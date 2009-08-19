@@ -10,7 +10,7 @@
         <repository>
             <id>jboss.com</id>
             <name>JBoss.com Repository</name>
-            <url>http://repository.jboss.com/maven2</url>
+            <url>http://repository.jboss.com/maven2/</url>
         </repository>
 
         <repository>
@@ -28,8 +28,16 @@
         <repository>
             <id>archive-releases</id>
             <name>Archive Releases</name>
-            <url>http://builds.archive.org:8080/maven2</url>
+            <url>http://builds.archive.org:8080/maven2/</url>
         </repository>
+
+        <repository>
+            <id>opensourcemasters.org</id>
+            <name>opensourcemasters.org</name>
+            <url>http://repo1.opensourcemasters.org:8081/nexus/content/groups/public/</url>
+        </repository>
+
+
     </repositories>
 
     <dependencies>
@@ -68,6 +76,7 @@
             <artifactId>hbase</artifactId>
             <version>${hbase.version}</version>
         </dependency>
+
 
     </dependencies>
 
