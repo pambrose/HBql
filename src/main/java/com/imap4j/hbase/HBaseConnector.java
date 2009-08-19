@@ -78,14 +78,15 @@ public class HBaseConnector {
         byte[][] end = table.getEndKeys();
         String s1 = new String(start[0]);
         String s2 = new String(end[0]);
-        int g = 9;
+        System.out.println("Start key: " + s1);
+        System.out.println("End key: " + s2);
 
         Scanner scanner = table.getScanner(new String[]{"post:"});
         for (RowResult res : scanner) {
-            System.out.println(res);
             System.out.println("Key: " + new String(res.getRow()));
-            for (byte[] b : res.keySet())
-                System.out.println(new String(b));
+            System.out.println(res);
+            //for (byte[] b : res.keySet())
+            //    System.out.println(new String(b));
         }
 
     }
