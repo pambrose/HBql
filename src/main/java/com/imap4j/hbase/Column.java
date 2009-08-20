@@ -10,10 +10,17 @@ package com.imap4j.hbase;
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 public @interface Column {
 
-    java.lang.String family() default "";
+    public enum Strategy {
+        SERIALIZED_INSTANCE,
+        SERIALIZED_ARRAY;
+    }
 
-    java.lang.String column() default "";
+    String family() default "";
 
-    java.lang.String lookup() default "";
+    String column() default "";
+
+    String lookup() default "";
+
+    Strategy strategy() default Strategy.SERIALIZED_INSTANCE;
 
 }

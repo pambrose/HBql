@@ -28,6 +28,12 @@ public class TestObject implements Persistable {
     @Column(family = family2, column = "bodyimage")
     String bodyimage = "A bodyimage value";
 
+    @Column(family = family2, strategy = Column.Strategy.SERIALIZED_ARRAY)
+    int[] array1 = {1, 2, 3};
+
+    @Column(family = family2, strategy = Column.Strategy.SERIALIZED_ARRAY)
+    String[] array2 = {"val1", "val2", "val3"};
+
     public TestObject() {
         this.keyval = "Val-" + System.currentTimeMillis() + "-" + System.nanoTime();
     }
@@ -41,8 +47,8 @@ public class TestObject implements Persistable {
 
         Transaction tx = new Transaction();
 
-        int cnt = 100; //10000;
-        for (int i = 1; i < cnt; i++) {
+        int cnt = 1;
+        for (int i = 0; i < cnt; i++) {
             TestObject obj = new TestObject();
             tx.insert(obj);
         }

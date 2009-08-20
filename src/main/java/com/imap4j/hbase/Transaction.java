@@ -6,7 +6,9 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.io.BatchUpdate;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +34,7 @@ public class Transaction {
         return retval;
     }
 
-    public void insert(final Persistable obj) throws PersistException {
+    public void insert(final Persistable obj) throws PersistException, IOException {
 
         final BatchUpdate batchUpdate = new BatchUpdate(obj.getKeyValue());
 
@@ -44,17 +46,26 @@ public class Transaction {
 
                 byte[] val = null;
 
-                Object objval = null;
+                Object instanceVarValue = null;
 
                 try {
-                    objval = attrib.getField().get(obj);
+                    instanceVarValue = attrib.getField().get(obj);
                 }
                 catch (IllegalAccessException e) {
                     throw new PersistException("Error getting value of " + attrib.getField().getName());
                 }
 
-                if (objval instanceof String)
-                    val = ((String)objval).getBytes();
+                switch (attrib.getStrategy()) {
+                    case SERIALIZED_INSTANCE:
+                        if (instanceVarValue instanceof String)
+                            val = ((String)instanceVarValue).getBytes();
+                        break;
+
+                    case SERIALIZED_ARRAY:
+
+                        this.getArrayasBytes(attrib, instanceVarValue);
+                        break;
+                }
 
                 batchUpdate.put(family + ":" + attrib.getColumn(), val);
             }
@@ -69,6 +80,41 @@ public class Transaction {
             final HTable table = new HTable(new HBaseConfiguration(), tableName);
             table.commit(this.getUpdateList(tableName));
         }
+    }
+
+    private byte[] getArrayasBytes(final FieldAttrib fieldAttrib, final Object obj) throws IOException, PersistException {
+
+        byte[] retval = null;
+        final Class clazz = obj.getClass();
+
+        if (!clazz.isArray())
+            throw new PersistException(clazz.getSimpleName() + " is not an array type");
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ObjectOutputStream oos = new ObjectOutputStream(baos);
+
+        try {
+            if (clazz.getComponentType() == Byte.TYPE) {
+                final byte[] val = (byte[])obj;
+                for (int i = 0; i < val.length; i++)
+                    oos.writeByte(val[i]);
+                return retval;
+            }
+
+            if (clazz.getComponentType() == Integer.TYPE) {
+                final int[] val = (int[])obj;
+                for (int i = 0; i < val.length; i++)
+                    oos.writeByte(val[i]);
+                return retval;
+            }
+
+        }
+        finally {
+            oos.flush();
+            retval = baos.toByteArray();
+        }
+
+        return retval;
     }
 
 }
