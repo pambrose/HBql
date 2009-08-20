@@ -19,13 +19,13 @@ import java.util.Map;
  * Date: Aug 17, 2009
  * Time: 9:38:45 AM
  */
-public class HBaseConnector {
+public class HBaseTests {
 
     final static String tablename = "blogposts";
 
     public static void insertPost(String val) throws IOException {
 
-        BatchUpdate upd = new BatchUpdate(val);
+        final BatchUpdate upd = new BatchUpdate(val);
         upd.put("post:title", ("This is a title " + val).getBytes());
         upd.put("post:author", ("This is a author " + val).getBytes());
         upd.put("post:body", ("This is a body " + val).getBytes());
@@ -54,8 +54,14 @@ public class HBaseConnector {
 
     public static void main(String[] args) throws IOException {
 
-        //for (int i = 2; i < 5; i++)
-        //    insertPost("post" + i);
+        int cnt = 0; //10000;
+        for (int i = 1; i < cnt; i++)
+            insertPost("post" + System.currentTimeMillis() + "-" + i);
+
+        TestObject obj = new TestObject();
+
+        HBaseConnection conn = new HBaseConnection();
+        conn.insert(obj);
 
         /*
         for (int j = 1; j < 5; j++) {
@@ -82,12 +88,15 @@ public class HBaseConnector {
         System.out.println("End key: " + s2);
 
         Scanner scanner = table.getScanner(new String[]{"post:"});
+        int tot = 0;
         for (RowResult res : scanner) {
-            System.out.println("Key: " + new String(res.getRow()));
-            System.out.println(res);
+            //System.out.println("Key: " + new String(res.getRow()));
+            tot++;
+            //System.out.println(res);
             //for (byte[] b : res.keySet())
             //    System.out.println(new String(b));
         }
+        System.out.println("Count: " + tot);
 
     }
 
