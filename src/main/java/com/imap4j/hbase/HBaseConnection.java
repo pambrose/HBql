@@ -8,6 +8,7 @@ package com.imap4j.hbase;
  */
 public class HBaseConnection {
 
+
     public void insert(final Object Persistable) {
 
     }
