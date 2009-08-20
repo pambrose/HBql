@@ -10,8 +10,10 @@ package com.imap4j.hbase;
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 public @interface Column {
 
-    java.lang.String name() default "";
-
     java.lang.String family() default "";
+
+    java.lang.String column() default "";
+
+    java.lang.String lookup() default "";
 
 }

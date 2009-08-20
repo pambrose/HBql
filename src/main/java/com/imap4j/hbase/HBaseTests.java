@@ -52,17 +52,13 @@ public class HBaseTests {
         return post;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, PersistException {
 
         int cnt = 0; //10000;
         for (int i = 1; i < cnt; i++)
             insertPost("post" + System.currentTimeMillis() + "-" + i);
 
-        TestObject obj = new TestObject();
-
-        HBaseConnection conn = new HBaseConnection();
-        conn.insert(obj);
-
+        TestObject.main(null);
         /*
         for (int j = 1; j < 5; j++) {
             String key = "post" + j;

@@ -1,5 +1,7 @@
 package com.imap4j.hbase;
 
+import java.io.IOException;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -9,18 +11,25 @@ package com.imap4j.hbase;
 @Table(name = "blogposts")
 public class TestObject implements Persistable {
 
-    final String family = "post";
+    final String family1 = "post";
+    final String family2 = "image";
 
     final String keyval;
 
-    @Column(family = family)
+    @Column(family = family1)
     String title = "A title value";
 
-    @Column(family = family, name = "author")
+    @Column(family = family1, column = "author")
     String author = "An author value";
 
+    @Column(family = family2)
+    String header = "A header value";
+
+    @Column(family = family2, column = "bodyimage")
+    String bodyimage = "A bodyimage value";
+
     public TestObject() {
-        this.keyval = "Val-" + System.currentTimeMillis();
+        this.keyval = "Val-" + System.currentTimeMillis() + "-" + System.nanoTime();
     }
 
     @Override
@@ -28,4 +37,17 @@ public class TestObject implements Persistable {
         return keyval.getBytes();
     }
 
+    public static void main(String[] args) throws IOException, PersistException {
+
+        Transaction tx = new Transaction();
+
+        int cnt = 100; //10000;
+        for (int i = 1; i < cnt; i++) {
+            TestObject obj = new TestObject();
+            tx.insert(obj);
+        }
+
+        tx.commit();
+
+    }
 }
