@@ -41,8 +41,11 @@ public class ClassSchema {
     }
 
     public static ClassSchema getClassSchema(final Persistable obj) throws PersistException {
-
         final Class<?> clazz = obj.getClass();
+        return getClassSchema(clazz);
+    }
+
+    public static ClassSchema getClassSchema(final Class<?> clazz) throws PersistException {
 
         ClassSchema classSchema = classSchemaMap.get(clazz);
         if (classSchema != null)

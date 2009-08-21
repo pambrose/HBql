@@ -79,7 +79,7 @@ public class TestObject implements Persistable {
         tx.commit();
 
         Query<TestObject> q =
-                new Query<TestObject>("select intValue, title from TestObjects",
+                new Query<TestObject>("select intValue, title from com.imap4j.hbase.TestObject",
                                       new QueryListenerAdapter<TestObject>() {
                                           public void onEachRow(final TestObject val) throws PersistException {
                                           }

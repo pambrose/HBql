@@ -19,9 +19,20 @@ public class Query<T extends Persistable> {
         this.listener = listener;
     }
 
-    public void execute() {
-        QueryArgs qa = (QueryArgs)HBSqlRule.QUERY.parse(this.query);
-        int o = 99;
+    public void execute() throws PersistException {
 
+        final QueryArgs qa = (QueryArgs)HBSqlRule.QUERY.parse(this.query);
+
+        final Class tableClass;
+        try {
+            tableClass = Class.forName(qa.getTableName());
+        }
+        catch (ClassNotFoundException e) {
+            throw new PersistException("Cannot find class: " + qa.getTableName());
+        }
+
+        final ClassSchema classSchema = ClassSchema.getClassSchema(tableClass);
+
+        int t = 0;
     }
 }
