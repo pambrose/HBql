@@ -1,4 +1,4 @@
-package com.imap4j.hbase;
+package com.imap4j.hbase.hbsql;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -18,11 +18,11 @@ import java.util.Map;
  * Date: Aug 19, 2009
  * Time: 4:22:40 PM
  */
-public class HBaseTransaction {
+public class Transaction {
 
     private final Map<String, List<BatchUpdate>> updateList = Maps.newHashMap();
 
-    public HBaseTransaction() {
+    public Transaction() {
     }
 
     public synchronized List<BatchUpdate> getUpdateList(final String tableName) {

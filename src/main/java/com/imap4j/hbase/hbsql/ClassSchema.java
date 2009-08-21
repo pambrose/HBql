@@ -1,4 +1,4 @@
-package com.imap4j.hbase;
+package com.imap4j.hbase.hbsql;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

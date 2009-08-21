@@ -1,6 +1,13 @@
 package com.imap4j.hbase;
 
 import com.google.common.collect.Maps;
+import com.imap4j.hbase.hbsql.Column;
+import com.imap4j.hbase.hbsql.PersistException;
+import com.imap4j.hbase.hbsql.Persistable;
+import com.imap4j.hbase.hbsql.Query;
+import com.imap4j.hbase.hbsql.QueryListenerAdapter;
+import com.imap4j.hbase.hbsql.Table;
+import com.imap4j.hbase.hbsql.Transaction;
 
 import java.io.IOException;
 import java.util.Map;
@@ -61,9 +68,9 @@ public class TestObject implements Persistable {
 
     public static void main(String[] args) throws IOException, PersistException {
 
-        HBaseTransaction tx = new HBaseTransaction();
+        Transaction tx = new Transaction();
 
-        int cnt = 10;
+        int cnt = 0;
         for (int i = 0; i < cnt; i++) {
             TestObject obj = new TestObject();
             tx.insert(obj);
@@ -71,7 +78,14 @@ public class TestObject implements Persistable {
 
         tx.commit();
 
-        HBaseQuery q = new HBaseQuery("select intValue from TestObjects");
+        Query<TestObject> q =
+                new Query<TestObject>("select intValue, title from TestObjects",
+                                      new QueryListenerAdapter<TestObject>() {
+                                          public void onEachRow(final TestObject val) throws PersistException {
+                                          }
+                                      });
+
+        q.execute();
 
     }
 }

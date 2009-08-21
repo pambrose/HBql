@@ -1,4 +1,4 @@
-package com.imap4j.hbase;
+package com.imap4j.hbase.antlr;
 
 import org.antlr.runtime.BitSet;
 import org.antlr.runtime.IntStream;
@@ -14,13 +14,13 @@ import org.antlr.runtime.TokenStream;
  * Date: Aug 20, 2009
  * Time: 9:35:18 PM
  */
-public class HBSqlParser extends Parser {
+public class HBaseParser extends Parser {
 
-    public HBSqlParser(final TokenStream input) {
+    public HBaseParser(final TokenStream input) {
         super(input);
     }
 
-    public HBSqlParser(final TokenStream input, final RecognizerSharedState state) {
+    public HBaseParser(final TokenStream input, final RecognizerSharedState state) {
         super(input, state);
     }
 

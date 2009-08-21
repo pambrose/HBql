@@ -1,4 +1,4 @@
-package com.imap4j.hbase.config;
+package com.imap4j.hbase.antlr.config;
 
 import com.imap4j.imap.antlr.util.GrammarRule;
 
@@ -8,14 +8,14 @@ import com.imap4j.imap.antlr.util.GrammarRule;
  * Date: Aug 20, 2009
  * Time: 9:56:22 PM
  */
-public enum Rule {
+public enum HBSqlRule {
 
-    QUERY(Grammar.HBSql, "query"),
+    QUERY(HBSqlGrammar.HBSql, "query"),
     NONE(null, null);
 
     private final GrammarRule grammarRule;
 
-    Rule(final Grammar grammar, final String rule) {
+    HBSqlRule(final HBSqlGrammar grammar, final String rule) {
         this.grammarRule = (grammar != null) ? GrammarRule.newInstance(grammar.getGrammarDef(), rule) : null;
     }
 

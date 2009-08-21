@@ -1,4 +1,4 @@
-package com.imap4j.hbase;
+package com.imap4j.hbase.hbsql;
 
 /**
  * Created by IntelliJ IDEA.

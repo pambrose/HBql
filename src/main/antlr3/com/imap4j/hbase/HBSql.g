@@ -1,6 +1,6 @@
 grammar HBSql;
 
-options {superClass=ImapParser;}
+options {superClass=HBaseParser;}
 
 tokens {
 	SELECT = 'select';
@@ -16,13 +16,16 @@ catch (RecognitionException re) {
 
 @header {
 package com.imap4j.hbase;
+import com.imap4j.hbase.hbsql.*;
+import com.imap4j.hbase.antlr.*;
 }
 
 @lexer::header {
 package com.imap4j.hbase;
 }
 
-query		: SELECT column_list FROM table;
+query returns [QueryRequest retval]
+		: SELECT column_list FROM table;
 
 column_list	: column (COMMA column)*;
 
@@ -37,3 +40,5 @@ DIGIT : '0'..'9';
 
 fragment 
 CHAR : 'a'..'z' | 'A'..'Z'; 
+
+WS : (' ' |'\t' |'\n' |'\r' )+ {skip();} ;
