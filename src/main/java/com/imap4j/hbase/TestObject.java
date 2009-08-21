@@ -17,6 +17,9 @@ public class TestObject implements Persistable {
     final String keyval;
 
     @Column(family = family1)
+    int intValue = -999;
+
+    @Column(family = family1)
     String title = "A title value";
 
     @Column(family = family1, column = "author")

@@ -15,9 +15,10 @@ import java.lang.reflect.Method;
  */
 public class FieldAttrib {
 
-    public enum ComponentType {
+    private enum ComponentType {
         BooleanType,
         ByteType,
+        CharType,
         ShortType,
         IntegerType,
         LongType,
@@ -37,6 +38,9 @@ public class FieldAttrib {
 
                 if (clazz == Byte.TYPE)
                     return ByteType;
+
+                if (clazz == Character.TYPE)
+                    return CharType;
 
                 if (clazz == Short.TYPE)
                     return ShortType;
@@ -140,20 +144,66 @@ public class FieldAttrib {
         return (byte[])this.getLookupMethod().invoke(obj);
     }
 
+    public byte[] getScalarAsBytes(final Object obj) throws IOException, PersistException {
+
+        final Class clazz = obj.getClass();
+
+        if (clazz.isArray())
+            throw new PersistException(this + " is an array type");
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ObjectOutputStream oos = new ObjectOutputStream(baos);
+
+        switch (this.getComponentType()) {
+
+            case BooleanType:
+                oos.writeBoolean((Boolean)obj);
+                break;
+
+            case ByteType:
+                oos.writeByte((Byte)obj);
+                break;
+
+            case CharType:
+                oos.writeByte((Byte)obj);
+                break;
+
+            case ShortType:
+                oos.writeShort((Short)obj);
+                break;
+
+            case IntegerType:
+                oos.writeInt((Integer)obj);
+                break;
+
+            case LongType:
+                oos.writeLong((Long)obj);
+                break;
+
+            case FloatType:
+                oos.writeFloat((Float)obj);
+                break;
+
+            case DoubleType:
+                oos.writeDouble((Double)obj);
+                break;
+
+            case ObjectType:
+                oos.writeObject(obj);
+                break;
+        }
+
+        oos.flush();
+        return baos.toByteArray();
+
+    }
+
     public byte[] getArrayasBytes(final Object obj) throws IOException, PersistException {
 
-        byte[] retval = null;
         final Class clazz = obj.getClass();
 
         if (!clazz.isArray())
             throw new PersistException(this + " is not an array type");
-
-        return this.getBytes(obj);
-
-    }
-
-
-    private byte[] getBytes(final Object obj) throws IOException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -168,6 +218,12 @@ public class FieldAttrib {
 
             case ByteType: {
                 final byte[] val = (byte[])obj;
+                for (int i = 0; i < val.length; i++) oos.write(val[i]);
+                break;
+            }
+
+            case CharType: {
+                final char[] val = (char[])obj;
                 for (int i = 0; i < val.length; i++) oos.write(val[i]);
                 break;
             }
@@ -205,6 +261,7 @@ public class FieldAttrib {
             case ObjectType: {
                 final Object[] val = (Object[])obj;
                 for (int i = 0; i < val.length; i++) oos.writeObject(val[i]);
+                break;
             }
         }
 

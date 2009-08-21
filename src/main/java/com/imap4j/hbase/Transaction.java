@@ -48,6 +48,8 @@ public class Transaction {
 
                 try {
                     instanceVarValue = attrib.getField().get(obj);
+
+                    // TODO check for null value here
                 }
                 catch (IllegalAccessException e) {
                     throw new PersistException("Error getting value of " + attrib.getField().getName());
@@ -55,12 +57,10 @@ public class Transaction {
 
                 switch (attrib.getStrategy()) {
                     case SERIALIZED_INSTANCE:
-                        if (instanceVarValue instanceof String)
-                            val = ((String)instanceVarValue).getBytes();
+                        val = attrib.getScalarAsBytes(instanceVarValue);
                         break;
 
                     case SERIALIZED_ARRAY:
-
                         val = attrib.getArrayasBytes(instanceVarValue);
                         break;
                 }
