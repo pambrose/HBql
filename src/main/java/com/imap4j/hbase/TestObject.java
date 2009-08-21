@@ -28,7 +28,7 @@ public class TestObject implements Persistable {
     @Column(family = family1, column = "author")
     String author = "An author value";
 
-    @Column(family = family2)
+    @Column(family = family2, lookup = "getHeaderBytes")
     String header = "A header value";
 
     @Column(family = family2, column = "bodyimage")
@@ -53,6 +53,10 @@ public class TestObject implements Persistable {
     @Override
     public byte[] getKeyValue() {
         return keyval.getBytes();
+    }
+
+    public byte[] getHeaderBytes() {
+        return this.header.getBytes();
     }
 
     public static void main(String[] args) throws IOException, PersistException {

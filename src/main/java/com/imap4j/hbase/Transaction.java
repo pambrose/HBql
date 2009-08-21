@@ -34,21 +34,21 @@ public class Transaction {
         return retval;
     }
 
-    public void insert(final Persistable obj) throws PersistException, IOException {
+    public void insert(final Persistable declaringObj) throws PersistException, IOException {
 
-        final BatchUpdate batchUpdate = new BatchUpdate(obj.getKeyValue());
+        final BatchUpdate batchUpdate = new BatchUpdate(declaringObj.getKeyValue());
 
-        final ClassSchema schema = ClassSchema.getClassSchema(obj);
+        final ClassSchema schema = ClassSchema.getClassSchema(declaringObj);
 
         for (final String family : schema.getFieldAttribs().keySet()) {
 
             for (final FieldAttrib attrib : schema.getFieldAttribs().get(family)) {
 
-                final Object instanceVarValue;
+                final Object instanceVarObj;
                 try {
-                    instanceVarValue = attrib.getField().get(obj);
+                    instanceVarObj = attrib.getField().get(declaringObj);
 
-                    if (instanceVarValue == null)
+                    if (instanceVarObj == null)
                         continue;
                 }
                 catch (IllegalAccessException e) {
@@ -56,12 +56,12 @@ public class Transaction {
                 }
 
                 if (attrib.isMapKeysAsColumns()) {
-                    final Map map = (Map)instanceVarValue;
+                    final Map map = (Map)instanceVarObj;
                     for (final Object keyobj : map.keySet()) {
                         final Object val = map.get(keyobj);
                         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         final ObjectOutputStream oos = new ObjectOutputStream(baos);
-                        oos.writeObject(instanceVarValue);
+                        oos.writeObject(instanceVarObj);
                         oos.flush();
                         final byte[] byteval = baos.toByteArray();
                         final String colname = val.toString();
@@ -69,7 +69,12 @@ public class Transaction {
                     }
                 }
                 else {
-                    byte[] val = attrib.getValue(instanceVarValue);
+                    final byte[] val;
+                    if (attrib.isLookupAttrib())
+                        val = attrib.invokeLookupMethod(declaringObj);
+                    else
+                        val = attrib.asBytes(instanceVarObj);
+
                     batchUpdate.put(family + ":" + attrib.getColumn(), val);
                 }
             }

@@ -127,17 +127,9 @@ public class FieldAttrib {
         return this.mapKeysAsColumns;
     }
 
-    public byte[] getValue(Object obj) throws IOException, PersistException {
-
-        if (this.isLookupAttrib())
-            return invokeLookupMethod(obj);
-        else
-            return this.asBytes(obj);
-    }
-
-    private byte[] invokeLookupMethod(Object obj) throws PersistException {
+    public byte[] invokeLookupMethod(final Object parent) throws PersistException {
         try {
-            return (byte[])this.getLookupMethod().invoke(obj);
+            return (byte[])this.getLookupMethod().invoke(parent);
         }
         catch (IllegalAccessException e) {
             throw new PersistException("Error getting value of " + this.getField().getName());
