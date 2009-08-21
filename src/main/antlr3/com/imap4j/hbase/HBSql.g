@@ -18,18 +18,28 @@ catch (RecognitionException re) {
 package com.imap4j.hbase;
 import com.imap4j.hbase.hbsql.*;
 import com.imap4j.hbase.antlr.*;
+import com.google.common.collect.Lists;
 }
 
 @lexer::header {
 package com.imap4j.hbase;
+import com.google.common.collect.Lists;
 }
 
-query returns [QueryRequest retval]
-		: SELECT column_list FROM table;
+query returns [QueryArgs retval]
+		: SELECT column_list FROM table
+		{
+		  retval = new QueryArgs($column_list.retval, $table.text);
+		}
+		;
 
-column_list	: column (COMMA column)*;
+column_list returns [List<String> retval]
+@init {retval = Lists.newArrayList();}
+		: column[retval] (COMMA column[retval])*;
 
-column		: ATOM;
+column [List<String> list]	
+		: ATOM {list.add($ATOM.text);};
+
 
 table		: ATOM;
 

@@ -1,5 +1,7 @@
 package com.imap4j.hbase.antlr;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -7,4 +9,20 @@ package com.imap4j.hbase.antlr;
  * Time: 11:07:28 PM
  */
 public class QueryArgs {
+
+    private final List<String> columnList;
+    private final String tableName;
+
+    public QueryArgs(final List<String> columnList, final String tableName) {
+        this.columnList = columnList;
+        this.tableName = tableName;
+    }
+
+    public List<String> getColumnList() {
+        return columnList;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
 }

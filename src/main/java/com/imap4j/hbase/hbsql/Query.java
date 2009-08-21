@@ -1,5 +1,6 @@
 package com.imap4j.hbase.hbsql;
 
+import com.imap4j.hbase.antlr.QueryArgs;
 import com.imap4j.hbase.antlr.config.HBSqlRule;
 
 /**
@@ -19,7 +20,8 @@ public class Query<T extends Persistable> {
     }
 
     public void execute() {
-        HBSqlRule.QUERY.parse(this.query);
+        QueryArgs qa = (QueryArgs)HBSqlRule.QUERY.parse(this.query);
+        int o = 99;
 
     }
 }
