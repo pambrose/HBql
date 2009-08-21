@@ -1,6 +1,6 @@
 package com.imap4j.hbase;
 
-import com.imap4j.hbase.hbsql.PersistException;
+import com.imap4j.hbase.hbql.PersistException;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;

@@ -1,7 +1,7 @@
-package com.imap4j.hbase.hbsql;
+package com.imap4j.hbase.hbql;
 
 import com.imap4j.hbase.antlr.QueryArgs;
-import com.imap4j.hbase.antlr.config.HBSqlRule;
+import com.imap4j.hbase.antlr.config.HBqlRule;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,7 +21,7 @@ public class Query<T extends Persistable> {
 
     public void execute() throws PersistException {
 
-        final QueryArgs qa = (QueryArgs)HBSqlRule.QUERY.parse(this.query);
+        final QueryArgs qa = (QueryArgs)HBqlRule.QUERY.parse(this.query);
 
         final Class tableClass;
         try {

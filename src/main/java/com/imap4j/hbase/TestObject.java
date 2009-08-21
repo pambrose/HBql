@@ -1,13 +1,13 @@
 package com.imap4j.hbase;
 
 import com.google.common.collect.Maps;
-import com.imap4j.hbase.hbsql.Column;
-import com.imap4j.hbase.hbsql.PersistException;
-import com.imap4j.hbase.hbsql.Persistable;
-import com.imap4j.hbase.hbsql.Query;
-import com.imap4j.hbase.hbsql.QueryListenerAdapter;
-import com.imap4j.hbase.hbsql.Table;
-import com.imap4j.hbase.hbsql.Transaction;
+import com.imap4j.hbase.hbql.Column;
+import com.imap4j.hbase.hbql.PersistException;
+import com.imap4j.hbase.hbql.Persistable;
+import com.imap4j.hbase.hbql.Query;
+import com.imap4j.hbase.hbql.QueryListenerAdapter;
+import com.imap4j.hbase.hbql.Table;
+import com.imap4j.hbase.hbql.Transaction;
 
 import java.io.IOException;
 import java.util.Map;

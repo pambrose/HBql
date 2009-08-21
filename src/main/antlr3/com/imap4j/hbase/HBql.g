@@ -1,4 +1,4 @@
-grammar HBSql;
+grammar HBql;
 
 options {superClass=HBaseParser;}
 
@@ -25,7 +25,7 @@ catch (RecognitionException re) {
 
 @header {
 package com.imap4j.hbase;
-import com.imap4j.hbase.hbsql.*;
+import com.imap4j.hbase.hbql.*;
 import com.imap4j.hbase.antlr.*;
 import com.google.common.collect.Lists;
 }

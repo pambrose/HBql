@@ -8,14 +8,14 @@ import com.imap4j.imap.antlr.util.GrammarDef;
  * Date: Aug 20, 2009
  * Time: 9:57:05 PM
  */
-public enum HBSqlGrammar {
+public enum HBqlGrammar {
 
-    HBSql("HBSql");
+    HBql("HBql");
 
     private final static String HOME = "com.imap4j.hbase.";
     private final GrammarDef grammarDef;
 
-    HBSqlGrammar(final String name) {
+    HBqlGrammar(final String name) {
         this.grammarDef = GrammarDef.newInstance(HOME + name);
     }
 
