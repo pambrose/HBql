@@ -6,7 +6,9 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.io.BatchUpdate;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -42,30 +44,22 @@ public class Transaction {
 
             for (final FieldAttrib attrib : schema.getFieldAttribs().get(family)) {
 
-                byte[] val = null;
-
-                final Object instanceVarValue;
-
-                try {
-                    instanceVarValue = attrib.getField().get(obj);
-
-                    // TODO check for null value here
+                if (attrib.isMapKeysAsColumns()) {
+                    final Map map = (Map)obj;
+                    for (final Object keyobj : map.keySet()) {
+                        final Object val = map.get(keyobj);
+                        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        final ObjectOutputStream oos = new ObjectOutputStream(baos);
+                        oos.writeObject(obj);
+                        oos.flush();
+                        final byte[] byteval = baos.toByteArray();
+                        batchUpdate.put(family + ":" + val.toString(), byteval);
+                    }
                 }
-                catch (IllegalAccessException e) {
-                    throw new PersistException("Error getting value of " + attrib.getField().getName());
+                else {
+                    byte[] val = attrib.getValue(obj);
+                    batchUpdate.put(family + ":" + attrib.getColumn(), val);
                 }
-
-                switch (attrib.getStrategy()) {
-                    case SERIALIZED_INSTANCE:
-                        val = attrib.getScalarAsBytes(instanceVarValue);
-                        break;
-
-                    case SERIALIZED_ARRAY:
-                        val = attrib.getArrayasBytes(instanceVarValue);
-                        break;
-                }
-
-                batchUpdate.put(family + ":" + attrib.getColumn(), val);
             }
         }
 

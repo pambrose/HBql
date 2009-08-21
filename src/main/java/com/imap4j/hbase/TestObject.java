@@ -1,6 +1,9 @@
 package com.imap4j.hbase;
 
+import com.google.common.collect.Maps;
+
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,14 +34,20 @@ public class TestObject implements Persistable {
     @Column(family = family2, column = "bodyimage")
     String bodyimage = "A bodyimage value";
 
-    @Column(family = family2, strategy = Column.Strategy.SERIALIZED_ARRAY)
+    @Column(family = family2)
     int[] array1 = {1, 2, 3};
 
-    @Column(family = family2, strategy = Column.Strategy.SERIALIZED_ARRAY)
+    @Column(family = family2)
     String[] array2 = {"val1", "val2", "val3"};
+
+    @Column(family = family2, mapKeysAsColumns = true)
+    Map<String, String> mapval1 = Maps.newHashMap();
 
     public TestObject() {
         this.keyval = "Val-" + System.currentTimeMillis() + "-" + System.nanoTime();
+
+        mapval1.put("key1", "val1");
+        mapval1.put("key2", "val2");
     }
 
     @Override

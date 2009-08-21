@@ -1,5 +1,6 @@
 package com.imap4j.hbase;
 
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -10,17 +11,12 @@ package com.imap4j.hbase;
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 public @interface Column {
 
-    public enum Strategy {
-        SERIALIZED_INSTANCE,
-        SERIALIZED_ARRAY;
-    }
-
     String family() default "";
 
     String column() default "";
 
     String lookup() default "";
 
-    Strategy strategy() default Strategy.SERIALIZED_INSTANCE;
+    boolean mapKeysAsColumns() default false;
 
 }

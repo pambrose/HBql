@@ -70,7 +70,7 @@ public class FieldAttrib {
     private final String family;
     private final String column;
     private final String lookup;
-    private final Column.Strategy strategy;
+    private final boolean mapKeysAsColumns;
 
     private Method lookupMethod = null;
 
@@ -83,10 +83,10 @@ public class FieldAttrib {
         this.family = column.family();
         this.column = column.column().length() > 0 ? column.column() : this.getField().getName();
         this.lookup = column.lookup();
-        this.strategy = column.strategy();
+        this.mapKeysAsColumns = column.mapKeysAsColumns();
 
         try {
-            if (this.isLookupColumn()) {
+            if (this.isLookupAttrib()) {
                 this.lookupMethod = enclosingClass.getDeclaredMethod(this.lookup);
 
                 // Check return type and args of lookup method
@@ -116,16 +116,8 @@ public class FieldAttrib {
         return lookupMethod;
     }
 
-    public boolean isLookupColumn() {
+    public boolean isLookupAttrib() {
         return this.lookup.length() > 0;
-    }
-
-    public Column.Strategy getStrategy() {
-        return this.strategy;
-    }
-
-    public boolean isSerializedArray() {
-        return this.strategy == Column.Strategy.SERIALIZED_ARRAY;
     }
 
     public String getFamily() {
@@ -140,16 +132,51 @@ public class FieldAttrib {
         return field;
     }
 
-    public byte[] invokeLookupMethod(Object obj) throws IllegalAccessException, InvocationTargetException {
-        return (byte[])this.getLookupMethod().invoke(obj);
+    public boolean isMapKeysAsColumns() {
+        return this.mapKeysAsColumns;
     }
 
-    public byte[] getScalarAsBytes(final Object obj) throws IOException, PersistException {
+    public byte[] getValue(Object obj) throws IOException, PersistException {
 
+        if (this.isLookupAttrib()) {
+            return invokeLookupMethod(obj);
+        }
+        else {
+            final Object instanceVarValue;
+            try {
+                instanceVarValue = this.getField().get(obj);
+
+                // TODO check for null value here
+                return this.asBytes(instanceVarValue);
+            }
+            catch (IllegalAccessException e) {
+                throw new PersistException("Error getting value of " + this.getField().getName());
+            }
+        }
+    }
+
+    private byte[] invokeLookupMethod(Object obj) throws PersistException {
+        try {
+            return (byte[])this.getLookupMethod().invoke(obj);
+        }
+        catch (IllegalAccessException e) {
+            throw new PersistException("Error getting value of " + this.getField().getName());
+        }
+        catch (InvocationTargetException e) {
+            throw new PersistException("Error getting value of " + this.getField().getName());
+        }
+    }
+
+    public byte[] asBytes(final Object obj) throws IOException, PersistException {
         final Class clazz = obj.getClass();
 
         if (clazz.isArray())
-            throw new PersistException(this + " is an array type");
+            return this.getArrayasBytes(obj);
+        else
+            return this.getScalarAsBytes(obj);
+    }
+
+    private byte[] getScalarAsBytes(final Object obj) throws IOException, PersistException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -198,12 +225,7 @@ public class FieldAttrib {
 
     }
 
-    public byte[] getArrayasBytes(final Object obj) throws IOException, PersistException {
-
-        final Class clazz = obj.getClass();
-
-        if (!clazz.isArray())
-            throw new PersistException(this + " is not an array type");
+    private byte[] getArrayasBytes(final Object obj) throws IOException, PersistException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
