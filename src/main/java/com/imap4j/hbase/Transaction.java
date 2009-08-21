@@ -44,20 +44,32 @@ public class Transaction {
 
             for (final FieldAttrib attrib : schema.getFieldAttribs().get(family)) {
 
+                final Object instanceVarValue;
+                try {
+                    instanceVarValue = attrib.getField().get(obj);
+
+                    if (instanceVarValue == null)
+                        continue;
+                }
+                catch (IllegalAccessException e) {
+                    throw new PersistException("Error getting value of " + attrib.getField().getName());
+                }
+
                 if (attrib.isMapKeysAsColumns()) {
-                    final Map map = (Map)obj;
+                    final Map map = (Map)instanceVarValue;
                     for (final Object keyobj : map.keySet()) {
                         final Object val = map.get(keyobj);
                         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         final ObjectOutputStream oos = new ObjectOutputStream(baos);
-                        oos.writeObject(obj);
+                        oos.writeObject(instanceVarValue);
                         oos.flush();
                         final byte[] byteval = baos.toByteArray();
-                        batchUpdate.put(family + ":" + val.toString(), byteval);
+                        final String colname = val.toString();
+                        batchUpdate.put(family + ":" + colname, byteval);
                     }
                 }
                 else {
-                    byte[] val = attrib.getValue(obj);
+                    byte[] val = attrib.getValue(instanceVarValue);
                     batchUpdate.put(family + ":" + attrib.getColumn(), val);
                 }
             }

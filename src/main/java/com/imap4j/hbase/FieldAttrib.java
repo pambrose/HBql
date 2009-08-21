@@ -138,21 +138,10 @@ public class FieldAttrib {
 
     public byte[] getValue(Object obj) throws IOException, PersistException {
 
-        if (this.isLookupAttrib()) {
+        if (this.isLookupAttrib())
             return invokeLookupMethod(obj);
-        }
-        else {
-            final Object instanceVarValue;
-            try {
-                instanceVarValue = this.getField().get(obj);
-
-                // TODO check for null value here
-                return this.asBytes(instanceVarValue);
-            }
-            catch (IllegalAccessException e) {
-                throw new PersistException("Error getting value of " + this.getField().getName());
-            }
-        }
+        else
+            return this.asBytes(obj);
     }
 
     private byte[] invokeLookupMethod(Object obj) throws PersistException {
