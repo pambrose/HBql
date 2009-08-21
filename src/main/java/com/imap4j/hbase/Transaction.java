@@ -6,9 +6,7 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.io.BatchUpdate;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +44,7 @@ public class Transaction {
 
                 byte[] val = null;
 
-                Object instanceVarValue = null;
+                final Object instanceVarValue;
 
                 try {
                     instanceVarValue = attrib.getField().get(obj);
@@ -63,7 +61,7 @@ public class Transaction {
 
                     case SERIALIZED_ARRAY:
 
-                        this.getArrayasBytes(attrib, instanceVarValue);
+                        val = attrib.getArrayasBytes(instanceVarValue);
                         break;
                 }
 
@@ -80,41 +78,6 @@ public class Transaction {
             final HTable table = new HTable(new HBaseConfiguration(), tableName);
             table.commit(this.getUpdateList(tableName));
         }
-    }
-
-    private byte[] getArrayasBytes(final FieldAttrib fieldAttrib, final Object obj) throws IOException, PersistException {
-
-        byte[] retval = null;
-        final Class clazz = obj.getClass();
-
-        if (!clazz.isArray())
-            throw new PersistException(clazz.getSimpleName() + " is not an array type");
-
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream oos = new ObjectOutputStream(baos);
-
-        try {
-            if (clazz.getComponentType() == Byte.TYPE) {
-                final byte[] val = (byte[])obj;
-                for (int i = 0; i < val.length; i++)
-                    oos.writeByte(val[i]);
-                return retval;
-            }
-
-            if (clazz.getComponentType() == Integer.TYPE) {
-                final int[] val = (int[])obj;
-                for (int i = 0; i < val.length; i++)
-                    oos.writeByte(val[i]);
-                return retval;
-            }
-
-        }
-        finally {
-            oos.flush();
-            retval = baos.toByteArray();
-        }
-
-        return retval;
     }
 
 }
