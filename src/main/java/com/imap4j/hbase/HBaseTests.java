@@ -86,7 +86,10 @@ public class HBaseTests {
         Scanner scanner = table.getScanner(new String[]{"post:"});
         int tot = 0;
         for (RowResult res : scanner) {
-            //System.out.println("Key: " + new String(res.getRow()));
+            String key = new String(res.getRow());
+            System.out.println("Key: " + key);
+
+            // table.deleteAll(key);
             tot++;
             //System.out.println(res);
             //for (byte[] b : res.keySet())

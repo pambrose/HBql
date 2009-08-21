@@ -18,11 +18,11 @@ import java.util.Map;
  * Date: Aug 19, 2009
  * Time: 4:22:40 PM
  */
-public class Transaction {
+public class HBaseTransaction {
 
     private final Map<String, List<BatchUpdate>> updateList = Maps.newHashMap();
 
-    public Transaction() {
+    public HBaseTransaction() {
     }
 
     public synchronized List<BatchUpdate> getUpdateList(final String tableName) {

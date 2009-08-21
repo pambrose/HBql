@@ -44,7 +44,7 @@ public class TestObject implements Persistable {
     Map<String, String> mapval1 = Maps.newHashMap();
 
     public TestObject() {
-        this.keyval = "Val-" + System.currentTimeMillis() + "-" + System.nanoTime();
+        this.keyval = "Val-" + System.nanoTime();
 
         mapval1.put("key1", "val1");
         mapval1.put("key2", "val2");
@@ -61,15 +61,17 @@ public class TestObject implements Persistable {
 
     public static void main(String[] args) throws IOException, PersistException {
 
-        Transaction tx = new Transaction();
+        HBaseTransaction tx = new HBaseTransaction();
 
-        int cnt = 1;
+        int cnt = 10;
         for (int i = 0; i < cnt; i++) {
             TestObject obj = new TestObject();
             tx.insert(obj);
         }
 
         tx.commit();
+
+        HBaseQuery q = new HBaseQuery("select intValue from TestObjects");
 
     }
 }
