@@ -15,58 +15,49 @@ import java.lang.reflect.Method;
  */
 public class FieldAttrib {
 
-    private enum ComponentType {
-        BooleanType,
-        ByteType,
-        CharType,
-        ShortType,
-        IntegerType,
-        LongType,
-        FloatType,
-        DoubleType,
-        ObjectType;
+    private enum Type {
 
-        private static ComponentType getType(final Field field) throws PersistException {
+        BooleanType(Boolean.TYPE),
+        ByteType(Byte.TYPE),
+        CharType(Character.TYPE),
+        ShortType(Short.TYPE),
+        IntegerType(Integer.TYPE),
+        LongType(Long.TYPE),
+        FloatType(Float.TYPE),
+        DoubleType(Double.TYPE),
+        ObjectType(Object.class);
+
+        private final Class clazz;
+
+        private Type(final Class clazz) {
+            this.clazz = clazz;
+        }
+
+        private Class getClazz() {
+            return clazz;
+        }
+
+        private static Type getType(final Field field) throws PersistException {
 
             final Class fieldClass = field.getType();
 
             final Class<?> clazz = fieldClass.isArray() ? fieldClass.getComponentType() : fieldClass;
 
-            if (clazz.isPrimitive()) {
-                if (clazz == Boolean.TYPE)
-                    return BooleanType;
-
-                if (clazz == Byte.TYPE)
-                    return ByteType;
-
-                if (clazz == Character.TYPE)
-                    return CharType;
-
-                if (clazz == Short.TYPE)
-                    return ShortType;
-
-                if (clazz == Integer.TYPE)
-                    return IntegerType;
-
-                if (clazz == Long.TYPE)
-                    return LongType;
-
-                if (clazz == Float.TYPE)
-                    return FloatType;
-
-                if (clazz == Double.TYPE)
-                    return DoubleType;
-
-                throw new PersistException("Not dealing with type: " + clazz);
-            }
-            else {
+            if (!clazz.isPrimitive()) {
                 return ObjectType;
             }
+            else {
+                for (final Type type : values())
+                    if (clazz == type.getClazz())
+                        return type;
+            }
+
+            throw new PersistException("Not dealing with type: " + clazz);
         }
     }
 
     private final Field field;
-    private final ComponentType componentType;
+    private final Type type;
     private final String family;
     private final String column;
     private final String lookup;
@@ -78,7 +69,7 @@ public class FieldAttrib {
     public FieldAttrib(final Class enclosingClass, final Field field, final Column column) throws PersistException {
 
         this.field = field;
-        this.componentType = ComponentType.getType(this.field);
+        this.type = Type.getType(this.field);
 
         this.family = column.family();
         this.column = column.column().length() > 0 ? column.column() : this.getField().getName();
@@ -108,8 +99,8 @@ public class FieldAttrib {
         return this.getField().getDeclaringClass() + "." + this.getField().getName();
     }
 
-    public ComponentType getComponentType() {
-        return componentType;
+    public Type getComponentType() {
+        return type;
     }
 
     private Method getLookupMethod() {
