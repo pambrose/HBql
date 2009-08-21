@@ -17,6 +17,8 @@ public class ClassSchema {
 
     private final static Map<Class<?>, ClassSchema> classSchemaMap = Maps.newHashMap();
 
+    private final static Map<String, Class<?>> classCacheMap = Maps.newHashMap();
+
     private final Class<?> clazz;
 
     private String tableName;
@@ -43,6 +45,39 @@ public class ClassSchema {
     public static ClassSchema getClassSchema(final Persistable obj) throws PersistException {
         final Class<?> clazz = obj.getClass();
         return getClassSchema(clazz);
+    }
+
+    public static ClassSchema getClassSchema(final String objname) throws PersistException {
+
+        // First see if already cached
+        Class<?> clazz = classCacheMap.get(objname);
+
+        if (clazz != null)
+            return getClassSchema(clazz);
+
+        // Then check with classpath prefixes
+        for (final String val : EnvVars.getClasspath()) {
+            String cp = val;
+            if (!cp.endsWith(".") && cp.length() > 0)
+                cp += ".";
+            final String name = cp + objname;
+            clazz = getClass(name);
+            if (clazz != null) {
+                classCacheMap.put(objname, clazz);
+                return getClassSchema(clazz);
+            }
+        }
+
+        throw new PersistException("Cannot find " + objname + " in classpath");
+    }
+
+    private static Class getClass(final String str) {
+        try {
+            return Class.forName(str);
+        }
+        catch (ClassNotFoundException e) {
+            return null;
+        }
     }
 
     public static ClassSchema getClassSchema(final Class<?> clazz) throws PersistException {
@@ -97,4 +132,5 @@ public class ClassSchema {
     public String getTableName() {
         return this.tableName;
     }
+
 }

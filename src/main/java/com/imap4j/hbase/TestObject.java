@@ -2,6 +2,7 @@ package com.imap4j.hbase;
 
 import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbql.Column;
+import com.imap4j.hbase.hbql.HBql;
 import com.imap4j.hbase.hbql.PersistException;
 import com.imap4j.hbase.hbql.Persistable;
 import com.imap4j.hbase.hbql.Query;
@@ -78,13 +79,16 @@ public class TestObject implements Persistable {
 
         tx.commit();
 
+        HBql.exec("set classpath = com.imap4j.hbsql:com.imap4j.hbase");
+
         Query<TestObject> q =
-                new Query<TestObject>("select intValue, title from com.imap4j.hbase.TestObject",
+                new Query<TestObject>("select intValue, title from TestObject",
                                       new QueryListenerAdapter<TestObject>() {
                                           public void onEachRow(final TestObject val) throws PersistException {
                                           }
                                       });
 
+        q.execute();
         q.execute();
 
     }

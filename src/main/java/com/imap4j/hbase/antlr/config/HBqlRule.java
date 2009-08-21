@@ -10,7 +10,9 @@ import com.imap4j.imap.antlr.util.GrammarRule;
  */
 public enum HBqlRule {
 
-    QUERY(HBqlGrammar.HBql, "query"),
+    QUERY(HBqlGrammar.HBql, "query_stmt"),
+    DELETE(HBqlGrammar.HBql, "delete_stmt"),
+    SET(HBqlGrammar.HBql, "set_stmt"),
     NONE(null, null);
 
     private final GrammarRule grammarRule;

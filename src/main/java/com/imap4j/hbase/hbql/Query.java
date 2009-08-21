@@ -23,15 +23,7 @@ public class Query<T extends Persistable> {
 
         final QueryArgs qa = (QueryArgs)HBqlRule.QUERY.parse(this.query);
 
-        final Class tableClass;
-        try {
-            tableClass = Class.forName(qa.getTableName());
-        }
-        catch (ClassNotFoundException e) {
-            throw new PersistException("Cannot find class: " + qa.getTableName());
-        }
-
-        final ClassSchema classSchema = ClassSchema.getClassSchema(tableClass);
+        final ClassSchema classSchema = ClassSchema.getClassSchema(qa.getTableName());
 
         int t = 0;
     }

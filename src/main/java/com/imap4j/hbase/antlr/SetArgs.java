@@ -1,0 +1,25 @@
+package com.imap4j.hbase.antlr;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: pambrose
+ * Date: Aug 21, 2009
+ * Time: 1:08:12 PM
+ */
+public class SetArgs {
+
+    private final String variable, value;
+
+    public SetArgs(final String variable, final String value) {
+        this.variable = variable;
+        this.value = value;
+    }
+
+    public String getVariable() {
+        return variable;
+    }
+
+    public String getValue() {
+        return value;
+    }
+}
