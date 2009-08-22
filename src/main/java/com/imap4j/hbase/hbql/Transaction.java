@@ -38,7 +38,6 @@ public class Transaction {
 
         final ClassSchema classSchema = ClassSchema.getClassSchema(declaringObj);
 
-        // TODO Need to allow for key to use getter and setter method
         final byte[] keyval = classSchema.getKeyFieldAttrib().getValueAsBytes(declaringObj);
 
         final BatchUpdate batchUpdate = new BatchUpdate(keyval);
@@ -51,12 +50,11 @@ public class Transaction {
                     final Map map = (Map)attrib.getValue(declaringObj);
                     for (final Object keyobj : map.keySet()) {
                         final String colname = keyobj.toString();
-                        final byte[] byteval = getBytes(map.get(keyobj));
+                        final byte[] byteval = getObjectAsBytes(map.get(keyobj));
 
                         // Use family:column-key scheme to avoid column namespace collision
                         batchUpdate.put(attrib.getQualifiedName() + "-" + colname, byteval);
                     }
-
                 }
                 else {
                     final byte[] instval = attrib.getValueAsBytes(declaringObj);
@@ -66,10 +64,9 @@ public class Transaction {
         }
 
         this.getUpdateList(classSchema.getTableName()).add(batchUpdate);
-
     }
 
-    private static byte[] getBytes(final Object obj) throws IOException {
+    private static byte[] getObjectAsBytes(final Object obj) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(obj);

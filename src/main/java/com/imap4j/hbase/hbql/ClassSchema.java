@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,10 @@ public class ClassSchema {
 
     public ClassSchema(final Class clazz) throws PersistException {
         this.clazz = clazz;
-        lookupAnnotations();
+
+        // TODO check to make sure there is a an empty constructor declared
+
+        processAnnotations();
     }
 
     public Class<?> getClazz() {
@@ -114,12 +118,16 @@ public class ClassSchema {
         }
     }
 
-    private void lookupAnnotations() throws PersistException {
+    public String toString() {
+        return this.getClazz().getName();
+    }
+
+    private void processAnnotations() throws PersistException {
 
         final Table tabAnno = this.getClazz().getAnnotation(Table.class);
 
         if (tabAnno == null)
-            throw new PersistException("Class " + this.getClazz().getName() + " is missing @Table");
+            throw new PersistException("Class " + this + " is missing @Table annotation");
 
         final String tabName = tabAnno.name();
         this.tableName = (tabName.length() > 0) ? tabName : clazz.getSimpleName();
@@ -131,19 +139,23 @@ public class ClassSchema {
             // Check if persisted or not
             if (column != null) {
 
+                // TODO Deal with enums
+
+                final boolean isFinal = checkFieldModifiers(field);
+
+                if (isFinal)
+                    throw new PersistException(this + "." + field.getName()
+                                               + " cannot have a Column annotation and be marked final");
+
                 final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, column);
-
-                // TODO Make sure it is not marked final
-
                 this.getFieldAttribMapByField().put(field.getName(), attrib);
-
                 this.getFieldAttribMapByColumn().put(attrib.getQualifiedName(), attrib);
 
                 if (column.key()) {
                     if (keyFieldAttrib != null)
-                        throw new PersistException("Class " + this.getClazz().getName()
+                        throw new PersistException("Class " + this
                                                    + " has multiple instance variables annotated "
-                                                   + "with @Column(key=true)");
+                                                   + "with Column(key=true)");
 
                     keyFieldAttrib = attrib;
                 }
@@ -162,9 +174,23 @@ public class ClassSchema {
             }
         }
         if (keyFieldAttrib == null)
-            throw new PersistException("Class " + this.getClazz().getName()
+            throw new PersistException("Class " + this
                                        + " is missing an instance variable annotated with @Column(key=true)");
 
+    }
+
+    private static boolean checkFieldModifiers(final Field field) {
+
+        final boolean isFinal = Modifier.isFinal(field.getModifiers());
+
+        if (isFinal)
+            return true;
+
+        // Unlock private vars
+        if (!field.isAccessible())
+            field.setAccessible(true);
+
+        return false;
     }
 
     public String getTableName() {

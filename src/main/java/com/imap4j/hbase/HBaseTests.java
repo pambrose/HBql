@@ -61,7 +61,7 @@ public class HBaseTests {
             insertPost("post" + System.currentTimeMillis() + "-" + i);
          */
 
-        //deleteAll(tablename);
+        deleteAll(tablename);
         TestObject.main(null);
 
         /*

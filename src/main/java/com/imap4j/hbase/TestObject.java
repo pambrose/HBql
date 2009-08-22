@@ -26,34 +26,34 @@ public class TestObject implements Persistable {
     final String family2 = "image";
 
     @Column(key = true)
-    public String keyval;
+    private String keyval;
 
     @Column(family = family1)
-    public int intValue = -999;
+    private int intValue = -999;
 
     @Column(family = family1)
-    public String title = "A brand new title value";
+    private String title = "A title value";
 
     @Column(family = family1, column = "author")
-    public String author = "An brand new author value";
+    private String author = "An author value";
 
     @Column(family = family2, getter = "getHeaderBytes", setter = "setHeaderBytes")
-    public String header = "A header value";
+    private String header = "A header value";
 
     @Column(family = family2, column = "bodyimage")
-    public String bodyimage = "A bodyimage value";
+    private String bodyimage = "A bodyimage value";
 
     @Column(family = family2)
-    public int[] array1 = {1, 2, 3};
+    private int[] array1 = {1, 2, 3};
 
     @Column(family = family2)
-    public String[] array2 = {"val1", "val2", "val3"};
+    private String[] array2 = {"val1", "val2", "val3"};
 
     @Column(family = family2, mapKeysAsColumns = true)
-    public Map<String, String> mapval1 = Maps.newHashMap();
+    private Map<String, String> mapval1 = Maps.newHashMap();
 
     public TestObject() {
-        this.keyval = "Brand New Val-" + System.nanoTime();
+        this.keyval = "Val-" + System.nanoTime();
 
         mapval1.put("key1", "val1");
         mapval1.put("key2", "val2");
@@ -71,7 +71,7 @@ public class TestObject implements Persistable {
 
         Transaction tx = new Transaction();
 
-        int cnt = 0;
+        int cnt = 2;
         for (int i = 0; i < cnt; i++) {
             TestObject obj = new TestObject();
             tx.insert(obj);
