@@ -58,17 +58,16 @@ public class Query<T extends Persistable> {
             for (RowResult res : scanner) {
 
                 final T newobj = (T)classSchema.getClazz().newInstance();
-
                 final FieldAttrib keyattrib = classSchema.getKeyFieldAttrib();
-                byte[] b = res.getRow();
-                String s = new String(b);
-                final Object keyval = keyattrib.getScalarfromBytes(b);
+                final byte[] b = res.getRow();
+                final Object keyval = keyattrib.getValueFromBytes(b);
                 classSchema.getKeyFieldAttrib().getField().set(newobj, keyval);
 
                 for (byte[] colbytes : res.keySet()) {
                     final String col = new String(colbytes);
                     final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(col);
-                    final Object val = attrib.getScalarfromBytes(res.get(colbytes).getValue());
+
+                    final Object val = attrib.getValueFromBytes(res.get(colbytes).getValue());
                     attrib.getField().set(newobj, val);
                 }
 
@@ -78,6 +77,7 @@ public class Query<T extends Persistable> {
         }
         catch (Exception e) {
             e.printStackTrace();
+            throw new PersistException("Error in execute()");
         }
 
     }

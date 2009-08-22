@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -54,7 +55,7 @@ public class FieldAttrib {
                         return type;
             }
 
-            throw new PersistException("Not dealing with type: " + clazz);
+            throw new PersistException("Not able to deal with type: " + clazz);
         }
     }
 
@@ -170,6 +171,10 @@ public class FieldAttrib {
         return field;
     }
 
+    public boolean isArray() {
+        return this.getField().getType().isArray();
+    }
+
     public boolean isMapKeysAsColumns() {
         return this.mapKeysAsColumns;
     }
@@ -210,13 +215,20 @@ public class FieldAttrib {
 
     public byte[] asBytes(final Object obj) throws IOException, PersistException {
 
-        if (obj.getClass().isArray())
+        if (this.isArray())
             return this.getArrayasBytes(obj);
         else
             return this.getScalarAsBytes(obj);
     }
 
-    public Object getScalarfromBytes(final byte[] b) throws IOException, PersistException {
+    public Object getValueFromBytes(final byte[] b) throws IOException, PersistException {
+        if (this.isArray())
+            return this.getArrayFromBytes(b);
+        else
+            return this.getScalarFromBytes(b);
+    }
+
+    private Object getScalarFromBytes(final byte[] b) throws IOException, PersistException {
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(b);
         final ObjectInputStream ois = new ObjectInputStream(bais);
@@ -250,6 +262,96 @@ public class FieldAttrib {
 
                 case ObjectType:
                     return ois.readObject();
+            }
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new PersistException("Error in getScalarfromBytes()");
+        }
+        finally {
+            ois.close();
+        }
+
+        throw new PersistException("Error in getScalarfromBytes()");
+    }
+
+    private Object getArrayFromBytes(final byte[] b) throws IOException, PersistException {
+
+        final ByteArrayInputStream bais = new ByteArrayInputStream(b);
+        final ObjectInputStream ois = new ObjectInputStream(bais);
+
+        try {
+            final int length = ois.readInt();
+
+            switch (this.getComponentType()) {
+
+                case BooleanType: {
+                    final Object array = Array.newInstance(Boolean.TYPE, length);
+                    for (int i = 0; i < length; i++)
+                        Array.set(array, i, ois.readBoolean());
+                    return array;
+                }
+
+                case ByteType: {
+                    final Object array = Array.newInstance(Byte.TYPE, length);
+                    for (int i = 0; i < length; i++)
+                        Array.set(array, i, ois.readByte());
+                    return array;
+                }
+
+                case CharType: {
+                    final Object array = Array.newInstance(Character.TYPE, length);
+                    for (int i = 0; i < length; i++)
+                        Array.set(array, i, ois.readByte());
+                    return array;
+                }
+
+                case ShortType: {
+                    final Object array = Array.newInstance(Short.TYPE, length);
+                    for (int i = 0; i < length; i++)
+                        Array.set(array, i, ois.readShort());
+                    return array;
+                }
+
+                case IntegerType: {
+                    final Object array = Array.newInstance(Integer.TYPE, length);
+                    for (int i = 0; i < length; i++)
+                        Array.set(array, i, ois.readInt());
+                    return array;
+                }
+
+                case LongType: {
+                    final Object array = Array.newInstance(Long.TYPE, length);
+                    for (int i = 0; i < length; i++)
+                        Array.set(array, i, ois.readLong());
+                    return array;
+                }
+
+                case FloatType: {
+                    final Object array = Array.newInstance(Float.TYPE, length);
+                    for (int i = 0; i < length; i++)
+                        Array.set(array, i, ois.readFloat());
+                    return array;
+                }
+
+                case DoubleType: {
+                    final Object array = Array.newInstance(Double.TYPE, length);
+                    for (int i = 0; i < length; i++)
+                        Array.set(array, i, ois.readDouble());
+                    return array;
+                }
+
+                case ObjectType: {
+                    // Read type info
+                    final String className = ois.readUTF();
+                    final Class clazz = Class.forName(className);
+                    final Object array = Array.newInstance(clazz, length);
+                    for (int i = 0; i < length; i++) {
+                        final Object obj = ois.readObject();
+                        Array.set(array, i, obj);
+                    }
+                    return array;
+                }
             }
         }
         catch (ClassNotFoundException e) {
@@ -319,56 +421,70 @@ public class FieldAttrib {
         switch (this.getComponentType()) {
 
             case BooleanType: {
-                final boolean[] val = (boolean[])obj;
-                for (int i = 0; i < val.length; i++) oos.writeBoolean(val[i]);
+                oos.writeInt(((boolean[])obj).length);
+                for (boolean val : (boolean[])obj)
+                    oos.writeBoolean(val);
                 break;
             }
 
             case ByteType: {
-                final byte[] val = (byte[])obj;
-                for (int i = 0; i < val.length; i++) oos.write(val[i]);
+                oos.writeInt(((byte[])obj).length);
+                for (byte val : (byte[])obj)
+                    oos.write(val);
                 break;
             }
 
             case CharType: {
-                final char[] val = (char[])obj;
-                for (int i = 0; i < val.length; i++) oos.write(val[i]);
+                oos.writeInt(((char[])obj).length);
+                for (char val : (char[])obj)
+                    oos.write(val);
                 break;
             }
 
             case ShortType: {
-                final short[] val = (short[])obj;
-                for (int i = 0; i < val.length; i++) oos.writeShort(val[i]);
+                oos.writeInt(((short[])obj).length);
+                for (short val : (short[])obj)
+                    oos.writeShort(val);
                 break;
             }
 
             case IntegerType: {
-                final int[] val = (int[])obj;
-                for (int i = 0; i < val.length; i++) oos.writeInt(val[i]);
+                oos.writeInt(((int[])obj).length);
+                for (int val : (int[])obj)
+                    oos.writeInt(val);
                 break;
             }
 
             case LongType: {
-                final long[] val = (long[])obj;
-                for (int i = 0; i < val.length; i++) oos.writeLong(val[i]);
+                oos.writeInt(((long[])obj).length);
+                for (long val : (long[])obj)
+                    oos.writeLong(val);
                 break;
             }
 
             case FloatType: {
-                final float[] val = (float[])obj;
-                for (int i = 0; i < val.length; i++) oos.writeFloat(val[i]);
+                oos.writeInt(((float[])obj).length);
+                for (float val : (float[])obj)
+                    oos.writeFloat(val);
                 break;
             }
 
             case DoubleType: {
-                final double[] val = (double[])obj;
-                for (int i = 0; i < val.length; i++) oos.writeDouble(val[i]);
+                oos.writeInt(((double[])obj).length);
+                for (double val : (double[])obj)
+                    oos.writeDouble(val);
                 break;
             }
 
             case ObjectType: {
-                final Object[] val = (Object[])obj;
-                for (int i = 0; i < val.length; i++) oos.writeObject(val[i]);
+                oos.writeInt(((Object[])obj).length);
+
+                // Write type info
+                final String className = this.getField().getType().getComponentType().getName();
+                oos.writeUTF(className);
+
+                for (Object val : (Object[])obj)
+                    oos.writeObject(val);
                 break;
             }
         }
