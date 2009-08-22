@@ -55,19 +55,21 @@ public class Query<T extends Persistable> {
             final String[] cols = colList.toArray(new String[colList.size()]);
             final Scanner scanner = table.getScanner(cols);
 
-            for (RowResult res : scanner) {
+            for (RowResult result : scanner) {
 
                 final T newobj = (T)classSchema.getClazz().newInstance();
                 final FieldAttrib keyattrib = classSchema.getKeyFieldAttrib();
-                final byte[] b = res.getRow();
-                final Object keyval = keyattrib.getValueFromBytes(b);
+                final byte[] keybytes = result.getRow();
+                final Object keyval = keyattrib.getValueFromBytes(newobj, keybytes);
                 classSchema.getKeyFieldAttrib().getField().set(newobj, keyval);
 
-                for (byte[] colbytes : res.keySet()) {
-                    final String col = new String(colbytes);
-                    final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(col);
+                for (byte[] colbytes : result.keySet()) {
 
-                    final Object val = attrib.getValueFromBytes(res.get(colbytes).getValue());
+                    final String column = new String(colbytes);
+                    final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(column);
+
+                    final byte[] valbytes = result.get(colbytes).getValue();
+                    final Object val = attrib.getValueFromBytes(newobj, valbytes);
                     attrib.getField().set(newobj, val);
                 }
 

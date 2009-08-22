@@ -191,6 +191,18 @@ public class FieldAttrib {
         }
     }
 
+    public Object invokeSetterMethod(final Object parent, final byte[] b) throws PersistException {
+        try {
+            return this.getSetterMethod().invoke(parent, b);
+        }
+        catch (IllegalAccessException e) {
+            throw new PersistException("Error setting value of " + this.getFieldName());
+        }
+        catch (InvocationTargetException e) {
+            throw new PersistException("Error setting value of " + this.getFieldName());
+        }
+    }
+
     public Object getValue(final Persistable declaringObj) throws PersistException {
         try {
             return this.getField().get(declaringObj);
@@ -207,25 +219,26 @@ public class FieldAttrib {
             return this.invokeGetterMethod(declaringObj);
         }
         else {
-            final Object instanceObj = this.getValue(declaringObj);
-            return this.asBytes(instanceObj);
+            final Object obj = this.getValue(declaringObj);
+
+            if (this.isArray())
+                return this.getArrayasBytes(obj);
+            else
+                return this.getScalarAsBytes(obj);
         }
     }
 
+    public Object getValueFromBytes(final Persistable declaringObj, final byte[] b) throws IOException, PersistException {
 
-    public byte[] asBytes(final Object obj) throws IOException, PersistException {
-
-        if (this.isArray())
-            return this.getArrayasBytes(obj);
-        else
-            return this.getScalarAsBytes(obj);
-    }
-
-    public Object getValueFromBytes(final byte[] b) throws IOException, PersistException {
-        if (this.isArray())
-            return this.getArrayFromBytes(b);
-        else
-            return this.getScalarFromBytes(b);
+        if (this.hasSetter()) {
+            return this.invokeSetterMethod(declaringObj, b);
+        }
+        else {
+            if (this.isArray())
+                return this.getArrayFromBytes(b);
+            else
+                return this.getScalarFromBytes(b);
+        }
     }
 
     private Object getScalarFromBytes(final byte[] b) throws IOException, PersistException {
@@ -344,6 +357,7 @@ public class FieldAttrib {
                 case ObjectType: {
                     // Read type info
                     final String className = ois.readUTF();
+
                     final Class clazz = Class.forName(className);
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
