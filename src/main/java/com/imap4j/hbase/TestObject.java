@@ -32,28 +32,28 @@ public class TestObject implements Persistable {
     public int intValue = -999;
 
     @Column(family = family1)
-    public String title = "A new title value";
+    public String title = "A brand new title value";
 
     @Column(family = family1, column = "author")
-    public String author = "An new author value";
+    public String author = "An brand new author value";
 
     @Column(family = family2, getter = "getHeaderBytes", setter = "setHeaderBytes")
-    String header = "A header value";
+    public String header = "A header value";
 
     @Column(family = family2, column = "bodyimage")
-    String bodyimage = "A bodyimage value";
+    public String bodyimage = "A bodyimage value";
 
     @Column(family = family2)
-    int[] array1 = {1, 2, 3};
+    public int[] array1 = {1, 2, 3};
 
     @Column(family = family2)
-    String[] array2 = {"val1", "val2", "val3"};
+    public String[] array2 = {"val1", "val2", "val3"};
 
     @Column(family = family2, mapKeysAsColumns = true)
-    Map<String, String> mapval1 = Maps.newHashMap();
+    public Map<String, String> mapval1 = Maps.newHashMap();
 
     public TestObject() {
-        this.keyval = "New Val-" + System.nanoTime();
+        this.keyval = "Brand New Val-" + System.nanoTime();
 
         mapval1.put("key1", "val1");
         mapval1.put("key2", "val2");

@@ -2,7 +2,11 @@ package com.imap4j.hbase;
 
 import com.imap4j.hbase.hbql.PersistException;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Scanner;
 import org.apache.hadoop.hbase.io.BatchUpdate;
 import org.apache.hadoop.hbase.io.RowResult;
 
@@ -51,10 +55,13 @@ public class HBaseTests {
 
     public static void main(String[] args) throws IOException, PersistException {
 
+        /*
         int cnt = 0; //10000;
         for (int i = 1; i < cnt; i++)
             insertPost("post" + System.currentTimeMillis() + "-" + i);
+         */
 
+        //deleteAll(tablename);
         TestObject.main(null);
 
         /*
@@ -66,36 +73,31 @@ public class HBaseTests {
         }
         */
 
-        /*
         HBaseAdmin admin = new HBaseAdmin(new HBaseConfiguration());
         HTableDescriptor desc = admin.getTableDescriptor(tablename);
 
         for (HColumnDescriptor col : desc.getFamilies())
             System.out.println("Family: " + col.getNameAsString());
 
-        final HTable table = new HTable(new HBaseConfiguration(), tablename);
+    }
 
-        byte[][] start = table.getStartKeys();
-        byte[][] end = table.getEndKeys();
-        String s1 = new String(start[0]);
-        String s2 = new String(end[0]);
-        System.out.println("Start key: " + s1);
-        System.out.println("End key: " + s2);
+    public static void deleteAll(final String tablename) throws IOException {
+
+        final HTable table = new HTable(new HBaseConfiguration(), tablename);
 
         Scanner scanner = table.getScanner(new String[]{"post:"});
         int tot = 0;
         for (RowResult res : scanner) {
             String key = new String(res.getRow());
-            System.out.println("Key: " + key);
-
-            // table.deleteAll(key);
+            //System.out.println("Key: " + key);
+            table.deleteAll(res.getRow());
             tot++;
             //System.out.println(res);
             //for (byte[] b : res.keySet())
             //    System.out.println(new String(b));
         }
         System.out.println("Count: " + tot);
-        */
+
     }
 
 }

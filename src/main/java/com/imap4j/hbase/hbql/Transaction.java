@@ -39,7 +39,16 @@ public class Transaction {
         final ClassSchema classSchema = ClassSchema.getClassSchema(declaringObj);
 
         // TODO Need to allow for key to use getter and setter method
-        final byte[] keyval = classSchema.getKeyFieldAttrib().asBytes(declaringObj);
+        final Object keyvalObj;
+        try {
+            keyvalObj = classSchema.getKeyFieldAttrib().getField().get(declaringObj);
+        }
+        catch (IllegalAccessException e) {
+            throw new PersistException("Error getting value of " + classSchema.getKeyFieldAttrib()
+                    .getField()
+                    .getName());
+        }
+        final byte[] keyval = classSchema.getKeyFieldAttrib().asBytes(keyvalObj);
 
         final BatchUpdate batchUpdate = new BatchUpdate(keyval);
 
