@@ -137,7 +137,7 @@ public class ClassSchema {
 
                 this.getFieldAttribMapByField().put(field.getName(), attrib);
 
-                this.getFieldAttribMapByColumn().put(attrib.getFullName(), attrib);
+                this.getFieldAttribMapByColumn().put(attrib.getQualifiedName(), attrib);
 
                 if (column.key()) {
                     if (keyFieldAttrib != null)
@@ -148,7 +148,7 @@ public class ClassSchema {
                     keyFieldAttrib = attrib;
                 }
                 else {
-                    final String family = attrib.getFamily();
+                    final String family = attrib.getFamilyName();
                     final List<FieldAttrib> columns;
                     if (!this.getFieldAttribMapByFamily().containsKey(family)) {
                         columns = Lists.newArrayList();

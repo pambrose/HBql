@@ -60,8 +60,8 @@ public class FieldAttrib {
 
     private final Field field;
     private final Type type;
-    private final String family;
-    private final String column;
+    private final String familyName;
+    private final String columnName;
     private final String getter;
     private final String setter;
     private final boolean mapKeysAsColumns;
@@ -70,16 +70,16 @@ public class FieldAttrib {
     private Method setterMethod = null;
 
 
-    public FieldAttrib(final Class enclosingClass, final Field field, final Column column) throws PersistException {
+    public FieldAttrib(final Class enclosingClass, final Field field, final Column columnName) throws PersistException {
 
         this.field = field;
         this.type = Type.getType(this.field);
 
-        this.family = column.family();
-        this.column = column.column().length() > 0 ? column.column() : this.getField().getName();
-        this.getter = column.getter();
-        this.setter = column.setter();
-        this.mapKeysAsColumns = column.mapKeysAsColumns();
+        this.familyName = columnName.family();
+        this.columnName = columnName.column().length() > 0 ? columnName.column() : this.getField().getName();
+        this.getter = columnName.getter();
+        this.setter = columnName.setter();
+        this.mapKeysAsColumns = columnName.mapKeysAsColumns();
 
         try {
             if (this.isGetter()) {
@@ -144,16 +144,16 @@ public class FieldAttrib {
         return this.setter.length() > 0;
     }
 
-    public String getFamily() {
-        return this.family;
+    public String getFamilyName() {
+        return this.familyName;
     }
 
-    public String getColumn() {
-        return column;
+    public String getColumnName() {
+        return columnName;
     }
 
-    public String getFullName() {
-        return this.getFamily() + ":" + this.getColumn();
+    public String getQualifiedName() {
+        return this.getFamilyName() + ":" + this.getColumnName();
 
     }
 

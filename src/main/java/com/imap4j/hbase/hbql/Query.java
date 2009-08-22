@@ -43,7 +43,7 @@ public class Query<T extends Persistable> {
 
                 final FieldAttrib attrib = classSchema.getFieldAttribMapByField().get(attribName);
 
-                colList.add(attrib.getFullName());
+                colList.add(attrib.getQualifiedName());
             }
 
             final String[] cols = colList.toArray(new String[colList.size()]);

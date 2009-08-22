@@ -32,10 +32,10 @@ public class TestObject implements Persistable {
     public int intValue = -999;
 
     @Column(family = family1)
-    public String title = "A title value";
+    public String title = "A new title value";
 
     @Column(family = family1, column = "author")
-    public String author = "An author value";
+    public String author = "An new author value";
 
     @Column(family = family2, getter = "getHeaderBytes", setter = "setHeaderBytes")
     String header = "A header value";
@@ -85,7 +85,7 @@ public class TestObject implements Persistable {
                 new Query<TestObject>("select author, title from TestObject",
                                       new QueryListenerAdapter<TestObject>() {
                                           public void onEachRow(final TestObject val) throws PersistException {
-                                              System.out.println("Key: " + val.keyval
+                                              System.out.println("Values: " + val.keyval
                                                                  + " - " + val.author
                                                                  + " - " + val.title);
                                           }

@@ -49,7 +49,7 @@ public class Transaction {
 
                 if (attrib.isGetter()) {
                     final byte[] val = attrib.invokeGetterMethod(declaringObj);
-                    batchUpdate.put(attrib.getFullName(), val);
+                    batchUpdate.put(attrib.getQualifiedName(), val);
                 }
                 else {
                     final Object instanceVarObj;
@@ -63,19 +63,19 @@ public class Transaction {
                     if (attrib.isMapKeysAsColumns()) {
                         final Map map = (Map)instanceVarObj;
                         for (final Object keyobj : map.keySet()) {
-                            final Object val = map.get(keyobj);
                             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             final ObjectOutputStream oos = new ObjectOutputStream(baos);
-                            oos.writeObject(instanceVarObj);
+                            final Object val = map.get(keyobj);
+                            oos.writeObject(val);
                             oos.flush();
-                            final byte[] byteval = baos.toByteArray();
-                            final String colname = val.toString();
-                            batchUpdate.put(family + ":" + colname, byteval);
+                            final String colname = keyobj.toString();
+                            // Use family:column-key scheme to avoid column namespace collision
+                            batchUpdate.put(attrib.getQualifiedName() + "-" + colname, baos.toByteArray());
                         }
                     }
                     else {
                         final byte[] val = attrib.asBytes(instanceVarObj);
-                        batchUpdate.put(attrib.getFullName(), val);
+                        batchUpdate.put(attrib.getQualifiedName(), val);
                     }
                 }
             }
