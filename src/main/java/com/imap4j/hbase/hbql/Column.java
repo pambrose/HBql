@@ -17,7 +17,9 @@ public @interface Column {
 
     String column() default "";
 
-    String lookup() default "";
+    String getter() default "";
+
+    String setter() default "";
 
     boolean mapKeysAsColumns() default false;
 

@@ -38,44 +38,44 @@ public class Transaction {
 
         final ClassSchema classSchema = ClassSchema.getClassSchema(declaringObj);
 
-        final BatchUpdate batchUpdate = new BatchUpdate();
+        final byte[] keyval = classSchema.getKeyFieldAttrib().asBytes(declaringObj);
+
+        final BatchUpdate batchUpdate = new BatchUpdate(keyval);
 
         for (final String family : classSchema.getFieldAttribMapByFamily().keySet()) {
 
             for (final FieldAttrib attrib : classSchema.getFieldAttribMapByFamily().get(family)) {
 
-                final Object instanceVarObj;
-                try {
-                    instanceVarObj = attrib.getField().get(declaringObj);
-
-                    if (instanceVarObj == null)
-                        continue;
-                }
-                catch (IllegalAccessException e) {
-                    throw new PersistException("Error getting value of " + attrib.getField().getName());
-                }
-
-                if (attrib.isMapKeysAsColumns()) {
-                    final Map map = (Map)instanceVarObj;
-                    for (final Object keyobj : map.keySet()) {
-                        final Object val = map.get(keyobj);
-                        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        final ObjectOutputStream oos = new ObjectOutputStream(baos);
-                        oos.writeObject(instanceVarObj);
-                        oos.flush();
-                        final byte[] byteval = baos.toByteArray();
-                        final String colname = val.toString();
-                        batchUpdate.put(family + ":" + colname, byteval);
-                    }
+                if (attrib.isGetter()) {
+                    final byte[] val = attrib.invokeLookupMethod(declaringObj);
+                    batchUpdate.put(attrib.getFullName(), val);
                 }
                 else {
-                    final byte[] val;
-                    if (attrib.isLookupAttrib())
-                        val = attrib.invokeLookupMethod(declaringObj);
-                    else
-                        val = attrib.asBytes(instanceVarObj);
+                    final Object instanceVarObj;
+                    try {
+                        instanceVarObj = attrib.getField().get(declaringObj);
+                    }
+                    catch (IllegalAccessException e) {
+                        throw new PersistException("Error getting value of " + attrib.getField().getName());
+                    }
 
-                    batchUpdate.put(family + ":" + attrib.getColumn(), val);
+                    if (attrib.isMapKeysAsColumns()) {
+                        final Map map = (Map)instanceVarObj;
+                        for (final Object keyobj : map.keySet()) {
+                            final Object val = map.get(keyobj);
+                            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            final ObjectOutputStream oos = new ObjectOutputStream(baos);
+                            oos.writeObject(instanceVarObj);
+                            oos.flush();
+                            final byte[] byteval = baos.toByteArray();
+                            final String colname = val.toString();
+                            batchUpdate.put(family + ":" + colname, byteval);
+                        }
+                    }
+                    else {
+                        final byte[] val = attrib.asBytes(instanceVarObj);
+                        batchUpdate.put(attrib.getFullName(), val);
+                    }
                 }
             }
         }

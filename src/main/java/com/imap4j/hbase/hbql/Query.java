@@ -45,7 +45,7 @@ public class Query<T extends Persistable> {
 
                 final FieldAttrib attrib = classSchema.getFieldAttribMapByField().get(attribName);
 
-                colList.add(attrib.getFamily() + ":" + attrib.getColumn());
+                colList.add(attrib.getFullName());
 
                 //attrib.getField().set(obj, null);
             }
@@ -61,7 +61,6 @@ public class Query<T extends Persistable> {
             String key = new String(res.getRow());
             System.out.println("Key: " + key);
 
-            // table.deleteAll(key);
             tot++;
             //System.out.println(res);
             //for (byte[] b : res.keySet())

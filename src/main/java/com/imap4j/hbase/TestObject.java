@@ -37,7 +37,7 @@ public class TestObject implements Persistable {
     @Column(family = family1, column = "author")
     String author = "An author value";
 
-    @Column(family = family2, lookup = "getHeaderBytes")
+    @Column(family = family2, getter = "getHeaderBytes", setter = "setHeaderBytes")
     String header = "A header value";
 
     @Column(family = family2, column = "bodyimage")
@@ -67,6 +67,10 @@ public class TestObject implements Persistable {
 
     public byte[] getHeaderBytes() {
         return this.header.getBytes();
+    }
+
+    public void setHeaderBytes(byte[] val) {
+        this.header = String.valueOf(val);
     }
 
     public static void main(String[] args) throws IOException, PersistException {

@@ -60,10 +60,12 @@ public class FieldAttrib {
     private final Type type;
     private final String family;
     private final String column;
-    private final String lookup;
+    private final String getter;
+    private final String setter;
     private final boolean mapKeysAsColumns;
 
-    private Method lookupMethod = null;
+    private Method getterMethod = null;
+    private Method setterMethod = null;
 
 
     public FieldAttrib(final Class enclosingClass, final Field field, final Column column) throws PersistException {
@@ -73,23 +75,44 @@ public class FieldAttrib {
 
         this.family = column.family();
         this.column = column.column().length() > 0 ? column.column() : this.getField().getName();
-        this.lookup = column.lookup();
+        this.getter = column.getter();
+        this.setter = column.setter();
         this.mapKeysAsColumns = column.mapKeysAsColumns();
 
         try {
-            if (this.isLookupAttrib()) {
-                this.lookupMethod = enclosingClass.getDeclaredMethod(this.lookup);
+            if (this.isGetter()) {
+                this.getterMethod = enclosingClass.getDeclaredMethod(this.getter);
 
-                // Check return type and args of lookup method
-                final Class<?> retClazz = this.getLookupMethod().getReturnType();
+                // Check return type of getter
+                final Class<?> returnType = this.getGetterMethod().getReturnType();
 
-                if (!(retClazz.isArray() && retClazz.getComponentType() == Byte.TYPE))
-                    throw new PersistException(enclosingClass.getName() + "." + this.lookup + "()"
+                if (!(returnType.isArray() && returnType.getComponentType() == Byte.TYPE))
+                    throw new PersistException(enclosingClass.getName() + "." + this.getter + "()"
                                                + " does not have a return type of byte[]");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new PersistException("Missing method " + enclosingClass.getName() + "." + this.lookup + "()");
+            throw new PersistException("Missing method byte[] " + enclosingClass.getName() + "." + this.getter + "()");
+        }
+
+        try {
+            if (this.isSetter()) {
+
+                this.setterMethod = enclosingClass.getDeclaredMethod(this.setter, Class.forName("[B"));
+
+                // Check if it takes single byte[] arg
+                final Class<?>[] args = this.getSetterMethod().getParameterTypes();
+                if (args.length != 1 || !(args[0].isArray() && args[0].getComponentType() == Byte.TYPE))
+                    throw new PersistException(enclosingClass.getName() + "." + this.setter + "()"
+                                               + " does not have single byte[] arg");
+            }
+        }
+        catch (NoSuchMethodException e) {
+            throw new PersistException("Missing method " + enclosingClass.getName() + "." + this.setter + "(byte[] arg)");
+        }
+        catch (ClassNotFoundException e) {
+            // This will not be hit
+            throw new PersistException("Missing method " + enclosingClass.getName() + "." + this.setter + "(byte[] arg)");
         }
 
     }
@@ -103,12 +126,20 @@ public class FieldAttrib {
         return type;
     }
 
-    private Method getLookupMethod() {
-        return lookupMethod;
+    private Method getGetterMethod() {
+        return this.getterMethod;
     }
 
-    public boolean isLookupAttrib() {
-        return this.lookup.length() > 0;
+    private Method getSetterMethod() {
+        return this.setterMethod;
+    }
+
+    public boolean isGetter() {
+        return this.getter.length() > 0;
+    }
+
+    public boolean isSetter() {
+        return this.setter.length() > 0;
     }
 
     public String getFamily() {
@@ -117,6 +148,11 @@ public class FieldAttrib {
 
     public String getColumn() {
         return column;
+    }
+
+    public String getFullName() {
+        return this.getFamily() + ":" + this.getColumn();
+
     }
 
     public Field getField() {
@@ -129,7 +165,7 @@ public class FieldAttrib {
 
     public byte[] invokeLookupMethod(final Object parent) throws PersistException {
         try {
-            return (byte[])this.getLookupMethod().invoke(parent);
+            return (byte[])this.getGetterMethod().invoke(parent);
         }
         catch (IllegalAccessException e) {
             throw new PersistException("Error getting value of " + this.getField().getName());
@@ -140,6 +176,7 @@ public class FieldAttrib {
     }
 
     public byte[] asBytes(final Object obj) throws IOException, PersistException {
+
         final Class clazz = obj.getClass();
 
         if (clazz.isArray())
