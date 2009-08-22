@@ -38,6 +38,7 @@ public class Transaction {
 
         final ClassSchema classSchema = ClassSchema.getClassSchema(declaringObj);
 
+        // TODO Need to allow for key to use getter and setter method
         final byte[] keyval = classSchema.getKeyFieldAttrib().asBytes(declaringObj);
 
         final BatchUpdate batchUpdate = new BatchUpdate(keyval);
@@ -47,7 +48,7 @@ public class Transaction {
             for (final FieldAttrib attrib : classSchema.getFieldAttribMapByFamily().get(family)) {
 
                 if (attrib.isGetter()) {
-                    final byte[] val = attrib.invokeLookupMethod(declaringObj);
+                    final byte[] val = attrib.invokeGetterMethod(declaringObj);
                     batchUpdate.put(attrib.getFullName(), val);
                 }
                 else {

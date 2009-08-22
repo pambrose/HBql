@@ -37,36 +37,42 @@ public class Query<T extends Persistable> {
 
         final List<String> colList = Lists.newArrayList();
 
-        Object obj = null;
         try {
-            obj = classSchema.getClazz().newInstance();
 
             for (final String attribName : qa.getColumnList()) {
 
                 final FieldAttrib attrib = classSchema.getFieldAttribMapByField().get(attribName);
 
                 colList.add(attrib.getFullName());
-
-                //attrib.getField().set(obj, null);
             }
+
+            final String[] cols = colList.toArray(new String[colList.size()]);
+            final Scanner scanner = table.getScanner(cols);
+
+            for (RowResult res : scanner) {
+
+                final T newobj = (T)classSchema.getClazz().newInstance();
+
+                final FieldAttrib keyattrib = classSchema.getKeyFieldAttrib();
+                byte[] b = res.getRow();
+                String s = new String(b);
+                final Object keyval = keyattrib.getScalarfromBytes(b);
+                classSchema.getKeyFieldAttrib().getField().set(newobj, keyval);
+
+                for (byte[] colbytes : res.keySet()) {
+                    final String col = new String(colbytes);
+                    final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(col);
+                    final Object val = attrib.getScalarfromBytes(res.get(colbytes).getValue());
+                    attrib.getField().set(newobj, val);
+                }
+
+                this.listener.onEachRow(newobj);
+            }
+
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-
-        Scanner scanner = table.getScanner(colList.toArray(new String[colList.size()]));
-
-        int tot = 0;
-        for (RowResult res : scanner) {
-            String key = new String(res.getRow());
-            System.out.println("Key: " + key);
-
-            tot++;
-            //System.out.println(res);
-            //for (byte[] b : res.keySet())
-            //    System.out.println(new String(b));
-        }
-        System.out.println("Count: " + tot);
 
     }
 }

@@ -26,16 +26,16 @@ public class TestObject implements Persistable {
     final String family2 = "image";
 
     @Column(key = true)
-    final String keyval;
+    public String keyval;
 
     @Column(family = family1)
-    int intValue = -999;
+    public int intValue = -999;
 
     @Column(family = family1)
-    String title = "A title value";
+    public String title = "A title value";
 
     @Column(family = family1, column = "author")
-    String author = "An author value";
+    public String author = "An author value";
 
     @Column(family = family2, getter = "getHeaderBytes", setter = "setHeaderBytes")
     String header = "A header value";
@@ -53,24 +53,18 @@ public class TestObject implements Persistable {
     Map<String, String> mapval1 = Maps.newHashMap();
 
     public TestObject() {
-        this.keyval = "Val-" + System.nanoTime();
+        this.keyval = "New Val-" + System.nanoTime();
 
         mapval1.put("key1", "val1");
         mapval1.put("key2", "val2");
     }
-
-    /*
-    public byte[] getKeyValue() {
-        return keyval.getBytes();
-    }
-    */
 
     public byte[] getHeaderBytes() {
         return this.header.getBytes();
     }
 
     public void setHeaderBytes(byte[] val) {
-        this.header = String.valueOf(val);
+        this.header = new String(val);
     }
 
     public static void main(String[] args) throws IOException, PersistException {
@@ -88,9 +82,12 @@ public class TestObject implements Persistable {
         HBql.exec("set classpath = com.imap4j.hbsql:com.imap4j.hbase");
 
         Query<TestObject> q =
-                new Query<TestObject>("select intValue, title from TestObject",
+                new Query<TestObject>("select author, title from TestObject",
                                       new QueryListenerAdapter<TestObject>() {
                                           public void onEachRow(final TestObject val) throws PersistException {
+                                              System.out.println("Key: " + val.keyval
+                                                                 + " - " + val.author
+                                                                 + " - " + val.title);
                                           }
                                       });
 

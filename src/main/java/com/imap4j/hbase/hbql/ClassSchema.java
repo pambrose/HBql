@@ -27,6 +27,7 @@ public class ClassSchema {
 
     final Map<String, List<FieldAttrib>> fieldAttribMapByFamily = Maps.newHashMap();
     final Map<String, FieldAttrib> fieldAttribMapByField = Maps.newHashMap();
+    final Map<String, FieldAttrib> fieldAttribMapByColumn = Maps.newHashMap();
 
     public ClassSchema(final Class clazz) throws PersistException {
         this.clazz = clazz;
@@ -43,6 +44,10 @@ public class ClassSchema {
 
     public Map<String, FieldAttrib> getFieldAttribMapByField() {
         return fieldAttribMapByField;
+    }
+
+    public Map<String, FieldAttrib> getFieldAttribMapByColumn() {
+        return fieldAttribMapByColumn;
     }
 
     private static Map<Class<?>, ClassSchema> getClassSchemaMap() {
@@ -128,7 +133,11 @@ public class ClassSchema {
 
                 final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, column);
 
-                // Make sure it is not marked final
+                // TODO Make sure it is not marked final
+
+                this.getFieldAttribMapByField().put(field.getName(), attrib);
+
+                this.getFieldAttribMapByColumn().put(attrib.getFullName(), attrib);
 
                 if (column.key()) {
                     if (keyFieldAttrib != null)
@@ -139,8 +148,6 @@ public class ClassSchema {
                     keyFieldAttrib = attrib;
                 }
                 else {
-                    this.getFieldAttribMapByField().put(field.getName(), attrib);
-
                     final String family = attrib.getFamily();
                     final List<FieldAttrib> columns;
                     if (!this.getFieldAttribMapByFamily().containsKey(family)) {

@@ -1,7 +1,9 @@
 package com.imap4j.hbase.hbql;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -163,7 +165,7 @@ public class FieldAttrib {
         return this.mapKeysAsColumns;
     }
 
-    public byte[] invokeLookupMethod(final Object parent) throws PersistException {
+    public byte[] invokeGetterMethod(final Object parent) throws PersistException {
         try {
             return (byte[])this.getGetterMethod().invoke(parent);
         }
@@ -177,12 +179,57 @@ public class FieldAttrib {
 
     public byte[] asBytes(final Object obj) throws IOException, PersistException {
 
-        final Class clazz = obj.getClass();
-
-        if (clazz.isArray())
+        if (obj.getClass().isArray())
             return this.getArrayasBytes(obj);
         else
             return this.getScalarAsBytes(obj);
+    }
+
+    public Object getScalarfromBytes(final byte[] b) throws IOException, PersistException {
+
+        final ByteArrayInputStream bais = new ByteArrayInputStream(b);
+        final ObjectInputStream ois = new ObjectInputStream(bais);
+
+        try {
+            switch (this.getComponentType()) {
+
+                case BooleanType:
+                    return ois.readBoolean();
+
+                case ByteType:
+                    return ois.readByte();
+
+                case CharType:
+                    return ois.readByte();
+
+                case ShortType:
+                    return ois.readShort();
+
+                case IntegerType:
+                    return ois.readInt();
+
+                case LongType:
+                    return ois.readLong();
+
+                case FloatType:
+                    return ois.readFloat();
+
+                case DoubleType:
+                    return ois.readDouble();
+
+                case ObjectType:
+                    return ois.readObject();
+            }
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new PersistException("Error in getScalarfromBytes()");
+        }
+        finally {
+            ois.close();
+        }
+
+        throw new PersistException("Error in getScalarfromBytes()");
     }
 
     private byte[] getScalarAsBytes(final Object obj) throws IOException, PersistException {
@@ -201,7 +248,7 @@ public class FieldAttrib {
                 break;
 
             case CharType:
-                oos.writeByte((Byte)obj);
+                oos.writeByte((Character)obj);
                 break;
 
             case ShortType:
@@ -231,7 +278,6 @@ public class FieldAttrib {
 
         oos.flush();
         return baos.toByteArray();
-
     }
 
     private byte[] getArrayasBytes(final Object obj) throws IOException, PersistException {

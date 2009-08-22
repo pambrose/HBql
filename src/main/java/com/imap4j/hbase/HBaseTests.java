@@ -2,11 +2,7 @@ package com.imap4j.hbase;
 
 import com.imap4j.hbase.hbql.PersistException;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Scanner;
 import org.apache.hadoop.hbase.io.BatchUpdate;
 import org.apache.hadoop.hbase.io.RowResult;
 
@@ -60,6 +56,7 @@ public class HBaseTests {
             insertPost("post" + System.currentTimeMillis() + "-" + i);
 
         TestObject.main(null);
+
         /*
         for (int j = 1; j < 5; j++) {
             String key = "post" + j;
@@ -69,6 +66,7 @@ public class HBaseTests {
         }
         */
 
+        /*
         HBaseAdmin admin = new HBaseAdmin(new HBaseConfiguration());
         HTableDescriptor desc = admin.getTableDescriptor(tablename);
 
@@ -97,7 +95,7 @@ public class HBaseTests {
             //    System.out.println(new String(b));
         }
         System.out.println("Count: " + tot);
-
+        */
     }
 
 }
