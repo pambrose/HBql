@@ -3,6 +3,7 @@ grammar HBql;
 options {superClass=HBaseParser;}
 
 tokens {
+	STAR = '*';
 	COMMA = ',';
 	EQUALS = '=';
 	DQUOTE = '"';
@@ -31,7 +32,7 @@ import com.google.common.collect.Lists;
 }
 
 query_stmt returns [QueryArgs retval]
-		: keySELECT column_list keyFROM table=ID
+		: keySELECT (STAR | column_list) keyFROM table=ID
 		{retval = new QueryArgs($column_list.retval, $table.text);};
 
 delete_stmt returns [DeleteArgs retval]

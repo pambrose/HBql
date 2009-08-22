@@ -64,22 +64,24 @@ public class FieldAttrib {
     private final String columnName;
     private final String getter;
     private final String setter;
+    private final boolean key;
     private final boolean mapKeysAsColumns;
 
     private Method getterMethod = null;
     private Method setterMethod = null;
 
 
-    public FieldAttrib(final Class enclosingClass, final Field field, final Column columnName) throws PersistException {
+    public FieldAttrib(final Class enclosingClass, final Field field, final Column column) throws PersistException {
 
         this.field = field;
         this.type = Type.getType(this.field);
 
-        this.familyName = columnName.family();
-        this.columnName = columnName.column().length() > 0 ? columnName.column() : this.getField().getName();
-        this.getter = columnName.getter();
-        this.setter = columnName.setter();
-        this.mapKeysAsColumns = columnName.mapKeysAsColumns();
+        this.familyName = column.family();
+        this.columnName = column.column().length() > 0 ? column.column() : this.getFieldName();
+        this.getter = column.getter();
+        this.setter = column.setter();
+        this.key = column.key();
+        this.mapKeysAsColumns = column.mapKeysAsColumns();
 
         try {
             if (this.hasGetter()) {
@@ -121,7 +123,15 @@ public class FieldAttrib {
 
     @Override
     public String toString() {
-        return this.getField().getDeclaringClass() + "." + this.getField().getName();
+        return this.getField().getDeclaringClass() + "." + this.getFieldName();
+    }
+
+    public String getFieldName() {
+        return this.getField().getName();
+    }
+
+    public boolean isKey() {
+        return key;
     }
 
     public Type getComponentType() {
@@ -169,10 +179,10 @@ public class FieldAttrib {
             return (byte[])this.getGetterMethod().invoke(parent);
         }
         catch (IllegalAccessException e) {
-            throw new PersistException("Error getting value of " + this.getField().getName());
+            throw new PersistException("Error getting value of " + this.getFieldName());
         }
         catch (InvocationTargetException e) {
-            throw new PersistException("Error getting value of " + this.getField().getName());
+            throw new PersistException("Error getting value of " + this.getFieldName());
         }
     }
 
@@ -181,7 +191,7 @@ public class FieldAttrib {
             return this.getField().get(declaringObj);
         }
         catch (IllegalAccessException e) {
-            throw new PersistException("Error getting value of " + this.getField().getName());
+            throw new PersistException("Error getting value of " + this.getFieldName());
         }
 
     }

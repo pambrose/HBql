@@ -81,7 +81,7 @@ public class TestObject implements Persistable {
 
         HBql.exec("set classpath = com.imap4j.hbsql:com.imap4j.hbase");
 
-        Query<TestObject> q =
+        Query<TestObject> q1 =
                 new Query<TestObject>("select author, title from TestObject",
                                       new QueryListenerAdapter<TestObject>() {
                                           public void onEachRow(final TestObject val) throws PersistException {
@@ -91,7 +91,19 @@ public class TestObject implements Persistable {
                                           }
                                       });
 
-        q.execute();
+        q1.execute();
+
+        Query<TestObject> q2 =
+                new Query<TestObject>("select * from TestObject",
+                                      new QueryListenerAdapter<TestObject>() {
+                                          public void onEachRow(final TestObject val) throws PersistException {
+                                              System.out.println("Values: " + val.keyval
+                                                                 + " - " + val.author
+                                                                 + " - " + val.title);
+                                          }
+                                      });
+
+        q2.execute();
 
     }
 }

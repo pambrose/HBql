@@ -91,6 +91,15 @@ public class ClassSchema {
         throw new PersistException("Cannot find " + objname + " in classpath");
     }
 
+    public List<String> getFieldList() {
+        final List<String> retval = Lists.newArrayList();
+        for (final FieldAttrib attrib : this.getFieldAttribMapByField().values()) {
+            if (!attrib.isKey())
+                retval.add(attrib.getFieldName());
+        }
+        return retval;
+    }
+
     private static Class getClass(final String str) {
         try {
             return Class.forName(str);
@@ -151,7 +160,7 @@ public class ClassSchema {
                 this.getFieldAttribMapByField().put(field.getName(), attrib);
                 this.getFieldAttribMapByColumn().put(attrib.getQualifiedName(), attrib);
 
-                if (column.key()) {
+                if (attrib.isKey()) {
                     if (keyFieldAttrib != null)
                         throw new PersistException("Class " + this
                                                    + " has multiple instance variables annotated "

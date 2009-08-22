@@ -38,12 +38,18 @@ public class Query<T extends Persistable> {
         final List<String> colList = Lists.newArrayList();
 
         try {
-
-            for (final String attribName : qa.getColumnList()) {
-
-                final FieldAttrib attrib = classSchema.getFieldAttribMapByField().get(attribName);
-
-                colList.add(attrib.getQualifiedName());
+            if (qa.getColumnList() == null) {
+                final List<String> fieldList = ClassSchema.getClassSchema(qa.getTableName()).getFieldList();
+                for (final String fieldName : fieldList) {
+                    final FieldAttrib attrib = classSchema.getFieldAttribMapByField().get(fieldName);
+                    colList.add(attrib.getQualifiedName());
+                }
+            }
+            else {
+                for (final String attribName : qa.getColumnList()) {
+                    final FieldAttrib attrib = classSchema.getFieldAttribMapByField().get(attribName);
+                    colList.add(attrib.getQualifiedName());
+                }
             }
 
             final String[] cols = colList.toArray(new String[colList.size()]);

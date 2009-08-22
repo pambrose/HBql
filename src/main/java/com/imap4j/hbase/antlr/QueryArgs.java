@@ -14,8 +14,8 @@ public class QueryArgs {
     private final String tableName;
 
     public QueryArgs(final List<String> columnList, final String tableName) {
-        this.columnList = columnList;
         this.tableName = tableName;
+        this.columnList = columnList;
     }
 
     public List<String> getColumnList() {
