@@ -39,16 +39,7 @@ public class Transaction {
         final ClassSchema classSchema = ClassSchema.getClassSchema(declaringObj);
 
         // TODO Need to allow for key to use getter and setter method
-        final Object keyvalObj;
-        try {
-            keyvalObj = classSchema.getKeyFieldAttrib().getField().get(declaringObj);
-        }
-        catch (IllegalAccessException e) {
-            throw new PersistException("Error getting value of " + classSchema.getKeyFieldAttrib()
-                    .getField()
-                    .getName());
-        }
-        final byte[] keyval = classSchema.getKeyFieldAttrib().asBytes(keyvalObj);
+        final byte[] keyval = classSchema.getKeyFieldAttrib().getValueAsBytes(declaringObj);
 
         final BatchUpdate batchUpdate = new BatchUpdate(keyval);
 
@@ -56,42 +47,34 @@ public class Transaction {
 
             for (final FieldAttrib attrib : classSchema.getFieldAttribMapByFamily().get(family)) {
 
-                if (attrib.isGetter()) {
-                    final byte[] val = attrib.invokeGetterMethod(declaringObj);
-                    batchUpdate.put(attrib.getQualifiedName(), val);
-                }
-                else {
-                    final Object instanceVarObj;
-                    try {
-                        instanceVarObj = attrib.getField().get(declaringObj);
-                    }
-                    catch (IllegalAccessException e) {
-                        throw new PersistException("Error getting value of " + attrib.getField().getName());
+                if (attrib.isMapKeysAsColumns()) {
+                    final Map map = (Map)attrib.getValue(declaringObj);
+                    for (final Object keyobj : map.keySet()) {
+                        final String colname = keyobj.toString();
+                        final byte[] byteval = getBytes(map.get(keyobj));
+
+                        // Use family:column-key scheme to avoid column namespace collision
+                        batchUpdate.put(attrib.getQualifiedName() + "-" + colname, byteval);
                     }
 
-                    if (attrib.isMapKeysAsColumns()) {
-                        final Map map = (Map)instanceVarObj;
-                        for (final Object keyobj : map.keySet()) {
-                            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            final ObjectOutputStream oos = new ObjectOutputStream(baos);
-                            final Object val = map.get(keyobj);
-                            oos.writeObject(val);
-                            oos.flush();
-                            final String colname = keyobj.toString();
-                            // Use family:column-key scheme to avoid column namespace collision
-                            batchUpdate.put(attrib.getQualifiedName() + "-" + colname, baos.toByteArray());
-                        }
-                    }
-                    else {
-                        final byte[] val = attrib.asBytes(instanceVarObj);
-                        batchUpdate.put(attrib.getQualifiedName(), val);
-                    }
+                }
+                else {
+                    final byte[] instval = attrib.getValueAsBytes(declaringObj);
+                    batchUpdate.put(attrib.getQualifiedName(), instval);
                 }
             }
         }
 
         this.getUpdateList(classSchema.getTableName()).add(batchUpdate);
 
+    }
+
+    private static byte[] getBytes(final Object obj) throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(obj);
+        oos.flush();
+        return baos.toByteArray();
     }
 
     public void commit() throws IOException {

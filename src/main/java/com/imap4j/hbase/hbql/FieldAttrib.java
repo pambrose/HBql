@@ -82,7 +82,7 @@ public class FieldAttrib {
         this.mapKeysAsColumns = columnName.mapKeysAsColumns();
 
         try {
-            if (this.isGetter()) {
+            if (this.hasGetter()) {
                 this.getterMethod = enclosingClass.getDeclaredMethod(this.getter);
 
                 // Check return type of getter
@@ -98,7 +98,7 @@ public class FieldAttrib {
         }
 
         try {
-            if (this.isSetter()) {
+            if (this.hasSetter()) {
 
                 this.setterMethod = enclosingClass.getDeclaredMethod(this.setter, Class.forName("[B"));
 
@@ -136,11 +136,11 @@ public class FieldAttrib {
         return this.setterMethod;
     }
 
-    public boolean isGetter() {
+    public boolean hasGetter() {
         return this.getter.length() > 0;
     }
 
-    public boolean isSetter() {
+    public boolean hasSetter() {
         return this.setter.length() > 0;
     }
 
@@ -154,7 +154,6 @@ public class FieldAttrib {
 
     public String getQualifiedName() {
         return this.getFamilyName() + ":" + this.getColumnName();
-
     }
 
     public Field getField() {
@@ -176,6 +175,28 @@ public class FieldAttrib {
             throw new PersistException("Error getting value of " + this.getField().getName());
         }
     }
+
+    public Object getValue(final Persistable declaringObj) throws PersistException {
+        try {
+            return this.getField().get(declaringObj);
+        }
+        catch (IllegalAccessException e) {
+            throw new PersistException("Error getting value of " + this.getField().getName());
+        }
+
+    }
+
+    public byte[] getValueAsBytes(final Persistable declaringObj) throws PersistException, IOException {
+
+        if (this.hasGetter()) {
+            return this.invokeGetterMethod(declaringObj);
+        }
+        else {
+            final Object instanceObj = this.getValue(declaringObj);
+            return this.asBytes(instanceObj);
+        }
+    }
+
 
     public byte[] asBytes(final Object obj) throws IOException, PersistException {
 
