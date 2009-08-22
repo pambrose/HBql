@@ -25,6 +25,7 @@ public class TestObject implements Persistable {
     final String family1 = "post";
     final String family2 = "image";
 
+    @Column(key = true)
     final String keyval;
 
     @Column(family = family1)
@@ -58,10 +59,11 @@ public class TestObject implements Persistable {
         mapval1.put("key2", "val2");
     }
 
-    @Override
+    /*
     public byte[] getKeyValue() {
         return keyval.getBytes();
     }
+    */
 
     public byte[] getHeaderBytes() {
         return this.header.getBytes();
@@ -88,7 +90,6 @@ public class TestObject implements Persistable {
                                           }
                                       });
 
-        q.execute();
         q.execute();
 
     }

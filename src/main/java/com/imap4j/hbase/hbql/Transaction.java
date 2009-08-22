@@ -36,13 +36,13 @@ public class Transaction {
 
     public void insert(final Persistable declaringObj) throws PersistException, IOException {
 
-        final BatchUpdate batchUpdate = new BatchUpdate(declaringObj.getKeyValue());
+        final ClassSchema classSchema = ClassSchema.getClassSchema(declaringObj);
 
-        final ClassSchema schema = ClassSchema.getClassSchema(declaringObj);
+        final BatchUpdate batchUpdate = new BatchUpdate();
 
-        for (final String family : schema.getFieldAttribs().keySet()) {
+        for (final String family : classSchema.getFieldAttribMapByFamily().keySet()) {
 
-            for (final FieldAttrib attrib : schema.getFieldAttribs().get(family)) {
+            for (final FieldAttrib attrib : classSchema.getFieldAttribMapByFamily().get(family)) {
 
                 final Object instanceVarObj;
                 try {
@@ -80,7 +80,7 @@ public class Transaction {
             }
         }
 
-        this.getUpdateList(schema.getTableName()).add(batchUpdate);
+        this.getUpdateList(classSchema.getTableName()).add(batchUpdate);
 
     }
 

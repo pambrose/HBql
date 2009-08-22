@@ -11,6 +11,8 @@ package com.imap4j.hbase.hbql;
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 public @interface Column {
 
+    boolean key() default false;
+
     String family() default "";
 
     String column() default "";

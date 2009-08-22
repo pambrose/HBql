@@ -21,9 +21,12 @@ public class ClassSchema {
 
     private final Class<?> clazz;
 
-    private String tableName;
+    private String tableName = null;
 
-    final Map<String, List<FieldAttrib>> fieldAttribs = Maps.newHashMap();
+    private FieldAttrib keyFieldAttrib = null;
+
+    final Map<String, List<FieldAttrib>> fieldAttribMapByFamily = Maps.newHashMap();
+    final Map<String, FieldAttrib> fieldAttribMapByField = Maps.newHashMap();
 
     public ClassSchema(final Class clazz) throws PersistException {
         this.clazz = clazz;
@@ -34,12 +37,20 @@ public class ClassSchema {
         return clazz;
     }
 
-    public Map<String, List<FieldAttrib>> getFieldAttribs() {
-        return fieldAttribs;
+    public Map<String, List<FieldAttrib>> getFieldAttribMapByFamily() {
+        return fieldAttribMapByFamily;
+    }
+
+    public Map<String, FieldAttrib> getFieldAttribMapByField() {
+        return fieldAttribMapByField;
     }
 
     private static Map<Class<?>, ClassSchema> getClassSchemaMap() {
         return classSchemaMap;
+    }
+
+    public FieldAttrib getKeyFieldAttrib() {
+        return keyFieldAttrib;
     }
 
     public static ClassSchema getClassSchema(final Persistable obj) throws PersistException {
@@ -112,21 +123,41 @@ public class ClassSchema {
 
             final Column column = field.getAnnotation(Column.class);
 
-            // Persisted or not
+            // Check if persisted or not
             if (column != null) {
+
                 final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, column);
-                final String family = attrib.getFamily();
-                final List<FieldAttrib> columns;
-                if (!this.getFieldAttribs().containsKey(family)) {
-                    columns = Lists.newArrayList();
-                    this.getFieldAttribs().put(family, columns);
+
+                // Make sure it is not marked final
+
+                if (column.key()) {
+                    if (keyFieldAttrib != null)
+                        throw new PersistException("Class " + this.getClazz().getName()
+                                                   + " has multiple instance variables annotated "
+                                                   + "with @Column(key=true)");
+
+                    keyFieldAttrib = attrib;
                 }
                 else {
-                    columns = this.getFieldAttribs().get(family);
+                    this.getFieldAttribMapByField().put(field.getName(), attrib);
+
+                    final String family = attrib.getFamily();
+                    final List<FieldAttrib> columns;
+                    if (!this.getFieldAttribMapByFamily().containsKey(family)) {
+                        columns = Lists.newArrayList();
+                        this.getFieldAttribMapByFamily().put(family, columns);
+                    }
+                    else {
+                        columns = this.getFieldAttribMapByFamily().get(family);
+                    }
+                    columns.add(attrib);
                 }
-                columns.add(attrib);
             }
         }
+        if (keyFieldAttrib == null)
+            throw new PersistException("Class " + this.getClazz().getName()
+                                       + " is missing an instance variable annotated with @Column(key=true)");
+
     }
 
     public String getTableName() {
