@@ -40,7 +40,7 @@ public class FieldAttrib {
             return clazz;
         }
 
-        private static Type getType(final Field field) throws PersistException {
+        private static Type getType(final Field field) throws HBPersistException {
 
             final Class fieldClass = field.getType();
 
@@ -55,7 +55,7 @@ public class FieldAttrib {
                         return type;
             }
 
-            throw new PersistException("Not able to deal with type: " + clazz);
+            throw new HBPersistException("Not able to deal with type: " + clazz);
         }
     }
 
@@ -72,7 +72,7 @@ public class FieldAttrib {
     private Method setterMethod = null;
 
 
-    public FieldAttrib(final Class enclosingClass, final Field field, final Column column) throws PersistException {
+    public FieldAttrib(final Class enclosingClass, final Field field, final HBColumn column) throws HBPersistException {
 
         this.field = field;
         this.type = Type.getType(this.field);
@@ -92,12 +92,12 @@ public class FieldAttrib {
                 final Class<?> returnType = this.getGetterMethod().getReturnType();
 
                 if (!(returnType.isArray() && returnType.getComponentType() == Byte.TYPE))
-                    throw new PersistException(enclosingClass.getName() + "." + this.getter + "()"
-                                               + " does not have a return type of byte[]");
+                    throw new HBPersistException(enclosingClass.getName() + "." + this.getter + "()"
+                                                 + " does not have a return type of byte[]");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new PersistException("Missing method byte[] " + enclosingClass.getName() + "." + this.getter + "()");
+            throw new HBPersistException("Missing method byte[] " + enclosingClass.getName() + "." + this.getter + "()");
         }
 
         try {
@@ -108,16 +108,16 @@ public class FieldAttrib {
                 // Check if it takes single byte[] arg
                 final Class<?>[] args = this.getSetterMethod().getParameterTypes();
                 if (args.length != 1 || !(args[0].isArray() && args[0].getComponentType() == Byte.TYPE))
-                    throw new PersistException(enclosingClass.getName() + "." + this.setter + "()"
-                                               + " does not have single byte[] arg");
+                    throw new HBPersistException(enclosingClass.getName() + "." + this.setter + "()"
+                                                 + " does not have single byte[] arg");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new PersistException("Missing method " + enclosingClass.getName() + "." + this.setter + "(byte[] arg)");
+            throw new HBPersistException("Missing method " + enclosingClass.getName() + "." + this.setter + "(byte[] arg)");
         }
         catch (ClassNotFoundException e) {
             // This will not be hit
-            throw new PersistException("Missing method " + enclosingClass.getName() + "." + this.setter + "(byte[] arg)");
+            throw new HBPersistException("Missing method " + enclosingClass.getName() + "." + this.setter + "(byte[] arg)");
         }
 
     }
@@ -179,41 +179,41 @@ public class FieldAttrib {
         return this.mapKeysAsColumns;
     }
 
-    public byte[] invokeGetterMethod(final Object parent) throws PersistException {
+    public byte[] invokeGetterMethod(final Object parent) throws HBPersistException {
         try {
             return (byte[])this.getGetterMethod().invoke(parent);
         }
         catch (IllegalAccessException e) {
-            throw new PersistException("Error getting value of " + this.getFieldName());
+            throw new HBPersistException("Error getting value of " + this.getFieldName());
         }
         catch (InvocationTargetException e) {
-            throw new PersistException("Error getting value of " + this.getFieldName());
+            throw new HBPersistException("Error getting value of " + this.getFieldName());
         }
     }
 
-    public Object invokeSetterMethod(final Object parent, final byte[] b) throws PersistException {
+    public Object invokeSetterMethod(final Object parent, final byte[] b) throws HBPersistException {
         try {
             return this.getSetterMethod().invoke(parent, b);
         }
         catch (IllegalAccessException e) {
-            throw new PersistException("Error setting value of " + this.getFieldName());
+            throw new HBPersistException("Error setting value of " + this.getFieldName());
         }
         catch (InvocationTargetException e) {
-            throw new PersistException("Error setting value of " + this.getFieldName());
+            throw new HBPersistException("Error setting value of " + this.getFieldName());
         }
     }
 
-    public Object getValue(final Persistable declaringObj) throws PersistException {
+    public Object getValue(final HBPersistable declaringObj) throws HBPersistException {
         try {
             return this.getField().get(declaringObj);
         }
         catch (IllegalAccessException e) {
-            throw new PersistException("Error getting value of " + this.getFieldName());
+            throw new HBPersistException("Error getting value of " + this.getFieldName());
         }
 
     }
 
-    public byte[] getValueAsBytes(final Persistable declaringObj) throws PersistException, IOException {
+    public byte[] getValueAsBytes(final HBPersistable declaringObj) throws HBPersistException, IOException {
 
         if (this.hasGetter()) {
             return this.invokeGetterMethod(declaringObj);
@@ -228,7 +228,7 @@ public class FieldAttrib {
         }
     }
 
-    public Object getValueFromBytes(final Persistable declaringObj, final byte[] b) throws IOException, PersistException {
+    public Object getValueFromBytes(final HBPersistable declaringObj, final byte[] b) throws IOException, HBPersistException {
 
         if (this.hasSetter()) {
             return this.invokeSetterMethod(declaringObj, b);
@@ -241,7 +241,7 @@ public class FieldAttrib {
         }
     }
 
-    private Object getScalarFromBytes(final byte[] b) throws IOException, PersistException {
+    private Object getScalarFromBytes(final byte[] b) throws IOException, HBPersistException {
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(b);
         final ObjectInputStream ois = new ObjectInputStream(bais);
@@ -279,16 +279,16 @@ public class FieldAttrib {
         }
         catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new PersistException("Error in getScalarfromBytes()");
+            throw new HBPersistException("Error in getScalarfromBytes()");
         }
         finally {
             ois.close();
         }
 
-        throw new PersistException("Error in getScalarfromBytes()");
+        throw new HBPersistException("Error in getScalarfromBytes()");
     }
 
-    private Object getArrayFromBytes(final byte[] b) throws IOException, PersistException {
+    private Object getArrayFromBytes(final byte[] b) throws IOException, HBPersistException {
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(b);
         final ObjectInputStream ois = new ObjectInputStream(bais);
@@ -368,16 +368,16 @@ public class FieldAttrib {
         }
         catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new PersistException("Error in getScalarfromBytes()");
+            throw new HBPersistException("Error in getScalarfromBytes()");
         }
         finally {
             ois.close();
         }
 
-        throw new PersistException("Error in getScalarfromBytes()");
+        throw new HBPersistException("Error in getScalarfromBytes()");
     }
 
-    private byte[] getScalarAsBytes(final Object obj) throws IOException, PersistException {
+    private byte[] getScalarAsBytes(final Object obj) throws IOException, HBPersistException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -425,7 +425,7 @@ public class FieldAttrib {
         return baos.toByteArray();
     }
 
-    private byte[] getArrayasBytes(final Object obj) throws IOException, PersistException {
+    private byte[] getArrayasBytes(final Object obj) throws IOException, HBPersistException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);

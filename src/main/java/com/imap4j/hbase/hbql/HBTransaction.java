@@ -18,7 +18,7 @@ import java.util.Map;
  * Date: Aug 19, 2009
  * Time: 4:22:40 PM
  */
-public class Transaction {
+public class HBTransaction {
 
     private final Map<String, List<Put>> updateList = Maps.newHashMap();
 
@@ -31,7 +31,7 @@ public class Transaction {
         return retval;
     }
 
-    public void insert(final Persistable declaringObj) throws PersistException, IOException {
+    public void insert(final HBPersistable declaringObj) throws HBPersistException, IOException {
 
         final ClassSchema classSchema = ClassSchema.getClassSchema(declaringObj);
         final byte[] keyval = classSchema.getKeyFieldAttrib().getValueAsBytes(declaringObj);
@@ -77,6 +77,7 @@ public class Transaction {
         for (final String tableName : updateList.keySet()) {
             final HTable table = new HTable(new HBaseConfiguration(), tableName);
             table.put(this.getUpdateList(tableName));
+            table.flushCommits();
         }
     }
 

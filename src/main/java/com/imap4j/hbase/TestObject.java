@@ -1,14 +1,14 @@
 package com.imap4j.hbase;
 
 import com.google.common.collect.Maps;
-import com.imap4j.hbase.hbql.Column;
+import com.imap4j.hbase.hbql.HBColumn;
+import com.imap4j.hbase.hbql.HBPersistException;
+import com.imap4j.hbase.hbql.HBPersistable;
+import com.imap4j.hbase.hbql.HBQuery;
+import com.imap4j.hbase.hbql.HBQueryListenerAdapter;
+import com.imap4j.hbase.hbql.HBTable;
+import com.imap4j.hbase.hbql.HBTransaction;
 import com.imap4j.hbase.hbql.HBql;
-import com.imap4j.hbase.hbql.PersistException;
-import com.imap4j.hbase.hbql.Persistable;
-import com.imap4j.hbase.hbql.Query;
-import com.imap4j.hbase.hbql.QueryListenerAdapter;
-import com.imap4j.hbase.hbql.Table;
-import com.imap4j.hbase.hbql.Transaction;
 
 import java.io.IOException;
 import java.util.Map;
@@ -19,37 +19,37 @@ import java.util.Map;
  * Date: Aug 19, 2009
  * Time: 4:39:06 PM
  */
-@Table(name = "blogposts")
-public class TestObject implements Persistable {
+@HBTable(name = "blogposts")
+public class TestObject implements HBPersistable {
 
     final String family1 = "post";
     final String family2 = "image";
 
-    @Column(key = true)
+    @HBColumn(key = true)
     private String keyval;
 
-    @Column(family = family1)
+    @HBColumn(family = family1)
     private int intValue = -999;
 
-    @Column(family = family1)
+    @HBColumn(family = family1)
     private String title = "A title value";
 
-    @Column(family = family1, column = "author")
+    @HBColumn(family = family1, column = "author")
     private String author = "An author value";
 
-    @Column(family = family2, getter = "getHeaderBytes", setter = "setHeaderBytes")
+    @HBColumn(family = family2, getter = "getHeaderBytes", setter = "setHeaderBytes")
     private String header = "A header value";
 
-    @Column(family = family2, column = "bodyimage")
+    @HBColumn(family = family2, column = "bodyimage")
     private String bodyimage = "A bodyimage value";
 
-    @Column(family = family2)
+    @HBColumn(family = family2)
     private int[] array1 = {1, 2, 3};
 
-    @Column(family = family2)
+    @HBColumn(family = family2)
     private String[] array2 = {"val1", "val2", "val3"};
 
-    @Column(family = family2, mapKeysAsColumns = true)
+    @HBColumn(family = family2, mapKeysAsColumns = true)
     private Map<String, String> mapval1 = Maps.newHashMap();
 
     public TestObject() {
@@ -67,9 +67,9 @@ public class TestObject implements Persistable {
         this.header = new String(val);
     }
 
-    public static void main(String[] args) throws IOException, PersistException {
+    public static void main(String[] args) throws IOException, HBPersistException {
 
-        Transaction tx = new Transaction();
+        HBTransaction tx = new HBTransaction();
 
         int cnt = 2;
         for (int i = 0; i < cnt; i++) {
@@ -81,27 +81,27 @@ public class TestObject implements Persistable {
 
         HBql.exec("set classpath com.imap4j.hbsql:com.imap4j.hbase");
 
-        Query<TestObject> q1 =
-                new Query<TestObject>("select mapval1, author, title from TestObject",
-                                      new QueryListenerAdapter<TestObject>() {
-                                          public void onEachRow(final TestObject val) throws PersistException {
-                                              System.out.println("Values: " + val.keyval
-                                                                 + " - " + val.author
-                                                                 + " - " + val.title);
-                                          }
-                                      });
+        HBQuery<TestObject> q1 =
+                new HBQuery<TestObject>("select mapval1, author, title from TestObject",
+                                        new HBQueryListenerAdapter<TestObject>() {
+                                            public void onEachRow(final TestObject val) throws HBPersistException {
+                                                System.out.println("Values: " + val.keyval
+                                                                   + " - " + val.author
+                                                                   + " - " + val.title);
+                                            }
+                                        });
 
         q1.execute();
 
-        Query<TestObject> q2 =
-                new Query<TestObject>("select * from TestObject",
-                                      new QueryListenerAdapter<TestObject>() {
-                                          public void onEachRow(final TestObject val) throws PersistException {
-                                              System.out.println("Values: " + val.keyval
-                                                                 + " - " + val.author
-                                                                 + " - " + val.title);
-                                          }
-                                      });
+        HBQuery<TestObject> q2 =
+                new HBQuery<TestObject>("select * from TestObject",
+                                        new HBQueryListenerAdapter<TestObject>() {
+                                            public void onEachRow(final TestObject val) throws HBPersistException {
+                                                System.out.println("Values: " + val.keyval
+                                                                   + " - " + val.author
+                                                                   + " - " + val.title);
+                                            }
+                                        });
 
         q2.execute();
 

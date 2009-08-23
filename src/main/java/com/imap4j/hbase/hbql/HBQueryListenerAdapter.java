@@ -8,12 +8,12 @@ import java.io.Serializable;
  * Date: Aug 20, 2009
  * Time: 10:39:59 PM
  */
-public abstract class QueryListenerAdapter<T extends Persistable> implements QueryListener<T>, Serializable {
+public abstract class HBQueryListenerAdapter<T extends HBPersistable> implements HBQueryListener<T>, Serializable {
 
     public void onQueryInit() {
     }
 
-    public void onEachRow(T val) throws PersistException {
+    public void onEachRow(T val) throws HBPersistException {
     }
 
     public void onQueryCompletion() {

@@ -18,17 +18,17 @@ import java.util.List;
  * Date: Aug 20, 2009
  * Time: 9:26:38 PM
  */
-public class Query<T extends Persistable> {
+public class HBQuery<T extends HBPersistable> {
 
     final String query;
-    final QueryListener<T> listener;
+    final HBQueryListener<T> listener;
 
-    public Query(final String query, final QueryListener<T> listener) {
+    public HBQuery(final String query, final HBQueryListener<T> listener) {
         this.query = query;
         this.listener = listener;
     }
 
-    public void execute() throws IOException, PersistException {
+    public void execute() throws IOException, HBPersistException {
 
         final QueryArgs qa = (QueryArgs)HBqlRule.QUERY.parse(this.query);
 
@@ -91,7 +91,7 @@ public class Query<T extends Persistable> {
         }
         catch (Exception e) {
             e.printStackTrace();
-            throw new PersistException("Error in execute()");
+            throw new HBPersistException("Error in execute()");
         }
 
     }

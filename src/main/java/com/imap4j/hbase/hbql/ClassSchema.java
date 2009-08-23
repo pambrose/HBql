@@ -30,7 +30,7 @@ public class ClassSchema {
     final Map<String, FieldAttrib> fieldAttribMapByField = Maps.newHashMap();
     final Map<String, FieldAttrib> fieldAttribMapByColumn = Maps.newHashMap();
 
-    public ClassSchema(final Class clazz) throws PersistException {
+    public ClassSchema(final Class clazz) throws HBPersistException {
         this.clazz = clazz;
 
         // TODO check to make sure there is a an empty constructor declared
@@ -62,12 +62,12 @@ public class ClassSchema {
         return keyFieldAttrib;
     }
 
-    public static ClassSchema getClassSchema(final Persistable obj) throws PersistException {
+    public static ClassSchema getClassSchema(final HBPersistable obj) throws HBPersistException {
         final Class<?> clazz = obj.getClass();
         return getClassSchema(clazz);
     }
 
-    public static ClassSchema getClassSchema(final String objname) throws PersistException {
+    public static ClassSchema getClassSchema(final String objname) throws HBPersistException {
 
         // First see if already cached
         Class<?> clazz = classCacheMap.get(objname);
@@ -88,7 +88,7 @@ public class ClassSchema {
             }
         }
 
-        throw new PersistException("Cannot find " + objname + " in classpath");
+        throw new HBPersistException("Cannot find " + objname + " in classpath");
     }
 
     public List<String> getFieldList() {
@@ -109,7 +109,7 @@ public class ClassSchema {
         }
     }
 
-    public static ClassSchema getClassSchema(final Class<?> clazz) throws PersistException {
+    public static ClassSchema getClassSchema(final Class<?> clazz) throws HBPersistException {
 
         ClassSchema classSchema = classSchemaMap.get(clazz);
         if (classSchema != null)
@@ -131,19 +131,19 @@ public class ClassSchema {
         return this.getClazz().getName();
     }
 
-    private void processAnnotations() throws PersistException {
+    private void processAnnotations() throws HBPersistException {
 
-        final Table tabAnno = this.getClazz().getAnnotation(Table.class);
+        final HBTable tabAnno = this.getClazz().getAnnotation(HBTable.class);
 
         if (tabAnno == null)
-            throw new PersistException("Class " + this + " is missing @Table annotation");
+            throw new HBPersistException("Class " + this + " is missing @Table annotation");
 
         final String tabName = tabAnno.name();
         this.tableName = (tabName.length() > 0) ? tabName : clazz.getSimpleName();
 
         for (final Field field : this.getClazz().getDeclaredFields()) {
 
-            final Column column = field.getAnnotation(Column.class);
+            final HBColumn column = field.getAnnotation(HBColumn.class);
 
             // Check if persisted or not
             if (column != null) {
@@ -153,8 +153,8 @@ public class ClassSchema {
                 final boolean isFinal = checkFieldModifiers(field);
 
                 if (isFinal)
-                    throw new PersistException(this + "." + field.getName()
-                                               + " cannot have a Column annotation and be marked final");
+                    throw new HBPersistException(this + "." + field.getName()
+                                                 + " cannot have a Column annotation and be marked final");
 
                 final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, column);
                 this.getFieldAttribMapByField().put(field.getName(), attrib);
@@ -162,9 +162,9 @@ public class ClassSchema {
 
                 if (attrib.isKey()) {
                     if (keyFieldAttrib != null)
-                        throw new PersistException("Class " + this
-                                                   + " has multiple instance variables annotated "
-                                                   + "with Column(key=true)");
+                        throw new HBPersistException("Class " + this
+                                                     + " has multiple instance variables annotated "
+                                                     + "with Column(key=true)");
 
                     keyFieldAttrib = attrib;
                 }
@@ -183,8 +183,8 @@ public class ClassSchema {
             }
         }
         if (keyFieldAttrib == null)
-            throw new PersistException("Class " + this
-                                       + " is missing an instance variable annotated with @Column(key=true)");
+            throw new HBPersistException("Class " + this
+                                         + " is missing an instance variable annotated with @Column(key=true)");
 
     }
 

@@ -11,18 +11,18 @@ import com.imap4j.hbase.antlr.config.HBqlRule;
  */
 public class HBql {
 
-    public static void exec(final String str) throws PersistException {
+    public static void exec(final String str) throws HBPersistException {
         final SetArgs sa = (SetArgs)HBqlRule.SET.parse(str);
 
         final String var = sa.getVariable();
         if (var == null)
-            throw new PersistException("Error in SET command");
+            throw new HBPersistException("Error in SET command");
 
         if (var.equals("classpath")) {
             EnvVars.setClasspath(sa.getValue());
             return;
         }
 
-        throw new PersistException("Unknown variable: " + var);
+        throw new HBPersistException("Unknown variable: " + var);
     }
 }

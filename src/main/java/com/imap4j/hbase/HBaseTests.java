@@ -1,6 +1,6 @@
 package com.imap4j.hbase;
 
-import com.imap4j.hbase.hbql.PersistException;
+import com.imap4j.hbase.hbql.HBPersistException;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -23,7 +23,7 @@ public class HBaseTests {
 
     final static String tablename = "blogposts";
 
-    public static void main(String[] args) throws IOException, PersistException {
+    public static void main(String[] args) throws IOException, HBPersistException {
 
         /*
         int cnt = 0; //10000;
