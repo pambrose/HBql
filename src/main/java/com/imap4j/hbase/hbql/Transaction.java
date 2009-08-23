@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.io.BatchUpdate;
+import org.apache.hadoop.hbase.client.Put;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,13 +20,10 @@ import java.util.Map;
  */
 public class Transaction {
 
-    private final Map<String, List<BatchUpdate>> updateList = Maps.newHashMap();
+    private final Map<String, List<Put>> updateList = Maps.newHashMap();
 
-    public Transaction() {
-    }
-
-    public synchronized List<BatchUpdate> getUpdateList(final String tableName) {
-        List<BatchUpdate> retval = updateList.get(tableName);
+    public synchronized List<Put> getUpdateList(final String tableName) {
+        List<Put> retval = updateList.get(tableName);
         if (retval == null) {
             retval = Lists.newArrayList();
             updateList.put(tableName, retval);
@@ -40,7 +37,7 @@ public class Transaction {
 
         final byte[] keyval = classSchema.getKeyFieldAttrib().getValueAsBytes(declaringObj);
 
-        final BatchUpdate batchUpdate = new BatchUpdate(keyval);
+        final Put put = new Put(keyval);
 
         for (final String family : classSchema.getFieldAttribMapByFamily().keySet()) {
 
@@ -53,17 +50,21 @@ public class Transaction {
                         final byte[] byteval = getObjectAsBytes(map.get(keyobj));
 
                         // Use family:column-key scheme to avoid column namespace collision
-                        batchUpdate.put(attrib.getQualifiedName() + "-" + colname, byteval);
+                        put.add(attrib.getFamilyName().getBytes(),
+                                (attrib.getColumnName() + "-" + colname).getBytes(),
+                                byteval);
                     }
                 }
                 else {
                     final byte[] instval = attrib.getValueAsBytes(declaringObj);
-                    batchUpdate.put(attrib.getQualifiedName(), instval);
+                    put.add(attrib.getFamilyName().getBytes(),
+                            attrib.getColumnName().getBytes(),
+                            instval);
                 }
             }
         }
 
-        this.getUpdateList(classSchema.getTableName()).add(batchUpdate);
+        this.getUpdateList(classSchema.getTableName()).add(put);
     }
 
     private static byte[] getObjectAsBytes(final Object obj) throws IOException {
@@ -77,7 +78,7 @@ public class Transaction {
     public void commit() throws IOException {
         for (final String tableName : updateList.keySet()) {
             final HTable table = new HTable(new HBaseConfiguration(), tableName);
-            table.commit(this.getUpdateList(tableName));
+            table.put(this.getUpdateList(tableName));
         }
     }
 

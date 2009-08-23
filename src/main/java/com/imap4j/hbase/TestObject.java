@@ -71,7 +71,7 @@ public class TestObject implements Persistable {
 
         Transaction tx = new Transaction();
 
-        int cnt = 2;
+        int cnt = 20;
         for (int i = 0; i < cnt; i++) {
             TestObject obj = new TestObject();
             tx.insert(obj);

@@ -4,9 +4,11 @@ import com.google.common.collect.Lists;
 import com.imap4j.hbase.antlr.QueryArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Scanner;
-import org.apache.hadoop.hbase.io.RowResult;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
 
 import java.io.IOException;
 import java.util.List;
@@ -52,10 +54,13 @@ public class Query<T extends Persistable> {
                 }
             }
 
-            final String[] cols = colList.toArray(new String[colList.size()]);
-            final Scanner scanner = table.getScanner(cols);
+            final Scan scan = new Scan();
+            for (final String col : colList)
+                scan.addColumn(col.getBytes());
 
-            for (RowResult result : scanner) {
+            final ResultScanner resultScanner = table.getScanner(scan);
+
+            for (Result result : resultScanner) {
 
                 final T newobj = (T)classSchema.getClazz().newInstance();
                 final FieldAttrib keyattrib = classSchema.getKeyFieldAttrib();
@@ -63,13 +68,16 @@ public class Query<T extends Persistable> {
                 final Object keyval = keyattrib.getValueFromBytes(newobj, keybytes);
                 classSchema.getKeyFieldAttrib().getField().set(newobj, keyval);
 
-                for (byte[] colbytes : result.keySet()) {
+                for (final KeyValue keyValue : result.list()) {
+
+                    final byte[] colbytes = keyValue.getColumn();
 
                     final String column = new String(colbytes);
                     final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(column);
 
-                    final byte[] valbytes = result.get(colbytes).getValue();
+                    final byte[] valbytes = result.getValue(colbytes);
                     final Object val = attrib.getValueFromBytes(newobj, valbytes);
+
                     attrib.getField().set(newobj, val);
                 }
 
