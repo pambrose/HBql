@@ -34,9 +34,7 @@ public class Transaction {
     public void insert(final Persistable declaringObj) throws PersistException, IOException {
 
         final ClassSchema classSchema = ClassSchema.getClassSchema(declaringObj);
-
         final byte[] keyval = classSchema.getKeyFieldAttrib().getValueAsBytes(declaringObj);
-
         final Put put = new Put(keyval);
 
         for (final String family : classSchema.getFieldAttribMapByFamily().keySet()) {
@@ -49,9 +47,9 @@ public class Transaction {
                         final String colname = keyobj.toString();
                         final byte[] byteval = getObjectAsBytes(map.get(keyobj));
 
-                        // Use family:column-key scheme to avoid column namespace collision
+                        // Use family:column[key] scheme to avoid column namespace collision
                         put.add(attrib.getFamilyName().getBytes(),
-                                (attrib.getColumnName() + "-" + colname).getBytes(),
+                                (attrib.getColumnName() + "[" + colname + "]").getBytes(),
                                 byteval);
                     }
                 }

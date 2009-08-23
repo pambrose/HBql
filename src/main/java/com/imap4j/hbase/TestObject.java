@@ -71,7 +71,7 @@ public class TestObject implements Persistable {
 
         Transaction tx = new Transaction();
 
-        int cnt = 20;
+        int cnt = 2;
         for (int i = 0; i < cnt; i++) {
             TestObject obj = new TestObject();
             tx.insert(obj);
@@ -79,10 +79,10 @@ public class TestObject implements Persistable {
 
         tx.commit();
 
-        HBql.exec("set classpath = com.imap4j.hbsql:com.imap4j.hbase");
+        HBql.exec("set classpath com.imap4j.hbsql:com.imap4j.hbase");
 
         Query<TestObject> q1 =
-                new Query<TestObject>("select author, title from TestObject",
+                new Query<TestObject>("select mapval1, author, title from TestObject",
                                       new QueryListenerAdapter<TestObject>() {
                                           public void onEachRow(final TestObject val) throws PersistException {
                                               System.out.println("Values: " + val.keyval

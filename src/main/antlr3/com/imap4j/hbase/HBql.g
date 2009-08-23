@@ -40,7 +40,7 @@ delete_stmt returns [DeleteArgs retval]
 		;
 
 set_stmt returns [SetArgs retval]
-		: keySET var=ID (keyTO | EQUALS) val=ID
+		: keySET var=ID (keyTO | EQUALS)? val=ID
 		{retval = new SetArgs($var.text, $val.text);}
 		;
 		

@@ -355,9 +355,7 @@ public class FieldAttrib {
                 }
 
                 case ObjectType: {
-                    // Read type info
-                    final String className = ois.readUTF();
-
+                    final String className = this.getField().getType().getComponentType().getName();
                     final Class clazz = Class.forName(className);
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
@@ -492,11 +490,6 @@ public class FieldAttrib {
 
             case ObjectType: {
                 oos.writeInt(((Object[])obj).length);
-
-                // Write type info
-                final String className = this.getField().getType().getComponentType().getName();
-                oos.writeUTF(className);
-
                 for (Object val : (Object[])obj)
                     oos.writeObject(val);
                 break;
