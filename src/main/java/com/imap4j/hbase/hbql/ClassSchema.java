@@ -33,7 +33,13 @@ public class ClassSchema {
     public ClassSchema(final Class clazz) throws HBPersistException {
         this.clazz = clazz;
 
-        // TODO check to make sure there is a an empty constructor declared
+        // Make sure there is a an empty constructor declared
+        try {
+            this.getClazz().getConstructor();
+        }
+        catch (NoSuchMethodException e) {
+            throw new HBPersistException("Class " + this + " is missing a null constructor");
+        }
 
         processAnnotations();
     }
@@ -157,6 +163,12 @@ public class ClassSchema {
                                                  + " cannot have a Column annotation and be marked final");
 
                 final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, column);
+
+                // TODO Make sure Map is not null
+                if (attrib.isMapKeysAsColumns()) {
+
+                }
+
                 this.getFieldAttribMapByField().put(field.getName(), attrib);
                 this.getFieldAttribMapByColumn().put(attrib.getQualifiedName(), attrib);
 

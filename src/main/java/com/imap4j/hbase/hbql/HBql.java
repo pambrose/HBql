@@ -1,7 +1,21 @@
 package com.imap4j.hbase.hbql;
 
+import com.imap4j.hbase.antlr.DeleteArgs;
+import com.imap4j.hbase.antlr.ExecArgs;
 import com.imap4j.hbase.antlr.SetArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.client.Delete;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,18 +25,58 @@ import com.imap4j.hbase.antlr.config.HBqlRule;
  */
 public class HBql {
 
-    public static void exec(final String str) throws HBPersistException {
-        final SetArgs sa = (SetArgs)HBqlRule.SET.parse(str);
+    public static void exec(final String str) throws HBPersistException, IOException {
 
-        final String var = sa.getVariable();
-        if (var == null)
-            throw new HBPersistException("Error in SET command");
+        final ExecArgs exec = (ExecArgs)HBqlRule.EXEC.parse(str);
 
-        if (var.equals("classpath")) {
-            EnvVars.setClasspath(sa.getValue());
-            return;
+        if (exec instanceof SetArgs) {
+
+            final SetArgs args = (SetArgs)exec;
+
+            final String var = args.getVariable();
+            if (var == null)
+                throw new HBPersistException("Error in SET command");
+
+            if (var.equals("classpath")) {
+                EnvVars.setClasspath(args.getValue());
+                return;
+            }
+
+            throw new HBPersistException("Unknown variable: " + var);
         }
 
-        throw new HBPersistException("Unknown variable: " + var);
+        if (exec instanceof DeleteArgs) {
+            final DeleteArgs args = (DeleteArgs)exec;
+            final ClassSchema schema = ClassSchema.getClassSchema(args.getClassname());
+            deleteAll(schema.getTableName());
+        }
     }
+
+    public static void deleteAll(final String tablename) throws IOException {
+
+        final HTable table = new HTable(new HBaseConfiguration(), tablename);
+
+        final Scan scan = new Scan();
+        final ResultScanner scanner = table.getScanner(scan);
+        int cnt = 0;
+        for (Result res : scanner) {
+            final Delete delete = new Delete(res.getRow());
+            table.delete(delete);
+            cnt++;
+        }
+        System.out.println("Delete count: " + cnt);
+
+    }
+
+    public static void getFamilyInfo(final String tablename) throws IOException {
+        HBaseAdmin admin = new HBaseAdmin(new HBaseConfiguration());
+        HTableDescriptor desc = admin.getTableDescriptor(tablename.getBytes());
+        for (HColumnDescriptor col : desc.getFamilies()) {
+            System.out.println("Family: " + col.getNameAsString());
+            Map value = col.getValues();
+            int r = 5;
+        }
+
+    }
+
 }

@@ -6,7 +6,7 @@ package com.imap4j.hbase.antlr;
  * Date: Aug 21, 2009
  * Time: 1:08:12 PM
  */
-public class SetArgs {
+public class SetArgs implements ExecArgs {
 
     private final String variable, value;
 

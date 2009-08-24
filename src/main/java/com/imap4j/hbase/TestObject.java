@@ -55,8 +55,8 @@ public class TestObject implements HBPersistable {
     public TestObject() {
         this.keyval = "Val-" + System.nanoTime();
 
-        // mapval1.put("key1", "val1");
-        // mapval1.put("key2", "val2");
+        mapval1.put("key1", "val1");
+        mapval1.put("key2", "val2");
     }
 
     public byte[] getHeaderBytes() {
@@ -69,8 +69,11 @@ public class TestObject implements HBPersistable {
 
     public static void main(String[] args) throws IOException, HBPersistException {
 
-        HBTransaction tx = new HBTransaction();
+        HBql.exec("set classpath com.imap4j.hbsql:com.imap4j.hbase");
 
+        HBql.exec("delete from TestObject");
+
+        final HBTransaction tx = new HBTransaction();
         int cnt = 2;
         for (int i = 0; i < cnt; i++) {
             TestObject obj = new TestObject();
@@ -78,8 +81,6 @@ public class TestObject implements HBPersistable {
         }
 
         tx.commit();
-
-        HBql.exec("set classpath com.imap4j.hbsql:com.imap4j.hbase");
 
         HBQuery<TestObject> q1 =
                 new HBQuery<TestObject>("select mapval1, author, title from TestObject",

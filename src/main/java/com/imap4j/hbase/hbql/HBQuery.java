@@ -31,7 +31,7 @@ public class HBQuery<T extends HBPersistable> {
 
     public void execute() throws IOException, HBPersistException {
 
-        final QueryArgs qa = (QueryArgs)HBqlRule.QUERY.parse(this.query);
+        final QueryArgs qa = (QueryArgs)HBqlRule.SELECT.parse(this.query);
 
         final ClassSchema classSchema = ClassSchema.getClassSchema(qa.getTableName());
 
@@ -80,6 +80,7 @@ public class HBQuery<T extends HBPersistable> {
                         final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(mapcolumn);
                         final Object val = attrib.getValueFromBytes(newobj, valbytes);
                         final Map mapval = (Map)attrib.getValue(newobj);
+
                         // TODO Should call constructor if map has not been created
                         if (mapval != null)
                             mapval.put(mapKey, val);

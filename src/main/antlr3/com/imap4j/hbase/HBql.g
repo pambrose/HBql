@@ -31,16 +31,23 @@ package com.imap4j.hbase;
 import com.google.common.collect.Lists;
 }
 
-query_stmt returns [QueryArgs retval]
-		: keySELECT (STAR | column_list) keyFROM table=ID
-		{retval = new QueryArgs($column_list.retval, $table.text);};
+select_stmt returns [QueryArgs retval]
+		: keySELECT (STAR | column_list) keyFROM table=ID 
+		{retval = new QueryArgs($column_list.retval, $table.text);}
+		;
+
+exec_cmd returns [ExecArgs retval]
+		: delete_stmt 	{retval = $delete_stmt.retval;}
+		| set_stmt	{retval = $set_stmt.retval;}
+		;
 
 delete_stmt returns [DeleteArgs retval]
-		: keyDELETE column_list keyFROM ID keyWHERE condition 
+		: keyDELETE keyFROM ID (keyWHERE condition)? 
+		{retval = new DeleteArgs($ID.text);}
 		;
 
 set_stmt returns [SetArgs retval]
-		: keySET var=ID (keyTO | EQUALS)? val=ID
+		: keySET var=ID (keyTO | EQUALS)? val=ID 
 		{retval = new SetArgs($var.text, $val.text);}
 		;
 		
