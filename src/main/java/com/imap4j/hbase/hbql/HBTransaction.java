@@ -40,10 +40,10 @@ public class HBTransaction {
             for (final FieldAttrib attrib : classSchema.getFieldAttribMapByFamily().get(family)) {
 
                 if (attrib.isMapKeysAsColumns()) {
-                    final Map map = (Map)attrib.getValue(declaringObj);
-                    for (final Object keyobj : map.keySet()) {
+                    final Map mapval = (Map)attrib.getValue(declaringObj);
+                    for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
-                        final byte[] byteval = HBUtil.getObjectAsBytes(map.get(keyobj));
+                        final byte[] byteval = HBUtil.getObjectAsBytes(mapval.get(keyobj));
 
                         // Use family:column[key] scheme to avoid column namespace collision
                         put.add(attrib.getFamilyName().getBytes(),

@@ -55,8 +55,8 @@ public class TestObject implements HBPersistable {
     public TestObject() {
         this.keyval = "Val-" + System.nanoTime();
 
-        mapval1.put("key1", "val1");
-        mapval1.put("key2", "val2");
+        // mapval1.put("key1", "val1");
+        // mapval1.put("key2", "val2");
     }
 
     public byte[] getHeaderBytes() {

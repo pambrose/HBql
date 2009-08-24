@@ -11,6 +11,7 @@ import org.apache.hadoop.hbase.client.Scan;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -74,9 +75,14 @@ public class HBQuery<T extends HBPersistable> {
 
                     if (column.endsWith("]")) {
                         final int lbrace = column.indexOf("[");
+                        final String mapcolumn = column.substring(0, lbrace);
                         final String mapKey = column.substring(lbrace + 1, column.length() - 1);
-                        final String mapcol = column.substring(0, lbrace);
-
+                        final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(mapcolumn);
+                        final Object val = attrib.getValueFromBytes(newobj, valbytes);
+                        final Map mapval = (Map)attrib.getValue(newobj);
+                        // TODO Should call constructor if map has not been created
+                        if (mapval != null)
+                            mapval.put(mapKey, val);
                     }
                     else {
                         final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(column);
