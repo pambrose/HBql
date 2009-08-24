@@ -1,0 +1,3 @@
+bin/hbase shell
+
+create 'blogposts', 'post', 'image'

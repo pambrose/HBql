@@ -6,9 +6,7 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +43,7 @@ public class HBTransaction {
                     final Map map = (Map)attrib.getValue(declaringObj);
                     for (final Object keyobj : map.keySet()) {
                         final String colname = keyobj.toString();
-                        final byte[] byteval = getObjectAsBytes(map.get(keyobj));
+                        final byte[] byteval = HBUtil.getObjectAsBytes(map.get(keyobj));
 
                         // Use family:column[key] scheme to avoid column namespace collision
                         put.add(attrib.getFamilyName().getBytes(),
@@ -65,13 +63,6 @@ public class HBTransaction {
         this.getUpdateList(classSchema.getTableName()).add(put);
     }
 
-    private static byte[] getObjectAsBytes(final Object obj) throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(obj);
-        oos.flush();
-        return baos.toByteArray();
-    }
 
     public void commit() throws IOException {
         for (final String tableName : updateList.keySet()) {
