@@ -78,12 +78,23 @@ public class TestObject implements HBPersistable {
 
     public static void main(String[] args) throws IOException, HBPersistException {
 
-        HBql.exec("set classpath com.imap4j.hbsql:com.imap4j.hbase");
-
-        HBql.exec("create table TestObject");
+        HBql.Results results;
 
         /*
-        HBql.exec("delete from TestObject");
+        results = HBql.exec("set classpath com.imap4j.hbsql:com.imap4j.hbase");
+        System.out.println(results.getOutput());
+
+        results = HBql.exec("create table TestObject");
+        System.out.println(results.getOutput());
+
+        results = HBql.exec("describe table TestObject");
+        System.out.println(results.getOutput());
+
+        results = HBql.exec("delete from TestObject");
+        System.out.println(results.getOutput());
+        */
+
+        /*
 
         final HBTransaction tx = new HBTransaction();
         int cnt = 2;

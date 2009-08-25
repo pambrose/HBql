@@ -37,19 +37,25 @@ select_stmt returns [QueryArgs retval]
 		;
 
 exec_cmd returns [ExecArgs retval]
-		: delete_stmt 	{retval = $delete_stmt.retval;}
-		| create_stmt	{retval = $create_stmt.retval;}
+		: create_stmt	{retval = $create_stmt.retval;}
+		| describe_stmt {retval = $describe_stmt.retval;}
+		| delete_stmt 	{retval = $delete_stmt.retval;}
 		| set_stmt	{retval = $set_stmt.retval;}
-		;
-
-delete_stmt returns [DeleteArgs retval]
-		: keyDELETE keyFROM ID (keyWHERE condition)? 
-		{retval = new DeleteArgs($ID.text);}
 		;
 
 create_stmt returns [CreateArgs retval]
 		: keyCREATE keyTABLE ID 
 		{retval = new CreateArgs($ID.text);}
+		;
+
+describe_stmt returns [DescribeArgs retval]
+		: keyDESCRIBE keyTABLE ID 
+		{retval = new DescribeArgs($ID.text);}
+		;
+
+delete_stmt returns [DeleteArgs retval]
+		: keyDELETE keyFROM ID (keyWHERE condition)? 
+		{retval = new DeleteArgs($ID.text);}
 		;
 
 set_stmt returns [SetArgs retval]
@@ -91,6 +97,7 @@ WS 		: (' ' |'\t' |'\n' |'\r' )+ {skip();} ;
 keySELECT 		: {AntlrActions.isKeyword(input, "SELECT")}? ID;
 keyDELETE 		: {AntlrActions.isKeyword(input, "DELETE")}? ID;
 keyCREATE 		: {AntlrActions.isKeyword(input, "CREATE")}? ID;
+keyDESCRIBE 		: {AntlrActions.isKeyword(input, "DESCRIBE")}? ID;
 keyTABLE 		: {AntlrActions.isKeyword(input, "TABLE")}? ID;
 keyWHERE		: {AntlrActions.isKeyword(input, "WHERE")}? ID;
 keyFROM 		: {AntlrActions.isKeyword(input, "FROM")}? ID;
