@@ -7,7 +7,14 @@ tokens {
 	COLON = ':';
 	STAR = '*';
 	COMMA = ',';
-	EQUALS = '=';
+	PLUS = '+';
+	MINUS = '-';
+	EQ = '=';
+	LT = '<';
+	GT = '>';
+	LTGT = '<>';	
+	LTEQ = '<=';	
+	GTEQ = '>=';	
 	DQUOTE = '"';
 	SQUOTE = '\'';
 	LPAREN = '(';
@@ -58,17 +65,11 @@ delete_stmt returns [DeleteArgs retval]
 	: keyDELETE keyFROM table=ID where_clause?		{retval = new DeleteArgs($table.text);};
 
 set_stmt returns [SetArgs retval]
-	: keySET var=ID (keyTO | EQUALS)? val=dotted_value 	{retval = new SetArgs($var.text, $val.text);};
+	: keySET var=ID (keyTO | EQ)? val=dotted_value 	{retval = new SetArgs($var.text, $val.text);};
 
 where_clause	
-	: keyWHERE cond;
+	: keyWHERE cond_expr;
 		
-cond	: compare | in_stmt;
-
-compare	: column[null] EQUALS qstring[null];
-
-in_stmt	: column[null] keyIN LPAREN qstring_list RPAREN;
-
 cond_expr
 	: cond_term (keyOR cond_expr)?
 	//| cond_expr keyOR cond_term
@@ -91,19 +92,17 @@ simple_cond_expr
 	: comp_expr
 	| between_expr
 	| like_expr
-	| in_expression
-	| null_comparison_expr
-	| empty_collection_comp_expr
-	| collection_member_expr
+	| in_expr
+	| null_comp_expr
 	;
 
 between_expr
-	: arithmetic_expr (keyNOT)? 'BETWEEN' arithmetic_expr keyAND arithmetic_expr
-	| string_expr (keyNOT)? 'BETWEEN' string_expr keyAND string_expr
-	| datetime_expr (keyNOT)? 'BETWEEN' datetime_expr keyAND datetime_expr;
+	: attr_field (keyNOT)? keyBETWEEN arithmetic_expr keyAND arithmetic_expr
+	| attr_field (keyNOT)? keyBETWEEN string_expr keyAND string_expr
+	| attr_field (keyNOT)? keyBETWEEN datetime_expr keyAND datetime_expr
+	;
 
-in_expression
-	: state_field_path_expr (keyNOT)? 'IN' LPAREN  (in_item (COMMA in_item)*) RPAREN;
+in_expr	: attr_field (keyNOT)? keyIN LPAREN (in_item (COMMA in_item)*) RPAREN;
 
 in_item
 	: string_literal
@@ -111,39 +110,32 @@ in_item
 	;
 
 like_expr
-	: string_expr keyNOT? 'LIKE' pattern_value=string_literal ('ESCAPE' escape_character=string_literal)?;
+	: string_expr keyNOT? keyLIKE pattern_value=string_literal ('ESCAPE' escape_character=string_literal)?;
 
-null_comparison_expr
-	: single_valued_path_expression 'IS' (keyNOT)? 'NULL';
-
-empty_collection_comp_expr
-	: collection_valued_path_expression 'IS' (keyNOT)? 'EMPTY';
-
-collection_member_expr
-	: entity_expr keyNOT? 'MEMBER' ('OF')? collection_valued_path_expression;
+null_comp_expr
+	: attr_field keyIS (keyNOT)? keyNULL;
 
 comp_expr
-	: string_expr comparison_operator (string_expr)
-	| boolean_expr ('=' | '<>') (boolean_expr)
-	| datetime_expr comparison_operator (datetime_expr)
-	| entity_expr ('=' | '<>') (entity_expr)
-	| arithmetic_expr comparison_operator (arithmetic_expr);
+	: attr_field comp_op string_expr
+	| string_expr comp_op attr_field
+	| attr_field (EQ | LTGT) boolean_expr
+	| boolean_expr (EQ | LTGT) attr_field
+	| attr_field comp_op datetime_expr
+	| datetime_expr comp_op attr_field
+	//| entity_expr (EQ | LTGT ) entity_expr
+	| attr_field comp_op arithmetic_expr
+	| arithmetic_expr comp_op attr_field
+	;
 
-comparison_operator
-	: '='
-	| '>'
-	| '>='
-	| '<'
-	| '<='
-	| '<>';
+comp_op	: EQ | GT | GTEQ | LT | LTEQ | LTGT;
 
 arithmetic_expr
 	: simple_arithmetic_expr
 	;
 
 simple_arithmetic_expr
-	: arithmetic_term (( '+' | '-' ) simple_arithmetic_expr)?
-	//| simple_arithmetic_expr ( '+' | '-' ) arithmetic_term
+	: arithmetic_term ((PLUS | MINUS) simple_arithmetic_expr)?
+	//| simple_arithmetic_expr (PLUS | MINUS) arithmetic_term
 	;
 
 arithmetic_term
@@ -152,13 +144,13 @@ arithmetic_term
 	;
 
 arithmetic_factor
-	: ( '+' | '-' )? arithmetic_primary;
+	: ( PLUS | MINUS )? arithmetic_primary;
 
 arithmetic_primary
-	: state_field_path_expr
-	| numeric_literal
+	: numeric_literal
 	| LPAREN simple_arithmetic_expr RPAREN
 	| functions_returning_numerics
+	//| attr_field
 	;
 
 string_expr
@@ -166,84 +158,43 @@ string_expr
 	;
 
 string_primary
-	: state_field_path_expr
-	| string_literal
+	: string_literal
 	| functions_returning_strings
+	//| attr_field
 	;
 
 datetime_expr
-	: datetime_primary
-	;
-
-datetime_primary
-	: state_field_path_expr
-	| functions_returning_datetime
+	: functions_returning_datetime
+	//| attr_field
 	;
 
 boolean_expr
-	: boolean_primary
-	;
-
-boolean_primary
-	: state_field_path_expr
-	| boolean_literal
-	;
-
-entity_expr
-	: single_valued_association_path_expr
-	| simple_entity_expr;
-
-simple_entity_expr
-	: identification_var
+	: boolean_literal
+	//| attr_field
 	;
 
 functions_returning_numerics
-	: 'LENGTH' LPAREN string_primary RPAREN
-	| 'LOCATE' LPAREN string_primary COMMA string_primary (COMMA simple_arithmetic_expr)? RPAREN
-	| 'ABS' LPAREN simple_arithmetic_expr RPAREN
-	| 'SQRT' LPAREN simple_arithmetic_expr RPAREN
-	| 'MOD' LPAREN simple_arithmetic_expr COMMA simple_arithmetic_expr RPAREN
-	| 'SIZE' LPAREN collection_valued_path_expression RPAREN;
+	: keyLENGTH LPAREN string_primary RPAREN
+	| keyABS LPAREN simple_arithmetic_expr RPAREN
+	| keyMOD LPAREN simple_arithmetic_expr COMMA simple_arithmetic_expr RPAREN
+	;
 
 functions_returning_datetime
-	: 'CURRENT_DATE'
-	| 'CURRENT_TIME'
-	| 'CURRENT_TIMESTAMP';
+	: keyCURRENT_DATE
+	| keyCURRENT_TIME
+	| keyCURRENT_TIMESTAMP;
 
 functions_returning_strings
-	: 'CONCAT' LPAREN string_primary COMMA string_primary RPAREN
-	| 'SUBSTRING' LPAREN string_primary COMMA simple_arithmetic_expr  simple_arithmetic_expr RPAREN
-	| 'TRIM' LPAREN string_primary RPAREN
-	| 'LOWER' LPAREN string_primary RPAREN
-	| 'UPPER' LPAREN string_primary RPAREN;
-
-single_valued_path_expression
-	: state_field_path_expr 
-	| single_valued_association_path_expr
+	: keyCONCAT LPAREN string_primary COMMA string_primary RPAREN
+	| keySUBSTRING LPAREN string_primary COMMA simple_arithmetic_expr COMMA simple_arithmetic_expr RPAREN
+	| keyTRIM LPAREN string_primary RPAREN
+	| keyLOWER LPAREN string_primary RPAREN
+	| keyUPPER LPAREN string_primary RPAREN
 	;
 
-state_field_path_expr
-	: (identification_var | single_valued_association_path_expr) DOT state_field
-	;
-
-single_valued_association_path_expr
-	: identification_var DOT (single_valued_association_field DOT)* single_valued_association_field;
-
-collection_valued_path_expression
-	: identification_var DOT (single_valued_association_field DOT)* collection_valued_association_field;
-
-state_field
-	: (embedded_class_state_field=ID DOT)* simple_state_field=ID;
-
-collection_valued_association_field
+attr_field
 	: ID;
-	
-single_valued_association_field
-	: ID;
-	
-identification_var
-	: ID;
-	
+		
 boolean_literal
 	: keyTRUE 
 	| keyFALSE
@@ -300,9 +251,24 @@ keyWHERE	: {AntlrActions.isKeyword(input, "WHERE")}? ID;
 keyFROM 	: {AntlrActions.isKeyword(input, "FROM")}? ID;
 keySET 		: {AntlrActions.isKeyword(input, "SET")}? ID;
 keyIN 		: {AntlrActions.isKeyword(input, "IN")}? ID;
+keyIS 		: {AntlrActions.isKeyword(input, "IS")}? ID;
+keyLIKE		: {AntlrActions.isKeyword(input, "LIKE")}? ID;
 keyTO 		: {AntlrActions.isKeyword(input, "TO")}? ID;
 keyOR 		: {AntlrActions.isKeyword(input, "OR")}? ID;
 keyAND 		: {AntlrActions.isKeyword(input, "AND")}? ID;
 keyNOT 		: {AntlrActions.isKeyword(input, "NOT")}? ID;
 keyTRUE 	: {AntlrActions.isKeyword(input, "TRUE")}? ID;
 keyFALSE 	: {AntlrActions.isKeyword(input, "FALSE")}? ID;
+keyBETWEEN 	: {AntlrActions.isKeyword(input, "BETWEEN")}? ID;
+keyNULL 	: {AntlrActions.isKeyword(input, "NULL")}? ID;
+keyLOWER 	: {AntlrActions.isKeyword(input, "LOWER")}? ID;
+keyUPPER 	: {AntlrActions.isKeyword(input, "UPPER")}? ID;
+keyTRIM 	: {AntlrActions.isKeyword(input, "TRIM")}? ID;
+keyCONCAT 	: {AntlrActions.isKeyword(input, "CONCAT")}? ID;
+keySUBSTRING 	: {AntlrActions.isKeyword(input, "SUBSTRING")}? ID;
+keyLENGTH 	: {AntlrActions.isKeyword(input, "LENGTH")}? ID;
+keyABS 		: {AntlrActions.isKeyword(input, "ABS")}? ID;
+keyMOD	 	: {AntlrActions.isKeyword(input, "MOD")}? ID;
+keyCURRENT_DATE	: {AntlrActions.isKeyword(input, "CURRENT_DATE")}? ID;
+keyCURRENT_TIME : {AntlrActions.isKeyword(input, "CURRENT_TIME")}? ID;
+keyCURRENT_TIMESTAMP 	: {AntlrActions.isKeyword(input, "CURRENT_TIMESTAMP")}? ID;
