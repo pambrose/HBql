@@ -1,15 +1,15 @@
 package com.imap4j.hbase;
 
 import com.google.common.collect.Maps;
-import com.imap4j.hbase.hbql.HColumn;
-import com.imap4j.hbase.hbql.HFamily;
-import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HPersistable;
-import com.imap4j.hbase.hbql.HQuery;
-import com.imap4j.hbase.hbql.HQueryListenerAdapter;
-import com.imap4j.hbase.hbql.HTable;
-import com.imap4j.hbase.hbql.HTransaction;
-import com.imap4j.hbase.hbql.Hql;
+import com.imap4j.hbase.hql.HColumn;
+import com.imap4j.hbase.hql.HFamily;
+import com.imap4j.hbase.hql.HPersistException;
+import com.imap4j.hbase.hql.HPersistable;
+import com.imap4j.hbase.hql.HQuery;
+import com.imap4j.hbase.hql.HQueryListenerAdapter;
+import com.imap4j.hbase.hql.HTable;
+import com.imap4j.hbase.hql.HTransaction;
+import com.imap4j.hbase.hql.Hql;
 
 import java.io.IOException;
 import java.util.Map;

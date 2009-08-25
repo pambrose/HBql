@@ -1,4 +1,4 @@
-package com.imap4j.hbase.hbql;
+package com.imap4j.hbase.hql;
 
 /**
  * Created by IntelliJ IDEA.
@@ -8,9 +8,9 @@ package com.imap4j.hbase.hbql;
  */
 @java.lang.annotation.Target({java.lang.annotation.ElementType.TYPE})
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-public @interface HTable {
+public @interface HFamily {
 
-    java.lang.String name() default "";
+    public abstract String name() default "";
 
-    HFamily[] families();
+    int maxVersions() default -1;
 }

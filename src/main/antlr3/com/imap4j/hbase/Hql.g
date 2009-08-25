@@ -20,7 +20,7 @@ catch (RecognitionException re) {
 
 @header {
 package com.imap4j.hbase;
-import com.imap4j.hbase.hbql.*;
+import com.imap4j.hbase.hql.*;
 import com.imap4j.hbase.antlr.*;
 import com.google.common.collect.Lists;
 import com.imap4j.imap.antlr.imap.AntlrActions;
