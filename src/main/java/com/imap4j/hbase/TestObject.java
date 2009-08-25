@@ -111,6 +111,7 @@ public class TestObject implements HPersistable {
 
         tx.commit();
 
+        /*
         HQuery<TestObject> q1 =
                 new HQuery<TestObject>("select mapval1, author, title from TestObject",
                                        new HQueryListenerAdapter<TestObject>() {
@@ -122,6 +123,7 @@ public class TestObject implements HPersistable {
                                        });
 
         q1.execute();
+        */
 
         HQuery<TestObject> q2 =
                 new HQuery<TestObject>("select * from TestObject WHERE keynum = '1234'",

@@ -1,6 +1,11 @@
 grammar Hql;
 
-options {superClass=HBaseParser;backtrack=true;}
+options {
+	superClass=HBaseParser;
+	backtrack=true;
+	output=AST;
+    	ASTLabelType=CommonTree;
+}
 
 tokens {
 	DOT = '.';
@@ -69,7 +74,11 @@ set_stmt returns [SetArgs retval]
 	: keySET var=ID (keyTO | EQ)? val=dotted_value 	{retval = new SetArgs($var.text, $val.text);};
 
 where_clause	
-	: keyWHERE cond_expr;
+	: keyWHERE c=cond_expr
+	{
+	  System.out.println($c.tree==null?"null":$c.tree.toStringTree());
+	}
+	;
 		
 cond_expr
 	: cond_term (keyOR cond_expr)?
