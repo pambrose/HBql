@@ -34,30 +34,30 @@ import com.google.common.collect.Lists;
 }
 
 select_stmt returns [QueryArgs retval]
-		: keySELECT (STAR | column_list) keyFROM table=ID 
+		: keySELECT (STAR | column_list) keyFROM table=dotted_value 
 		{retval = new QueryArgs($column_list.retval, $table.text);}
 		;
 
 exec_cmd returns [ExecArgs retval]
-		: create_stmt	{retval = $create_stmt.retval;}
-		| describe_stmt {retval = $describe_stmt.retval;}
-		| delete_stmt 	{retval = $delete_stmt.retval;}
-		| set_stmt	{retval = $set_stmt.retval;}
+		: stmt=create_stmt	{retval = $stmt.retval;}
+		| stmt=describe_stmt 	{retval = $stmt.retval;}
+		| stmt=delete_stmt 	{retval = $stmt.retval;}
+		| stmt=set_stmt		{retval = $stmt.retval;}
 		;
 
 create_stmt returns [CreateArgs retval]
-		: keyCREATE keyTABLE ID 
-		{retval = new CreateArgs($ID.text);}
+		: keyCREATE keyTABLE table=ID 
+		{retval = new CreateArgs($table.text);}
 		;
 
 describe_stmt returns [DescribeArgs retval]
-		: keyDESCRIBE keyTABLE ID 
-		{retval = new DescribeArgs($ID.text);}
+		: keyDESCRIBE keyTABLE table=ID 
+		{retval = new DescribeArgs($table.text);}
 		;
 
 delete_stmt returns [DeleteArgs retval]
-		: keyDELETE keyFROM ID (keyWHERE condition)? 
-		{retval = new DeleteArgs($ID.text);}
+		: keyDELETE keyFROM table=ID (keyWHERE condition)? 
+		{retval = new DeleteArgs($table.text);}
 		;
 
 set_stmt returns [SetArgs retval]
