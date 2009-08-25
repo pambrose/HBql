@@ -31,7 +31,7 @@ enum FieldType {
         return clazz;
     }
 
-    static FieldType getFieldType(final Field field) throws HBPersistException {
+    static FieldType getFieldType(final Field field) throws HPersistException {
 
         final Class fieldClass = field.getType();
 
@@ -46,6 +46,6 @@ enum FieldType {
                     return type;
         }
 
-        throw new HBPersistException("Not able to deal with type: " + clazz);
+        throw new HPersistException("Not able to deal with type: " + clazz);
     }
 }

@@ -1,4 +1,4 @@
-grammar HBql;
+grammar Hql;
 
 options {superClass=HBaseParser;}
 

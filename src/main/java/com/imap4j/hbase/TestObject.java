@@ -1,14 +1,15 @@
 package com.imap4j.hbase;
 
 import com.google.common.collect.Maps;
-import com.imap4j.hbase.hbql.HBColumn;
-import com.imap4j.hbase.hbql.HBFamily;
-import com.imap4j.hbase.hbql.HBPersistException;
-import com.imap4j.hbase.hbql.HBPersistable;
-import com.imap4j.hbase.hbql.HBQuery;
-import com.imap4j.hbase.hbql.HBQueryListenerAdapter;
-import com.imap4j.hbase.hbql.HBTable;
-import com.imap4j.hbase.hbql.HBql;
+import com.imap4j.hbase.hbql.HColumn;
+import com.imap4j.hbase.hbql.HFamily;
+import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbql.HPersistable;
+import com.imap4j.hbase.hbql.HQuery;
+import com.imap4j.hbase.hbql.HQueryListenerAdapter;
+import com.imap4j.hbase.hbql.HTable;
+import com.imap4j.hbase.hbql.HTransaction;
+import com.imap4j.hbase.hbql.Hql;
 
 import java.io.IOException;
 import java.util.Map;
@@ -19,46 +20,46 @@ import java.util.Map;
  * Date: Aug 19, 2009
  * Time: 4:39:06 PM
  */
-@HBTable(name = "testobjects",
-         families = {
-                 @HBFamily(name = "family1", maxVersions = 10),
-                 @HBFamily(name = "family2"),
-                 @HBFamily(name = "family3", maxVersions = 5)
-         })
-public class TestObject implements HBPersistable {
+@HTable(name = "testobjects",
+        families = {
+                @HFamily(name = "family1", maxVersions = 10),
+                @HFamily(name = "family2"),
+                @HFamily(name = "family3", maxVersions = 5)
+        })
+public class TestObject implements HPersistable {
 
     private enum TestEnum {
         RED, BLUE, BLACK, ORANGE
     }
 
-    @HBColumn(key = true)
+    @HColumn(key = true)
     private String keyval;
 
-    @HBColumn(family = "family1")
+    @HColumn(family = "family1")
     private TestEnum enumValue = TestEnum.BLUE;
 
-    @HBColumn(family = "family1")
+    @HColumn(family = "family1")
     private int intValue = -999;
 
-    @HBColumn(family = "family1")
+    @HColumn(family = "family1")
     private String title = "A title value";
 
-    @HBColumn(family = "family1", column = "author")
+    @HColumn(family = "family1", column = "author")
     private String author = "An author value";
 
-    @HBColumn(family = "family2", getter = "getHeaderBytes", setter = "setHeaderBytes")
+    @HColumn(family = "family2", getter = "getHeaderBytes", setter = "setHeaderBytes")
     private String header = "A header value";
 
-    @HBColumn(family = "family2", column = "bodyimage")
+    @HColumn(family = "family2", column = "bodyimage")
     private String bodyimage = "A bodyimage value";
 
-    @HBColumn(family = "family2")
+    @HColumn(family = "family2")
     private int[] array1 = {1, 2, 3};
 
-    @HBColumn(family = "family2")
+    @HColumn(family = "family2")
     private String[] array2 = {"val1", "val2", "val3"};
 
-    @HBColumn(family = "family3", mapKeysAsColumns = true)
+    @HColumn(family = "family3", mapKeysAsColumns = true)
     private Map<String, String> mapval1 = Maps.newHashMap();
 
     public TestObject() {
@@ -76,27 +77,23 @@ public class TestObject implements HBPersistable {
         this.header = new String(val);
     }
 
-    public static void main(String[] args) throws IOException, HBPersistException {
+    public static void main(String[] args) throws IOException, HPersistException {
 
-        HBql.Results results;
+        Hql.Results results;
 
-        /*
-        results = HBql.exec("set classpath com.imap4j.hbsql:com.imap4j.hbase");
+        results = Hql.exec("set classpath com.imap4j.hbsql:com.imap4j.hbase");
         System.out.println(results.getOutput());
 
-        results = HBql.exec("create table TestObject");
+        results = Hql.exec("create table TestObject");
         System.out.println(results.getOutput());
 
-        results = HBql.exec("describe table TestObject");
+        results = Hql.exec("describe table TestObject");
         System.out.println(results.getOutput());
 
-        results = HBql.exec("delete from TestObject");
+        results = Hql.exec("delete from TestObject");
         System.out.println(results.getOutput());
-        */
 
-        /*
-
-        final HBTransaction tx = new HBTransaction();
+        final HTransaction tx = new HTransaction();
         int cnt = 2;
         for (int i = 0; i < cnt; i++) {
             TestObject obj = new TestObject();
@@ -104,30 +101,28 @@ public class TestObject implements HBPersistable {
         }
 
         tx.commit();
-        */
 
-/*
-        HBQuery<TestObject> q1 =
-                new HBQuery<TestObject>("select mapval1, author, title from TestObject",
-                                        new HBQueryListenerAdapter<TestObject>() {
-                                            public void onEachRow(final TestObject val) throws HBPersistException {
-                                                System.out.println("Values: " + val.keyval
-                                                                   + " - " + val.author
-                                                                   + " - " + val.title);
-                                            }
-                                        });
+        HQuery<TestObject> q1 =
+                new HQuery<TestObject>("select mapval1, author, title from TestObject",
+                                       new HQueryListenerAdapter<TestObject>() {
+                                           public void onEachRow(final TestObject val) throws HPersistException {
+                                               System.out.println("Values: " + val.keyval
+                                                                  + " - " + val.author
+                                                                  + " - " + val.title);
+                                           }
+                                       });
 
         q1.execute();
-*/
-        HBQuery<TestObject> q2 =
-                new HBQuery<TestObject>("select * from TestObject",
-                                        new HBQueryListenerAdapter<TestObject>() {
-                                            public void onEachRow(final TestObject val) throws HBPersistException {
-                                                System.out.println("Values: " + val.keyval
-                                                                   + " - " + val.author
-                                                                   + " - " + val.title);
-                                            }
-                                        });
+
+        HQuery<TestObject> q2 =
+                new HQuery<TestObject>("select * from TestObject",
+                                       new HQueryListenerAdapter<TestObject>() {
+                                           public void onEachRow(final TestObject val) throws HPersistException {
+                                               System.out.println("Values: " + val.keyval
+                                                                  + " - " + val.author
+                                                                  + " - " + val.title);
+                                           }
+                                       });
 
         q2.execute();
 

@@ -19,17 +19,17 @@ import java.util.Map;
  * Date: Aug 20, 2009
  * Time: 9:26:38 PM
  */
-public class HBQuery<T extends HBPersistable> {
+public class HQuery<T extends HPersistable> {
 
     final String query;
-    final HBQueryListener<T> listener;
+    final HQueryListener<T> listener;
 
-    public HBQuery(final String query, final HBQueryListener<T> listener) {
+    public HQuery(final String query, final HQueryListener<T> listener) {
         this.query = query;
         this.listener = listener;
     }
 
-    public void execute() throws IOException, HBPersistException {
+    public void execute() throws IOException, HPersistException {
 
         final QueryArgs qa = (QueryArgs)HBqlRule.SELECT.parse(this.query);
 
@@ -99,7 +99,7 @@ public class HBQuery<T extends HBPersistable> {
         }
         catch (Exception e) {
             e.printStackTrace();
-            throw new HBPersistException("Error in execute()");
+            throw new HPersistException("Error in execute()");
         }
 
     }

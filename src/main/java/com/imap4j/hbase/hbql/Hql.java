@@ -26,7 +26,7 @@ import java.io.PrintStream;
  * Date: Aug 21, 2009
  * Time: 1:09:48 PM
  */
-public class HBql {
+public class Hql {
 
     public static class Results {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -37,7 +37,7 @@ public class HBql {
         }
     }
 
-    public static Results exec(final String str) throws HBPersistException, IOException {
+    public static Results exec(final String str) throws HPersistException, IOException {
 
         final ExecArgs exec = (ExecArgs)HBqlRule.EXEC.parse(str);
 
@@ -53,15 +53,15 @@ public class HBql {
         if (exec instanceof SetArgs)
             return setCommand((SetArgs)exec);
 
-        throw new HBPersistException("Unknown comand");
+        throw new HPersistException("Unknown comand");
     }
 
-    private static Results createCommand(final CreateArgs args) throws HBPersistException, IOException {
+    private static Results createCommand(final CreateArgs args) throws HPersistException, IOException {
         final Results retval = new Results();
         final ClassSchema schema = ClassSchema.getClassSchema(args.getClassname());
         final HTableDescriptor tableDesc = new HTableDescriptor(schema.getTableName());
 
-        for (final HBFamily family : schema.getFamilies()) {
+        for (final HFamily family : schema.getFamilies()) {
             final HColumnDescriptor columnDesc = new HColumnDescriptor(family.name());
             if (family.maxVersions() > 0)
                 columnDesc.setMaxVersions(family.maxVersions());
@@ -77,7 +77,7 @@ public class HBql {
         return retval;
     }
 
-    private static Results describeCommand(final DescribeArgs args) throws IOException, HBPersistException {
+    private static Results describeCommand(final DescribeArgs args) throws IOException, HPersistException {
 
         final Results retval = new Results();
         final ClassSchema schema = ClassSchema.getClassSchema(args.getClassname());
@@ -99,7 +99,7 @@ public class HBql {
         return retval;
     }
 
-    private static Results deleteCommand(final DeleteArgs args) throws HBPersistException, IOException {
+    private static Results deleteCommand(final DeleteArgs args) throws HPersistException, IOException {
         final Results retval = new Results();
         final ClassSchema schema = ClassSchema.getClassSchema(args.getClassname());
         final HTable table = new HTable(new HBaseConfiguration(), schema.getTableName());
@@ -117,13 +117,13 @@ public class HBql {
         return retval;
     }
 
-    private static Results setCommand(final SetArgs args) throws HBPersistException {
+    private static Results setCommand(final SetArgs args) throws HPersistException {
 
         final Results retval = new Results();
         final String var = args.getVariable();
 
         if (var == null)
-            throw new HBPersistException("Error in SET command");
+            throw new HPersistException("Error in SET command");
 
         if (var.equalsIgnoreCase("classpath")) {
             EnvVars.setClasspath(args.getValue());
@@ -132,7 +132,7 @@ public class HBql {
             return retval;
         }
 
-        throw new HBPersistException("Unknown variable: " + var);
+        throw new HPersistException("Unknown variable: " + var);
     }
 
 }

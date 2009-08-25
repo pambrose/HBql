@@ -13,7 +13,7 @@ import java.lang.reflect.Array;
  * Date: Aug 23, 2009
  * Time: 4:49:02 PM
  */
-public class HBUtil {
+public class HUtil {
 
     public static byte[] getObjectAsBytes(final Object obj) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -23,7 +23,7 @@ public class HBUtil {
         return baos.toByteArray();
     }
 
-    public static Object getObjectFromBytes(final byte[] b) throws IOException, HBPersistException {
+    public static Object getObjectFromBytes(final byte[] b) throws IOException, HPersistException {
         final ByteArrayInputStream bais = new ByteArrayInputStream(b);
         final ObjectInputStream ois = new ObjectInputStream(bais);
         try {
@@ -31,11 +31,11 @@ public class HBUtil {
         }
         catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new HBPersistException("Error in getObjectFromBytes()");
+            throw new HPersistException("Error in getObjectFromBytes()");
         }
     }
 
-    public static Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws IOException, HBPersistException {
+    public static Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws IOException, HPersistException {
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(b);
         final ObjectInputStream ois = new ObjectInputStream(bais);
@@ -73,16 +73,16 @@ public class HBUtil {
         }
         catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new HBPersistException("Error in getScalarfromBytes()");
+            throw new HPersistException("Error in getScalarfromBytes()");
         }
         finally {
             ois.close();
         }
 
-        throw new HBPersistException("Error in getScalarfromBytes()");
+        throw new HPersistException("Error in getScalarfromBytes()");
     }
 
-    public static byte[] getScalarAsBytes(final FieldType fieldType, final Object obj) throws IOException, HBPersistException {
+    public static byte[] getScalarAsBytes(final FieldType fieldType, final Object obj) throws IOException, HPersistException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -130,7 +130,7 @@ public class HBUtil {
         return baos.toByteArray();
     }
 
-    public static Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws IOException, HBPersistException {
+    public static Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws IOException, HPersistException {
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(b);
         final ObjectInputStream ois = new ObjectInputStream(bais);
@@ -198,16 +198,16 @@ public class HBUtil {
         }
         catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new HBPersistException("Error in getScalarfromBytes()");
+            throw new HPersistException("Error in getScalarfromBytes()");
         }
         finally {
             ois.close();
         }
 
-        throw new HBPersistException("Error in getScalarfromBytes()");
+        throw new HPersistException("Error in getScalarfromBytes()");
     }
 
-    public static byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws IOException, HBPersistException {
+    public static byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws IOException, HPersistException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);

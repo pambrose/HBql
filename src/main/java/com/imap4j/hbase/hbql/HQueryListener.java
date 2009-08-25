@@ -6,11 +6,11 @@ package com.imap4j.hbase.hbql;
  * Date: Aug 20, 2009
  * Time: 10:38:45 PM
  */
-public interface HBQueryListener<T extends HBPersistable> {
+public interface HQueryListener<T extends HPersistable> {
 
     void onQueryInit();
 
-    void onEachRow(T val) throws HBPersistException;
+    void onEachRow(T val) throws HPersistException;
 
     void onQueryCompletion();
 

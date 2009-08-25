@@ -10,7 +10,7 @@ import com.imap4j.imap.antlr.util.GrammarDef;
  */
 public enum HBqlGrammar {
 
-    HBql("HBql");
+    HBql("Hql");
 
     private final static String HOME = "com.imap4j.hbase.";
     private final GrammarDef grammarDef;

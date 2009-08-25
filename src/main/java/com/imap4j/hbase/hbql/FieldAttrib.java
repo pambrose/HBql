@@ -15,12 +15,12 @@ public class FieldAttrib {
 
     private final Field field;
     private final FieldType fieldType;
-    private final HBColumn column;
+    private final HColumn column;
 
     private Method getterMethod = null;
     private Method setterMethod = null;
 
-    public FieldAttrib(final Class enclosingClass, final Field field, final HBColumn column) throws HBPersistException {
+    public FieldAttrib(final Class enclosingClass, final Field field, final HColumn column) throws HPersistException {
 
         this.field = field;
         this.fieldType = FieldType.getFieldType(this.field);
@@ -34,13 +34,13 @@ public class FieldAttrib {
                 final Class<?> returnType = this.getGetterMethod().getReturnType();
 
                 if (!(returnType.isArray() && returnType.getComponentType() == Byte.TYPE))
-                    throw new HBPersistException(enclosingClass.getName() + "." + this.column.getter() + "()"
-                                                 + " does not have a return type of byte[]");
+                    throw new HPersistException(enclosingClass.getName() + "." + this.column.getter() + "()"
+                                                + " does not have a return type of byte[]");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new HBPersistException("Missing method byte[] " + enclosingClass.getName() + "."
-                                         + this.column.getter() + "()");
+            throw new HPersistException("Missing method byte[] " + enclosingClass.getName() + "."
+                                        + this.column.getter() + "()");
         }
 
         try {
@@ -51,18 +51,18 @@ public class FieldAttrib {
                 // Check if it takes single byte[] arg
                 final Class<?>[] args = this.getSetterMethod().getParameterTypes();
                 if (args.length != 1 || !(args[0].isArray() && args[0].getComponentType() == Byte.TYPE))
-                    throw new HBPersistException(enclosingClass.getName() + "." + this.column.setter() + "()"
-                                                 + " does not have single byte[] arg");
+                    throw new HPersistException(enclosingClass.getName() + "." + this.column.setter() + "()"
+                                                + " does not have single byte[] arg");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new HBPersistException("Missing method " + enclosingClass.getName() + "." + this.column.setter()
-                                         + "(byte[] arg)");
+            throw new HPersistException("Missing method " + enclosingClass.getName() + "." + this.column.setter()
+                                        + "(byte[] arg)");
         }
         catch (ClassNotFoundException e) {
             // This will not be hit
-            throw new HBPersistException("Missing method " + enclosingClass.getName() + "." + this.column.setter()
-                                         + "(byte[] arg)");
+            throw new HPersistException("Missing method " + enclosingClass.getName() + "." + this.column.setter()
+                                        + "(byte[] arg)");
         }
     }
 
@@ -123,41 +123,41 @@ public class FieldAttrib {
         return this.column.mapKeysAsColumns();
     }
 
-    public byte[] invokeGetterMethod(final Object parent) throws HBPersistException {
+    public byte[] invokeGetterMethod(final Object parent) throws HPersistException {
         try {
             return (byte[])this.getGetterMethod().invoke(parent);
         }
         catch (IllegalAccessException e) {
-            throw new HBPersistException("Error getting value of " + this.getFieldName());
+            throw new HPersistException("Error getting value of " + this.getFieldName());
         }
         catch (InvocationTargetException e) {
-            throw new HBPersistException("Error getting value of " + this.getFieldName());
+            throw new HPersistException("Error getting value of " + this.getFieldName());
         }
     }
 
-    public Object invokeSetterMethod(final Object parent, final byte[] b) throws HBPersistException {
+    public Object invokeSetterMethod(final Object parent, final byte[] b) throws HPersistException {
         try {
             return this.getSetterMethod().invoke(parent, b);
         }
         catch (IllegalAccessException e) {
-            throw new HBPersistException("Error setting value of " + this.getFieldName());
+            throw new HPersistException("Error setting value of " + this.getFieldName());
         }
         catch (InvocationTargetException e) {
-            throw new HBPersistException("Error setting value of " + this.getFieldName());
+            throw new HPersistException("Error setting value of " + this.getFieldName());
         }
     }
 
-    public Object getValue(final HBPersistable declaringObj) throws HBPersistException {
+    public Object getValue(final HPersistable declaringObj) throws HPersistException {
         try {
             return this.getField().get(declaringObj);
         }
         catch (IllegalAccessException e) {
-            throw new HBPersistException("Error getting value of " + this.getFieldName());
+            throw new HPersistException("Error getting value of " + this.getFieldName());
         }
 
     }
 
-    public byte[] getValueAsBytes(final HBPersistable declaringObj) throws HBPersistException, IOException {
+    public byte[] getValueAsBytes(final HPersistable declaringObj) throws HPersistException, IOException {
 
         if (this.hasGetter()) {
             return this.invokeGetterMethod(declaringObj);
@@ -166,22 +166,22 @@ public class FieldAttrib {
             final Object obj = this.getValue(declaringObj);
 
             if (this.isArray())
-                return HBUtil.getArrayasBytes(this.getFieldType(), obj);
+                return HUtil.getArrayasBytes(this.getFieldType(), obj);
             else
-                return HBUtil.getScalarAsBytes(this.getFieldType(), obj);
+                return HUtil.getScalarAsBytes(this.getFieldType(), obj);
         }
     }
 
-    public Object getValueFromBytes(final HBPersistable declaringObj, final byte[] b) throws IOException, HBPersistException {
+    public Object getValueFromBytes(final HPersistable declaringObj, final byte[] b) throws IOException, HPersistException {
 
         if (this.hasSetter()) {
             return this.invokeSetterMethod(declaringObj, b);
         }
         else {
             if (this.isArray())
-                return HBUtil.getArrayFromBytes(this.getFieldType(), this.getField().getType().getComponentType(), b);
+                return HUtil.getArrayFromBytes(this.getFieldType(), this.getField().getType().getComponentType(), b);
             else
-                return HBUtil.getScalarFromBytes(this.getFieldType(), b);
+                return HUtil.getScalarFromBytes(this.getFieldType(), b);
         }
     }
 

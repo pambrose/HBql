@@ -22,8 +22,8 @@ public class ClassSchema {
 
     private final Class<?> clazz;
 
-    private final HBTable table;
-    private final HBFamily[] families;
+    private final HTable table;
+    private final HFamily[] families;
 
     private FieldAttrib keyFieldAttrib = null;
 
@@ -31,7 +31,7 @@ public class ClassSchema {
     final Map<String, FieldAttrib> fieldAttribMapByField = Maps.newHashMap();
     final Map<String, FieldAttrib> fieldAttribMapByColumn = Maps.newHashMap();
 
-    public ClassSchema(final Class clazz) throws HBPersistException {
+    public ClassSchema(final Class clazz) throws HPersistException {
         this.clazz = clazz;
 
         // Make sure there is a an empty constructor declared
@@ -39,20 +39,20 @@ public class ClassSchema {
             this.getClazz().getConstructor();
         }
         catch (NoSuchMethodException e) {
-            throw new HBPersistException("Class " + this + " is missing a null constructor");
+            throw new HPersistException("Class " + this + " is missing a null constructor");
         }
 
-        this.table = this.getClazz().getAnnotation(HBTable.class);
+        this.table = this.getClazz().getAnnotation(HTable.class);
 
         if (this.table == null)
-            throw new HBPersistException("Class " + this + " is missing @HBTable annotation");
+            throw new HPersistException("Class " + this + " is missing @HTable annotation");
 
         this.families = this.table.families();
 
         if (this.families == null)
-            throw new HBPersistException("Class " + this + " is missing @HBFamily values in @HBTable annotation");
+            throw new HPersistException("Class " + this + " is missing @HFamily values in @HTable annotation");
 
-        for (final HBFamily family : families) {
+        for (final HFamily family : families) {
             final List<FieldAttrib> attribs = Lists.newArrayList();
             this.getFieldAttribMapByFamily().put(family.name(), attribs);
         }
@@ -85,7 +85,7 @@ public class ClassSchema {
         return keyFieldAttrib;
     }
 
-    public HBFamily[] getFamilies() {
+    public HFamily[] getFamilies() {
         return this.families;
     }
 
@@ -93,12 +93,12 @@ public class ClassSchema {
         return getFieldAttribMapByField().get(attribName);
     }
 
-    public static ClassSchema getClassSchema(final HBPersistable obj) throws HBPersistException {
+    public static ClassSchema getClassSchema(final HPersistable obj) throws HPersistException {
         final Class<?> clazz = obj.getClass();
         return getClassSchema(clazz);
     }
 
-    public static ClassSchema getClassSchema(final String objname) throws HBPersistException {
+    public static ClassSchema getClassSchema(final String objname) throws HPersistException {
 
         // First see if already cached
         Class<?> clazz = classCacheMap.get(objname);
@@ -119,7 +119,7 @@ public class ClassSchema {
             }
         }
 
-        throw new HBPersistException("Cannot find " + objname + " in classpath");
+        throw new HPersistException("Cannot find " + objname + " in classpath");
     }
 
     public List<String> getFieldList() {
@@ -143,7 +143,7 @@ public class ClassSchema {
         }
     }
 
-    public static ClassSchema getClassSchema(final Class<?> clazz) throws HBPersistException {
+    public static ClassSchema getClassSchema(final Class<?> clazz) throws HPersistException {
 
         ClassSchema classSchema = classSchemaMap.get(clazz);
         if (classSchema != null)
@@ -165,11 +165,11 @@ public class ClassSchema {
         return this.getClazz().getName();
     }
 
-    private void processFieldAnnotations() throws HBPersistException {
+    private void processFieldAnnotations() throws HPersistException {
 
         for (final Field field : this.getClazz().getDeclaredFields()) {
 
-            final HBColumn column = field.getAnnotation(HBColumn.class);
+            final HColumn column = field.getAnnotation(HColumn.class);
 
             // Check if persisted or not
             if (column != null) {
@@ -177,8 +177,8 @@ public class ClassSchema {
                 final boolean isFinal = checkFieldModifiers(field);
 
                 if (isFinal)
-                    throw new HBPersistException(this + "." + field.getName()
-                                                 + " cannot have a @HBColumn annotation and be marked final");
+                    throw new HPersistException(this + "." + field.getName() + " cannot have a @HColumn "
+                                                + "annotation and be marked final");
 
                 final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, column);
 
@@ -187,23 +187,23 @@ public class ClassSchema {
 
                 if (attrib.isKey()) {
                     if (keyFieldAttrib != null)
-                        throw new HBPersistException("Class " + this + " has multiple instance variables "
-                                                     + "annotated with @HBColumn(key=true)");
+                        throw new HPersistException("Class " + this + " has multiple instance variables "
+                                                    + "annotated with @HColumn(key=true)");
 
                     keyFieldAttrib = attrib;
                 }
                 else {
                     final String family = attrib.getFamilyName();
                     if (!this.getFieldAttribMapByFamily().containsKey(family))
-                        throw new HBPersistException("Class " + this + " is missing @HBFamily value for " + family);
+                        throw new HPersistException("Class " + this + " is missing @HFamily value for " + family);
 
                     this.getFieldAttribMapByFamily().get(family).add(attrib);
                 }
             }
         }
         if (keyFieldAttrib == null)
-            throw new HBPersistException("Class " + this
-                                         + " is missing an instance variable annotated with @HBColumn(key=true)");
+            throw new HPersistException("Class " + this + " is missing an instance variable "
+                                        + "annotated with @HColumn(key=true)");
 
     }
 

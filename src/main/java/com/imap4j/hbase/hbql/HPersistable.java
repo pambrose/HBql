@@ -8,6 +8,6 @@ import java.io.Serializable;
  * Date: Aug 19, 2009
  * Time: 4:23:26 PM
  */
-public interface HBPersistable extends Serializable {
+public interface HPersistable extends Serializable {
 
 }

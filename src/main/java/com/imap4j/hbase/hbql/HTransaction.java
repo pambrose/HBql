@@ -16,7 +16,7 @@ import java.util.Map;
  * Date: Aug 19, 2009
  * Time: 4:22:40 PM
  */
-public class HBTransaction {
+public class HTransaction {
 
     private final Map<String, List<Put>> updateList = Maps.newHashMap();
 
@@ -29,7 +29,7 @@ public class HBTransaction {
         return retval;
     }
 
-    public void insert(final HBPersistable declaringObj) throws HBPersistException, IOException {
+    public void insert(final HPersistable declaringObj) throws HPersistException, IOException {
 
         final ClassSchema classSchema = ClassSchema.getClassSchema(declaringObj);
         final byte[] keyval = classSchema.getKeyFieldAttrib().getValueAsBytes(declaringObj);
@@ -43,7 +43,7 @@ public class HBTransaction {
                     final Map mapval = (Map)attrib.getValue(declaringObj);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
-                        final byte[] byteval = HBUtil.getObjectAsBytes(mapval.get(keyobj));
+                        final byte[] byteval = HUtil.getObjectAsBytes(mapval.get(keyobj));
 
                         // Use family:column[key] scheme to avoid column namespace collision
                         put.add(attrib.getFamilyName().getBytes(),
