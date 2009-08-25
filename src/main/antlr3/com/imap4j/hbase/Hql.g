@@ -70,26 +70,30 @@ compare	: column[null] EQUALS qstring[null];
 in_stmt	: column[null] keyIN LPAREN qstring_list RPAREN;
 
 cond_expr
-	: cond_term
-	| cond_expr keyOR cond_term;
+	: cond_term (keyOR cond_expr)?
+	//| cond_expr keyOR cond_term
+	;
 
 cond_term
-	: cond_factor
-	| cond_term keyAND cond_factor;
+	: cond_factor (keyAND cond_term)?
+	//| cond_term keyAND cond_factor
+	;
 	
 cond_factor
-	: (keyNOT)? conditional_primary;
+	: (keyNOT)? cond_primary;
 
-conditional_primary
-	: simple_cond_expr | LPAREN cond_expr RPAREN;
+cond_primary
+	: simple_cond_expr 
+	| LPAREN cond_expr RPAREN
+	;
 
 simple_cond_expr
-	: comparison_expr
+	: comp_expr
 	| between_expr
 	| like_expr
 	| in_expression
 	| null_comparison_expr
-	| empty_collection_comparison_expr
+	| empty_collection_comp_expr
 	| collection_member_expr
 	;
 
@@ -112,13 +116,13 @@ like_expr
 null_comparison_expr
 	: single_valued_path_expression 'IS' (keyNOT)? 'NULL';
 
-empty_collection_comparison_expr
+empty_collection_comp_expr
 	: collection_valued_path_expression 'IS' (keyNOT)? 'EMPTY';
 
 collection_member_expr
 	: entity_expr keyNOT? 'MEMBER' ('OF')? collection_valued_path_expression;
 
-comparison_expr
+comp_expr
 	: string_expr comparison_operator (string_expr)
 	| boolean_expr ('=' | '<>') (boolean_expr)
 	| datetime_expr comparison_operator (datetime_expr)
@@ -138,12 +142,14 @@ arithmetic_expr
 	;
 
 simple_arithmetic_expr
-	: arithmetic_term
-	| simple_arithmetic_expr ( '+' | '-' ) arithmetic_term;
+	: arithmetic_term (( '+' | '-' ) simple_arithmetic_expr)?
+	//| simple_arithmetic_expr ( '+' | '-' ) arithmetic_term
+	;
 
 arithmetic_term
-	: arithmetic_factor
-	| arithmetic_term ( '*' | '/' ) arithmetic_factor;
+	: arithmetic_factor (( '*' | '/' ) arithmetic_term)?
+	//| arithmetic_term ( '*' | '/' ) arithmetic_factor
+	;
 
 arithmetic_factor
 	: ( '+' | '-' )? arithmetic_primary;
@@ -184,11 +190,11 @@ boolean_primary
 	;
 
 entity_expr
-	: single_valued_association_path_expression
-	| simple_entity_expression;
+	: single_valued_association_path_expr
+	| simple_entity_expr;
 
-simple_entity_expression
-	: identification_variable
+simple_entity_expr
+	: identification_var
 	;
 
 functions_returning_numerics
@@ -213,23 +219,29 @@ functions_returning_strings
 
 single_valued_path_expression
 	: state_field_path_expr 
-	| single_valued_association_path_expression
+	| single_valued_association_path_expr
 	;
 
 state_field_path_expr
-	: (identification_variable | single_valued_association_path_expression) DOT state_field
+	: (identification_var | single_valued_association_path_expr) DOT state_field
 	;
 
-single_valued_association_path_expression
-	: identification_variable DOT (single_valued_association_field=ID DOT)* single_valued_association_field;
+single_valued_association_path_expr
+	: identification_var DOT (single_valued_association_field DOT)* single_valued_association_field;
 
 collection_valued_path_expression
-	: identification_variable DOT (single_valued_association_field=ID DOT)* collection_valued_association_field=ID;
+	: identification_var DOT (single_valued_association_field DOT)* collection_valued_association_field;
 
 state_field
 	: (embedded_class_state_field=ID DOT)* simple_state_field=ID;
 
-identification_variable
+collection_valued_association_field
+	: ID;
+	
+single_valued_association_field
+	: ID;
+	
+identification_var
 	: ID;
 	
 boolean_literal
