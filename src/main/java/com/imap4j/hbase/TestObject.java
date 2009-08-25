@@ -62,11 +62,17 @@ public class TestObject implements HPersistable {
     @HColumn(family = "family3", mapKeysAsColumns = true)
     private Map<String, String> mapval1 = Maps.newHashMap();
 
+    @HColumn(family = "family3", mapKeysAsColumns = false)
+    private Map<String, String> mapval2 = Maps.newHashMap();
+
     public TestObject() {
         this.keyval = "Val-" + System.nanoTime();
 
         mapval1.put("key1", "val1");
         mapval1.put("key2", "val2");
+
+        mapval2.put("key3", "val3");
+        mapval2.put("key4", "val4");
     }
 
     public byte[] getHeaderBytes() {
@@ -84,14 +90,17 @@ public class TestObject implements HPersistable {
         results = Hql.exec("set classpath com.imap4j.hql:com.imap4j.hbase");
         System.out.println(results.getOutput());
 
+        // results = Hql.exec("delete from TestObject");
+        // System.out.println(results.getOutput());
+
         //results = Hql.exec("create table TestObject");
+        System.out.println(results.getOutput());
+
+        results = Hql.exec("show tables");
         System.out.println(results.getOutput());
 
         results = Hql.exec("describe table TestObject");
         System.out.println(results.getOutput());
-
-        // results = Hql.exec("delete from TestObject");
-        // System.out.println(results.getOutput());
 
         final HTransaction tx = new HTransaction();
         int cnt = 2;
@@ -115,7 +124,7 @@ public class TestObject implements HPersistable {
         q1.execute();
 
         HQuery<TestObject> q2 =
-                new HQuery<TestObject>("select * from TestObject",
+                new HQuery<TestObject>("select * from TestObject WHERE keynum = '1234'",
                                        new HQueryListenerAdapter<TestObject>() {
                                            public void onEachRow(final TestObject val) throws HPersistException {
                                                System.out.println("Values: " + val.keyval

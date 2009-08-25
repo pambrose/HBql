@@ -5,6 +5,7 @@ import com.imap4j.hbase.antlr.DeleteArgs;
 import com.imap4j.hbase.antlr.DescribeArgs;
 import com.imap4j.hbase.antlr.ExecArgs;
 import com.imap4j.hbase.antlr.SetArgs;
+import com.imap4j.hbase.antlr.ShowArgs;
 import com.imap4j.hbase.antlr.config.HqlRule;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -46,6 +47,9 @@ public class Hql {
 
         if (exec instanceof DescribeArgs)
             return describeCommand((DescribeArgs)exec);
+
+        if (exec instanceof ShowArgs)
+            return showCommand((ShowArgs)exec);
 
         if (exec instanceof DeleteArgs)
             return deleteCommand((DeleteArgs)exec);
@@ -94,6 +98,19 @@ public class Hql {
                                + " Compression: " + columnDesc.getCompression().getName()
                                + " Compression Type: " + columnDesc.getCompressionType().getName());
         }
+
+        retval.out.flush();
+        return retval;
+    }
+
+    private static Results showCommand(final ShowArgs args) throws IOException, HPersistException {
+
+        final Results retval = new Results();
+
+        final HBaseAdmin admin = new HBaseAdmin(new HBaseConfiguration());
+        retval.out.println("Table names: ");
+        for (final HTableDescriptor tableDesc : admin.listTables())
+            retval.out.println("\t" + tableDesc.getNameAsString());
 
         retval.out.flush();
         return retval;

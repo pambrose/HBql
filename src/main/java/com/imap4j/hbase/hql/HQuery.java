@@ -22,16 +22,24 @@ import java.util.Map;
 public class HQuery<T extends HPersistable> {
 
     final String query;
-    final HQueryListener<T> listener;
+    final HQueryListener<T> queryListener;
 
-    public HQuery(final String query, final HQueryListener<T> listener) {
+    public HQuery(final String query, final HQueryListener<T> queryListener) {
         this.query = query;
-        this.listener = listener;
+        this.queryListener = queryListener;
+    }
+
+    public String getQuery() {
+        return this.query;
+    }
+
+    public HQueryListener<T> getQueryListener() {
+        return this.queryListener;
     }
 
     public void execute() throws IOException, HPersistException {
 
-        final QueryArgs qa = (QueryArgs)HqlRule.SELECT.parse(this.query);
+        final QueryArgs qa = (QueryArgs)HqlRule.SELECT.parse(this.getQuery());
 
         final ClassSchema classSchema = ClassSchema.getClassSchema(qa.getTableName());
 
@@ -93,7 +101,7 @@ public class HQuery<T extends HPersistable> {
                     }
                 }
 
-                this.listener.onEachRow(newobj);
+                this.getQueryListener().onEachRow(newobj);
             }
 
         }
