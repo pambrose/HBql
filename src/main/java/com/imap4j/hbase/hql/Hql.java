@@ -5,7 +5,7 @@ import com.imap4j.hbase.antlr.DeleteArgs;
 import com.imap4j.hbase.antlr.DescribeArgs;
 import com.imap4j.hbase.antlr.ExecArgs;
 import com.imap4j.hbase.antlr.SetArgs;
-import com.imap4j.hbase.antlr.config.HBqlRule;
+import com.imap4j.hbase.antlr.config.HqlRule;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -39,7 +39,7 @@ public class Hql {
 
     public static Results exec(final String str) throws HPersistException, IOException {
 
-        final ExecArgs exec = (ExecArgs)HBqlRule.EXEC.parse(str);
+        final ExecArgs exec = (ExecArgs)HqlRule.EXEC.parse(str);
 
         if (exec instanceof CreateArgs)
             return createCommand((CreateArgs)exec);

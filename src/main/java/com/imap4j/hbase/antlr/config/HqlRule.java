@@ -8,15 +8,15 @@ import com.imap4j.imap.antlr.util.GrammarRule;
  * Date: Aug 20, 2009
  * Time: 9:56:22 PM
  */
-public enum HBqlRule {
+public enum HqlRule {
 
-    SELECT(HBqlGrammar.HBql, "select_stmt"),
-    EXEC(HBqlGrammar.HBql, "exec_cmd"),
+    SELECT(HqlGrammar.Hql, "select_stmt"),
+    EXEC(HqlGrammar.Hql, "exec_cmd"),
     NONE(null, null);
 
     private final GrammarRule grammarRule;
 
-    HBqlRule(final HBqlGrammar grammar, final String rule) {
+    HqlRule(final HqlGrammar grammar, final String rule) {
         this.grammarRule = (grammar != null) ? GrammarRule.newInstance(grammar.getGrammarDef(), rule) : null;
     }
 

@@ -2,7 +2,7 @@ package com.imap4j.hbase.hql;
 
 import com.google.common.collect.Maps;
 import com.imap4j.hbase.antlr.QueryArgs;
-import com.imap4j.hbase.antlr.config.HBqlRule;
+import com.imap4j.hbase.antlr.config.HqlRule;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.HTable;
@@ -31,7 +31,7 @@ public class HQuery<T extends HPersistable> {
 
     public void execute() throws IOException, HPersistException {
 
-        final QueryArgs qa = (QueryArgs)HBqlRule.SELECT.parse(this.query);
+        final QueryArgs qa = (QueryArgs)HqlRule.SELECT.parse(this.query);
 
         final ClassSchema classSchema = ClassSchema.getClassSchema(qa.getTableName());
 
