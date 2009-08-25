@@ -81,17 +81,17 @@ public class TestObject implements HPersistable {
 
         Hql.Results results;
 
-        results = Hql.exec("set classpath com.imap4j.hbsql:com.imap4j.hbase");
+        results = Hql.exec("set classpath com.imap4j.hql:com.imap4j.hbase");
         System.out.println(results.getOutput());
 
-        results = Hql.exec("create table TestObject");
+        //results = Hql.exec("create table TestObject");
         System.out.println(results.getOutput());
 
         results = Hql.exec("describe table TestObject");
         System.out.println(results.getOutput());
 
-        results = Hql.exec("delete from TestObject");
-        System.out.println(results.getOutput());
+        // results = Hql.exec("delete from TestObject");
+        // System.out.println(results.getOutput());
 
         final HTransaction tx = new HTransaction();
         int cnt = 2;

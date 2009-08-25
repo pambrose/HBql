@@ -3,6 +3,8 @@ grammar Hql;
 options {superClass=HBaseParser;}
 
 tokens {
+	DOT = '.';
+	COLON = ':';
 	STAR = '*';
 	COMMA = ',';
 	EQUALS = '=';
@@ -59,7 +61,7 @@ delete_stmt returns [DeleteArgs retval]
 		;
 
 set_stmt returns [SetArgs retval]
-		: keySET var=ID (keyTO | EQUALS)? val=ID 
+		: keySET var=ID (keyTO | EQUALS)? val=dotted_value 
 		{retval = new SetArgs($var.text, $val.text);}
 		;
 		
@@ -78,13 +80,16 @@ qstring_list returns [List<String> retval]
 		: qstring[retval] (COMMA qstring[retval])*;
 
 column [List<String> list]	
-		: charstr=ID {if (list != null) list.add($charstr.text);};
+		: charstr=dotted_value {if (list != null) list.add($charstr.text);};
+
+dotted_value	: ID ((DOT | COLON) ID)*;
 
 qstring	[List<String> list]
 		: (DQUOTE charstr=ID DQUOTE) {if (list != null) list.add($charstr.text);}
 		| (SQUOTE charstr=ID SQUOTE) {if (list != null) list.add($charstr.text);};
 
-ID	 	: CHAR (CHAR | DIGIT | '.' | ':')*;
+INT		: DIGIT+;
+ID	 	: CHAR (CHAR | DIGIT)*;
  
 fragment
 DIGIT		: '0'..'9'; 
