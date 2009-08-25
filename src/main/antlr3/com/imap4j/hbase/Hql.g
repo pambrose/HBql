@@ -1,11 +1,12 @@
 grammar Hql;
 
-options {superClass=HBaseParser;}
+options {superClass=HBaseParser;backtrack=true;}
 
 tokens {
 	DOT = '.';
 	COLON = ':';
 	STAR = '*';
+	DIV = '/';
 	COMMA = ',';
 	PLUS = '+';
 	MINUS = '-';
@@ -89,40 +90,36 @@ cond_primary
 	;
 
 simple_cond_expr
-	: comp_expr
-	| between_expr
+	: between_expr
 	| like_expr
 	| in_expr
 	| null_comp_expr
+	| comp_expr 
 	;
 
 between_expr
-	: attr_field (keyNOT)? keyBETWEEN 
-	  ((arithmetic_expr keyAND arithmetic_expr)
-	  | (string_expr keyAND string_expr)
-	  | (datetime_expr keyAND datetime_expr)
+	: attr_field keyNOT? keyBETWEEN 
+	  ( arithmetic_expr keyAND arithmetic_expr
+	  | string_expr keyAND string_expr
+	  | datetime_expr keyAND datetime_expr
 	  )
 	;
 
-in_expr	: attr_field (keyNOT)? keyIN LPAREN (in_item (COMMA in_item)*) RPAREN;
+like_expr
+	: attr_field keyNOT? keyLIKE pattern_value=string_literal; // ('ESCAPE' escape_character=string_literal)?;
+
+in_expr	: attr_field keyNOT? keyIN LPAREN in_item (COMMA in_item)* RPAREN;
 
 in_item : string_literal | numeric_literal;
-
-like_expr
-	: string_expr keyNOT? keyLIKE pattern_value=string_literal; // ('ESCAPE' escape_character=string_literal)?;
 
 null_comp_expr
 	: attr_field keyIS (keyNOT)? keyNULL;
 
 comp_expr
-	: (attr_field comp_op string_expr)
-	| (string_expr comp_op attr_field)
-	| (attr_field comp_op datetime_expr)
-	| (datetime_expr comp_op attr_field)
-	| (attr_field comp_op arithmetic_expr)
-	| (arithmetic_expr comp_op attr_field)
+	: attr_field comp_op (string_expr | datetime_expr | arithmetic_expr)
+	//| (string_expr | datetime_expr | arithmetic_expr)  comp_op attr_field
 	;
-
+	
 comp_op	: EQ | GT | GTEQ | LT | LTEQ | LTGT;
 
 arithmetic_expr
@@ -135,8 +132,8 @@ simple_arithmetic_expr
 	;
 
 arithmetic_term
-	: arithmetic_factor (( '*' | '/' ) arithmetic_term)?
-	//| arithmetic_term ( '*' | '/' ) arithmetic_factor
+	: arithmetic_factor ((STAR | DIV) arithmetic_term)?
+	//| arithmetic_term (STAR | DIV) arithmetic_factor
 	;
 
 arithmetic_factor
