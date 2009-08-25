@@ -53,6 +53,7 @@ public class ClassSchema {
     }
 
     public Map<String, FieldAttrib> getFieldAttribMapByField() {
+
         return fieldAttribMapByField;
     }
 
@@ -66,6 +67,10 @@ public class ClassSchema {
 
     public FieldAttrib getKeyFieldAttrib() {
         return keyFieldAttrib;
+    }
+
+    public FieldAttrib getFieldAttribByField(final String attribName) {
+        return getFieldAttribMapByField().get(attribName);
     }
 
     public static ClassSchema getClassSchema(final HBPersistable obj) throws HBPersistException {
@@ -100,8 +105,11 @@ public class ClassSchema {
     public List<String> getFieldList() {
         final List<String> retval = Lists.newArrayList();
         for (final FieldAttrib attrib : this.getFieldAttribMapByField().values()) {
-            if (!attrib.isKey())
-                retval.add(attrib.getFieldName());
+
+            if (attrib.isKey())
+                continue;
+
+            retval.add(attrib.getFieldName());
         }
         return retval;
     }
@@ -154,8 +162,6 @@ public class ClassSchema {
             // Check if persisted or not
             if (column != null) {
 
-                // TODO Deal with enums
-
                 final boolean isFinal = checkFieldModifiers(field);
 
                 if (isFinal)
@@ -163,11 +169,6 @@ public class ClassSchema {
                                                  + " cannot have a Column annotation and be marked final");
 
                 final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, column);
-
-                // TODO Make sure Map is not null
-                if (attrib.isMapKeysAsColumns()) {
-
-                }
 
                 this.getFieldAttribMapByField().put(field.getName(), attrib);
                 this.getFieldAttribMapByColumn().put(attrib.getQualifiedName(), attrib);

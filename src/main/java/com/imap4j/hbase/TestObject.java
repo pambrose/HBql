@@ -7,7 +7,6 @@ import com.imap4j.hbase.hbql.HBPersistable;
 import com.imap4j.hbase.hbql.HBQuery;
 import com.imap4j.hbase.hbql.HBQueryListenerAdapter;
 import com.imap4j.hbase.hbql.HBTable;
-import com.imap4j.hbase.hbql.HBTransaction;
 import com.imap4j.hbase.hbql.HBql;
 
 import java.io.IOException;
@@ -19,14 +18,22 @@ import java.util.Map;
  * Date: Aug 19, 2009
  * Time: 4:39:06 PM
  */
-@HBTable(name = "blogposts")
+@HBTable(name = "testobjects")
 public class TestObject implements HBPersistable {
 
-    final String family1 = "post";
-    final String family2 = "image";
+    final String family1 = "family1";
+    final String family2 = "family2";
+    final String family3 = "family3";
+
+    private enum TestEnum {
+        RED, BLUE, BLACK, ORANGE
+    }
 
     @HBColumn(key = true)
     private String keyval;
+
+    @HBColumn(family = family1)
+    private TestEnum enumValue = TestEnum.BLUE;
 
     @HBColumn(family = family1)
     private int intValue = -999;
@@ -49,7 +56,7 @@ public class TestObject implements HBPersistable {
     @HBColumn(family = family2)
     private String[] array2 = {"val1", "val2", "val3"};
 
-    @HBColumn(family = family2, mapKeysAsColumns = true)
+    @HBColumn(family = family3, mapKeysAsColumns = true)
     private Map<String, String> mapval1 = Maps.newHashMap();
 
     public TestObject() {
@@ -71,6 +78,7 @@ public class TestObject implements HBPersistable {
 
         HBql.exec("set classpath com.imap4j.hbsql:com.imap4j.hbase");
 
+        /*
         HBql.exec("delete from TestObject");
 
         final HBTransaction tx = new HBTransaction();
@@ -81,7 +89,9 @@ public class TestObject implements HBPersistable {
         }
 
         tx.commit();
+        */
 
+/*
         HBQuery<TestObject> q1 =
                 new HBQuery<TestObject>("select mapval1, author, title from TestObject",
                                         new HBQueryListenerAdapter<TestObject>() {
@@ -93,7 +103,7 @@ public class TestObject implements HBPersistable {
                                         });
 
         q1.execute();
-
+*/
         HBQuery<TestObject> q2 =
                 new HBQuery<TestObject>("select * from TestObject",
                                         new HBQueryListenerAdapter<TestObject>() {

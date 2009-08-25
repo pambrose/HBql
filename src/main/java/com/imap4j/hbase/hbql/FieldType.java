@@ -18,6 +18,7 @@ enum FieldType {
     LongType(Long.TYPE),
     FloatType(Float.TYPE),
     DoubleType(Double.TYPE),
+    EnumType(Enum.class),
     ObjectType(Object.class);
 
     private final Class clazz;
@@ -30,7 +31,7 @@ enum FieldType {
         return clazz;
     }
 
-    public static FieldType getFieldType(final Field field) throws HBPersistException {
+    static FieldType getFieldType(final Field field) throws HBPersistException {
 
         final Class fieldClass = field.getType();
 

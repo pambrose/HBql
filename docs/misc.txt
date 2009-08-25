@@ -1,3 +1,5 @@
 bin/hbase shell
 
 create 'blogposts', 'post', 'image'
+
+create 'testobjects', 'family1', 'family2', 'family3'

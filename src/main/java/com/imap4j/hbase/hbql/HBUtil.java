@@ -190,9 +190,8 @@ public class HBUtil {
                 }
 
                 case ObjectType: {
-                    for (int i = 0; i < length; i++) {
+                    for (int i = 0; i < length; i++)
                         Array.set(array, i, ois.readObject());
-                    }
                     return array;
                 }
             }

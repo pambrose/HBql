@@ -1,6 +1,6 @@
 package com.imap4j.hbase.hbql;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.imap4j.hbase.antlr.QueryArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -37,26 +37,23 @@ public class HBQuery<T extends HBPersistable> {
 
         final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
 
-        final List<String> colList = Lists.newArrayList();
-
         try {
             final List<String> fieldList = (qa.getColumnList() == null)
                                            ? ClassSchema.getClassSchema(qa.getTableName()).getFieldList()
                                            : qa.getColumnList();
 
-            for (final String attribName : fieldList) {
-                final FieldAttrib attrib = classSchema.getFieldAttribMapByField().get(attribName);
-                // If it is a map, then request all columns for family
-                if (attrib.isMapKeysAsColumns())
-                    colList.add(attrib.getFamilyName());
-                else
-                    colList.add(attrib.getQualifiedName());
-            }
-
             final Scan scan = new Scan();
 
-            for (final String col : colList)
-                scan.addColumn(col.getBytes());
+            for (final String attribName : fieldList) {
+
+                final FieldAttrib attrib = classSchema.getFieldAttribByField(attribName);
+
+                // If it is a map, then request all columns for family
+                if (attrib.isMapKeysAsColumns())
+                    scan.addFamily(attrib.getFamilyName().getBytes());
+                else
+                    scan.addColumn(attrib.getQualifiedName().getBytes());
+            }
 
             for (Result result : table.getScanner(scan)) {
 
@@ -79,11 +76,15 @@ public class HBQuery<T extends HBPersistable> {
                         final String mapKey = column.substring(lbrace + 1, column.length() - 1);
                         final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(mapcolumn);
                         final Object val = attrib.getValueFromBytes(newobj, valbytes);
-                        final Map mapval = (Map)attrib.getValue(newobj);
+                        Map mapval = (Map)attrib.getValue(newobj);
 
-                        // TODO Should call constructor if map has not been created
-                        if (mapval != null)
-                            mapval.put(mapKey, val);
+                        // TODO Not sure if it is kosher to create a map here
+                        if (mapval == null) {
+                            mapval = Maps.newHashMap();
+                            attrib.getField().set(newobj, mapval);
+                        }
+
+                        mapval.put(mapKey, val);
                     }
                     else {
                         final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(column);
