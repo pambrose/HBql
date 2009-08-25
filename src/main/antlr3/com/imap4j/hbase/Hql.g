@@ -81,25 +81,25 @@ cond_factor
 	: (keyNOT)? conditional_primary;
 
 conditional_primary
-	: simple_cond_expression | LPAREN cond_expr RPAREN;
+	: simple_cond_expr | LPAREN cond_expr RPAREN;
 
-simple_cond_expression
+simple_cond_expr
 	: comparison_expr
-	| between_expression
+	| between_expr
 	| like_expr
 	| in_expression
-	| null_comparison_expression
-	| empty_collection_comparison_expression
+	| null_comparison_expr
+	| empty_collection_comparison_expr
 	| collection_member_expr
 	;
 
-between_expression
+between_expr
 	: arithmetic_expr (keyNOT)? 'BETWEEN' arithmetic_expr keyAND arithmetic_expr
 	| string_expr (keyNOT)? 'BETWEEN' string_expr keyAND string_expr
-	| datetime_expression (keyNOT)? 'BETWEEN' datetime_expression keyAND datetime_expression;
+	| datetime_expr (keyNOT)? 'BETWEEN' datetime_expr keyAND datetime_expr;
 
 in_expression
-	: state_field_path_expression (keyNOT)? 'IN' LPAREN  (in_item (COMMA in_item)*) RPAREN;
+	: state_field_path_expr (keyNOT)? 'IN' LPAREN  (in_item (COMMA in_item)*) RPAREN;
 
 in_item
 	: string_literal
@@ -109,10 +109,10 @@ in_item
 like_expr
 	: string_expr keyNOT? 'LIKE' pattern_value=string_literal ('ESCAPE' escape_character=string_literal)?;
 
-null_comparison_expression
+null_comparison_expr
 	: single_valued_path_expression 'IS' (keyNOT)? 'NULL';
 
-empty_collection_comparison_expression
+empty_collection_comparison_expr
 	: collection_valued_path_expression 'IS' (keyNOT)? 'EMPTY';
 
 collection_member_expr
@@ -120,8 +120,8 @@ collection_member_expr
 
 comparison_expr
 	: string_expr comparison_operator (string_expr)
-	| boolean_expression ('=' | '<>') (boolean_expression)
-	| datetime_expression comparison_operator (datetime_expression)
+	| boolean_expr ('=' | '<>') (boolean_expr)
+	| datetime_expr comparison_operator (datetime_expr)
 	| entity_expr ('=' | '<>') (entity_expr)
 	| arithmetic_expr comparison_operator (arithmetic_expr);
 
@@ -149,7 +149,7 @@ arithmetic_factor
 	: ( '+' | '-' )? arithmetic_primary;
 
 arithmetic_primary
-	: state_field_path_expression
+	: state_field_path_expr
 	| numeric_literal
 	| LPAREN simple_arithmetic_expr RPAREN
 	| functions_returning_numerics
@@ -160,26 +160,26 @@ string_expr
 	;
 
 string_primary
-	: state_field_path_expression
+	: state_field_path_expr
 	| string_literal
 	| functions_returning_strings
 	;
 
-datetime_expression
+datetime_expr
 	: datetime_primary
 	;
 
 datetime_primary
-	: state_field_path_expression
+	: state_field_path_expr
 	| functions_returning_datetime
 	;
 
-boolean_expression
+boolean_expr
 	: boolean_primary
 	;
 
 boolean_primary
-	: state_field_path_expression
+	: state_field_path_expr
 	| boolean_literal
 	;
 
@@ -212,11 +212,11 @@ functions_returning_strings
 	| 'UPPER' LPAREN string_primary RPAREN;
 
 single_valued_path_expression
-	: state_field_path_expression 
+	: state_field_path_expr 
 	| single_valued_association_path_expression
 	;
 
-state_field_path_expression
+state_field_path_expr
 	: (identification_variable | single_valued_association_path_expression) DOT state_field
 	;
 
