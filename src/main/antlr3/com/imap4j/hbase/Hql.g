@@ -97,34 +97,30 @@ simple_cond_expr
 	;
 
 between_expr
-	: attr_field (keyNOT)? keyBETWEEN arithmetic_expr keyAND arithmetic_expr
-	| attr_field (keyNOT)? keyBETWEEN string_expr keyAND string_expr
-	| attr_field (keyNOT)? keyBETWEEN datetime_expr keyAND datetime_expr
+	: attr_field (keyNOT)? keyBETWEEN 
+	  ((arithmetic_expr keyAND arithmetic_expr)
+	  | (string_expr keyAND string_expr)
+	  | (datetime_expr keyAND datetime_expr)
+	  )
 	;
 
 in_expr	: attr_field (keyNOT)? keyIN LPAREN (in_item (COMMA in_item)*) RPAREN;
 
-in_item
-	: string_literal
-	| numeric_literal
-	;
+in_item : string_literal | numeric_literal;
 
 like_expr
-	: string_expr keyNOT? keyLIKE pattern_value=string_literal ('ESCAPE' escape_character=string_literal)?;
+	: string_expr keyNOT? keyLIKE pattern_value=string_literal; // ('ESCAPE' escape_character=string_literal)?;
 
 null_comp_expr
 	: attr_field keyIS (keyNOT)? keyNULL;
 
 comp_expr
-	: attr_field comp_op string_expr
-	| string_expr comp_op attr_field
-	| attr_field (EQ | LTGT) boolean_expr
-	| boolean_expr (EQ | LTGT) attr_field
-	| attr_field comp_op datetime_expr
-	| datetime_expr comp_op attr_field
-	//| entity_expr (EQ | LTGT ) entity_expr
-	| attr_field comp_op arithmetic_expr
-	| arithmetic_expr comp_op attr_field
+	: (attr_field comp_op string_expr)
+	| (string_expr comp_op attr_field)
+	| (attr_field comp_op datetime_expr)
+	| (datetime_expr comp_op attr_field)
+	| (attr_field comp_op arithmetic_expr)
+	| (arithmetic_expr comp_op attr_field)
 	;
 
 comp_op	: EQ | GT | GTEQ | LT | LTEQ | LTGT;
@@ -149,8 +145,7 @@ arithmetic_factor
 arithmetic_primary
 	: numeric_literal
 	| LPAREN simple_arithmetic_expr RPAREN
-	| functions_returning_numerics
-	//| attr_field
+	| funcs_returning_numerics
 	;
 
 string_expr
@@ -159,32 +154,25 @@ string_expr
 
 string_primary
 	: string_literal
-	| functions_returning_strings
-	//| attr_field
+	| funcs_returning_strings
 	;
 
 datetime_expr
-	: functions_returning_datetime
-	//| attr_field
+	: funcs_returning_datetime
 	;
 
-boolean_expr
-	: boolean_literal
-	//| attr_field
-	;
-
-functions_returning_numerics
+funcs_returning_numerics
 	: keyLENGTH LPAREN string_primary RPAREN
 	| keyABS LPAREN simple_arithmetic_expr RPAREN
 	| keyMOD LPAREN simple_arithmetic_expr COMMA simple_arithmetic_expr RPAREN
 	;
 
-functions_returning_datetime
+funcs_returning_datetime
 	: keyCURRENT_DATE
 	| keyCURRENT_TIME
 	| keyCURRENT_TIMESTAMP;
 
-functions_returning_strings
+funcs_returning_strings
 	: keyCONCAT LPAREN string_primary COMMA string_primary RPAREN
 	| keySUBSTRING LPAREN string_primary COMMA simple_arithmetic_expr COMMA simple_arithmetic_expr RPAREN
 	| keyTRIM LPAREN string_primary RPAREN
@@ -195,11 +183,6 @@ functions_returning_strings
 attr_field
 	: ID;
 		
-boolean_literal
-	: keyTRUE 
-	| keyFALSE
-	;
-	
 string_literal
 	: QUOTED;
 	
@@ -257,8 +240,6 @@ keyTO 		: {AntlrActions.isKeyword(input, "TO")}? ID;
 keyOR 		: {AntlrActions.isKeyword(input, "OR")}? ID;
 keyAND 		: {AntlrActions.isKeyword(input, "AND")}? ID;
 keyNOT 		: {AntlrActions.isKeyword(input, "NOT")}? ID;
-keyTRUE 	: {AntlrActions.isKeyword(input, "TRUE")}? ID;
-keyFALSE 	: {AntlrActions.isKeyword(input, "FALSE")}? ID;
 keyBETWEEN 	: {AntlrActions.isKeyword(input, "BETWEEN")}? ID;
 keyNULL 	: {AntlrActions.isKeyword(input, "NULL")}? ID;
 keyLOWER 	: {AntlrActions.isKeyword(input, "LOWER")}? ID;
