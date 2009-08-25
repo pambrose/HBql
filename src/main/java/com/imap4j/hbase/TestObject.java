@@ -2,6 +2,7 @@ package com.imap4j.hbase;
 
 import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbql.HBColumn;
+import com.imap4j.hbase.hbql.HBFamily;
 import com.imap4j.hbase.hbql.HBPersistException;
 import com.imap4j.hbase.hbql.HBPersistable;
 import com.imap4j.hbase.hbql.HBQuery;
@@ -18,12 +19,13 @@ import java.util.Map;
  * Date: Aug 19, 2009
  * Time: 4:39:06 PM
  */
-@HBTable(name = "testobjects")
+@HBTable(name = "testobjects",
+         families = {
+                 @HBFamily(name = "family1", maxVersions = 10),
+                 @HBFamily(name = "family2"),
+                 @HBFamily(name = "family3", maxVersions = 5)
+         })
 public class TestObject implements HBPersistable {
-
-    final String family1 = "family1";
-    final String family2 = "family2";
-    final String family3 = "family3";
 
     private enum TestEnum {
         RED, BLUE, BLACK, ORANGE
@@ -32,31 +34,31 @@ public class TestObject implements HBPersistable {
     @HBColumn(key = true)
     private String keyval;
 
-    @HBColumn(family = family1)
+    @HBColumn(family = "family1")
     private TestEnum enumValue = TestEnum.BLUE;
 
-    @HBColumn(family = family1)
+    @HBColumn(family = "family1")
     private int intValue = -999;
 
-    @HBColumn(family = family1)
+    @HBColumn(family = "family1")
     private String title = "A title value";
 
-    @HBColumn(family = family1, column = "author")
+    @HBColumn(family = "family1", column = "author")
     private String author = "An author value";
 
-    @HBColumn(family = family2, getter = "getHeaderBytes", setter = "setHeaderBytes")
+    @HBColumn(family = "family2", getter = "getHeaderBytes", setter = "setHeaderBytes")
     private String header = "A header value";
 
-    @HBColumn(family = family2, column = "bodyimage")
+    @HBColumn(family = "family2", column = "bodyimage")
     private String bodyimage = "A bodyimage value";
 
-    @HBColumn(family = family2)
+    @HBColumn(family = "family2")
     private int[] array1 = {1, 2, 3};
 
-    @HBColumn(family = family2)
+    @HBColumn(family = "family2")
     private String[] array2 = {"val1", "val2", "val3"};
 
-    @HBColumn(family = family3, mapKeysAsColumns = true)
+    @HBColumn(family = "family3", mapKeysAsColumns = true)
     private Map<String, String> mapval1 = Maps.newHashMap();
 
     public TestObject() {
@@ -77,6 +79,8 @@ public class TestObject implements HBPersistable {
     public static void main(String[] args) throws IOException, HBPersistException {
 
         HBql.exec("set classpath com.imap4j.hbsql:com.imap4j.hbase");
+
+        HBql.exec("create table TestObject");
 
         /*
         HBql.exec("delete from TestObject");

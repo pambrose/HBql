@@ -51,9 +51,6 @@ public class HBTransaction {
                                 byteval);
                     }
                 }
-                else if (attrib.isEnumConstant()) {
-
-                }
                 else {
                     final byte[] instval = attrib.getValueAsBytes(declaringObj);
                     put.add(attrib.getFamilyName().getBytes(),

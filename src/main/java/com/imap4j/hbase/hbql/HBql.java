@@ -1,5 +1,6 @@
 package com.imap4j.hbase.hbql;
 
+import com.imap4j.hbase.antlr.CreateArgs;
 import com.imap4j.hbase.antlr.DeleteArgs;
 import com.imap4j.hbase.antlr.ExecArgs;
 import com.imap4j.hbase.antlr.SetArgs;
@@ -29,6 +30,20 @@ public class HBql {
 
         final ExecArgs exec = (ExecArgs)HBqlRule.EXEC.parse(str);
 
+        if (exec instanceof DeleteArgs) {
+            final DeleteArgs args = (DeleteArgs)exec;
+            final ClassSchema schema = ClassSchema.getClassSchema(args.getClassname());
+            deleteAll(schema.getTableName());
+            return;
+        }
+
+        if (exec instanceof CreateArgs) {
+            final CreateArgs args = (CreateArgs)exec;
+            final ClassSchema schema = ClassSchema.getClassSchema(args.getClassname());
+            createTable(schema);
+            return;
+        }
+
         if (exec instanceof SetArgs) {
 
             final SetArgs args = (SetArgs)exec;
@@ -45,11 +60,22 @@ public class HBql {
             throw new HBPersistException("Unknown variable: " + var);
         }
 
-        if (exec instanceof DeleteArgs) {
-            final DeleteArgs args = (DeleteArgs)exec;
-            final ClassSchema schema = ClassSchema.getClassSchema(args.getClassname());
-            deleteAll(schema.getTableName());
+    }
+
+    private static void createTable(final ClassSchema schema) throws IOException {
+
+        final HTableDescriptor tableDesc = new HTableDescriptor(schema.getTableName());
+
+        for (final HBFamily family : schema.getFamilies()) {
+            final HColumnDescriptor columnDesc = new HColumnDescriptor(family.name());
+            if (family.maxVersions() > 0)
+                columnDesc.setMaxVersions(family.maxVersions());
+            tableDesc.addFamily(columnDesc);
         }
+
+        final HBaseAdmin admin = new HBaseAdmin(new HBaseConfiguration());
+
+        admin.createTable(tableDesc);
     }
 
     public static void deleteAll(final String tablename) throws IOException {

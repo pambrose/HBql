@@ -15,64 +15,55 @@ public class FieldAttrib {
 
     private final Field field;
     private final FieldType fieldType;
-    private final String familyName;
-    private final String columnName;
-    private final String getter;
-    private final String setter;
-    private final boolean key;
-    private final boolean mapKeysAsColumns;
+    private final HBColumn column;
 
     private Method getterMethod = null;
     private Method setterMethod = null;
-
 
     public FieldAttrib(final Class enclosingClass, final Field field, final HBColumn column) throws HBPersistException {
 
         this.field = field;
         this.fieldType = FieldType.getFieldType(this.field);
-        this.familyName = column.family();
-        this.columnName = column.column().length() > 0 ? column.column() : this.getFieldName();
-        this.getter = column.getter();
-        this.setter = column.setter();
-        this.key = column.key();
-        this.mapKeysAsColumns = column.mapKeysAsColumns();
+        this.column = column;
 
         try {
             if (this.hasGetter()) {
-                this.getterMethod = enclosingClass.getDeclaredMethod(this.getter);
+                this.getterMethod = enclosingClass.getDeclaredMethod(this.column.getter());
 
                 // Check return type of getter
                 final Class<?> returnType = this.getGetterMethod().getReturnType();
 
                 if (!(returnType.isArray() && returnType.getComponentType() == Byte.TYPE))
-                    throw new HBPersistException(enclosingClass.getName() + "." + this.getter + "()"
+                    throw new HBPersistException(enclosingClass.getName() + "." + this.column.getter() + "()"
                                                  + " does not have a return type of byte[]");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new HBPersistException("Missing method byte[] " + enclosingClass.getName() + "." + this.getter + "()");
+            throw new HBPersistException("Missing method byte[] " + enclosingClass.getName() + "."
+                                         + this.column.getter() + "()");
         }
 
         try {
             if (this.hasSetter()) {
 
-                this.setterMethod = enclosingClass.getDeclaredMethod(this.setter, Class.forName("[B"));
+                this.setterMethod = enclosingClass.getDeclaredMethod(this.column.setter(), Class.forName("[B"));
 
                 // Check if it takes single byte[] arg
                 final Class<?>[] args = this.getSetterMethod().getParameterTypes();
                 if (args.length != 1 || !(args[0].isArray() && args[0].getComponentType() == Byte.TYPE))
-                    throw new HBPersistException(enclosingClass.getName() + "." + this.setter + "()"
+                    throw new HBPersistException(enclosingClass.getName() + "." + this.column.setter() + "()"
                                                  + " does not have single byte[] arg");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new HBPersistException("Missing method " + enclosingClass.getName() + "." + this.setter + "(byte[] arg)");
+            throw new HBPersistException("Missing method " + enclosingClass.getName() + "." + this.column.setter()
+                                         + "(byte[] arg)");
         }
         catch (ClassNotFoundException e) {
             // This will not be hit
-            throw new HBPersistException("Missing method " + enclosingClass.getName() + "." + this.setter + "(byte[] arg)");
+            throw new HBPersistException("Missing method " + enclosingClass.getName() + "." + this.column.setter()
+                                         + "(byte[] arg)");
         }
-
     }
 
     @Override
@@ -85,7 +76,7 @@ public class FieldAttrib {
     }
 
     public boolean isKey() {
-        return this.key;
+        return this.column.key();
     }
 
     public FieldType getFieldType() {
@@ -101,19 +92,19 @@ public class FieldAttrib {
     }
 
     public boolean hasGetter() {
-        return this.getter.length() > 0;
+        return this.column.getter().length() > 0;
     }
 
     public boolean hasSetter() {
-        return this.setter.length() > 0;
+        return this.column.setter().length() > 0;
     }
 
     public String getFamilyName() {
-        return this.familyName;
+        return this.column.family();
     }
 
     public String getColumnName() {
-        return columnName;
+        return this.column.column().length() > 0 ? column.column() : this.getFieldName();
     }
 
     public String getQualifiedName() {
@@ -129,7 +120,7 @@ public class FieldAttrib {
     }
 
     public boolean isMapKeysAsColumns() {
-        return this.mapKeysAsColumns;
+        return this.column.mapKeysAsColumns();
     }
 
     public byte[] invokeGetterMethod(final Object parent) throws HBPersistException {

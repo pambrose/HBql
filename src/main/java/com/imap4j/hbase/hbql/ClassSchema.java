@@ -22,7 +22,8 @@ public class ClassSchema {
 
     private final Class<?> clazz;
 
-    private String tableName = null;
+    private final HBTable table;
+    private final HBFamily[] families;
 
     private FieldAttrib keyFieldAttrib = null;
 
@@ -41,7 +42,22 @@ public class ClassSchema {
             throw new HBPersistException("Class " + this + " is missing a null constructor");
         }
 
-        processAnnotations();
+        this.table = this.getClazz().getAnnotation(HBTable.class);
+
+        if (this.table == null)
+            throw new HBPersistException("Class " + this + " is missing @HBTable annotation");
+
+        this.families = this.table.families();
+
+        if (this.families == null)
+            throw new HBPersistException("Class " + this + " is missing @HBFamily values in @HBTable annotation");
+
+        for (final HBFamily family : families) {
+            final List<FieldAttrib> attribs = Lists.newArrayList();
+            this.getFieldAttribMapByFamily().put(family.name(), attribs);
+        }
+
+        processFieldAnnotations();
     }
 
     public Class<?> getClazz() {
@@ -67,6 +83,10 @@ public class ClassSchema {
 
     public FieldAttrib getKeyFieldAttrib() {
         return keyFieldAttrib;
+    }
+
+    public HBFamily[] getFamilies() {
+        return this.families;
     }
 
     public FieldAttrib getFieldAttribByField(final String attribName) {
@@ -145,15 +165,7 @@ public class ClassSchema {
         return this.getClazz().getName();
     }
 
-    private void processAnnotations() throws HBPersistException {
-
-        final HBTable tabAnno = this.getClazz().getAnnotation(HBTable.class);
-
-        if (tabAnno == null)
-            throw new HBPersistException("Class " + this + " is missing @Table annotation");
-
-        final String tabName = tabAnno.name();
-        this.tableName = (tabName.length() > 0) ? tabName : clazz.getSimpleName();
+    private void processFieldAnnotations() throws HBPersistException {
 
         for (final Field field : this.getClazz().getDeclaredFields()) {
 
@@ -166,7 +178,7 @@ public class ClassSchema {
 
                 if (isFinal)
                     throw new HBPersistException(this + "." + field.getName()
-                                                 + " cannot have a Column annotation and be marked final");
+                                                 + " cannot have a @HBColumn annotation and be marked final");
 
                 final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, column);
 
@@ -175,29 +187,23 @@ public class ClassSchema {
 
                 if (attrib.isKey()) {
                     if (keyFieldAttrib != null)
-                        throw new HBPersistException("Class " + this
-                                                     + " has multiple instance variables annotated "
-                                                     + "with Column(key=true)");
+                        throw new HBPersistException("Class " + this + " has multiple instance variables "
+                                                     + "annotated with @HBColumn(key=true)");
 
                     keyFieldAttrib = attrib;
                 }
                 else {
                     final String family = attrib.getFamilyName();
-                    final List<FieldAttrib> columns;
-                    if (!this.getFieldAttribMapByFamily().containsKey(family)) {
-                        columns = Lists.newArrayList();
-                        this.getFieldAttribMapByFamily().put(family, columns);
-                    }
-                    else {
-                        columns = this.getFieldAttribMapByFamily().get(family);
-                    }
-                    columns.add(attrib);
+                    if (!this.getFieldAttribMapByFamily().containsKey(family))
+                        throw new HBPersistException("Class " + this + " is missing @HBFamily value for " + family);
+
+                    this.getFieldAttribMapByFamily().get(family).add(attrib);
                 }
             }
         }
         if (keyFieldAttrib == null)
             throw new HBPersistException("Class " + this
-                                         + " is missing an instance variable annotated with @Column(key=true)");
+                                         + " is missing an instance variable annotated with @HBColumn(key=true)");
 
     }
 
@@ -216,7 +222,8 @@ public class ClassSchema {
     }
 
     public String getTableName() {
-        return this.tableName;
+        final String tableName = this.table.name();
+        return (tableName.length() > 0) ? tableName : clazz.getSimpleName();
     }
 
 }
