@@ -68,6 +68,180 @@ cond	: compare | in_stmt;
 compare	: column[null] EQUALS qstring[null];
 
 in_stmt	: column[null] keyIN LPAREN qstring_list RPAREN;
+
+cond_expr
+	: cond_term
+	| cond_expr keyOR cond_term;
+
+cond_term
+	: cond_factor
+	| cond_term keyAND cond_factor;
+	
+cond_factor
+	: (keyNOT)? conditional_primary;
+
+conditional_primary
+	: simple_cond_expression | LPAREN cond_expr RPAREN;
+
+simple_cond_expression
+	: comparison_expr
+	| between_expression
+	| like_expr
+	| in_expression
+	| null_comparison_expression
+	| empty_collection_comparison_expression
+	| collection_member_expr
+	;
+
+between_expression
+	: arithmetic_expr (keyNOT)? 'BETWEEN' arithmetic_expr keyAND arithmetic_expr
+	| string_expr (keyNOT)? 'BETWEEN' string_expr keyAND string_expr
+	| datetime_expression (keyNOT)? 'BETWEEN' datetime_expression keyAND datetime_expression;
+
+in_expression
+	: state_field_path_expression (keyNOT)? 'IN' LPAREN  (in_item (COMMA in_item)*) RPAREN;
+
+in_item
+	: string_literal
+	| numeric_literal
+	;
+
+like_expr
+	: string_expr keyNOT? 'LIKE' pattern_value=string_literal ('ESCAPE' escape_character=string_literal)?;
+
+null_comparison_expression
+	: single_valued_path_expression 'IS' (keyNOT)? 'NULL';
+
+empty_collection_comparison_expression
+	: collection_valued_path_expression 'IS' (keyNOT)? 'EMPTY';
+
+collection_member_expr
+	: entity_expr keyNOT? 'MEMBER' ('OF')? collection_valued_path_expression;
+
+comparison_expr
+	: string_expr comparison_operator (string_expr)
+	| boolean_expression ('=' | '<>') (boolean_expression)
+	| datetime_expression comparison_operator (datetime_expression)
+	| entity_expr ('=' | '<>') (entity_expr)
+	| arithmetic_expr comparison_operator (arithmetic_expr);
+
+comparison_operator
+	: '='
+	| '>'
+	| '>='
+	| '<'
+	| '<='
+	| '<>';
+
+arithmetic_expr
+	: simple_arithmetic_expr
+	;
+
+simple_arithmetic_expr
+	: arithmetic_term
+	| simple_arithmetic_expr ( '+' | '-' ) arithmetic_term;
+
+arithmetic_term
+	: arithmetic_factor
+	| arithmetic_term ( '*' | '/' ) arithmetic_factor;
+
+arithmetic_factor
+	: ( '+' | '-' )? arithmetic_primary;
+
+arithmetic_primary
+	: state_field_path_expression
+	| numeric_literal
+	| LPAREN simple_arithmetic_expr RPAREN
+	| functions_returning_numerics
+	;
+
+string_expr
+	: string_primary 
+	;
+
+string_primary
+	: state_field_path_expression
+	| string_literal
+	| functions_returning_strings
+	;
+
+datetime_expression
+	: datetime_primary
+	;
+
+datetime_primary
+	: state_field_path_expression
+	| functions_returning_datetime
+	;
+
+boolean_expression
+	: boolean_primary
+	;
+
+boolean_primary
+	: state_field_path_expression
+	| boolean_literal
+	;
+
+entity_expr
+	: single_valued_association_path_expression
+	| simple_entity_expression;
+
+simple_entity_expression
+	: identification_variable
+	;
+
+functions_returning_numerics
+	: 'LENGTH' LPAREN string_primary RPAREN
+	| 'LOCATE' LPAREN string_primary COMMA string_primary (COMMA simple_arithmetic_expr)? RPAREN
+	| 'ABS' LPAREN simple_arithmetic_expr RPAREN
+	| 'SQRT' LPAREN simple_arithmetic_expr RPAREN
+	| 'MOD' LPAREN simple_arithmetic_expr COMMA simple_arithmetic_expr RPAREN
+	| 'SIZE' LPAREN collection_valued_path_expression RPAREN;
+
+functions_returning_datetime
+	: 'CURRENT_DATE'
+	| 'CURRENT_TIME'
+	| 'CURRENT_TIMESTAMP';
+
+functions_returning_strings
+	: 'CONCAT' LPAREN string_primary COMMA string_primary RPAREN
+	| 'SUBSTRING' LPAREN string_primary COMMA simple_arithmetic_expr  simple_arithmetic_expr RPAREN
+	| 'TRIM' LPAREN string_primary RPAREN
+	| 'LOWER' LPAREN string_primary RPAREN
+	| 'UPPER' LPAREN string_primary RPAREN;
+
+single_valued_path_expression
+	: state_field_path_expression 
+	| single_valued_association_path_expression
+	;
+
+state_field_path_expression
+	: (identification_variable | single_valued_association_path_expression) DOT state_field
+	;
+
+single_valued_association_path_expression
+	: identification_variable DOT (single_valued_association_field=ID DOT)* single_valued_association_field;
+
+collection_valued_path_expression
+	: identification_variable DOT (single_valued_association_field=ID DOT)* collection_valued_association_field=ID;
+
+state_field
+	: (embedded_class_state_field=ID DOT)* simple_state_field=ID;
+
+identification_variable
+	: ID;
+	
+boolean_literal
+	: keyTRUE 
+	| keyFALSE
+	;
+	
+string_literal
+	: QUOTED;
+	
+numeric_literal 
+	: INT;
 		
 column_list returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
@@ -117,3 +291,6 @@ keyIN 		: {AntlrActions.isKeyword(input, "IN")}? ID;
 keyTO 		: {AntlrActions.isKeyword(input, "TO")}? ID;
 keyOR 		: {AntlrActions.isKeyword(input, "OR")}? ID;
 keyAND 		: {AntlrActions.isKeyword(input, "AND")}? ID;
+keyNOT 		: {AntlrActions.isKeyword(input, "NOT")}? ID;
+keyTRUE 	: {AntlrActions.isKeyword(input, "TRUE")}? ID;
+keyFALSE 	: {AntlrActions.isKeyword(input, "FALSE")}? ID;
