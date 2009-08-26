@@ -6,10 +6,10 @@ package com.imap4j.hbase.hql.expr;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class CondExpr implements Evaluatable {
+public class InExpr implements Evaluatable {
 
-    public CondTerm term;
-    public CondExpr expr;
+    public String attrib;
+    public boolean not;
 
     @Override
     public boolean evaluate() {

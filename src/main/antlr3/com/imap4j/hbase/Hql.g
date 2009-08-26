@@ -34,6 +34,7 @@ catch (RecognitionException re) {
 @header {
 package com.imap4j.hbase;
 import com.imap4j.hbase.hql.*;
+import com.imap4j.hbase.hql.expr.*;
 import com.imap4j.hbase.antlr.*;
 import com.google.common.collect.Lists;
 import com.imap4j.imap.antlr.imap.AntlrActions;
@@ -119,7 +120,7 @@ simpleCondExpr returns [SimpleCondExpr retval]
 	;
 
 betweenExpr returns [BetweenExpr retval]
-	: attrField keyNOT? keyBETWEEN 
+	: attribField keyNOT? keyBETWEEN 
 	  ( arithmeticExpr keyAND arithmeticExpr
 	  | stringExpr keyAND stringExpr
 	  | datetimeExpr keyAND datetimeExpr
@@ -127,23 +128,29 @@ betweenExpr returns [BetweenExpr retval]
 	;
 
 likeExpr 
-	: attrField keyNOT? keyLIKE pattern_value=stringLiteral; // ('ESCAPE' escape_character=string_literal)?;
+	: attribField keyNOT? keyLIKE pattern_value=stringLiteral; // ('ESCAPE' escape_character=string_literal)?;
 
 inExpr returns [InExpr retval]
 @init {retval = new InExpr();}
-	: attrField keyNOT? keyIN LPAREN inItem (COMMA inItem)* RPAREN
+	: attrib=attribField keyNOT? keyIN LPAREN list=inItemList RPAREN
 	{
-	  
+	 retval.attrib = $attrib.text; 
+	 retval.not = $keyNOT.text != null; 
+	 retval.inList = $list.retval;
 	}
 	;
 
+inItemList returns [List<String> retval]
+@init {retval = Lists.newArrayList();}
+	: item1=inItem {retval.add($item1.text);} (COMMA item2=inItem {retval.add($item2.text);})*;
+	
 inItem : stringLiteral | numericLiteral;
 
 nullCompExpr
-	: attrField keyIS (keyNOT)? keyNULL;
+	: attribField keyIS (keyNOT)? keyNULL;
 
 compExpr
-	: attrField comp_op (stringExpr | datetimeExpr | arithmeticExpr)
+	: attribField comp_op (stringExpr | datetimeExpr | arithmeticExpr)
 	//| (string_expr | datetime_expr | arithmetic_expr)  comp_op attr_field
 	;
 	
@@ -204,7 +211,7 @@ funcs_returning_strings
 	| keyUPPER LPAREN string_primary RPAREN
 	;
 
-attrField
+attribField
 	: ID;
 		
 stringLiteral

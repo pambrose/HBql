@@ -6,5 +6,11 @@ package com.imap4j.hbase.hql.expr;
  * Date: Aug 25, 2009
  * Time: 8:28:42 PM
  */
-public class CondPrimary {
+public class CondPrimary implements Evaluatable {
+    public SimpleCondExpr expr;
+
+    @Override
+    public boolean evaluate() {
+        return false;
+    }
 }
