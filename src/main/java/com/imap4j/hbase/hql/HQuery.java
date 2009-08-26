@@ -79,6 +79,7 @@ public class HQuery<T extends HPersistable> {
                     final byte[] valbytes = result.getValue(colbytes);
 
                     if (column.endsWith("]")) {
+
                         final int lbrace = column.indexOf("[");
                         final String mapcolumn = column.substring(0, lbrace);
                         final String mapKey = column.substring(lbrace + 1, column.length() - 1);

@@ -7,11 +7,15 @@ package com.imap4j.hbase.hql.expr;
  * Time: 8:28:06 PM
  */
 public class CondFactor implements Evaluatable {
+
     public boolean not;
     public CondPrimary primary;
 
     @Override
     public boolean evaluate() {
-        return false;
+        if (this.not)
+            return !this.primary.evaluate();
+        else
+            return this.primary.evaluate();
     }
 }

@@ -12,6 +12,6 @@ public class SimpleCondExpr implements Evaluatable {
 
     @Override
     public boolean evaluate() {
-        return false;
+        return expr.evaluate();
     }
 }

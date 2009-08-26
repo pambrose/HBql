@@ -73,25 +73,25 @@ deleteStmt returns [DeleteArgs retval]
 setStmt returns [SetArgs retval]
 	: keySET var=ID (keyTO | EQ)? val=dottedValue 	{retval = new SetArgs($var.text, $val.text);};
 
-whereClause returns [CondExpr retval]
-	: keyWHERE c=condExpr 				{retval = $c.retval;};
+whereClause returns [OrExpr retval]
+	: keyWHERE c=orExpr 				{retval = $c.retval;};
 		
-condExpr returns [CondExpr retval]
-@init {retval = new CondExpr();}
-	: term=condTerm (keyOR expr=condExpr)?
+orExpr returns [OrExpr retval]
+@init {retval = new OrExpr();}
+	: expr1=andExpr (keyOR expr2=orExpr)?
 	{
-	 retval.term = $term.retval;
-	 retval.expr = $expr.retval;
+	 retval.expr1 = $expr1.retval;
+	 retval.expr2 = $expr2.retval;
 	}
 	//| cond_expr keyOR cond_term
 	;
 
-condTerm returns [CondTerm retval]
-@init {retval = new CondTerm();}
-	: factor=condFactor (keyAND term=condTerm)?
+andExpr returns [AndExpr retval]
+@init {retval = new AndExpr();}
+	: expr1=condFactor (keyAND expr2=andExpr)?
 	{
-	 retval.factor = $factor.retval;
-	 retval.term = $term.retval;	 
+	 retval.expr1 = $expr1.retval;
+	 retval.expr2 = $expr2.retval;	 
 	}
 	//| cond_term keyAND cond_factor
 	;
@@ -108,7 +108,7 @@ condFactor returns [CondFactor retval]
 condPrimary returns [CondPrimary retval]
 @init {retval = new CondPrimary();}
 	: simpleCondExpr  		{retval.expr = $simpleCondExpr.retval;}
-	| LPAREN condExpr RPAREN	{retval.expr = $condExpr.retval;}
+	| LPAREN orExpr RPAREN		{retval.expr = $orExpr.retval;}
 	;
 
 simpleCondExpr returns [SimpleCondExpr retval]
@@ -133,7 +133,12 @@ likeExpr
 
 inExpr returns [InExpr retval]
 @init {retval = new InExpr();}
-	: attrib=attribField keyNOT? keyIN LPAREN (intlist=intItemList | strlist=strItemList) RPAREN
+	: attrib=attribField keyNOT? keyIN 
+	  LPAREN 
+	  (intlist=intItemList 	{retval = 
+	  |strlist=strItemList
+	  ) 
+	  RPAREN
 	{
 	 retval.attrib = $attrib.text; 
 	 retval.not = $keyNOT.text != null; 
@@ -168,15 +173,15 @@ compareExpr returns [CompareExpr retval]
 	 retval.attrib = $attrib.text;
 	 retval.op = $op.retval;
 	}
-	| ( str=stringExpr 		{retval = new StringCompareExpr($attrib.text, $op.retval, $str.text);}
+	| ( str=stringExpr 		{retval = new StringCompareExpr($str.text);}
 	  | date=datetimeExpr 
 	  | num=arithmeticExpr
 	  )  
 	  op=compareOp attrib=attribField
-	  {
-	    retval.op = $op.retval;
-	    retval.attrib = $attrib.text;
-	  }
+					{
+	    				 retval.op = $op.retval;
+	    				 retval.attrib = $attrib.text;
+	  				}
 	;
 	
 compareOp	returns [CompareExpr.Operator retval]

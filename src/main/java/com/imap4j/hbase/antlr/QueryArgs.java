@@ -1,6 +1,6 @@
 package com.imap4j.hbase.antlr;
 
-import com.imap4j.hbase.hql.expr.CondExpr;
+import com.imap4j.hbase.hql.expr.OrExpr;
 
 import java.util.List;
 
@@ -14,9 +14,9 @@ public class QueryArgs {
 
     private final List<String> columnList;
     private final String tableName;
-    private final CondExpr whereExpr;
+    private final OrExpr whereExpr;
 
-    public QueryArgs(final List<String> columnList, final String tableName, final CondExpr whereExpr) {
+    public QueryArgs(final List<String> columnList, final String tableName, final OrExpr whereExpr) {
         this.tableName = tableName;
         this.columnList = columnList;
         this.whereExpr = whereExpr;
@@ -30,7 +30,7 @@ public class QueryArgs {
         return tableName;
     }
 
-    public CondExpr getWhereExpr() {
+    public OrExpr getWhereExpr() {
         return whereExpr;
     }
 }

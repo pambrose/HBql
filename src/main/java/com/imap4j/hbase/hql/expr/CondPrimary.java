@@ -11,6 +11,6 @@ public class CondPrimary implements Evaluatable {
 
     @Override
     public boolean evaluate() {
-        return false;
+        return expr.evaluate();
     }
 }
