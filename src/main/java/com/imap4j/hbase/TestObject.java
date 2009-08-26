@@ -98,16 +98,16 @@ public class TestObject implements HPersistable {
         results = Hql.exec("set classpath com.imap4j.hql:com.imap4j.hbase");
         System.out.println(results.getOutput());
 
-        // results = Hql.exec("delete from TestObject");
+        //results = Hql.exec("delete from TestObject");
         System.out.println(results.getOutput());
 
         //results = Hql.exec("create table TestObject");
         System.out.println(results.getOutput());
 
-        results = Hql.exec("show tables");
+        //results = Hql.exec("show tables");
         System.out.println(results.getOutput());
 
-        results = Hql.exec("describe table TestObject");
+        //results = Hql.exec("describe table TestObject");
         System.out.println(results.getOutput());
 
         final HTransaction tx = new HTransaction();
@@ -133,17 +133,21 @@ public class TestObject implements HPersistable {
         q1.execute();
         */
 
+        long start = System.currentTimeMillis();
         HQuery<TestObject> q2 =
-                new HQuery<TestObject>("select * from TestObject WHERE strValue = 'v1' AND strValue IN ('v2', 'v1')",
+                new HQuery<TestObject>("select * from TestObject WHERE strValue = 'v19' OR strValue IN ('v2', 'v0', 'v999')",
                                        new HQueryListenerAdapter<TestObject>() {
                                            public void onEachRow(final TestObject val) throws HPersistException {
                                                System.out.println("Values: " + val.keyval
+                                                                  + " - " + val.strValue
                                                                   + " - " + val.author
                                                                   + " - " + val.title);
                                            }
                                        });
 
         q2.execute();
+
+        System.out.println("Time = " + (System.currentTimeMillis() - start));
 
     }
 }
