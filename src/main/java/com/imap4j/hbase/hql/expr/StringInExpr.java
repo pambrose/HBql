@@ -16,7 +16,7 @@ public class StringInExpr extends InExpr implements Evaluatable {
 
     private final List<String> strList;
 
-    public StringInExpr(final String attrib, final boolean not, final List<String> strList) {
+    public StringInExpr(final AttribRef attrib, final boolean not, final List<String> strList) {
         super(attrib, not);
         this.strList = strList;
     }

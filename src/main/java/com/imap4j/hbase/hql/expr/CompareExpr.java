@@ -15,18 +15,11 @@ public abstract class CompareExpr implements Evaluatable {
         LT,
         LTEQ,
         LTGT
-
     }
 
-    public AttribRef attrib;
     public CompareExpr.Operator op;
 
-    protected CompareExpr() {
-    }
-
-    protected CompareExpr(final AttribRef attrib, final Operator op) {
-        this.attrib = attrib;
+    protected CompareExpr(final Operator op) {
         this.op = op;
     }
-
 }

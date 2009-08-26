@@ -39,7 +39,10 @@ public class TestObject implements HPersistable {
     private TestEnum enumValue = TestEnum.BLUE;
 
     @HColumn(family = "family1")
-    private int intValue = -999;
+    private int intValue = -1;
+
+    @HColumn(family = "family1")
+    private String strValue = "";
 
     @HColumn(family = "family1")
     private String title = "A title value";
@@ -65,8 +68,10 @@ public class TestObject implements HPersistable {
     @HColumn(family = "family3", mapKeysAsColumns = false)
     private Map<String, String> mapval2 = Maps.newHashMap();
 
-    public TestObject() {
-        this.keyval = "Val-" + System.nanoTime();
+    public TestObject(int val) {
+        this.keyval = "Val: " + System.nanoTime();
+
+        strValue = "v" + val;
 
         mapval1.put("key1", "val1");
         mapval1.put("key2", "val2");
@@ -105,7 +110,7 @@ public class TestObject implements HPersistable {
         final HTransaction tx = new HTransaction();
         int cnt = 2;
         for (int i = 0; i < cnt; i++) {
-            TestObject obj = new TestObject();
+            TestObject obj = new TestObject(i);
             tx.insert(obj);
         }
 
@@ -126,7 +131,7 @@ public class TestObject implements HPersistable {
         */
 
         HQuery<TestObject> q2 =
-                new HQuery<TestObject>("select * from TestObject WHERE keynum = 'dd' AND keynum IN ('as1234', 'dasd')",
+                new HQuery<TestObject>("select * from TestObject WHERE strValue = 'v1' AND strValue IN ('v2', 'v1')",
                                        new HQueryListenerAdapter<TestObject>() {
                                            public void onEachRow(final TestObject val) throws HPersistException {
                                                System.out.println("Values: " + val.keyval

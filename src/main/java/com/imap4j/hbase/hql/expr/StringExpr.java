@@ -10,11 +10,11 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringExpr implements AttribValue {
+public class StringExpr implements ValueExpr {
 
-    private final AttribValue expr;
+    private final ValueExpr expr;
 
-    public StringExpr(final AttribValue expr) {
+    public StringExpr(final ValueExpr expr) {
         this.expr = expr;
     }
 

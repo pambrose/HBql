@@ -37,6 +37,7 @@ import com.imap4j.hbase.hql.*;
 import com.imap4j.hbase.hql.expr.*;
 import com.imap4j.hbase.antlr.*;
 import com.google.common.collect.Lists;
+import java.util.Date;
 import com.imap4j.imap.antlr.imap.AntlrActions;
 }
 
@@ -121,7 +122,7 @@ simpleCondExpr returns [SimpleCondExpr retval]
 	;
 
 betweenExpr returns [BetweenExpr retval]
-	: attribRef[Number.class] keyNOT? keyBETWEEN numExpr keyAND numExpr
+	: attribRef[Number.class] keyNOT? keyBETWEEN numberExpr keyAND numberExpr
 	| attribRef[String.class] keyNOT? keyBETWEEN stringExpr keyAND stringExpr
 	| attribRef[Date.class] keyNOT? keyBETWEEN datetimeExpr keyAND datetimeExpr
 	;
@@ -130,22 +131,10 @@ likeExpr
 	: attribRef[String.class] keyNOT? keyLIKE pattern_value=stringLiteral; // ('ESCAPE' escape_character=string_literal)?;
 
 inExpr returns [InExpr retval]
-@init {retval = new InExpr();}
-	: attribRef[Number.class] keyNOT? keyIN LPAREN intItemList RPAREN
-	{
-	 retval.attrib = $attrib.text; 
-	 retval.not = $keyNOT.text != null; 
-	 retval.intList = $intlist.retval;
-	 retval.strList = $strlist.retval;
-	}
-	| attribRef[String.class] keyNOT? keyIN LPAREN strItemList RPAREN
-	{
-	 retval.attrib = $attrib.text; 
-	 retval.not = $keyNOT.text != null; 
-	 retval.intList = $intlist.retval;
-	 retval.strList = $strlist.retval;
-	}
-
+	: a=attribRef[Number.class] n=keyNOT? keyIN 
+	  LPAREN intlist=intItemList RPAREN	{retval = new IntInExpr($a.retval, ($n.text != null), $intlist.retval);} 
+	| a=attribRef[String.class] n=keyNOT? keyIN 
+	  LPAREN strlist=strItemList RPAREN	{retval = new StringInExpr($a.retval, ($n.text != null), $strlist.retval);} 
 	;
 
 intItemList returns [List<Integer> retval]
@@ -157,7 +146,7 @@ strItemList returns [List<String> retval]
 	: item1=strItem {retval.add($item1.text);} (COMMA item2=strItem {retval.add($item2.text);})*;
 	
 intItem returns [Integer retval]
-	: num=numericLiteral		{retval = Integer.valueOf($num.text);};
+	: num=numberLiteral		{retval = Integer.valueOf($num.text);};
 
 strItem : stringLiteral;
 
@@ -167,10 +156,10 @@ nullCompExpr
 compareExpr returns [CompareExpr retval]
 	: attribRef[String.class] compareOp stringExpr		{retval = new StringCompareExpr($attribRef.retval, $compareOp.retval, $stringExpr.retval);}
 	| attribRef[Date.class] compareOp datetimeExpr 
-	| attribRef[Number.class] compareOp numExpr		{retval = new NumberCompareExpr($attribRef.retval, $compareOp.retval, $numExpr.retval);}
+	| attribRef[Number.class] compareOp numberExpr		{retval = new NumberCompareExpr($attribRef.retval, $compareOp.retval, $numberExpr.retval);}
 	| stringExpr compareOp attribRef[String.class]		{retval = new StringCompareExpr($stringExpr.retval, $compareOp.retval, $attribRef.retval);}
 	| datetimeExpr compareOp attribRef[Date.class]
-	| numExpr compareOp attribRef[Number.class]		{retval = new NumberCompareExpr($numExpr.retval, $compareOp.retval, $attribRef.retval);}
+	| numberExpr compareOp attribRef[Number.class]		{retval = new NumberCompareExpr($numberExpr.retval, $compareOp.retval, $attribRef.retval);}
 	;
 	
 compareOp returns [CompareExpr.Operator retval]
@@ -182,26 +171,26 @@ compareOp returns [CompareExpr.Operator retval]
 	| LTGT		{retval = CompareExpr.Operator.LTGT;}
 	;
 
-numExpr returns [NumExpr retval]
-	: simpleNumExpr
+numberExpr returns [NumberExpr retval]
+	: simpleNumberExpr
 	;
 
-simpleNumExpr
-	: numTerm ((PLUS | MINUS) simpleNumExpr)?
-	//| simpleNumExpr (PLUS | MINUS) numTerm
+simpleNumberExpr
+	: numberTerm ((PLUS | MINUS) simpleNumberExpr)?
+	//| simpleNumberExpr (PLUS | MINUS) numberTerm
 	;
 
-numTerm
-	: numFactor ((STAR | DIV) numTerm)?
-	//| numTerm (STAR | DIV) numFactor
+numberTerm
+	: numberFactor ((STAR | DIV) numberTerm)?
+	//| numberTerm (STAR | DIV) numberFactor
 	;
 
-numFactor
-	: (PLUS | MINUS)? numPrimary;
+numberFactor
+	: (PLUS | MINUS)? numberPrimary;
 
-numPrimary
-	: numericLiteral
-	| LPAREN simpleNumExpr RPAREN
+numberPrimary
+	: numberLiteral
+	| LPAREN simpleNumberExpr RPAREN
 	| funcsReturningNumeric
 	;
 
@@ -217,8 +206,8 @@ datetimeExpr
 
 funcsReturningNumeric
 	: keyLENGTH LPAREN stringExpr RPAREN
-	| keyABS LPAREN simpleNumExpr RPAREN
-	| keyMOD LPAREN simpleNumExpr COMMA simpleNumExpr RPAREN
+	| keyABS LPAREN simpleNumberExpr RPAREN
+	| keyMOD LPAREN simpleNumberExpr COMMA simpleNumberExpr RPAREN
 	;
 
 funcReturningDatetime
@@ -229,7 +218,7 @@ funcReturningDatetime
 
 funcReturningStrings
 	: keyCONCAT LPAREN stringExpr COMMA stringExpr RPAREN
-	| keySUBSTRING LPAREN stringExpr COMMA simpleNumExpr COMMA simpleNumExpr RPAREN
+	| keySUBSTRING LPAREN stringExpr COMMA simpleNumberExpr COMMA simpleNumberExpr RPAREN
 	| keyTRIM LPAREN stringExpr RPAREN
 	| keyLOWER LPAREN stringExpr RPAREN
 	| keyUPPER LPAREN stringExpr RPAREN
@@ -241,7 +230,7 @@ attribRef [Class clazz] returns [AttribRef retval]
 stringLiteral returns [StringLiteral retval]
 	: v=QUOTED 				{retval = new StringLiteral($v.text);};
 	
-numericLiteral 
+numberLiteral 
 	: v=INT;
 		
 columnList returns [List<String> retval]

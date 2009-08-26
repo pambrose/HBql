@@ -10,7 +10,7 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 26, 2009
  * Time: 10:18:22 AM
  */
-public interface AttribValue {
+public interface ValueExpr {
 
     Object getValue(ClassSchema classSchema, HPersistable recordObj) throws HPersistException;
 }

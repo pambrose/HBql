@@ -12,25 +12,25 @@ import com.imap4j.hbase.hql.HPersistable;
  */
 public class StringCompareExpr extends CompareExpr {
 
-    public StringExpr expr;
+    public ValueExpr expr1;
+    public ValueExpr expr2;
 
 
-    public StringCompareExpr(final StringExpr expr) {
-        this.expr = expr;
-    }
-
-    public StringCompareExpr(final String attribName, final Operator op, final StringExpr expr) {
-        super(attribName, op);
-        this.expr = expr;
+    public StringCompareExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
+        super(op);
+        this.expr1 = expr1;
+        this.expr2 = expr2;
     }
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
 
-        final String
+        final String val1 = (String)expr1.getValue(classSchema, recordObj);
+        final String val2 = (String)expr2.getValue(classSchema, recordObj);
+
         switch (this.op) {
             case EQ: {
-                return expr.getValue(classSchema, recordObj).equals();
+                return val1.equals(val2);
             }
             case GT: {
 
@@ -48,6 +48,8 @@ public class StringCompareExpr extends CompareExpr {
 
             }
         }
+
+        throw new HPersistException("Error in StringCompareExpr.evaluate()");
     }
 
 }

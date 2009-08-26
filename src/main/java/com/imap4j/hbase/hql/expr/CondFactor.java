@@ -18,8 +18,8 @@ public class CondFactor implements Evaluatable {
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
         if (this.not)
-            return !this.primary.evaluate(nil, nil);
+            return !this.primary.evaluate(classSchema, recordObj);
         else
-            return this.primary.evaluate(nil, nil);
+            return this.primary.evaluate(classSchema, recordObj);
     }
 }

@@ -10,7 +10,7 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class AttribRef implements AttribValue {
+public class AttribRef implements ValueExpr {
 
     private final String attribName;
     private final Class clazz;

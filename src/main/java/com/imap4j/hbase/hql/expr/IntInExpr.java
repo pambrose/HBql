@@ -16,7 +16,7 @@ public class IntInExpr extends InExpr implements Evaluatable {
 
     private final List<Integer> intList;
 
-    public IntInExpr(final String attrib, final boolean not, final List<Integer> intList) {
+    public IntInExpr(final AttribRef attrib, final boolean not, final List<Integer> intList) {
         super(attrib, not);
         this.intList = intList;
     }
