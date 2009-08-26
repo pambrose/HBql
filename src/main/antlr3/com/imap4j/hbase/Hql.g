@@ -122,7 +122,7 @@ simpleCondExpr returns [SimpleCondExpr retval]
 
 betweenExpr returns [BetweenExpr retval]
 	: attribField keyNOT? keyBETWEEN 
-	  ( arithmeticExpr keyAND arithmeticExpr
+	  ( numExpr keyAND numExpr
 	  | stringExpr keyAND stringExpr
 	  | datetimeExpr keyAND datetimeExpr
 	  )
@@ -165,9 +165,9 @@ nullCompExpr
 
 compareExpr returns [CompareExpr retval]
 	: attrib=attribField op=compareOp 
-	  ( str=stringExpr 		{retval = new StringCompareExpr($attrib.text, $op.retval, $str.text);}
+	  ( str=stringExpr 		{retval = new StringCompareExpr($attrib.text, $op.retval, $str.zzztext);}
 	  | date=datetimeExpr 
-	  | num=arithmeticExpr
+	  | num=numExpr			{retval = new NumberCompareExpr($attrib.text, $op.retval, $num.text);}
 	  )
 	{
 	 retval.attrib = $attrib.text;
@@ -175,7 +175,7 @@ compareExpr returns [CompareExpr retval]
 	}
 	| ( str=stringExpr 		{retval = new StringCompareExpr($str.text);}
 	  | date=datetimeExpr 
-	  | num=arithmeticExpr
+	  | num=numExpr			{retval = new NumberCompareExpr($num.text);}
 	  )  
 	  op=compareOp attrib=attribField
 					{
@@ -184,7 +184,7 @@ compareExpr returns [CompareExpr retval]
 	  				}
 	;
 	
-compareOp	returns [CompareExpr.Operator retval]
+compareOp returns [CompareExpr.Operator retval]
 	: EQ 		{retval = CompareExpr.Operator.EQ;}
 	| GT 		{retval = CompareExpr.Operator.GT;}
 	| GTEQ 		{retval = CompareExpr.Operator.GTEQ;}
@@ -193,59 +193,57 @@ compareOp	returns [CompareExpr.Operator retval]
 	| LTGT		{retval = CompareExpr.Operator.LTGT;}
 	;
 
-arithmeticExpr
-	: simpleArithmeticExpr
+numExpr
+	: simpleNumExpr
 	;
 
-simpleArithmeticExpr
-	: arithmeticTerm ((PLUS | MINUS) simpleArithmeticExpr)?
-	//| simple_arithmetic_expr (PLUS | MINUS) arithmetic_term
+simpleNumExpr
+	: numTerm ((PLUS | MINUS) simpleNumExpr)?
+	//| simpleNumExpr (PLUS | MINUS) numTerm
 	;
 
-arithmeticTerm
-	: arithmeticFactor ((STAR | DIV) arithmeticTerm)?
-	//| arithmetic_term (STAR | DIV) arithmetic_factor
+numTerm
+	: numFactor ((STAR | DIV) numTerm)?
+	//| numTerm (STAR | DIV) numFactor
 	;
 
-arithmeticFactor
-	: ( PLUS | MINUS )? arithmeticPrimary;
+numFactor
+	: (PLUS | MINUS)? numPrimary;
 
-arithmeticPrimary
+numPrimary
 	: numericLiteral
-	| LPAREN simpleArithmeticExpr RPAREN
-	| funcsReturningNumerics
+	| LPAREN simpleNumExpr RPAREN
+	| funcsReturningNumeric
 	;
 
 stringExpr
-	: stringPrimary 
-	;
-
-stringPrimary
 	: stringLiteral
-	| funcs_returning_strings
+	| funcReturningStrings
+	| attribField
 	;
 
 datetimeExpr
-	: funcs_returning_datetime
+	: funcReturningDatetime
 	;
 
-funcsReturningNumerics
-	: keyLENGTH LPAREN stringPrimary RPAREN
-	| keyABS LPAREN simpleArithmeticExpr RPAREN
-	| keyMOD LPAREN simpleArithmeticExpr COMMA simpleArithmeticExpr RPAREN
+funcsReturningNumeric
+	: keyLENGTH LPAREN stringExpr RPAREN
+	| keyABS LPAREN simpleNumExpr RPAREN
+	| keyMOD LPAREN simpleNumExpr COMMA simpleNumExpr RPAREN
 	;
 
-funcs_returning_datetime
+funcReturningDatetime
 	: keyCURRENT_DATE
 	| keyCURRENT_TIME
-	| keyCURRENT_TIMESTAMP;
+	| keyCURRENT_TIMESTAMP
+	;
 
-funcs_returning_strings
-	: keyCONCAT LPAREN stringPrimary COMMA stringPrimary RPAREN
-	| keySUBSTRING LPAREN stringPrimary COMMA simpleArithmeticExpr COMMA simpleArithmeticExpr RPAREN
-	| keyTRIM LPAREN stringPrimary RPAREN
-	| keyLOWER LPAREN stringPrimary RPAREN
-	| keyUPPER LPAREN stringPrimary RPAREN
+funcReturningStrings
+	: keyCONCAT LPAREN stringExpr COMMA stringExpr RPAREN
+	| keySUBSTRING LPAREN stringExpr COMMA simpleNumExpr COMMA simpleNumExpr RPAREN
+	| keyTRIM LPAREN stringExpr RPAREN
+	| keyLOWER LPAREN stringExpr RPAREN
+	| keyUPPER LPAREN stringExpr RPAREN
 	;
 
 attribField

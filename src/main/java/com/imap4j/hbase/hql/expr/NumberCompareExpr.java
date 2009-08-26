@@ -6,16 +6,16 @@ package com.imap4j.hbase.hql.expr;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class StringCompareExpr extends CompareExpr {
+public class NumberCompareExpr extends CompareExpr {
 
-    public String value;
+    public Number value;
 
 
-    public StringCompareExpr(final String value) {
+    public NumberCompareExpr(final Number value) {
         this.value = value;
     }
 
-    public StringCompareExpr(final String attribName, final Operator op, final String value) {
+    public NumberCompareExpr(final String attribName, final Operator op, final Number value) {
         super(attribName, op);
         this.value = value;
     }
