@@ -203,12 +203,12 @@ arithmeticTerm
 	;
 
 arithmeticFactor
-	: ( PLUS | MINUS )? arithmetic_primary;
+	: ( PLUS | MINUS )? arithmeticPrimary;
 
-arithmetic_primary
+arithmeticPrimary
 	: numericLiteral
 	| LPAREN simpleArithmeticExpr RPAREN
-	| funcs_returning_numerics
+	| funcsReturningNumerics
 	;
 
 stringExpr
@@ -224,7 +224,7 @@ datetimeExpr
 	: funcs_returning_datetime
 	;
 
-funcs_returning_numerics
+funcsReturningNumerics
 	: keyLENGTH LPAREN stringPrimary RPAREN
 	| keyABS LPAREN simpleArithmeticExpr RPAREN
 	| keyMOD LPAREN simpleArithmeticExpr COMMA simpleArithmeticExpr RPAREN
