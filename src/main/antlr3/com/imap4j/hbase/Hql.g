@@ -45,31 +45,32 @@ package com.imap4j.hbase;
 import com.google.common.collect.Lists;
 }
 
-select_stmt returns [QueryArgs retval]
+selectStmt returns [QueryArgs retval]
 	: keySELECT (STAR | cols=column_list) 
-	  keyFROM table=dottedValue whereClause?	{retval = new QueryArgs($cols.retval, $table.text);};
+	  keyFROM table=dottedValue 
+	  where=whereClause?				{retval = new QueryArgs($cols.retval, $table.text, $where.retval);};
 
-exec_cmd returns [ExecArgs retval]
-	: create=create_stmt				{retval = $create.retval;}
-	| desc=describe_stmt 				{retval = $desc.retval;}
-	| show=show_stmt 				{retval = $show.retval;}
-	| del=delete_stmt 				{retval = $del.retval;}
-	| set=set_stmt					{retval = $set.retval;}
+execCommand returns [ExecArgs retval]
+	: create=createStmt				{retval = $create.retval;}
+	| desc=describeStmt 				{retval = $desc.retval;}
+	| show=showStmt 				{retval = $show.retval;}
+	| del=deleteStmt 				{retval = $del.retval;}
+	| set=setStmt					{retval = $set.retval;}
 	;
 
-create_stmt returns [CreateArgs retval]
+createStmt returns [CreateArgs retval]
 	: keyCREATE keyTABLE table=ID 			{retval = new CreateArgs($table.text);};
 
-describe_stmt returns [DescribeArgs retval]
+describeStmt returns [DescribeArgs retval]
 	: keyDESCRIBE keyTABLE table=ID 		{retval = new DescribeArgs($table.text);};
 
-show_stmt returns [ShowArgs retval]
+showStmt returns [ShowArgs retval]
 	: keySHOW keyTABLES 		 		{retval = new ShowArgs();};
 
-delete_stmt returns [DeleteArgs retval]
+deleteStmt returns [DeleteArgs retval]
 	: keyDELETE keyFROM table=ID whereClause?	{retval = new DeleteArgs($table.text);};
 
-set_stmt returns [SetArgs retval]
+setStmt returns [SetArgs retval]
 	: keySET var=ID (keyTO | EQ)? val=dottedValue 	{retval = new SetArgs($var.text, $val.text);};
 
 whereClause returns [CondExpr retval]

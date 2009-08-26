@@ -126,7 +126,7 @@ public class TestObject implements HPersistable {
         */
 
         HQuery<TestObject> q2 =
-                new HQuery<TestObject>("select * from TestObject WHERE keynum = '1234'",
+                new HQuery<TestObject>("select * from TestObject WHERE keynum IN ('as1234', 'dasd')",
                                        new HQueryListenerAdapter<TestObject>() {
                                            public void onEachRow(final TestObject val) throws HPersistException {
                                                System.out.println("Values: " + val.keyval

@@ -10,8 +10,8 @@ import com.imap4j.imap.antlr.util.GrammarRule;
  */
 public enum HqlRule {
 
-    SELECT(HqlGrammar.Hql, "select_stmt"),
-    EXEC(HqlGrammar.Hql, "exec_cmd"),
+    SELECT(HqlGrammar.Hql, "selectStmt"),
+    EXEC(HqlGrammar.Hql, "execCommand"),
     NONE(null, null);
 
     private final GrammarRule grammarRule;

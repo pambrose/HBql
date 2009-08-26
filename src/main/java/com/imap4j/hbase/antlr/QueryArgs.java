@@ -1,5 +1,7 @@
 package com.imap4j.hbase.antlr;
 
+import com.imap4j.hbase.hql.expr.CondExpr;
+
 import java.util.List;
 
 /**
@@ -12,10 +14,12 @@ public class QueryArgs {
 
     private final List<String> columnList;
     private final String tableName;
+    private final CondExpr whereExpr;
 
-    public QueryArgs(final List<String> columnList, final String tableName) {
+    public QueryArgs(final List<String> columnList, final String tableName, final CondExpr whereExpr) {
         this.tableName = tableName;
         this.columnList = columnList;
+        this.whereExpr = whereExpr;
     }
 
     public List<String> getColumnList() {
@@ -24,5 +28,9 @@ public class QueryArgs {
 
     public String getTableName() {
         return tableName;
+    }
+
+    public CondExpr getWhereExpr() {
+        return whereExpr;
     }
 }
