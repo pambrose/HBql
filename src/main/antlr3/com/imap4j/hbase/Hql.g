@@ -117,7 +117,7 @@ simpleCondExpr returns [SimpleCondExpr retval]
 	| likeExpr			//{retval.expr = $likeExpr.retval;}
 	| inExpr			{retval.expr = $inExpr.retval;}
 	| nullCompExpr			//{retval.expr = $nullCompExpr.retval;}
-	| compExpr 			//{retval.expr = $compExpr.retval;}
+	| compExpr 			{retval.expr = $compExpr.retval;}
 	;
 
 betweenExpr returns [BetweenExpr retval]
@@ -158,12 +158,24 @@ strItem : stringLiteral;
 nullCompExpr
 	: attribField keyIS (keyNOT)? keyNULL;
 
-compExpr
-	: attribField comp_op (stringExpr | datetimeExpr | arithmeticExpr)
-	//| (string_expr | datetime_expr | arithmetic_expr)  comp_op attr_field
+compExpr returns [CompExpr retval]
+@init {retval = new CompExpr();}
+	: attrib=attribField op=compareOp (stringExpr | datetimeExpr | arithmeticExpr)
+	{
+	 retval.attrib = $attrib.text;
+	 retval.op = $op.retval;
+	}
+	| (stringExpr | datetimeExpr | arithmeticExpr)  compareOp attribField
 	;
 	
-comp_op	: EQ | GT | GTEQ | LT | LTEQ | LTGT;
+compareOp	returns [CompExpr.Operator retval]
+	: EQ 		{retval = CompExpr.Operator.EQ;}
+	| GT 		{retval = CompExpr.Operator.GT;}
+	| GTEQ 		{retval = CompExpr.Operator.GTEQ;}
+	| LT 		{retval = CompExpr.Operator.LT;}
+	| LTEQ 		{retval = CompExpr.Operator.LTEQ;}
+	| LTGT		{retval = CompExpr.Operator.LTGT;}
+	;
 
 arithmeticExpr
 	: simple_arithmetic_expr
