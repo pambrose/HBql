@@ -23,6 +23,10 @@ public class IntInExpr extends InExpr implements Evaluatable {
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
+        final Number attribVal = (Number)this.attrib.getValue(classSchema, recordObj);
+        for (final Number val : intList)
+            if (attribVal.equals(val))
+                return true;
         return false;
     }
 }

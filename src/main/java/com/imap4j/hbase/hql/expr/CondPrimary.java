@@ -15,6 +15,6 @@ public class CondPrimary implements Evaluatable {
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
-        return expr.evaluate(classSchema, recordObj);
+        return this.expr.evaluate(classSchema, recordObj);
     }
 }

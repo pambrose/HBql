@@ -68,6 +68,9 @@ public class TestObject implements HPersistable {
     @HColumn(family = "family3", mapKeysAsColumns = false)
     private Map<String, String> mapval2 = Maps.newHashMap();
 
+    public TestObject() {
+    }
+
     public TestObject(int val) {
         this.keyval = "Val: " + System.nanoTime();
 
@@ -96,7 +99,7 @@ public class TestObject implements HPersistable {
         System.out.println(results.getOutput());
 
         // results = Hql.exec("delete from TestObject");
-        // System.out.println(results.getOutput());
+        System.out.println(results.getOutput());
 
         //results = Hql.exec("create table TestObject");
         System.out.println(results.getOutput());
@@ -108,7 +111,7 @@ public class TestObject implements HPersistable {
         System.out.println(results.getOutput());
 
         final HTransaction tx = new HTransaction();
-        int cnt = 2;
+        int cnt = 0;
         for (int i = 0; i < cnt; i++) {
             TestObject obj = new TestObject(i);
             tx.insert(obj);

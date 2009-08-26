@@ -102,7 +102,8 @@ public class HQuery<T extends HPersistable> {
                     }
                 }
 
-                this.getQueryListener().onEachRow(newobj);
+                if (qa.getWhereExpr().evaluate(classSchema, newobj))
+                    this.getQueryListener().onEachRow(newobj);
             }
 
         }

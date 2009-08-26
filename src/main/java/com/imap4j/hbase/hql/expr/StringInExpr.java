@@ -23,6 +23,10 @@ public class StringInExpr extends InExpr implements Evaluatable {
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
+        final String attribVal = (String)this.attrib.getValue(classSchema, recordObj);
+        for (final String val : strList)
+            if (attribVal.equals(val))
+                return true;
         return false;
     }
 }

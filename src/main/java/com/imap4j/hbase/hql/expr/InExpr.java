@@ -8,8 +8,8 @@ package com.imap4j.hbase.hql.expr;
  */
 public abstract class InExpr implements Evaluatable {
 
-    private final AttribRef attrib;
-    private final boolean not;
+    protected final AttribRef attrib;
+    protected final boolean not;
 
     protected InExpr(final AttribRef attrib, final boolean not) {
         this.attrib = attrib;
