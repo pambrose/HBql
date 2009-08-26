@@ -46,105 +46,110 @@ import com.google.common.collect.Lists;
 
 select_stmt returns [QueryArgs retval]
 	: keySELECT (STAR | cols=column_list) 
-	  keyFROM table=dotted_value where_clause?		{retval = new QueryArgs($cols.retval, $table.text);};
+	  keyFROM table=dottedValue whereClause?	{retval = new QueryArgs($cols.retval, $table.text);};
 
 exec_cmd returns [ExecArgs retval]
-	: create=create_stmt					{retval = $create.retval;}
-	| desc=describe_stmt 					{retval = $desc.retval;}
-	| show=show_stmt 					{retval = $show.retval;}
-	| del=delete_stmt 					{retval = $del.retval;}
-	| set=set_stmt						{retval = $set.retval;}
+	: create=create_stmt				{retval = $create.retval;}
+	| desc=describe_stmt 				{retval = $desc.retval;}
+	| show=show_stmt 				{retval = $show.retval;}
+	| del=delete_stmt 				{retval = $del.retval;}
+	| set=set_stmt					{retval = $set.retval;}
 	;
 
 create_stmt returns [CreateArgs retval]
-	: keyCREATE keyTABLE table=ID 				{retval = new CreateArgs($table.text);};
+	: keyCREATE keyTABLE table=ID 			{retval = new CreateArgs($table.text);};
 
 describe_stmt returns [DescribeArgs retval]
-	: keyDESCRIBE keyTABLE table=ID 			{retval = new DescribeArgs($table.text);};
+	: keyDESCRIBE keyTABLE table=ID 		{retval = new DescribeArgs($table.text);};
 
 show_stmt returns [ShowArgs retval]
-	: keySHOW keyTABLES 		 			{retval = new ShowArgs();};
+	: keySHOW keyTABLES 		 		{retval = new ShowArgs();};
 
 delete_stmt returns [DeleteArgs retval]
-	: keyDELETE keyFROM table=ID where_clause?		{retval = new DeleteArgs($table.text);};
+	: keyDELETE keyFROM table=ID whereClause?	{retval = new DeleteArgs($table.text);};
 
 set_stmt returns [SetArgs retval]
-	: keySET var=ID (keyTO | EQ)? val=dotted_value 	{retval = new SetArgs($var.text, $val.text);};
+	: keySET var=ID (keyTO | EQ)? val=dottedValue 	{retval = new SetArgs($var.text, $val.text);};
 
-where_clause returns [CondExpr retval]
-	: keyWHERE c=cond_expr {retval = $c.retval;}
-	;
+whereClause returns [CondExpr retval]
+	: keyWHERE c=condExpr 				{retval = $c.retval;};
 		
-cond_expr returns [CondExpr retval]
+condExpr returns [CondExpr retval]
 @init {retval = new CondExpr();}
-	: cond_term (keyOR cond_expr)?
+	: term=condTerm (keyOR expr=condExpr)?
 	{
-	 retval.cond_term = $cond_term.retval;
-	 retval.cond_expr = $cond_expr.retval;
+	 retval.term = $term.retval;
+	 retval.expr = $expr.retval;
 	}
 	//| cond_expr keyOR cond_term
 	;
 
-cond_term returns [CondTerm retval]
+condTerm returns [CondTerm retval]
 @init {retval = new CondTerm();}
-	: cond_factor (keyAND cond_term)?
+	: factor=condFactor (keyAND term=condTerm)?
 	{
-	 retval.cond_factor = $cond_factor.retval;
-	 retval.cond_term = $cond_term.retval;
-	 
+	 retval.factor = $factor.retval;
+	 retval.term = $term.retval;	 
 	}
 	//| cond_term keyAND cond_factor
 	;
 	
-cond_factor returns [CondFactor retval]
+condFactor returns [CondFactor retval]
 @init {retval = new CondFactor();}
-	: keyNOT? cond_primary
+	: keyNOT? primary=condPrimary
 	{
-	  retval.not = $keyNOT.txt != null;
-	  retval.cond_primary = $cond_primary.retval;
+	  retval.not = $keyNOT.text != null;
+	  retval.primary = $primary.retval;
 	}
 	;
 
-cond_primary returns [CondPrimary retval]
+condPrimary returns [CondPrimary retval]
 @init {retval = new CondPrimary();}
-	: simple_cond_expr 
-	| LPAREN cond_expr RPAREN
+	: simpleCondExpr  		{retval.expr = $simpleCondExpr.retval;}
+	| LPAREN condExpr RPAREN	{retval.expr = $condExpr.retval;}
 	;
 
-simple_cond_expr
-	: between_expr
-	| like_expr
-	| in_expr
-	| null_comp_expr
-	| comp_expr 
+simpleCondExpr returns [SimpleCondExpr retval]
+@init {retval = new SimpleCondExpr();}
+	: betweenExpr			//{retval.expr = $betweenExpr.retval;}
+	| likeExpr			//{retval.expr = $likeExpr.retval;}
+	| inExpr			{retval.expr = $inExpr.retval;}
+	| nullCompExpr			//{retval.expr = $nullCompExpr.retval;}
+	| compExpr 			//{retval.expr = $compExpr.retval;}
 	;
 
-between_expr
-	: attr_field keyNOT? keyBETWEEN 
-	  ( arithmetic_expr keyAND arithmetic_expr
-	  | string_expr keyAND string_expr
-	  | datetime_expr keyAND datetime_expr
+betweenExpr returns [BetweenExpr retval]
+	: attrField keyNOT? keyBETWEEN 
+	  ( arithmeticExpr keyAND arithmeticExpr
+	  | stringExpr keyAND stringExpr
+	  | datetimeExpr keyAND datetimeExpr
 	  )
 	;
 
-like_expr
-	: attr_field keyNOT? keyLIKE pattern_value=string_literal; // ('ESCAPE' escape_character=string_literal)?;
+likeExpr 
+	: attrField keyNOT? keyLIKE pattern_value=stringLiteral; // ('ESCAPE' escape_character=string_literal)?;
 
-in_expr	: attr_field keyNOT? keyIN LPAREN in_item (COMMA in_item)* RPAREN;
+inExpr returns [InExpr retval]
+@init {retval = new InExpr();}
+	: attrField keyNOT? keyIN LPAREN inItem (COMMA inItem)* RPAREN
+	{
+	  
+	}
+	;
 
-in_item : string_literal | numeric_literal;
+inItem : stringLiteral | numericLiteral;
 
-null_comp_expr
-	: attr_field keyIS (keyNOT)? keyNULL;
+nullCompExpr
+	: attrField keyIS (keyNOT)? keyNULL;
 
-comp_expr
-	: attr_field comp_op (string_expr | datetime_expr | arithmetic_expr)
+compExpr
+	: attrField comp_op (stringExpr | datetimeExpr | arithmeticExpr)
 	//| (string_expr | datetime_expr | arithmetic_expr)  comp_op attr_field
 	;
 	
 comp_op	: EQ | GT | GTEQ | LT | LTEQ | LTGT;
 
-arithmetic_expr
+arithmeticExpr
 	: simple_arithmetic_expr
 	;
 
@@ -162,21 +167,21 @@ arithmetic_factor
 	: ( PLUS | MINUS )? arithmetic_primary;
 
 arithmetic_primary
-	: numeric_literal
+	: numericLiteral
 	| LPAREN simple_arithmetic_expr RPAREN
 	| funcs_returning_numerics
 	;
 
-string_expr
+stringExpr
 	: string_primary 
 	;
 
 string_primary
-	: string_literal
+	: stringLiteral
 	| funcs_returning_strings
 	;
 
-datetime_expr
+datetimeExpr
 	: funcs_returning_datetime
 	;
 
@@ -199,13 +204,13 @@ funcs_returning_strings
 	| keyUPPER LPAREN string_primary RPAREN
 	;
 
-attr_field
+attrField
 	: ID;
 		
-string_literal
+stringLiteral
 	: QUOTED;
 	
-numeric_literal 
+numericLiteral 
 	: INT;
 		
 column_list returns [List<String> retval]
@@ -217,9 +222,9 @@ qstring_list returns [List<String> retval]
 	: qstring[retval] (COMMA qstring[retval])*;
 
 column [List<String> list]	
-	: charstr=dotted_value 					{if (list != null) list.add($charstr.text);};
+	: charstr=dottedValue 					{if (list != null) list.add($charstr.text);};
 
-dotted_value	
+dottedValue	
 	: ID ((DOT | COLON) ID)*;
 
 qstring	[List<String> list]
@@ -271,4 +276,4 @@ keyABS 		: {AntlrActions.isKeyword(input, "ABS")}? ID;
 keyMOD	 	: {AntlrActions.isKeyword(input, "MOD")}? ID;
 keyCURRENT_DATE	: {AntlrActions.isKeyword(input, "CURRENT_DATE")}? ID;
 keyCURRENT_TIME : {AntlrActions.isKeyword(input, "CURRENT_TIME")}? ID;
-keyCURRENT_TIMESTAMP 	: {AntlrActions.isKeyword(input, "CURRENT_TIMESTAMP")}? ID;
+keyCURRENT_TIMESTAMP : {AntlrActions.isKeyword(input, "CURRENT_TIMESTAMP")}? ID;
