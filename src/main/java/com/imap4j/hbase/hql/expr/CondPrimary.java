@@ -7,7 +7,7 @@ package com.imap4j.hbase.hql.expr;
  * Time: 8:28:42 PM
  */
 public class CondPrimary implements Evaluatable {
-    public SimpleCondExpr expr;
+    public Evaluatable expr;
 
     @Override
     public boolean evaluate() {

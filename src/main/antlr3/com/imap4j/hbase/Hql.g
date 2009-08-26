@@ -132,19 +132,27 @@ likeExpr
 
 inExpr returns [InExpr retval]
 @init {retval = new InExpr();}
-	: attrib=attribField keyNOT? keyIN LPAREN list=inItemList RPAREN
+	: attrib=attribField keyNOT? keyIN LPAREN (intlist=intItemList | strlist=strItemList) RPAREN
 	{
 	 retval.attrib = $attrib.text; 
 	 retval.not = $keyNOT.text != null; 
-	 retval.inList = $list.retval;
+	 retval.intList = $intlist.retval;
+	 retval.strList = $strlist.retval;
 	}
 	;
 
-inItemList returns [List<String> retval]
+intItemList returns [List<Integer> retval]
 @init {retval = Lists.newArrayList();}
-	: item1=inItem {retval.add($item1.text);} (COMMA item2=inItem {retval.add($item2.text);})*;
+	: item1=intItem {retval.add($item1.retval);} (COMMA item2=intItem {retval.add($item2.retval);})*;
 	
-inItem : stringLiteral | numericLiteral;
+strItemList returns [List<String> retval]
+@init {retval = Lists.newArrayList();}
+	: item1=strItem {retval.add($item1.text);} (COMMA item2=strItem {retval.add($item2.text);})*;
+	
+intItem returns [Integer retval]
+	: num=numericLiteral		{retval = Integer.valueOf($num.text);};
+
+strItem : stringLiteral;
 
 nullCompExpr
 	: attribField keyIS (keyNOT)? keyNULL;

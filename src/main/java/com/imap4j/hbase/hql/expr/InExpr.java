@@ -1,5 +1,7 @@
 package com.imap4j.hbase.hql.expr;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -10,6 +12,8 @@ public class InExpr implements Evaluatable {
 
     public String attrib;
     public boolean not;
+    public List<Integer> intList;
+    public List<String> strList;
 
     @Override
     public boolean evaluate() {
