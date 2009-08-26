@@ -3,8 +3,6 @@ grammar Hql;
 options {
 	superClass=HBaseParser;
 	backtrack=true;
-	output=AST;
-    	ASTLabelType=CommonTree;
 }
 
 tokens {
@@ -73,27 +71,42 @@ delete_stmt returns [DeleteArgs retval]
 set_stmt returns [SetArgs retval]
 	: keySET var=ID (keyTO | EQ)? val=dotted_value 	{retval = new SetArgs($var.text, $val.text);};
 
-where_clause	
-	: keyWHERE c=cond_expr
-	{
-	  System.out.println($c.tree==null?"null":$c.tree.toStringTree());
-	}
+where_clause returns [CondExpr retval]
+	: keyWHERE c=cond_expr {retval = $c.retval;}
 	;
 		
-cond_expr
+cond_expr returns [CondExpr retval]
+@init {retval = new CondExpr();}
 	: cond_term (keyOR cond_expr)?
+	{
+	 retval.cond_term = $cond_term.retval;
+	 retval.cond_expr = $cond_expr.retval;
+	}
 	//| cond_expr keyOR cond_term
 	;
 
-cond_term
+cond_term returns [CondTerm retval]
+@init {retval = new CondTerm();}
 	: cond_factor (keyAND cond_term)?
+	{
+	 retval.cond_factor = $cond_factor.retval;
+	 retval.cond_term = $cond_term.retval;
+	 
+	}
 	//| cond_term keyAND cond_factor
 	;
 	
-cond_factor
-	: (keyNOT)? cond_primary;
+cond_factor returns [CondFactor retval]
+@init {retval = new CondFactor();}
+	: keyNOT? cond_primary
+	{
+	  retval.not = $keyNOT.txt != null;
+	  retval.cond_primary = $cond_primary.retval;
+	}
+	;
 
-cond_primary
+cond_primary returns [CondPrimary retval]
+@init {retval = new CondPrimary();}
 	: simple_cond_expr 
 	| LPAREN cond_expr RPAREN
 	;
