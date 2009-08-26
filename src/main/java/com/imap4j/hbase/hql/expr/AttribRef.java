@@ -2,21 +2,18 @@ package com.imap4j.hbase.hql.expr;
 
 import com.imap4j.hbase.hql.ClassSchema;
 
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringInExpr extends InExpr implements Evaluatable {
+public class AttribRef implements Evaluatable {
 
-    private final List<String> strList;
+    private final String field;
 
-    public StringInExpr(final String attrib, final boolean not, final List<String> strList) {
-        super(attrib, not);
-        this.strList = strList;
+    public AttribRef(final String field) {
+        this.field = field;
     }
 
     @Override

@@ -121,7 +121,7 @@ simpleCondExpr returns [SimpleCondExpr retval]
 	;
 
 betweenExpr returns [BetweenExpr retval]
-	: attribField keyNOT? keyBETWEEN 
+	: attribRef keyNOT? keyBETWEEN 
 	  ( numExpr keyAND numExpr
 	  | stringExpr keyAND stringExpr
 	  | datetimeExpr keyAND datetimeExpr
@@ -129,11 +129,11 @@ betweenExpr returns [BetweenExpr retval]
 	;
 
 likeExpr 
-	: attribField keyNOT? keyLIKE pattern_value=stringLiteral; // ('ESCAPE' escape_character=string_literal)?;
+	: attribRef keyNOT? keyLIKE pattern_value=stringLiteral; // ('ESCAPE' escape_character=string_literal)?;
 
 inExpr returns [InExpr retval]
 @init {retval = new InExpr();}
-	: attrib=attribField keyNOT? keyIN 
+	: attrib=attribRef keyNOT? keyIN 
 	  LPAREN 
 	  (intlist=intItemList 	{retval = 
 	  |strlist=strItemList
@@ -161,23 +161,23 @@ intItem returns [Integer retval]
 strItem : stringLiteral;
 
 nullCompExpr
-	: attribField keyIS (keyNOT)? keyNULL;
+	: attribRef keyIS (keyNOT)? keyNULL;
 
 compareExpr returns [CompareExpr retval]
-	: attrib=attribField op=compareOp 
-	  ( str=stringExpr 		{retval = new StringCompareExpr($attrib.text, $op.retval, $str.zzztext);}
+	: attrib=attribRef op=compareOp 
+	  ( str=stringExpr 		{retval = new StringCompareExpr($attrib.text, $op.retval, $str.retval);}
 	  | date=datetimeExpr 
-	  | num=numExpr			{retval = new NumberCompareExpr($attrib.text, $op.retval, $num.text);}
+	  | num=numExpr			{retval = new NumberCompareExpr($attrib.text, $op.retval, $num.retval);}
 	  )
 	{
 	 retval.attrib = $attrib.text;
 	 retval.op = $op.retval;
 	}
-	| ( str=stringExpr 		{retval = new StringCompareExpr($str.text);}
+	| ( str=stringExpr 		{retval = new StringCompareExpr($str.retval);}
 	  | date=datetimeExpr 
-	  | num=numExpr			{retval = new NumberCompareExpr($num.text);}
+	  | num=numExpr			{retval = new NumberCompareExpr($num.retval);}
 	  )  
-	  op=compareOp attrib=attribField
+	  op=compareOp attrib=attribRef
 					{
 	    				 retval.op = $op.retval;
 	    				 retval.attrib = $attrib.text;
@@ -216,10 +216,10 @@ numPrimary
 	| funcsReturningNumeric
 	;
 
-stringExpr
-	: stringLiteral
-	| funcReturningStrings
-	| attribField
+stringExpr returns [StringExpr retval]
+	: lit=stringLiteral			{retval = new StringExpr($lit.retval);}
+	| func=funcReturningStrings
+	| attrib=attribRef			{retval = StringExpr($attrib.retval);}
 	;
 
 datetimeExpr
@@ -246,11 +246,11 @@ funcReturningStrings
 	| keyUPPER LPAREN stringExpr RPAREN
 	;
 
-attribField
-	: ID;
+attribRef returns [AttribRef retval]
+	: v=ID 		{retval = new AttribRef($v.text);};
 		
-stringLiteral
-	: QUOTED;
+stringLiteral returns [StringLiteral retval]
+	: v=QUOTED 	{retval = new StringLiteral($v.text);};
 	
 numericLiteral 
 	: INT;

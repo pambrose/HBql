@@ -53,9 +53,7 @@ public class HTransaction {
                 }
                 else {
                     final byte[] instval = attrib.getValueAsBytes(declaringObj);
-                    put.add(attrib.getFamilyName().getBytes(),
-                            attrib.getColumnName().getBytes(),
-                            instval);
+                    put.add(attrib.getFamilyName().getBytes(), attrib.getColumnName().getBytes(), instval);
                 }
             }
         }

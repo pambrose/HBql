@@ -10,11 +10,11 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringInExpr extends InExpr implements Evaluatable {
+public class StringLiteral implements Evaluatable {
 
-    private final List<String> strList;
+    private final String value;
 
-    public StringInExpr(final String attrib, final boolean not, final List<String> strList) {
+    public StringLiteral(final String attrib, final boolean not, final List<String> strList) {
         super(attrib, not);
         this.strList = strList;
     }

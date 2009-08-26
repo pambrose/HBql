@@ -1,5 +1,7 @@
 package com.imap4j.hbase.hql.expr;
 
+import com.imap4j.hbase.hql.ClassSchema;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -8,15 +10,40 @@ package com.imap4j.hbase.hql.expr;
  */
 public class StringCompareExpr extends CompareExpr {
 
-    public String value;
+    public StringExpr expr;
 
 
-    public StringCompareExpr(final String value) {
-        this.value = value;
+    public StringCompareExpr(final StringExpr expr) {
+        this.expr = expr;
     }
 
-    public StringCompareExpr(final String attribName, final Operator op, final String value) {
+    public StringCompareExpr(final String attribName, final Operator op, final StringExpr expr) {
         super(attribName, op);
-        this.value = value;
+        this.expr = expr;
     }
+
+    @Override
+    public boolean evaluate(final ClassSchema classSchema, final Object recordObj) {
+        switch (this.op) {
+            case EQ: {
+                return
+            }
+            case GT: {
+
+            }
+            case GTEQ: {
+
+            }
+            case LT: {
+
+            }
+            case LTEQ: {
+
+            }
+            case LTGT: {
+
+            }
+        }
+    }
+
 }

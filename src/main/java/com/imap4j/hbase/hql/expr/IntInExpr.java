@@ -1,5 +1,7 @@
 package com.imap4j.hbase.hql.expr;
 
+import com.imap4j.hbase.hql.ClassSchema;
+
 import java.util.List;
 
 /**
@@ -18,7 +20,7 @@ public class IntInExpr extends InExpr implements Evaluatable {
     }
 
     @Override
-    public boolean evaluate() {
+    public boolean evaluate(final ClassSchema classSchema, final Object recordObj) {
         return false;
     }
 }

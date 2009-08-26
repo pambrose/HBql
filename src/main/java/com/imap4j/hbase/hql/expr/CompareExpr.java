@@ -9,7 +9,6 @@ package com.imap4j.hbase.hql.expr;
 public abstract class CompareExpr implements Evaluatable {
 
     public enum Operator {
-
         EQ,
         GT,
         GTEQ,
@@ -28,11 +27,6 @@ public abstract class CompareExpr implements Evaluatable {
     protected CompareExpr(final String attrib, final Operator op) {
         this.attrib = attrib;
         this.op = op;
-    }
-
-    @Override
-    public boolean evaluate() {
-        return false;
     }
 
 }

@@ -1,5 +1,7 @@
 package com.imap4j.hbase.hql.expr;
 
+import com.imap4j.hbase.hql.ClassSchema;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -8,6 +10,6 @@ package com.imap4j.hbase.hql.expr;
  */
 public interface Evaluatable {
 
-    boolean evaluate();
+    boolean evaluate(final ClassSchema classSchema, final Object recordObj);
 
 }

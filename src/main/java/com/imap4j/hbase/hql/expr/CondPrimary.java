@@ -1,5 +1,7 @@
 package com.imap4j.hbase.hql.expr;
 
+import com.imap4j.hbase.hql.ClassSchema;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -10,7 +12,7 @@ public class CondPrimary implements Evaluatable {
     public Evaluatable expr;
 
     @Override
-    public boolean evaluate() {
-        return expr.evaluate();
+    public boolean evaluate(final ClassSchema classSchema, final Object recordObj) {
+        return expr.evaluate(nil, nil);
     }
 }

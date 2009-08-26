@@ -8,16 +8,16 @@ import com.imap4j.hbase.hql.ClassSchema;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class OrExpr implements Evaluatable {
+public class StringExpr implements Evaluatable {
 
-    public AndExpr expr1;
-    public OrExpr expr2;
+    private final Evaluatable expr;
+
+    public StringExpr(final Evaluatable expr) {
+        this.expr = expr;
+    }
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final Object recordObj) {
-        if (expr2 == null)
-            return expr1.evaluate(nil, nil);
-        else
-            return expr1.evaluate(nil, nil) || expr2.evaluate(nil, nil);
+        return this.expr.evaluate(classSchema, recordObj);
     }
 }
