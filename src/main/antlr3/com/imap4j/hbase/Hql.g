@@ -46,7 +46,7 @@ import com.google.common.collect.Lists;
 }
 
 selectStmt returns [QueryArgs retval]
-	: keySELECT (STAR | cols=column_list) 
+	: keySELECT (STAR | cols=columnList) 
 	  keyFROM table=dottedValue 
 	  where=whereClause?				{retval = new QueryArgs($cols.retval, $table.text, $where.retval);};
 
@@ -117,7 +117,7 @@ simpleCondExpr returns [SimpleCondExpr retval]
 	| likeExpr			//{retval.expr = $likeExpr.retval;}
 	| inExpr			{retval.expr = $inExpr.retval;}
 	| nullCompExpr			//{retval.expr = $nullCompExpr.retval;}
-	| compExpr 			{retval.expr = $compExpr.retval;}
+	| compareExpr 			{retval.expr = $compareExpr.retval;}
 	;
 
 betweenExpr returns [BetweenExpr retval]
@@ -158,53 +158,64 @@ strItem : stringLiteral;
 nullCompExpr
 	: attribField keyIS (keyNOT)? keyNULL;
 
-compExpr returns [CompExpr retval]
-@init {retval = new CompExpr();}
-	: attrib=attribField op=compareOp (stringExpr | datetimeExpr | arithmeticExpr)
+compareExpr returns [CompareExpr retval]
+	: attrib=attribField op=compareOp 
+	  ( str=stringExpr 		{retval = new StringCompareExpr($attrib.text, $op.retval, $str.text);}
+	  | date=datetimeExpr 
+	  | num=arithmeticExpr
+	  )
 	{
 	 retval.attrib = $attrib.text;
 	 retval.op = $op.retval;
 	}
-	| (stringExpr | datetimeExpr | arithmeticExpr)  compareOp attribField
+	| ( str=stringExpr 		{retval = new StringCompareExpr($attrib.text, $op.retval, $str.text);}
+	  | date=datetimeExpr 
+	  | num=arithmeticExpr
+	  )  
+	  op=compareOp attrib=attribField
+	  {
+	    retval.op = $op.retval;
+	    retval.attrib = $attrib.text;
+	  }
 	;
 	
-compareOp	returns [CompExpr.Operator retval]
-	: EQ 		{retval = CompExpr.Operator.EQ;}
-	| GT 		{retval = CompExpr.Operator.GT;}
-	| GTEQ 		{retval = CompExpr.Operator.GTEQ;}
-	| LT 		{retval = CompExpr.Operator.LT;}
-	| LTEQ 		{retval = CompExpr.Operator.LTEQ;}
-	| LTGT		{retval = CompExpr.Operator.LTGT;}
+compareOp	returns [CompareExpr.Operator retval]
+	: EQ 		{retval = CompareExpr.Operator.EQ;}
+	| GT 		{retval = CompareExpr.Operator.GT;}
+	| GTEQ 		{retval = CompareExpr.Operator.GTEQ;}
+	| LT 		{retval = CompareExpr.Operator.LT;}
+	| LTEQ 		{retval = CompareExpr.Operator.LTEQ;}
+	| LTGT		{retval = CompareExpr.Operator.LTGT;}
 	;
 
 arithmeticExpr
-	: simple_arithmetic_expr
+	: simpleArithmeticExpr
 	;
 
-simple_arithmetic_expr
-	: arithmetic_term ((PLUS | MINUS) simple_arithmetic_expr)?
+simpleArithmeticExpr
+	: arithmeticTerm ((PLUS | MINUS) simpleArithmeticExpr)?
 	//| simple_arithmetic_expr (PLUS | MINUS) arithmetic_term
 	;
 
-arithmetic_term
-	: arithmetic_factor ((STAR | DIV) arithmetic_term)?
+arithmeticTerm
+	: arithmeticFactor ((STAR | DIV) arithmeticTerm)?
 	//| arithmetic_term (STAR | DIV) arithmetic_factor
 	;
 
-arithmetic_factor
+arithmeticFactor
 	: ( PLUS | MINUS )? arithmetic_primary;
 
 arithmetic_primary
 	: numericLiteral
-	| LPAREN simple_arithmetic_expr RPAREN
+	| LPAREN simpleArithmeticExpr RPAREN
 	| funcs_returning_numerics
 	;
 
 stringExpr
-	: string_primary 
+	: stringPrimary 
 	;
 
-string_primary
+stringPrimary
 	: stringLiteral
 	| funcs_returning_strings
 	;
@@ -214,9 +225,9 @@ datetimeExpr
 	;
 
 funcs_returning_numerics
-	: keyLENGTH LPAREN string_primary RPAREN
-	| keyABS LPAREN simple_arithmetic_expr RPAREN
-	| keyMOD LPAREN simple_arithmetic_expr COMMA simple_arithmetic_expr RPAREN
+	: keyLENGTH LPAREN stringPrimary RPAREN
+	| keyABS LPAREN simpleArithmeticExpr RPAREN
+	| keyMOD LPAREN simpleArithmeticExpr COMMA simpleArithmeticExpr RPAREN
 	;
 
 funcs_returning_datetime
@@ -225,11 +236,11 @@ funcs_returning_datetime
 	| keyCURRENT_TIMESTAMP;
 
 funcs_returning_strings
-	: keyCONCAT LPAREN string_primary COMMA string_primary RPAREN
-	| keySUBSTRING LPAREN string_primary COMMA simple_arithmetic_expr COMMA simple_arithmetic_expr RPAREN
-	| keyTRIM LPAREN string_primary RPAREN
-	| keyLOWER LPAREN string_primary RPAREN
-	| keyUPPER LPAREN string_primary RPAREN
+	: keyCONCAT LPAREN stringPrimary COMMA stringPrimary RPAREN
+	| keySUBSTRING LPAREN stringPrimary COMMA simpleArithmeticExpr COMMA simpleArithmeticExpr RPAREN
+	| keyTRIM LPAREN stringPrimary RPAREN
+	| keyLOWER LPAREN stringPrimary RPAREN
+	| keyUPPER LPAREN stringPrimary RPAREN
 	;
 
 attribField
@@ -241,11 +252,11 @@ stringLiteral
 numericLiteral 
 	: INT;
 		
-column_list returns [List<String> retval]
+columnList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
 	: column[retval] (COMMA column[retval])*;
 
-qstring_list returns [List<String> retval]
+qstringList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
 	: qstring[retval] (COMMA qstring[retval])*;
 

@@ -6,7 +6,7 @@ package com.imap4j.hbase.hql.expr;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class CompExpr implements Evaluatable {
+public abstract class CompareExpr implements Evaluatable {
 
     public enum Operator {
 
@@ -17,6 +17,17 @@ public class CompExpr implements Evaluatable {
         LTEQ,
         LTGT
 
+    }
+
+    public String attrib;
+    public CompareExpr.Operator op;
+
+    protected CompareExpr() {
+    }
+
+    protected CompareExpr(final String attrib, final Operator op) {
+        this.attrib = attrib;
+        this.op = op;
     }
 
     @Override

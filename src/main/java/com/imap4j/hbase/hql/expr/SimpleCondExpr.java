@@ -8,7 +8,7 @@ package com.imap4j.hbase.hql.expr;
  */
 public class SimpleCondExpr implements Evaluatable {
 
-    public InExpr expr;
+    public Evaluatable expr;
 
     @Override
     public boolean evaluate() {
