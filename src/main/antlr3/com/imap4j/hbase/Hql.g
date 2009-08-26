@@ -219,7 +219,7 @@ numPrimary
 stringExpr returns [StringExpr retval]
 	: lit=stringLiteral			{retval = new StringExpr($lit.retval);}
 	| func=funcReturningStrings
-	| attrib=attribRef			{retval = StringExpr($attrib.retval);}
+	| attrib=attribRef[String.class]	{retval = new StringExpr($attrib.retval);}
 	;
 
 datetimeExpr
@@ -246,14 +246,14 @@ funcReturningStrings
 	| keyUPPER LPAREN stringExpr RPAREN
 	;
 
-attribRef returns [AttribRef retval]
-	: v=ID 					{retval = new AttribRef($v.text);};
+attribRef [Class clazz] returns [AttribRef retval]
+	: v=ID 					{retval = new AttribRef(clazz, $v.text);};
 		
 stringLiteral returns [StringLiteral retval]
 	: v=QUOTED 				{retval = new StringLiteral($v.text);};
 	
 numericLiteral 
-	: INT;
+	: v=INT;
 		
 columnList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
@@ -264,13 +264,13 @@ qstringList returns [List<String> retval]
 	: qstring[retval] (COMMA qstring[retval])*;
 
 column [List<String> list]	
-	: charstr=dottedValue 					{if (list != null) list.add($charstr.text);};
+	: charstr=dottedValue 			{if (list != null) list.add($charstr.text);};
 
 dottedValue	
 	: ID ((DOT | COLON) ID)*;
 
 qstring	[List<String> list]
-	: QUOTED 						{if (list != null) list.add($QUOTED.text);};
+	: QUOTED 				{if (list != null) list.add($QUOTED.text);};
 
 INT	: DIGIT+;
 ID	: CHAR (CHAR | DIGIT)*;

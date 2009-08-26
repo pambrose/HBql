@@ -26,9 +26,11 @@ public class StringCompareExpr extends CompareExpr {
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
+
+        final String
         switch (this.op) {
             case EQ: {
-                return
+                return expr.getValue(classSchema, recordObj).equals();
             }
             case GT: {
 

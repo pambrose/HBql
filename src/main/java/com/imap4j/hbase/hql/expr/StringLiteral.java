@@ -9,7 +9,7 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringLiteral implements StringValue {
+public class StringLiteral implements AttribValue {
 
     private final String value;
 
@@ -18,7 +18,7 @@ public class StringLiteral implements StringValue {
     }
 
     @Override
-    public String getValue(final ClassSchema classSchema, final HPersistable recordObj) {
+    public Object getValue(final ClassSchema classSchema, final HPersistable recordObj) {
         return this.value;
     }
 }

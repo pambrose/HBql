@@ -10,16 +10,19 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringAttribRef implements StringValue {
+public class AttribRef implements AttribValue {
 
     private final String attribName;
+    private final Class clazz;
 
-    public StringAttribRef(final String attribName) {
+    public AttribRef(final Class clazz, final String attribName) {
+        this.clazz = clazz;
         this.attribName = attribName;
     }
 
     @Override
-    public String getValue(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
+    public Object getValue(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
         return (String)classSchema.getFieldAttribByField(this.attribName).getValue(recordObj);
     }
+
 }

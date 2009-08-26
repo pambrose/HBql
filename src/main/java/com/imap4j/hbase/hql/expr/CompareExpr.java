@@ -18,13 +18,13 @@ public abstract class CompareExpr implements Evaluatable {
 
     }
 
-    public String attrib;
+    public AttribRef attrib;
     public CompareExpr.Operator op;
 
     protected CompareExpr() {
     }
 
-    protected CompareExpr(final String attrib, final Operator op) {
+    protected CompareExpr(final AttribRef attrib, final Operator op) {
         this.attrib = attrib;
         this.op = op;
     }
