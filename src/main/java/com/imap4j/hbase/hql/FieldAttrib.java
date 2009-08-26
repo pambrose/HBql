@@ -123,9 +123,9 @@ public class FieldAttrib {
         return this.column.mapKeysAsColumns();
     }
 
-    public byte[] invokeGetterMethod(final Object parent) throws HPersistException {
+    public byte[] invokeGetterMethod(final Object recordObj) throws HPersistException {
         try {
-            return (byte[])this.getGetterMethod().invoke(parent);
+            return (byte[])this.getGetterMethod().invoke(recordObj);
         }
         catch (IllegalAccessException e) {
             throw new HPersistException("Error getting value of " + this.getFieldName());
@@ -135,9 +135,9 @@ public class FieldAttrib {
         }
     }
 
-    public Object invokeSetterMethod(final Object parent, final byte[] b) throws HPersistException {
+    public Object invokeSetterMethod(final Object recordObj, final byte[] b) throws HPersistException {
         try {
-            return this.getSetterMethod().invoke(parent, b);
+            return this.getSetterMethod().invoke(recordObj, b);
         }
         catch (IllegalAccessException e) {
             throw new HPersistException("Error setting value of " + this.getFieldName());
@@ -147,9 +147,9 @@ public class FieldAttrib {
         }
     }
 
-    public Object getValue(final HPersistable declaringObj) throws HPersistException {
+    public Object getValue(final HPersistable recordObj) throws HPersistException {
         try {
-            return this.getField().get(declaringObj);
+            return this.getField().get(recordObj);
         }
         catch (IllegalAccessException e) {
             throw new HPersistException("Error getting value of " + this.getFieldName());
@@ -157,13 +157,13 @@ public class FieldAttrib {
 
     }
 
-    public byte[] getValueAsBytes(final HPersistable declaringObj) throws HPersistException, IOException {
+    public byte[] getValueAsBytes(final HPersistable recordObj) throws HPersistException, IOException {
 
         if (this.hasGetter()) {
-            return this.invokeGetterMethod(declaringObj);
+            return this.invokeGetterMethod(recordObj);
         }
         else {
-            final Object obj = this.getValue(declaringObj);
+            final Object obj = this.getValue(recordObj);
 
             if (this.isArray())
                 return HUtil.getArrayasBytes(this.getFieldType(), obj);
@@ -172,10 +172,10 @@ public class FieldAttrib {
         }
     }
 
-    public Object getValueFromBytes(final HPersistable declaringObj, final byte[] b) throws IOException, HPersistException {
+    public Object getValueFromBytes(final HPersistable recordObj, final byte[] b) throws IOException, HPersistException {
 
         if (this.hasSetter()) {
-            return this.invokeSetterMethod(declaringObj, b);
+            return this.invokeSetterMethod(recordObj, b);
         }
         else {
             if (this.isArray())
@@ -184,5 +184,4 @@ public class FieldAttrib {
                 return HUtil.getScalarFromBytes(this.getFieldType(), b);
         }
     }
-
 }

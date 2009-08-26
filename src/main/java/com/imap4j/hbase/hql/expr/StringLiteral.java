@@ -1,8 +1,7 @@
 package com.imap4j.hbase.hql.expr;
 
 import com.imap4j.hbase.hql.ClassSchema;
-
-import java.util.List;
+import com.imap4j.hbase.hql.HPersistable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,17 +9,16 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringLiteral implements Evaluatable {
+public class StringLiteral implements StringValue {
 
     private final String value;
 
-    public StringLiteral(final String attrib, final boolean not, final List<String> strList) {
-        super(attrib, not);
-        this.strList = strList;
+    public StringLiteral(final String value) {
+        this.value = value;
     }
 
     @Override
-    public boolean evaluate(final ClassSchema classSchema, final Object recordObj) {
-        return false;
+    public String getValue(final ClassSchema classSchema, final HPersistable recordObj) {
+        return this.value;
     }
 }

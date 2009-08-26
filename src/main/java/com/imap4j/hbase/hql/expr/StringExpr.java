@@ -1,6 +1,7 @@
 package com.imap4j.hbase.hql.expr;
 
 import com.imap4j.hbase.hql.ClassSchema;
+import com.imap4j.hbase.hql.HPersistable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -8,16 +9,16 @@ import com.imap4j.hbase.hql.ClassSchema;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringExpr implements Evaluatable {
+public class StringExpr implements StringValue {
 
-    private final Evaluatable expr;
+    private final StringValue expr;
 
-    public StringExpr(final Evaluatable expr) {
+    public StringExpr(final StringValue expr) {
         this.expr = expr;
     }
 
     @Override
-    public boolean evaluate(final ClassSchema classSchema, final Object recordObj) {
-        return this.expr.evaluate(classSchema, recordObj);
+    public String getValue(final ClassSchema classSchema, final HPersistable recordObj) {
+        return this.expr.getValue(classSchema, recordObj);
     }
 }

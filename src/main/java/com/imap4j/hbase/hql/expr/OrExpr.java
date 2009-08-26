@@ -1,6 +1,8 @@
 package com.imap4j.hbase.hql.expr;
 
 import com.imap4j.hbase.hql.ClassSchema;
+import com.imap4j.hbase.hql.HPersistException;
+import com.imap4j.hbase.hql.HPersistable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,7 +16,7 @@ public class OrExpr implements Evaluatable {
     public OrExpr expr2;
 
     @Override
-    public boolean evaluate(final ClassSchema classSchema, final Object recordObj) {
+    public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
         if (expr2 == null)
             return expr1.evaluate(nil, nil);
         else

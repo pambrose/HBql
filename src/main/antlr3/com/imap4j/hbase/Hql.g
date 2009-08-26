@@ -247,10 +247,10 @@ funcReturningStrings
 	;
 
 attribRef returns [AttribRef retval]
-	: v=ID 		{retval = new AttribRef($v.text);};
+	: v=ID 					{retval = new AttribRef($v.text);};
 		
 stringLiteral returns [StringLiteral retval]
-	: v=QUOTED 	{retval = new StringLiteral($v.text);};
+	: v=QUOTED 				{retval = new StringLiteral($v.text);};
 	
 numericLiteral 
 	: INT;

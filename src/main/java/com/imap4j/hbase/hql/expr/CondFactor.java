@@ -1,6 +1,8 @@
 package com.imap4j.hbase.hql.expr;
 
 import com.imap4j.hbase.hql.ClassSchema;
+import com.imap4j.hbase.hql.HPersistException;
+import com.imap4j.hbase.hql.HPersistable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,7 +16,7 @@ public class CondFactor implements Evaluatable {
     public CondPrimary primary;
 
     @Override
-    public boolean evaluate(final ClassSchema classSchema, final Object recordObj) {
+    public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
         if (this.not)
             return !this.primary.evaluate(nil, nil);
         else
