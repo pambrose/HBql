@@ -12,8 +12,13 @@ import com.imap4j.hbase.hql.HPersistable;
  */
 public class CondFactor implements Evaluatable {
 
-    public boolean not;
-    public CondPrimary primary;
+    private final boolean not;
+    private final CondPrimary primary;
+
+    public CondFactor(final boolean not, final CondPrimary primary) {
+        this.not = not;
+        this.primary = primary;
+    }
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {

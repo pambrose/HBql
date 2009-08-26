@@ -78,47 +78,30 @@ whereClause returns [OrExpr retval]
 	: keyWHERE c=orExpr 				{retval = $c.retval;};
 		
 orExpr returns [OrExpr retval]
-@init {retval = new OrExpr();}
-	: expr1=andExpr (keyOR expr2=orExpr)?
-	{
-	 retval.expr1 = $expr1.retval;
-	 retval.expr2 = $expr2.retval;
-	}
+	: expr1=andExpr (keyOR expr2=orExpr)?		{retval= new OrExpr($expr1.retval, $expr2.retval);;}
 	//| cond_expr keyOR cond_term
 	;
 
 andExpr returns [AndExpr retval]
-@init {retval = new AndExpr();}
-	: expr1=condFactor (keyAND expr2=andExpr)?
-	{
-	 retval.expr1 = $expr1.retval;
-	 retval.expr2 = $expr2.retval;	 
-	}
+	: expr1=condFactor (keyAND expr2=andExpr)?	{retval = new AndExpr($expr1.retval, $expr2.retval);}
 	//| cond_term keyAND cond_factor
 	;
 	
-condFactor returns [CondFactor retval]
-@init {retval = new CondFactor();}
-	: keyNOT? primary=condPrimary
-	{
-	  retval.not = $keyNOT.text != null;
-	  retval.primary = $primary.retval;
-	}
+condFactor returns [CondFactor retval]			 
+	: k=keyNOT? p=condPrimary			{retval = new CondFactor(($k.text != null), $p.retval);}
 	;
 
 condPrimary returns [CondPrimary retval]
-@init {retval = new CondPrimary();}
-	: simpleCondExpr  		{retval.expr = $simpleCondExpr.retval;}
-	| LPAREN orExpr RPAREN		{retval.expr = $orExpr.retval;}
+	: simpleCondExpr  				{retval = new CondPrimary($simpleCondExpr.retval);}
+	| LPAREN orExpr RPAREN				{retval = new CondPrimary($orExpr.retval);}
 	;
 
 simpleCondExpr returns [SimpleCondExpr retval]
-@init {retval = new SimpleCondExpr();}
-	: betweenExpr			//{retval.expr = $betweenExpr.retval;}
-	| likeExpr			//{retval.expr = $likeExpr.retval;}
-	| inExpr			{retval.expr = $inExpr.retval;}
-	| nullCompExpr			//{retval.expr = $nullCompExpr.retval;}
-	| compareExpr 			{retval.expr = $compareExpr.retval;}
+	: betweenExpr			//{retval = new SimpleCondExpr($betweenExpr.retval);}
+	| likeExpr			//{retval = new SimpleCondExpr($likeExpr.retval);}
+	| inExpr			{retval = new SimpleCondExpr($inExpr.retval);}
+	| nullCompExpr			//{retval = new SimpleCondExpr($nullCompExpr.retval);}
+	| compareExpr 			{retval = new SimpleCondExpr($compareExpr.retval);}
 	;
 
 betweenExpr returns [BetweenExpr retval]

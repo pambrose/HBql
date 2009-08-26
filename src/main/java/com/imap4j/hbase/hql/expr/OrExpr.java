@@ -12,8 +12,13 @@ import com.imap4j.hbase.hql.HPersistable;
  */
 public class OrExpr implements Evaluatable {
 
-    public AndExpr expr1;
-    public OrExpr expr2;
+    private final AndExpr expr1;
+    private final OrExpr expr2;
+
+    public OrExpr(final AndExpr expr1, final OrExpr expr2) {
+        this.expr1 = expr1;
+        this.expr2 = expr2;
+    }
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {

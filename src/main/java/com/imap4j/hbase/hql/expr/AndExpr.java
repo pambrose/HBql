@@ -11,8 +11,14 @@ import com.imap4j.hbase.hql.HPersistable;
  * Time: 8:23:42 PM
  */
 public class AndExpr implements Evaluatable {
-    public CondFactor expr1;
-    public AndExpr expr2;
+
+    private final CondFactor expr1;
+    private final AndExpr expr2;
+
+    public AndExpr(final CondFactor expr1, final AndExpr expr2) {
+        this.expr1 = expr1;
+        this.expr2 = expr2;
+    }
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {

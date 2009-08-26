@@ -11,7 +11,11 @@ import com.imap4j.hbase.hql.HPersistable;
  * Time: 8:28:42 PM
  */
 public class CondPrimary implements Evaluatable {
-    public Evaluatable expr;
+    private final Evaluatable expr;
+
+    public CondPrimary(final Evaluatable expr) {
+        this.expr = expr;
+    }
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {

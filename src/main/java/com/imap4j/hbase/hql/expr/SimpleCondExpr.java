@@ -12,7 +12,11 @@ import com.imap4j.hbase.hql.HPersistable;
  */
 public class SimpleCondExpr implements Evaluatable {
 
-    public Evaluatable expr;
+    private final Evaluatable expr;
+
+    public SimpleCondExpr(final Evaluatable expr) {
+        this.expr = expr;
+    }
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
