@@ -121,30 +121,31 @@ simpleCondExpr returns [SimpleCondExpr retval]
 	;
 
 betweenExpr returns [BetweenExpr retval]
-	: attribRef keyNOT? keyBETWEEN 
-	  ( numExpr keyAND numExpr
-	  | stringExpr keyAND stringExpr
-	  | datetimeExpr keyAND datetimeExpr
-	  )
+	: attribRef[Number.class] keyNOT? keyBETWEEN numExpr keyAND numExpr
+	| attribRef[String.class] keyNOT? keyBETWEEN stringExpr keyAND stringExpr
+	| attribRef[Date.class] keyNOT? keyBETWEEN datetimeExpr keyAND datetimeExpr
 	;
 
 likeExpr 
-	: attribRef keyNOT? keyLIKE pattern_value=stringLiteral; // ('ESCAPE' escape_character=string_literal)?;
+	: attribRef[String.class] keyNOT? keyLIKE pattern_value=stringLiteral; // ('ESCAPE' escape_character=string_literal)?;
 
 inExpr returns [InExpr retval]
 @init {retval = new InExpr();}
-	: attrib=attribRef keyNOT? keyIN 
-	  LPAREN 
-	  (intlist=intItemList 	{retval = 
-	  |strlist=strItemList
-	  ) 
-	  RPAREN
+	: attribRef[Number.class] keyNOT? keyIN LPAREN intItemList RPAREN
 	{
 	 retval.attrib = $attrib.text; 
 	 retval.not = $keyNOT.text != null; 
 	 retval.intList = $intlist.retval;
 	 retval.strList = $strlist.retval;
 	}
+	| attribRef[String.class] keyNOT? keyIN LPAREN strItemList RPAREN
+	{
+	 retval.attrib = $attrib.text; 
+	 retval.not = $keyNOT.text != null; 
+	 retval.intList = $intlist.retval;
+	 retval.strList = $strlist.retval;
+	}
+
 	;
 
 intItemList returns [List<Integer> retval]
@@ -161,27 +162,15 @@ intItem returns [Integer retval]
 strItem : stringLiteral;
 
 nullCompExpr
-	: attribRef keyIS (keyNOT)? keyNULL;
+	: attribRef[String.class] keyIS (keyNOT)? keyNULL;
 
 compareExpr returns [CompareExpr retval]
-	: attrib=attribRef op=compareOp 
-	  ( str=stringExpr 		{retval = new StringCompareExpr($attrib.text, $op.retval, $str.retval);}
-	  | date=datetimeExpr 
-	  | num=numExpr			{retval = new NumberCompareExpr($attrib.text, $op.retval, $num.retval);}
-	  )
-	{
-	 retval.attrib = $attrib.text;
-	 retval.op = $op.retval;
-	}
-	| ( str=stringExpr 		{retval = new StringCompareExpr($str.retval);}
-	  | date=datetimeExpr 
-	  | num=numExpr			{retval = new NumberCompareExpr($num.retval);}
-	  )  
-	  op=compareOp attrib=attribRef
-					{
-	    				 retval.op = $op.retval;
-	    				 retval.attrib = $attrib.text;
-	  				}
+	: attribRef[String.class] compareOp stringExpr		{retval = new StringCompareExpr($attribRef.retval, $compareOp.retval, $stringExpr.retval);}
+	| attribRef[Date.class] compareOp datetimeExpr 
+	| attribRef[Number.class] compareOp numExpr		{retval = new NumberCompareExpr($attribRef.retval, $compareOp.retval, $numExpr.retval);}
+	| stringExpr compareOp attribRef[String.class]		{retval = new StringCompareExpr($stringExpr.retval, $compareOp.retval, $attribRef.retval);}
+	| datetimeExpr compareOp attribRef[Date.class]
+	| numExpr compareOp attribRef[Number.class]		{retval = new NumberCompareExpr($numExpr.retval, $compareOp.retval, $attribRef.retval);}
 	;
 	
 compareOp returns [CompareExpr.Operator retval]
@@ -193,7 +182,7 @@ compareOp returns [CompareExpr.Operator retval]
 	| LTGT		{retval = CompareExpr.Operator.LTGT;}
 	;
 
-numExpr
+numExpr returns [NumExpr retval]
 	: simpleNumExpr
 	;
 
