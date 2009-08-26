@@ -11,6 +11,7 @@ import com.imap4j.hbase.hql.HPersistable;
  * Time: 8:28:42 PM
  */
 public class CondPrimary implements Evaluatable {
+
     private final Evaluatable expr;
 
     public CondPrimary(final Evaluatable expr) {

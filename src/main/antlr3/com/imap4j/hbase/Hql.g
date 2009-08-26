@@ -97,11 +97,11 @@ condPrimary returns [CondPrimary retval]
 	;
 
 simpleCondExpr returns [SimpleCondExpr retval]
-	: betweenExpr			//{retval = new SimpleCondExpr($betweenExpr.retval);}
-	| likeExpr			//{retval = new SimpleCondExpr($likeExpr.retval);}
-	| inExpr			{retval = new SimpleCondExpr($inExpr.retval);}
-	| nullCompExpr			//{retval = new SimpleCondExpr($nullCompExpr.retval);}
-	| compareExpr 			{retval = new SimpleCondExpr($compareExpr.retval);}
+	: betweenExpr					//{retval = new SimpleCondExpr($betweenExpr.retval);}
+	| likeExpr					//{retval = new SimpleCondExpr($likeExpr.retval);}
+	| inExpr					{retval = new SimpleCondExpr($inExpr.retval);}
+	| nullCompExpr					//{retval = new SimpleCondExpr($nullCompExpr.retval);}
+	| compareExpr 					{retval = new SimpleCondExpr($compareExpr.retval);}
 	;
 
 betweenExpr returns [BetweenExpr retval]
@@ -115,9 +115,9 @@ likeExpr
 
 inExpr returns [InExpr retval]
 	: a=attribRef[Number.class] n=keyNOT? keyIN 
-	  LPAREN intlist=intItemList RPAREN	{retval = new IntInExpr($a.retval, ($n.text != null), $intlist.retval);} 
+	  LPAREN intlist=intItemList RPAREN		{retval = new IntInExpr($a.retval, ($n.text != null), $intlist.retval);} 
 	| a=attribRef[String.class] n=keyNOT? keyIN 
-	  LPAREN strlist=strItemList RPAREN	{retval = new StringInExpr($a.retval, ($n.text != null), $strlist.retval);} 
+	  LPAREN strlist=strItemList RPAREN		{retval = new StringInExpr($a.retval, ($n.text != null), $strlist.retval);} 
 	;
 
 intItemList returns [List<Integer> retval]
@@ -129,7 +129,7 @@ strItemList returns [List<String> retval]
 	: item1=strItem {retval.add($item1.text);} (COMMA item2=strItem {retval.add($item2.text);})*;
 	
 intItem returns [Integer retval]
-	: num=numberLiteral		{retval = Integer.valueOf($num.text);};
+	: num=numberLiteral				{retval = Integer.valueOf($num.text);};
 
 strItem : stringLiteral;
 
@@ -137,12 +137,12 @@ nullCompExpr
 	: attribRef[String.class] keyIS (keyNOT)? keyNULL;
 
 compareExpr returns [CompareExpr retval]
-	: attribRef[String.class] compareOp stringExpr		{retval = new StringCompareExpr($attribRef.retval, $compareOp.retval, $stringExpr.retval);}
+	: attribRef[String.class] compareOp stringExpr	{retval = new StringCompareExpr($attribRef.retval, $compareOp.retval, $stringExpr.retval);}
 	| attribRef[Date.class] compareOp datetimeExpr 
-	| attribRef[Number.class] compareOp numberExpr		{retval = new NumberCompareExpr($attribRef.retval, $compareOp.retval, $numberExpr.retval);}
-	| stringExpr compareOp attribRef[String.class]		{retval = new StringCompareExpr($stringExpr.retval, $compareOp.retval, $attribRef.retval);}
+	| attribRef[Number.class] compareOp numberExpr	{retval = new NumberCompareExpr($attribRef.retval, $compareOp.retval, $numberExpr.retval);}
+	| stringExpr compareOp attribRef[String.class]	{retval = new StringCompareExpr($stringExpr.retval, $compareOp.retval, $attribRef.retval);}
 	| datetimeExpr compareOp attribRef[Date.class]
-	| numberExpr compareOp attribRef[Number.class]		{retval = new NumberCompareExpr($numberExpr.retval, $compareOp.retval, $attribRef.retval);}
+	| numberExpr compareOp attribRef[Number.class]	{retval = new NumberCompareExpr($numberExpr.retval, $compareOp.retval, $attribRef.retval);}
 	;
 	
 compareOp returns [CompareExpr.Operator retval]
@@ -178,9 +178,9 @@ numberPrimary
 	;
 
 stringExpr returns [StringExpr retval]
-	: lit=stringLiteral			{retval = new StringExpr($lit.retval);}
+	: lit=stringLiteral				{retval = new StringExpr($lit.retval);}
 	| func=funcReturningStrings
-	| attrib=attribRef[String.class]	{retval = new StringExpr($attrib.retval);}
+	| attrib=attribRef[String.class]		{retval = new StringExpr($attrib.retval);}
 	;
 
 datetimeExpr
@@ -208,10 +208,10 @@ funcReturningStrings
 	;
 
 attribRef [Class clazz] returns [AttribRef retval]
-	: v=ID 					{retval = new AttribRef(clazz, $v.text);};
+	: v=ID 						{retval = new AttribRef(clazz, $v.text);};
 		
 stringLiteral returns [StringLiteral retval]
-	: v=QUOTED 				{retval = new StringLiteral($v.text);};
+	: v=QUOTED 					{retval = new StringLiteral($v.text);};
 	
 numberLiteral 
 	: v=INT;
@@ -225,13 +225,13 @@ qstringList returns [List<String> retval]
 	: qstring[retval] (COMMA qstring[retval])*;
 
 column [List<String> list]	
-	: charstr=dottedValue 			{if (list != null) list.add($charstr.text);};
+	: charstr=dottedValue 				{if (list != null) list.add($charstr.text);};
 
 dottedValue	
 	: ID ((DOT | COLON) ID)*;
 
 qstring	[List<String> list]
-	: QUOTED 				{if (list != null) list.add($QUOTED.text);};
+	: QUOTED 					{if (list != null) list.add($QUOTED.text);};
 
 INT	: DIGIT+;
 ID	: CHAR (CHAR | DIGIT)*;

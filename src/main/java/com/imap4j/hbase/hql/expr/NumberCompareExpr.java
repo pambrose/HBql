@@ -12,13 +12,13 @@ import com.imap4j.hbase.hql.HPersistable;
  */
 public class NumberCompareExpr extends CompareExpr {
 
-    public ValueExpr expr1;
-    public ValueExpr expr2;
-
+    private final ValueExpr expr1;
+    private final ValueExpr expr2;
 
     public NumberCompareExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(op);
         this.expr1 = expr1;
+        this.expr2 = expr2;
     }
 
     @Override
@@ -27,9 +27,9 @@ public class NumberCompareExpr extends CompareExpr {
         final Number val1 = (Number)expr1.getValue(classSchema, recordObj);
         final Number val2 = (Number)expr2.getValue(classSchema, recordObj);
 
-        switch (this.op) {
+        switch (this.getOperator()) {
             case EQ: {
-                return val1 == val2;
+                return val1.equals(val2);
             }
             case GT: {
 

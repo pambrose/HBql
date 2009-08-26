@@ -12,9 +12,8 @@ import com.imap4j.hbase.hql.HPersistable;
  */
 public class StringCompareExpr extends CompareExpr {
 
-    public ValueExpr expr1;
-    public ValueExpr expr2;
-
+    private final ValueExpr expr1;
+    private final ValueExpr expr2;
 
     public StringCompareExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(op);
@@ -28,7 +27,7 @@ public class StringCompareExpr extends CompareExpr {
         final String val1 = (String)expr1.getValue(classSchema, recordObj);
         final String val2 = (String)expr2.getValue(classSchema, recordObj);
 
-        switch (this.op) {
+        switch (this.getOperator()) {
             case EQ: {
                 return val1.equals(val2);
             }

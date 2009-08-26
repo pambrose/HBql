@@ -17,9 +17,13 @@ public abstract class CompareExpr implements Evaluatable {
         LTGT
     }
 
-    public CompareExpr.Operator op;
+    private final CompareExpr.Operator operator;
 
-    protected CompareExpr(final Operator op) {
-        this.op = op;
+    protected CompareExpr(final Operator operator) {
+        this.operator = operator;
+    }
+
+    protected Operator getOperator() {
+        return operator;
     }
 }
