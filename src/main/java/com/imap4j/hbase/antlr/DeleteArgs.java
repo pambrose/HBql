@@ -1,5 +1,7 @@
 package com.imap4j.hbase.antlr;
 
+import com.imap4j.hbase.hql.expr.WhereExpr;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -8,13 +10,19 @@ package com.imap4j.hbase.antlr;
  */
 public class DeleteArgs implements ExecArgs {
 
-    private final String classname;
+    private final String tableName;
+    private final WhereExpr whereExpr;
 
-    public DeleteArgs(final String classname) {
-        this.classname = classname;
+    public DeleteArgs(final String tableName, final WhereExpr whereExpr) {
+        this.tableName = tableName;
+        this.whereExpr = whereExpr;
     }
 
-    public String getClassname() {
-        return classname;
+    public String getTableName() {
+        return this.tableName;
+    }
+
+    public WhereExpr getWhereExpr() {
+        return this.whereExpr;
     }
 }

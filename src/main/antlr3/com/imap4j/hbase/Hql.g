@@ -69,13 +69,14 @@ showStmt returns [ShowArgs retval]
 	: keySHOW keyTABLES 		 		{retval = new ShowArgs();};
 
 deleteStmt returns [DeleteArgs retval]
-	: keyDELETE keyFROM table=ID whereClause?	{retval = new DeleteArgs($table.text);};
+	: keyDELETE keyFROM table=ID 
+	  where=whereClause?				{retval = new DeleteArgs($table.text, $where.retval);};
 
 setStmt returns [SetArgs retval]
 	: keySET var=ID (keyTO | EQ)? val=dottedValue 	{retval = new SetArgs($var.text, $val.text);};
 
-whereClause returns [OrExpr retval]
-	: keyWHERE c=orExpr 				{retval = $c.retval;};
+whereClause returns [WhereExpr retval]
+	: keyWHERE c=orExpr 				{retval = new WhereExpr($c.retval);};
 		
 orExpr returns [OrExpr retval]
 	: expr1=andExpr (keyOR expr2=orExpr)?		{retval= new OrExpr($expr1.retval, $expr2.retval);;}

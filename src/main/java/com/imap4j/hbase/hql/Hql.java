@@ -118,13 +118,13 @@ public class Hql {
 
     private static Results deleteCommand(final DeleteArgs args) throws HPersistException, IOException {
         final Results retval = new Results();
-        final ClassSchema schema = ClassSchema.getClassSchema(args.getClassname());
+        final ClassSchema schema = ClassSchema.getClassSchema(args.getTableName());
         final HTable table = new HTable(new HBaseConfiguration(), schema.getTableName());
 
         final Scan scan = new Scan();
         final ResultScanner scanner = table.getScanner(scan);
         int cnt = 0;
-        for (Result res : scanner) {
+        for (final Result res : scanner) {
             final Delete delete = new Delete(res.getRow());
             table.delete(delete);
             cnt++;

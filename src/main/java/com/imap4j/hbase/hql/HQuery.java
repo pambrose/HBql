@@ -65,7 +65,7 @@ public class HQuery<T extends HPersistable> {
 
             for (Result result : table.getScanner(scan)) {
 
-                final T newobj = (T)classSchema.getClazz().newInstance();
+                final HPersistable newobj = (HPersistable)classSchema.getClazz().newInstance();
                 final FieldAttrib keyattrib = classSchema.getKeyFieldAttrib();
                 final byte[] keybytes = result.getRow();
                 final Object keyval = keyattrib.getValueFromBytes(newobj, keybytes);
@@ -75,11 +75,9 @@ public class HQuery<T extends HPersistable> {
 
                     final byte[] colbytes = keyValue.getColumn();
                     final String column = new String(colbytes);
-
                     final byte[] valbytes = result.getValue(colbytes);
 
                     if (column.endsWith("]")) {
-
                         final int lbrace = column.indexOf("[");
                         final String mapcolumn = column.substring(0, lbrace);
                         final String mapKey = column.substring(lbrace + 1, column.length() - 1);
@@ -103,7 +101,7 @@ public class HQuery<T extends HPersistable> {
                 }
 
                 if (qa.getWhereExpr().evaluate(classSchema, newobj))
-                    this.getQueryListener().onEachRow(newobj);
+                    this.getQueryListener().onEachRow((T)newobj);
             }
 
         }
