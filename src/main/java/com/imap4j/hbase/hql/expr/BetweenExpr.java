@@ -10,7 +10,7 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class BetweenExpr implements Evaluatable {
+public class BetweenExpr implements ConditionExpr {
 
     private final ExprType type;
     private final AttribRef attrib;

@@ -1,6 +1,6 @@
 package com.imap4j.hbase.hql;
 
-import com.imap4j.hbase.antlr.QueryArgs;
+import com.imap4j.hbase.antlr.args.QueryArgs;
 import com.imap4j.hbase.antlr.config.HqlRule;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;

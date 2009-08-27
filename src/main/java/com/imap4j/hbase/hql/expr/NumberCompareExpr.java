@@ -24,31 +24,25 @@ public class NumberCompareExpr extends CompareExpr {
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
 
-        final Number val1 = (Number)expr1.getValue(classSchema, recordObj);
-        final Number val2 = (Number)expr2.getValue(classSchema, recordObj);
+        final int val1 = ((Number)expr1.getValue(classSchema, recordObj)).intValue();
+        final int val2 = ((Number)expr2.getValue(classSchema, recordObj)).intValue();
 
         switch (this.getOperator()) {
-            case EQ: {
-                return val1.equals(val2);
-            }
-            case GT: {
-
-            }
-            case GTEQ: {
-
-            }
-            case LT: {
-
-            }
-            case LTEQ: {
-
-            }
-            case LTGT: {
-
-            }
+            case EQ:
+                return val1 == val2;
+            case GT:
+                return val1 > val2;
+            case GTEQ:
+                return val1 >= val2;
+            case LT:
+                return val1 < val2;
+            case LTEQ:
+                return val1 <= val2;
+            case LTGT:
+                return val1 != val2;
         }
 
-        throw new HPersistException("Error in StringCompareExpr.evaluate()");
+        throw new HPersistException("Error in NumberCompareExpr.evaluate()");
     }
 
 }

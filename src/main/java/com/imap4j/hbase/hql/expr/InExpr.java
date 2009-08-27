@@ -12,7 +12,7 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class InExpr implements Evaluatable {
+public class InExpr implements ConditionExpr {
 
 
     private final ExprType type;

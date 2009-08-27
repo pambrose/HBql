@@ -35,9 +35,10 @@ catch (RecognitionException re) {
 package com.imap4j.hbase;
 import com.imap4j.hbase.hql.*;
 import com.imap4j.hbase.hql.expr.*;
+import com.imap4j.hbase.antlr.args.*;
 import com.imap4j.hbase.antlr.*;
-import com.google.common.collect.Lists;
 import java.util.Date;
+import com.google.common.collect.Lists;
 }
 
 @lexer::header {
@@ -133,12 +134,13 @@ nullCompExpr
 	: attribRef[ExprType.StringType] keyIS (keyNOT)? keyNULL;
 
 compareExpr returns [CompareExpr retval]
-	: a=attribRef[ExprType.StringType] o=compOp stringExpr	{retval = new StringCompareExpr($a.retval, $o.retval, $stringExpr.retval);}
+	: a=attribRef[ExprType.StringType] o=compOp s=stringExpr	{retval = new StringCompareExpr($a.retval, $o.retval, $s.retval);}
 	| a=attribRef[ExprType.DateType] o=compOp dateExpr 
-	| a=attribRef[ExprType.NumberType] o=compOp numberExpr	{retval = new NumberCompareExpr($a.retval, $o.retval, $numberExpr.retval);}
-	| stringExpr o=compOp a=attribRef[ExprType.StringType]	{retval = new StringCompareExpr($stringExpr.retval, $o.retval, $a.retval);}
+	| a=attribRef[ExprType.NumberType] o=compOp n=numberExpr	{retval = new NumberCompareExpr($a.retval, $o.retval, $n.retval);}
+	| s=stringExpr o=compOp a=attribRef[ExprType.StringType]	{retval = new StringCompareExpr($s.retval, $o.retval, $a.retval);}
 	| dateExpr o=compOp a=attribRef[ExprType.DateType]
-	| numberExpr o=compOp a=attribRef[ExprType.NumberType]	{retval = new NumberCompareExpr($numberExpr.retval, $o.retval, $a.retval);}
+	| n=numberExpr o=compOp a=attribRef[ExprType.NumberType]	{retval = new NumberCompareExpr($n.retval, $o.retval, $a.retval);}
+	| n1=numberExpr o=compOp n2=numberExpr				{retval = new NumberCompareExpr($n1.retval, $o.retval, $n2.retval);}
 	;
 	
 compOp returns [CompareExpr.Operator retval]
@@ -151,23 +153,45 @@ compOp returns [CompareExpr.Operator retval]
 	;
 
 numberExpr returns [NumberExpr retval]
-	: simpleNumberExpr
+	: simpleNumberExpr		
 	;
 
-simpleNumberExpr
-	: numberTerm ((PLUS | MINUS) simpleNumberExpr)?
-	//| simpleNumberExpr (PLUS | MINUS) numberTerm
+simpleNumberExpr returns [CalculationExpr retval]
+	: n1=numberTerm (op=plusMinus n2=simpleNumberExpr)?
+	{
+	  if ($n2.text == null) 
+	    $simpleNumberExpr.retval = new CalculationExpr($n1.retval);
+	  else
+	    $simpleNumberExpr.retval = new CalculationExpr($n1.retval, $op.retval, $n2.retval);
+	}
+	//| simpleNumberExpr plusMinus numberTerm
 	;
 
-numberTerm
-	: numberFactor ((STAR | DIV) numberTerm)?
-	//| numberTerm (STAR | DIV) numberFactor
+numberTerm returns [CalculationExpr retval]
+	: n1=numberFactor (op=multDiv n2=numberTerm)?
+	{
+	  if ($n2.text == null) 
+	    $numberTerm.retval = new CalculationExpr($n1.retval);
+	  else
+	    $numberTerm.retval = new CalculationExpr($n1.retval, $op.retval, $n2.retval);
+	}
+	//| numberTerm multDiv numberFactor
 	;
 
-numberFactor
-	: (PLUS | MINUS)? numberPrimary;
+plusMinus returns [CalculationExpr.OP retval]
+	: PLUS		{retval = CalculationExpr.OP.PLUS;}
+	| MINUS		{retval = CalculationExpr.OP.MINUS;}
+	;
+	
+multDiv returns [CalculationExpr.OP retval]
+	: STAR		{retval = CalculationExpr.OP.MULT;}
+	| DIV		{retval = CalculationExpr.OP.DIV;}
+	;
+	
+numberFactor returns [CalculationExpr retval]
+	: plusMinus? numberPrimary;
 
-numberPrimary
+numberPrimary [CalculationExpr retval]
 	: numberLiteral
 	| LPAREN simpleNumberExpr RPAREN
 	| funcsReturningNumber

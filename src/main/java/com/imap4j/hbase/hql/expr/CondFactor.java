@@ -10,7 +10,7 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 8:28:06 PM
  */
-public class CondFactor implements Evaluatable {
+public class CondFactor implements ConditionExpr {
 
     private final boolean not;
     private final CondPrimary primary;

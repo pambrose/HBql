@@ -1,4 +1,4 @@
-package com.imap4j.hbase.antlr;
+package com.imap4j.hbase.antlr.args;
 
 /**
  * Created by IntelliJ IDEA.

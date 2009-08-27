@@ -10,7 +10,7 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class OrExpr implements Evaluatable {
+public class OrExpr implements ConditionExpr {
 
     private final AndExpr expr1;
     private final OrExpr expr2;

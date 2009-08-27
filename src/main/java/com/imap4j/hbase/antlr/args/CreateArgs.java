@@ -1,4 +1,4 @@
-package com.imap4j.hbase.antlr;
+package com.imap4j.hbase.antlr.args;
 
 /**
  * Created by IntelliJ IDEA.
@@ -6,11 +6,11 @@ package com.imap4j.hbase.antlr;
  * Date: Aug 24, 2009
  * Time: 10:31:14 PM
  */
-public class DescribeArgs implements ExecArgs {
+public class CreateArgs implements ExecArgs {
 
     private final String classname;
 
-    public DescribeArgs(final String classname) {
+    public CreateArgs(final String classname) {
         this.classname = classname;
     }
 

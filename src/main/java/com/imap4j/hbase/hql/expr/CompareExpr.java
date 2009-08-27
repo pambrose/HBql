@@ -6,7 +6,7 @@ package com.imap4j.hbase.hql.expr;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public abstract class CompareExpr implements Evaluatable {
+public abstract class CompareExpr implements ConditionExpr {
 
     public enum Operator {
         EQ,

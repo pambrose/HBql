@@ -10,11 +10,11 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class SimpleCondExpr implements Evaluatable {
+public class SimpleCondExpr implements ConditionExpr {
 
-    private final Evaluatable expr;
+    private final ConditionExpr expr;
 
-    public SimpleCondExpr(final Evaluatable expr) {
+    public SimpleCondExpr(final ConditionExpr expr) {
         this.expr = expr;
     }
 

@@ -1,4 +1,4 @@
-package com.imap4j.hbase.antlr;
+package com.imap4j.hbase.antlr.args;
 
 import com.imap4j.hbase.hql.expr.WhereExpr;
 
