@@ -121,14 +121,6 @@ inExpr returns [InExpr retval]
 	  LPAREN strlist=strItemList RPAREN		{retval = new StringInExpr($a.retval, ($n.text != null), $strlist.retval);} 
 	;
 
-intItemList returns [List<Integer> retval]
-@init {retval = Lists.newArrayList();}
-	: item1=intItem {retval.add($item1.retval);} (COMMA item2=intItem {retval.add($item2.retval);})*;
-	
-strItemList returns [List<String> retval]
-@init {retval = Lists.newArrayList();}
-	: item1=strItem {retval.add($item1.text);} (COMMA item2=strItem {retval.add($item2.text);})*;
-	
 intItem returns [Integer retval]
 	: num=numberLiteral				{retval = Integer.valueOf($num.text);};
 
@@ -215,8 +207,16 @@ stringLiteral returns [StringLiteral retval]
 	: v=QUOTED 					{retval = new StringLiteral($v.text);};
 	
 numberLiteral 
-	: v=INT;
+	: v=INT;					{retval = Integer.valueOf($v.text);};
 		
+intItemList returns [List<Integer> retval]
+@init {retval = Lists.newArrayList();}
+	: item1=intItem {retval.add($item1.retval);} (COMMA item2=intItem {retval.add($item2.retval);})*;
+	
+strItemList returns [List<String> retval]
+@init {retval = Lists.newArrayList();}
+	: item1=strItem {retval.add($item1.text);} (COMMA item2=strItem {retval.add($item2.text);})*;
+	
 columnList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
 	: column[retval] (COMMA column[retval])*;
