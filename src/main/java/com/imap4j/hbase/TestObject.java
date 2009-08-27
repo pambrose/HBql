@@ -98,7 +98,7 @@ public class TestObject implements HPersistable {
         results = Hql.exec("set classpath com.imap4j.hql:com.imap4j.hbase");
         System.out.println(results.getOutput());
 
-        //results = Hql.exec("delete from TestObject");
+        results = Hql.exec("delete from TestObject where strValue = 'v19'");
         System.out.println(results.getOutput());
 
         //results = Hql.exec("create table TestObject");

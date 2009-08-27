@@ -1,11 +1,18 @@
 package com.imap4j.hbase.hql;
 
+import com.google.common.collect.Maps;
+import org.apache.hadoop.hbase.KeyValue;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.Scan;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Array;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -280,4 +287,70 @@ public class HUtil {
         oos.flush();
         return baos.toByteArray();
     }
+
+    public static Scan getScan(final ClassSchema classSchema, final List<String> fieldList) {
+
+        final Scan scan = new Scan();
+
+        for (final String attribName : fieldList) {
+
+            final FieldAttrib attrib = classSchema.getFieldAttribByField(attribName);
+
+            // If it is a map, then request all columns for family
+            if (attrib.isMapKeysAsColumns())
+                scan.addFamily(attrib.getFamilyName().getBytes());
+            else
+                scan.addColumn(attrib.getQualifiedName().getBytes());
+        }
+
+        return scan;
+    }
+
+    public static HPersistable getHPersistable(final ClassSchema classSchema, final Result result) throws HPersistException {
+
+        try {
+            final HPersistable newobj = (HPersistable)classSchema.getClazz().newInstance();
+            final FieldAttrib keyattrib = classSchema.getKeyFieldAttrib();
+
+            final byte[] keybytes = result.getRow();
+            final Object keyval = keyattrib.getValueFromBytes(newobj, keybytes);
+            classSchema.getKeyFieldAttrib().getField().set(newobj, keyval);
+
+            for (final KeyValue keyValue : result.list()) {
+
+                final byte[] colbytes = keyValue.getColumn();
+                final String column = new String(colbytes);
+                final byte[] valbytes = result.getValue(colbytes);
+
+                if (column.endsWith("]")) {
+                    final int lbrace = column.indexOf("[");
+                    final String mapcolumn = column.substring(0, lbrace);
+                    final String mapKey = column.substring(lbrace + 1, column.length() - 1);
+                    final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(mapcolumn);
+                    final Object val = attrib.getValueFromBytes(newobj, valbytes);
+                    Map mapval = (Map)attrib.getValue(newobj);
+
+                    // TODO Not sure if it is kosher to create a map here
+                    if (mapval == null) {
+                        mapval = Maps.newHashMap();
+                        attrib.getField().set(newobj, mapval);
+                    }
+
+                    mapval.put(mapKey, val);
+                }
+                else {
+                    final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(column);
+                    final Object val = attrib.getValueFromBytes(newobj, valbytes);
+                    attrib.getField().set(newobj, val);
+                }
+            }
+
+            return newobj;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            throw new HPersistException("Error in execute()");
+        }
+    }
+
 }

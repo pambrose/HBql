@@ -14,12 +14,12 @@ import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -117,20 +117,30 @@ public class Hql {
     }
 
     private static Results deleteCommand(final DeleteArgs args) throws HPersistException, IOException {
-        final Results retval = new Results();
-        final ClassSchema schema = ClassSchema.getClassSchema(args.getTableName());
-        final HTable table = new HTable(new HBaseConfiguration(), schema.getTableName());
 
-        final Scan scan = new Scan();
-        final ResultScanner scanner = table.getScanner(scan);
+        final Results retval = new Results();
+
+        final ClassSchema classSchema = ClassSchema.getClassSchema(args.getTableName());
+        final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
+
+        final List<String> fieldList = classSchema.getFieldList();
+        final Scan scan = HUtil.getScan(classSchema, fieldList);
+
         int cnt = 0;
-        for (final Result res : scanner) {
-            final Delete delete = new Delete(res.getRow());
-            table.delete(delete);
-            cnt++;
+        for (final Result result : table.getScanner(scan)) {
+
+            final HPersistable newobj = HUtil.getHPersistable(classSchema, result);
+
+            if (args.getWhereExpr().evaluate(classSchema, newobj)) {
+                final Delete delete = new Delete(result.getRow());
+                table.delete(delete);
+                cnt++;
+            }
         }
+
         retval.out.println("Delete count: " + cnt);
         retval.out.flush();
+
         return retval;
     }
 
