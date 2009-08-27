@@ -12,6 +12,7 @@ public enum HqlRule {
 
     SELECT(HqlGrammar.Hql, "selectStmt"),
     EXEC(HqlGrammar.Hql, "execCommand"),
+    WHERE(HqlGrammar.Hql, "whereClause"),
     NONE(null, null);
 
     private final GrammarRule grammarRule;

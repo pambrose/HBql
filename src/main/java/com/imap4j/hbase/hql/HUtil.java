@@ -1,6 +1,9 @@
 package com.imap4j.hbase.hql;
 
 import com.google.common.collect.Maps;
+import com.imap4j.hbase.antlr.config.HqlRule;
+import com.imap4j.hbase.hql.expr.WhereExpr;
+import org.antlr.runtime.TokenStream;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
@@ -21,6 +24,26 @@ import java.util.Map;
  * Time: 4:49:02 PM
  */
 public class HUtil {
+
+    public static boolean test(final String str) throws HPersistException {
+        return test(str, null);
+    }
+
+    public static boolean test(final String str, final HPersistable recordObj) throws HPersistException {
+        final WhereExpr expr = (WhereExpr)HqlRule.WHERE.parse("WHERE " + str);
+
+        final ClassSchema classSchema = recordObj != null
+                                        ? ClassSchema.getClassSchema(recordObj)
+                                        : null;
+        boolean val = expr.evaluate(classSchema, recordObj);
+        System.out.println("Returned value: " + val);
+        return val;
+    }
+
+    public static boolean isKeyword(final TokenStream input, final String str) {
+        final String s = input.LT(1).getText();
+        return s != null && s.equalsIgnoreCase(str);
+    }
 
     public static byte[] getObjectAsBytes(final Object obj) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
