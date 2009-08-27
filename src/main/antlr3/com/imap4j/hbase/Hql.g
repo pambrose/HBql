@@ -103,6 +103,7 @@ simpleCondExpr returns [SimpleCondExpr retval]
 	| inExpr					{retval = new SimpleCondExpr($inExpr.retval);}
 	| nullCompExpr					//{retval = new SimpleCondExpr($nullCompExpr.retval);}
 	| compareExpr 					{retval = new SimpleCondExpr($compareExpr.retval);}
+	| booleanExpr					{retval = new SimpleCondExpr($booleanExpr.retval);}
 	;
 
 betweenExpr returns [BetweenExpr retval]
@@ -170,20 +171,25 @@ numberFactor
 numberPrimary
 	: numberLiteral
 	| LPAREN simpleNumberExpr RPAREN
-	| funcsReturningNumeric
+	| funcsReturningNumber
 	;
 
 stringExpr returns [StringExpr retval]
 	: lit=stringLiteral				{retval = new StringExpr($lit.retval);}
-	| func=funcReturningStrings
+	| func=funcReturningString
 	| attrib=attribRef[ExprType.StringType]		{retval = new StringExpr($attrib.retval);}
+	;
+
+booleanExpr returns [BooleanExpr retval]
+	: b=booleanLiteral				{retval = new BooleanExpr($b.retval);}
+	| func=funcReturningBoolean
 	;
 
 dateExpr
 	: funcReturningDatetime
 	;
 
-funcsReturningNumeric
+funcsReturningNumber
 	: keyLENGTH LPAREN stringExpr RPAREN
 	| keyABS LPAREN simpleNumberExpr RPAREN
 	| keyMOD LPAREN simpleNumberExpr COMMA simpleNumberExpr RPAREN
@@ -195,12 +201,16 @@ funcReturningDatetime
 	| keyCURRENT_TIMESTAMP
 	;
 
-funcReturningStrings
+funcReturningString
 	: keyCONCAT LPAREN stringExpr COMMA stringExpr RPAREN
 	| keySUBSTRING LPAREN stringExpr COMMA simpleNumberExpr COMMA simpleNumberExpr RPAREN
 	| keyTRIM LPAREN stringExpr RPAREN
 	| keyLOWER LPAREN stringExpr RPAREN
 	| keyUPPER LPAREN stringExpr RPAREN
+	;
+	
+funcReturningBoolean
+	: 
 	;
 
 attribRef [ExprType type] returns [AttribRef retval]
@@ -211,6 +221,11 @@ stringLiteral returns [StringLiteral retval]
 	
 numberLiteral returns [NumberLiteral retval]
 	: v=INT						{retval = new NumberLiteral(Integer.valueOf($v.text));};
+		
+booleanLiteral returns [BooleanLiteral retval]
+	: t=keyTRUE					{retval = new BooleanLiteral($t.text);}
+	| f=keyFALSE					{retval = new BooleanLiteral($f.text);}
+	;
 		
 intItemList returns [List<Object> retval]
 @init {retval = Lists.newArrayList();}
