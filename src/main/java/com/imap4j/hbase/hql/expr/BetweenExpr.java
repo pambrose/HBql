@@ -12,10 +12,37 @@ import com.imap4j.hbase.hql.HPersistable;
  */
 public class BetweenExpr implements Evaluatable {
 
+    private final ExprType type;
+    private final AttribRef attrib;
+    private final boolean not;
+    private final Object lowerVal, upperVal;
+
+    public BetweenExpr(final ExprType type, final AttribRef attrib, final boolean not, final Object lowerVal, final Object upperVal) {
+        this.type = type;
+        this.attrib = attrib;
+        this.not = not;
+        this.lowerVal = lowerVal;
+        this.upperVal = upperVal;
+    }
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
-        return false;
+
+        switch (type) {
+            case IntegerType: {
+                final Number objVal = (Number)this.attrib.getValue(classSchema, recordObj);
+                final int attribVal = objVal.intValue();
+                return attribVal >= ((Number)lowerVal).intValue() && attribVal <= ((Number)upperVal).intValue();
+            }
+
+            case StringType: {
+                final String attribVal = (String)this.attrib.getValue(classSchema, recordObj);
+                // TODO Check this
+                return attribVal.compareTo((String)lowerVal) <= 0 && attribVal.compareTo((String)lowerVal) >= 0;
+            }
+        }
+
+        throw new HPersistException("Unknown type in InExpr.evaluate() - " + type);
     }
 
 }

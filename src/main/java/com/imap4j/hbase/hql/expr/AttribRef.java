@@ -13,10 +13,10 @@ import com.imap4j.hbase.hql.HPersistable;
 public class AttribRef implements ValueExpr {
 
     private final String attribName;
-    private final Class clazz;
+    private final ExprType type;
 
-    public AttribRef(final Class clazz, final String attribName) {
-        this.clazz = clazz;
+    public AttribRef(final ExprType type, final String attribName) {
+        this.type = type;
         this.attribName = attribName;
     }
 

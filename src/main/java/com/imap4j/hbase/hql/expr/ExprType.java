@@ -1,6 +1,9 @@
-package com.imap4j.hbase.hql;
+package com.imap4j.hbase.hql.expr;
+
+import com.imap4j.hbase.hql.HPersistException;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -8,7 +11,7 @@ import java.lang.reflect.Field;
  * Date: Aug 23, 2009
  * Time: 5:01:22 PM
  */
-enum FieldType {
+public enum ExprType {
 
     BooleanType(Boolean.TYPE),
     ByteType(Byte.TYPE),
@@ -18,11 +21,14 @@ enum FieldType {
     LongType(Long.TYPE),
     FloatType(Float.TYPE),
     DoubleType(Double.TYPE),
+    NumberType(Number.class),
+    StringType(String.class),
+    DateType(Date.class),
     ObjectType(Object.class);
 
     private final Class clazz;
 
-    FieldType(final Class clazz) {
+    ExprType(final Class clazz) {
         this.clazz = clazz;
     }
 
@@ -30,7 +36,7 @@ enum FieldType {
         return clazz;
     }
 
-    static FieldType getFieldType(final Field field) throws HPersistException {
+    static ExprType getExprType(final Field field) throws HPersistException {
 
         final Class fieldClass = field.getType();
 
@@ -40,7 +46,7 @@ enum FieldType {
             return ObjectType;
         }
         else {
-            for (final FieldType type : values())
+            for (final ExprType type : values())
                 if (clazz == type.getClazz())
                     return type;
         }

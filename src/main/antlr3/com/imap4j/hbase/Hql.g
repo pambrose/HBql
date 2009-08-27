@@ -98,7 +98,7 @@ condPrimary returns [CondPrimary retval]
 	;
 
 simpleCondExpr returns [SimpleCondExpr retval]
-	: betweenExpr					//{retval = new SimpleCondExpr($betweenExpr.retval);}
+	: betweenExpr					{retval = new SimpleCondExpr($betweenExpr.retval);}
 	| likeExpr					//{retval = new SimpleCondExpr($likeExpr.retval);}
 	| inExpr					{retval = new SimpleCondExpr($inExpr.retval);}
 	| nullCompExpr					//{retval = new SimpleCondExpr($nullCompExpr.retval);}
@@ -106,39 +106,42 @@ simpleCondExpr returns [SimpleCondExpr retval]
 	;
 
 betweenExpr returns [BetweenExpr retval]
-	: attribRef[Number.class] keyNOT? keyBETWEEN numberExpr keyAND numberExpr
-	| attribRef[String.class] keyNOT? keyBETWEEN stringExpr keyAND stringExpr
-	| attribRef[Date.class] keyNOT? keyBETWEEN datetimeExpr keyAND datetimeExpr
+	: a=attribRef[ExprType.NumberType] n=keyNOT? 
+	  keyBETWEEN n1=numberExpr keyAND n2=numberExpr	{retval = new BetweenExpr(ExprType.NumberType, $a.retval, ($n.text != null), $n1.retval, $n2.retval);}
+	| a=attribRef[ExprType.StringType] n=keyNOT?  
+	  keyBETWEEN s1=stringExpr keyAND s2=stringExpr	{retval = new BetweenExpr(ExprType.StringType, $a.retval, ($n.text != null), $n1.retval, $n2.retval);}
+	| a=attribRef[ExprType.DateType] n=keyNOT? 
+	  keyBETWEEN d1=dateExpr keyAND d2=dateExpr
 	;
 
 likeExpr 
-	: attribRef[String.class] keyNOT? keyLIKE pattern_value=stringLiteral; // ('ESCAPE' escape_character=string_literal)?;
+	: attribRef[ExprType.StringType] keyNOT? keyLIKE pattern_value=stringLiteral; // ('ESCAPE' escape_character=string_literal)?;
 
 inExpr returns [InExpr retval]
-	: a=attribRef[Number.class] n=keyNOT? keyIN 
-	  LPAREN intlist=intItemList RPAREN		{retval = new IntInExpr($a.retval, ($n.text != null), $intlist.retval);} 
-	| a=attribRef[String.class] n=keyNOT? keyIN 
-	  LPAREN strlist=strItemList RPAREN		{retval = new StringInExpr($a.retval, ($n.text != null), $strlist.retval);} 
+	: a=attribRef[ExprType.NumberType] n=keyNOT? keyIN 
+	  LPAREN i=intItemList RPAREN			{retval = new InExpr(ExprType.NumberType, $a.retval, ($n.text != null), $i.retval);} 
+	| a=attribRef[ExprType.StringType] n=keyNOT? keyIN 
+	  LPAREN s=strItemList RPAREN			{retval = new InExpr(ExprType.StringType, $a.retval, ($n.text != null), $s.retval);} 
 	;
 
-intItem returns [Integer retval]
-	: num=numberLiteral				{retval = Integer.valueOf($num.text);};
+intItem returns [NumberLiteral retval]
+	: num=numberLiteral				{retval = $num.retval;};
 
 strItem : stringLiteral;
 
 nullCompExpr
-	: attribRef[String.class] keyIS (keyNOT)? keyNULL;
+	: attribRef[ExprType.StringType] keyIS (keyNOT)? keyNULL;
 
 compareExpr returns [CompareExpr retval]
-	: attribRef[String.class] compareOp stringExpr	{retval = new StringCompareExpr($attribRef.retval, $compareOp.retval, $stringExpr.retval);}
-	| attribRef[Date.class] compareOp datetimeExpr 
-	| attribRef[Number.class] compareOp numberExpr	{retval = new NumberCompareExpr($attribRef.retval, $compareOp.retval, $numberExpr.retval);}
-	| stringExpr compareOp attribRef[String.class]	{retval = new StringCompareExpr($stringExpr.retval, $compareOp.retval, $attribRef.retval);}
-	| datetimeExpr compareOp attribRef[Date.class]
-	| numberExpr compareOp attribRef[Number.class]	{retval = new NumberCompareExpr($numberExpr.retval, $compareOp.retval, $attribRef.retval);}
+	: a=attribRef[ExprType.StringType] o=compOp stringExpr	{retval = new StringCompareExpr($a.retval, $o.retval, $stringExpr.retval);}
+	| a=attribRef[ExprType.DateType] o=compOp dateExpr 
+	| a=attribRef[ExprType.NumberType] o=compOp numberExpr	{retval = new NumberCompareExpr($a.retval, $o.retval, $numberExpr.retval);}
+	| stringExpr o=compOp a=attribRef[ExprType.StringType]	{retval = new StringCompareExpr($stringExpr.retval, $o.retval, $a.retval);}
+	| dateExpr o=compOp a=attribRef[ExprType.DateType]
+	| numberExpr o=compOp a=attribRef[ExprType.NumberType]	{retval = new NumberCompareExpr($numberExpr.retval, $o.retval, $a.retval);}
 	;
 	
-compareOp returns [CompareExpr.Operator retval]
+compOp returns [CompareExpr.Operator retval]
 	: EQ 		{retval = CompareExpr.Operator.EQ;}
 	| GT 		{retval = CompareExpr.Operator.GT;}
 	| GTEQ 		{retval = CompareExpr.Operator.GTEQ;}
@@ -173,10 +176,10 @@ numberPrimary
 stringExpr returns [StringExpr retval]
 	: lit=stringLiteral				{retval = new StringExpr($lit.retval);}
 	| func=funcReturningStrings
-	| attrib=attribRef[String.class]		{retval = new StringExpr($attrib.retval);}
+	| attrib=attribRef[ExprType.StringType]		{retval = new StringExpr($attrib.retval);}
 	;
 
-datetimeExpr
+dateExpr
 	: funcReturningDatetime
 	;
 
@@ -200,20 +203,20 @@ funcReturningStrings
 	| keyUPPER LPAREN stringExpr RPAREN
 	;
 
-attribRef [Class clazz] returns [AttribRef retval]
-	: v=ID 						{retval = new AttribRef(clazz, $v.text);};
+attribRef [ExprType type] returns [AttribRef retval]
+	: v=ID 						{retval = new AttribRef(type, $v.text);};
 		
 stringLiteral returns [StringLiteral retval]
 	: v=QUOTED 					{retval = new StringLiteral($v.text);};
 	
-numberLiteral 
-	: v=INT;					{retval = Integer.valueOf($v.text);};
+numberLiteral returns [NumberLiteral retval]
+	: v=INT						{retval = new NumberLiteral(Integer.valueOf($v.text));};
 		
-intItemList returns [List<Integer> retval]
+intItemList returns [List<Object> retval]
 @init {retval = Lists.newArrayList();}
 	: item1=intItem {retval.add($item1.retval);} (COMMA item2=intItem {retval.add($item2.retval);})*;
 	
-strItemList returns [List<String> retval]
+strItemList returns [List<Object> retval]
 @init {retval = Lists.newArrayList();}
 	: item1=strItem {retval.add($item1.text);} (COMMA item2=strItem {retval.add($item2.text);})*;
 	
@@ -268,6 +271,8 @@ keyTO 		: {AntlrActions.isKeyword(input, "TO")}? ID;
 keyOR 		: {AntlrActions.isKeyword(input, "OR")}? ID;
 keyAND 		: {AntlrActions.isKeyword(input, "AND")}? ID;
 keyNOT 		: {AntlrActions.isKeyword(input, "NOT")}? ID;
+keyTRUE 		: {AntlrActions.isKeyword(input, "TRUE")}? ID;
+keyFALSE 	: {AntlrActions.isKeyword(input, "FALSE")}? ID;
 keyBETWEEN 	: {AntlrActions.isKeyword(input, "BETWEEN")}? ID;
 keyNULL 	: {AntlrActions.isKeyword(input, "NULL")}? ID;
 keyLOWER 	: {AntlrActions.isKeyword(input, "LOWER")}? ID;
