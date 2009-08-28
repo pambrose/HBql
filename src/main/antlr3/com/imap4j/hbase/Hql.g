@@ -191,10 +191,10 @@ multDiv returns [CalculationExpr.OP retval]
 numberFactor returns [ValueExpr retval]
 	: (s=plusMinus)? n=numberPrimary 		
 	{
-	  if ($s.retval == CalculationExpr.OP.PLUS)
-		retval = $n.retval;
-	  else
+	  if ($s.retval == CalculationExpr.OP.MINUS)
 	  	retval = new CalculationExpr($n.retval, CalculationExpr.OP.NEGATIVE, null);
+	  else
+		retval = $n.retval;
 	}
 	;
 	
