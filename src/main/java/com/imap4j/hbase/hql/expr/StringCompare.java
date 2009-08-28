@@ -10,12 +10,12 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class StringCompareExpr extends CompareExpr {
+public class StringCompare extends CompareExpr {
 
     private final Value expr1;
     private final Value expr2;
 
-    public StringCompareExpr(final Value expr1, final Operator op, final Value expr2) {
+    public StringCompare(final Value expr1, final Operator op, final Value expr2) {
         super(op);
         this.expr1 = expr1;
         this.expr2 = expr2;

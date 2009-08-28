@@ -94,24 +94,24 @@ condFactor returns [Predicate retval]
 	;
 
 condPrimary returns [Predicate retval]
-	: simpleCondExpr  				{retval = new CondPrimary($simpleCondExpr.retval);}
-	| LPAREN orExpr RPAREN				{retval = new CondPrimary($orExpr.retval);}
+	: simpleCondExpr  				{retval = $simpleCondExpr.retval;}
+	| LPAREN orExpr RPAREN				{retval = $orExpr.retval;}
 	;
 
 simpleCondExpr returns [Predicate retval]
-	: betweenExpr					{retval = new SimpleCondExpr($betweenExpr.retval);}
-	| likeExpr					//{retval = new SimpleCondExpr($likeExpr.retval);}
-	| inExpr					{retval = new SimpleCondExpr($inExpr.retval);}
-	| nullCompExpr					//{retval = new SimpleCondExpr($nullCompExpr.retval);}
-	| compareExpr 					{retval = new SimpleCondExpr($compareExpr.retval);}
-	| booleanExpr					{retval = new SimpleCondExpr($booleanExpr.retval);}
+	: betweenExpr					{retval = $betweenExpr.retval;}
+	| likeExpr					//{retval = $likeExpr.retval;}
+	| inExpr					{retval = $inExpr.retval;}
+	| nullCompExpr					//{retval = $nullCompExpr.retval;}
+	| compareExpr 					{retval = $compareExpr.retval;}
+	| booleanExpr					{retval = $booleanExpr.retval;}
 	;
 
 betweenExpr returns [Predicate retval]
 	: a=attribRef[ExprType.NumberType] n=keyNOT? 
-	  keyBETWEEN n1=numberExpr keyAND n2=numberExpr	{retval = new BetweenExpr(ExprType.NumberType, $a.retval, ($n.text != null), $n1.retval, $n2.retval);}
+	  keyBETWEEN n1=numberExpr keyAND n2=numberExpr	{retval = new Between(ExprType.NumberType, $a.retval, ($n.text != null), $n1.retval, $n2.retval);}
 	| a=attribRef[ExprType.StringType] n=keyNOT?  
-	  keyBETWEEN s1=stringExpr keyAND s2=stringExpr	{retval = new BetweenExpr(ExprType.StringType, $a.retval, ($n.text != null), $n1.retval, $n2.retval);}
+	  keyBETWEEN s1=stringExpr keyAND s2=stringExpr	{retval = new Between(ExprType.StringType, $a.retval, ($n.text != null), $n1.retval, $n2.retval);}
 	| a=attribRef[ExprType.DateType] n=keyNOT? 
 	  keyBETWEEN d1=dateExpr keyAND d2=dateExpr
 	;
@@ -122,13 +122,13 @@ likeExpr
 
 inExpr returns [Predicate retval]
 	: a=attribRef[ExprType.NumberType] n=keyNOT? keyIN 
-	  LPAREN i=intItemList RPAREN			{retval = new InExpr(ExprType.NumberType, $a.retval, ($n.text != null), $i.retval);} 
+	  LPAREN i=intItemList RPAREN			{retval = new In(ExprType.NumberType, $a.retval, ($n.text != null), $i.retval);} 
 	| a=attribRef[ExprType.StringType] n=keyNOT? keyIN 
-	  LPAREN s=strItemList RPAREN			{retval = new InExpr(ExprType.StringType, $a.retval, ($n.text != null), $s.retval);} 
+	  LPAREN s=strItemList RPAREN			{retval = new In(ExprType.StringType, $a.retval, ($n.text != null), $s.retval);} 
 	;
 
 intItem returns [Value retval]
-	: num=numberLiteral				{retval = $num.retval;};
+	: n=numberLiteral				{retval = $n.retval;};
 
 strItem : stringLiteral;
 
@@ -136,13 +136,13 @@ nullCompExpr
 	: attribRef[ExprType.StringType] keyIS (keyNOT)? keyNULL;
 
 compareExpr returns [Predicate retval]
-	: a=attribRef[ExprType.StringType] o=compOp s=stringExpr	{retval = new StringCompareExpr($a.retval, $o.retval, $s.retval);}
+	: a=attribRef[ExprType.StringType] o=compOp s=stringExpr	{retval = new StringCompare($a.retval, $o.retval, $s.retval);}
 	| a=attribRef[ExprType.DateType] o=compOp dateExpr 
-	| a=attribRef[ExprType.NumberType] o=compOp n=numberExpr	{retval = new NumberCompareExpr($a.retval, $o.retval, $n.retval);}
-	| s=stringExpr o=compOp a=attribRef[ExprType.StringType]	{retval = new StringCompareExpr($s.retval, $o.retval, $a.retval);}
+	| a=attribRef[ExprType.NumberType] o=compOp n=numberExpr	{retval = new NumberCompare($a.retval, $o.retval, $n.retval);}
+	| s=stringExpr o=compOp a=attribRef[ExprType.StringType]	{retval = new StringCompare($s.retval, $o.retval, $a.retval);}
 	| dateExpr o=compOp a=attribRef[ExprType.DateType]
-	| n=numberExpr o=compOp a=attribRef[ExprType.NumberType]	{retval = new NumberCompareExpr($n.retval, $o.retval, $a.retval);}
-	| n1=numberExpr o=compOp n2=numberExpr				{retval = new NumberCompareExpr($n1.retval, $o.retval, $n2.retval);}
+	| n=numberExpr o=compOp a=attribRef[ExprType.NumberType]	{retval = new NumberCompare($n.retval, $o.retval, $a.retval);}
+	| n1=numberExpr o=compOp n2=numberExpr				{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
 	;
 	
 compOp returns [CompareExpr.Operator retval]
@@ -181,7 +181,8 @@ multDiv returns [CalcExpr.OP retval]
 	;
 	
 numberFactor returns [Value retval]
-	: (s=plusMinus)? n=numberPrimary 		{retval = ($s.retval == CalcExpr.OP.MINUS) ? new CalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) : $n.retval;}
+	: (s=plusMinus)? n=numberPrimary 		
+	{retval = ($s.retval == CalcExpr.OP.MINUS) ? new CalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) : $n.retval;}
 	;
 	
 numberPrimary returns [Value retval]
@@ -191,12 +192,12 @@ numberPrimary returns [Value retval]
 	;
 
 stringExpr returns [Value retval]
-	: lit=stringLiteral				{retval = new StringExpr($lit.retval);}
-	| func=funcReturningString
-	| attrib=attribRef[ExprType.StringType]		{retval = new StringExpr($attrib.retval);}
+	: s=stringLiteral				{retval = $s.retval;}
+	| f=funcReturningString
+	| a=attribRef[ExprType.StringType]		{retval = $a.retval;}
 	;
 
-booleanExpr returns [BooleanExpr retval]
+booleanExpr returns [Predicate retval]
 	: b=booleanLiteral				{retval = new BooleanExpr($b.retval);}
 	| func=funcReturningBoolean
 	;

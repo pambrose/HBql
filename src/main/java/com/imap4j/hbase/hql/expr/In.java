@@ -4,41 +4,50 @@ import com.imap4j.hbase.hql.ClassSchema;
 import com.imap4j.hbase.hql.HPersistException;
 import com.imap4j.hbase.hql.HPersistable;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class BetweenExpr implements Predicate {
+public class In implements Predicate {
+
 
     private final ExprType type;
     private final AttribRef attrib;
     private final boolean not;
-    private final Object lowerVal, upperVal;
+    private final List<Object> valList;
 
-    public BetweenExpr(final ExprType type, final AttribRef attrib, final boolean not, final Object lowerVal, final Object upperVal) {
+    public In(final ExprType type, final AttribRef attrib, final boolean not, final List<Object> valList) {
         this.type = type;
         this.attrib = attrib;
         this.not = not;
-        this.lowerVal = lowerVal;
-        this.upperVal = upperVal;
+        this.valList = valList;
     }
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
 
         switch (type) {
+
             case IntegerType: {
-                final Number objVal = (Number)this.attrib.getValue(classSchema, recordObj);
-                final int attribVal = objVal.intValue();
-                return attribVal >= ((Number)lowerVal).intValue() && attribVal <= ((Number)upperVal).intValue();
+                final Number attribVal = (Number)this.attrib.getValue(classSchema, recordObj);
+                for (final Object obj : this.valList)
+                    if (attribVal.equals(obj))
+                        return true;
+                return false;
+
             }
 
             case StringType: {
                 final String attribVal = (String)this.attrib.getValue(classSchema, recordObj);
-                // TODO Check this
-                return attribVal.compareTo((String)lowerVal) <= 0 && attribVal.compareTo((String)lowerVal) >= 0;
+                for (final Object obj : this.valList)
+                    if (attribVal.equals(obj))
+                        return true;
+                return false;
+
             }
         }
 

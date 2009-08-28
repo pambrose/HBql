@@ -22,7 +22,15 @@ public class AttribRef implements Value {
 
     @Override
     public Object getValue(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
-        return (String)classSchema.getFieldAttribByField(this.attribName).getValue(recordObj);
+
+        switch (this.type) {
+
+            case StringType:
+                return (String)classSchema.getFieldAttribByField(this.attribName).getValue(recordObj);
+
+        }
+
+        throw new HPersistException("Unknown type in AttribRef.getValue() - " + type);
     }
 
 }
