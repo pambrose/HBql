@@ -1,6 +1,7 @@
 package com.imap4j.hbase.hql.expr;
 
 import com.imap4j.hbase.hql.ClassSchema;
+import com.imap4j.hbase.hql.FieldAttrib;
 import com.imap4j.hbase.hql.HPersistException;
 import com.imap4j.hbase.hql.HPersistable;
 
@@ -25,12 +26,16 @@ public class AttribRef implements ValueExpr {
 
         switch (this.type) {
 
-            case StringType:
-                return (String)classSchema.getFieldAttribByField(this.attribName).getValue(recordObj);
+            case StringType: {
+                final FieldAttrib fieldAttrib = classSchema.getFieldAttribByField(this.attribName);
+                return (String)fieldAttrib.getValue(recordObj);
+            }
+
+            default:
+                throw new HPersistException("Unknown type in AttribRef.getValue() - " + type);
 
         }
 
-        throw new HPersistException("Unknown type in AttribRef.getValue() - " + type);
     }
 
 }
