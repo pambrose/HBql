@@ -17,18 +17,19 @@ public class CalculationExpr implements ValueExpr {
         MINUS,
         MULT,
         DIV,
+        NEGATIVE,
         NONE
 
     }
 
-    private final CalculationExpr expr1, expr2;
+    private final ValueExpr expr1, expr2;
     private final OP op;
 
-    public CalculationExpr(final CalculationExpr expr1) {
+    public CalculationExpr(final ValueExpr expr1) {
         this(expr1, OP.NONE, null);
     }
 
-    public CalculationExpr(final CalculationExpr expr1, final OP op, final CalculationExpr expr2) {
+    public CalculationExpr(final ValueExpr expr1, final OP op, final ValueExpr expr2) {
         this.expr1 = expr1;
         this.op = op;
         this.expr2 = expr2;
@@ -38,7 +39,10 @@ public class CalculationExpr implements ValueExpr {
     public Object getValue(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
 
         final int val1 = ((Number)expr1.getValue(classSchema, recordObj)).intValue();
-        final int val2 = ((Number)expr2.getValue(classSchema, recordObj)).intValue();
+
+        final int val2 = (this.expr2 != null)
+                         ? ((Number)expr2.getValue(classSchema, recordObj)).intValue()
+                         : 0;
 
         switch (this.op) {
             case PLUS:
@@ -49,6 +53,8 @@ public class CalculationExpr implements ValueExpr {
                 return val1 * val2;
             case DIV:
                 return val1 / val2;
+            case NEGATIVE:
+                return val1 * -1;
             case NONE:
                 return val1;
         }

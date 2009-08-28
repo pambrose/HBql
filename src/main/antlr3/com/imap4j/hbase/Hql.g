@@ -152,11 +152,11 @@ compOp returns [CompareExpr.Operator retval]
 	| LTGT		{retval = CompareExpr.Operator.LTGT;}
 	;
 
-numberExpr returns [NumberExpr retval]
-	: simpleNumberExpr		
+numberExpr returns [ValueExpr retval]
+	: n=simpleNumberExpr		{retval = $n.retval;}	
 	;
 
-simpleNumberExpr returns [CalculationExpr retval]
+simpleNumberExpr returns [ValueExpr retval]
 	: n1=numberTerm (op=plusMinus n2=simpleNumberExpr)?
 	{
 	  if ($n2.text == null) 
@@ -167,7 +167,7 @@ simpleNumberExpr returns [CalculationExpr retval]
 	//| simpleNumberExpr plusMinus numberTerm
 	;
 
-numberTerm returns [CalculationExpr retval]
+numberTerm returns [ValueExpr retval]
 	: n1=numberFactor (op=multDiv n2=numberTerm)?
 	{
 	  if ($n2.text == null) 
@@ -179,21 +179,28 @@ numberTerm returns [CalculationExpr retval]
 	;
 
 plusMinus returns [CalculationExpr.OP retval]
-	: PLUS		{retval = CalculationExpr.OP.PLUS;}
-	| MINUS		{retval = CalculationExpr.OP.MINUS;}
+	: PLUS					{retval = CalculationExpr.OP.PLUS;}
+	| MINUS					{retval = CalculationExpr.OP.MINUS;}
 	;
 	
 multDiv returns [CalculationExpr.OP retval]
-	: STAR		{retval = CalculationExpr.OP.MULT;}
-	| DIV		{retval = CalculationExpr.OP.DIV;}
+	: STAR					{retval = CalculationExpr.OP.MULT;}
+	| DIV					{retval = CalculationExpr.OP.DIV;}
 	;
 	
-numberFactor returns [CalculationExpr retval]
-	: plusMinus? numberPrimary;
-
-numberPrimary [CalculationExpr retval]
-	: numberLiteral
-	| LPAREN simpleNumberExpr RPAREN
+numberFactor returns [ValueExpr retval]
+	: (s=plusMinus)? n=numberPrimary 		
+	{
+	  if ($s.retval == CalculationExpr.OP.PLUS)
+		retval = $n.retval;
+	  else
+	  	retval = new CalculationExpr($n.retval, CalculationExpr.OP.NEGATIVE, null);
+	}
+	;
+	
+numberPrimary returns [ValueExpr retval]
+	: n=numberLiteral				{retval = $n.retval;}
+	| LPAREN s=simpleNumberExpr RPAREN		{retval = $s.retval;}
 	| funcsReturningNumber
 	;
 
