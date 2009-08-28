@@ -1,4 +1,8 @@
+import com.imap4j.hbase.hql.HColumn;
+import com.imap4j.hbase.hql.HFamily;
 import com.imap4j.hbase.hql.HPersistException;
+import com.imap4j.hbase.hql.HPersistable;
+import com.imap4j.hbase.hql.HTable;
 import com.imap4j.hbase.hql.HUtil;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -10,7 +14,31 @@ import org.junit.Test;
  * Date: Aug 27, 2009
  * Time: 2:13:47 PM
  */
-public class WhereTests {
+public class WhereExpressionTests {
+
+    @HTable(name = "alltypes",
+            families = {
+                    @HFamily(name = "family1", maxVersions = 10),
+                    @HFamily(name = "family2"),
+                    @HFamily(name = "family3", maxVersions = 5)
+            })
+    public static class AllTypes implements HPersistable {
+
+        @HColumn(key = true)
+        private String keyval;
+
+        @HColumn(family = "family1")
+        private int intValue = -1;
+
+        @HColumn(family = "family1")
+        private String stringValue = "";
+
+        public AllTypes(final String keyval, final int intValue, final String stringValue) {
+            this.keyval = keyval;
+            this.intValue = intValue;
+            this.stringValue = stringValue;
+        }
+    }
 
     @Test
     public void booleanExpressions() throws HPersistException {
