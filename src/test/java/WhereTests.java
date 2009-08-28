@@ -36,7 +36,21 @@ public class WhereTests {
 
         assertTrue(HUtil.test("4 < 5"));
         assertFalse(HUtil.test("4 = 5"));
+        assertFalse(HUtil.test("4 == 5"));
+        assertTrue(HUtil.test("4 != 5"));
+        assertTrue(HUtil.test("4 <> 5"));
         assertTrue(HUtil.test("4 <= 5"));
+        assertFalse(HUtil.test("4 > 5"));
+        assertFalse(HUtil.test("4 >= 5"));
+    }
+
+    @Test
+    public void numericCalculations() throws HPersistException {
+
+        assertTrue(HUtil.test("(4 + 5) == 9"));
+        assertFalse(HUtil.test("(4 + 5) == 8"));
+        assertTrue(HUtil.test("(4 + 5 + 10 + 10 - 20) == 9"));
+        assertFalse(HUtil.test("(4 + 5 + 10 + 10 - 20) != 9"));
     }
 
 }

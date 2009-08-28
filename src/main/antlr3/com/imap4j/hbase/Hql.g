@@ -19,6 +19,7 @@ tokens {
 	LTGT = '<>';	
 	LTEQ = '<=';	
 	GTEQ = '>=';	
+	NE = '!=';	
 	DQUOTE = '"';
 	SQUOTE = '\'';
 	LPAREN = '(';
@@ -144,12 +145,12 @@ compareExpr returns [CompareExpr retval]
 	;
 	
 compOp returns [CompareExpr.Operator retval]
-	: EQ 		{retval = CompareExpr.Operator.EQ;}
+	: EQ EQ?	{retval = CompareExpr.Operator.EQ;}
 	| GT 		{retval = CompareExpr.Operator.GT;}
 	| GTEQ 		{retval = CompareExpr.Operator.GTEQ;}
 	| LT 		{retval = CompareExpr.Operator.LT;}
 	| LTEQ 		{retval = CompareExpr.Operator.LTEQ;}
-	| LTGT		{retval = CompareExpr.Operator.LTGT;}
+	| (LTGT | NE)	{retval = CompareExpr.Operator.LTGT;}
 	;
 
 numberExpr returns [ValueExpr retval]
