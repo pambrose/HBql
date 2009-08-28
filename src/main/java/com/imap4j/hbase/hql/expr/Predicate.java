@@ -7,10 +7,11 @@ import com.imap4j.hbase.hql.HPersistable;
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
- * Date: Aug 26, 2009
- * Time: 10:18:22 AM
+ * Date: Aug 25, 2009
+ * Time: 8:38:28 PM
  */
-public interface ValueExpr {
+public interface Predicate {
 
-    Object getValue(ClassSchema classSchema, HPersistable recordObj) throws HPersistException;
+    boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException;
+
 }

@@ -79,26 +79,26 @@ setStmt returns [SetArgs retval]
 whereClause returns [WhereExpr retval]
 	: keyWHERE c=orExpr 				{retval = new WhereExpr($c.retval);};
 		
-orExpr returns [OrExpr retval]
+orExpr returns [Predicate retval]
 	: expr1=andExpr (keyOR expr2=orExpr)?		{retval= new OrExpr($expr1.retval, $expr2.retval);;}
 	//| cond_expr keyOR cond_term
 	;
 
-andExpr returns [AndExpr retval]
+andExpr returns [Predicate retval]
 	: expr1=condFactor (keyAND expr2=andExpr)?	{retval = new AndExpr($expr1.retval, $expr2.retval);}
 	//| cond_term keyAND cond_factor
 	;
 	
-condFactor returns [CondFactor retval]			 
+condFactor returns [Predicate retval]			 
 	: k=keyNOT? p=condPrimary			{retval = new CondFactor(($k.text != null), $p.retval);}
 	;
 
-condPrimary returns [CondPrimary retval]
+condPrimary returns [Predicate retval]
 	: simpleCondExpr  				{retval = new CondPrimary($simpleCondExpr.retval);}
 	| LPAREN orExpr RPAREN				{retval = new CondPrimary($orExpr.retval);}
 	;
 
-simpleCondExpr returns [SimpleCondExpr retval]
+simpleCondExpr returns [Predicate retval]
 	: betweenExpr					{retval = new SimpleCondExpr($betweenExpr.retval);}
 	| likeExpr					//{retval = new SimpleCondExpr($likeExpr.retval);}
 	| inExpr					{retval = new SimpleCondExpr($inExpr.retval);}
@@ -107,7 +107,7 @@ simpleCondExpr returns [SimpleCondExpr retval]
 	| booleanExpr					{retval = new SimpleCondExpr($booleanExpr.retval);}
 	;
 
-betweenExpr returns [BetweenExpr retval]
+betweenExpr returns [Predicate retval]
 	: a=attribRef[ExprType.NumberType] n=keyNOT? 
 	  keyBETWEEN n1=numberExpr keyAND n2=numberExpr	{retval = new BetweenExpr(ExprType.NumberType, $a.retval, ($n.text != null), $n1.retval, $n2.retval);}
 	| a=attribRef[ExprType.StringType] n=keyNOT?  
@@ -117,16 +117,17 @@ betweenExpr returns [BetweenExpr retval]
 	;
 
 likeExpr 
-	: attribRef[ExprType.StringType] keyNOT? keyLIKE pattern_value=stringLiteral; // ('ESCAPE' escape_character=string_literal)?;
+	: attribRef[ExprType.StringType] 
+	  keyNOT? keyLIKE pattern_value=stringLiteral; // ('ESCAPE' escape_character=string_literal)?;
 
-inExpr returns [InExpr retval]
+inExpr returns [Predicate retval]
 	: a=attribRef[ExprType.NumberType] n=keyNOT? keyIN 
 	  LPAREN i=intItemList RPAREN			{retval = new InExpr(ExprType.NumberType, $a.retval, ($n.text != null), $i.retval);} 
 	| a=attribRef[ExprType.StringType] n=keyNOT? keyIN 
 	  LPAREN s=strItemList RPAREN			{retval = new InExpr(ExprType.StringType, $a.retval, ($n.text != null), $s.retval);} 
 	;
 
-intItem returns [NumberLiteral retval]
+intItem returns [Value retval]
 	: num=numberLiteral				{retval = $num.retval;};
 
 strItem : stringLiteral;
@@ -134,7 +135,7 @@ strItem : stringLiteral;
 nullCompExpr
 	: attribRef[ExprType.StringType] keyIS (keyNOT)? keyNULL;
 
-compareExpr returns [CompareExpr retval]
+compareExpr returns [Predicate retval]
 	: a=attribRef[ExprType.StringType] o=compOp s=stringExpr	{retval = new StringCompareExpr($a.retval, $o.retval, $s.retval);}
 	| a=attribRef[ExprType.DateType] o=compOp dateExpr 
 	| a=attribRef[ExprType.NumberType] o=compOp n=numberExpr	{retval = new NumberCompareExpr($a.retval, $o.retval, $n.retval);}
@@ -145,67 +146,51 @@ compareExpr returns [CompareExpr retval]
 	;
 	
 compOp returns [CompareExpr.Operator retval]
-	: EQ EQ?	{retval = CompareExpr.Operator.EQ;}
-	| GT 		{retval = CompareExpr.Operator.GT;}
-	| GTEQ 		{retval = CompareExpr.Operator.GTEQ;}
-	| LT 		{retval = CompareExpr.Operator.LT;}
-	| LTEQ 		{retval = CompareExpr.Operator.LTEQ;}
-	| (LTGT | NE)	{retval = CompareExpr.Operator.LTGT;}
+	: EQ EQ?					{retval = CompareExpr.Operator.EQ;}
+	| GT 						{retval = CompareExpr.Operator.GT;}
+	| GTEQ 						{retval = CompareExpr.Operator.GTEQ;}
+	| LT 						{retval = CompareExpr.Operator.LT;}
+	| LTEQ 						{retval = CompareExpr.Operator.LTEQ;}
+	| (LTGT | NE)					{retval = CompareExpr.Operator.LTGT;}
 	;
 
-numberExpr returns [ValueExpr retval]
-	: n=simpleNumberExpr		{retval = $n.retval;}	
+numberExpr returns [Value retval]
+	: n=simpleNumberExpr				{retval = $n.retval;}	
 	;
 
-simpleNumberExpr returns [ValueExpr retval]
+simpleNumberExpr returns [Value retval]
 	: n1=numberTerm (op=plusMinus n2=simpleNumberExpr)?
-	{
-	  if ($n2.text == null) 
-	    $simpleNumberExpr.retval = new CalculationExpr($n1.retval);
-	  else
-	    $simpleNumberExpr.retval = new CalculationExpr($n1.retval, $op.retval, $n2.retval);
-	}
+	{$simpleNumberExpr.retval= ($n2.text == null) ? new CalcExpr($n1.retval) : new CalcExpr($n1.retval, $op.retval, $n2.retval);}
 	//| simpleNumberExpr plusMinus numberTerm
 	;
 
-numberTerm returns [ValueExpr retval]
+numberTerm returns [Value retval]
 	: n1=numberFactor (op=multDiv n2=numberTerm)?
-	{
-	  if ($n2.text == null) 
-	    $numberTerm.retval = new CalculationExpr($n1.retval);
-	  else
-	    $numberTerm.retval = new CalculationExpr($n1.retval, $op.retval, $n2.retval);
-	}
+	{$numberTerm.retval = ($n2.text == null) ? new CalcExpr($n1.retval) : new CalcExpr($n1.retval, $op.retval, $n2.retval);}
 	//| numberTerm multDiv numberFactor
 	;
 
-plusMinus returns [CalculationExpr.OP retval]
-	: PLUS					{retval = CalculationExpr.OP.PLUS;}
-	| MINUS					{retval = CalculationExpr.OP.MINUS;}
+plusMinus returns [CalcExpr.OP retval]
+	: PLUS						{retval = CalcExpr.OP.PLUS;}
+	| MINUS						{retval = CalcExpr.OP.MINUS;}
 	;
 	
-multDiv returns [CalculationExpr.OP retval]
-	: STAR					{retval = CalculationExpr.OP.MULT;}
-	| DIV					{retval = CalculationExpr.OP.DIV;}
+multDiv returns [CalcExpr.OP retval]
+	: STAR						{retval = CalcExpr.OP.MULT;}
+	| DIV						{retval = CalcExpr.OP.DIV;}
 	;
 	
-numberFactor returns [ValueExpr retval]
-	: (s=plusMinus)? n=numberPrimary 		
-	{
-	  if ($s.retval == CalculationExpr.OP.MINUS)
-	  	retval = new CalculationExpr($n.retval, CalculationExpr.OP.NEGATIVE, null);
-	  else
-		retval = $n.retval;
-	}
+numberFactor returns [Value retval]
+	: (s=plusMinus)? n=numberPrimary 		{retval = ($s.retval == CalcExpr.OP.MINUS) ? new CalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) : $n.retval;}
 	;
 	
-numberPrimary returns [ValueExpr retval]
+numberPrimary returns [Value retval]
 	: n=numberLiteral				{retval = $n.retval;}
 	| LPAREN s=simpleNumberExpr RPAREN		{retval = $s.retval;}
 	| funcsReturningNumber
 	;
 
-stringExpr returns [StringExpr retval]
+stringExpr returns [Value retval]
 	: lit=stringLiteral				{retval = new StringExpr($lit.retval);}
 	| func=funcReturningString
 	| attrib=attribRef[ExprType.StringType]		{retval = new StringExpr($attrib.retval);}

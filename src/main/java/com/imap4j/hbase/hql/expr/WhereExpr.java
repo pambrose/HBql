@@ -10,19 +10,30 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class WhereExpr implements ConditionExpr {
+public class WhereExpr implements Predicate {
 
-    private final OrExpr expr;
+    private final Predicate expr;
 
-    public WhereExpr(final OrExpr expr) {
+    private long start, end;
+
+    public WhereExpr(final Predicate expr) {
         this.expr = expr;
+
     }
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
-        if (this.expr != null)
-            return this.expr.evaluate(classSchema, recordObj);
-        else
-            return true;
+
+        this.start = System.nanoTime();
+
+        final boolean retval = this.expr == null || this.expr.evaluate(classSchema, recordObj);
+
+        this.end = System.nanoTime();
+
+        return retval;
+    }
+
+    public long getElapsedNanos() {
+        return this.end - this.start;
     }
 }

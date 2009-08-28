@@ -12,10 +12,10 @@ import com.imap4j.hbase.hql.HPersistable;
  */
 public class NumberCompareExpr extends CompareExpr {
 
-    private final ValueExpr expr1;
-    private final ValueExpr expr2;
+    private final Value expr1;
+    private final Value expr2;
 
-    public NumberCompareExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
+    public NumberCompareExpr(final Value expr1, final Operator op, final Value expr2) {
         super(op);
         this.expr1 = expr1;
         this.expr2 = expr2;

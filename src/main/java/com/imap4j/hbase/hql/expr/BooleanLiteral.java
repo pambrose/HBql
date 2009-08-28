@@ -9,7 +9,7 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class BooleanLiteral implements ValueExpr {
+public class BooleanLiteral implements Value {
 
     private final Boolean value;
 

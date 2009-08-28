@@ -10,11 +10,11 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 8:28:42 PM
  */
-public class CondPrimary implements ConditionExpr {
+public class CondPrimary implements Predicate {
 
-    private final ConditionExpr expr;
+    private final Predicate expr;
 
-    public CondPrimary(final ConditionExpr expr) {
+    public CondPrimary(final Predicate expr) {
         this.expr = expr;
     }
 

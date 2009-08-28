@@ -10,12 +10,12 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 8:28:06 PM
  */
-public class CondFactor implements ConditionExpr {
+public class CondFactor implements Predicate {
 
     private final boolean not;
-    private final CondPrimary primary;
+    private final Predicate primary;
 
-    public CondFactor(final boolean not, final CondPrimary primary) {
+    public CondFactor(final boolean not, final Predicate primary) {
         this.not = not;
         this.primary = primary;
     }

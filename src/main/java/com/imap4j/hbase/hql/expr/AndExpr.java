@@ -10,12 +10,12 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 8:23:42 PM
  */
-public class AndExpr implements ConditionExpr {
+public class AndExpr implements Predicate {
 
-    private final CondFactor expr1;
-    private final AndExpr expr2;
+    private final Predicate expr1;
+    private final Predicate expr2;
 
-    public AndExpr(final CondFactor expr1, final AndExpr expr2) {
+    public AndExpr(final Predicate expr1, final Predicate expr2) {
         this.expr1 = expr1;
         this.expr2 = expr2;
     }
