@@ -76,6 +76,7 @@ public class WhereTests {
     public void numericFunctions() throws HPersistException {
 
         assertTrue(HUtil.test("3 between 2 AND 5"));
+        assertTrue(HUtil.test("3 between (1+1) AND (3+2)"));
     }
 
 }
