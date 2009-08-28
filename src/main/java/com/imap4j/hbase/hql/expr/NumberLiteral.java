@@ -9,7 +9,7 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NumberLiteral implements Value {
+public class NumberLiteral implements ValueExpr {
 
     private final Number value;
 

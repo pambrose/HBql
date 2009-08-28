@@ -32,7 +32,7 @@ public class WhereTests {
     }
 
     @Test
-    public void numericExpressions() throws HPersistException {
+    public void numericCompares() throws HPersistException {
 
         assertTrue(HUtil.test("4 < 5"));
         assertFalse(HUtil.test("4 = 5"));
@@ -45,12 +45,37 @@ public class WhereTests {
     }
 
     @Test
+    public void stringCompares() throws HPersistException {
+
+        assertTrue(HUtil.test("'aaa' == 'aaa'"));
+        assertFalse(HUtil.test("'aaa' != 'aaa'"));
+        assertFalse(HUtil.test("'aaa' <> 'aaa'"));
+        assertFalse(HUtil.test("'aaa' == 'bbb'"));
+        assertTrue(HUtil.test("'aaa' <= 'bbb'"));
+        assertTrue(HUtil.test("'bbb' <= 'bbb'"));
+        assertFalse(HUtil.test("'bbb' <= 'aaa'"));
+        assertFalse(HUtil.test("'bbb' > 'bbb'"));
+        assertTrue(HUtil.test("'bbb' > 'aaa'"));
+        assertTrue(HUtil.test("'bbb' >= 'aaa'"));
+        assertTrue(HUtil.test("'aaa' >= 'aaa'"));
+    }
+
+    @Test
     public void numericCalculations() throws HPersistException {
 
+        assertTrue(HUtil.test("9 == 9"));
+        assertTrue(HUtil.test("((4 + 5) == 9)"));
+        assertTrue(HUtil.test("(9) == 9"));
         assertTrue(HUtil.test("(4 + 5) == 9"));
         assertFalse(HUtil.test("(4 + 5) == 8"));
         assertTrue(HUtil.test("(4 + 5 + 10 + 10 - 20) == 9"));
         assertFalse(HUtil.test("(4 + 5 + 10 + 10 - 20) != 9"));
+    }
+
+    @Test
+    public void numericFunctions() throws HPersistException {
+
+        assertTrue(HUtil.test("3 between 2 AND 5"));
     }
 
 }

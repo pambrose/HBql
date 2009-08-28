@@ -10,13 +10,13 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class WhereExpr implements Predicate {
+public class WhereExpr implements PredicateExpr {
 
-    private final Predicate expr;
+    private final PredicateExpr expr;
 
     private long start, end;
 
-    public WhereExpr(final Predicate expr) {
+    public WhereExpr(final PredicateExpr expr) {
         this.expr = expr;
 
     }

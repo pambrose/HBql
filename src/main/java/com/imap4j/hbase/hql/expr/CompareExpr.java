@@ -6,7 +6,7 @@ package com.imap4j.hbase.hql.expr;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public abstract class CompareExpr implements Predicate {
+public abstract class CompareExpr implements PredicateExpr {
 
     public enum Operator {
         EQ,
@@ -14,7 +14,7 @@ public abstract class CompareExpr implements Predicate {
         GTEQ,
         LT,
         LTEQ,
-        LTGT
+        NOTEQ
     }
 
     private final CompareExpr.Operator operator;

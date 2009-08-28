@@ -10,21 +10,21 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 8:23:42 PM
  */
-public class AndExpr implements Predicate {
+public class AndExpr implements PredicateExpr {
 
-    private final Predicate expr1;
-    private final Predicate expr2;
+    private final PredicateExpr expr1;
+    private final PredicateExpr expr2;
 
-    public AndExpr(final Predicate expr1, final Predicate expr2) {
+    public AndExpr(final PredicateExpr expr1, final PredicateExpr expr2) {
         this.expr1 = expr1;
         this.expr2 = expr2;
     }
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
-        if (expr2 == null)
-            return expr1.evaluate(classSchema, recordObj);
+        if (this.expr2 == null)
+            return this.expr1.evaluate(classSchema, recordObj);
         else
-            return expr1.evaluate(classSchema, recordObj) && expr2.evaluate(classSchema, recordObj);
+            return this.expr1.evaluate(classSchema, recordObj) && this.expr2.evaluate(classSchema, recordObj);
     }
 }

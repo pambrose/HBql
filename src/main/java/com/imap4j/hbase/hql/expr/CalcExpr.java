@@ -10,7 +10,7 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class CalcExpr implements Value {
+public class CalcExpr implements ValueExpr {
 
     public enum OP {
         PLUS,
@@ -22,14 +22,14 @@ public class CalcExpr implements Value {
 
     }
 
-    private final Value expr1, expr2;
+    private final ValueExpr expr1, expr2;
     private final OP op;
 
-    public CalcExpr(final Value expr1) {
+    public CalcExpr(final ValueExpr expr1) {
         this(expr1, OP.NONE, null);
     }
 
-    public CalcExpr(final Value expr1, final OP op, final Value expr2) {
+    public CalcExpr(final ValueExpr expr1, final OP op, final ValueExpr expr2) {
         this.expr1 = expr1;
         this.op = op;
         this.expr2 = expr2;

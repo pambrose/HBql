@@ -10,39 +10,58 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class Between implements Predicate {
+public class Between implements PredicateExpr {
 
     private final ExprType type;
-    private final AttribRef attrib;
+    private final ValueExpr expr;
     private final boolean not;
-    private final Object lowerVal, upperVal;
+    private final ValueExpr lower, upper;
 
-    public Between(final ExprType type, final AttribRef attrib, final boolean not, final Object lowerVal, final Object upperVal) {
+    public Between(final ExprType type, final ValueExpr expr, final boolean not, final ValueExpr lower, final ValueExpr upper) {
         this.type = type;
-        this.attrib = attrib;
+        this.expr = expr;
         this.not = not;
-        this.lowerVal = lowerVal;
-        this.upperVal = upperVal;
+        this.lower = lower;
+        this.upper = upper;
     }
 
     @Override
     public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
 
-        switch (type) {
+        final boolean retval;
+
+        switch (this.type) {
+
+            case NumberType:
             case IntegerType: {
-                final Number objVal = (Number)this.attrib.getValue(classSchema, recordObj);
-                final int attribVal = objVal.intValue();
-                return attribVal >= ((Number)lowerVal).intValue() && attribVal <= ((Number)upperVal).intValue();
+                final Number objVal = (Number)this.expr.getValue(classSchema, recordObj);
+                final int val = objVal.intValue();
+                retval = val >= ((Number)this.getLower().getValue(classSchema, recordObj)).intValue()
+                         && val <= ((Number)this.getUpper().getValue(classSchema, recordObj)).intValue();
+                break;
             }
 
             case StringType: {
-                final String attribVal = (String)this.attrib.getValue(classSchema, recordObj);
+                final String val = (String)this.expr.getValue(classSchema, recordObj);
                 // TODO Check this
-                return attribVal.compareTo((String)lowerVal) <= 0 && attribVal.compareTo((String)lowerVal) >= 0;
+                retval = val.compareTo((String)this.getLower().getValue(classSchema, recordObj)) >= 0
+                         && val.compareTo((String)this.getUpper().getValue(classSchema, recordObj)) <= 0;
+                break;
             }
+
+            default:
+                throw new HPersistException("Unknown type in Between.evaluate() - " + this.type);
         }
 
-        throw new HPersistException("Unknown type in InExpr.evaluate() - " + type);
+        return (this.not) ? !retval : retval;
+    }
+
+    private ValueExpr getLower() {
+        return this.lower;
+    }
+
+    private ValueExpr getUpper() {
+        return this.upper;
     }
 
 }

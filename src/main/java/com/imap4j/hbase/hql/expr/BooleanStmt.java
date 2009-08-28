@@ -10,11 +10,11 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class BooleanExpr implements Predicate {
+public class BooleanStmt implements PredicateExpr {
 
-    private final Value expr;
+    private final ValueExpr expr;
 
-    public BooleanExpr(final Value expr) {
+    public BooleanStmt(final ValueExpr expr) {
         this.expr = expr;
     }
 

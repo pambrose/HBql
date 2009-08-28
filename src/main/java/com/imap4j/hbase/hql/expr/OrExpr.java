@@ -10,12 +10,12 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class OrExpr implements Predicate {
+public class OrExpr implements PredicateExpr {
 
-    private final Predicate expr1;
-    private final Predicate expr2;
+    private final PredicateExpr expr1;
+    private final PredicateExpr expr2;
 
-    public OrExpr(final Predicate expr1, final Predicate expr2) {
+    public OrExpr(final PredicateExpr expr1, final PredicateExpr expr2) {
         this.expr1 = expr1;
         this.expr2 = expr2;
     }

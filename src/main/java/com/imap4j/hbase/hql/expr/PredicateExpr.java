@@ -10,7 +10,7 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 8:38:28 PM
  */
-public interface Predicate {
+public interface PredicateExpr {
 
     boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException;
 
