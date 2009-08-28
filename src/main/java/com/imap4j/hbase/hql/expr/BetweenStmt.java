@@ -10,14 +10,14 @@ import com.imap4j.hbase.hql.HPersistable;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class Between implements PredicateExpr {
+public class BetweenStmt implements PredicateExpr {
 
     private final ExprType type;
     private final ValueExpr expr;
     private final boolean not;
     private final ValueExpr lower, upper;
 
-    public Between(final ExprType type, final ValueExpr expr, final boolean not, final ValueExpr lower, final ValueExpr upper) {
+    public BetweenStmt(final ExprType type, final ValueExpr expr, final boolean not, final ValueExpr lower, final ValueExpr upper) {
         this.type = type;
         this.expr = expr;
         this.not = not;
@@ -43,7 +43,6 @@ public class Between implements PredicateExpr {
 
             case StringType: {
                 final String val = (String)this.expr.getValue(classSchema, recordObj);
-                // TODO Check this
                 retval = val.compareTo((String)this.getLower().getValue(classSchema, recordObj)) >= 0
                          && val.compareTo((String)this.getUpper().getValue(classSchema, recordObj)) <= 0;
                 break;

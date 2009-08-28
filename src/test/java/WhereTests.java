@@ -77,6 +77,21 @@ public class WhereTests {
 
         assertTrue(HUtil.test("3 between 2 AND 5"));
         assertTrue(HUtil.test("3 between (1+1) AND (3+2)"));
+
+        assertTrue(HUtil.test("3 in (2,3,4)"));
+        assertFalse(HUtil.test("3 in (1+1,1+3,4)"));
+        assertTrue(HUtil.test("3 in (1+1,1+2,4)"));
+
+    }
+
+    @Test
+    public void stringFunctions() throws HPersistException {
+
+        assertTrue(HUtil.test("'bbb' between 'aaa' AND 'ccc'"));
+        assertTrue(HUtil.test("'bbb' between 'bbb' AND 'ccc'"));
+        assertFalse(HUtil.test("'bbb' between 'ccc' AND 'ddd'"));
+
+        assertTrue(HUtil.test("('bbb' between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')"));
     }
 
 }

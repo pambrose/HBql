@@ -108,9 +108,9 @@ simpleCondExpr returns [PredicateExpr retval]
 
 betweenStmt returns [PredicateExpr retval]
 	: n1=numericExpr n=keyNOT? keyBETWEEN
-	  n2=numericExpr keyAND n3=numericExpr		{retval = new Between(ExprType.IntegerType, $n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
+	  n2=numericExpr keyAND n3=numericExpr		{retval = new BetweenStmt(ExprType.IntegerType, $n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
 	| s1=stringExpr n=keyNOT? keyBETWEEN
-	  s2=stringExpr keyAND s3=stringExpr		{retval = new Between(ExprType.StringType, $s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
+	  s2=stringExpr keyAND s3=stringExpr		{retval = new BetweenStmt(ExprType.StringType, $s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
 	| d1=dateExpr n=keyNOT? keyBETWEEN
 	  d2=dateExpr keyAND d3=dateExpr
 	;
@@ -121,9 +121,9 @@ likeStmt
 
 inStmt returns [PredicateExpr retval]
 	: a1=numericExpr n=keyNOT? keyIN 
-	  LPAREN i=intItemList RPAREN			{retval = new In(ExprType.IntegerType, $a1.retval, ($n.text != null), $i.retval);} 
+	  LPAREN i=intItemList RPAREN			{retval = new InStmt(ExprType.IntegerType, $a1.retval, ($n.text != null), $i.retval);} 
 	| a2=stringExpr n=keyNOT? keyIN 
-	  LPAREN s=strItemList RPAREN			{retval = new In(ExprType.StringType, $a2.retval, ($n.text != null), $s.retval);} 
+	  LPAREN s=strItemList RPAREN			{retval = new InStmt(ExprType.StringType, $a2.retval, ($n.text != null), $s.retval);} 
 	;
 
 booleanStmt returns [PredicateExpr retval]
@@ -135,7 +135,7 @@ nullCompExpr
 compareExpr returns [PredicateExpr retval]
 	: s1=stringExpr o=compOp s2=stringExpr	  	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
 	| d1=dateExpr o=compOp d2=dateExpr 
-	| n1=numericExpr o=compOp n2=numericExpr		{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
+	| n1=numericExpr o=compOp n2=numericExpr	{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
 	;
 	
 compOp returns [CompareExpr.Operator retval]
