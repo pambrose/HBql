@@ -1,4 +1,7 @@
-package com.imap4j.hbase.hbql.expr;
+package com.imap4j.hbase.hbql.expr.value;
+
+import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.ValueExpr;
 
 /**
  * Created by IntelliJ IDEA.

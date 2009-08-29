@@ -36,6 +36,8 @@ catch (RecognitionException re) {
 package com.imap4j.hbase;
 import com.imap4j.hbase.hbql.*;
 import com.imap4j.hbase.hbql.expr.*;
+import com.imap4j.hbase.hbql.expr.predicate.*;
+import com.imap4j.hbase.hbql.expr.value.*;
 import com.imap4j.hbase.antlr.args.*;
 import com.imap4j.hbase.antlr.*;
 import java.util.Date;
@@ -84,10 +86,10 @@ whereClause returns [WhereExpr retval]
 	: keyWHERE e=orExpr 				{retval = new WhereExpr($e.retval);};
 		
 orExpr returns [PredicateExpr retval]
-	: e1=andExpr (keyOR e2=orExpr)?			{retval= new OrExpr($e1.retval, $e2.retval);;};
+	: e1=andExpr (keyOR e2=orExpr)?			{retval= new BooleanExpr($e1.retval, BooleanExpr.OP.OR, $e2.retval);;};
 
 andExpr returns [PredicateExpr retval]
-	: e1=condFactor (keyAND e2=andExpr)?		{retval = new AndExpr($e1.retval, $e2.retval);};
+	: e1=condFactor (keyAND e2=andExpr)?		{retval = new BooleanExpr($e1.retval, BooleanExpr.OP.AND, $e2.retval);};
 	
 condFactor returns [PredicateExpr retval]			 
 	: k=keyNOT? p=condPrimary			{retval = new CondFactor(($k.text != null), $p.retval);};
@@ -99,7 +101,7 @@ condPrimary returns [PredicateExpr retval]
 
 simpleCondExpr returns [PredicateExpr retval]
 	: b=betweenStmt					{retval = $b.retval;}
-	| l=likeStmt					//{retval = $l.retval;}
+	| l=likeStmt					{retval = $l.retval;}
 	| i=inStmt					{retval = $i.retval;}
 	| b=booleanStmt					{retval = $b.retval;}
 	| n=nullCompExpr				{retval = $n.retval;}
@@ -115,9 +117,8 @@ betweenStmt returns [PredicateExpr retval]
 	  d2=dateExpr keyAND d3=dateExpr
 	;
 
-likeStmt 
-	: stringExpr 
-	  keyNOT? keyLIKE pattern_value=stringExpr; // ('ESCAPE' escape_character=string_literal)?;
+likeStmt returns [PredicateExpr retval]
+	: stringExpr keyNOT? keyLIKE p=stringExpr; // ('ESCAPE' escape_character=string_literal)?;
 
 inStmt returns [PredicateExpr retval]
 	: a1=numericExpr n=keyNOT? keyIN 

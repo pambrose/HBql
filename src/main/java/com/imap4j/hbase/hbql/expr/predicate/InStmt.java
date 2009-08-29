@@ -1,6 +1,10 @@
-package com.imap4j.hbase.hbql.expr;
+package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.ExprType;
+import com.imap4j.hbase.hbql.expr.PredicateExpr;
+import com.imap4j.hbase.hbql.expr.ValueExpr;
 
 import java.util.List;
 

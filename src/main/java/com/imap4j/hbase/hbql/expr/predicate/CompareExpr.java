@@ -1,4 +1,6 @@
-package com.imap4j.hbase.hbql.expr;
+package com.imap4j.hbase.hbql.expr.predicate;
+
+import com.imap4j.hbase.hbql.expr.PredicateExpr;
 
 /**
  * Created by IntelliJ IDEA.
