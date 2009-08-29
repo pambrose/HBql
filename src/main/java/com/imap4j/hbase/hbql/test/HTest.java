@@ -16,17 +16,12 @@ public class HTest {
 
     private static boolean test(final HPersistable recordObj, final String str) throws HPersistException {
         final WhereExpr expr = (WhereExpr)HBqlRule.WHERE.parse("WHERE " + str);
-
-        final ClassSchema classSchema = recordObj != null
-                                        ? ClassSchema.getClassSchema(recordObj)
-                                        : null;
-
+        final ClassSchema classSchema = (recordObj != null) ? ClassSchema.getClassSchema(recordObj) : null;
         return expr.evaluate(classSchema, recordObj);
     }
 
     public static void assertTrue(final String str) throws HPersistException {
         assertTrue(null, str);
-
     }
 
     public static void assertTrue(final HPersistable recordObj, final String str) throws HPersistException {
@@ -35,7 +30,6 @@ public class HTest {
 
     public static void assertFalse(final String str) throws HPersistException {
         assertFalse(null, str);
-
     }
 
     public static void assertFalse(final HPersistable recordObj, final String str) throws HPersistException {
