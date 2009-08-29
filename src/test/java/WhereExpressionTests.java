@@ -1,9 +1,9 @@
-import com.imap4j.hbase.hql.HColumn;
-import com.imap4j.hbase.hql.HFamily;
-import com.imap4j.hbase.hql.HPersistException;
-import com.imap4j.hbase.hql.HPersistable;
-import com.imap4j.hbase.hql.HTable;
-import com.imap4j.hbase.hql.HTest;
+import com.imap4j.hbase.hbql.HColumn;
+import com.imap4j.hbase.hbql.HFamily;
+import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbql.HPersistable;
+import com.imap4j.hbase.hbql.HTable;
+import com.imap4j.hbase.hbql.HTest;
 import org.junit.Test;
 
 /**

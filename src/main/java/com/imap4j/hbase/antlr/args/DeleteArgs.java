@@ -1,6 +1,6 @@
 package com.imap4j.hbase.antlr.args;
 
-import com.imap4j.hbase.hql.expr.WhereExpr;
+import com.imap4j.hbase.hbql.expr.WhereExpr;
 
 /**
  * Created by IntelliJ IDEA.
