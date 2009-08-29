@@ -6,22 +6,23 @@ import com.imap4j.hbase.hbql.HPersistException;
  * Created by IntelliJ IDEA.
  * User: pambrose
  * Date: Aug 25, 2009
- * Time: 8:28:06 PM
+ * Time: 10:30:32 PM
  */
-public class CondFactor implements PredicateExpr {
+public class NullCompare implements PredicateExpr {
 
+    private final ValueExpr expr;
     private final boolean not;
-    private final PredicateExpr primary;
 
-    public CondFactor(final boolean not, final PredicateExpr primary) {
+    public NullCompare(final boolean not, final ValueExpr expr) {
         this.not = not;
-        this.primary = primary;
+        this.expr = expr;
     }
 
     @Override
     public boolean evaluate(final AttribContext context) throws HPersistException {
-        final boolean retval = this.primary.evaluate(context);
+        final String val = (String)expr.getValue(context);
+        final boolean retval = (val == null);
         return (this.not) ? !retval : retval;
-
     }
+
 }

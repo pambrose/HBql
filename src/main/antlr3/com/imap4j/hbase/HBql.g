@@ -102,7 +102,7 @@ simpleCondExpr returns [PredicateExpr retval]
 	| l=likeStmt					//{retval = $l.retval;}
 	| i=inStmt					{retval = $i.retval;}
 	| b=booleanStmt					{retval = $b.retval;}
-	| n=nullCompExpr				//{retval = $n.retval;}
+	| n=nullCompExpr				{retval = $n.retval;}
 	| c=compareExpr 				{retval = $c.retval;}
 	;
 
@@ -129,8 +129,8 @@ inStmt returns [PredicateExpr retval]
 booleanStmt returns [PredicateExpr retval]
 	: b=booleanExpr					{retval = new BooleanStmt($b.retval);};
 	
-nullCompExpr
-	: strAttrib keyIS (keyNOT)? keyNULL;
+nullCompExpr returns [PredicateExpr retval]
+	: a=stringExpr keyIS (n=keyNOT)? keyNULL	{retval = new NullCompare(($n.text != null), $a.retval);};	
 
 compareExpr returns [PredicateExpr retval]
 	: s1=stringExpr o=compOp s2=stringExpr	  	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
@@ -178,6 +178,7 @@ numberExpr returns [ValueExpr retval]
 stringExpr returns [ValueExpr retval]
 	: s=stringLiteral				{retval = $s.retval;}
 	| f=funcReturningString
+	| n=keyNULL					{retval = new NullLiteral();}
 	| a=strAttrib					{retval = $a.retval;}
 	;
 

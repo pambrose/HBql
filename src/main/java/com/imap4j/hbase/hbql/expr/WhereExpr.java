@@ -24,7 +24,7 @@ public class WhereExpr implements PredicateExpr {
 
         this.start = System.nanoTime();
 
-        final boolean retval = this.expr == null || this.expr.evaluate(context);
+        final boolean retval = (this.expr == null) || (this.expr.evaluate(context));
 
         this.end = System.nanoTime();
 

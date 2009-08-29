@@ -90,6 +90,13 @@ public class WhereExpressionTests extends HTest {
     }
 
     @Test
+    public void nullCompares() throws HPersistException {
+
+        assertTrue("NULL IS NULL");
+        assertFalse("NULL IS NOT NULL");
+    }
+
+    @Test
     public void numericCalculations() throws HPersistException {
 
         assertTrue("9 == 9");
@@ -141,6 +148,7 @@ public class WhereExpressionTests extends HTest {
         assertFalse(obj, "'v19'= stringValue");
         assertFalse(obj, "stringValue = 'v19'");
         assertFalse(obj, "stringValue = 'v19' OR stringValue IN ('v2', 'v0', 'v999')");
+        assertTrue(obj, "stringValue IS NOT NULL");
     }
 
 }
