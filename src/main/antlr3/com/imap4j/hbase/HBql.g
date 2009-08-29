@@ -8,6 +8,7 @@ options {
 tokens {
 	DOT = '.';
 	COLON = ':';
+	QMARK = '?';
 	STAR = '*';
 	DIV = '/';
 	COMMA = ',';
@@ -15,6 +16,8 @@ tokens {
 	MINUS = '-';
 	MOD = '%';
 	NOT = '!';
+	OR = '||';
+	AND = '&&';
 	EQ = '=';
 	LT = '<';
 	GT = '>';
@@ -88,10 +91,13 @@ whereClause returns [WhereExpr retval]
 	: keyWHERE e=orExpr 				{retval = new WhereExpr($e.retval);};
 		
 orExpr returns [PredicateExpr retval]
-	: e1=andExpr (keyOR e2=orExpr)?			{retval= new BooleanExpr($e1.retval, BooleanExpr.OP.OR, $e2.retval);;};
+	: e1=andExpr (or e2=orExpr)?		{retval = new BooleanExpr($e1.retval, BooleanExpr.OP.OR, $e2.retval);;};
 
 andExpr returns [PredicateExpr retval]
-	: e1=condFactor (keyAND e2=andExpr)?		{retval = new BooleanExpr($e1.retval, BooleanExpr.OP.AND, $e2.retval);};
+	: e1=condFactor (and e2=andExpr)?	{retval = new BooleanExpr($e1.retval, BooleanExpr.OP.AND, $e2.retval);};
+
+or	: keyOR | OR;
+and	: keyAND | AND;
 	
 condFactor returns [PredicateExpr retval]			 
 	: n=notExpr p=condPrimary			{retval = new CondFactor($n.retval, $p.retval);};
@@ -116,23 +122,24 @@ simpleCondExpr returns [PredicateExpr retval]
 	;
 
 betweenStmt returns [PredicateExpr retval]
-	: n1=numericExpr n=keyNOT? keyBETWEEN
-	  n2=numericExpr keyAND n3=numericExpr		{retval = new BetweenStmt(ExprType.IntegerType, $n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
-	| s1=stringExpr n=keyNOT? keyBETWEEN
-	  s2=stringExpr keyAND s3=stringExpr		{retval = new BetweenStmt(ExprType.StringType, $s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
-	| d1=dateExpr n=keyNOT? keyBETWEEN
-	  d2=dateExpr keyAND d3=dateExpr
+	: n1=plusminusExpr n=notExpr keyBETWEEN
+	  n2=plusminusExpr and n3=plusminusExpr			{retval = new BetweenStmt(ExprType.IntegerType, $n1.retval, $n.retval, $n2.retval, $n3.retval);}
+	| s1=stringExpr n=notExpr keyBETWEEN
+	  s2=stringExpr and s3=stringExpr		{retval = new BetweenStmt(ExprType.StringType, $s1.retval, $n.retval, $s2.retval, $s3.retval);}
+	| d1=dateExpr n=notExpr keyBETWEEN
+	  d2=dateExpr and d3=dateExpr
 	;
 
 likeStmt returns [PredicateExpr retval]
 	: stringExpr keyNOT? keyLIKE p=stringExpr; // ('ESCAPE' escape_character=string_literal)?;
 
 inStmt returns [PredicateExpr retval]
-	: a1=numericExpr n=keyNOT? keyIN 
-	  LPAREN i=intItemList RPAREN			{retval = new InStmt(ExprType.IntegerType, $a1.retval, ($n.text != null), $i.retval);} 
-	| a2=stringExpr n=keyNOT? keyIN 
-	  LPAREN s=strItemList RPAREN			{retval = new InStmt(ExprType.StringType, $a2.retval, ($n.text != null), $s.retval);} 
+	: a1=plusminusExpr n=notExpr keyIN 
+	  LPAREN i=intItemList RPAREN			{retval = new InStmt(ExprType.IntegerType, $a1.retval, $n.retval, $i.retval);} 
+	| a2=stringExpr n=notExpr keyIN 
+	  LPAREN s=strItemList RPAREN			{retval = new InStmt(ExprType.StringType, $a2.retval, $n.retval, $s.retval);} 
 	;
+
 
 booleanStmt returns [PredicateExpr retval]
 	: b=booleanExpr					{retval = new BooleanStmt($b.retval);};
@@ -143,7 +150,7 @@ nullCompExpr returns [PredicateExpr retval]
 compareExpr returns [PredicateExpr retval]
 	: s1=stringExpr o=compOp s2=stringExpr	  	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
 	| d1=dateExpr o=compOp d2=dateExpr 
-	| n1=numericExpr o=compOp n2=numericExpr	{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
+	| n1=plusminusExpr o=compOp n2=plusminusExpr		{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
 	;
 	
 compOp returns [CompareExpr.Operator retval]
@@ -156,9 +163,9 @@ compOp returns [CompareExpr.Operator retval]
 	;
 
 // Numeric calculations
-numericExpr returns [ValueExpr retval]
-	: n1=multdivExpr (op=plusMinus n2=numericExpr)?
-	{$numericExpr.retval= ($n2.text == null) ? new CalcExpr($n1.retval) : new CalcExpr($n1.retval, $op.retval, $n2.retval);}
+plusminusExpr returns [ValueExpr retval]
+	: n1=multdivExpr (op=plusMinus n2=plusminusExpr)?
+	{$plusminusExpr.retval= ($n2.text == null) ? new CalcExpr($n1.retval) : new CalcExpr($n1.retval, $op.retval, $n2.retval);}
 	;
 
 multdivExpr returns [ValueExpr retval]
@@ -167,20 +174,21 @@ multdivExpr returns [ValueExpr retval]
 	;
 
 calcNumberExpr returns [ValueExpr retval]
-	: (s=plusMinus)? n=numberPrimary 		
+	: (s=plusMinus)? n=numPrimary 		
 	{retval = ($s.retval == CalcExpr.OP.MINUS) ? new CalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) : $n.retval;}
 	;
 
-numberPrimary returns [ValueExpr retval]
+numPrimary returns [ValueExpr retval]
 	: n=numberExpr					{retval = $n.retval;}
-	| LPAREN s=numericExpr RPAREN			{retval = $s.retval;}
+	| LPAREN s=plusminusExpr RPAREN			{retval = $s.retval;}
 	;
-
+	   						 
 // Simple typed exprs
 numberExpr returns [ValueExpr retval]
 	: f=funcReturningNumber
 	| l=numberLiteral				{retval = $l.retval;} 
 	| i=intAttrib					{retval = $i.retval;}
+	| (simpleCondExpr | LPAREN e=orExpr RPAREN) QMARK n1=plusminusExpr COLON n2=plusminusExpr	{retval = new Ternary($e.retval, $n1.retval, $n2.retval);}
 	;
 
 stringExpr returns [ValueExpr retval]
@@ -188,10 +196,12 @@ stringExpr returns [ValueExpr retval]
 	| f=funcReturningString
 	| n=keyNULL					{retval = new NullLiteral();}
 	| a=strAttrib					{retval = $a.retval;}
+	//| e=orExpr QMARK s1=stringExpr COLON s2=stringExpr {retval = new Ternary($e.retval, $s1.retval, $s2.retval);}
 	;
 
 booleanExpr returns [ValueExpr retval]
 	: b=booleanLiteral				{retval = $b.retval;}
+	//| e=orExpr QMARK b1=orExpr COLON b2=orExpr	{retval = new Ternary($e.retval, $b1.retval, $b2.retval);}
 	//| f=funcReturningBoolean
 	;
 
@@ -226,8 +236,8 @@ booleanLiteral returns [ValueExpr retval]
 
 funcReturningNumber
 	: keyLENGTH LPAREN stringExpr RPAREN
-	| keyABS LPAREN numericExpr RPAREN
-	| keyMOD LPAREN numericExpr COMMA numericExpr RPAREN
+	| keyABS LPAREN plusminusExpr RPAREN
+	| keyMOD LPAREN plusminusExpr COMMA plusminusExpr RPAREN
 	;
 
 funcReturningDatetime
@@ -238,7 +248,7 @@ funcReturningDatetime
 
 funcReturningString
 	: keyCONCAT LPAREN stringExpr COMMA stringExpr RPAREN
-	| keySUBSTRING LPAREN stringExpr COMMA numericExpr COMMA numericExpr RPAREN
+	| keySUBSTRING LPAREN stringExpr COMMA plusminusExpr COMMA plusminusExpr RPAREN
 	| keyTRIM LPAREN stringExpr RPAREN
 	| keyLOWER LPAREN stringExpr RPAREN
 	| keyUPPER LPAREN stringExpr RPAREN
@@ -257,7 +267,7 @@ strItemList returns [List<Object> retval]
 	: i1=strItem {retval.add($i1.retval);} (COMMA i2=strItem {retval.add($i2.retval);})*;
 	
 intItem returns [ValueExpr retval]
-	: n=numericExpr					{retval = $n.retval;};
+	: n=plusminusExpr					{retval = $n.retval;};
 
 strItem returns [ValueExpr retval]
 	: s=stringExpr					{$strItem.retval = $s.retval;};

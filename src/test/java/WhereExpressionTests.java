@@ -122,10 +122,15 @@ public class WhereExpressionTests extends HTest {
 
         assertTrue("3 between 2 AND 5");
         assertTrue("3 between (1+1) AND (3+2)");
+        assertTrue("3 between (1+1) && (3+2)");
 
         assertTrue("3 in (2,3,4)");
         assertFalse("3 in (1+1,1+3,4)");
         assertTrue("3 in (1+1,1+2,4)");
+        assertFalse("3 !in (1+1,1+2,4)");
+        assertFalse("3 NOT in (1+1,1+2,4)");
+
+        assertTrue("3 == (true) ? 3 : 2");
 
     }
 
@@ -133,10 +138,13 @@ public class WhereExpressionTests extends HTest {
     public void stringFunctions() throws HPersistException {
 
         assertTrue("'bbb' between 'aaa' AND 'ccc'");
+        assertTrue("'bbb' between 'aaa' && 'ccc'");
         assertTrue("'bbb' between 'bbb' AND 'ccc'");
         assertFalse("'bbb' between 'ccc' AND 'ddd'");
 
         assertTrue("('bbb' between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
+        assertTrue("('bbb' between 'bbb' && 'ccc') || ('fff' between 'eee' && 'ggg')");
+        assertFalse("('bbb' not between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
     }
 
     @Test
