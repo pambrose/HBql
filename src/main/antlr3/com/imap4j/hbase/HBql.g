@@ -13,6 +13,7 @@ tokens {
 	COMMA = ',';
 	PLUS = '+';
 	MINUS = '-';
+	MOD = '%';
 	EQ = '=';
 	LT = '<';
 	GT = '>';
@@ -276,6 +277,7 @@ plusMinus returns [CalcExpr.OP retval]
 multDiv returns [CalcExpr.OP retval]
 	: STAR						{retval = CalcExpr.OP.MULT;}
 	| DIV						{retval = CalcExpr.OP.DIV;}
+	| MOD						{retval = CalcExpr.OP.MOD;}
 	;
 	
 INT	: DIGIT+;

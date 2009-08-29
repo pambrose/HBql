@@ -106,6 +106,10 @@ public class WhereExpressionTests extends HTest {
         assertFalse("(4 + 5) == 8");
         assertTrue("(4 + 5 + 10 + 10 - 20) == 9");
         assertFalse("(4 + 5 + 10 + 10 - 20) != 9");
+
+        assertTrue("(4 * 5) == 20");
+        assertTrue("(40 % 6) == 4");
+        assertFalse("(40 % 6) == 3");
     }
 
     @Test

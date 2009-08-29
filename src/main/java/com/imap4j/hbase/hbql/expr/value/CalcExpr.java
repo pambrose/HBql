@@ -17,6 +17,7 @@ public class CalcExpr implements ValueExpr {
         MINUS,
         MULT,
         DIV,
+        MOD,
         NEGATIVE,
         NONE
 
@@ -50,6 +51,8 @@ public class CalcExpr implements ValueExpr {
                 return val1 * val2;
             case DIV:
                 return val1 / val2;
+            case MOD:
+                return val1 % val2;
             case NEGATIVE:
                 return val1 * -1;
             case NONE:
