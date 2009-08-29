@@ -149,6 +149,7 @@ public class WhereExpressionTests extends HTest {
         assertFalse(obj, "stringValue = 'v19'");
         assertFalse(obj, "stringValue = 'v19' OR stringValue IN ('v2', 'v0', 'v999')");
         assertTrue(obj, "stringValue IS NOT NULL");
+        assertFalse(obj, "stringValue IS NULL");
     }
 
 }
