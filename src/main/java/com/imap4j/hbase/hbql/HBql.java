@@ -28,7 +28,7 @@ import java.util.List;
  * Date: Aug 21, 2009
  * Time: 1:09:48 PM
  */
-public class Hql {
+public class HBql {
 
     public static class Results {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -3,7 +3,7 @@ import com.imap4j.hbase.hbql.HFamily;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.HPersistable;
 import com.imap4j.hbase.hbql.HTable;
-import com.imap4j.hbase.hbql.HTest;
+import com.imap4j.hbase.hbql.test.HTest;
 import org.junit.Test;
 
 /**

@@ -1,6 +1,7 @@
 package com.imap4j.hbase;
 
 import com.google.common.collect.Maps;
+import com.imap4j.hbase.hbql.HBql;
 import com.imap4j.hbase.hbql.HColumn;
 import com.imap4j.hbase.hbql.HFamily;
 import com.imap4j.hbase.hbql.HPersistException;
@@ -9,7 +10,6 @@ import com.imap4j.hbase.hbql.HQuery;
 import com.imap4j.hbase.hbql.HQueryListenerAdapter;
 import com.imap4j.hbase.hbql.HTable;
 import com.imap4j.hbase.hbql.HTransaction;
-import com.imap4j.hbase.hbql.Hql;
 
 import java.io.IOException;
 import java.util.Map;
@@ -93,12 +93,12 @@ public class TestObject implements HPersistable {
 
     public static void main(String[] args) throws IOException, HPersistException {
 
-        Hql.Results results;
+        HBql.Results results;
 
-        results = Hql.exec("set classpath com.imap4j.hbql:com.imap4j.hbase");
+        results = HBql.exec("set classpath com.imap4j.hbql:com.imap4j.hbase");
         System.out.println(results.getOutput());
 
-        results = Hql.exec("delete from TestObject where strValue = 'v19'");
+        results = HBql.exec("delete from TestObject where strValue = 'v19'");
         System.out.println(results.getOutput());
 
         //results = Hql.exec("create table TestObject");
