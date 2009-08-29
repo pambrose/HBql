@@ -30,14 +30,14 @@ public class BooleanExpr implements PredicateExpr {
     @Override
     public boolean evaluate(final AttribContext context) throws HPersistException {
 
-        if (expr2 == null)
-            return expr1.evaluate(context);
+        if (this.expr2 == null)
+            return this.expr1.evaluate(context);
 
         switch (this.op) {
             case OR:
-                return expr1.evaluate(context) || expr2.evaluate(context);
+                return this.expr1.evaluate(context) || this.expr2.evaluate(context);
             case AND:
-                return expr1.evaluate(context) && expr2.evaluate(context);
+                return this.expr1.evaluate(context) && this.expr2.evaluate(context);
 
             default:
                 throw new HPersistException("Error in BooleanExpr.evaluate()");
