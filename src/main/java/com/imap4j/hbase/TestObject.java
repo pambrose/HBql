@@ -95,20 +95,20 @@ public class TestObject implements HPersistable {
 
         HBql.Results results;
 
-        results = HBql.exec("set classpath com.imap4j.hbql:com.imap4j.hbase");
+        results = HBql.exec("set packagepath com.imap4j.hbql:com.imap4j.hbase");
         System.out.println(results.getOutput());
 
-        results = HBql.exec("delete from TestObject where strValue = 'v19'");
-        System.out.println(results.getOutput());
+        //results = HBql.exec("delete from TestObject where strValue = 'v19aa'");
+        //System.out.println(results.getOutput());
 
-        //results = Hql.exec("create table TestObject");
-        System.out.println(results.getOutput());
+        //results = HBql.exec("create table TestObject");
+        //System.out.println(results.getOutput());
 
-        //results = Hql.exec("show tables");
-        System.out.println(results.getOutput());
+        //results = HBql.exec("show tables");
+        //System.out.println(results.getOutput());
 
-        //results = Hql.exec("describe table TestObject");
-        System.out.println(results.getOutput());
+        //results = HBql.exec("describe table TestObject");
+        //System.out.println(results.getOutput());
 
         final HTransaction tx = new HTransaction();
         int cnt = 0;

@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.FieldAttrib;
 import com.imap4j.hbase.hbql.schema.FieldType;
-import org.antlr.runtime.TokenStream;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
@@ -25,11 +24,6 @@ import java.util.Map;
  * Time: 4:49:02 PM
  */
 public class HUtil {
-
-    public static boolean isKeyword(final TokenStream input, final String str) {
-        final String s = input.LT(1).getText();
-        return s != null && s.equalsIgnoreCase(str);
-    }
 
     public static byte[] getObjectAsBytes(final Object obj) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();

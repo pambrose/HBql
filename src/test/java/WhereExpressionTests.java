@@ -129,12 +129,18 @@ public class WhereExpressionTests extends HTest {
         final AllTypes obj = new AllTypes("aaa", 3, "bbb");
 
         assertTrue(obj, "stringValue between 'aaa' AND 'ccc'");
+        assertTrue(obj, "stringValue between 'aaa' AND 'ccc' AND stringValue between 'aaa' AND 'ccc'");
         assertTrue(obj, "stringValue between 'bbb' AND 'ccc'");
         assertFalse(obj, "stringValue between 'ccc' AND 'ddd'");
         assertTrue(obj, "('bbb' between stringValue AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
 
         assertTrue(obj, "intValue between 2 AND 5");
         assertTrue(obj, "intValue between (1+1) AND (intValue+2)");
+        assertFalse(obj, "stringValue IN ('v2', 'v0', 'v999')");
+        assertTrue(obj, "'v19' = 'v19'");
+        assertFalse(obj, "'v19'= stringValue");
+        assertFalse(obj, "stringValue = 'v19'");
+        assertFalse(obj, "stringValue = 'v19' OR stringValue IN ('v2', 'v0', 'v999')");
     }
 
 }

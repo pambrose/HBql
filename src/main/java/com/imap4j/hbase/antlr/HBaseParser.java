@@ -24,6 +24,11 @@ public class HBaseParser extends Parser {
         super(input, state);
     }
 
+    protected static boolean isKeyword(final TokenStream input, final String str) {
+        final String s = input.LT(1).getText();
+        return s != null && s.equalsIgnoreCase(str);
+    }
+
     /*
     public String getErrorMessage(RecognitionException e, String[] tokenNames) {
         List stack = getRuleInvocationStack(e, this.getClass().getName());

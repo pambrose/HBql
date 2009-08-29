@@ -112,8 +112,8 @@ public class ClassSchema {
         if (clazz != null)
             return getClassSchema(clazz);
 
-        // Then check with classpath prefixes
-        for (final String val : EnvVars.getClasspath()) {
+        // Then check with packagepath prefixes
+        for (final String val : EnvVars.getPackagePath()) {
             String cp = val;
             if (!cp.endsWith(".") && cp.length() > 0)
                 cp += ".";
@@ -125,7 +125,7 @@ public class ClassSchema {
             }
         }
 
-        throw new HPersistException("Cannot find " + objname + " in classpath");
+        throw new HPersistException("Cannot find " + objname + " in packagepath");
     }
 
     public List<String> getFieldList() {

@@ -78,16 +78,16 @@ deleteStmt returns [DeleteArgs retval]
 	  where=whereClause?				{retval = new DeleteArgs($table.text, $where.retval);};
 
 setStmt returns [SetArgs retval]
-	: keySET var=ID (keyTO | EQ)? val=dottedValue 	{retval = new SetArgs($var.text, $val.text);};
+	: keySET i=ID (keyTO | EQ)? v=dottedValue 	{retval = new SetArgs($i.text, $v.text);};
 
 whereClause returns [WhereExpr retval]
-	: keyWHERE c=orExpr 				{retval = new WhereExpr($c.retval);};
+	: keyWHERE e=orExpr 				{retval = new WhereExpr($e.retval);};
 		
 orExpr returns [PredicateExpr retval]
-	: expr1=andExpr (keyOR expr2=orExpr)?		{retval= new OrExpr($expr1.retval, $expr2.retval);;};
+	: e1=andExpr (keyOR e2=orExpr)?			{retval= new OrExpr($e1.retval, $e2.retval);;};
 
 andExpr returns [PredicateExpr retval]
-	: expr1=condFactor (keyAND expr2=andExpr)?	{retval = new AndExpr($expr1.retval, $expr2.retval);};
+	: e1=condFactor (keyAND e2=andExpr)?		{retval = new AndExpr($e1.retval, $e2.retval);};
 	
 condFactor returns [PredicateExpr retval]			 
 	: k=keyNOT? p=condPrimary			{retval = new CondFactor(($k.text != null), $p.retval);};
@@ -183,7 +183,7 @@ stringExpr returns [ValueExpr retval]
 
 booleanExpr returns [ValueExpr retval]
 	: b=booleanLiteral				{retval = $b.retval;}
-	| f=funcReturningBoolean
+	//| f=funcReturningBoolean
 	;
 
 dateExpr returns [ValueExpr retval]
@@ -191,16 +191,16 @@ dateExpr returns [ValueExpr retval]
 	;
 
 // Attribs with type
-strAttrib returns [AttribRef retval]
+strAttrib returns [ValueExpr retval]
 	: a=attribRef[ExprType.StringType] 		{retval = $a.retval;};
 
-intAttrib returns [AttribRef retval]
+intAttrib returns [ValueExpr retval]
 	: a=attribRef[ExprType.NumberType] 		{retval = $a.retval;};
 
-dateAttrib returns [AttribRef retval]
+dateAttrib returns [ValueExpr retval]
 	: a=attribRef[ExprType.DateType] 		{retval = $a.retval;};
 
-attribRef [ExprType type] returns [AttribRef retval]
+attribRef [ExprType type] returns [ValueExpr retval]
 	: v=ID 						{retval = new AttribRef(type, $v.text);};
 
 // Literals		
@@ -241,11 +241,11 @@ funcReturningBoolean
 		
 intItemList returns [List<Object> retval]
 @init {retval = Lists.newArrayList();}
-	: item1=intItem {retval.add($item1.retval);} (COMMA item2=intItem {retval.add($item2.retval);})*;
+	: i1=intItem {retval.add($i1.retval);} (COMMA i2=intItem {retval.add($i2.retval);})*;
 	
 strItemList returns [List<Object> retval]
 @init {retval = Lists.newArrayList();}
-	: item1=strItem {retval.add($item1.text);} (COMMA item2=strItem {retval.add($item2.text);})*;
+	: i1=strItem {retval.add($i1.retval);} (COMMA i2=strItem {retval.add($i2.retval);})*;
 	
 intItem returns [ValueExpr retval]
 	: n=numericExpr					{retval = $n.retval;};
@@ -293,35 +293,35 @@ CHAR 	: 'a'..'z' | 'A'..'Z';
 
 WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();} ;
 
-keySELECT 	: {HUtil.isKeyword(input, "SELECT")}? ID;
-keyDELETE 	: {HUtil.isKeyword(input, "DELETE")}? ID;
-keyCREATE 	: {HUtil.isKeyword(input, "CREATE")}? ID;
-keyDESCRIBE 	: {HUtil.isKeyword(input, "DESCRIBE")}? ID;
-keySHOW 	: {HUtil.isKeyword(input, "SHOW")}? ID;
-keyTABLE 	: {HUtil.isKeyword(input, "TABLE")}? ID;
-keyTABLES 	: {HUtil.isKeyword(input, "TABLES")}? ID;
-keyWHERE	: {HUtil.isKeyword(input, "WHERE")}? ID;
-keyFROM 	: {HUtil.isKeyword(input, "FROM")}? ID;
-keySET 		: {HUtil.isKeyword(input, "SET")}? ID;
-keyIN 		: {HUtil.isKeyword(input, "IN")}? ID;
-keyIS 		: {HUtil.isKeyword(input, "IS")}? ID;
-keyLIKE		: {HUtil.isKeyword(input, "LIKE")}? ID;
-keyTO 		: {HUtil.isKeyword(input, "TO")}? ID;
-keyOR 		: {HUtil.isKeyword(input, "OR")}? ID;
-keyAND 		: {HUtil.isKeyword(input, "AND")}? ID;
-keyNOT 		: {HUtil.isKeyword(input, "NOT")}? ID;
-keyTRUE 	: {HUtil.isKeyword(input, "TRUE")}? ID;
-keyFALSE 	: {HUtil.isKeyword(input, "FALSE")}? ID;
-keyBETWEEN 	: {HUtil.isKeyword(input, "BETWEEN")}? ID;
-keyNULL 	: {HUtil.isKeyword(input, "NULL")}? ID;
-keyLOWER 	: {HUtil.isKeyword(input, "LOWER")}? ID;
-keyUPPER 	: {HUtil.isKeyword(input, "UPPER")}? ID;
-keyTRIM 	: {HUtil.isKeyword(input, "TRIM")}? ID;
-keyCONCAT 	: {HUtil.isKeyword(input, "CONCAT")}? ID;
-keySUBSTRING 	: {HUtil.isKeyword(input, "SUBSTRING")}? ID;
-keyLENGTH 	: {HUtil.isKeyword(input, "LENGTH")}? ID;
-keyABS 		: {HUtil.isKeyword(input, "ABS")}? ID;
-keyMOD	 	: {HUtil.isKeyword(input, "MOD")}? ID;
-keyCURRENT_DATE	: {HUtil.isKeyword(input, "CURRENT_DATE")}? ID;
-keyCURRENT_TIME : {HUtil.isKeyword(input, "CURRENT_TIME")}? ID;
-keyCURRENT_TIMESTAMP : {HUtil.isKeyword(input, "CURRENT_TIMESTAMP")}? ID;
+keySELECT 	: {isKeyword(input, "SELECT")}? ID;
+keyDELETE 	: {isKeyword(input, "DELETE")}? ID;
+keyCREATE 	: {isKeyword(input, "CREATE")}? ID;
+keyDESCRIBE 	: {isKeyword(input, "DESCRIBE")}? ID;
+keySHOW 	: {isKeyword(input, "SHOW")}? ID;
+keyTABLE 	: {isKeyword(input, "TABLE")}? ID;
+keyTABLES 	: {isKeyword(input, "TABLES")}? ID;
+keyWHERE	: {isKeyword(input, "WHERE")}? ID;
+keyFROM 	: {isKeyword(input, "FROM")}? ID;
+keySET 		: {isKeyword(input, "SET")}? ID;
+keyIN 		: {isKeyword(input, "IN")}? ID;
+keyIS 		: {isKeyword(input, "IS")}? ID;
+keyLIKE		: {isKeyword(input, "LIKE")}? ID;
+keyTO 		: {isKeyword(input, "TO")}? ID;
+keyOR 		: {isKeyword(input, "OR")}? ID;
+keyAND 		: {isKeyword(input, "AND")}? ID;
+keyNOT 		: {isKeyword(input, "NOT")}? ID;
+keyTRUE 	: {isKeyword(input, "TRUE")}? ID;
+keyFALSE 	: {isKeyword(input, "FALSE")}? ID;
+keyBETWEEN 	: {isKeyword(input, "BETWEEN")}? ID;
+keyNULL 	: {isKeyword(input, "NULL")}? ID;
+keyLOWER 	: {isKeyword(input, "LOWER")}? ID;
+keyUPPER 	: {isKeyword(input, "UPPER")}? ID;
+keyTRIM 	: {isKeyword(input, "TRIM")}? ID;
+keyCONCAT 	: {isKeyword(input, "CONCAT")}? ID;
+keySUBSTRING 	: {isKeyword(input, "SUBSTRING")}? ID;
+keyLENGTH 	: {isKeyword(input, "LENGTH")}? ID;
+keyABS 		: {isKeyword(input, "ABS")}? ID;
+keyMOD	 	: {isKeyword(input, "MOD")}? ID;
+keyCURRENT_DATE	: {isKeyword(input, "CURRENT_DATE")}? ID;
+keyCURRENT_TIME : {isKeyword(input, "CURRENT_TIME")}? ID;
+keyCURRENT_TIMESTAMP : {isKeyword(input, "CURRENT_TIMESTAMP")}? ID;

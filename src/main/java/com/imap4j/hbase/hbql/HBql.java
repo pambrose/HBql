@@ -58,7 +58,7 @@ public class HBql {
         if (exec instanceof SetArgs)
             return setCommand((SetArgs)exec);
 
-        throw new HPersistException("Unknown comand");
+        throw new HPersistException("Unknown comand: " + str);
     }
 
     private static Results createCommand(final CreateArgs args) throws HPersistException, IOException {
@@ -153,9 +153,9 @@ public class HBql {
         if (var == null)
             throw new HPersistException("Error in SET command");
 
-        if (var.equalsIgnoreCase("classpath")) {
-            EnvVars.setClasspath(args.getValue());
-            retval.out.println("Classpath set to " + args.getValue());
+        if (var.equalsIgnoreCase("packagepath")) {
+            EnvVars.setPackagePath(args.getValue());
+            retval.out.println("PackagePath set to " + args.getValue());
             retval.out.flush();
             return retval;
         }

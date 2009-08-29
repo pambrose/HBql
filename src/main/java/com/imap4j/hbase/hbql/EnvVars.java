@@ -13,15 +13,15 @@ import java.util.List;
  */
 public class EnvVars {
 
-    private static List<String> classpath = Lists.newArrayList();
+    private static List<String> packagePath = Lists.newArrayList();
 
-    public static void setClasspath(final String str) {
-        classpath.clear();
-        classpath.add("");      // Add an entry for the object as defined in command
-        classpath.addAll(Arrays.asList(str.split(":")));
+    public static void setPackagePath(final String str) {
+        packagePath.clear();
+        packagePath.add("");      // Add an entry for the object as defined in command
+        packagePath.addAll(Arrays.asList(str.split(":")));
     }
 
-    public static List<String> getClasspath() {
-        return classpath;
+    public static List<String> getPackagePath() {
+        return packagePath;
     }
 }
