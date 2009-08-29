@@ -2,6 +2,8 @@ package com.imap4j.hbase.hbql;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.imap4j.hbase.hbql.schema.ClassSchema;
+import com.imap4j.hbase.hbql.schema.FieldAttrib;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;

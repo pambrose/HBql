@@ -101,9 +101,9 @@ simpleCondExpr returns [PredicateExpr retval]
 	: b=betweenStmt					{retval = $b.retval;}
 	| l=likeStmt					//{retval = $l.retval;}
 	| i=inStmt					{retval = $i.retval;}
+	| b=booleanStmt					{retval = $b.retval;}
 	| n=nullCompExpr				//{retval = $n.retval;}
 	| c=compareExpr 				{retval = $c.retval;}
-	| b=booleanStmt					{retval = $b.retval;}
 	;
 
 betweenStmt returns [PredicateExpr retval]
@@ -147,6 +147,7 @@ compOp returns [CompareExpr.Operator retval]
 	| (LTGT | BANGEQ)				{retval = CompareExpr.Operator.NOTEQ;}
 	;
 
+// Numeric calculations
 numericExpr returns [ValueExpr retval]
 	: n1=multdivExpr (op=plusMinus n2=numericExpr)?
 	{$numericExpr.retval= ($n2.text == null) ? new CalcExpr($n1.retval) : new CalcExpr($n1.retval, $op.retval, $n2.retval);}
@@ -182,7 +183,7 @@ stringExpr returns [ValueExpr retval]
 
 booleanExpr returns [ValueExpr retval]
 	: b=booleanLiteral				{retval = $b.retval;}
-	//| f=funcReturningBoolean
+	| f=funcReturningBoolean
 	;
 
 dateExpr returns [ValueExpr retval]

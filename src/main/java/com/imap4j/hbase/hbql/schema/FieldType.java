@@ -1,4 +1,6 @@
-package com.imap4j.hbase.hbql;
+package com.imap4j.hbase.hbql.schema;
+
+import com.imap4j.hbase.hbql.HPersistException;
 
 import java.lang.reflect.Field;
 
@@ -8,7 +10,7 @@ import java.lang.reflect.Field;
  * Date: Aug 23, 2009
  * Time: 5:01:22 PM
  */
-enum FieldType {
+public enum FieldType {
 
     BooleanType(Boolean.TYPE),
     ByteType(Byte.TYPE),

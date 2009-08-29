@@ -2,6 +2,7 @@ package com.imap4j.hbase.hbql;
 
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.WhereExpr;
+import com.imap4j.hbase.hbql.schema.ClassSchema;
 
 /**
  * Created by IntelliJ IDEA.

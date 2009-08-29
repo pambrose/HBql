@@ -1,6 +1,9 @@
 package com.imap4j.hbase.hbql;
 
 import com.google.common.collect.Maps;
+import com.imap4j.hbase.hbql.schema.ClassSchema;
+import com.imap4j.hbase.hbql.schema.FieldAttrib;
+import com.imap4j.hbase.hbql.schema.FieldType;
 import org.antlr.runtime.TokenStream;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Result;

@@ -1,4 +1,9 @@
-package com.imap4j.hbase.hbql;
+package com.imap4j.hbase.hbql.schema;
+
+import com.imap4j.hbase.hbql.HColumn;
+import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbql.HPersistable;
+import com.imap4j.hbase.hbql.HUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Field;

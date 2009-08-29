@@ -1,9 +1,9 @@
 package com.imap4j.hbase.hbql.expr;
 
-import com.imap4j.hbase.hbql.ClassSchema;
-import com.imap4j.hbase.hbql.FieldAttrib;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.HPersistable;
+import com.imap4j.hbase.hbql.schema.ClassSchema;
+import com.imap4j.hbase.hbql.schema.FieldAttrib;
 
 /**
  * Created by IntelliJ IDEA.

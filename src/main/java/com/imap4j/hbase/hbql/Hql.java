@@ -7,6 +7,7 @@ import com.imap4j.hbase.antlr.args.ExecArgs;
 import com.imap4j.hbase.antlr.args.SetArgs;
 import com.imap4j.hbase.antlr.args.ShowArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
+import com.imap4j.hbase.hbql.schema.ClassSchema;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
