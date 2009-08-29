@@ -56,7 +56,7 @@ public class CalcExpr implements ValueExpr {
                 return val1;
         }
 
-        throw new HPersistException("Error in CalculationExpr.evaluate()");
+        throw new HPersistException("Error in CalcExpr.getValue() " + this.op);
 
     }
 }
