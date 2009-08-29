@@ -14,6 +14,7 @@ tokens {
 	PLUS = '+';
 	MINUS = '-';
 	MOD = '%';
+	NOT = '!';
 	EQ = '=';
 	LT = '<';
 	GT = '>';
@@ -93,8 +94,13 @@ andExpr returns [PredicateExpr retval]
 	: e1=condFactor (keyAND e2=andExpr)?		{retval = new BooleanExpr($e1.retval, BooleanExpr.OP.AND, $e2.retval);};
 	
 condFactor returns [PredicateExpr retval]			 
-	: k=keyNOT? p=condPrimary			{retval = new CondFactor(($k.text != null), $p.retval);};
+	: n=notExpr p=condPrimary			{retval = new CondFactor($n.retval, $p.retval);};
 
+notExpr	returns [Boolean retval]
+	: (keyNOT | NOT)				{retval = true;}
+	|						{retval = false;}
+	;
+	
 condPrimary returns [PredicateExpr retval]
 	: s=simpleCondExpr  				{retval = $s.retval;}
 	| LPAREN o=orExpr RPAREN			{retval = $o.retval;}

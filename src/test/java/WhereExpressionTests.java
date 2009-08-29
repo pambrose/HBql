@@ -45,6 +45,11 @@ public class WhereExpressionTests extends HTest {
     public void booleanExpressions() throws HPersistException {
 
         assertTrue("TRUE");
+        assertFalse("NOT TRUE");
+        assertFalse("! TRUE");
+        assertFalse("!TRUE");
+        assertFalse("!(((((TRUE)))))");
+        assertFalse("!((!(((!TRUE)))))");
         assertFalse("FALSE");
         assertTrue("TRUE OR TRUE");
         assertTrue("TRUE OR TRUE OR TRUE");
