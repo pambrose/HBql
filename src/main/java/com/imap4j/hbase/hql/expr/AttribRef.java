@@ -24,10 +24,16 @@ public class AttribRef implements ValueExpr {
     @Override
     public Object getValue(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
 
+        final FieldAttrib fieldAttrib = classSchema.getFieldAttribByField(this.attribName);
+
         switch (this.type) {
 
+            case IntegerType:
+            case NumberType: {
+                return (Number)fieldAttrib.getValue(recordObj);
+            }
+
             case StringType: {
-                final FieldAttrib fieldAttrib = classSchema.getFieldAttribByField(this.attribName);
                 return (String)fieldAttrib.getValue(recordObj);
             }
 

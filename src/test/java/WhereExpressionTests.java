@@ -12,7 +12,7 @@ import org.junit.Test;
  * Date: Aug 27, 2009
  * Time: 2:13:47 PM
  */
-public class WhereExpressionTests {
+public class WhereExpressionTests extends HTest {
 
     @HTable(name = "alltypes",
             families = {
@@ -44,94 +44,97 @@ public class WhereExpressionTests {
     @Test
     public void booleanExpressions() throws HPersistException {
 
-        HTest.assertTrue("TRUE");
-        HTest.assertFalse("FALSE");
-        HTest.assertTrue("TRUE OR TRUE");
-        HTest.assertTrue("TRUE OR TRUE OR TRUE");
-        HTest.assertFalse("FALSE OR FALSE OR FALSE");
-        HTest.assertFalse("(FALSE OR FALSE OR FALSE)");
-        HTest.assertFalse("((((FALSE OR FALSE OR FALSE))))" + " OR " + "((((FALSE OR FALSE OR FALSE))))");
-        HTest.assertTrue("TRUE OR FALSE");
-        HTest.assertFalse("FALSE OR FALSE");
-        HTest.assertTrue("TRUE AND TRUE");
-        HTest.assertFalse("TRUE AND FALSE");
-        HTest.assertTrue("TRUE OR ((true) or true) OR FALSE");
-        HTest.assertFalse("(false AND ((true) OR true)) AND TRUE");
-        HTest.assertTrue("(false AND ((true) OR true)) OR TRUE");
+        assertTrue("TRUE");
+        assertFalse("FALSE");
+        assertTrue("TRUE OR TRUE");
+        assertTrue("TRUE OR TRUE OR TRUE");
+        assertFalse("FALSE OR FALSE OR FALSE");
+        assertFalse("(FALSE OR FALSE OR FALSE)");
+        assertFalse("((((FALSE OR FALSE OR FALSE))))" + " OR " + "((((FALSE OR FALSE OR FALSE))))");
+        assertTrue("TRUE OR FALSE");
+        assertFalse("FALSE OR FALSE");
+        assertTrue("TRUE AND TRUE");
+        assertFalse("TRUE AND FALSE");
+        assertTrue("TRUE OR ((true) or true) OR FALSE");
+        assertFalse("(false AND ((true) OR true)) AND TRUE");
+        assertTrue("(false AND ((true) OR true)) OR TRUE");
     }
 
     @Test
     public void numericCompares() throws HPersistException {
 
-        HTest.assertTrue("4 < 5");
-        HTest.assertFalse("4 = 5");
-        HTest.assertFalse("4 == 5");
-        HTest.assertTrue("4 != 5");
-        HTest.assertTrue("4 <> 5");
-        HTest.assertTrue("4 <= 5");
-        HTest.assertFalse("4 > 5");
-        HTest.assertFalse("4 >= 5");
+        assertTrue("4 < 5");
+        assertFalse("4 = 5");
+        assertFalse("4 == 5");
+        assertTrue("4 != 5");
+        assertTrue("4 <> 5");
+        assertTrue("4 <= 5");
+        assertFalse("4 > 5");
+        assertFalse("4 >= 5");
     }
 
     @Test
     public void stringCompares() throws HPersistException {
 
-        HTest.assertTrue("'aaa' == 'aaa'");
-        HTest.assertFalse("'aaa' != 'aaa'");
-        HTest.assertFalse("'aaa' <> 'aaa'");
-        HTest.assertFalse("'aaa' == 'bbb'");
-        HTest.assertTrue("'aaa' <= 'bbb'");
-        HTest.assertTrue("'bbb' <= 'bbb'");
-        HTest.assertFalse("'bbb' <= 'aaa'");
-        HTest.assertFalse("'bbb' > 'bbb'");
-        HTest.assertTrue("'bbb' > 'aaa'");
-        HTest.assertTrue("'bbb' >= 'aaa'");
-        HTest.assertTrue("'aaa' >= 'aaa'");
+        assertTrue("'aaa' == 'aaa'");
+        assertFalse("'aaa' != 'aaa'");
+        assertFalse("'aaa' <> 'aaa'");
+        assertFalse("'aaa' == 'bbb'");
+        assertTrue("'aaa' <= 'bbb'");
+        assertTrue("'bbb' <= 'bbb'");
+        assertFalse("'bbb' <= 'aaa'");
+        assertFalse("'bbb' > 'bbb'");
+        assertTrue("'bbb' > 'aaa'");
+        assertTrue("'bbb' >= 'aaa'");
+        assertTrue("'aaa' >= 'aaa'");
     }
 
     @Test
     public void numericCalculations() throws HPersistException {
 
-        HTest.assertTrue("9 == 9");
-        HTest.assertTrue("((4 + 5) == 9)");
-        HTest.assertTrue("(9) == 9");
-        HTest.assertTrue("(4 + 5) == 9");
-        HTest.assertFalse("(4 + 5) == 8");
-        HTest.assertTrue("(4 + 5 + 10 + 10 - 20) == 9");
-        HTest.assertFalse("(4 + 5 + 10 + 10 - 20) != 9");
+        assertTrue("9 == 9");
+        assertTrue("((4 + 5) == 9)");
+        assertTrue("(9) == 9");
+        assertTrue("(4 + 5) == 9");
+        assertFalse("(4 + 5) == 8");
+        assertTrue("(4 + 5 + 10 + 10 - 20) == 9");
+        assertFalse("(4 + 5 + 10 + 10 - 20) != 9");
     }
 
     @Test
     public void numericFunctions() throws HPersistException {
 
-        HTest.assertTrue("3 between 2 AND 5");
-        HTest.assertTrue("3 between (1+1) AND (3+2)");
+        assertTrue("3 between 2 AND 5");
+        assertTrue("3 between (1+1) AND (3+2)");
 
-        HTest.assertTrue("3 in (2,3,4)");
-        HTest.assertFalse("3 in (1+1,1+3,4)");
-        HTest.assertTrue("3 in (1+1,1+2,4)");
+        assertTrue("3 in (2,3,4)");
+        assertFalse("3 in (1+1,1+3,4)");
+        assertTrue("3 in (1+1,1+2,4)");
 
     }
 
     @Test
     public void stringFunctions() throws HPersistException {
 
-        HTest.assertTrue("'bbb' between 'aaa' AND 'ccc'");
-        HTest.assertTrue("'bbb' between 'bbb' AND 'ccc'");
-        HTest.assertFalse("'bbb' between 'ccc' AND 'ddd'");
+        assertTrue("'bbb' between 'aaa' AND 'ccc'");
+        assertTrue("'bbb' between 'bbb' AND 'ccc'");
+        assertFalse("'bbb' between 'ccc' AND 'ddd'");
 
-        HTest.assertTrue("('bbb' between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
+        assertTrue("('bbb' between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
     }
 
     @Test
     public void objectFunctions() throws HPersistException {
 
-        AllTypes obj = new AllTypes("aaa", 1, "bbb");
+        final AllTypes obj = new AllTypes("aaa", 3, "bbb");
 
-        HTest.assertTrue("stringValue between 'aaa' AND 'ccc'", obj);
-        HTest.assertTrue("stringValue between 'bbb' AND 'ccc'", obj);
-        HTest.assertFalse("stringValue between 'ccc' AND 'ddd'", obj);
-        HTest.assertTrue("('bbb' between stringValue AND 'ccc') AND ('fff' between 'eee' AND 'ggg')", obj);
+        assertTrue(obj, "stringValue between 'aaa' AND 'ccc'");
+        assertTrue(obj, "stringValue between 'bbb' AND 'ccc'");
+        assertFalse(obj, "stringValue between 'ccc' AND 'ddd'");
+        assertTrue(obj, "('bbb' between stringValue AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
+
+        assertTrue(obj, "intValue between 2 AND 5");
+        assertTrue(obj, "intValue between (1+1) AND (intValue+2)");
     }
 
 }

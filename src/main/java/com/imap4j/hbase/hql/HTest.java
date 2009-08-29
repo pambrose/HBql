@@ -27,20 +27,20 @@ public class HTest {
     }
 
     public static void assertTrue(final String str) throws HPersistException {
-        assertTrue(str, null);
+        assertTrue(null, str);
 
     }
 
-    public static void assertTrue(final String str, final HPersistable recordObj) throws HPersistException {
+    public static void assertTrue(final HPersistable recordObj, final String str) throws HPersistException {
         org.junit.Assert.assertTrue(test(str, recordObj));
     }
 
     public static void assertFalse(final String str) throws HPersistException {
-        assertFalse(str, null);
+        assertFalse(null, str);
 
     }
 
-    public static void assertFalse(final String str, final HPersistable recordObj) throws HPersistException {
+    public static void assertFalse(final HPersistable recordObj, final String str) throws HPersistException {
         org.junit.Assert.assertFalse(test(str, recordObj));
     }
 }
