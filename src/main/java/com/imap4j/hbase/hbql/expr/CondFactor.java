@@ -1,8 +1,6 @@
 package com.imap4j.hbase.hbql.expr;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HPersistable;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,10 +19,10 @@ public class CondFactor implements PredicateExpr {
     }
 
     @Override
-    public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
+    public boolean evaluate(final AttribContext context) throws HPersistException {
         if (this.not)
-            return !this.primary.evaluate(classSchema, recordObj);
+            return !this.primary.evaluate(context);
         else
-            return this.primary.evaluate(classSchema, recordObj);
+            return this.primary.evaluate(context);
     }
 }

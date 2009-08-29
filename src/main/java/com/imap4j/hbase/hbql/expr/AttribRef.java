@@ -1,8 +1,6 @@
 package com.imap4j.hbase.hbql.expr;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HPersistable;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.FieldAttrib;
 
 /**
@@ -22,19 +20,19 @@ public class AttribRef implements ValueExpr {
     }
 
     @Override
-    public Object getValue(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
+    public Object getValue(final AttribContext context) throws HPersistException {
 
-        final FieldAttrib fieldAttrib = classSchema.getFieldAttribByField(this.attribName);
+        final FieldAttrib fieldAttrib = context.getClassSchema().getFieldAttribByField(this.attribName);
 
         switch (this.type) {
 
             case IntegerType:
             case NumberType: {
-                return (Number)fieldAttrib.getValue(recordObj);
+                return (Number)fieldAttrib.getValue(context.getRecordObj());
             }
 
             case StringType: {
-                return (String)fieldAttrib.getValue(recordObj);
+                return (String)fieldAttrib.getValue(context.getRecordObj());
             }
 
             default:

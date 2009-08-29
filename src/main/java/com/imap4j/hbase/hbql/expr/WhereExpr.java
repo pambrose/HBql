@@ -1,8 +1,6 @@
 package com.imap4j.hbase.hbql.expr;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HPersistable;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,11 +20,11 @@ public class WhereExpr implements PredicateExpr {
     }
 
     @Override
-    public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
+    public boolean evaluate(final AttribContext context) throws HPersistException {
 
         this.start = System.nanoTime();
 
-        final boolean retval = this.expr == null || this.expr.evaluate(classSchema, recordObj);
+        final boolean retval = this.expr == null || this.expr.evaluate(context);
 
         this.end = System.nanoTime();
 

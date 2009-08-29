@@ -1,8 +1,5 @@
 package com.imap4j.hbase.hbql.expr;
 
-import com.imap4j.hbase.hbql.HPersistable;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -18,7 +15,7 @@ public class BooleanLiteral implements ValueExpr {
     }
 
     @Override
-    public Object getValue(final ClassSchema classSchema, final HPersistable recordObj) {
+    public Object getValue(final AttribContext context) {
         return this.value;
     }
 }

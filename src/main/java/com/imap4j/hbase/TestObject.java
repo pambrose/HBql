@@ -135,7 +135,8 @@ public class TestObject implements HPersistable {
 
         long start = System.currentTimeMillis();
         HQuery<TestObject> q2 =
-                new HQuery<TestObject>("select * from TestObject WHERE strValue = 'v19' OR strValue IN ('v2', 'v0', 'v999')",
+                new HQuery<TestObject>("select * from TestObject "
+                                       + "WHERE strValue = 'v19' OR strValue IN ('v2', 'v0', 'v999')",
                                        new HQueryListenerAdapter<TestObject>() {
                                            public void onEachRow(final TestObject val) throws HPersistException {
                                                System.out.println("Values: " + val.keyval

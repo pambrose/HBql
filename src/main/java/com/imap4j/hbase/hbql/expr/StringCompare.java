@@ -1,8 +1,6 @@
 package com.imap4j.hbase.hbql.expr;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HPersistable;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,10 +20,10 @@ public class StringCompare extends CompareExpr {
     }
 
     @Override
-    public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
+    public boolean evaluate(final AttribContext context) throws HPersistException {
 
-        final String val1 = (String)expr1.getValue(classSchema, recordObj);
-        final String val2 = (String)expr2.getValue(classSchema, recordObj);
+        final String val1 = (String)expr1.getValue(context);
+        final String val2 = (String)expr2.getValue(context);
 
         switch (this.getOperator()) {
             case EQ:
@@ -42,7 +40,7 @@ public class StringCompare extends CompareExpr {
                 return val1.compareTo(val2) <= 0;
         }
 
-        throw new HPersistException("Error in StringCompareExpr.evaluate()");
+        throw new HPersistException("Error in StringCompare.evaluate()");
     }
 
 }

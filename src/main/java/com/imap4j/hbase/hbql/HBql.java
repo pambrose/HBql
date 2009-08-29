@@ -7,6 +7,7 @@ import com.imap4j.hbase.antlr.args.ExecArgs;
 import com.imap4j.hbase.antlr.args.SetArgs;
 import com.imap4j.hbase.antlr.args.ShowArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
+import com.imap4j.hbase.hbql.expr.AttribContext;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -130,9 +131,9 @@ public class HBql {
         int cnt = 0;
         for (final Result result : table.getScanner(scan)) {
 
-            final HPersistable newobj = HUtil.getHPersistable(classSchema, result);
+            final HPersistable recordObj = HUtil.getHPersistable(classSchema, result);
 
-            if (args.getWhereExpr().evaluate(classSchema, newobj)) {
+            if (args.getWhereExpr().evaluate(new AttribContext(classSchema, recordObj))) {
                 final Delete delete = new Delete(result.getRow());
                 table.delete(delete);
                 cnt++;

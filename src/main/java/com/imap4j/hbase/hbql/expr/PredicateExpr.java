@@ -1,8 +1,6 @@
 package com.imap4j.hbase.hbql.expr;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HPersistable;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,6 +10,6 @@ import com.imap4j.hbase.hbql.schema.ClassSchema;
  */
 public interface PredicateExpr {
 
-    boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException;
+    boolean evaluate(final AttribContext context) throws HPersistException;
 
 }

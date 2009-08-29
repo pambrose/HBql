@@ -1,8 +1,6 @@
 package com.imap4j.hbase.hbql.expr;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HPersistable;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,7 +17,7 @@ public class BooleanStmt implements PredicateExpr {
     }
 
     @Override
-    public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
-        return ((Boolean)this.expr.getValue(classSchema, recordObj)).booleanValue();
+    public boolean evaluate(final AttribContext context) throws HPersistException {
+        return ((Boolean)this.expr.getValue(context)).booleanValue();
     }
 }

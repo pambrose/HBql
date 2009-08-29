@@ -1,8 +1,6 @@
 package com.imap4j.hbase.hbql.expr;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HPersistable;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,7 +24,7 @@ public class BetweenStmt implements PredicateExpr {
     }
 
     @Override
-    public boolean evaluate(final ClassSchema classSchema, final HPersistable recordObj) throws HPersistException {
+    public boolean evaluate(final AttribContext context) throws HPersistException {
 
         final boolean retval;
 
@@ -34,22 +32,22 @@ public class BetweenStmt implements PredicateExpr {
 
             case NumberType:
             case IntegerType: {
-                final Number objVal = (Number)this.expr.getValue(classSchema, recordObj);
+                final Number objVal = (Number)this.expr.getValue(context);
                 final int val = objVal.intValue();
-                retval = val >= ((Number)this.getLower().getValue(classSchema, recordObj)).intValue()
-                         && val <= ((Number)this.getUpper().getValue(classSchema, recordObj)).intValue();
+                retval = val >= ((Number)this.getLower().getValue(context)).intValue()
+                         && val <= ((Number)this.getUpper().getValue(context)).intValue();
                 break;
             }
 
             case StringType: {
-                final String val = (String)this.expr.getValue(classSchema, recordObj);
-                retval = val.compareTo((String)this.getLower().getValue(classSchema, recordObj)) >= 0
-                         && val.compareTo((String)this.getUpper().getValue(classSchema, recordObj)) <= 0;
+                final String val = (String)this.expr.getValue(context);
+                retval = val.compareTo((String)this.getLower().getValue(context)) >= 0
+                         && val.compareTo((String)this.getUpper().getValue(context)) <= 0;
                 break;
             }
 
             default:
-                throw new HPersistException("Unknown type in Between.evaluate() - " + this.type);
+                throw new HPersistException("Unknown type in BetweenStmt.evaluate() - " + this.type);
         }
 
         return (this.not) ? !retval : retval;
