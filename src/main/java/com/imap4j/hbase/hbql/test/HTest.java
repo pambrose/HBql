@@ -16,9 +16,25 @@ import com.imap4j.hbase.hbql.schema.ClassSchema;
 public class HTest {
 
     private static boolean test(final HPersistable recordObj, final String str) throws HPersistException {
-        final WhereExpr expr = (WhereExpr)HBqlRule.WHERE.parse(str);
+
         final ClassSchema classSchema = (recordObj != null) ? ClassSchema.getClassSchema(recordObj) : null;
-        return expr.evaluate(new EvalContext(classSchema, recordObj));
+        final WhereExpr expr = (WhereExpr)HBqlRule.WHERE.parse(str);
+        final EvalContext context = new EvalContext(classSchema, recordObj);
+
+        final boolean no_opt_run = expr.evaluate(context);
+        final long no_opt_time = expr.getElapsedNanos();
+
+        expr.optimizeForConstants(context);
+
+        final boolean opt_run = expr.evaluate(context);
+        final long opt_time = expr.getElapsedNanos();
+
+        if (no_opt_run != opt_run)
+            throw new HPersistException("Different outcome with optimization");
+
+        // System.out.println("Time savings: " + (no_opt_time - opt_time));
+        return no_opt_run;
+
     }
 
     public static void assertTrue(final String str) throws HPersistException {
