@@ -207,10 +207,10 @@ stringVal returns [StringValue retval]
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
 
-booleanExpr returns [ValueExpr retval]
+booleanExpr returns [BooleanValue retval]
 	: b=booleanLiteral				{retval = $b.retval;}
 	| LBRACE e=orExpr QMARK b1=booleanExpr COLON b2=booleanExpr RBRACE	
-							{retval = new Ternary($e.retval, $b1.retval, $b2.retval);}
+							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	//| f=funcReturningBoolean
 	;
 /*
@@ -239,7 +239,7 @@ stringLiteral returns [StringValue retval]
 numberLiteral returns [ValueExpr retval]
 	: v=INT						{retval = new NumberLiteral(Integer.valueOf($v.text));};
 		
-booleanLiteral returns [ValueExpr retval]
+booleanLiteral returns [BooleanValue retval]
 	: t=keyTRUE					{retval = new BooleanLiteral($t.text);}
 	| f=keyFALSE					{retval = new BooleanLiteral($f.text);}
 	;
