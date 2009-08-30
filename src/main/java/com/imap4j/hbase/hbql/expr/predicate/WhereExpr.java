@@ -1,8 +1,9 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.PredicateExpr;
+import com.imap4j.hbase.hbql.expr.value.BooleanLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,8 +13,7 @@ import com.imap4j.hbase.hbql.expr.PredicateExpr;
  */
 public class WhereExpr implements PredicateExpr {
 
-    private final PredicateExpr expr;
-
+    private PredicateExpr expr = null;
     private long start, end;
 
     public WhereExpr(final PredicateExpr expr) {
@@ -21,12 +21,29 @@ public class WhereExpr implements PredicateExpr {
 
     }
 
+    private PredicateExpr getExpr() {
+        return expr;
+    }
+
     @Override
-    public boolean evaluate(final AttribContext context) throws HPersistException {
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+
+        boolean retval = true;
+
+        if (this.getExpr().optimizeForConstants(context))
+            this.expr = new BooleanLiteral(this.getExpr().evaluate(context));
+        else
+            retval = false;
+
+        return retval;
+    }
+
+    @Override
+    public boolean evaluate(final EvalContext context) throws HPersistException {
 
         this.start = System.nanoTime();
 
-        final boolean retval = (this.expr == null) || (this.expr.evaluate(context));
+        final boolean retval = (this.getExpr() == null) || (this.getExpr().evaluate(context));
 
         this.end = System.nanoTime();
 

@@ -12,6 +12,8 @@ import java.io.Serializable;
  */
 public interface PredicateExpr extends Serializable {
 
-    boolean evaluate(final AttribContext context) throws HPersistException;
+    boolean optimizeForConstants(final EvalContext context) throws HPersistException;
+
+    boolean evaluate(final EvalContext context) throws HPersistException;
 
 }

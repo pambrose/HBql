@@ -11,12 +11,12 @@ import java.io.Serializable;
  * Date: Aug 29, 2009
  * Time: 10:34:29 AM
  */
-public class AttribContext implements Serializable {
+public class EvalContext implements Serializable {
 
     final ClassSchema classSchema;
     final HPersistable recordObj;
 
-    public AttribContext(final ClassSchema classSchema, final HPersistable recordObj) {
+    public EvalContext(final ClassSchema classSchema, final HPersistable recordObj) {
         this.classSchema = classSchema;
         this.recordObj = recordObj;
     }

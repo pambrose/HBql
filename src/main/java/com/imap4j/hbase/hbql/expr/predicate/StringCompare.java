@@ -1,8 +1,10 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.EvalContext;
+import com.imap4j.hbase.hbql.expr.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.StringValue;
+import com.imap4j.hbase.hbql.expr.value.StringLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,24 +12,50 @@ import com.imap4j.hbase.hbql.expr.StringValue;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class StringCompare extends CompareExpr {
+public class StringCompare extends CompareExpr implements PredicateExpr {
 
-    private final StringValue expr1;
-    private final StringValue expr2;
+    private StringValue expr1 = null, expr2 = null;
 
-    public StringCompare(final StringValue expr1, final Operator op, final StringValue expr2) {
+    public StringCompare(final StringValue expr1, final OP op, final StringValue expr2) {
         super(op);
         this.expr1 = expr1;
         this.expr2 = expr2;
     }
 
+    private StringValue getExpr1() {
+        return this.expr1;
+    }
+
+    private StringValue getExpr2() {
+        return this.expr2;
+    }
+
     @Override
-    public boolean evaluate(final AttribContext context) throws HPersistException {
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
 
-        final String val1 = this.expr1.getValue(context);
-        final String val2 = this.expr2.getValue(context);
+        boolean retval = true;
 
-        switch (this.getOperator()) {
+        if (this.getExpr1().optimizeForConstants(context))
+            this.expr1 = new StringLiteral(this.getExpr1().getValue(context));
+        else
+            retval = false;
+
+        if (this.getExpr2().optimizeForConstants(context))
+            this.expr2 = new StringLiteral(this.getExpr2().getValue(context));
+        else
+            retval = false;
+
+        return retval;
+    }
+
+
+    @Override
+    public boolean evaluate(final EvalContext context) throws HPersistException {
+
+        final String val1 = this.getExpr1().getValue(context);
+        final String val2 = this.getExpr2().getValue(context);
+
+        switch (this.getOp()) {
             case EQ:
                 return val1.equals(val2);
             case NOTEQ:

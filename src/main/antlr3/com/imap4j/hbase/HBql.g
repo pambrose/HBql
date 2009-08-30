@@ -149,13 +149,13 @@ compareExpr returns [PredicateExpr retval]
 	| n1=numericExpr o=compOp n2=numericExpr	{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
 	;
 	
-compOp returns [CompareExpr.Operator retval]
-	: EQ EQ?					{retval = CompareExpr.Operator.EQ;}
-	| GT 						{retval = CompareExpr.Operator.GT;}
-	| GTEQ 						{retval = CompareExpr.Operator.GTEQ;}
-	| LT 						{retval = CompareExpr.Operator.LT;}
-	| LTEQ 						{retval = CompareExpr.Operator.LTEQ;}
-	| (LTGT | BANGEQ)				{retval = CompareExpr.Operator.NOTEQ;}
+compOp returns [CompareExpr.OP retval]
+	: EQ EQ?					{retval = CompareExpr.OP.EQ;}
+	| GT 						{retval = CompareExpr.OP.GT;}
+	| GTEQ 						{retval = CompareExpr.OP.GTEQ;}
+	| LT 						{retval = CompareExpr.OP.LT;}
+	| LTEQ 						{retval = CompareExpr.OP.LTEQ;}
+	| (LTGT | BANGEQ)				{retval = CompareExpr.OP.NOTEQ;}
 	;
 
 // Numeric calculations

@@ -12,5 +12,7 @@ import java.io.Serializable;
  */
 public interface BooleanValue extends Serializable {
 
-    Boolean getValue(final AttribContext context) throws HPersistException;
+    boolean optimizeForConstants(final EvalContext context) throws HPersistException;
+
+    Boolean getValue(final EvalContext context) throws HPersistException;
 }

@@ -1,9 +1,10 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
 import com.imap4j.hbase.hbql.expr.BooleanValue;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.PredicateExpr;
+import com.imap4j.hbase.hbql.expr.value.BooleanLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,14 +14,31 @@ import com.imap4j.hbase.hbql.expr.PredicateExpr;
  */
 public class BooleanStmt implements PredicateExpr {
 
-    private final BooleanValue expr;
+    private BooleanValue expr = null;
 
     public BooleanStmt(final BooleanValue expr) {
         this.expr = expr;
     }
 
+    private BooleanValue getExpr() {
+        return expr;
+    }
+
     @Override
-    public boolean evaluate(final AttribContext context) throws HPersistException {
-        return this.expr.getValue(context);
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+
+        boolean retval = true;
+
+        if (this.getExpr().optimizeForConstants(context))
+            this.expr = new BooleanLiteral(this.getExpr().getValue(context));
+        else
+            retval = false;
+
+        return retval;
+    }
+
+    @Override
+    public boolean evaluate(final EvalContext context) throws HPersistException {
+        return this.getExpr().getValue(context);
     }
 }

@@ -1,7 +1,7 @@
 package com.imap4j.hbase.hbql.expr.value;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.NumberValue;
 import com.imap4j.hbase.hbql.expr.PredicateExpr;
 
@@ -23,7 +23,7 @@ public class Ternary implements NumberValue {
     }
 
     @Override
-    public Number getValue(final AttribContext context) throws HPersistException {
+    public Number getValue(final EvalContext context) throws HPersistException {
 
         if (this.pred.evaluate(context))
             return this.expr1.getValue(context);

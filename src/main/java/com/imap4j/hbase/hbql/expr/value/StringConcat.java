@@ -1,7 +1,7 @@
 package com.imap4j.hbase.hbql.expr.value;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.StringValue;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class StringConcat implements StringValue {
     }
 
     @Override
-    public String getValue(final AttribContext context) throws HPersistException {
+    public String getValue(final EvalContext context) throws HPersistException {
 
         if (vals.size() == 1)
             return this.vals.get(0).getValue(context);

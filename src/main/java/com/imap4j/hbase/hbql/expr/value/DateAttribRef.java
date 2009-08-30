@@ -1,8 +1,8 @@
 package com.imap4j.hbase.hbql.expr.value;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
 import com.imap4j.hbase.hbql.expr.DateValue;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.schema.FieldAttrib;
 
 import java.util.Date;
@@ -22,7 +22,7 @@ public class DateAttribRef implements DateValue {
     }
 
     @Override
-    public Date getValue(final AttribContext context) throws HPersistException {
+    public Date getValue(final EvalContext context) throws HPersistException {
         final FieldAttrib fieldAttrib = context.getClassSchema().getFieldAttribByField(this.attribName);
         return (Date)fieldAttrib.getValue(context.getRecordObj());
     }

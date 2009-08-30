@@ -1,9 +1,10 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.StringValue;
+import com.imap4j.hbase.hbql.expr.value.StringLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,9 +14,9 @@ import com.imap4j.hbase.hbql.expr.StringValue;
  */
 public class StringBetweenStmt implements PredicateExpr {
 
-    private final StringValue expr;
+    private StringValue expr = null;
     private final boolean not;
-    private final StringValue lower, upper;
+    private StringValue lower = null, upper = null;
 
     public StringBetweenStmt(final StringValue expr, final boolean not, final StringValue lower, final StringValue upper) {
         this.expr = expr;
@@ -24,14 +25,8 @@ public class StringBetweenStmt implements PredicateExpr {
         this.upper = upper;
     }
 
-    @Override
-    public boolean evaluate(final AttribContext context) throws HPersistException {
-
-        final String val = this.expr.getValue(context);
-        final boolean retval = val.compareTo(this.getLower().getValue(context)) >= 0
-                               && val.compareTo(this.getUpper().getValue(context)) <= 0;
-
-        return (this.not) ? !retval : retval;
+    private StringValue getExpr() {
+        return this.expr;
     }
 
     private StringValue getLower() {
@@ -40,6 +35,38 @@ public class StringBetweenStmt implements PredicateExpr {
 
     private StringValue getUpper() {
         return this.upper;
+    }
+
+    @Override
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+        boolean retval = true;
+
+        if (this.getExpr().optimizeForConstants(context))
+            this.expr = new StringLiteral(this.getExpr().getValue(context));
+        else
+            retval = false;
+
+        if (this.getLower().optimizeForConstants(context))
+            this.lower = new StringLiteral(this.getLower().getValue(context));
+        else
+            retval = false;
+
+        if (this.getUpper().optimizeForConstants(context))
+            this.upper = new StringLiteral(this.getUpper().getValue(context));
+        else
+            retval = false;
+
+        return retval;
+    }
+
+    @Override
+    public boolean evaluate(final EvalContext context) throws HPersistException {
+
+        final String str = this.getExpr().getValue(context);
+        final boolean retval = str.compareTo(this.getLower().getValue(context)) >= 0
+                               && str.compareTo(this.getUpper().getValue(context)) <= 0;
+
+        return (this.not) ? !retval : retval;
     }
 
 }

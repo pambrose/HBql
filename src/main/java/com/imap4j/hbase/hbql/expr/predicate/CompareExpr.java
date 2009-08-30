@@ -1,16 +1,14 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
-import com.imap4j.hbase.hbql.expr.PredicateExpr;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public abstract class CompareExpr implements PredicateExpr {
+public abstract class CompareExpr {
 
-    public enum Operator {
+    public enum OP {
         EQ,
         GT,
         GTEQ,
@@ -19,13 +17,13 @@ public abstract class CompareExpr implements PredicateExpr {
         NOTEQ
     }
 
-    private final CompareExpr.Operator operator;
+    private final OP op;
 
-    protected CompareExpr(final Operator operator) {
-        this.operator = operator;
+    protected CompareExpr(final OP op) {
+        this.op = op;
     }
 
-    protected Operator getOperator() {
-        return operator;
+    protected OP getOp() {
+        return op;
     }
 }

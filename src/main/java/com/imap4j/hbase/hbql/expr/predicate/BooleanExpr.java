@@ -1,8 +1,9 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.PredicateExpr;
+import com.imap4j.hbase.hbql.expr.value.BooleanLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,27 +18,60 @@ public class BooleanExpr implements PredicateExpr {
         OR
     }
 
-    private final PredicateExpr expr1;
-    private final PredicateExpr expr2;
+    private PredicateExpr expr1 = null, expr2 = null;
     private final BooleanExpr.OP op;
 
     public BooleanExpr(final PredicateExpr expr1, final BooleanExpr.OP op, final PredicateExpr expr2) {
         this.expr1 = expr1;
-        this.expr2 = expr2;
         this.op = op;
+        this.expr2 = expr2;
+    }
+
+    private PredicateExpr getExpr1() {
+        return expr1;
+    }
+
+    private PredicateExpr getExpr2() {
+        return expr2;
+    }
+
+    private OP getOp() {
+        return op;
     }
 
     @Override
-    public boolean evaluate(final AttribContext context) throws HPersistException {
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
 
-        if (this.expr2 == null)
-            return this.expr1.evaluate(context);
+        boolean retval = true;
 
-        switch (this.op) {
+        if (this.getExpr1().optimizeForConstants(context))
+            this.expr1 = new BooleanLiteral(this.getExpr1().evaluate(context));
+        else
+            retval = false;
+
+        if (this.getExpr2() != null) {
+            if (this.getExpr2().optimizeForConstants(context))
+                this.expr2 = new BooleanLiteral(this.getExpr2().evaluate(context));
+            else
+                retval = false;
+        }
+
+        return retval;
+    }
+
+    @Override
+    public boolean evaluate(final EvalContext context) throws HPersistException {
+
+        final boolean expr1val = this.getExpr1().evaluate(context);
+
+        if (this.getExpr2() == null)
+            return expr1val;
+
+        switch (this.getOp()) {
             case OR:
-                return this.expr1.evaluate(context) || this.expr2.evaluate(context);
+                return expr1val || this.getExpr2().evaluate(context);
             case AND:
-                return this.expr1.evaluate(context) && this.expr2.evaluate(context);
+                return expr1val && this.getExpr2().evaluate(context);
 
             default:
                 throw new HPersistException("Error in BooleanExpr.evaluate()");

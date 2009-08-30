@@ -1,8 +1,8 @@
 package com.imap4j.hbase.hbql.expr.value;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
 import com.imap4j.hbase.hbql.expr.BooleanValue;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.PredicateExpr;
 
 /**
@@ -13,8 +13,8 @@ import com.imap4j.hbase.hbql.expr.PredicateExpr;
  */
 public class BooleanTernary implements BooleanValue {
 
-    private final PredicateExpr pred;
-    private final BooleanValue expr1, expr2;
+    private PredicateExpr pred;
+    private BooleanValue expr1 = null, expr2 = null;
 
     public BooleanTernary(final PredicateExpr pred, final BooleanValue expr1, final BooleanValue expr2) {
         this.pred = pred;
@@ -23,7 +23,7 @@ public class BooleanTernary implements BooleanValue {
     }
 
     @Override
-    public Boolean getValue(final AttribContext context) throws HPersistException {
+    public Boolean getValue(final EvalContext context) throws HPersistException {
 
         if (this.pred.evaluate(context))
             return this.expr1.getValue(context);

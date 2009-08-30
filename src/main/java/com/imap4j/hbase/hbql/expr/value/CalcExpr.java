@@ -1,7 +1,7 @@
 package com.imap4j.hbase.hbql.expr.value;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.NumberValue;
 
 /**
@@ -37,7 +37,7 @@ public class CalcExpr implements NumberValue {
     }
 
     @Override
-    public Number getValue(final AttribContext context) throws HPersistException {
+    public Number getValue(final EvalContext context) throws HPersistException {
 
         final int val1 = ((Number)this.expr1.getValue(context)).intValue();
         final int val2 = (this.expr2 != null) ? ((Number)this.expr2.getValue(context)).intValue() : 0;

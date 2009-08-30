@@ -1,8 +1,9 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.PredicateExpr;
+import com.imap4j.hbase.hbql.expr.value.BooleanLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,16 +14,33 @@ import com.imap4j.hbase.hbql.expr.PredicateExpr;
 public class CondFactor implements PredicateExpr {
 
     private final boolean not;
-    private final PredicateExpr primary;
+    private PredicateExpr expr = null;
 
-    public CondFactor(final boolean not, final PredicateExpr primary) {
+    public CondFactor(final boolean not, final PredicateExpr expr) {
         this.not = not;
-        this.primary = primary;
+        this.expr = expr;
+    }
+
+    private PredicateExpr getExpr() {
+        return this.expr;
     }
 
     @Override
-    public boolean evaluate(final AttribContext context) throws HPersistException {
-        final boolean retval = this.primary.evaluate(context);
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+
+        boolean retval = true;
+
+        if (this.getExpr().optimizeForConstants(context))
+            this.expr = new BooleanLiteral(this.getExpr().evaluate(context));
+        else
+            retval = false;
+
+        return retval;
+    }
+
+    @Override
+    public boolean evaluate(final EvalContext context) throws HPersistException {
+        final boolean retval = this.getExpr().evaluate(context);
         return (this.not) ? !retval : retval;
 
     }

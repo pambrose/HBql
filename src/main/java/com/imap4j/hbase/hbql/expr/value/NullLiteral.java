@@ -1,6 +1,6 @@
 package com.imap4j.hbase.hbql.expr.value;
 
-import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.StringValue;
 
 /**
@@ -15,7 +15,7 @@ public class NullLiteral implements StringValue {
     }
 
     @Override
-    public String getValue(final AttribContext context) {
+    public String getValue(final EvalContext context) {
         return null;
     }
 }

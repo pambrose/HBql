@@ -1,9 +1,10 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.StringValue;
+import com.imap4j.hbase.hbql.expr.value.StringLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,16 +14,33 @@ import com.imap4j.hbase.hbql.expr.StringValue;
  */
 public class NullCompare implements PredicateExpr {
 
-    private final StringValue expr;
     private final boolean not;
+    private StringValue expr = null;
 
     public NullCompare(final boolean not, final StringValue expr) {
         this.not = not;
         this.expr = expr;
     }
 
+    private StringValue getExpr() {
+        return this.expr;
+    }
+
     @Override
-    public boolean evaluate(final AttribContext context) throws HPersistException {
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+
+        boolean retval = true;
+
+        if (this.getExpr().optimizeForConstants(context))
+            this.expr = new StringLiteral(this.getExpr().getValue(context));
+        else
+            retval = false;
+
+        return retval;
+    }
+
+    @Override
+    public boolean evaluate(final EvalContext context) throws HPersistException {
         final String val = this.expr.getValue(context);
         final boolean retval = (val == null);
         return (this.not) ? !retval : retval;

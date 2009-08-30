@@ -1,7 +1,7 @@
 package com.imap4j.hbase.hbql.expr.value;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.StringValue;
 
 /**
@@ -32,7 +32,7 @@ public class StringFunction implements StringValue {
     }
 
     @Override
-    public String getValue(final AttribContext context) throws HPersistException {
+    public String getValue(final EvalContext context) throws HPersistException {
 
         switch (this.getFunc()) {
             case TRIM: {

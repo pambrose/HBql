@@ -1,9 +1,11 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
+import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.NumberValue;
 import com.imap4j.hbase.hbql.expr.PredicateExpr;
+import com.imap4j.hbase.hbql.expr.value.NumberLiteral;
 
 import java.util.List;
 
@@ -15,34 +17,77 @@ import java.util.List;
  */
 public class NumberInStmt implements PredicateExpr {
 
-    private final NumberValue number;
+    private NumberValue expr = null;
     private final boolean not;
-    private final List<Object> valList;
+    private final List<NumberValue> valList;
 
-    public NumberInStmt(final NumberValue number, final boolean not, final List<Object> valList) {
-        this.number = number;
+    public NumberInStmt(final NumberValue expr, final boolean not, final List<NumberValue> valList) {
+        this.expr = expr;
         this.not = not;
         this.valList = valList;
     }
 
-    @Override
-    public boolean evaluate(final AttribContext context) throws HPersistException {
+    private NumberValue getExpr() {
+        return this.expr;
+    }
 
+    private List<NumberValue> getValList() {
+        return this.valList;
+    }
+
+    @Override
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+
+        boolean retval = true;
+
+        if (this.getExpr().optimizeForConstants(context))
+            this.expr = new NumberLiteral(this.getExpr().getValue(context));
+        else
+            retval = false;
+
+        if (!this.optimizeList(context))
+            retval = false;
+
+        return retval;
+    }
+
+    @Override
+    public boolean evaluate(final EvalContext context) throws HPersistException {
         final boolean retval = this.evaluateList(context);
         return (this.not) ? !retval : retval;
     }
 
-    private boolean evaluateList(final AttribContext context) throws HPersistException {
+    private boolean optimizeList(final EvalContext context) throws HPersistException {
 
-        final Number number = this.number.getValue(context);
-        final int attribVal = number.intValue();
-        for (final Object obj : this.valList) {
-            final Number numobj = ((NumberValue)obj).getValue(context);
-            final int val = numobj.intValue();
+        boolean retval = true;
+        final List<NumberValue> newvalList = Lists.newArrayList();
+
+        for (final NumberValue num : this.getValList()) {
+            if (num.optimizeForConstants(context)) {
+                newvalList.add(new NumberLiteral(num.getValue(context)));
+            }
+            else {
+                newvalList.add(num);
+                retval = false;
+            }
+        }
+
+        // Swap new values to list
+        this.getValList().clear();
+        this.getValList().addAll(newvalList);
+
+        return retval;
+
+    }
+
+    private boolean evaluateList(final EvalContext context) throws HPersistException {
+
+        final int attribVal = this.getExpr().getValue(context).intValue();
+        for (final NumberValue obj : this.getValList()) {
+            final int val = obj.getValue(context).intValue();
             if (attribVal == val)
                 return true;
         }
         return false;
-
     }
 }

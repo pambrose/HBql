@@ -13,5 +13,7 @@ import java.util.Date;
  */
 public interface DateValue extends Serializable {
 
-    Date getValue(final AttribContext context) throws HPersistException;
+    boolean optimizeForConstants(final EvalContext context) throws HPersistException;
+
+    Date getValue(final EvalContext context) throws HPersistException;
 }

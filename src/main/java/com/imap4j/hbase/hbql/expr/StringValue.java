@@ -12,5 +12,7 @@ import java.io.Serializable;
  */
 public interface StringValue extends Serializable {
 
-    String getValue(final AttribContext context) throws HPersistException;
+    boolean optimizeForConstants(final EvalContext context) throws HPersistException;
+
+    String getValue(final EvalContext context) throws HPersistException;
 }
