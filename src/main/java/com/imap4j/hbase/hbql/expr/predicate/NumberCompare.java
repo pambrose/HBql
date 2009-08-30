@@ -24,8 +24,8 @@ public class NumberCompare extends CompareExpr {
     @Override
     public boolean evaluate(final AttribContext context) throws HPersistException {
 
-        final int val1 = ((Number)expr1.getValue(context)).intValue();
-        final int val2 = ((Number)expr2.getValue(context)).intValue();
+        final int val1 = this.expr1.getValue(context).intValue();
+        final int val2 = this.expr2.getValue(context).intValue();
 
         switch (this.getOperator()) {
             case EQ:

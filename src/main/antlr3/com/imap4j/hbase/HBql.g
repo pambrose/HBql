@@ -94,11 +94,6 @@ orExpr returns [PredicateExpr retval]
 andExpr returns [PredicateExpr retval]
 	: e1=condFactor (and e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanExpr($e1.retval, BooleanExpr.OP.AND, $e2.retval);};
 
-to 	: keyTO | EQ;
-or	: keyOR | OR;
-and	: keyAND | AND;
-not	: keyNOT | NOT;
-	
 condFactor returns [PredicateExpr retval]			 
 	: n=not? p=condPrimary				{$condFactor.retval = ($n.text != null) ?  new CondFactor(true, $p.retval) :  $p.retval;};
 	
@@ -307,7 +302,12 @@ multDiv returns [CalcExpr.OP retval]
 	| DIV						{retval = CalcExpr.OP.DIV;}
 	| MOD						{retval = CalcExpr.OP.MOD;}
 	;
-	
+
+to 	: keyTO | EQ;
+or	: keyOR | OR;
+and	: keyAND | AND;
+not	: keyNOT | NOT;
+		
 INT	: DIGIT+;
 ID	: CHAR (CHAR | DIGIT)*;
  

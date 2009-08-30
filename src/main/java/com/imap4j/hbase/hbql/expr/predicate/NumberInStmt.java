@@ -15,7 +15,6 @@ import java.util.List;
  */
 public class NumberInStmt implements PredicateExpr {
 
-
     private final NumberValue number;
     private final boolean not;
     private final List<Object> valList;

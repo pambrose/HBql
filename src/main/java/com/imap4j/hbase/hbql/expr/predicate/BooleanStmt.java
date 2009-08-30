@@ -21,6 +21,6 @@ public class BooleanStmt implements PredicateExpr {
 
     @Override
     public boolean evaluate(final AttribContext context) throws HPersistException {
-        return this.expr.getValue(context).booleanValue();
+        return this.expr.getValue(context);
     }
 }
