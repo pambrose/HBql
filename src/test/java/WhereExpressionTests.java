@@ -152,6 +152,10 @@ public class WhereExpressionTests extends HTest {
         assertTrue("'ABABAB' == UPPER(CONCAT('aba', 'bab'))");
 
         assertTrue("'bbb' == SUBSTRING('BBBbbbAAA', 3, 6)");
+
+        assertTrue("'AAA' == 'A' + 'A' + 'A'");
+
+        assertTrue("'aaa' == LOWER('A' + 'A' + 'A')");
     }
 
     @Test

@@ -182,7 +182,14 @@ numberExpr returns [ValueExpr retval]
 							{retval = new Ternary($e.retval, $n1.retval, $n2.retval);}
 	;
 
+// Supports string concatenation
 stringExpr returns [ValueExpr retval]
+@init {List<ValueExpr> vals = Lists.newArrayList();} 
+	: s1=stringVal {vals.add($s1.retval);} (PLUS s2=stringExpr {vals.add($s2.retval);})*
+							{retval = new StringConcat(vals);}
+	;
+	
+stringVal returns [ValueExpr retval]
 	: s=stringLiteral				{retval = $s.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
 	| n=keyNULL					{retval = new NullLiteral();}
