@@ -39,8 +39,8 @@ public class CalcExpr implements ValueExpr {
     @Override
     public Object getValue(final AttribContext context) throws HPersistException {
 
-        final int val1 = ((Number)expr1.getValue(context)).intValue();
-        final int val2 = (this.expr2 != null) ? ((Number)expr2.getValue(context)).intValue() : 0;
+        final int val1 = ((Number)this.expr1.getValue(context)).intValue();
+        final int val2 = (this.expr2 != null) ? ((Number)this.expr2.getValue(context)).intValue() : 0;
 
         switch (this.op) {
             case PLUS:

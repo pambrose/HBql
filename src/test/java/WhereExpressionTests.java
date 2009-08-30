@@ -43,12 +43,13 @@ public class WhereExpressionTests extends HTest {
 
     @Test
     public void booleanExpressions() throws HPersistException {
-
         assertTrue("TRUE");
         assertFalse("NOT TRUE");
         assertFalse("! TRUE");
         assertFalse("!TRUE");
         assertFalse("!(((((TRUE)))))");
+        assertTrue("((TRUE))");
+        assertTrue("(((((TRUE)))))");
         assertFalse("!((!(((!TRUE)))))");
         assertFalse("FALSE");
         assertTrue("TRUE OR TRUE");
@@ -130,7 +131,7 @@ public class WhereExpressionTests extends HTest {
         assertFalse("3 !in (1+1,1+2,4)");
         assertFalse("3 NOT in (1+1,1+2,4)");
 
-        assertTrue("3 == (true) ? 3 : 2");
+        assertTrue("3 == [true ? 3 : 2]");
 
     }
 

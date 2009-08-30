@@ -26,6 +26,7 @@ public class HBaseParser extends Parser {
 
     protected static boolean isKeyword(final TokenStream input, final String str) {
         final String s = input.LT(1).getText();
+        //System.out.println("Checking for " + str + " and " + s);
         return s != null && s.equalsIgnoreCase(str);
     }
 
