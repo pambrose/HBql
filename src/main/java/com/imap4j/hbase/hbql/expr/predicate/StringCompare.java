@@ -72,5 +72,4 @@ public class StringCompare extends CompareExpr implements PredicateExpr {
 
         throw new HPersistException("Error in StringCompare.evaluate()");
     }
-
 }

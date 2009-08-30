@@ -45,5 +45,4 @@ public class NullCompare implements PredicateExpr {
         final boolean retval = (val == null);
         return (this.not) ? !retval : retval;
     }
-
 }

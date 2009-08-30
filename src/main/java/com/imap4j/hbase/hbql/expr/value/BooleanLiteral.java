@@ -24,7 +24,7 @@ public class BooleanLiteral implements BooleanValue, PredicateExpr {
     }
 
     @Override
-    public Boolean getValue(final EvalContext context) {
+    public boolean getValue(final EvalContext context) {
         return this.value;
     }
 

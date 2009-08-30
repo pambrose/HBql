@@ -213,7 +213,7 @@ stringVal returns [StringValue retval]
 // TODO Deal with LBRACE/RBRACE here
 booleanExpr returns [BooleanValue retval]
 	: b=booleanLiteral				{retval = $b.retval;}
-	//| LBRACE e=orExpr RBRACE			{retval = new BooleanStmt($e.retval);}
+	| LBRACE e=orExpr RBRACE			{retval = new BooleanPredicate($e.retval);}
 	| LBRACE e=orExpr QMARK b1=orExpr COLON b2=orExpr RBRACE	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	//| f=funcReturningBoolean

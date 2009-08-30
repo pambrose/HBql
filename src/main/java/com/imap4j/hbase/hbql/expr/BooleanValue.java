@@ -14,5 +14,5 @@ public interface BooleanValue extends Serializable {
 
     boolean optimizeForConstants(final EvalContext context) throws HPersistException;
 
-    Boolean getValue(final EvalContext context) throws HPersistException;
+    boolean getValue(final EvalContext context) throws HPersistException;
 }

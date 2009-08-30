@@ -20,10 +20,6 @@ public class BooleanStmt implements PredicateExpr {
         this.expr = expr;
     }
 
-    public BooleanStmt(final PredicateExpr expr) {
-        //  this.expr = expr;
-    }
-
     private BooleanValue getExpr() {
         return expr;
     }
@@ -45,4 +41,5 @@ public class BooleanStmt implements PredicateExpr {
     public boolean evaluate(final EvalContext context) throws HPersistException {
         return this.getExpr().getValue(context);
     }
+
 }

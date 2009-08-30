@@ -68,5 +68,4 @@ public class StringBetweenStmt implements PredicateExpr {
 
         return (this.not) ? !retval : retval;
     }
-
 }
