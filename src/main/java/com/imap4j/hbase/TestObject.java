@@ -98,8 +98,8 @@ public class TestObject implements HPersistable {
         results = HBql.exec("set packagepath com.imap4j.hbql:com.imap4j.hbase");
         System.out.println(results.getOutput());
 
-        //results = HBql.exec("delete from TestObject where strValue = 'v19aa'");
-        //System.out.println(results.getOutput());
+        results = HBql.exec("delete from TestObject with filter TRUE AND !FALSE where strValue = 'v19aa'");
+        System.out.println(results.getOutput());
 
         //results = HBql.exec("create table TestObject");
         //System.out.println(results.getOutput());
@@ -136,7 +136,7 @@ public class TestObject implements HPersistable {
         long start = System.currentTimeMillis();
         HQuery<TestObject> q2 =
                 new HQuery<TestObject>("select * from TestObject "
-                                       + "FILTER WITH TRUE AND !FALSE "
+                                       + "WITH FILTER TRUE AND !FALSE "
                                        + "WHERE strValue = 'v19' OR strValue IN ('v2', 'v0', 'v999')",
                                        new HQueryListenerAdapter<TestObject>() {
                                            public void onEachRow(final TestObject val) throws HPersistException {

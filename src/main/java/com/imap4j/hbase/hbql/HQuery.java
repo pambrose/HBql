@@ -40,9 +40,10 @@ public class HQuery<T extends HPersistable> {
 
         final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery());
         final ClassSchema classSchema = ClassSchema.getClassSchema(args.getTableName());
-        final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
         final List<String> fieldList = (args.getColumnList() == null) ? classSchema.getFieldList() : args.getColumnList();
         final Scan scan = HUtil.getScan(classSchema, fieldList, args.getFilterExpr());
+
+        final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
 
         for (final Result result : table.getScanner(scan)) {
 

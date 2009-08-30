@@ -123,10 +123,10 @@ public class HBql {
         final Results retval = new Results();
 
         final ClassSchema classSchema = ClassSchema.getClassSchema(args.getTableName());
-        final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
-
         final List<String> fieldList = classSchema.getFieldList();
         final Scan scan = HUtil.getScan(classSchema, fieldList, args.getFilterExpr());
+
+        final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
 
         int cnt = 0;
         for (final Result result : table.getScanner(scan)) {

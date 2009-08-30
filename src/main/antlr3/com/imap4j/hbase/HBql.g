@@ -88,7 +88,7 @@ setStmt returns [SetArgs retval]
 	: keySET i=ID to? v=dottedValue 		{retval = new SetArgs($i.text, $v.text);};
 
 filterClause returns [WhereExpr retval]
-	: keyFILTER keyWITH w=whereExpr			{retval = $w.retval;};
+	: keyWITH keyFILTER w=whereExpr			{retval = $w.retval;};
 	
 whereClause returns [WhereExpr retval]
 	: keyWHERE w=whereExpr 				{retval = $w.retval;};
