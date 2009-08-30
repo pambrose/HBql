@@ -120,7 +120,7 @@ betweenStmt returns [PredicateExpr retval]
 	: n1=numericExpr n=not? keyBETWEEN n2=numericExpr and n3=numericExpr		
 							{retval = new BetweenStmt(ExprType.IntegerType, $n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
 	| s1=stringExpr n=not? keyBETWEEN s2=stringExpr and s3=stringExpr		
-							{retval = new BetweenStmt(ExprType.StringType, $s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
+							{retval = new StringBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
 	//| d1=dateExpr n=not? keyBETWEEN d2=dateExpr and d3=dateExpr
 	;
 
@@ -131,7 +131,7 @@ inStmt returns [PredicateExpr retval]
 	: a1=numericExpr n=not? keyIN LPAREN i=intItemList RPAREN			
 							{retval = new InStmt(ExprType.IntegerType, $a1.retval,($n.text != null), $i.retval);} 
 	| a2=stringExpr n=not? keyIN LPAREN s=strItemList RPAREN			
-							{retval = new InStmt(ExprType.StringType, $a2.retval, ($n.text != null), $s.retval);} 
+							{retval = new StringInStmt($a2.retval, ($n.text != null), $s.retval);} 
 	;
 
 booleanStmt returns [PredicateExpr retval]
@@ -182,20 +182,29 @@ numberExpr returns [ValueExpr retval]
 							{retval = new Ternary($e.retval, $n1.retval, $n2.retval);}
 	;
 
-// Supports string concatenation
-stringExpr returns [ValueExpr retval]
-@init {List<ValueExpr> vals = Lists.newArrayList();} 
-	: s1=stringVal {vals.add($s1.retval);} (PLUS s2=stringExpr {vals.add($s2.retval);})*
-							{retval = new StringConcat(vals);}
+// Supports string concatenation -- avoids creating a list everytime
+stringExpr returns [StringValue retval]
+@init {
+  StringValue firstval = null;  
+  List<StringValue> vals = null;
+} 
+	: s1=stringVal {firstval = $s1.retval;} 
+	  (PLUS s2=stringExpr {if (vals == null) {
+	    			 vals = Lists.newArrayList();
+	    			 vals.add(firstval);
+	    		       } 
+	    		       vals.add($s2.retval);
+	    		      })*
+							{retval = (vals == null) ? firstval : new StringConcat(vals);}
 	;
 	
-stringVal returns [ValueExpr retval]
+stringVal returns [StringValue retval]
 	: s=stringLiteral				{retval = $s.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
 	| n=keyNULL					{retval = new NullLiteral();}
 	| a=strAttrib					{retval = $a.retval;}
 	| LBRACE e=orExpr QMARK s1=stringExpr COLON s2=stringExpr RBRACE	
-							{retval = new Ternary($e.retval, $s1.retval, $s2.retval);}
+							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
 
 booleanExpr returns [ValueExpr retval]
@@ -211,8 +220,8 @@ dateExpr returns [ValueExpr retval]
 */
 
 // Attribs with type
-strAttrib returns [ValueExpr retval]
-	: a=attribRef[ExprType.StringType] 		{retval = $a.retval;};
+strAttrib returns [StringValue retval]
+	: v=ID 						{retval = new StringAttribRef($v.text);};
 
 intAttrib returns [ValueExpr retval]
 	: a=attribRef[ExprType.NumberType] 		{retval = $a.retval;};
@@ -224,7 +233,7 @@ attribRef [ExprType type] returns [ValueExpr retval]
 	: v=ID 						{retval = new AttribRef(type, $v.text);};
 
 // Literals		
-stringLiteral returns [ValueExpr retval]
+stringLiteral returns [StringValue retval]
 	: v=QUOTED 					{retval = new StringLiteral($v.text);};
 	
 numberLiteral returns [ValueExpr retval]
@@ -249,7 +258,7 @@ funcReturningDatetime
 	;
 */
 
-funcReturningString returns [ValueExpr retval]
+funcReturningString returns [StringValue retval]
 	: keyCONCAT LPAREN s1=stringExpr COMMA s2=stringExpr RPAREN
 							{retval = new StringFunction(StringFunction.FUNC.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=stringExpr COMMA n1=numericExpr COMMA n2=numericExpr RPAREN
@@ -268,14 +277,14 @@ intItemList returns [List<Object> retval]
 @init {retval = Lists.newArrayList();}
 	: i1=intItem {retval.add($i1.retval);} (COMMA i2=intItem {retval.add($i2.retval);})*;
 	
-strItemList returns [List<Object> retval]
+strItemList returns [List<StringValue> retval]
 @init {retval = Lists.newArrayList();}
 	: i1=strItem {retval.add($i1.retval);} (COMMA i2=strItem {retval.add($i2.retval);})*;
 	
 intItem returns [ValueExpr retval]
 	: n=numericExpr					{retval = $n.retval;};
 
-strItem returns [ValueExpr retval]
+strItem returns [StringValue retval]
 	: s=stringExpr					{$strItem.retval = $s.retval;};
 
 qstringList returns [List<String> retval]

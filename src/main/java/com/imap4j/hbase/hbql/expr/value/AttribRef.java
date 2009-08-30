@@ -31,11 +31,7 @@ public class AttribRef implements ValueExpr {
 
             case IntegerType:
             case NumberType: {
-                return (Number)fieldAttrib.getValue(context.getRecordObj());
-            }
-
-            case StringType: {
-                return (String)fieldAttrib.getValue(context.getRecordObj());
+                return fieldAttrib.getValue(context.getRecordObj());
             }
 
             default:

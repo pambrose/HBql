@@ -2,6 +2,7 @@ package com.imap4j.hbase.hbql.expr.value;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.StringValue;
 import com.imap4j.hbase.hbql.expr.ValueExpr;
 
 /**
@@ -10,7 +11,7 @@ import com.imap4j.hbase.hbql.expr.ValueExpr;
  * Date: Aug 29, 2009
  * Time: 5:28:17 PM
  */
-public class StringFunction implements ValueExpr {
+public class StringFunction implements StringValue {
 
     public enum FUNC {
         CONCAT,
@@ -33,7 +34,7 @@ public class StringFunction implements ValueExpr {
     }
 
     @Override
-    public Object getValue(final AttribContext context) throws HPersistException {
+    public String getValue(final AttribContext context) throws HPersistException {
 
         switch (this.getFunc()) {
             case TRIM: {

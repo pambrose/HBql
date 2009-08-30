@@ -43,13 +43,6 @@ public class BetweenStmt implements PredicateExpr {
                 break;
             }
 
-            case StringType: {
-                final String val = (String)this.expr.getValue(context);
-                retval = val.compareTo((String)this.getLower().getValue(context)) >= 0
-                         && val.compareTo((String)this.getUpper().getValue(context)) <= 0;
-                break;
-            }
-
             default:
                 throw new HPersistException("Unknown type in BetweenStmt.evaluate() - " + this.type);
         }
