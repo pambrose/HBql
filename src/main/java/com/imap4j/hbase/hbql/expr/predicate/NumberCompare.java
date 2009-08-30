@@ -2,7 +2,7 @@ package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.AttribContext;
-import com.imap4j.hbase.hbql.expr.ValueExpr;
+import com.imap4j.hbase.hbql.expr.NumberValue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,10 +12,10 @@ import com.imap4j.hbase.hbql.expr.ValueExpr;
  */
 public class NumberCompare extends CompareExpr {
 
-    private final ValueExpr expr1;
-    private final ValueExpr expr2;
+    private final NumberValue expr1;
+    private final NumberValue expr2;
 
-    public NumberCompare(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
+    public NumberCompare(final NumberValue expr1, final Operator op, final NumberValue expr2) {
         super(op);
         this.expr1 = expr1;
         this.expr2 = expr2;

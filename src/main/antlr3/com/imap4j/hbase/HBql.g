@@ -118,7 +118,7 @@ simpleCondExpr returns [PredicateExpr retval]
 
 betweenStmt returns [PredicateExpr retval]
 	: n1=numericExpr n=not? keyBETWEEN n2=numericExpr and n3=numericExpr		
-							{retval = new BetweenStmt(ExprType.IntegerType, $n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
+							{retval = new NumberBetweenStmt($n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
 	| s1=stringExpr n=not? keyBETWEEN s2=stringExpr and s3=stringExpr		
 							{retval = new StringBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
 	//| d1=dateExpr n=not? keyBETWEEN d2=dateExpr and d3=dateExpr
@@ -129,7 +129,7 @@ likeStmt returns [PredicateExpr retval]
 
 inStmt returns [PredicateExpr retval]
 	: a1=numericExpr n=not? keyIN LPAREN i=intItemList RPAREN			
-							{retval = new InStmt(ExprType.IntegerType, $a1.retval,($n.text != null), $i.retval);} 
+							{retval = new NumberInStmt($a1.retval,($n.text != null), $i.retval);} 
 	| a2=stringExpr n=not? keyIN LPAREN s=strItemList RPAREN			
 							{retval = new StringInStmt($a2.retval, ($n.text != null), $s.retval);} 
 	;
@@ -156,25 +156,25 @@ compOp returns [CompareExpr.Operator retval]
 	;
 
 // Numeric calculations
-numericExpr returns [ValueExpr retval]
+numericExpr returns [NumberValue retval]
 	: m=multdivExpr (op=plusMinus n=numericExpr)?	{$numericExpr.retval= ($n.text == null) ? $m.retval : new CalcExpr($m.retval, $op.retval, $n.retval);}
 	;
 
-multdivExpr returns [ValueExpr retval]
+multdivExpr returns [NumberValue retval]
 	: c=calcNumberExpr (op=multDiv m=multdivExpr)?	{$multdivExpr.retval = ($m.text == null) ? $c.retval : new CalcExpr($c.retval, $op.retval, $m.retval);}
 	;
 
-calcNumberExpr returns [ValueExpr retval]
+calcNumberExpr returns [NumberValue retval]
 	: (s=plusMinus)? n=numPrimary 			{retval = ($s.retval == CalcExpr.OP.MINUS) ? new CalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) :  $n.retval;}
 	;
 
-numPrimary returns [ValueExpr retval]
+numPrimary returns [NumberValue retval]
 	: n=numberExpr					{retval = $n.retval;}
 	| LPAREN s=numericExpr RPAREN			{retval = $s.retval;}
 	;
 	   						 
 // Simple typed exprs
-numberExpr returns [ValueExpr retval]
+numberExpr returns [NumberValue retval]
 	: l=numberLiteral				{retval = $l.retval;} 
 	| i=intAttrib					{retval = $i.retval;}
 	//| f=funcReturningNumber
@@ -214,7 +214,7 @@ booleanExpr returns [BooleanValue retval]
 	//| f=funcReturningBoolean
 	;
 /*
-dateExpr returns [ValueExpr retval]
+dateExpr returns [DateValue retval]
 	: funcReturningDatetime
 	;
 */
@@ -223,20 +223,17 @@ dateExpr returns [ValueExpr retval]
 strAttrib returns [StringValue retval]
 	: v=ID 						{retval = new StringAttribRef($v.text);};
 
-intAttrib returns [ValueExpr retval]
-	: a=attribRef[ExprType.NumberType] 		{retval = $a.retval;};
+intAttrib returns [NumberValue retval]
+	: v=ID 						{retval = new NumberAttribRef($v.text);};
 
-dateAttrib returns [ValueExpr retval]
-	: a=attribRef[ExprType.DateType] 		{retval = $a.retval;};
-
-attribRef [ExprType type] returns [ValueExpr retval]
-	: v=ID 						{retval = new AttribRef(type, $v.text);};
+dateAttrib returns [DateValue retval]
+	: v=ID 						{retval = new DateAttribRef($v.text);};
 
 // Literals		
 stringLiteral returns [StringValue retval]
 	: v=QUOTED 					{retval = new StringLiteral($v.text);};
 	
-numberLiteral returns [ValueExpr retval]
+numberLiteral returns [NumberValue retval]
 	: v=INT						{retval = new NumberLiteral(Integer.valueOf($v.text));};
 		
 booleanLiteral returns [BooleanValue retval]
@@ -281,7 +278,7 @@ strItemList returns [List<StringValue> retval]
 @init {retval = Lists.newArrayList();}
 	: i1=strItem {retval.add($i1.retval);} (COMMA i2=strItem {retval.add($i2.retval);})*;
 	
-intItem returns [ValueExpr retval]
+intItem returns [NumberValue retval]
 	: n=numericExpr					{retval = $n.retval;};
 
 strItem returns [StringValue retval]

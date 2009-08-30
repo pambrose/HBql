@@ -2,8 +2,8 @@ package com.imap4j.hbase.hbql.expr.value;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.NumberValue;
 import com.imap4j.hbase.hbql.expr.StringValue;
-import com.imap4j.hbase.hbql.expr.ValueExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,20 +14,20 @@ import com.imap4j.hbase.hbql.expr.ValueExpr;
 public class Substring implements StringValue {
 
     private final StringValue strExpr;
-    private final ValueExpr beginExpr, endExpr;
+    private final NumberValue beginNumber, endNumber;
 
-    public Substring(final StringValue strExpr, final ValueExpr beginExpr, final ValueExpr endExpr) {
+    public Substring(final StringValue strExpr, final NumberValue beginNumber, final NumberValue endNumber) {
         this.strExpr = strExpr;
-        this.beginExpr = beginExpr;
-        this.endExpr = endExpr;
+        this.beginNumber = beginNumber;
+        this.endNumber = endNumber;
     }
 
     @Override
     public String getValue(final AttribContext context) throws HPersistException {
 
         final String val = this.strExpr.getValue(context);
-        final int begin = (Integer)this.beginExpr.getValue(context);
-        final int end = (Integer)this.endExpr.getValue(context);
+        final int begin = (Integer)this.beginNumber.getValue(context);
+        final int end = (Integer)this.endNumber.getValue(context);
         return val.substring(begin, end);
     }
 }

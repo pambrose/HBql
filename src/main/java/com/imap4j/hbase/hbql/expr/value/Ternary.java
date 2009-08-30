@@ -2,8 +2,8 @@ package com.imap4j.hbase.hbql.expr.value;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.AttribContext;
+import com.imap4j.hbase.hbql.expr.NumberValue;
 import com.imap4j.hbase.hbql.expr.PredicateExpr;
-import com.imap4j.hbase.hbql.expr.ValueExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,19 +11,19 @@ import com.imap4j.hbase.hbql.expr.ValueExpr;
  * Date: Aug 29, 2009
  * Time: 2:35:57 PM
  */
-public class Ternary implements ValueExpr {
+public class Ternary implements NumberValue {
 
     private final PredicateExpr pred;
-    private final ValueExpr expr1, expr2;
+    private final NumberValue expr1, expr2;
 
-    public Ternary(final PredicateExpr pred, final ValueExpr expr1, final ValueExpr expr2) {
+    public Ternary(final PredicateExpr pred, final NumberValue expr1, final NumberValue expr2) {
         this.pred = pred;
         this.expr1 = expr1;
         this.expr2 = expr2;
     }
 
     @Override
-    public Object getValue(final AttribContext context) throws HPersistException {
+    public Number getValue(final AttribContext context) throws HPersistException {
 
         if (this.pred.evaluate(context))
             return this.expr1.getValue(context);

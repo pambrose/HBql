@@ -2,7 +2,7 @@ package com.imap4j.hbase.hbql.expr.value;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.AttribContext;
-import com.imap4j.hbase.hbql.expr.ValueExpr;
+import com.imap4j.hbase.hbql.expr.NumberValue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,7 +10,7 @@ import com.imap4j.hbase.hbql.expr.ValueExpr;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class CalcExpr implements ValueExpr {
+public class CalcExpr implements NumberValue {
 
     public enum OP {
         PLUS,
@@ -23,21 +23,21 @@ public class CalcExpr implements ValueExpr {
 
     }
 
-    private final ValueExpr expr1, expr2;
+    private final NumberValue expr1, expr2;
     private final OP op;
 
-    public CalcExpr(final ValueExpr expr1) {
+    public CalcExpr(final NumberValue expr1) {
         this(expr1, OP.NONE, null);
     }
 
-    public CalcExpr(final ValueExpr expr1, final OP op, final ValueExpr expr2) {
+    public CalcExpr(final NumberValue expr1, final OP op, final NumberValue expr2) {
         this.expr1 = expr1;
         this.op = op;
         this.expr2 = expr2;
     }
 
     @Override
-    public Object getValue(final AttribContext context) throws HPersistException {
+    public Number getValue(final AttribContext context) throws HPersistException {
 
         final int val1 = ((Number)this.expr1.getValue(context)).intValue();
         final int val2 = (this.expr2 != null) ? ((Number)this.expr2.getValue(context)).intValue() : 0;
