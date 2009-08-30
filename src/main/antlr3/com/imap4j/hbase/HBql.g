@@ -117,22 +117,21 @@ simpleCondExpr returns [PredicateExpr retval]
 	;
 
 betweenStmt returns [PredicateExpr retval]
-	: n1=numericExpr n=not? keyBETWEEN
-	  n2=numericExpr and n3=numericExpr		{retval = new BetweenStmt(ExprType.IntegerType, $n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
-	| s1=stringExpr n=not? keyBETWEEN
-	  s2=stringExpr and s3=stringExpr		{retval = new BetweenStmt(ExprType.StringType, $s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
-	//| d1=dateExpr n=not? keyBETWEEN
-	//  d2=dateExpr and d3=dateExpr
+	: n1=numericExpr n=not? keyBETWEEN n2=numericExpr and n3=numericExpr		
+							{retval = new BetweenStmt(ExprType.IntegerType, $n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
+	| s1=stringExpr n=not? keyBETWEEN s2=stringExpr and s3=stringExpr		
+							{retval = new BetweenStmt(ExprType.StringType, $s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
+	//| d1=dateExpr n=not? keyBETWEEN d2=dateExpr and d3=dateExpr
 	;
 
 likeStmt returns [PredicateExpr retval]
 	: stringExpr keyNOT? keyLIKE p=stringExpr; // ('ESCAPE' escape_character=string_literal)?;
 
 inStmt returns [PredicateExpr retval]
-	: a1=numericExpr n=not? keyIN 
-	  LPAREN i=intItemList RPAREN			{retval = new InStmt(ExprType.IntegerType, $a1.retval,($n.text != null), $i.retval);} 
-	| a2=stringExpr n=not? keyIN 
-	  LPAREN s=strItemList RPAREN			{retval = new InStmt(ExprType.StringType, $a2.retval, ($n.text != null), $s.retval);} 
+	: a1=numericExpr n=not? keyIN LPAREN i=intItemList RPAREN			
+							{retval = new InStmt(ExprType.IntegerType, $a1.retval,($n.text != null), $i.retval);} 
+	| a2=stringExpr n=not? keyIN LPAREN s=strItemList RPAREN			
+							{retval = new InStmt(ExprType.StringType, $a2.retval, ($n.text != null), $s.retval);} 
 	;
 
 booleanStmt returns [PredicateExpr retval]
@@ -179,23 +178,23 @@ numberExpr returns [ValueExpr retval]
 	: l=numberLiteral				{retval = $l.retval;} 
 	| i=intAttrib					{retval = $i.retval;}
 	//| f=funcReturningNumber
-	| LBRACE e=orExpr QMARK 
-	  n1=numericExpr COLON n2=numericExpr RBRACE	{retval = new Ternary($e.retval, $n1.retval, $n2.retval);}
+	| LBRACE e=orExpr QMARK n1=numericExpr COLON n2=numericExpr RBRACE	
+							{retval = new Ternary($e.retval, $n1.retval, $n2.retval);}
 	;
 
 stringExpr returns [ValueExpr retval]
 	: s=stringLiteral				{retval = $s.retval;}
-	//| f=funcReturningString
+	| f=funcReturningString				{retval = $f.retval;}
 	| n=keyNULL					{retval = new NullLiteral();}
 	| a=strAttrib					{retval = $a.retval;}
-	| LBRACE e=orExpr QMARK 
-	 s1=stringExpr COLON s2=stringExpr RBRACE	{retval = new Ternary($e.retval, $s1.retval, $s2.retval);}
+	| LBRACE e=orExpr QMARK s1=stringExpr COLON s2=stringExpr RBRACE	
+							{retval = new Ternary($e.retval, $s1.retval, $s2.retval);}
 	;
 
 booleanExpr returns [ValueExpr retval]
 	: b=booleanLiteral				{retval = $b.retval;}
-	| LBRACE e=orExpr QMARK 
-	  b1=booleanExpr COLON b2=booleanExpr RBRACE	{retval = new Ternary($e.retval, $b1.retval, $b2.retval);}
+	| LBRACE e=orExpr QMARK b1=booleanExpr COLON b2=booleanExpr RBRACE	
+							{retval = new Ternary($e.retval, $b1.retval, $b2.retval);}
 	//| f=funcReturningBoolean
 	;
 /*
@@ -241,15 +240,18 @@ funcReturningDatetime
 	| keyCURRENT_TIME
 	| keyCURRENT_TIMESTAMP
 	;
+*/
 
-funcReturningString
-	: keyCONCAT LPAREN stringExpr COMMA stringExpr RPAREN
-	//| keySUBSTRING LPAREN stringExpr COMMA numericExpr COMMA numericExpr RPAREN
-	| keyTRIM LPAREN stringExpr RPAREN
-	| keyLOWER LPAREN stringExpr RPAREN
-	| keyUPPER LPAREN stringExpr RPAREN
+funcReturningString returns [ValueExpr retval]
+	: keyCONCAT LPAREN s1=stringExpr COMMA s2=stringExpr RPAREN
+							{retval = new StringFunction(StringFunction.FUNC.CONCAT, $s1.retval, $s2.retval);}
+	| keySUBSTRING LPAREN s=stringExpr COMMA n1=numericExpr COMMA n2=numericExpr RPAREN
+							{retval = new StringFunction(StringFunction.FUNC.SUBSTRING, $s.retval, $n1.retval, $n2.retval);}
+	| keyTRIM LPAREN s=stringExpr RPAREN		{retval = new StringFunction(StringFunction.FUNC.TRIM, $s.retval);}
+	| keyLOWER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(StringFunction.FUNC.LOWER, $s.retval);} 
+	| keyUPPER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(StringFunction.FUNC.UPPER, $s.retval);} 
 	;
-	
+/*	
 funcReturningBoolean
 	: 
 	;
@@ -335,7 +337,7 @@ keyLOWER 	: {isKeyword(input, "LOWER")}? ID;
 keyUPPER 	: {isKeyword(input, "UPPER")}? ID;
 keyTRIM 	: {isKeyword(input, "TRIM")}? ID;
 keyCONCAT 	: {isKeyword(input, "CONCAT")}? ID;
-//keySUBSTRING 	: {isKeyword(input, "SUBSTRING")}? ID;
+keySUBSTRING 	: {isKeyword(input, "SUBSTRING")}? ID;
 //keyLENGTH 	: {isKeyword(input, "LENGTH")}? ID;
 //keyABS 	: {isKeyword(input, "ABS")}? ID;
 //keyMOD	 : {isKeyword(input, "MOD")}? ID;

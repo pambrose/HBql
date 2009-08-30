@@ -146,6 +146,12 @@ public class WhereExpressionTests extends HTest {
         assertTrue("('bbb' between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
         assertTrue("('bbb' between 'bbb' && 'ccc') || ('fff' between 'eee' && 'ggg')");
         assertFalse("('bbb' not between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
+
+        assertTrue("'bbb' == LOWER('BBB')");
+
+        assertTrue("'ABABAB' == UPPER(CONCAT('aba', 'bab'))");
+
+        assertTrue("'bbb' == SUBSTRING('BBBbbbAAA', 3, 6)");
     }
 
     @Test
