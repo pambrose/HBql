@@ -262,7 +262,7 @@ funcReturningString returns [StringValue retval]
 	: keyCONCAT LPAREN s1=stringExpr COMMA s2=stringExpr RPAREN
 							{retval = new StringFunction(StringFunction.FUNC.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=stringExpr COMMA n1=numericExpr COMMA n2=numericExpr RPAREN
-							{retval = new StringFunction(StringFunction.FUNC.SUBSTRING, $s.retval, $n1.retval, $n2.retval);}
+							{retval = new Substring($s.retval, $n1.retval, $n2.retval);}
 	| keyTRIM LPAREN s=stringExpr RPAREN		{retval = new StringFunction(StringFunction.FUNC.TRIM, $s.retval);}
 	| keyLOWER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(StringFunction.FUNC.LOWER, $s.retval);} 
 	| keyUPPER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(StringFunction.FUNC.UPPER, $s.retval);} 

@@ -3,7 +3,6 @@ package com.imap4j.hbase.hbql.expr.value;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.AttribContext;
 import com.imap4j.hbase.hbql.expr.StringValue;
-import com.imap4j.hbase.hbql.expr.ValueExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,16 +14,15 @@ public class StringFunction implements StringValue {
 
     public enum FUNC {
         CONCAT,
-        SUBSTRING,
         TRIM,
         LOWER,
         UPPER
     }
 
     private final FUNC func;
-    private final ValueExpr[] expr;
+    private final StringValue[] expr;
 
-    public StringFunction(final FUNC func, final ValueExpr... expr) {
+    public StringFunction(final FUNC func, final StringValue... expr) {
         this.func = func;
         this.expr = expr;
     }
@@ -38,31 +36,24 @@ public class StringFunction implements StringValue {
 
         switch (this.getFunc()) {
             case TRIM: {
-                final String val = (String)this.expr[0].getValue(context);
+                final String val = this.expr[0].getValue(context);
                 return val.trim();
             }
 
             case LOWER: {
-                final String val = (String)this.expr[0].getValue(context);
+                final String val = this.expr[0].getValue(context);
                 return val.toLowerCase();
             }
 
             case UPPER: {
-                final String val = (String)this.expr[0].getValue(context);
+                final String val = this.expr[0].getValue(context);
                 return val.toUpperCase();
             }
 
             case CONCAT: {
-                final String v1 = (String)this.expr[0].getValue(context);
-                final String v2 = (String)this.expr[1].getValue(context);
+                final String v1 = this.expr[0].getValue(context);
+                final String v2 = this.expr[1].getValue(context);
                 return v1 + v2;
-            }
-
-            case SUBSTRING: {
-                final String val = (String)this.expr[0].getValue(context);
-                final int begin = (Integer)this.expr[1].getValue(context);
-                final int end = (Integer)this.expr[2].getValue(context);
-                return val.substring(begin, end);
             }
 
             default:

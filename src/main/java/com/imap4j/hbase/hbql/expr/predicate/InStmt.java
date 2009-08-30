@@ -53,16 +53,6 @@ public class InStmt implements PredicateExpr {
 
             }
 
-            case StringType: {
-                final String attribVal = (String)this.expr.getValue(context);
-                for (final Object obj : this.valList) {
-                    final String val = (String)((ValueExpr)obj).getValue(context);
-                    if (attribVal.equals(val))
-                        return true;
-                }
-                return false;
-
-            }
             default:
                 throw new HPersistException("Unknown type in InStmt.evaluateList() - " + type);
 

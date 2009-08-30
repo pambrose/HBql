@@ -3,7 +3,6 @@ package com.imap4j.hbase.hbql.expr.value;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.AttribContext;
 import com.imap4j.hbase.hbql.expr.StringValue;
-import com.imap4j.hbase.hbql.expr.ValueExpr;
 
 import java.util.List;
 
@@ -25,11 +24,11 @@ public class StringConcat implements StringValue {
     public String getValue(final AttribContext context) throws HPersistException {
 
         if (vals.size() == 1)
-            return (String)vals.get(0).getValue(context);
+            return this.vals.get(0).getValue(context);
 
         final StringBuffer sbuf = new StringBuffer();
-        for (final ValueExpr str : this.vals)
-            sbuf.append((String)str.getValue(context));
+        for (final StringValue str : this.vals)
+            sbuf.append(str.getValue(context));
 
         return sbuf.toString();
     }

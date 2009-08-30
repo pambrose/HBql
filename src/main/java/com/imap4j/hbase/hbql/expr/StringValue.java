@@ -8,8 +8,7 @@ import com.imap4j.hbase.hbql.HPersistException;
  * Date: Aug 29, 2009
  * Time: 7:16:27 PM
  */
-public interface StringValue extends ValueExpr {
+public interface StringValue {
 
-    @Override
     String getValue(final AttribContext context) throws HPersistException;
 }

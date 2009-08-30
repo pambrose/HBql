@@ -4,7 +4,6 @@ import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.AttribContext;
 import com.imap4j.hbase.hbql.expr.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.StringValue;
-import com.imap4j.hbase.hbql.expr.ValueExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,18 +27,18 @@ public class StringBetweenStmt implements PredicateExpr {
     @Override
     public boolean evaluate(final AttribContext context) throws HPersistException {
 
-        final String val = (String)this.expr.getValue(context);
-        final boolean retval = val.compareTo((String)this.getLower().getValue(context)) >= 0
-                               && val.compareTo((String)this.getUpper().getValue(context)) <= 0;
+        final String val = this.expr.getValue(context);
+        final boolean retval = val.compareTo(this.getLower().getValue(context)) >= 0
+                               && val.compareTo(this.getUpper().getValue(context)) <= 0;
 
         return (this.not) ? !retval : retval;
     }
 
-    private ValueExpr getLower() {
+    private StringValue getLower() {
         return this.lower;
     }
 
-    private ValueExpr getUpper() {
+    private StringValue getUpper() {
         return this.upper;
     }
 
