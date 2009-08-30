@@ -19,20 +19,20 @@ public class NumberInStmt implements PredicateExpr {
 
     private NumberValue expr = null;
     private final boolean not;
-    private final List<NumberValue> valList;
+    private final List<NumberValue> vals;
 
-    public NumberInStmt(final NumberValue expr, final boolean not, final List<NumberValue> valList) {
+    public NumberInStmt(final NumberValue expr, final boolean not, final List<NumberValue> vals) {
         this.expr = expr;
         this.not = not;
-        this.valList = valList;
+        this.vals = vals;
     }
 
     private NumberValue getExpr() {
         return this.expr;
     }
 
-    private List<NumberValue> getValList() {
-        return this.valList;
+    private List<NumberValue> getVals() {
+        return this.vals;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class NumberInStmt implements PredicateExpr {
         boolean retval = true;
         final List<NumberValue> newvalList = Lists.newArrayList();
 
-        for (final NumberValue num : this.getValList()) {
+        for (final NumberValue num : this.getVals()) {
             if (num.optimizeForConstants(context)) {
                 newvalList.add(new NumberLiteral(num.getValue(context)));
             }
@@ -73,8 +73,8 @@ public class NumberInStmt implements PredicateExpr {
         }
 
         // Swap new values to list
-        this.getValList().clear();
-        this.getValList().addAll(newvalList);
+        this.getVals().clear();
+        this.getVals().addAll(newvalList);
 
         return retval;
 
@@ -83,7 +83,7 @@ public class NumberInStmt implements PredicateExpr {
     private boolean evaluateList(final EvalContext context) throws HPersistException {
 
         final int attribVal = this.getExpr().getValue(context).intValue();
-        for (final NumberValue obj : this.getValList()) {
+        for (final NumberValue obj : this.getVals()) {
             final int val = obj.getValue(context).intValue();
             if (attribVal == val)
                 return true;

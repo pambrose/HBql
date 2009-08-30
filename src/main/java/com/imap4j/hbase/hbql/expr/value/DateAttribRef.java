@@ -22,6 +22,11 @@ public class DateAttribRef implements DateValue {
     }
 
     @Override
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+        return false;
+    }
+
+    @Override
     public Date getValue(final EvalContext context) throws HPersistException {
         final FieldAttrib fieldAttrib = context.getClassSchema().getFieldAttribByField(this.attribName);
         return (Date)fieldAttrib.getValue(context.getRecordObj());

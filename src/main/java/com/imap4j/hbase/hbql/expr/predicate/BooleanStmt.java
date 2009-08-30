@@ -20,6 +20,10 @@ public class BooleanStmt implements PredicateExpr {
         this.expr = expr;
     }
 
+    public BooleanStmt(final PredicateExpr expr) {
+        //  this.expr = expr;
+    }
+
     private BooleanValue getExpr() {
         return expr;
     }

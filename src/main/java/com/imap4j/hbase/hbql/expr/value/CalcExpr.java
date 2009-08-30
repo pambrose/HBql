@@ -23,7 +23,7 @@ public class CalcExpr implements NumberValue {
 
     }
 
-    private final NumberValue expr1, expr2;
+    private NumberValue expr1 = null, expr2 = null;
     private final OP op;
 
     public CalcExpr(final NumberValue expr1) {
@@ -34,6 +34,32 @@ public class CalcExpr implements NumberValue {
         this.expr1 = expr1;
         this.op = op;
         this.expr2 = expr2;
+    }
+
+    private NumberValue getExpr1() {
+        return this.expr1;
+    }
+
+    private NumberValue getExpr2() {
+        return this.expr2;
+    }
+
+    @Override
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+
+        boolean retval = true;
+
+        if (this.getExpr1().optimizeForConstants(context))
+            this.expr1 = new NumberLiteral(this.getExpr1().getValue(context));
+        else
+            retval = false;
+
+        if (this.getExpr2().optimizeForConstants(context))
+            this.expr2 = new NumberLiteral(this.getExpr2().getValue(context));
+        else
+            retval = false;
+
+        return retval;
     }
 
     @Override

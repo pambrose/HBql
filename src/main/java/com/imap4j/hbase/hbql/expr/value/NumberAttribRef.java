@@ -20,6 +20,11 @@ public class NumberAttribRef implements NumberValue {
     }
 
     @Override
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+        return false;
+    }
+
+    @Override
     public Number getValue(final EvalContext context) throws HPersistException {
         final FieldAttrib fieldAttrib = context.getClassSchema().getFieldAttribByField(this.attribName);
         return (Number)fieldAttrib.getValue(context.getRecordObj());

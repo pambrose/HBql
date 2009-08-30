@@ -31,6 +31,12 @@ public class StringFunction implements StringValue {
         return func;
     }
 
+    // TODO Deal with this
+    @Override
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+        return false;
+    }
+
     @Override
     public String getValue(final EvalContext context) throws HPersistException {
 

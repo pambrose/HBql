@@ -182,7 +182,7 @@ numberExpr returns [NumberValue retval]
 	| i=intAttrib					{retval = $i.retval;}
 	//| f=funcReturningNumber
 	| LBRACE e=orExpr QMARK n1=numericExpr COLON n2=numericExpr RBRACE	
-							{retval = new Ternary($e.retval, $n1.retval, $n2.retval);}
+							{retval = new NumberTernary($e.retval, $n1.retval, $n2.retval);}
 	;
 
 // Supports string concatenation -- avoids creating a list everytime
@@ -210,9 +210,11 @@ stringVal returns [StringValue retval]
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
 
+// TODO Deal with LBRACE/RBRACE here
 booleanExpr returns [BooleanValue retval]
 	: b=booleanLiteral				{retval = $b.retval;}
-	| LBRACE e=orExpr QMARK b1=booleanExpr COLON b2=booleanExpr RBRACE	
+	//| LBRACE e=orExpr RBRACE			{retval = new BooleanStmt($e.retval);}
+	| LBRACE e=orExpr QMARK b1=orExpr COLON b2=orExpr RBRACE	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	//| f=funcReturningBoolean
 	;
@@ -273,7 +275,7 @@ funcReturningBoolean
 	;
 */
 		
-intItemList returns [List<Object> retval]
+intItemList returns [List<NumberValue> retval]
 @init {retval = Lists.newArrayList();}
 	: i1=intItem {retval.add($i1.retval);} (COMMA i2=intItem {retval.add($i2.retval);})*;
 	

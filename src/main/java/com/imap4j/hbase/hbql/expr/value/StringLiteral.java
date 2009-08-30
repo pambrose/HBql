@@ -1,5 +1,6 @@
 package com.imap4j.hbase.hbql.expr.value;
 
+import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.StringValue;
 
@@ -15,6 +16,11 @@ public class StringLiteral implements StringValue {
 
     public StringLiteral(final String value) {
         this.value = value;
+    }
+
+    @Override
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+        return false;
     }
 
     @Override

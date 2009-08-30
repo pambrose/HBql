@@ -13,21 +13,55 @@ import com.imap4j.hbase.hbql.expr.StringValue;
  */
 public class Substring implements StringValue {
 
-    private final StringValue strExpr;
-    private final NumberValue beginNumber, endNumber;
+    private StringValue expr = null;
+    private NumberValue begin = null, end = null;
 
-    public Substring(final StringValue strExpr, final NumberValue beginNumber, final NumberValue endNumber) {
-        this.strExpr = strExpr;
-        this.beginNumber = beginNumber;
-        this.endNumber = endNumber;
+    public Substring(final StringValue expr, final NumberValue begin, final NumberValue end) {
+        this.expr = expr;
+        this.begin = begin;
+        this.end = end;
+    }
+
+    private StringValue getExpr() {
+        return this.expr;
+    }
+
+    private NumberValue getBegin() {
+        return this.begin;
+    }
+
+    private NumberValue getEnd() {
+        return this.end;
+    }
+
+    @Override
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+
+        boolean retval = true;
+
+        if (this.getExpr().optimizeForConstants(context))
+            this.expr = new StringLiteral(this.getExpr().getValue(context));
+        else
+            retval = false;
+
+        if (this.getBegin().optimizeForConstants(context))
+            this.begin = new NumberLiteral(this.getBegin().getValue(context));
+        else
+            retval = false;
+
+        if (this.getEnd().optimizeForConstants(context))
+            this.end = new NumberLiteral(this.getEnd().getValue(context));
+        else
+            retval = false;
+
+        return retval;
     }
 
     @Override
     public String getValue(final EvalContext context) throws HPersistException {
-
-        final String val = this.strExpr.getValue(context);
-        final int begin = (Integer)this.beginNumber.getValue(context);
-        final int end = (Integer)this.endNumber.getValue(context);
+        final String val = this.getExpr().getValue(context);
+        final int begin = (Integer)this.getBegin().getValue(context);
+        final int end = (Integer)this.getEnd().getValue(context);
         return val.substring(begin, end);
     }
 }

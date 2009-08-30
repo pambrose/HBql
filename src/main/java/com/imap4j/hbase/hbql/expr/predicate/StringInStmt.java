@@ -31,7 +31,7 @@ public class StringInStmt implements PredicateExpr {
         return expr;
     }
 
-    private List<StringValue> getValList() {
+    private List<StringValue> getVals() {
         return valList;
     }
 
@@ -62,7 +62,7 @@ public class StringInStmt implements PredicateExpr {
         boolean retval = true;
         final List<StringValue> newvalList = Lists.newArrayList();
 
-        for (final StringValue num : this.getValList()) {
+        for (final StringValue num : this.getVals()) {
             if (num.optimizeForConstants(context)) {
                 newvalList.add(new StringLiteral(num.getValue(context)));
             }
@@ -73,8 +73,8 @@ public class StringInStmt implements PredicateExpr {
         }
 
         // Swap new values to list
-        this.getValList().clear();
-        this.getValList().addAll(newvalList);
+        this.getVals().clear();
+        this.getVals().addAll(newvalList);
 
         return retval;
 
@@ -83,7 +83,7 @@ public class StringInStmt implements PredicateExpr {
     private boolean evaluateList(final EvalContext context) throws HPersistException {
 
         final String attribVal = this.getExpr().getValue(context);
-        for (final StringValue obj : this.getValList()) {
+        for (final StringValue obj : this.getVals()) {
             final String val = obj.getValue(context);
             if (attribVal.equals(val))
                 return true;

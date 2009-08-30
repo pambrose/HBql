@@ -1,5 +1,6 @@
 package com.imap4j.hbase.hbql.expr.value;
 
+import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.StringValue;
@@ -20,16 +21,54 @@ public class StringConcat implements StringValue {
         this.vals = vals;
     }
 
+    private List<StringValue> getVals() {
+        return this.vals;
+    }
+
+    @Override
+    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+
+        boolean retval = true;
+
+        if (!this.optimizeList(context))
+            retval = false;
+
+        return retval;
+    }
+
     @Override
     public String getValue(final EvalContext context) throws HPersistException {
 
-        if (vals.size() == 1)
-            return this.vals.get(0).getValue(context);
+        if (this.getVals().size() == 1)
+            return this.getVals().get(0).getValue(context);
 
         final StringBuffer sbuf = new StringBuffer();
-        for (final StringValue str : this.vals)
+        for (final StringValue str : this.getVals())
             sbuf.append(str.getValue(context));
 
         return sbuf.toString();
+    }
+
+    private boolean optimizeList(final EvalContext context) throws HPersistException {
+
+        boolean retval = true;
+        final List<StringValue> newvalList = Lists.newArrayList();
+
+        for (final StringValue num : this.getVals()) {
+            if (num.optimizeForConstants(context)) {
+                newvalList.add(new StringLiteral(num.getValue(context)));
+            }
+            else {
+                newvalList.add(num);
+                retval = false;
+            }
+        }
+
+        // Swap new values to list
+        this.getVals().clear();
+        this.getVals().addAll(newvalList);
+
+        return retval;
+
     }
 }
