@@ -3,13 +3,15 @@ package com.imap4j.hbase.hbql.expr;
 import com.imap4j.hbase.hbql.HPersistable;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 
+import java.io.Serializable;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
  * Date: Aug 29, 2009
  * Time: 10:34:29 AM
  */
-public class AttribContext {
+public class AttribContext implements Serializable {
 
     final ClassSchema classSchema;
     final HPersistable recordObj;

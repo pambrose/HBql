@@ -130,8 +130,9 @@ public class WhereExpressionTests extends HTest {
         assertTrue("3 in (1+1,1+2,4)");
         assertFalse("3 !in (1+1,1+2,4)");
         assertFalse("3 NOT in (1+1,1+2,4)");
-
         assertTrue("3 == [true ? 3 : 2]");
+        assertFalse("3 == [false ? 3 : 2]");
+        assertTrue("2 == [false ? 3 : 2]");
 
     }
 
@@ -142,19 +143,13 @@ public class WhereExpressionTests extends HTest {
         assertTrue("'bbb' between 'aaa' && 'ccc'");
         assertTrue("'bbb' between 'bbb' AND 'ccc'");
         assertFalse("'bbb' between 'ccc' AND 'ddd'");
-
         assertTrue("('bbb' between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
         assertTrue("('bbb' between 'bbb' && 'ccc') || ('fff' between 'eee' && 'ggg')");
         assertFalse("('bbb' not between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
-
         assertTrue("'bbb' == LOWER('BBB')");
-
         assertTrue("'ABABAB' == UPPER(CONCAT('aba', 'bab'))");
-
         assertTrue("'bbb' == SUBSTRING('BBBbbbAAA', 3, 6)");
-
         assertTrue("'AAA' == 'A' + 'A' + 'A'");
-
         assertTrue("'aaa' == LOWER('A' + 'A' + 'A')");
     }
 

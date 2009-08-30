@@ -126,7 +126,7 @@ public class HBql {
         final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
 
         final List<String> fieldList = classSchema.getFieldList();
-        final Scan scan = HUtil.getScan(classSchema, fieldList);
+        final Scan scan = HUtil.getScan(classSchema, fieldList, args.getFilterExpr());
 
         int cnt = 0;
         for (final Result result : table.getScanner(scan)) {

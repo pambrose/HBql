@@ -16,7 +16,7 @@ import com.imap4j.hbase.hbql.schema.ClassSchema;
 public class HTest {
 
     private static boolean test(final HPersistable recordObj, final String str) throws HPersistException {
-        final WhereExpr expr = (WhereExpr)HBqlRule.WHERE.parse("WHERE " + str);
+        final WhereExpr expr = (WhereExpr)HBqlRule.WHERE.parse(str);
         final ClassSchema classSchema = (recordObj != null) ? ClassSchema.getClassSchema(recordObj) : null;
         return expr.evaluate(new AttribContext(classSchema, recordObj));
     }

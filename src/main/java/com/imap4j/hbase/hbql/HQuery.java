@@ -39,12 +39,10 @@ public class HQuery<T extends HPersistable> {
     public void execute() throws IOException, HPersistException {
 
         final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery());
-
         final ClassSchema classSchema = ClassSchema.getClassSchema(args.getTableName());
         final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
-
         final List<String> fieldList = (args.getColumnList() == null) ? classSchema.getFieldList() : args.getColumnList();
-        final Scan scan = HUtil.getScan(classSchema, fieldList);
+        final Scan scan = HUtil.getScan(classSchema, fieldList, args.getFilterExpr());
 
         for (final Result result : table.getScanner(scan)) {
 

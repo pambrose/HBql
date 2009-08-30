@@ -14,11 +14,13 @@ public class QueryArgs {
 
     private final List<String> columnList;
     private final String tableName;
+    private final WhereExpr filterExpr;
     private final WhereExpr whereExpr;
 
-    public QueryArgs(final List<String> columnList, final String tableName, final WhereExpr whereExpr) {
+    public QueryArgs(final List<String> columnList, final String tableName, final WhereExpr filterExpr, final WhereExpr whereExpr) {
         this.tableName = tableName;
         this.columnList = columnList;
+        this.filterExpr = filterExpr;
         this.whereExpr = whereExpr;
     }
 
@@ -28,6 +30,13 @@ public class QueryArgs {
 
     public String getTableName() {
         return this.tableName;
+    }
+
+    public WhereExpr getFilterExpr() {
+        if (this.filterExpr != null)
+            return this.filterExpr;
+        else
+            return new WhereExpr(null);
     }
 
     public WhereExpr getWhereExpr() {

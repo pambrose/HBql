@@ -9,6 +9,7 @@ import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.HPersistable;
 import com.imap4j.hbase.hbql.HTable;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.Map;
  * Date: Aug 19, 2009
  * Time: 5:30:59 PM
  */
-public class ClassSchema {
+public class ClassSchema implements Serializable {
 
     private final static Map<Class<?>, ClassSchema> classSchemaMap = Maps.newHashMap();
 

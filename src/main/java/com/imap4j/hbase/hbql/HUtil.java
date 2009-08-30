@@ -1,6 +1,7 @@
 package com.imap4j.hbase.hbql;
 
 import com.google.common.collect.Maps;
+import com.imap4j.hbase.hbql.expr.predicate.WhereExpr;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.FieldAttrib;
 import com.imap4j.hbase.hbql.schema.FieldType;
@@ -291,7 +292,7 @@ public class HUtil {
         return baos.toByteArray();
     }
 
-    public static Scan getScan(final ClassSchema classSchema, final List<String> fieldList) {
+    public static Scan getScan(final ClassSchema classSchema, final List<String> fieldList, final WhereExpr filterExpr) {
 
         final Scan scan = new Scan();
 

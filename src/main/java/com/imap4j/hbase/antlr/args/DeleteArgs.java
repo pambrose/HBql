@@ -11,10 +11,12 @@ import com.imap4j.hbase.hbql.expr.predicate.WhereExpr;
 public class DeleteArgs implements ExecArgs {
 
     private final String tableName;
+    private final WhereExpr filterExpr;
     private final WhereExpr whereExpr;
 
-    public DeleteArgs(final String tableName, final WhereExpr whereExpr) {
+    public DeleteArgs(final String tableName, final WhereExpr filterExpr, final WhereExpr whereExpr) {
         this.tableName = tableName;
+        this.filterExpr = filterExpr;
         this.whereExpr = whereExpr;
     }
 
@@ -24,5 +26,9 @@ public class DeleteArgs implements ExecArgs {
 
     public WhereExpr getWhereExpr() {
         return this.whereExpr;
+    }
+
+    public WhereExpr getFilterExpr() {
+        return filterExpr;
     }
 }

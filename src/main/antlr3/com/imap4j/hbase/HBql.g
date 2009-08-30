@@ -53,9 +53,10 @@ import com.google.common.collect.Lists;
 }
 
 selectStmt returns [QueryArgs retval]
-	: keySELECT (STAR | cols=columnList) 
-	  keyFROM table=dottedValue 
-	  where=whereClause?				{retval = new QueryArgs($cols.retval, $table.text, $where.retval);};
+	: keySELECT (STAR | c=columnList) 
+	  keyFROM t=dottedValue 
+	  f=filterClause?
+	  w=whereClause?				{retval = new QueryArgs($c.retval, $t.text, $f.retval, $w.retval);};
 
 columnList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
@@ -80,14 +81,21 @@ showStmt returns [ShowArgs retval]
 
 deleteStmt returns [DeleteArgs retval]
 	: keyDELETE keyFROM table=ID 
-	  where=whereClause?				{retval = new DeleteArgs($table.text, $where.retval);};
+	  f=filterClause?
+	  w=whereClause?				{retval = new DeleteArgs($table.text, $f.retval, $w.retval);};
 
 setStmt returns [SetArgs retval]
 	: keySET i=ID to? v=dottedValue 		{retval = new SetArgs($i.text, $v.text);};
 
+filterClause returns [WhereExpr retval]
+	: keyFILTER keyWITH w=whereExpr			{retval = $w.retval;};
+	
 whereClause returns [WhereExpr retval]
-	: keyWHERE e=orExpr 				{retval = new WhereExpr($e.retval);};
-		
+	: keyWHERE w=whereExpr 				{retval = $w.retval;};
+
+whereExpr returns [WhereExpr retval]
+	: e=orExpr					{retval = new WhereExpr($e.retval);};
+			
 orExpr returns [PredicateExpr retval]
 	: e1=andExpr (or e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanExpr($e1.retval, BooleanExpr.OP.OR, $e2.retval);};
 
@@ -333,6 +341,8 @@ keySHOW 	: {isKeyword(input, "SHOW")}? ID;
 keyTABLE 	: {isKeyword(input, "TABLE")}? ID;
 keyTABLES 	: {isKeyword(input, "TABLES")}? ID;
 keyWHERE	: {isKeyword(input, "WHERE")}? ID;
+keyFILTER	: {isKeyword(input, "FILTER")}? ID;
+keyWITH		: {isKeyword(input, "WITH")}? ID;
 keyFROM 	: {isKeyword(input, "FROM")}? ID;
 keySET 		: {isKeyword(input, "SET")}? ID;
 keyIN 		: {isKeyword(input, "IN")}? ID;

@@ -6,6 +6,7 @@ import com.imap4j.hbase.hbql.HPersistable;
 import com.imap4j.hbase.hbql.HUtil;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,7 +17,7 @@ import java.lang.reflect.Method;
  * Date: Aug 19, 2009
  * Time: 6:07:31 PM
  */
-public class FieldAttrib {
+public class FieldAttrib implements Serializable {
 
     private final Field field;
     private final FieldType fieldType;
