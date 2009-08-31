@@ -3,7 +3,7 @@ package com.imap4j.hbase.hbql.schema;
 import com.imap4j.hbase.hbql.HColumn;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.HPersistable;
-import com.imap4j.hbase.hbql.HUtil;
+import com.imap4j.hbase.hbql.io.JavaSerialization;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -171,9 +171,9 @@ public class FieldAttrib implements Serializable {
             final Object obj = this.getValue(recordObj);
 
             if (this.isArray())
-                return HUtil.getArrayasBytes(this.getFieldType(), obj);
+                return JavaSerialization.getArrayasBytes(this.getFieldType(), obj);
             else
-                return HUtil.getScalarAsBytes(this.getFieldType(), obj);
+                return JavaSerialization.getScalarAsBytes(this.getFieldType(), obj);
         }
     }
 
@@ -184,9 +184,10 @@ public class FieldAttrib implements Serializable {
         }
         else {
             if (this.isArray())
-                return HUtil.getArrayFromBytes(this.getFieldType(), this.getField().getType().getComponentType(), b);
+                return JavaSerialization.getArrayFromBytes(this.getFieldType(), this.getField()
+                        .getType().getComponentType(), b);
             else
-                return HUtil.getScalarFromBytes(this.getFieldType(), b);
+                return JavaSerialization.getScalarFromBytes(this.getFieldType(), b);
         }
     }
 }

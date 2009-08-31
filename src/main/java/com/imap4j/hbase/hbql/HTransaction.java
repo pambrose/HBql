@@ -2,6 +2,7 @@ package com.imap4j.hbase.hbql;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.imap4j.hbase.hbql.io.JavaSerialization;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.FieldAttrib;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -45,7 +46,7 @@ public class HTransaction {
                     final Map mapval = (Map)attrib.getValue(declaringObj);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
-                        final byte[] byteval = HUtil.getObjectAsBytes(mapval.get(keyobj));
+                        final byte[] byteval = JavaSerialization.getObjectAsBytes(mapval.get(keyobj));
 
                         // Use family:column[key] scheme to avoid column namespace collision
                         put.add(attrib.getFamilyName().getBytes(),
