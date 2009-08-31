@@ -3,7 +3,7 @@ package com.imap4j.hbase.hbql;
 import com.imap4j.hbase.antlr.args.QueryArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.EvalContext;
-import com.imap4j.hbase.hbql.io.JavaSerialization;
+import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
@@ -46,9 +46,11 @@ public class HQuery<T extends HPersistable> {
 
         final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
 
+        final Serialization ser = HUtil.getSerialization();
+
         for (final Result result : table.getScanner(scan)) {
 
-            final HPersistable recordObj = JavaSerialization.getHPersistable(classSchema, result);
+            final HPersistable recordObj = ser.getHPersistable(classSchema, result);
 
             if (args.getWhereExpr().evaluate(new EvalContext(classSchema, recordObj)))
                 this.getQueryListener().onEachRow((T)recordObj);

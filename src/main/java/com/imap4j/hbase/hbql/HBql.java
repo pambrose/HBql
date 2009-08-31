@@ -8,7 +8,7 @@ import com.imap4j.hbase.antlr.args.SetArgs;
 import com.imap4j.hbase.antlr.args.ShowArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.EvalContext;
-import com.imap4j.hbase.hbql.io.JavaSerialization;
+import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -129,14 +129,16 @@ public class HBql {
 
         final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
 
+        final Serialization ser = HUtil.getSerialization();
+
         int cnt = 0;
         for (final Result result : table.getScanner(scan)) {
 
-            final HPersistable recordObj = JavaSerialization.getHPersistable(classSchema, result);
+            final HPersistable recordObj = ser.getHPersistable(classSchema, result);
 
             if (args.getWhereExpr().evaluate(new EvalContext(classSchema, recordObj))) {
                 final Delete delete = new Delete(result.getRow());
-                //   table.delete(delete);
+                table.delete(delete);
                 cnt++;
             }
         }

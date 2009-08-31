@@ -3,7 +3,7 @@ package com.imap4j.hbase.hbql.schema;
 import com.imap4j.hbase.hbql.HColumn;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.HPersistable;
-import com.imap4j.hbase.hbql.io.JavaSerialization;
+import com.imap4j.hbase.hbql.io.Serialization;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -162,7 +162,7 @@ public class FieldAttrib implements Serializable {
 
     }
 
-    public byte[] getValueAsBytes(final HPersistable recordObj) throws HPersistException, IOException {
+    public byte[] getValueAsBytes(final Serialization ser, final HPersistable recordObj) throws HPersistException, IOException {
 
         if (this.hasGetter()) {
             return this.invokeGetterMethod(recordObj);
@@ -171,23 +171,22 @@ public class FieldAttrib implements Serializable {
             final Object obj = this.getValue(recordObj);
 
             if (this.isArray())
-                return JavaSerialization.getArrayasBytes(this.getFieldType(), obj);
+                return ser.getArrayasBytes(this.getFieldType(), obj);
             else
-                return JavaSerialization.getScalarAsBytes(this.getFieldType(), obj);
+                return ser.getScalarAsBytes(this.getFieldType(), obj);
         }
     }
 
-    public Object getValueFromBytes(final HPersistable recordObj, final byte[] b) throws IOException, HPersistException {
+    public Object getValueFromBytes(final Serialization ser, final HPersistable recordObj, final byte[] b) throws IOException, HPersistException {
 
         if (this.hasSetter()) {
             return this.invokeSetterMethod(recordObj, b);
         }
         else {
             if (this.isArray())
-                return JavaSerialization.getArrayFromBytes(this.getFieldType(), this.getField()
-                        .getType().getComponentType(), b);
+                return ser.getArrayFromBytes(this.getFieldType(), this.getField().getType().getComponentType(), b);
             else
-                return JavaSerialization.getScalarFromBytes(this.getFieldType(), b);
+                return ser.getScalarFromBytes(this.getFieldType(), b);
         }
     }
 }

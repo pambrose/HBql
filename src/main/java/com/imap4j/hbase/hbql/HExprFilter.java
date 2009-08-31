@@ -1,10 +1,8 @@
 package com.imap4j.hbase.hbql;
 
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
-import com.imap4j.hbase.hbql.io.JavaSerialization;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -56,22 +54,24 @@ public class HExprFilter implements Filter {
 
     @Override
     public void write(final DataOutput out) throws IOException {
-        final byte[] b = JavaSerialization.getObjectAsBytes(this.getFilterExpr());
-        Bytes.writeByteArray(out, b);
+        //final byte[] b = JavaSerialization.getObjectAsBytes(this.getFilterExpr());
+        // Bytes.writeByteArray(out, b);
 
     }
 
     @Override
     public void readFields(final DataInput in) throws IOException {
 
+        /*
         byte[] b = Bytes.readByteArray(in);
 
         try {
-            this.filterExpr = (ExprEvalTree)JavaSerialization.getObjectFromBytes(b);
+           // this.filterExpr = (ExprEvalTree)JavaSerialization.getObjectFromBytes(b);
         }
         catch (HPersistException e) {
             e.printStackTrace();
             throw new IOException("HPersist problem: " + e.getCause());
         }
+        */
     }
 }

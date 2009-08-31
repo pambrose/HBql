@@ -23,21 +23,10 @@ import java.util.Map;
  * Date: Aug 31, 2009
  * Time: 2:18:29 PM
  */
-public class JavaSerialization {
-    public static boolean isSerializable(final Object obj) {
+public class JavaSerialization extends Serialization {
 
-        try {
-            final byte[] b = getObjectAsBytes(obj);
-            Object newobj = getObjectFromBytes(b);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    public static byte[] getObjectAsBytes(final Object obj) throws IOException {
+    @Override
+    public byte[] getObjectAsBytes(final Object obj) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(obj);
@@ -45,7 +34,8 @@ public class JavaSerialization {
         return baos.toByteArray();
     }
 
-    public static Object getObjectFromBytes(final byte[] b) throws IOException, HPersistException {
+    @Override
+    public Object getObjectFromBytes(final byte[] b) throws IOException, HPersistException {
         final ByteArrayInputStream bais = new ByteArrayInputStream(b);
         final ObjectInputStream ois = new ObjectInputStream(bais);
         try {
@@ -57,7 +47,8 @@ public class JavaSerialization {
         }
     }
 
-    public static Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws IOException, HPersistException {
+    @Override
+    public Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws IOException, HPersistException {
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(b);
         final ObjectInputStream ois = new ObjectInputStream(bais);
@@ -104,7 +95,8 @@ public class JavaSerialization {
         throw new HPersistException("Error in getScalarfromBytes()");
     }
 
-    public static byte[] getScalarAsBytes(final FieldType fieldType, final Object obj) throws IOException, HPersistException {
+    @Override
+    public byte[] getScalarAsBytes(final FieldType fieldType, final Object obj) throws IOException, HPersistException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -152,7 +144,8 @@ public class JavaSerialization {
         return baos.toByteArray();
     }
 
-    public static Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws IOException, HPersistException {
+    @Override
+    public Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws IOException, HPersistException {
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(b);
         final ObjectInputStream ois = new ObjectInputStream(bais);
@@ -229,7 +222,8 @@ public class JavaSerialization {
         throw new HPersistException("Error in getScalarfromBytes()");
     }
 
-    public static byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws IOException, HPersistException {
+    @Override
+    public byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws IOException, HPersistException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -303,14 +297,15 @@ public class JavaSerialization {
         return baos.toByteArray();
     }
 
-    public static HPersistable getHPersistable(final ClassSchema classSchema, final Result result) throws HPersistException {
+    @Override
+    public HPersistable getHPersistable(final ClassSchema classSchema, final Result result) throws HPersistException {
 
         try {
             final HPersistable newobj = (HPersistable)classSchema.getClazz().newInstance();
             final FieldAttrib keyattrib = classSchema.getKeyFieldAttrib();
 
             final byte[] keybytes = result.getRow();
-            final Object keyval = keyattrib.getValueFromBytes(newobj, keybytes);
+            final Object keyval = keyattrib.getValueFromBytes(this, newobj, keybytes);
             classSchema.getKeyFieldAttrib().getField().set(newobj, keyval);
 
             for (final KeyValue keyValue : result.list()) {
@@ -324,7 +319,7 @@ public class JavaSerialization {
                     final String mapcolumn = column.substring(0, lbrace);
                     final String mapKey = column.substring(lbrace + 1, column.length() - 1);
                     final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(mapcolumn);
-                    final Object val = attrib.getValueFromBytes(newobj, valbytes);
+                    final Object val = attrib.getValueFromBytes(this, newobj, valbytes);
                     Map mapval = (Map)attrib.getValue(newobj);
 
                     // TODO Not sure if it is kosher to create a map here
@@ -337,7 +332,7 @@ public class JavaSerialization {
                 }
                 else {
                     final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(column);
-                    final Object val = attrib.getValueFromBytes(newobj, valbytes);
+                    final Object val = attrib.getValueFromBytes(this, newobj, valbytes);
                     attrib.getField().set(newobj, val);
                 }
             }

@@ -1,6 +1,7 @@
 package com.imap4j.hbase.hbql;
 
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
+import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.FieldAttrib;
 import org.apache.hadoop.hbase.client.Scan;
@@ -37,6 +38,12 @@ public class HUtil {
         }
 
         return scan;
+    }
+
+    final static Serialization ser = Serialization.newSerializationStrategy(Serialization.TYPE.JAVA);
+
+    public static Serialization getSerialization() {
+        return ser;
     }
 
 }

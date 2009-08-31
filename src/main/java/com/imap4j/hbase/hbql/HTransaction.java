@@ -2,7 +2,7 @@ package com.imap4j.hbase.hbql;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.imap4j.hbase.hbql.io.JavaSerialization;
+import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.FieldAttrib;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -34,8 +34,9 @@ public class HTransaction {
 
     public void insert(final HPersistable declaringObj) throws HPersistException, IOException {
 
+        final Serialization ser = HUtil.getSerialization();
         final ClassSchema classSchema = ClassSchema.getClassSchema(declaringObj);
-        final byte[] keyval = classSchema.getKeyFieldAttrib().getValueAsBytes(declaringObj);
+        final byte[] keyval = classSchema.getKeyFieldAttrib().getValueAsBytes(ser, declaringObj);
         final Put put = new Put(keyval);
 
         for (final String family : classSchema.getFieldAttribMapByFamily().keySet()) {
@@ -46,7 +47,7 @@ public class HTransaction {
                     final Map mapval = (Map)attrib.getValue(declaringObj);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
-                        final byte[] byteval = JavaSerialization.getObjectAsBytes(mapval.get(keyobj));
+                        final byte[] byteval = ser.getObjectAsBytes(mapval.get(keyobj));
 
                         // Use family:column[key] scheme to avoid column namespace collision
                         put.add(attrib.getFamilyName().getBytes(),
@@ -55,7 +56,7 @@ public class HTransaction {
                     }
                 }
                 else {
-                    final byte[] instval = attrib.getValueAsBytes(declaringObj);
+                    final byte[] instval = attrib.getValueAsBytes(ser, declaringObj);
                     put.add(attrib.getFamilyName().getBytes(), attrib.getColumnName().getBytes(), instval);
                 }
             }
