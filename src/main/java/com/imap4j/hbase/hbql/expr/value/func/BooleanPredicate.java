@@ -6,6 +6,8 @@ import com.imap4j.hbase.hbql.expr.node.BooleanValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -22,6 +24,11 @@ public class BooleanPredicate implements BooleanValue {
 
     private PredicateExpr getExpr() {
         return expr;
+    }
+
+    @Override
+    public List<String> getAttribNames() {
+        return this.getExpr().getAttribNames();
     }
 
     @Override

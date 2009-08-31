@@ -6,6 +6,8 @@ import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -28,6 +30,14 @@ public class StringCompare extends CompareExpr implements PredicateExpr {
 
     private StringValue getExpr2() {
         return this.expr2;
+    }
+
+    @Override
+    public List<String> getAttribNames() {
+
+        final List<String> retval = this.getExpr1().getAttribNames();
+        retval.addAll(this.getExpr2().getAttribNames());
+        return retval;
     }
 
     @Override

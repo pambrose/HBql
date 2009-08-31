@@ -6,6 +6,8 @@ import com.imap4j.hbase.hbql.expr.node.BooleanValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -33,6 +35,14 @@ public class BooleanTernary implements BooleanValue {
 
     private PredicateExpr getExpr2() {
         return this.expr2;
+    }
+
+    @Override
+    public List<String> getAttribNames() {
+        final List<String> retval = this.getPred().getAttribNames();
+        retval.addAll(this.getExpr1().getAttribNames());
+        retval.addAll(this.getExpr2().getAttribNames());
+        return retval;
     }
 
     @Override

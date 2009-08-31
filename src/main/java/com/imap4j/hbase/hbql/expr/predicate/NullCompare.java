@@ -6,6 +6,8 @@ import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -24,6 +26,11 @@ public class NullCompare implements PredicateExpr {
 
     private StringValue getExpr() {
         return this.expr;
+    }
+
+    @Override
+    public List<String> getAttribNames() {
+        return this.getExpr().getAttribNames();
     }
 
     @Override

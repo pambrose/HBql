@@ -6,6 +6,8 @@ import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -35,6 +37,14 @@ public class NumberBetweenStmt implements PredicateExpr {
 
     private NumberValue getUpper() {
         return this.upper;
+    }
+
+    @Override
+    public List<String> getAttribNames() {
+        final List<String> retval = this.getExpr().getAttribNames();
+        retval.addAll(this.getLower().getAttribNames());
+        retval.addAll(this.getUpper().getAttribNames());
+        return retval;
     }
 
     @Override

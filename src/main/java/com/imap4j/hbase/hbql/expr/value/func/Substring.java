@@ -7,6 +7,8 @@ import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -34,6 +36,14 @@ public class Substring implements StringValue {
 
     private NumberValue getEnd() {
         return this.end;
+    }
+
+    @Override
+    public List<String> getAttribNames() {
+        final List<String> retval = this.getExpr().getAttribNames();
+        retval.addAll(this.getBegin().getAttribNames());
+        retval.addAll(this.getEnd().getAttribNames());
+        return retval;
     }
 
     @Override

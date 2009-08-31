@@ -27,6 +27,14 @@ public class StringConcat implements StringValue {
     }
 
     @Override
+    public List<String> getAttribNames() {
+        final List<String> retval = Lists.newArrayList();
+        for (final StringValue val : this.getVals())
+            retval.addAll(val.getAttribNames());
+        return retval;
+    }
+
+    @Override
     public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
 
         boolean retval = true;
@@ -44,8 +52,8 @@ public class StringConcat implements StringValue {
             return this.getVals().get(0).getValue(context);
 
         final StringBuffer sbuf = new StringBuffer();
-        for (final StringValue str : this.getVals())
-            sbuf.append(str.getValue(context));
+        for (final StringValue val : this.getVals())
+            sbuf.append(val.getValue(context));
 
         return sbuf.toString();
     }
@@ -55,12 +63,12 @@ public class StringConcat implements StringValue {
         boolean retval = true;
         final List<StringValue> newvalList = Lists.newArrayList();
 
-        for (final StringValue num : this.getVals()) {
-            if (num.optimizeForConstants(context)) {
-                newvalList.add(new StringLiteral(num.getValue(context)));
+        for (final StringValue val : this.getVals()) {
+            if (val.optimizeForConstants(context)) {
+                newvalList.add(new StringLiteral(val.getValue(context)));
             }
             else {
-                newvalList.add(num);
+                newvalList.add(val);
                 retval = false;
             }
         }

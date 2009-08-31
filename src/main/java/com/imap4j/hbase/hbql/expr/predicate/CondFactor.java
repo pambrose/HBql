@@ -5,6 +5,8 @@ import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -23,6 +25,11 @@ public class CondFactor implements PredicateExpr {
 
     private PredicateExpr getExpr() {
         return this.expr;
+    }
+
+    @Override
+    public List<String> getAttribNames() {
+        return this.getExpr().getAttribNames();
     }
 
     @Override
