@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
+import com.imap4j.hbase.hbql.expr.predicate.GenericFunction;
 
 import java.util.List;
 
@@ -13,28 +14,16 @@ import java.util.List;
  * Date: Aug 29, 2009
  * Time: 5:28:17 PM
  */
-public class StringFunction implements StringValue {
+public class StringFunction extends GenericFunction implements StringValue {
 
-    public enum FUNC {
-        CONCAT,
-        TRIM,
-        LOWER,
-        UPPER
-    }
-
-    private final FUNC func;
     private final StringValue[] exprs;
 
-    public StringFunction(final FUNC func, final StringValue... exprs) {
-        this.func = func;
+    public StringFunction(final FUNC func, final StringValue[] exprs) {
+        super(func);
         this.exprs = exprs;
     }
 
-    private FUNC getFunc() {
-        return func;
-    }
-
-    public StringValue[] getExprs() {
+    private StringValue[] getExprs() {
         return exprs;
     }
 
