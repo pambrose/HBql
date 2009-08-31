@@ -11,22 +11,15 @@ import com.imap4j.hbase.hbql.schema.FieldAttrib;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NumberAttribRef implements NumberValue {
-
-    private final String attribName;
+public class NumberAttribRef extends GenericAttribRef implements NumberValue {
 
     public NumberAttribRef(final String attribName) {
-        this.attribName = attribName;
-    }
-
-    @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
-        return false;
+        super(attribName);
     }
 
     @Override
     public Number getValue(final EvalContext context) throws HPersistException {
-        final FieldAttrib fieldAttrib = context.getClassSchema().getFieldAttribByField(this.attribName);
+        final FieldAttrib fieldAttrib = context.getClassSchema().getFieldAttribByField(this.getAttribName());
         return (Number)fieldAttrib.getValue(context.getRecordObj());
     }
 

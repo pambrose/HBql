@@ -36,6 +36,14 @@ public class StringInStmt implements PredicateExpr {
     }
 
     @Override
+    public List<String> getAttribNames() {
+        final List<String> retval = this.getExpr().getAttribNames();
+        for (final StringValue val : this.getVals())
+            retval.addAll(val.getAttribNames());
+        return retval;
+    }
+
+    @Override
     public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
 
         boolean retval = true;

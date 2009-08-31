@@ -7,43 +7,28 @@ import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
 
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
  * Date: Aug 29, 2009
  * Time: 2:35:57 PM
  */
-public class StringTernary implements StringValue {
+public class StringTernary extends GenericTernary implements StringValue {
 
-    private PredicateExpr pred = null;
     private StringValue expr1 = null, expr2 = null;
 
     public StringTernary(final PredicateExpr pred, final StringValue expr1, final StringValue expr2) {
-        this.pred = pred;
+        super(pred);
         this.expr1 = expr1;
         this.expr2 = expr2;
     }
 
-    private PredicateExpr getPred() {
-        return this.pred;
-    }
-
-    private StringValue getExpr1() {
+    protected StringValue getExpr1() {
         return this.expr1;
     }
 
-    private StringValue getExpr2() {
+    protected StringValue getExpr2() {
         return this.expr2;
-    }
-
-    @Override
-    public List<String> getAttribNames() {
-        final List<String> retval = this.getPred().getAttribNames();
-        retval.addAll(this.getExpr1().getAttribNames());
-        retval.addAll(this.getExpr2().getAttribNames());
-        return retval;
     }
 
     @Override

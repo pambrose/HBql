@@ -23,7 +23,6 @@ public class CalcExpr implements NumberValue {
         MOD,
         NEGATIVE,
         NONE
-
     }
 
     private NumberValue expr1 = null, expr2 = null;

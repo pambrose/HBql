@@ -7,43 +7,28 @@ import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
 import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
 
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
  * Date: Aug 29, 2009
  * Time: 2:35:57 PM
  */
-public class NumberTernary implements NumberValue {
+public class NumberTernary extends GenericTernary implements NumberValue {
 
-    private PredicateExpr pred = null;
     private NumberValue expr1 = null, expr2 = null;
 
     public NumberTernary(final PredicateExpr pred, final NumberValue expr1, final NumberValue expr2) {
-        this.pred = pred;
+        super(pred);
         this.expr1 = expr1;
         this.expr2 = expr2;
     }
 
-    private PredicateExpr getPred() {
-        return this.pred;
-    }
-
-    private NumberValue getExpr1() {
+    protected NumberValue getExpr1() {
         return this.expr1;
     }
 
-    private NumberValue getExpr2() {
+    protected NumberValue getExpr2() {
         return this.expr2;
-    }
-
-    @Override
-    public List<String> getAttribNames() {
-        final List<String> retval = this.getPred().getAttribNames();
-        retval.addAll(this.getExpr1().getAttribNames());
-        retval.addAll(this.getExpr2().getAttribNames());
-        return retval;
     }
 
     @Override

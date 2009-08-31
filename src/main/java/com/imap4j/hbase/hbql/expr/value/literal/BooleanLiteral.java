@@ -11,7 +11,7 @@ import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class BooleanLiteral implements BooleanValue, PredicateExpr {
+public class BooleanLiteral extends GenericLiteral implements BooleanValue, PredicateExpr {
 
     private final Boolean value;
 
@@ -33,8 +33,4 @@ public class BooleanLiteral implements BooleanValue, PredicateExpr {
         return this.value;
     }
 
-    @Override
-    public boolean optimizeForConstants(final EvalContext context) {
-        return false;
-    }
 }

@@ -13,22 +13,15 @@ import java.util.Date;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class DateAttribRef implements DateValue {
-
-    private final String attribName;
+public class DateAttribRef extends GenericAttribRef implements DateValue {
 
     public DateAttribRef(final String attribName) {
-        this.attribName = attribName;
-    }
-
-    @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
-        return false;
+        super(attribName);
     }
 
     @Override
     public Date getValue(final EvalContext context) throws HPersistException {
-        final FieldAttrib fieldAttrib = context.getClassSchema().getFieldAttribByField(this.attribName);
+        final FieldAttrib fieldAttrib = context.getClassSchema().getFieldAttribByField(this.getAttribName());
         return (Date)fieldAttrib.getValue(context.getRecordObj());
     }
 

@@ -36,6 +36,14 @@ public class NumberInStmt implements PredicateExpr {
     }
 
     @Override
+    public List<String> getAttribNames() {
+        final List<String> retval = this.getExpr().getAttribNames();
+        for (final NumberValue val : this.getVals())
+            retval.addAll(val.getAttribNames());
+        return retval;
+    }
+
+    @Override
     public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
 
         boolean retval = true;
@@ -62,12 +70,12 @@ public class NumberInStmt implements PredicateExpr {
         boolean retval = true;
         final List<NumberValue> newvalList = Lists.newArrayList();
 
-        for (final NumberValue num : this.getVals()) {
-            if (num.optimizeForConstants(context)) {
-                newvalList.add(new NumberLiteral(num.getValue(context)));
+        for (final NumberValue val : this.getVals()) {
+            if (val.optimizeForConstants(context)) {
+                newvalList.add(new NumberLiteral(val.getValue(context)));
             }
             else {
-                newvalList.add(num);
+                newvalList.add(val);
                 retval = false;
             }
         }

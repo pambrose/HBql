@@ -1,8 +1,11 @@
 package com.imap4j.hbase.hbql.expr.value.func;
 
+import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,15 +23,27 @@ public class StringFunction implements StringValue {
     }
 
     private final FUNC func;
-    private final StringValue[] expr;
+    private final StringValue[] exprs;
 
-    public StringFunction(final FUNC func, final StringValue... expr) {
+    public StringFunction(final FUNC func, final StringValue... exprs) {
         this.func = func;
-        this.expr = expr;
+        this.exprs = exprs;
     }
 
     private FUNC getFunc() {
         return func;
+    }
+
+    public StringValue[] getExprs() {
+        return exprs;
+    }
+
+    @Override
+    public List<String> getAttribNames() {
+        final List<String> retval = Lists.newArrayList();
+        for (final StringValue val : this.getExprs())
+            retval.addAll(val.getAttribNames());
+        return retval;
     }
 
     // TODO Deal with this
@@ -42,23 +57,23 @@ public class StringFunction implements StringValue {
 
         switch (this.getFunc()) {
             case TRIM: {
-                final String val = this.expr[0].getValue(context);
+                final String val = this.getExprs()[0].getValue(context);
                 return val.trim();
             }
 
             case LOWER: {
-                final String val = this.expr[0].getValue(context);
+                final String val = this.getExprs()[0].getValue(context);
                 return val.toLowerCase();
             }
 
             case UPPER: {
-                final String val = this.expr[0].getValue(context);
+                final String val = this.getExprs()[0].getValue(context);
                 return val.toUpperCase();
             }
 
             case CONCAT: {
-                final String v1 = this.expr[0].getValue(context);
-                final String v2 = this.expr[1].getValue(context);
+                final String v1 = this.getExprs()[0].getValue(context);
+                final String v2 = this.getExprs()[1].getValue(context);
                 return v1 + v2;
             }
 
