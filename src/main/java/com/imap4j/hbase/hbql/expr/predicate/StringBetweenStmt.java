@@ -6,45 +6,34 @@ import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
 
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringBetweenStmt implements PredicateExpr {
+public class StringBetweenStmt extends GenericBetweenStmt implements PredicateExpr {
 
     private StringValue expr = null;
-    private final boolean not;
     private StringValue lower = null, upper = null;
 
-    public StringBetweenStmt(final StringValue expr, final boolean not, final StringValue lower, final StringValue upper) {
+    public StringBetweenStmt(final boolean not, final StringValue expr, final StringValue lower, final StringValue upper) {
+        super(not);
         this.expr = expr;
-        this.not = not;
         this.lower = lower;
         this.upper = upper;
     }
 
-    private StringValue getExpr() {
+    protected StringValue getExpr() {
         return this.expr;
     }
 
-    private StringValue getLower() {
+    protected StringValue getLower() {
         return this.lower;
     }
 
-    private StringValue getUpper() {
+    protected StringValue getUpper() {
         return this.upper;
-    }
-
-    @Override
-    public List<String> getAttribNames() {
-        final List<String> retval = this.getExpr().getAttribNames();
-        retval.addAll(this.getLower().getAttribNames());
-        retval.addAll(this.getUpper().getAttribNames());
-        return retval;
     }
 
     @Override
@@ -76,6 +65,6 @@ public class StringBetweenStmt implements PredicateExpr {
         final boolean retval = str.compareTo(this.getLower().getValue(context)) >= 0
                                && str.compareTo(this.getUpper().getValue(context)) <= 0;
 
-        return (this.not) ? !retval : retval;
+        return (this.isNot()) ? !retval : retval;
     }
 }

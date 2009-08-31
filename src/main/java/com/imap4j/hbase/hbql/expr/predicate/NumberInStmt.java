@@ -15,19 +15,18 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NumberInStmt implements PredicateExpr {
+public class NumberInStmt extends GenericInStmt implements PredicateExpr {
 
     private NumberValue expr = null;
-    private final boolean not;
     private final List<NumberValue> vals;
 
-    public NumberInStmt(final NumberValue expr, final boolean not, final List<NumberValue> vals) {
+    public NumberInStmt(final boolean not, final NumberValue expr, final List<NumberValue> vals) {
+        super(not);
         this.expr = expr;
-        this.not = not;
         this.vals = vals;
     }
 
-    private NumberValue getExpr() {
+    protected NumberValue getExpr() {
         return this.expr;
     }
 
@@ -62,7 +61,7 @@ public class NumberInStmt implements PredicateExpr {
     @Override
     public boolean evaluate(final EvalContext context) throws HPersistException {
         final boolean retval = this.evaluateList(context);
-        return (this.not) ? !retval : retval;
+        return (this.isNot()) ? !retval : retval;
     }
 
     private boolean optimizeList(final EvalContext context) throws HPersistException {

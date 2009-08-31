@@ -15,19 +15,18 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringInStmt implements PredicateExpr {
+public class StringInStmt extends GenericInStmt implements PredicateExpr {
 
     private StringValue expr = null;
-    private final boolean not;
     private final List<StringValue> valList;
 
-    public StringInStmt(final StringValue expr, final boolean not, final List<StringValue> valList) {
+    public StringInStmt(final boolean not, final StringValue expr, final List<StringValue> valList) {
+        super(not);
         this.expr = expr;
-        this.not = not;
         this.valList = valList;
     }
 
-    private StringValue getExpr() {
+    protected StringValue getExpr() {
         return expr;
     }
 
@@ -62,7 +61,7 @@ public class StringInStmt implements PredicateExpr {
     @Override
     public boolean evaluate(final EvalContext context) throws HPersistException {
         final boolean retval = this.evaluateList(context);
-        return (this.not) ? !retval : retval;
+        return (this.isNot()) ? !retval : retval;
     }
 
     private boolean optimizeList(final EvalContext context) throws HPersistException {
@@ -85,7 +84,6 @@ public class StringInStmt implements PredicateExpr {
         this.getVals().addAll(newvalList);
 
         return retval;
-
     }
 
     private boolean evaluateList(final EvalContext context) throws HPersistException {

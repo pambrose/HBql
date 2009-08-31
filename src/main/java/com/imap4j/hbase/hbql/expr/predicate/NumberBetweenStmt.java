@@ -6,45 +6,34 @@ import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
 
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NumberBetweenStmt implements PredicateExpr {
+public class NumberBetweenStmt extends GenericBetweenStmt implements PredicateExpr {
 
     private NumberValue expr = null;
-    private final boolean not;
     private NumberValue lower = null, upper = null;
 
-    public NumberBetweenStmt(final NumberValue expr, final boolean not, final NumberValue lower, final NumberValue upper) {
+    public NumberBetweenStmt(final boolean not, final NumberValue expr, final NumberValue lower, final NumberValue upper) {
+        super(not);
         this.expr = expr;
-        this.not = not;
         this.lower = lower;
         this.upper = upper;
     }
 
-    private NumberValue getExpr() {
+    protected NumberValue getExpr() {
         return this.expr;
     }
 
-    private NumberValue getLower() {
+    protected NumberValue getLower() {
         return this.lower;
     }
 
-    private NumberValue getUpper() {
+    protected NumberValue getUpper() {
         return this.upper;
-    }
-
-    @Override
-    public List<String> getAttribNames() {
-        final List<String> retval = this.getExpr().getAttribNames();
-        retval.addAll(this.getLower().getAttribNames());
-        retval.addAll(this.getUpper().getAttribNames());
-        return retval;
     }
 
     @Override
@@ -76,7 +65,7 @@ public class NumberBetweenStmt implements PredicateExpr {
         final boolean retval = val >= this.getLower().getValue(context).intValue()
                                && val <= this.getUpper().getValue(context).intValue();
 
-        return (this.not) ? !retval : retval;
+        return (this.isNot()) ? !retval : retval;
     }
 
 }
