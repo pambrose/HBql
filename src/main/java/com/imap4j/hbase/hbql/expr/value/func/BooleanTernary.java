@@ -1,9 +1,10 @@
-package com.imap4j.hbase.hbql.expr.value;
+package com.imap4j.hbase.hbql.expr.value.func;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
-import com.imap4j.hbase.hbql.expr.NumberValue;
-import com.imap4j.hbase.hbql.expr.PredicateExpr;
+import com.imap4j.hbase.hbql.expr.node.BooleanValue;
+import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
+import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,12 +12,12 @@ import com.imap4j.hbase.hbql.expr.PredicateExpr;
  * Date: Aug 29, 2009
  * Time: 2:35:57 PM
  */
-public class NumberTernary implements NumberValue {
+public class BooleanTernary implements BooleanValue {
 
-    private PredicateExpr pred = null;
-    private NumberValue expr1 = null, expr2 = null;
+    private PredicateExpr pred;
+    private PredicateExpr expr1 = null, expr2 = null;
 
-    public NumberTernary(final PredicateExpr pred, final NumberValue expr1, final NumberValue expr2) {
+    public BooleanTernary(final PredicateExpr pred, final PredicateExpr expr1, final PredicateExpr expr2) {
         this.pred = pred;
         this.expr1 = expr1;
         this.expr2 = expr2;
@@ -26,11 +27,11 @@ public class NumberTernary implements NumberValue {
         return this.pred;
     }
 
-    private NumberValue getExpr1() {
+    private PredicateExpr getExpr1() {
         return this.expr1;
     }
 
-    private NumberValue getExpr2() {
+    private PredicateExpr getExpr2() {
         return this.expr2;
     }
 
@@ -45,12 +46,12 @@ public class NumberTernary implements NumberValue {
             retval = false;
 
         if (this.getExpr1().optimizeForConstants(context))
-            this.expr1 = new NumberLiteral(this.getExpr1().getValue(context));
+            this.expr1 = new BooleanLiteral(this.getExpr1().evaluate(context));
         else
             retval = false;
 
         if (this.getExpr2().optimizeForConstants(context))
-            this.expr2 = new NumberLiteral(this.getExpr2().getValue(context));
+            this.expr2 = new BooleanLiteral(this.getExpr2().evaluate(context));
         else
             retval = false;
 
@@ -58,11 +59,11 @@ public class NumberTernary implements NumberValue {
     }
 
     @Override
-    public Number getValue(final EvalContext context) throws HPersistException {
+    public boolean getValue(final EvalContext context) throws HPersistException {
 
         if (this.getPred().evaluate(context))
-            return this.getExpr1().getValue(context);
+            return this.getExpr1().evaluate(context);
         else
-            return this.getExpr2().getValue(context);
+            return this.getExpr2().evaluate(context);
     }
 }

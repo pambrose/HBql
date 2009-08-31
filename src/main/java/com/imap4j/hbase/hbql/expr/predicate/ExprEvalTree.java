@@ -2,8 +2,10 @@ package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
-import com.imap4j.hbase.hbql.expr.PredicateExpr;
-import com.imap4j.hbase.hbql.expr.value.BooleanLiteral;
+import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
+import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,18 +13,23 @@ import com.imap4j.hbase.hbql.expr.value.BooleanLiteral;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class WhereExpr implements PredicateExpr {
+public class ExprEvalTree implements PredicateExpr {
 
     private PredicateExpr expr = null;
     private long start, end;
 
-    public WhereExpr(final PredicateExpr expr) {
+    public ExprEvalTree(final PredicateExpr expr) {
         this.expr = expr;
 
     }
 
     private PredicateExpr getExpr() {
         return expr;
+    }
+
+    @Override
+    public List<String> getAttribNames() {
+        return this.getExpr().getAttribNames();
     }
 
     @Override

@@ -1,8 +1,8 @@
-package com.imap4j.hbase.hbql.expr.value;
+package com.imap4j.hbase.hbql.expr.value.literal;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
-import com.imap4j.hbase.hbql.expr.NumberValue;
+import com.imap4j.hbase.hbql.expr.node.StringValue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,11 +10,11 @@ import com.imap4j.hbase.hbql.expr.NumberValue;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NumberLiteral implements NumberValue {
+public class StringLiteral implements StringValue {
 
-    private final Number value;
+    private final String value;
 
-    public NumberLiteral(final Number value) {
+    public StringLiteral(final String value) {
         this.value = value;
     }
 
@@ -24,7 +24,7 @@ public class NumberLiteral implements NumberValue {
     }
 
     @Override
-    public Number getValue(final EvalContext context) {
+    public String getValue(final EvalContext context) {
         return this.value;
     }
 }

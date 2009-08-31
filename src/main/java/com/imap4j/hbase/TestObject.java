@@ -104,11 +104,13 @@ public class TestObject implements HPersistable {
         //results = HBql.exec("create table TestObject");
         //System.out.println(results.getOutput());
 
-        //results = HBql.exec("show tables");
-        //System.out.println(results.getOutput());
+        /*
+        results = HBql.exec("show tables");
+        System.out.println(results.getOutput());
 
-        //results = HBql.exec("describe table TestObject");
-        //System.out.println(results.getOutput());
+        results = HBql.exec("describe table TestObject");
+        System.out.println(results.getOutput());
+        */
 
         final HTransaction tx = new HTransaction();
         int cnt = 0;
@@ -132,7 +134,6 @@ public class TestObject implements HPersistable {
 
         q1.execute();
         */
-
         long start = System.currentTimeMillis();
         HQuery<TestObject> q2 =
                 new HQuery<TestObject>("select * from TestObject "

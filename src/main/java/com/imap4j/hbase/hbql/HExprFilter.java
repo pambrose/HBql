@@ -1,6 +1,6 @@
 package com.imap4j.hbase.hbql;
 
-import com.imap4j.hbase.hbql.expr.predicate.WhereExpr;
+import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -17,13 +17,13 @@ import java.io.IOException;
  */
 public class HExprFilter implements Filter {
 
-    WhereExpr filterExpr;
+    ExprEvalTree filterExpr;
 
-    public HExprFilter(final WhereExpr filterExpr) {
+    public HExprFilter(final ExprEvalTree filterExpr) {
         this.filterExpr = filterExpr;
     }
 
-    public WhereExpr getFilterExpr() {
+    public ExprEvalTree getFilterExpr() {
         return filterExpr;
     }
 
@@ -44,7 +44,8 @@ public class HExprFilter implements Filter {
 
     @Override
     public ReturnCode filterKeyValue(final KeyValue v) {
-        return null;
+        System.out.println("Called by filterKeyValue() - " + new String(v.getColumn()) + " - " + v.getKeyString());
+        return ReturnCode.INCLUDE;
     }
 
     @Override
@@ -56,18 +57,20 @@ public class HExprFilter implements Filter {
     public void write(final DataOutput out) throws IOException {
         final byte[] b = HUtil.getObjectAsBytes(this.getFilterExpr());
         Bytes.writeByteArray(out, b);
+
     }
 
     @Override
     public void readFields(final DataInput in) throws IOException {
+
         byte[] b = Bytes.readByteArray(in);
 
         try {
-            this.filterExpr = (WhereExpr)HUtil.getObjectFromBytes(b);
+            this.filterExpr = (ExprEvalTree)HUtil.getObjectFromBytes(b);
         }
         catch (HPersistException e) {
             e.printStackTrace();
-            throw new IOException(e.getCause());
+            throw new IOException("HPersist problem: " + e.getCause());
         }
     }
 }

@@ -4,7 +4,7 @@ import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.HPersistable;
 import com.imap4j.hbase.hbql.expr.EvalContext;
-import com.imap4j.hbase.hbql.expr.predicate.WhereExpr;
+import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 
 /**
@@ -18,7 +18,7 @@ public class HTest {
     private static boolean test(final HPersistable recordObj, final String str) throws HPersistException {
 
         final ClassSchema classSchema = (recordObj != null) ? ClassSchema.getClassSchema(recordObj) : null;
-        final WhereExpr expr = (WhereExpr)HBqlRule.WHERE.parse(str);
+        final ExprEvalTree expr = (ExprEvalTree)HBqlRule.WHERE.parse(str);
         final EvalContext context = new EvalContext(classSchema, recordObj);
 
         final boolean no_opt_run = expr.evaluate(context);

@@ -1,6 +1,6 @@
 package com.imap4j.hbase.antlr.args;
 
-import com.imap4j.hbase.hbql.expr.predicate.WhereExpr;
+import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,10 +11,10 @@ import com.imap4j.hbase.hbql.expr.predicate.WhereExpr;
 public class DeleteArgs implements ExecArgs {
 
     private final String tableName;
-    private final WhereExpr filterExpr;
-    private final WhereExpr whereExpr;
+    private final ExprEvalTree filterExpr;
+    private final ExprEvalTree whereExpr;
 
-    public DeleteArgs(final String tableName, final WhereExpr filterExpr, final WhereExpr whereExpr) {
+    public DeleteArgs(final String tableName, final ExprEvalTree filterExpr, final ExprEvalTree whereExpr) {
         this.tableName = tableName;
         this.filterExpr = filterExpr;
         this.whereExpr = whereExpr;
@@ -24,11 +24,11 @@ public class DeleteArgs implements ExecArgs {
         return this.tableName;
     }
 
-    public WhereExpr getWhereExpr() {
+    public ExprEvalTree getWhereExpr() {
         return this.whereExpr;
     }
 
-    public WhereExpr getFilterExpr() {
+    public ExprEvalTree getFilterExpr() {
         return filterExpr;
     }
 }

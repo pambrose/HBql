@@ -39,8 +39,11 @@ tokens {
 package com.imap4j.hbase;
 import com.imap4j.hbase.hbql.*;
 import com.imap4j.hbase.hbql.expr.*;
+import com.imap4j.hbase.hbql.expr.node.*;
 import com.imap4j.hbase.hbql.expr.predicate.*;
-import com.imap4j.hbase.hbql.expr.value.*;
+import com.imap4j.hbase.hbql.expr.value.func.*;
+import com.imap4j.hbase.hbql.expr.value.literal.*;
+import com.imap4j.hbase.hbql.expr.value.var.*;
 import com.imap4j.hbase.antlr.args.*;
 import com.imap4j.hbase.antlr.*;
 import java.util.Date;
@@ -87,14 +90,14 @@ deleteStmt returns [DeleteArgs retval]
 setStmt returns [SetArgs retval]
 	: keySET i=ID to? v=dottedValue 		{retval = new SetArgs($i.text, $v.text);};
 
-filterClause returns [WhereExpr retval]
+filterClause returns [ExprEvalTree retval]
 	: keyWITH keyFILTER w=whereExpr			{retval = $w.retval;};
 	
-whereClause returns [WhereExpr retval]
+whereClause returns [ExprEvalTree retval]
 	: keyWHERE w=whereExpr 				{retval = $w.retval;};
 
-whereExpr returns [WhereExpr retval]
-	: e=orExpr					{retval = new WhereExpr($e.retval);};
+whereExpr returns [ExprEvalTree retval]
+	: e=orExpr					{retval = new ExprEvalTree($e.retval);};
 			
 orExpr returns [PredicateExpr retval]
 	: e1=andExpr (or e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanExpr($e1.retval, BooleanExpr.OP.OR, $e2.retval);};

@@ -1,4 +1,4 @@
-package com.imap4j.hbase.hbql.expr;
+package com.imap4j.hbase.hbql.expr.value.func;
 
 /**
  * Created by IntelliJ IDEA.

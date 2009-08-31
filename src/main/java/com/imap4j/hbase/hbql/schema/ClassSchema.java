@@ -24,19 +24,17 @@ import java.util.Map;
 public class ClassSchema implements Serializable {
 
     private final static Map<Class<?>, ClassSchema> classSchemaMap = Maps.newHashMap();
-
     private final static Map<String, Class<?>> classCacheMap = Maps.newHashMap();
-
-    private final Class<?> clazz;
-
-    private final HTable table;
-    private final HFamily[] families;
-
-    private FieldAttrib keyFieldAttrib = null;
 
     final Map<String, List<FieldAttrib>> fieldAttribMapByFamily = Maps.newHashMap();
     final Map<String, FieldAttrib> fieldAttribMapByField = Maps.newHashMap();
     final Map<String, FieldAttrib> fieldAttribMapByColumn = Maps.newHashMap();
+
+    private final Class<?> clazz;
+    private final HTable table;
+    private final HFamily[] families;
+
+    private FieldAttrib keyFieldAttrib = null;
 
     public ClassSchema(final Class clazz) throws HPersistException {
         this.clazz = clazz;

@@ -1,8 +1,8 @@
-package com.imap4j.hbase.hbql.expr.value;
+package com.imap4j.hbase.hbql.expr.value.literal;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
-import com.imap4j.hbase.hbql.expr.StringValue;
+import com.imap4j.hbase.hbql.expr.node.StringValue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,12 +10,9 @@ import com.imap4j.hbase.hbql.expr.StringValue;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringLiteral implements StringValue {
+public class NullLiteral implements StringValue {
 
-    private final String value;
-
-    public StringLiteral(final String value) {
-        this.value = value;
+    public NullLiteral() {
     }
 
     @Override
@@ -25,6 +22,6 @@ public class StringLiteral implements StringValue {
 
     @Override
     public String getValue(final EvalContext context) {
-        return this.value;
+        return null;
     }
 }

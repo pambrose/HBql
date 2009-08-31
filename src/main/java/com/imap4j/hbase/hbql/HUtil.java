@@ -1,13 +1,14 @@
 package com.imap4j.hbase.hbql;
 
 import com.google.common.collect.Maps;
-import com.imap4j.hbase.hbql.expr.predicate.WhereExpr;
+import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.FieldAttrib;
 import com.imap4j.hbase.hbql.schema.FieldType;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.PrefixFilter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,6 +26,19 @@ import java.util.Map;
  * Time: 4:49:02 PM
  */
 public class HUtil {
+
+    public static boolean isSerializable(final Object obj) {
+
+        try {
+            final byte[] b = HUtil.getObjectAsBytes(obj);
+            Object newobj = HUtil.getObjectFromBytes(b);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
     public static byte[] getObjectAsBytes(final Object obj) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -292,7 +306,7 @@ public class HUtil {
         return baos.toByteArray();
     }
 
-    public static Scan getScan(final ClassSchema classSchema, final List<String> fieldList, final WhereExpr filterExpr) {
+    public static Scan getScan(final ClassSchema classSchema, final List<String> fieldList, final ExprEvalTree filterExpr) {
 
         final Scan scan = new Scan();
 
@@ -306,6 +320,9 @@ public class HUtil {
             else
                 scan.addColumn(attrib.getQualifiedName().getBytes());
         }
+
+        if (filterExpr != null)
+            scan.setFilter(new PrefixFilter(classSchema, filterExpr));
 
         return scan;
     }

@@ -1,9 +1,9 @@
-package com.imap4j.hbase.hbql.expr.value;
+package com.imap4j.hbase.hbql.expr.value.literal;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.BooleanValue;
 import com.imap4j.hbase.hbql.expr.EvalContext;
-import com.imap4j.hbase.hbql.expr.PredicateExpr;
+import com.imap4j.hbase.hbql.expr.node.BooleanValue;
+import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 
 /**
  * Created by IntelliJ IDEA.

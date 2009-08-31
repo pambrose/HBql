@@ -1,8 +1,7 @@
-package com.imap4j.hbase.hbql.expr;
+package com.imap4j.hbase.hbql.expr.node;
 
 import com.imap4j.hbase.hbql.HPersistException;
-
-import java.io.Serializable;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,9 +9,7 @@ import java.io.Serializable;
  * Date: Aug 25, 2009
  * Time: 8:38:28 PM
  */
-public interface PredicateExpr extends Serializable {
-
-    boolean optimizeForConstants(final EvalContext context) throws HPersistException;
+public interface PredicateExpr extends ExprEvalTreeNode {
 
     boolean evaluate(final EvalContext context) throws HPersistException;
 

@@ -19,12 +19,11 @@ import java.lang.reflect.Method;
  */
 public class FieldAttrib implements Serializable {
 
-    private final Field field;
+    private final transient Field field;
     private final FieldType fieldType;
     private final HColumn column;
 
-    private Method getterMethod = null;
-    private Method setterMethod = null;
+    private transient Method getterMethod = null, setterMethod = null;
 
     public FieldAttrib(final Class enclosingClass, final Field field, final HColumn column) throws HPersistException {
 

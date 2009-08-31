@@ -1,8 +1,7 @@
-package com.imap4j.hbase.hbql.expr;
+package com.imap4j.hbase.hbql.expr.node;
 
 import com.imap4j.hbase.hbql.HPersistException;
-
-import java.io.Serializable;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,9 +9,7 @@ import java.io.Serializable;
  * Date: Aug 29, 2009
  * Time: 7:16:27 PM
  */
-public interface BooleanValue extends Serializable {
-
-    boolean optimizeForConstants(final EvalContext context) throws HPersistException;
+public interface BooleanValue extends ExprEvalTreeNode {
 
     boolean getValue(final EvalContext context) throws HPersistException;
 }

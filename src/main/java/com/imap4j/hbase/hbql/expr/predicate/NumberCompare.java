@@ -2,9 +2,9 @@ package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
-import com.imap4j.hbase.hbql.expr.NumberValue;
-import com.imap4j.hbase.hbql.expr.PredicateExpr;
-import com.imap4j.hbase.hbql.expr.value.NumberLiteral;
+import com.imap4j.hbase.hbql.expr.node.NumberValue;
+import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
+import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
 
 /**
  * Created by IntelliJ IDEA.

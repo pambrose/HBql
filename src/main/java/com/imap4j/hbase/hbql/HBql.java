@@ -135,7 +135,7 @@ public class HBql {
 
             if (args.getWhereExpr().evaluate(new EvalContext(classSchema, recordObj))) {
                 final Delete delete = new Delete(result.getRow());
-                table.delete(delete);
+                //   table.delete(delete);
                 cnt++;
             }
         }

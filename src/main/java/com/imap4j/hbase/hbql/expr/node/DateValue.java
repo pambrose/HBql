@@ -1,8 +1,8 @@
-package com.imap4j.hbase.hbql.expr;
+package com.imap4j.hbase.hbql.expr.node;
 
 import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -11,9 +11,7 @@ import java.util.Date;
  * Date: Aug 26, 2009
  * Time: 10:18:22 AM
  */
-public interface DateValue extends Serializable {
-
-    boolean optimizeForConstants(final EvalContext context) throws HPersistException;
+public interface DateValue extends ExprEvalTreeNode {
 
     Date getValue(final EvalContext context) throws HPersistException;
 }
