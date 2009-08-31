@@ -42,9 +42,9 @@ public class BooleanExpr implements PredicateExpr {
     }
 
     @Override
-    public List<String> getAttribNames() {
-        final List<String> retval = this.getExpr1().getAttribNames();
-        retval.addAll(this.getExpr2().getAttribNames());
+    public List<String> getQualifiedColumnNames() {
+        final List<String> retval = this.getExpr1().getQualifiedColumnNames();
+        retval.addAll(this.getExpr2().getQualifiedColumnNames());
         return retval;
     }
 

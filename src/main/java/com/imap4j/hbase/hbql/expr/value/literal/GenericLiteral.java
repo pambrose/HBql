@@ -16,7 +16,7 @@ import java.util.List;
 public abstract class GenericLiteral implements ExprEvalTreeNode {
 
     @Override
-    public List<String> getAttribNames() {
+    public List<String> getQualifiedColumnNames() {
         return Lists.newArrayList();
     }
 

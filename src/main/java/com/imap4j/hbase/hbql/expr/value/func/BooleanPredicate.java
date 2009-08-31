@@ -27,8 +27,8 @@ public class BooleanPredicate implements BooleanValue {
     }
 
     @Override
-    public List<String> getAttribNames() {
-        return this.getExpr().getAttribNames();
+    public List<String> getQualifiedColumnNames() {
+        return this.getExpr().getQualifiedColumnNames();
     }
 
     @Override

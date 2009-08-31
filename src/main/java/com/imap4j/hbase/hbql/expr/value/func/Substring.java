@@ -39,10 +39,10 @@ public class Substring implements StringValue {
     }
 
     @Override
-    public List<String> getAttribNames() {
-        final List<String> retval = this.getExpr().getAttribNames();
-        retval.addAll(this.getBegin().getAttribNames());
-        retval.addAll(this.getEnd().getAttribNames());
+    public List<String> getQualifiedColumnNames() {
+        final List<String> retval = this.getExpr().getQualifiedColumnNames();
+        retval.addAll(this.getBegin().getQualifiedColumnNames());
+        retval.addAll(this.getEnd().getQualifiedColumnNames());
         return retval;
     }
 

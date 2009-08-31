@@ -26,7 +26,7 @@ public abstract class GenericAttribRef implements ExprEvalTreeNode {
     }
 
     @Override
-    public List<String> getAttribNames() {
+    public List<String> getQualifiedColumnNames() {
         return Lists.newArrayList(this.getAttribName());
     }
 

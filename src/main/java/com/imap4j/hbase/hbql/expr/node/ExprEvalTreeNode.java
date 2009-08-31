@@ -16,6 +16,6 @@ public interface ExprEvalTreeNode extends Serializable {
 
     boolean optimizeForConstants(final EvalContext context) throws HPersistException;
 
-    List<String> getAttribNames();
+    List<String> getQualifiedColumnNames();
 
 }

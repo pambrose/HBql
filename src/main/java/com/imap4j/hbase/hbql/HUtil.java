@@ -31,8 +31,10 @@ public class HUtil {
                 scan.addColumn(attrib.getQualifiedName().getBytes());
         }
 
-        if (filterExpr != null)
+        if (filterExpr != null) {
+            List<String> names = filterExpr.getQualifiedColumnNames();
             scan.setFilter(new PrefixFilter(classSchema, filterExpr));
+        }
 
         return scan;
     }

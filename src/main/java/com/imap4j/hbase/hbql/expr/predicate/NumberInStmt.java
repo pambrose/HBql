@@ -35,10 +35,10 @@ public class NumberInStmt extends GenericInStmt implements PredicateExpr {
     }
 
     @Override
-    public List<String> getAttribNames() {
-        final List<String> retval = this.getExpr().getAttribNames();
+    public List<String> getQualifiedColumnNames() {
+        final List<String> retval = this.getExpr().getQualifiedColumnNames();
         for (final NumberValue val : this.getVals())
-            retval.addAll(val.getAttribNames());
+            retval.addAll(val.getQualifiedColumnNames());
         return retval;
     }
 

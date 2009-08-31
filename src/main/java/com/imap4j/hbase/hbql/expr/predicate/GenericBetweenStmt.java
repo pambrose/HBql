@@ -28,10 +28,10 @@ public abstract class GenericBetweenStmt {
 
     abstract protected ExprEvalTreeNode getUpper();
 
-    public List<String> getAttribNames() {
-        final List<String> retval = this.getExpr().getAttribNames();
-        retval.addAll(this.getLower().getAttribNames());
-        retval.addAll(this.getUpper().getAttribNames());
+    public List<String> getQualifiedColumnNames() {
+        final List<String> retval = this.getExpr().getQualifiedColumnNames();
+        retval.addAll(this.getLower().getQualifiedColumnNames());
+        retval.addAll(this.getUpper().getQualifiedColumnNames());
         return retval;
     }
 }

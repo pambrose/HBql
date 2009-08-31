@@ -27,10 +27,10 @@ public class StringConcat implements StringValue {
     }
 
     @Override
-    public List<String> getAttribNames() {
+    public List<String> getQualifiedColumnNames() {
         final List<String> retval = Lists.newArrayList();
         for (final StringValue val : this.getVals())
-            retval.addAll(val.getAttribNames());
+            retval.addAll(val.getQualifiedColumnNames());
         return retval;
     }
 

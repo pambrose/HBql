@@ -43,114 +43,114 @@ public class WhereExpressionTests extends HTest {
 
     @Test
     public void booleanExpressions() throws HPersistException {
-        assertTrue("TRUE");
-        assertFalse("NOT TRUE");
-        assertFalse("! TRUE");
-        assertFalse("!TRUE");
-        assertFalse("!(((((TRUE)))))");
-        assertTrue("((TRUE))");
-        assertTrue("(((((TRUE)))))");
-        assertFalse("!((!(((!TRUE)))))");
-        assertFalse("FALSE");
-        assertTrue("TRUE OR TRUE");
-        assertTrue("TRUE OR TRUE OR TRUE");
-        assertFalse("FALSE OR FALSE OR FALSE");
-        assertFalse("(FALSE OR FALSE OR FALSE)");
-        assertFalse("((((FALSE OR FALSE OR FALSE))))" + " OR " + "((((FALSE OR FALSE OR FALSE))))");
-        assertTrue("TRUE OR FALSE");
-        assertFalse("FALSE OR FALSE");
-        assertTrue("TRUE AND TRUE");
-        assertFalse("TRUE AND FALSE");
-        assertTrue("TRUE OR ((true) or true) OR FALSE");
-        assertFalse("(false AND ((true) OR true)) AND TRUE");
-        assertTrue("(false AND ((true) OR true)) OR TRUE");
+        assertEvalTrue("TRUE");
+        assertEvalFalse("NOT TRUE");
+        assertEvalFalse("! TRUE");
+        assertEvalFalse("!TRUE");
+        assertEvalFalse("!(((((TRUE)))))");
+        assertEvalTrue("((TRUE))");
+        assertEvalTrue("(((((TRUE)))))");
+        assertEvalFalse("!((!(((!TRUE)))))");
+        assertEvalFalse("FALSE");
+        assertEvalTrue("TRUE OR TRUE");
+        assertEvalTrue("TRUE OR TRUE OR TRUE");
+        assertEvalFalse("FALSE OR FALSE OR FALSE");
+        assertEvalFalse("(FALSE OR FALSE OR FALSE)");
+        assertEvalFalse("((((FALSE OR FALSE OR FALSE))))" + " OR " + "((((FALSE OR FALSE OR FALSE))))");
+        assertEvalTrue("TRUE OR FALSE");
+        assertEvalFalse("FALSE OR FALSE");
+        assertEvalTrue("TRUE AND TRUE");
+        assertEvalFalse("TRUE AND FALSE");
+        assertEvalTrue("TRUE OR ((true) or true) OR FALSE");
+        assertEvalFalse("(false AND ((true) OR true)) AND TRUE");
+        assertEvalTrue("(false AND ((true) OR true)) OR TRUE");
     }
 
     @Test
     public void numericCompares() throws HPersistException {
 
-        assertTrue("4 < 5");
-        assertFalse("4 = 5");
-        assertFalse("4 == 5");
-        assertTrue("4 != 5");
-        assertTrue("4 <> 5");
-        assertTrue("4 <= 5");
-        assertFalse("4 > 5");
-        assertFalse("4 >= 5");
+        assertEvalTrue("4 < 5");
+        assertEvalFalse("4 = 5");
+        assertEvalFalse("4 == 5");
+        assertEvalTrue("4 != 5");
+        assertEvalTrue("4 <> 5");
+        assertEvalTrue("4 <= 5");
+        assertEvalFalse("4 > 5");
+        assertEvalFalse("4 >= 5");
     }
 
     @Test
     public void stringCompares() throws HPersistException {
 
-        assertTrue("'aaa' == 'aaa'");
-        assertFalse("'aaa' != 'aaa'");
-        assertFalse("'aaa' <> 'aaa'");
-        assertFalse("'aaa' == 'bbb'");
-        assertTrue("'aaa' <= 'bbb'");
-        assertTrue("'bbb' <= 'bbb'");
-        assertFalse("'bbb' <= 'aaa'");
-        assertFalse("'bbb' > 'bbb'");
-        assertTrue("'bbb' > 'aaa'");
-        assertTrue("'bbb' >= 'aaa'");
-        assertTrue("'aaa' >= 'aaa'");
+        assertEvalTrue("'aaa' == 'aaa'");
+        assertEvalFalse("'aaa' != 'aaa'");
+        assertEvalFalse("'aaa' <> 'aaa'");
+        assertEvalFalse("'aaa' == 'bbb'");
+        assertEvalTrue("'aaa' <= 'bbb'");
+        assertEvalTrue("'bbb' <= 'bbb'");
+        assertEvalFalse("'bbb' <= 'aaa'");
+        assertEvalFalse("'bbb' > 'bbb'");
+        assertEvalTrue("'bbb' > 'aaa'");
+        assertEvalTrue("'bbb' >= 'aaa'");
+        assertEvalTrue("'aaa' >= 'aaa'");
     }
 
     @Test
     public void nullCompares() throws HPersistException {
 
-        assertTrue("NULL IS NULL");
-        assertFalse("NULL IS NOT NULL");
+        assertEvalTrue("NULL IS NULL");
+        assertEvalFalse("NULL IS NOT NULL");
     }
 
     @Test
     public void numericCalculations() throws HPersistException {
 
-        assertTrue("9 == 9");
-        assertTrue("((4 + 5) == 9)");
-        assertTrue("(9) == 9");
-        assertTrue("(4 + 5) == 9");
-        assertFalse("(4 + 5) == 8");
-        assertTrue("(4 + 5 + 10 + 10 - 20) == 9");
-        assertFalse("(4 + 5 + 10 + 10 - 20) != 9");
+        assertEvalTrue("9 == 9");
+        assertEvalTrue("((4 + 5) == 9)");
+        assertEvalTrue("(9) == 9");
+        assertEvalTrue("(4 + 5) == 9");
+        assertEvalFalse("(4 + 5) == 8");
+        assertEvalTrue("(4 + 5 + 10 + 10 - 20) == 9");
+        assertEvalFalse("(4 + 5 + 10 + 10 - 20) != 9");
 
-        assertTrue("(4 * 5) == 20");
-        assertTrue("(40 % 6) == 4");
-        assertFalse("(40 % 6) == 3");
+        assertEvalTrue("(4 * 5) == 20");
+        assertEvalTrue("(40 % 6) == 4");
+        assertEvalFalse("(40 % 6) == 3");
     }
 
     @Test
     public void numericFunctions() throws HPersistException {
 
-        assertTrue("3 between 2 AND 5");
-        assertTrue("3 between (1+1) AND (3+2)");
-        assertTrue("3 between (1+1) && (3+2)");
+        assertEvalTrue("3 between 2 AND 5");
+        assertEvalTrue("3 between (1+1) AND (3+2)");
+        assertEvalTrue("3 between (1+1) && (3+2)");
 
-        assertTrue("3 in (2,3,4)");
-        assertFalse("3 in (1+1,1+3,4)");
-        assertTrue("3 in (1+1,1+2,4)");
-        assertFalse("3 !in (1+1,1+2,4)");
-        assertFalse("3 NOT in (1+1,1+2,4)");
-        assertTrue("3 == [true ? 3 : 2]");
-        assertFalse("3 == [false ? 3 : 2]");
-        assertTrue("2 == [false ? 3 : 2]");
+        assertEvalTrue("3 in (2,3,4)");
+        assertEvalFalse("3 in (1+1,1+3,4)");
+        assertEvalTrue("3 in (1+1,1+2,4)");
+        assertEvalFalse("3 !in (1+1,1+2,4)");
+        assertEvalFalse("3 NOT in (1+1,1+2,4)");
+        assertEvalTrue("3 == [true ? 3 : 2]");
+        assertEvalFalse("3 == [false ? 3 : 2]");
+        assertEvalTrue("2 == [false ? 3 : 2]");
 
     }
 
     @Test
     public void stringFunctions() throws HPersistException {
 
-        assertTrue("'bbb' between 'aaa' AND 'ccc'");
-        assertTrue("'bbb' between 'aaa' && 'ccc'");
-        assertTrue("'bbb' between 'bbb' AND 'ccc'");
-        assertFalse("'bbb' between 'ccc' AND 'ddd'");
-        assertTrue("('bbb' between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
-        assertTrue("('bbb' between 'bbb' && 'ccc') || ('fff' between 'eee' && 'ggg')");
-        assertFalse("('bbb' not between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
-        assertTrue("'bbb' == LOWER('BBB')");
-        assertTrue("'ABABAB' == UPPER(CONCAT('aba', 'bab'))");
-        assertTrue("'bbb' == SUBSTRING('BBBbbbAAA', 3, 6)");
-        assertTrue("'AAA' == 'A' + 'A' + 'A'");
-        assertTrue("'aaa' == LOWER('A' + 'A' + 'A')");
+        assertEvalTrue("'bbb' between 'aaa' AND 'ccc'");
+        assertEvalTrue("'bbb' between 'aaa' && 'ccc'");
+        assertEvalTrue("'bbb' between 'bbb' AND 'ccc'");
+        assertEvalFalse("'bbb' between 'ccc' AND 'ddd'");
+        assertEvalTrue("('bbb' between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
+        assertEvalTrue("('bbb' between 'bbb' && 'ccc') || ('fff' between 'eee' && 'ggg')");
+        assertEvalFalse("('bbb' not between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
+        assertEvalTrue("'bbb' == LOWER('BBB')");
+        assertEvalTrue("'ABABAB' == UPPER(CONCAT('aba', 'bab'))");
+        assertEvalTrue("'bbb' == SUBSTRING('BBBbbbAAA', 3, 6)");
+        assertEvalTrue("'AAA' == 'A' + 'A' + 'A'");
+        assertEvalTrue("'aaa' == LOWER('A' + 'A' + 'A')");
     }
 
     @Test
@@ -158,21 +158,32 @@ public class WhereExpressionTests extends HTest {
 
         final AllTypes obj = new AllTypes("aaa", 3, "bbb");
 
-        assertTrue(obj, "stringValue between 'aaa' AND 'ccc'");
-        assertTrue(obj, "stringValue between 'aaa' AND 'ccc' AND stringValue between 'aaa' AND 'ccc'");
-        assertTrue(obj, "stringValue between 'bbb' AND 'ccc'");
-        assertFalse(obj, "stringValue between 'ccc' AND 'ddd'");
-        assertTrue(obj, "('bbb' between stringValue AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
+        assertEvalTrue(obj, "stringValue between 'aaa' AND 'ccc'");
+        assertEvalTrue(obj, "stringValue between 'aaa' AND 'ccc' AND stringValue between 'aaa' AND 'ccc'");
+        assertEvalTrue(obj, "stringValue between 'bbb' AND 'ccc'");
+        assertEvalFalse(obj, "stringValue between 'ccc' AND 'ddd'");
+        assertEvalTrue(obj, "('bbb' between stringValue AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
 
-        assertTrue(obj, "intValue between 2 AND 5");
-        assertTrue(obj, "intValue between (1+1) AND (intValue+2)");
-        assertFalse(obj, "stringValue IN ('v2', 'v0', 'v999')");
-        assertTrue(obj, "'v19' = 'v19'");
-        assertFalse(obj, "'v19'= stringValue");
-        assertFalse(obj, "stringValue = 'v19'");
-        assertFalse(obj, "stringValue = 'v19' OR stringValue IN ('v2', 'v0', 'v999')");
-        assertTrue(obj, "stringValue IS NOT NULL");
-        assertFalse(obj, "stringValue IS NULL");
+        assertEvalTrue(obj, "intValue between 2 AND 5");
+        assertEvalTrue(obj, "intValue between (1+1) AND (intValue+2)");
+        assertEvalFalse(obj, "stringValue IN ('v2', 'v0', 'v999')");
+        assertEvalTrue(obj, "'v19' = 'v19'");
+        assertEvalFalse(obj, "'v19'= stringValue");
+        assertEvalFalse(obj, "stringValue = 'v19'");
+        assertEvalFalse(obj, "stringValue = 'v19' OR stringValue IN ('v2', 'v0', 'v999')");
+        assertEvalTrue(obj, "stringValue IS NOT NULL");
+        assertEvalFalse(obj, "stringValue IS NULL");
+    }
+
+    @Test
+    public void columnLookups() throws HPersistException {
+        assertColumnsMatchTrue("TRUE");
+        assertColumnsMatchFalse("TRUE", "intValue");
+        assertColumnsMatchTrue("intValue between 2 AND 5", "intValue");
+        assertColumnsMatchFalse("xintValue between 2 AND 5", "intValue");
+        assertColumnsMatchTrue("a1 < a2", "a1", "a2");
+        assertColumnsMatchFalse("a1 < a2 || d1 > k3", "a1", "a2");
+        assertColumnsMatchTrue("a1 < a2 || d1 > k3", "a1", "a2", "d1", "k3");
     }
 
 }
