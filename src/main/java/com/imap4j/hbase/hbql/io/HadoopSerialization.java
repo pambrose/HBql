@@ -2,6 +2,7 @@ package com.imap4j.hbase.hbql.io;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.schema.FieldType;
+import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -16,7 +17,7 @@ import java.lang.reflect.Array;
  * Date: Aug 31, 2009
  * Time: 2:18:29 PM
  */
-public class JavaSerialization extends Serialization {
+public class HadoopSerialization extends Serialization {
 
     @Override
     public byte[] getObjectAsBytes(final Object obj) throws IOException {
@@ -50,28 +51,28 @@ public class JavaSerialization extends Serialization {
             switch (fieldType) {
 
                 case BooleanType:
-                    return ois.readBoolean();
+                    return Bytes.toBoolean(b);
 
                 case ByteType:
-                    return ois.readByte();
+                    return Bytes.toShort(b);
 
                 case CharType:
-                    return ois.readByte();
+                    return Bytes.toShort(b);
 
                 case ShortType:
-                    return ois.readShort();
+                    return Bytes.toShort(b);
 
                 case IntegerType:
-                    return ois.readInt();
+                    return Bytes.toInt(b);
 
                 case LongType:
-                    return ois.readLong();
+                    return Bytes.toLong(b);
 
                 case FloatType:
-                    return ois.readFloat();
+                    return Bytes.toFloat(b);
 
                 case DoubleType:
-                    return ois.readDouble();
+                    return Bytes.toDouble(b);
 
                 case ObjectType:
                     return ois.readObject();
@@ -91,50 +92,41 @@ public class JavaSerialization extends Serialization {
     @Override
     public byte[] getScalarAsBytes(final FieldType fieldType, final Object obj) throws IOException, HPersistException {
 
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream oos = new ObjectOutputStream(baos);
-
         switch (fieldType) {
 
             case BooleanType:
-                oos.writeBoolean((Boolean)obj);
-                break;
+                return Bytes.toBytes((Boolean)obj);
 
             case ByteType:
-                oos.writeByte((Byte)obj);
-                break;
+                return Bytes.toBytes((Short)obj);
 
             case CharType:
-                oos.writeByte((Character)obj);
-                break;
+                return Bytes.toBytes((Short)obj);
 
             case ShortType:
-                oos.writeShort((Short)obj);
-                break;
+                return Bytes.toBytes((Short)obj);
 
             case IntegerType:
-                oos.writeInt((Integer)obj);
-                break;
+                return Bytes.toBytes((Integer)obj);
 
             case LongType:
-                oos.writeLong((Long)obj);
-                break;
+                return Bytes.toBytes((Long)obj);
 
             case FloatType:
-                oos.writeFloat((Float)obj);
-                break;
+                return Bytes.toBytes((Float)obj);
 
             case DoubleType:
-                oos.writeDouble((Double)obj);
-                break;
+                return Bytes.toBytes((Double)obj);
 
             case ObjectType:
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                final ObjectOutputStream oos = new ObjectOutputStream(baos);
                 oos.writeObject(obj);
-                break;
+                oos.flush();
+                return baos.toByteArray();
         }
 
-        oos.flush();
-        return baos.toByteArray();
+        throw new HPersistException("Error in getScalarfromBytes()");
     }
 
     @Override
