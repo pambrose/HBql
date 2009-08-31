@@ -17,7 +17,7 @@ public class NumberBetweenStmt extends GenericBetweenStmt implements PredicateEx
     private NumberValue expr = null;
     private NumberValue lower = null, upper = null;
 
-    public NumberBetweenStmt(final boolean not, final NumberValue expr, final NumberValue lower, final NumberValue upper) {
+    public NumberBetweenStmt(final NumberValue expr, final boolean not, final NumberValue lower, final NumberValue upper) {
         super(not);
         this.expr = expr;
         this.lower = lower;

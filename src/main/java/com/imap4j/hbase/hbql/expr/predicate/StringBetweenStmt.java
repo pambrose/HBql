@@ -17,7 +17,7 @@ public class StringBetweenStmt extends GenericBetweenStmt implements PredicateEx
     private StringValue expr = null;
     private StringValue lower = null, upper = null;
 
-    public StringBetweenStmt(final boolean not, final StringValue expr, final StringValue lower, final StringValue upper) {
+    public StringBetweenStmt(final StringValue expr, final boolean not, final StringValue lower, final StringValue upper) {
         super(not);
         this.expr = expr;
         this.lower = lower;

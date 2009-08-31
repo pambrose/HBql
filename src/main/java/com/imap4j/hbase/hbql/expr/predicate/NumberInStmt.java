@@ -20,7 +20,7 @@ public class NumberInStmt extends GenericInStmt implements PredicateExpr {
     private NumberValue expr = null;
     private final List<NumberValue> vals;
 
-    public NumberInStmt(final boolean not, final NumberValue expr, final List<NumberValue> vals) {
+    public NumberInStmt(final NumberValue expr, final boolean not, final List<NumberValue> vals) {
         super(not);
         this.expr = expr;
         this.vals = vals;

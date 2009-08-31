@@ -20,7 +20,7 @@ public class StringInStmt extends GenericInStmt implements PredicateExpr {
     private StringValue expr = null;
     private final List<StringValue> valList;
 
-    public StringInStmt(final boolean not, final StringValue expr, final List<StringValue> valList) {
+    public StringInStmt(final StringValue expr, final boolean not, final List<StringValue> valList) {
         super(not);
         this.expr = expr;
         this.valList = valList;
