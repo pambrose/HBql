@@ -197,23 +197,51 @@ public class WhereExpressionTests extends HTest {
     @Test
     public void hadoopSerialization() throws IOException, HPersistException {
 
+        final int total = 100000;
+        int pos = 0;
+        byte[] b;
+
         final Serialization.TYPE[] types = {Serialization.TYPE.HADOOP, Serialization.TYPE.JAVA};
 
         for (final Serialization.TYPE type : types) {
+
             Serialization ser = Serialization.getSerializationStrategy(type);
 
-            final int total = 100000;
             final Random random = new Random(System.currentTimeMillis());
+
+            // Byte array
+            final List<Byte> byteList = Lists.newArrayList();
+            for (int i = 0; i < total; i++)
+                byteList.add((byte)(random.nextInt() % Byte.MAX_VALUE));
+            final byte[] bytearr1 = new byte[byteList.size()];
+            pos = 0;
+            for (final Byte val : byteList)
+                bytearr1[pos++] = val;
+            b = ser.getArrayasBytes(FieldType.ByteType, bytearr1);
+            final byte[] bytearr2 = (byte[])ser.getArrayFromBytes(FieldType.ByteType, Byte.TYPE, b);
+            assertTrue(Arrays.equals(bytearr1, bytearr2));
+
+            // Char array
+            final StringBuffer sbuf = new StringBuffer();
+            for (int i = 0; i < total; i++) {
+                String s = "" + System.nanoTime();
+                String t = s.substring(s.length() - 5, s.length() - 4);
+                sbuf.append(t);
+            }
+            final char[] chararr1 = sbuf.toString().toCharArray();
+            b = ser.getArrayasBytes(FieldType.CharType, chararr1);
+            final char[] chararr2 = (char[])ser.getArrayFromBytes(FieldType.CharType, Short.TYPE, b);
+            assertTrue(Arrays.equals(chararr1, chararr2));
 
             // Short array
             final List<Short> shortList = Lists.newArrayList();
             for (int i = 0; i < total; i++)
                 shortList.add((short)random.nextInt());
             final short[] shortarr1 = new short[shortList.size()];
-            int pos = 0;
+            pos = 0;
             for (final Short val : shortList)
                 shortarr1[pos++] = val;
-            byte[] b = ser.getArrayasBytes(FieldType.ShortType, shortarr1);
+            b = ser.getArrayasBytes(FieldType.ShortType, shortarr1);
             final short[] shortarr2 = (short[])ser.getArrayFromBytes(FieldType.ShortType, Short.TYPE, b);
             assertTrue(Arrays.equals(shortarr1, shortarr2));
 

@@ -125,10 +125,16 @@ public class JavaSerialization extends Serialization {
     @Override
     public Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws IOException, HPersistException {
 
+        if (fieldType == FieldType.CharType) {
+            final String s = new String(b);
+            return s.toCharArray();
+        }
+
         final ByteArrayInputStream bais = new ByteArrayInputStream(b);
         final ObjectInputStream ois = new ObjectInputStream(bais);
 
         try {
+            // Read length
             final int length = ois.readInt();
             final Object array = Array.newInstance(clazz, length);
 
@@ -147,9 +153,8 @@ public class JavaSerialization extends Serialization {
                 }
 
                 case CharType: {
-                    for (int i = 0; i < length; i++)
-                        Array.set(array, i, ois.readByte());
-                    return array;
+                    // See above
+                    return null;
                 }
 
                 case ShortType: {
@@ -193,6 +198,9 @@ public class JavaSerialization extends Serialization {
                         Array.set(array, i, ois.readObject());
                     return array;
                 }
+
+                default:
+                    throw new HPersistException("Error in getScalarfromBytes() - " + fieldType);
             }
         }
         catch (ClassNotFoundException e) {
@@ -203,11 +211,15 @@ public class JavaSerialization extends Serialization {
             ois.close();
         }
 
-        throw new HPersistException("Error in getScalarfromBytes()");
     }
 
     @Override
     public byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws IOException, HPersistException {
+
+        if (fieldType == FieldType.CharType) {
+            final String s = new String((char[])obj);
+            return s.getBytes();
+        }
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -229,9 +241,7 @@ public class JavaSerialization extends Serialization {
             }
 
             case CharType: {
-                oos.writeInt(((char[])obj).length);
-                for (final char val : (char[])obj)
-                    oos.write(val);
+                // See above
                 break;
             }
 

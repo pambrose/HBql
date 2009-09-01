@@ -64,14 +64,15 @@ public class HadoopSerialization extends Serialization {
                         ois.close();
                     }
                 }
+
+                default:
+                    throw new HPersistException("Error in getScalarfromBytes() - " + fieldType);
             }
         }
         catch (ClassNotFoundException e) {
             e.printStackTrace();
             throw new HPersistException("Error in getScalarfromBytes()");
         }
-
-        throw new HPersistException("Error in getScalarfromBytes()");
     }
 
     @Override
@@ -117,9 +118,10 @@ public class HadoopSerialization extends Serialization {
                 finally {
                     oos.close();
                 }
-        }
 
-        throw new HPersistException("Error in getScalarfromBytes()");
+            default:
+                throw new HPersistException("Error in getScalarfromBytes() - " + fieldType);
+        }
     }
 
     @Override
@@ -141,29 +143,23 @@ public class HadoopSerialization extends Serialization {
                 }
 
                 case ByteType: {
-                    final ByteArrayInputStream bais = new ByteArrayInputStream(b);
-                    final ObjectInputStream ois = new ObjectInputStream(bais);
-                    final int length = ois.readInt();
+                    final int length = this.readLength(b);
+                    int offset = lengthsize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
-                        Array.set(array, i, ois.readByte());
+                        Array.set(array, i, b[offset]);
+                        offset += Bytes.SIZEOF_BYTE;
                     }
                     return array;
                 }
 
                 case CharType: {
-                    final ByteArrayInputStream bais = new ByteArrayInputStream(b);
-                    final ObjectInputStream ois = new ObjectInputStream(bais);
-                    final int length = ois.readInt();
-                    final Object array = Array.newInstance(clazz, length);
-                    for (int i = 0; i < length; i++) {
-                        Array.set(array, i, ois.readByte());
-                        return array;
-                    }
+                    final String s = new String(b);
+                    return s.toCharArray();
                 }
 
                 case ShortType: {
-                    final int length = Bytes.toInt(b);
+                    final int length = this.readLength(b);
                     int offset = lengthsize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
@@ -174,7 +170,7 @@ public class HadoopSerialization extends Serialization {
                 }
 
                 case IntegerType: {
-                    final int length = Bytes.toInt(b);
+                    final int length = this.readLength(b);
                     int offset = lengthsize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
@@ -185,7 +181,7 @@ public class HadoopSerialization extends Serialization {
                 }
 
                 case LongType: {
-                    final int length = Bytes.toInt(b);
+                    final int length = this.readLength(b);
                     int offset = lengthsize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
@@ -196,7 +192,7 @@ public class HadoopSerialization extends Serialization {
                 }
 
                 case FloatType: {
-                    final int length = Bytes.toInt(b);
+                    final int length = this.readLength(b);
                     int offset = lengthsize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
@@ -207,7 +203,7 @@ public class HadoopSerialization extends Serialization {
                 }
 
                 case DoubleType: {
-                    final int length = Bytes.toInt(b);
+                    final int length = this.readLength(b);
                     int offset = lengthsize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
@@ -243,53 +239,56 @@ public class HadoopSerialization extends Serialization {
                         ois.close();
                     }
                 }
+
+                default:
+                    throw new HPersistException("Error in getScalarfromBytes() - " + fieldType);
             }
         }
         catch (ClassNotFoundException e) {
             e.printStackTrace();
             throw new HPersistException("Error in getScalarfromBytes()");
         }
-
-        throw new HPersistException("Error in getScalarfromBytes()");
     }
 
     @Override
     public byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws IOException, HPersistException {
 
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream oos = new ObjectOutputStream(baos);
-
         switch (fieldType) {
 
             case BooleanType: {
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                final ObjectOutputStream oos = new ObjectOutputStream(baos);
                 oos.writeInt(((boolean[])obj).length);
                 for (final boolean val : (boolean[])obj) {
                     oos.writeBoolean(val);
                 }
-                break;
+                oos.flush();
+                return baos.toByteArray();
             }
 
             case ByteType: {
-                oos.writeInt(((byte[])obj).length);
+                final int elemsize = Bytes.SIZEOF_BYTE;
+                final int length = ((byte[])obj).length;
+                final byte[] b = new byte[(length * elemsize) + lengthsize];
+                this.writeLength(b, length);
+                int offset = lengthsize;
                 for (final byte val : (byte[])obj) {
-                    oos.write(val);
+                    Bytes.putByte(b, offset, val);
+                    offset += elemsize;
                 }
-                break;
+                return b;
             }
 
             case CharType: {
-                oos.writeInt(((char[])obj).length);
-                for (final char val : (char[])obj) {
-                    oos.write(val);
-                }
-                break;
+                final String s = new String((char[])obj);
+                return s.getBytes();
             }
 
             case ShortType: {
                 final int elemsize = Bytes.SIZEOF_SHORT;
                 final int length = ((short[])obj).length;
                 final byte[] b = new byte[(length * elemsize) + lengthsize];
-                Bytes.putInt(b, 0, length);
+                this.writeLength(b, length);
                 int offset = lengthsize;
                 for (final short val : (short[])obj) {
                     Bytes.putShort(b, offset, val);
@@ -302,7 +301,7 @@ public class HadoopSerialization extends Serialization {
                 final int elemsize = Bytes.SIZEOF_INT;
                 final int length = ((int[])obj).length;
                 final byte[] b = new byte[(length * elemsize) + lengthsize];
-                Bytes.putInt(b, 0, length);
+                this.writeLength(b, length);
                 int offset = lengthsize;
                 for (final int val : (int[])obj) {
                     Bytes.putInt(b, offset, val);
@@ -315,7 +314,7 @@ public class HadoopSerialization extends Serialization {
                 final int elemsize = Bytes.SIZEOF_LONG;
                 final int length = ((long[])obj).length;
                 final byte[] b = new byte[(length * elemsize) + lengthsize];
-                Bytes.putInt(b, 0, length);
+                this.writeLength(b, length);
                 int offset = lengthsize;
                 for (final long val : (long[])obj) {
                     Bytes.putLong(b, offset, val);
@@ -328,7 +327,7 @@ public class HadoopSerialization extends Serialization {
                 final int elemsize = Bytes.SIZEOF_FLOAT;
                 final int length = ((float[])obj).length;
                 final byte[] b = new byte[(length * elemsize) + lengthsize];
-                Bytes.putInt(b, 0, length);
+                this.writeLength(b, length);
                 int offset = lengthsize;
                 for (final float val : (float[])obj) {
                     Bytes.putFloat(b, offset, val);
@@ -341,7 +340,7 @@ public class HadoopSerialization extends Serialization {
                 final int elemsize = Bytes.SIZEOF_DOUBLE;
                 final int length = ((double[])obj).length;
                 final byte[] b = new byte[(length * elemsize) + lengthsize];
-                Bytes.putInt(b, 0, length);
+                this.writeLength(b, length);
                 int offset = lengthsize;
                 for (final double val : (double[])obj) {
                     Bytes.putDouble(b, offset, val);
@@ -351,23 +350,38 @@ public class HadoopSerialization extends Serialization {
             }
 
             case StringType: {
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                final ObjectOutputStream oos = new ObjectOutputStream(baos);
                 oos.writeInt(((Object[])obj).length);
                 for (final String val : (String[])obj) {
                     oos.writeUTF(val);
                 }
-                break;
+                oos.flush();
+                return baos.toByteArray();
             }
 
             case ObjectType: {
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                final ObjectOutputStream oos = new ObjectOutputStream(baos);
                 oos.writeInt(((Object[])obj).length);
                 for (final Object val : (Object[])obj) {
                     oos.writeObject(val);
                 }
-                break;
+                oos.flush();
+                return baos.toByteArray();
             }
+
+            default:
+                throw new HPersistException("Error in getArrayasBytes() - " + fieldType);
         }
-        oos.flush();
-        return baos.toByteArray();
+    }
+
+    private int readLength(final byte[] b) {
+        return Bytes.toInt(b);
+    }
+
+    private void writeLength(final byte[] b, final int length) {
+        Bytes.putInt(b, 0, length);
     }
 
 }

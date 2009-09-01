@@ -14,7 +14,7 @@ public enum FieldType {
 
     BooleanType(Boolean.TYPE),
     ByteType(Byte.TYPE),
-    CharType(Character.TYPE),
+    CharType(Short.TYPE),
     ShortType(Short.TYPE),
     IntegerType(Integer.TYPE),
     LongType(Long.TYPE),
