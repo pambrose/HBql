@@ -19,28 +19,6 @@ import java.lang.reflect.Array;
 public class JavaSerialization extends Serialization {
 
     @Override
-    public byte[] getObjectAsBytes(final Object obj) throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(obj);
-        oos.flush();
-        return baos.toByteArray();
-    }
-
-    @Override
-    public Object getObjectFromBytes(final byte[] b) throws IOException, HPersistException {
-        final ByteArrayInputStream bais = new ByteArrayInputStream(b);
-        final ObjectInputStream ois = new ObjectInputStream(bais);
-        try {
-            return ois.readObject();
-        }
-        catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new HPersistException("Error in getObjectFromBytes()");
-        }
-    }
-
-    @Override
     public Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws IOException, HPersistException {
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(b);
@@ -72,6 +50,9 @@ public class JavaSerialization extends Serialization {
 
                 case DoubleType:
                     return ois.readDouble();
+
+                case StringType:
+                    return ois.readUTF();
 
                 case ObjectType:
                     return ois.readObject();
@@ -126,6 +107,10 @@ public class JavaSerialization extends Serialization {
 
             case DoubleType:
                 oos.writeDouble((Double)obj);
+                break;
+
+            case StringType:
+                oos.writeUTF((String)obj);
                 break;
 
             case ObjectType:
@@ -197,6 +182,12 @@ public class JavaSerialization extends Serialization {
                     return array;
                 }
 
+                case StringType: {
+                    for (int i = 0; i < length; i++)
+                        Array.set(array, i, ois.readUTF());
+                    return array;
+                }
+
                 case ObjectType: {
                     for (int i = 0; i < length; i++)
                         Array.set(array, i, ois.readObject());
@@ -225,63 +216,70 @@ public class JavaSerialization extends Serialization {
 
             case BooleanType: {
                 oos.writeInt(((boolean[])obj).length);
-                for (boolean val : (boolean[])obj)
+                for (final boolean val : (boolean[])obj)
                     oos.writeBoolean(val);
                 break;
             }
 
             case ByteType: {
                 oos.writeInt(((byte[])obj).length);
-                for (byte val : (byte[])obj)
+                for (final byte val : (byte[])obj)
                     oos.write(val);
                 break;
             }
 
             case CharType: {
                 oos.writeInt(((char[])obj).length);
-                for (char val : (char[])obj)
+                for (final char val : (char[])obj)
                     oos.write(val);
                 break;
             }
 
             case ShortType: {
                 oos.writeInt(((short[])obj).length);
-                for (short val : (short[])obj)
+                for (final short val : (short[])obj)
                     oos.writeShort(val);
                 break;
             }
 
             case IntegerType: {
                 oos.writeInt(((int[])obj).length);
-                for (int val : (int[])obj)
+                for (final int val : (int[])obj)
                     oos.writeInt(val);
                 break;
             }
 
             case LongType: {
                 oos.writeInt(((long[])obj).length);
-                for (long val : (long[])obj)
+                for (final long val : (long[])obj)
                     oos.writeLong(val);
                 break;
             }
 
             case FloatType: {
                 oos.writeInt(((float[])obj).length);
-                for (float val : (float[])obj)
+                for (final float val : (float[])obj)
                     oos.writeFloat(val);
                 break;
             }
 
             case DoubleType: {
                 oos.writeInt(((double[])obj).length);
-                for (double val : (double[])obj)
+                for (final double val : (double[])obj)
                     oos.writeDouble(val);
+                break;
+            }
+
+            case StringType: {
+                oos.writeInt(((String[])obj).length);
+                for (final String val : (String[])obj)
+                    oos.writeUTF(val);
                 break;
             }
 
             case ObjectType: {
                 oos.writeInt(((Object[])obj).length);
-                for (Object val : (Object[])obj)
+                for (final Object val : (Object[])obj)
                     oos.writeObject(val);
                 break;
             }

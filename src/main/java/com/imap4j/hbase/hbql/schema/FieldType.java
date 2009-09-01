@@ -20,6 +20,7 @@ public enum FieldType {
     LongType(Long.TYPE),
     FloatType(Float.TYPE),
     DoubleType(Double.TYPE),
+    StringType(String.class),
     ObjectType(Object.class);
 
     private final Class clazz;
@@ -32,14 +33,25 @@ public enum FieldType {
         return clazz;
     }
 
-    static FieldType getFieldType(final Field field) throws HPersistException {
+    public static FieldType getFieldType(final Object obj) throws HPersistException {
+        final Class fieldClass = obj.getClass();
+        return getFieldType(fieldClass);
+    }
 
+    public static FieldType getFieldType(final Field field) throws HPersistException {
         final Class fieldClass = field.getType();
+        return getFieldType(fieldClass);
+    }
+
+    public static FieldType getFieldType(final Class fieldClass) throws HPersistException {
 
         final Class<?> clazz = fieldClass.isArray() ? fieldClass.getComponentType() : fieldClass;
 
         if (!clazz.isPrimitive()) {
-            return ObjectType;
+            if (clazz.equals(String.class))
+                return StringType;
+            else
+                return ObjectType;
         }
         else {
             for (final FieldType type : values())

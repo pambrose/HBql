@@ -117,7 +117,7 @@ public class FieldAttrib implements Serializable {
     }
 
     public Field getField() {
-        return field;
+        return this.field;
     }
 
     public boolean isArray() {

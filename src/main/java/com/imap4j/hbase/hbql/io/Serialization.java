@@ -24,34 +24,20 @@ public abstract class Serialization {
         JAVA, HADOOP
     }
 
-    public static Serialization newSerializationStrategy(final TYPE type) {
+    private final static Serialization java = new JavaSerialization();
+    private final static Serialization hadoop = new HadoopSerialization();
+
+    public static Serialization getSerializationStrategy(final TYPE type) {
 
         switch (type) {
             case JAVA:
-                return new JavaSerialization();
+                return java;
             case HADOOP:
-                return new HadoopSerialization();
+                return hadoop;
         }
 
         return null;
     }
-
-    public boolean isSerializable(final Object obj) {
-
-        try {
-            final byte[] b = getObjectAsBytes(obj);
-            Object newobj = getObjectFromBytes(b);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    abstract public byte[] getObjectAsBytes(Object obj) throws IOException;
-
-    abstract public Object getObjectFromBytes(byte[] b) throws IOException, HPersistException;
 
     abstract public Object getScalarFromBytes(FieldType fieldType, byte[] b) throws IOException, HPersistException;
 
@@ -60,6 +46,27 @@ public abstract class Serialization {
     abstract public Object getArrayFromBytes(FieldType fieldType, Class clazz, byte[] b) throws IOException, HPersistException;
 
     abstract public byte[] getArrayasBytes(FieldType fieldType, Object obj) throws IOException, HPersistException;
+
+    public byte[] getObjectAsBytes(final Object obj) throws IOException, HPersistException {
+        return this.getScalarAsBytes(FieldType.getFieldType(obj), obj);
+    }
+
+    public boolean isSerializable(final Object obj) {
+
+        try {
+            final byte[] b = getObjectAsBytes(obj);
+            Object newobj = getObjectFromBytes(FieldType.getFieldType(obj), b);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public Object getObjectFromBytes(final FieldType type, final byte[] b) throws IOException, HPersistException {
+        return this.getScalarFromBytes(type, b);
+    }
 
     public HPersistable getHPersistable(final ClassSchema classSchema, final Result result) throws HPersistException {
 

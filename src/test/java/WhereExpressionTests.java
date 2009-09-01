@@ -1,10 +1,18 @@
+import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbql.HColumn;
 import com.imap4j.hbase.hbql.HFamily;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.HPersistable;
 import com.imap4j.hbase.hbql.HTable;
+import com.imap4j.hbase.hbql.io.Serialization;
+import com.imap4j.hbase.hbql.schema.FieldType;
 import com.imap4j.hbase.hbql.test.HTest;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by IntelliJ IDEA.
@@ -184,6 +192,67 @@ public class WhereExpressionTests extends HTest {
         assertColumnsMatchTrue("a1 < a2", "a1", "a2");
         assertColumnsMatchFalse("a1 < a2 || d1 > k3", "a1", "a2");
         assertColumnsMatchTrue("a1 < a2 || d1 > k3", "a1", "a2", "d1", "k3");
+    }
+
+    @Test
+    public void hadoopSerialization() throws IOException, HPersistException {
+
+        final Serialization.TYPE[] types = {Serialization.TYPE.HADOOP, Serialization.TYPE.JAVA};
+
+        for (final Serialization.TYPE type : types) {
+            Serialization ser = Serialization.getSerializationStrategy(type);
+
+            final int total = 100000;
+            final Random random = new Random(System.currentTimeMillis());
+
+            // Int array
+            final List<Integer> intList = Lists.newArrayList();
+            for (int i = 0; i < total; i++)
+                intList.add(random.nextInt());
+            final int[] intarr1 = new int[intList.size()];
+            int pos = 0;
+            for (final Integer val : intList)
+                intarr1[pos++] = val;
+            byte[] b = ser.getArrayasBytes(FieldType.IntegerType, intarr1);
+            final int[] intarr2 = (int[])ser.getArrayFromBytes(FieldType.IntegerType, Integer.TYPE, b);
+            assertTrue(Arrays.equals(intarr1, intarr2));
+
+            // Long Array
+            final List<Long> longList = Lists.newArrayList();
+            for (int i = 0; i < total; i++)
+                longList.add(random.nextLong());
+            final long[] longarr1 = new long[longList.size()];
+            pos = 0;
+            for (final Long val : longList)
+                longarr1[pos++] = val;
+            b = ser.getArrayasBytes(FieldType.LongType, longarr1);
+            final long[] longarr2 = (long[])ser.getArrayFromBytes(FieldType.LongType, Long.TYPE, b);
+            assertTrue(Arrays.equals(longarr1, longarr2));
+
+            // Float Array
+            final List<Float> floatList = Lists.newArrayList();
+            for (int i = 0; i < total; i++)
+                floatList.add(random.nextFloat());
+            final float[] floatarr1 = new float[floatList.size()];
+            pos = 0;
+            for (final Float val : floatList)
+                floatarr1[pos++] = val;
+            b = ser.getArrayasBytes(FieldType.FloatType, floatarr1);
+            final float[] floatarr2 = (float[])ser.getArrayFromBytes(FieldType.FloatType, Float.TYPE, b);
+            assertTrue(Arrays.equals(floatarr1, floatarr2));
+
+            // Double Array
+            final List<Double> doubleList = Lists.newArrayList();
+            for (int i = 0; i < total; i++)
+                doubleList.add(random.nextDouble());
+            final double[] doublearr1 = new double[doubleList.size()];
+            pos = 0;
+            for (final Double val : doubleList)
+                doublearr1[pos++] = val;
+            b = ser.getArrayasBytes(FieldType.DoubleType, doublearr1);
+            final double[] doublearr2 = (double[])ser.getArrayFromBytes(FieldType.DoubleType, Double.TYPE, b);
+            assertTrue(Arrays.equals(doublearr1, doublearr2));
+        }
     }
 
 }

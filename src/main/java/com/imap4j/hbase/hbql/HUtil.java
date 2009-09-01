@@ -40,7 +40,7 @@ public class HUtil {
         return scan;
     }
 
-    final static Serialization ser = Serialization.newSerializationStrategy(Serialization.TYPE.JAVA);
+    final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.JAVA);
 
     public static Serialization getSerialization() {
         return ser;

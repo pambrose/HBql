@@ -40,6 +40,14 @@ public class HTest {
 
     }
 
+    public static void assertTrue(final boolean val) throws HPersistException {
+        org.junit.Assert.assertTrue(val);
+    }
+
+    public static void assertFalse(final boolean val) throws HPersistException {
+        org.junit.Assert.assertFalse(val);
+    }
+
     public static void assertEvalTrue(final String expr) throws HPersistException {
         assertEvalTrue(null, expr);
     }
