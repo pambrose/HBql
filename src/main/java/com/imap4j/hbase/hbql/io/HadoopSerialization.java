@@ -163,19 +163,19 @@ public class HadoopSerialization extends Serialization {
                 }
 
                 case ShortType: {
-                    final ByteArrayInputStream bais = new ByteArrayInputStream(b);
-                    final ObjectInputStream ois = new ObjectInputStream(bais);
-                    final int length = ois.readInt();
+                    final int length = Bytes.toInt(b);
+                    int offset = lengthsize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
-                        Array.set(array, i, ois.readShort());
+                        Array.set(array, i, Bytes.toShort(b, offset));
+                        offset += Bytes.SIZEOF_SHORT;
                     }
                     return array;
                 }
 
                 case IntegerType: {
                     final int length = Bytes.toInt(b);
-                    int offset = Bytes.SIZEOF_INT;
+                    int offset = lengthsize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
                         Array.set(array, i, Bytes.toInt(b, offset));
@@ -286,61 +286,66 @@ public class HadoopSerialization extends Serialization {
             }
 
             case ShortType: {
-                oos.writeInt(((short[])obj).length);
+                final int elemsize = Bytes.SIZEOF_SHORT;
+                final int length = ((short[])obj).length;
+                final byte[] b = new byte[(length * elemsize) + lengthsize];
+                Bytes.putInt(b, 0, length);
+                int offset = lengthsize;
                 for (final short val : (short[])obj) {
-                    oos.writeShort(val);
+                    Bytes.putShort(b, offset, val);
+                    offset += elemsize;
                 }
-                break;
+                return b;
             }
 
             case IntegerType: {
-                final int arraysize = Bytes.SIZEOF_INT;
+                final int elemsize = Bytes.SIZEOF_INT;
                 final int length = ((int[])obj).length;
-                final byte[] b = new byte[(length * arraysize) + lengthsize];
-                int offset = 0;
-                Bytes.putInt(b, offset, length);
+                final byte[] b = new byte[(length * elemsize) + lengthsize];
+                Bytes.putInt(b, 0, length);
+                int offset = lengthsize;
                 for (final int val : (int[])obj) {
-                    offset += arraysize;
                     Bytes.putInt(b, offset, val);
+                    offset += elemsize;
                 }
                 return b;
             }
 
             case LongType: {
-                final int arraysize = Bytes.SIZEOF_LONG;
+                final int elemsize = Bytes.SIZEOF_LONG;
                 final int length = ((long[])obj).length;
-                final byte[] b = new byte[(length * arraysize) + lengthsize];
+                final byte[] b = new byte[(length * elemsize) + lengthsize];
                 Bytes.putInt(b, 0, length);
                 int offset = lengthsize;
                 for (final long val : (long[])obj) {
                     Bytes.putLong(b, offset, val);
-                    offset += arraysize;
+                    offset += elemsize;
                 }
                 return b;
             }
 
             case FloatType: {
-                final int arraysize = Bytes.SIZEOF_FLOAT;
+                final int elemsize = Bytes.SIZEOF_FLOAT;
                 final int length = ((float[])obj).length;
-                final byte[] b = new byte[(length * arraysize) + lengthsize];
+                final byte[] b = new byte[(length * elemsize) + lengthsize];
                 Bytes.putInt(b, 0, length);
                 int offset = lengthsize;
                 for (final float val : (float[])obj) {
                     Bytes.putFloat(b, offset, val);
-                    offset += arraysize;
+                    offset += elemsize;
                 }
                 return b;
             }
 
             case DoubleType: {
-                final int arraysize = Bytes.SIZEOF_DOUBLE;
+                final int elemsize = Bytes.SIZEOF_DOUBLE;
                 final int length = ((double[])obj).length;
-                final byte[] b = new byte[(length * arraysize) + lengthsize];
+                final byte[] b = new byte[(length * elemsize) + lengthsize];
                 Bytes.putInt(b, 0, length);
                 int offset = lengthsize;
                 for (final double val : (double[])obj) {
                     Bytes.putDouble(b, offset, val);
-                    offset += arraysize;
+                    offset += elemsize;
                 }
                 return b;
             }

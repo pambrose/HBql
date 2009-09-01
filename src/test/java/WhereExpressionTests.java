@@ -205,15 +205,27 @@ public class WhereExpressionTests extends HTest {
             final int total = 100000;
             final Random random = new Random(System.currentTimeMillis());
 
+            // Short array
+            final List<Short> shortList = Lists.newArrayList();
+            for (int i = 0; i < total; i++)
+                shortList.add((short)random.nextInt());
+            final short[] shortarr1 = new short[shortList.size()];
+            int pos = 0;
+            for (final Short val : shortList)
+                shortarr1[pos++] = val;
+            byte[] b = ser.getArrayasBytes(FieldType.ShortType, shortarr1);
+            final short[] shortarr2 = (short[])ser.getArrayFromBytes(FieldType.ShortType, Short.TYPE, b);
+            assertTrue(Arrays.equals(shortarr1, shortarr2));
+
             // Int array
             final List<Integer> intList = Lists.newArrayList();
             for (int i = 0; i < total; i++)
                 intList.add(random.nextInt());
             final int[] intarr1 = new int[intList.size()];
-            int pos = 0;
+            pos = 0;
             for (final Integer val : intList)
                 intarr1[pos++] = val;
-            byte[] b = ser.getArrayasBytes(FieldType.IntegerType, intarr1);
+            b = ser.getArrayasBytes(FieldType.IntegerType, intarr1);
             final int[] intarr2 = (int[])ser.getArrayFromBytes(FieldType.IntegerType, Integer.TYPE, b);
             assertTrue(Arrays.equals(intarr1, intarr2));
 
