@@ -148,8 +148,8 @@ booleanStmt returns [PredicateExpr retval]
 	: b=booleanExpr					{retval = new BooleanStmt($b.retval);};
 	
 nullCompExpr returns [PredicateExpr retval]
-	: d=dateExpr keyIS (n=keyNOT)? keyNULL		{retval = new DateNullCompare(($n.text != null), $d.retval);}
-	| s=stringExpr keyIS (n=keyNOT)? keyNULL	{retval = new StringNullCompare(($n.text != null), $s.retval);}	
+	: s=stringExpr keyIS (n=keyNOT)? keyNULL	{retval = new StringNullCompare(($n.text != null), $s.retval);}	
+	// | d=dateExpr keyIS (n=keyNOT)? keyNULL	{retval = new DateNullCompare(($n.text != null), $d.retval);}
 	;	
 
 compareExpr returns [PredicateExpr retval]
