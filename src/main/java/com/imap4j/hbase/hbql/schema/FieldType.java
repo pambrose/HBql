@@ -1,6 +1,7 @@
 package com.imap4j.hbase.hbql.schema;
 
 import com.imap4j.hbase.hbql.HPersistException;
+import org.apache.hadoop.hbase.util.Bytes;
 
 import java.lang.reflect.Field;
 
@@ -12,25 +13,32 @@ import java.lang.reflect.Field;
  */
 public enum FieldType {
 
-    BooleanType(Boolean.TYPE),
-    ByteType(Byte.TYPE),
-    CharType(Short.TYPE),
-    ShortType(Short.TYPE),
-    IntegerType(Integer.TYPE),
-    LongType(Long.TYPE),
-    FloatType(Float.TYPE),
-    DoubleType(Double.TYPE),
-    StringType(String.class),
-    ObjectType(Object.class);
+    BooleanType(Boolean.TYPE, Bytes.SIZEOF_BOOLEAN),
+    ByteType(Byte.TYPE, Bytes.SIZEOF_BYTE),
+    CharType(Short.TYPE, Bytes.SIZEOF_CHAR),
+    ShortType(Short.TYPE, Bytes.SIZEOF_SHORT),
+    IntegerType(Integer.TYPE, Bytes.SIZEOF_INT),
+    LongType(Long.TYPE, Bytes.SIZEOF_LONG),
+    FloatType(Float.TYPE, Bytes.SIZEOF_FLOAT),
+    DoubleType(Double.TYPE, Bytes.SIZEOF_DOUBLE),
+    StringType(String.class, -1),
+    ObjectType(Object.class, -1);
 
     private final Class clazz;
+    private final int size;
 
-    FieldType(final Class clazz) {
+
+    FieldType(final Class clazz, final int size) {
         this.clazz = clazz;
+        this.size = size;
     }
 
     private Class getClazz() {
         return clazz;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     public static FieldType getFieldType(final Object obj) throws HPersistException {

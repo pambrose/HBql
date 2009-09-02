@@ -209,6 +209,18 @@ public class WhereExpressionTests extends HTest {
 
             final Random random = new Random(System.currentTimeMillis());
 
+            // Boolean array
+            final List<Boolean> boolList = Lists.newArrayList();
+            for (int i = 0; i < total; i++)
+                boolList.add((random.nextInt() % 2) > 0);
+            final boolean[] boolarr1 = new boolean[boolList.size()];
+            pos = 0;
+            for (final Boolean val : boolList)
+                boolarr1[pos++] = val;
+            b = ser.getArrayasBytes(FieldType.BooleanType, boolarr1);
+            final boolean[] boolarr2 = (boolean[])ser.getArrayFromBytes(FieldType.BooleanType, Boolean.TYPE, b);
+            assertTrue(Arrays.equals(boolarr1, boolarr2));
+
             // Byte array
             final List<Byte> byteList = Lists.newArrayList();
             for (int i = 0; i < total; i++)

@@ -19,7 +19,7 @@ import java.lang.reflect.Array;
  */
 public class HadoopSerialization extends Serialization {
 
-    private static final int lengthsize = Bytes.SIZEOF_INT;
+    private static final int arraysize = Bytes.SIZEOF_INT;
 
     @Override
     public Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws IOException, HPersistException {
@@ -144,11 +144,11 @@ public class HadoopSerialization extends Serialization {
 
                 case ByteType: {
                     final int length = this.readLength(b);
-                    int offset = lengthsize;
+                    int offset = arraysize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
                         Array.set(array, i, b[offset]);
-                        offset += Bytes.SIZEOF_BYTE;
+                        offset += fieldType.getSize();
                     }
                     return array;
                 }
@@ -160,55 +160,55 @@ public class HadoopSerialization extends Serialization {
 
                 case ShortType: {
                     final int length = this.readLength(b);
-                    int offset = lengthsize;
+                    int offset = arraysize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
                         Array.set(array, i, Bytes.toShort(b, offset));
-                        offset += Bytes.SIZEOF_SHORT;
+                        offset += fieldType.getSize();
                     }
                     return array;
                 }
 
                 case IntegerType: {
                     final int length = this.readLength(b);
-                    int offset = lengthsize;
+                    int offset = arraysize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
                         Array.set(array, i, Bytes.toInt(b, offset));
-                        offset += Bytes.SIZEOF_INT;
+                        offset += fieldType.getSize();
                     }
                     return array;
                 }
 
                 case LongType: {
                     final int length = this.readLength(b);
-                    int offset = lengthsize;
+                    int offset = arraysize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
                         Array.set(array, i, Bytes.toLong(b, offset));
-                        offset += Bytes.SIZEOF_LONG;
+                        offset += fieldType.getSize();
                     }
                     return array;
                 }
 
                 case FloatType: {
                     final int length = this.readLength(b);
-                    int offset = lengthsize;
+                    int offset = arraysize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
                         Array.set(array, i, Bytes.toFloat(b, offset));
-                        offset += Bytes.SIZEOF_FLOAT;
+                        offset += fieldType.getSize();
                     }
                     return array;
                 }
 
                 case DoubleType: {
                     final int length = this.readLength(b);
-                    int offset = lengthsize;
+                    int offset = arraysize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
                         Array.set(array, i, Bytes.toDouble(b, offset));
-                        offset += Bytes.SIZEOF_DOUBLE;
+                        offset += fieldType.getSize();
                     }
                     return array;
                 }
@@ -267,14 +267,13 @@ public class HadoopSerialization extends Serialization {
             }
 
             case ByteType: {
-                final int elemsize = Bytes.SIZEOF_BYTE;
                 final int length = ((byte[])obj).length;
-                final byte[] b = new byte[(length * elemsize) + lengthsize];
+                final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
                 this.writeLength(b, length);
-                int offset = lengthsize;
+                int offset = arraysize;
                 for (final byte val : (byte[])obj) {
                     Bytes.putByte(b, offset, val);
-                    offset += elemsize;
+                    offset += fieldType.getSize();
                 }
                 return b;
             }
@@ -285,66 +284,61 @@ public class HadoopSerialization extends Serialization {
             }
 
             case ShortType: {
-                final int elemsize = Bytes.SIZEOF_SHORT;
                 final int length = ((short[])obj).length;
-                final byte[] b = new byte[(length * elemsize) + lengthsize];
+                final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
                 this.writeLength(b, length);
-                int offset = lengthsize;
+                int offset = arraysize;
                 for (final short val : (short[])obj) {
                     Bytes.putShort(b, offset, val);
-                    offset += elemsize;
+                    offset += fieldType.getSize();
                 }
                 return b;
             }
 
             case IntegerType: {
-                final int elemsize = Bytes.SIZEOF_INT;
                 final int length = ((int[])obj).length;
-                final byte[] b = new byte[(length * elemsize) + lengthsize];
+                final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
                 this.writeLength(b, length);
-                int offset = lengthsize;
+                int offset = arraysize;
                 for (final int val : (int[])obj) {
                     Bytes.putInt(b, offset, val);
-                    offset += elemsize;
+                    offset += fieldType.getSize();
                 }
                 return b;
             }
 
             case LongType: {
-                final int elemsize = Bytes.SIZEOF_LONG;
                 final int length = ((long[])obj).length;
-                final byte[] b = new byte[(length * elemsize) + lengthsize];
+                final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
                 this.writeLength(b, length);
-                int offset = lengthsize;
+                int offset = arraysize;
                 for (final long val : (long[])obj) {
                     Bytes.putLong(b, offset, val);
-                    offset += elemsize;
+                    offset += fieldType.getSize();
                 }
                 return b;
             }
 
             case FloatType: {
-                final int elemsize = Bytes.SIZEOF_FLOAT;
                 final int length = ((float[])obj).length;
-                final byte[] b = new byte[(length * elemsize) + lengthsize];
+                final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
                 this.writeLength(b, length);
-                int offset = lengthsize;
+                int offset = arraysize;
                 for (final float val : (float[])obj) {
                     Bytes.putFloat(b, offset, val);
-                    offset += elemsize;
+                    offset += fieldType.getSize();
                 }
                 return b;
             }
 
             case DoubleType: {
-                final int elemsize = Bytes.SIZEOF_DOUBLE;
                 final int length = ((double[])obj).length;
-                final byte[] b = new byte[(length * elemsize) + lengthsize];
+                final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
                 this.writeLength(b, length);
-                int offset = lengthsize;
+                int offset = arraysize;
                 for (final double val : (double[])obj) {
                     Bytes.putDouble(b, offset, val);
-                    offset += elemsize;
+                    offset += fieldType.getSize();
                 }
                 return b;
             }
