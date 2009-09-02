@@ -22,7 +22,6 @@ public class ExprEvalTree implements PredicateExpr {
 
     public ExprEvalTree(final PredicateExpr expr) {
         this.expr = expr;
-
     }
 
     private PredicateExpr getExpr() {
@@ -60,6 +59,11 @@ public class ExprEvalTree implements PredicateExpr {
         this.end = System.nanoTime();
 
         return retval;
+    }
+
+    @Override
+    public boolean isContant() {
+        return this.getExpr().isContant();
     }
 
     public long getElapsedNanos() {

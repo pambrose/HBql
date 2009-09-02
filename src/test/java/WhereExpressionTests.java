@@ -164,6 +164,20 @@ public class WhereExpressionTests extends HTest {
     }
 
     @Test
+    public void regexFunctions() throws HPersistException {
+
+        final AllTypes obj = new AllTypes("aaa", 3, "aaab");
+
+        assertEvalTrue("'abc' like 'abc'");
+        assertEvalFalse("'abc' not like 'abc'");
+        assertEvalTrue("'aaaaab' like 'a*b'");
+        assertEvalTrue("'aaaaa' + 'b' like 'a*b'");
+        assertEvalTrue("('aaaaa' + 'b') like 'a*b'");
+        assertEvalTrue(obj, "stringValue + 'b' like 'a*bb'");
+        assertEvalTrue(obj, "(((((stringValue + 'b'))))) like 'a*bb'");
+    }
+
+    @Test
     public void objectFunctions() throws HPersistException {
 
         final AllTypes obj = new AllTypes("aaa", 3, "bbb");
@@ -236,7 +250,7 @@ public class WhereExpressionTests extends HTest {
             assertTrue(Arrays.equals(bytearr1, bytearr2));
 
             // Char array
-            final StringBuffer sbuf = new StringBuffer();
+            final StringBuilder sbuf = new StringBuilder();
             for (int i = 0; i < total; i++) {
                 String s = "" + System.nanoTime();
                 String t = s.substring(s.length() - 5, s.length() - 4);

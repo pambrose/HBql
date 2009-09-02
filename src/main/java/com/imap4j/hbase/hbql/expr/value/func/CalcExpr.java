@@ -98,4 +98,10 @@ public class CalcExpr implements NumberValue {
         throw new HPersistException("Error in CalcExpr.getValue() " + this.op);
 
     }
+
+    @Override
+    public boolean isContant() {
+        return this.getExpr1().isContant() && this.getExpr2().isContant();
+    }
+
 }

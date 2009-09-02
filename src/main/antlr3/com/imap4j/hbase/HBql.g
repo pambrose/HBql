@@ -131,7 +131,8 @@ betweenStmt returns [PredicateExpr retval]
 	;
 
 likeStmt returns [PredicateExpr retval]
-	: stringExpr keyNOT? keyLIKE p=stringExpr; // ('ESCAPE' escape_character=string_literal)?;
+	: s1=stringExpr n=not? keyLIKE s2=stringExpr 
+							{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);};
 
 inStmt returns [PredicateExpr retval]
 	: a1=numericExpr n=not? keyIN LPAREN i=intItemList RPAREN			
@@ -205,8 +206,9 @@ stringExpr returns [StringValue retval]
 	;
 	
 stringVal returns [StringValue retval]
-	: s=stringLiteral				{retval = $s.retval;}
+	: sl=stringLiteral				{retval = $sl.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
+	| LPAREN se=stringExpr	RPAREN			{retval = $se.retval;}
 	| n=keyNULL					{retval = new NullLiteral();}
 	| a=strAttrib					{retval = $a.retval;}
 	| LBRACE e=orExpr QMARK s1=stringExpr COLON s2=stringExpr RBRACE	
@@ -325,7 +327,7 @@ INT	: DIGIT+;
 ID	: CHAR (CHAR | DIGIT)*;
  
 QUOTED		
-@init {final StringBuffer sbuf = new StringBuffer();}	
+@init {final StringBuilder sbuf = new StringBuilder();}	
 	: DQUOTE (options {greedy=false;} : any=. {sbuf.append((char)$any);})* DQUOTE 	{setText(sbuf.toString());}
 	| SQUOTE (options {greedy=false;} : any=. {sbuf.append((char)$any);})* SQUOTE	{setText(sbuf.toString());}
 	;
@@ -366,6 +368,7 @@ keyUPPER 	: {isKeyword(input, "UPPER")}? ID;
 keyTRIM 	: {isKeyword(input, "TRIM")}? ID;
 keyCONCAT 	: {isKeyword(input, "CONCAT")}? ID;
 keySUBSTRING 	: {isKeyword(input, "SUBSTRING")}? ID;
+keyIGNORE_CASE 	: {isKeyword(input, "IGNORE_CASE")}? ID;
 //keyLENGTH 	: {isKeyword(input, "LENGTH")}? ID;
 //keyABS 	: {isKeyword(input, "ABS")}? ID;
 //keyMOD	 : {isKeyword(input, "MOD")}? ID;

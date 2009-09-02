@@ -33,4 +33,8 @@ public class BooleanLiteral extends GenericLiteral implements BooleanValue, Pred
         return this.value;
     }
 
+    @Override
+    public boolean isContant() {
+        return true;
+    }
 }

@@ -82,4 +82,9 @@ public class NumberCompare extends CompareExpr implements PredicateExpr {
         throw new HPersistException("Error in NumberCompare.evaluate()");
     }
 
+    @Override
+    public boolean isContant() {
+        return this.getExpr1().isContant() && this.getExpr2().isContant();
+    }
+
 }

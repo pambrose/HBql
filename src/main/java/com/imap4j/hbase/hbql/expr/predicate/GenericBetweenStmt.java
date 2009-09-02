@@ -11,16 +11,10 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public abstract class GenericBetweenStmt {
-
-    private final boolean not;
+public abstract class GenericBetweenStmt extends GenericNotStmt implements ExprEvalTreeNode {
 
     protected GenericBetweenStmt(final boolean not) {
-        this.not = not;
-    }
-
-    public boolean isNot() {
-        return not;
+        super(not);
     }
 
     abstract protected ExprEvalTreeNode getExpr();
@@ -29,10 +23,17 @@ public abstract class GenericBetweenStmt {
 
     abstract protected ExprEvalTreeNode getUpper();
 
+    @Override
     public List<ExprVariable> getExprVariables() {
         final List<ExprVariable> retval = this.getExpr().getExprVariables();
         retval.addAll(this.getLower().getExprVariables());
         retval.addAll(this.getUpper().getExprVariables());
         return retval;
     }
+
+    @Override
+    public boolean isContant() {
+        return this.getExpr().isContant() && this.getLower().isContant() && this.getUpper().isContant();
+    }
+
 }

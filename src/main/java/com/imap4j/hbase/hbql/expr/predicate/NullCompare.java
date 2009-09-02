@@ -15,13 +15,12 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class NullCompare implements PredicateExpr {
+public class NullCompare extends GenericNotStmt implements PredicateExpr {
 
-    private final boolean not;
     private StringValue expr = null;
 
     public NullCompare(final boolean not, final StringValue expr) {
-        this.not = not;
+        super(not);
         this.expr = expr;
     }
 
@@ -51,6 +50,11 @@ public class NullCompare implements PredicateExpr {
     public boolean evaluate(final EvalContext context) throws HPersistException {
         final String val = this.expr.getValue(context);
         final boolean retval = (val == null);
-        return (this.not) ? !retval : retval;
+        return (this.isNot()) ? !retval : retval;
+    }
+
+    @Override
+    public boolean isContant() {
+        return this.getExpr().isContant();
     }
 }

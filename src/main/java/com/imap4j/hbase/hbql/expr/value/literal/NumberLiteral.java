@@ -21,4 +21,9 @@ public class NumberLiteral extends GenericLiteral implements NumberValue {
     public Number getValue(final EvalContext context) {
         return this.value;
     }
+
+    @Override
+    public boolean isContant() {
+        return true;
+    }
 }

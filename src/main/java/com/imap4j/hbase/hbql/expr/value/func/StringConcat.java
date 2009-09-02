@@ -23,14 +23,14 @@ public class StringConcat implements StringValue {
         this.vals = vals;
     }
 
-    private List<StringValue> getVals() {
+    private List<StringValue> getValList() {
         return this.vals;
     }
 
     @Override
     public List<ExprVariable> getExprVariables() {
         final List<ExprVariable> retval = Lists.newArrayList();
-        for (final StringValue val : this.getVals())
+        for (final StringValue val : this.getValList())
             retval.addAll(val.getExprVariables());
         return retval;
     }
@@ -49,14 +49,19 @@ public class StringConcat implements StringValue {
     @Override
     public String getValue(final EvalContext context) throws HPersistException {
 
-        if (this.getVals().size() == 1)
-            return this.getVals().get(0).getValue(context);
+        if (this.getValList().size() == 1)
+            return this.getValList().get(0).getValue(context);
 
-        final StringBuffer sbuf = new StringBuffer();
-        for (final StringValue val : this.getVals())
+        final StringBuilder sbuf = new StringBuilder();
+        for (final StringValue val : this.getValList())
             sbuf.append(val.getValue(context));
 
         return sbuf.toString();
+    }
+
+    @Override
+    public boolean isContant() {
+        return this.listIsConstant();
     }
 
     private boolean optimizeList(final EvalContext context) throws HPersistException {
@@ -64,7 +69,7 @@ public class StringConcat implements StringValue {
         boolean retval = true;
         final List<StringValue> newvalList = Lists.newArrayList();
 
-        for (final StringValue val : this.getVals()) {
+        for (final StringValue val : this.getValList()) {
             if (val.optimizeForConstants(context)) {
                 newvalList.add(new StringLiteral(val.getValue(context)));
             }
@@ -75,10 +80,20 @@ public class StringConcat implements StringValue {
         }
 
         // Swap new values to list
-        this.getVals().clear();
-        this.getVals().addAll(newvalList);
+        this.getValList().clear();
+        this.getValList().addAll(newvalList);
 
         return retval;
 
     }
+
+    private boolean listIsConstant() {
+
+        for (final StringValue val : this.getValList()) {
+            if (!val.isContant())
+                return false;
+        }
+        return true;
+    }
+
 }

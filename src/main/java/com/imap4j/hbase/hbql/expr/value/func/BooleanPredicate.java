@@ -50,4 +50,9 @@ public class BooleanPredicate implements BooleanValue {
         return this.getExpr().evaluate(context);
     }
 
+    @Override
+    public boolean isContant() {
+        return this.getExpr().isContant();
+    }
+
 }

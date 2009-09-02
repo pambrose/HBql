@@ -61,4 +61,10 @@ public class BooleanTernary extends GenericTernary implements BooleanValue {
         else
             return this.getExpr2().evaluate(context);
     }
+
+    @Override
+    public boolean isContant() {
+        return this.getPred().isContant() && this.getExpr1().isContant() && this.getExpr2().isContant();
+    }
+
 }

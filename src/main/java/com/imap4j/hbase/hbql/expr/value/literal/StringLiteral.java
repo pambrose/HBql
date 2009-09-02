@@ -21,4 +21,9 @@ public class StringLiteral extends GenericLiteral implements StringValue {
     public String getValue(final EvalContext context) {
         return this.value;
     }
+
+    @Override
+    public boolean isContant() {
+        return true;
+    }
 }

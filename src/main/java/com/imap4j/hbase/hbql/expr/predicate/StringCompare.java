@@ -83,4 +83,9 @@ public class StringCompare extends CompareExpr implements PredicateExpr {
 
         throw new HPersistException("Error in StringCompare.evaluate()");
     }
+
+    @Override
+    public boolean isContant() {
+        return this.getExpr1().isContant() && this.getExpr2().isContant();
+    }
 }

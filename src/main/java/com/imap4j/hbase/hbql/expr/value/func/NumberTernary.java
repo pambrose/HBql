@@ -62,4 +62,10 @@ public class NumberTernary extends GenericTernary implements NumberValue {
         else
             return this.getExpr2().getValue(context);
     }
+
+    @Override
+    public boolean isContant() {
+        return this.getPred().isContant() && this.getExpr1().isContant() && this.getExpr2().isContant();
+    }
+
 }

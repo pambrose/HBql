@@ -50,4 +50,9 @@ public class BooleanStmt implements PredicateExpr {
         return this.getExpr().getValue(context);
     }
 
+    @Override
+    public boolean isContant() {
+        return this.getExpr().isContant();
+    }
+
 }

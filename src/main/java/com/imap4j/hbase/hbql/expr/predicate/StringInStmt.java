@@ -31,14 +31,14 @@ public class StringInStmt extends GenericInStmt implements PredicateExpr {
         return expr;
     }
 
-    private List<StringValue> getVals() {
+    private List<StringValue> getValList() {
         return valList;
     }
 
     @Override
     public List<ExprVariable> getExprVariables() {
         final List<ExprVariable> retval = this.getExpr().getExprVariables();
-        for (final StringValue val : this.getVals())
+        for (final StringValue val : this.getValList())
             retval.addAll(val.getExprVariables());
         return retval;
     }
@@ -65,12 +65,17 @@ public class StringInStmt extends GenericInStmt implements PredicateExpr {
         return (this.isNot()) ? !retval : retval;
     }
 
+    @Override
+    public boolean isContant() {
+        return this.getExpr().isContant() && this.listIsConstant();
+    }
+
     private boolean optimizeList(final EvalContext context) throws HPersistException {
 
         boolean retval = true;
         final List<StringValue> newvalList = Lists.newArrayList();
 
-        for (final StringValue num : this.getVals()) {
+        for (final StringValue num : this.getValList()) {
             if (num.optimizeForConstants(context)) {
                 newvalList.add(new StringLiteral(num.getValue(context)));
             }
@@ -81,8 +86,8 @@ public class StringInStmt extends GenericInStmt implements PredicateExpr {
         }
 
         // Swap new values to list
-        this.getVals().clear();
-        this.getVals().addAll(newvalList);
+        this.getValList().clear();
+        this.getValList().addAll(newvalList);
 
         return retval;
     }
@@ -90,7 +95,7 @@ public class StringInStmt extends GenericInStmt implements PredicateExpr {
     private boolean evaluateList(final EvalContext context) throws HPersistException {
 
         final String attribVal = this.getExpr().getValue(context);
-        for (final StringValue obj : this.getVals()) {
+        for (final StringValue obj : this.getValList()) {
             final String val = obj.getValue(context);
             if (attribVal.equals(val))
                 return true;
@@ -98,4 +103,14 @@ public class StringInStmt extends GenericInStmt implements PredicateExpr {
 
         return false;
     }
+
+    private boolean listIsConstant() {
+
+        for (final StringValue val : this.getValList()) {
+            if (!val.isContant())
+                return false;
+        }
+        return true;
+    }
+
 }

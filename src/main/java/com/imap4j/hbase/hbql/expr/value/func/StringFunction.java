@@ -42,6 +42,12 @@ public class StringFunction extends GenericFunction implements StringValue {
         return false;
     }
 
+    // TODO Deal with this
+    @Override
+    public boolean isContant() {
+        return false;
+    }
+
     @Override
     public String getValue(final EvalContext context) throws HPersistException {
 

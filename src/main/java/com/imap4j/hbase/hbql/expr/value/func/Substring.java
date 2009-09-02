@@ -77,4 +77,10 @@ public class Substring implements StringValue {
         final int end = (Integer)this.getEnd().getValue(context);
         return val.substring(begin, end);
     }
+
+    @Override
+    public boolean isContant() {
+        return this.getExpr().isContant() && this.getBegin().isContant() && this.getEnd().isContant();
+    }
+
 }

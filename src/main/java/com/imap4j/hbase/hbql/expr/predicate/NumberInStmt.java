@@ -31,14 +31,14 @@ public class NumberInStmt extends GenericInStmt implements PredicateExpr {
         return this.expr;
     }
 
-    private List<NumberValue> getVals() {
+    private List<NumberValue> getValList() {
         return this.vals;
     }
 
     @Override
     public List<ExprVariable> getExprVariables() {
         final List<ExprVariable> retval = this.getExpr().getExprVariables();
-        for (final NumberValue val : this.getVals())
+        for (final NumberValue val : this.getValList())
             retval.addAll(val.getExprVariables());
         return retval;
     }
@@ -65,12 +65,17 @@ public class NumberInStmt extends GenericInStmt implements PredicateExpr {
         return (this.isNot()) ? !retval : retval;
     }
 
+    @Override
+    public boolean isContant() {
+        return this.getExpr().isContant() && this.listIsConstant();
+    }
+
     private boolean optimizeList(final EvalContext context) throws HPersistException {
 
         boolean retval = true;
         final List<NumberValue> newvalList = Lists.newArrayList();
 
-        for (final NumberValue val : this.getVals()) {
+        for (final NumberValue val : this.getValList()) {
             if (val.optimizeForConstants(context)) {
                 newvalList.add(new NumberLiteral(val.getValue(context)));
             }
@@ -81,8 +86,8 @@ public class NumberInStmt extends GenericInStmt implements PredicateExpr {
         }
 
         // Swap new values to list
-        this.getVals().clear();
-        this.getVals().addAll(newvalList);
+        this.getValList().clear();
+        this.getValList().addAll(newvalList);
 
         return retval;
 
@@ -91,11 +96,20 @@ public class NumberInStmt extends GenericInStmt implements PredicateExpr {
     private boolean evaluateList(final EvalContext context) throws HPersistException {
 
         final int attribVal = this.getExpr().getValue(context).intValue();
-        for (final NumberValue obj : this.getVals()) {
+        for (final NumberValue obj : this.getValList()) {
             final int val = obj.getValue(context).intValue();
             if (attribVal == val)
                 return true;
         }
         return false;
+    }
+
+    private boolean listIsConstant() {
+
+        for (final NumberValue val : this.getValList()) {
+            if (!val.isContant())
+                return false;
+        }
+        return true;
     }
 }

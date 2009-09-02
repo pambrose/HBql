@@ -102,7 +102,7 @@ public class TestObject implements HPersistable {
         results = HBql.exec("set packagepath com.imap4j.hbql:com.imap4j.hbase");
         System.out.println(results.getOutput());
 
-        results = HBql.exec("delete from TestObject with filter TRUE AND !FALSE");
+        results = HBql.exec("delete from TestObject");
         System.out.println(results.getOutput());
 
         //results = HBql.exec("create table TestObject");

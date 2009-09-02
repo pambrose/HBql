@@ -18,4 +18,9 @@ public class NullLiteral extends GenericLiteral implements StringValue {
     public String getValue(final EvalContext context) {
         return null;
     }
+
+    @Override
+    public boolean isContant() {
+        return true;
+    }
 }

@@ -62,4 +62,10 @@ public class StringTernary extends GenericTernary implements StringValue {
         else
             return this.expr2.getValue(context);
     }
+
+    @Override
+    public boolean isContant() {
+        return this.getPred().isContant() && this.getExpr1().isContant() && this.getExpr2().isContant();
+    }
+
 }
