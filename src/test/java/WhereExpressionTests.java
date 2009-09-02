@@ -310,7 +310,7 @@ public class WhereExpressionTests extends HTest {
             // String Array
             final List<String> stringList = Lists.newArrayList();
             for (int i = 0; i < total; i++)
-                stringList.add("" + random.nextDouble());
+                stringList.add((new Date(random.nextLong()).toString()));
             final String[] stringarr1 = new String[stringList.size()];
             pos = 0;
             for (final String val : stringList)
@@ -322,7 +322,7 @@ public class WhereExpressionTests extends HTest {
             // Date Array
             final List<Date> dateList = Lists.newArrayList();
             for (int i = 0; i < total; i++)
-                dateList.add(new Date(System.currentTimeMillis()));
+                dateList.add(new Date(random.nextLong()));
             final Date[] datearr1 = new Date[dateList.size()];
             pos = 0;
             for (final Date val : dateList)
