@@ -10,6 +10,7 @@ import com.imap4j.hbase.hbql.test.HTest;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -197,7 +198,7 @@ public class WhereExpressionTests extends HTest {
     @Test
     public void hadoopSerialization() throws IOException, HPersistException {
 
-        final int total = 100000;
+        final int total = 10000;
         int pos = 0;
         byte[] b;
 
@@ -304,6 +305,50 @@ public class WhereExpressionTests extends HTest {
             b = ser.getArrayasBytes(FieldType.DoubleType, doublearr1);
             final double[] doublearr2 = (double[])ser.getArrayFromBytes(FieldType.DoubleType, Double.TYPE, b);
             assertTrue(Arrays.equals(doublearr1, doublearr2));
+
+            // String Array
+            final List<String> stringList = Lists.newArrayList();
+            for (int i = 0; i < total; i++)
+                stringList.add("" + random.nextDouble());
+            final String[] stringarr1 = new String[stringList.size()];
+            pos = 0;
+            for (final String val : stringList)
+                stringarr1[pos++] = val;
+            b = ser.getArrayasBytes(FieldType.StringType, stringarr1);
+            final String[] stringarr2 = (String[])ser.getArrayFromBytes(FieldType.StringType, String.class, b);
+            assertTrue(Arrays.equals(stringarr1, stringarr2));
+
+            // Object Array
+            final List<Object> objectList = Lists.newArrayList();
+            for (int i = 0; i < total; i++)
+                objectList.add(new TestClass("" + random.nextDouble(), random.nextInt(), random.nextDouble()));
+            final Object[] objarr1 = new Object[objectList.size()];
+            pos = 0;
+            for (final Object val : objectList)
+                objarr1[pos++] = val;
+            b = ser.getArrayasBytes(FieldType.ObjectType, objarr1);
+            final Object[] objarr2 = (Object[])ser.getArrayFromBytes(FieldType.ObjectType, Object.class, b);
+            assertTrue(Arrays.equals(objarr1, objarr2));
+        }
+    }
+
+    public static class TestClass implements Serializable {
+        String strval;
+        int intval;
+        double doubleval;
+
+        public TestClass(final String strval, final int intval, final double doubleval) {
+            this.strval = strval;
+            this.intval = intval;
+            this.doubleval = doubleval;
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            TestClass t = (TestClass)o;
+            return this.strval.equals(t.strval)
+                   && this.intval == t.intval
+                   && this.doubleval == t.doubleval;
         }
     }
 
