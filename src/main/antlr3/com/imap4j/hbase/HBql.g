@@ -114,21 +114,21 @@ condPrimary returns [PredicateExpr retval]
 	;
 
 simpleCondExpr returns [PredicateExpr retval]
-	: b1=betweenStmt				{retval = $b1.retval;}
+	: n=nullCompExpr				{retval = $n.retval;}
+	| c=compareExpr 				{retval = $c.retval;}
+	| b1=betweenStmt				{retval = $b1.retval;}
 	| l=likeStmt					{retval = $l.retval;}
 	| i=inStmt					{retval = $i.retval;}
 	| b2=booleanStmt				{retval = $b2.retval;}
-	| n=nullCompExpr				{retval = $n.retval;}
-	| c=compareExpr 				{retval = $c.retval;}
 	;
 
 betweenStmt returns [PredicateExpr retval]
-	: n1=numericExpr n=not? keyBETWEEN n2=numericExpr and n3=numericExpr		
+	: d1=dateExpr n=not? keyBETWEEN d2=dateExpr and d3=dateExpr
+							{retval = new DateBetweenStmt($d1.retval, ($n.text != null), $d2.retval, $d3.retval);}
+	| n1=numericExpr n=not? keyBETWEEN n2=numericExpr and n3=numericExpr		
 							{retval = new NumberBetweenStmt($n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
 	| s1=stringExpr n=not? keyBETWEEN s2=stringExpr and s3=stringExpr		
 							{retval = new StringBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
-	| d1=dateExpr n=not? keyBETWEEN d2=dateExpr and d3=dateExpr
-							{retval = new DateBetweenStmt($d1.retval, ($n.text != null), $d2.retval, $d3.retval);}
 	;
 
 likeStmt returns [PredicateExpr retval]
@@ -148,12 +148,13 @@ booleanStmt returns [PredicateExpr retval]
 	: b=booleanExpr					{retval = new BooleanStmt($b.retval);};
 	
 nullCompExpr returns [PredicateExpr retval]
-	: a=stringExpr keyIS (n=keyNOT)? keyNULL	{retval = new StringNullCompare(($n.text != null), $a.retval);}	
-	| d=dateExpr keyIS (n=keyNOT)? keyNULL		{retval = new DateNullCompare(($n.text != null), $d.retval);};	
+	: d=dateExpr keyIS (n=keyNOT)? keyNULL		{retval = new DateNullCompare(($n.text != null), $d.retval);}
+	| s=stringExpr keyIS (n=keyNOT)? keyNULL	{retval = new StringNullCompare(($n.text != null), $s.retval);}	
+	;	
 
 compareExpr returns [PredicateExpr retval]
-	: s1=stringExpr o=compOp s2=stringExpr	  	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
-	| d1=dateExpr o=compOp d2=dateExpr 		{retval = new DateCompare($d1.retval, $o.retval, $d2.retval);}
+	: d1=dateExpr o=compOp d2=dateExpr 		{retval = new DateCompare($d1.retval, $o.retval, $d2.retval);}	
+	| s1=stringExpr o=compOp s2=stringExpr	  	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
 	| n1=numericExpr o=compOp n2=numericExpr	{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
 	;
 	
@@ -213,7 +214,7 @@ stringVal returns [StringValue retval]
 	: sl=stringLiteral				{retval = $sl.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
 	| LPAREN se=stringExpr	RPAREN			{retval = $se.retval;}
-	| n=keyNULL					{retval = new NullLiteral();}
+	//| n=keyNULL					{retval = new NullLiteral();}
 	| a=strAttrib					{retval = $a.retval;}
 	| LBRACE e=orExpr QMARK s1=stringExpr COLON s2=stringExpr RBRACE	
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
@@ -257,7 +258,9 @@ numberLiteral returns [NumberValue retval]
 	: v=INT						{retval = new NumberLiteral(Integer.valueOf($v.text));};
 		
 dateLiteral returns [DateValue retval]
-	: keyNOW					{retval = new DateLiteral();}
+	: keyNOW					{retval = new DateLiteral(DateLiteral.TYPE.TODAY);}
+	| keyYESTERDAY					{retval = new DateLiteral(DateLiteral.TYPE.YESTERDAY);}
+	| keyTOMORROW					{retval = new DateLiteral(DateLiteral.TYPE.TOMORROW);}
 	;
 
 booleanLiteral returns [BooleanValue retval]
@@ -313,7 +316,7 @@ strItem returns [StringValue retval]
 	: s=stringExpr					{$strItem.retval = $s.retval;};
 
 dateItem returns [DateValue retval]
-	: s=dateExpr					{$dateItem.retval = $s.retval;};
+	: d=dateExpr					{$dateItem.retval = $d.retval;};
 
 qstringList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
@@ -391,4 +394,6 @@ keyCONCAT 	: {isKeyword(input, "CONCAT")}? ID;
 keySUBSTRING 	: {isKeyword(input, "SUBSTRING")}? ID;
 keyIGNORE_CASE 	: {isKeyword(input, "IGNORE_CASE")}? ID;
 keyNOW	 	: {isKeyword(input, "NOW")}? ID;
+keyYESTERDAY	: {isKeyword(input, "YESTERDAY")}? ID;
+keyTOMORROW	: {isKeyword(input, "TOMORROW")}? ID;
 keyDATE		: {isKeyword(input, "DATE")}? ID;

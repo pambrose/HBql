@@ -23,7 +23,7 @@ public abstract class GenericLiteral implements ExprEvalTreeNode {
 
     @Override
     public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
-        return false;
+        return true;
     }
 
     @Override
