@@ -22,8 +22,7 @@ public class DateAttribRef extends GenericAttribRef implements DateValue {
 
     @Override
     public Date getValue(final EvalContext context) throws HPersistException {
-        final FieldAttrib fieldAttrib = context.getClassSchema()
-                .getFieldAttribByField(this.getExprVar().getAttribName());
+        final FieldAttrib fieldAttrib = this.getExprVar().getFieldAttrib(context);
         return (Date)fieldAttrib.getValue(context.getRecordObj());
     }
 

@@ -20,8 +20,7 @@ public class NumberAttribRef extends GenericAttribRef implements NumberValue {
 
     @Override
     public Number getValue(final EvalContext context) throws HPersistException {
-        final FieldAttrib fieldAttrib = context.getClassSchema().getFieldAttribByField(this.getExprVar().
-                getAttribName());
+        final FieldAttrib fieldAttrib = this.getExprVar().getFieldAttrib(context);
         return (Number)fieldAttrib.getValue(context.getRecordObj());
     }
 

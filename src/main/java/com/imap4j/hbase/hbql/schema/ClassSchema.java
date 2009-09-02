@@ -94,7 +94,7 @@ public class ClassSchema implements Serializable {
         return this.families;
     }
 
-    public FieldAttrib getFieldAttribByField(final String attribName) {
+    public FieldAttrib getFieldAttribByName(final String attribName) {
         return getFieldAttribMapByField().get(attribName);
     }
 

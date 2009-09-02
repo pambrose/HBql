@@ -23,7 +23,7 @@ public class HUtil {
 
         for (final String attribName : fieldList) {
 
-            final FieldAttrib attrib = classSchema.getFieldAttribByField(attribName);
+            final FieldAttrib attrib = classSchema.getFieldAttribByName(attribName);
 
             // If it is a map, then request all columns for family
             if (attrib.isMapKeysAsColumns())

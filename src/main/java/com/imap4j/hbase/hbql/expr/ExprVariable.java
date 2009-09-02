@@ -1,5 +1,6 @@
 package com.imap4j.hbase.hbql.expr;
 
+import com.imap4j.hbase.hbql.schema.FieldAttrib;
 import com.imap4j.hbase.hbql.schema.FieldType;
 
 /**
@@ -18,13 +19,16 @@ public class ExprVariable {
         this.attribName = attribName;
     }
 
-    public String getAttribName() {
+    public String getName() {
         return attribName;
     }
 
     @Override
     public boolean equals(final Object o) {
-        return (o instanceof ExprVariable) && this.getAttribName().equals(((ExprVariable)o).getAttribName());
+        return (o instanceof ExprVariable) && this.getName().equals(((ExprVariable)o).getName());
     }
 
+    public FieldAttrib getFieldAttrib(final EvalContext context) {
+        return context.getClassSchema().getFieldAttribByName(this.getName());
+    }
 }

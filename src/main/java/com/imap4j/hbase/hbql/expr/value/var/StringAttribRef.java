@@ -20,8 +20,7 @@ public class StringAttribRef extends GenericAttribRef implements StringValue {
 
     @Override
     public String getValue(final EvalContext context) throws HPersistException {
-        final FieldAttrib fieldAttrib = context.getClassSchema()
-                .getFieldAttribByField(this.getExprVar().getAttribName());
+        final FieldAttrib fieldAttrib = this.getExprVar().getFieldAttrib(context);
         return (String)fieldAttrib.getValue(context.getRecordObj());
     }
 }

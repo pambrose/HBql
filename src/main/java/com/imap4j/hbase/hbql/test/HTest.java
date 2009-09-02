@@ -90,7 +90,7 @@ public class HTest {
         }
 
         for (final ExprVariable var : attribs) {
-            if (!valList.contains(var.getAttribName())) {
+            if (!valList.contains(var.getName())) {
                 System.out.println("Missing column name: " + var);
                 retval = false;
             }
