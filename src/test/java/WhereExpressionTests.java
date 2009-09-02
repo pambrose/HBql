@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -317,6 +318,18 @@ public class WhereExpressionTests extends HTest {
             b = ser.getArrayasBytes(FieldType.StringType, stringarr1);
             final String[] stringarr2 = (String[])ser.getArrayFromBytes(FieldType.StringType, String.class, b);
             assertTrue(Arrays.equals(stringarr1, stringarr2));
+
+            // Date Array
+            final List<Date> dateList = Lists.newArrayList();
+            for (int i = 0; i < total; i++)
+                dateList.add(new Date(System.currentTimeMillis()));
+            final Date[] datearr1 = new Date[dateList.size()];
+            pos = 0;
+            for (final Date val : dateList)
+                datearr1[pos++] = val;
+            b = ser.getArrayasBytes(FieldType.DateType, datearr1);
+            final Date[] datearr2 = (Date[])ser.getArrayFromBytes(FieldType.DateType, Date.class, b);
+            assertTrue(Arrays.equals(datearr1, datearr2));
 
             // Object Array
             final List<Object> objectList = Lists.newArrayList();

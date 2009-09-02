@@ -2,6 +2,7 @@ package com.imap4j.hbase.hbql.expr.value.func;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
+import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.BooleanValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
@@ -27,8 +28,8 @@ public class BooleanPredicate implements BooleanValue {
     }
 
     @Override
-    public List<String> getQualifiedColumnNames() {
-        return this.getExpr().getQualifiedColumnNames();
+    public List<ExprVariable> getExprVariables() {
+        return this.getExpr().getExprVariables();
     }
 
     @Override

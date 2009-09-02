@@ -34,7 +34,7 @@ public class HTransaction {
 
     public void insert(final HPersistable declaringObj) throws HPersistException, IOException {
 
-        final Serialization ser = HUtil.getSerialization();
+        final Serialization ser = HSer.getSer();
         final ClassSchema classSchema = ClassSchema.getClassSchema(declaringObj);
         final byte[] keyval = classSchema.getKeyFieldAttrib().getValueAsBytes(ser, declaringObj);
         final Put put = new Put(keyval);

@@ -54,6 +54,7 @@ public class HadoopSerialization extends Serialization {
                 case StringType:
                     return Bytes.toString(b);
 
+                case DateType:
                 case ObjectType: {
                     final ByteArrayInputStream bais = new ByteArrayInputStream(b);
                     final ObjectInputStream ois = new ObjectInputStream(bais);
@@ -107,6 +108,7 @@ public class HadoopSerialization extends Serialization {
             case StringType:
                 return Bytes.toBytes((String)obj);
 
+            case DateType:
             case ObjectType:
                 final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -224,6 +226,7 @@ public class HadoopSerialization extends Serialization {
                     return array;
                 }
 
+                case DateType:
                 case ObjectType: {
                     final ByteArrayInputStream bais = new ByteArrayInputStream(b);
                     final ObjectInputStream ois = new ObjectInputStream(bais);
@@ -354,6 +357,7 @@ public class HadoopSerialization extends Serialization {
                 return baos.toByteArray();
             }
 
+            case DateType:
             case ObjectType: {
                 final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 final ObjectOutputStream oos = new ObjectOutputStream(baos);

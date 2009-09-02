@@ -8,6 +8,7 @@ import com.imap4j.hbase.hbql.schema.ClassSchema;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 
 import java.io.IOException;
@@ -46,9 +47,11 @@ public class HQuery<T extends HPersistable> {
 
         final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
 
-        final Serialization ser = HUtil.getSerialization();
+        final Serialization ser = HSer.getSer();
 
-        for (final Result result : table.getScanner(scan)) {
+        final ResultScanner resultScanner = table.getScanner(scan);
+
+        for (final Result result : resultScanner) {
 
             final HPersistable recordObj = ser.getHPersistable(classSchema, result);
 

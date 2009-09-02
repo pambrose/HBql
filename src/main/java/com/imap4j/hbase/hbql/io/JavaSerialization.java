@@ -54,6 +54,7 @@ public class JavaSerialization extends Serialization {
                 case StringType:
                     return ois.readUTF();
 
+                case DateType:
                 case ObjectType:
                     return ois.readObject();
             }
@@ -113,6 +114,7 @@ public class JavaSerialization extends Serialization {
                 oos.writeUTF((String)obj);
                 break;
 
+            case DateType:
             case ObjectType:
                 oos.writeObject(obj);
                 break;
@@ -193,6 +195,7 @@ public class JavaSerialization extends Serialization {
                     return array;
                 }
 
+                case DateType:
                 case ObjectType: {
                     for (int i = 0; i < length; i++)
                         Array.set(array, i, ois.readObject());
@@ -287,6 +290,7 @@ public class JavaSerialization extends Serialization {
                 break;
             }
 
+            case DateType:
             case ObjectType: {
                 oos.writeInt(((Object[])obj).length);
                 for (final Object val : (Object[])obj)

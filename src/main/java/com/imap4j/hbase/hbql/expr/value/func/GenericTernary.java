@@ -1,5 +1,6 @@
 package com.imap4j.hbase.hbql.expr.value.func;
 
+import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.ExprEvalTreeNode;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 
@@ -27,10 +28,10 @@ public abstract class GenericTernary {
 
     abstract protected ExprEvalTreeNode getExpr2();
 
-    public List<String> getQualifiedColumnNames() {
-        final List<String> retval = this.getPred().getQualifiedColumnNames();
-        retval.addAll(this.getExpr1().getQualifiedColumnNames());
-        retval.addAll(this.getExpr2().getQualifiedColumnNames());
+    public List<ExprVariable> getExprVariables() {
+        final List<ExprVariable> retval = this.getPred().getExprVariables();
+        retval.addAll(this.getExpr1().getExprVariables());
+        retval.addAll(this.getExpr2().getExprVariables());
         return retval;
     }
 

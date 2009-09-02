@@ -1,7 +1,9 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
+import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
+import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
 
@@ -28,8 +30,11 @@ public class ExprEvalTree implements PredicateExpr {
     }
 
     @Override
-    public List<String> getQualifiedColumnNames() {
-        return this.getExpr().getQualifiedColumnNames();
+    public List<ExprVariable> getExprVariables() {
+        if (this.getExpr() == null)
+            return Lists.newArrayList();
+        else
+            return this.getExpr().getExprVariables();
     }
 
     @Override

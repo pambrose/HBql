@@ -17,6 +17,7 @@ import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 
 import java.io.ByteArrayOutputStream;
@@ -129,10 +130,11 @@ public class HBql {
 
         final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
 
-        final Serialization ser = HUtil.getSerialization();
+        final Serialization ser = HSer.getSer();
 
         int cnt = 0;
-        for (final Result result : table.getScanner(scan)) {
+        final ResultScanner resultsScanner = table.getScanner(scan);
+        for (final Result result : resultsScanner) {
 
             final HPersistable recordObj = ser.getHPersistable(classSchema, result);
 

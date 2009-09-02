@@ -2,6 +2,7 @@ package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
+import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
@@ -33,10 +34,10 @@ public class StringCompare extends CompareExpr implements PredicateExpr {
     }
 
     @Override
-    public List<String> getQualifiedColumnNames() {
+    public List<ExprVariable> getExprVariables() {
 
-        final List<String> retval = this.getExpr1().getQualifiedColumnNames();
-        retval.addAll(this.getExpr2().getQualifiedColumnNames());
+        final List<ExprVariable> retval = this.getExpr1().getExprVariables();
+        retval.addAll(this.getExpr2().getExprVariables());
         return retval;
     }
 

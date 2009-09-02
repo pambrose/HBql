@@ -2,6 +2,7 @@ package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
+import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
@@ -29,8 +30,8 @@ public class NullCompare implements PredicateExpr {
     }
 
     @Override
-    public List<String> getQualifiedColumnNames() {
-        return this.getExpr().getQualifiedColumnNames();
+    public List<ExprVariable> getExprVariables() {
+        return this.getExpr().getExprVariables();
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.imap4j.hbase.hbql.expr.node;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
+import com.imap4j.hbase.hbql.expr.ExprVariable;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,6 +17,6 @@ public interface ExprEvalTreeNode extends Serializable {
 
     boolean optimizeForConstants(final EvalContext context) throws HPersistException;
 
-    List<String> getQualifiedColumnNames();
+    List<ExprVariable> getExprVariables();
 
 }

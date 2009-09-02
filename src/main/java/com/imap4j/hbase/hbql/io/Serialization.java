@@ -47,6 +47,10 @@ public abstract class Serialization {
 
     abstract public byte[] getArrayasBytes(FieldType fieldType, Object obj) throws IOException, HPersistException;
 
+    public byte[] getStringAsBytes(final String obj) throws IOException, HPersistException {
+        return this.getScalarAsBytes(FieldType.getFieldType(obj), obj);
+    }
+
     public byte[] getObjectAsBytes(final Object obj) throws IOException, HPersistException {
         return this.getScalarAsBytes(FieldType.getFieldType(obj), obj);
     }
@@ -62,6 +66,10 @@ public abstract class Serialization {
             return false;
         }
         return true;
+    }
+
+    public String getStringFromBytes(final byte[] b) throws IOException, HPersistException {
+        return (String)this.getScalarFromBytes(FieldType.StringType, b);
     }
 
     public Object getObjectFromBytes(final FieldType type, final byte[] b) throws IOException, HPersistException {
@@ -81,7 +89,7 @@ public abstract class Serialization {
             for (final KeyValue keyValue : result.list()) {
 
                 final byte[] colbytes = keyValue.getColumn();
-                final String column = new String(colbytes);
+                final String column = (String)this.getScalarFromBytes(FieldType.StringType, colbytes);
                 final byte[] valbytes = result.getValue(colbytes);
 
                 if (column.endsWith("]")) {

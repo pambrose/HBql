@@ -5,8 +5,10 @@ import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.HPersistable;
 import com.imap4j.hbase.hbql.expr.EvalContext;
+import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
+import com.imap4j.hbase.hbql.schema.FieldType;
 
 import java.util.List;
 
@@ -76,20 +78,20 @@ public class HTest {
 
         final List<String> valList = Lists.newArrayList(vals);
         final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE.parse(expr);
-        final List<String> attribs = tree.getQualifiedColumnNames();
+        final List<ExprVariable> attribs = tree.getExprVariables();
 
         boolean retval = true;
 
         for (final String val : valList) {
-            if (!attribs.contains(val)) {
+            if (!attribs.contains(new ExprVariable(FieldType.StringType, val))) {
                 System.out.println("Missing column name: " + val);
                 retval = false;
             }
         }
 
-        for (final String str : attribs) {
-            if (!valList.contains(str)) {
-                System.out.println("Missing column name: " + str);
+        for (final ExprVariable var : attribs) {
+            if (!valList.contains(var.getAttribName())) {
+                System.out.println("Missing column name: " + var);
                 retval = false;
             }
         }

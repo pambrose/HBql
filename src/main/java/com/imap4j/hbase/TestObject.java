@@ -81,6 +81,10 @@ public class TestObject implements HPersistable {
 
         mapval2.put("key3", "val3");
         mapval2.put("key4", "val4");
+
+        author += "-" + val;
+        header += "-" + val;
+        title += "-" + val;
     }
 
     public byte[] getHeaderBytes() {
@@ -98,7 +102,7 @@ public class TestObject implements HPersistable {
         results = HBql.exec("set packagepath com.imap4j.hbql:com.imap4j.hbase");
         System.out.println(results.getOutput());
 
-        results = HBql.exec("delete from TestObject with filter TRUE AND !FALSE where strValue = 'v19aa'");
+        results = HBql.exec("delete from TestObject with filter TRUE AND !FALSE");
         System.out.println(results.getOutput());
 
         //results = HBql.exec("create table TestObject");
@@ -113,7 +117,7 @@ public class TestObject implements HPersistable {
         */
 
         final HTransaction tx = new HTransaction();
-        int cnt = 0;
+        int cnt = 10;
         for (int i = 0; i < cnt; i++) {
             TestObject obj = new TestObject(i);
             tx.insert(obj);
@@ -137,8 +141,8 @@ public class TestObject implements HPersistable {
         long start = System.currentTimeMillis();
         HQuery<TestObject> q2 =
                 new HQuery<TestObject>("select * from TestObject "
-                                       + "WITH FILTER TRUE AND !FALSE "
-                                       + "WHERE strValue = 'v19' OR strValue IN ('v2', 'v0', 'v999')",
+                                       // + "WITH FILTER TRUE AND !FALSE "
+                        ,// + "WHERE TRUE", //strValue = 'v19' OR strValue IN ('v2', 'v0', 'v999')",
                                        new HQueryListenerAdapter<TestObject>() {
                                            public void onEachRow(final TestObject val) throws HPersistException {
                                                System.out.println("Values: " + val.keyval

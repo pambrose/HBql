@@ -4,6 +4,7 @@ import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.schema.FieldAttrib;
+import com.imap4j.hbase.hbql.schema.FieldType;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,12 +15,13 @@ import com.imap4j.hbase.hbql.schema.FieldAttrib;
 public class StringAttribRef extends GenericAttribRef implements StringValue {
 
     public StringAttribRef(final String attribName) {
-        super(attribName);
+        super(FieldType.StringType, attribName);
     }
 
     @Override
     public String getValue(final EvalContext context) throws HPersistException {
-        final FieldAttrib fieldAttrib = context.getClassSchema().getFieldAttribByField(this.getAttribName());
+        final FieldAttrib fieldAttrib = context.getClassSchema()
+                .getFieldAttribByField(this.getExprVar().getAttribName());
         return (String)fieldAttrib.getValue(context.getRecordObj());
     }
 }

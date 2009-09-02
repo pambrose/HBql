@@ -1,5 +1,6 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
+import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.ExprEvalTreeNode;
 
 import java.util.List;
@@ -28,10 +29,10 @@ public abstract class GenericBetweenStmt {
 
     abstract protected ExprEvalTreeNode getUpper();
 
-    public List<String> getQualifiedColumnNames() {
-        final List<String> retval = this.getExpr().getQualifiedColumnNames();
-        retval.addAll(this.getLower().getQualifiedColumnNames());
-        retval.addAll(this.getUpper().getQualifiedColumnNames());
+    public List<ExprVariable> getExprVariables() {
+        final List<ExprVariable> retval = this.getExpr().getExprVariables();
+        retval.addAll(this.getLower().getExprVariables());
+        retval.addAll(this.getUpper().getExprVariables());
         return retval;
     }
 }

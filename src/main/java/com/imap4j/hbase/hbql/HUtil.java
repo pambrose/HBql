@@ -1,7 +1,7 @@
 package com.imap4j.hbase.hbql;
 
+import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
-import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.FieldAttrib;
 import org.apache.hadoop.hbase.client.Scan;
@@ -33,17 +33,10 @@ public class HUtil {
         }
 
         if (filterExpr != null) {
-            List<String> names = filterExpr.getQualifiedColumnNames();
+            List<ExprVariable> names = filterExpr.getExprVariables();
             scan.setFilter(new PrefixFilter(classSchema, filterExpr));
         }
 
         return scan;
     }
-
-    final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.HADOOP);
-
-    public static Serialization getSerialization() {
-        return ser;
-    }
-
 }

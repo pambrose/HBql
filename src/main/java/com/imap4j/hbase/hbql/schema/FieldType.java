@@ -4,6 +4,7 @@ import com.imap4j.hbase.hbql.HPersistException;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,6 +23,7 @@ public enum FieldType {
     FloatType(Float.TYPE, Bytes.SIZEOF_FLOAT),
     DoubleType(Double.TYPE, Bytes.SIZEOF_DOUBLE),
     StringType(String.class, -1),
+    DateType(Date.class, -1),
     ObjectType(Object.class, -1);
 
     private final Class clazz;
@@ -58,6 +60,8 @@ public enum FieldType {
         if (!clazz.isPrimitive()) {
             if (clazz.equals(String.class))
                 return StringType;
+            else if (clazz.equals(Date.class))
+                return DateType;
             else
                 return ObjectType;
         }
