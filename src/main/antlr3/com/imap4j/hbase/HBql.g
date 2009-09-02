@@ -140,13 +140,16 @@ inStmt returns [PredicateExpr retval]
 							{retval = new NumberInStmt($a1.retval,($n.text != null), $i.retval);} 
 	| a2=stringExpr n=not? keyIN LPAREN s=strItemList RPAREN			
 							{retval = new StringInStmt($a2.retval, ($n.text != null), $s.retval);} 
+	| a3=dateExpr n=not? keyIN LPAREN d=dateItemList RPAREN			
+							{retval = new DateInStmt($a3.retval, ($n.text != null), $d.retval);} 
 	;
 
 booleanStmt returns [PredicateExpr retval]
 	: b=booleanExpr					{retval = new BooleanStmt($b.retval);};
 	
 nullCompExpr returns [PredicateExpr retval]
-	: a=stringExpr keyIS (n=keyNOT)? keyNULL	{retval = new NullCompare(($n.text != null), $a.retval);};	
+	: a=stringExpr keyIS (n=keyNOT)? keyNULL	{retval = new StringNullCompare(($n.text != null), $a.retval);}	
+	| d=dateExpr keyIS (n=keyNOT)? keyNULL		{retval = new DateNullCompare(($n.text != null), $d.retval);};	
 
 compareExpr returns [PredicateExpr retval]
 	: s1=stringExpr o=compOp s2=stringExpr	  	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
@@ -299,11 +302,18 @@ strItemList returns [List<StringValue> retval]
 @init {retval = Lists.newArrayList();}
 	: i1=strItem {retval.add($i1.retval);} (COMMA i2=strItem {retval.add($i2.retval);})*;
 	
+dateItemList returns [List<DateValue> retval]
+@init {retval = Lists.newArrayList();}
+	: d1=dateItem {retval.add($d1.retval);} (COMMA d2=dateItem {retval.add($d2.retval);})*;
+	
 intItem returns [NumberValue retval]
-	: n=numericExpr					{retval = $n.retval;};
+	: n=numericExpr					{$intItem.retval = $n.retval;};
 
 strItem returns [StringValue retval]
 	: s=stringExpr					{$strItem.retval = $s.retval;};
+
+dateItem returns [DateValue retval]
+	: s=dateExpr					{$dateItem.retval = $s.retval;};
 
 qstringList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
@@ -380,8 +390,5 @@ keyTRIM 	: {isKeyword(input, "TRIM")}? ID;
 keyCONCAT 	: {isKeyword(input, "CONCAT")}? ID;
 keySUBSTRING 	: {isKeyword(input, "SUBSTRING")}? ID;
 keyIGNORE_CASE 	: {isKeyword(input, "IGNORE_CASE")}? ID;
-//keyLENGTH 	: {isKeyword(input, "LENGTH")}? ID;
-//keyABS 	: {isKeyword(input, "ABS")}? ID;
-//keyMOD	 : {isKeyword(input, "MOD")}? ID;
-keyNOW		 : {isKeyword(input, "NOW")}? ID;
-keyDATE		 : {isKeyword(input, "DATE")}? ID;
+keyNOW	 	: {isKeyword(input, "NOW")}? ID;
+keyDATE		: {isKeyword(input, "DATE")}? ID;

@@ -92,7 +92,11 @@ public class WhereExpressionTests extends HTest {
     @Test
     public void dateCompares() throws HPersistException {
 
-        assertEvalTrue("NOW < Date('mm/dd/yyyy', '12/21/2020'");
+        assertEvalTrue("NOW IS NOT NULL");
+        // assertEvalTrue("NOW < Date('mm/dd/yyyy', '12/21/2020'");
+
+        // BETWEEN
+        // IN
     }
 
     @Test

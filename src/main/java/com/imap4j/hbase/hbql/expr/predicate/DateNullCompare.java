@@ -3,10 +3,11 @@ package com.imap4j.hbase.hbql.expr.predicate;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
+import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
-import com.imap4j.hbase.hbql.expr.node.StringValue;
-import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
+import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,16 +16,16 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class NullCompare extends GenericNotStmt implements PredicateExpr {
+public class DateNullCompare extends GenericNotStmt implements PredicateExpr {
 
-    private StringValue expr = null;
+    private DateValue expr = null;
 
-    public NullCompare(final boolean not, final StringValue expr) {
+    public DateNullCompare(final boolean not, final DateValue expr) {
         super(not);
         this.expr = expr;
     }
 
-    private StringValue getExpr() {
+    private DateValue getExpr() {
         return this.expr;
     }
 
@@ -39,7 +40,7 @@ public class NullCompare extends GenericNotStmt implements PredicateExpr {
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(context))
-            this.expr = new StringLiteral(this.getExpr().getValue(context));
+            this.expr = new DateLiteral(this.getExpr().getValue(context));
         else
             retval = false;
 
@@ -48,7 +49,7 @@ public class NullCompare extends GenericNotStmt implements PredicateExpr {
 
     @Override
     public boolean evaluate(final EvalContext context) throws HPersistException {
-        final String val = this.expr.getValue(context);
+        final Date val = this.getExpr().getValue(context);
         final boolean retval = (val == null);
         return (this.isNot()) ? !retval : retval;
     }
