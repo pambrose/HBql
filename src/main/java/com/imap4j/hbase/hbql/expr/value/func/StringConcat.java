@@ -60,7 +60,7 @@ public class StringConcat implements StringValue {
     }
 
     @Override
-    public boolean isAContant() {
+    public boolean isAConstant() {
         return this.listIsConstant();
     }
 
@@ -90,7 +90,7 @@ public class StringConcat implements StringValue {
     private boolean listIsConstant() {
 
         for (final StringValue val : this.getValList()) {
-            if (!val.isAContant())
+            if (!val.isAConstant())
                 return false;
         }
         return true;

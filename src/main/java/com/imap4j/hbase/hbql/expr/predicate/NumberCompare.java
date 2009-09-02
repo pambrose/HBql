@@ -83,8 +83,8 @@ public class NumberCompare extends CompareExpr implements PredicateExpr {
     }
 
     @Override
-    public boolean isAContant() {
-        return this.getExpr1().isAContant() && this.getExpr2().isAContant();
+    public boolean isAConstant() {
+        return this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
     }
 
 }

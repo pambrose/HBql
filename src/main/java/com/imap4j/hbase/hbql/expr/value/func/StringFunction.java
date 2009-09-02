@@ -44,7 +44,7 @@ public class StringFunction extends GenericFunction implements StringValue {
 
     // TODO Deal with this
     @Override
-    public boolean isAContant() {
+    public boolean isAConstant() {
         return false;
     }
 

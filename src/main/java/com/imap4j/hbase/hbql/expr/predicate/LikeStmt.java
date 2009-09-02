@@ -45,7 +45,7 @@ public class LikeStmt extends GenericNotStmt implements PredicateExpr {
     @Override
     public boolean evaluate(final EvalContext context) throws HPersistException {
 
-        if (this.getPatternExpr().isAContant()) {
+        if (this.getPatternExpr().isAConstant()) {
             if (this.pattern == null) {
                 final String pattern = this.getPatternExpr().getValue(context);
                 this.pattern = Pattern.compile(pattern);
@@ -89,8 +89,8 @@ public class LikeStmt extends GenericNotStmt implements PredicateExpr {
     }
 
     @Override
-    public boolean isAContant() {
-        return this.getExpr().isAContant() && this.getPatternExpr().isAContant();
+    public boolean isAConstant() {
+        return this.getExpr().isAConstant() && this.getPatternExpr().isAConstant();
     }
 
 }

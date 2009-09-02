@@ -54,8 +54,8 @@ public class CondFactor implements PredicateExpr {
     }
 
     @Override
-    public boolean isAContant() {
-        return this.getExpr().isAContant();
+    public boolean isAConstant() {
+        return this.getExpr().isAConstant();
     }
 
 }

@@ -79,8 +79,8 @@ public class Substring implements StringValue {
     }
 
     @Override
-    public boolean isAContant() {
-        return this.getExpr().isAContant() && this.getBegin().isAContant() && this.getEnd().isAContant();
+    public boolean isAConstant() {
+        return this.getExpr().isAConstant() && this.getBegin().isAConstant() && this.getEnd().isAConstant();
     }
 
 }

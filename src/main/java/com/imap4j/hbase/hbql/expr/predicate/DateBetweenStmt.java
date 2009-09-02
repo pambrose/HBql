@@ -2,9 +2,11 @@ package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
-import com.imap4j.hbase.hbql.expr.node.NumberValue;
+import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
-import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
+import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
+
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,27 +14,27 @@ import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NumberBetweenStmt extends GenericBetweenStmt implements PredicateExpr {
+public class DateBetweenStmt extends GenericBetweenStmt implements PredicateExpr {
 
-    private NumberValue expr = null;
-    private NumberValue lower = null, upper = null;
+    private DateValue expr = null;
+    private DateValue lower = null, upper = null;
 
-    public NumberBetweenStmt(final NumberValue expr, final boolean not, final NumberValue lower, final NumberValue upper) {
+    public DateBetweenStmt(final DateValue expr, final boolean not, final DateValue lower, final DateValue upper) {
         super(not);
         this.expr = expr;
         this.lower = lower;
         this.upper = upper;
     }
 
-    protected NumberValue getExpr() {
+    protected DateValue getExpr() {
         return this.expr;
     }
 
-    protected NumberValue getLower() {
+    protected DateValue getLower() {
         return this.lower;
     }
 
-    protected NumberValue getUpper() {
+    protected DateValue getUpper() {
         return this.upper;
     }
 
@@ -41,17 +43,17 @@ public class NumberBetweenStmt extends GenericBetweenStmt implements PredicateEx
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(context))
-            this.expr = new NumberLiteral(this.getExpr().getValue(context));
+            this.expr = new DateLiteral(this.getExpr().getValue(context));
         else
             retval = false;
 
         if (this.getLower().optimizeForConstants(context))
-            this.lower = new NumberLiteral(this.getLower().getValue(context));
+            this.lower = new DateLiteral(this.getLower().getValue(context));
         else
             retval = false;
 
         if (this.getUpper().optimizeForConstants(context))
-            this.upper = new NumberLiteral(this.getUpper().getValue(context));
+            this.upper = new DateLiteral(this.getUpper().getValue(context));
         else
             retval = false;
 
@@ -61,11 +63,10 @@ public class NumberBetweenStmt extends GenericBetweenStmt implements PredicateEx
     @Override
     public boolean evaluate(final EvalContext context) throws HPersistException {
 
-        final int numval = this.getExpr().getValue(context).intValue();
-        final boolean retval = numval >= this.getLower().getValue(context).intValue()
-                               && numval <= this.getUpper().getValue(context).intValue();
+        final Date dateval = this.getExpr().getValue(context);
+        final boolean retval = dateval.compareTo(this.getLower().getValue(context)) >= 0
+                               && dateval.compareTo(this.getUpper().getValue(context)) <= 0;
 
         return (this.isNot()) ? !retval : retval;
     }
-
 }

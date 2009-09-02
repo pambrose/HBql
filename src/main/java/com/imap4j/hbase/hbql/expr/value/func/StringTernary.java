@@ -57,15 +57,15 @@ public class StringTernary extends GenericTernary implements StringValue {
     @Override
     public String getValue(final EvalContext context) throws HPersistException {
 
-        if (this.pred.evaluate(context))
-            return this.expr1.getValue(context);
+        if (this.getPred().evaluate(context))
+            return this.getExpr1().getValue(context);
         else
-            return this.expr2.getValue(context);
+            return this.getExpr2().getValue(context);
     }
 
     @Override
-    public boolean isAContant() {
-        return this.getPred().isAContant() && this.getExpr1().isAContant() && this.getExpr2().isAContant();
+    public boolean isAConstant() {
+        return this.getPred().isAConstant() && this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
     }
 
 }

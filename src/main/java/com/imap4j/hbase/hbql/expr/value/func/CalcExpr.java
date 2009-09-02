@@ -39,6 +39,10 @@ public class CalcExpr implements NumberValue {
         this.expr2 = expr2;
     }
 
+    private OP getOp() {
+        return this.op;
+    }
+
     private NumberValue getExpr1() {
         return this.expr1;
     }
@@ -75,10 +79,10 @@ public class CalcExpr implements NumberValue {
     @Override
     public Number getValue(final EvalContext context) throws HPersistException {
 
-        final int val1 = ((Number)this.expr1.getValue(context)).intValue();
-        final int val2 = (this.expr2 != null) ? ((Number)this.expr2.getValue(context)).intValue() : 0;
+        final int val1 = this.getExpr1().getValue(context).intValue();
+        final int val2 = (this.getExpr2() != null) ? (this.getExpr2().getValue(context)).intValue() : 0;
 
-        switch (this.op) {
+        switch (this.getOp()) {
             case PLUS:
                 return val1 + val2;
             case MINUS:
@@ -95,13 +99,13 @@ public class CalcExpr implements NumberValue {
                 return val1;
         }
 
-        throw new HPersistException("Error in CalcExpr.getValue() " + this.op);
+        throw new HPersistException("Error in CalcExpr.getValue() " + this.getOp());
 
     }
 
     @Override
-    public boolean isAContant() {
-        return this.getExpr1().isAContant() && this.getExpr2().isAContant();
+    public boolean isAConstant() {
+        return this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
     }
 
 }

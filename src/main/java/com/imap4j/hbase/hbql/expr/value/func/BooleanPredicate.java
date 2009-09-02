@@ -51,8 +51,8 @@ public class BooleanPredicate implements BooleanValue {
     }
 
     @Override
-    public boolean isAContant() {
-        return this.getExpr().isAContant();
+    public boolean isAConstant() {
+        return this.getExpr().isAConstant();
     }
 
 }

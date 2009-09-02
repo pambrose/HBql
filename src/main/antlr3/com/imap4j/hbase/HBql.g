@@ -127,7 +127,8 @@ betweenStmt returns [PredicateExpr retval]
 							{retval = new NumberBetweenStmt($n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
 	| s1=stringExpr n=not? keyBETWEEN s2=stringExpr and s3=stringExpr		
 							{retval = new StringBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
-	//| d1=dateExpr n=not? keyBETWEEN d2=dateExpr and d3=dateExpr
+	| d1=dateExpr n=not? keyBETWEEN d2=dateExpr and d3=dateExpr
+							{retval = new DateBetweenStmt($d1.retval, ($n.text != null), $d2.retval, $d3.retval);}
 	;
 
 likeStmt returns [PredicateExpr retval]
@@ -149,7 +150,7 @@ nullCompExpr returns [PredicateExpr retval]
 
 compareExpr returns [PredicateExpr retval]
 	: s1=stringExpr o=compOp s2=stringExpr	  	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
-	//| d1=dateExpr o=compOp d2=dateExpr 
+	| d1=dateExpr o=compOp d2=dateExpr 		{retval = new DateCompare($d1.retval, $o.retval, $d2.retval);}
 	| n1=numericExpr o=compOp n2=numericExpr	{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
 	;
 	
@@ -223,11 +224,17 @@ booleanExpr returns [BooleanValue retval]
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	//| f=funcReturningBoolean
 	;
-/*
+
 dateExpr returns [DateValue retval]
-	: funcReturningDatetime
+	: d1=dateVal					{retval = $d1.retval;}
+	| LPAREN d2=dateExpr RPAREN			{retval = $d2.retval;}
 	;
-*/
+	
+dateVal returns [DateValue retval]
+	: d1=dateLiteral				{retval = $d1.retval;}
+	| d2=funcReturningDatetime			{retval = $d2.retval;}
+	| d3=dateAttrib					{retval = $d3.retval;} 			
+	;
 
 // Attribs with type
 strAttrib returns [StringValue retval]
@@ -246,20 +253,19 @@ stringLiteral returns [StringValue retval]
 numberLiteral returns [NumberValue retval]
 	: v=INT						{retval = new NumberLiteral(Integer.valueOf($v.text));};
 		
+dateLiteral returns [DateValue retval]
+	: keyNOW					{retval = new DateLiteral();}
+	;
+
 booleanLiteral returns [BooleanValue retval]
 	: t=keyTRUE					{retval = new BooleanLiteral($t.text);}
 	| f=keyFALSE					{retval = new BooleanLiteral($f.text);}
 	;
 
-/*
-funcReturningNumber
-	: keyLENGTH LPAREN stringExpr RPAREN
-	| keyABS LPAREN numericExpr RPAREN
-	| keyMOD LPAREN numericExpr COMMA numericExpr RPAREN
-	;
-*/
-funcReturningDatetime
-	: keyNOW
+// Functions
+funcReturningDatetime returns [DateValue retval]
+	: keyDATE LPAREN s1=stringExpr COMMA s2=stringExpr RPAREN
+							{retval = new DateExpr($s1.retval, $s2.retval);}
 	;
 
 funcReturningString returns [StringValue retval]
@@ -271,6 +277,14 @@ funcReturningString returns [StringValue retval]
 	| keyLOWER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.FUNC.LOWER, $s.retval);} 
 	| keyUPPER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.FUNC.UPPER, $s.retval);} 
 	;
+/*
+funcReturningNumber
+	: keyLENGTH LPAREN stringExpr RPAREN
+	| keyABS LPAREN numericExpr RPAREN
+	| keyMOD LPAREN numericExpr COMMA numericExpr RPAREN
+	;
+*/
+
 /*	
 funcReturningBoolean
 	: 
@@ -370,3 +384,4 @@ keyIGNORE_CASE 	: {isKeyword(input, "IGNORE_CASE")}? ID;
 //keyABS 	: {isKeyword(input, "ABS")}? ID;
 //keyMOD	 : {isKeyword(input, "MOD")}? ID;
 keyNOW		 : {isKeyword(input, "NOW")}? ID;
+keyDATE		 : {isKeyword(input, "DATE")}? ID;

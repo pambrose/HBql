@@ -32,8 +32,8 @@ public abstract class GenericBetweenStmt extends GenericNotStmt implements ExprE
     }
 
     @Override
-    public boolean isAContant() {
-        return this.getExpr().isAContant() && this.getLower().isAContant() && this.getUpper().isAContant();
+    public boolean isAConstant() {
+        return this.getExpr().isAConstant() && this.getLower().isAConstant() && this.getUpper().isAConstant();
     }
 
 }
