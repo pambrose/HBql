@@ -9,9 +9,9 @@ import com.imap4j.hbase.hbql.expr.node.StringValue;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NullLiteral extends GenericLiteral implements StringValue {
+public class StringNullLiteral extends GenericLiteral implements StringValue {
 
-    public NullLiteral() {
+    public StringNullLiteral() {
     }
 
     @Override

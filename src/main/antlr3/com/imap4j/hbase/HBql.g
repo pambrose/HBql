@@ -136,12 +136,12 @@ likeStmt returns [PredicateExpr retval]
 							{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);};
 
 inStmt returns [PredicateExpr retval]
-	: a1=numericExpr n=not? keyIN LPAREN i=intItemList RPAREN			
+	: a3=dateExpr n=not? keyIN LPAREN d=dateItemList RPAREN			
+							{retval = new DateInStmt($a3.retval, ($n.text != null), $d.retval);} 
+	| a1=numericExpr n=not? keyIN LPAREN i=intItemList RPAREN			
 							{retval = new NumberInStmt($a1.retval,($n.text != null), $i.retval);} 
 	| a2=stringExpr n=not? keyIN LPAREN s=strItemList RPAREN			
 							{retval = new StringInStmt($a2.retval, ($n.text != null), $s.retval);} 
-	| a3=dateExpr n=not? keyIN LPAREN d=dateItemList RPAREN			
-							{retval = new DateInStmt($a3.retval, ($n.text != null), $d.retval);} 
 	;
 
 booleanStmt returns [PredicateExpr retval]
@@ -214,7 +214,7 @@ stringVal returns [StringValue retval]
 	: sl=stringLiteral				{retval = $sl.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
 	| LPAREN se=stringExpr	RPAREN			{retval = $se.retval;}
-	//| n=keyNULL					{retval = new NullLiteral();}
+	| n=keyNULL					{retval = new StringNullLiteral();}
 	| a=strAttrib					{retval = $a.retval;}
 	| LBRACE e=orExpr QMARK s1=stringExpr COLON s2=stringExpr RBRACE	
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}

@@ -6,6 +6,7 @@ import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
+import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
 
 import java.util.List;
 
@@ -53,6 +54,9 @@ public class ExprEvalTree implements PredicateExpr {
     public boolean evaluate(final EvalContext context) throws HPersistException {
 
         this.start = System.nanoTime();
+
+        // Set it once per evaluation
+        DateLiteral.resetNow();
 
         final boolean retval = (this.getExpr() == null) || (this.getExpr().evaluate(context));
 

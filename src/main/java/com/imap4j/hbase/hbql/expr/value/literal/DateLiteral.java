@@ -13,6 +13,8 @@ import java.util.Date;
  */
 public class DateLiteral extends GenericLiteral implements DateValue {
 
+    private static long now = System.currentTimeMillis();
+
     private final static long day = 1000 * 60 * 60 * 24;
 
     public enum TYPE {
@@ -42,8 +44,15 @@ public class DateLiteral extends GenericLiteral implements DateValue {
     }
 
     public DateLiteral(final TYPE type) {
-        final long now = System.currentTimeMillis();
-        this.value = new Date(now + type.getAdjustment());
+        this.value = new Date(getNow() + type.getAdjustment());
+    }
+
+    private static long getNow() {
+        return now;
+    }
+
+    public static void resetNow() {
+        now = System.currentTimeMillis();
     }
 
     @Override
