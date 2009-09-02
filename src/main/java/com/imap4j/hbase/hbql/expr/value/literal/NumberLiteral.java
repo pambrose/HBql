@@ -23,7 +23,7 @@ public class NumberLiteral extends GenericLiteral implements NumberValue {
     }
 
     @Override
-    public boolean isContant() {
+    public boolean isAContant() {
         return true;
     }
 }

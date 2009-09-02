@@ -62,8 +62,8 @@ public class ExprEvalTree implements PredicateExpr {
     }
 
     @Override
-    public boolean isContant() {
-        return this.getExpr().isContant();
+    public boolean isAContant() {
+        return this.getExpr().isAContant();
     }
 
     public long getElapsedNanos() {

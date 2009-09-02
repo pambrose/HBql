@@ -34,7 +34,7 @@ public class BooleanLiteral extends GenericLiteral implements BooleanValue, Pred
     }
 
     @Override
-    public boolean isContant() {
+    public boolean isAContant() {
         return true;
     }
 }

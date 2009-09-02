@@ -23,7 +23,7 @@ public class StringLiteral extends GenericLiteral implements StringValue {
     }
 
     @Override
-    public boolean isContant() {
+    public boolean isAContant() {
         return true;
     }
 }

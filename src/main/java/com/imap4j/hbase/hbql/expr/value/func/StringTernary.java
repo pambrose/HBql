@@ -64,8 +64,8 @@ public class StringTernary extends GenericTernary implements StringValue {
     }
 
     @Override
-    public boolean isContant() {
-        return this.getPred().isContant() && this.getExpr1().isContant() && this.getExpr2().isContant();
+    public boolean isAContant() {
+        return this.getPred().isAContant() && this.getExpr1().isAContant() && this.getExpr2().isAContant();
     }
 
 }

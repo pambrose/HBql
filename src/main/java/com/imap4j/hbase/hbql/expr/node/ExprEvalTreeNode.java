@@ -19,6 +19,6 @@ public interface ExprEvalTreeNode extends Serializable {
 
     List<ExprVariable> getExprVariables();
 
-    boolean isContant();
+    boolean isAContant();
 
 }

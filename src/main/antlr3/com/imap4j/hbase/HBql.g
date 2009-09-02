@@ -257,13 +257,10 @@ funcReturningNumber
 	| keyABS LPAREN numericExpr RPAREN
 	| keyMOD LPAREN numericExpr COMMA numericExpr RPAREN
 	;
-
-funcReturningDatetime
-	: keyCURRENT_DATE
-	| keyCURRENT_TIME
-	| keyCURRENT_TIMESTAMP
-	;
 */
+funcReturningDatetime
+	: keyNOW
+	;
 
 funcReturningString returns [StringValue retval]
 	: keyCONCAT LPAREN s1=stringExpr COMMA s2=stringExpr RPAREN
@@ -372,6 +369,4 @@ keyIGNORE_CASE 	: {isKeyword(input, "IGNORE_CASE")}? ID;
 //keyLENGTH 	: {isKeyword(input, "LENGTH")}? ID;
 //keyABS 	: {isKeyword(input, "ABS")}? ID;
 //keyMOD	 : {isKeyword(input, "MOD")}? ID;
-//keyCURRENT_DATE: {isKeyword(input, "CURRENT_DATE")}? ID;
-//keyCURRENT_TIME: {isKeyword(input, "CURRENT_TIME")}? ID;
-//keyCURRENT_TIMESTAMP : {isKeyword(input, "CURRENT_TIMESTAMP")}? ID;
+keyNOW		 : {isKeyword(input, "NOW")}? ID;

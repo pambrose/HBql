@@ -27,7 +27,7 @@ public abstract class GenericLiteral implements ExprEvalTreeNode {
     }
 
     @Override
-    public boolean isContant() {
+    public boolean isAContant() {
         return true;
     }
 }

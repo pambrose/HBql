@@ -66,8 +66,8 @@ public class StringInStmt extends GenericInStmt implements PredicateExpr {
     }
 
     @Override
-    public boolean isContant() {
-        return this.getExpr().isContant() && this.listIsConstant();
+    public boolean isAContant() {
+        return this.getExpr().isAContant() && this.listIsConstant();
     }
 
     private boolean optimizeList(final EvalContext context) throws HPersistException {
@@ -107,7 +107,7 @@ public class StringInStmt extends GenericInStmt implements PredicateExpr {
     private boolean listIsConstant() {
 
         for (final StringValue val : this.getValList()) {
-            if (!val.isContant())
+            if (!val.isAContant())
                 return false;
         }
         return true;

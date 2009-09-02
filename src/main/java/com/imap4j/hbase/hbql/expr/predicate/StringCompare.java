@@ -85,7 +85,7 @@ public class StringCompare extends CompareExpr implements PredicateExpr {
     }
 
     @Override
-    public boolean isContant() {
-        return this.getExpr1().isContant() && this.getExpr2().isContant();
+    public boolean isAContant() {
+        return this.getExpr1().isAContant() && this.getExpr2().isAContant();
     }
 }

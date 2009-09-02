@@ -38,7 +38,7 @@ public abstract class GenericAttribRef implements ExprEvalTreeNode {
     }
 
     @Override
-    public boolean isContant() {
+    public boolean isAContant() {
         return false;
     }
 }
