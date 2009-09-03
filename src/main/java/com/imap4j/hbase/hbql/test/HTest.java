@@ -23,7 +23,7 @@ public class HTest {
     private static boolean evalExpr(final HPersistable recordObj, final String expr) throws HPersistException {
 
         final ClassSchema classSchema = (recordObj != null) ? ClassSchema.getClassSchema(recordObj) : null;
-        final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE.parse(expr);
+        final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE.parse(expr, classSchema);
         final EvalContext context = new EvalContext(classSchema, recordObj);
 
         final boolean no_opt_run = tree.evaluate(context);
@@ -77,7 +77,7 @@ public class HTest {
     private static boolean evalColumnNames(final String expr, String... vals) {
 
         final List<String> valList = Lists.newArrayList(vals);
-        final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE.parse(expr);
+        final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE.parse(expr, (ClassSchema)null);
         final List<ExprVariable> attribs = tree.getExprVariables();
 
         boolean retval = true;

@@ -30,6 +30,12 @@ public class HBaseParser extends Parser {
         return s != null && s.equalsIgnoreCase(str);
     }
 
+    protected static boolean isStringAttrib(final TokenStream input) {
+        final String s = input.LT(1).getText();
+        //System.out.println("Checking for " + str + " and " + s);
+        return true;
+    }
+
     /*
     public String getErrorMessage(RecognitionException e, String[] tokenNames) {
         List stack = getRuleInvocationStack(e, this.getClass().getName());

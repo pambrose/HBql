@@ -45,6 +45,7 @@ import com.imap4j.hbase.hbql.expr.value.literal.*;
 import com.imap4j.hbase.hbql.expr.value.var.*;
 import com.imap4j.hbase.antlr.args.*;
 import com.imap4j.hbase.antlr.*;
+import com.imap4j.hbase.hbql.schema.ClassSchema;
 import java.util.Date;
 import com.google.common.collect.Lists;
 }
@@ -54,21 +55,24 @@ package com.imap4j.hbase;
 import com.google.common.collect.Lists;
 }
 
-selectStmt returns [QueryArgs retval]
+@members {
+ClassSchema classSchema = null;
+}
+selectStmt [ClassSchema cs] returns [QueryArgs retval]
 	: keySELECT (STAR | c=columnList) 
 	  keyFROM t=dottedValue 
-	  f=filterClause?
-	  w=whereClause?				{retval = new QueryArgs($c.retval, $t.text, $f.retval, $w.retval);};
+	  f=filterClause[cs]?
+	  w=whereClause[cs]?				{retval = new QueryArgs($c.retval, $t.text, $f.retval, $w.retval);};
 
 columnList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
 	: column[retval] (COMMA column[retval])*;
 
-execCommand returns [ExecArgs retval]
+execCommand [ClassSchema cs] returns [ExecArgs retval]
 	: create=createStmt				{retval = $create.retval;}
 	| desc=describeStmt 				{retval = $desc.retval;}
 	| show=showStmt 				{retval = $show.retval;}
-	| del=deleteStmt 				{retval = $del.retval;}
+	| del=deleteStmt[cs] 				{retval = $del.retval;}
 	| set=setStmt					{retval = $set.retval;}
 	;
 
@@ -81,21 +85,22 @@ describeStmt returns [DescribeArgs retval]
 showStmt returns [ShowArgs retval]
 	: keySHOW keyTABLES 		 		{retval = new ShowArgs();};
 
-deleteStmt returns [DeleteArgs retval]
-	: keyDELETE keyFROM table=ID 
-	  f=filterClause?
-	  w=whereClause?				{retval = new DeleteArgs($table.text, $f.retval, $w.retval);};
+deleteStmt [ClassSchema cs] returns [DeleteArgs retval]
+	: keyDELETE keyFROM table=ID 			{ClassSchema.getClassSchema($table.text);}
+	  f=filterClause[cs]?
+	  w=whereClause[cs]?				{retval = new DeleteArgs($table.text, $f.retval, $w.retval);};
 
 setStmt returns [SetArgs retval]
 	: keySET i=ID to? v=dottedValue 		{retval = new SetArgs($i.text, $v.text);};
 
-filterClause returns [ExprEvalTree retval]
-	: keyWITH keyFILTER w=whereExpr			{retval = $w.retval;};
+filterClause [ClassSchema cs] returns [ExprEvalTree retval]
+	: keyWITH keyFILTER w=whereExpr[cs]			{retval = $w.retval;};
 	
-whereClause returns [ExprEvalTree retval]
-	: keyWHERE w=whereExpr 				{retval = $w.retval;};
+whereClause [ClassSchema cs] returns [ExprEvalTree retval]
+	: keyWHERE w=whereExpr[cs] 				{retval = $w.retval;};
 
-whereExpr returns [ExprEvalTree retval]
+whereExpr [ClassSchema cs] returns [ExprEvalTree retval]
+@init {classSchema = cs;}
 	: e=orExpr					{retval = new ExprEvalTree($e.retval);};
 			
 orExpr returns [PredicateExpr retval]
@@ -248,7 +253,7 @@ dateVal returns [DateValue retval]
 
 // Attribs with type
 strAttrib returns [StringValue retval]
-	: v=ID 						{retval = new StringAttribRef($v.text);};
+	: {isStringAttrib(input)}? v=ID 		{retval = new StringAttribRef($v.text);};
 
 intAttrib returns [NumberValue retval]
 	: v=ID 						{retval = new NumberAttribRef($v.text);};
