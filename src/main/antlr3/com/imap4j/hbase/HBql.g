@@ -2,7 +2,6 @@ grammar HBql;
 
 options {
 	superClass=HBaseParser;
-	backtrack=true;
 }
 
 tokens {
@@ -109,11 +108,13 @@ condFactor returns [PredicateExpr retval]
 	: n=not? p=condPrimary				{$condFactor.retval = ($n.text != null) ?  new CondFactor(true, $p.retval) :  $p.retval;};
 	
 condPrimary returns [PredicateExpr retval]
+options {backtrack=true;}	
 	: s=simpleCondExpr  				{retval = $s.retval;}
 	| LPAREN o=orExpr RPAREN			{retval = $o.retval;}
 	;
 
 simpleCondExpr returns [PredicateExpr retval]
+options {backtrack=true;}	
 	: n=nullCompExpr				{retval = $n.retval;}
 	| c=compareExpr 				{retval = $c.retval;}
 	| b1=betweenStmt				{retval = $b1.retval;}
@@ -123,6 +124,7 @@ simpleCondExpr returns [PredicateExpr retval]
 	;
 
 betweenStmt returns [PredicateExpr retval]
+options {backtrack=true;}	
 	: d1=dateExpr n=not? keyBETWEEN d2=dateExpr and d3=dateExpr
 							{retval = new DateBetweenStmt($d1.retval, ($n.text != null), $d2.retval, $d3.retval);}
 	| n1=numericExpr n=not? keyBETWEEN n2=numericExpr and n3=numericExpr		
@@ -136,6 +138,7 @@ likeStmt returns [PredicateExpr retval]
 							{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);};
 
 inStmt returns [PredicateExpr retval]
+options {backtrack=true;}	
 	: a3=dateExpr n=not? keyIN LPAREN d=dateItemList RPAREN			
 							{retval = new DateInStmt($a3.retval, ($n.text != null), $d.retval);} 
 	| a1=numericExpr n=not? keyIN LPAREN i=intItemList RPAREN			
@@ -153,6 +156,7 @@ nullCompExpr returns [PredicateExpr retval]
 	;	
 
 compareExpr returns [PredicateExpr retval]
+options {backtrack=true;}	
 	: d1=dateExpr o=compOp d2=dateExpr 		{retval = new DateCompare($d1.retval, $o.retval, $d2.retval);}	
 	| s1=stringExpr o=compOp s2=stringExpr	  	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
 	| n1=numericExpr o=compOp n2=numericExpr	{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
@@ -206,14 +210,15 @@ stringExpr returns [StringValue retval]
 	    			 vals.add(firstval);
 	    		       } 
 	    		       vals.add($s2.retval);
-	    		      })*
+	    		      })?
 							{retval = (vals == null) ? firstval : new StringConcat(vals);}
+	| LPAREN se=stringExpr	RPAREN			{retval = $se.retval;}						
 	;
 	
 stringVal returns [StringValue retval]
+options {backtrack=true;}	
 	: sl=stringLiteral				{retval = $sl.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
-	| LPAREN se=stringExpr	RPAREN			{retval = $se.retval;}
 	| n=keyNULL					{retval = new StringNullLiteral();}
 	| a=strAttrib					{retval = $a.retval;}
 	| LBRACE e=orExpr QMARK s1=stringExpr COLON s2=stringExpr RBRACE	
@@ -222,6 +227,7 @@ stringVal returns [StringValue retval]
 
 // TODO Deal with LBRACE/RBRACE here
 booleanExpr returns [BooleanValue retval]
+options {backtrack=true;}	
 	: b=booleanLiteral				{retval = $b.retval;}
 	| LBRACE e=orExpr RBRACE			{retval = new BooleanPredicate($e.retval);}
 	| LBRACE e=orExpr QMARK b1=orExpr COLON b2=orExpr RBRACE	
