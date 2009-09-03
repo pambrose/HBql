@@ -28,13 +28,19 @@ public class ClassSchema implements Serializable {
 
     final Map<String, List<FieldAttrib>> fieldAttribMapByFamily = Maps.newHashMap();
     final Map<String, FieldAttrib> fieldAttribMapByField = Maps.newHashMap();
-    final Map<String, FieldAttrib> fieldAttribMapByColumn = Maps.newHashMap();
+    final Map<String, FieldAttrib> fieldAttribMapByColumnName = Maps.newHashMap();
+    final Map<String, FieldAttrib> fieldAttribMapByVarName = Maps.newHashMap();
 
     private final Class<?> clazz;
     private final HTable table;
     private final HFamily[] families;
 
     private FieldAttrib keyFieldAttrib = null;
+
+    public ClassSchema(final String desc) throws HPersistException {
+        // Format: varname:type, varname:type
+
+    }
 
     public ClassSchema(final Class clazz) throws HPersistException {
         this.clazz = clazz;
@@ -73,13 +79,16 @@ public class ClassSchema implements Serializable {
         return fieldAttribMapByFamily;
     }
 
-    public Map<String, FieldAttrib> getFieldAttribMapByField() {
-
+    public Map<String, FieldAttrib> getFieldAttribMapByFieldAttrib() {
         return fieldAttribMapByField;
     }
 
-    public Map<String, FieldAttrib> getFieldAttribMapByColumn() {
-        return fieldAttribMapByColumn;
+    public Map<String, FieldAttrib> getFieldAttribMapByColumnName() {
+        return fieldAttribMapByColumnName;
+    }
+
+    public Map<String, FieldAttrib> getFieldAttribMapByVarName() {
+        return fieldAttribMapByVarName;
     }
 
     private static Map<Class<?>, ClassSchema> getClassSchemaMap() {
@@ -95,7 +104,7 @@ public class ClassSchema implements Serializable {
     }
 
     public FieldAttrib getFieldAttribByName(final String attribName) {
-        return getFieldAttribMapByField().get(attribName);
+        return getFieldAttribMapByFieldAttrib().get(attribName);
     }
 
     public static ClassSchema getClassSchema(final HPersistable obj) throws HPersistException {
@@ -129,7 +138,7 @@ public class ClassSchema implements Serializable {
 
     public List<String> getFieldList() {
         final List<String> retval = Lists.newArrayList();
-        for (final FieldAttrib attrib : this.getFieldAttribMapByField().values()) {
+        for (final FieldAttrib attrib : this.getFieldAttribMapByFieldAttrib().values()) {
 
             if (attrib.isKey())
                 continue;
@@ -187,8 +196,9 @@ public class ClassSchema implements Serializable {
 
                 final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, column);
 
-                this.getFieldAttribMapByField().put(field.getName(), attrib);
-                this.getFieldAttribMapByColumn().put(attrib.getQualifiedName(), attrib);
+                this.getFieldAttribMapByFieldAttrib().put(field.getName(), attrib);
+                this.getFieldAttribMapByColumnName().put(attrib.getQualifiedName(), attrib);
+                this.getFieldAttribMapByVarName().put(field.getName(), attrib);
 
                 if (attrib.isKey()) {
                     if (keyFieldAttrib != null)

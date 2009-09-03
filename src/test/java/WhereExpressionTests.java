@@ -230,7 +230,7 @@ public class WhereExpressionTests extends HTest {
     @Test
     public void hadoopSerialization() throws IOException, HPersistException {
 
-        final int total = 10000;
+        final int total = 1000;
         int pos = 0;
         byte[] b;
 

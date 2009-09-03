@@ -96,7 +96,7 @@ public abstract class Serialization {
                     final int lbrace = column.indexOf("[");
                     final String mapcolumn = column.substring(0, lbrace);
                     final String mapKey = column.substring(lbrace + 1, column.length() - 1);
-                    final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(mapcolumn);
+                    final FieldAttrib attrib = classSchema.getFieldAttribMapByColumnName().get(mapcolumn);
                     final Object val = attrib.getValueFromBytes(this, newobj, valbytes);
                     Map mapval = (Map)attrib.getValue(newobj);
 
@@ -109,7 +109,7 @@ public abstract class Serialization {
                     mapval.put(mapKey, val);
                 }
                 else {
-                    final FieldAttrib attrib = classSchema.getFieldAttribMapByColumn().get(column);
+                    final FieldAttrib attrib = classSchema.getFieldAttribMapByColumnName().get(column);
                     final Object val = attrib.getValueFromBytes(this, newobj, valbytes);
                     attrib.getField().set(newobj, val);
                 }

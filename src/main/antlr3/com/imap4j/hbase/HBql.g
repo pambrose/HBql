@@ -56,7 +56,7 @@ import com.google.common.collect.Lists;
 }
 
 @members {
-ClassSchema classSchema = null;
+//ClassSchema classSchema = null;
 }
 selectStmt [ClassSchema cs] returns [QueryArgs retval]
 	: keySELECT (STAR | c=columnList) 
@@ -86,7 +86,7 @@ showStmt returns [ShowArgs retval]
 	: keySHOW keyTABLES 		 		{retval = new ShowArgs();};
 
 deleteStmt [ClassSchema cs] returns [DeleteArgs retval]
-	: keyDELETE keyFROM table=ID 			{ClassSchema.getClassSchema($table.text);}
+	: keyDELETE keyFROM table=ID 			{setClassSchema($table.text);}
 	  f=filterClause[cs]?
 	  w=whereClause[cs]?				{retval = new DeleteArgs($table.text, $f.retval, $w.retval);};
 
@@ -100,7 +100,7 @@ whereClause [ClassSchema cs] returns [ExprEvalTree retval]
 	: keyWHERE w=whereExpr[cs] 				{retval = $w.retval;};
 
 whereExpr [ClassSchema cs] returns [ExprEvalTree retval]
-@init {classSchema = cs;}
+@init {setClassSchema(cs);}
 	: e=orExpr					{retval = new ExprEvalTree($e.retval);};
 			
 orExpr returns [PredicateExpr retval]
@@ -256,10 +256,10 @@ strAttrib returns [StringValue retval]
 	: {isStringAttrib(input)}? v=ID 		{retval = new StringAttribRef($v.text);};
 
 intAttrib returns [NumberValue retval]
-	: v=ID 						{retval = new NumberAttribRef($v.text);};
+	: {isIntAttrib(input)}? v=ID 			{retval = new NumberAttribRef($v.text);};
 
 dateAttrib returns [DateValue retval]
-	: v=ID 						{retval = new DateAttribRef($v.text);};
+	: {isDateAttrib(input)}? v=ID 			{retval = new DateAttribRef($v.text);};
 
 // Literals		
 stringLiteral returns [StringValue retval]
@@ -336,6 +336,14 @@ qstringList returns [List<String> retval]
 column [List<String> list]	
 	: charstr=dottedValue 				{if (list != null) list.add($charstr.text);};
 
+schemaDesc returns [List<VarDesc> retval]
+	: (varDesc (COMMA varDesc)*)?;
+	;
+	
+varDesc returns [VarDesc retval]
+	: v1=ID COLON v2=ID				{retval = new VarDesc($v1.text, $v2.text);}
+	;
+	
 dottedValue	
 	: ID ((DOT | COLON) ID)*;
 
