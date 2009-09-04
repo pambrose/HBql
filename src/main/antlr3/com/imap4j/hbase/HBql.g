@@ -60,7 +60,7 @@ import com.google.common.collect.Lists;
 }
 selectStmt [ClassSchema cs] returns [QueryArgs retval]
 	: keySELECT (STAR | c=columnList) 
-	  keyFROM t=variableRef 
+	  keyFROM t=ID 
 	  f=filterClause[cs]?
 	  w=whereClause[cs]?				{retval = new QueryArgs($c.retval, $t.text, $f.retval, $w.retval);};
 
@@ -197,7 +197,7 @@ numPrimary returns [IntegerValue retval]
 // Simple typed exprs
 numberExpr returns [IntegerValue retval]
 	: l=numberLiteral				{retval = $l.retval;} 
-	| i=intAttrib					{retval = $i.retval;}
+	| i=attribVar					{retval = (IntegerValue)$i.retval;}
 	//| f=funcReturningInteger
 	| LBRACE e=orExpr QMARK n1=numericExpr WS COLON WS n2=numericExpr RBRACE	
 							{retval = new IntegerTernary($e.retval, $n1.retval, $n2.retval);}
@@ -225,7 +225,7 @@ options {backtrack=true;}
 	: sl=stringLiteral				{retval = $sl.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
 	| n=keyNULL					{retval = new StringNullLiteral();}
-	| a=strAttrib					{retval = $a.retval;}
+	| a=attribVar					{retval = (StringValue)$a.retval;}
 	| LBRACE e=orExpr QMARK s1=stringExpr WS COLON WS s2=stringExpr RBRACE	
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
@@ -248,18 +248,12 @@ dateExpr returns [DateValue retval]
 dateVal returns [DateValue retval]
 	: d1=dateLiteral				{retval = $d1.retval;}
 	| d2=funcReturningDatetime			{retval = $d2.retval;}
-	| d3=dateAttrib					{retval = $d3.retval;} 			
+	| d3=attribVar					{retval = (DateValue)$d3.retval;} 			
 	;
 
-// Attribs with type
-strAttrib returns [StringValue retval]
-	: {isStringAttrib(input)}? v=variableRef 	{retval = new StringAttribRef($v.text);};
-
-intAttrib returns [IntegerValue retval]
-	: {isIntAttrib(input)}? v=variableRef 		{retval = new IntegerAttribRef($v.text);};
-
-dateAttrib returns [DateValue retval]
-	: {isDateAttrib(input)}? v=variableRef 		{retval = new DateAttribRef($v.text);};
+// Attrib
+attribVar returns [ValueExpr retval]
+	: v=varRef 					{retval = this.getValueExpr($v.text);};
 
 // Literals		
 stringLiteral returns [StringValue retval]
@@ -334,17 +328,24 @@ qstringList returns [List<String> retval]
 	: qstring[retval] (COMMA qstring[retval])*;
 
 column [List<String> list]	
-	: charstr=variableRef 				{if (list != null) list.add($charstr.text);};
+	: charstr=varRef 				{if (list != null) list.add($charstr.text);};
 
 schemaDesc returns [List<VarDesc> retval]
 @init {retval = Lists.newArrayList();}
 	: (varDesc[retval] (COMMA varDesc[retval])*)?;
 	
-varDesc [List<VarDesc> list] returns [VarDesc retval]
-	: v1=variableRef keyAS v2=variableRef		{list.add(new VarDesc($v1.text, $v2.text));}
+varDesc [List<VarDesc> list] 
+	: v=varRefList keyAS t=varType			{list.addAll(VarDesc.getList($v.retval, $t.text));}
+	;
+
+varRefList returns [List<String> retval]
+@init {retval = Lists.newArrayList();}
+	: v1=varRef {retval.add($v1.text);} (COMMA v2=varRef {retval.add($v2.text);})*
 	;
 	
-variableRef	
+varType	: ID;
+		
+varRef	
 	: ID ((DOT | COLON) ID)*			
 	;
 

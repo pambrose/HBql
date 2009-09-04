@@ -70,7 +70,7 @@ public class BooleanExpr implements PredicateExpr {
     }
 
     @Override
-    public boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final EvalContext context) throws HPersistException {
 
         final boolean expr1val = this.getExpr1().evaluate(context);
 

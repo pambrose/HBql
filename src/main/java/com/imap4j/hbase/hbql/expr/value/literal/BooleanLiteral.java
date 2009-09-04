@@ -24,12 +24,12 @@ public class BooleanLiteral extends GenericLiteral implements BooleanValue, Pred
     }
 
     @Override
-    public boolean getValue(final EvalContext context) {
+    public Boolean getValue(final EvalContext context) {
         return this.value;
     }
 
     @Override
-    public boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final EvalContext context) throws HPersistException {
         return this.value;
     }
 

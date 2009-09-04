@@ -218,13 +218,14 @@ public class WhereExpressionTests extends HTest {
 
     @Test
     public void columnLookups() throws HPersistException {
+        assertInvalidInput("", "a1 < a2");
         assertColumnsMatchTrue("", "TRUE");
         assertColumnsMatchFalse("", "TRUE", "intValue");
         assertColumnsMatchTrue("intValue as int, int2 as integer", "intValue between 2 AND 5", "intValue");
-        //assertColumnsMatchFalse("", "xintValue between 2 AND 5", "intValue");
-        assertColumnsMatchTrue("", "a1 < a2", "a1", "a2");
+        assertInvalidInput("", "xintValue between 2 AND 5", "intValue");
+        assertColumnsMatchTrue("a1,a2 as date", "a1 < a2", "a1", "a2");
         assertColumnsMatchFalse("", "a1 < a2 || d1 > k3", "a1", "a2");
-        assertColumnsMatchTrue("", "a1 < a2 || d1 > k3", "a1", "a2", "d1", "k3");
+        assertColumnsMatchTrue("a1, a2, d1 as date, k3 as date", "a1 < a2 || d1 > k3", "a1", "a2", "d1", "k3");
     }
 
     @Test

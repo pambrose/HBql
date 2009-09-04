@@ -11,5 +11,5 @@ import com.imap4j.hbase.hbql.expr.EvalContext;
  */
 public interface BooleanValue extends ValueExpr {
 
-    boolean getValue(final EvalContext context) throws HPersistException;
+    Boolean getValue(final EvalContext context) throws HPersistException;
 }

@@ -59,7 +59,7 @@ public class StringBetweenStmt extends GenericBetweenStmt implements PredicateEx
     }
 
     @Override
-    public boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final EvalContext context) throws HPersistException {
 
         final String strval = this.getExpr().getValue(context);
         final boolean retval = strval.compareTo(this.getLower().getValue(context)) >= 0

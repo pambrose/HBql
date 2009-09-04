@@ -51,7 +51,7 @@ public class ExprEvalTree implements PredicateExpr {
     }
 
     @Override
-    public boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final EvalContext context) throws HPersistException {
 
         this.start = System.nanoTime();
 

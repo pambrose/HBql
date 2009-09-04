@@ -66,6 +66,11 @@ public class HTest {
         org.junit.Assert.assertFalse(evalExpr(recordObj, expr));
     }
 
+    public void assertInvalidInput(final String schema, final String expr, String... vals) throws HPersistException {
+        org.junit.Assert.assertFalse(evalColumnNames(schema, expr, vals));
+    }
+
+
     public static void assertColumnsMatchTrue(final String schema, final String expr, String... vals) throws HPersistException {
         org.junit.Assert.assertTrue(evalColumnNames(schema, expr, vals));
     }
@@ -79,6 +84,10 @@ public class HTest {
         final ClassSchema classSchema = new ClassSchema(schema);
         final List<String> valList = Lists.newArrayList(vals);
         final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE.parse(expr, classSchema);
+
+        if (tree == null)
+            return false;
+
         final List<ExprVariable> attribs = tree.getExprVariables();
 
         boolean retval = true;

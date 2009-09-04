@@ -61,7 +61,7 @@ public class DateBetweenStmt extends GenericBetweenStmt implements PredicateExpr
     }
 
     @Override
-    public boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final EvalContext context) throws HPersistException {
 
         final Date dateval = this.getExpr().getValue(context);
         final boolean retval = dateval.compareTo(this.getLower().getValue(context)) >= 0

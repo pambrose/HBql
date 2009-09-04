@@ -59,7 +59,7 @@ public class IntegerCompare extends CompareExpr implements PredicateExpr {
     }
 
     @Override
-    public boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final EvalContext context) throws HPersistException {
 
         final int val1 = this.getExpr1().getValue(context).intValue();
         final int val2 = this.getExpr2().getValue(context).intValue();

@@ -61,7 +61,7 @@ public class DateInStmt extends GenericInStmt implements PredicateExpr {
     }
 
     @Override
-    public boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final EvalContext context) throws HPersistException {
         final boolean retval = this.evaluateList(context);
         return (this.isNot()) ? !retval : retval;
     }

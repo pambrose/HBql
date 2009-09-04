@@ -59,7 +59,7 @@ public class IntegerBetweenStmt extends GenericBetweenStmt implements PredicateE
     }
 
     @Override
-    public boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final EvalContext context) throws HPersistException {
 
         final int numval = this.getExpr().getValue(context).intValue();
         final boolean retval = numval >= this.getLower().getValue(context).intValue()

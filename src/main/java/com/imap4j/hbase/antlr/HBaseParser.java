@@ -1,9 +1,12 @@
 package com.imap4j.hbase.antlr;
 
 import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbql.expr.node.ValueExpr;
+import com.imap4j.hbase.hbql.expr.value.var.DateAttribRef;
+import com.imap4j.hbase.hbql.expr.value.var.IntegerAttribRef;
+import com.imap4j.hbase.hbql.expr.value.var.StringAttribRef;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.FieldAttrib;
-import com.imap4j.hbase.hbql.schema.FieldType;
 import org.antlr.runtime.BitSet;
 import org.antlr.runtime.IntStream;
 import org.antlr.runtime.MismatchedTokenException;
@@ -56,27 +59,29 @@ public class HBaseParser extends Parser {
         return s != null && s.equalsIgnoreCase(str);
     }
 
-    private boolean isNextTokenOfType(final TokenStream input, final FieldType type) {
 
-        if (this.getClassSchema() == null)
-            return false;
+    protected ValueExpr getValueExpr(final String var) throws RecognitionException {
 
-        final String s = input.LT(1).getText();
-        final FieldAttrib attrib = this.getClassSchema().getFieldAttribMapByVarName().get(s);
+        if (this.getClassSchema() != null) {
 
-        return attrib != null && attrib.getFieldType() == type;
-    }
+            final FieldAttrib attrib = this.getClassSchema().getFieldAttribMapByVarName().get(var);
 
-    protected boolean isStringAttrib(final TokenStream input) {
-        return this.isNextTokenOfType(input, FieldType.StringType);
-    }
+            if (attrib != null) {
+                switch (attrib.getFieldType()) {
+                    case StringType:
+                        return new StringAttribRef(var);
 
-    protected boolean isIntAttrib(final TokenStream input) {
-        return this.isNextTokenOfType(input, FieldType.IntegerType);
-    }
+                    case IntegerType:
+                        return new IntegerAttribRef(var);
 
-    protected boolean isDateAttrib(final TokenStream input) {
-        return this.isNextTokenOfType(input, FieldType.DateType);
+                    case DateType:
+                        return new DateAttribRef(var);
+                }
+            }
+        }
+
+        System.out.println("Unknown variable: " + var);
+        throw new RecognitionException(input);
     }
 
     /*

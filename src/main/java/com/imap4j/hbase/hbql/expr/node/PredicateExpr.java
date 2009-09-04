@@ -11,6 +11,6 @@ import com.imap4j.hbase.hbql.expr.EvalContext;
  */
 public interface PredicateExpr extends ExprEvalTreeNode {
 
-    boolean evaluate(final EvalContext context) throws HPersistException;
+    Boolean evaluate(final EvalContext context) throws HPersistException;
 
 }

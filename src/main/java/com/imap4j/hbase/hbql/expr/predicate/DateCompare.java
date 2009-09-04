@@ -60,7 +60,7 @@ public class DateCompare extends CompareExpr implements PredicateExpr {
     }
 
     @Override
-    public boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final EvalContext context) throws HPersistException {
 
         final Date val1 = this.getExpr1().getValue(context);
         final Date val2 = this.getExpr2().getValue(context);

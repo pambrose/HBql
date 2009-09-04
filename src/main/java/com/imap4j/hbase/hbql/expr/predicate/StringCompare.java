@@ -61,7 +61,7 @@ public class StringCompare extends CompareExpr implements PredicateExpr {
 
 
     @Override
-    public boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final EvalContext context) throws HPersistException {
 
         final String val1 = this.getExpr1().getValue(context);
         final String val2 = this.getExpr2().getValue(context);

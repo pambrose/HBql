@@ -1,6 +1,9 @@
 package com.imap4j.hbase.hbql.schema;
 
+import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbql.HPersistException;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,14 +15,26 @@ public class VarDesc {
     private String varname;
     private FieldType type;
 
-    public VarDesc(final String varname, final String typename) {
+    private VarDesc(final String varname, final FieldType type) {
         this.varname = varname;
+        this.type = type;
+    }
+
+    public static List<VarDesc> getList(final List<String> varList, final String typename) {
+
+        final List<VarDesc> retval = Lists.newArrayList();
+        FieldType vartype;
         try {
-            this.type = FieldType.getFieldType(typename);
+            vartype = FieldType.getFieldType(typename);
         }
         catch (HPersistException e) {
-            this.type = null;
+            vartype = null;
         }
+
+        for (final String var : varList)
+            retval.add(new VarDesc(var, vartype));
+
+        return retval;
     }
 
     public String getVarname() {

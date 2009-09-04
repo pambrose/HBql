@@ -47,7 +47,7 @@ public class StringNullCompare extends GenericNotStmt implements PredicateExpr {
     }
 
     @Override
-    public boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final EvalContext context) throws HPersistException {
         final String val = this.getExpr().getValue(context);
         final boolean retval = (val == null);
         return (this.isNot()) ? !retval : retval;

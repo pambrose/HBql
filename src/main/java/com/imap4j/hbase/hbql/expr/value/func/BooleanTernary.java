@@ -54,7 +54,7 @@ public class BooleanTernary extends GenericTernary implements BooleanValue {
     }
 
     @Override
-    public boolean getValue(final EvalContext context) throws HPersistException {
+    public Boolean getValue(final EvalContext context) throws HPersistException {
 
         if (this.getPred().evaluate(context))
             return this.getExpr1().evaluate(context);

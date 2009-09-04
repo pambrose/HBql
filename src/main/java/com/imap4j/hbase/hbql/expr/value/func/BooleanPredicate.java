@@ -46,7 +46,7 @@ public class BooleanPredicate implements BooleanValue {
     }
 
     @Override
-    public boolean getValue(final EvalContext context) throws HPersistException {
+    public Boolean getValue(final EvalContext context) throws HPersistException {
         return this.getExpr().evaluate(context);
     }
 
