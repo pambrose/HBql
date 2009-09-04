@@ -1,8 +1,6 @@
 grammar HBql;
 
-options {
-	superClass=HBaseParser;
-}
+options {superClass=HBaseParser;}
 
 tokens {
 	DOT = '.';
@@ -90,6 +88,49 @@ deleteStmt [ClassSchema cs] returns [DeleteArgs retval]
 setStmt returns [SetArgs retval]
 	: keySET i=ID to? v=QUOTED	 		{retval = new SetArgs($i.text, $v.text);};
 
+whereValue [ClassSchema cs] returns [WhereArgs retval]
+@init {retval = new WhereArgs();}
+	: k=keys?					{$whereValue.retval.setKeyRangeArgs($k.retval);}
+	  time?			
+	  versions?
+	  serverFilter[cs]?
+	  clientFilter[cs]?
+	;
+
+keys returns [KeyRangeArgs retval]
+	: keyKEYS k=keyRangeList			{retval = new KeyRangeArgs($k.retval);}	
+	;
+	
+time returns [KeyRangeArgs retval]
+	: keyTIME keyRANGE t=timeRange
+	;
+
+timeRange
+	:
+	;
+		
+versions returns [VersionArgs retval]
+	: keyVERSIONS integerLiteral
+	;
+	
+serverFilter [ClassSchema cs] returns [FilterArgs retval]
+	: keySERVER keySIDE? keyFILTER? whereExpr[cs]
+	;
+	
+clientFilter [ClassSchema cs] returns [FilterArgs retval]
+	: keyCLIENT keySIDE? keyFILTER? whereExpr[cs]
+	;
+	
+keyRangeList returns [List<KeyRangeArgs.Range> retval]
+@init {retval = Lists.newArrayList();}
+	:  k1=keyRange {retval.add($k1.retval);} (COMMA k2=keyRange {retval.add($k2.retval);})*
+	;
+	
+keyRange returns [KeyRangeArgs.Range retval]
+	: q=QUOTED					{retval = new KeyRangeArgs.Range($q.text);}
+	| q1=QUOTED COLON q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
+	;
+		
 filterClause [ClassSchema cs] returns [ExprEvalTree retval]
 	: keyWITH keyFILTER w=whereExpr[cs]		{retval = $w.retval;};
 	
@@ -433,3 +474,10 @@ keyNOW	 	: {isKeyword(input, "NOW")}? ID;
 keyYESTERDAY	: {isKeyword(input, "YESTERDAY")}? ID;
 keyTOMORROW	: {isKeyword(input, "TOMORROW")}? ID;
 keyDATE		: {isKeyword(input, "DATE")}? ID;
+keyCLIENT	: {isKeyword(input, "CLIENT")}? ID;
+keySERVER	: {isKeyword(input, "SERVER")}? ID;
+keySIDE		: {isKeyword(input, "SIDE")}? ID;
+keyVERSIONS	: {isKeyword(input, "VERSIONS")}? ID;
+keyTIME		: {isKeyword(input, "TIME")}? ID;
+keyRANGE	: {isKeyword(input, "RANGE")}? ID;
+keyKEYS		: {isKeyword(input, "KEYS")}? ID;

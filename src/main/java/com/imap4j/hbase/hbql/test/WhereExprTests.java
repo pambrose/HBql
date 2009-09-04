@@ -18,28 +18,14 @@ import java.util.List;
  * Date: Aug 23, 2009
  * Time: 4:49:02 PM
  */
-public class HTest {
+public class WhereExprTests {
 
-    private static boolean evalExpr(final HPersistable recordObj, final String expr) throws HPersistException {
+    public void assertValidInput(final String schema, final String expr, String... vals) throws HPersistException {
+        org.junit.Assert.assertTrue(evalColumnNames(schema, expr, vals));
+    }
 
-        final ClassSchema classSchema = (recordObj != null) ? ClassSchema.getClassSchema(recordObj) : null;
-        final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE.parse(expr, classSchema);
-        final EvalContext context = new EvalContext(classSchema, recordObj);
-
-        final boolean no_opt_run = tree.evaluate(context);
-        final long no_opt_time = tree.getElapsedNanos();
-
-        tree.optimizeForConstants(context);
-
-        final boolean opt_run = tree.evaluate(context);
-        final long opt_time = tree.getElapsedNanos();
-
-        if (no_opt_run != opt_run)
-            throw new HPersistException("Different outcome with optimization");
-
-        // System.out.println("Time savings: " + (no_opt_time - opt_time));
-        return no_opt_run;
-
+    public void assertInvalidInput(final String schema, final String expr, String... vals) throws HPersistException {
+        org.junit.Assert.assertFalse(evalColumnNames(schema, expr, vals));
     }
 
     public static void assertTrue(final boolean val) throws HPersistException {
@@ -66,11 +52,6 @@ public class HTest {
         org.junit.Assert.assertFalse(evalExpr(recordObj, expr));
     }
 
-    public void assertInvalidInput(final String schema, final String expr, String... vals) throws HPersistException {
-        org.junit.Assert.assertFalse(evalColumnNames(schema, expr, vals));
-    }
-
-
     public static void assertColumnsMatchTrue(final String schema, final String expr, String... vals) throws HPersistException {
         org.junit.Assert.assertTrue(evalColumnNames(schema, expr, vals));
     }
@@ -79,11 +60,32 @@ public class HTest {
         org.junit.Assert.assertFalse(evalColumnNames(schema, expr, vals));
     }
 
+    private static boolean evalExpr(final HPersistable recordObj, final String expr) throws HPersistException {
+
+        final ClassSchema classSchema = (recordObj != null) ? ClassSchema.getClassSchema(recordObj) : null;
+        final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE_EXPR.parse(expr, classSchema);
+        final EvalContext context = new EvalContext(classSchema, recordObj);
+
+        final boolean no_opt_run = tree.evaluate(context);
+        final long no_opt_time = tree.getElapsedNanos();
+
+        tree.optimizeForConstants(context);
+
+        final boolean opt_run = tree.evaluate(context);
+        final long opt_time = tree.getElapsedNanos();
+
+        if (no_opt_run != opt_run)
+            throw new HPersistException("Different outcome with optimization");
+
+        // System.out.println("Time savings: " + (no_opt_time - opt_time));
+        return no_opt_run;
+
+    }
+
     private static boolean evalColumnNames(final String schema, final String expr, String... vals) throws HPersistException {
 
         final ClassSchema classSchema = new ClassSchema(schema);
-        final List<String> valList = Lists.newArrayList(vals);
-        final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE.parse(expr, classSchema);
+        final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE_EXPR.parse(expr, classSchema);
 
         if (tree == null)
             return false;
@@ -91,6 +93,8 @@ public class HTest {
         final List<ExprVariable> attribs = tree.getExprVariables();
 
         boolean retval = true;
+
+        final List<String> valList = Lists.newArrayList(vals);
 
         for (final String val : valList) {
             if (!attribs.contains(new ExprVariable(FieldType.StringType, val))) {

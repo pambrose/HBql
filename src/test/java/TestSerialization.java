@@ -2,7 +2,7 @@ import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.hbql.schema.FieldType;
-import com.imap4j.hbase.hbql.test.HTest;
+import com.imap4j.hbase.hbql.test.WhereExprTests;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.util.Random;
  * Date: Sep 4, 2009
  * Time: 7:39:16 AM
  */
-public class TestSerialization extends HTest {
+public class TestSerialization extends WhereExprTests {
 
     public static class TestClass implements Serializable {
         String strval;

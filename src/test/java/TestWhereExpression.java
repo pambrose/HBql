@@ -1,5 +1,5 @@
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.test.HTest;
+import com.imap4j.hbase.hbql.test.WhereExprTests;
 import org.junit.Test;
 
 /**
@@ -8,7 +8,7 @@ import org.junit.Test;
  * Date: Aug 27, 2009
  * Time: 2:13:47 PM
  */
-public class TestWhereExpression extends HTest {
+public class TestWhereExpression extends WhereExprTests {
 
 
     @Test
