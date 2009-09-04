@@ -90,9 +90,9 @@ setStmt returns [SetArgs retval]
 
 whereValue [ClassSchema cs] returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
-	: k=keys?					{$whereValue.retval.setKeyRangeArgs($k.retval);}
-	  t=time?					{$whereValue.retval.setDateRangeArgs($t.retval);}	
-	  versions?
+	: k=keys?					{retval.setKeyRangeArgs($k.retval);}
+	  t=time?					{retval.setDateRangeArgs($t.retval);}	
+	  v=versions?					{retval.setVersionArgs($v.retval);}
 	  serverFilter[cs]?
 	  clientFilter[cs]?
 	;
@@ -107,7 +107,7 @@ time returns [DateRangeArgs retval]
 	;
 		
 versions returns [VersionArgs retval]
-	: keyVERSIONS integerLiteral
+	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);}
 	;
 	
 serverFilter [ClassSchema cs] returns [FilterArgs retval]

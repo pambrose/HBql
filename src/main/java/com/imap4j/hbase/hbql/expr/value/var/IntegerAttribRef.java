@@ -19,9 +19,9 @@ public class IntegerAttribRef extends GenericAttribRef implements IntegerValue {
     }
 
     @Override
-    public Number getValue(final EvalContext context) throws HPersistException {
+    public Integer getValue(final EvalContext context) throws HPersistException {
         final FieldAttrib fieldAttrib = this.getExprVar().getFieldAttrib(context);
-        return (Number)fieldAttrib.getValue(context.getRecordObj());
+        return (Integer)fieldAttrib.getValue(context.getRecordObj());
     }
 
 }

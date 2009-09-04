@@ -55,7 +55,7 @@ public class IntegerTernary extends GenericTernary implements IntegerValue {
     }
 
     @Override
-    public Number getValue(final EvalContext context) throws HPersistException {
+    public Integer getValue(final EvalContext context) throws HPersistException {
 
         if (this.getPred().evaluate(context))
             return this.getExpr1().getValue(context);

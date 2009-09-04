@@ -13,6 +13,10 @@ import com.imap4j.hbase.hbql.schema.ClassSchema;
  */
 public class WhereValueTests {
 
+    public void assertValidInput(final String expr) throws HPersistException {
+        assertValidInput("", expr);
+    }
+
     public void assertValidInput(final String schema, final String expr) throws HPersistException {
         org.junit.Assert.assertTrue(evalWhereValue(schema, expr));
     }

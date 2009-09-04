@@ -11,14 +11,14 @@ import com.imap4j.hbase.hbql.expr.node.IntegerValue;
  */
 public class IntegerLiteral extends GenericLiteral implements IntegerValue {
 
-    private final Number value;
+    private final Integer value;
 
-    public IntegerLiteral(final Number value) {
+    public IntegerLiteral(final Integer value) {
         this.value = value;
     }
 
     @Override
-    public Number getValue(final EvalContext context) {
+    public Integer getValue(final EvalContext context) {
         return this.value;
     }
 }

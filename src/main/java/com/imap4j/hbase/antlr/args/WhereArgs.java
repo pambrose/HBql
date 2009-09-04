@@ -10,10 +10,11 @@ public class WhereArgs {
 
     private KeyRangeArgs keyRangeArgs = new KeyRangeArgs(null);
     private DateRangeArgs dateRangeArgs = new DateRangeArgs(null, null);
+    private VersionArgs versionArgs = new VersionArgs(null);
 
 
     public KeyRangeArgs getKeyRangeArgs() {
-        return keyRangeArgs;
+        return this.keyRangeArgs;
     }
 
     public void setKeyRangeArgs(final KeyRangeArgs keyRangeArgs) {
@@ -21,10 +22,18 @@ public class WhereArgs {
     }
 
     public DateRangeArgs getDateRangeArgs() {
-        return dateRangeArgs;
+        return this.dateRangeArgs;
     }
 
     public void setDateRangeArgs(final DateRangeArgs dateRangeArgs) {
         this.dateRangeArgs = dateRangeArgs;
+    }
+
+    public VersionArgs getVersionArgs() {
+        return this.versionArgs;
+    }
+
+    public void setVersionArgs(final VersionArgs versionArgs) {
+        this.versionArgs = versionArgs;
     }
 }

@@ -11,5 +11,5 @@ import com.imap4j.hbase.hbql.expr.EvalContext;
  */
 public interface IntegerValue extends ValueExpr {
 
-    Number getValue(final EvalContext context) throws HPersistException;
+    Integer getValue(final EvalContext context) throws HPersistException;
 }

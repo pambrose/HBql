@@ -77,7 +77,7 @@ public class CalcExpr implements IntegerValue {
     }
 
     @Override
-    public Number getValue(final EvalContext context) throws HPersistException {
+    public Integer getValue(final EvalContext context) throws HPersistException {
 
         final int val1 = this.getExpr1().getValue(context).intValue();
         final int val2 = (this.getExpr2() != null) ? (this.getExpr2().getValue(context)).intValue() : 0;
