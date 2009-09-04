@@ -55,9 +55,6 @@ package com.imap4j.hbase;
 import com.google.common.collect.Lists;
 }
 
-@members {
-//ClassSchema classSchema = null;
-}
 selectStmt [ClassSchema cs] returns [QueryArgs retval]
 	: keySELECT (STAR | c=columnList) 
 	  keyFROM t=ID 
@@ -190,20 +187,20 @@ calcNumberExpr returns [IntegerValue retval]
 	;
 
 numPrimary returns [IntegerValue retval]
-	: n=numberExpr					{retval = $n.retval;}
+	: n=integerExpr					{retval = $n.retval;}
 	| LPAREN s=numericExpr RPAREN			{retval = $s.retval;}
 	;
 	   						 
 // Simple typed exprs
-numberExpr returns [IntegerValue retval]
+integerExpr returns [IntegerValue retval]
 options {backtrack=true;}	
-	: l=numberVal				{retval = $l.retval;} 
-	| keyIF e=orExpr keyTHEN n1=numericExpr keyELSE n2=numericExpr 	
+	: l=integerVal					{retval = $l.retval;} 
+	| LBRACE keyIF e=orExpr keyTHEN n1=numericExpr keyELSE n2=numericExpr RBRACE 	
 							{retval = new IntegerTernary($e.retval, $n1.retval, $n2.retval);}
 	;
 
-numberVal returns [IntegerValue retval]
-	: l=numberLiteral				{retval = $l.retval;} 
+integerVal returns [IntegerValue retval]
+	: l=integerLiteral				{retval = $l.retval;} 
 	| i=attribVar					{retval = (IntegerValue)$i.retval;}
 	//| f=funcReturningInteger
 	;
@@ -214,7 +211,7 @@ stringExpr returns [StringValue retval]
   StringValue firstval = null;  
   List<StringValue> vals = null;
 } 
-	: s1=stringVal {firstval = $s1.retval;} 
+	: s1=stringParen {firstval = $s1.retval;} 
 	  (PLUS s2=stringExpr {if (vals == null) {
 	    			 vals = Lists.newArrayList();
 	    			 vals.add(firstval);
@@ -222,31 +219,34 @@ stringExpr returns [StringValue retval]
 	    		       vals.add($s2.retval);
 	    		      })?
 							{retval = (vals == null) ? firstval : new StringConcat(vals);}
-	| LPAREN se=stringExpr	RPAREN			{retval = $se.retval;}						
 	;
-	
+
+stringParen returns [StringValue retval]
+	: s1=stringVal					{retval = $s1.retval;}
+	| LPAREN s2=stringExpr	RPAREN			{retval = $s2.retval;}						
+	;
+		
 stringVal returns [StringValue retval]
 options {backtrack=true;}	
 	: sl=stringLiteral				{retval = $sl.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
 	| n=keyNULL					{retval = new StringNullLiteral();}
 	| a=attribVar					{retval = (StringValue)$a.retval;}
-	| keyIF e=orExpr keyTHEN s1=stringExpr keyELSE s2=stringExpr 	
+	| LBRACE keyIF e=orExpr keyTHEN s1=stringExpr keyELSE s2=stringExpr RBRACE 	
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
 
-// TODO Deal with LBRACE/RBRACE here
 booleanExpr returns [BooleanValue retval]
 options {backtrack=true;}	
 	: b=booleanVal					{retval = $b.retval;}
-	| LBRACE e=orExpr RBRACE			{retval = new BooleanPredicate($e.retval);}
+	| LPAREN e=orExpr RPAREN			{retval = new BooleanPredicate($e.retval);}
 	;
 
 booleanVal returns [BooleanValue retval]
 options {backtrack=true;}	
 	: b=booleanLiteral				{retval = $b.retval;}
 	//| f=funcReturningBoolean
-	| keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr 	
+	| LBRACE keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr RBRACE	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	;
 	
@@ -261,10 +261,6 @@ dateVal returns [DateValue retval]
 	| d3=attribVar					{retval = (DateValue)$d3.retval;} 			
 	;
 
-// Generic Ternary
-ternaryExpr returns [ValueExpr retval]
-	:
-	;
 // Generic Attrib
 attribVar returns [ValueExpr retval]
 	: v=varRef 					{retval = this.getValueExpr($v.text);};
@@ -273,7 +269,7 @@ attribVar returns [ValueExpr retval]
 stringLiteral returns [StringValue retval]
 	: v=QUOTED 					{retval = new StringLiteral($v.text);};
 	
-numberLiteral returns [IntegerValue retval]
+integerLiteral returns [IntegerValue retval]
 	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};
 		
 dateLiteral returns [DateValue retval]
@@ -387,8 +383,8 @@ ID	: CHAR (CHAR | DIGIT)*;
  
 QUOTED		
 @init {final StringBuilder sbuf = new StringBuilder();}	
-	: DQUOTE (options {greedy=false;} : any=. {sbuf.append((char)$any);})* DQUOTE 	{setText(sbuf.toString());}
-	| SQUOTE (options {greedy=false;} : any=. {sbuf.append((char)$any);})* SQUOTE	{setText(sbuf.toString());}
+	: DQUOTE (options {greedy=false;} : any=. {sbuf.append((char)$any);})* DQUOTE {setText(sbuf.toString());}
+	| SQUOTE (options {greedy=false;} : any=. {sbuf.append((char)$any);})* SQUOTE {setText(sbuf.toString());}
 	;
 
 fragment
@@ -416,6 +412,7 @@ keyIS 		: {isKeyword(input, "IS")}? ID;
 keyIF 		: {isKeyword(input, "IF")}? ID;
 keyTHEN 	: {isKeyword(input, "THEN")}? ID;
 keyELSE 	: {isKeyword(input, "ELSE")}? ID;
+//keyEND	 : {isKeyword(input, "END")}? ID;
 keyAS 		: {isKeyword(input, "AS")}? ID;
 keyLIKE		: {isKeyword(input, "LIKE")}? ID;
 keyTO 		: {isKeyword(input, "TO")}? ID;
