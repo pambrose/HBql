@@ -196,11 +196,16 @@ numPrimary returns [IntegerValue retval]
 	   						 
 // Simple typed exprs
 numberExpr returns [IntegerValue retval]
+options {backtrack=true;}	
+	: l=numberVal				{retval = $l.retval;} 
+	| keyIF e=orExpr keyTHEN n1=numericExpr keyELSE n2=numericExpr 	
+							{retval = new IntegerTernary($e.retval, $n1.retval, $n2.retval);}
+	;
+
+numberVal returns [IntegerValue retval]
 	: l=numberLiteral				{retval = $l.retval;} 
 	| i=attribVar					{retval = (IntegerValue)$i.retval;}
 	//| f=funcReturningInteger
-	| LBRACE keyIF e=orExpr keyTHEN n1=numericExpr keyELSE n2=numericExpr RBRACE	
-							{retval = new IntegerTernary($e.retval, $n1.retval, $n2.retval);}
 	;
 
 // Supports string concatenation -- avoids creating a list everytime
@@ -226,20 +231,25 @@ options {backtrack=true;}
 	| f=funcReturningString				{retval = $f.retval;}
 	| n=keyNULL					{retval = new StringNullLiteral();}
 	| a=attribVar					{retval = (StringValue)$a.retval;}
-	| LBRACE keyIF e=orExpr keyTHEN s1=stringExpr keyELSE s2=stringExpr RBRACE	
+	| keyIF e=orExpr keyTHEN s1=stringExpr keyELSE s2=stringExpr 	
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
 
 // TODO Deal with LBRACE/RBRACE here
 booleanExpr returns [BooleanValue retval]
 options {backtrack=true;}	
-	: b=booleanLiteral				{retval = $b.retval;}
+	: b=booleanVal					{retval = $b.retval;}
 	| LBRACE e=orExpr RBRACE			{retval = new BooleanPredicate($e.retval);}
-	| LBRACE keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr RBRACE	
-							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
-	//| f=funcReturningBoolean
 	;
 
+booleanVal returns [BooleanValue retval]
+options {backtrack=true;}	
+	: b=booleanLiteral				{retval = $b.retval;}
+	//| f=funcReturningBoolean
+	| keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr 	
+							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
+	;
+	
 dateExpr returns [DateValue retval]
 	: d1=dateVal					{retval = $d1.retval;}
 	| LPAREN d2=dateExpr RPAREN			{retval = $d2.retval;}
@@ -251,7 +261,11 @@ dateVal returns [DateValue retval]
 	| d3=attribVar					{retval = (DateValue)$d3.retval;} 			
 	;
 
-// Attrib
+// Generic Ternary
+ternaryExpr returns [ValueExpr retval]
+	:
+	;
+// Generic Attrib
 attribVar returns [ValueExpr retval]
 	: v=varRef 					{retval = this.getValueExpr($v.text);};
 
