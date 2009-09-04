@@ -9,7 +9,7 @@ import com.imap4j.hbase.hbql.expr.EvalContext;
  * Date: Aug 29, 2009
  * Time: 7:16:27 PM
  */
-public interface StringValue extends ExprEvalTreeNode {
+public interface StringValue extends ValueExpr {
 
     String getValue(final EvalContext context) throws HPersistException;
 }

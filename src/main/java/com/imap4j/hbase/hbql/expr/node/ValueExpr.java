@@ -6,10 +6,11 @@ import com.imap4j.hbase.hbql.expr.EvalContext;
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
- * Date: Aug 29, 2009
- * Time: 7:16:27 PM
+ * Date: Sep 3, 2009
+ * Time: 8:13:01 PM
  */
-public interface BooleanValue extends ValueExpr {
+public interface ValueExpr extends ExprEvalTreeNode {
 
-    boolean getValue(final EvalContext context) throws HPersistException;
+    Object getValue(final EvalContext context) throws HPersistException;
+
 }

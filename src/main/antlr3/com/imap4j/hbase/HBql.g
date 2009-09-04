@@ -341,11 +341,12 @@ schemaDesc returns [List<VarDesc> retval]
 	: (varDesc[retval] (COMMA varDesc[retval])*)?;
 	
 varDesc [List<VarDesc> list] returns [VarDesc retval]
-	: v1=variableRef keyAS v2=variableRef				{list.add(new VarDesc($v1.text, $v2.text));}
+	: v1=variableRef keyAS v2=variableRef		{list.add(new VarDesc($v1.text, $v2.text));}
 	;
 	
 variableRef	
-	: ID ((DOT | COLON) ID)*;
+	: ID ((DOT | COLON) ID)*			
+	;
 
 qstring	[List<String> list]
 	: QUOTED 					{if (list != null) list.add($QUOTED.text);};

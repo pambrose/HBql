@@ -11,7 +11,7 @@ import java.util.Date;
  * Date: Aug 26, 2009
  * Time: 10:18:22 AM
  */
-public interface DateValue extends ExprEvalTreeNode {
+public interface DateValue extends ValueExpr {
 
     Date getValue(final EvalContext context) throws HPersistException;
 }
