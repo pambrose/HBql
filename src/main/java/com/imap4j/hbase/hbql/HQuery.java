@@ -41,7 +41,7 @@ public class HQuery<T extends HPersistable> {
 
     public void execute() throws IOException, HPersistException {
 
-        final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery());
+        final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ClassSchema)null);
         final ClassSchema classSchema = ClassSchema.getClassSchema(args.getTableName());
         final List<String> fieldList = (args.getColumnList() == null) ? classSchema.getFieldList() : args.getColumnList();
         final Scan scan = HUtil.getScan(classSchema, fieldList, args.getWhereExpr());

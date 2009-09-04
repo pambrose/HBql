@@ -6,7 +6,7 @@ import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.FieldAttrib;
 import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.filter.PrefixFilter;
+import org.apache.hadoop.hbase.filter.HBqlFilter;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class HUtil {
 
         if (serverFilter != null) {
             List<ExprVariable> names = serverFilter.getExprVariables();
-            scan.setFilter(new PrefixFilter(classSchema, serverFilter));
+            scan.setFilter(new HBqlFilter(classSchema, serverFilter));
         }
 
         return scan;

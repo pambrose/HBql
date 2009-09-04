@@ -45,7 +45,7 @@ public class HBql {
 
     public static Results exec(final String str) throws HPersistException, IOException {
 
-        final ExecArgs exec = (ExecArgs)HBqlRule.EXEC.parse(str);
+        final ExecArgs exec = (ExecArgs)HBqlRule.EXEC.parse(str, (ClassSchema)null);
 
         if (exec instanceof CreateArgs)
             return createCommand((CreateArgs)exec);
@@ -138,7 +138,7 @@ public class HBql {
         final ResultScanner resultsScanner = table.getScanner(scan);
         for (final Result result : resultsScanner) {
 
-            final HPersistable recordObj = ser.getHPersistable(classSchema, result);
+            final HPersistable recordObj = null;//ser.getHPersistable(classSchema, result);
 
             if (clientFilter == null || clientFilter.evaluate(new EvalContext(classSchema, recordObj))) {
                 final Delete delete = new Delete(result.getRow());

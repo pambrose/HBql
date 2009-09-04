@@ -73,7 +73,7 @@ createStmt returns [CreateArgs retval]
 	: keyCREATE keyTABLE t=ID 			{retval = new CreateArgs($t.text);};
 
 describeStmt returns [DescribeArgs retval]
-	: keyDESCRIBE keyTABLE t=ID 		{retval = new DescribeArgs($t.text);};
+	: keyDESCRIBE keyTABLE t=ID 			{retval = new DescribeArgs($t.text);};
 
 showStmt returns [ShowArgs retval]
 	: keySHOW keyTABLES 		 		{retval = new ShowArgs();};
@@ -107,10 +107,10 @@ versions returns [VersionArgs retval]
 	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);};
 	
 serverFilter [ClassSchema cs] returns [ExprEvalTree retval]
-	: keySERVER keyFILTER? w=whereExpr[cs]	{retval = $w.retval;};
+	: keySERVER keyFILTER? w=whereExpr[cs]		{retval = $w.retval;};
 	
 clientFilter [ClassSchema cs] returns [ExprEvalTree retval]
-	: keyCLIENT keyFILTER? w=whereExpr[cs]	{retval = $w.retval;};
+	: keyCLIENT keyFILTER? w=whereExpr[cs]		{retval = $w.retval;};
 	
 keyRangeList returns [List<KeyRangeArgs.Range> retval]
 @init {retval = Lists.newArrayList();}
@@ -283,8 +283,8 @@ options {backtrack=true;}
 	;
 
 rangeDateExpr returns [DateValue retval]
-	: d1=rangeDateVal					{retval = $d1.retval;}
-	| LPAREN d2=rangeDateExpr RPAREN			{retval = $d2.retval;}
+	: d1=rangeDateVal				{retval = $d1.retval;}
+	| LPAREN d2=rangeDateExpr RPAREN		{retval = $d2.retval;}
 	;
 
 rangeDateVal returns [DateValue retval]
