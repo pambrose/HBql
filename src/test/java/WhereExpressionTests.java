@@ -157,9 +157,9 @@ public class WhereExpressionTests extends HTest {
         assertEvalTrue("3 in (1+1,1+2,4)");
         assertEvalFalse("3 !in (1+1,1+2,4)");
         assertEvalFalse("3 NOT in (1+1,1+2,4)");
-        assertEvalTrue("3 == [true ? 3 : 2]");
-        assertEvalFalse("3 == [false ? 3 : 2]");
-        assertEvalTrue("2 == [false ? 3 : 2]");
+        assertEvalTrue("3 == [IF true THEN 3 ELSE 2]");
+        assertEvalFalse("3 == [IF false THEN 3 else 2]");
+        assertEvalTrue("2 == [IF false THEN 3 else 2]");
 
     }
 

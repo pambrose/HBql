@@ -199,7 +199,7 @@ numberExpr returns [IntegerValue retval]
 	: l=numberLiteral				{retval = $l.retval;} 
 	| i=attribVar					{retval = (IntegerValue)$i.retval;}
 	//| f=funcReturningInteger
-	| LBRACE e=orExpr QMARK n1=numericExpr WS COLON WS n2=numericExpr RBRACE	
+	| LBRACE keyIF e=orExpr keyTHEN n1=numericExpr keyELSE n2=numericExpr RBRACE	
 							{retval = new IntegerTernary($e.retval, $n1.retval, $n2.retval);}
 	;
 
@@ -226,7 +226,7 @@ options {backtrack=true;}
 	| f=funcReturningString				{retval = $f.retval;}
 	| n=keyNULL					{retval = new StringNullLiteral();}
 	| a=attribVar					{retval = (StringValue)$a.retval;}
-	| LBRACE e=orExpr QMARK s1=stringExpr WS COLON WS s2=stringExpr RBRACE	
+	| LBRACE keyIF e=orExpr keyTHEN s1=stringExpr keyELSE s2=stringExpr RBRACE	
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
 
@@ -235,7 +235,7 @@ booleanExpr returns [BooleanValue retval]
 options {backtrack=true;}	
 	: b=booleanLiteral				{retval = $b.retval;}
 	| LBRACE e=orExpr RBRACE			{retval = new BooleanPredicate($e.retval);}
-	| LBRACE e=orExpr QMARK b1=orExpr WS COLON WS b2=orExpr RBRACE	
+	| LBRACE keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr RBRACE	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	//| f=funcReturningBoolean
 	;
@@ -399,6 +399,9 @@ keyFROM 	: {isKeyword(input, "FROM")}? ID;
 keySET 		: {isKeyword(input, "SET")}? ID;
 keyIN 		: {isKeyword(input, "IN")}? ID;
 keyIS 		: {isKeyword(input, "IS")}? ID;
+keyIF 		: {isKeyword(input, "IF")}? ID;
+keyTHEN 	: {isKeyword(input, "THEN")}? ID;
+keyELSE 	: {isKeyword(input, "ELSE")}? ID;
 keyAS 		: {isKeyword(input, "AS")}? ID;
 keyLIKE		: {isKeyword(input, "LIKE")}? ID;
 keyTO 		: {isKeyword(input, "TO")}? ID;
