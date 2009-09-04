@@ -15,8 +15,8 @@ public class KeyRangeArgs {
     private final List<Range> rangeList;
 
     public static class Range {
-        final String lower;
-        final String upper;
+        private final String lower;
+        private final String upper;
 
         public Range(final String val) {
             this.lower = val;

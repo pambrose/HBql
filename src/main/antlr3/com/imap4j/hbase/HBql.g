@@ -91,7 +91,7 @@ setStmt returns [SetArgs retval]
 whereValue [ClassSchema cs] returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
 	: k=keys?					{$whereValue.retval.setKeyRangeArgs($k.retval);}
-	  time?			
+	  t=time?					{$whereValue.retval.setDateRangeArgs($t.retval);}	
 	  versions?
 	  serverFilter[cs]?
 	  clientFilter[cs]?
@@ -101,12 +101,9 @@ keys returns [KeyRangeArgs retval]
 	: keyKEYS k=keyRangeList			{retval = new KeyRangeArgs($k.retval);}	
 	;
 	
-time returns [KeyRangeArgs retval]
-	: keyTIME keyRANGE t=timeRange
-	;
-
-timeRange
-	:
+time returns [DateRangeArgs retval]
+	: keyTIME keyRANGE? 
+	  d1=rangeDateExpr COLON d2=rangeDateExpr	{retval = new DateRangeArgs($d1.retval, $d2.retval);}
 	;
 		
 versions returns [VersionArgs retval]
@@ -289,6 +286,16 @@ options {backtrack=true;}
 	//| f=funcReturningBoolean
 	| LBRACE keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr RBRACE	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
+	;
+
+rangeDateExpr returns [DateValue retval]
+	: d1=rangeDateVal					{retval = $d1.retval;}
+	| LPAREN d2=rangeDateExpr RPAREN			{retval = $d2.retval;}
+	;
+
+rangeDateVal returns [DateValue retval]
+	: d1=dateLiteral				{retval = $d1.retval;}
+	| d2=funcReturningDatetime			{retval = $d2.retval;}
 	;
 	
 dateExpr returns [DateValue retval]

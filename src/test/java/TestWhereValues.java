@@ -12,8 +12,16 @@ public class TestWhereValues extends WhereValueTests {
 
 
     @Test
-    public void whereExpressions() throws HPersistException {
+    public void keysExpressions() throws HPersistException {
         assertValidInput("", "KEYS 'aaa' : 'bbb'");
+        assertValidInput("", "KEYS 'sss'");
+        assertValidInput("", "KEYS 'fff' : 'ggg', 'sss', 'sssd'");
+    }
+
+    @Test
+    public void timeExpressions() throws HPersistException {
+        assertValidInput("", "TIME RANGE NOW : NOW");
+        assertValidInput("", "TIME RANGE NOW : TOMORROW");
     }
 
 }
