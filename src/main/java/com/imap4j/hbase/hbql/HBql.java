@@ -124,29 +124,27 @@ public class HBql {
     private static Results deleteCommand(final DeleteArgs args) throws HPersistException, IOException {
 
         final Results retval = new Results();
-
         final ClassSchema classSchema = ClassSchema.getClassSchema(args.getTableName());
         final List<String> fieldList = classSchema.getFieldList();
-        final Scan scan = HUtil.getScan(classSchema, fieldList, args.getWhereExpr());
-
         final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
-
         final Serialization ser = HSer.getSer();
-
-        int cnt = 0;
         final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
-        final ResultScanner resultsScanner = table.getScanner(scan);
-        for (final Result result : resultsScanner) {
+        int cnt = 0;
 
-            final HPersistable recordObj = null;//ser.getHPersistable(classSchema, result);
+        final List<Scan> scanList = HUtil.getScanList(classSchema, fieldList, args.getWhereExpr());
+        for (final Scan scan : scanList) {
+            final ResultScanner resultsScanner = table.getScanner(scan);
+            for (final Result result : resultsScanner) {
 
-            if (clientFilter == null || clientFilter.evaluate(new EvalContext(classSchema, recordObj))) {
-                final Delete delete = new Delete(result.getRow());
-                table.delete(delete);
-                cnt++;
+                final HPersistable recordObj = ser.getHPersistable(classSchema, result);
+
+                if (clientFilter == null || clientFilter.evaluate(new EvalContext(classSchema, recordObj))) {
+                    final Delete delete = new Delete(result.getRow());
+                    table.delete(delete);
+                    cnt++;
+                }
             }
         }
-
         retval.out.println("Delete count: " + cnt);
         retval.out.flush();
 

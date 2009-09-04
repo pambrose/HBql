@@ -1,5 +1,6 @@
 package com.imap4j.hbase.hbql;
 
+import com.imap4j.hbase.antlr.args.KeyRangeArgs;
 import com.imap4j.hbase.antlr.args.WhereArgs;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
@@ -18,7 +19,9 @@ import java.util.List;
  */
 public class HUtil {
 
-    public static Scan getScan(final ClassSchema classSchema, final List<String> fieldList, final WhereArgs whereExpr) {
+    public static List<Scan> getScanList(final ClassSchema classSchema, final List<String> fieldList, final WhereArgs whereExpr) {
+
+        final KeyRangeArgs keys =
 
         final Scan scan = new Scan();
 
@@ -41,5 +44,20 @@ public class HUtil {
         }
 
         return scan;
+    }
+
+    public static String getZeroPaddedNumber(final int val, final int width) throws HPersistException {
+
+        final String strval = "" + val;
+        final int padsize = width - strval.length();
+        if (padsize < 0)
+            throw new HPersistException("Value " + val + " exceeded width " + width);
+
+        StringBuilder sbuf = new StringBuilder();
+        for (int i = 0; i < padsize; i++)
+            sbuf.append("0");
+
+        sbuf.append(strval);
+        return sbuf.toString();
     }
 }

@@ -10,6 +10,7 @@ import com.imap4j.hbase.hbql.HQuery;
 import com.imap4j.hbase.hbql.HQueryListenerAdapter;
 import com.imap4j.hbase.hbql.HTable;
 import com.imap4j.hbase.hbql.HTransaction;
+import com.imap4j.hbase.hbql.HUtil;
 
 import java.io.IOException;
 import java.util.Map;
@@ -71,8 +72,8 @@ public class TestObject implements HPersistable {
     public TestObject() {
     }
 
-    public TestObject(int val) {
-        this.keyval = "Val: " + System.nanoTime();
+    public TestObject(int val) throws HPersistException {
+        this.keyval = HUtil.getZeroPaddedNumber(val, 6);
 
         strValue = "v" + val;
 
@@ -102,8 +103,8 @@ public class TestObject implements HPersistable {
         results = HBql.exec("set packagepath 'com.imap4j.hbql:com.imap4j.hbase'");
         System.out.println(results.getOutput());
 
-        results = HBql.exec("delete from TestObject with  client filter true");
-        System.out.println(results.getOutput());
+        //results = HBql.exec("delete from TestObject with  client filter true");
+        //System.out.println(results.getOutput());
 
         //results = HBql.exec("create table TestObject");
         //System.out.println(results.getOutput());
@@ -117,7 +118,7 @@ public class TestObject implements HPersistable {
         */
 
         final HTransaction tx = new HTransaction();
-        int cnt = 10;
+        int cnt = 0;
         for (int i = 0; i < cnt; i++) {
             TestObject obj = new TestObject(i);
             tx.insert(obj);
@@ -140,7 +141,7 @@ public class TestObject implements HPersistable {
         */
         long start = System.currentTimeMillis();
         HQuery<TestObject> q2 =
-                new HQuery<TestObject>("select * from TestObject "
+                new HQuery<TestObject>("select * from TestObject WITH KEYS '000002' : '000005'"
                                        // + "WITH FILTER TRUE AND !FALSE "
                         ,// + "WHERE TRUE", //strValue = 'v19' OR strValue IN ('v2', 'v0', 'v999')",
                                        new HQueryListenerAdapter<TestObject>() {

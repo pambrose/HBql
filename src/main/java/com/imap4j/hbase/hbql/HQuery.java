@@ -44,22 +44,22 @@ public class HQuery<T extends HPersistable> {
         final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ClassSchema)null);
         final ClassSchema classSchema = ClassSchema.getClassSchema(args.getTableName());
         final List<String> fieldList = (args.getColumnList() == null) ? classSchema.getFieldList() : args.getColumnList();
-        final Scan scan = HUtil.getScan(classSchema, fieldList, args.getWhereExpr());
-
         final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
-
         final Serialization ser = HSer.getSer();
+        final List<Scan> scanList = HUtil.getScanList(classSchema, fieldList, args.getWhereExpr());
 
-        final ResultScanner resultScanner = table.getScanner(scan);
+        for (final Scan scan : scanList) {
+            final ResultScanner resultScanner = table.getScanner(scan);
 
-        final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
+            final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
 
-        for (final Result result : resultScanner) {
+            for (final Result result : resultScanner) {
 
-            final HPersistable recordObj = ser.getHPersistable(classSchema, result);
+                final HPersistable recordObj = ser.getHPersistable(classSchema, result);
 
-            if (clientFilter == null || clientFilter.evaluate(new EvalContext(classSchema, recordObj)))
-                this.getQueryListener().onEachRow((T)recordObj);
+                if (clientFilter == null || clientFilter.evaluate(new EvalContext(classSchema, recordObj)))
+                    this.getQueryListener().onEachRow((T)recordObj);
+            }
         }
     }
 
