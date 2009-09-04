@@ -3,6 +3,7 @@ package com.imap4j.hbase.hbql;
 import com.imap4j.hbase.antlr.args.QueryArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.EvalContext;
+import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -43,7 +44,7 @@ public class HQuery<T extends HPersistable> {
         final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery());
         final ClassSchema classSchema = ClassSchema.getClassSchema(args.getTableName());
         final List<String> fieldList = (args.getColumnList() == null) ? classSchema.getFieldList() : args.getColumnList();
-        final Scan scan = HUtil.getScan(classSchema, fieldList, args.getFilterExpr());
+        final Scan scan = HUtil.getScan(classSchema, fieldList, args.getWhereExpr());
 
         final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
 
@@ -51,11 +52,13 @@ public class HQuery<T extends HPersistable> {
 
         final ResultScanner resultScanner = table.getScanner(scan);
 
+        final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
+
         for (final Result result : resultScanner) {
 
             final HPersistable recordObj = ser.getHPersistable(classSchema, result);
 
-            if (args.getWhereExpr().evaluate(new EvalContext(classSchema, recordObj)))
+            if (clientFilter == null || clientFilter.evaluate(new EvalContext(classSchema, recordObj)))
                 this.getQueryListener().onEachRow((T)recordObj);
         }
     }

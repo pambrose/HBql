@@ -1,5 +1,7 @@
 package com.imap4j.hbase.antlr.args;
 
+import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -11,6 +13,8 @@ public class WhereArgs {
     private KeyRangeArgs keyRangeArgs = new KeyRangeArgs(null);
     private DateRangeArgs dateRangeArgs = new DateRangeArgs(null, null);
     private VersionArgs versionArgs = new VersionArgs(null);
+    private ExprEvalTree clientFilterArgs = new ExprEvalTree(null);
+    private ExprEvalTree serverFilterArgs = new ExprEvalTree(null);
 
 
     public KeyRangeArgs getKeyRangeArgs() {
@@ -35,5 +39,21 @@ public class WhereArgs {
 
     public void setVersionArgs(final VersionArgs versionArgs) {
         this.versionArgs = versionArgs;
+    }
+
+    public ExprEvalTree getClientFilterArgs() {
+        return clientFilterArgs;
+    }
+
+    public void setClientFilterArgs(final ExprEvalTree clientFilterArgs) {
+        this.clientFilterArgs = clientFilterArgs;
+    }
+
+    public ExprEvalTree getServerFilterArgs() {
+        return serverFilterArgs;
+    }
+
+    public void setServerFilterArgs(final ExprEvalTree serverFilterArgs) {
+        this.serverFilterArgs = serverFilterArgs;
     }
 }

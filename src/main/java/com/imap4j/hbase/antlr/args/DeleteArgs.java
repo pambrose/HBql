@@ -1,8 +1,5 @@
 package com.imap4j.hbase.antlr.args;
 
-import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
-import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -12,14 +9,10 @@ import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
 public class DeleteArgs implements ExecArgs {
 
     private final String tableName;
-    private final ExprEvalTree filterExpr;
-    private final ExprEvalTree whereExpr;
+    private final WhereArgs whereExpr;
 
-    private final static ExprEvalTree defaultExpr = new ExprEvalTree(new BooleanLiteral("true"));
-
-    public DeleteArgs(final String tableName, final ExprEvalTree filterExpr, final ExprEvalTree whereExpr) {
+    public DeleteArgs(final String tableName, final WhereArgs whereExpr) {
         this.tableName = tableName;
-        this.filterExpr = filterExpr;
         this.whereExpr = whereExpr;
     }
 
@@ -27,14 +20,11 @@ public class DeleteArgs implements ExecArgs {
         return this.tableName;
     }
 
-    public ExprEvalTree getWhereExpr() {
+    public WhereArgs getWhereExpr() {
         if (whereExpr == null)
-            return defaultExpr;
+            return new WhereArgs();
         else
             return this.whereExpr;
     }
 
-    public ExprEvalTree getFilterExpr() {
-        return filterExpr;
-    }
 }

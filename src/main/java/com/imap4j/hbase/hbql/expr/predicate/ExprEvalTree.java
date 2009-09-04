@@ -21,6 +21,8 @@ public class ExprEvalTree implements PredicateExpr {
     private PredicateExpr expr = null;
     private long start, end;
 
+    // private final static ExprEvalTree defaultExpr = new ExprEvalTree(new BooleanLiteral("true"));
+
     public ExprEvalTree(final PredicateExpr expr) {
         this.expr = expr;
     }

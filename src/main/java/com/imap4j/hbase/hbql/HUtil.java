@@ -1,5 +1,6 @@
 package com.imap4j.hbase.hbql;
 
+import com.imap4j.hbase.antlr.args.WhereArgs;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class HUtil {
 
-    public static Scan getScan(final ClassSchema classSchema, final List<String> fieldList, final ExprEvalTree filterExpr) {
+    public static Scan getScan(final ClassSchema classSchema, final List<String> fieldList, final WhereArgs whereExpr) {
 
         final Scan scan = new Scan();
 
@@ -32,9 +33,11 @@ public class HUtil {
                 scan.addColumn(attrib.getQualifiedName().getBytes());
         }
 
-        if (filterExpr != null) {
-            List<ExprVariable> names = filterExpr.getExprVariables();
-            scan.setFilter(new PrefixFilter(classSchema, filterExpr));
+        final ExprEvalTree serverFilter = whereExpr.getServerFilterArgs();
+
+        if (serverFilter != null) {
+            List<ExprVariable> names = serverFilter.getExprVariables();
+            scan.setFilter(new PrefixFilter(classSchema, serverFilter));
         }
 
         return scan;

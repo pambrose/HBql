@@ -1,7 +1,5 @@
 package com.imap4j.hbase.antlr.args;
 
-import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
-
 import java.util.List;
 
 /**
@@ -14,13 +12,11 @@ public class QueryArgs {
 
     private final List<String> columnList;
     private final String tableName;
-    private final ExprEvalTree filterExpr;
-    private final ExprEvalTree whereExpr;
+    private final WhereArgs whereExpr;
 
-    public QueryArgs(final List<String> columnList, final String tableName, final ExprEvalTree filterExpr, final ExprEvalTree whereExpr) {
+    public QueryArgs(final List<String> columnList, final String tableName, final WhereArgs whereExpr) {
         this.tableName = tableName;
         this.columnList = columnList;
-        this.filterExpr = filterExpr;
         this.whereExpr = whereExpr;
     }
 
@@ -32,17 +28,10 @@ public class QueryArgs {
         return this.tableName;
     }
 
-    public ExprEvalTree getFilterExpr() {
-        if (this.filterExpr != null)
-            return this.filterExpr;
-        else
-            return new ExprEvalTree(null);
-    }
-
-    public ExprEvalTree getWhereExpr() {
+    public WhereArgs getWhereExpr() {
         if (this.whereExpr != null)
             return this.whereExpr;
         else
-            return new ExprEvalTree(null);
+            return new WhereArgs();
     }
 }

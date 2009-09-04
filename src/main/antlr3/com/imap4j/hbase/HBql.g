@@ -54,10 +54,8 @@ import com.google.common.collect.Lists;
 }
 
 selectStmt [ClassSchema cs] returns [QueryArgs retval]
-	: keySELECT (STAR | c=columnList) 
-	  keyFROM t=ID 
-	  f=filterClause[cs]?
-	  w=whereClause[cs]?				{retval = new QueryArgs($c.retval, $t.text, $f.retval, $w.retval);};
+	: keySELECT (STAR | c=columnList) keyFROM t=ID w=whereValue[cs]?			
+							{retval = new QueryArgs($c.retval, $t.text, $w.retval);};
 
 columnList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
@@ -72,29 +70,29 @@ execCommand [ClassSchema cs] returns [ExecArgs retval]
 	;
 
 createStmt returns [CreateArgs retval]
-	: keyCREATE keyTABLE table=ID 			{retval = new CreateArgs($table.text);};
+	: keyCREATE keyTABLE t=ID 			{retval = new CreateArgs($t.text);};
 
 describeStmt returns [DescribeArgs retval]
-	: keyDESCRIBE keyTABLE table=ID 		{retval = new DescribeArgs($table.text);};
+	: keyDESCRIBE keyTABLE t=ID 		{retval = new DescribeArgs($t.text);};
 
 showStmt returns [ShowArgs retval]
 	: keySHOW keyTABLES 		 		{retval = new ShowArgs();};
 
 deleteStmt [ClassSchema cs] returns [DeleteArgs retval]
-	: keyDELETE keyFROM table=ID 			{setClassSchema($table.text);}
-	  f=filterClause[cs]?
-	  w=whereClause[cs]?				{retval = new DeleteArgs($table.text, $f.retval, $w.retval);};
+	: keyDELETE keyFROM t=ID 			{setClassSchema($t.text);}
+	  w=whereValue[cs]?				{retval = new DeleteArgs($t.text, $w.retval);};
 
 setStmt returns [SetArgs retval]
 	: keySET i=ID to? v=QUOTED	 		{retval = new SetArgs($i.text, $v.text);};
 
 whereValue [ClassSchema cs] returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
-	: k=keys?					{retval.setKeyRangeArgs($k.retval);}
+	: keyWITH
+	  k=keys?					{retval.setKeyRangeArgs($k.retval);}
 	  t=time?					{retval.setDateRangeArgs($t.retval);}	
 	  v=versions?					{retval.setVersionArgs($v.retval);}
-	  serverFilter[cs]?
-	  clientFilter[cs]?
+	  c=clientFilter[cs]?				{retval.setClientFilterArgs($c.retval);}
+	  s=serverFilter[cs]?				{retval.setServerFilterArgs($s.retval);}
 	;
 
 keys returns [KeyRangeArgs retval]
@@ -103,20 +101,16 @@ keys returns [KeyRangeArgs retval]
 	
 time returns [DateRangeArgs retval]
 	: keyTIME keyRANGE? 
-	  d1=rangeDateExpr COLON d2=rangeDateExpr	{retval = new DateRangeArgs($d1.retval, $d2.retval);}
-	;
+	  d1=rangeDateExpr COLON d2=rangeDateExpr	{retval = new DateRangeArgs($d1.retval, $d2.retval);};
 		
 versions returns [VersionArgs retval]
-	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);}
-	;
+	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);};
 	
-serverFilter [ClassSchema cs] returns [FilterArgs retval]
-	: keySERVER keySIDE? keyFILTER? whereExpr[cs]
-	;
+serverFilter [ClassSchema cs] returns [ExprEvalTree retval]
+	: keySERVER keyFILTER? w=whereExpr[cs]	{retval = $w.retval;};
 	
-clientFilter [ClassSchema cs] returns [FilterArgs retval]
-	: keyCLIENT keySIDE? keyFILTER? whereExpr[cs]
-	;
+clientFilter [ClassSchema cs] returns [ExprEvalTree retval]
+	: keyCLIENT keyFILTER? w=whereExpr[cs]	{retval = $w.retval;};
 	
 keyRangeList returns [List<KeyRangeArgs.Range> retval]
 @init {retval = Lists.newArrayList();}
@@ -483,7 +477,6 @@ keyTOMORROW	: {isKeyword(input, "TOMORROW")}? ID;
 keyDATE		: {isKeyword(input, "DATE")}? ID;
 keyCLIENT	: {isKeyword(input, "CLIENT")}? ID;
 keySERVER	: {isKeyword(input, "SERVER")}? ID;
-keySIDE		: {isKeyword(input, "SIDE")}? ID;
 keyVERSIONS	: {isKeyword(input, "VERSIONS")}? ID;
 keyTIME		: {isKeyword(input, "TIME")}? ID;
 keyRANGE	: {isKeyword(input, "RANGE")}? ID;
