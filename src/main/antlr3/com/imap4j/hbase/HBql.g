@@ -45,7 +45,7 @@ import com.imap4j.hbase.hbql.expr.value.literal.*;
 import com.imap4j.hbase.hbql.expr.value.var.*;
 import com.imap4j.hbase.antlr.args.*;
 import com.imap4j.hbase.antlr.*;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
+import com.imap4j.hbase.hbql.schema.*;
 import java.util.Date;
 import com.google.common.collect.Lists;
 }
@@ -60,7 +60,7 @@ import com.google.common.collect.Lists;
 }
 selectStmt [ClassSchema cs] returns [QueryArgs retval]
 	: keySELECT (STAR | c=columnList) 
-	  keyFROM t=dottedValue 
+	  keyFROM t=variableRef 
 	  f=filterClause[cs]?
 	  w=whereClause[cs]?				{retval = new QueryArgs($c.retval, $t.text, $f.retval, $w.retval);};
 
@@ -91,13 +91,13 @@ deleteStmt [ClassSchema cs] returns [DeleteArgs retval]
 	  w=whereClause[cs]?				{retval = new DeleteArgs($table.text, $f.retval, $w.retval);};
 
 setStmt returns [SetArgs retval]
-	: keySET i=ID to? v=dottedValue 		{retval = new SetArgs($i.text, $v.text);};
+	: keySET i=ID to? v=QUOTED	 		{retval = new SetArgs($i.text, $v.text);};
 
 filterClause [ClassSchema cs] returns [ExprEvalTree retval]
-	: keyWITH keyFILTER w=whereExpr[cs]			{retval = $w.retval;};
+	: keyWITH keyFILTER w=whereExpr[cs]		{retval = $w.retval;};
 	
 whereClause [ClassSchema cs] returns [ExprEvalTree retval]
-	: keyWHERE w=whereExpr[cs] 				{retval = $w.retval;};
+	: keyWHERE w=whereExpr[cs] 			{retval = $w.retval;};
 
 whereExpr [ClassSchema cs] returns [ExprEvalTree retval]
 @init {setClassSchema(cs);}
@@ -133,7 +133,7 @@ options {backtrack=true;}
 	: d1=dateExpr n=not? keyBETWEEN d2=dateExpr and d3=dateExpr
 							{retval = new DateBetweenStmt($d1.retval, ($n.text != null), $d2.retval, $d3.retval);}
 	| n1=numericExpr n=not? keyBETWEEN n2=numericExpr and n3=numericExpr		
-							{retval = new NumberBetweenStmt($n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
+							{retval = new IntegerBetweenStmt($n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
 	| s1=stringExpr n=not? keyBETWEEN s2=stringExpr and s3=stringExpr		
 							{retval = new StringBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
 	;
@@ -147,7 +147,7 @@ options {backtrack=true;}
 	: a3=dateExpr n=not? keyIN LPAREN d=dateItemList RPAREN			
 							{retval = new DateInStmt($a3.retval, ($n.text != null), $d.retval);} 
 	| a1=numericExpr n=not? keyIN LPAREN i=intItemList RPAREN			
-							{retval = new NumberInStmt($a1.retval,($n.text != null), $i.retval);} 
+							{retval = new IntegerInStmt($a1.retval,($n.text != null), $i.retval);} 
 	| a2=stringExpr n=not? keyIN LPAREN s=strItemList RPAREN			
 							{retval = new StringInStmt($a2.retval, ($n.text != null), $s.retval);} 
 	;
@@ -164,7 +164,7 @@ compareExpr returns [PredicateExpr retval]
 options {backtrack=true;}	
 	: d1=dateExpr o=compOp d2=dateExpr 		{retval = new DateCompare($d1.retval, $o.retval, $d2.retval);}	
 	| s1=stringExpr o=compOp s2=stringExpr	  	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
-	| n1=numericExpr o=compOp n2=numericExpr	{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
+	| n1=numericExpr o=compOp n2=numericExpr	{retval = new IntegerCompare($n1.retval, $o.retval, $n2.retval);}
 	;
 	
 compOp returns [CompareExpr.OP retval]
@@ -177,30 +177,30 @@ compOp returns [CompareExpr.OP retval]
 	;
 
 // Numeric calculations
-numericExpr returns [NumberValue retval]
+numericExpr returns [IntegerValue retval]
 	: m=multdivExpr (op=plusMinus n=numericExpr)?	{$numericExpr.retval= ($n.text == null) ? $m.retval : new CalcExpr($m.retval, $op.retval, $n.retval);}
 	;
 
-multdivExpr returns [NumberValue retval]
+multdivExpr returns [IntegerValue retval]
 	: c=calcNumberExpr (op=multDiv m=multdivExpr)?	{$multdivExpr.retval = ($m.text == null) ? $c.retval : new CalcExpr($c.retval, $op.retval, $m.retval);}
 	;
 
-calcNumberExpr returns [NumberValue retval]
+calcNumberExpr returns [IntegerValue retval]
 	: (s=plusMinus)? n=numPrimary 			{retval = ($s.retval == CalcExpr.OP.MINUS) ? new CalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) :  $n.retval;}
 	;
 
-numPrimary returns [NumberValue retval]
+numPrimary returns [IntegerValue retval]
 	: n=numberExpr					{retval = $n.retval;}
 	| LPAREN s=numericExpr RPAREN			{retval = $s.retval;}
 	;
 	   						 
 // Simple typed exprs
-numberExpr returns [NumberValue retval]
+numberExpr returns [IntegerValue retval]
 	: l=numberLiteral				{retval = $l.retval;} 
 	| i=intAttrib					{retval = $i.retval;}
-	//| f=funcReturningNumber
-	| LBRACE e=orExpr QMARK n1=numericExpr COLON n2=numericExpr RBRACE	
-							{retval = new NumberTernary($e.retval, $n1.retval, $n2.retval);}
+	//| f=funcReturningInteger
+	| LBRACE e=orExpr QMARK n1=numericExpr WS COLON WS n2=numericExpr RBRACE	
+							{retval = new IntegerTernary($e.retval, $n1.retval, $n2.retval);}
 	;
 
 // Supports string concatenation -- avoids creating a list everytime
@@ -226,7 +226,7 @@ options {backtrack=true;}
 	| f=funcReturningString				{retval = $f.retval;}
 	| n=keyNULL					{retval = new StringNullLiteral();}
 	| a=strAttrib					{retval = $a.retval;}
-	| LBRACE e=orExpr QMARK s1=stringExpr COLON s2=stringExpr RBRACE	
+	| LBRACE e=orExpr QMARK s1=stringExpr WS COLON WS s2=stringExpr RBRACE	
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
 
@@ -235,7 +235,7 @@ booleanExpr returns [BooleanValue retval]
 options {backtrack=true;}	
 	: b=booleanLiteral				{retval = $b.retval;}
 	| LBRACE e=orExpr RBRACE			{retval = new BooleanPredicate($e.retval);}
-	| LBRACE e=orExpr QMARK b1=orExpr COLON b2=orExpr RBRACE	
+	| LBRACE e=orExpr QMARK b1=orExpr WS COLON WS b2=orExpr RBRACE	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	//| f=funcReturningBoolean
 	;
@@ -253,20 +253,20 @@ dateVal returns [DateValue retval]
 
 // Attribs with type
 strAttrib returns [StringValue retval]
-	: {isStringAttrib(input)}? v=ID 		{retval = new StringAttribRef($v.text);};
+	: {isStringAttrib(input)}? v=variableRef 	{retval = new StringAttribRef($v.text);};
 
-intAttrib returns [NumberValue retval]
-	: {isIntAttrib(input)}? v=ID 			{retval = new NumberAttribRef($v.text);};
+intAttrib returns [IntegerValue retval]
+	: {isIntAttrib(input)}? v=variableRef 		{retval = new IntegerAttribRef($v.text);};
 
 dateAttrib returns [DateValue retval]
-	: {isDateAttrib(input)}? v=ID 			{retval = new DateAttribRef($v.text);};
+	: {isDateAttrib(input)}? v=variableRef 		{retval = new DateAttribRef($v.text);};
 
 // Literals		
 stringLiteral returns [StringValue retval]
 	: v=QUOTED 					{retval = new StringLiteral($v.text);};
 	
-numberLiteral returns [NumberValue retval]
-	: v=INT						{retval = new NumberLiteral(Integer.valueOf($v.text));};
+numberLiteral returns [IntegerValue retval]
+	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};
 		
 dateLiteral returns [DateValue retval]
 	: keyNOW					{retval = new DateLiteral(DateLiteral.TYPE.TODAY);}
@@ -295,7 +295,7 @@ funcReturningString returns [StringValue retval]
 	| keyUPPER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.FUNC.UPPER, $s.retval);} 
 	;
 /*
-funcReturningNumber
+funcReturningInteger
 	: keyLENGTH LPAREN stringExpr RPAREN
 	| keyABS LPAREN numericExpr RPAREN
 	| keyMOD LPAREN numericExpr COMMA numericExpr RPAREN
@@ -308,7 +308,7 @@ funcReturningBoolean
 	;
 */
 		
-intItemList returns [List<NumberValue> retval]
+intItemList returns [List<IntegerValue> retval]
 @init {retval = Lists.newArrayList();}
 	: i1=intItem {retval.add($i1.retval);} (COMMA i2=intItem {retval.add($i2.retval);})*;
 	
@@ -320,7 +320,7 @@ dateItemList returns [List<DateValue> retval]
 @init {retval = Lists.newArrayList();}
 	: d1=dateItem {retval.add($d1.retval);} (COMMA d2=dateItem {retval.add($d2.retval);})*;
 	
-intItem returns [NumberValue retval]
+intItem returns [IntegerValue retval]
 	: n=numericExpr					{$intItem.retval = $n.retval;};
 
 strItem returns [StringValue retval]
@@ -334,17 +334,17 @@ qstringList returns [List<String> retval]
 	: qstring[retval] (COMMA qstring[retval])*;
 
 column [List<String> list]	
-	: charstr=dottedValue 				{if (list != null) list.add($charstr.text);};
+	: charstr=variableRef 				{if (list != null) list.add($charstr.text);};
 
 schemaDesc returns [List<VarDesc> retval]
-	: (varDesc (COMMA varDesc)*)?;
+@init {retval = Lists.newArrayList();}
+	: (varDesc[retval] (COMMA varDesc[retval])*)?;
+	
+varDesc [List<VarDesc> list] returns [VarDesc retval]
+	: v1=variableRef keyAS v2=variableRef				{list.add(new VarDesc($v1.text, $v2.text));}
 	;
 	
-varDesc returns [VarDesc retval]
-	: v1=ID COLON v2=ID				{retval = new VarDesc($v1.text, $v2.text);}
-	;
-	
-dottedValue	
+variableRef	
 	: ID ((DOT | COLON) ID)*;
 
 qstring	[List<String> list]
@@ -397,6 +397,7 @@ keyFROM 	: {isKeyword(input, "FROM")}? ID;
 keySET 		: {isKeyword(input, "SET")}? ID;
 keyIN 		: {isKeyword(input, "IN")}? ID;
 keyIS 		: {isKeyword(input, "IS")}? ID;
+keyAS 		: {isKeyword(input, "AS")}? ID;
 keyLIKE		: {isKeyword(input, "LIKE")}? ID;
 keyTO 		: {isKeyword(input, "TO")}? ID;
 keyOR 		: {isKeyword(input, "OR")}? ID;

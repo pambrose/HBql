@@ -2,6 +2,7 @@ package com.imap4j.hbase.hbql.schema;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.EnvVars;
 import com.imap4j.hbase.hbql.HColumn;
 import com.imap4j.hbase.hbql.HFamily;
@@ -26,10 +27,10 @@ public class ClassSchema implements Serializable {
     private final static Map<Class<?>, ClassSchema> classSchemaMap = Maps.newHashMap();
     private final static Map<String, Class<?>> classCacheMap = Maps.newHashMap();
 
-    final Map<String, List<FieldAttrib>> fieldAttribMapByFamily = Maps.newHashMap();
-    final Map<String, FieldAttrib> fieldAttribMapByField = Maps.newHashMap();
-    final Map<String, FieldAttrib> fieldAttribMapByColumnName = Maps.newHashMap();
-    final Map<String, FieldAttrib> fieldAttribMapByVarName = Maps.newHashMap();
+    private final Map<String, List<FieldAttrib>> fieldAttribMapByFamily = Maps.newHashMap();
+    private final Map<String, FieldAttrib> fieldAttribMapByField = Maps.newHashMap();
+    private final Map<String, FieldAttrib> fieldAttribMapByColumnName = Maps.newHashMap();
+    private final Map<String, FieldAttrib> fieldAttribMapByVarName = Maps.newHashMap();
 
     private final Class<?> clazz;
     private final HTable table;
@@ -39,13 +40,21 @@ public class ClassSchema implements Serializable {
 
     public ClassSchema(final String desc) throws HPersistException {
         // Format: varname:type, varname:type
+        final List<VarDesc> varList = (List<VarDesc>)HBqlRule.SCHEMA.parse(desc);
 
+        for (final VarDesc var : varList)
+            getFieldAttribMapByVarName().put(var.getVarname(), new FieldAttrib(var.getVarname(), var.getType()));
+
+        this.clazz = null;
+        this.table = null;
+        this.families = null;
     }
 
     public ClassSchema(final Class clazz) throws HPersistException {
+
         this.clazz = clazz;
 
-        // Make sure there is a an empty constructor declared
+        // Make sure there is an empty constructor declared
         try {
             this.getClazz().getConstructor();
         }
@@ -72,23 +81,23 @@ public class ClassSchema implements Serializable {
     }
 
     public Class<?> getClazz() {
-        return clazz;
+        return this.clazz;
     }
 
     public Map<String, List<FieldAttrib>> getFieldAttribMapByFamily() {
-        return fieldAttribMapByFamily;
+        return this.fieldAttribMapByFamily;
     }
 
     public Map<String, FieldAttrib> getFieldAttribMapByFieldAttrib() {
-        return fieldAttribMapByField;
+        return this.fieldAttribMapByField;
     }
 
     public Map<String, FieldAttrib> getFieldAttribMapByColumnName() {
-        return fieldAttribMapByColumnName;
+        return this.fieldAttribMapByColumnName;
     }
 
     public Map<String, FieldAttrib> getFieldAttribMapByVarName() {
-        return fieldAttribMapByVarName;
+        return this.fieldAttribMapByVarName;
     }
 
     private static Map<Class<?>, ClassSchema> getClassSchemaMap() {
@@ -96,7 +105,7 @@ public class ClassSchema implements Serializable {
     }
 
     public FieldAttrib getKeyFieldAttrib() {
-        return keyFieldAttrib;
+        return this.keyFieldAttrib;
     }
 
     public HFamily[] getFamilies() {

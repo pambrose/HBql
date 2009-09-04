@@ -57,9 +57,9 @@ public class HBaseParser extends Parser {
     }
 
     private boolean isNextTokenOfType(final TokenStream input, final FieldType type) {
-        final String s = input.LT(1).getText();
         if (this.getClassSchema() == null)
             return false;
+        final String s = input.LT(1).getText();
         final FieldAttrib attrib = this.getClassSchema().getFieldAttribMapByVarName().get(s);
         return attrib != null && attrib.getFieldType() == type;
     }

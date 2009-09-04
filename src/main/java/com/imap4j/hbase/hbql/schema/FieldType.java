@@ -57,6 +57,10 @@ public enum FieldType {
         return getFieldType(fieldClass);
     }
 
+    private List<String> getSynonymList() {
+        return this.synonymList;
+    }
+
     public static FieldType getFieldType(final Class fieldClass) throws HPersistException {
 
         final Class<?> clazz = fieldClass.isArray() ? fieldClass.getComponentType() : fieldClass;
@@ -84,12 +88,12 @@ public enum FieldType {
             if (type.matchesSynonym(desc))
                 return type;
         }
-        return null;
 
+        throw new HPersistException("Unkown type: " + desc);
     }
 
     private boolean matchesSynonym(final String str) {
-        for (final String syn : this.synonymList)
+        for (final String syn : this.getSynonymList())
             if (str.equalsIgnoreCase(syn))
                 return true;
         return false;

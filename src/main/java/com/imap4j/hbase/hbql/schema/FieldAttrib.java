@@ -23,11 +23,21 @@ public class FieldAttrib implements Serializable {
     private final FieldType fieldType;
     private final HColumn column;
 
+    private final String name;
+
     private transient Method getterMethod = null, setterMethod = null;
+
+    public FieldAttrib(final String name, final FieldType type) {
+        this.name = name;
+        this.fieldType = type;
+        this.column = null;
+        this.field = null;
+    }
 
     public FieldAttrib(final Class enclosingClass, final Field field, final HColumn column) throws HPersistException {
 
         this.field = field;
+        this.name = this.getField().getName();
         this.fieldType = FieldType.getFieldType(this.field);
         this.column = column;
 
@@ -77,7 +87,7 @@ public class FieldAttrib implements Serializable {
     }
 
     public String getFieldName() {
-        return this.getField().getName();
+        return this.name; //TODO change this back -- this.getField().getName();
     }
 
     public boolean isKey() {

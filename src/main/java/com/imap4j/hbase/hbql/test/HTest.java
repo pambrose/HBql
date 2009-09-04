@@ -66,18 +66,19 @@ public class HTest {
         org.junit.Assert.assertFalse(evalExpr(recordObj, expr));
     }
 
-    public static void assertColumnsMatchTrue(final String expr, String... vals) throws HPersistException {
-        org.junit.Assert.assertTrue(evalColumnNames(expr, vals));
+    public static void assertColumnsMatchTrue(final String schema, final String expr, String... vals) throws HPersistException {
+        org.junit.Assert.assertTrue(evalColumnNames(schema, expr, vals));
     }
 
-    public static void assertColumnsMatchFalse(final String expr, String... vals) throws HPersistException {
-        org.junit.Assert.assertFalse(evalColumnNames(expr, vals));
+    public static void assertColumnsMatchFalse(final String schema, final String expr, String... vals) throws HPersistException {
+        org.junit.Assert.assertFalse(evalColumnNames(schema, expr, vals));
     }
 
-    private static boolean evalColumnNames(final String expr, String... vals) {
+    private static boolean evalColumnNames(final String schema, final String expr, String... vals) throws HPersistException {
 
+        final ClassSchema classSchema = new ClassSchema(schema);
         final List<String> valList = Lists.newArrayList(vals);
-        final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE.parse(expr, (ClassSchema)null);
+        final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE.parse(expr, classSchema);
         final List<ExprVariable> attribs = tree.getExprVariables();
 
         boolean retval = true;

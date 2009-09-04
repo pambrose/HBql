@@ -1,5 +1,7 @@
 package com.imap4j.hbase.hbql.schema;
 
+import com.imap4j.hbase.hbql.HPersistException;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -12,7 +14,20 @@ public class VarDesc {
 
     public VarDesc(final String varname, final String typename) {
         this.varname = varname;
-        this.type = type;
+        try {
+            this.type = FieldType.getFieldType(typename);
+        }
+        catch (HPersistException e) {
+            this.type = null;
+        }
+    }
+
+    public String getVarname() {
+        return this.varname;
+    }
+
+    public FieldType getType() {
+        return this.type;
     }
 }
 
