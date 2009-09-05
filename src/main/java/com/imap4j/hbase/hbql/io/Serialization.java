@@ -11,6 +11,7 @@ import org.apache.hadoop.hbase.client.Result;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.NavigableMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,9 +60,13 @@ public abstract class Serialization {
 
         try {
             final byte[] b = getObjectAsBytes(obj);
-            Object newobj = getObjectFromBytes(FieldType.getFieldType(obj), b);
+            final Object newobj = getObjectFromBytes(FieldType.getFieldType(obj), b);
         }
-        catch (Exception e) {
+        catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        catch (HPersistException e) {
             e.printStackTrace();
             return false;
         }
@@ -85,6 +90,13 @@ public abstract class Serialization {
             final byte[] keybytes = result.getRow();
             final Object keyval = keyattrib.getValueFromBytes(this, newobj, keybytes);
             classSchema.getKeyFieldAttrib().getField().set(newobj, keyval);
+
+            NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> map1 = result.getMap();
+
+            for (final byte[] b1 : map1.keySet()) {
+                String s = new String(b1);
+                NavigableMap<byte[], NavigableMap<Long, byte[]>> map2 = map1.get(b1);
+            }
 
             for (final KeyValue keyValue : result.list()) {
 

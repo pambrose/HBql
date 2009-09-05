@@ -47,12 +47,12 @@ public enum FieldType {
         return size;
     }
 
-    public static FieldType getFieldType(final Object obj) throws HPersistException {
+    public static FieldType getFieldType(final Object obj) {
         final Class fieldClass = obj.getClass();
         return getFieldType(fieldClass);
     }
 
-    public static FieldType getFieldType(final Field field) throws HPersistException {
+    public static FieldType getFieldType(final Field field) {
         final Class fieldClass = field.getType();
         return getFieldType(fieldClass);
     }
@@ -61,7 +61,7 @@ public enum FieldType {
         return this.synonymList;
     }
 
-    public static FieldType getFieldType(final Class fieldClass) throws HPersistException {
+    public static FieldType getFieldType(final Class fieldClass) {
 
         final Class<?> clazz = fieldClass.isArray() ? fieldClass.getComponentType() : fieldClass;
 
@@ -79,7 +79,7 @@ public enum FieldType {
                     return type;
         }
 
-        throw new HPersistException("Not able to deal with type: " + clazz);
+        throw new RuntimeException("Unknown type: " + clazz);
     }
 
     public static FieldType getFieldType(final String desc) throws HPersistException {
@@ -89,7 +89,7 @@ public enum FieldType {
                 return type;
         }
 
-        throw new HPersistException("Unkown type: " + desc);
+        throw new HPersistException("Unknown type description: " + desc);
     }
 
     private boolean matchesSynonym(final String str) {

@@ -16,7 +16,6 @@ public class WhereArgs {
     private ExprEvalTree clientFilterArgs = new ExprEvalTree(null);
     private ExprEvalTree serverFilterArgs = new ExprEvalTree(null);
 
-
     public KeyRangeArgs getKeyRangeArgs() {
         return this.keyRangeArgs;
     }

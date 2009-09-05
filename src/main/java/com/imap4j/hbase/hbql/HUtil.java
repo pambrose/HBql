@@ -2,6 +2,7 @@ package com.imap4j.hbase.hbql;
 
 import com.google.common.collect.Lists;
 import com.imap4j.hbase.antlr.args.KeyRangeArgs;
+import com.imap4j.hbase.antlr.args.VersionArgs;
 import com.imap4j.hbase.antlr.args.WhereArgs;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
@@ -41,10 +42,10 @@ public class HUtil {
         }
 
         for (final Scan scan : scanList) {
+
+            // Set column names
             for (final String attribName : fieldList) {
-
                 final FieldAttrib attrib = classSchema.getFieldAttribByName(attribName);
-
                 // If it is a map, then request all columns for family
                 if (attrib.isMapKeysAsColumns())
                     scan.addFamily(attrib.getFamilyName().getBytes());
@@ -52,8 +53,12 @@ public class HUtil {
                     scan.addColumn(attrib.getQualifiedName().getBytes());
             }
 
-            final ExprEvalTree serverFilter = whereExpr.getServerFilterArgs();
+            final VersionArgs verArgs = whereExpr.getVersionArgs();
+            if (verArgs.isValid())
+                scan.setMaxVersions(verArgs.getValue());
 
+            // Set server-side filter
+            final ExprEvalTree serverFilter = whereExpr.getServerFilterArgs();
             if (serverFilter != null) {
                 List<ExprVariable> names = serverFilter.getExprVariables();
                 scan.setFilter(new HBqlFilter(classSchema, serverFilter));

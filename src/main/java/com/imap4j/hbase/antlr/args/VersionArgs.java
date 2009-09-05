@@ -11,16 +11,20 @@ import com.imap4j.hbase.hbql.expr.node.IntegerValue;
  */
 public class VersionArgs {
 
-    private Integer value;
+    private Integer value = null;
 
     public VersionArgs(final IntegerValue val) {
         try {
-            if (this.value != null)
+            if (val != null)
                 this.value = val.getValue(null);
         }
         catch (HPersistException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isValid() {
+        return this.getValue() != null;
     }
 
     public Integer getValue() {
