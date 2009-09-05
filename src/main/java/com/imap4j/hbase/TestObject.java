@@ -141,7 +141,7 @@ public class TestObject implements HPersistable {
         */
         long start = System.currentTimeMillis();
         HQuery<TestObject> q2 =
-                new HQuery<TestObject>("select * from TestObject WITH KEYS '000002' : '000005'"
+                new HQuery<TestObject>("select * from TestObject WITH KEYS  '000002' : '000005','000007':LAST"
                                        // + "WITH FILTER TRUE AND !FALSE "
                         ,// + "WHERE TRUE", //strValue = 'v19' OR strValue IN ('v2', 'v0', 'v999')",
                                        new HQueryListenerAdapter<TestObject>() {

@@ -118,7 +118,7 @@ keyRangeList returns [List<KeyRangeArgs.Range> retval]
 	;
 	
 keyRange returns [KeyRangeArgs.Range retval]
-	: q=QUOTED					{retval = new KeyRangeArgs.Range($q.text);}
+	: q=QUOTED COLON keyLAST			{retval = new KeyRangeArgs.Range($q.text);}
 	| q1=QUOTED COLON q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
 	;
 		
@@ -454,7 +454,7 @@ keyIS 		: {isKeyword(input, "IS")}? ID;
 keyIF 		: {isKeyword(input, "IF")}? ID;
 keyTHEN 	: {isKeyword(input, "THEN")}? ID;
 keyELSE 	: {isKeyword(input, "ELSE")}? ID;
-//keyEND	 : {isKeyword(input, "END")}? ID;
+keyLAST		: {isKeyword(input, "LAST")}? ID;
 keyAS 		: {isKeyword(input, "AS")}? ID;
 keyLIKE		: {isKeyword(input, "LIKE")}? ID;
 keyTO 		: {isKeyword(input, "TO")}? ID;

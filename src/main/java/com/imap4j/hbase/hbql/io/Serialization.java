@@ -48,7 +48,7 @@ public abstract class Serialization {
     abstract public byte[] getArrayasBytes(FieldType fieldType, Object obj) throws IOException, HPersistException;
 
     public byte[] getStringAsBytes(final String obj) throws IOException, HPersistException {
-        return this.getScalarAsBytes(FieldType.getFieldType(obj), obj);
+        return this.getScalarAsBytes(FieldType.StringType, obj);
     }
 
     public byte[] getObjectAsBytes(final Object obj) throws IOException, HPersistException {

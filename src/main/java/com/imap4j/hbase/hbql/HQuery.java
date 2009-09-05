@@ -44,14 +44,14 @@ public class HQuery<T extends HPersistable> {
         final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ClassSchema)null);
         final ClassSchema classSchema = ClassSchema.getClassSchema(args.getTableName());
         final List<String> fieldList = (args.getColumnList() == null) ? classSchema.getFieldList() : args.getColumnList();
-        final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
+        final String tableName = classSchema.getTableName();
+        final HTable table = new HTable(new HBaseConfiguration(), tableName);
         final Serialization ser = HSer.getSer();
+        final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
         final List<Scan> scanList = HUtil.getScanList(classSchema, fieldList, args.getWhereExpr());
 
         for (final Scan scan : scanList) {
             final ResultScanner resultScanner = table.getScanner(scan);
-
-            final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
 
             for (final Result result : resultScanner) {
 

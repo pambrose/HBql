@@ -14,8 +14,8 @@ public class TestWhereValues extends WhereValueTests {
     @Test
     public void keysExpressions() throws HPersistException {
         assertValidInput("WITH KEYS 'aaa' : 'bbb'");
-        assertValidInput("WITH KEYS 'sss'");
-        assertValidInput("WITH KEYS 'fff' : 'ggg', 'sss', 'sssd'");
+        assertValidInput("WITH KEYS 'sss' : LAST");
+        assertValidInput("WITH KEYS 'fff' : 'ggg', 'sss': LAST, 'sssd':LAST");
     }
 
     @Test
