@@ -3,6 +3,7 @@ package com.imap4j.hbase;
 import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbql.HBql;
 import com.imap4j.hbase.hbql.HColumn;
+import com.imap4j.hbase.hbql.HColumnVersionMap;
 import com.imap4j.hbase.hbql.HFamily;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.HPersistable;
@@ -14,6 +15,7 @@ import com.imap4j.hbase.hbql.HUtil;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.NavigableMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,6 +52,9 @@ public class TestObject implements HPersistable {
 
     @HColumn(family = "family1", column = "author")
     private String author = "An author value";
+
+    @HColumnVersionMap(instance = "author")
+    private NavigableMap<Long, String> authorVersions;
 
     @HColumn(family = "family2", getter = "getHeaderBytes", setter = "setHeaderBytes")
     private String header = "A header value";

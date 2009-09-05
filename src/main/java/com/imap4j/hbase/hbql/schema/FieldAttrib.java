@@ -83,10 +83,10 @@ public class FieldAttrib implements Serializable {
 
     @Override
     public String toString() {
-        return this.getField().getDeclaringClass() + "." + this.getFieldName();
+        return this.getField().getDeclaringClass() + "." + this.getVariableName();
     }
 
-    public String getFieldName() {
+    public String getVariableName() {
         return this.name; //TODO change this back -- this.getField().getName();
     }
 
@@ -119,7 +119,7 @@ public class FieldAttrib implements Serializable {
     }
 
     public String getColumnName() {
-        return this.column.column().length() > 0 ? column.column() : this.getFieldName();
+        return this.column.column().length() > 0 ? column.column() : this.getVariableName();
     }
 
     public String getQualifiedName() {
@@ -143,10 +143,10 @@ public class FieldAttrib implements Serializable {
             return (byte[])this.getGetterMethod().invoke(recordObj);
         }
         catch (IllegalAccessException e) {
-            throw new HPersistException("Error getting value of " + this.getFieldName());
+            throw new HPersistException("Error getting value of " + this.getVariableName());
         }
         catch (InvocationTargetException e) {
-            throw new HPersistException("Error getting value of " + this.getFieldName());
+            throw new HPersistException("Error getting value of " + this.getVariableName());
         }
     }
 
@@ -155,10 +155,10 @@ public class FieldAttrib implements Serializable {
             return this.getSetterMethod().invoke(recordObj, b);
         }
         catch (IllegalAccessException e) {
-            throw new HPersistException("Error setting value of " + this.getFieldName());
+            throw new HPersistException("Error setting value of " + this.getVariableName());
         }
         catch (InvocationTargetException e) {
-            throw new HPersistException("Error setting value of " + this.getFieldName());
+            throw new HPersistException("Error setting value of " + this.getVariableName());
         }
     }
 
@@ -167,7 +167,7 @@ public class FieldAttrib implements Serializable {
             return this.getField().get(recordObj);
         }
         catch (IllegalAccessException e) {
-            throw new HPersistException("Error getting value of " + this.getFieldName());
+            throw new HPersistException("Error getting value of " + this.getVariableName());
         }
 
     }

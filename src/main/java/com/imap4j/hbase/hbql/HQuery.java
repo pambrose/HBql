@@ -51,14 +51,18 @@ public class HQuery<T extends HPersistable> {
         final List<Scan> scanList = HUtil.getScanList(classSchema, fieldList, args.getWhereExpr());
 
         for (final Scan scan : scanList) {
-            final ResultScanner resultScanner = table.getScanner(scan);
-
-            for (final Result result : resultScanner) {
-
-                final HPersistable recordObj = ser.getHPersistable(classSchema, result);
-
-                if (clientFilter == null || clientFilter.evaluate(new EvalContext(classSchema, recordObj)))
-                    this.getQueryListener().onEachRow((T)recordObj);
+            ResultScanner resultScanner = null;
+            try {
+                resultScanner = table.getScanner(scan);
+                for (final Result result : resultScanner) {
+                    final HPersistable recordObj = ser.getHPersistable(classSchema, scan, result);
+                    if (clientFilter == null || clientFilter.evaluate(new EvalContext(classSchema, recordObj)))
+                        this.getQueryListener().onEachRow((T)recordObj);
+                }
+            }
+            finally {
+                if (resultScanner != null)
+                    resultScanner.close();
             }
         }
     }

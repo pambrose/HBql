@@ -29,8 +29,8 @@ public class ClassSchema implements Serializable {
 
     private final Map<String, List<FieldAttrib>> fieldAttribMapByFamily = Maps.newHashMap();
     private final Map<String, FieldAttrib> fieldAttribMapByField = Maps.newHashMap();
-    private final Map<String, FieldAttrib> fieldAttribMapByColumnName = Maps.newHashMap();
-    private final Map<String, FieldAttrib> fieldAttribMapByVarName = Maps.newHashMap();
+    private final Map<String, FieldAttrib> fieldAttribMapByQualifiedColumnName = Maps.newHashMap();
+    private final Map<String, FieldAttrib> fieldAttribMapByVariableName = Maps.newHashMap();
 
     private final Class<?> clazz;
     private final HTable table;
@@ -43,7 +43,7 @@ public class ClassSchema implements Serializable {
         final List<VarDesc> varList = (List<VarDesc>)HBqlRule.SCHEMA.parse(desc);
 
         for (final VarDesc var : varList)
-            getFieldAttribMapByVarName().put(var.getVarname(), new FieldAttrib(var.getVarname(), var.getType()));
+            getFieldAttribMapByVariableName().put(var.getVarname(), new FieldAttrib(var.getVarname(), var.getType()));
 
         this.clazz = null;
         this.table = null;
@@ -92,12 +92,12 @@ public class ClassSchema implements Serializable {
         return this.fieldAttribMapByField;
     }
 
-    public Map<String, FieldAttrib> getFieldAttribMapByColumnName() {
-        return this.fieldAttribMapByColumnName;
+    public Map<String, FieldAttrib> getFieldAttribMapByQualifiedColumnName() {
+        return this.fieldAttribMapByQualifiedColumnName;
     }
 
-    public Map<String, FieldAttrib> getFieldAttribMapByVarName() {
-        return this.fieldAttribMapByVarName;
+    public Map<String, FieldAttrib> getFieldAttribMapByVariableName() {
+        return this.fieldAttribMapByVariableName;
     }
 
     private static Map<Class<?>, ClassSchema> getClassSchemaMap() {
@@ -152,7 +152,7 @@ public class ClassSchema implements Serializable {
             if (attrib.isKey())
                 continue;
 
-            retval.add(attrib.getFieldName());
+            retval.add(attrib.getVariableName());
         }
         return retval;
     }
@@ -206,8 +206,8 @@ public class ClassSchema implements Serializable {
                 final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, column);
 
                 this.getFieldAttribMapByFieldAttrib().put(field.getName(), attrib);
-                this.getFieldAttribMapByColumnName().put(attrib.getQualifiedName(), attrib);
-                this.getFieldAttribMapByVarName().put(field.getName(), attrib);
+                this.getFieldAttribMapByQualifiedColumnName().put(attrib.getQualifiedName(), attrib);
+                this.getFieldAttribMapByVariableName().put(field.getName(), attrib);
 
                 if (attrib.isKey()) {
                     if (keyFieldAttrib != null)

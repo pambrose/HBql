@@ -136,7 +136,7 @@ public class HBql {
             final ResultScanner resultsScanner = table.getScanner(scan);
             for (final Result result : resultsScanner) {
 
-                final HPersistable recordObj = ser.getHPersistable(classSchema, result);
+                final HPersistable recordObj = ser.getHPersistable(classSchema, scan, result);
 
                 if (clientFilter == null || clientFilter.evaluate(new EvalContext(classSchema, recordObj))) {
                     final Delete delete = new Delete(result.getRow());
