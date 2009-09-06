@@ -45,7 +45,7 @@ public class HUtil {
 
             // Set column names
             for (final String attribName : fieldList) {
-                final FieldAttrib attrib = classSchema.getFieldAttribByName(attribName);
+                final FieldAttrib attrib = classSchema.getFieldAttribByVariableName(attribName);
                 // If it is a map, then request all columns for family
                 if (attrib.isMapKeysAsColumns())
                     scan.addFamily(attrib.getFamilyName().getBytes());

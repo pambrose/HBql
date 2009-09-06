@@ -12,11 +12,11 @@ import java.util.List;
  * Time: 11:38:01 AM
  */
 public class VarDesc {
-    private String varname;
+    private String varName;
     private FieldType type;
 
-    private VarDesc(final String varname, final FieldType type) {
-        this.varname = varname;
+    private VarDesc(final String varName, final FieldType type) {
+        this.varName = varName;
         this.type = type;
     }
 
@@ -37,8 +37,8 @@ public class VarDesc {
         return retval;
     }
 
-    public String getVarname() {
-        return this.varname;
+    public String getVarName() {
+        return this.varName;
     }
 
     public FieldType getType() {

@@ -39,9 +39,9 @@ public class HTransaction {
         final byte[] keyval = classSchema.getKeyFieldAttrib().getValueAsBytes(ser, declaringObj);
         final Put put = new Put(keyval);
 
-        for (final String family : classSchema.getFieldAttribMapByFamily().keySet()) {
+        for (final String family : classSchema.getFamilyNameList()) {
 
-            for (final FieldAttrib attrib : classSchema.getFieldAttribMapByFamily().get(family)) {
+            for (final FieldAttrib attrib : classSchema.getFieldAttribListByFamilyName(family)) {
 
                 if (attrib.isMapKeysAsColumns()) {
                     final Map mapval = (Map)attrib.getValue(declaringObj);

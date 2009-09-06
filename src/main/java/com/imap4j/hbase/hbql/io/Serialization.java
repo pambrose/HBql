@@ -123,22 +123,21 @@ public abstract class Serialization {
                     final int lbrace = column.indexOf("[");
                     final String mapcolumn = column.substring(0, lbrace);
                     final String mapKey = column.substring(lbrace + 1, column.length() - 1);
-                    final FieldAttrib attrib = classSchema.getFieldAttribMapByQualifiedColumnName().get(mapcolumn);
+                    final FieldAttrib attrib = classSchema.getFieldAttribByQualifiedColumnName(mapcolumn);
                     final Object val = attrib.getValueFromBytes(this, newobj, valbytes);
                     Map mapval = (Map)attrib.getValue(newobj);
 
                     // TODO it is probably not kosher to create a map here
                     if (mapval == null) {
                         mapval = Maps.newHashMap();
-                        attrib.getField().set(newobj, mapval);
+                        attrib.setValue(newobj, mapval);
                     }
 
                     mapval.put(mapKey, val);
                 }
                 else {
-                    final FieldAttrib attrib = classSchema.getFieldAttribMapByQualifiedColumnName().get(column);
-                    final Object val = attrib.getValueFromBytes(this, newobj, valbytes);
-                    attrib.getField().set(newobj, val);
+                    final FieldAttrib attrib = classSchema.getFieldAttribByQualifiedColumnName(column);
+                    attrib.setValue(this, newobj, valbytes);
                 }
             }
 
@@ -158,8 +157,7 @@ public abstract class Serialization {
         try {
             newobj = (HPersistable)classSchema.getClazz().newInstance();
             final byte[] keybytes = result.getRow();
-            final Object keyval = keyattrib.getValueFromBytes(this, newobj, keybytes);
-            classSchema.getKeyFieldAttrib().getField().set(newobj, keyval);
+            keyattrib.setValue(this, newobj, keybytes);
         }
         catch (InstantiationException e) {
             throw new RuntimeException("Cannot create new instance of " + classSchema.getClazz());

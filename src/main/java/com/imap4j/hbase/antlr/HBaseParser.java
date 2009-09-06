@@ -64,7 +64,7 @@ public class HBaseParser extends Parser {
 
         if (this.getClassSchema() != null) {
 
-            final FieldAttrib attrib = this.getClassSchema().getFieldAttribMapByVariableName().get(var);
+            final FieldAttrib attrib = this.getClassSchema().getFieldAttribByVariableName(var);
 
             if (attrib != null) {
                 switch (attrib.getFieldType()) {

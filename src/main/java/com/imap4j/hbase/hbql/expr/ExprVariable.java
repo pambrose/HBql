@@ -31,11 +31,11 @@ public class ExprVariable {
     }
 
     public FieldAttrib getFieldAttrib(final EvalContext context) {
-        return context.getClassSchema().getFieldAttribByName(this.getName());
+        return context.getClassSchema().getFieldAttribByVariableName(this.getName());
     }
 
     public String getQualifiedName(final ClassSchema classSchema) throws HPersistException {
-        final FieldAttrib fieldAttrib = classSchema.getFieldAttribByName(this.getName());
+        final FieldAttrib fieldAttrib = classSchema.getFieldAttribByVariableName(this.getName());
         if (fieldAttrib == null)
             throw new HPersistException("Invalid attrib name " + this.getName());
         return fieldAttrib.getQualifiedName();

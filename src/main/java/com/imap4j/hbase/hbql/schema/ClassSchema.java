@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,10 +28,9 @@ public class ClassSchema implements Serializable {
     private final static Map<Class<?>, ClassSchema> classSchemaMap = Maps.newHashMap();
     private final static Map<String, Class<?>> classCacheMap = Maps.newHashMap();
 
-    private final Map<String, List<FieldAttrib>> fieldAttribMapByFamily = Maps.newHashMap();
-    private final Map<String, FieldAttrib> fieldAttribMapByField = Maps.newHashMap();
-    private final Map<String, FieldAttrib> fieldAttribMapByQualifiedColumnName = Maps.newHashMap();
-    private final Map<String, FieldAttrib> fieldAttribMapByVariableName = Maps.newHashMap();
+    private final Map<String, List<FieldAttrib>> fieldAttribListByFamilyNameMap = Maps.newHashMap();
+    private final Map<String, FieldAttrib> fieldAttribByQualifiedColumnNameMap = Maps.newHashMap();
+    private final Map<String, FieldAttrib> fieldAttribByVariableNameMap = Maps.newHashMap();
 
     private final Class<?> clazz;
     private final HTable table;
@@ -43,7 +43,7 @@ public class ClassSchema implements Serializable {
         final List<VarDesc> varList = (List<VarDesc>)HBqlRule.SCHEMA.parse(desc);
 
         for (final VarDesc var : varList)
-            getFieldAttribMapByVariableName().put(var.getVarname(), new FieldAttrib(var.getVarname(), var.getType()));
+            setFieldAttribByVariableName(var.getVarName(), new FieldAttrib(var.getVarName(), var.getType()));
 
         this.clazz = null;
         this.table = null;
@@ -74,7 +74,7 @@ public class ClassSchema implements Serializable {
 
         for (final HFamily family : families) {
             final List<FieldAttrib> attribs = Lists.newArrayList();
-            this.getFieldAttribMapByFamily().put(family.name(), attribs);
+            this.fieldAttribListByFamilyNameMap.put(family.name(), attribs);
         }
 
         processFieldAnnotations();
@@ -84,20 +84,28 @@ public class ClassSchema implements Serializable {
         return this.clazz;
     }
 
-    public Map<String, List<FieldAttrib>> getFieldAttribMapByFamily() {
-        return this.fieldAttribMapByFamily;
+    public Set<String> getFamilyNameList() {
+        return this.fieldAttribListByFamilyNameMap.keySet();
     }
 
-    public Map<String, FieldAttrib> getFieldAttribMapByFieldAttrib() {
-        return this.fieldAttribMapByField;
+    public List<FieldAttrib> getFieldAttribListByFamilyName(final String name) {
+        return this.fieldAttribListByFamilyNameMap.get(name);
     }
 
-    public Map<String, FieldAttrib> getFieldAttribMapByQualifiedColumnName() {
-        return this.fieldAttribMapByQualifiedColumnName;
+    public FieldAttrib getFieldAttribByQualifiedColumnName(final String name) {
+        return this.fieldAttribByQualifiedColumnNameMap.get(name);
     }
 
-    public Map<String, FieldAttrib> getFieldAttribMapByVariableName() {
-        return this.fieldAttribMapByVariableName;
+    public void setFieldAttribByQualifiedColumnName(final String name, final FieldAttrib fieldAttrib) {
+        this.fieldAttribByQualifiedColumnNameMap.put(name, fieldAttrib);
+    }
+
+    public FieldAttrib getFieldAttribByVariableName(final String name) {
+        return this.fieldAttribByVariableNameMap.get(name);
+    }
+
+    public void setFieldAttribByVariableName(final String name, final FieldAttrib fieldAttrib) {
+        this.fieldAttribByVariableNameMap.put(name, fieldAttrib);
     }
 
     private static Map<Class<?>, ClassSchema> getClassSchemaMap() {
@@ -110,10 +118,6 @@ public class ClassSchema implements Serializable {
 
     public HFamily[] getFamilies() {
         return this.families;
-    }
-
-    public FieldAttrib getFieldAttribByName(final String attribName) {
-        return getFieldAttribMapByFieldAttrib().get(attribName);
     }
 
     public static ClassSchema getClassSchema(final HPersistable obj) throws HPersistException {
@@ -147,7 +151,7 @@ public class ClassSchema implements Serializable {
 
     public List<String> getFieldList() {
         final List<String> retval = Lists.newArrayList();
-        for (final FieldAttrib attrib : this.getFieldAttribMapByFieldAttrib().values()) {
+        for (final FieldAttrib attrib : this.fieldAttribByVariableNameMap.values()) {
 
             if (attrib.isKey())
                 continue;
@@ -205,9 +209,8 @@ public class ClassSchema implements Serializable {
 
                 final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, column);
 
-                this.getFieldAttribMapByFieldAttrib().put(field.getName(), attrib);
-                this.getFieldAttribMapByQualifiedColumnName().put(attrib.getQualifiedName(), attrib);
-                this.getFieldAttribMapByVariableName().put(field.getName(), attrib);
+                this.setFieldAttribByQualifiedColumnName(attrib.getQualifiedName(), attrib);
+                this.setFieldAttribByVariableName(field.getName(), attrib);
 
                 if (attrib.isKey()) {
                     if (keyFieldAttrib != null)
@@ -218,10 +221,10 @@ public class ClassSchema implements Serializable {
                 }
                 else {
                     final String family = attrib.getFamilyName();
-                    if (!this.getFieldAttribMapByFamily().containsKey(family))
+                    if (!this.fieldAttribListByFamilyNameMap.containsKey(family))
                         throw new HPersistException("Class " + this + " is missing @HFamily value for " + family);
 
-                    this.getFieldAttribMapByFamily().get(family).add(attrib);
+                    this.getFieldAttribListByFamilyName(family).add(attrib);
                 }
             }
         }

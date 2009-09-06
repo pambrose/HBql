@@ -126,7 +126,7 @@ public class FieldAttrib implements Serializable {
         return this.getFamilyName() + ":" + this.getColumnName();
     }
 
-    public Field getField() {
+    private Field getField() {
         return this.field;
     }
 
@@ -198,5 +198,20 @@ public class FieldAttrib implements Serializable {
             else
                 return ser.getScalarFromBytes(this.getFieldType(), b);
         }
+    }
+
+    public void setValue(final HPersistable newobj, final Object val) {
+        try {
+            this.getField().set(newobj, val);
+        }
+        catch (IllegalAccessException e) {
+            throw new RuntimeException("Error setting value of " + this.getVariableName());
+        }
+
+    }
+
+    public void setValue(final Serialization ser, final HPersistable newobj, final byte[] b) throws IOException, HPersistException {
+        final Object val = this.getValueFromBytes(ser, newobj, b);
+        this.setValue(newobj, val);
     }
 }
