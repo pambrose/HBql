@@ -50,7 +50,7 @@ public class HUtil {
                 if (attrib.isMapKeysAsColumns())
                     scan.addFamily(attrib.getFamilyName().getBytes());
                 else
-                    scan.addColumn(attrib.getQualifiedName().getBytes());
+                    scan.addColumn(attrib.getFamilyQualifiedName().getBytes());
             }
 
             final VersionArgs verArgs = whereExpr.getVersionArgs();

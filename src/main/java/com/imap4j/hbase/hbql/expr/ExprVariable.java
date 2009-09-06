@@ -38,7 +38,7 @@ public class ExprVariable {
         final FieldAttrib fieldAttrib = classSchema.getFieldAttribByVariableName(this.getName());
         if (fieldAttrib == null)
             throw new HPersistException("Invalid attrib name " + this.getName());
-        return fieldAttrib.getQualifiedName();
+        return fieldAttrib.getFamilyQualifiedName();
     }
 
 }

@@ -10,6 +10,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +22,6 @@ import java.lang.reflect.Method;
 public class FieldAttrib implements Serializable {
 
     private final String name;
-    private final HColumn columnAnnotation;
     private final FieldType fieldType;
 
     private final transient Field field;
@@ -30,67 +31,77 @@ public class FieldAttrib implements Serializable {
         this.field = null;
         this.name = name;
         this.fieldType = type;
-        this.columnAnnotation = null;
     }
 
-    public FieldAttrib(final Class enclClass, final Field field, final HColumn columnAnnotation) throws HPersistException {
+    public FieldAttrib(final Field field) throws HPersistException {
         this.field = field;
         this.name = this.getField().getName();
         this.fieldType = FieldType.getFieldType(this.field);
-        this.columnAnnotation = columnAnnotation;
 
         try {
             if (this.hasGetter()) {
-                this.getterMethod = enclClass.getDeclaredMethod(this.getColumnAnno().getter());
+                this.getterMethod = this.getEnclosingClass().getDeclaredMethod(this.getColumnAnno().getter());
 
                 // Check return type of getter
                 final Class<?> returnType = this.getGetterMethod().getReturnType();
 
                 if (!(returnType.isArray() && returnType.getComponentType() == Byte.TYPE))
-                    throw new HPersistException(enclClass.getName()
+                    throw new HPersistException(this.getEnclosingClass().getName()
                                                 + "." + this.getColumnAnno().getter() + "()"
                                                 + " does not have a return type of byte[]");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new HPersistException("Missing method byte[] " + enclClass.getName() + "."
+            throw new HPersistException("Missing method byte[] " + this.getEnclosingClass().getName() + "."
                                         + this.getColumnAnno().getter() + "()");
         }
 
         try {
             if (this.hasSetter()) {
-                this.setterMethod = enclClass.getDeclaredMethod(this.getColumnAnno().setter(), Class.forName("[B"));
+                this.setterMethod = this.getEnclosingClass().getDeclaredMethod(this.getColumnAnno().setter(),
+                                                                               Class.forName("[B"));
 
                 // Check if it takes single byte[] arg
                 final Class<?>[] args = this.getSetterMethod().getParameterTypes();
                 if (args.length != 1 || !(args[0].isArray() && args[0].getComponentType() == Byte.TYPE))
-                    throw new HPersistException(enclClass.getName() + "." + this.getColumnAnno()
-                            .setter() + "()"
+                    throw new HPersistException(this.getEnclosingClass().getName()
+                                                + "." + this.getColumnAnno().setter() + "()"
                                                 + " does not have single byte[] arg");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new HPersistException("Missing method " + enclClass.getName()
+            throw new HPersistException("Missing method " + this.getEnclosingClass().getName()
                                         + "." + this.getColumnAnno().setter() + "(byte[] arg)");
         }
         catch (ClassNotFoundException e) {
             // This will not be hit
-            throw new HPersistException("Missing method " + enclClass.getName()
+            throw new HPersistException("Missing method " + this.getEnclosingClass().getName()
                                         + "." + this.getColumnAnno().setter() + "(byte[] arg)");
         }
+
+        this.verify();
+
     }
 
     @Override
     public String toString() {
-        return this.getField().getDeclaringClass() + "." + this.getVariableName();
+        return this.getObjectQualifiedName();
     }
 
     public String getVariableName() {
         return this.name; //TODO change this back when you cleanup VarDesc -- this.getField().getName();
     }
 
+    public String getObjectQualifiedName() {
+        return this.getEnclosingClass().getName() + "." + this.getVariableName();
+    }
+
     private HColumn getColumnAnno() {
-        return this.columnAnnotation;
+        return this.getField().getAnnotation(HColumn.class);
+    }
+
+    private Class getEnclosingClass() {
+        return this.getField().getDeclaringClass();
     }
 
     public boolean isKey() {
@@ -125,7 +136,7 @@ public class FieldAttrib implements Serializable {
         return this.getColumnAnno().column().length() > 0 ? getColumnAnno().column() : this.getVariableName();
     }
 
-    public String getQualifiedName() {
+    public String getFamilyQualifiedName() {
         return this.getFamilyName() + ":" + this.getColumnName();
     }
 
@@ -146,10 +157,10 @@ public class FieldAttrib implements Serializable {
             return (byte[])this.getGetterMethod().invoke(recordObj);
         }
         catch (IllegalAccessException e) {
-            throw new HPersistException("Error getting value of " + this.getVariableName());
+            throw new HPersistException("Error getting value of " + this.getObjectQualifiedName());
         }
         catch (InvocationTargetException e) {
-            throw new HPersistException("Error getting value of " + this.getVariableName());
+            throw new HPersistException("Error getting value of " + this.getObjectQualifiedName());
         }
     }
 
@@ -159,10 +170,10 @@ public class FieldAttrib implements Serializable {
             return this.getSetterMethod().invoke(recordObj, b);
         }
         catch (IllegalAccessException e) {
-            throw new HPersistException("Error setting value of " + this.getVariableName());
+            throw new HPersistException("Error setting value of " + this.getObjectQualifiedName());
         }
         catch (InvocationTargetException e) {
-            throw new HPersistException("Error setting value of " + this.getVariableName());
+            throw new HPersistException("Error setting value of " + this.getObjectQualifiedName());
         }
     }
 
@@ -171,7 +182,7 @@ public class FieldAttrib implements Serializable {
             return this.getField().get(recordObj);
         }
         catch (IllegalAccessException e) {
-            throw new HPersistException("Error getting value of " + this.getVariableName());
+            throw new HPersistException("Error getting value of " + this.getObjectQualifiedName());
         }
 
     }
@@ -212,7 +223,7 @@ public class FieldAttrib implements Serializable {
             this.getField().set(newobj, val);
         }
         catch (IllegalAccessException e) {
-            throw new RuntimeException("Error setting value of " + this.getVariableName());
+            throw new RuntimeException("Error setting value of " + this.getObjectQualifiedName());
         }
 
     }
@@ -223,4 +234,32 @@ public class FieldAttrib implements Serializable {
         final Object val = this.getValueFromBytes(ser, newobj, b);
         this.setValue(newobj, val);
     }
+
+    private void verify() throws HPersistException {
+
+        if (isFinal(field))
+            throw new HPersistException(this + "." + field.getName() + " cannot have a @HColumn "
+                                        + "annotation and be marked final");
+
+        // Make sure type implements Map if this is true
+        if (this.isMapKeysAsColumns() && (!Map.class.isAssignableFrom(field.getType())))
+            throw new HPersistException(this.getObjectQualifiedName() + " has @HColumn(mapKeysAsColumns=true) " +
+                                        "annotation but doesn't implement the Map interface");
+
+    }
+
+    private static boolean isFinal(final Field field) {
+
+        final boolean isFinal = Modifier.isFinal(field.getModifiers());
+
+        if (isFinal)
+            return true;
+
+        // Unlock private vars
+        if (!field.isAccessible())
+            field.setAccessible(true);
+
+        return false;
+    }
+
 }

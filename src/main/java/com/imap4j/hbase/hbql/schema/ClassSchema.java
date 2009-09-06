@@ -13,7 +13,6 @@ import com.imap4j.hbase.hbql.HTable;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -80,6 +79,8 @@ public class ClassSchema implements Serializable {
         }
 
         processFieldAnnotations();
+
+        int k = 0;
     }
 
     public Class<?> getClazz() {
@@ -213,13 +214,9 @@ public class ClassSchema implements Serializable {
 
     private void processColumnAnnotation(final Field field) throws HPersistException {
 
-        if (isFinal(field))
-            throw new HPersistException(this + "." + field.getName() + " cannot have a @HColumn "
-                                        + "annotation and be marked final");
+        final FieldAttrib attrib = new FieldAttrib(field);
 
-        final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, field.getAnnotation(HColumn.class));
-
-        this.setFieldAttribByQualifiedColumnName(attrib.getQualifiedName(), attrib);
+        this.setFieldAttribByQualifiedColumnName(attrib.getFamilyQualifiedName(), attrib);
         this.setFieldAttribByVariableName(field.getName(), attrib);
 
         if (attrib.isKey()) {
@@ -241,38 +238,10 @@ public class ClassSchema implements Serializable {
 
     private void processColumnVersionMapAnnotation(final Field field) throws HPersistException {
 
-        HColumnVersionMap columnVersion = field.getAnnotation(HColumnVersionMap.class);
-        VersionAttrib versionAttrib = new VersionAttrib(field, columnVersion);
-
-        // Check if instance variable exists
-        if (!this.fieldAttribByVariableNameMap.containsKey(columnVersion.instance())) {
-            throw new HPersistException("The @HColumnVersionMap annotation for " + versionAttrib.getVariableName()
-                                        + " refers to invalid instance variable " + columnVersion.instance());
-        }
-
-        // Check if it is a Map
-        Class[] classes = field.getType().getInterfaces();
+        VersionAttrib versionAttrib = new VersionAttrib(this, field);
 
         this.versionAttribByVariableNameMap.put(versionAttrib.getVariableName(), versionAttrib);
 
-    }
-
-    private static boolean implementsInterface(final Object object, final Class clazz) {
-
-    }
-
-    private static boolean isFinal(final Field field) {
-
-        final boolean isFinal = Modifier.isFinal(field.getModifiers());
-
-        if (isFinal)
-            return true;
-
-        // Unlock private vars
-        if (!field.isAccessible())
-            field.setAccessible(true);
-
-        return false;
     }
 
     public String getTableName() {
@@ -280,4 +249,7 @@ public class ClassSchema implements Serializable {
         return (tableName.length() > 0) ? tableName : clazz.getSimpleName();
     }
 
+    public boolean constainsVariableName(final String varname) {
+        return this.fieldAttribByVariableNameMap.containsKey(varname);
+    }
 }
