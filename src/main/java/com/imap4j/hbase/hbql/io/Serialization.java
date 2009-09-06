@@ -57,23 +57,6 @@ public abstract class Serialization {
         return this.getScalarAsBytes(FieldType.getFieldType(obj), obj);
     }
 
-    public boolean isSerializable(final Object obj) {
-
-        try {
-            final byte[] b = getObjectAsBytes(obj);
-            final Object newobj = getObjectFromBytes(FieldType.getFieldType(obj), b);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        catch (HPersistException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
     public String getStringFromBytes(final byte[] b) throws IOException, HPersistException {
         return (String)this.getScalarFromBytes(FieldType.StringType, b);
     }
@@ -87,59 +70,15 @@ public abstract class Serialization {
                                         final Result result) throws HPersistException {
 
         try {
-
+            // Create object and assign key value
             final HPersistable newobj = this.createNewObject(classSchema, result);
 
-            // Set the remaining values
+            // Assign most recent values
+            this.assignMostRecentValues(classSchema, result, newobj);
 
-            if (scan.getMaxVersions() > 1) {
-                final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
-
-                for (final byte[] fbytes : familyMap.keySet()) {
-
-                    final String family = new String(fbytes);
-                    final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(fbytes);
-
-                    for (final byte[] cbytes : columnMap.keySet()) {
-                        final String column = new String(cbytes);
-                        final NavigableMap<Long, byte[]> tsMap = columnMap.get(cbytes);
-
-                        for (final Long ts : tsMap.keySet()) {
-                            final byte[] valbytes = tsMap.get(ts);
-                            final String s3 = new String(valbytes);
-                            int j = 0;
-                        }
-                    }
-                }
-            }
-
-            for (final KeyValue keyValue : result.list()) {
-
-                final byte[] colbytes = keyValue.getColumn();
-                final String column = (String)this.getScalarFromBytes(FieldType.StringType, colbytes);
-                final byte[] valbytes = result.getValue(colbytes);
-
-                if (column.endsWith("]")) {
-                    final int lbrace = column.indexOf("[");
-                    final String mapcolumn = column.substring(0, lbrace);
-                    final String mapKey = column.substring(lbrace + 1, column.length() - 1);
-                    final FieldAttrib attrib = classSchema.getFieldAttribByQualifiedColumnName(mapcolumn);
-                    final Object val = attrib.getValueFromBytes(this, newobj, valbytes);
-                    Map mapval = (Map)attrib.getValue(newobj);
-
-                    // TODO it is probably not kosher to create a map here
-                    if (mapval == null) {
-                        mapval = Maps.newHashMap();
-                        attrib.setValue(newobj, mapval);
-                    }
-
-                    mapval.put(mapKey, val);
-                }
-                else {
-                    final FieldAttrib attrib = classSchema.getFieldAttribByQualifiedColumnName(column);
-                    attrib.setValue(this, newobj, valbytes);
-                }
-            }
+            // Assign the versioned values
+            if (scan.getMaxVersions() > 1)
+                this.assignVersionedValues(classSchema, result, newobj);
 
             return newobj;
         }
@@ -169,4 +108,75 @@ public abstract class Serialization {
         return newobj;
     }
 
+    private void assignMostRecentValues(final ClassSchema classSchema,
+                                        final Result result,
+                                        final HPersistable newobj) throws IOException, HPersistException {
+
+        for (final KeyValue keyValue : result.list()) {
+
+            final byte[] colbytes = keyValue.getColumn();
+            final String column = (String)this.getScalarFromBytes(FieldType.StringType, colbytes);
+            final byte[] valbytes = result.getValue(colbytes);
+
+            if (column.endsWith("]")) {
+                final int lbrace = column.indexOf("[");
+                final String mapcolumn = column.substring(0, lbrace);
+                final String mapKey = column.substring(lbrace + 1, column.length() - 1);
+                final FieldAttrib attrib = classSchema.getFieldAttribByQualifiedColumnName(mapcolumn);
+                final Object val = attrib.getValueFromBytes(this, newobj, valbytes);
+                Map mapval = (Map)attrib.getValue(newobj);
+
+                // TODO it is probably not kosher to create a map here
+                if (mapval == null) {
+                    mapval = Maps.newHashMap();
+                    attrib.setValue(newobj, mapval);
+                }
+
+                mapval.put(mapKey, val);
+            }
+            else {
+                final FieldAttrib attrib = classSchema.getFieldAttribByQualifiedColumnName(column);
+                attrib.setValue(this, newobj, valbytes);
+            }
+        }
+    }
+
+    private void assignVersionedValues(final ClassSchema classSchema, final Result result, final HPersistable newobj) {
+
+        final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
+
+        for (final byte[] fbytes : familyMap.keySet()) {
+
+            final String family = new String(fbytes);
+            final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(fbytes);
+
+            for (final byte[] cbytes : columnMap.keySet()) {
+                final String column = new String(cbytes);
+                final NavigableMap<Long, byte[]> tsMap = columnMap.get(cbytes);
+
+                for (final Long ts : tsMap.keySet()) {
+                    final byte[] valbytes = tsMap.get(ts);
+                    final String s3 = new String(valbytes);
+                    int j = 0;
+                }
+            }
+        }
+    }
+
+    public boolean isSerializable(final Object obj) {
+
+        try {
+            final byte[] b = getObjectAsBytes(obj);
+            final Object newobj = getObjectFromBytes(FieldType.getFieldType(obj), b);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        catch (HPersistException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }
