@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.EnvVars;
 import com.imap4j.hbase.hbql.HColumn;
+import com.imap4j.hbase.hbql.HColumnVersionMap;
 import com.imap4j.hbase.hbql.HFamily;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.HPersistable;
@@ -31,6 +32,7 @@ public class ClassSchema implements Serializable {
     private final Map<String, List<FieldAttrib>> fieldAttribListByFamilyNameMap = Maps.newHashMap();
     private final Map<String, FieldAttrib> fieldAttribByQualifiedColumnNameMap = Maps.newHashMap();
     private final Map<String, FieldAttrib> fieldAttribByVariableNameMap = Maps.newHashMap();
+    private final Map<String, VersionAttrib> versionAttribByVariableNameMap = Maps.newHashMap();
 
     private final Class<?> clazz;
     private final HTable table;
@@ -39,7 +41,7 @@ public class ClassSchema implements Serializable {
     private FieldAttrib keyFieldAttrib = null;
 
     public ClassSchema(final String desc) throws HPersistException {
-        // Format: varname:type, varname:type
+
         final List<VarDesc> varList = (List<VarDesc>)HBqlRule.SCHEMA.parse(desc);
 
         for (final VarDesc var : varList)
@@ -194,47 +196,72 @@ public class ClassSchema implements Serializable {
 
     private void processFieldAnnotations() throws HPersistException {
 
-        for (final Field field : this.getClazz().getDeclaredFields()) {
+        // First process all HColumn fields so we can do lookup from HColumnVersionMaps
+        for (final Field field : this.getClazz().getDeclaredFields())
+            if (field.getAnnotation(HColumn.class) != null)
+                this.processColumnAnnotation(field);
 
-            final HColumn column = field.getAnnotation(HColumn.class);
-
-            // Check if persisted or not
-            if (column != null) {
-
-                final boolean isFinal = checkFieldModifiers(field);
-
-                if (isFinal)
-                    throw new HPersistException(this + "." + field.getName() + " cannot have a @HColumn "
-                                                + "annotation and be marked final");
-
-                final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, column);
-
-                this.setFieldAttribByQualifiedColumnName(attrib.getQualifiedName(), attrib);
-                this.setFieldAttribByVariableName(field.getName(), attrib);
-
-                if (attrib.isKey()) {
-                    if (keyFieldAttrib != null)
-                        throw new HPersistException("Class " + this + " has multiple instance variables "
-                                                    + "annotated with @HColumn(key=true)");
-
-                    keyFieldAttrib = attrib;
-                }
-                else {
-                    final String family = attrib.getFamilyName();
-                    if (!this.fieldAttribListByFamilyNameMap.containsKey(family))
-                        throw new HPersistException("Class " + this + " is missing @HFamily value for " + family);
-
-                    this.getFieldAttribListByFamilyName(family).add(attrib);
-                }
-            }
-        }
-        if (keyFieldAttrib == null)
+        if (this.getKeyFieldAttrib() == null)
             throw new HPersistException("Class " + this + " is missing an instance variable "
                                         + "annotated with @HColumn(key=true)");
 
+        for (final Field field : this.getClazz().getDeclaredFields())
+            if (field.getAnnotation(HColumnVersionMap.class) != null)
+                this.processColumnVersionMapAnnotation(field);
+
     }
 
-    private static boolean checkFieldModifiers(final Field field) {
+    private void processColumnAnnotation(final Field field) throws HPersistException {
+
+        if (isFinal(field))
+            throw new HPersistException(this + "." + field.getName() + " cannot have a @HColumn "
+                                        + "annotation and be marked final");
+
+        final FieldAttrib attrib = new FieldAttrib(this.getClazz(), field, field.getAnnotation(HColumn.class));
+
+        this.setFieldAttribByQualifiedColumnName(attrib.getQualifiedName(), attrib);
+        this.setFieldAttribByVariableName(field.getName(), attrib);
+
+        if (attrib.isKey()) {
+            if (this.getKeyFieldAttrib() != null)
+                throw new HPersistException("Class " + this + " has multiple instance variables "
+                                            + "annotated with @HColumn(key=true)");
+
+            this.keyFieldAttrib = attrib;
+        }
+        else {
+            final String family = attrib.getFamilyName();
+            if (!this.fieldAttribListByFamilyNameMap.containsKey(family))
+                throw new HPersistException("Class " + this + " is missing @HFamily value for " + family);
+
+            this.getFieldAttribListByFamilyName(family).add(attrib);
+        }
+
+    }
+
+    private void processColumnVersionMapAnnotation(final Field field) throws HPersistException {
+
+        HColumnVersionMap columnVersion = field.getAnnotation(HColumnVersionMap.class);
+        VersionAttrib versionAttrib = new VersionAttrib(field, columnVersion);
+
+        // Check if instance variable exists
+        if (!this.fieldAttribByVariableNameMap.containsKey(columnVersion.instance())) {
+            throw new HPersistException("The @HColumnVersionMap annotation for " + versionAttrib.getVariableName()
+                                        + " refers to invalid instance variable " + columnVersion.instance());
+        }
+
+        // Check if it is a Map
+        Class[] classes = field.getType().getInterfaces();
+
+        this.versionAttribByVariableNameMap.put(versionAttrib.getVariableName(), versionAttrib);
+
+    }
+
+    private static boolean implementsInterface(final Object object, final Class clazz) {
+
+    }
+
+    private static boolean isFinal(final Field field) {
 
         final boolean isFinal = Modifier.isFinal(field.getModifiers());
 

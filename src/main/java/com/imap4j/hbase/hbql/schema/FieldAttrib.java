@@ -19,65 +19,64 @@ import java.lang.reflect.Method;
  */
 public class FieldAttrib implements Serializable {
 
-    private final transient Field field;
-    private final FieldType fieldType;
-    private final HColumn column;
-
     private final String name;
+    private final HColumn columnAnnotation;
+    private final FieldType fieldType;
 
+    private final transient Field field;
     private transient Method getterMethod = null, setterMethod = null;
 
     public FieldAttrib(final String name, final FieldType type) {
+        this.field = null;
         this.name = name;
         this.fieldType = type;
-        this.column = null;
-        this.field = null;
+        this.columnAnnotation = null;
     }
 
-    public FieldAttrib(final Class enclosingClass, final Field field, final HColumn column) throws HPersistException {
-
+    public FieldAttrib(final Class enclClass, final Field field, final HColumn columnAnnotation) throws HPersistException {
         this.field = field;
         this.name = this.getField().getName();
         this.fieldType = FieldType.getFieldType(this.field);
-        this.column = column;
+        this.columnAnnotation = columnAnnotation;
 
         try {
             if (this.hasGetter()) {
-                this.getterMethod = enclosingClass.getDeclaredMethod(this.column.getter());
+                this.getterMethod = enclClass.getDeclaredMethod(this.getColumnAnno().getter());
 
                 // Check return type of getter
                 final Class<?> returnType = this.getGetterMethod().getReturnType();
 
                 if (!(returnType.isArray() && returnType.getComponentType() == Byte.TYPE))
-                    throw new HPersistException(enclosingClass.getName() + "." + this.column.getter() + "()"
+                    throw new HPersistException(enclClass.getName()
+                                                + "." + this.getColumnAnno().getter() + "()"
                                                 + " does not have a return type of byte[]");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new HPersistException("Missing method byte[] " + enclosingClass.getName() + "."
-                                        + this.column.getter() + "()");
+            throw new HPersistException("Missing method byte[] " + enclClass.getName() + "."
+                                        + this.getColumnAnno().getter() + "()");
         }
 
         try {
             if (this.hasSetter()) {
-
-                this.setterMethod = enclosingClass.getDeclaredMethod(this.column.setter(), Class.forName("[B"));
+                this.setterMethod = enclClass.getDeclaredMethod(this.getColumnAnno().setter(), Class.forName("[B"));
 
                 // Check if it takes single byte[] arg
                 final Class<?>[] args = this.getSetterMethod().getParameterTypes();
                 if (args.length != 1 || !(args[0].isArray() && args[0].getComponentType() == Byte.TYPE))
-                    throw new HPersistException(enclosingClass.getName() + "." + this.column.setter() + "()"
+                    throw new HPersistException(enclClass.getName() + "." + this.getColumnAnno()
+                            .setter() + "()"
                                                 + " does not have single byte[] arg");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new HPersistException("Missing method " + enclosingClass.getName() + "." + this.column.setter()
-                                        + "(byte[] arg)");
+            throw new HPersistException("Missing method " + enclClass.getName()
+                                        + "." + this.getColumnAnno().setter() + "(byte[] arg)");
         }
         catch (ClassNotFoundException e) {
             // This will not be hit
-            throw new HPersistException("Missing method " + enclosingClass.getName() + "." + this.column.setter()
-                                        + "(byte[] arg)");
+            throw new HPersistException("Missing method " + enclClass.getName()
+                                        + "." + this.getColumnAnno().setter() + "(byte[] arg)");
         }
     }
 
@@ -87,11 +86,15 @@ public class FieldAttrib implements Serializable {
     }
 
     public String getVariableName() {
-        return this.name; //TODO change this back -- this.getField().getName();
+        return this.name; //TODO change this back when you cleanup VarDesc -- this.getField().getName();
+    }
+
+    private HColumn getColumnAnno() {
+        return this.columnAnnotation;
     }
 
     public boolean isKey() {
-        return this.column.key();
+        return this.getColumnAnno().key();
     }
 
     public FieldType getFieldType() {
@@ -107,19 +110,19 @@ public class FieldAttrib implements Serializable {
     }
 
     public boolean hasGetter() {
-        return this.column.getter().length() > 0;
+        return this.getColumnAnno().getter().length() > 0;
     }
 
     public boolean hasSetter() {
-        return this.column.setter().length() > 0;
+        return this.getColumnAnno().setter().length() > 0;
     }
 
     public String getFamilyName() {
-        return this.column.family();
+        return this.getColumnAnno().family();
     }
 
     public String getColumnName() {
-        return this.column.column().length() > 0 ? column.column() : this.getVariableName();
+        return this.getColumnAnno().column().length() > 0 ? getColumnAnno().column() : this.getVariableName();
     }
 
     public String getQualifiedName() {
@@ -135,7 +138,7 @@ public class FieldAttrib implements Serializable {
     }
 
     public boolean isMapKeysAsColumns() {
-        return this.column.mapKeysAsColumns();
+        return this.getColumnAnno().mapKeysAsColumns();
     }
 
     public byte[] invokeGetterMethod(final Object recordObj) throws HPersistException {
@@ -152,6 +155,7 @@ public class FieldAttrib implements Serializable {
 
     public Object invokeSetterMethod(final Object recordObj, final byte[] b) throws HPersistException {
         try {
+            // TODO Resolve passing primitive to Object varargs
             return this.getSetterMethod().invoke(recordObj, b);
         }
         catch (IllegalAccessException e) {
@@ -172,7 +176,8 @@ public class FieldAttrib implements Serializable {
 
     }
 
-    public byte[] getValueAsBytes(final Serialization ser, final HPersistable recordObj) throws HPersistException, IOException {
+    public byte[] getValueAsBytes(final Serialization ser,
+                                  final HPersistable recordObj) throws HPersistException, IOException {
 
         if (this.hasGetter()) {
             return this.invokeGetterMethod(recordObj);
@@ -187,7 +192,9 @@ public class FieldAttrib implements Serializable {
         }
     }
 
-    public Object getValueFromBytes(final Serialization ser, final HPersistable recordObj, final byte[] b) throws IOException, HPersistException {
+    public Object getValueFromBytes(final Serialization ser,
+                                    final HPersistable recordObj,
+                                    final byte[] b) throws IOException, HPersistException {
 
         if (this.hasSetter()) {
             return this.invokeSetterMethod(recordObj, b);
@@ -210,7 +217,9 @@ public class FieldAttrib implements Serializable {
 
     }
 
-    public void setValue(final Serialization ser, final HPersistable newobj, final byte[] b) throws IOException, HPersistException {
+    public void setValue(final Serialization ser,
+                         final HPersistable newobj,
+                         final byte[] b) throws IOException, HPersistException {
         final Object val = this.getValueFromBytes(ser, newobj, b);
         this.setValue(newobj, val);
     }
