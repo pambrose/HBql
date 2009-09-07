@@ -5,6 +5,8 @@ import com.imap4j.hbase.hbql.HColumnVersionMap;
 import com.imap4j.hbase.hbql.HPersistException;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -30,34 +32,40 @@ public class VersionAttrib extends ColumnAttrib {
         final HColumnVersionMap versionAnno = field.getAnnotation(HColumnVersionMap.class);
         final String instance = versionAnno.instance();
 
+        final String annoname = "@HColumnVersionMap annotation";
+
+        // Check if type is a Map
+        if (!Map.class.isAssignableFrom(field.getType()))
+            throw new HPersistException(getObjectQualifiedName(field) + "has a " + annoname + " so it "
+                                        + "must implement the Map interface");
+
+        // Look up type of map value
+        final ParameterizedType ptype = (ParameterizedType)field.getGenericType();
+        final Type[] typeargs = ptype.getActualTypeArguments();
+        final Type mapValueType = typeargs[1];
+
         if (instance.length() > 0) {
             if (versionAnno.family().length() > 0)
                 throw new HPersistException(getObjectQualifiedName(field)
-                                            + " cannot have both an instance and family value in annotation");
+                                            + " cannot have both an instance and family value in " + annoname);
             if (versionAnno.column().length() > 0)
                 throw new HPersistException(getObjectQualifiedName(field)
-                                            + " cannot have both an instance and column value in annotation");
+                                            + " cannot have both an instance and column value in " + annoname);
             if (versionAnno.getter().length() > 0)
                 throw new HPersistException(getObjectQualifiedName(field)
-                                            + " cannot have both an instance and getter value in annotation");
+                                            + " cannot have both an instance and getter value in " + annoname);
             if (versionAnno.setter().length() > 0)
                 throw new HPersistException(getObjectQualifiedName(field)
-                                            + " cannot have both an instance and setter value in annotation");
+                                            + " cannot have both an instance and setter value in " + annoname);
             // This doesn't test false values -- they wil be ignored
             if (versionAnno.mapKeysAsColumns())
                 throw new HPersistException(getObjectQualifiedName(field)
-                                            + " cannot have both an instance and mapKeysAsColumns value in annotation");
+                                            + " cannot have both an instance and mapKeysAsColumns value in " + annoname);
 
             // Check if instance variable exists
-            if (!classSchema.constainsVariableName(instance)) {
-                throw new HPersistException("@HColumnVersionMap annotation for " + getObjectQualifiedName(field)
+            if (!classSchema.constainsVariableName(instance))
+                throw new HPersistException(annoname + " for " + getObjectQualifiedName(field)
                                             + " refers to invalid instance variable " + instance);
-            }
-
-            // Check if it is a Map
-            if (!Map.class.isAssignableFrom(field.getType()))
-                throw new HPersistException(getObjectQualifiedName(field) + "has a @HColumnVersionMap annotation so it "
-                                            + "must implement the Map interface");
 
             final ColumnAttrib columnAttrib = (ColumnAttrib)classSchema.getVariableAttribByVariableName(instance);
 
@@ -68,6 +76,11 @@ public class VersionAttrib extends ColumnAttrib {
 
             final HColumn columnAnno = currentAttrib.getColumnAnno();
 
+            // Make sure type of Value in map matches type of instance var
+            if (!mapValueType.equals(currentAttrib.getField().getType()))
+                throw new HPersistException("Type of " + getObjectQualifiedName(field) + " map value type does not " +
+                                            "match type of " + currentAttrib.getObjectQualifiedName());
+
             return new VersionAttrib(field,
                                      currentAttrib.getFieldType(),
                                      columnAnno.family(),
@@ -77,15 +90,13 @@ public class VersionAttrib extends ColumnAttrib {
                                      columnAnno.mapKeysAsColumns());
         }
         else {
-
             return new VersionAttrib(field,
-                                     FieldType.getFieldType(field),
+                                     FieldType.getFieldType(mapValueType),
                                      versionAnno.family(),
                                      versionAnno.column(),
                                      versionAnno.getter(),
                                      versionAnno.setter(),
                                      versionAnno.mapKeysAsColumns());
-
         }
 
     }

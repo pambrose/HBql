@@ -241,11 +241,8 @@ public class ClassSchema implements Serializable {
     }
 
     private void processColumnVersionAnnotation(final Field field) throws HPersistException {
-
         final VersionAttrib versionAttrib = VersionAttrib.createVersionAttrib(this, field);
-
         this.versionAttribByVariableNameMap.put(versionAttrib.getVariableName(), versionAttrib);
-
     }
 
     public String getTableName() {

@@ -54,7 +54,7 @@ public class TestObject implements HPersistable {
     private String author = "An author value";
 
     @HColumnVersionMap(instance = "author")
-    private NavigableMap<Long, String> authorVersions;
+    private NavigableMap<Long, StringBuffer> authorVersions;
 
     @HColumn(family = "family2", getter = "getHeaderBytes", setter = "setHeaderBytes")
     private String header = "A header value";
