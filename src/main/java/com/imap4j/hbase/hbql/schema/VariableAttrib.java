@@ -19,6 +19,8 @@ public abstract class VariableAttrib implements Serializable {
 
     public abstract String getVariableName();
 
+    public abstract FieldType getFieldType();
+
     public abstract Object getValue(final HPersistable recordObj) throws HPersistException;
 
     public abstract String getFamilyName();
@@ -26,23 +28,5 @@ public abstract class VariableAttrib implements Serializable {
     public abstract String getFamilyQualifiedName();
 
     public abstract boolean isMapKeysAsColumns();
-
-    public abstract FieldType getFieldType();
-
-    /*
-
-    public abstract byte[] getValueAsBytes(final Serialization ser,
-                                           final HPersistable recordObj) throws HPersistException, IOException;
-
-    public abstract Object getValueFromBytes(final Serialization ser,
-                                             final HPersistable recordObj,
-                                             final byte[] b) throws IOException, HPersistException;
-
-    public abstract void setValue(final HPersistable newobj, final Object val);
-
-    public abstract void setValue(final Serialization ser,
-                                  final HPersistable newobj,
-                                  final byte[] b) throws IOException, HPersistException;
-                                  */
 
 }
