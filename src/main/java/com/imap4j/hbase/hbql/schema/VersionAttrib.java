@@ -1,5 +1,6 @@
 package com.imap4j.hbase.hbql.schema;
 
+import com.imap4j.hbase.hbql.HColumn;
 import com.imap4j.hbase.hbql.HColumnVersionMap;
 import com.imap4j.hbase.hbql.HPersistException;
 
@@ -14,37 +15,36 @@ import java.util.Map;
  */
 public class VersionAttrib extends ColumnAttrib {
 
-    private VersionAttrib(final ClassSchema classSchamea, final Field field) throws HPersistException {
-        super(field,
-              FieldType.getFieldType(field),
-              field.getAnnotation(HColumnVersionMap.class).family(),
-              field.getAnnotation(HColumnVersionMap.class).column(),
-              field.getAnnotation(HColumnVersionMap.class).getter(),
-              field.getAnnotation(HColumnVersionMap.class).setter(),
-              field.getAnnotation(HColumnVersionMap.class).mapKeysAsColumns());
-
+    private VersionAttrib(final Field field,
+                          final FieldType fieldType,
+                          final String family,
+                          final String column,
+                          final String getter,
+                          final String setter,
+                          final boolean mapKeysAsColumns) throws HPersistException {
+        super(field, fieldType, family, column, getter, setter, mapKeysAsColumns);
     }
 
     public static VersionAttrib createVersionAttrib(final ClassSchema classSchema, final Field field) throws HPersistException {
 
-        final HColumnVersionMap anno = field.getAnnotation(HColumnVersionMap.class);
-        final String instance = anno.instance();
+        final HColumnVersionMap versionAnno = field.getAnnotation(HColumnVersionMap.class);
+        final String instance = versionAnno.instance();
 
         if (instance.length() > 0) {
-            if (anno.family().length() > 0)
+            if (versionAnno.family().length() > 0)
                 throw new HPersistException(getObjectQualifiedName(field)
                                             + " cannot have both an instance and family value in annotation");
-            if (anno.column().length() > 0)
+            if (versionAnno.column().length() > 0)
                 throw new HPersistException(getObjectQualifiedName(field)
                                             + " cannot have both an instance and column value in annotation");
-            if (anno.getter().length() > 0)
+            if (versionAnno.getter().length() > 0)
                 throw new HPersistException(getObjectQualifiedName(field)
                                             + " cannot have both an instance and getter value in annotation");
-            if (anno.setter().length() > 0)
+            if (versionAnno.setter().length() > 0)
                 throw new HPersistException(getObjectQualifiedName(field)
                                             + " cannot have both an instance and setter value in annotation");
             // This doesn't test false values -- they wil be ignored
-            if (anno.mapKeysAsColumns())
+            if (versionAnno.mapKeysAsColumns())
                 throw new HPersistException(getObjectQualifiedName(field)
                                             + " cannot have both an instance and mapKeysAsColumns value in annotation");
 
@@ -59,21 +59,40 @@ public class VersionAttrib extends ColumnAttrib {
                 throw new HPersistException(getObjectQualifiedName(field) + "has a @HColumnVersionMap annotation so it "
                                             + "must implement the Map interface");
 
+            final ColumnAttrib columnAttrib = (ColumnAttrib)classSchema.getVariableAttribByVariableName(instance);
+
+            if (!columnAttrib.isCurrentValueAttrib())
+                throw new HPersistException(getObjectQualifiedName(field) + "instance variable must have HColumn annotation");
+
+            final CurrentValueAttrib currentAttrib = (CurrentValueAttrib)columnAttrib;
+
+            final HColumn columnAnno = currentAttrib.getColumnAnno();
+
+            return new VersionAttrib(field,
+                                     currentAttrib.getFieldType(),
+                                     columnAnno.family(),
+                                     columnAnno.column(),
+                                     columnAnno.getter(),
+                                     columnAnno.setter(),
+                                     columnAnno.mapKeysAsColumns());
         }
         else {
 
+            return new VersionAttrib(field,
+                                     FieldType.getFieldType(field),
+                                     versionAnno.family(),
+                                     versionAnno.column(),
+                                     versionAnno.getter(),
+                                     versionAnno.setter(),
+                                     versionAnno.mapKeysAsColumns());
+
         }
 
-        return new VersionAttrib(classSchema, field);
     }
 
-
-    private HColumnVersionMap getColumnVersionMapAnnotation() {
-        return this.getField().getAnnotation(HColumnVersionMap.class);
-    }
-
-    public String getInstanceVariableName() {
-        return this.getColumnVersionMapAnnotation().instance();
+    @Override
+    public boolean isCurrentValueAttrib() {
+        return false;
     }
 
 }

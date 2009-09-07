@@ -35,11 +35,16 @@ public class CurrentValueAttrib extends ColumnAttrib {
 
     }
 
+    @Override
+    public boolean isCurrentValueAttrib() {
+        return true;
+    }
 
-    private HColumn getColumnAnno() {
+    public HColumn getColumnAnno() {
         return this.getField().getAnnotation(HColumn.class);
     }
 
+    @Override
     public boolean isKey() {
         return this.getColumnAnno().key();
     }

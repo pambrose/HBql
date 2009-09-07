@@ -80,6 +80,8 @@ public abstract class ColumnAttrib extends VariableAttrib {
         }
     }
 
+    public abstract boolean isCurrentValueAttrib();
+
     @Override
     public String toString() {
         return this.getObjectQualifiedName();
