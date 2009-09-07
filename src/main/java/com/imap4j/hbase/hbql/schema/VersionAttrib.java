@@ -3,7 +3,6 @@ package com.imap4j.hbase.hbql.schema;
 import com.imap4j.hbase.hbql.HColumnVersionMap;
 import com.imap4j.hbase.hbql.HPersistException;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -13,35 +12,22 @@ import java.util.Map;
  * Date: Sep 5, 2009
  * Time: 10:03:49 PM
  */
-public class VersionAttrib implements Serializable {
-
-    private final Field field;
+public class VersionAttrib extends ColumnAttrib {
 
     public VersionAttrib(final ClassSchema classSchamea, final Field field) throws HPersistException {
-        this.field = field;
+        super(field,
+              field.getAnnotation(HColumnVersionMap.class).family(),
+              field.getAnnotation(HColumnVersionMap.class).column(),
+              field.getAnnotation(HColumnVersionMap.class).getter(),
+              field.getAnnotation(HColumnVersionMap.class).setter(),
+              field.getAnnotation(HColumnVersionMap.class).mapKeysAsColumns());
 
+        // Now check relative to instance variable
         this.verify(classSchamea);
-
-    }
-
-    private Field getField() {
-        return field;
     }
 
     private HColumnVersionMap getColumnVersionMapAnnotation() {
         return this.getField().getAnnotation(HColumnVersionMap.class);
-    }
-
-    public String getVariableName() {
-        return this.getField().getName();
-    }
-
-    public String getObjectQualifiedName() {
-        return this.getEnclosingClass().getName() + "." + this.getVariableName();
-    }
-
-    private Class getEnclosingClass() {
-        return this.getField().getDeclaringClass();
     }
 
     public String getInstanceVariableName() {
@@ -57,7 +43,7 @@ public class VersionAttrib implements Serializable {
         }
 
         // Check if it is a Map
-        if (!Map.class.isAssignableFrom(field.getType()))
+        if (!Map.class.isAssignableFrom(this.getField().getType()))
             throw new HPersistException(this.getObjectQualifiedName() + "has a @HColumnVersionMap annotation so it "
                                         + "must implement the Map interface");
     }

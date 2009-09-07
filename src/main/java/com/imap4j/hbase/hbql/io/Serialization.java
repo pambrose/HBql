@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.HPersistable;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
-import com.imap4j.hbase.hbql.schema.FieldAttrib;
+import com.imap4j.hbase.hbql.schema.ColumnAttrib;
 import com.imap4j.hbase.hbql.schema.FieldType;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Result;
@@ -74,7 +74,7 @@ public abstract class Serialization {
             final HPersistable newobj = this.createNewObject(classSchema, result);
 
             // Assign most recent values
-            this.assignMostRecentValues(classSchema, result, newobj);
+            this.assignCurrentValues(classSchema, result, newobj);
 
             // Assign the versioned values
             if (scan.getMaxVersions() > 1)
@@ -91,7 +91,7 @@ public abstract class Serialization {
     private HPersistable createNewObject(final ClassSchema classSchema, final Result result) throws IOException, HPersistException {
 
         // Create new instance and set key value
-        final FieldAttrib keyattrib = classSchema.getKeyFieldAttrib();
+        final ColumnAttrib keyattrib = classSchema.getKeyColumnAttrib();
         final HPersistable newobj;
         try {
             newobj = (HPersistable)classSchema.getClazz().newInstance();
@@ -108,22 +108,23 @@ public abstract class Serialization {
         return newobj;
     }
 
-    private void assignMostRecentValues(final ClassSchema classSchema,
-                                        final Result result,
-                                        final HPersistable newobj) throws IOException, HPersistException {
+    private void assignCurrentValues(final ClassSchema classSchema,
+                                     final Result result,
+                                     final HPersistable newobj) throws IOException, HPersistException {
 
         for (final KeyValue keyValue : result.list()) {
 
-            final byte[] colbytes = keyValue.getColumn();
-            final String column = (String)this.getScalarFromBytes(FieldType.StringType, colbytes);
-            final byte[] valbytes = result.getValue(colbytes);
+            final byte[] cbytes = keyValue.getColumn();
+            final byte[] vbytes = result.getValue(cbytes);
+            final String colname = this.getStringFromBytes(cbytes);
 
-            if (column.endsWith("]")) {
-                final int lbrace = column.indexOf("[");
-                final String mapcolumn = column.substring(0, lbrace);
-                final String mapKey = column.substring(lbrace + 1, column.length() - 1);
-                final FieldAttrib attrib = classSchema.getFieldAttribByQualifiedColumnName(mapcolumn);
-                final Object val = attrib.getValueFromBytes(this, newobj, valbytes);
+            if (colname.endsWith("]")) {
+                final int lbrace = colname.indexOf("[");
+                final String mapcolumn = colname.substring(0, lbrace);
+                final String mapKey = colname.substring(lbrace + 1, colname.length() - 1);
+                final ColumnAttrib attrib = classSchema.getColumnAttribByFamilyQualifiedColumnName(mapcolumn);
+                final Object val = attrib.getValueFromBytes(this, newobj, vbytes);
+
                 Map mapval = (Map)attrib.getValue(newobj);
 
                 // TODO it is probably not kosher to create a map here
@@ -135,29 +136,34 @@ public abstract class Serialization {
                 mapval.put(mapKey, val);
             }
             else {
-                final FieldAttrib attrib = classSchema.getFieldAttribByQualifiedColumnName(column);
-                attrib.setValue(this, newobj, valbytes);
+                final ColumnAttrib attrib = classSchema.getColumnAttribByFamilyQualifiedColumnName(colname);
+                attrib.setValue(this, newobj, vbytes);
             }
         }
     }
 
-    private void assignVersionedValues(final ClassSchema classSchema, final Result result, final HPersistable newobj) {
+    private void assignVersionedValues(final ClassSchema classSchema,
+                                       final Result result,
+                                       final HPersistable newobj) throws IOException, HPersistException {
 
         final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
 
         for (final byte[] fbytes : familyMap.keySet()) {
 
-            final String family = new String(fbytes);
+            final String famname = this.getStringFromBytes(fbytes) + ":";
             final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(fbytes);
 
             for (final byte[] cbytes : columnMap.keySet()) {
-                final String column = new String(cbytes);
+                final String colname = this.getStringFromBytes(cbytes);
+                final String qualifiedName = famname + colname;
                 final NavigableMap<Long, byte[]> tsMap = columnMap.get(cbytes);
 
                 for (final Long ts : tsMap.keySet()) {
-                    final byte[] valbytes = tsMap.get(ts);
-                    final String s3 = new String(valbytes);
-                    int j = 0;
+                    final byte[] vbytes = tsMap.get(ts);
+
+                    //  final VersionAttrib attrib = classSchema.getVersionAttribByFamilyQualifiedColumnName(qualifiedName);
+                    //  attrib.setValue(this, newobj, vbytes);
+
                 }
             }
         }

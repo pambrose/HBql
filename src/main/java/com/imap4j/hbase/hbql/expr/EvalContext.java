@@ -22,10 +22,10 @@ public class EvalContext implements Serializable {
     }
 
     public ClassSchema getClassSchema() {
-        return classSchema;
+        return this.classSchema;
     }
 
     public HPersistable getRecordObj() {
-        return recordObj;
+        return this.recordObj;
     }
 }

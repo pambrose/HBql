@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
-import com.imap4j.hbase.hbql.schema.FieldAttrib;
+import com.imap4j.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
@@ -36,12 +36,12 @@ public class HTransaction {
 
         final Serialization ser = HSer.getSer();
         final ClassSchema classSchema = ClassSchema.getClassSchema(declaringObj);
-        final byte[] keyval = classSchema.getKeyFieldAttrib().getValueAsBytes(ser, declaringObj);
+        final byte[] keyval = classSchema.getKeyColumnAttrib().getValueAsBytes(ser, declaringObj);
         final Put put = new Put(keyval);
 
         for (final String family : classSchema.getFamilyNameList()) {
 
-            for (final FieldAttrib attrib : classSchema.getFieldAttribListByFamilyName(family)) {
+            for (final ColumnAttrib attrib : classSchema.getColumnAttribListByFamilyName(family)) {
 
                 if (attrib.isMapKeysAsColumns()) {
                     final Map mapval = (Map)attrib.getValue(declaringObj);

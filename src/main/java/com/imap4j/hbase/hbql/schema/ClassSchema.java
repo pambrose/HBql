@@ -28,23 +28,25 @@ public class ClassSchema implements Serializable {
     private final static Map<Class<?>, ClassSchema> classSchemaMap = Maps.newHashMap();
     private final static Map<String, Class<?>> classCacheMap = Maps.newHashMap();
 
-    private final Map<String, List<FieldAttrib>> fieldAttribListByFamilyNameMap = Maps.newHashMap();
-    private final Map<String, FieldAttrib> fieldAttribByQualifiedColumnNameMap = Maps.newHashMap();
     private final Map<String, FieldAttrib> fieldAttribByVariableNameMap = Maps.newHashMap();
+
     private final Map<String, VersionAttrib> versionAttribByVariableNameMap = Maps.newHashMap();
+
+    private final Map<String, List<ColumnAttrib>> fieldColumnListByFamilyNameMap = Maps.newHashMap();
+    private final Map<String, ColumnAttrib> fieldColumnByFamilyQualifiedColumnNameMap = Maps.newHashMap();
 
     private final Class<?> clazz;
     private final HTable table;
     private final HFamily[] families;
 
-    private FieldAttrib keyFieldAttrib = null;
+    private ColumnAttrib keyColumnAttrib = null;
 
     public ClassSchema(final String desc) throws HPersistException {
 
         final List<VarDesc> varList = (List<VarDesc>)HBqlRule.SCHEMA.parse(desc);
 
         for (final VarDesc var : varList)
-            setFieldAttribByVariableName(var.getVarName(), new FieldAttrib(var.getVarName(), var.getType()));
+            setFieldAttribByVariableName(var.getVarName(), new VarDescAttrib(var.getVarName(), var.getType()));
 
         this.clazz = null;
         this.table = null;
@@ -74,13 +76,11 @@ public class ClassSchema implements Serializable {
             throw new HPersistException("Class " + this + " is missing @HFamily values in @HTable annotation");
 
         for (final HFamily family : families) {
-            final List<FieldAttrib> attribs = Lists.newArrayList();
-            this.fieldAttribListByFamilyNameMap.put(family.name(), attribs);
+            final List<ColumnAttrib> attribs = Lists.newArrayList();
+            this.fieldColumnListByFamilyNameMap.put(family.name(), attribs);
         }
 
         processFieldAnnotations();
-
-        int k = 0;
     }
 
     public Class<?> getClazz() {
@@ -88,19 +88,19 @@ public class ClassSchema implements Serializable {
     }
 
     public Set<String> getFamilyNameList() {
-        return this.fieldAttribListByFamilyNameMap.keySet();
+        return this.fieldColumnListByFamilyNameMap.keySet();
     }
 
-    public List<FieldAttrib> getFieldAttribListByFamilyName(final String name) {
-        return this.fieldAttribListByFamilyNameMap.get(name);
+    public List<ColumnAttrib> getColumnAttribListByFamilyName(final String name) {
+        return this.fieldColumnListByFamilyNameMap.get(name);
     }
 
-    public FieldAttrib getFieldAttribByQualifiedColumnName(final String name) {
-        return this.fieldAttribByQualifiedColumnNameMap.get(name);
+    public ColumnAttrib getColumnAttribByFamilyQualifiedColumnName(final String name) {
+        return this.fieldColumnByFamilyQualifiedColumnNameMap.get(name);
     }
 
-    public void setFieldAttribByQualifiedColumnName(final String name, final FieldAttrib fieldAttrib) {
-        this.fieldAttribByQualifiedColumnNameMap.put(name, fieldAttrib);
+    public void setColumnAttribByFamilyQualifiedColumnName(final String name, final ColumnAttrib columnAttrib) {
+        this.fieldColumnByFamilyQualifiedColumnNameMap.put(name, columnAttrib);
     }
 
     public FieldAttrib getFieldAttribByVariableName(final String name) {
@@ -115,8 +115,8 @@ public class ClassSchema implements Serializable {
         return classSchemaMap;
     }
 
-    public FieldAttrib getKeyFieldAttrib() {
-        return this.keyFieldAttrib;
+    public ColumnAttrib getKeyColumnAttrib() {
+        return this.keyColumnAttrib;
     }
 
     public HFamily[] getFamilies() {
@@ -202,7 +202,7 @@ public class ClassSchema implements Serializable {
             if (field.getAnnotation(HColumn.class) != null)
                 this.processColumnAnnotation(field);
 
-        if (this.getKeyFieldAttrib() == null)
+        if (this.getKeyColumnAttrib() == null)
             throw new HPersistException("Class " + this + " is missing an instance variable "
                                         + "annotated with @HColumn(key=true)");
 
@@ -214,31 +214,30 @@ public class ClassSchema implements Serializable {
 
     private void processColumnAnnotation(final Field field) throws HPersistException {
 
-        final FieldAttrib attrib = new FieldAttrib(field);
+        final ColumnAttrib columnAttrib = new CurrentValueAttrib(field);
 
-        this.setFieldAttribByQualifiedColumnName(attrib.getFamilyQualifiedName(), attrib);
-        this.setFieldAttribByVariableName(field.getName(), attrib);
+        this.setColumnAttribByFamilyQualifiedColumnName(columnAttrib.getFamilyQualifiedName(), columnAttrib);
+        this.setFieldAttribByVariableName(field.getName(), columnAttrib);
 
-        if (attrib.isKey()) {
-            if (this.getKeyFieldAttrib() != null)
+        if (columnAttrib.isKey()) {
+            if (this.getKeyColumnAttrib() != null)
                 throw new HPersistException("Class " + this + " has multiple instance variables "
                                             + "annotated with @HColumn(key=true)");
 
-            this.keyFieldAttrib = attrib;
+            this.keyColumnAttrib = columnAttrib;
         }
         else {
-            final String family = attrib.getFamilyName();
-            if (!this.fieldAttribListByFamilyNameMap.containsKey(family))
+            final String family = columnAttrib.getFamilyName();
+            if (!this.fieldColumnListByFamilyNameMap.containsKey(family))
                 throw new HPersistException("Class " + this + " is missing @HFamily value for " + family);
 
-            this.getFieldAttribListByFamilyName(family).add(attrib);
+            this.getColumnAttribListByFamilyName(family).add(columnAttrib);
         }
-
     }
 
     private void processColumnVersionMapAnnotation(final Field field) throws HPersistException {
 
-        VersionAttrib versionAttrib = new VersionAttrib(this, field);
+        final VersionAttrib versionAttrib = new VersionAttrib(this, field);
 
         this.versionAttribByVariableNameMap.put(versionAttrib.getVariableName(), versionAttrib);
 

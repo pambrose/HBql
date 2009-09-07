@@ -11,4 +11,14 @@ package com.imap4j.hbase.hbql;
 public @interface HColumnVersionMap {
 
     String instance() default "";
+
+    String family() default "";
+
+    String column() default "";
+
+    String getter() default "";
+
+    String setter() default "";
+
+    boolean mapKeysAsColumns() default false;
 }
