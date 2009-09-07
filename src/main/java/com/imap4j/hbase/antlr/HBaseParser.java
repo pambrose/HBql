@@ -6,7 +6,7 @@ import com.imap4j.hbase.hbql.expr.value.var.DateAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.IntegerAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.StringAttribRef;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
-import com.imap4j.hbase.hbql.schema.FieldAttrib;
+import com.imap4j.hbase.hbql.schema.VariableAttrib;
 import org.antlr.runtime.BitSet;
 import org.antlr.runtime.IntStream;
 import org.antlr.runtime.MismatchedTokenException;
@@ -64,7 +64,7 @@ public class HBaseParser extends Parser {
 
         if (this.getClassSchema() != null) {
 
-            final FieldAttrib attrib = this.getClassSchema().getFieldAttribByVariableName(var);
+            final VariableAttrib attrib = this.getClassSchema().getVariableAttribByVariableName(var);
 
             if (attrib != null) {
                 switch (attrib.getFieldType()) {

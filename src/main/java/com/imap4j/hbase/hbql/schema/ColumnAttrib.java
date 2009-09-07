@@ -16,7 +16,7 @@ import java.lang.reflect.Modifier;
  * Date: Sep 6, 2009
  * Time: 5:27:00 PM
  */
-public abstract class ColumnAttrib extends FieldAttrib {
+public abstract class ColumnAttrib extends VariableAttrib {
 
     private final FieldType fieldType;
     private final transient Field field;

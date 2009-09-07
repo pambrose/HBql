@@ -11,7 +11,7 @@ import java.io.Serializable;
  * Date: Aug 19, 2009
  * Time: 6:07:31 PM
  */
-public abstract class FieldAttrib implements Serializable {
+public abstract class VariableAttrib implements Serializable {
 
     public boolean isKey() {
         return false;

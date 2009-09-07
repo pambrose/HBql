@@ -3,8 +3,8 @@ package com.imap4j.hbase.hbql.expr.value.var;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
-import com.imap4j.hbase.hbql.schema.FieldAttrib;
 import com.imap4j.hbase.hbql.schema.FieldType;
+import com.imap4j.hbase.hbql.schema.VariableAttrib;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +20,7 @@ public class StringAttribRef extends GenericAttribRef implements StringValue {
 
     @Override
     public String getValue(final EvalContext context) throws HPersistException {
-        final FieldAttrib fieldAttrib = this.getExprVar().getFieldAttrib(context);
-        return (String)fieldAttrib.getValue(context.getRecordObj());
+        final VariableAttrib variableAttrib = this.getExprVar().getVariableAttrib(context);
+        return (String)variableAttrib.getValue(context.getRecordObj());
     }
 }

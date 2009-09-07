@@ -7,7 +7,7 @@ import com.imap4j.hbase.antlr.args.WhereArgs;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
-import com.imap4j.hbase.hbql.schema.FieldAttrib;
+import com.imap4j.hbase.hbql.schema.VariableAttrib;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 
@@ -45,7 +45,7 @@ public class HUtil {
 
             // Set column names
             for (final String attribName : fieldList) {
-                final FieldAttrib attrib = classSchema.getFieldAttribByVariableName(attribName);
+                final VariableAttrib attrib = classSchema.getVariableAttribByVariableName(attribName);
                 // If it is a map, then request all columns for family
                 if (attrib.isMapKeysAsColumns())
                     scan.addFamily(attrib.getFamilyName().getBytes());

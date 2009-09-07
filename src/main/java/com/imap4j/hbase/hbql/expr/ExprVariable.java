@@ -2,8 +2,8 @@ package com.imap4j.hbase.hbql.expr;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
-import com.imap4j.hbase.hbql.schema.FieldAttrib;
 import com.imap4j.hbase.hbql.schema.FieldType;
+import com.imap4j.hbase.hbql.schema.VariableAttrib;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,15 +30,15 @@ public class ExprVariable {
         return (o instanceof ExprVariable) && this.getName().equals(((ExprVariable)o).getName());
     }
 
-    public FieldAttrib getFieldAttrib(final EvalContext context) {
-        return context.getClassSchema().getFieldAttribByVariableName(this.getName());
+    public VariableAttrib getVariableAttrib(final EvalContext context) {
+        return context.getClassSchema().getVariableAttribByVariableName(this.getName());
     }
 
     public String getQualifiedName(final ClassSchema classSchema) throws HPersistException {
-        final FieldAttrib fieldAttrib = classSchema.getFieldAttribByVariableName(this.getName());
-        if (fieldAttrib == null)
+        final VariableAttrib variableAttrib = classSchema.getVariableAttribByVariableName(this.getName());
+        if (variableAttrib == null)
             throw new HPersistException("Invalid attrib name " + this.getName());
-        return fieldAttrib.getFamilyQualifiedName();
+        return variableAttrib.getFamilyQualifiedName();
     }
 
 }
