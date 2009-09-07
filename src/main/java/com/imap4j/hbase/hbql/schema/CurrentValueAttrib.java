@@ -17,55 +17,12 @@ public class CurrentValueAttrib extends ColumnAttrib {
 
     public CurrentValueAttrib(final Field field) throws HPersistException {
         super(field,
+              FieldType.getFieldType(field),
               field.getAnnotation(HColumn.class).family(),
               field.getAnnotation(HColumn.class).column(),
               field.getAnnotation(HColumn.class).getter(),
               field.getAnnotation(HColumn.class).setter(),
               field.getAnnotation(HColumn.class).mapKeysAsColumns());
-
-        try {
-            if (this.getGetter().length() > 0) {
-                this.getterMethod = this.getEnclosingClass().getDeclaredMethod(this.getGetter());
-
-                // Check return type of getter
-                final Class<?> returnType = this.getGetterMethod().getReturnType();
-
-                if (!(returnType.isArray() && returnType.getComponentType() == Byte.TYPE))
-                    throw new HPersistException(this.getEnclosingClass().getName()
-                                                + "." + this.getGetter() + "()"
-                                                + " does not have a return type of byte[]");
-            }
-        }
-        catch (NoSuchMethodException e) {
-            throw new HPersistException("Missing method byte[] " + this.getEnclosingClass().getName() + "."
-                                        + this.getGetter() + "()");
-        }
-
-        try {
-            if (this.getSetter().length() > 0) {
-                this.setterMethod = this.getEnclosingClass().getDeclaredMethod(this.getSetter(), Class.forName("[B"));
-
-                // Check if it takes single byte[] arg
-                final Class<?>[] args = this.getSetterMethod().getParameterTypes();
-                if (args.length != 1 || !(args[0].isArray() && args[0].getComponentType() == Byte.TYPE))
-                    throw new HPersistException(this.getEnclosingClass().getName()
-                                                + "." + this.getSetter() + "()" + " does not have single byte[] arg");
-            }
-        }
-        catch (NoSuchMethodException e) {
-            throw new HPersistException("Missing method " + this.getEnclosingClass().getName()
-                                        + "." + this.getSetter() + "(byte[] arg)");
-        }
-        catch (ClassNotFoundException e) {
-            // This will not be hit
-            throw new HPersistException("Missing method " + this.getEnclosingClass().getName()
-                                        + "." + this.getSetter() + "(byte[] arg)");
-        }
-
-        this.verify();
-    }
-
-    private void verify() throws HPersistException {
 
         if (isFinal(this.getField()))
             throw new HPersistException(this + "." + this.getField().getName() + " cannot have a @HColumn "
@@ -77,6 +34,7 @@ public class CurrentValueAttrib extends ColumnAttrib {
                                         "annotation but doesn't implement the Map interface");
 
     }
+
 
     private HColumn getColumnAnno() {
         return this.getField().getAnnotation(HColumn.class);

@@ -34,19 +34,4 @@ public class VarDescAttrib extends VariableAttrib {
         return null;
     }
 
-    @Override
-    public String getFamilyName() {
-        return null;
-    }
-
-    @Override
-    public String getFamilyQualifiedName() {
-        return null;
-    }
-
-    @Override
-    public boolean isMapKeysAsColumns() {
-        return false;
-    }
-
 }

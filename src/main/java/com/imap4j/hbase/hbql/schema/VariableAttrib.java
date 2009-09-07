@@ -23,10 +23,4 @@ public abstract class VariableAttrib implements Serializable {
 
     public abstract Object getValue(final HPersistable recordObj) throws HPersistException;
 
-    public abstract String getFamilyName();
-
-    public abstract String getFamilyQualifiedName();
-
-    public abstract boolean isMapKeysAsColumns();
-
 }

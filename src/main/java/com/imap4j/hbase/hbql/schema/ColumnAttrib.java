@@ -19,25 +19,65 @@ import java.lang.reflect.Modifier;
 public abstract class ColumnAttrib extends VariableAttrib {
 
     private final FieldType fieldType;
+    private final String family, column, getter, setter;
+    private final boolean mapKeysAsColumns;
+
     private final transient Field field;
     protected transient Method getterMethod = null, setterMethod = null;
 
-    private final String family, column, getter, setter;
-    private boolean mapKeysAsColumns;
-
     public ColumnAttrib(final Field field,
+                        final FieldType fieldType,
                         final String family,
                         final String column,
                         final String getter,
                         final String setter,
-                        final boolean mapKeysAsColumns) {
+                        final boolean mapKeysAsColumns) throws HPersistException {
         this.field = field;
-        this.fieldType = FieldType.getFieldType(this.field);
+        this.fieldType = fieldType;
         this.family = family;
         this.column = column;
         this.getter = getter;
         this.setter = setter;
         this.mapKeysAsColumns = mapKeysAsColumns;
+
+        try {
+            if (this.getGetter().length() > 0) {
+                this.getterMethod = this.getEnclosingClass().getDeclaredMethod(this.getGetter());
+
+                // Check return type of getter
+                final Class<?> returnType = this.getGetterMethod().getReturnType();
+
+                if (!(returnType.isArray() && returnType.getComponentType() == Byte.TYPE))
+                    throw new HPersistException(this.getEnclosingClass().getName()
+                                                + "." + this.getGetter() + "()"
+                                                + " does not have a return type of byte[]");
+            }
+        }
+        catch (NoSuchMethodException e) {
+            throw new HPersistException("Missing method byte[] " + this.getEnclosingClass().getName() + "."
+                                        + this.getGetter() + "()");
+        }
+
+        try {
+            if (this.getSetter().length() > 0) {
+                this.setterMethod = this.getEnclosingClass().getDeclaredMethod(this.getSetter(), Class.forName("[B"));
+
+                // Check if it takes single byte[] arg
+                final Class<?>[] args = this.getSetterMethod().getParameterTypes();
+                if (args.length != 1 || !(args[0].isArray() && args[0].getComponentType() == Byte.TYPE))
+                    throw new HPersistException(this.getEnclosingClass().getName()
+                                                + "." + this.getSetter() + "()" + " does not have single byte[] arg");
+            }
+        }
+        catch (NoSuchMethodException e) {
+            throw new HPersistException("Missing method " + this.getEnclosingClass().getName()
+                                        + "." + this.getSetter() + "(byte[] arg)");
+        }
+        catch (ClassNotFoundException e) {
+            // This will not be hit
+            throw new HPersistException("Missing method " + this.getEnclosingClass().getName()
+                                        + "." + this.getSetter() + "(byte[] arg)");
+        }
     }
 
     @Override
@@ -51,6 +91,10 @@ public abstract class ColumnAttrib extends VariableAttrib {
 
     public String getObjectQualifiedName() {
         return this.getEnclosingClass().getName() + "." + this.getVariableName();
+    }
+
+    public static String getObjectQualifiedName(final Field field) {
+        return field.getDeclaringClass().getName() + "." + field.getName();
     }
 
     protected Class getEnclosingClass() {

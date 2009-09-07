@@ -14,17 +14,59 @@ import java.util.Map;
  */
 public class VersionAttrib extends ColumnAttrib {
 
-    public VersionAttrib(final ClassSchema classSchamea, final Field field) throws HPersistException {
+    private VersionAttrib(final ClassSchema classSchamea, final Field field) throws HPersistException {
         super(field,
+              FieldType.getFieldType(field),
               field.getAnnotation(HColumnVersionMap.class).family(),
               field.getAnnotation(HColumnVersionMap.class).column(),
               field.getAnnotation(HColumnVersionMap.class).getter(),
               field.getAnnotation(HColumnVersionMap.class).setter(),
               field.getAnnotation(HColumnVersionMap.class).mapKeysAsColumns());
 
-        // Now check relative to instance variable
-        this.verify(classSchamea);
     }
+
+    public static VersionAttrib createVersionAttrib(final ClassSchema classSchema, final Field field) throws HPersistException {
+
+        final HColumnVersionMap anno = field.getAnnotation(HColumnVersionMap.class);
+        final String instance = anno.instance();
+
+        if (instance.length() > 0) {
+            if (anno.family().length() > 0)
+                throw new HPersistException(getObjectQualifiedName(field)
+                                            + " cannot have both an instance and family value in annotation");
+            if (anno.column().length() > 0)
+                throw new HPersistException(getObjectQualifiedName(field)
+                                            + " cannot have both an instance and column value in annotation");
+            if (anno.getter().length() > 0)
+                throw new HPersistException(getObjectQualifiedName(field)
+                                            + " cannot have both an instance and getter value in annotation");
+            if (anno.setter().length() > 0)
+                throw new HPersistException(getObjectQualifiedName(field)
+                                            + " cannot have both an instance and setter value in annotation");
+            // This doesn't test false values -- they wil be ignored
+            if (anno.mapKeysAsColumns())
+                throw new HPersistException(getObjectQualifiedName(field)
+                                            + " cannot have both an instance and mapKeysAsColumns value in annotation");
+
+            // Check if instance variable exists
+            if (!classSchema.constainsVariableName(instance)) {
+                throw new HPersistException("@HColumnVersionMap annotation for " + getObjectQualifiedName(field)
+                                            + " refers to invalid instance variable " + instance);
+            }
+
+            // Check if it is a Map
+            if (!Map.class.isAssignableFrom(field.getType()))
+                throw new HPersistException(getObjectQualifiedName(field) + "has a @HColumnVersionMap annotation so it "
+                                            + "must implement the Map interface");
+
+        }
+        else {
+
+        }
+
+        return new VersionAttrib(classSchema, field);
+    }
+
 
     private HColumnVersionMap getColumnVersionMapAnnotation() {
         return this.getField().getAnnotation(HColumnVersionMap.class);
@@ -34,17 +76,4 @@ public class VersionAttrib extends ColumnAttrib {
         return this.getColumnVersionMapAnnotation().instance();
     }
 
-    public void verify(final ClassSchema classSchema) throws HPersistException {
-
-        // Check if instance variable exists
-        if (!classSchema.constainsVariableName(this.getInstanceVariableName())) {
-            throw new HPersistException("@HColumnVersionMap annotation for " + this.getObjectQualifiedName()
-                                        + " refers to invalid instance variable " + this.getInstanceVariableName());
-        }
-
-        // Check if it is a Map
-        if (!Map.class.isAssignableFrom(this.getField().getType()))
-            throw new HPersistException(this.getObjectQualifiedName() + "has a @HColumnVersionMap annotation so it "
-                                        + "must implement the Map interface");
-    }
 }

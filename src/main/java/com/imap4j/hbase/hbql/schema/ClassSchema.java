@@ -80,7 +80,7 @@ public class ClassSchema implements Serializable {
             this.fieldColumnListByFamilyNameMap.put(family.name(), attribs);
         }
 
-        processFieldAnnotations();
+        processAnnotations();
     }
 
     public Class<?> getClazz() {
@@ -195,7 +195,7 @@ public class ClassSchema implements Serializable {
         return this.getClazz().getName();
     }
 
-    private void processFieldAnnotations() throws HPersistException {
+    private void processAnnotations() throws HPersistException {
 
         // First process all HColumn fields so we can do lookup from HColumnVersionMaps
         for (final Field field : this.getClazz().getDeclaredFields())
@@ -208,36 +208,41 @@ public class ClassSchema implements Serializable {
 
         for (final Field field : this.getClazz().getDeclaredFields())
             if (field.getAnnotation(HColumnVersionMap.class) != null)
-                this.processColumnVersionMapAnnotation(field);
+                this.processColumnVersionAnnotation(field);
 
     }
 
     private void processColumnAnnotation(final Field field) throws HPersistException {
 
-        final ColumnAttrib columnAttrib = new CurrentValueAttrib(field);
+        final ColumnAttrib attrib = new CurrentValueAttrib(field);
 
-        this.setColumnAttribByFamilyQualifiedColumnName(columnAttrib.getFamilyQualifiedName(), columnAttrib);
-        this.setVariableAttribByVariableName(field.getName(), columnAttrib);
-
-        if (columnAttrib.isKey()) {
+        if (attrib.isKey()) {
             if (this.getKeyColumnAttrib() != null)
                 throw new HPersistException("Class " + this + " has multiple instance variables "
                                             + "annotated with @HColumn(key=true)");
 
-            this.keyColumnAttrib = columnAttrib;
+            this.keyColumnAttrib = attrib;
         }
         else {
-            final String family = columnAttrib.getFamilyName();
-            if (!this.fieldColumnListByFamilyNameMap.containsKey(family))
-                throw new HPersistException("Class " + this + " is missing @HFamily value for " + family);
+            final String family = attrib.getFamilyName();
 
-            this.getColumnAttribListByFamilyName(family).add(columnAttrib);
+            if (family.length() == 0)
+                throw new HPersistException(attrib.getObjectQualifiedName()
+                                            + " is missing family name in annotation");
+
+            if (!this.fieldColumnListByFamilyNameMap.containsKey(family))
+                throw new HPersistException(attrib.getObjectQualifiedName() + " references unknown family: " + family);
+
+            this.getColumnAttribListByFamilyName(family).add(attrib);
         }
+
+        this.setVariableAttribByVariableName(field.getName(), attrib);
+        this.setColumnAttribByFamilyQualifiedColumnName(attrib.getFamilyQualifiedName(), attrib);
     }
 
-    private void processColumnVersionMapAnnotation(final Field field) throws HPersistException {
+    private void processColumnVersionAnnotation(final Field field) throws HPersistException {
 
-        final VersionAttrib versionAttrib = new VersionAttrib(this, field);
+        final VersionAttrib versionAttrib = VersionAttrib.createVersionAttrib(this, field);
 
         this.versionAttribByVariableNameMap.put(versionAttrib.getVariableName(), versionAttrib);
 
