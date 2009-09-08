@@ -101,7 +101,7 @@ keys returns [KeyRangeArgs retval]
 	
 time returns [DateRangeArgs retval]
 	: keyTIME keyRANGE? 
-	  d1=rangeDateExpr COLON d2=rangeDateExpr	{retval = new DateRangeArgs($d1.retval, $d2.retval);};
+	  d1=rangeExpr COLON d2=rangeExpr	{retval = new DateRangeArgs($d1.retval, $d2.retval);};
 		
 versions returns [VersionArgs retval]
 	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);};
@@ -207,18 +207,18 @@ compOp returns [CompareExpr.OP retval]
 
 // Numeric calculations
 numericExpr returns [IntegerValue retval]
-	: m=multdivExpr (op=plusMinus n=numericExpr)?	{$numericExpr.retval= ($n.text == null) ? $m.retval : new IntegerCalcExpr($m.retval, $op.retval, $n.retval);}
+	: m=multdivNumericExpr (op=plusMinus n=numericExpr)?	
+							{$numericExpr.retval= ($n.text == null) ? $m.retval : new IntegerCalcExpr($m.retval, $op.retval, $n.retval);};
+
+multdivNumericExpr returns [IntegerValue retval]
+	: c=signedNumericPrimary (op=multDiv m=multdivNumericExpr)?	
+							{$multdivNumericExpr.retval = ($m.text == null) ? $c.retval : new IntegerCalcExpr($c.retval, $op.retval, $m.retval);};
+
+signedNumericPrimary returns [IntegerValue retval]
+	: (s=plusMinus)? n=numericPrimary 		{retval = ($s.retval == CalcExpr.OP.MINUS) ? new IntegerCalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) :  $n.retval;}
 	;
 
-multdivExpr returns [IntegerValue retval]
-	: c=calcNumberExpr (op=multDiv m=multdivExpr)?	{$multdivExpr.retval = ($m.text == null) ? $c.retval : new IntegerCalcExpr($c.retval, $op.retval, $m.retval);}
-	;
-
-calcNumberExpr returns [IntegerValue retval]
-	: (s=plusMinus)? n=numPrimary 			{retval = ($s.retval == CalcExpr.OP.MINUS) ? new IntegerCalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) :  $n.retval;}
-	;
-
-numPrimary returns [IntegerValue retval]
+numericPrimary returns [IntegerValue retval]
 	: n=integerExpr					{retval = $n.retval;}
 	| LPAREN s=numericExpr RPAREN			{retval = $s.retval;}
 	;
@@ -282,23 +282,21 @@ options {backtrack=true;}
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	;
 
-rangeDateExpr returns [DateValue retval]
-	: m=rangeDatePrimary (op=plusMinus n=rangeDateExpr)?	{$rangeDateExpr.retval= ($n.text == null) ? $m.retval : new DateCalcExpr($m.retval, $op.retval, $n.retval);}
+rangeExpr returns [DateValue retval]
+	: m=rangePrimary (op=plusMinus n=rangeExpr)?	{$rangeExpr.retval= ($n.text == null) ? $m.retval : new DateCalcExpr($m.retval, $op.retval, $n.retval);};
+
+rangePrimary returns [DateValue retval]
+	: d1=rangeVal					{retval = $d1.retval;}
+	| LPAREN d2=rangePrimary RPAREN			{retval = $d2.retval;}
 	;
 
-rangeDatePrimary returns [DateValue retval]
-	: d1=rangeDateVal				{retval = $d1.retval;}
-	| LPAREN d2=rangeDatePrimary RPAREN		{retval = $d2.retval;}
-	;
-
-rangeDateVal returns [DateValue retval]
+rangeVal returns [DateValue retval]
 	: d1=dateLiteral				{retval = $d1.retval;}
 	| d2=funcReturningDatetime			{retval = $d2.retval;}
 	;
 	
 dateExpr returns [DateValue retval]
-	: m=datePrimary (op=plusMinus n=dateExpr)?	{$dateExpr.retval= ($n.text == null) ? $m.retval : new DateCalcExpr($m.retval, $op.retval, $n.retval);}
-	;
+	: m=datePrimary (op=plusMinus n=dateExpr)?	{$dateExpr.retval= ($n.text == null) ? $m.retval : new DateCalcExpr($m.retval, $op.retval, $n.retval);};
 
 datePrimary returns [DateValue retval]
 	: d1=dateVal					{retval = $d1.retval;}
