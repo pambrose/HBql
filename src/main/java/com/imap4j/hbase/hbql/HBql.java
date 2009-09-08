@@ -9,7 +9,6 @@ import com.imap4j.hbase.antlr.args.ShowArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
-import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -127,7 +126,6 @@ public class HBql {
         final ClassSchema classSchema = ClassSchema.getClassSchema(args.getTableName());
         final List<String> fieldList = classSchema.getFieldList();
         final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
-        final Serialization ser = HSer.getSer();
         final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
         int cnt = 0;
 
@@ -136,7 +134,7 @@ public class HBql {
             final ResultScanner resultsScanner = table.getScanner(scan);
             for (final Result result : resultsScanner) {
 
-                final HPersistable recordObj = ser.getHPersistable(classSchema, scan, result);
+                final HPersistable recordObj = HUtil.ser.getHPersistable(classSchema, scan, result);
 
                 if (clientFilter == null || clientFilter.evaluate(new EvalContext(classSchema, recordObj))) {
                     final Delete delete = new Delete(result.getRow());

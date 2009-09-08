@@ -4,7 +4,6 @@ import com.imap4j.hbase.antlr.args.QueryArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
-import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
@@ -46,7 +45,6 @@ public class HQuery<T extends HPersistable> {
         final List<String> fieldList = (args.getColumnList() == null) ? classSchema.getFieldList() : args.getColumnList();
         final String tableName = classSchema.getTableName();
         final HTable table = new HTable(new HBaseConfiguration(), tableName);
-        final Serialization ser = HSer.getSer();
         final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
         final List<Scan> scanList = HUtil.getScanList(classSchema, fieldList, args.getWhereExpr());
 
@@ -55,7 +53,7 @@ public class HQuery<T extends HPersistable> {
             try {
                 resultScanner = table.getScanner(scan);
                 for (final Result result : resultScanner) {
-                    final HPersistable recordObj = ser.getHPersistable(classSchema, scan, result);
+                    final HPersistable recordObj = HUtil.ser.getHPersistable(classSchema, scan, result);
                     if (clientFilter == null || clientFilter.evaluate(new EvalContext(classSchema, recordObj)))
                         this.getQueryListener().onEachRow((T)recordObj);
                 }

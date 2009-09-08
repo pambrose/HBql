@@ -6,6 +6,7 @@ import com.imap4j.hbase.antlr.args.VersionArgs;
 import com.imap4j.hbase.antlr.args.WhereArgs;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
+import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.client.Scan;
@@ -21,6 +22,8 @@ import java.util.List;
  * Time: 4:49:02 PM
  */
 public class HUtil {
+
+    public final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.HADOOP);
 
     public static List<Scan> getScanList(final ClassSchema classSchema, final List<String> fieldList, final WhereArgs whereExpr) throws IOException, HPersistException {
 
@@ -46,6 +49,11 @@ public class HUtil {
             // Set column names
             for (final String attribName : fieldList) {
                 final ColumnAttrib attrib = (ColumnAttrib)classSchema.getVariableAttribByVariableName(attribName);
+
+                if (attrib == null)
+                    throw new HPersistException("Instance variable " + classSchema.getClazz().getName()
+                                                + "." + attribName + " does not exist");
+
                 // If it is a map, then request all columns for family
                 if (attrib.isMapKeysAsColumns())
                     scan.addFamily(attrib.getFamilyName().getBytes());

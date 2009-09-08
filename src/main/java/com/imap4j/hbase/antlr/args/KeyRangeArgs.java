@@ -2,7 +2,7 @@ package com.imap4j.hbase.antlr.args;
 
 import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HSer;
+import com.imap4j.hbase.hbql.HUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,11 +40,11 @@ public class KeyRangeArgs {
         }
 
         public byte[] getLowerAsBytes() throws IOException, HPersistException {
-            return HSer.getSer().getStringAsBytes(this.getLower());
+            return HUtil.ser.getStringAsBytes(this.getLower());
         }
 
         public byte[] getUpperAsBytes() throws IOException, HPersistException {
-            return HSer.getSer().getStringAsBytes(this.getUpper());
+            return HUtil.ser.getStringAsBytes(this.getUpper());
         }
 
         public boolean isStartKeyOnly() {

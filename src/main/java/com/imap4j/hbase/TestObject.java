@@ -136,32 +136,22 @@ public class TestObject implements HPersistable {
 
         tx.commit();
 
-        /*
-        HQuery<TestObject> q1 =
-                new HQuery<TestObject>("select mapval1, author, title from TestObject",
-                                       new HQueryListenerAdapter<TestObject>() {
-                                           public void onEachRow(final TestObject val) throws HPersistException {
-                                               System.out.println("Values: " + val.keyval
-                                                                  + " - " + val.author
-                                                                  + " - " + val.title);
-                                           }
-                                       });
-
-        q1.execute();
-        */
         long start = System.currentTimeMillis();
         HQuery<TestObject> q2 =
-                new HQuery<TestObject>("select titleVersions from TestObject WITH "
+                new HQuery<TestObject>("select titleVersions1, authorVersions from TestObject WITH "
                                        + "KEYS  '000002' : '000005','000007':LAST "
-                                       + "VERSIONS 4 "
+                                       + "VERSIONS 20 "
                         ,
                                        new HQueryListenerAdapter<TestObject>() {
                                            public void onEachRow(final TestObject val) throws HPersistException {
+
                                                System.out.println("Current Values: " + val.keyval
                                                                   + " - " + val.strValue
                                                                   + " - " + val.author
                                                                   + " - " + val.title);
+
                                                System.out.println("Historicals");
+
                                                if (val.authorVersions != null)
                                                    for (final Long key : val.authorVersions.keySet())
                                                        System.out.println(new Date(key) + " - "
