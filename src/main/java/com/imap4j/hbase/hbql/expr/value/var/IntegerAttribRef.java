@@ -12,9 +12,9 @@ import com.imap4j.hbase.hbql.schema.VariableAttrib;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NumberAttribRef extends GenericAttribRef implements NumberValue {
+public class IntegerAttribRef extends GenericAttribRef implements NumberValue {
 
-    public NumberAttribRef(final String attribName) {
+    public IntegerAttribRef(final String attribName) {
         super(FieldType.IntegerType, attribName);
     }
 

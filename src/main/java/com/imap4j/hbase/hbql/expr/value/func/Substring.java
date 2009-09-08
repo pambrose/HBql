@@ -73,8 +73,8 @@ public class Substring implements StringValue {
     @Override
     public String getValue(final EvalContext context) throws HPersistException {
         final String val = this.getExpr().getValue(context);
-        final int begin = (Integer)this.getBegin().getValue(context);
-        final int end = (Integer)this.getEnd().getValue(context);
+        final int begin = this.getBegin().getValue(context).intValue();
+        final int end = this.getEnd().getValue(context).intValue();
         return val.substring(begin, end);
     }
 
