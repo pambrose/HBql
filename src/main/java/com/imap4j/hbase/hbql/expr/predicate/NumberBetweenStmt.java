@@ -61,9 +61,9 @@ public class NumberBetweenStmt extends GenericBetweenStmt implements PredicateEx
     @Override
     public Boolean evaluate(final EvalContext context) throws HPersistException {
 
-        final int numval = this.getExpr().getValue(context).intValue();
-        final boolean retval = numval >= this.getLower().getValue(context).intValue()
-                               && numval <= this.getUpper().getValue(context).intValue();
+        final long numval = this.getExpr().getValue(context).longValue();
+        final boolean retval = numval >= this.getLower().getValue(context).longValue()
+                               && numval <= this.getUpper().getValue(context).longValue();
 
         return (this.isNot()) ? !retval : retval;
     }

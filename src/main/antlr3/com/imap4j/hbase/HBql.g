@@ -175,9 +175,9 @@ inStmt returns [PredicateExpr retval]
 options {backtrack=true;}	
 	: a3=dateExpr n=not? keyIN LPAREN d=dateItemList RPAREN			
 							{retval = new DateInStmt($a3.retval, ($n.text != null), $d.retval);} 
-	| a1=numericExpr n=not? keyIN LPAREN i=intItemList RPAREN			
+	| a1=numericExpr n=not? keyIN LPAREN i=numberItemList RPAREN			
 							{retval = new NumberInStmt($a1.retval,($n.text != null), $i.retval);} 
-	| a2=stringExpr n=not? keyIN LPAREN s=strItemList RPAREN			
+	| a2=stringExpr n=not? keyIN LPAREN s=stringItemList RPAREN			
 							{retval = new StringInStmt($a2.retval, ($n.text != null), $s.retval);} 
 	;
 
@@ -218,19 +218,19 @@ signedNumericPrimary returns [NumberValue retval]
 	: (s=plusMinus)? n=numericPrimary 		{retval = ($s.retval == CalcExpr.OP.MINUS) ? new NumberCalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) :  $n.retval;};
 
 numericPrimary returns [NumberValue retval]
-	: n=integerExpr					{retval = $n.retval;}
+	: n=numberExpr					{retval = $n.retval;}
 	| LPAREN s=numericExpr RPAREN			{retval = $s.retval;}
 	;
 	   						 
 // Simple typed exprs
-integerExpr returns [NumberValue retval]
+numberExpr returns [NumberValue retval]
 options {backtrack=true;}	
-	: l=integerVal					{retval = $l.retval;} 
+	: l=numberVal					{retval = $l.retval;} 
 	| LBRACE keyIF e=orExpr keyTHEN n1=numericExpr keyELSE n2=numericExpr RBRACE 	
 							{retval = new NumberTernary($e.retval, $n1.retval, $n2.retval);}
 	;
 
-integerVal returns [NumberValue retval]
+numberVal returns [NumberValue retval]
 	: l=integerLiteral				{retval = $l.retval;} 
 	| i=attribVar					{retval = (NumberValue)$i.retval;}
 	//| f=funcReturningInteger
@@ -368,23 +368,23 @@ funcReturningBoolean
 	;
 */
 		
-intItemList returns [List<NumberValue> retval]
+numberItemList returns [List<NumberValue> retval]
 @init {retval = Lists.newArrayList();}
-	: i1=intItem {retval.add($i1.retval);} (COMMA i2=intItem {retval.add($i2.retval);})*;
+	: i1=numberItem {retval.add($i1.retval);} (COMMA i2=numberItem {retval.add($i2.retval);})*;
 	
-strItemList returns [List<StringValue> retval]
+stringItemList returns [List<StringValue> retval]
 @init {retval = Lists.newArrayList();}
-	: i1=strItem {retval.add($i1.retval);} (COMMA i2=strItem {retval.add($i2.retval);})*;
+	: i1=stringItem {retval.add($i1.retval);} (COMMA i2=stringItem {retval.add($i2.retval);})*;
 	
 dateItemList returns [List<DateValue> retval]
 @init {retval = Lists.newArrayList();}
 	: d1=dateItem {retval.add($d1.retval);} (COMMA d2=dateItem {retval.add($d2.retval);})*;
 	
-intItem returns [NumberValue retval]
-	: n=numericExpr					{$intItem.retval = $n.retval;};
+numberItem returns [NumberValue retval]
+	: n=numericExpr					{$numberItem.retval = $n.retval;};
 
-strItem returns [StringValue retval]
-	: s=stringExpr					{$strItem.retval = $s.retval;};
+stringItem returns [StringValue retval]
+	: s=stringExpr					{$stringItem.retval = $s.retval;};
 
 dateItem returns [DateValue retval]
 	: d=dateExpr					{$dateItem.retval = $d.retval;};

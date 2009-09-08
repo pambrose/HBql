@@ -61,8 +61,8 @@ public class NumberCompare extends CompareExpr implements PredicateExpr {
     @Override
     public Boolean evaluate(final EvalContext context) throws HPersistException {
 
-        final int val1 = this.getExpr1().getValue(context).intValue();
-        final int val2 = this.getExpr2().getValue(context).intValue();
+        final long val1 = this.getExpr1().getValue(context).longValue();
+        final long val2 = this.getExpr2().getValue(context).longValue();
 
         switch (this.getOp()) {
             case EQ:

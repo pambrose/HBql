@@ -62,10 +62,10 @@ public class NumberCalcExpr extends CalcExpr implements NumberValue {
     }
 
     @Override
-    public Integer getValue(final EvalContext context) throws HPersistException {
+    public Long getValue(final EvalContext context) throws HPersistException {
 
-        final int val1 = this.getExpr1().getValue(context).intValue();
-        final int val2 = (this.getExpr2() != null) ? (this.getExpr2().getValue(context)).intValue() : 0;
+        final long val1 = this.getExpr1().getValue(context).longValue();
+        final long val2 = (this.getExpr2() != null) ? (this.getExpr2().getValue(context)).longValue() : 0;
 
         switch (this.getOp()) {
             case PLUS:
@@ -84,7 +84,7 @@ public class NumberCalcExpr extends CalcExpr implements NumberValue {
                 return val1;
         }
 
-        throw new HPersistException("Error in IntegerCalcExpr.getValue() " + this.getOp());
+        throw new HPersistException("Error in NumberCalcExpr.getValue() " + this.getOp());
 
     }
 

@@ -95,9 +95,9 @@ public class NumberInStmt extends GenericInStmt implements PredicateExpr {
 
     private boolean evaluateList(final EvalContext context) throws HPersistException {
 
-        final int attribVal = this.getExpr().getValue(context).intValue();
+        final long attribVal = this.getExpr().getValue(context).longValue();
         for (final NumberValue obj : this.getValList()) {
-            final int val = obj.getValue(context).intValue();
+            final long val = obj.getValue(context).longValue();
             if (attribVal == val)
                 return true;
         }
