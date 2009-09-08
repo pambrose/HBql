@@ -13,8 +13,7 @@ public enum HBqlRule {
     SELECT(HBqlGrammar.HBql, "selectStmt"),
     EXEC(HBqlGrammar.HBql, "execCommand"),
     WHERE_EXPR(HBqlGrammar.HBql, "whereExpr"),
-    WHERE_VALUE(HBqlGrammar.HBql, "whereValue"),
-    SCHEMA(HBqlGrammar.HBql, "schemaDesc");
+    WHERE_VALUE(HBqlGrammar.HBql, "whereValue");
 
     private final GrammarRule grammarRule;
 

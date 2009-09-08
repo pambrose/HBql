@@ -20,12 +20,12 @@ import java.util.List;
  */
 public class WhereExprTests {
 
-    public void assertValidInput(final String schema, final String expr, String... vals) throws HPersistException {
-        org.junit.Assert.assertTrue(evalColumnNames(schema, expr, vals));
+    public void assertValidInput(final String expr, String... vals) throws HPersistException {
+        org.junit.Assert.assertTrue(evalColumnNames(expr, vals));
     }
 
-    public void assertInvalidInput(final String schema, final String expr, String... vals) throws HPersistException {
-        org.junit.Assert.assertFalse(evalColumnNames(schema, expr, vals));
+    public void assertInvalidInput(final String expr, String... vals) throws HPersistException {
+        org.junit.Assert.assertFalse(evalColumnNames(expr, vals));
     }
 
     public static void assertTrue(final boolean val) throws HPersistException {
@@ -52,12 +52,12 @@ public class WhereExprTests {
         org.junit.Assert.assertFalse(evalExpr(recordObj, expr));
     }
 
-    public static void assertColumnsMatchTrue(final String schema, final String expr, String... vals) throws HPersistException {
-        org.junit.Assert.assertTrue(evalColumnNames(schema, expr, vals));
+    public static void assertColumnsMatchTrue(final String expr, String... vals) throws HPersistException {
+        org.junit.Assert.assertTrue(evalColumnNames(expr, vals));
     }
 
-    public static void assertColumnsMatchFalse(final String schema, final String expr, String... vals) throws HPersistException {
-        org.junit.Assert.assertFalse(evalColumnNames(schema, expr, vals));
+    public static void assertColumnsMatchFalse(final String expr, String... vals) throws HPersistException {
+        org.junit.Assert.assertFalse(evalColumnNames(expr, vals));
     }
 
     private static boolean evalExpr(final HPersistable recordObj, final String expr) throws HPersistException {
@@ -82,10 +82,9 @@ public class WhereExprTests {
 
     }
 
-    private static boolean evalColumnNames(final String schema, final String expr, String... vals) throws HPersistException {
+    private static boolean evalColumnNames(final String expr, String... vals) {
 
-        final ClassSchema classSchema = new ClassSchema(schema);
-        final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE_EXPR.parse(expr, classSchema);
+        final ExprEvalTree tree = (ExprEvalTree)HBqlRule.WHERE_EXPR.parse(expr, (ClassSchema)null);
 
         if (tree == null)
             return false;

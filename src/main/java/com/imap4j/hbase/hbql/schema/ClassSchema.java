@@ -2,7 +2,6 @@ package com.imap4j.hbase.hbql.schema;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.EnvVars;
 import com.imap4j.hbase.hbql.HColumn;
 import com.imap4j.hbase.hbql.HColumnVersionMap;
@@ -41,12 +40,13 @@ public class ClassSchema implements Serializable {
 
     private ColumnAttrib keyColumnAttrib = null;
 
-    public ClassSchema(final String desc) throws HPersistException {
 
-        final List<VarDesc> varList = (List<VarDesc>)HBqlRule.SCHEMA.parse(desc);
+    public ClassSchema(final List<VarDesc> varList) {
 
-        for (final VarDesc var : varList)
-            setVariableAttribByVariableName(var.getVarName(), new VarDescAttrib(var.getVarName(), var.getType()));
+        for (final VarDesc var : varList) {
+            final VarDescAttrib attrib = new VarDescAttrib(var.getVarName(), var.getType());
+            setVariableAttribByVariableName(var.getVarName(), attrib);
+        }
 
         this.clazz = null;
         this.table = null;
@@ -95,12 +95,12 @@ public class ClassSchema implements Serializable {
         return this.columnAtrtibListByFamilyNameMap.get(name);
     }
 
-    public ColumnAttrib getColumnAttribByFamilyQualifiedColumnName(final String name) {
-        return this.columnAttribByFamilyQualifiedColumnNameMap.get(name);
-    }
-
     public VersionAttrib getVersionAttribByFamilyQualifiedColumnName(final String name) {
         return this.versionAttribByFamilyQualifiedColumnNameMap.get(name);
+    }
+
+    public ColumnAttrib getColumnAttribByFamilyQualifiedColumnName(final String name) {
+        return this.columnAttribByFamilyQualifiedColumnNameMap.get(name);
     }
 
     public void setColumnAttribByFamilyQualifiedColumnName(final String name, final ColumnAttrib columnAttrib) {

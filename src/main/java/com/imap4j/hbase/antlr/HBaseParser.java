@@ -7,6 +7,7 @@ import com.imap4j.hbase.hbql.expr.value.var.IntegerAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.LongAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.StringAttribRef;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
+import com.imap4j.hbase.hbql.schema.FieldType;
 import com.imap4j.hbase.hbql.schema.VariableAttrib;
 import org.antlr.runtime.BitSet;
 import org.antlr.runtime.IntStream;
@@ -58,6 +59,19 @@ public class HBaseParser extends Parser {
         final String s = input.LT(1).getText();
         //System.out.println("Checking for " + str + " and " + s);
         return s != null && s.equalsIgnoreCase(str);
+    }
+
+    protected boolean isAttribType(final TokenStream input, final FieldType type) {
+
+        if (this.getClassSchema() == null)
+            return false;
+
+        final String s = input.LT(1).getText();
+        if (s == null)
+            return false;
+
+        final VariableAttrib attrib = this.getClassSchema().getVariableAttribByVariableName(s);
+        return attrib != null && attrib.getFieldType() == type;
     }
 
 

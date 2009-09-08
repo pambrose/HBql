@@ -14,24 +14,18 @@ import com.imap4j.hbase.hbql.schema.ClassSchema;
 public class WhereValueTests {
 
     public void assertValidInput(final String expr) throws HPersistException {
-        assertValidInput("", expr);
+        org.junit.Assert.assertTrue(evalWhereValue(expr));
     }
 
-    public void assertValidInput(final String schema, final String expr) throws HPersistException {
-        org.junit.Assert.assertTrue(evalWhereValue(schema, expr));
+    public void assertInvalidInput(final String expr) throws HPersistException {
+        org.junit.Assert.assertFalse(evalWhereValue(expr));
     }
 
-    public void assertInvalidInput(final String schema, final String expr) throws HPersistException {
-        org.junit.Assert.assertFalse(evalWhereValue(schema, expr));
-    }
+    private static boolean evalWhereValue(final String expr) throws HPersistException {
 
-    private static boolean evalWhereValue(final String schema, final String expr) throws HPersistException {
-
-        final ClassSchema classSchema = new ClassSchema(schema);
-        final WhereArgs args = (WhereArgs)HBqlRule.WHERE_VALUE.parse(expr, classSchema);
+        final WhereArgs args = (WhereArgs)HBqlRule.WHERE_VALUE.parse(expr, (ClassSchema)null);
 
         return args != null;
-
     }
 
 }

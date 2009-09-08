@@ -28,6 +28,8 @@ tokens {
 	RPAREN = ')';
 	LBRACE = '[';
 	RBRACE = ']';
+	LCURLY = '{';
+	RCURLY = '}';
 }
 
 @rulecatch {catch (RecognitionException re) {handleRecognitionException(re);}}
@@ -121,16 +123,11 @@ keyRange returns [KeyRangeArgs.Range retval]
 	: q=QUOTED COLON keyLAST			{retval = new KeyRangeArgs.Range($q.text);}
 	| q1=QUOTED COLON q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
 	;
-		
-filterClause [ClassSchema cs] returns [ExprEvalTree retval]
-	: keyWITH keyFILTER w=whereExpr[cs]		{retval = $w.retval;};
-	
-whereClause [ClassSchema cs] returns [ExprEvalTree retval]
-	: keyWHERE w=whereExpr[cs] 			{retval = $w.retval;};
 
 whereExpr [ClassSchema cs] returns [ExprEvalTree retval]
 @init {setClassSchema(cs);}
-	: e=orExpr					{retval = new ExprEvalTree($e.retval);};
+	: s=schemaDesc? 				{if ($s.retval != null) setClassSchema($s.retval);}			
+	  e=orExpr					{retval = new ExprEvalTree($e.retval);};
 			
 orExpr returns [PredicateExpr retval]
 	: e1=andExpr (or e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanExpr($e1.retval, BooleanExpr.OP.OR, $e2.retval);};
@@ -232,7 +229,7 @@ options {backtrack=true;}
 
 numberVal returns [NumberValue retval]
 	: l=integerLiteral				{retval = $l.retval;} 
-	| i=attribVar					{retval = (NumberValue)$i.retval;}
+	| i=numberAttribVar				{retval = $i.retval;}
 	//| f=funcReturningInteger
 	;
 
@@ -262,7 +259,7 @@ options {backtrack=true;}
 	: sl=stringLiteral				{retval = $sl.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
 	| n=keyNULL					{retval = new StringNullLiteral();}
-	| a=attribVar					{retval = (StringValue)$a.retval;}
+	| a=stringAttribVar				{retval = $a.retval;}
 	| LBRACE keyIF e=orExpr keyTHEN s1=stringExpr keyELSE s2=stringExpr RBRACE 	
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
@@ -305,12 +302,21 @@ datePrimary returns [DateValue retval]
 dateVal returns [DateValue retval]
 	: d1=dateLiteral				{retval = $d1.retval;}
 	| d2=funcReturningDatetime			{retval = $d2.retval;}
-	| d3=attribVar					{retval = (DateValue)$d3.retval;} 			
+	| d3=dateAttribVar				{retval = $d3.retval;} 			
 	;
 
-// Generic Attrib
-attribVar returns [ValueExpr retval]
-	: v=varRef 					{retval = this.getValueExpr($v.text);};
+// Attrib
+numberAttribVar returns [NumberValue retval]
+	: {isAttribType(input, FieldType.IntegerType)}? v=varRef 
+							{retval = (NumberValue)this.getValueExpr($v.text);};
+
+stringAttribVar returns [StringValue retval]
+	: {isAttribType(input, FieldType.StringType)}? v=varRef 
+							{retval = (StringValue)this.getValueExpr($v.text);};
+
+dateAttribVar returns [DateValue retval]
+	: {isAttribType(input, FieldType.DateType)}? v=varRef 
+							{retval = (DateValue)this.getValueExpr($v.text);};
 
 // Literals		
 stringLiteral returns [StringValue retval]
@@ -396,9 +402,11 @@ qstringList returns [List<String> retval]
 column [List<String> list]	
 	: charstr=varRef 				{if (list != null) list.add($charstr.text);};
 
-schemaDesc returns [List<VarDesc> retval]
-@init {retval = Lists.newArrayList();}
-	: (varDesc[retval] (COMMA varDesc[retval])*)?;
+schemaDesc returns [ClassSchema retval]
+@init {List<VarDesc> varList = Lists.newArrayList();}
+	: LCURLY (varDesc[varList] (COMMA varDesc[varList])*)? RCURLY
+							{retval = new ClassSchema(varList);}
+	;
 	
 varDesc [List<VarDesc> list] 
 	: v=varRefList keyAS t=varType			{list.addAll(VarDesc.getList($v.retval, $t.text));}
@@ -412,7 +420,7 @@ varRefList returns [List<String> retval]
 varType	: ID;
 		
 varRef	
-	: ID ((DOT | COLON) ID)*			
+	: ID //((DOT | COLON) ID)*			
 	;
 
 qstring	[List<String> list]
@@ -435,7 +443,7 @@ and	: keyAND | AND;
 not	: keyNOT | NOT;
 		
 INT	: DIGIT+;
-ID	: CHAR (CHAR | DIGIT)*;
+ID	: CHAR (CHAR | DIGIT  | DOT | COLON)*;
  
 QUOTED		
 @init {final StringBuilder sbuf = new StringBuilder();}	
@@ -459,8 +467,8 @@ keySHOW 	: {isKeyword(input, "SHOW")}? ID;
 keyTABLE 	: {isKeyword(input, "TABLE")}? ID;
 keyTABLES 	: {isKeyword(input, "TABLES")}? ID;
 keyWHERE	: {isKeyword(input, "WHERE")}? ID;
-keyFILTER	: {isKeyword(input, "FILTER")}? ID;
 keyWITH		: {isKeyword(input, "WITH")}? ID;
+keyFILTER	: {isKeyword(input, "FILTER")}? ID;
 keyFROM 	: {isKeyword(input, "FROM")}? ID;
 keySET 		: {isKeyword(input, "SET")}? ID;
 keyIN 		: {isKeyword(input, "IN")}? ID;
