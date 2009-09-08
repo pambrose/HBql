@@ -218,36 +218,38 @@ public class ClassSchema implements Serializable {
 
     private void processColumnAnnotation(final Field field) throws HPersistException {
 
-        final ColumnAttrib attrib = new CurrentValueAttrib(field);
+        final ColumnAttrib columnAttrib = new CurrentValueAttrib(field);
 
-        if (attrib.isKey()) {
+        if (columnAttrib.isKey()) {
             if (this.getKeyColumnAttrib() != null)
                 throw new HPersistException("Class " + this + " has multiple instance variables "
                                             + "annotated with @HColumn(key=true)");
 
-            this.keyColumnAttrib = attrib;
+            this.keyColumnAttrib = columnAttrib;
         }
         else {
-            final String family = attrib.getFamilyName();
+            final String family = columnAttrib.getFamilyName();
 
             if (family.length() == 0)
-                throw new HPersistException(attrib.getObjectQualifiedName()
+                throw new HPersistException(columnAttrib.getObjectQualifiedName()
                                             + " is missing family name in annotation");
 
             if (!this.columnAtrtibListByFamilyNameMap.containsKey(family))
-                throw new HPersistException(attrib.getObjectQualifiedName() + " references unknown family: " + family);
+                throw new HPersistException(columnAttrib.getObjectQualifiedName() + " references unknown family: " + family);
 
-            this.getColumnAttribListByFamilyName(family).add(attrib);
+            this.getColumnAttribListByFamilyName(family).add(columnAttrib);
         }
 
-        this.setVariableAttribByVariableName(field.getName(), attrib);
-        this.setColumnAttribByFamilyQualifiedColumnName(attrib.getFamilyQualifiedName(), attrib);
+        this.setVariableAttribByVariableName(field.getName(), columnAttrib);
+        this.setColumnAttribByFamilyQualifiedColumnName(columnAttrib.getFamilyQualifiedName(), columnAttrib);
     }
 
     private void processColumnVersionAnnotation(final Field field) throws HPersistException {
         final VersionAttrib versionAttrib = VersionAttrib.createVersionAttrib(this, field);
-        final String familyQualifiedName = versionAttrib.getFamilyQualifiedName();
-        this.versionAttribByFamilyQualifiedColumnNameMap.put(familyQualifiedName, versionAttrib);
+
+        this.versionAttribByFamilyQualifiedColumnNameMap.put(versionAttrib.getFamilyQualifiedName(), versionAttrib);
+
+        this.setVariableAttribByVariableName(versionAttrib.getVariableName(), versionAttrib);
     }
 
     public String getTableName() {
