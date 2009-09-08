@@ -17,34 +17,45 @@ public class DateLiteral extends GenericLiteral implements DateValue {
 
     private final static long day = 1000 * 60 * 60 * 24;
 
-    public enum TYPE {
-        TODAY(0),
-        YESTERDAY(-day),
-        TOMORROW(+day);
+    public enum Type {
+        TODAY(true, 0),
+        YESTERDAY(true, -day),
+        TOMORROW(true, +day),
+        MINDATE(false, 0),
+        MAXDATE(false, Long.MAX_VALUE);
 
-        final long adjustment;
+        final boolean adjusted;
+        final long value;
 
-        TYPE(final long adjustment) {
-            this.adjustment = adjustment;
+        Type(final boolean adjusted, final long value) {
+            this.adjusted = adjusted;
+            this.value = value;
         }
 
-        public long getAdjustment() {
-            return adjustment;
+        public boolean isAdjustment() {
+            return this.adjusted;
+        }
+
+        public long getValue() {
+            return this.value;
         }
     }
 
-    private final Date value;
+    private final Date dateval;
 
-    public DateLiteral(final Date value) {
-        this.value = value;
+    public DateLiteral(final Date dateval) {
+        this.dateval = dateval;
     }
 
     public DateLiteral(final long val) {
-        this.value = new Date(val);
+        this.dateval = new Date(val);
     }
 
-    public DateLiteral(final TYPE type) {
-        this.value = new Date(getNow() + type.getAdjustment());
+    public DateLiteral(final Type type) {
+        if (type.isAdjustment())
+            this.dateval = new Date(getNow() + type.getValue());
+        else
+            this.dateval = new Date(type.getValue());
     }
 
     private static long getNow() {
@@ -57,6 +68,6 @@ public class DateLiteral extends GenericLiteral implements DateValue {
 
     @Override
     public Date getValue(final EvalContext context) {
-        return this.value;
+        return this.dateval;
     }
 }

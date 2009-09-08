@@ -19,7 +19,7 @@ public class StringFunction extends GenericFunction implements StringValue {
 
     private final StringValue[] exprs;
 
-    public StringFunction(final FUNC func, final StringValue... exprs) {
+    public StringFunction(final Func func, final StringValue... exprs) {
         super(func);
         this.exprs = exprs;
     }

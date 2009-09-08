@@ -138,10 +138,9 @@ public class TestObject implements HPersistable {
 
         long start = System.currentTimeMillis();
         HQuery<TestObject> q2 =
-                new HQuery<TestObject>("select titleVersions1, authorVersions from TestObject WITH "
+                new HQuery<TestObject>("select * authorVersions from TestObject WITH "
                                        + "KEYS  '000002' : '000005','000007':LAST "
-                                       + "VERSIONS 20 "
-                        ,
+                                       + "VERSIONS 20 ",
                                        new HQueryListenerAdapter<TestObject>() {
                                            public void onEachRow(final TestObject val) throws HPersistException {
 

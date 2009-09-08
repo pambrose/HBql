@@ -8,20 +8,20 @@ package com.imap4j.hbase.hbql.expr.predicate;
  */
 public abstract class GenericFunction {
 
-    public enum FUNC {
+    public enum Func {
         CONCAT,
         TRIM,
         LOWER,
         UPPER
     }
 
-    private final GenericFunction.FUNC func;
+    private final Func func;
 
-    protected GenericFunction(final FUNC func) {
+    protected GenericFunction(final Func func) {
         this.func = func;
     }
 
-    protected GenericFunction.FUNC getFunc() {
+    protected Func getFunc() {
         return this.func;
     }
 

@@ -207,15 +207,15 @@ compOp returns [CompareExpr.OP retval]
 
 // Numeric calculations
 numericExpr returns [IntegerValue retval]
-	: m=multdivExpr (op=plusMinus n=numericExpr)?	{$numericExpr.retval= ($n.text == null) ? $m.retval : new CalcExpr($m.retval, $op.retval, $n.retval);}
+	: m=multdivExpr (op=plusMinus n=numericExpr)?	{$numericExpr.retval= ($n.text == null) ? $m.retval : new IntegerCalcExpr($m.retval, $op.retval, $n.retval);}
 	;
 
 multdivExpr returns [IntegerValue retval]
-	: c=calcNumberExpr (op=multDiv m=multdivExpr)?	{$multdivExpr.retval = ($m.text == null) ? $c.retval : new CalcExpr($c.retval, $op.retval, $m.retval);}
+	: c=calcNumberExpr (op=multDiv m=multdivExpr)?	{$multdivExpr.retval = ($m.text == null) ? $c.retval : new IntegerCalcExpr($c.retval, $op.retval, $m.retval);}
 	;
 
 calcNumberExpr returns [IntegerValue retval]
-	: (s=plusMinus)? n=numPrimary 			{retval = ($s.retval == CalcExpr.OP.MINUS) ? new CalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) :  $n.retval;}
+	: (s=plusMinus)? n=numPrimary 			{retval = ($s.retval == CalcExpr.OP.MINUS) ? new IntegerCalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) :  $n.retval;}
 	;
 
 numPrimary returns [IntegerValue retval]
@@ -283,8 +283,12 @@ options {backtrack=true;}
 	;
 
 rangeDateExpr returns [DateValue retval]
+	: m=rangeDatePrimary (op=plusMinus n=rangeDateExpr)?	{$rangeDateExpr.retval= ($n.text == null) ? $m.retval : new DateCalcExpr($m.retval, $op.retval, $n.retval);}
+	;
+
+rangeDatePrimary returns [DateValue retval]
 	: d1=rangeDateVal				{retval = $d1.retval;}
-	| LPAREN d2=rangeDateExpr RPAREN		{retval = $d2.retval;}
+	| LPAREN d2=rangeDatePrimary RPAREN		{retval = $d2.retval;}
 	;
 
 rangeDateVal returns [DateValue retval]
@@ -293,8 +297,12 @@ rangeDateVal returns [DateValue retval]
 	;
 	
 dateExpr returns [DateValue retval]
+	: m=datePrimary (op=plusMinus n=dateExpr)?	{$dateExpr.retval= ($n.text == null) ? $m.retval : new DateCalcExpr($m.retval, $op.retval, $n.retval);}
+	;
+
+datePrimary returns [DateValue retval]
 	: d1=dateVal					{retval = $d1.retval;}
-	| LPAREN d2=dateExpr RPAREN			{retval = $d2.retval;}
+	| LPAREN d2=datePrimary RPAREN			{retval = $d2.retval;}
 	;
 	
 dateVal returns [DateValue retval]
@@ -315,9 +323,11 @@ integerLiteral returns [IntegerValue retval]
 	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};
 		
 dateLiteral returns [DateValue retval]
-	: keyNOW					{retval = new DateLiteral(DateLiteral.TYPE.TODAY);}
-	| keyYESTERDAY					{retval = new DateLiteral(DateLiteral.TYPE.YESTERDAY);}
-	| keyTOMORROW					{retval = new DateLiteral(DateLiteral.TYPE.TOMORROW);}
+	: keyNOW					{retval = new DateLiteral(DateLiteral.Type.TODAY);}
+	| keyYESTERDAY					{retval = new DateLiteral(DateLiteral.Type.YESTERDAY);}
+	| keyTOMORROW					{retval = new DateLiteral(DateLiteral.Type.TOMORROW);}
+	| keyMINDATE					{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
+	| keyMAXDATE					{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
 	;
 
 booleanLiteral returns [BooleanValue retval]
@@ -329,16 +339,18 @@ booleanLiteral returns [BooleanValue retval]
 funcReturningDatetime returns [DateValue retval]
 	: keyDATE LPAREN s1=stringExpr COMMA s2=stringExpr RPAREN
 							{retval = new DateExpr($s1.retval, $s2.retval);}
+	| keyYEAR LPAREN n=numericExpr RPAREN
+							{retval = new IntervalExpr(IntervalExpr.Type.YEAR, $n.retval);}
 	;
 
 funcReturningString returns [StringValue retval]
 	: keyCONCAT LPAREN s1=stringExpr COMMA s2=stringExpr RPAREN
-							{retval = new StringFunction(GenericFunction.FUNC.CONCAT, $s1.retval, $s2.retval);}
+							{retval = new StringFunction(GenericFunction.Func.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=stringExpr COMMA n1=numericExpr COMMA n2=numericExpr RPAREN
 							{retval = new Substring($s.retval, $n1.retval, $n2.retval);}
-	| keyTRIM LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.FUNC.TRIM, $s.retval);}
-	| keyLOWER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.FUNC.LOWER, $s.retval);} 
-	| keyUPPER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.FUNC.UPPER, $s.retval);} 
+	| keyTRIM LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Func.TRIM, $s.retval);}
+	| keyLOWER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Func.LOWER, $s.retval);} 
+	| keyUPPER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Func.UPPER, $s.retval);} 
 	;
 /*
 funcReturningInteger
@@ -474,7 +486,16 @@ keyIGNORE_CASE 	: {isKeyword(input, "IGNORE_CASE")}? ID;
 keyNOW	 	: {isKeyword(input, "NOW")}? ID;
 keyYESTERDAY	: {isKeyword(input, "YESTERDAY")}? ID;
 keyTOMORROW	: {isKeyword(input, "TOMORROW")}? ID;
+keyMINDATE	: {isKeyword(input, "MINDATE")}? ID;
+keyMAXDATE	: {isKeyword(input, "MAXDATE")}? ID;
 keyDATE		: {isKeyword(input, "DATE")}? ID;
+keyYEAR		: {isKeyword(input, "YEAR")}? ID;
+keyWEEK		: {isKeyword(input, "WEEK")}? ID;
+keyDAY		: {isKeyword(input, "DAY")}? ID;
+keyHOUR		: {isKeyword(input, "HOUR")}? ID;
+keyMINUTE	: {isKeyword(input, "MINUTE")}? ID;
+keySECOND	: {isKeyword(input, "SECOND")}? ID;
+keyMILLI	: {isKeyword(input, "MILLI")}? ID;
 keyCLIENT	: {isKeyword(input, "CLIENT")}? ID;
 keySERVER	: {isKeyword(input, "SERVER")}? ID;
 keyVERSIONS	: {isKeyword(input, "VERSIONS")}? ID;

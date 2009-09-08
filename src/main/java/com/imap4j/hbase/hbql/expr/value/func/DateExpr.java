@@ -77,7 +77,7 @@ public class DateExpr implements DateValue {
 
     @Override
     public boolean isAConstant() {
-        return this.getFormatExpr().isAConstant() && this.getFormatExpr().isAConstant() && this.getExpr().isAConstant();
+        return this.getFormatExpr().isAConstant() && this.getExpr().isAConstant();
     }
 
 }
