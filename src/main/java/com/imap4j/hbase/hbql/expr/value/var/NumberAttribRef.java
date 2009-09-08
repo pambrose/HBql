@@ -2,7 +2,7 @@ package com.imap4j.hbase.hbql.expr.value.var;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
-import com.imap4j.hbase.hbql.expr.node.IntegerValue;
+import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.schema.FieldType;
 import com.imap4j.hbase.hbql.schema.VariableAttrib;
 
@@ -12,9 +12,9 @@ import com.imap4j.hbase.hbql.schema.VariableAttrib;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class IntegerAttribRef extends GenericAttribRef implements IntegerValue {
+public class NumberAttribRef extends GenericAttribRef implements NumberValue {
 
-    public IntegerAttribRef(final String attribName) {
+    public NumberAttribRef(final String attribName) {
         super(FieldType.IntegerType, attribName);
     }
 

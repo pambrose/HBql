@@ -4,9 +4,9 @@ import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
-import com.imap4j.hbase.hbql.expr.node.IntegerValue;
+import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
-import com.imap4j.hbase.hbql.expr.value.literal.IntegerLiteral;
+import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
 
 import java.util.List;
 
@@ -16,29 +16,29 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class IntegerInStmt extends GenericInStmt implements PredicateExpr {
+public class NumberInStmt extends GenericInStmt implements PredicateExpr {
 
-    private IntegerValue expr = null;
-    private final List<IntegerValue> vals;
+    private NumberValue expr = null;
+    private final List<NumberValue> vals;
 
-    public IntegerInStmt(final IntegerValue expr, final boolean not, final List<IntegerValue> vals) {
+    public NumberInStmt(final NumberValue expr, final boolean not, final List<NumberValue> vals) {
         super(not);
         this.expr = expr;
         this.vals = vals;
     }
 
-    protected IntegerValue getExpr() {
+    protected NumberValue getExpr() {
         return this.expr;
     }
 
-    private List<IntegerValue> getValList() {
+    private List<NumberValue> getValList() {
         return this.vals;
     }
 
     @Override
     public List<ExprVariable> getExprVariables() {
         final List<ExprVariable> retval = this.getExpr().getExprVariables();
-        for (final IntegerValue val : this.getValList())
+        for (final NumberValue val : this.getValList())
             retval.addAll(val.getExprVariables());
         return retval;
     }
@@ -49,7 +49,7 @@ public class IntegerInStmt extends GenericInStmt implements PredicateExpr {
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(context))
-            this.expr = new IntegerLiteral(this.getExpr().getValue(context));
+            this.expr = new NumberLiteral(this.getExpr().getValue(context));
         else
             retval = false;
 
@@ -73,11 +73,11 @@ public class IntegerInStmt extends GenericInStmt implements PredicateExpr {
     private boolean optimizeList(final EvalContext context) throws HPersistException {
 
         boolean retval = true;
-        final List<IntegerValue> newvalList = Lists.newArrayList();
+        final List<NumberValue> newvalList = Lists.newArrayList();
 
-        for (final IntegerValue val : this.getValList()) {
+        for (final NumberValue val : this.getValList()) {
             if (val.optimizeForConstants(context)) {
-                newvalList.add(new IntegerLiteral(val.getValue(context)));
+                newvalList.add(new NumberLiteral(val.getValue(context)));
             }
             else {
                 newvalList.add(val);
@@ -96,7 +96,7 @@ public class IntegerInStmt extends GenericInStmt implements PredicateExpr {
     private boolean evaluateList(final EvalContext context) throws HPersistException {
 
         final int attribVal = this.getExpr().getValue(context).intValue();
-        for (final IntegerValue obj : this.getValList()) {
+        for (final NumberValue obj : this.getValList()) {
             final int val = obj.getValue(context).intValue();
             if (attribVal == val)
                 return true;
@@ -106,7 +106,7 @@ public class IntegerInStmt extends GenericInStmt implements PredicateExpr {
 
     private boolean listIsConstant() {
 
-        for (final IntegerValue val : this.getValList()) {
+        for (final NumberValue val : this.getValList()) {
             if (!val.isAConstant())
                 return false;
         }

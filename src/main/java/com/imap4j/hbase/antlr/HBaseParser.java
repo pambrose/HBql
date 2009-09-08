@@ -3,7 +3,7 @@ package com.imap4j.hbase.antlr;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.node.ValueExpr;
 import com.imap4j.hbase.hbql.expr.value.var.DateAttribRef;
-import com.imap4j.hbase.hbql.expr.value.var.IntegerAttribRef;
+import com.imap4j.hbase.hbql.expr.value.var.NumberAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.StringAttribRef;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.VariableAttrib;
@@ -72,7 +72,7 @@ public class HBaseParser extends Parser {
                         return new StringAttribRef(var);
 
                     case IntegerType:
-                        return new IntegerAttribRef(var);
+                        return new NumberAttribRef(var);
 
                     case DateType:
                         return new DateAttribRef(var);

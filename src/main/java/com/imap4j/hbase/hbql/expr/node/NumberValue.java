@@ -6,10 +6,10 @@ import com.imap4j.hbase.hbql.expr.EvalContext;
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
- * Date: Sep 8, 2009
- * Time: 10:12:28 AM
+ * Date: Aug 26, 2009
+ * Time: 10:18:22 AM
  */
-public interface LongValue extends ValueExpr {
+public interface NumberValue extends ValueExpr {
 
-    Long getValue(final EvalContext context) throws HPersistException;
+    Number getValue(final EvalContext context) throws HPersistException;
 }

@@ -3,9 +3,9 @@ package com.imap4j.hbase.hbql.expr.value.func;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
-import com.imap4j.hbase.hbql.expr.node.IntegerValue;
+import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
-import com.imap4j.hbase.hbql.expr.value.literal.IntegerLiteral;
+import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
 
 import java.util.List;
@@ -19,9 +19,9 @@ import java.util.List;
 public class Substring implements StringValue {
 
     private StringValue expr = null;
-    private IntegerValue begin = null, end = null;
+    private NumberValue begin = null, end = null;
 
-    public Substring(final StringValue expr, final IntegerValue begin, final IntegerValue end) {
+    public Substring(final StringValue expr, final NumberValue begin, final NumberValue end) {
         this.expr = expr;
         this.begin = begin;
         this.end = end;
@@ -31,11 +31,11 @@ public class Substring implements StringValue {
         return this.expr;
     }
 
-    private IntegerValue getBegin() {
+    private NumberValue getBegin() {
         return this.begin;
     }
 
-    private IntegerValue getEnd() {
+    private NumberValue getEnd() {
         return this.end;
     }
 
@@ -58,12 +58,12 @@ public class Substring implements StringValue {
             retval = false;
 
         if (this.getBegin().optimizeForConstants(context))
-            this.begin = new IntegerLiteral(this.getBegin().getValue(context));
+            this.begin = new NumberLiteral(this.getBegin().getValue(context));
         else
             retval = false;
 
         if (this.getEnd().optimizeForConstants(context))
-            this.end = new IntegerLiteral(this.getEnd().getValue(context));
+            this.end = new NumberLiteral(this.getEnd().getValue(context));
         else
             retval = false;
 
@@ -73,8 +73,8 @@ public class Substring implements StringValue {
     @Override
     public String getValue(final EvalContext context) throws HPersistException {
         final String val = this.getExpr().getValue(context);
-        final int begin = this.getBegin().getValue(context);
-        final int end = this.getEnd().getValue(context);
+        final int begin = (Integer)this.getBegin().getValue(context);
+        final int end = (Integer)this.getEnd().getValue(context);
         return val.substring(begin, end);
     }
 

@@ -9,16 +9,16 @@ import com.imap4j.hbase.hbql.expr.node.NumberValue;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class IntegerLiteral extends GenericLiteral implements NumberValue {
+public class NumberLiteral extends GenericLiteral implements NumberValue {
 
-    private final Integer value;
+    private final Number value;
 
-    public IntegerLiteral(final Integer value) {
+    public NumberLiteral(final Number value) {
         this.value = value;
     }
 
     @Override
-    public Integer getValue(final EvalContext context) {
+    public Number getValue(final EvalContext context) {
         return this.value;
     }
 }

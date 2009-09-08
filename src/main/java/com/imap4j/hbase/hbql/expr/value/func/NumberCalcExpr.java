@@ -3,8 +3,8 @@ package com.imap4j.hbase.hbql.expr.value.func;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
-import com.imap4j.hbase.hbql.expr.node.IntegerValue;
-import com.imap4j.hbase.hbql.expr.value.literal.IntegerLiteral;
+import com.imap4j.hbase.hbql.expr.node.NumberValue;
+import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
 
 import java.util.List;
 
@@ -14,25 +14,25 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class IntegerCalcExpr extends CalcExpr implements IntegerValue {
+public class NumberCalcExpr extends CalcExpr implements NumberValue {
 
-    private IntegerValue expr1 = null, expr2 = null;
+    private NumberValue expr1 = null, expr2 = null;
 
-    public IntegerCalcExpr(final IntegerValue expr1) {
+    public NumberCalcExpr(final NumberValue expr1) {
         this(expr1, CalcExpr.OP.NONE, null);
     }
 
-    public IntegerCalcExpr(final IntegerValue expr1, final CalcExpr.OP op, final IntegerValue expr2) {
+    public NumberCalcExpr(final NumberValue expr1, final CalcExpr.OP op, final NumberValue expr2) {
         super(op);
         this.expr1 = expr1;
         this.expr2 = expr2;
     }
 
-    private IntegerValue getExpr1() {
+    private NumberValue getExpr1() {
         return this.expr1;
     }
 
-    private IntegerValue getExpr2() {
+    private NumberValue getExpr2() {
         return this.expr2;
     }
 
@@ -49,12 +49,12 @@ public class IntegerCalcExpr extends CalcExpr implements IntegerValue {
         boolean retval = true;
 
         if (this.getExpr1().optimizeForConstants(context))
-            this.expr1 = new IntegerLiteral(this.getExpr1().getValue(context));
+            this.expr1 = new NumberLiteral(this.getExpr1().getValue(context));
         else
             retval = false;
 
         if (this.getExpr2().optimizeForConstants(context))
-            this.expr2 = new IntegerLiteral(this.getExpr2().getValue(context));
+            this.expr2 = new NumberLiteral(this.getExpr2().getValue(context));
         else
             retval = false;
 

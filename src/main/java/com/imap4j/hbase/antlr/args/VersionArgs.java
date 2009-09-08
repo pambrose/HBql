@@ -1,7 +1,7 @@
 package com.imap4j.hbase.antlr.args;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.expr.node.IntegerValue;
+import com.imap4j.hbase.hbql.expr.node.NumberValue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,9 +11,9 @@ import com.imap4j.hbase.hbql.expr.node.IntegerValue;
  */
 public class VersionArgs {
 
-    private Integer value = null;
+    private Number value = null;
 
-    public VersionArgs(final IntegerValue val) {
+    public VersionArgs(final NumberValue val) {
         try {
             if (val != null)
                 this.value = val.getValue(null);
@@ -28,6 +28,6 @@ public class VersionArgs {
     }
 
     public Integer getValue() {
-        return value;
+        return value.intValue();
     }
 }

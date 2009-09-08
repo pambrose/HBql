@@ -2,9 +2,9 @@ package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
-import com.imap4j.hbase.hbql.expr.node.IntegerValue;
+import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
-import com.imap4j.hbase.hbql.expr.value.literal.IntegerLiteral;
+import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,27 +12,27 @@ import com.imap4j.hbase.hbql.expr.value.literal.IntegerLiteral;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class IntegerBetweenStmt extends GenericBetweenStmt implements PredicateExpr {
+public class NumberBetweenStmt extends GenericBetweenStmt implements PredicateExpr {
 
-    private IntegerValue expr = null;
-    private IntegerValue lower = null, upper = null;
+    private NumberValue expr = null;
+    private NumberValue lower = null, upper = null;
 
-    public IntegerBetweenStmt(final IntegerValue expr, final boolean not, final IntegerValue lower, final IntegerValue upper) {
+    public NumberBetweenStmt(final NumberValue expr, final boolean not, final NumberValue lower, final NumberValue upper) {
         super(not);
         this.expr = expr;
         this.lower = lower;
         this.upper = upper;
     }
 
-    protected IntegerValue getExpr() {
+    protected NumberValue getExpr() {
         return this.expr;
     }
 
-    protected IntegerValue getLower() {
+    protected NumberValue getLower() {
         return this.lower;
     }
 
-    protected IntegerValue getUpper() {
+    protected NumberValue getUpper() {
         return this.upper;
     }
 
@@ -41,17 +41,17 @@ public class IntegerBetweenStmt extends GenericBetweenStmt implements PredicateE
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(context))
-            this.expr = new IntegerLiteral(this.getExpr().getValue(context));
+            this.expr = new NumberLiteral(this.getExpr().getValue(context));
         else
             retval = false;
 
         if (this.getLower().optimizeForConstants(context))
-            this.lower = new IntegerLiteral(this.getLower().getValue(context));
+            this.lower = new NumberLiteral(this.getLower().getValue(context));
         else
             retval = false;
 
         if (this.getUpper().optimizeForConstants(context))
-            this.upper = new IntegerLiteral(this.getUpper().getValue(context));
+            this.upper = new NumberLiteral(this.getUpper().getValue(context));
         else
             retval = false;
 
