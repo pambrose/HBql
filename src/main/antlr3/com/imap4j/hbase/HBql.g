@@ -101,7 +101,7 @@ keys returns [KeyRangeArgs retval]
 	
 time returns [DateRangeArgs retval]
 	: keyTIME keyRANGE? 
-	  d1=rangeExpr COLON d2=rangeExpr	{retval = new DateRangeArgs($d1.retval, $d2.retval);};
+	  d1=rangeExpr COLON d2=rangeExpr		{retval = new DateRangeArgs($d1.retval, $d2.retval);};
 		
 versions returns [VersionArgs retval]
 	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);};
@@ -215,8 +215,7 @@ multdivNumericExpr returns [IntegerValue retval]
 							{$multdivNumericExpr.retval = ($m.text == null) ? $c.retval : new IntegerCalcExpr($c.retval, $op.retval, $m.retval);};
 
 signedNumericPrimary returns [IntegerValue retval]
-	: (s=plusMinus)? n=numericPrimary 		{retval = ($s.retval == CalcExpr.OP.MINUS) ? new IntegerCalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) :  $n.retval;}
-	;
+	: (s=plusMinus)? n=numericPrimary 		{retval = ($s.retval == CalcExpr.OP.MINUS) ? new IntegerCalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) :  $n.retval;};
 
 numericPrimary returns [IntegerValue retval]
 	: n=integerExpr					{retval = $n.retval;}
@@ -281,7 +280,7 @@ options {backtrack=true;}
 	| LBRACE keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr RBRACE	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	;
-
+	
 rangeExpr returns [DateValue retval]
 	: m=rangePrimary (op=plusMinus n=rangeExpr)?	{$rangeExpr.retval= ($n.text == null) ? $m.retval : new DateCalcExpr($m.retval, $op.retval, $n.retval);};
 
