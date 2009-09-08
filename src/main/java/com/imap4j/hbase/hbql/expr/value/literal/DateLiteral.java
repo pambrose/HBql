@@ -18,7 +18,7 @@ public class DateLiteral extends GenericLiteral implements DateValue {
     private final static long day = 1000 * 60 * 60 * 24;
 
     public enum Type {
-        TODAY(true, 0),
+        NOW(true, 0),
         YESTERDAY(true, -day),
         TOMORROW(true, +day),
         MINDATE(false, 0),

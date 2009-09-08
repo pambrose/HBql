@@ -323,7 +323,7 @@ integerLiteral returns [IntegerValue retval]
 	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};
 		
 dateLiteral returns [DateValue retval]
-	: keyNOW					{retval = new DateLiteral(DateLiteral.Type.TODAY);}
+	: keyNOW					{retval = new DateLiteral(DateLiteral.Type.NOW);}
 	| keyYESTERDAY					{retval = new DateLiteral(DateLiteral.Type.YESTERDAY);}
 	| keyTOMORROW					{retval = new DateLiteral(DateLiteral.Type.TOMORROW);}
 	| keyMINDATE					{retval = new DateLiteral(DateLiteral.Type.MINDATE);}

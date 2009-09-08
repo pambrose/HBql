@@ -81,6 +81,7 @@ public class HBaseParser extends Parser {
         }
 
         System.out.println("Unknown variable: " + var);
+
         throw new RecognitionException(input);
     }
 
