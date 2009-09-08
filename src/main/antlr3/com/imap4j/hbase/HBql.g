@@ -339,8 +339,13 @@ booleanLiteral returns [BooleanValue retval]
 funcReturningDatetime returns [DateValue retval]
 	: keyDATE LPAREN s1=stringExpr COMMA s2=stringExpr RPAREN
 							{retval = new DateExpr($s1.retval, $s2.retval);}
-	| keyYEAR LPAREN n=numericExpr RPAREN
-							{retval = new IntervalExpr(IntervalExpr.Type.YEAR, $n.retval);}
+	| keyYEAR LPAREN n=numericExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.YEAR, $n.retval);}
+	| keyWEEK LPAREN n=numericExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.WEEK, $n.retval);}
+	| keyDAY LPAREN n=numericExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.DAY, $n.retval);}
+	| keyHOUR LPAREN n=numericExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.HOUR, $n.retval);}
+	| keyMINUTE LPAREN n=numericExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.MINUTE, $n.retval);}
+	| keySECOND LPAREN n=numericExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.SECOND, $n.retval);}
+	| keyMILLI LPAREN n=numericExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.MILLI, $n.retval);}
 	;
 
 funcReturningString returns [StringValue retval]

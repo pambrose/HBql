@@ -46,6 +46,10 @@ public class IntervalExpr implements DateValue {
         this.expr = expr;
     }
 
+    private Type getType() {
+        return this.type;
+    }
+
     protected IntegerValue getExpr() {
         return this.expr;
     }
@@ -65,7 +69,8 @@ public class IntervalExpr implements DateValue {
 
     @Override
     public Date getValue(final EvalContext context) throws HPersistException {
-        return new Date(this.getExpr().getValue(context));
+        final long val = this.getExpr().getValue(context);
+        return new Date(val * this.getType().getIntervalMillis());
     }
 
     @Override

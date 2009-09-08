@@ -16,6 +16,10 @@ public class TestIntervalValues extends WhereExprTests {
         assertEvalTrue("NOW < NOW+YEAR(1)");
         assertEvalTrue("NOW == NOW+YEAR(1)-YEAR(1)");
         assertEvalTrue("NOW+YEAR(2) > NOW+YEAR(1)");
+
+        assertEvalTrue("NOW < NOW+WEEK(1)");
+        assertEvalTrue("YEAR(2) == WEEK(52*2)");
+        assertEvalTrue("NOW+YEAR(2) == NOW+WEEK(52*2)");
     }
 
 }
