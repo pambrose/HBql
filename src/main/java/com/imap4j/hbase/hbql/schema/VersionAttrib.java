@@ -1,6 +1,5 @@
 package com.imap4j.hbase.hbql.schema;
 
-import com.imap4j.hbase.hbql.HColumn;
 import com.imap4j.hbase.hbql.HColumnVersionMap;
 import com.imap4j.hbase.hbql.HPersistException;
 
@@ -74,8 +73,6 @@ public class VersionAttrib extends ColumnAttrib {
 
             final CurrentValueAttrib currentAttrib = (CurrentValueAttrib)columnAttrib;
 
-            final HColumn columnAnno = currentAttrib.getColumnAnno();
-
             // Make sure type of Value in map matches type of instance var
             if (!mapValueType.equals(currentAttrib.getField().getType()))
                 throw new HPersistException("Type of " + getObjectQualifiedName(field) + " map value type does not " +
@@ -83,11 +80,11 @@ public class VersionAttrib extends ColumnAttrib {
 
             return new VersionAttrib(field,
                                      currentAttrib.getFieldType(),
-                                     columnAnno.family(),
-                                     columnAnno.column(),
-                                     columnAnno.getter(),
-                                     columnAnno.setter(),
-                                     columnAnno.mapKeysAsColumns());
+                                     currentAttrib.getFamilyName(),
+                                     currentAttrib.getColumnName(),
+                                     currentAttrib.getGetter(),
+                                     currentAttrib.getSetter(),
+                                     currentAttrib.isMapKeysAsColumns());
         }
         else {
             return new VersionAttrib(field,

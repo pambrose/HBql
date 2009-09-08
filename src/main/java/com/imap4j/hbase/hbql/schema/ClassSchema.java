@@ -30,10 +30,10 @@ public class ClassSchema implements Serializable {
 
     private final Map<String, VariableAttrib> variableAttribByVariableNameMap = Maps.newHashMap();
 
-    private final Map<String, VersionAttrib> versionAttribByVariableNameMap = Maps.newHashMap();
+    private final Map<String, VersionAttrib> versionAttribByFamilyQualifiedColumnNameMap = Maps.newHashMap();
 
-    private final Map<String, List<ColumnAttrib>> fieldColumnListByFamilyNameMap = Maps.newHashMap();
-    private final Map<String, ColumnAttrib> fieldColumnByFamilyQualifiedColumnNameMap = Maps.newHashMap();
+    private final Map<String, List<ColumnAttrib>> columnAtrtibListByFamilyNameMap = Maps.newHashMap();
+    private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedColumnNameMap = Maps.newHashMap();
 
     private final Class<?> clazz;
     private final HTable table;
@@ -77,7 +77,7 @@ public class ClassSchema implements Serializable {
 
         for (final HFamily family : families) {
             final List<ColumnAttrib> attribs = Lists.newArrayList();
-            this.fieldColumnListByFamilyNameMap.put(family.name(), attribs);
+            this.columnAtrtibListByFamilyNameMap.put(family.name(), attribs);
         }
 
         processAnnotations();
@@ -88,19 +88,23 @@ public class ClassSchema implements Serializable {
     }
 
     public Set<String> getFamilyNameList() {
-        return this.fieldColumnListByFamilyNameMap.keySet();
+        return this.columnAtrtibListByFamilyNameMap.keySet();
     }
 
     public List<ColumnAttrib> getColumnAttribListByFamilyName(final String name) {
-        return this.fieldColumnListByFamilyNameMap.get(name);
+        return this.columnAtrtibListByFamilyNameMap.get(name);
     }
 
     public ColumnAttrib getColumnAttribByFamilyQualifiedColumnName(final String name) {
-        return this.fieldColumnByFamilyQualifiedColumnNameMap.get(name);
+        return this.columnAttribByFamilyQualifiedColumnNameMap.get(name);
+    }
+
+    public VersionAttrib getVersionAttribByFamilyQualifiedColumnName(final String name) {
+        return this.versionAttribByFamilyQualifiedColumnNameMap.get(name);
     }
 
     public void setColumnAttribByFamilyQualifiedColumnName(final String name, final ColumnAttrib columnAttrib) {
-        this.fieldColumnByFamilyQualifiedColumnNameMap.put(name, columnAttrib);
+        this.columnAttribByFamilyQualifiedColumnNameMap.put(name, columnAttrib);
     }
 
     public VariableAttrib getVariableAttribByVariableName(final String name) {
@@ -230,7 +234,7 @@ public class ClassSchema implements Serializable {
                 throw new HPersistException(attrib.getObjectQualifiedName()
                                             + " is missing family name in annotation");
 
-            if (!this.fieldColumnListByFamilyNameMap.containsKey(family))
+            if (!this.columnAtrtibListByFamilyNameMap.containsKey(family))
                 throw new HPersistException(attrib.getObjectQualifiedName() + " references unknown family: " + family);
 
             this.getColumnAttribListByFamilyName(family).add(attrib);
@@ -242,7 +246,8 @@ public class ClassSchema implements Serializable {
 
     private void processColumnVersionAnnotation(final Field field) throws HPersistException {
         final VersionAttrib versionAttrib = VersionAttrib.createVersionAttrib(this, field);
-        this.versionAttribByVariableNameMap.put(versionAttrib.getVariableName(), versionAttrib);
+        final String familyQualifiedName = versionAttrib.getFamilyQualifiedName();
+        this.versionAttribByFamilyQualifiedColumnNameMap.put(familyQualifiedName, versionAttrib);
     }
 
     public String getTableName() {

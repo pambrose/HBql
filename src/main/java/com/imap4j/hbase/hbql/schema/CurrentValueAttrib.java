@@ -40,7 +40,7 @@ public class CurrentValueAttrib extends ColumnAttrib {
         return true;
     }
 
-    public HColumn getColumnAnno() {
+    private HColumn getColumnAnno() {
         return this.getField().getAnnotation(HColumn.class);
     }
 

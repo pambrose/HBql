@@ -35,10 +35,12 @@ public abstract class ColumnAttrib extends VariableAttrib {
         this.field = field;
         this.fieldType = fieldType;
         this.family = family;
-        this.column = column;
+        this.column = (column.length() > 0) ? column : this.getVariableName();
         this.getter = getter;
         this.setter = setter;
         this.mapKeysAsColumns = mapKeysAsColumns;
+
+        setAccessible(this.getField());
 
         try {
             if (this.getGetter().length() > 0) {
@@ -132,7 +134,7 @@ public abstract class ColumnAttrib extends VariableAttrib {
     }
 
     public String getColumnName() {
-        return this.column.length() > 0 ? this.column : this.getVariableName();
+        return this.column;
     }
 
     protected Field getField() {
@@ -238,19 +240,15 @@ public abstract class ColumnAttrib extends VariableAttrib {
         this.setValue(newobj, val);
     }
 
-
-    protected static boolean isFinal(final Field field) {
-
-        final boolean isFinal = Modifier.isFinal(field.getModifiers());
-
-        if (isFinal)
-            return true;
+    protected static void setAccessible(final Field field) {
 
         // Unlock private vars
         if (!field.isAccessible())
             field.setAccessible(true);
+    }
 
-        return false;
+    protected static boolean isFinal(final Field field) {
+        return Modifier.isFinal(field.getModifiers());
     }
 
 }

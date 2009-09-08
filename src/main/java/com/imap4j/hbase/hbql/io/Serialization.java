@@ -6,6 +6,7 @@ import com.imap4j.hbase.hbql.HPersistable;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.ColumnAttrib;
 import com.imap4j.hbase.hbql.schema.FieldType;
+import com.imap4j.hbase.hbql.schema.VersionAttrib;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
@@ -13,6 +14,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import java.io.IOException;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -158,11 +160,25 @@ public abstract class Serialization {
                 final String qualifiedName = famname + colname;
                 final NavigableMap<Long, byte[]> tsMap = columnMap.get(cbytes);
 
-                for (final Long ts : tsMap.keySet()) {
-                    final byte[] vbytes = tsMap.get(ts);
+                for (final Long timestamp : tsMap.keySet()) {
+                    final byte[] vbytes = tsMap.get(timestamp);
 
-                    //  final VersionAttrib attrib = classSchema.getVersionAttribByFamilyQualifiedColumnName(qualifiedName);
-                    //  attrib.setValue(this, newobj, vbytes);
+                    final VersionAttrib attrib = classSchema.getVersionAttribByFamilyQualifiedColumnName(qualifiedName);
+
+                    // Ignore data if no version map exists for the column
+                    if (attrib != null) {
+                        final Object val = attrib.getValueFromBytes(this, newobj, vbytes);
+                        Map mapval = (Map)attrib.getValue(newobj);
+
+                        // TODO it is probably not kosher to create a map here
+                        if (mapval == null) {
+                            //mapval = Maps.newHashMap();
+                            mapval = new TreeMap();
+                            attrib.setValue(newobj, mapval);
+                        }
+
+                        mapval.put(timestamp, val);
+                    }
 
                 }
             }

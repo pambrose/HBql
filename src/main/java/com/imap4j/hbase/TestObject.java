@@ -14,8 +14,10 @@ import com.imap4j.hbase.hbql.HTransaction;
 import com.imap4j.hbase.hbql.HUtil;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,11 +52,15 @@ public class TestObject implements HPersistable {
     @HColumn(family = "family1")
     private String title = "A title value";
 
+    @HColumnVersionMap(instance = "title")
+    private NavigableMap<Long, String> titleVersions = new TreeMap<Long, String>();
+
     @HColumn(family = "family1", column = "author")
     private String author = "An author value";
 
     @HColumnVersionMap(instance = "author")
-    private NavigableMap<Long, StringBuffer> authorVersions;
+    //private NavigableMap<Long, String> authorVersions  = new TreeMap<Long, String>();
+    private NavigableMap<Long, String> authorVersions;
 
     @HColumn(family = "family2", getter = "getHeaderBytes", setter = "setHeaderBytes")
     private String header = "A header value";
@@ -152,10 +158,17 @@ public class TestObject implements HPersistable {
                         ,
                                        new HQueryListenerAdapter<TestObject>() {
                                            public void onEachRow(final TestObject val) throws HPersistException {
-                                               System.out.println("Values: " + val.keyval
+                                               System.out.println("Current Values: " + val.keyval
                                                                   + " - " + val.strValue
                                                                   + " - " + val.author
                                                                   + " - " + val.title);
+                                               System.out.println("Historicals");
+                                               for (final Long key : val.authorVersions.keySet())
+                                                   System.out.println(new Date(key) + " - "
+                                                                      + val.authorVersions.get(key));
+                                               for (final Long key : val.titleVersions.keySet())
+                                                   System.out.println(new Date(key) + " - "
+                                                                      + val.titleVersions.get(key));
                                            }
                                        });
 
