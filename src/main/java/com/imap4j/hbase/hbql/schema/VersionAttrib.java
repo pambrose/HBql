@@ -26,7 +26,7 @@ public class VersionAttrib extends ColumnAttrib {
         super(field, fieldType, family, column, getter, setter, mapKeysAsColumns);
     }
 
-    public static VersionAttrib createVersionAttrib(final ClassSchema classSchema, final Field field) throws HPersistException {
+    public static VersionAttrib createVersionAttrib(final ExprSchema exprSchema, final Field field) throws HPersistException {
 
         final HColumnVersionMap versionAnno = field.getAnnotation(HColumnVersionMap.class);
         final String instance = versionAnno.instance();
@@ -62,11 +62,11 @@ public class VersionAttrib extends ColumnAttrib {
                                             + " cannot have both an instance and mapKeysAsColumns value in " + annoname);
 
             // Check if instance variable exists
-            if (!classSchema.constainsVariableName(instance))
+            if (!exprSchema.constainsVariableName(instance))
                 throw new HPersistException(annoname + " for " + getObjectQualifiedName(field)
                                             + " refers to invalid instance variable " + instance);
 
-            final ColumnAttrib columnAttrib = (ColumnAttrib)classSchema.getVariableAttribByVariableName(instance);
+            final ColumnAttrib columnAttrib = (ColumnAttrib)exprSchema.getVariableAttribByVariableName(instance);
 
             if (!columnAttrib.isCurrentValueAttrib())
                 throw new HPersistException(getObjectQualifiedName(field) + "instance variable must have HColumn annotation");

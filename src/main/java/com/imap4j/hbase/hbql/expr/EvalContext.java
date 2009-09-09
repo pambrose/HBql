@@ -1,7 +1,7 @@
 package com.imap4j.hbase.hbql.expr;
 
 import com.imap4j.hbase.hbql.HPersistable;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 import java.io.Serializable;
 
@@ -13,16 +13,16 @@ import java.io.Serializable;
  */
 public class EvalContext implements Serializable {
 
-    final ClassSchema classSchema;
+    final ExprSchema exprSchema;
     final HPersistable recordObj;
 
-    public EvalContext(final ClassSchema classSchema, final HPersistable recordObj) {
-        this.classSchema = classSchema;
+    public EvalContext(final ExprSchema exprSchema, final HPersistable recordObj) {
+        this.exprSchema = exprSchema;
         this.recordObj = recordObj;
     }
 
-    public ClassSchema getClassSchema() {
-        return this.classSchema;
+    public ExprSchema getExprSchema() {
+        return this.exprSchema;
     }
 
     public HPersistable getRecordObj() {

@@ -22,9 +22,9 @@ import java.util.Set;
  * Date: Aug 19, 2009
  * Time: 5:30:59 PM
  */
-public class ClassSchema implements Serializable {
+public class ExprSchema implements Serializable {
 
-    private final static Map<Class<?>, ClassSchema> classSchemaMap = Maps.newHashMap();
+    private final static Map<Class<?>, ExprSchema> exprSchemaMap = Maps.newHashMap();
     private final static Map<String, Class<?>> classCacheMap = Maps.newHashMap();
 
     private final Map<String, VariableAttrib> variableAttribByVariableNameMap = Maps.newHashMap();
@@ -41,7 +41,7 @@ public class ClassSchema implements Serializable {
     private ColumnAttrib keyColumnAttrib = null;
 
 
-    public ClassSchema(final List<VarDesc> varList) {
+    public ExprSchema(final List<VarDesc> varList) {
 
         for (final VarDesc var : varList) {
             final VarDescAttrib attrib = new VarDescAttrib(var.getVarName(), var.getType());
@@ -53,7 +53,7 @@ public class ClassSchema implements Serializable {
         this.families = null;
     }
 
-    public ClassSchema(final Class clazz) throws HPersistException {
+    public ExprSchema(final Class clazz) throws HPersistException {
 
         this.clazz = clazz;
 
@@ -115,8 +115,8 @@ public class ClassSchema implements Serializable {
         this.variableAttribByVariableNameMap.put(name, variableAttrib);
     }
 
-    private static Map<Class<?>, ClassSchema> getClassSchemaMap() {
-        return classSchemaMap;
+    private static Map<Class<?>, ExprSchema> getExprSchemaMap() {
+        return exprSchemaMap;
     }
 
     public ColumnAttrib getKeyColumnAttrib() {
@@ -127,18 +127,18 @@ public class ClassSchema implements Serializable {
         return this.families;
     }
 
-    public static ClassSchema getClassSchema(final HPersistable obj) throws HPersistException {
+    public static ExprSchema getExprSchema(final HPersistable obj) throws HPersistException {
         final Class<?> clazz = obj.getClass();
-        return getClassSchema(clazz);
+        return getExprSchema(clazz);
     }
 
-    public static ClassSchema getClassSchema(final String objname) throws HPersistException {
+    public static ExprSchema getExprSchema(final String objname) throws HPersistException {
 
         // First see if already cached
         Class<?> clazz = classCacheMap.get(objname);
 
         if (clazz != null)
-            return getClassSchema(clazz);
+            return getExprSchema(clazz);
 
         // Then check with packagepath prefixes
         for (final String val : EnvVars.getPackagePath()) {
@@ -149,7 +149,7 @@ public class ClassSchema implements Serializable {
             clazz = getClass(name);
             if (clazz != null) {
                 classCacheMap.put(objname, clazz);
-                return getClassSchema(clazz);
+                return getExprSchema(clazz);
             }
         }
 
@@ -177,21 +177,21 @@ public class ClassSchema implements Serializable {
         }
     }
 
-    public static ClassSchema getClassSchema(final Class<?> clazz) throws HPersistException {
+    public static ExprSchema getExprSchema(final Class<?> clazz) throws HPersistException {
 
-        ClassSchema classSchema = classSchemaMap.get(clazz);
-        if (classSchema != null)
-            return classSchema;
+        ExprSchema exprSchema = exprSchemaMap.get(clazz);
+        if (exprSchema != null)
+            return exprSchema;
 
-        synchronized (getClassSchemaMap()) {
+        synchronized (getExprSchemaMap()) {
             // Check again in case waiting for the lock
-            classSchema = getClassSchemaMap().get(clazz);
-            if (classSchema != null)
-                return classSchema;
+            exprSchema = getExprSchemaMap().get(clazz);
+            if (exprSchema != null)
+                return exprSchema;
 
-            classSchema = new ClassSchema(clazz);
-            getClassSchemaMap().put(clazz, classSchema);
-            return classSchema;
+            exprSchema = new ExprSchema(clazz);
+            getExprSchemaMap().put(clazz, exprSchema);
+            return exprSchema;
         }
     }
 

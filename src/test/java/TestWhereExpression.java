@@ -112,8 +112,8 @@ public class TestWhereExpression extends WhereExprTests {
         assertTrue(HUtil.parseNumericExpr("(2-2)-2").intValue() == ((2 - 2) - 2));
         assertTrue(HUtil.parseNumericExpr("2-(2-2)").intValue() == (2 - (2 - 2)));
         assertTrue(HUtil.parseNumericExpr("2-2-2").intValue() == (2 - 2 - 2));
-        assertTrue(HUtil.parseNumericExpr("2*3-4*(((20/5)))+2-(2-3-4*3)")
-                .intValue() == (2 * 3 - 4 * (((20 / 5))) + 2 - (2 - 3 - 4 * 3)));
+        assertTrue(HUtil.parseNumericExpr("2*3-4*(((20/5)))+2-(2-3-4*3)").intValue()
+                   == (2 * 3 - 4 * (((20 / 5))) + 2 - (2 - 3 - 4 * 3)));
         assertTrue(HUtil.parseNumericExpr("2-(-4)").intValue() == (2 - (-4)));
         assertTrue(HUtil.parseNumericExpr("(7-4)+2").intValue() == ((7 - 4) + 2));
         assertTrue(HUtil.parseNumericExpr("7-(4+2)").intValue() == (7 - (4 + 2)));

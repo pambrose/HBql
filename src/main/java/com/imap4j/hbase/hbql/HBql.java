@@ -9,7 +9,7 @@ import com.imap4j.hbase.antlr.args.ShowArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -44,7 +44,7 @@ public class HBql {
 
     public static Results exec(final String str) throws HPersistException, IOException {
 
-        final ExecArgs exec = (ExecArgs)HBqlRule.EXEC.parse(str, (ClassSchema)null);
+        final ExecArgs exec = (ExecArgs)HBqlRule.EXEC.parse(str, (ExprSchema)null);
 
         if (exec instanceof CreateArgs)
             return createCommand((CreateArgs)exec);
@@ -66,7 +66,7 @@ public class HBql {
 
     private static Results createCommand(final CreateArgs args) throws HPersistException, IOException {
         final Results retval = new Results();
-        final ClassSchema schema = ClassSchema.getClassSchema(args.getClassname());
+        final ExprSchema schema = ExprSchema.getExprSchema(args.getClassname());
         final HTableDescriptor tableDesc = new HTableDescriptor(schema.getTableName());
 
         for (final HFamily family : schema.getFamilies()) {
@@ -88,7 +88,7 @@ public class HBql {
     private static Results describeCommand(final DescribeArgs args) throws IOException, HPersistException {
 
         final Results retval = new Results();
-        final ClassSchema schema = ClassSchema.getClassSchema(args.getClassname());
+        final ExprSchema schema = ExprSchema.getExprSchema(args.getClassname());
         final HBaseAdmin admin = new HBaseAdmin(new HBaseConfiguration());
         final HTableDescriptor tableDesc = admin.getTableDescriptor(schema.getTableName().getBytes());
 
@@ -123,20 +123,20 @@ public class HBql {
     private static Results deleteCommand(final DeleteArgs args) throws HPersistException, IOException {
 
         final Results retval = new Results();
-        final ClassSchema classSchema = ClassSchema.getClassSchema(args.getTableName());
-        final List<String> fieldList = classSchema.getFieldList();
-        final HTable table = new HTable(new HBaseConfiguration(), classSchema.getTableName());
+        final ExprSchema exprSchema = ExprSchema.getExprSchema(args.getTableName());
+        final List<String> fieldList = exprSchema.getFieldList();
+        final HTable table = new HTable(new HBaseConfiguration(), exprSchema.getTableName());
         final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
         int cnt = 0;
 
-        final List<Scan> scanList = HUtil.getScanList(classSchema, fieldList, args.getWhereExpr());
+        final List<Scan> scanList = HUtil.getScanList(exprSchema, fieldList, args.getWhereExpr());
         for (final Scan scan : scanList) {
             final ResultScanner resultsScanner = table.getScanner(scan);
             for (final Result result : resultsScanner) {
 
-                final HPersistable recordObj = HUtil.ser.getHPersistable(classSchema, scan, result);
+                final HPersistable recordObj = HUtil.ser.getHPersistable(exprSchema, scan, result);
 
-                if (clientFilter == null || clientFilter.evaluate(new EvalContext(classSchema, recordObj))) {
+                if (clientFilter == null || clientFilter.evaluate(new EvalContext(exprSchema, recordObj))) {
                     final Delete delete = new Delete(result.getRow());
                     table.delete(delete);
                     cnt++;

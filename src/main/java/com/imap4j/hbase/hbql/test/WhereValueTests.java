@@ -3,7 +3,7 @@ package com.imap4j.hbase.hbql.test;
 import com.imap4j.hbase.antlr.args.WhereArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,7 +22,7 @@ public class WhereValueTests {
     }
 
     private static boolean evalWhereValue(final String expr) throws HPersistException {
-        final WhereArgs args = (WhereArgs)HBqlRule.WHERE_VALUE.parse(expr, (ClassSchema)null);
+        final WhereArgs args = (WhereArgs)HBqlRule.WHERE_VALUE.parse(expr, (ExprSchema)null);
         return args != null;
     }
 

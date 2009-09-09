@@ -55,19 +55,19 @@ package com.imap4j.hbase;
 import com.google.common.collect.Lists;
 }
 
-selectStmt [ClassSchema cs] returns [QueryArgs retval]
-	: keySELECT (STAR | c=columnList) keyFROM t=ID w=whereValue[cs]?			
+selectStmt [ExprSchema es] returns [QueryArgs retval]
+	: keySELECT (STAR | c=columnList) keyFROM t=ID w=whereValue[es]?			
 							{retval = new QueryArgs($c.retval, $t.text, $w.retval);};
 
 columnList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
 	: column[retval] (COMMA column[retval])*;
 
-execCommand [ClassSchema cs] returns [ExecArgs retval]
+execCommand [ExprSchema es] returns [ExecArgs retval]
 	: create=createStmt				{retval = $create.retval;}
 	| desc=describeStmt 				{retval = $desc.retval;}
 	| show=showStmt 				{retval = $show.retval;}
-	| del=deleteStmt[cs] 				{retval = $del.retval;}
+	| del=deleteStmt[es] 				{retval = $del.retval;}
 	| set=setStmt					{retval = $set.retval;}
 	;
 
@@ -80,21 +80,21 @@ describeStmt returns [DescribeArgs retval]
 showStmt returns [ShowArgs retval]
 	: keySHOW keyTABLES 		 		{retval = new ShowArgs();};
 
-deleteStmt [ClassSchema cs] returns [DeleteArgs retval]
-	: keyDELETE keyFROM t=ID 			{setClassSchema($t.text);}
-	  w=whereValue[cs]?				{retval = new DeleteArgs($t.text, $w.retval);};
+deleteStmt [ExprSchema es] returns [DeleteArgs retval]
+	: keyDELETE keyFROM t=ID 			{setExprSchema($t.text);}
+	  w=whereValue[es]?				{retval = new DeleteArgs($t.text, $w.retval);};
 
 setStmt returns [SetArgs retval]
 	: keySET i=ID to? v=QUOTED	 		{retval = new SetArgs($i.text, $v.text);};
 
-whereValue [ClassSchema cs] returns [WhereArgs retval]
+whereValue [ExprSchema es] returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
 	: keyWITH
 	  k=keys?					{retval.setKeyRangeArgs($k.retval);}
 	  t=time?					{retval.setDateRangeArgs($t.retval);}	
 	  v=versions?					{retval.setVersionArgs($v.retval);}
-	  c=clientFilter[cs]?				{retval.setClientFilterArgs($c.retval);}
-	  s=serverFilter[cs]?				{retval.setServerFilterArgs($s.retval);}
+	  c=clientFilter[es]?				{retval.setClientFilterArgs($c.retval);}
+	  s=serverFilter[es]?				{retval.setServerFilterArgs($s.retval);}
 	;
 
 keys returns [KeyRangeArgs retval]
@@ -108,11 +108,11 @@ time returns [DateRangeArgs retval]
 versions returns [VersionArgs retval]
 	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);};
 	
-serverFilter [ClassSchema cs] returns [ExprEvalTree retval]
-	: keySERVER keyFILTER? w=whereExpr[cs]		{retval = $w.retval;};
+serverFilter [ExprSchema es] returns [ExprEvalTree retval]
+	: keySERVER keyFILTER? w=whereExpr[es]		{retval = $w.retval;};
 	
-clientFilter [ClassSchema cs] returns [ExprEvalTree retval]
-	: keyCLIENT keyFILTER? w=whereExpr[cs]		{retval = $w.retval;};
+clientFilter [ExprSchema es] returns [ExprEvalTree retval]
+	: keyCLIENT keyFILTER? w=whereExpr[es]		{retval = $w.retval;};
 	
 keyRangeList returns [List<KeyRangeArgs.Range> retval]
 @init {retval = Lists.newArrayList();}
@@ -124,9 +124,9 @@ keyRange returns [KeyRangeArgs.Range retval]
 	| q1=QUOTED COLON q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
 	;
 
-whereExpr [ClassSchema cs] returns [ExprEvalTree retval]
-@init {setClassSchema(cs);}
-	: s=schemaDesc? 				{if ($s.retval != null) setClassSchema($s.retval);}			
+whereExpr [ExprSchema es] returns [ExprEvalTree retval]
+@init {setExprSchema(es);}
+	: s=schemaDesc? 				{if ($s.retval != null) setExprSchema($s.retval);}			
 	  e=orExpr					{retval = new ExprEvalTree($e.retval);};
 			
 orExpr returns [PredicateExpr retval]
@@ -413,10 +413,10 @@ qstringList returns [List<String> retval]
 column [List<String> list]	
 	: charstr=varRef 				{if (list != null) list.add($charstr.text);};
 
-schemaDesc returns [ClassSchema retval]
+schemaDesc returns [ExprSchema retval]
 @init {List<VarDesc> varList = Lists.newArrayList();}
 	: LCURLY (varDesc[varList] (COMMA varDesc[varList])*)? RCURLY
-							{retval = new ClassSchema(varList);}
+							{retval = new ExprSchema(varList);}
 	;
 	
 varDesc [List<VarDesc> list] 

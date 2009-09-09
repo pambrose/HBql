@@ -11,8 +11,8 @@ import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 import com.imap4j.hbase.hbql.io.Serialization;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
 import com.imap4j.hbase.hbql.schema.ColumnAttrib;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 
@@ -29,7 +29,7 @@ public class HUtil {
 
     public final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.HADOOP);
 
-    public static List<Scan> getScanList(final ClassSchema classSchema, final List<String> fieldList, final WhereArgs whereExpr) throws IOException, HPersistException {
+    public static List<Scan> getScanList(final ExprSchema exprSchema, final List<String> fieldList, final WhereArgs whereExpr) throws IOException, HPersistException {
 
         final List<Scan> scanList = Lists.newArrayList();
         final KeyRangeArgs keys = whereExpr.getKeyRangeArgs();
@@ -52,10 +52,10 @@ public class HUtil {
 
             // Set column names
             for (final String attribName : fieldList) {
-                final ColumnAttrib attrib = (ColumnAttrib)classSchema.getVariableAttribByVariableName(attribName);
+                final ColumnAttrib attrib = (ColumnAttrib)exprSchema.getVariableAttribByVariableName(attribName);
 
                 if (attrib == null)
-                    throw new HPersistException("Instance variable " + classSchema.getClazz().getName()
+                    throw new HPersistException("Instance variable " + exprSchema.getClazz().getName()
                                                 + "." + attribName + " does not exist");
 
                 // If it is a map, then request all columns for family
@@ -73,7 +73,7 @@ public class HUtil {
             final ExprEvalTree serverFilter = whereExpr.getServerFilterArgs();
             if (serverFilter != null) {
                 List<ExprVariable> names = serverFilter.getExprVariables();
-                scan.setFilter(new HBqlFilter(classSchema, serverFilter));
+                scan.setFilter(new HBqlFilter(exprSchema, serverFilter));
             }
         }
 

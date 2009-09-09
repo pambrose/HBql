@@ -4,7 +4,7 @@ import com.imap4j.hbase.antlr.args.QueryArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
@@ -40,21 +40,21 @@ public class HQuery<T extends HPersistable> {
 
     public void execute() throws IOException, HPersistException {
 
-        final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ClassSchema)null);
-        final ClassSchema classSchema = ClassSchema.getClassSchema(args.getTableName());
-        final List<String> fieldList = (args.getColumnList() == null) ? classSchema.getFieldList() : args.getColumnList();
-        final String tableName = classSchema.getTableName();
+        final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ExprSchema)null);
+        final ExprSchema exprSchema = ExprSchema.getExprSchema(args.getTableName());
+        final List<String> fieldList = (args.getColumnList() == null) ? exprSchema.getFieldList() : args.getColumnList();
+        final String tableName = exprSchema.getTableName();
         final HTable table = new HTable(new HBaseConfiguration(), tableName);
         final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
-        final List<Scan> scanList = HUtil.getScanList(classSchema, fieldList, args.getWhereExpr());
+        final List<Scan> scanList = HUtil.getScanList(exprSchema, fieldList, args.getWhereExpr());
 
         for (final Scan scan : scanList) {
             ResultScanner resultScanner = null;
             try {
                 resultScanner = table.getScanner(scan);
                 for (final Result result : resultScanner) {
-                    final HPersistable recordObj = HUtil.ser.getHPersistable(classSchema, scan, result);
-                    if (clientFilter == null || clientFilter.evaluate(new EvalContext(classSchema, recordObj)))
+                    final HPersistable recordObj = HUtil.ser.getHPersistable(exprSchema, scan, result);
+                    if (clientFilter == null || clientFilter.evaluate(new EvalContext(exprSchema, recordObj)))
                         this.getQueryListener().onEachRow((T)recordObj);
                 }
             }

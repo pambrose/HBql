@@ -11,7 +11,7 @@ import com.imap4j.hbase.hbql.expr.value.var.DateAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.IntegerAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.LongAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.StringAttribRef;
-import com.imap4j.hbase.hbql.schema.ClassSchema;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.FieldType;
 import com.imap4j.hbase.hbql.schema.VariableAttrib;
 import org.antlr.runtime.BitSet;
@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class HBaseParser extends Parser {
 
-    private ClassSchema classSchema = null;
+    private ExprSchema exprSchema = null;
 
     public HBaseParser(final TokenStream input) {
         super(input);
@@ -42,19 +42,19 @@ public class HBaseParser extends Parser {
         super(input, state);
     }
 
-    protected ClassSchema getClassSchema() {
-        return this.classSchema;
+    protected ExprSchema getExprSchema() {
+        return this.exprSchema;
     }
 
-    protected void setClassSchema(final ClassSchema classSchema) {
-        if (classSchema != null)
-            this.classSchema = classSchema;
+    protected void setExprSchema(final ExprSchema exprSchema) {
+        if (exprSchema != null)
+            this.exprSchema = exprSchema;
     }
 
-    protected void setClassSchema(final String tablename) throws RecognitionException {
+    protected void setExprSchema(final String tablename) throws RecognitionException {
         try {
-            final ClassSchema classSchema = ClassSchema.getClassSchema(tablename);
-            this.setClassSchema(classSchema);
+            final ExprSchema exprSchema = ExprSchema.getExprSchema(tablename);
+            this.setExprSchema(exprSchema);
         }
         catch (HPersistException e) {
             System.out.println("Unknown table: " + tablename);
@@ -70,23 +70,23 @@ public class HBaseParser extends Parser {
 
     protected boolean isAttribType(final TokenStream input, final FieldType type) {
 
-        if (this.getClassSchema() == null)
+        if (this.getExprSchema() == null)
             return false;
 
         final String s = input.LT(1).getText();
         if (s == null)
             return false;
 
-        final VariableAttrib attrib = this.getClassSchema().getVariableAttribByVariableName(s);
+        final VariableAttrib attrib = this.getExprSchema().getVariableAttribByVariableName(s);
         return attrib != null && attrib.getFieldType() == type;
     }
 
 
     protected ValueExpr getValueExpr(final String var) throws RecognitionException {
 
-        if (this.getClassSchema() != null) {
+        if (this.getExprSchema() != null) {
 
-            final VariableAttrib attrib = this.getClassSchema().getVariableAttribByVariableName(var);
+            final VariableAttrib attrib = this.getExprSchema().getVariableAttribByVariableName(var);
 
             if (attrib != null) {
                 switch (attrib.getFieldType()) {

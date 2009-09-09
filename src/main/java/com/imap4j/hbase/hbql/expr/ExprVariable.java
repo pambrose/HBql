@@ -29,7 +29,7 @@ public class ExprVariable {
     }
 
     public VariableAttrib getVariableAttrib(final EvalContext context) {
-        return context.getClassSchema().getVariableAttribByVariableName(this.getName());
+        return context.getExprSchema().getVariableAttribByVariableName(this.getName());
     }
 
 }
