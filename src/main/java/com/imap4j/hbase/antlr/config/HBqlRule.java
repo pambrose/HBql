@@ -13,7 +13,10 @@ public enum HBqlRule {
     SELECT(HBqlGrammar.HBql, "selectStmt"),
     EXEC(HBqlGrammar.HBql, "execCommand"),
     WHERE_EXPR(HBqlGrammar.HBql, "whereExpr"),
-    WHERE_VALUE(HBqlGrammar.HBql, "whereValue");
+    WHERE_VALUE(HBqlGrammar.HBql, "whereValue"),
+    STRING_EXPR(HBqlGrammar.HBql, "stringExpr"),
+    NUMBER_EXPR(HBqlGrammar.HBql, "numericTest"),
+    DATE_EXPR(HBqlGrammar.HBql, "dateTest");
 
     private final GrammarRule grammarRule;
 

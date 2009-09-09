@@ -166,5 +166,4 @@ public class HBql {
 
         throw new HPersistException("Unknown variable: " + var);
     }
-
 }

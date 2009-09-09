@@ -9,7 +9,6 @@ import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,14 +53,14 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public Date getValue(final EvalContext context) throws HPersistException {
+    public Long getValue(final EvalContext context) throws HPersistException {
 
         final String pattern = this.getFormatExpr().getValue(context);
         final String datestr = this.getExpr().getValue(context);
         final SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 
         try {
-            return formatter.parse(datestr);
+            return formatter.parse(datestr).getTime();
         }
         catch (ParseException e) {
             throw new HPersistException(e.getMessage());

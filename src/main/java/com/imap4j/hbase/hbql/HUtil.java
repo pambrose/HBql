@@ -4,7 +4,11 @@ import com.google.common.collect.Lists;
 import com.imap4j.hbase.antlr.args.KeyRangeArgs;
 import com.imap4j.hbase.antlr.args.VersionArgs;
 import com.imap4j.hbase.antlr.args.WhereArgs;
+import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
+import com.imap4j.hbase.hbql.expr.node.DateValue;
+import com.imap4j.hbase.hbql.expr.node.NumberValue;
+import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.hbql.schema.ClassSchema;
@@ -90,4 +94,20 @@ public class HUtil {
         sbuf.append(strval);
         return sbuf.toString();
     }
+
+    public static String parseStringExpr(final String s) throws HPersistException {
+        final StringValue value = (StringValue)HBqlRule.STRING_EXPR.parse(s);
+        return value.getValue(null);
+    }
+
+    public static Long parseDateExpr(final String s) throws HPersistException {
+        final DateValue value = (DateValue)HBqlRule.DATE_EXPR.parse(s);
+        return value.getValue(null);
+    }
+
+    public static Number parseNumericExpr(final String s) throws HPersistException {
+        final NumberValue value = (NumberValue)HBqlRule.NUMBER_EXPR.parse(s);
+        return value.getValue(null);
+    }
+
 }

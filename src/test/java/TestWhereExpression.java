@@ -1,4 +1,5 @@
 import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbql.HUtil;
 import com.imap4j.hbase.hbql.test.WhereExprTests;
 import org.junit.Test;
 
@@ -66,7 +67,14 @@ public class TestWhereExpression extends WhereExprTests {
         assertEvalTrue("DATE('mm/dd/yy', '10/31/94') - DAY(2) < DATE('mm/dd/yy', '10/30/94')");
         assertEvalFalse("DATE('mm/dd/yy', '10/31/94') - DAY(1) < DATE('mm/dd/yy', '10/30/94')");
        */
-        assertEvalTrue("DATE('mm/dd/yyyy', '10/31/1994') - DAY(1) - MINUTE(1) < DATE('mm/dd/yyyy', '10/30/1994')");
+
+        //Long val1 = HUtil.parseDateExpr("DAY(1)");
+        //System.out.println("Val = " + val1);
+        //System.out.println("Val = " + HUtil.parseDateExpr("MILLI(1) - MILLI(2) - MILLI(3) - MILLI(4)"));
+        System.out.println("Val = " + HUtil.parseNumericExpr("(2-2)-2"));
+        System.out.println("Val = " + HUtil.parseNumericExpr("2-(2-2)"));
+        System.out.println("Val = " + HUtil.parseNumericExpr("2-2-2"));
+        //assertEvalTrue("DATE('mm/dd/yyyy', '10/31/1994') - DAY(1) - MINUTE(1) < DATE('mm/dd/yyyy', '10/30/1994')");
 
     }
 

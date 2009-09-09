@@ -6,8 +6,6 @@ import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
 
-import java.util.Date;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -63,9 +61,9 @@ public class DateBetweenStmt extends GenericBetweenStmt implements PredicateExpr
     @Override
     public Boolean evaluate(final EvalContext context) throws HPersistException {
 
-        final Date dateval = this.getExpr().getValue(context);
-        final boolean retval = dateval.compareTo(this.getLower().getValue(context)) >= 0
-                               && dateval.compareTo(this.getUpper().getValue(context)) <= 0;
+        final long dateval = this.getExpr().getValue(context);
+        final boolean retval = dateval >= this.getLower().getValue(context)
+                               && dateval <= this.getUpper().getValue(context);
 
         return (this.isNot()) ? !retval : retval;
     }

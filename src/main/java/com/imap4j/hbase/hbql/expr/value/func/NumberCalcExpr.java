@@ -39,7 +39,8 @@ public class NumberCalcExpr extends CalcExpr implements NumberValue {
     @Override
     public List<ExprVariable> getExprVariables() {
         final List<ExprVariable> retval = this.getExpr1().getExprVariables();
-        retval.addAll(this.getExpr2().getExprVariables());
+        if (this.getExpr2() != null)
+            retval.addAll(this.getExpr2().getExprVariables());
         return retval;
     }
 

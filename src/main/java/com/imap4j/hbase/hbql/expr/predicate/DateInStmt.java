@@ -8,7 +8,6 @@ import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -95,10 +94,10 @@ public class DateInStmt extends GenericInStmt implements PredicateExpr {
 
     private boolean evaluateList(final EvalContext context) throws HPersistException {
 
-        final Date attribVal = this.getExpr().getValue(context);
+        final long attribVal = this.getExpr().getValue(context);
         for (final DateValue obj : this.getValList()) {
-            final Date val = obj.getValue(context);
-            if (attribVal.equals(val))
+            final long val = obj.getValue(context);
+            if (attribVal == val)
                 return true;
         }
 

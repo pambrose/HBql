@@ -7,7 +7,6 @@ import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,8 +48,9 @@ public class DateNullCompare extends GenericNotStmt implements PredicateExpr {
 
     @Override
     public Boolean evaluate(final EvalContext context) throws HPersistException {
-        final Date val = this.getExpr().getValue(context);
-        final boolean retval = (val == null);
+        final long val = this.getExpr().getValue(context);
+        // TODO not sure what to do here
+        final boolean retval = (val >= 0);
         return (this.isNot()) ? !retval : retval;
     }
 

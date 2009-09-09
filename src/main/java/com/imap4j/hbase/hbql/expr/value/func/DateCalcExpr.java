@@ -6,7 +6,6 @@ import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,7 +39,8 @@ public class DateCalcExpr extends CalcExpr implements DateValue {
     @Override
     public List<ExprVariable> getExprVariables() {
         final List<ExprVariable> retval = this.getExpr1().getExprVariables();
-        retval.addAll(this.getExpr2().getExprVariables());
+        if (this.getExpr2() != null)
+            retval.addAll(this.getExpr2().getExprVariables());
         return retval;
     }
 
@@ -63,20 +63,19 @@ public class DateCalcExpr extends CalcExpr implements DateValue {
     }
 
     @Override
-    public Date getValue(final EvalContext context) throws HPersistException {
+    public Long getValue(final EvalContext context) throws HPersistException {
 
-        final long val1 = this.getExpr1().getValue(context).getTime();
-        final long val2 = (this.getExpr2() != null) ? (this.getExpr2().getValue(context)).getTime() : 0;
+        final long val1 = this.getExpr1().getValue(context);
+        final long val2 = (this.getExpr2() != null) ? (this.getExpr2().getValue(context)) : 0;
 
         switch (this.getOp()) {
             case PLUS:
-                return new Date(val1 + val2);
+                return val1 + val2;
             case MINUS:
-                return new Date(val1 - val2);
+                return val1 - val2;
         }
 
         throw new HPersistException("Error in DateCalcExpr.getValue() " + this.getOp());
-
     }
 
     @Override

@@ -202,6 +202,9 @@ compOp returns [CompareExpr.OP retval]
 	| (LTGT | BANGEQ)				{retval = CompareExpr.OP.NOTEQ;}
 	;
 
+numericTest returns [NumberValue retval]
+	: n=numericExpr					{retval = $n.retval;};
+	
 // Numeric calculations
 numericExpr returns [NumberValue retval]
 	: m=multdivNumericExpr (op=plusMinus n=numericExpr)?	
@@ -215,13 +218,12 @@ signedNumericPrimary returns [NumberValue retval]
 	: (s=plusMinus)? n=numericPrimary 		{retval = ($s.retval == CalcExpr.OP.MINUS) ? new NumberCalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) :  $n.retval;};
 
 numericPrimary returns [NumberValue retval]
-	: n=numberExpr					{retval = $n.retval;}
+	: n=numericTern					{retval = $n.retval;}
 	| LPAREN s=numericExpr RPAREN			{retval = $s.retval;}
 	;
 	   						 
 // Simple typed exprs
-numberExpr returns [NumberValue retval]
-options {backtrack=true;}	
+numericTern returns [NumberValue retval]
 	: l=numberVal					{retval = $l.retval;} 
 	| LBRACE keyIF e=orExpr keyTHEN n1=numericExpr keyELSE n2=numericExpr RBRACE 	
 							{retval = new NumberTernary($e.retval, $n1.retval, $n2.retval);}
@@ -232,7 +234,7 @@ numberVal returns [NumberValue retval]
 	| i=numberAttribVar				{retval = $i.retval;}
 	//| f=funcReturningInteger
 	;
-
+	
 // Supports string concatenation -- avoids creating a list everytime
 stringExpr returns [StringValue retval]
 @init {
@@ -255,7 +257,6 @@ stringParen returns [StringValue retval]
 	;
 		
 stringVal returns [StringValue retval]
-options {backtrack=true;}	
 	: sl=stringLiteral				{retval = $sl.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
 	| n=keyNULL					{retval = new StringNullLiteral();}
@@ -265,13 +266,11 @@ options {backtrack=true;}
 	;
 
 booleanExpr returns [BooleanValue retval]
-options {backtrack=true;}	
 	: b=booleanVal					{retval = $b.retval;}
 	| LPAREN e=orExpr RPAREN			{retval = new BooleanPredicate($e.retval);}
 	;
 
 booleanVal returns [BooleanValue retval]
-options {backtrack=true;}	
 	: b=booleanLiteral				{retval = $b.retval;}
 	//| f=funcReturningBoolean
 	| LBRACE keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr RBRACE	
@@ -290,7 +289,11 @@ rangeVal returns [DateValue retval]
 	: d1=dateLiteral				{retval = $d1.retval;}
 	| d2=funcReturningDatetime			{retval = $d2.retval;}
 	;
-	
+
+dateTest returns [DateValue retval]
+	: d=dateExpr					{retval = $d.retval;}
+	;
+		
 dateExpr returns [DateValue retval]
 	: m=datePrimary (op=plusMinus n=dateExpr)?	{$dateExpr.retval= ($n.text == null) ? $m.retval : new DateCalcExpr($m.retval, $op.retval, $n.retval);};
 

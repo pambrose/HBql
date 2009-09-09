@@ -3,8 +3,6 @@ package com.imap4j.hbase.hbql.expr.node;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 
-import java.util.Date;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -13,5 +11,5 @@ import java.util.Date;
  */
 public interface DateValue extends ValueExpr {
 
-    Date getValue(final EvalContext context) throws HPersistException;
+    Long getValue(final EvalContext context) throws HPersistException;
 }

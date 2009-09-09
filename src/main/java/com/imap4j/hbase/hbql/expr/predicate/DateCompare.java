@@ -7,7 +7,6 @@ import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,22 +61,22 @@ public class DateCompare extends CompareExpr implements PredicateExpr {
     @Override
     public Boolean evaluate(final EvalContext context) throws HPersistException {
 
-        final Date val1 = this.getExpr1().getValue(context);
-        final Date val2 = this.getExpr2().getValue(context);
+        final long val1 = this.getExpr1().getValue(context);
+        final long val2 = this.getExpr2().getValue(context);
 
         switch (this.getOp()) {
             case EQ:
-                return val1.equals(val2);
+                return val1 == val2;
             case NOTEQ:
-                return !val1.equals(val2);
+                return val1 != val2;
             case GT:
-                return val1.compareTo(val2) > 0;
+                return val1 > val2;
             case GTEQ:
-                return val1.compareTo(val2) >= 0;
+                return val1 >= val2;
             case LT:
-                return val1.compareTo(val2) < 0;
+                return val1 < val2;
             case LTEQ:
-                return val1.compareTo(val2) <= 0;
+                return val1 <= val2;
         }
         throw new HPersistException("Error in DateCompare.evaluate()");
     }

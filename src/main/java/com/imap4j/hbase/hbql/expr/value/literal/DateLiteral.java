@@ -41,21 +41,21 @@ public class DateLiteral extends GenericLiteral implements DateValue {
         }
     }
 
-    private final Date dateval;
+    private final long dateval;
 
     public DateLiteral(final Date dateval) {
-        this.dateval = dateval;
+        this.dateval = dateval.getTime();
     }
 
     public DateLiteral(final long val) {
-        this.dateval = new Date(val);
+        this.dateval = val;
     }
 
     public DateLiteral(final Type type) {
         if (type.isAdjustment())
-            this.dateval = new Date(getNow() + type.getValue());
+            this.dateval = getNow() + type.getValue();
         else
-            this.dateval = new Date(type.getValue());
+            this.dateval = type.getValue();
     }
 
     private static long getNow() {
@@ -67,7 +67,7 @@ public class DateLiteral extends GenericLiteral implements DateValue {
     }
 
     @Override
-    public Date getValue(final EvalContext context) {
+    public Long getValue(final EvalContext context) {
         return this.dateval;
     }
 }

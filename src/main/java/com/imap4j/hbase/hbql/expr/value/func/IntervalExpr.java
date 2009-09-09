@@ -7,7 +7,6 @@ import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -68,10 +67,10 @@ public class IntervalExpr implements DateValue {
     }
 
     @Override
-    public Date getValue(final EvalContext context) throws HPersistException {
+    public Long getValue(final EvalContext context) throws HPersistException {
         final Number num = this.getExpr().getValue(context);
         final long val = num.longValue();
-        return new Date(val * this.getType().getIntervalMillis());
+        return val * this.getType().getIntervalMillis();
     }
 
     @Override

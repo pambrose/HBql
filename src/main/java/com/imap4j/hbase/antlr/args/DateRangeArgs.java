@@ -3,8 +3,6 @@ package com.imap4j.hbase.antlr.args;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.expr.node.DateValue;
 
-import java.util.Date;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -13,15 +11,15 @@ import java.util.Date;
  */
 public class DateRangeArgs {
 
-    private Date lower = null;
-    private Date upper = null;
+    private long lower = -1;
+    private long upper = -1;
 
     public DateRangeArgs(final DateValue lower, final DateValue upper) {
         try {
-            if (this.lower != null)
+            if (this.lower != -1)
                 this.lower = lower.getValue(null);
 
-            if (this.upper != null)
+            if (this.upper != -1)
                 this.upper = upper.getValue(null);
         }
         catch (HPersistException e) {
@@ -29,11 +27,11 @@ public class DateRangeArgs {
         }
     }
 
-    public Date getLower() {
+    public long getLower() {
         return lower;
     }
 
-    public Date getUpper() {
+    public long getUpper() {
         return upper;
     }
 }
