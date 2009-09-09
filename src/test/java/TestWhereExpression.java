@@ -52,7 +52,6 @@ public class TestWhereExpression extends WhereExprTests {
 
     @Test
     public void dateCompares() throws HPersistException {
-        /*
         assertEvalTrue("NOW == NOW");
         assertEvalTrue("NOW != YESTERDAY");
         assertEvalTrue("NOW > YESTERDAY");
@@ -66,15 +65,8 @@ public class TestWhereExpression extends WhereExprTests {
         assertEvalTrue("DATE('mm/dd/yy', '10/31/94') - DAY(1) == DATE('mm/dd/yy', '10/30/94')");
         assertEvalTrue("DATE('mm/dd/yy', '10/31/94') - DAY(2) < DATE('mm/dd/yy', '10/30/94')");
         assertEvalFalse("DATE('mm/dd/yy', '10/31/94') - DAY(1) < DATE('mm/dd/yy', '10/30/94')");
-       */
-
-        //Long val1 = HUtil.parseDateExpr("DAY(1)");
-        //System.out.println("Val = " + val1);
-        //System.out.println("Val = " + HUtil.parseDateExpr("MILLI(1) - MILLI(2) - MILLI(3) - MILLI(4)"));
-        System.out.println("Val = " + HUtil.parseNumericExpr("(2-2)-2"));
-        System.out.println("Val = " + HUtil.parseNumericExpr("2-(2-2)"));
-        System.out.println("Val = " + HUtil.parseNumericExpr("2-2-2"));
-        //assertEvalTrue("DATE('mm/dd/yyyy', '10/31/1994') - DAY(1) - MINUTE(1) < DATE('mm/dd/yyyy', '10/30/1994')");
+        assertEvalTrue("DATE('mm/dd/yyyy', '10/31/1994') - DAY(1) - MILLI(1) < DATE('mm/dd/yyyy', '10/31/1994')  - DAY(1) ");
+        assertEvalTrue("DATE('mm/dd/yyyy', '10/31/1994') - DAY(1) - MILLI(1) == DATE('mm/dd/yyyy', '10/30/1994')  - MILLI(1) ");
 
     }
 
@@ -115,6 +107,16 @@ public class TestWhereExpression extends WhereExprTests {
         assertEvalTrue("(4 * 5) == 20");
         assertEvalTrue("(40 % 6) == 4");
         assertEvalFalse("(40 % 6) == 3");
+
+        assertTrue(HUtil.parseNumericExpr("1-2-3-4").intValue() == (1 - 2 - 3 - 4));
+        assertTrue(HUtil.parseNumericExpr("(2-2)-2").intValue() == ((2 - 2) - 2));
+        assertTrue(HUtil.parseNumericExpr("2-(2-2)").intValue() == (2 - (2 - 2)));
+        assertTrue(HUtil.parseNumericExpr("2-2-2").intValue() == (2 - 2 - 2));
+        assertTrue(HUtil.parseNumericExpr("2*3-4*(((20/5)))+2-(2-3-4*3)")
+                .intValue() == (2 * 3 - 4 * (((20 / 5))) + 2 - (2 - 3 - 4 * 3)));
+        assertTrue(HUtil.parseNumericExpr("2-(-4)").intValue() == (2 - (-4)));
+        assertTrue(HUtil.parseNumericExpr("(7-4)+2").intValue() == ((7 - 4) + 2));
+        assertTrue(HUtil.parseNumericExpr("7-(4+2)").intValue() == (7 - (4 + 2)));
     }
 
     @Test

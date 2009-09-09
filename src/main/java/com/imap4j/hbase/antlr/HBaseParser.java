@@ -1,7 +1,12 @@
 package com.imap4j.hbase.antlr;
 
 import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbql.expr.node.DateValue;
+import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.ValueExpr;
+import com.imap4j.hbase.hbql.expr.value.func.CalcExpr;
+import com.imap4j.hbase.hbql.expr.value.func.DateCalcExpr;
+import com.imap4j.hbase.hbql.expr.value.func.NumberCalcExpr;
 import com.imap4j.hbase.hbql.expr.value.var.DateAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.IntegerAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.LongAttribRef;
@@ -16,6 +21,8 @@ import org.antlr.runtime.Parser;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -146,5 +153,27 @@ public class HBaseParser extends Parser {
         else {
             throw re;
         }
+    }
+
+    public NumberValue getLeftAssociativeNumberValues(final List<NumberValue> exprList, final List<CalcExpr.OP> opList) {
+
+        if (exprList.size() == 1)
+            return exprList.get(0);
+
+        NumberValue root = new NumberCalcExpr(exprList.get(0), opList.get(0), exprList.get(1));
+        for (int i = 1; i < opList.size(); i++)
+            root = new NumberCalcExpr(root, opList.get(i), exprList.get(i + 1));
+        return root;
+    }
+
+    public DateValue getLeftAssociativeDateValues(final List<DateValue> exprList, final List<CalcExpr.OP> opList) {
+
+        if (exprList.size() == 1)
+            return exprList.get(0);
+
+        DateValue root = new DateCalcExpr(exprList.get(0), opList.get(0), exprList.get(1));
+        for (int i = 1; i < opList.size(); i++)
+            root = new DateCalcExpr(root, opList.get(i), exprList.get(i + 1));
+        return root;
     }
 }

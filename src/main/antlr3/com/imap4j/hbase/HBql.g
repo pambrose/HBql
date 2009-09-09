@@ -206,16 +206,18 @@ numericTest returns [NumberValue retval]
 	: n=numericExpr					{retval = $n.retval;};
 	
 // Numeric calculations
-numericExpr returns [NumberValue retval]
-	: m=multdivNumericExpr (op=plusMinus n=numericExpr)?	
-							{$numericExpr.retval= ($n.text == null) ? $m.retval : new NumberCalcExpr($m.retval, $op.retval, $n.retval);};
-
-multdivNumericExpr returns [NumberValue retval]
-	: c=signedNumericPrimary (op=multDiv m=multdivNumericExpr)?	
-							{$multdivNumericExpr.retval = ($m.text == null) ? $c.retval : new NumberCalcExpr($c.retval, $op.retval, $m.retval);};
-
+numericExpr returns [NumberValue retval] 
+@init {List<NumberValue> exprList = Lists.newArrayList(); List<CalcExpr.OP> opList = Lists.newArrayList(); }
+	: m=multNumericExpr {exprList.add($m.retval);} (op=plusMinus n=multNumericExpr {opList.add($op.retval); exprList.add($n.retval);})*	
+							{$numericExpr.retval = getLeftAssociativeNumberValues(exprList, opList);};
+	
+multNumericExpr returns [NumberValue retval]
+@init {List<NumberValue> exprList = Lists.newArrayList(); List<CalcExpr.OP> opList = Lists.newArrayList(); }
+	: m=signedNumericPrimary {exprList.add($m.retval);} (op=multDiv n=signedNumericPrimary {opList.add($op.retval); exprList.add($n.retval);})*	
+							{$multNumericExpr.retval = getLeftAssociativeNumberValues(exprList, opList);};
+	
 signedNumericPrimary returns [NumberValue retval]
-	: (s=plusMinus)? n=numericPrimary 		{retval = ($s.retval == CalcExpr.OP.MINUS) ? new NumberCalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) :  $n.retval;};
+	: (s=plusMinus)? n=numericPrimary 		{$signedNumericPrimary.retval = ($s.retval == CalcExpr.OP.MINUS) ? new NumberCalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) :  $n.retval;};
 
 numericPrimary returns [NumberValue retval]
 	: n=numericTern					{retval = $n.retval;}
@@ -236,6 +238,7 @@ numberVal returns [NumberValue retval]
 	;
 	
 // Supports string concatenation -- avoids creating a list everytime
+// TODO Get rid of List since using ? operator
 stringExpr returns [StringValue retval]
 @init {
   StringValue firstval = null;  
@@ -278,7 +281,10 @@ booleanVal returns [BooleanValue retval]
 	;
 	
 rangeExpr returns [DateValue retval]
-	: m=rangePrimary (op=plusMinus n=rangeExpr)?	{$rangeExpr.retval= ($n.text == null) ? $m.retval : new DateCalcExpr($m.retval, $op.retval, $n.retval);};
+@init {List<DateValue> exprList = Lists.newArrayList(); List<CalcExpr.OP> opList = Lists.newArrayList();}
+	: m=rangePrimary {exprList.add($m.retval);} (op=plusMinus n=rangePrimary {opList.add($op.retval); exprList.add($n.retval);})*
+							{$rangeExpr.retval = getLeftAssociativeDateValues(exprList, opList);}
+	;
 
 rangePrimary returns [DateValue retval]
 	: d1=rangeVal					{retval = $d1.retval;}
@@ -295,7 +301,9 @@ dateTest returns [DateValue retval]
 	;
 		
 dateExpr returns [DateValue retval]
-	: m=datePrimary (op=plusMinus n=dateExpr)?	{$dateExpr.retval= ($n.text == null) ? $m.retval : new DateCalcExpr($m.retval, $op.retval, $n.retval);};
+@init {List<DateValue> exprList = Lists.newArrayList(); List<CalcExpr.OP> opList = Lists.newArrayList();}
+	: m=datePrimary {exprList.add($m.retval);} (op=plusMinus n=datePrimary {opList.add($op.retval); exprList.add($n.retval);})*	
+							{$dateExpr.retval = getLeftAssociativeDateValues(exprList, opList);};
 
 datePrimary returns [DateValue retval]
 	: d1=dateVal					{retval = $d1.retval;}
