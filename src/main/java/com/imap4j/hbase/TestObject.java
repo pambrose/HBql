@@ -140,7 +140,9 @@ public class TestObject implements HPersistable {
         HQuery<TestObject> q2 =
                 new HQuery<TestObject>("select * authorVersions from TestObject WITH "
                                        + "KEYS  '000002' : '000005','000007':LAST "
-                                       + "VERSIONS 20 ",
+                                       + "TIME RANGE NOW : TOMORROW"
+                                       + "VERSIONS 5 "
+                        ,
                                        new HQueryListenerAdapter<TestObject>() {
                                            public void onEachRow(final TestObject val) throws HPersistException {
 
