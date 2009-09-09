@@ -21,7 +21,7 @@ public class LongAttribRef extends GenericAttribRef implements NumberValue {
     @Override
     public Long getValue(final EvalContext context) throws HPersistException {
         final VariableAttrib variableAttrib = this.getExprVar().getVariableAttrib(context);
-        return (Long)variableAttrib.getValue(context.getRecordObj());
+        return (Long)variableAttrib.getValue(context.getObject());
     }
 
 }

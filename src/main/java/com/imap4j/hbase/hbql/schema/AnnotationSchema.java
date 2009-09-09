@@ -36,7 +36,7 @@ public class AnnotationSchema extends ExprSchema {
 
     private ColumnAttrib keyColumnAttrib = null;
 
-    public AnnotationSchema(final Class clazz) throws HPersistException {
+    private AnnotationSchema(final Class clazz) throws HPersistException {
 
         this.clazz = clazz;
 
@@ -63,10 +63,21 @@ public class AnnotationSchema extends ExprSchema {
             this.setColumnAttribListByFamilyName(family.name(), attribs);
         }
 
-        processAnnotations();
+        // First process all HColumn fields so we can do lookup from HColumnVersionMaps
+        for (final Field field : this.getClazz().getDeclaredFields())
+            if (field.getAnnotation(HColumn.class) != null)
+                this.processColumnAnnotation(field);
+
+        if (this.getKeyColumnAttrib() == null)
+            throw new HPersistException("Class " + this + " is missing an instance variable "
+                                        + "annotated with @HColumn(key=true)");
+
+        for (final Field field : this.getClazz().getDeclaredFields())
+            if (field.getAnnotation(HColumnVersionMap.class) != null)
+                this.processColumnVersionAnnotation(field);
     }
 
-    public static AnnotationSchema getAnnotationSchema(final String objname) throws HPersistException {
+    public synchronized static AnnotationSchema getAnnotationSchema(final String objname) throws HPersistException {
 
         // First see if already cached
         Class<?> clazz = getClassCacheMap().get(objname);
@@ -91,26 +102,18 @@ public class AnnotationSchema extends ExprSchema {
     }
 
     public static AnnotationSchema getAnnotationSchema(final HPersistable obj) throws HPersistException {
-        final Class<?> clazz = obj.getClass();
-        return getAnnotationSchema(clazz);
+        return getAnnotationSchema(obj.getClass());
     }
 
-    public static AnnotationSchema getAnnotationSchema(final Class<?> clazz) throws HPersistException {
+    public synchronized static AnnotationSchema getAnnotationSchema(final Class<?> clazz) throws HPersistException {
 
         AnnotationSchema schema = getAnnotationSchemaMap().get(clazz);
         if (schema != null)
             return schema;
 
-        synchronized (getAnnotationSchemaMap()) {
-            // Check again in case waiting for the lock
-            schema = getAnnotationSchemaMap().get(clazz);
-            if (schema != null)
-                return schema;
-
-            schema = new AnnotationSchema(clazz);
-            getAnnotationSchemaMap().put(clazz, schema);
-            return schema;
-        }
+        schema = new AnnotationSchema(clazz);
+        getAnnotationSchemaMap().put(clazz, schema);
+        return schema;
     }
 
     private static Class getClass(final String str) {
@@ -144,23 +147,6 @@ public class AnnotationSchema extends ExprSchema {
 
     public HFamily[] getFamilies() {
         return this.families;
-    }
-
-    private void processAnnotations() throws HPersistException {
-
-        // First process all HColumn fields so we can do lookup from HColumnVersionMaps
-        for (final Field field : this.getClazz().getDeclaredFields())
-            if (field.getAnnotation(HColumn.class) != null)
-                this.processColumnAnnotation(field);
-
-        if (this.getKeyColumnAttrib() == null)
-            throw new HPersistException("Class " + this + " is missing an instance variable "
-                                        + "annotated with @HColumn(key=true)");
-
-        for (final Field field : this.getClazz().getDeclaredFields())
-            if (field.getAnnotation(HColumnVersionMap.class) != null)
-                this.processColumnVersionAnnotation(field);
-
     }
 
     private void processColumnAnnotation(final Field field) throws HPersistException {

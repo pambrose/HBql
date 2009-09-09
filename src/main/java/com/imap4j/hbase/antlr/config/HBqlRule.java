@@ -12,8 +12,9 @@ public enum HBqlRule {
 
     SELECT(HBqlGrammar.HBql, "selectStmt"),
     EXEC(HBqlGrammar.HBql, "execCommand"),
-    WHERE_EXPR(HBqlGrammar.HBql, "whereExpr"),
-    WHERE_VALUE(HBqlGrammar.HBql, "whereValue"),
+    NODESC_WHERE_EXPR(HBqlGrammar.HBql, "nodescWhereExpr"),
+    DESC_WHERE_VALUE(HBqlGrammar.HBql, "descWhereExpr"),
+    WITH_EXPR(HBqlGrammar.HBql, "whereValue"),
     STRING_EXPR(HBqlGrammar.HBql, "stringExpr"),
     NUMBER_EXPR(HBqlGrammar.HBql, "numericTest"),
     DATE_EXPR(HBqlGrammar.HBql, "dateTest");

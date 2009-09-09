@@ -109,10 +109,10 @@ versions returns [VersionArgs retval]
 	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);};
 	
 serverFilter [ExprSchema es] returns [ExprEvalTree retval]
-	: keySERVER keyFILTER? w=whereExpr[es]		{retval = $w.retval;};
+	: keySERVER keyFILTER? w=descWhereExpr[es]		{retval = $w.retval;};
 	
 clientFilter [ExprSchema es] returns [ExprEvalTree retval]
-	: keyCLIENT keyFILTER? w=whereExpr[es]		{retval = $w.retval;};
+	: keyCLIENT keyFILTER? w=descWhereExpr[es]		{retval = $w.retval;};
 	
 keyRangeList returns [List<KeyRangeArgs.Range> retval]
 @init {retval = Lists.newArrayList();}
@@ -124,10 +124,15 @@ keyRange returns [KeyRangeArgs.Range retval]
 	| q1=QUOTED COLON q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
 	;
 
-whereExpr [ExprSchema es] returns [ExprEvalTree retval]
+nodescWhereExpr [ExprSchema es] returns [ExprEvalTree retval]
+@init {setExprSchema(es);}
+	 : e=orExpr					{retval = new ExprEvalTree($e.retval);};
+
+descWhereExpr [ExprSchema es] returns [ExprEvalTree retval]
 @init {setExprSchema(es);}
 	: s=schemaDesc? 				{if ($s.retval != null) setExprSchema($s.retval);}			
 	  e=orExpr					{retval = new ExprEvalTree($e.retval);};
+
 			
 orExpr returns [PredicateExpr retval]
 	: e1=andExpr (or e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanExpr($e1.retval, BooleanExpr.OP.OR, $e2.retval);};

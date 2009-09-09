@@ -15,12 +15,11 @@ import java.lang.reflect.Method;
  * Date: Sep 6, 2009
  * Time: 5:27:00 PM
  */
-public abstract class ColumnAttrib extends VariableAttrib {
+public abstract class ColumnAttrib extends FieldAttrib {
 
     private final String family, column, getter, setter;
     private final boolean mapKeysAsColumns;
 
-    private final transient Field field;
     protected transient Method getterMethod = null, setterMethod = null;
 
     public ColumnAttrib(final Field field,
@@ -30,15 +29,12 @@ public abstract class ColumnAttrib extends VariableAttrib {
                         final String getter,
                         final String setter,
                         final boolean mapKeysAsColumns) throws HPersistException {
-        super(fieldType);
-        this.field = field;
+        super(fieldType, field);
         this.family = family;
         this.column = (column.length() > 0) ? column : this.getVariableName();
         this.getter = getter;
         this.setter = setter;
         this.mapKeysAsColumns = mapKeysAsColumns;
-
-        setAccessible(this.getField());
 
         try {
             if (this.getGetter().length() > 0) {
@@ -82,26 +78,6 @@ public abstract class ColumnAttrib extends VariableAttrib {
 
     public abstract boolean isCurrentValueAttrib();
 
-    @Override
-    public String toString() {
-        return this.getObjectQualifiedName();
-    }
-
-    public String getVariableName() {
-        return this.getField().getName();
-    }
-
-    public String getObjectQualifiedName() {
-        return this.getEnclosingClass().getName() + "." + this.getVariableName();
-    }
-
-    public static String getObjectQualifiedName(final Field field) {
-        return field.getDeclaringClass().getName() + "." + field.getName();
-    }
-
-    protected Class getEnclosingClass() {
-        return this.getField().getDeclaringClass();
-    }
 
     protected String getGetter() {
         return this.getter;
@@ -129,10 +105,6 @@ public abstract class ColumnAttrib extends VariableAttrib {
 
     public String getColumnName() {
         return this.column;
-    }
-
-    protected Field getField() {
-        return this.field;
     }
 
     public boolean isMapKeysAsColumns() {
@@ -176,16 +148,6 @@ public abstract class ColumnAttrib extends VariableAttrib {
         }
     }
 
-    public Object getValue(final Object recordObj) throws HPersistException {
-        try {
-            return this.getField().get(recordObj);
-        }
-        catch (IllegalAccessException e) {
-            throw new HPersistException("Error getting value of " + this.getObjectQualifiedName());
-        }
-
-    }
-
     public byte[] getValueAsBytes(final Serialization ser,
                                   final HPersistable recordObj) throws HPersistException, IOException {
 
@@ -215,16 +177,6 @@ public abstract class ColumnAttrib extends VariableAttrib {
             else
                 return ser.getScalarFromBytes(this.getFieldType(), b);
         }
-    }
-
-    public void setValue(final HPersistable newobj, final Object val) {
-        try {
-            this.getField().set(newobj, val);
-        }
-        catch (IllegalAccessException e) {
-            throw new RuntimeException("Error setting value of " + this.getObjectQualifiedName());
-        }
-
     }
 
     public void setValue(final Serialization ser,

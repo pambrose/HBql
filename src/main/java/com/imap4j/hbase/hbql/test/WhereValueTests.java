@@ -22,7 +22,7 @@ public class WhereValueTests {
     }
 
     private static boolean evalWhereValue(final String expr) throws HPersistException {
-        final WhereArgs args = (WhereArgs)HBqlRule.WHERE_VALUE.parse(expr, (ExprSchema)null);
+        final WhereArgs args = (WhereArgs)HBqlRule.WITH_EXPR.parse(expr, (ExprSchema)null);
         return args != null;
     }
 

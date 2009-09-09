@@ -21,6 +21,6 @@ public class StringAttribRef extends GenericAttribRef implements StringValue {
     @Override
     public String getValue(final EvalContext context) throws HPersistException {
         final VariableAttrib variableAttrib = this.getExprVar().getVariableAttrib(context);
-        return (String)variableAttrib.getValue(context.getRecordObj());
+        return (String)variableAttrib.getValue(context.getObject());
     }
 }

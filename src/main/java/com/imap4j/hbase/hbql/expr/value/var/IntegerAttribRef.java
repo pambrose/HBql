@@ -21,7 +21,7 @@ public class IntegerAttribRef extends GenericAttribRef implements NumberValue {
     @Override
     public Integer getValue(final EvalContext context) throws HPersistException {
         final VariableAttrib variableAttrib = this.getExprVar().getVariableAttrib(context);
-        return (Integer)variableAttrib.getValue(context.getRecordObj());
+        return (Integer)variableAttrib.getValue(context.getObject());
     }
 
 }
