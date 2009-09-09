@@ -1,9 +1,9 @@
 package com.imap4j.hbase.hbql.schema;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HPersistable;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,14 +13,28 @@ import java.io.Serializable;
  */
 public abstract class VariableAttrib implements Serializable {
 
-    public boolean isKey() {
-        return false;
+    private final FieldType fieldType;
+
+    protected VariableAttrib(final FieldType fieldType) {
+        this.fieldType = fieldType;
     }
 
     public abstract String getVariableName();
 
-    public abstract FieldType getFieldType();
+    public abstract Object getValue(final Object recordObj) throws HPersistException;
 
-    public abstract Object getValue(final HPersistable recordObj) throws HPersistException;
+    public FieldType getFieldType() {
+        return this.fieldType;
+    }
+
+    public boolean isKey() {
+        return false;
+    }
+
+    protected static void setAccessible(final Field field) {
+        // Unlock private vars
+        if (!field.isAccessible())
+            field.setAccessible(true);
+    }
 
 }

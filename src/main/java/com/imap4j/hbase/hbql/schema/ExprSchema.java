@@ -46,11 +46,10 @@ public class ExprSchema implements Serializable {
         return this.getVariableAttribByVariableNameMap().get(name);
     }
 
-    protected void setVariableAttribByVariableName(final String name,
-                                                   final VariableAttrib variableAttrib) throws HPersistException {
+    protected void addVariableAttrib(final VariableAttrib variableAttrib) throws HPersistException {
+        final String name = variableAttrib.getVariableName();
         if (this.getVariableAttribByVariableNameMap().containsKey(name))
             throw new HPersistException(name + " already delcared");
         this.getVariableAttribByVariableNameMap().put(name, variableAttrib);
     }
-
 }

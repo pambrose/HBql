@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +17,6 @@ import java.lang.reflect.Modifier;
  */
 public abstract class ColumnAttrib extends VariableAttrib {
 
-    private final FieldType fieldType;
     private final String family, column, getter, setter;
     private final boolean mapKeysAsColumns;
 
@@ -32,8 +30,8 @@ public abstract class ColumnAttrib extends VariableAttrib {
                         final String getter,
                         final String setter,
                         final boolean mapKeysAsColumns) throws HPersistException {
+        super(fieldType);
         this.field = field;
-        this.fieldType = fieldType;
         this.family = family;
         this.column = (column.length() > 0) ? column : this.getVariableName();
         this.getter = getter;
@@ -103,10 +101,6 @@ public abstract class ColumnAttrib extends VariableAttrib {
 
     protected Class getEnclosingClass() {
         return this.getField().getDeclaringClass();
-    }
-
-    public FieldType getFieldType() {
-        return this.fieldType;
     }
 
     protected String getGetter() {
@@ -182,7 +176,7 @@ public abstract class ColumnAttrib extends VariableAttrib {
         }
     }
 
-    public Object getValue(final HPersistable recordObj) throws HPersistException {
+    public Object getValue(final Object recordObj) throws HPersistException {
         try {
             return this.getField().get(recordObj);
         }
@@ -238,17 +232,6 @@ public abstract class ColumnAttrib extends VariableAttrib {
                          final byte[] b) throws IOException, HPersistException {
         final Object val = this.getValueFromBytes(ser, newobj, b);
         this.setValue(newobj, val);
-    }
-
-    protected static void setAccessible(final Field field) {
-
-        // Unlock private vars
-        if (!field.isAccessible())
-            field.setAccessible(true);
-    }
-
-    protected static boolean isFinal(final Field field) {
-        return Modifier.isFinal(field.getModifiers());
     }
 
 }

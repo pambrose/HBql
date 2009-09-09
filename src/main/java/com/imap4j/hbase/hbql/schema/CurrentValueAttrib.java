@@ -4,6 +4,7 @@ import com.imap4j.hbase.hbql.HColumn;
 import com.imap4j.hbase.hbql.HPersistException;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 
 /**
@@ -32,7 +33,6 @@ public class CurrentValueAttrib extends ColumnAttrib {
         if (this.isMapKeysAsColumns() && (!Map.class.isAssignableFrom(this.getField().getType())))
             throw new HPersistException(this.getObjectQualifiedName() + " has @HColumn(mapKeysAsColumns=true) " +
                                         "annotation but doesn't implement the Map interface");
-
     }
 
     @Override
@@ -49,4 +49,7 @@ public class CurrentValueAttrib extends ColumnAttrib {
         return this.getColumnAnno().key();
     }
 
+    private static boolean isFinal(final Field field) {
+        return Modifier.isFinal(field.getModifiers());
+    }
 }

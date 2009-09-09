@@ -1,7 +1,6 @@
 package com.imap4j.hbase.hbql.schema;
 
 import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HPersistable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,11 +11,10 @@ import com.imap4j.hbase.hbql.HPersistable;
 public class VarDescAttrib extends VariableAttrib {
 
     private final String name;
-    private final FieldType type;
 
-    public VarDescAttrib(final String name, final FieldType type) {
+    public VarDescAttrib(final String name, final FieldType fieldType) {
+        super(fieldType);
         this.name = name;
-        this.type = type;
     }
 
     @Override
@@ -25,12 +23,7 @@ public class VarDescAttrib extends VariableAttrib {
     }
 
     @Override
-    public FieldType getFieldType() {
-        return this.type;
-    }
-
-    @Override
-    public Object getValue(final HPersistable recordObj) throws HPersistException {
+    public Object getValue(final Object recordObj) throws HPersistException {
         return null;
     }
 

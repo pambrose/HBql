@@ -188,14 +188,14 @@ public class AnnotationSchema extends ExprSchema {
             this.getColumnAttribListByFamilyName(family).add(columnAttrib);
         }
 
-        this.setVariableAttribByVariableName(field.getName(), columnAttrib);
+        this.addVariableAttrib(columnAttrib);
         this.setColumnAttribByFamilyQualifiedColumnName(columnAttrib.getFamilyQualifiedName(), columnAttrib);
     }
 
     private void processColumnVersionAnnotation(final Field field) throws HPersistException {
         final VersionAttrib versionAttrib = VersionAttrib.createVersionAttrib(this, field);
         this.setVersionAttribByFamilyQualifiedColumnName(versionAttrib.getFamilyQualifiedName(), versionAttrib);
-        this.setVariableAttribByVariableName(versionAttrib.getVariableName(), versionAttrib);
+        this.addVariableAttrib(versionAttrib);
     }
 
     public String getTableName() {

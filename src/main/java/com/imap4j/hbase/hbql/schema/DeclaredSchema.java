@@ -15,11 +15,10 @@ import java.util.List;
 public class DeclaredSchema extends ExprSchema {
 
     public DeclaredSchema(final TokenStream input, final List<VarDesc> varList) throws RecognitionException {
-
         try {
             for (final VarDesc var : varList) {
                 final VarDescAttrib attrib = new VarDescAttrib(var.getVarName(), var.getType());
-                setVariableAttribByVariableName(var.getVarName(), attrib);
+                addVariableAttrib(attrib);
             }
         }
         catch (HPersistException e) {
@@ -27,5 +26,4 @@ public class DeclaredSchema extends ExprSchema {
             throw new RecognitionException(input);
         }
     }
-
 }
