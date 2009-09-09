@@ -3,8 +3,8 @@ package com.imap4j.hbase.hbql.io;
 import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.HPersistable;
+import com.imap4j.hbase.hbql.schema.AnnotationSchema;
 import com.imap4j.hbase.hbql.schema.ColumnAttrib;
-import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.FieldType;
 import com.imap4j.hbase.hbql.schema.VersionAttrib;
 import org.apache.hadoop.hbase.KeyValue;
@@ -67,20 +67,20 @@ public abstract class Serialization {
         return this.getScalarFromBytes(type, b);
     }
 
-    public HPersistable getHPersistable(final ExprSchema exprSchema,
+    public HPersistable getHPersistable(final AnnotationSchema schema,
                                         final Scan scan,
                                         final Result result) throws HPersistException {
 
         try {
             // Create object and assign key value
-            final HPersistable newobj = this.createNewObject(exprSchema, result);
+            final HPersistable newobj = this.createNewObject(schema, result);
 
             // Assign most recent values
-            this.assignCurrentValues(exprSchema, result, newobj);
+            this.assignCurrentValues(schema, result, newobj);
 
             // Assign the versioned values
             if (scan.getMaxVersions() > 1)
-                this.assignVersionedValues(exprSchema, result, newobj);
+                this.assignVersionedValues(schema, result, newobj);
 
             return newobj;
         }
@@ -90,27 +90,27 @@ public abstract class Serialization {
         }
     }
 
-    private HPersistable createNewObject(final ExprSchema exprSchema, final Result result) throws IOException, HPersistException {
+    private HPersistable createNewObject(final AnnotationSchema schema, final Result result) throws IOException, HPersistException {
 
         // Create new instance and set key value
-        final ColumnAttrib keyattrib = exprSchema.getKeyColumnAttrib();
+        final ColumnAttrib keyattrib = schema.getKeyColumnAttrib();
         final HPersistable newobj;
         try {
-            newobj = (HPersistable)exprSchema.getClazz().newInstance();
+            newobj = (HPersistable)schema.getClazz().newInstance();
             final byte[] keybytes = result.getRow();
             keyattrib.setValue(this, newobj, keybytes);
         }
         catch (InstantiationException e) {
-            throw new RuntimeException("Cannot create new instance of " + exprSchema.getClazz());
+            throw new RuntimeException("Cannot create new instance of " + schema.getClazz());
         }
         catch (IllegalAccessException e) {
             throw new RuntimeException("Cannot set value for key  " + keyattrib.getVariableName()
-                                       + " for " + exprSchema.getClazz());
+                                       + " for " + schema.getClazz());
         }
         return newobj;
     }
 
-    private void assignCurrentValues(final ExprSchema exprSchema,
+    private void assignCurrentValues(final AnnotationSchema schema,
                                      final Result result,
                                      final HPersistable newobj) throws IOException, HPersistException {
 
@@ -124,7 +124,7 @@ public abstract class Serialization {
                 final int lbrace = colname.indexOf("[");
                 final String mapcolumn = colname.substring(0, lbrace);
                 final String mapKey = colname.substring(lbrace + 1, colname.length() - 1);
-                final ColumnAttrib attrib = exprSchema.getColumnAttribByFamilyQualifiedColumnName(mapcolumn);
+                final ColumnAttrib attrib = schema.getColumnAttribByFamilyQualifiedColumnName(mapcolumn);
                 final Object val = attrib.getValueFromBytes(this, newobj, vbytes);
 
                 Map mapval = (Map)attrib.getValue(newobj);
@@ -138,13 +138,13 @@ public abstract class Serialization {
                 mapval.put(mapKey, val);
             }
             else {
-                final ColumnAttrib attrib = exprSchema.getColumnAttribByFamilyQualifiedColumnName(colname);
+                final ColumnAttrib attrib = schema.getColumnAttribByFamilyQualifiedColumnName(colname);
                 attrib.setValue(this, newobj, vbytes);
             }
         }
     }
 
-    private void assignVersionedValues(final ExprSchema exprSchema,
+    private void assignVersionedValues(final AnnotationSchema schema,
                                        final Result result,
                                        final HPersistable newobj) throws IOException, HPersistException {
 
@@ -163,7 +163,7 @@ public abstract class Serialization {
                 for (final Long timestamp : tsMap.keySet()) {
                     final byte[] vbytes = tsMap.get(timestamp);
 
-                    final VersionAttrib attrib = exprSchema.getVersionAttribByFamilyQualifiedColumnName(qualifiedName);
+                    final VersionAttrib attrib = schema.getVersionAttribByFamilyQualifiedColumnName(qualifiedName);
 
                     // Ignore data if no version map exists for the column
                     if (attrib != null) {

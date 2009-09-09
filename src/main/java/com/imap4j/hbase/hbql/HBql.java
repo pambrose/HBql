@@ -9,6 +9,7 @@ import com.imap4j.hbase.antlr.args.ShowArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
+import com.imap4j.hbase.hbql.schema.AnnotationSchema;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -66,7 +67,7 @@ public class HBql {
 
     private static Results createCommand(final CreateArgs args) throws HPersistException, IOException {
         final Results retval = new Results();
-        final ExprSchema schema = ExprSchema.getExprSchema(args.getClassname());
+        final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getClassname());
         final HTableDescriptor tableDesc = new HTableDescriptor(schema.getTableName());
 
         for (final HFamily family : schema.getFamilies()) {
@@ -88,7 +89,7 @@ public class HBql {
     private static Results describeCommand(final DescribeArgs args) throws IOException, HPersistException {
 
         final Results retval = new Results();
-        final ExprSchema schema = ExprSchema.getExprSchema(args.getClassname());
+        final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getClassname());
         final HBaseAdmin admin = new HBaseAdmin(new HBaseConfiguration());
         final HTableDescriptor tableDesc = admin.getTableDescriptor(schema.getTableName().getBytes());
 
@@ -123,20 +124,20 @@ public class HBql {
     private static Results deleteCommand(final DeleteArgs args) throws HPersistException, IOException {
 
         final Results retval = new Results();
-        final ExprSchema exprSchema = ExprSchema.getExprSchema(args.getTableName());
-        final List<String> fieldList = exprSchema.getFieldList();
-        final HTable table = new HTable(new HBaseConfiguration(), exprSchema.getTableName());
+        final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getTableName());
+        final List<String> fieldList = schema.getFieldList();
+        final HTable table = new HTable(new HBaseConfiguration(), schema.getTableName());
         final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
         int cnt = 0;
 
-        final List<Scan> scanList = HUtil.getScanList(exprSchema, fieldList, args.getWhereExpr());
+        final List<Scan> scanList = HUtil.getScanList(schema, fieldList, args.getWhereExpr());
         for (final Scan scan : scanList) {
             final ResultScanner resultsScanner = table.getScanner(scan);
             for (final Result result : resultsScanner) {
 
-                final HPersistable recordObj = HUtil.ser.getHPersistable(exprSchema, scan, result);
+                final HPersistable recordObj = HUtil.ser.getHPersistable(schema, scan, result);
 
-                if (clientFilter == null || clientFilter.evaluate(new EvalContext(exprSchema, recordObj))) {
+                if (clientFilter == null || clientFilter.evaluate(new EvalContext(schema, recordObj))) {
                     final Delete delete = new Delete(result.getRow());
                     table.delete(delete);
                     cnt++;

@@ -183,7 +183,6 @@ booleanStmt returns [PredicateExpr retval]
 	
 nullCompExpr returns [PredicateExpr retval]
 	: s=stringExpr keyIS (n=keyNOT)? keyNULL	{retval = new StringNullCompare(($n.text != null), $s.retval);}	
-	// | d=dateExpr keyIS (n=keyNOT)? keyNULL	{retval = new DateNullCompare(($n.text != null), $d.retval);}
 	;	
 
 compareExpr returns [PredicateExpr retval]
@@ -416,7 +415,7 @@ column [List<String> list]
 schemaDesc returns [ExprSchema retval]
 @init {List<VarDesc> varList = Lists.newArrayList();}
 	: LCURLY (varDesc[varList] (COMMA varDesc[varList])*)? RCURLY
-							{retval = new ExprSchema(input, varList);}
+							{retval = new DeclaredSchema(input, varList);}
 	;
 	
 varDesc [List<VarDesc> list] 

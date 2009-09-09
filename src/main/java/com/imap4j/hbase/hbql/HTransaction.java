@@ -2,8 +2,8 @@ package com.imap4j.hbase.hbql;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.imap4j.hbase.hbql.schema.AnnotationSchema;
 import com.imap4j.hbase.hbql.schema.ColumnAttrib;
-import com.imap4j.hbase.hbql.schema.ExprSchema;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
@@ -33,13 +33,13 @@ public class HTransaction {
 
     public void insert(final HPersistable declaringObj) throws HPersistException, IOException {
 
-        final ExprSchema exprSchema = ExprSchema.getExprSchema(declaringObj);
-        final byte[] keyval = exprSchema.getKeyColumnAttrib().getValueAsBytes(HUtil.ser, declaringObj);
+        final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(declaringObj);
+        final byte[] keyval = schema.getKeyColumnAttrib().getValueAsBytes(HUtil.ser, declaringObj);
         final Put put = new Put(keyval);
 
-        for (final String family : exprSchema.getFamilyNameList()) {
+        for (final String family : schema.getFamilyNameList()) {
 
-            for (final ColumnAttrib attrib : exprSchema.getColumnAttribListByFamilyName(family)) {
+            for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {
 
                 if (attrib.isMapKeysAsColumns()) {
                     final Map mapval = (Map)attrib.getValue(declaringObj);
@@ -60,7 +60,7 @@ public class HTransaction {
             }
         }
 
-        this.getUpdateList(exprSchema.getTableName()).add(put);
+        this.getUpdateList(schema.getTableName()).add(put);
     }
 
 
