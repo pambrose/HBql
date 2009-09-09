@@ -9,9 +9,12 @@ import com.imap4j.hbase.hbql.HFamily;
 import com.imap4j.hbase.hbql.HPersistException;
 import com.imap4j.hbase.hbql.HPersistable;
 import com.imap4j.hbase.hbql.HTable;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.TokenStream;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +34,7 @@ public class ExprSchema implements Serializable {
 
     private final Map<String, VersionAttrib> versionAttribByFamilyQualifiedColumnNameMap = Maps.newHashMap();
 
-    private final Map<String, List<ColumnAttrib>> columnAtrtibListByFamilyNameMap = Maps.newHashMap();
+    private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
     private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedColumnNameMap = Maps.newHashMap();
 
     private final Class<?> clazz;
@@ -41,11 +44,17 @@ public class ExprSchema implements Serializable {
     private ColumnAttrib keyColumnAttrib = null;
 
 
-    public ExprSchema(final List<VarDesc> varList) {
+    public ExprSchema(final TokenStream input, final List<VarDesc> varList) throws RecognitionException {
 
-        for (final VarDesc var : varList) {
-            final VarDescAttrib attrib = new VarDescAttrib(var.getVarName(), var.getType());
-            setVariableAttribByVariableName(var.getVarName(), attrib);
+        try {
+            for (final VarDesc var : varList) {
+                final VarDescAttrib attrib = new VarDescAttrib(var.getVarName(), var.getType());
+                setVariableAttribByVariableName(var.getVarName(), attrib);
+            }
+        }
+        catch (HPersistException e) {
+            System.out.println(e.getMessage());
+            throw new RecognitionException(input);
         }
 
         this.clazz = null;
@@ -77,46 +86,22 @@ public class ExprSchema implements Serializable {
 
         for (final HFamily family : families) {
             final List<ColumnAttrib> attribs = Lists.newArrayList();
-            this.columnAtrtibListByFamilyNameMap.put(family.name(), attribs);
+            this.setColumnAttribListByFamilyName(family.name(), attribs);
         }
 
         processAnnotations();
     }
 
-    public Class<?> getClazz() {
-        return this.clazz;
-    }
-
-    public Set<String> getFamilyNameList() {
-        return this.columnAtrtibListByFamilyNameMap.keySet();
-    }
-
-    public List<ColumnAttrib> getColumnAttribListByFamilyName(final String name) {
-        return this.columnAtrtibListByFamilyNameMap.get(name);
-    }
-
-    public VersionAttrib getVersionAttribByFamilyQualifiedColumnName(final String name) {
-        return this.versionAttribByFamilyQualifiedColumnNameMap.get(name);
-    }
-
-    public ColumnAttrib getColumnAttribByFamilyQualifiedColumnName(final String name) {
-        return this.columnAttribByFamilyQualifiedColumnNameMap.get(name);
-    }
-
-    public void setColumnAttribByFamilyQualifiedColumnName(final String name, final ColumnAttrib columnAttrib) {
-        this.columnAttribByFamilyQualifiedColumnNameMap.put(name, columnAttrib);
-    }
-
-    public VariableAttrib getVariableAttribByVariableName(final String name) {
-        return this.variableAttribByVariableNameMap.get(name);
-    }
-
-    public void setVariableAttribByVariableName(final String name, final VariableAttrib variableAttrib) {
-        this.variableAttribByVariableNameMap.put(name, variableAttrib);
-    }
-
     private static Map<Class<?>, ExprSchema> getExprSchemaMap() {
         return exprSchemaMap;
+    }
+
+    private static Map<String, Class<?>> getClassCacheMap() {
+        return classCacheMap;
+    }
+
+    public Class<?> getClazz() {
+        return this.clazz;
     }
 
     public ColumnAttrib getKeyColumnAttrib() {
@@ -135,7 +120,7 @@ public class ExprSchema implements Serializable {
     public static ExprSchema getExprSchema(final String objname) throws HPersistException {
 
         // First see if already cached
-        Class<?> clazz = classCacheMap.get(objname);
+        Class<?> clazz = getClassCacheMap().get(objname);
 
         if (clazz != null)
             return getExprSchema(clazz);
@@ -148,7 +133,7 @@ public class ExprSchema implements Serializable {
             final String name = cp + objname;
             clazz = getClass(name);
             if (clazz != null) {
-                classCacheMap.put(objname, clazz);
+                getClassCacheMap().put(objname, clazz);
                 return getExprSchema(clazz);
             }
         }
@@ -158,11 +143,9 @@ public class ExprSchema implements Serializable {
 
     public List<String> getFieldList() {
         final List<String> retval = Lists.newArrayList();
-        for (final VariableAttrib attrib : this.variableAttribByVariableNameMap.values()) {
-
+        for (final VariableAttrib attrib : this.getVariableAttribs()) {
             if (attrib.isKey())
                 continue;
-
             retval.add(attrib.getVariableName());
         }
         return retval;
@@ -179,7 +162,7 @@ public class ExprSchema implements Serializable {
 
     public static ExprSchema getExprSchema(final Class<?> clazz) throws HPersistException {
 
-        ExprSchema exprSchema = exprSchemaMap.get(clazz);
+        ExprSchema exprSchema = getExprSchemaMap().get(clazz);
         if (exprSchema != null)
             return exprSchema;
 
@@ -234,8 +217,9 @@ public class ExprSchema implements Serializable {
                 throw new HPersistException(columnAttrib.getObjectQualifiedName()
                                             + " is missing family name in annotation");
 
-            if (!this.columnAtrtibListByFamilyNameMap.containsKey(family))
-                throw new HPersistException(columnAttrib.getObjectQualifiedName() + " references unknown family: " + family);
+            if (!this.containsFamilyName(family))
+                throw new HPersistException(columnAttrib.getObjectQualifiedName()
+                                            + " references unknown family: " + family);
 
             this.getColumnAttribListByFamilyName(family).add(columnAttrib);
         }
@@ -246,9 +230,7 @@ public class ExprSchema implements Serializable {
 
     private void processColumnVersionAnnotation(final Field field) throws HPersistException {
         final VersionAttrib versionAttrib = VersionAttrib.createVersionAttrib(this, field);
-
-        this.versionAttribByFamilyQualifiedColumnNameMap.put(versionAttrib.getFamilyQualifiedName(), versionAttrib);
-
+        this.setVersionAttribByFamilyQualifiedColumnName(versionAttrib.getFamilyQualifiedName(), versionAttrib);
         this.setVariableAttribByVariableName(versionAttrib.getVariableName(), versionAttrib);
     }
 
@@ -257,7 +239,84 @@ public class ExprSchema implements Serializable {
         return (tableName.length() > 0) ? tableName : clazz.getSimpleName();
     }
 
+    // *** variableAttribByVariableNameMap calls
+    private Map<String, VariableAttrib> getVariableAttribByVariableNameMap() {
+        return this.variableAttribByVariableNameMap;
+    }
+
     public boolean constainsVariableName(final String varname) {
-        return this.variableAttribByVariableNameMap.containsKey(varname);
+        return this.getVariableAttribByVariableNameMap().containsKey(varname);
+    }
+
+    public Collection<VariableAttrib> getVariableAttribs() {
+        return this.getVariableAttribByVariableNameMap().values();
+    }
+
+    public VariableAttrib getVariableAttribByVariableName(final String name) {
+        return this.getVariableAttribByVariableNameMap().get(name);
+    }
+
+    private void setVariableAttribByVariableName(final String name,
+                                                 final VariableAttrib variableAttrib) throws HPersistException {
+        if (this.getVariableAttribByVariableNameMap().containsKey(name))
+            throw new HPersistException(name + " already delcared");
+        this.getVariableAttribByVariableNameMap().put(name, variableAttrib);
+    }
+
+    // *** columnAttribByFamilyQualifiedColumnNameMap calls
+    private Map<String, ColumnAttrib> getColumnAttribByFamilyQualifiedColumnNameMap() {
+        return this.columnAttribByFamilyQualifiedColumnNameMap;
+    }
+
+    public ColumnAttrib getColumnAttribByFamilyQualifiedColumnName(final String s) {
+        return this.getColumnAttribByFamilyQualifiedColumnNameMap().get(s);
+    }
+
+    private void setColumnAttribByFamilyQualifiedColumnName(final String s,
+                                                            final ColumnAttrib columnAttrib) throws HPersistException {
+        if (this.getColumnAttribByFamilyQualifiedColumnNameMap().containsKey(s))
+            throw new HPersistException(s + " already delcared");
+        this.getColumnAttribByFamilyQualifiedColumnNameMap().put(s, columnAttrib);
+    }
+
+    // *** versionAttribByFamilyQualifiedColumnNameMap calls
+    private Map<String, VersionAttrib> getVersionAttribByFamilyQualifiedColumnNameMap() {
+        return versionAttribByFamilyQualifiedColumnNameMap;
+    }
+
+    public VersionAttrib getVersionAttribByFamilyQualifiedColumnName(final String s) {
+        return this.getVersionAttribByFamilyQualifiedColumnNameMap().get(s);
+    }
+
+    private void setVersionAttribByFamilyQualifiedColumnName(final String s,
+                                                             final VersionAttrib versionAttrib) throws HPersistException {
+        if (this.getVersionAttribByFamilyQualifiedColumnNameMap().containsKey(s))
+            throw new HPersistException(s + " already delcared");
+
+        this.getVersionAttribByFamilyQualifiedColumnNameMap().put(s, versionAttrib);
+    }
+
+    // *** columnAttribListByFamilyNameMap
+    private Map<String, List<ColumnAttrib>> getColumnAttribListByFamilyNameMap() {
+        return columnAttribListByFamilyNameMap;
+    }
+
+    public Set<String> getFamilyNameList() {
+        return this.getColumnAttribListByFamilyNameMap().keySet();
+    }
+
+    public List<ColumnAttrib> getColumnAttribListByFamilyName(final String s) {
+        return this.getColumnAttribListByFamilyNameMap().get(s);
+    }
+
+    private boolean containsFamilyName(final String s) {
+        return this.getColumnAttribListByFamilyNameMap().containsKey(s);
+    }
+
+    public void setColumnAttribListByFamilyName(final String s,
+                                                final List<ColumnAttrib> columnAttribs) throws HPersistException {
+        if (this.containsFamilyName(s))
+            throw new HPersistException(s + " already delcared");
+        this.getColumnAttribListByFamilyNameMap().put(s, columnAttribs);
     }
 }

@@ -416,7 +416,7 @@ column [List<String> list]
 schemaDesc returns [ExprSchema retval]
 @init {List<VarDesc> varList = Lists.newArrayList();}
 	: LCURLY (varDesc[varList] (COMMA varDesc[varList])*)? RCURLY
-							{retval = new ExprSchema(varList);}
+							{retval = new ExprSchema(input, varList);}
 	;
 	
 varDesc [List<VarDesc> list] 
