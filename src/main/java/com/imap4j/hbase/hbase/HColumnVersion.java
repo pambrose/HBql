@@ -8,7 +8,7 @@ package com.imap4j.hbase.hbase;
  */
 @java.lang.annotation.Target({java.lang.annotation.ElementType.FIELD})
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-public @interface HColumnVersionMap {
+public @interface HColumnVersion {
 
     String instance() default "";
 

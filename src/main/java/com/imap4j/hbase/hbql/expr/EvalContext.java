@@ -18,11 +18,9 @@ public abstract class EvalContext implements Serializable {
         this.exprSchema = exprSchema;
     }
 
-
     public ExprSchema getExprSchema() {
         return this.exprSchema;
     }
 
     public abstract Object getObject();
-
 }

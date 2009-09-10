@@ -3,7 +3,7 @@ package com.imap4j.hbase.hbql.schema;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbase.HColumn;
-import com.imap4j.hbase.hbase.HColumnVersionMap;
+import com.imap4j.hbase.hbase.HColumnVersion;
 import com.imap4j.hbase.hbase.HFamily;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HPersistable;
@@ -72,7 +72,7 @@ public class AnnotationSchema extends ExprSchema {
                                         + "annotated with @HColumn(key=true)");
 
         for (final Field field : this.getClazz().getDeclaredFields())
-            if (field.getAnnotation(HColumnVersionMap.class) != null)
+            if (field.getAnnotation(HColumnVersion.class) != null)
                 this.processColumnVersionAnnotation(field);
     }
 

@@ -3,7 +3,7 @@ package com.imap4j.hbase;
 import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbase.HBql;
 import com.imap4j.hbase.hbase.HColumn;
-import com.imap4j.hbase.hbase.HColumnVersionMap;
+import com.imap4j.hbase.hbase.HColumnVersion;
 import com.imap4j.hbase.hbase.HFamily;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HPersistable;
@@ -52,13 +52,13 @@ public class TestObject implements HPersistable {
     @HColumn(family = "family1")
     private String title = "A title value";
 
-    @HColumnVersionMap(instance = "title")
+    @HColumnVersion(instance = "title")
     private NavigableMap<Long, String> titleVersions = new TreeMap<Long, String>();
 
     @HColumn(family = "family1", column = "author")
     private String author = "An author value";
 
-    @HColumnVersionMap(instance = "author")
+    @HColumnVersion(instance = "author")
     private NavigableMap<Long, String> authorVersions;
 
     @HColumn(family = "family2", getter = "getHeaderBytes", setter = "setHeaderBytes")
