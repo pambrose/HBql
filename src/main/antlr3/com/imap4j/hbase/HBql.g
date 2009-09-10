@@ -198,13 +198,13 @@ options {backtrack=true;}
 	| n1=numericExpr o=compOp n2=numericExpr	{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
 	;
 	
-compOp returns [CompareExpr.OP retval]
-	: EQ EQ?					{retval = CompareExpr.OP.EQ;}
-	| GT 						{retval = CompareExpr.OP.GT;}
-	| GTEQ 						{retval = CompareExpr.OP.GTEQ;}
-	| LT 						{retval = CompareExpr.OP.LT;}
-	| LTEQ 						{retval = CompareExpr.OP.LTEQ;}
-	| (LTGT | BANGEQ)				{retval = CompareExpr.OP.NOTEQ;}
+compOp returns [GenericCompare.OP retval]
+	: EQ EQ?					{retval = GenericCompare.OP.EQ;}
+	| GT 						{retval = GenericCompare.OP.GT;}
+	| GTEQ 						{retval = GenericCompare.OP.GTEQ;}
+	| LT 						{retval = GenericCompare.OP.LT;}
+	| LTEQ 						{retval = GenericCompare.OP.LTEQ;}
+	| (LTGT | BANGEQ)				{retval = GenericCompare.OP.NOTEQ;}
 	;
 
 numericTest returns [NumberValue retval]

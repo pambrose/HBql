@@ -13,7 +13,6 @@ import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.io.Serialization;
 import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.filter.HBqlFilter;
 
 import java.io.IOException;
 import java.util.List;
@@ -71,7 +70,7 @@ public class HUtil {
             final ExprEvalTree serverFilter = whereExpr.getServerFilterArgs();
             if (serverFilter != null) {
                 List<ExprVariable> names = serverFilter.getExprVariables();
-                scan.setFilter(new HBqlFilter(exprSchema, serverFilter));
+                //scan.setFilter(new HBqlFilter(exprSchema, serverFilter));
             }
         }
 
