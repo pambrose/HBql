@@ -98,7 +98,7 @@ public class WhereExprTests {
         final List<String> valList = Lists.newArrayList(vals);
 
         for (final String val : valList) {
-            if (!attribs.contains(new ExprVariable(FieldType.StringType, val))) {
+            if (!attribs.contains(new ExprVariable(val, FieldType.StringType))) {
                 System.out.println("Missing column name: " + val);
                 retval = false;
             }

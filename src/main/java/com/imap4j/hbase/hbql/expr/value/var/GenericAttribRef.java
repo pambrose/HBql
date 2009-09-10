@@ -19,8 +19,8 @@ public abstract class GenericAttribRef implements ExprEvalTreeNode {
 
     private final ExprVariable exprVar;
 
-    protected GenericAttribRef(final FieldType type, final String attribName) {
-        this.exprVar = new ExprVariable(type, attribName);
+    protected GenericAttribRef(final FieldType fieldType, final String attribName) {
+        this.exprVar = new ExprVariable(attribName, fieldType);
     }
 
     public ExprVariable getExprVar() {

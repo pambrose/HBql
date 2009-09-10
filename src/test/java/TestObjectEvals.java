@@ -70,5 +70,4 @@ public class TestObjectEvals extends ObjectTests<TestObjectEvals.SimpleObject> {
         List<SimpleObject> list = Lists.newArrayList(Iterables.filter(objList, new CollectionQueryPredicate<SimpleObject>(qstr)));
         System.out.println(list.size());
     }
-
 }

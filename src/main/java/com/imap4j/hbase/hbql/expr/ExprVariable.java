@@ -12,10 +12,10 @@ import com.imap4j.hbase.hbql.schema.VariableAttrib;
 public class ExprVariable {
 
     private final String attribName;
-    private final FieldType type;
+    private final FieldType fieldType;
 
-    public ExprVariable(FieldType type, final String attribName) {
-        this.type = type;
+    public ExprVariable(final String attribName, FieldType fieldType) {
+        this.fieldType = fieldType;
         this.attribName = attribName;
     }
 
