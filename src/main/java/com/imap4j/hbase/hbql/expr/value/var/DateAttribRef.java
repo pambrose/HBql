@@ -6,6 +6,8 @@ import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.schema.FieldType;
 import com.imap4j.hbase.hbql.schema.VariableAttrib;
 
+import java.util.Date;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -21,7 +23,7 @@ public class DateAttribRef extends GenericAttribRef implements DateValue {
     @Override
     public Long getValue(final EvalContext context) throws HPersistException {
         final VariableAttrib variableAttrib = this.getExprVar().getVariableAttrib(context);
-        return (Long)variableAttrib.getValue(context.getObject());
+        return ((Date)variableAttrib.getValue(context.getObject())).getTime();
     }
 
 }

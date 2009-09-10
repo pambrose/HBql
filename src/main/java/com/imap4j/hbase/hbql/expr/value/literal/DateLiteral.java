@@ -19,8 +19,6 @@ public class DateLiteral extends GenericLiteral implements DateValue {
 
     public enum Type {
         NOW(true, 0),
-        YESTERDAY(true, -day),
-        TOMORROW(true, +day),
         MINDATE(false, 0),
         MAXDATE(false, Long.MAX_VALUE);
 

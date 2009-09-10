@@ -53,15 +53,15 @@ public class TestWhereExpression extends WhereExprTests {
     @Test
     public void dateCompares() throws HPersistException {
         assertEvalTrue("NOW == NOW");
-        assertEvalTrue("NOW != YESTERDAY");
-        assertEvalTrue("NOW > YESTERDAY");
-        assertEvalTrue("YESTERDAY < NOW");
-        assertEvalTrue("NOW <= TOMORROW");
-        assertEvalTrue("TOMORROW >= NOW");
+        assertEvalTrue("NOW != NOW-HOUR(1)");
+        assertEvalTrue("NOW > NOW-DAY(1)");
+        assertEvalTrue("NOW-DAY(1) < NOW");
+        assertEvalTrue("NOW <= NOW+DAY(1)");
+        assertEvalTrue("NOW+DAY(1) >= NOW");
         assertEvalTrue("NOW < Date('mm/dd/yyyy', '12/21/2020')");
-        assertEvalTrue("NOW BETWEEN YESTERDAY AND TOMORROW");
-        assertEvalTrue("NOW IN (YESTERDAY, NOW, TOMORROW, Date('mm/dd/yyyy', '12/21/2020'))");
-        assertEvalFalse("NOW IN (YESTERDAY, TOMORROW, Date('mm/dd/yyyy', '12/21/2020'))");
+        assertEvalTrue("NOW BETWEEN NOW-DAY(1) AND NOW+DAY(1)");
+        assertEvalTrue("NOW IN (NOW-DAY(1), NOW, NOW+DAY(1), Date('mm/dd/yyyy', '12/21/2020'))");
+        assertEvalFalse("NOW IN (NOW-DAY(1), NOW+DAY(1), Date('mm/dd/yyyy', '12/21/2020'))");
         assertEvalTrue("DATE('mm/dd/yy', '10/31/94') - DAY(1) == DATE('mm/dd/yy', '10/30/94')");
         assertEvalTrue("DATE('mm/dd/yy', '10/31/94') - DAY(2) < DATE('mm/dd/yy', '10/30/94')");
         assertEvalFalse("DATE('mm/dd/yy', '10/31/94') - DAY(1) < DATE('mm/dd/yy', '10/30/94')");

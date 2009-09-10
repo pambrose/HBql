@@ -10,7 +10,6 @@ import util.WhereExprTests;
  */
 public class TestIntervalValues extends WhereExprTests {
 
-
     @Test
     public void keysExpressions() throws HPersistException {
         assertEvalTrue("NOW < NOW+YEAR(1)");
@@ -21,7 +20,11 @@ public class TestIntervalValues extends WhereExprTests {
         assertEvalTrue("YEAR(2) == WEEK(52*2)");
         assertEvalTrue("NOW+YEAR(2) == NOW+WEEK(52*2)");
 
-        //assertEvalTrue("NOW+YEAR(2) == NOW+WEEK(52)+DAY(364)");
+        assertEvalTrue("NOW+YEAR(2) == NOW+WEEK(52)+DAY(364)");
+
+        assertEvalTrue("NOW BETWEEN NOW-DAY(1) AND NOW+DAY(1)");
+        assertEvalTrue("NOW between NOW-DAY(1) AND NOW+DAY(1)");
+        assertEvalFalse("NOW BETWEEN NOW+DAY(1) AND NOW+DAY(1)");
     }
 
 }

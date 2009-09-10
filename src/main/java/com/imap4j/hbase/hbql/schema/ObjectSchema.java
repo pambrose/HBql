@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbase.HPersistException;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -23,7 +24,9 @@ public class ObjectSchema extends ExprSchema {
             if (field.getType().isArray())
                 continue;
 
-            if (field.getType().isPrimitive() || field.getType().equals(String.class)) {
+            if (field.getType().isPrimitive()
+                || field.getType().equals(String.class)
+                || field.getType().equals(Date.class)) {
                 final ReflectionAttrib attrib = new ReflectionAttrib(field);
                 addVariableAttrib(attrib);
             }

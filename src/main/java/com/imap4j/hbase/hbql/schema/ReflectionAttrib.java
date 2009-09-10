@@ -12,7 +12,5 @@ public class ReflectionAttrib extends FieldAttrib {
 
     public ReflectionAttrib(final Field field) {
         super(FieldType.getFieldType(field.getType()), field);
-
     }
-
 }

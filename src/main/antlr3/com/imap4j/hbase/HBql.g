@@ -109,10 +109,10 @@ versions returns [VersionArgs retval]
 	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);};
 	
 serverFilter [ExprSchema es] returns [ExprEvalTree retval]
-	: keySERVER keyFILTER? w=descWhereExpr[es]		{retval = $w.retval;};
+	: keySERVER keyFILTER? w=descWhereExpr[es]	{retval = $w.retval;};
 	
 clientFilter [ExprSchema es] returns [ExprEvalTree retval]
-	: keyCLIENT keyFILTER? w=descWhereExpr[es]		{retval = $w.retval;};
+	: keyCLIENT keyFILTER? w=descWhereExpr[es]	{retval = $w.retval;};
 	
 keyRangeList returns [List<KeyRangeArgs.Range> retval]
 @init {retval = Lists.newArrayList();}
@@ -131,7 +131,8 @@ nodescWhereExpr [ExprSchema es] returns [ExprEvalTree retval]
 descWhereExpr [ExprSchema es] returns [ExprEvalTree retval]
 @init {setExprSchema(es);}
 	: s=schemaDesc? 				{if ($s.retval != null) setExprSchema($s.retval);}			
-	  e=orExpr					{retval = new ExprEvalTree($e.retval);};
+	  e=orExpr					{retval = new ExprEvalTree($e.retval);
+	  						 if ($s.retval != null) retval.setSchema($s.retval);};
 
 			
 orExpr returns [PredicateExpr retval]
@@ -342,8 +343,6 @@ integerLiteral returns [NumberValue retval]
 		
 dateLiteral returns [DateValue retval]
 	: keyNOW					{retval = new DateLiteral(DateLiteral.Type.NOW);}
-	| keyYESTERDAY					{retval = new DateLiteral(DateLiteral.Type.YESTERDAY);}
-	| keyTOMORROW					{retval = new DateLiteral(DateLiteral.Type.TOMORROW);}
 	| keyMINDATE					{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
 	| keyMAXDATE					{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
 	;
@@ -509,8 +508,6 @@ keyCONCAT 	: {isKeyword(input, "CONCAT")}? ID;
 keySUBSTRING 	: {isKeyword(input, "SUBSTRING")}? ID;
 keyIGNORE_CASE 	: {isKeyword(input, "IGNORE_CASE")}? ID;
 keyNOW	 	: {isKeyword(input, "NOW")}? ID;
-keyYESTERDAY	: {isKeyword(input, "YESTERDAY")}? ID;
-keyTOMORROW	: {isKeyword(input, "TOMORROW")}? ID;
 keyMINDATE	: {isKeyword(input, "MINDATE")}? ID;
 keyMAXDATE	: {isKeyword(input, "MAXDATE")}? ID;
 keyDATE		: {isKeyword(input, "DATE")}? ID;

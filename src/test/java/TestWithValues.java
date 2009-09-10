@@ -8,7 +8,7 @@ import util.WhereValueTests;
  * Date: Aug 27, 2009
  * Time: 2:13:47 PM
  */
-public class TestWhereValues extends WhereValueTests {
+public class TestWithValues extends WhereValueTests {
 
 
     @Test
@@ -21,7 +21,7 @@ public class TestWhereValues extends WhereValueTests {
     @Test
     public void timeExpressions() throws HPersistException {
         assertValidInput("WITH TIME RANGE NOW : NOW");
-        assertValidInput("WITH TIME RANGE NOW : TOMORROW");
+        assertValidInput("WITH TIME RANGE NOW : NOW+DAY(1)");
     }
 
     @Test
@@ -31,9 +31,9 @@ public class TestWhereValues extends WhereValueTests {
 
     @Test
     public void timerangeExpressions() throws HPersistException {
-        assertValidInput("WITH TIME RANGE NOW : TOMORROW");
-        assertValidInput("WITH TIME RANGE NOW - DAY(1) : TOMORROW + DAY(2)");
-        assertValidInput("WITH TIME RANGE DATE('mm/dd/yy', '10/31/94') - DAY(1) : TOMORROW + DAY(2)");
+        assertValidInput("WITH TIME RANGE NOW : NOW+DAY(1)");
+        assertValidInput("WITH TIME RANGE NOW - DAY(1) : NOW+DAY(1) + DAY(2)");
+        assertValidInput("WITH TIME RANGE DATE('mm/dd/yy', '10/31/94') - DAY(1) : NOW+DAY(1) + DAY(2)");
     }
 
     @Test

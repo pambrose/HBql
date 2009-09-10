@@ -37,8 +37,9 @@ public class ExprEvalTree implements PredicateExpr {
         return schema;
     }
 
-    public void setSchema(final ExprSchema schema) throws HPersistException {
-        this.schema = schema;
+    public void setSchema(final ExprSchema schema) {
+        if (schema != null)
+            this.schema = schema;
     }
 
     public void optimize() throws HPersistException {
