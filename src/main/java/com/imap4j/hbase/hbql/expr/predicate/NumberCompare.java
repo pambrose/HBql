@@ -1,13 +1,8 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
-import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
-import com.imap4j.hbase.hbql.schema.ExprSchema;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,29 +10,10 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class NumberCompare extends CompareExpr implements PredicateExpr {
-
-    private NumberValue expr1 = null, expr2 = null;
+public class NumberCompare extends GenericCompare<NumberValue> {
 
     public NumberCompare(final NumberValue expr1, final OP op, final NumberValue expr2) {
-        super(op);
-        this.expr1 = expr1;
-        this.expr2 = expr2;
-    }
-
-    private NumberValue getExpr1() {
-        return expr1;
-    }
-
-    private NumberValue getExpr2() {
-        return expr2;
-    }
-
-    @Override
-    public List<ExprVariable> getExprVariables() {
-        final List<ExprVariable> retval = this.getExpr1().getExprVariables();
-        retval.addAll(this.getExpr2().getExprVariables());
-        return retval;
+        super(expr1, op, expr2);
     }
 
     @Override
@@ -46,12 +22,12 @@ public class NumberCompare extends CompareExpr implements PredicateExpr {
         boolean retval = true;
 
         if (this.getExpr1().optimizeForConstants(object))
-            this.expr1 = new NumberLiteral(this.getExpr1().getValue(object));
+            this.setExpr1(new NumberLiteral(this.getExpr1().getValue(object)));
         else
             retval = false;
 
         if (this.getExpr2().optimizeForConstants(object))
-            this.expr2 = new NumberLiteral(this.getExpr2().getValue(object));
+            this.setExpr2(new NumberLiteral(this.getExpr2().getValue(object)));
         else
             retval = false;
 
@@ -81,16 +57,4 @@ public class NumberCompare extends CompareExpr implements PredicateExpr {
 
         throw new HPersistException("Error in NumberCompare.evaluate()");
     }
-
-    @Override
-    public boolean isAConstant() {
-        return this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
-    }
-
-    @Override
-    public void setSchema(final ExprSchema schema) {
-        this.getExpr1().setSchema(schema);
-        this.getExpr2().setSchema(schema);
-    }
-
 }
