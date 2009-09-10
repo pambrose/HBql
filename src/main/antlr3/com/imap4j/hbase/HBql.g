@@ -281,7 +281,7 @@ booleanExpr returns [BooleanValue retval]
 booleanVal returns [BooleanValue retval]
 	: b=booleanLiteral				{retval = $b.retval;}
 	//| f=funcReturningBoolean
-	| LBRACE keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr RBRACE	
+	| LBRACE keyIF e=orExpr keyTHEN b1=booleanExpr keyELSE b2=booleanExpr RBRACE	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	;
 	
