@@ -1,6 +1,6 @@
 package com.imap4j.hbase.hbql.expr.value.var;
 
-import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.schema.FieldType;

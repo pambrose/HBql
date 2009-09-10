@@ -1,4 +1,6 @@
-package com.imap4j.hbase.hbql;
+package com.imap4j.hbase.collection;
+
+import com.imap4j.hbase.hbase.HPersistException;
 
 import java.io.Serializable;
 

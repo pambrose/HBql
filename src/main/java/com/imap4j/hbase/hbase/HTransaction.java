@@ -1,9 +1,10 @@
-package com.imap4j.hbase.hbql;
+package com.imap4j.hbase.hbase;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
 import com.imap4j.hbase.hbql.schema.ColumnAttrib;
+import com.imap4j.hbase.hbql.schema.HUtil;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;

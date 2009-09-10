@@ -1,7 +1,7 @@
 package com.imap4j.hbase.hbql.schema;
 
-import com.imap4j.hbase.hbql.HColumnVersionMap;
-import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbase.HColumnVersionMap;
+import com.imap4j.hbase.hbase.HPersistException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;

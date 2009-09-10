@@ -1,6 +1,6 @@
 package com.imap4j.hbase.hbql.expr;
 
-import com.imap4j.hbase.hbql.HPersistable;
+import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 /**

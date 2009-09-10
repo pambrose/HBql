@@ -2,7 +2,7 @@ package com.imap4j.hbase.hbql.test;
 
 import com.imap4j.hbase.antlr.args.WhereArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
-import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 /**

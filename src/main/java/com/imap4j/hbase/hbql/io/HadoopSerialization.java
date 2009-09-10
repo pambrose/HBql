@@ -1,6 +1,6 @@
 package com.imap4j.hbase.hbql.io;
 
-import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.schema.FieldType;
 import org.apache.hadoop.hbase.util.Bytes;
 

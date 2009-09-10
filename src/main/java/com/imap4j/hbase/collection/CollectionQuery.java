@@ -1,6 +1,7 @@
-package com.imap4j.hbase.hbql;
+package com.imap4j.hbase.collection;
 
 import com.imap4j.hbase.antlr.config.HBqlRule;
+import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.ReflectionEvalContext;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 import com.imap4j.hbase.hbql.schema.ObjectSchema;
@@ -37,7 +38,7 @@ public class CollectionQuery<T> {
             return;
 
         final Object obj = objs.iterator().next();
-        ObjectSchema schema = ObjectSchema.getObjectSchema(obj);
+        final ObjectSchema schema = ObjectSchema.getObjectSchema(obj);
         final ExprEvalTree tree = (ExprEvalTree)HBqlRule.NODESC_WHERE_EXPR.parse(this.query, schema);
         tree.optimizeForConstants(new ReflectionEvalContext(schema, null));
 

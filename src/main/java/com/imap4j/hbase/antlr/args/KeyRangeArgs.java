@@ -1,8 +1,8 @@
 package com.imap4j.hbase.antlr.args;
 
 import com.google.common.collect.Lists;
-import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HUtil;
+import com.imap4j.hbase.hbase.HPersistException;
+import com.imap4j.hbase.hbql.schema.HUtil;
 
 import java.io.IOException;
 import java.util.List;

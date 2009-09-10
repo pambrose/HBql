@@ -1,7 +1,7 @@
 package com.imap4j.hbase.hbql.schema;
 
-import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HPersistable;
+import com.imap4j.hbase.hbase.HPersistException;
+import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbql.io.Serialization;
 
 import java.io.IOException;

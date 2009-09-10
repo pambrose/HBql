@@ -2,8 +2,8 @@ package com.imap4j.hbase.hbql.test;
 
 import com.google.common.collect.Lists;
 import com.imap4j.hbase.antlr.config.HBqlRule;
-import com.imap4j.hbase.hbql.HPersistException;
-import com.imap4j.hbase.hbql.HPersistable;
+import com.imap4j.hbase.hbase.HPersistException;
+import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.HBqlEvalContext;

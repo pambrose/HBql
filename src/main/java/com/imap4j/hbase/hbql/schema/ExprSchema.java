@@ -2,7 +2,7 @@ package com.imap4j.hbase.hbql.schema;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbase.HPersistException;
 
 import java.io.Serializable;
 import java.util.Collection;

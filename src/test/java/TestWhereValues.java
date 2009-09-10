@@ -1,4 +1,4 @@
-import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.test.WhereValueTests;
 import org.junit.Test;
 

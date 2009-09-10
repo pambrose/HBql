@@ -1,4 +1,4 @@
-package com.imap4j.hbase.hbql;
+package com.imap4j.hbase.hbql.schema;
 
 import com.google.common.collect.Lists;
 

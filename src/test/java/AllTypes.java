@@ -1,7 +1,7 @@
-import com.imap4j.hbase.hbql.HColumn;
-import com.imap4j.hbase.hbql.HFamily;
-import com.imap4j.hbase.hbql.HPersistable;
-import com.imap4j.hbase.hbql.HTable;
+import com.imap4j.hbase.hbase.HColumn;
+import com.imap4j.hbase.hbase.HFamily;
+import com.imap4j.hbase.hbase.HPersistable;
+import com.imap4j.hbase.hbase.HTable;
 
 /**
  * Created by IntelliJ IDEA.

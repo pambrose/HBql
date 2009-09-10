@@ -1,7 +1,7 @@
 package com.imap4j.hbase.hbql.schema;
 
 import com.google.common.collect.Lists;
-import com.imap4j.hbase.hbql.HPersistException;
+import com.imap4j.hbase.hbase.HPersistException;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.lang.reflect.Field;
