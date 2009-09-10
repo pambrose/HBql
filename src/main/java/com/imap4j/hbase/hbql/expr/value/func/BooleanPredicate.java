@@ -1,11 +1,11 @@
 package com.imap4j.hbase.hbql.expr.value.func;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.BooleanValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 import java.util.List;
 
@@ -33,12 +33,12 @@ public class BooleanPredicate implements BooleanValue {
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
 
         boolean retval = true;
 
-        if (this.getExpr().optimizeForConstants(context))
-            this.expr = new BooleanLiteral(this.getExpr().evaluate(context));
+        if (this.getExpr().optimizeForConstants(object))
+            this.expr = new BooleanLiteral(this.getExpr().evaluate(object));
         else
             retval = false;
 
@@ -46,8 +46,8 @@ public class BooleanPredicate implements BooleanValue {
     }
 
     @Override
-    public Boolean getValue(final EvalContext context) throws HPersistException {
-        return this.getExpr().evaluate(context);
+    public Boolean getValue(final Object object) throws HPersistException {
+        return this.getExpr().evaluate(object);
     }
 
     @Override
@@ -55,4 +55,8 @@ public class BooleanPredicate implements BooleanValue {
         return this.getExpr().isAConstant();
     }
 
+    @Override
+    public void setSchema(final ExprSchema schema) {
+        this.getExpr().setSchema(schema);
+    }
 }

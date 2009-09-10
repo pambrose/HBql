@@ -2,6 +2,7 @@ package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.ExprEvalTreeNode;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 import java.util.List;
 
@@ -36,4 +37,10 @@ public abstract class GenericBetweenStmt extends GenericNotStmt implements ExprE
         return this.getExpr().isAConstant() && this.getLower().isAConstant() && this.getUpper().isAConstant();
     }
 
+    @Override
+    public void setSchema(final ExprSchema schema) {
+        this.getExpr().setSchema(schema);
+        this.getLower().setSchema(schema);
+        this.getUpper().setSchema(schema);
+    }
 }

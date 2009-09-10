@@ -1,7 +1,6 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
@@ -37,21 +36,21 @@ public class NumberBetweenStmt extends GenericBetweenStmt implements PredicateEx
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
         boolean retval = true;
 
-        if (this.getExpr().optimizeForConstants(context))
-            this.expr = new NumberLiteral(this.getExpr().getValue(context));
+        if (this.getExpr().optimizeForConstants(object))
+            this.expr = new NumberLiteral(this.getExpr().getValue(object));
         else
             retval = false;
 
-        if (this.getLower().optimizeForConstants(context))
-            this.lower = new NumberLiteral(this.getLower().getValue(context));
+        if (this.getLower().optimizeForConstants(object))
+            this.lower = new NumberLiteral(this.getLower().getValue(object));
         else
             retval = false;
 
-        if (this.getUpper().optimizeForConstants(context))
-            this.upper = new NumberLiteral(this.getUpper().getValue(context));
+        if (this.getUpper().optimizeForConstants(object))
+            this.upper = new NumberLiteral(this.getUpper().getValue(object));
         else
             retval = false;
 
@@ -59,11 +58,11 @@ public class NumberBetweenStmt extends GenericBetweenStmt implements PredicateEx
     }
 
     @Override
-    public Boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final Object object) throws HPersistException {
 
-        final long numval = this.getExpr().getValue(context).longValue();
-        final boolean retval = numval >= this.getLower().getValue(context).longValue()
-                               && numval <= this.getUpper().getValue(context).longValue();
+        final long numval = this.getExpr().getValue(object).longValue();
+        final boolean retval = numval >= this.getLower().getValue(object).longValue()
+                               && numval <= this.getUpper().getValue(object).longValue();
 
         return (this.isNot()) ? !retval : retval;
     }

@@ -1,11 +1,11 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 import java.util.List;
 
@@ -42,17 +42,17 @@ public class StringCompare extends CompareExpr implements PredicateExpr {
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
 
         boolean retval = true;
 
-        if (this.getExpr1().optimizeForConstants(context))
-            this.expr1 = new StringLiteral(this.getExpr1().getValue(context));
+        if (this.getExpr1().optimizeForConstants(object))
+            this.expr1 = new StringLiteral(this.getExpr1().getValue(object));
         else
             retval = false;
 
-        if (this.getExpr2().optimizeForConstants(context))
-            this.expr2 = new StringLiteral(this.getExpr2().getValue(context));
+        if (this.getExpr2().optimizeForConstants(object))
+            this.expr2 = new StringLiteral(this.getExpr2().getValue(object));
         else
             retval = false;
 
@@ -61,10 +61,10 @@ public class StringCompare extends CompareExpr implements PredicateExpr {
 
 
     @Override
-    public Boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final Object object) throws HPersistException {
 
-        final String val1 = this.getExpr1().getValue(context);
-        final String val2 = this.getExpr2().getValue(context);
+        final String val1 = this.getExpr1().getValue(object);
+        final String val2 = this.getExpr2().getValue(object);
 
         switch (this.getOp()) {
             case EQ:
@@ -87,5 +87,11 @@ public class StringCompare extends CompareExpr implements PredicateExpr {
     @Override
     public boolean isAConstant() {
         return this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
+    }
+
+    @Override
+    public void setSchema(final ExprSchema schema) {
+        this.getExpr1().setSchema(schema);
+        this.getExpr2().setSchema(schema);
     }
 }

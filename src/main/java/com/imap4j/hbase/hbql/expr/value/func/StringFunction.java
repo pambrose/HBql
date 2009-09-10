@@ -2,10 +2,10 @@ package com.imap4j.hbase.hbql.expr.value.func;
 
 import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.predicate.GenericFunction;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class StringFunction extends GenericFunction implements StringValue {
 
     // TODO Deal with this
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
         return false;
     }
 
@@ -49,27 +49,33 @@ public class StringFunction extends GenericFunction implements StringValue {
     }
 
     @Override
-    public String getValue(final EvalContext context) throws HPersistException {
+    public void setSchema(final ExprSchema schema) {
+        for (final StringValue val : this.getExprs())
+            val.setSchema(schema);
+    }
+
+    @Override
+    public String getValue(final Object object) throws HPersistException {
 
         switch (this.getFunc()) {
             case TRIM: {
-                final String val = this.getExprs()[0].getValue(context);
+                final String val = this.getExprs()[0].getValue(object);
                 return val.trim();
             }
 
             case LOWER: {
-                final String val = this.getExprs()[0].getValue(context);
+                final String val = this.getExprs()[0].getValue(object);
                 return val.toLowerCase();
             }
 
             case UPPER: {
-                final String val = this.getExprs()[0].getValue(context);
+                final String val = this.getExprs()[0].getValue(object);
                 return val.toUpperCase();
             }
 
             case CONCAT: {
-                final String v1 = this.getExprs()[0].getValue(context);
-                final String v2 = this.getExprs()[1].getValue(context);
+                final String v1 = this.getExprs()[0].getValue(object);
+                final String v2 = this.getExprs()[1].getValue(object);
                 return v1 + v2;
             }
 

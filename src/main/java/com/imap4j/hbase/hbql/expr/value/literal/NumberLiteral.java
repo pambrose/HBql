@@ -1,6 +1,5 @@
 package com.imap4j.hbase.hbql.expr.value.literal;
 
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
 
 /**
@@ -18,7 +17,7 @@ public class NumberLiteral extends GenericLiteral implements NumberValue {
     }
 
     @Override
-    public Number getValue(final EvalContext context) {
+    public Number getValue(final Object object) {
         return this.value;
     }
 }

@@ -1,11 +1,11 @@
 package com.imap4j.hbase.hbql.expr.value.func;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
 import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,22 +32,22 @@ public class NumberTernary extends GenericTernary implements NumberValue {
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
 
         boolean retval = true;
 
-        if (this.getPred().optimizeForConstants(context))
-            this.pred = new BooleanLiteral(this.getPred().evaluate(context));
+        if (this.getPred().optimizeForConstants(object))
+            this.pred = new BooleanLiteral(this.getPred().evaluate(object));
         else
             retval = false;
 
-        if (this.getExpr1().optimizeForConstants(context))
-            this.expr1 = new NumberLiteral(this.getExpr1().getValue(context));
+        if (this.getExpr1().optimizeForConstants(object))
+            this.expr1 = new NumberLiteral(this.getExpr1().getValue(object));
         else
             retval = false;
 
-        if (this.getExpr2().optimizeForConstants(context))
-            this.expr2 = new NumberLiteral(this.getExpr2().getValue(context));
+        if (this.getExpr2().optimizeForConstants(object))
+            this.expr2 = new NumberLiteral(this.getExpr2().getValue(object));
         else
             retval = false;
 
@@ -55,12 +55,12 @@ public class NumberTernary extends GenericTernary implements NumberValue {
     }
 
     @Override
-    public Number getValue(final EvalContext context) throws HPersistException {
+    public Number getValue(final Object object) throws HPersistException {
 
-        if (this.getPred().evaluate(context))
-            return this.getExpr1().getValue(context);
+        if (this.getPred().evaluate(object))
+            return this.getExpr1().getValue(object);
         else
-            return this.getExpr2().getValue(context);
+            return this.getExpr2().getValue(object);
     }
 
     @Override
@@ -68,4 +68,10 @@ public class NumberTernary extends GenericTernary implements NumberValue {
         return this.getPred().isAConstant() && this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
     }
 
+    @Override
+    public void setSchema(final ExprSchema schema) {
+        this.getPred().setSchema(schema);
+        this.getExpr1().setSchema(schema);
+        this.getExpr2().setSchema(schema);
+    }
 }

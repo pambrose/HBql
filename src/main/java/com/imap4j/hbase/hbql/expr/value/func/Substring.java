@@ -1,12 +1,12 @@
 package com.imap4j.hbase.hbql.expr.value.func;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 import java.util.List;
 
@@ -48,22 +48,22 @@ public class Substring implements StringValue {
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
 
         boolean retval = true;
 
-        if (this.getExpr().optimizeForConstants(context))
-            this.expr = new StringLiteral(this.getExpr().getValue(context));
+        if (this.getExpr().optimizeForConstants(object))
+            this.expr = new StringLiteral(this.getExpr().getValue(object));
         else
             retval = false;
 
-        if (this.getBegin().optimizeForConstants(context))
-            this.begin = new NumberLiteral(this.getBegin().getValue(context));
+        if (this.getBegin().optimizeForConstants(object))
+            this.begin = new NumberLiteral(this.getBegin().getValue(object));
         else
             retval = false;
 
-        if (this.getEnd().optimizeForConstants(context))
-            this.end = new NumberLiteral(this.getEnd().getValue(context));
+        if (this.getEnd().optimizeForConstants(object))
+            this.end = new NumberLiteral(this.getEnd().getValue(object));
         else
             retval = false;
 
@@ -71,16 +71,23 @@ public class Substring implements StringValue {
     }
 
     @Override
-    public String getValue(final EvalContext context) throws HPersistException {
-        final String val = this.getExpr().getValue(context);
-        final int begin = this.getBegin().getValue(context).intValue();
-        final int end = this.getEnd().getValue(context).intValue();
+    public String getValue(final Object object) throws HPersistException {
+        final String val = this.getExpr().getValue(object);
+        final int begin = this.getBegin().getValue(object).intValue();
+        final int end = this.getEnd().getValue(object).intValue();
         return val.substring(begin, end);
     }
 
     @Override
     public boolean isAConstant() {
         return this.getExpr().isAConstant() && this.getBegin().isAConstant() && this.getEnd().isAConstant();
+    }
+
+    @Override
+    public void setSchema(final ExprSchema schema) {
+        this.getExpr().setSchema(schema);
+        this.getBegin().setSchema(schema);
+        this.getEnd().setSchema(schema);
     }
 
 }

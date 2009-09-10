@@ -1,10 +1,10 @@
 package com.imap4j.hbase.hbql.expr.value.func;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 import java.util.List;
 
@@ -45,17 +45,17 @@ public class NumberCalcExpr extends CalcExpr implements NumberValue {
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
 
         boolean retval = true;
 
-        if (this.getExpr1().optimizeForConstants(context))
-            this.expr1 = new NumberLiteral(this.getExpr1().getValue(context));
+        if (this.getExpr1().optimizeForConstants(object))
+            this.expr1 = new NumberLiteral(this.getExpr1().getValue(object));
         else
             retval = false;
 
-        if (this.getExpr2().optimizeForConstants(context))
-            this.expr2 = new NumberLiteral(this.getExpr2().getValue(context));
+        if (this.getExpr2().optimizeForConstants(object))
+            this.expr2 = new NumberLiteral(this.getExpr2().getValue(object));
         else
             retval = false;
 
@@ -63,10 +63,10 @@ public class NumberCalcExpr extends CalcExpr implements NumberValue {
     }
 
     @Override
-    public Long getValue(final EvalContext context) throws HPersistException {
+    public Long getValue(final Object object) throws HPersistException {
 
-        final long val1 = this.getExpr1().getValue(context).longValue();
-        final long val2 = (this.getExpr2() != null) ? (this.getExpr2().getValue(context)).longValue() : 0;
+        final long val1 = this.getExpr1().getValue(object).longValue();
+        final long val2 = (this.getExpr2() != null) ? (this.getExpr2().getValue(object)).longValue() : 0;
 
         switch (this.getOp()) {
             case PLUS:
@@ -92,6 +92,12 @@ public class NumberCalcExpr extends CalcExpr implements NumberValue {
     @Override
     public boolean isAConstant() {
         return this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
+    }
+
+    @Override
+    public void setSchema(final ExprSchema schema) {
+        this.getExpr1().setSchema(schema);
+        this.getExpr2().setSchema(schema);
     }
 
 }

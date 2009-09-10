@@ -2,7 +2,6 @@ package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
@@ -20,7 +19,6 @@ import java.util.List;
 public class ExprEvalTree implements PredicateExpr {
 
     private PredicateExpr expr = null;
-    private ExprSchema schema = null;
     private long start, end;
 
     // private final static ExprEvalTree defaultExpr = new ExprEvalTree(new BooleanLiteral("true"));
@@ -33,13 +31,9 @@ public class ExprEvalTree implements PredicateExpr {
         return expr;
     }
 
-    public ExprSchema getSchema() {
-        return schema;
-    }
-
     public void setSchema(final ExprSchema schema) {
         if (schema != null)
-            this.schema = schema;
+            this.getExpr().setSchema(schema);
     }
 
     public void optimize() throws HPersistException {
@@ -58,12 +52,12 @@ public class ExprEvalTree implements PredicateExpr {
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
 
         boolean retval = true;
 
-        if (this.getExpr().optimizeForConstants(context))
-            this.expr = new BooleanLiteral(this.getExpr().evaluate(context));
+        if (this.getExpr().optimizeForConstants(object))
+            this.expr = new BooleanLiteral(this.getExpr().evaluate(object));
         else
             retval = false;
 
@@ -71,16 +65,14 @@ public class ExprEvalTree implements PredicateExpr {
     }
 
     @Override
-    public Boolean evaluate(final EvalContext context) throws HPersistException {
-
-        context.setExprSchema(this.getSchema());
+    public Boolean evaluate(final Object object) throws HPersistException {
 
         this.start = System.nanoTime();
 
         // Set it once per evaluation
         DateLiteral.resetNow();
 
-        final boolean retval = (this.getExpr() == null) || (this.getExpr().evaluate(context));
+        final boolean retval = (this.getExpr() == null) || (this.getExpr().evaluate(object));
 
         this.end = System.nanoTime();
 

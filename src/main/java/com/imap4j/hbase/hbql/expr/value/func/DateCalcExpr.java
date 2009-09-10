@@ -1,10 +1,10 @@
 package com.imap4j.hbase.hbql.expr.value.func;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 import java.util.List;
 
@@ -45,17 +45,17 @@ public class DateCalcExpr extends CalcExpr implements DateValue {
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
 
         boolean retval = true;
 
-        if (this.getExpr1().optimizeForConstants(context))
-            this.expr1 = new DateLiteral(this.getExpr1().getValue(context));
+        if (this.getExpr1().optimizeForConstants(object))
+            this.expr1 = new DateLiteral(this.getExpr1().getValue(object));
         else
             retval = false;
 
-        if (this.getExpr2().optimizeForConstants(context))
-            this.expr2 = new DateLiteral(this.getExpr2().getValue(context));
+        if (this.getExpr2().optimizeForConstants(object))
+            this.expr2 = new DateLiteral(this.getExpr2().getValue(object));
         else
             retval = false;
 
@@ -63,10 +63,10 @@ public class DateCalcExpr extends CalcExpr implements DateValue {
     }
 
     @Override
-    public Long getValue(final EvalContext context) throws HPersistException {
+    public Long getValue(final Object object) throws HPersistException {
 
-        final long val1 = this.getExpr1().getValue(context);
-        final long val2 = (this.getExpr2() != null) ? (this.getExpr2().getValue(context)) : 0;
+        final long val1 = this.getExpr1().getValue(object);
+        final long val2 = (this.getExpr2() != null) ? (this.getExpr2().getValue(object)) : 0;
 
         switch (this.getOp()) {
             case PLUS:
@@ -83,4 +83,9 @@ public class DateCalcExpr extends CalcExpr implements DateValue {
         return this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
     }
 
+    @Override
+    public void setSchema(final ExprSchema schema) {
+        this.getExpr1().setSchema(schema);
+        this.getExpr2().setSchema(schema);
+    }
 }

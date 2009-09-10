@@ -2,9 +2,9 @@ package com.imap4j.hbase.hbql.expr.value.var;
 
 import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.ExprEvalTreeNode;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.FieldType;
 
 import java.util.List;
@@ -18,6 +18,7 @@ import java.util.List;
 public abstract class GenericAttribRef implements ExprEvalTreeNode {
 
     private final ExprVariable exprVar;
+    private ExprSchema schema = null;
 
     protected GenericAttribRef(final String attribName, final FieldType fieldType) {
         this.exprVar = new ExprVariable(attribName, fieldType);
@@ -33,7 +34,7 @@ public abstract class GenericAttribRef implements ExprEvalTreeNode {
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
         return false;
     }
 
@@ -41,4 +42,13 @@ public abstract class GenericAttribRef implements ExprEvalTreeNode {
     public boolean isAConstant() {
         return false;
     }
+
+    public void setSchema(final ExprSchema schema) {
+        this.schema = schema;
+    }
+
+    public ExprSchema getSchema() {
+        return schema;
+    }
+
 }

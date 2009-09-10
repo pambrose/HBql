@@ -1,7 +1,6 @@
 package com.imap4j.hbase.hbql.expr.value.var;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.schema.FieldType;
 import com.imap4j.hbase.hbql.schema.VariableAttrib;
@@ -21,9 +20,9 @@ public class DateAttribRef extends GenericAttribRef implements DateValue {
     }
 
     @Override
-    public Long getValue(final EvalContext context) throws HPersistException {
-        final VariableAttrib variableAttrib = this.getExprVar().getVariableAttrib(context);
-        return ((Date)variableAttrib.getValue(context.getObject())).getTime();
+    public Long getValue(final Object object) throws HPersistException {
+        final VariableAttrib variableAttrib = this.getExprVar().getVariableAttrib(this.getSchema());
+        return ((Date)variableAttrib.getValue(object)).getTime();
     }
 
 }

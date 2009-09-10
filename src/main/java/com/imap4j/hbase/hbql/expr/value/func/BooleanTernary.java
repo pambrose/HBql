@@ -1,10 +1,10 @@
 package com.imap4j.hbase.hbql.expr.value.func;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.BooleanValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,22 +31,22 @@ public class BooleanTernary extends GenericTernary implements BooleanValue {
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
 
         boolean retval = true;
 
-        if (this.getPred().optimizeForConstants(context))
-            this.pred = new BooleanLiteral(this.getPred().evaluate(context));
+        if (this.getPred().optimizeForConstants(object))
+            this.pred = new BooleanLiteral(this.getPred().evaluate(object));
         else
             retval = false;
 
-        if (this.getExpr1().optimizeForConstants(context))
-            this.expr1 = new BooleanLiteral(this.getExpr1().evaluate(context));
+        if (this.getExpr1().optimizeForConstants(object))
+            this.expr1 = new BooleanLiteral(this.getExpr1().evaluate(object));
         else
             retval = false;
 
-        if (this.getExpr2().optimizeForConstants(context))
-            this.expr2 = new BooleanLiteral(this.getExpr2().evaluate(context));
+        if (this.getExpr2().optimizeForConstants(object))
+            this.expr2 = new BooleanLiteral(this.getExpr2().evaluate(object));
         else
             retval = false;
 
@@ -54,12 +54,12 @@ public class BooleanTernary extends GenericTernary implements BooleanValue {
     }
 
     @Override
-    public Boolean getValue(final EvalContext context) throws HPersistException {
+    public Boolean getValue(final Object object) throws HPersistException {
 
-        if (this.getPred().evaluate(context))
-            return this.getExpr1().evaluate(context);
+        if (this.getPred().evaluate(object))
+            return this.getExpr1().evaluate(object);
         else
-            return this.getExpr2().evaluate(context);
+            return this.getExpr2().evaluate(object);
     }
 
     @Override
@@ -67,4 +67,10 @@ public class BooleanTernary extends GenericTernary implements BooleanValue {
         return this.getPred().isAConstant() && this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
     }
 
+    @Override
+    public void setSchema(final ExprSchema schema) {
+        this.getPred().setSchema(schema);
+        this.getExpr1().setSchema(schema);
+        this.getExpr2().setSchema(schema);
+    }
 }

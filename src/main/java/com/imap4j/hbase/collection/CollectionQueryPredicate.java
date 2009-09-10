@@ -3,7 +3,6 @@ package com.imap4j.hbase.collection;
 import com.google.common.base.Predicate;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 import com.imap4j.hbase.hbql.schema.ObjectSchema;
 
@@ -36,7 +35,7 @@ public class CollectionQueryPredicate<T> implements Predicate<T> {
                 initialized = true;
             }
 
-            return tree.evaluate(new EvalContext(obj));
+            return tree.evaluate(obj);
         }
         catch (HPersistException e) {
             e.printStackTrace();

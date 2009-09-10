@@ -1,7 +1,6 @@
 package com.imap4j.hbase.hbql.expr.value.literal;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.BooleanValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 
@@ -24,12 +23,12 @@ public class BooleanLiteral extends GenericLiteral implements BooleanValue, Pred
     }
 
     @Override
-    public Boolean getValue(final EvalContext context) {
+    public Boolean getValue(final Object object) {
         return this.value;
     }
 
     @Override
-    public Boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final Object object) throws HPersistException {
         return this.value;
     }
 

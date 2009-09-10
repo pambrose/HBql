@@ -1,11 +1,11 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -43,20 +43,20 @@ public class LikeStmt extends GenericNotStmt implements PredicateExpr {
     }
 
     @Override
-    public Boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final Object object) throws HPersistException {
 
         if (this.getPatternExpr().isAConstant()) {
             if (this.pattern == null) {
-                final String pattern = this.getPatternExpr().getValue(context);
+                final String pattern = this.getPatternExpr().getValue(object);
                 this.pattern = Pattern.compile(pattern);
             }
         }
         else {
-            final String pattern = this.getPatternExpr().getValue(context);
+            final String pattern = this.getPatternExpr().getValue(object);
             this.pattern = Pattern.compile(pattern);
         }
 
-        final String val = this.getExpr().getValue(context);
+        final String val = this.getExpr().getValue(object);
         final Matcher m = this.getPattern().matcher(val);
 
         final boolean retval = m.matches();
@@ -65,16 +65,16 @@ public class LikeStmt extends GenericNotStmt implements PredicateExpr {
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
         boolean retval = true;
 
-        if (this.getExpr().optimizeForConstants(context))
-            this.expr = new StringLiteral(this.getExpr().getValue(context));
+        if (this.getExpr().optimizeForConstants(object))
+            this.expr = new StringLiteral(this.getExpr().getValue(object));
         else
             retval = false;
 
-        if (this.getPatternExpr().optimizeForConstants(context))
-            this.patternExpr = new StringLiteral(this.getPatternExpr().getValue(context));
+        if (this.getPatternExpr().optimizeForConstants(object))
+            this.patternExpr = new StringLiteral(this.getPatternExpr().getValue(object));
         else
             retval = false;
 
@@ -91,6 +91,12 @@ public class LikeStmt extends GenericNotStmt implements PredicateExpr {
     @Override
     public boolean isAConstant() {
         return this.getExpr().isAConstant() && this.getPatternExpr().isAConstant();
+    }
+
+    @Override
+    public void setSchema(final ExprSchema schema) {
+        this.getExpr().setSchema(schema);
+        this.getPatternExpr().setSchema(schema);
     }
 
 }

@@ -1,7 +1,6 @@
 package com.imap4j.hbase.hbql.expr.value.var;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.schema.FieldType;
 import com.imap4j.hbase.hbql.schema.VariableAttrib;
@@ -19,9 +18,9 @@ public class IntegerAttribRef extends GenericAttribRef implements NumberValue {
     }
 
     @Override
-    public Integer getValue(final EvalContext context) throws HPersistException {
-        final VariableAttrib variableAttrib = this.getExprVar().getVariableAttrib(context);
-        return (Integer)variableAttrib.getValue(context.getObject());
+    public Integer getValue(final Object object) throws HPersistException {
+        final VariableAttrib variableAttrib = this.getExprVar().getVariableAttrib(this.getSchema());
+        return (Integer)variableAttrib.getValue(object);
     }
 
 }

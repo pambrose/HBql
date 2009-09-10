@@ -1,7 +1,6 @@
 package com.imap4j.hbase.hbql.expr.node;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,5 +10,5 @@ import com.imap4j.hbase.hbql.expr.EvalContext;
  */
 public interface StringValue extends ValueExpr {
 
-    String getValue(final EvalContext context) throws HPersistException;
+    String getValue(final Object object) throws HPersistException;
 }

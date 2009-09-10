@@ -1,11 +1,11 @@
 package com.imap4j.hbase.hbql.expr.value.func;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 import java.util.List;
 
@@ -54,12 +54,12 @@ public class IntervalExpr implements DateValue {
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
 
         boolean retval = true;
 
-        if (this.getExpr().optimizeForConstants(context))
-            this.expr = new NumberLiteral(this.getExpr().getValue(context));
+        if (this.getExpr().optimizeForConstants(object))
+            this.expr = new NumberLiteral(this.getExpr().getValue(object));
         else
             retval = false;
 
@@ -67,8 +67,8 @@ public class IntervalExpr implements DateValue {
     }
 
     @Override
-    public Long getValue(final EvalContext context) throws HPersistException {
-        final Number num = this.getExpr().getValue(context);
+    public Long getValue(final Object object) throws HPersistException {
+        final Number num = this.getExpr().getValue(object);
         final long val = num.longValue();
         return val * this.getType().getIntervalMillis();
     }
@@ -81,6 +81,11 @@ public class IntervalExpr implements DateValue {
     @Override
     public boolean isAConstant() {
         return this.getExpr().isAConstant();
+    }
+
+    @Override
+    public void setSchema(final ExprSchema schema) {
+        this.getExpr().setSchema(schema);
     }
 
 }

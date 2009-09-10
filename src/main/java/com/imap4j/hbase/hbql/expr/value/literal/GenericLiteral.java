@@ -2,9 +2,9 @@ package com.imap4j.hbase.hbql.expr.value.literal;
 
 import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.ExprEvalTreeNode;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 import java.util.List;
 
@@ -22,12 +22,16 @@ public abstract class GenericLiteral implements ExprEvalTreeNode {
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
         return true;
     }
 
     @Override
     public boolean isAConstant() {
         return true;
+    }
+
+    @Override
+    public void setSchema(final ExprSchema schema) {
     }
 }

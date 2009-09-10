@@ -1,7 +1,6 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
@@ -37,21 +36,21 @@ public class StringBetweenStmt extends GenericBetweenStmt implements PredicateEx
     }
 
     @Override
-    public boolean optimizeForConstants(final EvalContext context) throws HPersistException {
+    public boolean optimizeForConstants(final Object object) throws HPersistException {
         boolean retval = true;
 
-        if (this.getExpr().optimizeForConstants(context))
-            this.expr = new StringLiteral(this.getExpr().getValue(context));
+        if (this.getExpr().optimizeForConstants(object))
+            this.expr = new StringLiteral(this.getExpr().getValue(object));
         else
             retval = false;
 
-        if (this.getLower().optimizeForConstants(context))
-            this.lower = new StringLiteral(this.getLower().getValue(context));
+        if (this.getLower().optimizeForConstants(object))
+            this.lower = new StringLiteral(this.getLower().getValue(object));
         else
             retval = false;
 
-        if (this.getUpper().optimizeForConstants(context))
-            this.upper = new StringLiteral(this.getUpper().getValue(context));
+        if (this.getUpper().optimizeForConstants(object))
+            this.upper = new StringLiteral(this.getUpper().getValue(object));
         else
             retval = false;
 
@@ -59,11 +58,11 @@ public class StringBetweenStmt extends GenericBetweenStmt implements PredicateEx
     }
 
     @Override
-    public Boolean evaluate(final EvalContext context) throws HPersistException {
+    public Boolean evaluate(final Object object) throws HPersistException {
 
-        final String strval = this.getExpr().getValue(context);
-        final boolean retval = strval.compareTo(this.getLower().getValue(context)) >= 0
-                               && strval.compareTo(this.getUpper().getValue(context)) <= 0;
+        final String strval = this.getExpr().getValue(object);
+        final boolean retval = strval.compareTo(this.getLower().getValue(object)) >= 0
+                               && strval.compareTo(this.getUpper().getValue(object)) <= 0;
 
         return (this.isNot()) ? !retval : retval;
     }
