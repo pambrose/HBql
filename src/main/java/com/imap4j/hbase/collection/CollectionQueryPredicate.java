@@ -31,11 +31,12 @@ public class CollectionQueryPredicate<T> implements Predicate<T> {
             if (!initialized) {
                 this.schema = ObjectSchema.getObjectSchema(obj);
                 this.tree = (ExprEvalTree)HBqlRule.NODESC_WHERE_EXPR.parse(this.query, schema);
-                this.tree.optimizeForConstants(new ReflectionEvalContext(schema, null));
+                this.tree.setSchema(schema);
+                this.tree.optimize();
                 initialized = true;
             }
 
-            return tree.evaluate(new ReflectionEvalContext(schema, obj));
+            return tree.evaluate(new ReflectionEvalContext(obj));
         }
         catch (HPersistException e) {
             e.printStackTrace();

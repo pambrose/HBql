@@ -66,12 +66,13 @@ public class WhereExprTests {
 
         final AnnotationSchema schema = (recordObj != null) ? AnnotationSchema.getAnnotationSchema(recordObj) : null;
         final ExprEvalTree tree = (ExprEvalTree)HBqlRule.DESC_WHERE_VALUE.parse(expr, schema);
-        final EvalContext context = new HBqlEvalContext(schema, recordObj);
+        tree.setSchema(schema);
 
+        final EvalContext context = new HBqlEvalContext(recordObj);
         final boolean no_opt_run = tree.evaluate(context);
         final long no_opt_time = tree.getElapsedNanos();
 
-        tree.optimizeForConstants(context);
+        tree.optimize();
 
         final boolean opt_run = tree.evaluate(context);
         final long opt_time = tree.getElapsedNanos();

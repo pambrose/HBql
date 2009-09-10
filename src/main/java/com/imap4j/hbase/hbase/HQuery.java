@@ -48,7 +48,8 @@ public class HQuery<T extends HPersistable> {
         final String tableName = schema.getTableName();
         final HTable table = new HTable(new HBaseConfiguration(), tableName);
         final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
-        clientFilter.optimizeForConstants(new HBqlEvalContext(schema, null));
+        clientFilter.setSchema(schema);
+        clientFilter.optimize();
 
         final List<Scan> scanList = HUtil.getScanList(schema, fieldList, args.getWhereExpr());
 
@@ -58,7 +59,7 @@ public class HQuery<T extends HPersistable> {
                 resultScanner = table.getScanner(scan);
                 for (final Result result : resultScanner) {
                     final HPersistable recordObj = HUtil.ser.getHPersistable(schema, scan, result);
-                    if (clientFilter == null || clientFilter.evaluate(new HBqlEvalContext(schema, recordObj)))
+                    if (clientFilter == null || clientFilter.evaluate(new HBqlEvalContext(recordObj)))
                         this.getListener().onEachRow((T)recordObj);
                 }
             }

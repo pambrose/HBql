@@ -130,6 +130,8 @@ public class HBql {
         final List<String> fieldList = schema.getFieldList();
         final HTable table = new HTable(new HBaseConfiguration(), schema.getTableName());
         final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
+        clientFilter.setSchema(schema);
+        clientFilter.optimize();
         int cnt = 0;
 
         final List<Scan> scanList = HUtil.getScanList(schema, fieldList, args.getWhereExpr());
@@ -139,7 +141,7 @@ public class HBql {
 
                 final HPersistable recordObj = HUtil.ser.getHPersistable(schema, scan, result);
 
-                if (clientFilter == null || clientFilter.evaluate(new HBqlEvalContext(schema, recordObj))) {
+                if (clientFilter == null || clientFilter.evaluate(new HBqlEvalContext(recordObj))) {
                     final Delete delete = new Delete(result.getRow());
                     table.delete(delete);
                     cnt++;

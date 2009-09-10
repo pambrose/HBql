@@ -40,10 +40,11 @@ public class CollectionQuery<T> {
         final Object obj = objs.iterator().next();
         final ObjectSchema schema = ObjectSchema.getObjectSchema(obj);
         final ExprEvalTree tree = (ExprEvalTree)HBqlRule.NODESC_WHERE_EXPR.parse(this.query, schema);
-        tree.optimizeForConstants(new ReflectionEvalContext(schema, null));
+        tree.setSchema(schema);
+        tree.optimize();
 
         for (final Object o : objs)
-            if (tree.evaluate(new ReflectionEvalContext(schema, o)))
+            if (tree.evaluate(new ReflectionEvalContext(o)))
                 this.getListener().onEachObject((T)o);
 
     }

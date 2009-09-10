@@ -1,7 +1,6 @@
 package com.imap4j.hbase.hbql.expr;
 
 import com.imap4j.hbase.hbase.HPersistable;
-import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,8 +12,7 @@ public class HBqlEvalContext extends EvalContext {
 
     final HPersistable recordObj;
 
-    public HBqlEvalContext(final ExprSchema exprSchema, final HPersistable recordObj) {
-        super(exprSchema);
+    public HBqlEvalContext(final HPersistable recordObj) {
         this.recordObj = recordObj;
     }
 

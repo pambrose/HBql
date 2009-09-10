@@ -12,9 +12,9 @@ import java.io.Serializable;
  */
 public abstract class EvalContext implements Serializable {
 
-    final ExprSchema exprSchema;
+    private ExprSchema exprSchema;
 
-    public EvalContext(final ExprSchema exprSchema) {
+    public void setExprSchema(final ExprSchema exprSchema) {
         this.exprSchema = exprSchema;
     }
 

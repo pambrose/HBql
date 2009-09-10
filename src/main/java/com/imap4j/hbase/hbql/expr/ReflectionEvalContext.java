@@ -1,7 +1,5 @@
 package com.imap4j.hbase.hbql.expr;
 
-import com.imap4j.hbase.hbql.schema.ExprSchema;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -12,13 +10,8 @@ public class ReflectionEvalContext extends EvalContext {
 
     final Object object;
 
-    public ReflectionEvalContext(final ExprSchema exprSchema, final Object object) {
-        super(exprSchema);
+    public ReflectionEvalContext(final Object object) {
         this.object = object;
-    }
-
-    public ExprSchema getExprSchema() {
-        return this.exprSchema;
     }
 
     public Object getObject() {
