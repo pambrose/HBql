@@ -1,6 +1,6 @@
 package com.imap4j.hbase.hbase;
 
-import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
+import com.imap4j.hbase.hbql.expr.ExprEvalTree;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.filter.Filter;
 

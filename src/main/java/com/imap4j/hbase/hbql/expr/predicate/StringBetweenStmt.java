@@ -12,7 +12,6 @@ import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
  */
 public class StringBetweenStmt extends GenericBetweenStmt<StringValue> {
 
-
     public StringBetweenStmt(final StringValue expr, final boolean not, final StringValue lower, final StringValue upper) {
         super(not, expr, lower, upper);
     }

@@ -12,7 +12,6 @@ import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
  */
 public class DateBetweenStmt extends GenericBetweenStmt<DateValue> {
 
-
     public DateBetweenStmt(final DateValue expr, final boolean not, final DateValue lower, final DateValue upper) {
         super(not, expr, lower, upper);
     }

@@ -1,6 +1,6 @@
 package com.imap4j.hbase.antlr.args;
 
-import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
+import com.imap4j.hbase.hbql.expr.ExprEvalTree;
 
 /**
  * Created by IntelliJ IDEA.
