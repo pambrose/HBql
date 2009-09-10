@@ -4,8 +4,8 @@ import com.imap4j.hbase.collection.CollectionQuery;
 import com.imap4j.hbase.collection.CollectionQueryListenerAdapter;
 import com.imap4j.hbase.collection.CollectionQueryPredicate;
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.test.ObjectTests;
 import org.junit.Test;
+import util.ObjectTests;
 
 import java.util.List;
 

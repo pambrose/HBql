@@ -1,4 +1,4 @@
-package com.imap4j.hbase.hbql.test;
+package util;
 
 import com.imap4j.hbase.collection.CollectionQuery;
 import com.imap4j.hbase.collection.CollectionQueryListenerAdapter;

@@ -1,4 +1,4 @@
-package com.imap4j.hbase.hbql.test;
+package util;
 
 import com.google.common.collect.Lists;
 import com.imap4j.hbase.antlr.config.HBqlRule;

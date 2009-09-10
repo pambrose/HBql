@@ -1,6 +1,6 @@
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.test.WhereExprTests;
 import org.junit.Test;
+import util.WhereExprTests;
 
 /**
  * Created by IntelliJ IDEA.
