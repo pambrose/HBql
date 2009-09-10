@@ -15,14 +15,14 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class ExprEvalTree implements PredicateExpr {
+public class ExprTree implements PredicateExpr {
 
     private PredicateExpr expr = null;
     private long start, end;
 
     // private final static ExprEvalTree defaultExpr = new ExprEvalTree(new BooleanLiteral("true"));
 
-    public ExprEvalTree(final PredicateExpr expr) {
+    public ExprTree(final PredicateExpr expr) {
         this.expr = expr;
     }
 

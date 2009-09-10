@@ -7,7 +7,7 @@ import com.imap4j.hbase.antlr.args.ExecArgs;
 import com.imap4j.hbase.antlr.args.SetArgs;
 import com.imap4j.hbase.antlr.args.ShowArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
-import com.imap4j.hbase.hbql.expr.ExprEvalTree;
+import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
 import com.imap4j.hbase.hbql.schema.EnvVars;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
@@ -128,7 +128,7 @@ public class HBql {
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getTableName());
         final List<String> fieldList = schema.getFieldList();
         final HTable table = new HTable(new HBaseConfiguration(), schema.getTableName());
-        final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
+        final ExprTree clientFilter = args.getWhereExpr().getClientFilterArgs();
         clientFilter.setSchema(schema);
         clientFilter.optimize();
         int cnt = 0;

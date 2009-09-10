@@ -1,6 +1,6 @@
 package com.imap4j.hbase.hbase;
 
-import com.imap4j.hbase.hbql.expr.ExprEvalTree;
+import com.imap4j.hbase.hbql.expr.ExprTree;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.filter.Filter;
 
@@ -16,13 +16,13 @@ import java.io.IOException;
  */
 public class HExprFilter implements Filter {
 
-    ExprEvalTree filterExpr;
+    ExprTree filterExpr;
 
-    public HExprFilter(final ExprEvalTree filterExpr) {
+    public HExprFilter(final ExprTree filterExpr) {
         this.filterExpr = filterExpr;
     }
 
-    public ExprEvalTree getFilterExpr() {
+    public ExprTree getFilterExpr() {
         return filterExpr;
     }
 

@@ -1,6 +1,6 @@
 package com.imap4j.hbase.antlr.args;
 
-import com.imap4j.hbase.hbql.expr.ExprEvalTree;
+import com.imap4j.hbase.hbql.expr.ExprTree;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,8 +13,8 @@ public class WhereArgs {
     private KeyRangeArgs keyRangeArgs = new KeyRangeArgs(null);
     private DateRangeArgs dateRangeArgs = new DateRangeArgs(null, null);
     private VersionArgs versionArgs = new VersionArgs(null);
-    private ExprEvalTree clientFilterArgs = new ExprEvalTree(null);
-    private ExprEvalTree serverFilterArgs = new ExprEvalTree(null);
+    private ExprTree clientFilterArgs = new ExprTree(null);
+    private ExprTree serverFilterArgs = new ExprTree(null);
 
     public KeyRangeArgs getKeyRangeArgs() {
         return this.keyRangeArgs;
@@ -40,19 +40,19 @@ public class WhereArgs {
         this.versionArgs = versionArgs;
     }
 
-    public ExprEvalTree getClientFilterArgs() {
+    public ExprTree getClientFilterArgs() {
         return clientFilterArgs;
     }
 
-    public void setClientFilterArgs(final ExprEvalTree clientFilterArgs) {
+    public void setClientFilterArgs(final ExprTree clientFilterArgs) {
         this.clientFilterArgs = clientFilterArgs;
     }
 
-    public ExprEvalTree getServerFilterArgs() {
+    public ExprTree getServerFilterArgs() {
         return serverFilterArgs;
     }
 
-    public void setServerFilterArgs(final ExprEvalTree serverFilterArgs) {
+    public void setServerFilterArgs(final ExprTree serverFilterArgs) {
         this.serverFilterArgs = serverFilterArgs;
     }
 }

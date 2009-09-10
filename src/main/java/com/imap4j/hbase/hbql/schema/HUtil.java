@@ -6,7 +6,7 @@ import com.imap4j.hbase.antlr.args.VersionArgs;
 import com.imap4j.hbase.antlr.args.WhereArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.ExprEvalTree;
+import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
@@ -67,7 +67,7 @@ public class HUtil {
                 scan.setMaxVersions(verArgs.getValue());
 
             // Set server-side filter
-            final ExprEvalTree serverFilter = whereExpr.getServerFilterArgs();
+            final ExprTree serverFilter = whereExpr.getServerFilterArgs();
             if (serverFilter != null) {
                 List<ExprVariable> names = serverFilter.getExprVariables();
                 //scan.setFilter(new HBqlFilter(exprSchema, serverFilter));

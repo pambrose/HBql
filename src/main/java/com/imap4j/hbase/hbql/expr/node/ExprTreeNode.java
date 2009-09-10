@@ -13,7 +13,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 11:52:39 AM
  */
-public interface ExprEvalTreeNode extends Serializable {
+public interface ExprTreeNode extends Serializable {
 
     boolean optimizeForConstants(final Object object) throws HPersistException;
 

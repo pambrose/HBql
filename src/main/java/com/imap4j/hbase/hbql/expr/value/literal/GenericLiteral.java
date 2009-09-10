@@ -3,7 +3,7 @@ package com.imap4j.hbase.hbql.expr.value.literal;
 import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
-import com.imap4j.hbase.hbql.expr.node.ExprEvalTreeNode;
+import com.imap4j.hbase.hbql.expr.node.ExprTreeNode;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 12:27:29 PM
  */
-public abstract class GenericLiteral implements ExprEvalTreeNode {
+public abstract class GenericLiteral implements ExprTreeNode {
 
     @Override
     public List<ExprVariable> getExprVariables() {

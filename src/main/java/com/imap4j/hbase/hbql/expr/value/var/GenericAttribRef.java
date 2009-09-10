@@ -3,7 +3,7 @@ package com.imap4j.hbase.hbql.expr.value.var;
 import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
-import com.imap4j.hbase.hbql.expr.node.ExprEvalTreeNode;
+import com.imap4j.hbase.hbql.expr.node.ExprTreeNode;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.FieldType;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 12:30:57 PM
  */
-public abstract class GenericAttribRef implements ExprEvalTreeNode {
+public abstract class GenericAttribRef implements ExprTreeNode {
 
     private final ExprVariable exprVar;
     private ExprSchema schema = null;

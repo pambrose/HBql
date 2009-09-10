@@ -2,7 +2,7 @@ package com.imap4j.hbase.hbase;
 
 import com.imap4j.hbase.antlr.args.QueryArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
-import com.imap4j.hbase.hbql.expr.ExprEvalTree;
+import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.HUtil;
@@ -46,7 +46,7 @@ public class HQuery<T extends HPersistable> {
         final List<String> fieldList = (args.getColumnList() == null) ? schema.getFieldList() : args.getColumnList();
         final String tableName = schema.getTableName();
         final HTable table = new HTable(new HBaseConfiguration(), tableName);
-        final ExprEvalTree clientFilter = args.getWhereExpr().getClientFilterArgs();
+        final ExprTree clientFilter = args.getWhereExpr().getClientFilterArgs();
         clientFilter.setSchema(schema);
         clientFilter.optimize();
 

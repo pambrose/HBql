@@ -108,10 +108,10 @@ time returns [DateRangeArgs retval]
 versions returns [VersionArgs retval]
 	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);};
 	
-serverFilter [ExprSchema es] returns [ExprEvalTree retval]
+serverFilter [ExprSchema es] returns [ExprTree retval]
 	: keySERVER keyFILTER? w=descWhereExpr[es]	{retval = $w.retval;};
 	
-clientFilter [ExprSchema es] returns [ExprEvalTree retval]
+clientFilter [ExprSchema es] returns [ExprTree retval]
 	: keyCLIENT keyFILTER? w=descWhereExpr[es]	{retval = $w.retval;};
 	
 keyRangeList returns [List<KeyRangeArgs.Range> retval]
@@ -124,14 +124,14 @@ keyRange returns [KeyRangeArgs.Range retval]
 	| q1=QUOTED COLON q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
 	;
 
-nodescWhereExpr [ExprSchema es] returns [ExprEvalTree retval]
+nodescWhereExpr [ExprSchema es] returns [ExprTree retval]
 @init {setExprSchema(es);}
-	 : e=orExpr					{retval = new ExprEvalTree($e.retval);};
+	 : e=orExpr					{retval = new ExprTree($e.retval);};
 
-descWhereExpr [ExprSchema es] returns [ExprEvalTree retval]
+descWhereExpr [ExprSchema es] returns [ExprTree retval]
 @init {setExprSchema(es);}
 	: s=schemaDesc? 				{if ($s.retval != null) setExprSchema($s.retval);}			
-	  e=orExpr					{retval = new ExprEvalTree($e.retval);
+	  e=orExpr					{retval = new ExprTree($e.retval);
 	  						 if ($s.retval != null) retval.setSchema($s.retval);};
 
 			
@@ -172,7 +172,7 @@ options {backtrack=true;}
 
 likeStmt returns [PredicateExpr retval]
 	: s1=stringExpr n=not? keyLIKE s2=stringExpr 
-							{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);};
+							{retval = new StringLikeStmt($s1.retval, ($n.text != null), $s2.retval);};
 
 inStmt returns [PredicateExpr retval]
 options {backtrack=true;}	
