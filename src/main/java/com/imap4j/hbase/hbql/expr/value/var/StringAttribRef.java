@@ -15,7 +15,7 @@ import com.imap4j.hbase.hbql.schema.VariableAttrib;
 public class StringAttribRef extends GenericAttribRef implements StringValue {
 
     public StringAttribRef(final String attribName) {
-        super(FieldType.StringType, attribName);
+        super(attribName, FieldType.StringType);
     }
 
     @Override

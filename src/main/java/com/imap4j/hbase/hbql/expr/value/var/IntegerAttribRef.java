@@ -15,7 +15,7 @@ import com.imap4j.hbase.hbql.schema.VariableAttrib;
 public class IntegerAttribRef extends GenericAttribRef implements NumberValue {
 
     public IntegerAttribRef(final String attribName) {
-        super(FieldType.IntegerType, attribName);
+        super(attribName, FieldType.IntegerType);
     }
 
     @Override

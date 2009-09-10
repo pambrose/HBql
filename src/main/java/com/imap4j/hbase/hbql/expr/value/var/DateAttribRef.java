@@ -17,7 +17,7 @@ import java.util.Date;
 public class DateAttribRef extends GenericAttribRef implements DateValue {
 
     public DateAttribRef(final String attribName) {
-        super(FieldType.DateType, attribName);
+        super(attribName, FieldType.DateType);
     }
 
     @Override
