@@ -24,19 +24,19 @@ import java.util.List;
 public class HQuery<T extends HPersistable> {
 
     final String query;
-    final HQueryListener<T> queryListener;
+    final HQueryListener<T> listener;
 
-    public HQuery(final String query, final HQueryListener<T> queryListener) {
+    public HQuery(final String query, final HQueryListener<T> listener) {
         this.query = query;
-        this.queryListener = queryListener;
+        this.listener = listener;
     }
 
     public String getQuery() {
         return this.query;
     }
 
-    public HQueryListener<T> getQueryListener() {
-        return this.queryListener;
+    public HQueryListener<T> getListener() {
+        return this.listener;
     }
 
     public void execute() throws IOException, HPersistException {
@@ -56,7 +56,7 @@ public class HQuery<T extends HPersistable> {
                 for (final Result result : resultScanner) {
                     final HPersistable recordObj = HUtil.ser.getHPersistable(schema, scan, result);
                     if (clientFilter == null || clientFilter.evaluate(new HBqlEvalContext(schema, recordObj)))
-                        this.getQueryListener().onEachRow((T)recordObj);
+                        this.getListener().onEachRow((T)recordObj);
                 }
             }
             finally {
