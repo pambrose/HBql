@@ -10,9 +10,14 @@ import java.io.Serializable;
  * Date: Aug 29, 2009
  * Time: 10:34:29 AM
  */
-public abstract class EvalContext implements Serializable {
+public class EvalContext implements Serializable {
 
+    private final Object object;
     private ExprSchema exprSchema;
+
+    public EvalContext(final Object object) {
+        this.object = object;
+    }
 
     public void setExprSchema(final ExprSchema exprSchema) {
         this.exprSchema = exprSchema;
@@ -22,5 +27,7 @@ public abstract class EvalContext implements Serializable {
         return this.exprSchema;
     }
 
-    public abstract Object getObject();
+    public Object getObject() {
+        return this.object;
+    }
 }

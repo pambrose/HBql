@@ -2,7 +2,7 @@ package com.imap4j.hbase.collection;
 
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.ReflectionEvalContext;
+import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.predicate.ExprEvalTree;
 import com.imap4j.hbase.hbql.schema.ObjectSchema;
 
@@ -44,7 +44,7 @@ public class CollectionQuery<T> {
         tree.optimize();
 
         for (final Object o : objs)
-            if (tree.evaluate(new ReflectionEvalContext(o)))
+            if (tree.evaluate(new EvalContext(o)))
                 this.getListener().onEachObject((T)o);
 
     }

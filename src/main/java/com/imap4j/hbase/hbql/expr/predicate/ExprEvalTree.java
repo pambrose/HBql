@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.EvalContext;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
-import com.imap4j.hbase.hbql.expr.ReflectionEvalContext;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
 import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
@@ -44,9 +43,9 @@ public class ExprEvalTree implements PredicateExpr {
 
     public void optimize() throws HPersistException {
         // Any EvalContext would work here since value is null
-        final ReflectionEvalContext context = new ReflectionEvalContext(null);
-        context.setExprSchema(this.getSchema());
-        this.optimizeForConstants(context);
+        //final ReflectionEvalContext context = new ReflectionEvalContext(null);
+        //context.setExprSchema(this.getSchema());
+        this.optimizeForConstants(null);
     }
 
     @Override
