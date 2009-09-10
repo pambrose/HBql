@@ -1,7 +1,7 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbql.expr.ExprVariable;
-import com.imap4j.hbase.hbql.expr.node.ExprEvalTreeNode;
+import com.imap4j.hbase.hbql.expr.node.ValueExpr;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 
 import java.util.List;
@@ -12,17 +12,41 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public abstract class GenericBetweenStmt extends GenericNotStmt implements ExprEvalTreeNode {
+public abstract class GenericBetweenStmt<T extends ValueExpr> extends GenericNotStmt {
 
-    protected GenericBetweenStmt(final boolean not) {
+    private T expr = null;
+    private T lower = null, upper = null;
+
+    protected GenericBetweenStmt(final boolean not, final T expr, final T lower, final T upper) {
         super(not);
+        this.expr = expr;
+        this.lower = lower;
+        this.upper = upper;
     }
 
-    abstract protected ExprEvalTreeNode getExpr();
+    protected T getExpr() {
+        return this.expr;
+    }
 
-    abstract protected ExprEvalTreeNode getLower();
+    protected T getLower() {
+        return this.lower;
+    }
 
-    abstract protected ExprEvalTreeNode getUpper();
+    protected T getUpper() {
+        return this.upper;
+    }
+
+    public void setExpr(final T expr) {
+        this.expr = expr;
+    }
+
+    public void setLower(final T lower) {
+        this.lower = lower;
+    }
+
+    public void setUpper(final T upper) {
+        this.upper = upper;
+    }
 
     @Override
     public List<ExprVariable> getExprVariables() {

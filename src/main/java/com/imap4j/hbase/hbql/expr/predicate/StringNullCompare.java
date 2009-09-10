@@ -2,7 +2,6 @@ package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
-import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
@@ -15,7 +14,7 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class StringNullCompare extends GenericNotStmt implements PredicateExpr {
+public class StringNullCompare extends GenericNotStmt {
 
     private StringValue expr = null;
 

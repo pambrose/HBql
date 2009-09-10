@@ -2,7 +2,6 @@ package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.node.DateValue;
-import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
 
 /**
@@ -11,28 +10,11 @@ import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class DateBetweenStmt extends GenericBetweenStmt implements PredicateExpr {
+public class DateBetweenStmt extends GenericBetweenStmt<DateValue> {
 
-    private DateValue expr = null;
-    private DateValue lower = null, upper = null;
 
     public DateBetweenStmt(final DateValue expr, final boolean not, final DateValue lower, final DateValue upper) {
-        super(not);
-        this.expr = expr;
-        this.lower = lower;
-        this.upper = upper;
-    }
-
-    protected DateValue getExpr() {
-        return this.expr;
-    }
-
-    protected DateValue getLower() {
-        return this.lower;
-    }
-
-    protected DateValue getUpper() {
-        return this.upper;
+        super(not, expr, lower, upper);
     }
 
     @Override
@@ -40,17 +22,17 @@ public class DateBetweenStmt extends GenericBetweenStmt implements PredicateExpr
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.expr = new DateLiteral(this.getExpr().getValue(object));
+            this.setExpr(new DateLiteral(this.getExpr().getValue(object)));
         else
             retval = false;
 
         if (this.getLower().optimizeForConstants(object))
-            this.lower = new DateLiteral(this.getLower().getValue(object));
+            this.setLower(new DateLiteral(this.getLower().getValue(object)));
         else
             retval = false;
 
         if (this.getUpper().optimizeForConstants(object))
-            this.upper = new DateLiteral(this.getUpper().getValue(object));
+            this.setUpper(new DateLiteral(this.getUpper().getValue(object)));
         else
             retval = false;
 

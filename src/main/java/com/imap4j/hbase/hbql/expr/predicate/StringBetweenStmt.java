@@ -1,7 +1,6 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
 
@@ -11,28 +10,11 @@ import com.imap4j.hbase.hbql.expr.value.literal.StringLiteral;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringBetweenStmt extends GenericBetweenStmt implements PredicateExpr {
+public class StringBetweenStmt extends GenericBetweenStmt<StringValue> {
 
-    private StringValue expr = null;
-    private StringValue lower = null, upper = null;
 
     public StringBetweenStmt(final StringValue expr, final boolean not, final StringValue lower, final StringValue upper) {
-        super(not);
-        this.expr = expr;
-        this.lower = lower;
-        this.upper = upper;
-    }
-
-    protected StringValue getExpr() {
-        return this.expr;
-    }
-
-    protected StringValue getLower() {
-        return this.lower;
-    }
-
-    protected StringValue getUpper() {
-        return this.upper;
+        super(not, expr, lower, upper);
     }
 
     @Override
@@ -40,17 +22,17 @@ public class StringBetweenStmt extends GenericBetweenStmt implements PredicateEx
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.expr = new StringLiteral(this.getExpr().getValue(object));
+            this.setExpr(new StringLiteral(this.getExpr().getValue(object)));
         else
             retval = false;
 
         if (this.getLower().optimizeForConstants(object))
-            this.lower = new StringLiteral(this.getLower().getValue(object));
+            this.setLower(new StringLiteral(this.getLower().getValue(object)));
         else
             retval = false;
 
         if (this.getUpper().optimizeForConstants(object))
-            this.upper = new StringLiteral(this.getUpper().getValue(object));
+            this.setUpper(new StringLiteral(this.getUpper().getValue(object)));
         else
             retval = false;
 
