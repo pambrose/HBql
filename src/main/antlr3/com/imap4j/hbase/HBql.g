@@ -232,7 +232,7 @@ numericPrimary returns [NumberValue retval]
 // Simple typed exprs
 numericTern returns [NumberValue retval]
 	: l=numberVal					{retval = $l.retval;} 
-	| LBRACE keyIF e=orExpr keyTHEN n1=numericExpr keyELSE n2=numericExpr RBRACE 	
+	| keyIF LPAREN e=orExpr RPAREN  keyTHEN LCURLY n1=numericExpr RCURLY keyELSE LCURLY n2=numericExpr RCURLY 	
 							{retval = new NumberTernary($e.retval, $n1.retval, $n2.retval);}
 	;
 
@@ -269,7 +269,7 @@ stringVal returns [StringValue retval]
 	| f=funcReturningString				{retval = $f.retval;}
 	| n=keyNULL					{retval = new StringNullLiteral();}
 	| a=stringAttribVar				{retval = $a.retval;}
-	| LBRACE keyIF e=orExpr keyTHEN s1=stringExpr keyELSE s2=stringExpr RBRACE 	
+	| keyIF LPAREN e=orExpr RPAREN keyTHEN LCURLY s1=stringExpr RCURLY keyELSE LCURLY s2=stringExpr  RCURLY	
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
 
@@ -281,7 +281,7 @@ booleanExpr returns [BooleanValue retval]
 booleanVal returns [BooleanValue retval]
 	: b=booleanLiteral				{retval = $b.retval;}
 	//| f=funcReturningBoolean
-	| LBRACE keyIF e=orExpr keyTHEN b1=booleanExpr keyELSE b2=booleanExpr RBRACE	
+	| keyIF LPAREN e=orExpr RPAREN keyTHEN LCURLY b1=booleanExpr RCURLY  keyELSE LCURLY b2=booleanExpr RCURLY	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	;
 	
