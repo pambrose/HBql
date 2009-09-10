@@ -46,5 +46,4 @@ public class NumberTernary extends GenericTernary<NumberValue> implements Number
     public Number getValue(final Object object) throws HPersistException {
         return (Number)super.getValue(object);
     }
-
 }

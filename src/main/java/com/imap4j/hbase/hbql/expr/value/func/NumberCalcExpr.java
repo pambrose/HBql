@@ -1,12 +1,8 @@
 package com.imap4j.hbase.hbql.expr.value.func;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
-import com.imap4j.hbase.hbql.schema.ExprSchema;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,35 +10,16 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NumberCalcExpr extends CalcExpr implements NumberValue {
-
-    private NumberValue expr1 = null, expr2 = null;
+public class NumberCalcExpr extends GenericCalcExpr<NumberValue> implements NumberValue {
 
     public NumberCalcExpr(final NumberValue expr1) {
-        this(expr1, CalcExpr.OP.NONE, null);
+        this(expr1, GenericCalcExpr.OP.NONE, null);
     }
 
-    public NumberCalcExpr(final NumberValue expr1, final CalcExpr.OP op, final NumberValue expr2) {
-        super(op);
-        this.expr1 = expr1;
-        this.expr2 = expr2;
+    public NumberCalcExpr(final NumberValue expr1, final GenericCalcExpr.OP op, final NumberValue expr2) {
+        super(expr1, op, expr2);
     }
 
-    private NumberValue getExpr1() {
-        return this.expr1;
-    }
-
-    private NumberValue getExpr2() {
-        return this.expr2;
-    }
-
-    @Override
-    public List<ExprVariable> getExprVariables() {
-        final List<ExprVariable> retval = this.getExpr1().getExprVariables();
-        if (this.getExpr2() != null)
-            retval.addAll(this.getExpr2().getExprVariables());
-        return retval;
-    }
 
     @Override
     public boolean optimizeForConstants(final Object object) throws HPersistException {
@@ -50,12 +27,12 @@ public class NumberCalcExpr extends CalcExpr implements NumberValue {
         boolean retval = true;
 
         if (this.getExpr1().optimizeForConstants(object))
-            this.expr1 = new NumberLiteral(this.getExpr1().getValue(object));
+            this.setExpr1(new NumberLiteral(this.getExpr1().getValue(object)));
         else
             retval = false;
 
         if (this.getExpr2().optimizeForConstants(object))
-            this.expr2 = new NumberLiteral(this.getExpr2().getValue(object));
+            this.setExpr2(new NumberLiteral(this.getExpr2().getValue(object)));
         else
             retval = false;
 
@@ -88,16 +65,4 @@ public class NumberCalcExpr extends CalcExpr implements NumberValue {
         throw new HPersistException("Error in NumberCalcExpr.getValue() " + this.getOp());
 
     }
-
-    @Override
-    public boolean isAConstant() {
-        return this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
-    }
-
-    @Override
-    public void setSchema(final ExprSchema schema) {
-        this.getExpr1().setSchema(schema);
-        this.getExpr2().setSchema(schema);
-    }
-
 }

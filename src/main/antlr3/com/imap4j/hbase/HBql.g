@@ -212,17 +212,17 @@ numericTest returns [NumberValue retval]
 	
 // Numeric calculations
 numericExpr returns [NumberValue retval] 
-@init {List<NumberValue> exprList = Lists.newArrayList(); List<CalcExpr.OP> opList = Lists.newArrayList(); }
+@init {List<NumberValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList(); }
 	: m=multNumericExpr {exprList.add($m.retval);} (op=plusMinus n=multNumericExpr {opList.add($op.retval); exprList.add($n.retval);})*	
 							{$numericExpr.retval = getLeftAssociativeNumberValues(exprList, opList);};
 	
 multNumericExpr returns [NumberValue retval]
-@init {List<NumberValue> exprList = Lists.newArrayList(); List<CalcExpr.OP> opList = Lists.newArrayList(); }
+@init {List<NumberValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList(); }
 	: m=signedNumericPrimary {exprList.add($m.retval);} (op=multDiv n=signedNumericPrimary {opList.add($op.retval); exprList.add($n.retval);})*	
 							{$multNumericExpr.retval = getLeftAssociativeNumberValues(exprList, opList);};
 	
 signedNumericPrimary returns [NumberValue retval]
-	: (s=plusMinus)? n=numericPrimary 		{$signedNumericPrimary.retval = ($s.retval == CalcExpr.OP.MINUS) ? new NumberCalcExpr($n.retval, CalcExpr.OP.NEGATIVE, null) :  $n.retval;};
+	: (s=plusMinus)? n=numericPrimary 		{$signedNumericPrimary.retval = ($s.retval == GenericCalcExpr.OP.MINUS) ? new NumberCalcExpr($n.retval, GenericCalcExpr.OP.NEGATIVE, null) :  $n.retval;};
 
 numericPrimary returns [NumberValue retval]
 	: n=numericTern					{retval = $n.retval;}
@@ -286,7 +286,7 @@ booleanVal returns [BooleanValue retval]
 	;
 	
 rangeExpr returns [DateValue retval]
-@init {List<DateValue> exprList = Lists.newArrayList(); List<CalcExpr.OP> opList = Lists.newArrayList();}
+@init {List<DateValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList();}
 	: m=rangePrimary {exprList.add($m.retval);} (op=plusMinus n=rangePrimary {opList.add($op.retval); exprList.add($n.retval);})*
 							{$rangeExpr.retval = getLeftAssociativeDateValues(exprList, opList);}
 	;
@@ -306,7 +306,7 @@ dateTest returns [DateValue retval]
 	;
 		
 dateExpr returns [DateValue retval]
-@init {List<DateValue> exprList = Lists.newArrayList(); List<CalcExpr.OP> opList = Lists.newArrayList();}
+@init {List<DateValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList();}
 	: m=datePrimary {exprList.add($m.retval);} (op=plusMinus n=datePrimary {opList.add($op.retval); exprList.add($n.retval);})*	
 							{$dateExpr.retval = getLeftAssociativeDateValues(exprList, opList);};
 
@@ -440,15 +440,15 @@ varRef
 qstring	[List<String> list]
 	: QUOTED 					{if (list != null) list.add($QUOTED.text);};
 
-plusMinus returns [CalcExpr.OP retval]
-	: PLUS						{retval = CalcExpr.OP.PLUS;}
-	| MINUS						{retval = CalcExpr.OP.MINUS;}
+plusMinus returns [GenericCalcExpr.OP retval]
+	: PLUS						{retval = GenericCalcExpr.OP.PLUS;}
+	| MINUS						{retval = GenericCalcExpr.OP.MINUS;}
 	;
 	
-multDiv returns [CalcExpr.OP retval]
-	: STAR						{retval = CalcExpr.OP.MULT;}
-	| DIV						{retval = CalcExpr.OP.DIV;}
-	| MOD						{retval = CalcExpr.OP.MOD;}
+multDiv returns [GenericCalcExpr.OP retval]
+	: STAR						{retval = GenericCalcExpr.OP.MULT;}
+	| DIV						{retval = GenericCalcExpr.OP.DIV;}
+	| MOD						{retval = GenericCalcExpr.OP.MOD;}
 	;
 
 to 	: keyTO | EQ;

@@ -42,8 +42,6 @@ public class BooleanTernary extends GenericTernary<BooleanValue> implements Bool
 
     @Override
     public Boolean getValue(final Object object) throws HPersistException {
-
         return (Boolean)super.getValue(object);
     }
-
 }

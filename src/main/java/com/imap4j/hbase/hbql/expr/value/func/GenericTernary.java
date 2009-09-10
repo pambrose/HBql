@@ -17,7 +17,6 @@ import java.util.List;
 public abstract class GenericTernary<T extends ValueExpr> {
 
     private PredicateExpr pred = null;
-
     private T expr1 = null, expr2 = null;
 
     public GenericTernary(final PredicateExpr pred, final T expr1, final T expr2) {

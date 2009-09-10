@@ -4,8 +4,8 @@ import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.ValueExpr;
-import com.imap4j.hbase.hbql.expr.value.func.CalcExpr;
 import com.imap4j.hbase.hbql.expr.value.func.DateCalcExpr;
+import com.imap4j.hbase.hbql.expr.value.func.GenericCalcExpr;
 import com.imap4j.hbase.hbql.expr.value.func.NumberCalcExpr;
 import com.imap4j.hbase.hbql.expr.value.var.DateAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.IntegerAttribRef;
@@ -156,7 +156,7 @@ public class HBaseParser extends Parser {
         }
     }
 
-    public NumberValue getLeftAssociativeNumberValues(final List<NumberValue> exprList, final List<CalcExpr.OP> opList) {
+    public NumberValue getLeftAssociativeNumberValues(final List<NumberValue> exprList, final List<GenericCalcExpr.OP> opList) {
 
         if (exprList.size() == 1)
             return exprList.get(0);
@@ -167,7 +167,7 @@ public class HBaseParser extends Parser {
         return root;
     }
 
-    public DateValue getLeftAssociativeDateValues(final List<DateValue> exprList, final List<CalcExpr.OP> opList) {
+    public DateValue getLeftAssociativeDateValues(final List<DateValue> exprList, final List<GenericCalcExpr.OP> opList) {
 
         if (exprList.size() == 1)
             return exprList.get(0);
