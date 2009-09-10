@@ -52,6 +52,7 @@ public class TestObjectEvals extends ObjectTests<TestObjectEvals.SimpleObject> {
         assertResultCount(objList, "strval like 'T[est]+ Value: [1-5]'", 5);
         assertResultCount(objList, "NOW between NOW-DAY(1) AND NOW+DAY(1)", 10);
         assertResultCount(objList, "dateval between NOW-MINUTE(1) AND NOW+MINUTE(1)", 10);
+        assertResultCount(objList, "dateval between DATE('mm/dd/yyyy', '09/09/2009')-MINUTE(1) AND NOW+MINUTE(1)", 10);
 
         // Using Listeners with CollectionQuery Object
         final CollectionQuery<SimpleObject> query = new CollectionQuery<SimpleObject>(
