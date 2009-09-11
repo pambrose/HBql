@@ -12,9 +12,6 @@ tokens {
 	PLUS = '+';
 	MINUS = '-';
 	MOD = '%';
-	NOT = '!';
-	OR = '||';
-	AND = '&&';
 	EQ = '=';
 	LT = '<';
 	GT = '>';
@@ -36,7 +33,6 @@ tokens {
 
 @header {
 package com.imap4j.hbase;
-import com.imap4j.hbase.hbql.*;
 import com.imap4j.hbase.hbql.expr.*;
 import com.imap4j.hbase.hbql.expr.node.*;
 import com.imap4j.hbase.hbql.expr.predicate.*;
@@ -85,7 +81,7 @@ deleteStmt [ExprSchema es] returns [DeleteArgs retval]
 	  w=whereValue[es]?				{retval = new DeleteArgs($t.text, $w.retval);};
 
 setStmt returns [SetArgs retval]
-	: keySET i=ID to? v=QUOTED	 		{retval = new SetArgs($i.text, $v.text);};
+	: keySET i=ID EQ? v=QUOTED	 		{retval = new SetArgs($i.text, $v.text);};
 
 whereValue [ExprSchema es] returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
@@ -136,13 +132,13 @@ descWhereExpr [ExprSchema es] returns [ExprTree retval]
 
 			
 orExpr returns [PredicateExpr retval]
-	: e1=andExpr (or e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanExpr($e1.retval, BooleanExpr.OP.OR, $e2.retval);};
+	: e1=andExpr (keyOR e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanExpr($e1.retval, BooleanExpr.OP.OR, $e2.retval);};
 
 andExpr returns [PredicateExpr retval]
-	: e1=condFactor (and e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanExpr($e1.retval, BooleanExpr.OP.AND, $e2.retval);};
+	: e1=condFactor (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanExpr($e1.retval, BooleanExpr.OP.AND, $e2.retval);};
 
 condFactor returns [PredicateExpr retval]			 
-	: n=not? p=condPrimary				{$condFactor.retval = ($n.text != null) ?  new CondFactor(true, $p.retval) :  $p.retval;};
+	: n=keyNOT? p=condPrimary				{$condFactor.retval = ($n.text != null) ?  new CondFactor(true, $p.retval) :  $p.retval;};
 	
 condPrimary returns [PredicateExpr retval]
 options {backtrack=true;}	
@@ -162,25 +158,25 @@ options {backtrack=true;}
 
 betweenStmt returns [PredicateExpr retval]
 options {backtrack=true;}	
-	: d1=dateExpr n=not? keyBETWEEN d2=dateExpr and d3=dateExpr
+	: d1=dateExpr n=keyNOT? keyBETWEEN d2=dateExpr keyAND d3=dateExpr
 							{retval = new DateBetweenStmt($d1.retval, ($n.text != null), $d2.retval, $d3.retval);}
-	| n1=numericExpr n=not? keyBETWEEN n2=numericExpr and n3=numericExpr		
+	| n1=numericExpr n=keyNOT? keyBETWEEN n2=numericExpr keyAND n3=numericExpr		
 							{retval = new NumberBetweenStmt($n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
-	| s1=stringExpr n=not? keyBETWEEN s2=stringExpr and s3=stringExpr		
+	| s1=stringExpr n=keyNOT? keyBETWEEN s2=stringExpr keyAND s3=stringExpr		
 							{retval = new StringBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
 	;
 
 likeStmt returns [PredicateExpr retval]
-	: s1=stringExpr n=not? keyLIKE s2=stringExpr 
+	: s1=stringExpr n=keyNOT? keyLIKE s2=stringExpr 
 							{retval = new StringLikeStmt($s1.retval, ($n.text != null), $s2.retval);};
 
 inStmt returns [PredicateExpr retval]
 options {backtrack=true;}	
-	: a3=dateExpr n=not? keyIN LPAREN d=dateItemList RPAREN			
+	: a3=dateExpr n=keyNOT? keyIN LPAREN d=dateItemList RPAREN			
 							{retval = new DateInStmt($a3.retval, ($n.text != null), $d.retval);} 
-	| a1=numericExpr n=not? keyIN LPAREN i=numberItemList RPAREN			
+	| a1=numericExpr n=keyNOT? keyIN LPAREN i=numberItemList RPAREN			
 							{retval = new NumberInStmt($a1.retval,($n.text != null), $i.retval);} 
-	| a2=stringExpr n=not? keyIN LPAREN s=stringItemList RPAREN			
+	| a2=stringExpr n=keyNOT? keyIN LPAREN s=stringItemList RPAREN			
 							{retval = new StringInStmt($a2.retval, ($n.text != null), $s.retval);} 
 	;
 
@@ -225,12 +221,12 @@ signedNumericPrimary returns [NumberValue retval]
 	: (s=plusMinus)? n=numericPrimary 		{$signedNumericPrimary.retval = ($s.retval == GenericCalcExpr.OP.MINUS) ? new NumberCalcExpr($n.retval, GenericCalcExpr.OP.NEGATIVE, null) :  $n.retval;};
 
 numericPrimary returns [NumberValue retval]
-	: n=numericTern					{retval = $n.retval;}
+	: n=numericCond					{retval = $n.retval;}
 	| LPAREN s=numericExpr RPAREN			{retval = $s.retval;}
 	;
 	   						 
 // Simple typed exprs
-numericTern returns [NumberValue retval]
+numericCond returns [NumberValue retval]
 	: l=numberVal					{retval = $l.retval;} 
 	|  keyIF e=orExpr keyTHEN n1=numericExpr  keyELSE  n2=numericExpr keyEND 	
 							{retval = new NumberTernary($e.retval, $n1.retval, $n2.retval);}
@@ -269,7 +265,7 @@ stringVal returns [StringValue retval]
 	| f=funcReturningString				{retval = $f.retval;}
 	| n=keyNULL					{retval = new StringNullLiteral();}
 	| a=stringAttribVar				{retval = $a.retval;}
-	| keyIF  e=orExpr  keyTHEN  s1=stringExpr  keyELSE  s2=stringExpr  keyEND	
+	| keyIF e=orExpr keyTHEN s1=stringExpr keyELSE s2=stringExpr keyEND	
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
 
@@ -281,7 +277,7 @@ booleanExpr returns [BooleanValue retval]
 booleanVal returns [BooleanValue retval]
 	: b=booleanLiteral				{retval = $b.retval;}
 	//| f=funcReturningBoolean
-	| keyIF  e=orExpr  keyTHEN  b1=booleanExpr   keyELSE  b2=booleanExpr keyEND	
+	| keyIF e=orExpr keyTHEN b1=booleanExpr keyELSE b2=booleanExpr keyEND	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	;
 	
@@ -297,8 +293,9 @@ rangePrimary returns [DateValue retval]
 	;
 
 rangeVal returns [DateValue retval]
-	: d1=dateLiteral				{retval = $d1.retval;}
-	| d2=funcReturningDatetime			{retval = $d2.retval;}
+	: d2=funcReturningDatetime			{retval = $d2.retval;}
+	| keyIF e=orExpr keyTHEN r1=rangeExpr keyELSE r2=rangeExpr keyEND	
+							{retval = new DateTernary($e.retval, $r1.retval, $r2.retval);}
 	;
 
 dateTest returns [DateValue retval]
@@ -316,8 +313,9 @@ datePrimary returns [DateValue retval]
 	;
 	
 dateVal returns [DateValue retval]
-	: d1=dateLiteral				{retval = $d1.retval;}
-	| d2=funcReturningDatetime			{retval = $d2.retval;}
+	: d2=funcReturningDatetime			{retval = $d2.retval;}
+	| keyIF e=orExpr keyTHEN r1=dateExpr keyELSE r2=dateExpr keyEND	
+							{retval = new DateTernary($e.retval, $r1.retval, $r2.retval);}
 	| d3=dateAttribVar				{retval = $d3.retval;} 			
 	;
 
@@ -341,10 +339,6 @@ stringLiteral returns [StringValue retval]
 integerLiteral returns [NumberValue retval]
 	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};
 		
-dateLiteral returns [DateValue retval]
-	: keyMINDATE					{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
-	| keyMAXDATE					{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
-	;
 
 booleanLiteral returns [BooleanValue retval]
 	: t=keyTRUE					{retval = new BooleanLiteral($t.text);}
@@ -354,6 +348,8 @@ booleanLiteral returns [BooleanValue retval]
 // Functions
 funcReturningDatetime returns [DateValue retval]
 	: keyNOW LPAREN	RPAREN				{retval = new DateLiteral(DateLiteral.Type.NOW);}
+	| keyMINDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
+	| keyMAXDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
 	| keyDATE LPAREN s1=stringExpr COMMA s2=stringExpr RPAREN
 							{retval = new DateExpr($s1.retval, $s2.retval);}
 	| keyYEAR LPAREN n=numericExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.YEAR, $n.retval);}
@@ -450,11 +446,6 @@ multDiv returns [GenericCalcExpr.OP retval]
 	| DIV						{retval = GenericCalcExpr.OP.DIV;}
 	| MOD						{retval = GenericCalcExpr.OP.MOD;}
 	;
-
-to 	: keyTO | EQ;
-or	: keyOR | OR;
-and	: keyAND | AND;
-not	: keyNOT | NOT;
 		
 INT	: DIGIT+;
 ID	: CHAR (CHAR | DIGIT  | DOT | COLON)*;

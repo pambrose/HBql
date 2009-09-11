@@ -16,12 +16,12 @@ public class TestWhereExpression extends WhereExprTests {
     public void booleanExpressions() throws HPersistException {
         assertEvalTrue("TRUE");
         assertEvalFalse("NOT TRUE");
-        assertEvalFalse("! TRUE");
-        assertEvalFalse("!TRUE");
-        assertEvalFalse("!(((((TRUE)))))");
+        assertEvalFalse("NOT TRUE");
+        assertEvalFalse("NOT TRUE");
+        assertEvalFalse("NOT(((((TRUE)))))");
         assertEvalTrue("((TRUE))");
         assertEvalTrue("(((((TRUE)))))");
-        assertEvalFalse("!((!(((!TRUE)))))");
+        assertEvalFalse("NOT((NOT(((NOT TRUE)))))");
         assertEvalFalse("FALSE");
         assertEvalTrue("TRUE OR TRUE");
         assertEvalTrue("TRUE OR TRUE OR TRUE");
@@ -130,12 +130,12 @@ public class TestWhereExpression extends WhereExprTests {
 
         assertEvalTrue("3 between 2 AND 5");
         assertEvalTrue("3 between (1+1) AND (3+2)");
-        assertEvalTrue("3 between (1+1) && (3+2)");
+        assertEvalTrue("3 between (1+1) AND (3+2)");
 
         assertEvalTrue("3 in (2,3,4)");
         assertEvalFalse("3 in (1+1,1+3,4)");
         assertEvalTrue("3 in (1+1,1+2,4)");
-        assertEvalFalse("3 !in (1+1,1+2,4)");
+        assertEvalFalse("3 NOT in (1+1,1+2,4)");
         assertEvalFalse("3 NOT in (1+1,1+2,4)");
         assertEvalTrue("3 = IF true THEN 3 ELSE 2 END");
         assertEvalFalse("3 = IF false THEN 3 else 2 END");
@@ -147,11 +147,11 @@ public class TestWhereExpression extends WhereExprTests {
     public void stringFunctions() throws HPersistException {
 
         assertEvalTrue("'bbb' between 'aaa' AND 'ccc'");
-        assertEvalTrue("'bbb' between 'aaa' && 'ccc'");
+        assertEvalTrue("'bbb' between 'aaa' AND 'ccc'");
         assertEvalTrue("'bbb' between 'bbb' AND 'ccc'");
         assertEvalFalse("'bbb' between 'ccc' AND 'ddd'");
         assertEvalTrue("('bbb' between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
-        assertEvalTrue("('bbb' between 'bbb' && 'ccc') || ('fff' between 'eee' && 'ggg')");
+        assertEvalTrue("('bbb' between 'bbb' AND 'ccc') OR ('fff' between 'eee' AND 'ggg')");
         assertEvalFalse("('bbb' not between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
         assertEvalTrue("'bbb' = LOWER('BBB')");
         assertEvalTrue("'ABABAB' = UPPER(CONCAT('aba', 'bab'))");
@@ -204,8 +204,8 @@ public class TestWhereExpression extends WhereExprTests {
         assertColumnsMatchTrue("{intValue as int, int2 as integer} intValue between 2 AND 5", "intValue");
         assertInvalidInput("{xintValue as int} xintValue between 2 AND 5", "intValue");
         assertColumnsMatchTrue("{a1,a2 as date} a1 < a2", "a1", "a2");
-        assertColumnsMatchFalse("{a1, a2, d1, k3 as int} a1 < a2 || d1 > k3", "a1", "a2");
-        assertColumnsMatchTrue("{a1, a2, d1 as date, k3 as date} a1 < a2 || d1 > k3", "a1", "a2", "d1", "k3");
+        assertColumnsMatchFalse("{a1, a2, d1, k3 as int} a1 < a2 OR d1 > k3", "a1", "a2");
+        assertColumnsMatchTrue("{a1, a2, d1 as date, k3 as date} a1 < a2 OR d1 > k3", "a1", "a2", "d1", "k3");
     }
 
 }
