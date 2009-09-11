@@ -5,6 +5,7 @@ import com.imap4j.hbase.collection.CollectionQueryListenerAdapter;
 import com.imap4j.hbase.collection.CollectionQueryPredicate;
 import com.imap4j.hbase.hbase.HPersistException;
 import org.junit.Test;
+import util.Counter;
 import util.ObjectTests;
 
 import java.util.Date;
@@ -55,19 +56,22 @@ public class TestObjectEvals extends ObjectTests<TestObjectEvals.SimpleObject> {
         assertResultCount(objList, "dateval between DATE('mm/dd/yyyy', '09/09/2009')-MINUTE(1) AND NOW()+MINUTE(1)", 10);
 
         // Using Listeners with CollectionQuery Object
+        final Counter cnt = new Counter();
         final CollectionQuery<SimpleObject> query = new CollectionQuery<SimpleObject>(
                 "strval like 'T[est]+ Value: [1-3]'",
                 new CollectionQueryListenerAdapter<SimpleObject>() {
                     public void onEachObject(final SimpleObject val) throws HPersistException {
-                        System.out.println(val);
+                        cnt.increment();
                     }
                 }
         );
         query.execute(objList);
+        assertTrue(cnt.getCount() == 3);
 
         // Using Google collections
         String qstr = "intval1 in (1, 2+1, 2+1+1, 4+3)";
         List<SimpleObject> list = Lists.newArrayList(Iterables.filter(objList, new CollectionQueryPredicate<SimpleObject>(qstr)));
-        System.out.println(list.size());
+
+        assertTrue(list.size() == 4);
     }
 }

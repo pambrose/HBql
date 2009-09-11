@@ -32,15 +32,22 @@ public class TestWithValues extends WhereValueTests {
     @Test
     public void timerangeExpressions() throws HPersistException {
         assertValidInput("WITH TIME RANGE NOW() : NOW()+DAY(1)");
-        assertValidInput("WITH TIME RANGE NOW() - DAY(1) : NOW()+DAY(1) + DAY(2)");
+        assertValidInput("WITH TIME RANGE NOW() - DAY(1) : NOW() + DAY(1) + DAY(2)");
         assertValidInput("WITH TIME RANGE DATE('mm/dd/yy', '10/31/94') - DAY(1) : NOW()+DAY(1) + DAY(2)");
     }
 
     @Test
-    public void clientExpressions() throws HPersistException {
+    public void clientFilterExpressions() throws HPersistException {
         assertValidInput("WITH CLIENT FILTER TRUE");
         assertValidInput("WITH CLIENT FILTER {col1 as int} col1 < 4");
         assertValidInput("WITH CLIENT FILTER {fam1:col1 as int} fam1:col1 < 4");
+    }
+
+    @Test
+    public void serverFilterExpressions() throws HPersistException {
+        assertValidInput("WITH SERVER FILTER TRUE");
+        assertValidInput("WITH SERVER FILTER {col1 as int} col1 < 4");
+        assertValidInput("WITH SERVER FILTER {fam1:col1 as int} fam1:col1 < 4");
     }
 
 }

@@ -14,18 +14,6 @@ import java.util.Collection;
  */
 public class ObjectTests<T> {
 
-    public class Counter {
-        int count = 0;
-
-        public void increment() {
-            count++;
-        }
-
-        public int getCount() {
-            return this.count;
-        }
-    }
-
     protected void assertResultCount(final Collection<T> objList, final String expr, final int expected_cnt) throws HPersistException {
 
         final Counter cnt = new Counter();
@@ -44,6 +32,11 @@ public class ObjectTests<T> {
         System.out.println("Count = " + cnt.getCount());
 
         org.junit.Assert.assertTrue(expected_cnt == cnt.getCount());
+    }
+
+    protected void assertTrue(final boolean cond) {
+        org.junit.Assert.assertTrue(cond);
+
     }
 
 }
