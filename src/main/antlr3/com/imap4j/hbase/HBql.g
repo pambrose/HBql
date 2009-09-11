@@ -199,7 +199,7 @@ options {backtrack=true;}
 	;
 	
 compOp returns [GenericCompare.OP retval]
-	: EQ EQ?					{retval = GenericCompare.OP.EQ;}
+	: EQ 						{retval = GenericCompare.OP.EQ;}
 	| GT 						{retval = GenericCompare.OP.GT;}
 	| GTEQ 						{retval = GenericCompare.OP.GTEQ;}
 	| LT 						{retval = GenericCompare.OP.LT;}
@@ -232,7 +232,7 @@ numericPrimary returns [NumberValue retval]
 // Simple typed exprs
 numericTern returns [NumberValue retval]
 	: l=numberVal					{retval = $l.retval;} 
-	| keyIF LPAREN e=orExpr RPAREN  keyTHEN LCURLY n1=numericExpr RCURLY keyELSE LCURLY n2=numericExpr RCURLY 	
+	|  keyIF e=orExpr keyTHEN n1=numericExpr  keyELSE  n2=numericExpr keyEND 	
 							{retval = new NumberTernary($e.retval, $n1.retval, $n2.retval);}
 	;
 
@@ -269,7 +269,7 @@ stringVal returns [StringValue retval]
 	| f=funcReturningString				{retval = $f.retval;}
 	| n=keyNULL					{retval = new StringNullLiteral();}
 	| a=stringAttribVar				{retval = $a.retval;}
-	| keyIF LPAREN e=orExpr RPAREN keyTHEN LCURLY s1=stringExpr RCURLY keyELSE LCURLY s2=stringExpr  RCURLY	
+	| keyIF  e=orExpr  keyTHEN  s1=stringExpr  keyELSE  s2=stringExpr  keyEND	
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
 
@@ -281,7 +281,7 @@ booleanExpr returns [BooleanValue retval]
 booleanVal returns [BooleanValue retval]
 	: b=booleanLiteral				{retval = $b.retval;}
 	//| f=funcReturningBoolean
-	| keyIF LPAREN e=orExpr RPAREN keyTHEN LCURLY b1=booleanExpr RCURLY  keyELSE LCURLY b2=booleanExpr RCURLY	
+	| keyIF  e=orExpr  keyTHEN  b1=booleanExpr   keyELSE  b2=booleanExpr keyEND	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	;
 	
@@ -342,8 +342,7 @@ integerLiteral returns [NumberValue retval]
 	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};
 		
 dateLiteral returns [DateValue retval]
-	: keyNOW					{retval = new DateLiteral(DateLiteral.Type.NOW);}
-	| keyMINDATE					{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
+	: keyMINDATE					{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
 	| keyMAXDATE					{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
 	;
 
@@ -354,7 +353,8 @@ booleanLiteral returns [BooleanValue retval]
 
 // Functions
 funcReturningDatetime returns [DateValue retval]
-	: keyDATE LPAREN s1=stringExpr COMMA s2=stringExpr RPAREN
+	: keyNOW LPAREN	RPAREN				{retval = new DateLiteral(DateLiteral.Type.NOW);}
+	| keyDATE LPAREN s1=stringExpr COMMA s2=stringExpr RPAREN
 							{retval = new DateExpr($s1.retval, $s2.retval);}
 	| keyYEAR LPAREN n=numericExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.YEAR, $n.retval);}
 	| keyWEEK LPAREN n=numericExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.WEEK, $n.retval);}
@@ -490,6 +490,7 @@ keyIS 		: {isKeyword(input, "IS")}? ID;
 keyIF 		: {isKeyword(input, "IF")}? ID;
 keyTHEN 	: {isKeyword(input, "THEN")}? ID;
 keyELSE 	: {isKeyword(input, "ELSE")}? ID;
+keyEND 		: {isKeyword(input, "END")}? ID;
 keyLAST		: {isKeyword(input, "LAST")}? ID;
 keyAS 		: {isKeyword(input, "AS")}? ID;
 keyLIKE		: {isKeyword(input, "LIKE")}? ID;

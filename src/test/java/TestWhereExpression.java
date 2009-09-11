@@ -42,7 +42,7 @@ public class TestWhereExpression extends WhereExprTests {
 
         assertEvalTrue("4 < 5");
         assertEvalFalse("4 = 5");
-        assertEvalFalse("4 == 5");
+        assertEvalFalse("4 = 5");
         assertEvalTrue("4 != 5");
         assertEvalTrue("4 <> 5");
         assertEvalTrue("4 <= 5");
@@ -52,31 +52,31 @@ public class TestWhereExpression extends WhereExprTests {
 
     @Test
     public void dateCompares() throws HPersistException {
-        assertEvalTrue("NOW == NOW");
-        assertEvalTrue("NOW != NOW-HOUR(1)");
-        assertEvalTrue("NOW > NOW-DAY(1)");
-        assertEvalTrue("NOW-DAY(1) < NOW");
-        assertEvalTrue("NOW <= NOW+DAY(1)");
-        assertEvalTrue("NOW+DAY(1) >= NOW");
-        assertEvalTrue("NOW < Date('mm/dd/yyyy', '12/21/2020')");
-        assertEvalTrue("NOW BETWEEN NOW-DAY(1) AND NOW+DAY(1)");
-        assertEvalTrue("NOW IN (NOW-DAY(1), NOW, NOW+DAY(1), Date('mm/dd/yyyy', '12/21/2020'))");
-        assertEvalFalse("NOW IN (NOW-DAY(1), NOW+DAY(1), Date('mm/dd/yyyy', '12/21/2020'))");
-        assertEvalTrue("DATE('mm/dd/yy', '10/31/94') - DAY(1) == DATE('mm/dd/yy', '10/30/94')");
+        assertEvalTrue("NOW() = NOW()");
+        assertEvalTrue("NOW() != NOW()-HOUR(1)");
+        assertEvalTrue("NOW() > NOW()-DAY(1)");
+        assertEvalTrue("NOW()-DAY(1) < NOW()");
+        assertEvalTrue("NOW() <= NOW()+DAY(1)");
+        assertEvalTrue("NOW()+DAY(1) >= NOW()");
+        assertEvalTrue("NOW() < Date('mm/dd/yyyy', '12/21/2020')");
+        assertEvalTrue("NOW() BETWEEN NOW()-DAY(1) AND NOW()+DAY(1)");
+        assertEvalTrue("NOW() IN (NOW()-DAY(1), NOW(), NOW()+DAY(1), Date('mm/dd/yyyy', '12/21/2020'))");
+        assertEvalFalse("NOW() IN (NOW()-DAY(1), NOW()+DAY(1), Date('mm/dd/yyyy', '12/21/2020'))");
+        assertEvalTrue("DATE('mm/dd/yy', '10/31/94') - DAY(1) = DATE('mm/dd/yy', '10/30/94')");
         assertEvalTrue("DATE('mm/dd/yy', '10/31/94') - DAY(2) < DATE('mm/dd/yy', '10/30/94')");
         assertEvalFalse("DATE('mm/dd/yy', '10/31/94') - DAY(1) < DATE('mm/dd/yy', '10/30/94')");
         assertEvalTrue("DATE('mm/dd/yyyy', '10/31/1994') - DAY(1) - MILLI(1) < DATE('mm/dd/yyyy', '10/31/1994')  - DAY(1) ");
-        assertEvalTrue("DATE('mm/dd/yyyy', '10/31/1994') - DAY(1) - MILLI(1) == DATE('mm/dd/yyyy', '10/30/1994')  - MILLI(1) ");
+        assertEvalTrue("DATE('mm/dd/yyyy', '10/31/1994') - DAY(1) - MILLI(1) = DATE('mm/dd/yyyy', '10/30/1994')  - MILLI(1) ");
 
     }
 
     @Test
     public void stringCompares() throws HPersistException {
 
-        assertEvalTrue("'aaa' == 'aaa'");
+        assertEvalTrue("'aaa' = 'aaa'");
         assertEvalFalse("'aaa' != 'aaa'");
         assertEvalFalse("'aaa' <> 'aaa'");
-        assertEvalFalse("'aaa' == 'bbb'");
+        assertEvalFalse("'aaa' = 'bbb'");
         assertEvalTrue("'aaa' <= 'bbb'");
         assertEvalTrue("'bbb' <= 'bbb'");
         assertEvalFalse("'bbb' <= 'aaa'");
@@ -96,17 +96,17 @@ public class TestWhereExpression extends WhereExprTests {
     @Test
     public void numericCalculations() throws HPersistException {
 
-        assertEvalTrue("9 == 9");
-        assertEvalTrue("((4 + 5) == 9)");
-        assertEvalTrue("(9) == 9");
-        assertEvalTrue("(4 + 5) == 9");
-        assertEvalFalse("(4 + 5) == 8");
-        assertEvalTrue("(4 + 5 + 10 + 10 - 20) == 9");
+        assertEvalTrue("9 = 9");
+        assertEvalTrue("((4 + 5) = 9)");
+        assertEvalTrue("(9) = 9");
+        assertEvalTrue("(4 + 5) = 9");
+        assertEvalFalse("(4 + 5) = 8");
+        assertEvalTrue("(4 + 5 + 10 + 10 - 20) = 9");
         assertEvalFalse("(4 + 5 + 10 + 10 - 20) != 9");
 
-        assertEvalTrue("(4 * 5) == 20");
-        assertEvalTrue("(40 % 6) == 4");
-        assertEvalFalse("(40 % 6) == 3");
+        assertEvalTrue("(4 * 5) = 20");
+        assertEvalTrue("(40 % 6) = 4");
+        assertEvalFalse("(40 % 6) = 3");
 
         assertTrue(HUtil.parseNumericExpr("1-2-3-4").intValue() == (1 - 2 - 3 - 4));
         assertTrue(HUtil.parseNumericExpr("(2-2)-2").intValue() == ((2 - 2) - 2));
@@ -137,9 +137,9 @@ public class TestWhereExpression extends WhereExprTests {
         assertEvalTrue("3 in (1+1,1+2,4)");
         assertEvalFalse("3 !in (1+1,1+2,4)");
         assertEvalFalse("3 NOT in (1+1,1+2,4)");
-        assertEvalTrue("3 == IF (true) THEN {3} ELSE {2}");
-        assertEvalFalse("3 == IF (false) THEN {3} else {2}");
-        assertEvalTrue("2 == IF (false) THEN {3} else {2}");
+        assertEvalTrue("3 = IF true THEN 3 ELSE 2 END");
+        assertEvalFalse("3 = IF false THEN 3 else 2 END");
+        assertEvalTrue("2 = IF false THEN 3 else 2 END");
 
     }
 
@@ -153,11 +153,11 @@ public class TestWhereExpression extends WhereExprTests {
         assertEvalTrue("('bbb' between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
         assertEvalTrue("('bbb' between 'bbb' && 'ccc') || ('fff' between 'eee' && 'ggg')");
         assertEvalFalse("('bbb' not between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
-        assertEvalTrue("'bbb' == LOWER('BBB')");
-        assertEvalTrue("'ABABAB' == UPPER(CONCAT('aba', 'bab'))");
-        assertEvalTrue("'bbb' == SUBSTRING('BBBbbbAAA', 3, 6)");
-        assertEvalTrue("'AAA' == 'A' + 'A' + 'A'");
-        assertEvalTrue("'aaa' == LOWER('A' + 'A' + 'A')");
+        assertEvalTrue("'bbb' = LOWER('BBB')");
+        assertEvalTrue("'ABABAB' = UPPER(CONCAT('aba', 'bab'))");
+        assertEvalTrue("'bbb' = SUBSTRING('BBBbbbAAA', 3, 6)");
+        assertEvalTrue("'AAA' = 'A' + 'A' + 'A'");
+        assertEvalTrue("'aaa' = LOWER('A' + 'A' + 'A')");
     }
 
     @Test

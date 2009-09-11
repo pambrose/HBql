@@ -43,16 +43,16 @@ public class TestObjectEvals extends ObjectTests<TestObjectEvals.SimpleObject> {
         for (int i = 0; i < 10; i++)
             objList.add(new SimpleObject(i));
 
-        assertResultCount(objList, "intval1 == 2", 1);
+        assertResultCount(objList, "intval1 = 2", 1);
         assertResultCount(objList, "intval1 >= 5", 5);
-        assertResultCount(objList, "2*intval1 == intval2", 10);
-        assertResultCount(objList, "intval2 == 2*intval1", 10);
+        assertResultCount(objList, "2*intval1 = intval2", 10);
+        assertResultCount(objList, "intval2 = 2*intval1", 10);
         assertResultCount(objList, "intval1 between 1 and 4", 4);
         assertResultCount(objList, "intval1 in (1, 2+1, 2+1+1, 4+3)", 4);
         assertResultCount(objList, "strval like 'T[est]+ Value: [1-5]'", 5);
-        assertResultCount(objList, "NOW between NOW-DAY(1) AND NOW+DAY(1)", 10);
-        assertResultCount(objList, "dateval between NOW-MINUTE(1) AND NOW+MINUTE(1)", 10);
-        assertResultCount(objList, "dateval between DATE('mm/dd/yyyy', '09/09/2009')-MINUTE(1) AND NOW+MINUTE(1)", 10);
+        assertResultCount(objList, "NOW() between NOW()-DAY(1) AND NOW()+DAY(1)", 10);
+        assertResultCount(objList, "dateval between NOW()-MINUTE(1) AND NOW()+MINUTE(1)", 10);
+        assertResultCount(objList, "dateval between DATE('mm/dd/yyyy', '09/09/2009')-MINUTE(1) AND NOW()+MINUTE(1)", 10);
 
         // Using Listeners with CollectionQuery Object
         final CollectionQuery<SimpleObject> query = new CollectionQuery<SimpleObject>(

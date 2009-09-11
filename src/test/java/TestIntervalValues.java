@@ -12,19 +12,19 @@ public class TestIntervalValues extends WhereExprTests {
 
     @Test
     public void keysExpressions() throws HPersistException {
-        assertEvalTrue("NOW < NOW+YEAR(1)");
-        assertEvalTrue("NOW == NOW+YEAR(1)-YEAR(1)");
-        assertEvalTrue("NOW+YEAR(2) > NOW+YEAR(1)");
+        assertEvalTrue("NOW() < NOW()+YEAR(1)");
+        assertEvalTrue("NOW() = NOW()+YEAR(1)-YEAR(1)");
+        assertEvalTrue("NOW()+YEAR(2) > NOW()+YEAR(1)");
 
-        assertEvalTrue("NOW < NOW+WEEK(1)");
-        assertEvalTrue("YEAR(2) == WEEK(52*2)");
-        assertEvalTrue("NOW+YEAR(2) == NOW+WEEK(52*2)");
+        assertEvalTrue("NOW() < NOW()+WEEK(1)");
+        assertEvalTrue("YEAR(2) = WEEK(52*2)");
+        assertEvalTrue("NOW()+YEAR(2) = NOW()+WEEK(52*2)");
 
-        assertEvalTrue("NOW+YEAR(2) == NOW+WEEK(52)+DAY(364)");
+        assertEvalTrue("NOW()+YEAR(2) = NOW()+WEEK(52)+DAY(364)");
 
-        assertEvalTrue("NOW BETWEEN NOW-DAY(1) AND NOW+DAY(1)");
-        assertEvalTrue("NOW between NOW-DAY(1) AND NOW+DAY(1)");
-        assertEvalFalse("NOW BETWEEN NOW+DAY(1) AND NOW+DAY(1)");
+        assertEvalTrue("NOW() BETWEEN NOW()-DAY(1) AND NOW()+DAY(1)");
+        assertEvalTrue("NOW() between NOW()-DAY(1) AND NOW()+DAY(1)");
+        assertEvalFalse("NOW() BETWEEN NOW()+DAY(1) AND NOW()+DAY(1)");
     }
 
 }
