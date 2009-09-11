@@ -89,8 +89,8 @@ whereValue [ExprSchema es] returns [WhereArgs retval]
 	  k=keys?					{retval.setKeyRangeArgs($k.retval);}
 	  t=time?					{retval.setDateRangeArgs($t.retval);}	
 	  v=versions?					{retval.setVersionArgs($v.retval);}
-	  c=clientFilter[es]?				{retval.setClientFilterArgs($c.retval);}
 	  s=serverFilter[es]?				{retval.setServerFilterArgs($s.retval);}
+	  c=clientFilter[es]?				{retval.setClientFilterArgs($c.retval);}
 	;
 
 keys returns [KeyRangeArgs retval]
@@ -98,17 +98,17 @@ keys returns [KeyRangeArgs retval]
 	;
 	
 time returns [DateRangeArgs retval]
-	: keyTIME keyRANGE? 
-	  d1=rangeExpr COLON d2=rangeExpr		{retval = new DateRangeArgs($d1.retval, $d2.retval);};
+	: keyTIME keyRANGE? d1=rangeExpr COLON d2=rangeExpr		
+							{retval = new DateRangeArgs($d1.retval, $d2.retval);};
 		
 versions returns [VersionArgs retval]
 	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);};
 	
-serverFilter [ExprSchema es] returns [ExprTree retval]
-	: keySERVER keyFILTER? w=descWhereExpr[es]	{retval = $w.retval;};
-	
 clientFilter [ExprSchema es] returns [ExprTree retval]
 	: keyCLIENT keyFILTER? w=descWhereExpr[es]	{retval = $w.retval;};
+	
+serverFilter [ExprSchema es] returns [ExprTree retval]
+	: keySERVER keyFILTER? w=descWhereExpr[es]	{retval = $w.retval;};
 	
 keyRangeList returns [List<KeyRangeArgs.Range> retval]
 @init {retval = Lists.newArrayList();}
@@ -138,7 +138,7 @@ andExpr returns [PredicateExpr retval]
 	: e1=condFactor (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanExpr($e1.retval, BooleanExpr.OP.AND, $e2.retval);};
 
 condFactor returns [PredicateExpr retval]			 
-	: n=keyNOT? p=condPrimary				{$condFactor.retval = ($n.text != null) ?  new CondFactor(true, $p.retval) :  $p.retval;};
+	: n=keyNOT? p=condPrimary			{$condFactor.retval = ($n.text != null) ?  new CondFactor(true, $p.retval) :  $p.retval;};
 	
 condPrimary returns [PredicateExpr retval]
 options {backtrack=true;}	
@@ -238,21 +238,10 @@ numberVal returns [NumberValue retval]
 	//| f=funcReturningInteger
 	;
 	
-// Supports string concatenation -- avoids creating a list everytime
-// TODO Get rid of List since using ? operator
+// String concatenation 
 stringExpr returns [StringValue retval]
-@init {
-  StringValue firstval = null;  
-  List<StringValue> vals = null;
-} 
-	: s1=stringParen {firstval = $s1.retval;} 
-	  (PLUS s2=stringExpr {if (vals == null) {
-	    			 vals = Lists.newArrayList();
-	    			 vals.add(firstval);
-	    		       } 
-	    		       vals.add($s2.retval);
-	    		      })?
-							{retval = (vals == null) ? firstval : new StringConcat(vals);}
+	: s1=stringParen (p=PLUS s2=stringExpr)?
+							{retval = ($p.text == null) ? $s1.retval : new StringConcat($s1.retval, $s2.retval);}
 	;
 
 stringParen returns [StringValue retval]

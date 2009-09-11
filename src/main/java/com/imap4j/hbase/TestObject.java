@@ -110,10 +110,10 @@ public class TestObject implements HPersistable {
 
         HBql.Results results;
 
-        results = HBql.exec("set packagepath 'com.imap4j.hbql:com.imap4j.hbase'");
+        results = HBql.exec("set packagepath = 'com.imap4j.hbql:com.imap4j.hbase'");
         System.out.println(results.getOutput());
 
-        //results = HBql.exec("delete from TestObject with  client filter true");
+        //results = HBql.exec("delete from TestObject with client filter true");
         //System.out.println(results.getOutput());
 
         //results = HBql.exec("create table TestObject");
@@ -140,7 +140,7 @@ public class TestObject implements HPersistable {
         HQuery<TestObject> q2 =
                 new HQuery<TestObject>("select * authorVersions from TestObject WITH "
                                        + "KEYS  '000002' : '000005','000007':LAST "
-                                       + "TIME RANGE NOW : NOW+DAY(1)"
+                                       + "TIME RANGE NOW() : NOW()+DAY(1)"
                                        + "VERSIONS 5 "
                         ,
                                        new HQueryListenerAdapter<TestObject>() {

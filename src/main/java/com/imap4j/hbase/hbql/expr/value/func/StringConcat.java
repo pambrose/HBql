@@ -17,21 +17,19 @@ import java.util.List;
  */
 public class StringConcat implements StringValue {
 
-    private final List<StringValue> vals;
+    private StringValue val1, val2;
 
-    public StringConcat(final List<StringValue> vals) {
-        this.vals = vals;
+    public StringConcat(final StringValue val1, StringValue val2) {
+        this.val1 = val1;
+        this.val2 = val2;
     }
 
-    private List<StringValue> getValueList() {
-        return this.vals;
-    }
 
     @Override
     public List<ExprVariable> getExprVariables() {
         final List<ExprVariable> retval = Lists.newArrayList();
-        for (final StringValue val : this.getValueList())
-            retval.addAll(val.getExprVariables());
+        retval.addAll(val1.getExprVariables());
+        retval.addAll(val2.getExprVariables());
         return retval;
     }
 
@@ -49,57 +47,36 @@ public class StringConcat implements StringValue {
     @Override
     public String getValue(final Object object) throws HPersistException {
 
-        if (this.getValueList().size() == 1)
-            return this.getValueList().get(0).getValue(object);
-
-        final StringBuilder sbuf = new StringBuilder();
-        for (final StringValue val : this.getValueList())
-            sbuf.append(val.getValue(object));
-
-        return sbuf.toString();
+        return this.val1.getValue(object) + this.val2.getValue(object);
     }
 
     @Override
     public boolean isAConstant() {
-        return this.listIsConstant();
+        return this.val1.isAConstant() && this.val2.isAConstant();
     }
 
     private boolean optimizeList(final Object object) throws HPersistException {
 
         boolean retval = true;
-        final List<StringValue> newvalList = Lists.newArrayList();
 
-        for (final StringValue val : this.getValueList()) {
-            if (val.optimizeForConstants(object)) {
-                newvalList.add(new StringLiteral(val.getValue(object)));
-            }
-            else {
-                newvalList.add(val);
-                retval = false;
-            }
-        }
+        if (this.val1.optimizeForConstants(object))
+            this.val1 = new StringLiteral(this.val1.getValue(object));
+        else
+            retval = false;
 
-        // Swap new values to list
-        this.getValueList().clear();
-        this.getValueList().addAll(newvalList);
+        if (this.val2.optimizeForConstants(object))
+            this.val2 = new StringLiteral(this.val2.getValue(object));
+        else
+            retval = false;
 
         return retval;
 
     }
 
-    private boolean listIsConstant() {
-
-        for (final StringValue val : this.getValueList()) {
-            if (!val.isAConstant())
-                return false;
-        }
-        return true;
-    }
-
     @Override
     public void setSchema(final ExprSchema schema) {
-        for (final StringValue val : this.getValueList())
-            val.setSchema(schema);
+        this.val1.setSchema(schema);
+        this.val2.setSchema(schema);
     }
 
 }
