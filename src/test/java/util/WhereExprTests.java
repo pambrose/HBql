@@ -1,6 +1,5 @@
 package util;
 
-import com.google.common.collect.Lists;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HPersistable;
@@ -9,6 +8,7 @@ import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.FieldType;
+import com.imap4j.hbase.util.Lists;
 
 import java.util.List;
 

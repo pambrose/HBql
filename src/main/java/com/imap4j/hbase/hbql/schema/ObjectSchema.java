@@ -1,7 +1,7 @@
 package com.imap4j.hbase.hbql.schema;
 
-import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbase.HPersistException;
+import com.imap4j.hbase.util.Maps;
 
 import java.lang.reflect.Field;
 import java.util.Date;

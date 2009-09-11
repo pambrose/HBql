@@ -1,6 +1,5 @@
 package com.imap4j.hbase;
 
-import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbase.HBql;
 import com.imap4j.hbase.hbase.HColumn;
 import com.imap4j.hbase.hbase.HColumnVersion;
@@ -12,6 +11,7 @@ import com.imap4j.hbase.hbase.HQueryListenerAdapter;
 import com.imap4j.hbase.hbase.HTable;
 import com.imap4j.hbase.hbase.HTransaction;
 import com.imap4j.hbase.hbql.schema.HUtil;
+import com.imap4j.hbase.util.Maps;
 
 import java.io.IOException;
 import java.util.Date;

@@ -1,10 +1,11 @@
 package com.imap4j.hbase.hbql.schema;
 
-import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbase.HPersistException;
+import com.imap4j.hbase.util.Lists;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +37,8 @@ public enum FieldType {
     FieldType(final Class clazz, final int size, final String... synonyms) {
         this.clazz = clazz;
         this.size = size;
-        this.synonymList = Lists.newArrayList(synonyms);
+        this.synonymList = Lists.newArrayList();
+        this.synonymList.addAll(Arrays.asList(synonyms));
     }
 
     private Class getClazz() {

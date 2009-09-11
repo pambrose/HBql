@@ -1,11 +1,11 @@
 package com.imap4j.hbase.hbql.expr;
 
-import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.BooleanLiteral;
 import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
+import com.imap4j.hbase.util.Lists;
 
 import java.util.List;
 

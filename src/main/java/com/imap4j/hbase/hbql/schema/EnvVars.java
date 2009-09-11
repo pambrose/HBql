@@ -1,6 +1,7 @@
 package com.imap4j.hbase.hbql.schema;
 
-import com.google.common.collect.Lists;
+
+import com.imap4j.hbase.util.Lists;
 
 import java.util.Arrays;
 import java.util.List;

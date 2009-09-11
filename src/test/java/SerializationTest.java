@@ -1,7 +1,7 @@
-import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.hbql.schema.FieldType;
+import com.imap4j.hbase.util.Lists;
 import org.junit.Test;
 import util.WhereExprTests;
 

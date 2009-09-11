@@ -1,12 +1,12 @@
 package com.imap4j.hbase.hbql.io;
 
-import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
 import com.imap4j.hbase.hbql.schema.ColumnAttrib;
 import com.imap4j.hbase.hbql.schema.FieldType;
 import com.imap4j.hbase.hbql.schema.VersionAttrib;
+import com.imap4j.hbase.util.Maps;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;

@@ -1,10 +1,10 @@
 package com.imap4j.hbase.hbql.expr.predicate;
 
-import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.PredicateExpr;
 import com.imap4j.hbase.hbql.expr.value.literal.NumberLiteral;
+import com.imap4j.hbase.util.Lists;
 
 import java.util.List;
 

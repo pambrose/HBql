@@ -1,11 +1,11 @@
 package com.imap4j.hbase.hbql.expr.value.var;
 
-import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.ExprTreeNode;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.FieldType;
+import com.imap4j.hbase.util.Lists;
 
 import java.util.List;
 

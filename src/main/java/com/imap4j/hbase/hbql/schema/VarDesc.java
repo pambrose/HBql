@@ -1,7 +1,7 @@
 package com.imap4j.hbase.hbql.schema;
 
-import com.google.common.collect.Lists;
 import com.imap4j.hbase.hbase.HPersistException;
+import com.imap4j.hbase.util.Lists;
 
 import java.util.List;
 

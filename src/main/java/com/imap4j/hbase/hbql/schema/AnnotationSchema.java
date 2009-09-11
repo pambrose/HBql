@@ -1,13 +1,13 @@
 package com.imap4j.hbase.hbql.schema;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.imap4j.hbase.hbase.HColumn;
 import com.imap4j.hbase.hbase.HColumnVersion;
 import com.imap4j.hbase.hbase.HFamily;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbase.HTable;
+import com.imap4j.hbase.util.Lists;
+import com.imap4j.hbase.util.Maps;
 
 import java.lang.reflect.Field;
 import java.util.List;

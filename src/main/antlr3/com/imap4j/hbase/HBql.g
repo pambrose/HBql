@@ -41,14 +41,14 @@ import com.imap4j.hbase.hbql.expr.value.literal.*;
 import com.imap4j.hbase.hbql.expr.value.var.*;
 import com.imap4j.hbase.antlr.args.*;
 import com.imap4j.hbase.antlr.*;
+import com.imap4j.hbase.util.*;
 import com.imap4j.hbase.hbql.schema.*;
 import java.util.Date;
-import com.google.common.collect.Lists;
 }
 
 @lexer::header {
 package com.imap4j.hbase;
-import com.google.common.collect.Lists;
+import com.imap4j.hbase.util.*;
 }
 
 selectStmt [ExprSchema es] returns [QueryArgs retval]

@@ -1,6 +1,5 @@
 package com.imap4j.hbase.hbql.schema;
 
-import com.google.common.collect.Lists;
 import com.imap4j.hbase.antlr.args.KeyRangeArgs;
 import com.imap4j.hbase.antlr.args.VersionArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
@@ -11,6 +10,7 @@ import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.io.Serialization;
+import com.imap4j.hbase.util.Lists;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 
