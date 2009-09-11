@@ -8,6 +8,7 @@ import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbase.HQuery;
 import com.imap4j.hbase.hbase.HQueryListenerAdapter;
+import com.imap4j.hbase.hbase.HResults;
 import com.imap4j.hbase.hbase.HTable;
 import com.imap4j.hbase.hbase.HTransaction;
 import com.imap4j.hbase.hbql.schema.HUtil;
@@ -108,9 +109,7 @@ public class TestObject implements HPersistable {
 
     public static void main(String[] args) throws IOException, HPersistException {
 
-        HBql.Results results;
-
-        results = HBql.exec("set packagepath = 'com.imap4j.hbql:com.imap4j.hbase'");
+        HResults results = HBql.exec("set packagepath = 'com.imap4j.hbql:com.imap4j.hbase'");
         System.out.println(results.getOutput());
 
         //results = HBql.exec("delete from TestObject with client filter true");
@@ -128,20 +127,20 @@ public class TestObject implements HPersistable {
         */
 
         final HTransaction tx = new HTransaction();
-        int cnt = 10;
-        for (int i = 0; i < cnt; i++) {
-            TestObject obj = new TestObject(i);
-            tx.insert(obj);
-        }
+        int cnt = 0;
+        for (int i = 0; i < cnt; i++)
+            tx.insert(new TestObject(i));
 
         tx.commit();
 
-        long start = System.currentTimeMillis();
         HQuery<TestObject> q2 =
-                HQuery.newHQuery("select * from TestObject WITH "
-                                 + "KEYS  '000002' : '000005','000007':LAST "
+                HQuery.newHQuery("select author, authorVersions from TestObject "
+                                 + "WITH "
+                                 + "KEYS  '000002' : '000005', '000007':LAST "
                                  + "TIME RANGE NOW()-DAY(1) : NOW()+DAY(1)"
                                  + "VERSIONS 5 "
+                                 //+ "SERVER FILTER (author LIKE '.*282.*')"
+                                 + "CLIENT FILTER (author LIKE '.*282.*')"
                         ,
                                  new HQueryListenerAdapter<TestObject>() {
                                      public void onEachRow(final TestObject val) throws HPersistException {
@@ -166,8 +165,6 @@ public class TestObject implements HPersistable {
                                  });
 
         q2.execute();
-
-        System.out.println("Time = " + (System.currentTimeMillis() - start));
 
     }
 }

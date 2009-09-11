@@ -27,7 +27,7 @@ public class HUtil {
 
     public final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.HADOOP);
 
-    public static List<Scan> getScanList(final ExprSchema schema,
+    public static List<Scan> getScanList(final AnnotationSchema schema,
                                          final List<String> fieldList,
                                          final KeyRangeArgs keys,
                                          final VersionArgs verArgs,
@@ -52,11 +52,12 @@ public class HUtil {
         for (final Scan scan : scanList) {
 
             // Set column names
-            for (final String attribName : fieldList) {
-                final ColumnAttrib attrib = (ColumnAttrib)schema.getVariableAttribByVariableName(attribName);
+            for (final String name : fieldList) {
+                final ColumnAttrib attrib = (ColumnAttrib)schema.getVariableAttribByVariableName(name);
 
                 if (attrib == null)
-                    throw new HPersistException("Variable " + attribName + " does not exist");
+                    throw new HPersistException("Instance variable " + name + " does not exist in " + schema.getClazz()
+                            .getName());
 
                 // If it is a map, then request all columns for family
                 if (attrib.isMapKeysAsColumns())

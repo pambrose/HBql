@@ -22,9 +22,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.List;
 
 /**
@@ -35,16 +33,7 @@ import java.util.List;
  */
 public class HBql {
 
-    public static class Results {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final PrintStream out = new PrintStream(baos);
-
-        public String getOutput() {
-            return baos.toString();
-        }
-    }
-
-    public static Results exec(final String str) throws HPersistException, IOException {
+    public static HResults exec(final String str) throws HPersistException, IOException {
 
         final ExecArgs exec = (ExecArgs)HBqlRule.EXEC.parse(str, (ExprSchema)null);
 
@@ -66,8 +55,8 @@ public class HBql {
         throw new HPersistException("Unknown comand: " + str);
     }
 
-    private static Results createCommand(final CreateArgs args) throws HPersistException, IOException {
-        final Results retval = new Results();
+    private static HResults createCommand(final CreateArgs args) throws HPersistException, IOException {
+        final HResults retval = new HResults();
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getClassname());
         final HTableDescriptor tableDesc = new HTableDescriptor(schema.getTableName());
 
@@ -87,9 +76,9 @@ public class HBql {
         return retval;
     }
 
-    private static Results describeCommand(final DescribeArgs args) throws IOException, HPersistException {
+    private static HResults describeCommand(final DescribeArgs args) throws IOException, HPersistException {
 
-        final Results retval = new Results();
+        final HResults retval = new HResults();
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getClassname());
         final HBaseAdmin admin = new HBaseAdmin(new HBaseConfiguration());
         final HTableDescriptor tableDesc = admin.getTableDescriptor(schema.getTableName().getBytes());
@@ -109,9 +98,9 @@ public class HBql {
         return retval;
     }
 
-    private static Results showCommand(final ShowArgs args) throws IOException, HPersistException {
+    private static HResults showCommand(final ShowArgs args) throws IOException, HPersistException {
 
-        final Results retval = new Results();
+        final HResults retval = new HResults();
 
         final HBaseAdmin admin = new HBaseAdmin(new HBaseConfiguration());
         retval.out.println("Table names: ");
@@ -122,9 +111,9 @@ public class HBql {
         return retval;
     }
 
-    private static Results deleteCommand(final DeleteArgs args) throws HPersistException, IOException {
+    private static HResults deleteCommand(final DeleteArgs args) throws HPersistException, IOException {
 
-        final Results retval = new Results();
+        final HResults retval = new HResults();
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getTableName());
         final List<String> fieldList = schema.getFieldList();
         final HTable table = new HTable(new HBaseConfiguration(), schema.getTableName());
@@ -158,9 +147,9 @@ public class HBql {
         return retval;
     }
 
-    private static Results setCommand(final SetArgs args) throws HPersistException {
+    private static HResults setCommand(final SetArgs args) throws HPersistException {
 
-        final Results retval = new Results();
+        final HResults retval = new HResults();
         final String var = args.getVariable();
 
         if (var == null)

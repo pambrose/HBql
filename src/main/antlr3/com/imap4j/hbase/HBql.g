@@ -52,8 +52,8 @@ import com.imap4j.hbase.util.*;
 }
 
 selectStmt [ExprSchema es] returns [QueryArgs retval]
-	: keySELECT (STAR | c=columnList) keyFROM t=ID w=whereValue[es]?			
-							{retval = new QueryArgs($c.retval, $t.text, $w.retval);};
+	: keySELECT (STAR | c=columnList) keyFROM t=ID 	{setExprSchema($t.text);}
+	  w=whereValue[es]?				{retval = new QueryArgs($c.retval, $t.text, $w.retval);};
 
 columnList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
@@ -105,10 +105,10 @@ versions returns [VersionArgs retval]
 	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);};
 	
 clientFilter [ExprSchema es] returns [ExprTree retval]
-	: keyCLIENT keyFILTER? w=descWhereExpr[es]	{retval = $w.retval;};
+	: keyCLIENT keyFILTER w=descWhereExpr[es]	{retval = $w.retval;};
 	
 serverFilter [ExprSchema es] returns [ExprTree retval]
-	: keySERVER keyFILTER? w=descWhereExpr[es]	{retval = $w.retval;};
+	: keySERVER keyFILTER w=descWhereExpr[es]	{retval = $w.retval;};
 	
 keyRangeList returns [List<KeyRangeArgs.Range> retval]
 @init {retval = Lists.newArrayList();}

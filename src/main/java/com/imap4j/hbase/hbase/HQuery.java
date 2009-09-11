@@ -3,6 +3,7 @@ package com.imap4j.hbase.hbase;
 import com.imap4j.hbase.antlr.args.QueryArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.ExprTree;
+import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.HUtil;
@@ -48,8 +49,6 @@ public class HQuery<T extends HPersistable> {
         final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ExprSchema)null);
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getTableName());
         final List<String> fieldList = (args.getColumnList() == null) ? schema.getFieldList() : args.getColumnList();
-        final String tableName = schema.getTableName();
-        final HTable table = new HTable(new HBaseConfiguration(), tableName);
 
         final ExprTree clientFilter = args.getWhereExpr().getClientFilterArgs();
         if (clientFilter != null) {
@@ -57,11 +56,21 @@ public class HQuery<T extends HPersistable> {
             clientFilter.optimize();
         }
 
+        // Check if all the variables referenced in the where clause are present in the fieldList.
+        final List<ExprVariable> vars = clientFilter.getExprVariables();
+        for (final ExprVariable var : vars) {
+            if (!fieldList.contains(var.getName()))
+                throw new HPersistException("Variable " + var.getName() + " used in client filter but it is not "
+                                            + "not in the select list");
+        }
+
         final List<Scan> scanList = HUtil.getScanList(schema,
                                                       fieldList,
                                                       args.getWhereExpr().getKeyRangeArgs(),
                                                       args.getWhereExpr().getVersionArgs(),
                                                       args.getWhereExpr().getServerFilterArgs());
+
+        final HTable table = new HTable(new HBaseConfiguration(), schema.getTableName());
 
         for (final Scan scan : scanList) {
             ResultScanner resultScanner = null;
