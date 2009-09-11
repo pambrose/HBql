@@ -133,7 +133,12 @@ public class HBql {
         clientFilter.optimize();
         int cnt = 0;
 
-        final List<Scan> scanList = HUtil.getScanList(schema, fieldList, args.getWhereExpr());
+        final List<Scan> scanList = HUtil.getScanList(schema,
+                                                      fieldList,
+                                                      args.getWhereExpr().getKeyRangeArgs(),
+                                                      args.getWhereExpr().getVersionArgs(),
+                                                      args.getWhereExpr().getServerFilterArgs());
+
         for (final Scan scan : scanList) {
             final ResultScanner resultsScanner = table.getScanner(scan);
             for (final Result result : resultsScanner) {

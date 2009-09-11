@@ -17,7 +17,7 @@ import java.util.List;
  * Date: Aug 27, 2009
  * Time: 2:13:47 PM
  */
-public class TestObjectEvals extends ObjectTests<TestObjectEvals.SimpleObject> {
+public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
 
     public class SimpleObject {
         final int intval1, intval2;

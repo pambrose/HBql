@@ -3,7 +3,6 @@ package com.imap4j.hbase.hbql.schema;
 import com.google.common.collect.Lists;
 import com.imap4j.hbase.antlr.args.KeyRangeArgs;
 import com.imap4j.hbase.antlr.args.VersionArgs;
-import com.imap4j.hbase.antlr.args.WhereArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.ExprTree;
@@ -13,6 +12,7 @@ import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.io.Serialization;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.HBqlFilter;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,10 +27,13 @@ public class HUtil {
 
     public final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.HADOOP);
 
-    public static List<Scan> getScanList(final ExprSchema exprSchema, final List<String> fieldList, final WhereArgs whereExpr) throws IOException, HPersistException {
+    public static List<Scan> getScanList(final ExprSchema schema,
+                                         final List<String> fieldList,
+                                         final KeyRangeArgs keys,
+                                         final VersionArgs verArgs,
+                                         final ExprTree serverFilter) throws IOException, HPersistException {
 
         final List<Scan> scanList = Lists.newArrayList();
-        final KeyRangeArgs keys = whereExpr.getKeyRangeArgs();
         final List<KeyRangeArgs.Range> rangeList = keys.getRangeList();
 
         if (rangeList.size() == 0) {
@@ -50,7 +53,7 @@ public class HUtil {
 
             // Set column names
             for (final String attribName : fieldList) {
-                final ColumnAttrib attrib = (ColumnAttrib)exprSchema.getVariableAttribByVariableName(attribName);
+                final ColumnAttrib attrib = (ColumnAttrib)schema.getVariableAttribByVariableName(attribName);
 
                 if (attrib == null)
                     throw new HPersistException("Variable " + attribName + " does not exist");
@@ -62,15 +65,16 @@ public class HUtil {
                     scan.addColumn(attrib.getFamilyQualifiedName().getBytes());
             }
 
-            final VersionArgs verArgs = whereExpr.getVersionArgs();
             if (verArgs.isValid())
                 scan.setMaxVersions(verArgs.getValue());
 
             // Set server-side filter
-            final ExprTree serverFilter = whereExpr.getServerFilterArgs();
             if (serverFilter != null) {
-                List<ExprVariable> names = serverFilter.getExprVariables();
-                //scan.setFilter(new HBqlFilter(exprSchema, serverFilter));
+                serverFilter.setSchema(schema);
+                serverFilter.optimize();
+
+                final List<ExprVariable> names = serverFilter.getExprVariables();
+                scan.setFilter(new HBqlFilter(schema, serverFilter));
             }
         }
 

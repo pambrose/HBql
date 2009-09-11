@@ -26,9 +26,13 @@ public class HQuery<T extends HPersistable> {
     final String query;
     final HQueryListener<T> listener;
 
-    public HQuery(final String query, final HQueryListener<T> listener) {
+    private HQuery(final String query, final HQueryListener<T> listener) {
         this.query = query;
         this.listener = listener;
+    }
+
+    public static <T extends HPersistable> HQuery<T> newHQuery(final String query, final HQueryListener<T> listener) {
+        return new HQuery<T>(query, listener);
     }
 
     public String getQuery() {
@@ -46,11 +50,18 @@ public class HQuery<T extends HPersistable> {
         final List<String> fieldList = (args.getColumnList() == null) ? schema.getFieldList() : args.getColumnList();
         final String tableName = schema.getTableName();
         final HTable table = new HTable(new HBaseConfiguration(), tableName);
-        final ExprTree clientFilter = args.getWhereExpr().getClientFilterArgs();
-        clientFilter.setSchema(schema);
-        clientFilter.optimize();
 
-        final List<Scan> scanList = HUtil.getScanList(schema, fieldList, args.getWhereExpr());
+        final ExprTree clientFilter = args.getWhereExpr().getClientFilterArgs();
+        if (clientFilter != null) {
+            clientFilter.setSchema(schema);
+            clientFilter.optimize();
+        }
+
+        final List<Scan> scanList = HUtil.getScanList(schema,
+                                                      fieldList,
+                                                      args.getWhereExpr().getKeyRangeArgs(),
+                                                      args.getWhereExpr().getVersionArgs(),
+                                                      args.getWhereExpr().getServerFilterArgs());
 
         for (final Scan scan : scanList) {
             ResultScanner resultScanner = null;
@@ -68,5 +79,4 @@ public class HQuery<T extends HPersistable> {
             }
         }
     }
-
 }

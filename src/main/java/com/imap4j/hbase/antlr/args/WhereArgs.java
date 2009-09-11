@@ -13,8 +13,8 @@ public class WhereArgs {
     private KeyRangeArgs keyRangeArgs = new KeyRangeArgs(null);
     private DateRangeArgs dateRangeArgs = new DateRangeArgs(null, null);
     private VersionArgs versionArgs = new VersionArgs(null);
-    private ExprTree clientFilterArgs = new ExprTree(null);
-    private ExprTree serverFilterArgs = new ExprTree(null);
+    private ExprTree clientFilterArgs = ExprTree.newExprTree(null);
+    private ExprTree serverFilterArgs = ExprTree.newExprTree(null);
 
     public KeyRangeArgs getKeyRangeArgs() {
         return this.keyRangeArgs;

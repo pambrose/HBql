@@ -26,7 +26,7 @@ public class VersionAttrib extends ColumnAttrib {
         super(field, fieldType, family, column, getter, setter, mapKeysAsColumns);
     }
 
-    public static VersionAttrib createVersionAttrib(final ExprSchema exprSchema, final Field field) throws HPersistException {
+    public static VersionAttrib newVersionAttrib(final ExprSchema exprSchema, final Field field) throws HPersistException {
 
         final HColumnVersion versionAnno = field.getAnnotation(HColumnVersion.class);
         final String instance = versionAnno.instance();

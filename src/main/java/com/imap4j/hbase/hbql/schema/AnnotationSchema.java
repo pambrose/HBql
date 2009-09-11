@@ -178,7 +178,7 @@ public class AnnotationSchema extends ExprSchema {
     }
 
     private void processColumnVersionAnnotation(final Field field) throws HPersistException {
-        final VersionAttrib versionAttrib = VersionAttrib.createVersionAttrib(this, field);
+        final VersionAttrib versionAttrib = VersionAttrib.newVersionAttrib(this, field);
         this.setVersionAttribByFamilyQualifiedColumnName(versionAttrib.getFamilyQualifiedName(), versionAttrib);
         this.addVariableAttrib(versionAttrib);
     }
@@ -187,7 +187,6 @@ public class AnnotationSchema extends ExprSchema {
         final String tableName = this.table.name();
         return (tableName.length() > 0) ? tableName : clazz.getSimpleName();
     }
-
 
     // *** columnAttribListByFamilyNameMap
     private Map<String, List<ColumnAttrib>> getColumnAttribListByFamilyNameMap() {

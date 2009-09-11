@@ -128,7 +128,7 @@ public class TestObject implements HPersistable {
         */
 
         final HTransaction tx = new HTransaction();
-        int cnt = 0;
+        int cnt = 10;
         for (int i = 0; i < cnt; i++) {
             TestObject obj = new TestObject(i);
             tx.insert(obj);
@@ -138,32 +138,32 @@ public class TestObject implements HPersistable {
 
         long start = System.currentTimeMillis();
         HQuery<TestObject> q2 =
-                new HQuery<TestObject>("select * authorVersions from TestObject WITH "
-                                       + "KEYS  '000002' : '000005','000007':LAST "
-                                       + "TIME RANGE NOW() : NOW()+DAY(1)"
-                                       + "VERSIONS 5 "
+                HQuery.newHQuery("select * from TestObject WITH "
+                                 + "KEYS  '000002' : '000005','000007':LAST "
+                                 + "TIME RANGE NOW()-DAY(1) : NOW()+DAY(1)"
+                                 + "VERSIONS 5 "
                         ,
-                                       new HQueryListenerAdapter<TestObject>() {
-                                           public void onEachRow(final TestObject val) throws HPersistException {
+                                 new HQueryListenerAdapter<TestObject>() {
+                                     public void onEachRow(final TestObject val) throws HPersistException {
 
-                                               System.out.println("Current Values: " + val.keyval
-                                                                  + " - " + val.strValue
-                                                                  + " - " + val.author
-                                                                  + " - " + val.title);
+                                         System.out.println("Current Values: " + val.keyval
+                                                            + " - " + val.strValue
+                                                            + " - " + val.author
+                                                            + " - " + val.title);
 
-                                               System.out.println("Historicals");
+                                         System.out.println("Historicals");
 
-                                               if (val.authorVersions != null)
-                                                   for (final Long key : val.authorVersions.keySet())
-                                                       System.out.println(new Date(key) + " - "
-                                                                          + val.authorVersions.get(key));
+                                         if (val.authorVersions != null)
+                                             for (final Long key : val.authorVersions.keySet())
+                                                 System.out.println(new Date(key) + " - "
+                                                                    + val.authorVersions.get(key));
 
-                                               if (val.titleVersions != null)
-                                                   for (final Long key : val.titleVersions.keySet())
-                                                       System.out.println(new Date(key) + " - "
-                                                                          + val.titleVersions.get(key));
-                                           }
-                                       });
+                                         if (val.titleVersions != null)
+                                             for (final Long key : val.titleVersions.keySet())
+                                                 System.out.println(new Date(key) + " - "
+                                                                    + val.titleVersions.get(key));
+                                     }
+                                 });
 
         q2.execute();
 

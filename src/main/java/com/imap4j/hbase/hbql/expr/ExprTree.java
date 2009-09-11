@@ -15,19 +15,25 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class ExprTree implements PredicateExpr {
+public class ExprTree {
 
     private PredicateExpr expr = null;
     private long start, end;
 
-    // private final static ExprEvalTree defaultExpr = new ExprEvalTree(new BooleanLiteral("true"));
-
-    public ExprTree(final PredicateExpr expr) {
+    private ExprTree(final PredicateExpr expr) {
         this.expr = expr;
     }
 
+    public static ExprTree newExprTree(final PredicateExpr expr) {
+        return new ExprTree(expr);
+    }
+
     private PredicateExpr getExpr() {
-        return expr;
+        return this.expr;
+    }
+
+    private void setExpr(final PredicateExpr expr) {
+        this.expr = expr;
     }
 
     public void setSchema(final ExprSchema schema) {
@@ -36,13 +42,9 @@ public class ExprTree implements PredicateExpr {
     }
 
     public void optimize() throws HPersistException {
-        // Any EvalContext would work here since value is null
-        //final ReflectionEvalContext context = new ReflectionEvalContext(null);
-        //context.setExprSchema(this.getSchema());
         this.optimizeForConstants(null);
     }
 
-    @Override
     public List<ExprVariable> getExprVariables() {
         if (this.getExpr() == null)
             return Lists.newArrayList();
@@ -50,20 +52,18 @@ public class ExprTree implements PredicateExpr {
             return this.getExpr().getExprVariables();
     }
 
-    @Override
-    public boolean optimizeForConstants(final Object object) throws HPersistException {
+    private boolean optimizeForConstants(final Object object) throws HPersistException {
 
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.expr = new BooleanLiteral(this.getExpr().evaluate(object));
+            this.setExpr(new BooleanLiteral(this.getExpr().evaluate(object)));
         else
             retval = false;
 
         return retval;
     }
 
-    @Override
     public Boolean evaluate(final Object object) throws HPersistException {
 
         this.start = System.nanoTime();
@@ -78,12 +78,8 @@ public class ExprTree implements PredicateExpr {
         return retval;
     }
 
-    @Override
-    public boolean isAConstant() {
-        return this.getExpr().isAConstant();
-    }
-
     public long getElapsedNanos() {
         return this.end - this.start;
     }
+
 }

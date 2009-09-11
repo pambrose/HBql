@@ -8,7 +8,7 @@ import util.WhereValueTests;
  * Date: Aug 27, 2009
  * Time: 2:13:47 PM
  */
-public class TestWithValues extends WhereValueTests {
+public class WithValuesTest extends WhereValueTests {
 
 
     @Test

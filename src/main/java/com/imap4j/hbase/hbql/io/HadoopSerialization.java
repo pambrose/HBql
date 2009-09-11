@@ -198,7 +198,8 @@ public class HadoopSerialization extends Serialization {
                     int offset = arraysize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
-                        Array.set(array, i, Bytes.toFloat(b, offset));
+                        final float val = Bytes.toFloat(b, offset);
+                        Array.set(array, i, val);
                         offset += fieldType.getSize();
                     }
                     return array;
@@ -209,7 +210,8 @@ public class HadoopSerialization extends Serialization {
                     int offset = arraysize;
                     final Object array = Array.newInstance(clazz, length);
                     for (int i = 0; i < length; i++) {
-                        Array.set(array, i, Bytes.toDouble(b, offset));
+                        final double val = Bytes.toDouble(b, offset);
+                        Array.set(array, i, val);
                         offset += fieldType.getSize();
                     }
                     return array;

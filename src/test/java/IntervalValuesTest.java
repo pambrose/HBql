@@ -8,7 +8,7 @@ import util.WhereExprTests;
  * Date: Aug 27, 2009
  * Time: 2:13:47 PM
  */
-public class TestIntervalValues extends WhereExprTests {
+public class IntervalValuesTest extends WhereExprTests {
 
     @Test
     public void keysExpressions() throws HPersistException {

@@ -9,7 +9,7 @@ import util.WhereExprTests;
  * Date: Aug 27, 2009
  * Time: 2:13:47 PM
  */
-public class TestWhereExpression extends WhereExprTests {
+public class WhereExpressionTest extends WhereExprTests {
 
 
     @Test

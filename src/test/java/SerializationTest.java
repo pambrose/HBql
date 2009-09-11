@@ -18,7 +18,7 @@ import java.util.Random;
  * Date: Sep 4, 2009
  * Time: 7:39:16 AM
  */
-public class TestSerialization extends WhereExprTests {
+public class SerializationTest extends WhereExprTests {
 
     public static class TestClass implements Serializable {
         String strval;

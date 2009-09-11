@@ -122,12 +122,12 @@ keyRange returns [KeyRangeArgs.Range retval]
 
 nodescWhereExpr [ExprSchema es] returns [ExprTree retval]
 @init {setExprSchema(es);}
-	 : e=orExpr					{retval = new ExprTree($e.retval);};
+	 : e=orExpr					{retval = ExprTree.newExprTree($e.retval);};
 
 descWhereExpr [ExprSchema es] returns [ExprTree retval]
 @init {setExprSchema(es);}
 	: s=schemaDesc? 				{if ($s.retval != null) setExprSchema($s.retval);}			
-	  e=orExpr					{retval = new ExprTree($e.retval);
+	  e=orExpr					{retval = ExprTree.newExprTree($e.retval);
 	  						 if ($s.retval != null) retval.setSchema($s.retval);};
 
 			
