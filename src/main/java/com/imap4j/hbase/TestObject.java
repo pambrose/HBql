@@ -51,13 +51,13 @@ public class TestObject implements HPersistable {
     private String strValue = "";
 
     @HColumn(family = "family1")
-    private String title = "A title value";
+    private String title = "";
 
     @HColumnVersion(instance = "title")
     private NavigableMap<Long, String> titleVersions = new TreeMap<Long, String>();
 
     @HColumn(family = "family1", column = "author")
-    private String author = "An author value";
+    private String author = "";
 
     @HColumnVersion(instance = "author")
     private NavigableMap<Long, String> authorVersions;
@@ -86,6 +86,8 @@ public class TestObject implements HPersistable {
     public TestObject(int val) throws HPersistException {
         this.keyval = HUtil.getZeroPaddedNumber(val, 6);
 
+        // this.title = "A title value";
+        // this.author = "An author value";
         strValue = "v" + val;
 
         mapval1.put("key1", "val1");
@@ -133,15 +135,18 @@ public class TestObject implements HPersistable {
 
         tx.commit();
 
+        final String query = "SELECT author, authorVersions "
+                             + "FROM TestObject "
+                             + "WITH "
+                             + "KEYS  '000002' : '000005', '000007':LAST "
+                             + "TIME RANGE NOW()-DAY(1) : NOW()+DAY(1)"
+                             + "VERSIONS 5 "
+                //+ "SERVER FILTER (author LIKE '.*282.*')"
+                //+ "CLIENT FILTER (author LIKE '.*282.*')"
+                ;
+
         HQuery<TestObject> q2 =
-                HQuery.newHQuery("select author, authorVersions from TestObject "
-                                 + "WITH "
-                                 + "KEYS  '000002' : '000005', '000007':LAST "
-                                 + "TIME RANGE NOW()-DAY(1) : NOW()+DAY(1)"
-                                 + "VERSIONS 5 "
-                                 //+ "SERVER FILTER (author LIKE '.*282.*')"
-                                 + "CLIENT FILTER (author LIKE '.*282.*')"
-                        ,
+                HQuery.newHQuery(query,
                                  new HQueryListenerAdapter<TestObject>() {
                                      public void onEachRow(final TestObject val) throws HPersistException {
 

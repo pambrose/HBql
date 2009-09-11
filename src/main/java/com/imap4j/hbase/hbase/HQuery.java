@@ -54,14 +54,14 @@ public class HQuery<T extends HPersistable> {
         if (clientFilter != null) {
             clientFilter.setSchema(schema);
             clientFilter.optimize();
-        }
 
-        // Check if all the variables referenced in the where clause are present in the fieldList.
-        final List<ExprVariable> vars = clientFilter.getExprVariables();
-        for (final ExprVariable var : vars) {
-            if (!fieldList.contains(var.getName()))
-                throw new HPersistException("Variable " + var.getName() + " used in client filter but it is not "
-                                            + "not in the select list");
+            // Check if all the variables referenced in the where clause are present in the fieldList.
+            final List<ExprVariable> vars = clientFilter.getExprVariables();
+            for (final ExprVariable var : vars) {
+                if (!fieldList.contains(var.getName()))
+                    throw new HPersistException("Variable " + var.getName() + " used in client filter but it is not "
+                                                + "not in the select list");
+            }
         }
 
         final List<Scan> scanList = HUtil.getScanList(schema,
@@ -77,7 +77,7 @@ public class HQuery<T extends HPersistable> {
             try {
                 resultScanner = table.getScanner(scan);
                 for (final Result result : resultScanner) {
-                    final HPersistable recordObj = HUtil.ser.getHPersistable(schema, scan, result);
+                    final HPersistable recordObj = HUtil.getHPersistable(HUtil.ser, schema, fieldList, scan, result);
                     if (clientFilter == null || clientFilter.evaluate(recordObj))
                         this.getListener().onEachRow((T)recordObj);
                 }
