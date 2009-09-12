@@ -18,13 +18,12 @@ public class ObjectTests<T> {
 
         final Counter cnt = new Counter();
 
-        final ObjectQuery<T> query = ObjectQuery.newObjectQuery(
-                expr,
-                new ObjectQueryListenerAdapter<T>() {
-                    public void onEachObject(final T val) throws HPersistException {
-                        cnt.increment();
-                    }
-                }
+        final ObjectQuery<T> query = ObjectQuery.newObjectQuery(expr);
+        query.addListener(new ObjectQueryListenerAdapter<T>() {
+            public void onEachObject(final T val) throws HPersistException {
+                cnt.increment();
+            }
+        }
         );
 
         query.execute(objList);

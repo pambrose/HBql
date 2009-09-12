@@ -18,6 +18,6 @@ public abstract class ObjectQueryListenerAdapter<T> implements ObjectQueryListen
     public void onEachObject(T val) throws HPersistException {
     }
 
-    public void onQueryCompletion() {
+    public void onQueryComplete() {
     }
 }

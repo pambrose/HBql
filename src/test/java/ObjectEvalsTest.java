@@ -3,6 +3,7 @@ import com.google.common.collect.Lists;
 import com.imap4j.hbase.collection.ObjectQuery;
 import com.imap4j.hbase.collection.ObjectQueryListenerAdapter;
 import com.imap4j.hbase.collection.ObjectQueryPredicate;
+import com.imap4j.hbase.collection.ObjectResults;
 import com.imap4j.hbase.hbase.HPersistException;
 import org.junit.Test;
 import util.Counter;
@@ -57,8 +58,8 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
 
         // Using Listeners with CollectionQuery Object
         final Counter cnt1 = new Counter();
-        final ObjectQuery<SimpleObject> query = ObjectQuery.newObjectQuery(
-                "strval like 'T[est]+ Value: [1-3]'",
+        final ObjectQuery<SimpleObject> query = ObjectQuery.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
+        query.addListener(
                 new ObjectQueryListenerAdapter<SimpleObject>() {
                     public void onEachObject(final SimpleObject val) throws HPersistException {
                         cnt1.increment();
@@ -70,15 +71,15 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
 
         // Using Iterator
         final Counter cnt2 = new Counter();
-        for (final SimpleObject obj : ObjectQuery.newObjectQuery("strval like 'T[est]+ Value: [1-3]'", objList))
+        ObjectQuery<SimpleObject> query2 = ObjectQuery.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
+        final ObjectResults<SimpleObject> results = query2.execute(objList);
+        for (final SimpleObject obj : results)
             cnt2.increment();
-
         assertTrue(cnt2.getCount() == 3);
 
         // Using Google collections
         String qstr = "intval1 in (1, 2+1, 2+1+1, 4+3)";
         List<SimpleObject> list = Lists.newArrayList(Iterables.filter(objList, new ObjectQueryPredicate<SimpleObject>(qstr)));
-
         assertTrue(list.size() == 4);
     }
 }

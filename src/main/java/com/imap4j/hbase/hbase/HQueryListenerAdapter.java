@@ -16,6 +16,6 @@ public abstract class HQueryListenerAdapter<T extends HPersistable> implements H
     public void onEachRow(T val) throws HPersistException {
     }
 
-    public void onQueryCompletion() {
+    public void onQueryComplete() {
     }
 }

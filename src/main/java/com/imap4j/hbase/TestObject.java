@@ -9,6 +9,7 @@ import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbase.HQuery;
 import com.imap4j.hbase.hbase.HQueryListenerAdapter;
+import com.imap4j.hbase.hbase.HResults;
 import com.imap4j.hbase.hbase.HTable;
 import com.imap4j.hbase.hbase.HTransaction;
 import com.imap4j.hbase.hbql.schema.HUtil;
@@ -142,32 +143,33 @@ public class TestObject implements HPersistable {
                              //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
                              + "CLIENT FILTER WHERE author LIKE '.*282.*'";
 
-        HQuery<TestObject> q1 =
-                HQuery.newHQuery(query,
-                                 new HQueryListenerAdapter<TestObject>() {
-                                     public void onEachRow(final TestObject val) throws HPersistException {
+        HQuery<TestObject> q1 = HQuery.newHQuery(query);
+        q1.addListener(new HQueryListenerAdapter<TestObject>() {
+            public void onEachRow(final TestObject val) throws HPersistException {
 
-                                         System.out.println("Current Values: " + val.keyval + " - " + val.strValue
-                                                            + " - " + val.author + " - " + val.title);
+                System.out.println("Current Values: " + val.keyval + " - " + val.strValue
+                                   + " - " + val.author + " - " + val.title);
 
-                                         System.out.println("Historicals");
+                System.out.println("Historicals");
 
-                                         if (val.authorVersions != null)
-                                             for (final Long key : val.authorVersions.keySet())
-                                                 System.out.println(new Date(key) + " - "
-                                                                    + val.authorVersions.get(key));
+                if (val.authorVersions != null)
+                    for (final Long key : val.authorVersions.keySet())
+                        System.out.println(new Date(key) + " - "
+                                           + val.authorVersions.get(key));
 
-                                         if (val.titles != null)
-                                             for (final Long key : val.titles.keySet())
-                                                 System.out.println(new Date(key) + " - "
-                                                                    + val.titles.get(key));
-                                     }
-                                 });
+                if (val.titles != null)
+                    for (final Long key : val.titles.keySet())
+                        System.out.println(new Date(key) + " - "
+                                           + val.titles.get(key));
+            }
+        });
 
         q1.execute();
 
         HQuery<TestObject> q2 = HQuery.newHQuery(query);
-        for (TestObject val : q2) {
+        HResults<TestObject> results = q2.execute();
+
+        for (TestObject val : results) {
             System.out.println("Current Values: " + val.keyval + " - " + val.strValue
                                + " - " + val.author + " - " + val.title);
 
@@ -184,7 +186,6 @@ public class TestObject implements HPersistable {
                                        + val.titles.get(key));
         }
 
-        q2.close();
-
+        results.close();
     }
 }

@@ -20,7 +20,7 @@ public class QueryArgs {
         this.whereExpr = whereExpr;
     }
 
-    public List<String> getColumnList() {
+    public List<String> getColumns() {
         return this.columnList;
     }
 

@@ -14,6 +14,6 @@ public interface ObjectQueryListener<T> {
 
     void onEachObject(T val) throws HPersistException;
 
-    void onQueryCompletion();
+    void onQueryComplete();
 
 }

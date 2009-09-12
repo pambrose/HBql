@@ -12,6 +12,6 @@ public interface HQueryListener<T extends HPersistable> {
 
     void onEachRow(T val) throws HPersistException;
 
-    void onQueryCompletion();
+    void onQueryComplete();
 
 }
