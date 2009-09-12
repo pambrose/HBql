@@ -4,11 +4,11 @@ import com.imap4j.hbase.hbase.HBql;
 import com.imap4j.hbase.hbase.HColumn;
 import com.imap4j.hbase.hbase.HColumnVersionMap;
 import com.imap4j.hbase.hbase.HFamily;
+import com.imap4j.hbase.hbase.HOutput;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbase.HQuery;
 import com.imap4j.hbase.hbase.HQueryListenerAdapter;
-import com.imap4j.hbase.hbase.HResults;
 import com.imap4j.hbase.hbase.HTable;
 import com.imap4j.hbase.hbase.HTransaction;
 import com.imap4j.hbase.hbql.schema.HUtil;
@@ -111,20 +111,20 @@ public class TestObject implements HPersistable {
 
     public static void main(String[] args) throws IOException, HPersistException {
 
-        HResults results = HBql.exec("set packagepath = 'com.imap4j.hbql:com.imap4j.hbase'");
-        System.out.println(results.getOutput());
+        HOutput output = HBql.exec("set packagepath = 'com.imap4j.hbql:com.imap4j.hbase'");
+        System.out.println(output);
 
         //results = HBql.exec("delete from TestObject with client filter true");
-        //System.out.println(results.getOutput());
+        //System.out.println(results);
 
         //results = HBql.exec("create table TestObject");
-        //System.out.println(results.getOutput());
+        //System.out.println(results);
 
-        results = HBql.exec("show tables");
-        System.out.println(results.getOutput());
+        output = HBql.exec("show tables");
+        System.out.println(output);
 
-        results = HBql.exec("describe table TestObject");
-        System.out.println(results.getOutput());
+        output = HBql.exec("describe table TestObject");
+        System.out.println(output);
 
         final HTransaction tx = new HTransaction();
         int cnt = 0;
@@ -147,10 +147,8 @@ public class TestObject implements HPersistable {
                                  new HQueryListenerAdapter<TestObject>() {
                                      public void onEachRow(final TestObject val) throws HPersistException {
 
-                                         System.out.println("Current Values: " + val.keyval
-                                                            + " - " + val.strValue
-                                                            + " - " + val.author
-                                                            + " - " + val.title);
+                                         System.out.println("Current Values: " + val.keyval + " - " + val.strValue
+                                                            + " - " + val.author + " - " + val.title);
 
                                          System.out.println("Historicals");
 
@@ -170,10 +168,8 @@ public class TestObject implements HPersistable {
 
         HQuery<TestObject> q2 = HQuery.newHQuery(query);
         for (TestObject val : q2) {
-            System.out.println("Current Values: " + val.keyval
-                               + " - " + val.strValue
-                               + " - " + val.author
-                               + " - " + val.title);
+            System.out.println("Current Values: " + val.keyval + " - " + val.strValue
+                               + " - " + val.author + " - " + val.title);
 
             System.out.println("Historicals");
 
@@ -187,6 +183,8 @@ public class TestObject implements HPersistable {
                     System.out.println(new Date(key) + " - "
                                        + val.titles.get(key));
         }
+
+        q2.close();
 
     }
 }

@@ -9,11 +9,11 @@ import java.io.PrintStream;
  * Date: Sep 11, 2009
  * Time: 1:51:09 PM
  */
-public class HResults {
+public class HOutput {
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     final PrintStream out = new PrintStream(baos);
 
-    public String getOutput() {
+    public String toString() {
         return baos.toString();
     }
 }

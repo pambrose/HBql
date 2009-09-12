@@ -7,6 +7,7 @@ import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.HUtil;
+import com.imap4j.hbase.util.Lists;
 import com.imap4j.hbase.util.ResultsIterator;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
@@ -28,6 +29,7 @@ public class HQuery<T extends HPersistable> implements Iterable<T> {
 
     final String query;
     final HQueryListener<T> listener;
+    final List<ResultScanner> scannerList = Lists.newArrayList();
 
     private HQuery(final String query, final HQueryListener<T> listener) {
         this.query = query;
@@ -110,11 +112,37 @@ public class HQuery<T extends HPersistable> implements Iterable<T> {
         }
     }
 
+    private List<ResultScanner> getScannerList() {
+        return scannerList;
+    }
+
+    public void close() {
+
+        for (final ResultScanner scanner : this.getScannerList())
+            closeCurrentScanner(scanner, false);
+
+        this.scannerList.clear();
+    }
+
+    private void closeCurrentScanner(final ResultScanner scanner, final boolean removeFromList) {
+        if (scanner == null)
+            return;
+
+        try {
+            scanner.close();
+        }
+        catch (Exception e) {
+            // Do nothing
+        }
+
+        if (removeFromList)
+            getScannerList().remove(scanner);
+    }
+
     @Override
     public Iterator<T> iterator() {
 
         try {
-
             return new ResultsIterator<T>() {
 
                 final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(getQuery(), (ExprSchema)null);
@@ -143,13 +171,14 @@ public class HQuery<T extends HPersistable> implements Iterable<T> {
                 private Iterator<Result> getNextResultScanner() throws IOException {
                     if (scanIter.hasNext()) {
 
-                        // First close previous ResultScanner before reassigning
-                        if (currentResultScanner != null)
-                            currentResultScanner.close();
-
                         final Scan scan = scanIter.next();
                         maxVersions = scan.getMaxVersions();
+
+                        // First close previous ResultScanner before reassigning
+                        closeCurrentScanner(currentResultScanner, true);
+
                         currentResultScanner = table.getScanner(scan);
+                        getScannerList().add(currentResultScanner);
 
                         return currentResultScanner.iterator();
                     }
@@ -164,9 +193,12 @@ public class HQuery<T extends HPersistable> implements Iterable<T> {
 
                     if (val != null)
                         return val;
-                    else
-                        // Try one more time
-                        return doFetch();
+
+                    // Try one more time
+                    val = doFetch();
+                    if (val == null)
+                        closeCurrentScanner(currentResultScanner, true);
+                    return val;
                 }
 
                 private T doFetch() throws HPersistException, IOException {
