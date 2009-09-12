@@ -1,6 +1,6 @@
 package com.imap4j.hbase.hbql.schema;
 
-import com.imap4j.hbase.hbase.HColumnVersion;
+import com.imap4j.hbase.hbase.HColumnVersionMap;
 import com.imap4j.hbase.hbase.HPersistException;
 
 import java.lang.reflect.Field;
@@ -28,7 +28,7 @@ public class VersionAttrib extends ColumnAttrib {
 
     public static VersionAttrib newVersionAttrib(final ExprSchema exprSchema, final Field field) throws HPersistException {
 
-        final HColumnVersion versionAnno = field.getAnnotation(HColumnVersion.class);
+        final HColumnVersionMap versionAnno = field.getAnnotation(HColumnVersionMap.class);
         final String instance = versionAnno.instance();
 
         final String annoname = "@HColumnVersionMap annotation";

@@ -105,10 +105,10 @@ versions returns [VersionArgs retval]
 	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);};
 	
 clientFilter [ExprSchema es] returns [ExprTree retval]
-	: keyCLIENT keyFILTER w=descWhereExpr[es]	{retval = $w.retval;};
+	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr[es]	{retval = $w.retval;};
 	
 serverFilter [ExprSchema es] returns [ExprTree retval]
-	: keySERVER keyFILTER w=descWhereExpr[es]	{retval = $w.retval;};
+	: keySERVER keyFILTER keyWHERE w=descWhereExpr[es]	{retval = $w.retval;};
 	
 keyRangeList returns [List<KeyRangeArgs.Range> retval]
 @init {retval = Lists.newArrayList();}

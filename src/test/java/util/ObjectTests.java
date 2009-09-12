@@ -1,7 +1,7 @@
 package util;
 
-import com.imap4j.hbase.collection.CollectionQuery;
-import com.imap4j.hbase.collection.CollectionQueryListenerAdapter;
+import com.imap4j.hbase.collection.ObjectQuery;
+import com.imap4j.hbase.collection.ObjectQueryListenerAdapter;
 import com.imap4j.hbase.hbase.HPersistException;
 
 import java.util.Collection;
@@ -18,9 +18,9 @@ public class ObjectTests<T> {
 
         final Counter cnt = new Counter();
 
-        final CollectionQuery<T> query = new CollectionQuery<T>(
+        final ObjectQuery<T> query = ObjectQuery.newObjectQuery(
                 expr,
-                new CollectionQueryListenerAdapter<T>() {
+                new ObjectQueryListenerAdapter<T>() {
                     public void onEachObject(final T val) throws HPersistException {
                         cnt.increment();
                     }

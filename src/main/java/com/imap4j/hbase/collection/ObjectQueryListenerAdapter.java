@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Date: Aug 20, 2009
  * Time: 10:39:59 PM
  */
-public abstract class CollectionQueryListenerAdapter<T> implements CollectionQueryListener<T>, Serializable {
+public abstract class ObjectQueryListenerAdapter<T> implements ObjectQueryListener<T>, Serializable {
 
     public void onQueryInit() {
     }

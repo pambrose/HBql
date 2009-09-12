@@ -12,14 +12,14 @@ import com.imap4j.hbase.hbql.schema.ObjectSchema;
  * Date: Sep 9, 2009
  * Time: 10:09:38 PM
  */
-public class CollectionQueryPredicate<T> implements Predicate<T> {
+public class ObjectQueryPredicate<T> implements Predicate<T> {
 
     private final String query;
     private ObjectSchema schema;
     private ExprTree tree;
     private boolean initialized = false;
 
-    public CollectionQueryPredicate(final String query) {
+    public ObjectQueryPredicate(final String query) {
         this.query = query;
     }
 

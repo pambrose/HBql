@@ -73,7 +73,7 @@ public class HUtil {
                     scan.addColumn(attrib.getFamilyQualifiedName().getBytes());
             }
 
-            if (verArgs.isValid())
+            if (verArgs != null && verArgs.isValid())
                 scan.setMaxVersions(verArgs.getValue());
 
             // Set server-side filter

@@ -2,7 +2,7 @@ package com.imap4j.hbase;
 
 import com.imap4j.hbase.hbase.HBql;
 import com.imap4j.hbase.hbase.HColumn;
-import com.imap4j.hbase.hbase.HColumnVersion;
+import com.imap4j.hbase.hbase.HColumnVersionMap;
 import com.imap4j.hbase.hbase.HFamily;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HPersistable;
@@ -53,13 +53,13 @@ public class TestObject implements HPersistable {
     @HColumn(family = "family1")
     private String title = "";
 
-    @HColumnVersion(instance = "title")
-    private NavigableMap<Long, String> titleVersions = new TreeMap<Long, String>();
+    @HColumnVersionMap(instance = "title")
+    private NavigableMap<Long, String> titles = new TreeMap<Long, String>();
 
     @HColumn(family = "family1", column = "author")
     private String author = "";
 
-    @HColumnVersion(instance = "author")
+    @HColumnVersionMap(instance = "author")
     private NavigableMap<Long, String> authorVersions;
 
     @HColumn(family = "family2", getter = "getHeaderBytes", setter = "setHeaderBytes")
@@ -120,13 +120,11 @@ public class TestObject implements HPersistable {
         //results = HBql.exec("create table TestObject");
         //System.out.println(results.getOutput());
 
-        /*
         results = HBql.exec("show tables");
         System.out.println(results.getOutput());
 
         results = HBql.exec("describe table TestObject");
         System.out.println(results.getOutput());
-        */
 
         final HTransaction tx = new HTransaction();
         int cnt = 0;
@@ -141,9 +139,8 @@ public class TestObject implements HPersistable {
                              + "KEYS  '000002' : '000005', '000007':LAST "
                              + "TIME RANGE NOW()-DAY(1) : NOW()+DAY(1)"
                              + "VERSIONS 5 "
-                //+ "SERVER FILTER (author LIKE '.*282.*')"
-                //+ "CLIENT FILTER (author LIKE '.*282.*')"
-                ;
+                             //+ "SERVER FILTER WHERE (author LIKE '.*282.*')"
+                             + "CLIENT FILTER WHERE author LIKE '.*282.*'";
 
         HQuery<TestObject> q2 =
                 HQuery.newHQuery(query,
@@ -162,10 +159,10 @@ public class TestObject implements HPersistable {
                                                  System.out.println(new Date(key) + " - "
                                                                     + val.authorVersions.get(key));
 
-                                         if (val.titleVersions != null)
-                                             for (final Long key : val.titleVersions.keySet())
+                                         if (val.titles != null)
+                                             for (final Long key : val.titles.keySet())
                                                  System.out.println(new Date(key) + " - "
-                                                                    + val.titleVersions.get(key));
+                                                                    + val.titles.get(key));
                                      }
                                  });
 
