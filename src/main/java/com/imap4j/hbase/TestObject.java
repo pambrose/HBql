@@ -6,7 +6,6 @@ import com.imap4j.hbase.hbase.HConnection;
 import com.imap4j.hbase.hbase.HFamily;
 import com.imap4j.hbase.hbase.HOutput;
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbase.HQuery;
 import com.imap4j.hbase.hbase.HResults;
 import com.imap4j.hbase.hbase.HTable;
@@ -32,7 +31,7 @@ import java.util.TreeMap;
                 @HFamily(name = "family2"),
                 @HFamily(name = "family3", maxVersions = 5)
         })
-public class TestObject implements HPersistable {
+public class TestObject {
 
     private enum TestEnum {
         RED, BLUE, BLACK, ORANGE
@@ -116,7 +115,8 @@ public class TestObject implements HPersistable {
         HOutput output = conn.exec("set packagepath = 'com.imap4j.hbql:com.imap4j.hbase'");
         System.out.println(output);
 
-        output = conn.exec("delete from TestObject with client filter true");
+        /*
+        output = conn.exec("delete from TestObject with client filter where true");
         System.out.println(output);
 
         output = conn.exec("create table TestObject");
@@ -127,6 +127,7 @@ public class TestObject implements HPersistable {
 
         output = conn.exec("describe table TestObject");
         System.out.println(output);
+        */
 
         final HTransaction tx = conn.newHTransaction();
         int cnt = 0;

@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Date: Aug 20, 2009
  * Time: 10:39:59 PM
  */
-public abstract class HQueryListenerAdapter<T extends HPersistable> implements HQueryListener<T>, Serializable {
+public abstract class HQueryListenerAdapter<T> implements HQueryListener<T>, Serializable {
 
     public void onQueryInit() {
     }

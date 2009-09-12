@@ -4,7 +4,6 @@ import com.imap4j.hbase.antlr.args.KeyRangeArgs;
 import com.imap4j.hbase.antlr.args.VersionArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.DateValue;
@@ -119,15 +118,15 @@ public class HUtil {
         return value.getValue(null);
     }
 
-    public static HPersistable getHPersistable(final Serialization ser,
-                                               final AnnotationSchema schema,
-                                               final List<String> fieldList,
-                                               final int maxVersions,
-                                               final Result result) throws HPersistException {
+    public static Object getHPersistable(final Serialization ser,
+                                         final AnnotationSchema schema,
+                                         final List<String> fieldList,
+                                         final int maxVersions,
+                                         final Result result) throws HPersistException {
 
         try {
             // Create object and assign key value
-            final HPersistable newobj = createNewObject(ser, schema, result);
+            final Object newobj = createNewObject(ser, schema, result);
 
             // Assign most recent values
             assignCurrentValues(ser, schema, fieldList, result, newobj);
@@ -144,15 +143,15 @@ public class HUtil {
         }
     }
 
-    private static HPersistable createNewObject(final Serialization ser,
-                                                final AnnotationSchema schema,
-                                                final Result result) throws IOException, HPersistException {
+    private static Object createNewObject(final Serialization ser,
+                                          final AnnotationSchema schema,
+                                          final Result result) throws IOException, HPersistException {
 
         // Create new instance and set key value
         final ColumnAttrib keyattrib = schema.getKeyColumnAttrib();
-        final HPersistable newobj;
+        final Object newobj;
         try {
-            newobj = (HPersistable)schema.getClazz().newInstance();
+            newobj = schema.getClazz().newInstance();
             final byte[] keybytes = result.getRow();
             keyattrib.setValue(ser, newobj, keybytes);
         }
@@ -170,7 +169,7 @@ public class HUtil {
                                             final AnnotationSchema schema,
                                             final List<String> fieldList,
                                             final Result result,
-                                            final HPersistable newobj) throws IOException, HPersistException {
+                                            final Object newobj) throws IOException, HPersistException {
 
         for (final KeyValue keyValue : result.list()) {
 
@@ -210,7 +209,7 @@ public class HUtil {
     private static void assignVersionedValues(final AnnotationSchema schema,
                                               final List<String> fieldList,
                                               final Result result,
-                                              final HPersistable newobj) throws IOException, HPersistException {
+                                              final Object newobj) throws IOException, HPersistException {
 
         final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
 

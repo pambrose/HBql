@@ -100,7 +100,7 @@ public class AnnotationSchema extends ExprSchema {
         throw new HPersistException("Cannot find " + objname + " in packagepath");
     }
 
-    public static AnnotationSchema getAnnotationSchema(final HPersistable obj) throws HPersistException {
+    public static AnnotationSchema getAnnotationSchema(final Object obj) throws HPersistException {
         return getAnnotationSchema(obj.getClass());
     }
 

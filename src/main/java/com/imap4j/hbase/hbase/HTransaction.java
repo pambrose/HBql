@@ -41,7 +41,7 @@ public class HTransaction {
         return retval;
     }
 
-    public void insert(final HPersistable declaringObj) throws HPersistException, IOException {
+    public void insert(final Object declaringObj) throws HPersistException, IOException {
 
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(declaringObj);
         final byte[] keyval = schema.getKeyColumnAttrib().getValueAsBytes(HUtil.ser, declaringObj);

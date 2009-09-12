@@ -2,7 +2,6 @@ package util;
 
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
@@ -40,7 +39,7 @@ public class WhereExprTests {
         assertEvalTrue(null, expr);
     }
 
-    public static void assertEvalTrue(final HPersistable recordObj, final String expr) throws HPersistException {
+    public static void assertEvalTrue(final Object recordObj, final String expr) throws HPersistException {
         org.junit.Assert.assertTrue(evalExpr(recordObj, expr));
     }
 
@@ -48,7 +47,7 @@ public class WhereExprTests {
         assertEvalFalse(null, expr);
     }
 
-    public static void assertEvalFalse(final HPersistable recordObj, final String expr) throws HPersistException {
+    public static void assertEvalFalse(final Object recordObj, final String expr) throws HPersistException {
         org.junit.Assert.assertFalse(evalExpr(recordObj, expr));
     }
 
@@ -60,7 +59,7 @@ public class WhereExprTests {
         org.junit.Assert.assertFalse(evalColumnNames(expr, vals));
     }
 
-    private static boolean evalExpr(final HPersistable recordObj, final String expr) throws HPersistException {
+    private static boolean evalExpr(final Object recordObj, final String expr) throws HPersistException {
 
         final AnnotationSchema schema = (recordObj != null) ? AnnotationSchema.getAnnotationSchema(recordObj) : null;
         final ExprTree tree = (ExprTree)HBqlRule.DESC_WHERE_VALUE.parse(expr, schema);

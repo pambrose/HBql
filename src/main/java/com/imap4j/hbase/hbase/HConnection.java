@@ -35,7 +35,7 @@ public class HConnection {
 
     final HBaseConfiguration config = new HBaseConfiguration();
 
-    public <T extends HPersistable> HQuery<T> newHQuery(final String query) {
+    public <T> HQuery<T> newHQuery(final String query) {
         return new HQuery<T>(this, query);
     }
 
@@ -150,11 +150,11 @@ public class HConnection {
             final ResultScanner resultsScanner = table.getScanner(scan);
             for (final Result result : resultsScanner) {
 
-                final HPersistable recordObj = HUtil.getHPersistable(HUtil.ser,
-                                                                     schema,
-                                                                     schema.getFieldList(),
-                                                                     scan.getMaxVersions(),
-                                                                     result);
+                final Object recordObj = HUtil.getHPersistable(HUtil.ser,
+                                                               schema,
+                                                               schema.getFieldList(),
+                                                               scan.getMaxVersions(),
+                                                               result);
 
                 if (clientFilter == null || clientFilter.evaluate(recordObj)) {
                     final Delete delete = new Delete(result.getRow());

@@ -6,7 +6,7 @@ package com.imap4j.hbase.hbase;
  * Date: Aug 20, 2009
  * Time: 10:38:45 PM
  */
-public interface HQueryListener<T extends HPersistable> {
+public interface HQueryListener<T> {
 
     void onQueryInit();
 

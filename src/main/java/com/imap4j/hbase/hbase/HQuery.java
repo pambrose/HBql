@@ -14,7 +14,7 @@ import java.util.List;
  * Date: Aug 20, 2009
  * Time: 9:26:38 PM
  */
-public class HQuery<T extends HPersistable> {
+public class HQuery<T> {
 
     final HConnection connection;
     final String query;

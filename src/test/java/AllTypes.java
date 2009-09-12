@@ -1,6 +1,5 @@
 import com.imap4j.hbase.hbase.HColumn;
 import com.imap4j.hbase.hbase.HFamily;
-import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbase.HTable;
 
 /**
@@ -15,7 +14,7 @@ import com.imap4j.hbase.hbase.HTable;
                 @HFamily(name = "family2"),
                 @HFamily(name = "family3", maxVersions = 5)
         })
-public class AllTypes implements HPersistable {
+public class AllTypes {
 
     @HColumn(key = true)
     private String keyval = null;

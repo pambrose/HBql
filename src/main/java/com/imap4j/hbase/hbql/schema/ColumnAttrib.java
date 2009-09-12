@@ -1,7 +1,6 @@
 package com.imap4j.hbase.hbql.schema;
 
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbql.io.Serialization;
 
 import java.io.IOException;
@@ -149,7 +148,7 @@ public abstract class ColumnAttrib extends FieldAttrib {
     }
 
     public byte[] getValueAsBytes(final Serialization ser,
-                                  final HPersistable recordObj) throws HPersistException, IOException {
+                                  final Object recordObj) throws HPersistException, IOException {
 
         if (this.hasGetter()) {
             return this.invokeGetterMethod(recordObj);
@@ -165,7 +164,7 @@ public abstract class ColumnAttrib extends FieldAttrib {
     }
 
     public Object getValueFromBytes(final Serialization ser,
-                                    final HPersistable recordObj,
+                                    final Object recordObj,
                                     final byte[] b) throws IOException, HPersistException {
 
         if (this.hasSetter()) {
@@ -180,7 +179,7 @@ public abstract class ColumnAttrib extends FieldAttrib {
     }
 
     public void setValue(final Serialization ser,
-                         final HPersistable newobj,
+                         final Object newobj,
                          final byte[] b) throws IOException, HPersistException {
         final Object val = this.getValueFromBytes(ser, newobj, b);
         this.setValue(newobj, val);

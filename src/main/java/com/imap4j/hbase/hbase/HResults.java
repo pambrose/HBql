@@ -23,7 +23,7 @@ import java.util.List;
  * Date: Sep 12, 2009
  * Time: 2:08:38 PM
  */
-public class HResults<T extends HPersistable> implements Iterable<T> {
+public class HResults<T> implements Iterable<T> {
 
     final List<ResultScanner> scannerList = Lists.newArrayList();
     final HQuery hquery;
