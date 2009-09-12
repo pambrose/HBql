@@ -38,6 +38,10 @@ public class HQuery<T extends HPersistable> implements Iterable<T> {
         return new HQuery<T>(query, listener);
     }
 
+    public static <T extends HPersistable> HQuery<T> newHQuery(final String query) {
+        return new HQuery<T>(query, null);
+    }
+
     public String getQuery() {
         return this.query;
     }
@@ -68,11 +72,14 @@ public class HQuery<T extends HPersistable> implements Iterable<T> {
 
     public void execute() throws IOException, HPersistException {
 
+        if (this.getListener() == null)
+            return;
+
         final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ExprSchema)null);
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getTableName());
         final List<String> fieldList = (args.getColumnList() == null) ? schema.getFieldList() : args.getColumnList();
 
-        final ExprTree clientFilter = getExprTree(args.getWhereExpr().getClientFilter(), schema, fieldList);
+        final ExprTree clientExprTree = getExprTree(args.getWhereExpr().getClientFilter(), schema, fieldList);
 
         final List<Scan> scanList = HUtil.getScanList(schema,
                                                       fieldList,
@@ -87,13 +94,13 @@ public class HQuery<T extends HPersistable> implements Iterable<T> {
             try {
                 resultScanner = table.getScanner(scan);
                 for (final Result result : resultScanner) {
-                    final HPersistable recordObj = HUtil.getHPersistable(HUtil.ser,
-                                                                         schema,
-                                                                         fieldList,
-                                                                         scan.getMaxVersions(),
-                                                                         result);
-                    if (clientFilter == null || clientFilter.evaluate(recordObj))
-                        this.getListener().onEachRow((T)recordObj);
+                    final HPersistable val = HUtil.getHPersistable(HUtil.ser,
+                                                                   schema,
+                                                                   fieldList,
+                                                                   scan.getMaxVersions(),
+                                                                   result);
+                    if (clientExprTree == null || clientExprTree.evaluate(val))
+                        this.getListener().onEachRow((T)val);
                 }
             }
             finally {
@@ -143,6 +150,7 @@ public class HQuery<T extends HPersistable> implements Iterable<T> {
                         final Scan scan = scanIter.next();
                         maxVersions = scan.getMaxVersions();
                         currentResultScanner = table.getScanner(scan);
+
                         return currentResultScanner.iterator();
                     }
                     else {
@@ -152,20 +160,32 @@ public class HQuery<T extends HPersistable> implements Iterable<T> {
 
                 protected T fetchNextObject() throws HPersistException, IOException {
 
+                    T val = doFetch();
+
+                    if (val != null)
+                        return val;
+                    else
+                        // Try one more time
+                        return doFetch();
+                }
+
+                private T doFetch() throws HPersistException, IOException {
+
                     if (resultIter == null)
                         resultIter = getNextResultScanner();
 
-                    if (resultIter == null)
-                        return null;
+                    if (resultIter != null) {
+                        while (resultIter.hasNext()) {
+                            final Result result = resultIter.next();
+                            final T val = (T)HUtil.getHPersistable(HUtil.ser, schema, fieldList, maxVersions, result);
+                            if (this.clientExprTree == null || this.clientExprTree.evaluate(val))
+                                return val;
 
-                    while (resultIter.hasNext()) {
-                        final Result result = resultIter.next();
-                        final T val = (T)HUtil.getHPersistable(HUtil.ser, schema, fieldList, maxVersions, result);
-                        if (this.clientExprTree.evaluate(val))
-                            return val;
-
+                        }
                     }
 
+                    // Reset to get next scanner
+                    resultIter = null;
                     return null;
                 }
 

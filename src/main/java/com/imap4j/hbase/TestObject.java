@@ -117,8 +117,8 @@ public class TestObject implements HPersistable {
         //results = HBql.exec("delete from TestObject with client filter true");
         //System.out.println(results.getOutput());
 
-        results = HBql.exec("create table TestObject");
-        System.out.println(results.getOutput());
+        //results = HBql.exec("create table TestObject");
+        //System.out.println(results.getOutput());
 
         results = HBql.exec("show tables");
         System.out.println(results.getOutput());
@@ -139,10 +139,10 @@ public class TestObject implements HPersistable {
                              + "KEYS  '000002' TO '000005', '000007' TO LAST "
                              + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
                              + "VERSIONS 5 "
-                             //+ "SERVER FILTER WHERE (author LIKE '.*282.*')"
+                             //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
                              + "CLIENT FILTER WHERE author LIKE '.*282.*'";
 
-        HQuery<TestObject> q2 =
+        HQuery<TestObject> q1 =
                 HQuery.newHQuery(query,
                                  new HQueryListenerAdapter<TestObject>() {
                                      public void onEachRow(final TestObject val) throws HPersistException {
@@ -166,7 +166,27 @@ public class TestObject implements HPersistable {
                                      }
                                  });
 
-        q2.execute();
+        q1.execute();
+
+        HQuery<TestObject> q2 = HQuery.newHQuery(query);
+        for (TestObject val : q2) {
+            System.out.println("Current Values: " + val.keyval
+                               + " - " + val.strValue
+                               + " - " + val.author
+                               + " - " + val.title);
+
+            System.out.println("Historicals");
+
+            if (val.authorVersions != null)
+                for (final Long key : val.authorVersions.keySet())
+                    System.out.println(new Date(key) + " - "
+                                       + val.authorVersions.get(key));
+
+            if (val.titles != null)
+                for (final Long key : val.titles.keySet())
+                    System.out.println(new Date(key) + " - "
+                                       + val.titles.get(key));
+        }
 
     }
 }

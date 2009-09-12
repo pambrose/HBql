@@ -13,15 +13,15 @@ public class WithValuesTest extends WhereValueTests {
 
     @Test
     public void keysExpressions() throws HPersistException {
-        assertValidInput("WITH KEYS 'aaa' : 'bbb'");
-        assertValidInput("WITH KEYS 'sss' : LAST");
-        assertValidInput("WITH KEYS 'fff' : 'ggg', 'sss': LAST, 'sssd':LAST");
+        assertValidInput("WITH KEYS 'aaa' TO 'bbb'");
+        assertValidInput("WITH KEYS 'sss' TO LAST");
+        assertValidInput("WITH KEYS 'fff' TO 'ggg', 'sss'TO LAST, 'sssd' TO LAST");
     }
 
     @Test
     public void timeExpressions() throws HPersistException {
-        assertValidInput("WITH TIME RANGE NOW() : NOW()");
-        assertValidInput("WITH TIME RANGE NOW() : NOW()+DAY(1)");
+        assertValidInput("WITH TIME RANGE NOW() TO NOW()");
+        assertValidInput("WITH TIME RANGE NOW() TO NOW()+DAY(1)");
     }
 
     @Test
@@ -31,9 +31,9 @@ public class WithValuesTest extends WhereValueTests {
 
     @Test
     public void timerangeExpressions() throws HPersistException {
-        assertValidInput("WITH TIME RANGE NOW() : NOW()+DAY(1)");
-        assertValidInput("WITH TIME RANGE NOW() - DAY(1) : NOW() + DAY(1) + DAY(2)");
-        assertValidInput("WITH TIME RANGE DATE('mm/dd/yy', '10/31/94') - DAY(1) : NOW()+DAY(1) + DAY(2)");
+        assertValidInput("WITH TIME RANGE NOW() TO NOW()+DAY(1)");
+        assertValidInput("WITH TIME RANGE NOW() - DAY(1) TO NOW() + DAY(1) + DAY(2)");
+        assertValidInput("WITH TIME RANGE DATE('mm/dd/yy', '10/31/94') - DAY(1) TO NOW()+DAY(1) + DAY(2)");
     }
 
     @Test
