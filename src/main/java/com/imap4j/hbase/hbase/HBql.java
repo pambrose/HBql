@@ -117,16 +117,16 @@ public class HBql {
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getTableName());
         final List<String> fieldList = schema.getFieldList();
         final HTable table = new HTable(new HBaseConfiguration(), schema.getTableName());
-        final ExprTree clientFilter = args.getWhereExpr().getClientFilterArgs();
+        final ExprTree clientFilter = args.getWhereExpr().getClientFilter();
         clientFilter.setSchema(schema);
         clientFilter.optimize();
         int cnt = 0;
 
         final List<Scan> scanList = HUtil.getScanList(schema,
                                                       fieldList,
-                                                      args.getWhereExpr().getKeyRangeArgs(),
-                                                      args.getWhereExpr().getVersionArgs(),
-                                                      args.getWhereExpr().getServerFilterArgs());
+                                                      args.getWhereExpr().getKeyRange(),
+                                                      args.getWhereExpr().getVersion(),
+                                                      args.getWhereExpr().getServerFilter());
 
         for (final Scan scan : scanList) {
             final ResultScanner resultsScanner = table.getScanner(scan);
@@ -135,7 +135,7 @@ public class HBql {
                 final HPersistable recordObj = HUtil.getHPersistable(HUtil.ser,
                                                                      schema,
                                                                      schema.getFieldList(),
-                                                                     scan,
+                                                                     scan.getMaxVersions(),
                                                                      result);
 
                 if (clientFilter == null || clientFilter.evaluate(recordObj)) {

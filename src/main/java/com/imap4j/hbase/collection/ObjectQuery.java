@@ -4,6 +4,7 @@ import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.schema.ObjectSchema;
+import com.imap4j.hbase.util.ResultsIterator;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -42,6 +43,20 @@ public class ObjectQuery<T> implements Iterable<T> {
         return this.listener;
     }
 
+    private Collection<T> getObjects() {
+        return objects;
+    }
+
+    private ExprTree getExprTree() throws HPersistException {
+        final Object obj = this.getObjects().iterator().next();
+        final ObjectSchema schema = ObjectSchema.getObjectSchema(obj);
+        final ExprTree tree = (ExprTree)HBqlRule.NODESC_WHERE_EXPR.parse(this.query, schema);
+        tree.setSchema(schema);
+        tree.optimize();
+        return tree;
+
+    }
+
     public void execute(final Collection<T> objs) throws HPersistException {
 
         this.objects = objs;
@@ -61,48 +76,34 @@ public class ObjectQuery<T> implements Iterable<T> {
     public Iterator<T> iterator() {
 
         try {
-            final ExprTree tree = this.getExprTree();
+            return new ResultsIterator<T>() {
 
-            return new Iterator<T>() {
-
-                final Iterator<T> iter = getObjects().iterator();
+                final ExprTree exprTree = getExprTree();
+                Iterator<T> iter;
 
                 // Prime the iterator with the first value
-                T current = getNextObject();
+                T nextObject = fetchNextObject();
 
-                private T getNextObject() throws HPersistException {
-                    while (iter.hasNext()) {
-                        final T val = iter.next();
-                        if (tree.evaluate(val))
+                protected T fetchNextObject() throws HPersistException {
+
+                    if (iter == null)
+                        iter = getObjects().iterator();
+
+                    while (this.iter.hasNext()) {
+                        final T val = this.iter.next();
+                        if (this.exprTree.evaluate(val))
                             return val;
                     }
+
                     return null;
                 }
 
-
-                @Override
-                public T next() {
-                    final T retval = current;
-
-                    try {
-                        current = getNextObject();
-                    }
-                    catch (HPersistException e) {
-                        e.printStackTrace();
-                        current = null;
-                    }
-
-                    return retval;
+                protected T getNextObject() {
+                    return this.nextObject;
                 }
 
-                @Override
-                public boolean hasNext() {
-                    return current != null;
-                }
-
-                @Override
-                public void remove() {
-
+                protected void setNextObject(final T nextObject) {
+                    this.nextObject = nextObject;
                 }
             };
         }
@@ -127,20 +128,4 @@ public class ObjectQuery<T> implements Iterable<T> {
             }
         };
     }
-
-
-    private Collection<T> getObjects() {
-        return objects;
-    }
-
-    private ExprTree getExprTree() throws HPersistException {
-        final Object obj = this.getObjects().iterator().next();
-        final ObjectSchema schema = ObjectSchema.getObjectSchema(obj);
-        final ExprTree tree = (ExprTree)HBqlRule.NODESC_WHERE_EXPR.parse(this.query, schema);
-        tree.setSchema(schema);
-        tree.optimize();
-        return tree;
-
-    }
-
 }

@@ -86,11 +86,11 @@ setStmt returns [SetArgs retval]
 whereValue [ExprSchema es] returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
 	: keyWITH
-	  k=keys?					{retval.setKeyRangeArgs($k.retval);}
-	  t=time?					{retval.setDateRangeArgs($t.retval);}	
-	  v=versions?					{retval.setVersionArgs($v.retval);}
-	  s=serverFilter[es]?				{retval.setServerFilterArgs($s.retval);}
-	  c=clientFilter[es]?				{retval.setClientFilterArgs($c.retval);}
+	  k=keys?					{retval.setKeyRange($k.retval);}
+	  t=time?					{retval.setDateRange($t.retval);}	
+	  v=versions?					{retval.setVersion($v.retval);}
+	  s=serverFilter[es]?				{retval.setServerFilter($s.retval);}
+	  c=clientFilter[es]?				{retval.setClientFilter($c.retval);}
 	;
 
 keys returns [KeyRangeArgs retval]

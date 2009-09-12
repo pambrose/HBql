@@ -122,7 +122,7 @@ public class HUtil {
     public static HPersistable getHPersistable(final Serialization ser,
                                                final AnnotationSchema schema,
                                                final List<String> fieldList,
-                                               final Scan scan,
+                                               final int maxVersions,
                                                final Result result) throws HPersistException {
 
         try {
@@ -133,7 +133,7 @@ public class HUtil {
             assignCurrentValues(ser, schema, fieldList, result, newobj);
 
             // Assign the versioned values
-            if (scan.getMaxVersions() > 1)
+            if (maxVersions > 1)
                 assignVersionedValues(schema, fieldList, result, newobj);
 
             return newobj;

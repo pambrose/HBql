@@ -117,8 +117,8 @@ public class TestObject implements HPersistable {
         //results = HBql.exec("delete from TestObject with client filter true");
         //System.out.println(results.getOutput());
 
-        //results = HBql.exec("create table TestObject");
-        //System.out.println(results.getOutput());
+        results = HBql.exec("create table TestObject");
+        System.out.println(results.getOutput());
 
         results = HBql.exec("show tables");
         System.out.println(results.getOutput());

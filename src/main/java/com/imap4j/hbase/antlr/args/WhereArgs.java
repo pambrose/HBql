@@ -10,49 +10,49 @@ import com.imap4j.hbase.hbql.expr.ExprTree;
  */
 public class WhereArgs {
 
-    private KeyRangeArgs keyRangeArgs = new KeyRangeArgs(null);
-    private DateRangeArgs dateRangeArgs = new DateRangeArgs(null, null);
-    private VersionArgs versionArgs = new VersionArgs(null);
-    private ExprTree clientFilterArgs = ExprTree.newExprTree(null);
-    private ExprTree serverFilterArgs = ExprTree.newExprTree(null);
+    private KeyRangeArgs keyRange = new KeyRangeArgs(null);
+    private DateRangeArgs dateRange = new DateRangeArgs(null, null);
+    private VersionArgs version = new VersionArgs(null);
+    private ExprTree clientFilter = ExprTree.newExprTree(null);
+    private ExprTree serverFilter = ExprTree.newExprTree(null);
 
-    public KeyRangeArgs getKeyRangeArgs() {
-        return this.keyRangeArgs;
+    public KeyRangeArgs getKeyRange() {
+        return this.keyRange;
     }
 
-    public void setKeyRangeArgs(final KeyRangeArgs keyRangeArgs) {
-        this.keyRangeArgs = keyRangeArgs;
+    public void setKeyRange(final KeyRangeArgs keyRange) {
+        this.keyRange = keyRange;
     }
 
-    public DateRangeArgs getDateRangeArgs() {
-        return this.dateRangeArgs;
+    public DateRangeArgs getDateRange() {
+        return this.dateRange;
     }
 
-    public void setDateRangeArgs(final DateRangeArgs dateRangeArgs) {
-        this.dateRangeArgs = dateRangeArgs;
+    public void setDateRange(final DateRangeArgs dateRange) {
+        this.dateRange = dateRange;
     }
 
-    public VersionArgs getVersionArgs() {
-        return this.versionArgs;
+    public VersionArgs getVersion() {
+        return this.version;
     }
 
-    public void setVersionArgs(final VersionArgs versionArgs) {
-        this.versionArgs = versionArgs;
+    public void setVersion(final VersionArgs version) {
+        this.version = version;
     }
 
-    public ExprTree getClientFilterArgs() {
-        return clientFilterArgs;
+    public ExprTree getClientFilter() {
+        return clientFilter;
     }
 
-    public void setClientFilterArgs(final ExprTree clientFilterArgs) {
-        this.clientFilterArgs = clientFilterArgs;
+    public void setClientFilter(final ExprTree clientFilter) {
+        this.clientFilter = clientFilter;
     }
 
-    public ExprTree getServerFilterArgs() {
-        return serverFilterArgs;
+    public ExprTree getServerFilter() {
+        return serverFilter;
     }
 
-    public void setServerFilterArgs(final ExprTree serverFilterArgs) {
-        this.serverFilterArgs = serverFilterArgs;
+    public void setServerFilter(final ExprTree serverFilter) {
+        this.serverFilter = serverFilter;
     }
 }
