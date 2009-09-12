@@ -5,7 +5,6 @@ import com.imap4j.hbase.hbql.schema.ColumnAttrib;
 import com.imap4j.hbase.hbql.schema.HUtil;
 import com.imap4j.hbase.util.Lists;
 import com.imap4j.hbase.util.Maps;
-import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 
@@ -22,6 +21,16 @@ import java.util.Map;
 public class HTransaction {
 
     private final Map<String, List<Put>> updateList = Maps.newHashMap();
+
+    final HConnection connection;
+
+    public HTransaction(final HConnection connection) {
+        this.connection = connection;
+    }
+
+    HConnection getConnection() {
+        return connection;
+    }
 
     public synchronized List<Put> getUpdateList(final String tableName) {
         List<Put> retval = updateList.get(tableName);
@@ -67,7 +76,7 @@ public class HTransaction {
 
     public void commit() throws IOException {
         for (final String tableName : updateList.keySet()) {
-            final HTable table = new HTable(new HBaseConfiguration(), tableName);
+            final HTable table = this.getConnection().getHTable(tableName);
             table.put(this.getUpdateList(tableName));
             table.flushCommits();
         }

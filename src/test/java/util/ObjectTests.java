@@ -1,7 +1,7 @@
 package util;
 
 import com.imap4j.hbase.collection.ObjectQuery;
-import com.imap4j.hbase.collection.ObjectQueryListenerAdapter;
+import com.imap4j.hbase.collection.ObjectResults;
 import com.imap4j.hbase.hbase.HPersistException;
 
 import java.util.Collection;
@@ -16,21 +16,16 @@ public class ObjectTests<T> {
 
     protected void assertResultCount(final Collection<T> objList, final String expr, final int expected_cnt) throws HPersistException {
 
-        final Counter cnt = new Counter();
-
         final ObjectQuery<T> query = ObjectQuery.newObjectQuery(expr);
-        query.addListener(new ObjectQueryListenerAdapter<T>() {
-            public void onEachObject(final T val) throws HPersistException {
-                cnt.increment();
-            }
-        }
-        );
 
-        query.execute(objList);
+        int cnt = 0;
+        ObjectResults<T> results = query.execute(objList);
+        for (final T val : results)
+            cnt++;
 
-        System.out.println("Count = " + cnt.getCount());
+        System.out.println("Count = " + cnt);
 
-        org.junit.Assert.assertTrue(expected_cnt == cnt.getCount());
+        org.junit.Assert.assertTrue(expected_cnt == cnt);
     }
 
     protected void assertTrue(final boolean cond) {

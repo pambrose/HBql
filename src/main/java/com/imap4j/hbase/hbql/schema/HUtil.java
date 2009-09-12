@@ -63,8 +63,8 @@ public class HUtil {
                 final ColumnAttrib attrib = (ColumnAttrib)schema.getVariableAttribByVariableName(name);
 
                 if (attrib == null)
-                    throw new HPersistException("Instance variable " + name + " does not exist in " + schema.getClazz()
-                            .getName());
+                    throw new HPersistException("Instance variable " + name
+                                                + " does not exist in " + schema.getClazz().getName());
 
                 // If it is a map, then request all columns for family
                 if (attrib.isMapKeysAsColumns())

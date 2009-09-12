@@ -1,14 +1,13 @@
 package com.imap4j.hbase;
 
-import com.imap4j.hbase.hbase.HBql;
 import com.imap4j.hbase.hbase.HColumn;
 import com.imap4j.hbase.hbase.HColumnVersionMap;
+import com.imap4j.hbase.hbase.HConnection;
 import com.imap4j.hbase.hbase.HFamily;
 import com.imap4j.hbase.hbase.HOutput;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbase.HQuery;
-import com.imap4j.hbase.hbase.HQueryListenerAdapter;
 import com.imap4j.hbase.hbase.HResults;
 import com.imap4j.hbase.hbase.HTable;
 import com.imap4j.hbase.hbase.HTransaction;
@@ -112,22 +111,24 @@ public class TestObject implements HPersistable {
 
     public static void main(String[] args) throws IOException, HPersistException {
 
-        HOutput output = HBql.exec("set packagepath = 'com.imap4j.hbql:com.imap4j.hbase'");
+        HConnection conn = new HConnection();
+
+        HOutput output = conn.exec("set packagepath = 'com.imap4j.hbql:com.imap4j.hbase'");
         System.out.println(output);
 
-        //results = HBql.exec("delete from TestObject with client filter true");
-        //System.out.println(results);
-
-        //results = HBql.exec("create table TestObject");
-        //System.out.println(results);
-
-        output = HBql.exec("show tables");
+        output = conn.exec("delete from TestObject with client filter true");
         System.out.println(output);
 
-        output = HBql.exec("describe table TestObject");
+        output = conn.exec("create table TestObject");
         System.out.println(output);
 
-        final HTransaction tx = new HTransaction();
+        output = conn.exec("show tables");
+        System.out.println(output);
+
+        output = conn.exec("describe table TestObject");
+        System.out.println(output);
+
+        final HTransaction tx = conn.newHTransaction();
         int cnt = 0;
         for (int i = 0; i < cnt; i++)
             tx.insert(new TestObject(i));
@@ -143,31 +144,8 @@ public class TestObject implements HPersistable {
                              //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
                              + "CLIENT FILTER WHERE author LIKE '.*282.*'";
 
-        HQuery<TestObject> q1 = HQuery.newHQuery(query);
-        q1.addListener(new HQueryListenerAdapter<TestObject>() {
-            public void onEachRow(final TestObject val) throws HPersistException {
-
-                System.out.println("Current Values: " + val.keyval + " - " + val.strValue
-                                   + " - " + val.author + " - " + val.title);
-
-                System.out.println("Historicals");
-
-                if (val.authorVersions != null)
-                    for (final Long key : val.authorVersions.keySet())
-                        System.out.println(new Date(key) + " - "
-                                           + val.authorVersions.get(key));
-
-                if (val.titles != null)
-                    for (final Long key : val.titles.keySet())
-                        System.out.println(new Date(key) + " - "
-                                           + val.titles.get(key));
-            }
-        });
-
-        q1.execute();
-
-        HQuery<TestObject> q2 = HQuery.newHQuery(query);
-        HResults<TestObject> results = q2.execute();
+        HQuery<TestObject> q1 = conn.newHQuery(query);
+        HResults<TestObject> results = q1.execute();
 
         for (TestObject val : results) {
             System.out.println("Current Values: " + val.keyval + " - " + val.strValue

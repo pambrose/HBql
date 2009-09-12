@@ -8,7 +8,6 @@ import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.HUtil;
 import com.imap4j.hbase.util.Lists;
 import com.imap4j.hbase.util.ResultsIterator;
-import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -26,9 +25,8 @@ import java.util.List;
  */
 public class HResults<T extends HPersistable> implements Iterable<T> {
 
-    final HQuery hquery;
-
     final List<ResultScanner> scannerList = Lists.newArrayList();
+    final HQuery hquery;
 
     public HResults(final HQuery hquery) {
         this.hquery = hquery;
@@ -87,8 +85,7 @@ public class HResults<T extends HPersistable> implements Iterable<T> {
                                                                                       this.schema,
                                                                                       this.fieldList));
 
-                final org.apache.hadoop.hbase.client.HTable table = new HTable(new HBaseConfiguration(),
-                                                                               schema.getTableName());
+                final HTable table = getHQuery().getConnection().getHTable(schema.getTableName());
                 final Iterator<Scan> scanIter = scanList.iterator();
                 int maxVersions = 0;
                 ResultScanner currentResultScanner = null;

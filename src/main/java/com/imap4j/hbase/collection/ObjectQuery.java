@@ -18,18 +18,26 @@ import java.util.List;
 public class ObjectQuery<T> {
 
     final String query;
-    final List<ObjectQueryListener<T>> listeners = Lists.newArrayList();
+    List<ObjectQueryListener<T>> listeners = null;
 
     private ObjectQuery(final String query) {
         this.query = query;
     }
 
     public void addListener(final ObjectQueryListener<T> listener) {
+        if (this.getListeners() == null)
+            this.listeners = listeners = Lists.newArrayList();
+
         this.getListeners().add(listener);
     }
 
-    public List<ObjectQueryListener<T>> getListeners() {
-        return listeners;
+    private List<ObjectQueryListener<T>> getListeners() {
+        return this.listeners;
+    }
+
+    public void clearListeners() {
+        if (this.getListeners() != null)
+            this.getListeners().clear();
     }
 
     public static <T> ObjectQuery<T> newObjectQuery(final String query) {
@@ -54,7 +62,7 @@ public class ObjectQuery<T> {
 
         final ObjectResults<T> retval = new ObjectResults<T>(this, objs);
 
-        if (this.getListeners().size() > 0) {
+        if (this.getListeners() != null && this.getListeners().size() > 0) {
 
             for (final ObjectQueryListener<T> listener : this.getListeners())
                 listener.onQueryInit();

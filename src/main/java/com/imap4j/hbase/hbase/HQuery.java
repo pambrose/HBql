@@ -16,19 +16,19 @@ import java.util.List;
  */
 public class HQuery<T extends HPersistable> {
 
+    final HConnection connection;
     final String query;
-    final List<HQueryListener<T>> listeners = Lists.newArrayList();
-    ;
+    List<HQueryListener<T>> listeners = null;
 
-    private HQuery(final String query) {
+    public HQuery(final HConnection connection, final String query) {
+        this.connection = connection;
         this.query = query;
     }
 
-    public static <T extends HPersistable> HQuery<T> newHQuery(final String query) {
-        return new HQuery<T>(query);
-    }
+    public synchronized void addListener(final HQueryListener<T> listener) {
+        if (this.getListeners() == null)
+            this.listeners = Lists.newArrayList();
 
-    public void addListener(final HQueryListener<T> listener) {
         this.getListeners().add(listener);
     }
 
@@ -36,8 +36,17 @@ public class HQuery<T extends HPersistable> {
         return this.query;
     }
 
-    List<HQueryListener<T>> getListeners() {
+    HConnection getConnection() {
+        return this.connection;
+    }
+
+    private List<HQueryListener<T>> getListeners() {
         return this.listeners;
+    }
+
+    public void clearListeners() {
+        if (this.getListeners() != null)
+            this.getListeners().clear();
     }
 
     ExprTree getExprTree(final ExprTree exprTree,
@@ -64,7 +73,7 @@ public class HQuery<T extends HPersistable> {
 
         final HResults<T> retval = new HResults<T>(this);
 
-        if (this.getListeners().size() > 0) {
+        if (this.getListeners() != null && this.getListeners().size() > 0) {
             try {
                 for (final HQueryListener<T> listener : this.getListeners())
                     listener.onQueryInit();
