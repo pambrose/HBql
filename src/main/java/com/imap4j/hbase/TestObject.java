@@ -136,8 +136,8 @@ public class TestObject implements HPersistable {
         final String query = "SELECT author, authorVersions "
                              + "FROM TestObject "
                              + "WITH "
-                             + "KEYS  '000002' : '000005', '000007':LAST "
-                             + "TIME RANGE NOW()-DAY(1) : NOW()+DAY(1)"
+                             + "KEYS  '000002' TO '000005', '000007' TO LAST "
+                             + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
                              + "VERSIONS 5 "
                              //+ "SERVER FILTER WHERE (author LIKE '.*282.*')"
                              + "CLIENT FILTER WHERE author LIKE '.*282.*'";

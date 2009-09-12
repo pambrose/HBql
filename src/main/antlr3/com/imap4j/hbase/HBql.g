@@ -98,7 +98,7 @@ keys returns [KeyRangeArgs retval]
 	;
 	
 time returns [DateRangeArgs retval]
-	: keyTIME keyRANGE? d1=rangeExpr COLON d2=rangeExpr		
+	: keyTIME keyRANGE? d1=rangeExpr keyTO d2=rangeExpr		
 							{retval = new DateRangeArgs($d1.retval, $d2.retval);};
 		
 versions returns [VersionArgs retval]
@@ -116,8 +116,8 @@ keyRangeList returns [List<KeyRangeArgs.Range> retval]
 	;
 	
 keyRange returns [KeyRangeArgs.Range retval]
-	: q=QUOTED COLON keyLAST			{retval = new KeyRangeArgs.Range($q.text);}
-	| q1=QUOTED COLON q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
+	: q=QUOTED keyTO keyLAST			{retval = new KeyRangeArgs.Range($q.text);}
+	| q1=QUOTED keyTO q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
 	;
 
 nodescWhereExpr [ExprSchema es] returns [ExprTree retval]

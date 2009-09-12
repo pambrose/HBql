@@ -56,24 +56,24 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
         assertResultCount(objList, "dateval between DATE('mm/dd/yyyy', '09/09/2009')-MINUTE(1) AND NOW()+MINUTE(1)", 10);
 
         // Using Listeners with CollectionQuery Object
-        final Counter cnt = new Counter();
+        final Counter cnt1 = new Counter();
         final ObjectQuery<SimpleObject> query = ObjectQuery.newObjectQuery(
                 "strval like 'T[est]+ Value: [1-3]'",
                 new ObjectQueryListenerAdapter<SimpleObject>() {
                     public void onEachObject(final SimpleObject val) throws HPersistException {
-                        cnt.increment();
+                        cnt1.increment();
                     }
                 }
         );
         query.execute(objList);
-        assertTrue(cnt.getCount() == 3);
+        assertTrue(cnt1.getCount() == 3);
 
         // Using Iterator
-        cnt.reset();
+        final Counter cnt2 = new Counter();
         for (final SimpleObject obj : ObjectQuery.newObjectQuery("strval like 'T[est]+ Value: [1-3]'", objList))
-            cnt.increment();
+            cnt2.increment();
 
-        assertTrue(cnt.getCount() == 3);
+        assertTrue(cnt2.getCount() == 3);
 
         // Using Google collections
         String qstr = "intval1 in (1, 2+1, 2+1+1, 4+3)";
