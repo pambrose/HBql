@@ -13,36 +13,49 @@ import java.util.List;
  */
 public class VarDesc {
     private String varName;
-    private FieldType type;
+    private String typeName;
+    private FieldType fieldType;
 
-    private VarDesc(final String varName, final FieldType type) {
+    private VarDesc(final String varName, final String typeName) {
         this.varName = varName;
-        this.type = type;
+        this.typeName = typeName;
+        this.fieldType = getFieldType(this.getTypeName());
     }
 
-    public static List<VarDesc> getList(final List<String> varList, final String typename) {
+    public static VarDesc newVarDesc(final String varName, final String typeName) {
+        return new VarDesc(varName, typeName);
+    }
+
+    public static List<VarDesc> getList(final List<String> varList, final String typeName) {
 
         final List<VarDesc> retval = Lists.newArrayList();
-        FieldType vartype;
-        try {
-            vartype = FieldType.getFieldType(typename);
-        }
-        catch (HPersistException e) {
-            vartype = null;
-        }
 
         for (final String var : varList)
-            retval.add(new VarDesc(var, vartype));
+            retval.add(new VarDesc(var, typeName));
 
         return retval;
+    }
+
+    private static FieldType getFieldType(final String typeName) {
+        try {
+            return FieldType.getFieldType(typeName);
+        }
+        catch (HPersistException e) {
+            return null;
+        }
+
     }
 
     public String getVarName() {
         return this.varName;
     }
 
+    public String getTypeName() {
+        return this.typeName;
+    }
+
     public FieldType getType() {
-        return this.type;
+        return this.fieldType;
     }
 }
 

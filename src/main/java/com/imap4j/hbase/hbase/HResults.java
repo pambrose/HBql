@@ -1,10 +1,5 @@
 package com.imap4j.hbase.hbase;
 
-import com.imap4j.hbase.antlr.args.QueryArgs;
-import com.imap4j.hbase.antlr.config.HBqlRule;
-import com.imap4j.hbase.hbql.expr.ExprTree;
-import com.imap4j.hbase.hbql.schema.AnnotationSchema;
-import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.HUtil;
 import com.imap4j.hbase.util.Lists;
 import com.imap4j.hbase.util.ResultsIterator;
@@ -69,24 +64,8 @@ public class HResults<T> implements Iterable<T> {
         try {
             return new ResultsIterator<T>() {
 
-                final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(getHQuery().getQuery(), (ExprSchema)null);
-                final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getTableName());
-                final List<String> fieldList = (args.getColumns() == null) ? schema.getFieldList() : args.getColumns();
-
-                final ExprTree clientExprTree = getHQuery().getExprTree(args.getWhereExpr().getClientFilter(),
-                                                                        schema,
-                                                                        fieldList);
-
-                final List<Scan> scanList = HUtil.getScanList(this.schema,
-                                                              this.fieldList,
-                                                              this.args.getWhereExpr().getKeyRange(),
-                                                              this.args.getWhereExpr().getVersion(),
-                                                              getHQuery().getExprTree(args.getWhereExpr().getServerFilter(),
-                                                                                      this.schema,
-                                                                                      this.fieldList));
-
-                final HTable table = getHQuery().getConnection().getHTable(schema.getTableName());
-                final Iterator<Scan> scanIter = scanList.iterator();
+                final HTable table = getHQuery().getConnection().getHTable(getHQuery().getSchema().getTableName());
+                final Iterator<Scan> scanIter = getHQuery().getScanList().iterator();
                 int maxVersions = 0;
                 ResultScanner currentResultScanner = null;
                 Iterator<Result> resultIter = null;
@@ -135,8 +114,13 @@ public class HResults<T> implements Iterable<T> {
                     if (resultIter != null) {
                         while (resultIter.hasNext()) {
                             final Result result = resultIter.next();
-                            final T val = (T)HUtil.getHPersistable(HUtil.ser, schema, fieldList, maxVersions, result);
-                            if (this.clientExprTree == null || this.clientExprTree.evaluate(val))
+                            final T val = (T)HUtil.getObject(HUtil.ser,
+                                                             getHQuery().getSchema(),
+                                                             getHQuery().getFieldList(),
+                                                             maxVersions,
+                                                             result);
+                            if (getHQuery().getClientExprTree() == null || getHQuery().getClientExprTree()
+                                    .evaluate(val))
                                 return val;
 
                         }

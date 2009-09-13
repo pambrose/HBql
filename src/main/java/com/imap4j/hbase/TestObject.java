@@ -115,11 +115,14 @@ public class TestObject {
         HOutput output = conn.exec("set packagepath = 'com.imap4j.hbql:com.imap4j.hbase'");
         System.out.println(output);
 
+        output = conn.exec("create temp table testobjects (author string)");
+        System.out.println(output);
+
         /*
         output = conn.exec("delete from TestObject with client filter where true");
         System.out.println(output);
 
-        output = conn.exec("create table TestObject");
+        output = conn.exec("create table using TestObject");
         System.out.println(output);
 
         output = conn.exec("show tables");

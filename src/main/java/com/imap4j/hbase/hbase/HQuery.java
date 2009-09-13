@@ -1,9 +1,14 @@
 package com.imap4j.hbase.hbase;
 
+import com.imap4j.hbase.antlr.args.QueryArgs;
+import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
+import com.imap4j.hbase.hbql.schema.ExprSchema;
+import com.imap4j.hbase.hbql.schema.HUtil;
 import com.imap4j.hbase.util.Lists;
+import org.apache.hadoop.hbase.client.Scan;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,11 +23,32 @@ public class HQuery<T> {
 
     final HConnection connection;
     final String query;
+    final AnnotationSchema schema;
+    final List<String> fieldList;
+    final ExprTree clientExprTree;
+    final List<Scan> scanList;
+
     List<HQueryListener<T>> listeners = null;
 
-    public HQuery(final HConnection connection, final String query) {
+    public HQuery(final HConnection connection, final String query) throws IOException, HPersistException {
         this.connection = connection;
         this.query = query;
+
+        final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ExprSchema)null);
+        this.schema = AnnotationSchema.getAnnotationSchema(args.getTableName());
+        this.fieldList = (args.getColumns() == null) ? this.getSchema().getFieldList() : args.getColumns();
+
+        this.clientExprTree = this.getExprTree(args.getWhereExpr().getClientFilter(),
+                                               this.getSchema(),
+                                               fieldList);
+
+        this.scanList = HUtil.getScanList(this.getSchema(),
+                                          fieldList,
+                                          args.getWhereExpr().getKeyRange(),
+                                          args.getWhereExpr().getVersion(),
+                                          this.getExprTree(args.getWhereExpr().getServerFilter(),
+                                                           this.getSchema(),
+                                                           fieldList));
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {
@@ -30,6 +56,22 @@ public class HQuery<T> {
             this.listeners = Lists.newArrayList();
 
         this.getListeners().add(listener);
+    }
+
+    List<Scan> getScanList() {
+        return this.scanList;
+    }
+
+    AnnotationSchema getSchema() {
+        return this.schema;
+    }
+
+    ExprTree getClientExprTree() {
+        return this.clientExprTree;
+    }
+
+    List<String> getFieldList() {
+        return this.fieldList;
     }
 
     public String getQuery() {

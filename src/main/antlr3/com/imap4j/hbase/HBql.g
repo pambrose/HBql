@@ -62,13 +62,25 @@ columnList returns [List<String> retval]
 execCommand [ExprSchema es] returns [ExecArgs retval]
 	: create=createStmt				{retval = $create.retval;}
 	| desc=describeStmt 				{retval = $desc.retval;}
+	| def=createTempStmt 				{retval = $def.retval;}
 	| show=showStmt 				{retval = $show.retval;}
 	| del=deleteStmt[es] 				{retval = $del.retval;}
 	| set=setStmt					{retval = $set.retval;}
 	;
 
 createStmt returns [CreateArgs retval]
-	: keyCREATE keyTABLE t=ID 			{retval = new CreateArgs($t.text);};
+	: keyCREATE keyTABLE keyUSING t=ID 		{retval = new CreateArgs($t.text);}
+	;
+	
+createTempStmt returns [CreateTempArgs retval]
+@init {List<VarDesc> varList = Lists.newArrayList();}
+	: keyCREATE keyTEMP keyTABLE t=ID LPAREN (a=tempAttrib {varList.add($a.retval);})* RPAREN
+							{retval = new CreateTempArgs($t.text, varList);}
+	;
+
+tempAttrib returns [VarDesc retval]
+	: n=ID t=ID 					{retval = VarDesc.newVarDesc($n.text, $t.text);}
+	;
 
 describeStmt returns [DescribeArgs retval]
 	: keyDESCRIBE keyTABLE t=ID 			{retval = new DescribeArgs($t.text);};
@@ -105,10 +117,12 @@ versions returns [VersionArgs retval]
 	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);};
 	
 clientFilter [ExprSchema es] returns [ExprTree retval]
-	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr[es]	{retval = $w.retval;};
+	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr[es]	
+							{retval = $w.retval;};
 	
 serverFilter [ExprSchema es] returns [ExprTree retval]
-	: keySERVER keyFILTER keyWHERE w=descWhereExpr[es]	{retval = $w.retval;};
+	: keySERVER keyFILTER keyWHERE w=descWhereExpr[es]	
+							{retval = $w.retval;};
 	
 keyRangeList returns [List<KeyRangeArgs.Range> retval]
 @init {retval = Lists.newArrayList();}
@@ -120,6 +134,11 @@ keyRange returns [KeyRangeArgs.Range retval]
 	| q1=QUOTED keyTO q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
 	;
 
+rangeParam
+	: stringLiteral
+	| param
+	;
+	
 nodescWhereExpr [ExprSchema es] returns [ExprTree retval]
 @init {setExprSchema(es);}
 	 : e=orExpr					{retval = ExprTree.newExprTree($e.retval);};
@@ -248,7 +267,10 @@ stringParen returns [StringValue retval]
 	: s1=stringVal					{retval = $s1.retval;}
 	| LPAREN s2=stringExpr	RPAREN			{retval = $s2.retval;}						
 	;
-		
+
+param	
+	: PARAM;
+			
 stringVal returns [StringValue retval]
 	: sl=stringLiteral				{retval = $sl.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
@@ -438,6 +460,7 @@ multDiv returns [GenericCalcExpr.OP retval]
 		
 INT	: DIGIT+;
 ID	: CHAR (CHAR | DIGIT  | DOT | COLON)*;
+PARAM	: COLON (CHAR | DIGIT  | DOT)*;
  
 QUOTED		
 @init {final StringBuilder sbuf = new StringBuilder();}	
@@ -456,6 +479,8 @@ WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();} ;
 keySELECT 	: {isKeyword(input, "SELECT")}? ID;
 keyDELETE 	: {isKeyword(input, "DELETE")}? ID;
 keyCREATE 	: {isKeyword(input, "CREATE")}? ID;
+keyTEMP 	: {isKeyword(input, "TEMP")}? ID;
+keyUSING 	: {isKeyword(input, "USING")}? ID;
 keyDESCRIBE 	: {isKeyword(input, "DESCRIBE")}? ID;
 keySHOW 	: {isKeyword(input, "SHOW")}? ID;
 keyTABLE 	: {isKeyword(input, "TABLE")}? ID;

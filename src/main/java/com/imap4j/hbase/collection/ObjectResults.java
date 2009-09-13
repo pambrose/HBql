@@ -36,20 +36,22 @@ public class ObjectResults<T> implements Iterable<T> {
 
         try {
             return new ResultsIterator<T>() {
-
+                // In theory, this should be done only once and in ObjectQuery, but
+                // since it requires the objects to get the scema, I do it here
                 final ExprTree exprTree = getObjectQuery().getExprTree(getObjects());
-                Iterator<T> iter;
+
+                Iterator<T> objectIter = null;
 
                 // Prime the iterator with the first value
                 T nextObject = fetchNextObject();
 
                 protected T fetchNextObject() throws HPersistException {
 
-                    if (iter == null)
-                        iter = getObjects().iterator();
+                    if (objectIter == null)
+                        objectIter = getObjects().iterator();
 
-                    while (this.iter.hasNext()) {
-                        final T val = this.iter.next();
+                    while (this.objectIter.hasNext()) {
+                        final T val = this.objectIter.next();
                         if (this.exprTree.evaluate(val)) {
                             return val;
                         }

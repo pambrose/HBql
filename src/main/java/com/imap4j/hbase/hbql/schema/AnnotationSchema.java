@@ -4,7 +4,6 @@ import com.imap4j.hbase.hbase.HColumn;
 import com.imap4j.hbase.hbase.HColumnVersionMap;
 import com.imap4j.hbase.hbase.HFamily;
 import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbase.HPersistable;
 import com.imap4j.hbase.hbase.HTable;
 import com.imap4j.hbase.util.Lists;
 import com.imap4j.hbase.util.Maps;

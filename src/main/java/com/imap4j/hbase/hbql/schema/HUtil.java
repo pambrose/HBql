@@ -118,11 +118,11 @@ public class HUtil {
         return value.getValue(null);
     }
 
-    public static Object getHPersistable(final Serialization ser,
-                                         final AnnotationSchema schema,
-                                         final List<String> fieldList,
-                                         final int maxVersions,
-                                         final Result result) throws HPersistException {
+    public static Object getObject(final Serialization ser,
+                                   final AnnotationSchema schema,
+                                   final List<String> fieldList,
+                                   final int maxVersions,
+                                   final Result result) throws HPersistException {
 
         try {
             // Create object and assign key value
@@ -139,7 +139,7 @@ public class HUtil {
         }
         catch (Exception e) {
             e.printStackTrace();
-            throw new HPersistException("Error in getHPersistable()");
+            throw new HPersistException("Error in getObject()");
         }
     }
 
