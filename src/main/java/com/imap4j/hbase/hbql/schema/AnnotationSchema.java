@@ -5,13 +5,19 @@ import com.imap4j.hbase.hbase.HColumnVersionMap;
 import com.imap4j.hbase.hbase.HFamily;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HTable;
+import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.util.Lists;
 import com.imap4j.hbase.util.Maps;
+import org.apache.hadoop.hbase.KeyValue;
+import org.apache.hadoop.hbase.client.Result;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -219,4 +225,134 @@ public class AnnotationSchema extends HBaseSchema {
             throw new HPersistException(s + " already delcared");
         this.getColumnAttribListByFamilyNameMap().put(s, columnAttribs);
     }
+
+    @Override
+    public Object getObject(final Serialization ser,
+                            final List<String> fieldList,
+                            final int maxVersions,
+                            final Result result) throws HPersistException {
+
+        try {
+            // Create object and assign key value
+            final Object newobj = createNewObject(ser, result);
+
+            // Assign most recent values
+            assignCurrentValues(ser, fieldList, result, newobj);
+
+            // Assign the versioned values
+            if (maxVersions > 1)
+                assignVersionedValues(ser, fieldList, result, newobj);
+
+            return newobj;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            throw new HPersistException("Error in getObject()");
+        }
+    }
+
+    private Object createNewObject(final Serialization ser,
+                                   final Result result) throws IOException, HPersistException {
+
+        // Create new instance and set key value
+        final ColumnAttrib keyattrib = this.getKeyColumnAttrib();
+        final Object newobj;
+        try {
+            newobj = this.newInstance();
+            final byte[] keybytes = result.getRow();
+            keyattrib.setValue(ser, newobj, keybytes);
+        }
+        catch (InstantiationException e) {
+            throw new RuntimeException("Cannot create new instance of " + this.getSchemaName());
+        }
+        catch (IllegalAccessException e) {
+            throw new RuntimeException("Cannot set value for key  " + keyattrib.getVariableName()
+                                       + " for " + this.getSchemaName());
+        }
+        return newobj;
+    }
+
+    private void assignCurrentValues(final Serialization ser,
+                                     final List<String> fieldList,
+                                     final Result result,
+                                     final Object newobj) throws IOException, HPersistException {
+
+        for (final KeyValue keyValue : result.list()) {
+
+            final byte[] cbytes = keyValue.getColumn();
+            final byte[] vbytes = result.getValue(cbytes);
+            final String colname = ser.getStringFromBytes(cbytes);
+
+            if (colname.endsWith("]")) {
+                final int lbrace = colname.indexOf("[");
+                final String mapcolumn = colname.substring(0, lbrace);
+                final String mapKey = colname.substring(lbrace + 1, colname.length() - 1);
+                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(mapcolumn);
+                final Object val = attrib.getValueFromBytes(ser, newobj, vbytes);
+
+                Map mapval = (Map)attrib.getValue(newobj);
+
+                // TODO Need to check if variable was on select list like below
+
+                if (mapval == null) {
+                    mapval = Maps.newHashMap();
+                    attrib.setValue(newobj, mapval);
+                }
+
+                mapval.put(mapKey, val);
+            }
+            else {
+                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(colname);
+
+                // Check if variable was requested in select list
+                if (fieldList.contains(attrib.getVariableName()))
+                    attrib.setValue(ser, newobj, vbytes);
+            }
+        }
+    }
+
+    private void assignVersionedValues(final Serialization ser,
+                                       final List<String> fieldList,
+                                       final Result result,
+                                       final Object newobj) throws IOException, HPersistException {
+
+        final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
+
+        for (final byte[] fbytes : familyMap.keySet()) {
+
+            final String famname = ser.getStringFromBytes(fbytes) + ":";
+            final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(fbytes);
+
+            for (final byte[] cbytes : columnMap.keySet()) {
+                final String colname = ser.getStringFromBytes(cbytes);
+                final String qualifiedName = famname + colname;
+                final NavigableMap<Long, byte[]> tsMap = columnMap.get(cbytes);
+
+                for (final Long timestamp : tsMap.keySet()) {
+                    final byte[] vbytes = tsMap.get(timestamp);
+
+                    final VersionAttrib attrib = this.getVersionAttribByFamilyQualifiedColumnName(qualifiedName);
+
+                    // Ignore data if no version map exists for the column
+                    if (attrib == null)
+                        continue;
+
+                    // Ignore if not in select list
+                    if (!fieldList.contains(attrib.getField().getName()))
+                        continue;
+
+                    final Object val = attrib.getValueFromBytes(ser, newobj, vbytes);
+                    Map mapval = (Map)attrib.getValue(newobj);
+
+                    if (mapval == null) {
+                        mapval = new TreeMap();
+                        attrib.setValue(newobj, mapval);
+                    }
+
+                    mapval.put(timestamp, val);
+                }
+            }
+        }
+    }
+
 }

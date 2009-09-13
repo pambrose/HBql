@@ -1,10 +1,14 @@
 package com.imap4j.hbase.hbql.schema;
 
 import com.imap4j.hbase.hbase.HPersistException;
+import com.imap4j.hbase.hbase.HRecord;
+import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.util.Maps;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
+import org.apache.hadoop.hbase.client.Result;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -72,6 +76,45 @@ public class DeclaredSchema extends HBaseSchema {
     @Override
     public String getSchemaName() {
         return this.getTableName();
+    }
+
+    @Override
+    public HRecord getObject(final Serialization ser,
+                             final List<String> fieldList,
+                             final int maxVersions,
+                             final Result result) throws HPersistException {
+
+        try {
+            // Create object and assign key value
+            final HRecord newobj = createNewHRecord(ser, result);
+
+            // Assign most recent values
+            //  assignCurrentValues(ser, schema, fieldList, result, newobj);
+
+            // Assign the versioned values
+            //  if (maxVersions > 1)
+            //      assignVersionedValues(schema, fieldList, result, newobj);
+
+            return newobj;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            throw new HPersistException("Error in getObject()");
+        }
+
+    }
+
+    private HRecord createNewHRecord(final Serialization ser,
+                                     final Result result) throws IOException, HPersistException {
+
+        // Create new instance and set key value
+        final HRecord newobj = new HRecord();
+        final ColumnAttrib keyattrib = this.getKeyColumnAttrib();
+        if (keyattrib != null) {
+            final byte[] keybytes = result.getRow();
+            keyattrib.setValue(ser, newobj, keybytes);
+        }
+        return newobj;
     }
 
 }

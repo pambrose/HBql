@@ -1,8 +1,11 @@
 package com.imap4j.hbase.hbql.schema;
 
 import com.imap4j.hbase.hbase.HPersistException;
+import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.util.Maps;
+import org.apache.hadoop.hbase.client.Result;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +30,11 @@ public abstract class HBaseSchema extends ExprSchema {
     public abstract String getSchemaName();
 
     public abstract String getTableName();
+
+    public abstract Object getObject(final Serialization ser,
+                                     final List<String> fieldList,
+                                     final int maxVersions,
+                                     final Result result) throws HPersistException;
 
 
     // *** columnAttribByFamilyQualifiedColumnNameMap calls
