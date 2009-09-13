@@ -1,5 +1,6 @@
 package com.imap4j.hbase.antlr.config;
 
+import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.imap.antlr.util.GrammarRule;
 
 /**
@@ -29,8 +30,12 @@ public enum HBqlRule {
         return grammarRule;
     }
 
-    public Object parse(final String str, Object... args) {
-        return this.getGrammarRule().parse(str, args);
+    public Object parse(final String str, Object... args) throws HPersistException {
+        final Object retval = this.getGrammarRule().parse(str, args);
+        if (retval == null)
+            throw new HPersistException("Error parsing " + str);
+        else
+            return retval;
     }
 
 }

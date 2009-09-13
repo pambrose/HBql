@@ -123,7 +123,6 @@ public class HResults<T> implements Iterable<T> {
 
                             if (clientExprTree == null || clientExprTree.evaluate(val))
                                 return val;
-
                         }
                     }
 

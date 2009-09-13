@@ -83,32 +83,34 @@ public class WhereExprTests {
 
     private static boolean evalColumnNames(final String expr, String... vals) {
 
-        final ExprTree tree = (ExprTree)HBqlRule.DESC_WHERE_VALUE.parse(expr, (ExprSchema)null);
+        try {
+            final ExprTree tree = (ExprTree)HBqlRule.DESC_WHERE_VALUE.parse(expr, (ExprSchema)null);
 
-        if (tree == null)
+            final List<ExprVariable> attribs = tree.getExprVariables();
+
+            boolean retval = true;
+
+            final List<String> valList = Lists.newArrayList(vals);
+
+            for (final String val : valList) {
+                if (!attribs.contains(new ExprVariable(val, FieldType.StringType))) {
+                    System.out.println("Missing column name: " + val);
+                    retval = false;
+                }
+            }
+
+            for (final ExprVariable var : attribs) {
+                if (!valList.contains(var.getName())) {
+                    System.out.println("Missing column name: " + var.getName());
+                    retval = false;
+                }
+            }
+
+            return retval;
+        }
+        catch (HPersistException e) {
             return false;
-
-        final List<ExprVariable> attribs = tree.getExprVariables();
-
-        boolean retval = true;
-
-        final List<String> valList = Lists.newArrayList(vals);
-
-        for (final String val : valList) {
-            if (!attribs.contains(new ExprVariable(val, FieldType.StringType))) {
-                System.out.println("Missing column name: " + val);
-                retval = false;
-            }
         }
-
-        for (final ExprVariable var : attribs) {
-            if (!valList.contains(var.getName())) {
-                System.out.println("Missing column name: " + var.getName());
-                retval = false;
-            }
-        }
-
-        return retval;
     }
 
 }

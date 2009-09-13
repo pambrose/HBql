@@ -19,4 +19,8 @@ public class HRecord {
     public Object getValue(final String name) {
         return this.values.get(name);
     }
+
+    public Object setValue(final String name, final Object val) {
+        return this.values.put(name, val);
+    }
 }

@@ -39,8 +39,8 @@ public class HConnection {
 
     final HBaseConfiguration config = new HBaseConfiguration();
 
-    public <T> HQuery<T> newHQuery(final String query) throws IOException, HPersistException {
-        return new HQuery<T>(this, query);
+    public <T> HQuery<T> newHQuery(final String query, final boolean useAnnotations) throws IOException, HPersistException {
+        return new HQuery<T>(this, query, useAnnotations);
     }
 
     public HBaseConfiguration getConfig() {
@@ -58,6 +58,9 @@ public class HConnection {
     public HOutput exec(final String str) throws HPersistException, IOException {
 
         final ExecArgs exec = (ExecArgs)HBqlRule.EXEC.parse(str, (ExprSchema)null);
+
+        if (exec == null)
+            throw new HPersistException("Error parsing: " + str);
 
         if (exec instanceof CreateArgs)
             return createCommand((CreateArgs)exec);

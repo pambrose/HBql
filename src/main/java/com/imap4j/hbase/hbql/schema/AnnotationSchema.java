@@ -354,5 +354,4 @@ public class AnnotationSchema extends HBaseSchema {
             }
         }
     }
-
 }

@@ -57,7 +57,7 @@ selectStmt [ExprSchema es] returns [QueryArgs retval]
 
 columnList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
-	: column[retval] (COMMA column[retval])*;
+	: c1=column {retval.add($c1.text);} (COMMA c2=column {retval.add($c2.text);})*;
 
 execCommand [ExprSchema es] returns [ExecArgs retval]
 	: create=createStmt				{retval = $create.retval;}
@@ -74,7 +74,7 @@ createStmt returns [CreateArgs retval]
 	
 createTempStmt returns [CreateTempArgs retval]
 @init {List<VarDesc> varList = Lists.newArrayList();}
-	: keyCREATE keyTEMP keyTABLE t=ID LPAREN (a=tempAttrib {varList.add($a.retval);})* RPAREN
+	: keyCREATE keyTEMP keyTABLE t=ID LPAREN (a1=tempAttrib {varList.add($a1.retval);} (COMMA a2=tempAttrib {varList.add($a2.retval);})*)? RPAREN
 							{retval = new CreateTempArgs($t.text, varList);}
 	;
 
@@ -132,11 +132,6 @@ keyRangeList returns [List<KeyRangeArgs.Range> retval]
 keyRange returns [KeyRangeArgs.Range retval]
 	: q=QUOTED keyTO keyLAST			{retval = new KeyRangeArgs.Range($q.text);}
 	| q1=QUOTED keyTO q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
-	;
-
-rangeParam
-	: stringLiteral
-	| param
 	;
 	
 nodescWhereExpr [ExprSchema es] returns [ExprTree retval]
@@ -267,9 +262,6 @@ stringParen returns [StringValue retval]
 	: s1=stringVal					{retval = $s1.retval;}
 	| LPAREN s2=stringExpr	RPAREN			{retval = $s2.retval;}						
 	;
-
-param	
-	: PARAM;
 			
 stringVal returns [StringValue retval]
 	: sl=stringLiteral				{retval = $sl.retval;}
@@ -420,9 +412,8 @@ qstringList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
 	: qstring[retval] (COMMA qstring[retval])*;
 
-column [List<String> list]	
-	: charstr=varRef 				{if (list != null) list.add($charstr.text);};
-
+column 	: c=varRef;
+	
 schemaDesc returns [ExprSchema retval]
 @init {List<VarDesc> varList = Lists.newArrayList();}
 	: LCURLY (varDesc[varList] (COMMA varDesc[varList])*)? RCURLY
@@ -459,8 +450,11 @@ multDiv returns [GenericCalcExpr.OP retval]
 	;
 		
 INT	: DIGIT+;
-ID	: CHAR (CHAR | DIGIT  | DOT | COLON)*;
-PARAM	: COLON (CHAR | DIGIT  | DOT)*;
+ID	: CHAR (CHAR | DOT | DIGIT)* 
+	| CHAR (CHAR | DOT | DIGIT)* COLON (CHAR | DOT | DIGIT)*
+	;
+	
+//PARAM	: COLON (CHAR | DIGIT  | DOT)*;
  
 QUOTED		
 @init {final StringBuilder sbuf = new StringBuilder();}	

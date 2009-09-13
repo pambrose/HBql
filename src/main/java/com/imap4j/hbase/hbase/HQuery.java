@@ -34,14 +34,16 @@ public class HQuery<T> {
 
     List<HQueryListener<T>> listeners = null;
 
-    public HQuery(final HConnection connection, final String query) throws IOException, HPersistException {
+    public HQuery(final HConnection connection,
+                  final String query,
+                  final boolean useAnnotations) throws IOException, HPersistException {
         this.connection = connection;
         this.query = query;
+        this.useAnnotations = useAnnotations;
 
         final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ExprSchema)null);
         this.schema = this.findSchema(args.getTableName());
 
-        this.useAnnotations = this.schema instanceof AnnotationSchema;
         this.fieldList = (args.getColumns() == null) ? this.getSchema().getFieldList() : args.getColumns();
 
         this.clientExprTree = this.getExprTree(args.getWhereExpr().getClientFilter(),
@@ -59,18 +61,17 @@ public class HQuery<T> {
 
     private HBaseSchema findSchema(final String tableName) throws HPersistException {
 
-        // First look in AnnotationSchema and then try DeclaredSchemas
-        HBaseSchema schema = AnnotationSchema.getAnnotationSchema(tableName);
+        final HBaseSchema schema;
+
+        if (this.useAnnotations())
+            schema = AnnotationSchema.getAnnotationSchema(tableName);
+        else
+            schema = DeclaredSchema.getDeclaredSchema(tableName);
 
         if (schema != null)
             return schema;
-
-        schema = DeclaredSchema.getDeclaredSchema(tableName);
-
-        if (schema != null)
-            return schema;
-
-        throw new HPersistException("Unknown table name " + tableName);
+        else
+            throw new HPersistException("Unknown table name " + tableName);
 
     }
 

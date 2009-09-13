@@ -1,6 +1,7 @@
 package com.imap4j.hbase.hbql.schema;
 
 import com.imap4j.hbase.hbase.HPersistException;
+import com.imap4j.hbase.hbase.HRecord;
 
 import java.lang.reflect.Method;
 
@@ -27,10 +28,6 @@ public class VarDescAttrib extends ColumnAttrib {
         return this.varDesc.getVariableName();
     }
 
-    @Override
-    public Object getValue(final Object recordObj) throws HPersistException {
-        return null;
-    }
 
     @Override
     public boolean isArray() {
@@ -60,6 +57,14 @@ public class VarDescAttrib extends ColumnAttrib {
 
     @Override
     protected void setValue(final Object newobj, final Object val) {
-
+        final HRecord record = (HRecord)newobj;
+        record.setValue(this.getVariableName(), val);
     }
+
+    @Override
+    public Object getValue(final Object recordObj) throws HPersistException {
+        final HRecord record = (HRecord)recordObj;
+        return record.getValue(this.getVariableName());
+    }
+
 }
