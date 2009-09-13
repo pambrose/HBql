@@ -33,7 +33,7 @@ public class HUtil {
 
     public final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.HADOOP);
 
-    public static List<Scan> getScanList(final AnnotationSchema schema,
+    public static List<Scan> getScanList(final ExprSchema schema,
                                          final List<String> fieldList,
                                          final KeyRangeArgs keys,
                                          final VersionArgs verArgs,
@@ -63,7 +63,7 @@ public class HUtil {
 
                 if (attrib == null)
                     throw new HPersistException("Instance variable " + name
-                                                + " does not exist in " + schema.getClazz().getName());
+                                                + " does not exist in " + schema.getSchemaName());
 
                 // If it is a map, then request all columns for family
                 if (attrib.isMapKeysAsColumns())
@@ -119,21 +119,21 @@ public class HUtil {
     }
 
     public static Object getObject(final Serialization ser,
-                                   final AnnotationSchema schema,
+                                   final ExprSchema schema,
                                    final List<String> fieldList,
                                    final int maxVersions,
                                    final Result result) throws HPersistException {
 
         try {
             // Create object and assign key value
-            final Object newobj = createNewObject(ser, schema, result);
+            final Object newobj = createNewObject(ser, (AnnotationSchema)schema, result);
 
             // Assign most recent values
-            assignCurrentValues(ser, schema, fieldList, result, newobj);
+            assignCurrentValues(ser, (AnnotationSchema)schema, fieldList, result, newobj);
 
             // Assign the versioned values
             if (maxVersions > 1)
-                assignVersionedValues(schema, fieldList, result, newobj);
+                assignVersionedValues((AnnotationSchema)schema, fieldList, result, newobj);
 
             return newobj;
         }
@@ -151,16 +151,16 @@ public class HUtil {
         final ColumnAttrib keyattrib = schema.getKeyColumnAttrib();
         final Object newobj;
         try {
-            newobj = schema.getClazz().newInstance();
+            newobj = schema.newInstance();
             final byte[] keybytes = result.getRow();
             keyattrib.setValue(ser, newobj, keybytes);
         }
         catch (InstantiationException e) {
-            throw new RuntimeException("Cannot create new instance of " + schema.getClazz());
+            throw new RuntimeException("Cannot create new instance of " + schema.getSchemaName());
         }
         catch (IllegalAccessException e) {
             throw new RuntimeException("Cannot set value for key  " + keyattrib.getVariableName()
-                                       + " for " + schema.getClazz());
+                                       + " for " + schema.getSchemaName());
         }
         return newobj;
     }
@@ -188,7 +188,6 @@ public class HUtil {
 
                 // TODO Need to check if variable was on select list like below
 
-                // TODO it is probably not kosher to create a map here
                 if (mapval == null) {
                     mapval = Maps.newHashMap();
                     attrib.setValue(newobj, mapval);
@@ -239,9 +238,7 @@ public class HUtil {
                     final Object val = attrib.getValueFromBytes(ser, newobj, vbytes);
                     Map mapval = (Map)attrib.getValue(newobj);
 
-                    // TODO it is probably not kosher to create a map here
                     if (mapval == null) {
-                        //mapval = Maps.newHashMap();
                         mapval = new TreeMap();
                         attrib.setValue(newobj, mapval);
                     }

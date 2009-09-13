@@ -23,7 +23,7 @@ public class HQuery<T> {
 
     final HConnection connection;
     final String query;
-    final AnnotationSchema schema;
+    final ExprSchema schema;
     final List<String> fieldList;
     final ExprTree clientExprTree;
     final List<Scan> scanList;
@@ -62,7 +62,7 @@ public class HQuery<T> {
         return this.scanList;
     }
 
-    AnnotationSchema getSchema() {
+    ExprSchema getSchema() {
         return this.schema;
     }
 
@@ -92,7 +92,7 @@ public class HQuery<T> {
     }
 
     ExprTree getExprTree(final ExprTree exprTree,
-                         final AnnotationSchema schema,
+                         final ExprSchema schema,
                          final List<String> fieldList) throws HPersistException {
 
         if (exprTree != null) {

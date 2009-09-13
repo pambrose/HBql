@@ -12,16 +12,16 @@ import java.util.List;
  */
 public class CreateTempArgs implements ExecArgs {
 
-    private final String classname;
+    private final String tableName;
     private final List<VarDesc> varList;
 
-    public CreateTempArgs(final String classname, final List<VarDesc> varList) {
-        this.classname = classname;
+    public CreateTempArgs(final String tableName, final List<VarDesc> varList) {
+        this.tableName = tableName;
         this.varList = varList;
     }
 
-    public String getClassname() {
-        return this.classname;
+    public String getTableName() {
+        return this.tableName;
     }
 
     public List<VarDesc> getVarList() {

@@ -12,12 +12,12 @@ import java.util.List;
  * Time: 11:38:01 AM
  */
 public class VarDesc {
-    private String varName;
+    private String variableName;
     private String typeName;
     private FieldType fieldType;
 
-    private VarDesc(final String varName, final String typeName) {
-        this.varName = varName;
+    private VarDesc(final String variableName, final String typeName) {
+        this.variableName = variableName;
         this.typeName = typeName;
         this.fieldType = getFieldType(this.getTypeName());
     }
@@ -46,15 +46,15 @@ public class VarDesc {
 
     }
 
-    public String getVarName() {
-        return this.varName;
+    public String getVariableName() {
+        return this.variableName;
     }
 
     public String getTypeName() {
         return this.typeName;
     }
 
-    public FieldType getType() {
+    public FieldType getFieldType() {
         return this.fieldType;
     }
 }

@@ -10,16 +10,22 @@ import com.imap4j.hbase.hbase.HPersistException;
  */
 public class VarDescAttrib extends VariableAttrib {
 
-    private final String name;
+    private final String variableName;
+    private final String typeName;
 
-    public VarDescAttrib(final String name, final FieldType fieldType) {
-        super(fieldType);
-        this.name = name;
+    public VarDescAttrib(final VarDesc var) {
+        super(var.getFieldType());
+        this.variableName = var.getVariableName();
+        this.typeName = var.getTypeName();
+    }
+
+    public String getTypeName() {
+        return this.typeName;
     }
 
     @Override
     public String getVariableName() {
-        return this.name;
+        return this.variableName;
     }
 
     @Override

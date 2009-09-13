@@ -1,5 +1,6 @@
 package com.imap4j.hbase.hbase;
 
+import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.schema.HUtil;
 import com.imap4j.hbase.util.Lists;
 import com.imap4j.hbase.util.ResultsIterator;
@@ -65,6 +66,7 @@ public class HResults<T> implements Iterable<T> {
             return new ResultsIterator<T>() {
 
                 final HTable table = getHQuery().getConnection().getHTable(getHQuery().getSchema().getTableName());
+                final ExprTree clientExprTree = getHQuery().getClientExprTree();
                 final Iterator<Scan> scanIter = getHQuery().getScanList().iterator();
                 int maxVersions = 0;
                 ResultScanner currentResultScanner = null;
@@ -119,8 +121,7 @@ public class HResults<T> implements Iterable<T> {
                                                              getHQuery().getFieldList(),
                                                              maxVersions,
                                                              result);
-                            if (getHQuery().getClientExprTree() == null || getHQuery().getClientExprTree()
-                                    .evaluate(val))
+                            if (clientExprTree == null || clientExprTree.evaluate(val))
                                 return val;
 
                         }

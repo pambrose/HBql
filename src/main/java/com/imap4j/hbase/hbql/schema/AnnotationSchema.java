@@ -131,7 +131,13 @@ public class AnnotationSchema extends ExprSchema {
         return classCacheMap;
     }
 
+    @Override
     public String toString() {
+        return this.getSchemaName();
+    }
+
+    @Override
+    public String getSchemaName() {
         return this.getClazz().getName();
     }
 
@@ -185,6 +191,11 @@ public class AnnotationSchema extends ExprSchema {
     public String getTableName() {
         final String tableName = this.table.name();
         return (tableName.length() > 0) ? tableName : clazz.getSimpleName();
+    }
+
+    @Override
+    public Object newInstance() throws IllegalAccessException, InstantiationException {
+        return this.getClazz().newInstance();
     }
 
     // *** columnAttribListByFamilyNameMap

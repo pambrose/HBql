@@ -17,7 +17,10 @@ public class ObjectSchema extends ExprSchema {
 
     private final static Map<Class<?>, ObjectSchema> objectSchemaMap = Maps.newHashMap();
 
+    private final Class<?> clazz;
+
     private ObjectSchema(final Class clazz) throws HPersistException {
+        this.clazz = clazz;
 
         for (final Field field : clazz.getDeclaredFields()) {
 
@@ -32,7 +35,6 @@ public class ObjectSchema extends ExprSchema {
             }
         }
     }
-
 
     public static ObjectSchema getObjectSchema(final Object obj) throws HPersistException {
         return getObjectSchema(obj.getClass());
@@ -49,7 +51,22 @@ public class ObjectSchema extends ExprSchema {
         return schema;
     }
 
-    public static Map<Class<?>, ObjectSchema> getObjectSchemaMap() {
+    private static Map<Class<?>, ObjectSchema> getObjectSchemaMap() {
         return objectSchemaMap;
     }
+
+    private Class<?> getClazz() {
+        return clazz;
+    }
+
+    @Override
+    public String getSchemaName() {
+        return this.getTableName();
+    }
+
+    @Override
+    public String getTableName() {
+        return this.getClazz().getName();
+    }
+
 }

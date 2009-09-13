@@ -15,7 +15,7 @@ import java.util.Map;
  * Date: Aug 19, 2009
  * Time: 5:30:59 PM
  */
-public class ExprSchema implements Serializable {
+public abstract class ExprSchema implements Serializable {
 
     private final Map<String, VariableAttrib> variableAttribByVariableNameMap = Maps.newHashMap();
 
@@ -27,6 +27,14 @@ public class ExprSchema implements Serializable {
             retval.add(attrib.getVariableName());
         }
         return retval;
+    }
+
+    public abstract String getSchemaName();
+
+    public abstract String getTableName();
+
+    public Object newInstance() throws IllegalAccessException, InstantiationException {
+        return null;
     }
 
     // *** variableAttribByVariableNameMap calls

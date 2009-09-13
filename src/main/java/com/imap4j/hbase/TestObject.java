@@ -7,6 +7,7 @@ import com.imap4j.hbase.hbase.HFamily;
 import com.imap4j.hbase.hbase.HOutput;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HQuery;
+import com.imap4j.hbase.hbase.HRecord;
 import com.imap4j.hbase.hbase.HResults;
 import com.imap4j.hbase.hbase.HTable;
 import com.imap4j.hbase.hbase.HTransaction;
@@ -115,7 +116,7 @@ public class TestObject {
         HOutput output = conn.exec("set packagepath = 'com.imap4j.hbql:com.imap4j.hbase'");
         System.out.println(output);
 
-        output = conn.exec("create temp table testobjects (author string)");
+        output = conn.exec("create temp table testobjects (family1:author string)");
         System.out.println(output);
 
         /*
@@ -139,35 +140,53 @@ public class TestObject {
 
         tx.commit();
 
-        final String query = "SELECT author, authorVersions "
-                             + "FROM TestObject "
-                             + "WITH "
-                             + "KEYS  '000002' TO '000005', '000007' TO LAST "
-                             + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
-                             + "VERSIONS 5 "
-                             //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
-                             + "CLIENT FILTER WHERE author LIKE '.*282.*'";
+        final String query1 = "SELECT family1:author "
+                              + "FROM testobjects "
+                              + "WITH "
+                              + "KEYS  '000002' TO '000005', '000007' TO LAST "
+                              + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
+                              + "VERSIONS 5 "
+                              //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
+                              + "CLIENT FILTER WHERE family1:author LIKE '.*282.*'";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        HResults<HRecord> results1 = q1.execute();
 
-        HQuery<TestObject> q1 = conn.newHQuery(query);
-        HResults<TestObject> results = q1.execute();
+        for (HRecord val1 : results1) {
+            System.out.println("Current Values: " + val1.getValue("keyval") + " - " + val1.getValue("strValue")
+                               + " - " + val1.getValue("author") + " - " + val1.getValue("title"));
+        }
 
-        for (TestObject val : results) {
-            System.out.println("Current Values: " + val.keyval + " - " + val.strValue
-                               + " - " + val.author + " - " + val.title);
+        results1.close();
+
+        final String query2 = "SELECT author, authorVersions "
+                              + "FROM TestObject "
+                              + "WITH "
+                              + "KEYS  '000002' TO '000005', '000007' TO LAST "
+                              + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
+                              + "VERSIONS 5 "
+                              //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
+                              + "CLIENT FILTER WHERE author LIKE '.*282.*'";
+
+        HQuery<TestObject> q2 = conn.newHQuery(query2);
+        HResults<TestObject> results2 = q2.execute();
+
+        for (TestObject val2 : results2) {
+            System.out.println("Current Values: " + val2.keyval + " - " + val2.strValue
+                               + " - " + val2.author + " - " + val2.title);
 
             System.out.println("Historicals");
 
-            if (val.authorVersions != null)
-                for (final Long key : val.authorVersions.keySet())
+            if (val2.authorVersions != null)
+                for (final Long key : val2.authorVersions.keySet())
                     System.out.println(new Date(key) + " - "
-                                       + val.authorVersions.get(key));
+                                       + val2.authorVersions.get(key));
 
-            if (val.titles != null)
-                for (final Long key : val.titles.keySet())
+            if (val2.titles != null)
+                for (final Long key : val2.titles.keySet())
                     System.out.println(new Date(key) + " - "
-                                       + val.titles.get(key));
+                                       + val2.titles.get(key));
         }
 
-        results.close();
+        results2.close();
     }
 }

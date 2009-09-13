@@ -61,8 +61,8 @@ columnList returns [List<String> retval]
 
 execCommand [ExprSchema es] returns [ExecArgs retval]
 	: create=createStmt				{retval = $create.retval;}
-	| desc=describeStmt 				{retval = $desc.retval;}
 	| def=createTempStmt 				{retval = $def.retval;}
+	| desc=describeStmt 				{retval = $desc.retval;}
 	| show=showStmt 				{retval = $show.retval;}
 	| del=deleteStmt[es] 				{retval = $del.retval;}
 	| set=setStmt					{retval = $set.retval;}
