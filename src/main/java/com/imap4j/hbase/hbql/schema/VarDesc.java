@@ -46,6 +46,22 @@ public class VarDesc {
 
     }
 
+    public String getFamilyName() {
+        if (this.getVariableName().indexOf(":") != -1) {
+            String[] vals = this.getVariableName().split(":");
+            return vals[0];
+        }
+        return "";
+    }
+
+    public String getColumnName() {
+        if (this.getVariableName().indexOf(":") != -1) {
+            String[] vals = this.getVariableName().split(":");
+            return vals[1];
+        }
+        return this.getVariableName();
+    }
+
     public String getVariableName() {
         return this.variableName;
     }

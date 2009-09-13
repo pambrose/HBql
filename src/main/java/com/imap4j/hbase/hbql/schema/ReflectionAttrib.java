@@ -1,5 +1,7 @@
 package com.imap4j.hbase.hbql.schema;
 
+import com.imap4j.hbase.hbase.HPersistException;
+
 import java.lang.reflect.Field;
 
 /**
@@ -10,7 +12,7 @@ import java.lang.reflect.Field;
  */
 public class ReflectionAttrib extends FieldAttrib {
 
-    public ReflectionAttrib(final Field field) {
-        super(FieldType.getFieldType(field.getType()), field);
+    public ReflectionAttrib(final Field field) throws HPersistException {
+        super(field, FieldType.getFieldType(field.getType()), null, null, null, null, false);
     }
 }

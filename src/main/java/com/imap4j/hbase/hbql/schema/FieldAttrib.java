@@ -3,6 +3,7 @@ package com.imap4j.hbase.hbql.schema;
 import com.imap4j.hbase.hbase.HPersistException;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,14 +11,24 @@ import java.lang.reflect.Field;
  * Date: Sep 6, 2009
  * Time: 5:27:00 PM
  */
-public abstract class FieldAttrib extends VariableAttrib {
+public abstract class FieldAttrib extends ColumnAttrib {
 
     private final transient Field field;
 
-    protected FieldAttrib(final FieldType fieldType, final Field field) {
-        super(fieldType);
+    protected FieldAttrib(final Field field,
+                          final FieldType fieldType,
+                          final String family,
+                          final String column,
+                          final String getter,
+                          final String setter,
+                          final boolean mapKeysAsColumns) throws HPersistException {
+        super(fieldType,
+              family,
+              (column != null && column.length() > 0) ? column : field.getName(),
+              getter,
+              setter,
+              mapKeysAsColumns);
         this.field = field;
-
         setAccessible(this.getField());
     }
 
@@ -38,10 +49,24 @@ public abstract class FieldAttrib extends VariableAttrib {
         return field.getDeclaringClass().getName() + "." + field.getName();
     }
 
-    protected Class getEnclosingClass() {
+    @Override
+    public String getEnclosingClassName() {
+        return this.getEnclosingClass().getName();
+    }
+
+    private Class getEnclosingClass() {
         return this.getField().getDeclaringClass();
     }
 
+    @Override
+    protected Method getMethod(final String methodName, final Class<?>... params) throws NoSuchMethodException {
+        return this.getEnclosingClass().getDeclaredMethod(methodName, params);
+    }
+
+    @Override
+    protected Class getComponentType() {
+        return this.getField().getType().getComponentType();
+    }
 
     protected Field getField() {
         return this.field;
@@ -50,7 +75,6 @@ public abstract class FieldAttrib extends VariableAttrib {
     public boolean isArray() {
         return this.getField().getType().isArray();
     }
-
 
     public Object getValue(final Object recordObj) throws HPersistException {
         try {
@@ -69,7 +93,5 @@ public abstract class FieldAttrib extends VariableAttrib {
         catch (IllegalAccessException e) {
             throw new RuntimeException("Error setting value of " + this.getObjectQualifiedName());
         }
-
     }
-
 }

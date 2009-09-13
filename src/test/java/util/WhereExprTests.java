@@ -74,7 +74,7 @@ public class WhereExprTests {
         final long opt_time = tree.getElapsedNanos();
 
         if (no_opt_run != opt_run)
-            throw new HPersistException("Different outcome with optimization");
+            throw new HPersistException("Different outcome with call to optimize()");
 
         // System.out.println("Time savings: " + (no_opt_time - opt_time));
         return no_opt_run;

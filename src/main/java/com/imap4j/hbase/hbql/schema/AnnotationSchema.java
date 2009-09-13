@@ -19,14 +19,12 @@ import java.util.Set;
  * Date: Sep 9, 2009
  * Time: 9:47:01 AM
  */
-public class AnnotationSchema extends ExprSchema {
+public class AnnotationSchema extends HBaseSchema {
 
     private final static Map<Class<?>, AnnotationSchema> annotationSchemaMap = Maps.newHashMap();
     private final static Map<String, Class<?>> classCacheMap = Maps.newHashMap();
 
     private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
-    private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedColumnNameMap = Maps.newHashMap();
-    private final Map<String, VersionAttrib> versionAttribByFamilyQualifiedColumnNameMap = Maps.newHashMap();
 
     private final Class<?> clazz;
     private final HTable table;
@@ -221,38 +219,4 @@ public class AnnotationSchema extends ExprSchema {
             throw new HPersistException(s + " already delcared");
         this.getColumnAttribListByFamilyNameMap().put(s, columnAttribs);
     }
-
-    // *** versionAttribByFamilyQualifiedColumnNameMap calls
-    private Map<String, VersionAttrib> getVersionAttribByFamilyQualifiedColumnNameMap() {
-        return versionAttribByFamilyQualifiedColumnNameMap;
-    }
-
-    public VersionAttrib getVersionAttribByFamilyQualifiedColumnName(final String s) {
-        return this.getVersionAttribByFamilyQualifiedColumnNameMap().get(s);
-    }
-
-    private void setVersionAttribByFamilyQualifiedColumnName(final String s,
-                                                             final VersionAttrib versionAttrib) throws HPersistException {
-        if (this.getVersionAttribByFamilyQualifiedColumnNameMap().containsKey(s))
-            throw new HPersistException(s + " already delcared");
-
-        this.getVersionAttribByFamilyQualifiedColumnNameMap().put(s, versionAttrib);
-    }
-
-    // *** columnAttribByFamilyQualifiedColumnNameMap calls
-    private Map<String, ColumnAttrib> getColumnAttribByFamilyQualifiedColumnNameMap() {
-        return this.columnAttribByFamilyQualifiedColumnNameMap;
-    }
-
-    public ColumnAttrib getColumnAttribByFamilyQualifiedColumnName(final String s) {
-        return this.getColumnAttribByFamilyQualifiedColumnNameMap().get(s);
-    }
-
-    private void setColumnAttribByFamilyQualifiedColumnName(final String s,
-                                                            final ColumnAttrib columnAttrib) throws HPersistException {
-        if (this.getColumnAttribByFamilyQualifiedColumnNameMap().containsKey(s))
-            throw new HPersistException(s + " already delcared");
-        this.getColumnAttribByFamilyQualifiedColumnNameMap().put(s, columnAttrib);
-    }
-
 }

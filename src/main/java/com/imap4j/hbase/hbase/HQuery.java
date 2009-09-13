@@ -7,6 +7,7 @@ import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
 import com.imap4j.hbase.hbql.schema.DeclaredSchema;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
+import com.imap4j.hbase.hbql.schema.HBaseSchema;
 import com.imap4j.hbase.hbql.schema.HUtil;
 import com.imap4j.hbase.util.Lists;
 import org.apache.hadoop.hbase.client.Scan;
@@ -24,7 +25,7 @@ public class HQuery<T> {
 
     final HConnection connection;
     final String query;
-    final ExprSchema schema;
+    final HBaseSchema schema;
     final List<String> fieldList;
     final ExprTree clientExprTree;
     final List<Scan> scanList;
@@ -56,10 +57,10 @@ public class HQuery<T> {
                                                            fieldList));
     }
 
-    private ExprSchema findSchema(final String tableName) throws HPersistException {
+    private HBaseSchema findSchema(final String tableName) throws HPersistException {
 
         // First look in AnnotationSchema and then try DeclaredSchemas
-        ExprSchema schema = AnnotationSchema.getAnnotationSchema(tableName);
+        HBaseSchema schema = AnnotationSchema.getAnnotationSchema(tableName);
 
         if (schema != null)
             return schema;
@@ -84,7 +85,7 @@ public class HQuery<T> {
         return this.scanList;
     }
 
-    ExprSchema getSchema() {
+    HBaseSchema getSchema() {
         return this.schema;
     }
 

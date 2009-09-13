@@ -13,7 +13,7 @@ import java.util.Map;
  * Date: Sep 6, 2009
  * Time: 5:17:59 PM
  */
-public class CurrentValueAttrib extends ColumnAttrib {
+public class CurrentValueAttrib extends FieldAttrib {
 
 
     public CurrentValueAttrib(final Field field) throws HPersistException {
@@ -33,11 +33,6 @@ public class CurrentValueAttrib extends ColumnAttrib {
         if (this.isMapKeysAsColumns() && (!Map.class.isAssignableFrom(this.getField().getType())))
             throw new HPersistException(this.getObjectQualifiedName() + " has @HColumn(mapKeysAsColumns=true) " +
                                         "annotation but doesn't implement the Map interface");
-    }
-
-    @Override
-    public boolean isCurrentValueAttrib() {
-        return true;
     }
 
     private HColumn getColumnAnno() {

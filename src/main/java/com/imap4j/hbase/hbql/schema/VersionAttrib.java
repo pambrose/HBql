@@ -14,7 +14,7 @@ import java.util.Map;
  * Date: Sep 5, 2009
  * Time: 10:03:49 PM
  */
-public class VersionAttrib extends ColumnAttrib {
+public class VersionAttrib extends FieldAttrib {
 
     private VersionAttrib(final Field field,
                           final FieldType fieldType,
@@ -68,7 +68,7 @@ public class VersionAttrib extends ColumnAttrib {
 
             final ColumnAttrib columnAttrib = (ColumnAttrib)exprSchema.getVariableAttribByVariableName(instance);
 
-            if (!columnAttrib.isCurrentValueAttrib())
+            if (!columnAttrib.isACurrentValue())
                 throw new HPersistException(getObjectQualifiedName(field) + "instance variable must have HColumn annotation");
 
             final CurrentValueAttrib currentAttrib = (CurrentValueAttrib)columnAttrib;
@@ -99,7 +99,7 @@ public class VersionAttrib extends ColumnAttrib {
     }
 
     @Override
-    public boolean isCurrentValueAttrib() {
+    public boolean isACurrentValue() {
         return false;
     }
 

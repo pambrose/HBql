@@ -34,7 +34,7 @@ public class HUtil {
 
     public final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.HADOOP);
 
-    public static List<Scan> getScanList(final ExprSchema schema,
+    public static List<Scan> getScanList(final HBaseSchema schema,
                                          final List<String> fieldList,
                                          final KeyRangeArgs keys,
                                          final VersionArgs verArgs,
@@ -120,21 +120,21 @@ public class HUtil {
     }
 
     public static Object getObject(final Serialization ser,
-                                   final ExprSchema schema,
+                                   final HBaseSchema schema,
                                    final List<String> fieldList,
                                    final int maxVersions,
                                    final Result result) throws HPersistException {
 
         try {
             // Create object and assign key value
-            final Object newobj = createNewObject(ser, (AnnotationSchema)schema, result);
+            final Object newobj = createNewObject(ser, schema, result);
 
             // Assign most recent values
-            assignCurrentValues(ser, (AnnotationSchema)schema, fieldList, result, newobj);
+            assignCurrentValues(ser, schema, fieldList, result, newobj);
 
             // Assign the versioned values
             if (maxVersions > 1)
-                assignVersionedValues((AnnotationSchema)schema, fieldList, result, newobj);
+                assignVersionedValues(schema, fieldList, result, newobj);
 
             return newobj;
         }
@@ -145,7 +145,7 @@ public class HUtil {
     }
 
     private static Object createNewObject(final Serialization ser,
-                                          final AnnotationSchema schema,
+                                          final HBaseSchema schema,
                                           final Result result) throws IOException, HPersistException {
 
         // Create new instance and set key value
@@ -167,7 +167,7 @@ public class HUtil {
     }
 
     private static void assignCurrentValues(final Serialization ser,
-                                            final AnnotationSchema schema,
+                                            final HBaseSchema schema,
                                             final List<String> fieldList,
                                             final Result result,
                                             final Object newobj) throws IOException, HPersistException {
@@ -200,13 +200,13 @@ public class HUtil {
                 final ColumnAttrib attrib = schema.getColumnAttribByFamilyQualifiedColumnName(colname);
 
                 // Check if variable was requested in select list
-                if (fieldList.contains(attrib.getField().getName()))
+                if (fieldList.contains(attrib.getVariableName()))
                     attrib.setValue(ser, newobj, vbytes);
             }
         }
     }
 
-    private static void assignVersionedValues(final AnnotationSchema schema,
+    private static void assignVersionedValues(final HBaseSchema schema,
                                               final List<String> fieldList,
                                               final Result result,
                                               final Object newobj) throws IOException, HPersistException {
@@ -251,12 +251,43 @@ public class HUtil {
     }
 
     public static HRecord getHRecord(final Serialization ser,
-                                     final ExprSchema schema,
+                                     final HBaseSchema schema,
                                      final List fieldList,
                                      final int maxVersions,
-                                     final Result result) {
+                                     final Result result) throws HPersistException {
 
-        return null;
+        try {
+            // Create object and assign key value
+            final HRecord newobj = createNewHRecord(ser, schema, result);
+
+            // Assign most recent values
+            assignCurrentValues(ser, schema, fieldList, result, newobj);
+
+            // Assign the versioned values
+            if (maxVersions > 1)
+                assignVersionedValues(schema, fieldList, result, newobj);
+
+            return newobj;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            throw new HPersistException("Error in getObject()");
+        }
 
     }
+
+    private static HRecord createNewHRecord(final Serialization ser,
+                                            final HBaseSchema schema,
+                                            final Result result) throws IOException, HPersistException {
+
+        // Create new instance and set key value
+        final HRecord newobj = new HRecord();
+        final ColumnAttrib keyattrib = schema.getKeyColumnAttrib();
+        if (keyattrib != null) {
+            final byte[] keybytes = result.getRow();
+            keyattrib.setValue(ser, newobj, keybytes);
+        }
+        return newobj;
+    }
+
 }

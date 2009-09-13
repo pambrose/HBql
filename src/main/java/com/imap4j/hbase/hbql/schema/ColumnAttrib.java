@@ -4,7 +4,6 @@ import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.io.Serialization;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -14,69 +13,79 @@ import java.lang.reflect.Method;
  * Date: Sep 6, 2009
  * Time: 5:27:00 PM
  */
-public abstract class ColumnAttrib extends FieldAttrib {
+public abstract class ColumnAttrib extends VariableAttrib {
 
     private final String family, column, getter, setter;
     private final boolean mapKeysAsColumns;
 
     protected transient Method getterMethod = null, setterMethod = null;
 
-    public ColumnAttrib(final Field field,
-                        final FieldType fieldType,
+    public ColumnAttrib(final FieldType fieldType,
                         final String family,
                         final String column,
                         final String getter,
                         final String setter,
                         final boolean mapKeysAsColumns) throws HPersistException {
-        super(fieldType, field);
+        super(fieldType);
         this.family = family;
-        this.column = (column.length() > 0) ? column : this.getVariableName();
+        this.column = column;
         this.getter = getter;
         this.setter = setter;
         this.mapKeysAsColumns = mapKeysAsColumns;
 
         try {
-            if (this.getGetter().length() > 0) {
-                this.getterMethod = this.getEnclosingClass().getDeclaredMethod(this.getGetter());
+            if (this.getGetter() != null && this.getGetter().length() > 0) {
+                this.getterMethod = this.getMethod(this.getGetter());
 
                 // Check return type of getter
                 final Class<?> returnType = this.getGetterMethod().getReturnType();
 
                 if (!(returnType.isArray() && returnType.getComponentType() == Byte.TYPE))
-                    throw new HPersistException(this.getEnclosingClass().getName()
+                    throw new HPersistException(this.getEnclosingClassName()
                                                 + "." + this.getGetter() + "()"
                                                 + " does not have a return type of byte[]");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new HPersistException("Missing method byte[] " + this.getEnclosingClass().getName() + "."
+            throw new HPersistException("Missing method byte[] " + this.getEnclosingClassName() + "."
                                         + this.getGetter() + "()");
         }
 
         try {
-            if (this.getSetter().length() > 0) {
-                this.setterMethod = this.getEnclosingClass().getDeclaredMethod(this.getSetter(), Class.forName("[B"));
+            if (this.getSetter() != null && this.getSetter().length() > 0) {
+                this.setterMethod = this.getMethod(this.getSetter(), Class.forName("[B"));
 
                 // Check if it takes single byte[] arg
                 final Class<?>[] args = this.getSetterMethod().getParameterTypes();
                 if (args.length != 1 || !(args[0].isArray() && args[0].getComponentType() == Byte.TYPE))
-                    throw new HPersistException(this.getEnclosingClass().getName()
+                    throw new HPersistException(this.getEnclosingClassName()
                                                 + "." + this.getSetter() + "()" + " does not have single byte[] arg");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new HPersistException("Missing method " + this.getEnclosingClass().getName()
+            throw new HPersistException("Missing method " + this.getEnclosingClassName()
                                         + "." + this.getSetter() + "(byte[] arg)");
         }
         catch (ClassNotFoundException e) {
             // This will not be hit
-            throw new HPersistException("Missing method " + this.getEnclosingClass().getName()
+            throw new HPersistException("Missing method " + this.getEnclosingClassName()
                                         + "." + this.getSetter() + "(byte[] arg)");
         }
     }
 
-    public abstract boolean isCurrentValueAttrib();
+    public boolean isACurrentValue() {
+        return true;
+    }
 
+    public abstract boolean isArray();
+
+    protected abstract Method getMethod(final String methodName, final Class<?>... params) throws NoSuchMethodException;
+
+    protected abstract Class getComponentType();
+
+    public abstract String getObjectQualifiedName();
+
+    public abstract String getEnclosingClassName();
 
     protected String getGetter() {
         return this.getter;
@@ -108,10 +117,6 @@ public abstract class ColumnAttrib extends FieldAttrib {
 
     public boolean isMapKeysAsColumns() {
         return this.mapKeysAsColumns;
-    }
-
-    public boolean isArray() {
-        return this.getField().getType().isArray();
     }
 
     protected boolean hasGetter() {
@@ -172,7 +177,7 @@ public abstract class ColumnAttrib extends FieldAttrib {
         }
         else {
             if (this.isArray())
-                return ser.getArrayFromBytes(this.getFieldType(), this.getField().getType().getComponentType(), b);
+                return ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
             else
                 return ser.getScalarFromBytes(this.getFieldType(), b);
         }

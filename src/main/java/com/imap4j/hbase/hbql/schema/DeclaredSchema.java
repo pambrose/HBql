@@ -14,7 +14,7 @@ import java.util.Map;
  * Date: Sep 9, 2009
  * Time: 10:19:00 AM
  */
-public class DeclaredSchema extends ExprSchema {
+public class DeclaredSchema extends HBaseSchema {
 
     private final static Map<String, DeclaredSchema> declaredSchemaMap = Maps.newHashMap();
 
@@ -26,6 +26,7 @@ public class DeclaredSchema extends ExprSchema {
             for (final VarDesc var : varList) {
                 final VarDescAttrib attrib = new VarDescAttrib(var);
                 addVariableAttrib(attrib);
+                this.setColumnAttribByFamilyQualifiedColumnName(var.getVariableName(), attrib);
             }
         }
         catch (HPersistException e) {
@@ -39,6 +40,7 @@ public class DeclaredSchema extends ExprSchema {
         for (final VarDesc var : varList) {
             final VarDescAttrib attrib = new VarDescAttrib(var);
             addVariableAttrib(attrib);
+            this.setColumnAttribByFamilyQualifiedColumnName(var.getVariableName(), attrib);
         }
     }
 
@@ -58,7 +60,7 @@ public class DeclaredSchema extends ExprSchema {
         return declaredSchemaMap;
     }
 
-    public static ExprSchema getDeclaredSchema(final String tableName) {
+    public static HBaseSchema getDeclaredSchema(final String tableName) {
         return getDeclaredSchemaMap().get(tableName);
     }
 

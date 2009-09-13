@@ -29,13 +29,6 @@ public abstract class ExprSchema implements Serializable {
         return retval;
     }
 
-    public abstract String getSchemaName();
-
-    public abstract String getTableName();
-
-    public Object newInstance() throws IllegalAccessException, InstantiationException {
-        return null;
-    }
 
     // *** variableAttribByVariableNameMap calls
     private Map<String, VariableAttrib> getVariableAttribByVariableNameMap() {
@@ -60,4 +53,5 @@ public abstract class ExprSchema implements Serializable {
             throw new HPersistException(name + " already delcared");
         this.getVariableAttribByVariableNameMap().put(name, variableAttrib);
     }
+
 }

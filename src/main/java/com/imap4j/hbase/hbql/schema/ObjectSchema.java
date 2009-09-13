@@ -59,14 +59,13 @@ public class ObjectSchema extends ExprSchema {
         return clazz;
     }
 
-    @Override
+    /*
     public String getSchemaName() {
         return this.getTableName();
     }
 
-    @Override
     public String getTableName() {
         return this.getClazz().getName();
     }
-
+    */
 }
