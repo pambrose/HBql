@@ -4,6 +4,7 @@ import com.imap4j.hbase.antlr.args.KeyRangeArgs;
 import com.imap4j.hbase.antlr.args.VersionArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbase.HPersistException;
+import com.imap4j.hbase.hbase.HRecord;
 import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.DateValue;
@@ -249,4 +250,13 @@ public class HUtil {
         }
     }
 
+    public static HRecord getHRecord(final Serialization ser,
+                                     final ExprSchema schema,
+                                     final List fieldList,
+                                     final int maxVersions,
+                                     final Result result) {
+
+        return null;
+
+    }
 }

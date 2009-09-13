@@ -116,17 +116,17 @@ public class HResults<T> implements Iterable<T> {
                     if (resultIter != null) {
                         while (resultIter.hasNext()) {
                             final Result result = resultIter.next();
-                            final T val = getHQuery().useAnnotations() ?
-                                          (T)HUtil.getHRecord(HUtil.ser,
-                                                              getHQuery().getSchema(),
-                                                              getHQuery().getFieldList(),
-                                                              maxVersions,
-                                                              result)
-                                                                       : (T)HUtil.getObject(HUtil.ser,
-                                                                                            getHQuery().getSchema(),
-                                                                                            getHQuery().getFieldList(),
-                                                                                            maxVersions,
-                                                                                            result);
+                            final T val = getHQuery().useAnnotations()
+                                          ? (T)HUtil.getHRecord(HUtil.ser,
+                                                                getHQuery().getSchema(),
+                                                                getHQuery().getFieldList(),
+                                                                maxVersions,
+                                                                result)
+                                          : (T)HUtil.getObject(HUtil.ser,
+                                                               getHQuery().getSchema(),
+                                                               getHQuery().getFieldList(),
+                                                               maxVersions,
+                                                               result);
 
                             if (clientExprTree == null || clientExprTree.evaluate(val))
                                 return val;
