@@ -58,6 +58,10 @@ public class DeclaredSchema extends ExprSchema {
         return declaredSchemaMap;
     }
 
+    public static ExprSchema getDeclaredSchema(final String tableName) {
+        return getDeclaredSchemaMap().get(tableName);
+    }
+
     @Override
     public String getTableName() {
         return this.tableName;

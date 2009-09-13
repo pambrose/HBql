@@ -5,6 +5,7 @@ import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
+import com.imap4j.hbase.hbql.schema.DeclaredSchema;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.HUtil;
 import com.imap4j.hbase.util.Lists;
@@ -28,6 +29,8 @@ public class HQuery<T> {
     final ExprTree clientExprTree;
     final List<Scan> scanList;
 
+    final boolean useAnnotations;
+
     List<HQueryListener<T>> listeners = null;
 
     public HQuery(final HConnection connection, final String query) throws IOException, HPersistException {
@@ -35,7 +38,9 @@ public class HQuery<T> {
         this.query = query;
 
         final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ExprSchema)null);
-        this.schema = AnnotationSchema.getAnnotationSchema(args.getTableName());
+        this.schema = this.findSchema(args.getTableName());
+
+        this.useAnnotations = this.schema instanceof AnnotationSchema;
         this.fieldList = (args.getColumns() == null) ? this.getSchema().getFieldList() : args.getColumns();
 
         this.clientExprTree = this.getExprTree(args.getWhereExpr().getClientFilter(),
@@ -49,6 +54,23 @@ public class HQuery<T> {
                                           this.getExprTree(args.getWhereExpr().getServerFilter(),
                                                            this.getSchema(),
                                                            fieldList));
+    }
+
+    private ExprSchema findSchema(final String tableName) throws HPersistException {
+
+        // First look in AnnotationSchema and then try DeclaredSchemas
+        ExprSchema schema = AnnotationSchema.getAnnotationSchema(tableName);
+
+        if (schema != null)
+            return schema;
+
+        schema = DeclaredSchema.getDeclaredSchema(tableName);
+
+        if (schema != null)
+            return schema;
+
+        throw new HPersistException("Unknown table name " + tableName);
+
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {
@@ -80,6 +102,10 @@ public class HQuery<T> {
 
     HConnection getConnection() {
         return this.connection;
+    }
+
+    public boolean useAnnotations() {
+        return this.useAnnotations;
     }
 
     private List<HQueryListener<T>> getListeners() {
@@ -122,7 +148,7 @@ public class HQuery<T> {
 
                 for (final T val : retval)
                     for (final HQueryListener<T> listener : this.getListeners())
-                        listener.onEachRow((T)val);
+                        listener.onEachRow(val);
 
                 for (final HQueryListener<T> listener : this.getListeners())
                     listener.onQueryComplete();

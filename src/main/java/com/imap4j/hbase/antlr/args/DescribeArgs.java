@@ -8,13 +8,13 @@ package com.imap4j.hbase.antlr.args;
  */
 public class DescribeArgs implements ExecArgs {
 
-    private final String classname;
+    private final String className;
 
-    public DescribeArgs(final String classname) {
-        this.classname = classname;
+    public DescribeArgs(final String className) {
+        this.className = className;
     }
 
-    public String getClassname() {
-        return this.classname;
+    public String getClassName() {
+        return this.className;
     }
 }

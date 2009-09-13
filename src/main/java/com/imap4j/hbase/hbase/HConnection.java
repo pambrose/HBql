@@ -82,7 +82,11 @@ public class HConnection {
 
     private HOutput createCommand(final CreateArgs args) throws HPersistException, IOException {
         final HOutput retval = new HOutput();
-        final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getClassname());
+        final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getClassName());
+
+        if (schema == null)
+            throw new HPersistException("Unknown class name " + args.getClassName());
+
         final HTableDescriptor tableDesc = new HTableDescriptor(schema.getTableName());
 
         for (final HFamily family : schema.getFamilies()) {
@@ -121,7 +125,11 @@ public class HConnection {
     private HOutput describeCommand(final DescribeArgs args) throws IOException, HPersistException {
 
         final HOutput retval = new HOutput();
-        final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getClassname());
+        final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getClassName());
+
+        if (schema == null)
+            throw new HPersistException("Unknown class name " + args.getClassName());
+
         final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
         final HTableDescriptor tableDesc = admin.getTableDescriptor(schema.getTableName().getBytes());
 
@@ -157,6 +165,10 @@ public class HConnection {
 
         final HOutput retval = new HOutput();
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getTableName());
+
+        if (schema == null)
+            throw new HPersistException("Unknown table name " + args.getTableName());
+
         final List<String> fieldList = schema.getFieldList();
         final HTable table = this.getHTable(schema.getTableName());
         final ExprTree clientFilter = args.getWhereExpr().getClientFilter();
