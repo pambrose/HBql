@@ -112,9 +112,7 @@ public class TestObject {
     public static void main(String[] args) throws IOException, HPersistException {
 
         HConnection conn = new HConnection();
-
-        HOutput output = conn.exec("set packagepath = 'com.imap4j.hbql:com.imap4j.hbase'");
-        System.out.println(output);
+        HOutput output;
 
         output = conn.exec("define table testobjects "
                            + "("

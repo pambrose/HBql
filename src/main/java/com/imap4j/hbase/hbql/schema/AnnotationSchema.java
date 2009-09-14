@@ -10,11 +10,15 @@ import com.imap4j.hbase.util.Lists;
 import com.imap4j.hbase.util.Maps;
 import org.apache.hadoop.hbase.client.Result;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * Created by IntelliJ IDEA.
@@ -74,28 +78,140 @@ public class AnnotationSchema extends HBaseSchema {
                 this.processColumnVersionAnnotation(field);
     }
 
-    public synchronized static AnnotationSchema getAnnotationSchema(final String objname) throws HPersistException {
+    public synchronized static AnnotationSchema getAnnotationSchema(final String objName) throws HPersistException {
 
         // First see if already cached
-        Class<?> clazz = getClassCacheMap().get(objname);
+        Class<?> clazz = getClassCacheMap().get(objName);
 
         if (clazz != null)
             return getAnnotationSchema(clazz);
 
-        // Then check with packagepath prefixes
-        for (final String val : EnvVars.getPackagePath()) {
-            String cp = val;
-            if (!cp.endsWith(".") && cp.length() > 0)
-                cp += ".";
-            final String name = cp + objname;
-            clazz = getClass(name);
-            if (clazz != null) {
-                getClassCacheMap().put(objname, clazz);
-                return getAnnotationSchema(clazz);
+        final String classpath = System.getProperty("java.class.path");
+        for (final String val : classpath.split(":")) {
+            try {
+                if (val.toLowerCase().endsWith(".jar")) {
+                    JarFile jarFile = new JarFile(val);
+                    Enumeration<JarEntry> entries = jarFile.entries();
+                    while (entries.hasMoreElements()) {
+                        final JarEntry entry = entries.nextElement();
+                        final AnnotationSchema schema = searchPackage(entry.getName(), objName);
+                        if (schema != null)
+                            return schema;
+                    }
+                }
+
+                final File dir = new File(val);
+                if (dir.isDirectory())
+                    return searchDirectory(dir, "", objName + ".class");
+            }
+            catch (IOException e) {
+                // Go to next entry
             }
         }
 
         return null;
+    }
+
+    private static AnnotationSchema searchDirectory(final File dir,
+                                                    final String prefix,
+                                                    final String dotClassName) throws HPersistException {
+
+        final List<File> subdirs = Lists.newArrayList();
+        final String[] contents = dir.list();
+
+        for (final String elem : contents) {
+
+            final File file = new File(dir + "/" + elem);
+            if (file.isDirectory()) {
+                subdirs.add(file);
+            }
+            else {
+                if (file.getName().endsWith(dotClassName)) {
+                    final String simplename = dotClassName.split(".class")[0];
+                    final String fullName = prefix
+                                            + ((prefix.length() > 0) ? "." : "")
+                                            + simplename;
+                    return setClassCache(fullName, simplename);
+                }
+            }
+        }
+
+        // Now search the dirs
+        for (final File subdir : subdirs) {
+            final String nextdir = (prefix.length() == 0) ? subdir.getName() : prefix + "." + subdir.getName();
+            final AnnotationSchema schema = searchDirectory(subdir, nextdir, dotClassName);
+            if (schema != null)
+                return schema;
+        }
+
+        return null;
+    }
+
+    private static AnnotationSchema searchPackage(final String packageName,
+                                                  final String objname) throws HPersistException {
+
+        if (packageName == null)
+            return null;
+
+        final String prefix = packageName.replaceAll("/", ".");
+
+        if (prefix.startsWith("META-INF.")
+            || prefix.startsWith("antlr.")
+            || prefix.startsWith("org.antlr.")
+            || prefix.startsWith("apple.")
+            || prefix.startsWith("com.apple.")
+            || prefix.startsWith("sun.")
+            || prefix.startsWith("com.sun.")
+            || prefix.startsWith("java.")
+            || prefix.startsWith("javax.")
+            || prefix.startsWith("org.apache.zookeeper.")
+            || prefix.startsWith("org.apache.bookkeeper.")
+            || prefix.startsWith("org.apache.jute.")
+            || prefix.startsWith("com.google.common.")
+            || prefix.startsWith("org.apache.log4j.")
+            || prefix.startsWith("junit.")
+            || prefix.startsWith("org.junit.")
+            || prefix.startsWith("org.xml.")
+            || prefix.startsWith("org.w3c.")
+            || prefix.startsWith("org.omg.")
+            || prefix.startsWith("org.apache.mina.")
+            || prefix.startsWith("org.apache.hadoop.")
+            || prefix.startsWith("org.apache.commons.logging.")
+            || prefix.startsWith("org.jcp.")
+            || prefix.startsWith("org.slf4j.")
+            || prefix.startsWith("org.ietf.")
+            || prefix.startsWith("org.relaxng.")
+            || prefix.startsWith("netscape.")
+                )
+            return null;
+
+        final String fullname = prefix
+                                + ((!prefix.endsWith(".") && prefix.length() > 0) ? "." : "")
+                                + objname;
+
+        return setClassCache(fullname, objname);
+    }
+
+    private static AnnotationSchema setClassCache(final String fullname,
+                                                  final String objName) throws HPersistException {
+
+        final Class<?> clazz = getClass(fullname);
+        if (clazz == null) {
+            return null;
+        }
+        else {
+            getClassCacheMap().put(objName, clazz);
+            return getAnnotationSchema(clazz);
+        }
+    }
+
+    private static Class getClass(final String str) {
+        try {
+            return Class.forName(str);
+        }
+        catch (ClassNotFoundException e) {
+            return null;
+        }
     }
 
     public static AnnotationSchema getAnnotationSchema(final Object obj) throws HPersistException {
@@ -111,15 +227,6 @@ public class AnnotationSchema extends HBaseSchema {
         schema = new AnnotationSchema(clazz);
         getAnnotationSchemaMap().put(clazz, schema);
         return schema;
-    }
-
-    private static Class getClass(final String str) {
-        try {
-            return Class.forName(str);
-        }
-        catch (ClassNotFoundException e) {
-            return null;
-        }
     }
 
     private static Map<Class<?>, AnnotationSchema> getAnnotationSchemaMap() {

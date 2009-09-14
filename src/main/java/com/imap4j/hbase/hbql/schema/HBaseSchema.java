@@ -49,12 +49,14 @@ public abstract class HBaseSchema extends ExprSchema {
 
     public static HBaseSchema findSchema(final String tablename) throws HPersistException {
 
-        // First look in annotation schema, thentry defined schema
-        HBaseSchema schema = AnnotationSchema.getAnnotationSchema(tablename);
+        // First look in defined schema, then try annotation schema
+        HBaseSchema schema;
+
+        schema = DefinedSchema.getDefinedSchema(tablename);
         if (schema != null)
             return schema;
 
-        schema = DefinedSchema.getDefinedSchema(tablename);
+        schema = AnnotationSchema.getAnnotationSchema(tablename);
         if (schema != null)
             return schema;
 
