@@ -80,34 +80,6 @@ public class TestObject {
     @HColumn(family = "family3", mapKeysAsColumns = false)
     private Map<String, String> mapval2 = Maps.newHashMap();
 
-
-    @HTable(name = "testobjects",
-            families = {
-                    @HFamily(name = "family1", maxVersions = 10),
-                    @HFamily(name = "family2"),
-                    @HFamily(name = "family3", maxVersions = 5)
-            })
-    public static class TestObject2 {
-        @HColumn(key = true)
-        private String keyval;
-
-        @HColumn(family = "family1")
-        private String strValue = "";
-
-        @HColumn(family = "family1", column = "author")
-        private String author = "";
-
-        @HColumnVersionMap(instance = "author")
-        private NavigableMap<Long, String> authorVersions;
-
-        @HColumn(family = "family1")
-        private String title = "";
-
-        @HColumnVersionMap(instance = "title")
-        private NavigableMap<Long, String> titles = new TreeMap<Long, String>();
-    }
-
-
     public TestObject() {
     }
 
@@ -204,18 +176,8 @@ public class TestObject {
 
         results1.close();
 
-        TestObject2 l = new TestObject2();
-        String k = l.getClass().getName();
-        Object o;
-        try {
-            o = Class.forName(k);
-        }
-        catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
         final String query2 = "SELECT author, authorVersions "
-                              + "FROM TestObject$TestObject2 "
+                              + "FROM TestObject "
                               + "WITH "
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
                               + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
@@ -223,10 +185,10 @@ public class TestObject {
                               //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
                               + "CLIENT FILTER WHERE author LIKE '.*282.*'";
 
-        HQuery<TestObject2> q2 = conn.newHQuery(query2);
-        HResults<TestObject2> results2 = q2.execute();
+        HQuery<TestObject> q2 = conn.newHQuery(query2);
+        HResults<TestObject> results2 = q2.execute();
 
-        for (TestObject2 val2 : results2) {
+        for (TestObject val2 : results2) {
             System.out.println("Current Values: " + val2.keyval + " - " + val2.strValue
                                + " - " + val2.author + " - " + val2.title);
 
