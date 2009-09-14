@@ -95,6 +95,11 @@ public class DefinedSchema extends HBaseSchema {
     }
 
     @Override
+    public String toString() {
+        return this.getTableName();
+    }
+
+    @Override
     public String getTableName() {
         return this.tableName;
     }
