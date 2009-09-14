@@ -55,11 +55,11 @@ public class ObjectSchema extends ExprSchema {
         return objectSchemaMap;
     }
 
+    /*
     private Class<?> getClazz() {
         return clazz;
     }
 
-    /*
     public String getSchemaName() {
         return this.getTableName();
     }

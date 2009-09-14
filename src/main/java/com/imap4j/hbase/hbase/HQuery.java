@@ -34,15 +34,14 @@ public class HQuery<T> {
 
     List<HQueryListener<T>> listeners = null;
 
-    public HQuery(final HConnection connection,
-                  final String query,
-                  final boolean useAnnotations) throws IOException, HPersistException {
+    public HQuery(final HConnection connection, final String query) throws IOException, HPersistException {
         this.connection = connection;
         this.query = query;
-        this.useAnnotations = useAnnotations;
 
         final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ExprSchema)null);
-        this.schema = this.findSchema(args.getTableName());
+        //this.schema = this.findSchema(args.getTableName());
+        this.schema = (HBaseSchema)args.getSchema();
+        this.useAnnotations = this.schema instanceof AnnotationSchema;
 
         this.fieldList = (args.getColumns() == null) ? this.getSchema().getFieldList() : args.getColumns();
 
@@ -66,7 +65,7 @@ public class HQuery<T> {
         if (this.useAnnotations())
             schema = AnnotationSchema.getAnnotationSchema(tableName);
         else
-            schema = DefinedSchema.getDeclaredSchema(tableName);
+            schema = DefinedSchema.getDefinedSchema(tableName);
 
         if (schema != null)
             return schema;

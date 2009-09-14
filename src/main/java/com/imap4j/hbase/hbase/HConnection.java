@@ -39,8 +39,8 @@ public class HConnection {
 
     final HBaseConfiguration config = new HBaseConfiguration();
 
-    public <T> HQuery<T> newHQuery(final String query, final boolean useAnnotations) throws IOException, HPersistException {
-        return new HQuery<T>(this, query, useAnnotations);
+    public <T> HQuery<T> newHQuery(final String query) throws IOException, HPersistException {
+        return new HQuery<T>(this, query);
     }
 
     public HBaseConfiguration getConfig() {

@@ -1,5 +1,7 @@
 package com.imap4j.hbase.antlr.args;
 
+import com.imap4j.hbase.hbql.schema.ExprSchema;
+
 import java.util.List;
 
 /**
@@ -13,11 +15,16 @@ public class QueryArgs {
     private final List<String> columnList;
     private final String tableName;
     private final WhereArgs whereExpr;
+    private final ExprSchema schema;
 
-    public QueryArgs(final List<String> columnList, final String tableName, final WhereArgs whereExpr) {
+    public QueryArgs(final List<String> columnList,
+                     final String tableName,
+                     final WhereArgs whereExpr,
+                     final ExprSchema schema) {
         this.tableName = tableName;
         this.columnList = columnList;
         this.whereExpr = whereExpr;
+        this.schema = schema;
     }
 
     public List<String> getColumns() {
@@ -33,5 +40,9 @@ public class QueryArgs {
             return this.whereExpr;
         else
             return new WhereArgs();
+    }
+
+    public ExprSchema getSchema() {
+        return this.schema;
     }
 }

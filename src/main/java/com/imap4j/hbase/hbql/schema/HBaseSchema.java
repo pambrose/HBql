@@ -37,6 +37,19 @@ public abstract class HBaseSchema extends ExprSchema {
                                      final Result result) throws HPersistException;
 
 
+    public static HBaseSchema findSchema(final String tablename) throws HPersistException {
+
+        HBaseSchema schema = AnnotationSchema.getAnnotationSchema(tablename);
+        if (schema != null)
+            return schema;
+
+        schema = DefinedSchema.getDefinedSchema(tablename);
+        if (schema != null)
+            return schema;
+
+        throw new HPersistException("Unknown annotated table: " + tablename);
+    }
+
     // *** columnAttribByFamilyQualifiedColumnNameMap calls
     private Map<String, ColumnAttrib> getColumnAttribByFamilyQualifiedColumnNameMap() {
         return this.columnAttribByFamilyQualifiedColumnNameMap;

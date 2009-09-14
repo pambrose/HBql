@@ -146,10 +146,9 @@ public class TestObject {
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
                               + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
                               + "VERSIONS 5 "
-                //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
-                //+ "CLIENT FILTER WHERE family1:author LIKE '.*282.*'"
-                ;
-        HQuery<HRecord> q1 = conn.newHQuery(query1, false);
+                              //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
+                              + "CLIENT FILTER WHERE family1:author LIKE '.*282.*'";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
         HResults<HRecord> results1 = q1.execute();
 
         for (HRecord val1 : results1) {
@@ -168,7 +167,7 @@ public class TestObject {
                               //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
                               + "CLIENT FILTER WHERE author LIKE '.*282.*'";
 
-        HQuery<TestObject> q2 = conn.newHQuery(query2, true);
+        HQuery<TestObject> q2 = conn.newHQuery(query2);
         HResults<TestObject> results2 = q2.execute();
 
         for (TestObject val2 : results2) {

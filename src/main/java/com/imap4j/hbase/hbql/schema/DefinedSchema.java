@@ -23,7 +23,7 @@ import java.util.TreeMap;
  */
 public class DefinedSchema extends HBaseSchema {
 
-    private final static Map<String, DefinedSchema> declaredSchemaMap = Maps.newHashMap();
+    private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
     final String tableName;
 
@@ -54,21 +54,21 @@ public class DefinedSchema extends HBaseSchema {
     public synchronized static DefinedSchema newDefinedSchema(final String tableName,
                                                               final List<VarDesc> varList) throws HPersistException {
 
-        DefinedSchema schema = getDeclaredSchemaMap().get(tableName);
+        DefinedSchema schema = getDefinedSchemaMap().get(tableName);
         if (schema != null)
             throw new HPersistException("Table " + tableName + " already defined");
 
         schema = new DefinedSchema(tableName, varList);
-        getDeclaredSchemaMap().put(tableName, schema);
+        getDefinedSchemaMap().put(tableName, schema);
         return schema;
     }
 
-    private static Map<String, DefinedSchema> getDeclaredSchemaMap() {
-        return declaredSchemaMap;
+    private static Map<String, DefinedSchema> getDefinedSchemaMap() {
+        return definedSchemaMap;
     }
 
-    public static HBaseSchema getDeclaredSchema(final String tableName) {
-        return getDeclaredSchemaMap().get(tableName);
+    public static DefinedSchema getDefinedSchema(final String tableName) {
+        return getDefinedSchemaMap().get(tableName);
     }
 
     @Override

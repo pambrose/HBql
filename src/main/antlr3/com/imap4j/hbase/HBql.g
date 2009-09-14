@@ -53,7 +53,7 @@ import com.imap4j.hbase.util.*;
 
 selectStmt [ExprSchema es] returns [QueryArgs retval]
 	: keySELECT (STAR | c=columnList) keyFROM t=ID 	{setExprSchema($t.text);}
-	  w=whereValue[es]?				{retval = new QueryArgs($c.retval, $t.text, $w.retval);};
+	  w=whereValue[es]?				{retval = new QueryArgs($c.retval, $t.text, $w.retval, getExprSchema());};
 
 columnList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
@@ -64,7 +64,7 @@ execCommand [ExprSchema es] returns [ExecArgs retval]
 	| def=defineStmt 				{retval = $def.retval;}
 	| desc=describeStmt 				{retval = $desc.retval;}
 	| show=showStmt 				{retval = $show.retval;}
-	| del=deleteStmt[es] 				{retval = $del.retval;}
+	| del=deleteStmt[es]		 		{retval = $del.retval;}
 	| set=setStmt					{retval = $set.retval;}
 	;
 

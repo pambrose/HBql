@@ -11,9 +11,9 @@ import com.imap4j.hbase.hbql.expr.value.var.DateAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.IntegerAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.LongAttribRef;
 import com.imap4j.hbase.hbql.expr.value.var.StringAttribRef;
-import com.imap4j.hbase.hbql.schema.AnnotationSchema;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.FieldType;
+import com.imap4j.hbase.hbql.schema.HBaseSchema;
 import com.imap4j.hbase.hbql.schema.VariableAttrib;
 import org.antlr.runtime.BitSet;
 import org.antlr.runtime.IntStream;
@@ -53,12 +53,13 @@ public class HBaseParser extends Parser {
     }
 
     protected void setExprSchema(final String tablename) throws RecognitionException {
+
         try {
-            final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(tablename);
+            final HBaseSchema schema = HBaseSchema.findSchema(tablename);
             this.setExprSchema(schema);
         }
         catch (HPersistException e) {
-            System.out.println("Unknown table: " + tablename);
+            System.out.println("Unknown annotated table: " + tablename);
             throw new RecognitionException(input);
         }
     }
