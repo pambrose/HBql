@@ -10,12 +10,12 @@ import java.util.List;
  * Date: Aug 24, 2009
  * Time: 10:31:14 PM
  */
-public class CreateTempArgs implements ExecArgs {
+public class DefineArgs implements ExecArgs {
 
     private final String tableName;
     private final List<VarDesc> varList;
 
-    public CreateTempArgs(final String tableName, final List<VarDesc> varList) {
+    public DefineArgs(final String tableName, final List<VarDesc> varList) {
         this.tableName = tableName;
         this.varList = varList;
     }

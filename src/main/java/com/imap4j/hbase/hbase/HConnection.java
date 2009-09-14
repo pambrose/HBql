@@ -1,7 +1,7 @@
 package com.imap4j.hbase.hbase;
 
 import com.imap4j.hbase.antlr.args.CreateArgs;
-import com.imap4j.hbase.antlr.args.CreateTempArgs;
+import com.imap4j.hbase.antlr.args.DefineArgs;
 import com.imap4j.hbase.antlr.args.DeleteArgs;
 import com.imap4j.hbase.antlr.args.DescribeArgs;
 import com.imap4j.hbase.antlr.args.ExecArgs;
@@ -10,7 +10,7 @@ import com.imap4j.hbase.antlr.args.ShowArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
-import com.imap4j.hbase.hbql.schema.DeclaredSchema;
+import com.imap4j.hbase.hbql.schema.DefinedSchema;
 import com.imap4j.hbase.hbql.schema.EnvVars;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.HUtil;
@@ -65,8 +65,8 @@ public class HConnection {
         if (exec instanceof CreateArgs)
             return createCommand((CreateArgs)exec);
 
-        if (exec instanceof CreateTempArgs)
-            return createTempCommand((CreateTempArgs)exec);
+        if (exec instanceof DefineArgs)
+            return defineCommand((DefineArgs)exec);
 
         if (exec instanceof DescribeArgs)
             return describeCommand((DescribeArgs)exec);
@@ -108,10 +108,10 @@ public class HConnection {
         return retval;
     }
 
-    private HOutput createTempCommand(final CreateTempArgs args) throws HPersistException {
+    private HOutput defineCommand(final DefineArgs args) throws HPersistException {
         final HOutput retval = new HOutput();
 
-        final DeclaredSchema schema = DeclaredSchema.newDeclaredSchema(args.getTableName(), args.getVarList());
+        final DefinedSchema schema = DefinedSchema.newDefinedSchema(args.getTableName(), args.getVarList());
 
         for (final VariableAttrib attrib : schema.getVariableAttribs()) {
             final VarDescAttrib vdattrib = (VarDescAttrib)attrib;
@@ -120,7 +120,7 @@ public class HConnection {
                                             + " has unknown type " + vdattrib.getTypeName());
         }
 
-        retval.out.println("Temp Table " + args.getTableName() + " created.");
+        retval.out.println("Table " + args.getTableName() + " defined.");
         retval.out.flush();
         return retval;
     }

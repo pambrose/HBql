@@ -21,13 +21,13 @@ import java.util.TreeMap;
  * Date: Sep 9, 2009
  * Time: 10:19:00 AM
  */
-public class DeclaredSchema extends HBaseSchema {
+public class DefinedSchema extends HBaseSchema {
 
-    private final static Map<String, DeclaredSchema> declaredSchemaMap = Maps.newHashMap();
+    private final static Map<String, DefinedSchema> declaredSchemaMap = Maps.newHashMap();
 
     final String tableName;
 
-    public DeclaredSchema(final TokenStream input, final List<VarDesc> varList) throws RecognitionException {
+    public DefinedSchema(final TokenStream input, final List<VarDesc> varList) throws RecognitionException {
         this.tableName = "declared";
         try {
             for (final VarDesc var : varList) {
@@ -42,7 +42,7 @@ public class DeclaredSchema extends HBaseSchema {
         }
     }
 
-    private DeclaredSchema(final String tableName, final List<VarDesc> varList) throws HPersistException {
+    private DefinedSchema(final String tableName, final List<VarDesc> varList) throws HPersistException {
         this.tableName = tableName;
         for (final VarDesc var : varList) {
             final VarDescAttrib attrib = new VarDescAttrib(var);
@@ -51,19 +51,19 @@ public class DeclaredSchema extends HBaseSchema {
         }
     }
 
-    public synchronized static DeclaredSchema newDeclaredSchema(final String tableName,
-                                                                final List<VarDesc> varList) throws HPersistException {
+    public synchronized static DefinedSchema newDefinedSchema(final String tableName,
+                                                              final List<VarDesc> varList) throws HPersistException {
 
-        DeclaredSchema schema = getDeclaredSchemaMap().get(tableName);
+        DefinedSchema schema = getDeclaredSchemaMap().get(tableName);
         if (schema != null)
             throw new HPersistException("Table " + tableName + " already defined");
 
-        schema = new DeclaredSchema(tableName, varList);
+        schema = new DefinedSchema(tableName, varList);
         getDeclaredSchemaMap().put(tableName, schema);
         return schema;
     }
 
-    private static Map<String, DeclaredSchema> getDeclaredSchemaMap() {
+    private static Map<String, DefinedSchema> getDeclaredSchemaMap() {
         return declaredSchemaMap;
     }
 

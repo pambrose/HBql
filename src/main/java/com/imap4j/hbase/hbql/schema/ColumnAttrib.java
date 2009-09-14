@@ -33,6 +33,9 @@ public abstract class ColumnAttrib extends VariableAttrib {
         this.setter = setter;
         this.mapKeysAsColumns = mapKeysAsColumns;
 
+    }
+
+    protected void defineAccessors() throws HPersistException {
         try {
             if (this.getGetter() != null && this.getGetter().length() > 0) {
                 this.getterMethod = this.getMethod(this.getGetter());
@@ -71,6 +74,7 @@ public abstract class ColumnAttrib extends VariableAttrib {
             throw new HPersistException("Missing method " + this.getEnclosingClassName()
                                         + "." + this.getSetter() + "(byte[] arg)");
         }
+
     }
 
     public boolean isACurrentValue() {

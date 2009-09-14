@@ -25,6 +25,8 @@ public class CurrentValueAttrib extends FieldAttrib {
               field.getAnnotation(HColumn.class).setter(),
               field.getAnnotation(HColumn.class).mapKeysAsColumns());
 
+        this.defineAccessors();
+
         if (isFinal(this.getField()))
             throw new HPersistException(this + "." + this.getField().getName() + " cannot have a @HColumn "
                                         + "annotation and be marked final");

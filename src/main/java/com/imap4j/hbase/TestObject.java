@@ -116,7 +116,7 @@ public class TestObject {
         HOutput output = conn.exec("set packagepath = 'com.imap4j.hbql:com.imap4j.hbase'");
         System.out.println(output);
 
-        output = conn.exec("create temp table testobjects (family1:author string)");
+        output = conn.exec("define table testobjects (family1:author string)");
         System.out.println(output);
 
         /*

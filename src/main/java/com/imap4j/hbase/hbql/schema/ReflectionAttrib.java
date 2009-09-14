@@ -14,5 +14,7 @@ public class ReflectionAttrib extends FieldAttrib {
 
     public ReflectionAttrib(final Field field) throws HPersistException {
         super(field, FieldType.getFieldType(field.getType()), null, null, null, null, false);
+
+        this.defineAccessors();
     }
 }

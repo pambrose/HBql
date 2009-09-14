@@ -24,6 +24,8 @@ public class VersionAttrib extends FieldAttrib {
                           final String setter,
                           final boolean mapKeysAsColumns) throws HPersistException {
         super(field, fieldType, family, column, getter, setter, mapKeysAsColumns);
+
+        this.defineAccessors();
     }
 
     public static VersionAttrib newVersionAttrib(final ExprSchema exprSchema, final Field field) throws HPersistException {

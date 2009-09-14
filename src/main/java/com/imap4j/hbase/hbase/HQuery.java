@@ -5,7 +5,7 @@ import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
-import com.imap4j.hbase.hbql.schema.DeclaredSchema;
+import com.imap4j.hbase.hbql.schema.DefinedSchema;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.HBaseSchema;
 import com.imap4j.hbase.hbql.schema.HUtil;
@@ -66,7 +66,7 @@ public class HQuery<T> {
         if (this.useAnnotations())
             schema = AnnotationSchema.getAnnotationSchema(tableName);
         else
-            schema = DeclaredSchema.getDeclaredSchema(tableName);
+            schema = DefinedSchema.getDeclaredSchema(tableName);
 
         if (schema != null)
             return schema;

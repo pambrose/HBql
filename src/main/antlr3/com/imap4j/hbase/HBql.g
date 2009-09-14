@@ -61,7 +61,7 @@ columnList returns [List<String> retval]
 
 execCommand [ExprSchema es] returns [ExecArgs retval]
 	: create=createStmt				{retval = $create.retval;}
-	| def=createTempStmt 				{retval = $def.retval;}
+	| def=defineStmt 				{retval = $def.retval;}
 	| desc=describeStmt 				{retval = $desc.retval;}
 	| show=showStmt 				{retval = $show.retval;}
 	| del=deleteStmt[es] 				{retval = $del.retval;}
@@ -72,10 +72,10 @@ createStmt returns [CreateArgs retval]
 	: keyCREATE keyTABLE keyUSING t=ID 		{retval = new CreateArgs($t.text);}
 	;
 	
-createTempStmt returns [CreateTempArgs retval]
+defineStmt returns [DefineArgs retval]
 @init {List<VarDesc> varList = Lists.newArrayList();}
-	: keyCREATE keyTEMP keyTABLE t=ID LPAREN (a1=tempAttrib {varList.add($a1.retval);} (COMMA a2=tempAttrib {varList.add($a2.retval);})*)? RPAREN
-							{retval = new CreateTempArgs($t.text, varList);}
+	: keyDEFINE keyTABLE t=ID LPAREN (a1=tempAttrib {varList.add($a1.retval);} (COMMA a2=tempAttrib {varList.add($a2.retval);})*)? RPAREN
+							{retval = new DefineArgs($t.text, varList);}
 	;
 
 tempAttrib returns [VarDesc retval]
@@ -417,7 +417,7 @@ column 	: c=varRef;
 schemaDesc returns [ExprSchema retval]
 @init {List<VarDesc> varList = Lists.newArrayList();}
 	: LCURLY (varDesc[varList] (COMMA varDesc[varList])*)? RCURLY
-							{retval = new DeclaredSchema(input, varList);}
+							{retval = new DefinedSchema(input, varList);}
 	;
 	
 varDesc [List<VarDesc> list] 
@@ -473,7 +473,7 @@ WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();} ;
 keySELECT 	: {isKeyword(input, "SELECT")}? ID;
 keyDELETE 	: {isKeyword(input, "DELETE")}? ID;
 keyCREATE 	: {isKeyword(input, "CREATE")}? ID;
-keyTEMP 	: {isKeyword(input, "TEMP")}? ID;
+keyDEFINE 	: {isKeyword(input, "DEFINE")}? ID;
 keyUSING 	: {isKeyword(input, "USING")}? ID;
 keyDESCRIBE 	: {isKeyword(input, "DESCRIBE")}? ID;
 keySHOW 	: {isKeyword(input, "SHOW")}? ID;
