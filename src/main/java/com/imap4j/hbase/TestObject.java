@@ -160,6 +160,20 @@ public class TestObject {
             System.out
                     .println("Current Values: " + val1.getCurrentValue("keyval") + " - " + val1.getCurrentValue("strValue")
                              + " - " + val1.getCurrentValue("family1:author") + " - " + val1.getCurrentValue("title"));
+
+            System.out.println("Historicals");
+
+            if (val1.getVersionedValue("family1:author") != null) {
+                Map<Long, String> versioned = (Map<Long, String>)val1.getVersionedValue("family1:author");
+                for (final Long key : versioned.keySet())
+                    System.out.println(new Date(key) + " - " + versioned.get(key));
+            }
+
+            if (val1.getVersionedValue("family1:title") != null) {
+                Map<Long, String> versioned = (Map<Long, String>)val1.getVersionedValue("family1:title");
+                for (final Long key : versioned.keySet())
+                    System.out.println(new Date(key) + " - " + versioned.get(key));
+            }
         }
 
         results1.close();
@@ -184,8 +198,7 @@ public class TestObject {
 
             if (val2.authorVersions != null)
                 for (final Long key : val2.authorVersions.keySet())
-                    System.out.println(new Date(key) + " - "
-                                       + val2.authorVersions.get(key));
+                    System.out.println(new Date(key) + " - " + val2.authorVersions.get(key));
 
             if (val2.titles != null)
                 for (final Long key : val2.titles.keySet())

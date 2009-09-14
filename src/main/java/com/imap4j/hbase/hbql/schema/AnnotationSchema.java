@@ -14,9 +14,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -181,9 +179,9 @@ public class AnnotationSchema extends HBaseSchema {
     }
 
     private void processColumnVersionAnnotation(final Field field) throws HPersistException {
-        final VersionAttrib versionAttrib = VersionAttrib.newVersionAttrib(this, field);
-        this.setVersionAttribByFamilyQualifiedColumnName(versionAttrib.getFamilyQualifiedName(), versionAttrib);
-        this.addVariableAttrib(versionAttrib);
+        final VersionAttrib attrib = VersionAttrib.newVersionAttrib(this, field);
+        this.setVersionAttribByFamilyQualifiedColumnName(attrib.getFamilyQualifiedName(), attrib);
+        this.addVariableAttrib(attrib);
     }
 
     public String getTableName() {
@@ -263,49 +261,5 @@ public class AnnotationSchema extends HBaseSchema {
                                        + " for " + this.getSchemaName());
         }
         return newobj;
-    }
-
-    private void assignVersionedValues(final Serialization ser,
-                                       final List<String> fieldList,
-                                       final Result result,
-                                       final Object newobj) throws IOException, HPersistException {
-
-        final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
-
-        for (final byte[] fbytes : familyMap.keySet()) {
-
-            final String famname = ser.getStringFromBytes(fbytes) + ":";
-            final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(fbytes);
-
-            for (final byte[] cbytes : columnMap.keySet()) {
-                final String colname = ser.getStringFromBytes(cbytes);
-                final String qualifiedName = famname + colname;
-                final NavigableMap<Long, byte[]> tsMap = columnMap.get(cbytes);
-
-                for (final Long timestamp : tsMap.keySet()) {
-                    final byte[] vbytes = tsMap.get(timestamp);
-
-                    final VersionAttrib attrib = this.getVersionAttribByFamilyQualifiedColumnName(qualifiedName);
-
-                    // Ignore data if no version map exists for the column
-                    if (attrib == null)
-                        continue;
-
-                    // Ignore if not in select list
-                    if (!fieldList.contains(attrib.getField().getName()))
-                        continue;
-
-                    final Object val = attrib.getValueFromBytes(ser, newobj, vbytes);
-                    Map mapval = (Map)attrib.getVersionedValue(newobj);
-
-                    if (mapval == null) {
-                        mapval = new TreeMap();
-                        attrib.setVersionedValue(newobj, mapval);
-                    }
-
-                    mapval.put(timestamp, val);
-                }
-            }
-        }
     }
 }
