@@ -32,7 +32,6 @@ public abstract class ColumnAttrib extends VariableAttrib {
         this.getter = getter;
         this.setter = setter;
         this.mapKeysAsColumns = mapKeysAsColumns;
-
     }
 
     protected void defineAccessors() throws HPersistException {

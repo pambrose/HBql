@@ -32,4 +32,10 @@ public class HRecord {
     public Object setVersionedValue(final String name, final Object val) {
         return this.versionValues.put(name, val);
     }
+
+    public void clear() {
+        this.currentValues.clear();
+        this.versionValues.clear();
+        this.types.clear();
+    }
 }

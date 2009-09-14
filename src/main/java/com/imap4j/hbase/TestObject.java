@@ -182,8 +182,9 @@ public class TestObject {
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
                               + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
                               + "VERSIONS 5 "
-                              //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
-                              + "CLIENT FILTER WHERE author LIKE '.*282.*'";
+                              + "SERVER FILTER WHERE author LIKE '.*282.*'"
+                //+ "CLIENT FILTER WHERE author LIKE '.*282.*'"
+                ;
 
         HQuery<TestObject> q2 = conn.newHQuery(query2);
         HResults<TestObject> results2 = q2.execute();
