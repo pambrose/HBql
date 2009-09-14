@@ -5,7 +5,6 @@ import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
-import com.imap4j.hbase.hbql.schema.DefinedSchema;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.HBaseSchema;
 import com.imap4j.hbase.hbql.schema.HUtil;
@@ -32,7 +31,7 @@ public class HQuery<T> {
 
     final boolean useAnnotations;
 
-    List<HQueryListener<T>> listeners = null;
+    private List<HQueryListener<T>> listeners = null;
 
     public HQuery(final HConnection connection, final String query) throws IOException, HPersistException {
         this.connection = connection;
@@ -56,22 +55,6 @@ public class HQuery<T> {
                                           this.getExprTree(args.getWhereExpr().getServerFilter(),
                                                            this.getSchema(),
                                                            fieldList));
-    }
-
-    private HBaseSchema findSchema(final String tableName) throws HPersistException {
-
-        final HBaseSchema schema;
-
-        if (this.useAnnotations())
-            schema = AnnotationSchema.getAnnotationSchema(tableName);
-        else
-            schema = DefinedSchema.getDefinedSchema(tableName);
-
-        if (schema != null)
-            return schema;
-        else
-            throw new HPersistException("Unknown table name " + tableName);
-
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {
@@ -109,7 +92,7 @@ public class HQuery<T> {
         return this.useAnnotations;
     }
 
-    private List<HQueryListener<T>> getListeners() {
+    public List<HQueryListener<T>> getListeners() {
         return this.listeners;
     }
 
@@ -142,21 +125,12 @@ public class HQuery<T> {
 
         final HResults<T> retval = new HResults<T>(this);
 
-        if (this.getListeners() != null && this.getListeners().size() > 0) {
-            try {
-                for (final HQueryListener<T> listener : this.getListeners())
-                    listener.onQueryInit();
+        if (this.getListeners() != null) {
+            for (final HQueryListener<T> listener : this.getListeners())
+                listener.onQueryInit();
 
-                for (final T val : retval)
-                    for (final HQueryListener<T> listener : this.getListeners())
-                        listener.onEachRow(val);
-
-                for (final HQueryListener<T> listener : this.getListeners())
-                    listener.onQueryComplete();
-            }
-            finally {
-                retval.close();
-            }
+            for (final HQueryListener<T> listener : this.getListeners())
+                listener.onQueryComplete();
         }
 
         return retval;

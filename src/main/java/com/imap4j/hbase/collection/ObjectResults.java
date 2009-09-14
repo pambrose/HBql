@@ -64,7 +64,7 @@ public class ObjectResults<T> implements Iterable<T> {
                     return this.nextObject;
                 }
 
-                protected void setNextObject(final T nextObject) {
+                protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
                     this.nextObject = nextObject;
                 }
             };
@@ -90,5 +90,4 @@ public class ObjectResults<T> implements Iterable<T> {
             }
         };
     }
-
 }

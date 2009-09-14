@@ -121,8 +121,13 @@ public class HResults<T> implements Iterable<T> {
                                                                                maxVersions,
                                                                                result);
 
-                            if (clientExprTree == null || clientExprTree.evaluate(val))
+                            if (clientExprTree == null || clientExprTree.evaluate(val)) {
+                                final List<HQueryListener<T>> listenerList = getHQuery().getListeners();
+                                if (listenerList != null)
+                                    for (final HQueryListener<T> listener : listenerList)
+                                        listener.onEachRow(val);
                                 return val;
+                            }
                         }
                     }
 
@@ -135,8 +140,15 @@ public class HResults<T> implements Iterable<T> {
                     return this.nextObject;
                 }
 
-                protected void setNextObject(final T nextObject) {
+                protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
                     this.nextObject = nextObject;
+
+                    if (nextObject == null && !fromExceptionCatch) {
+                        final List<HQueryListener<T>> listenerList = getHQuery().getListeners();
+                        if (listenerList != null)
+                            for (final HQueryListener<T> listener : listenerList)
+                                listener.onQueryInit();
+                    }
                 }
             };
         }

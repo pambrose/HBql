@@ -17,7 +17,7 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
 
     protected abstract T getNextObject();
 
-    protected abstract void setNextObject(final T nextObject);
+    protected abstract void setNextObject(final T nextObject, final boolean fromExceptionCatch);
 
     @Override
     public T next() {
@@ -27,15 +27,15 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
 
         // Now prefetch next value so that hasNext() will be correct
         try {
-            this.setNextObject(fetchNextObject());
+            this.setNextObject(fetchNextObject(), false);
         }
         catch (HPersistException e) {
             e.printStackTrace();
-            this.setNextObject(null);
+            this.setNextObject(null, true);
         }
         catch (IOException e) {
             e.printStackTrace();
-            this.setNextObject(null);
+            this.setNextObject(null, true);
         }
 
         return retval;
