@@ -51,6 +51,7 @@ public class JavaSerialization extends Serialization {
                 case DoubleType:
                     return ois.readDouble();
 
+                case KeyType:
                 case StringType:
                     return ois.readUTF();
 
@@ -110,6 +111,7 @@ public class JavaSerialization extends Serialization {
                 oos.writeDouble((Double)obj);
                 break;
 
+            case KeyType:
             case StringType:
                 oos.writeUTF((String)obj);
                 break;

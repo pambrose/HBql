@@ -36,8 +36,6 @@ public class AnnotationSchema extends HBaseSchema {
     private final HTable table;
     private final HFamily[] families;
 
-    private ColumnAttrib keyColumnAttrib = null;
-
     private AnnotationSchema(final Class clazz) throws HPersistException {
 
         this.clazz = clazz;
@@ -149,10 +147,6 @@ public class AnnotationSchema extends HBaseSchema {
         return this.clazz;
     }
 
-    public ColumnAttrib getKeyColumnAttrib() {
-        return this.keyColumnAttrib;
-    }
-
     public HFamily[] getFamilies() {
         return this.families;
     }
@@ -161,12 +155,15 @@ public class AnnotationSchema extends HBaseSchema {
 
         final ColumnAttrib columnAttrib = new CurrentValueAttrib(field);
 
+        this.addVariableAttrib(columnAttrib);
+        this.setColumnAttribByFamilyQualifiedColumnName(columnAttrib.getFamilyQualifiedName(), columnAttrib);
+
         if (columnAttrib.isKey()) {
             if (this.getKeyColumnAttrib() != null)
                 throw new HPersistException("Class " + this + " has multiple instance variables "
                                             + "annotated with @HColumn(key=true)");
 
-            this.keyColumnAttrib = columnAttrib;
+            this.setKeyColumnAttrib(columnAttrib);
         }
         else {
             final String family = columnAttrib.getFamilyName();
@@ -182,8 +179,6 @@ public class AnnotationSchema extends HBaseSchema {
             this.getColumnAttribListByFamilyName(family).add(columnAttrib);
         }
 
-        this.addVariableAttrib(columnAttrib);
-        this.setColumnAttribByFamilyQualifiedColumnName(columnAttrib.getFamilyQualifiedName(), columnAttrib);
     }
 
     private void processColumnVersionAnnotation(final Field field) throws HPersistException {

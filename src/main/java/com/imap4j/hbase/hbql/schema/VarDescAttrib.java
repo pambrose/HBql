@@ -36,6 +36,11 @@ public class VarDescAttrib extends ColumnAttrib {
     }
 
     @Override
+    public boolean isKey() {
+        return this.getFieldType() == FieldType.KeyType;
+    }
+
+    @Override
     protected Method getMethod(final String methodName, final Class<?>... params) throws NoSuchMethodException {
         return null;
     }

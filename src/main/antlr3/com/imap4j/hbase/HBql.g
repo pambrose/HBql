@@ -74,11 +74,12 @@ createStmt returns [CreateArgs retval]
 	
 defineStmt returns [DefineArgs retval]
 @init {List<VarDesc> varList = Lists.newArrayList();}
-	: keyDEFINE keyTABLE t=ID LPAREN (a1=tempAttrib {varList.add($a1.retval);} (COMMA a2=tempAttrib {varList.add($a2.retval);})*)? RPAREN
+	: keyDEFINE keyTABLE t=ID LPAREN (a1=defineAttrib {varList.add($a1.retval);} 
+	  (COMMA a2=defineAttrib {varList.add($a2.retval);})*)? RPAREN
 							{retval = new DefineArgs($t.text, varList);}
 	;
 
-tempAttrib returns [VarDesc retval]
+defineAttrib returns [VarDesc retval]
 	: n=ID t=ID 					{retval = VarDesc.newVarDesc($n.text, $t.text);}
 	;
 

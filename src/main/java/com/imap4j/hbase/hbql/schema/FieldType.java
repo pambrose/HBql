@@ -25,6 +25,7 @@ public enum FieldType {
     LongType(Long.TYPE, Bytes.SIZEOF_LONG, "L", "LONG"),
     FloatType(Float.TYPE, Bytes.SIZEOF_FLOAT, "F", "FLOAT"),
     DoubleType(Double.TYPE, Bytes.SIZEOF_DOUBLE, "D", "DOUBLE"),
+    KeyType(String.class, -1, "S", "KEY"),
     StringType(String.class, -1, "S", "STR", "STRING"),
     DateType(Date.class, -1, "D", "DATE", "DATETIME"),
     ObjectType(Object.class, -1, "O", "OBJ", "OBJECT");

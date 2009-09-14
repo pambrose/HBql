@@ -51,6 +51,7 @@ public class HadoopSerialization extends Serialization {
                 case DoubleType:
                     return Bytes.toDouble(b);
 
+                case KeyType:
                 case StringType:
                     return Bytes.toString(b);
 
@@ -105,6 +106,7 @@ public class HadoopSerialization extends Serialization {
             case DoubleType:
                 return Bytes.toBytes((Double)obj);
 
+            case KeyType:
             case StringType:
                 return Bytes.toBytes((String)obj);
 

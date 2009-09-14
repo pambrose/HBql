@@ -16,15 +16,21 @@ import java.util.Map;
  */
 public abstract class HBaseSchema extends ExprSchema {
 
+    private ColumnAttrib keyColumnAttrib = null;
+
     private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedColumnNameMap = Maps.newHashMap();
     private final Map<String, VersionAttrib> versionAttribByFamilyQualifiedColumnNameMap = Maps.newHashMap();
 
-    public ColumnAttrib getKeyColumnAttrib() {
+    public Object newInstance() throws IllegalAccessException, InstantiationException {
         return null;
     }
 
-    public Object newInstance() throws IllegalAccessException, InstantiationException {
-        return null;
+    public ColumnAttrib getKeyColumnAttrib() {
+        return this.keyColumnAttrib;
+    }
+
+    protected void setKeyColumnAttrib(final ColumnAttrib keyColumnAttrib) {
+        this.keyColumnAttrib = keyColumnAttrib;
     }
 
     public abstract String getSchemaName();

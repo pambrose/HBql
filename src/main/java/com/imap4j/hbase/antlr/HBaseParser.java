@@ -92,6 +92,7 @@ public class HBaseParser extends Parser {
 
             if (attrib != null) {
                 switch (attrib.getFieldType()) {
+                    case KeyType:
                     case StringType:
                         return new StringAttribRef(var);
 

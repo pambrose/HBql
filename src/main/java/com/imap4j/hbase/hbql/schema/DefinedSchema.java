@@ -28,27 +28,24 @@ public class DefinedSchema extends HBaseSchema {
     final String tableName;
 
     public DefinedSchema(final TokenStream input, final List<VarDesc> varList) throws RecognitionException {
+
         this.tableName = "declared";
+
         try {
-            for (final VarDesc var : varList) {
-                final VarDescAttrib attrib = new VarDescAttrib(var);
-                addVariableAttrib(attrib);
-                this.setColumnAttribByFamilyQualifiedColumnName(var.getVariableName(), attrib);
-            }
+            for (final VarDesc var : varList)
+                processColumn(var);
         }
         catch (HPersistException e) {
             System.out.println(e.getMessage());
             throw new RecognitionException(input);
         }
+
     }
 
     private DefinedSchema(final String tableName, final List<VarDesc> varList) throws HPersistException {
         this.tableName = tableName;
-        for (final VarDesc var : varList) {
-            final VarDescAttrib attrib = new VarDescAttrib(var);
-            addVariableAttrib(attrib);
-            this.setColumnAttribByFamilyQualifiedColumnName(var.getVariableName(), attrib);
-        }
+        for (final VarDesc var : varList)
+            processColumn(var);
     }
 
     public synchronized static DefinedSchema newDefinedSchema(final String tableName,
@@ -62,6 +59,32 @@ public class DefinedSchema extends HBaseSchema {
         getDefinedSchemaMap().put(tableName, schema);
         return schema;
     }
+
+    private void processColumn(final VarDesc var) throws HPersistException {
+
+        final VarDescAttrib attrib = new VarDescAttrib(var);
+
+        this.addVariableAttrib(attrib);
+        this.setColumnAttribByFamilyQualifiedColumnName(var.getVariableName(), attrib);
+
+        if (attrib.isKey()) {
+            if (this.getKeyColumnAttrib() != null)
+                throw new HPersistException("Table " + this + " has multiple instance variables "
+                                            + "marked as keys");
+
+            this.setKeyColumnAttrib(attrib);
+        }
+        else {
+
+            final String family = attrib.getFamilyName();
+
+            if (family.length() == 0)
+                throw new HPersistException(attrib.getObjectQualifiedName()
+                                            + " is missing family name");
+
+        }
+    }
+
 
     private static Map<String, DefinedSchema> getDefinedSchemaMap() {
         return definedSchemaMap;
