@@ -27,12 +27,12 @@ public class NumberCalcExpr extends GenericCalcExpr<NumberValue> implements Numb
         boolean retval = true;
 
         if (this.getExpr1().optimizeForConstants(object))
-            this.setExpr1(new NumberLiteral(this.getExpr1().getValue(object)));
+            this.setExpr1(new NumberLiteral(this.getExpr1().getCurrentValue(object)));
         else
             retval = false;
 
         if (this.getExpr2().optimizeForConstants(object))
-            this.setExpr2(new NumberLiteral(this.getExpr2().getValue(object)));
+            this.setExpr2(new NumberLiteral(this.getExpr2().getCurrentValue(object)));
         else
             retval = false;
 
@@ -40,10 +40,10 @@ public class NumberCalcExpr extends GenericCalcExpr<NumberValue> implements Numb
     }
 
     @Override
-    public Long getValue(final Object object) throws HPersistException {
+    public Long getCurrentValue(final Object object) throws HPersistException {
 
-        final long val1 = this.getExpr1().getValue(object).longValue();
-        final long val2 = (this.getExpr2() != null) ? (this.getExpr2().getValue(object)).longValue() : 0;
+        final long val1 = this.getExpr1().getCurrentValue(object).longValue();
+        final long val2 = (this.getExpr2() != null) ? (this.getExpr2().getCurrentValue(object)).longValue() : 0;
 
         switch (this.getOp()) {
             case PLUS:

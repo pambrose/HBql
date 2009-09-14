@@ -29,8 +29,6 @@ public class HQuery<T> {
     final ExprTree clientExprTree;
     final List<Scan> scanList;
 
-    final boolean useAnnotations;
-
     private List<HQueryListener<T>> listeners = null;
 
     public HQuery(final HConnection connection, final String query) throws IOException, HPersistException {
@@ -38,9 +36,7 @@ public class HQuery<T> {
         this.query = query;
 
         final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ExprSchema)null);
-        //this.schema = this.findSchema(args.getTableName());
         this.schema = (HBaseSchema)args.getSchema();
-        this.useAnnotations = this.schema instanceof AnnotationSchema;
 
         this.fieldList = (args.getColumns() == null) ? this.getSchema().getFieldList() : args.getColumns();
 
@@ -88,8 +84,8 @@ public class HQuery<T> {
         return this.connection;
     }
 
-    public boolean useAnnotations() {
-        return this.useAnnotations;
+    public boolean isAnnotationSchema() {
+        return this.schema instanceof AnnotationSchema;
     }
 
     public List<HQueryListener<T>> getListeners() {
@@ -123,16 +119,11 @@ public class HQuery<T> {
 
     public HResults<T> execute() throws IOException, HPersistException {
 
-        final HResults<T> retval = new HResults<T>(this);
-
         if (this.getListeners() != null) {
             for (final HQueryListener<T> listener : this.getListeners())
                 listener.onQueryInit();
-
-            for (final HQueryListener<T> listener : this.getListeners())
-                listener.onQueryComplete();
         }
 
-        return retval;
+        return new HResults<T>(this);
     }
 }

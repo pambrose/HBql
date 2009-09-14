@@ -46,7 +46,7 @@ public class BooleanPredicate implements BooleanValue {
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Boolean getCurrentValue(final Object object) throws HPersistException {
         return this.getExpr().evaluate(object);
     }
 

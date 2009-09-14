@@ -20,9 +20,9 @@ public class DateAttribRef extends GenericAttribRef implements DateValue {
     }
 
     @Override
-    public Long getValue(final Object object) throws HPersistException {
+    public Long getCurrentValue(final Object object) throws HPersistException {
         final VariableAttrib variableAttrib = this.getExprVar().getVariableAttrib(this.getSchema());
-        return ((Date)variableAttrib.getValue(object)).getTime();
+        return ((Date)variableAttrib.getCurrentValue(object)).getTime();
     }
 
 }

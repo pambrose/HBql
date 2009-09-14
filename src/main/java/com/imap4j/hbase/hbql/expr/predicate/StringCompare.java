@@ -23,12 +23,12 @@ public class StringCompare extends GenericCompare<StringValue> implements Predic
         boolean retval = true;
 
         if (this.getExpr1().optimizeForConstants(object))
-            this.setExpr1(new StringLiteral(this.getExpr1().getValue(object)));
+            this.setExpr1(new StringLiteral(this.getExpr1().getCurrentValue(object)));
         else
             retval = false;
 
         if (this.getExpr2().optimizeForConstants(object))
-            this.setExpr2(new StringLiteral(this.getExpr2().getValue(object)));
+            this.setExpr2(new StringLiteral(this.getExpr2().getCurrentValue(object)));
         else
             retval = false;
 
@@ -39,8 +39,8 @@ public class StringCompare extends GenericCompare<StringValue> implements Predic
     @Override
     public Boolean evaluate(final Object object) throws HPersistException {
 
-        final String val1 = this.getExpr1().getValue(object);
-        final String val2 = this.getExpr2().getValue(object);
+        final String val1 = this.getExpr1().getCurrentValue(object);
+        final String val2 = this.getExpr2().getCurrentValue(object);
 
         switch (this.getOp()) {
             case EQ:

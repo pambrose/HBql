@@ -38,7 +38,7 @@ public class BooleanStmt implements PredicateExpr {
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.expr = new BooleanLiteral(this.getExpr().getValue(object));
+            this.expr = new BooleanLiteral(this.getExpr().getCurrentValue(object));
         else
             retval = false;
 
@@ -47,7 +47,7 @@ public class BooleanStmt implements PredicateExpr {
 
     @Override
     public Boolean evaluate(final Object object) throws HPersistException {
-        return this.getExpr().getValue(object);
+        return this.getExpr().getCurrentValue(object);
     }
 
     @Override

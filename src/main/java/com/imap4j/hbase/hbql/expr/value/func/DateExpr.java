@@ -40,12 +40,12 @@ public class DateExpr implements DateValue {
         boolean retval = true;
 
         if (this.getFormatExpr().optimizeForConstants(object))
-            this.formatExpr = new StringLiteral(this.getFormatExpr().getValue(object));
+            this.formatExpr = new StringLiteral(this.getFormatExpr().getCurrentValue(object));
         else
             retval = false;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.expr = new StringLiteral(this.getExpr().getValue(object));
+            this.expr = new StringLiteral(this.getExpr().getCurrentValue(object));
         else
             retval = false;
 
@@ -53,10 +53,10 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public Long getValue(final Object object) throws HPersistException {
+    public Long getCurrentValue(final Object object) throws HPersistException {
 
-        final String pattern = this.getFormatExpr().getValue(object);
-        final String datestr = this.getExpr().getValue(object);
+        final String pattern = this.getFormatExpr().getCurrentValue(object);
+        final String datestr = this.getExpr().getCurrentValue(object);
         final SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 
         try {

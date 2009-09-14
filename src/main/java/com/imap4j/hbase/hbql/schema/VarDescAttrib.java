@@ -61,15 +61,27 @@ public class VarDescAttrib extends ColumnAttrib {
     }
 
     @Override
-    protected void setValue(final Object newobj, final Object val) {
+    protected void setCurrentValue(final Object newobj, final Object val) {
         final HRecord record = (HRecord)newobj;
-        record.setValue(this.getVariableName(), val);
+        record.setCurrentValue(this.getVariableName(), val);
     }
 
     @Override
-    public Object getValue(final Object recordObj) throws HPersistException {
+    public Object getCurrentValue(final Object recordObj) throws HPersistException {
         final HRecord record = (HRecord)recordObj;
-        return record.getValue(this.getVariableName());
+        return record.getCurrentValue(this.getVariableName());
+    }
+
+    @Override
+    protected void setVersionedValue(final Object newobj, final Object val) {
+        final HRecord record = (HRecord)newobj;
+        record.setVersionedValue(this.getVariableName(), val);
+    }
+
+    @Override
+    public Object getVersionedValue(final Object recordObj) throws HPersistException {
+        final HRecord record = (HRecord)recordObj;
+        return record.getVersionedValue(this.getVariableName());
     }
 
 }

@@ -98,17 +98,17 @@ public class HUtil {
 
     public static String parseStringExpr(final String s) throws HPersistException {
         final StringValue value = (StringValue)HBqlRule.STRING_EXPR.parse(s);
-        return value.getValue(null);
+        return value.getCurrentValue(null);
     }
 
     public static Long parseDateExpr(final String s) throws HPersistException {
         final DateValue value = (DateValue)HBqlRule.DATE_EXPR.parse(s);
-        return value.getValue(null);
+        return value.getCurrentValue(null);
     }
 
     public static Number parseNumericExpr(final String s) throws HPersistException {
         final NumberValue value = (NumberValue)HBqlRule.NUMBER_EXPR.parse(s);
-        return value.getValue(null);
+        return value.getCurrentValue(null);
     }
 
 }

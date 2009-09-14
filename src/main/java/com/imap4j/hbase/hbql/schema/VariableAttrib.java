@@ -21,9 +21,13 @@ public abstract class VariableAttrib implements Serializable {
 
     public abstract String getVariableName();
 
-    public abstract Object getValue(final Object recordObj) throws HPersistException;
+    public abstract Object getCurrentValue(final Object recordObj) throws HPersistException;
 
-    protected abstract void setValue(final Object newobj, final Object val);
+    protected abstract void setCurrentValue(final Object newobj, final Object val);
+
+    public abstract Object getVersionedValue(final Object recordObj) throws HPersistException;
+
+    protected abstract void setVersionedValue(final Object newobj, final Object val);
 
     public FieldType getFieldType() {
         return this.fieldType;

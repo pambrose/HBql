@@ -3,8 +3,10 @@ package com.imap4j.hbase.hbql.schema;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.util.Maps;
+import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Result;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -88,6 +90,40 @@ public abstract class HBaseSchema extends ExprSchema {
             throw new HPersistException(s + " already delcared");
 
         this.getVersionAttribByFamilyQualifiedColumnNameMap().put(s, versionAttrib);
+    }
+
+    protected void assignCurrentValues(final Serialization ser,
+                                       final List<String> fieldList,
+                                       final Result result,
+                                       final Object newobj) throws IOException, HPersistException {
+
+        for (final KeyValue keyValue : result.list()) {
+
+            final byte[] cbytes = keyValue.getColumn();
+            final byte[] vbytes = result.getValue(cbytes);
+            final String colname = ser.getStringFromBytes(cbytes);
+
+            if (colname.endsWith("]")) {
+                final int lbrace = colname.indexOf("[");
+                final String mapcolumn = colname.substring(0, lbrace);
+                final String mapKey = colname.substring(lbrace + 1, colname.length() - 1);
+                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(mapcolumn);
+                final Object val = attrib.getValueFromBytes(ser, newobj, vbytes);
+
+                Map mapval = (Map)attrib.getCurrentValue(newobj);
+
+                if (mapval == null) {
+                    mapval = Maps.newHashMap();
+                    attrib.setVersionedValue(newobj, mapval);
+                }
+
+                mapval.put(mapKey, val);
+            }
+            else {
+                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(colname);
+                attrib.setCurrentValue(ser, newobj, vbytes);
+            }
+        }
     }
 
 }

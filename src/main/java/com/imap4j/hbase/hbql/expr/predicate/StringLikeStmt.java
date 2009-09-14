@@ -47,16 +47,16 @@ public class StringLikeStmt extends GenericNotStmt implements PredicateExpr {
 
         if (this.getPatternExpr().isAConstant()) {
             if (this.pattern == null) {
-                final String pattern = this.getPatternExpr().getValue(object);
+                final String pattern = this.getPatternExpr().getCurrentValue(object);
                 this.pattern = Pattern.compile(pattern);
             }
         }
         else {
-            final String pattern = this.getPatternExpr().getValue(object);
+            final String pattern = this.getPatternExpr().getCurrentValue(object);
             this.pattern = Pattern.compile(pattern);
         }
 
-        final String val = this.getExpr().getValue(object);
+        final String val = this.getExpr().getCurrentValue(object);
         final Matcher m = this.getPattern().matcher(val);
 
         final boolean retval = m.matches();
@@ -69,12 +69,12 @@ public class StringLikeStmt extends GenericNotStmt implements PredicateExpr {
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.expr = new StringLiteral(this.getExpr().getValue(object));
+            this.expr = new StringLiteral(this.getExpr().getCurrentValue(object));
         else
             retval = false;
 
         if (this.getPatternExpr().optimizeForConstants(object))
-            this.patternExpr = new StringLiteral(this.getPatternExpr().getValue(object));
+            this.patternExpr = new StringLiteral(this.getPatternExpr().getCurrentValue(object));
         else
             retval = false;
 

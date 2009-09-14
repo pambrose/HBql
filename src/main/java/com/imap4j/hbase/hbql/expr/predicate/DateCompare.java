@@ -22,12 +22,12 @@ public class DateCompare extends GenericCompare<DateValue> {
         boolean retval = true;
 
         if (this.getExpr1().optimizeForConstants(object))
-            this.setExpr1(new DateLiteral(this.getExpr1().getValue(object)));
+            this.setExpr1(new DateLiteral(this.getExpr1().getCurrentValue(object)));
         else
             retval = false;
 
         if (this.getExpr2().optimizeForConstants(object))
-            this.setExpr2(new DateLiteral(this.getExpr2().getValue(object)));
+            this.setExpr2(new DateLiteral(this.getExpr2().getCurrentValue(object)));
         else
             retval = false;
 
@@ -37,8 +37,8 @@ public class DateCompare extends GenericCompare<DateValue> {
     @Override
     public Boolean evaluate(final Object object) throws HPersistException {
 
-        final long val1 = this.getExpr1().getValue(object);
-        final long val2 = this.getExpr2().getValue(object);
+        final long val1 = this.getExpr1().getCurrentValue(object);
+        final long val2 = this.getExpr2().getCurrentValue(object);
 
         switch (this.getOp()) {
             case EQ:

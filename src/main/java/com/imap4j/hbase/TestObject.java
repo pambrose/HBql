@@ -157,8 +157,9 @@ public class TestObject {
         HResults<HRecord> results1 = q1.execute();
 
         for (HRecord val1 : results1) {
-            System.out.println("Current Values: " + val1.getValue("keyval") + " - " + val1.getValue("strValue")
-                               + " - " + val1.getValue("family1:author") + " - " + val1.getValue("title"));
+            System.out
+                    .println("Current Values: " + val1.getCurrentValue("keyval") + " - " + val1.getCurrentValue("strValue")
+                             + " - " + val1.getCurrentValue("family1:author") + " - " + val1.getCurrentValue("title"));
         }
 
         results1.close();

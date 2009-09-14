@@ -17,10 +17,10 @@ public class DateRangeArgs {
     public DateRangeArgs(final DateValue lower, final DateValue upper) {
         try {
             if (this.lower != -1)
-                this.lower = lower.getValue(null);
+                this.lower = lower.getCurrentValue(null);
 
             if (this.upper != -1)
-                this.upper = upper.getValue(null);
+                this.upper = upper.getCurrentValue(null);
         }
         catch (HPersistException e) {
             e.printStackTrace();

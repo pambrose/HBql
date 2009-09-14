@@ -14,13 +14,22 @@ import java.util.Map;
 public class HRecord {
 
     final Map<String, VarDescAttrib> types = Maps.newHashMap();
-    final Map<String, Object> values = Maps.newHashMap();
+    final Map<String, Object> currentValues = Maps.newHashMap();
+    final Map<String, Object> versionValues = Maps.newHashMap();
 
-    public Object getValue(final String name) {
-        return this.values.get(name);
+    public Object getCurrentValue(final String name) {
+        return this.currentValues.get(name);
     }
 
-    public Object setValue(final String name, final Object val) {
-        return this.values.put(name, val);
+    public Object setCurrentValue(final String name, final Object val) {
+        return this.currentValues.put(name, val);
+    }
+
+    public Object getVersionedValue(final String name) {
+        return this.versionValues.get(name);
+    }
+
+    public Object setVersionedValue(final String name, final Object val) {
+        return this.versionValues.put(name, val);
     }
 }

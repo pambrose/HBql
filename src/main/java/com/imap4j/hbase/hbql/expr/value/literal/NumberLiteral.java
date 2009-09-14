@@ -17,7 +17,7 @@ public class NumberLiteral extends GenericLiteral implements NumberValue {
     }
 
     @Override
-    public Number getValue(final Object object) {
+    public Number getCurrentValue(final Object object) {
         return this.value;
     }
 }

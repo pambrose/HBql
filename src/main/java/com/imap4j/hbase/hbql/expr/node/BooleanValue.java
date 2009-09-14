@@ -10,5 +10,5 @@ import com.imap4j.hbase.hbase.HPersistException;
  */
 public interface BooleanValue extends ValueExpr {
 
-    Boolean getValue(final Object object) throws HPersistException;
+    Boolean getCurrentValue(final Object object) throws HPersistException;
 }

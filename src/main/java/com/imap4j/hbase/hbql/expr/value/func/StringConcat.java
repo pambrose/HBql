@@ -45,9 +45,9 @@ public class StringConcat implements StringValue {
     }
 
     @Override
-    public String getValue(final Object object) throws HPersistException {
+    public String getCurrentValue(final Object object) throws HPersistException {
 
-        return this.val1.getValue(object) + this.val2.getValue(object);
+        return this.val1.getCurrentValue(object) + this.val2.getCurrentValue(object);
     }
 
     @Override
@@ -60,12 +60,12 @@ public class StringConcat implements StringValue {
         boolean retval = true;
 
         if (this.val1.optimizeForConstants(object))
-            this.val1 = new StringLiteral(this.val1.getValue(object));
+            this.val1 = new StringLiteral(this.val1.getCurrentValue(object));
         else
             retval = false;
 
         if (this.val2.optimizeForConstants(object))
-            this.val2 = new StringLiteral(this.val2.getValue(object));
+            this.val2 = new StringLiteral(this.val2.getCurrentValue(object));
         else
             retval = false;
 

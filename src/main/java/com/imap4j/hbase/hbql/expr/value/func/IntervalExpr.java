@@ -59,7 +59,7 @@ public class IntervalExpr implements DateValue {
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.expr = new NumberLiteral(this.getExpr().getValue(object));
+            this.expr = new NumberLiteral(this.getExpr().getCurrentValue(object));
         else
             retval = false;
 
@@ -67,8 +67,8 @@ public class IntervalExpr implements DateValue {
     }
 
     @Override
-    public Long getValue(final Object object) throws HPersistException {
-        final Number num = this.getExpr().getValue(object);
+    public Long getCurrentValue(final Object object) throws HPersistException {
+        final Number num = this.getExpr().getCurrentValue(object);
         final long val = num.longValue();
         return val * this.getType().getIntervalMillis();
     }

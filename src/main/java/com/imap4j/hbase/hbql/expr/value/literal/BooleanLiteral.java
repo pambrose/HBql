@@ -23,7 +23,7 @@ public class BooleanLiteral extends GenericLiteral implements BooleanValue, Pred
     }
 
     @Override
-    public Boolean getValue(final Object object) {
+    public Boolean getCurrentValue(final Object object) {
         return this.value;
     }
 

@@ -30,12 +30,12 @@ public class StringTernary extends GenericTernary<StringValue> implements String
             retval = false;
 
         if (this.getExpr1().optimizeForConstants(object))
-            this.setExpr1(new StringLiteral(this.getExpr1().getValue(object)));
+            this.setExpr1(new StringLiteral(this.getExpr1().getCurrentValue(object)));
         else
             retval = false;
 
         if (this.getExpr2().optimizeForConstants(object))
-            this.setExpr2(new StringLiteral(this.getExpr2().getValue(object)));
+            this.setExpr2(new StringLiteral(this.getExpr2().getCurrentValue(object)));
         else
             retval = false;
 
@@ -43,7 +43,7 @@ public class StringTernary extends GenericTernary<StringValue> implements String
     }
 
     @Override
-    public String getValue(final Object object) throws HPersistException {
+    public String getCurrentValue(final Object object) throws HPersistException {
         return (String)super.getValue(object);
     }
 }

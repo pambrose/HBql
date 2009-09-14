@@ -10,5 +10,5 @@ import com.imap4j.hbase.hbase.HPersistException;
  */
 public interface NumberValue extends ValueExpr {
 
-    Number getValue(final Object object) throws HPersistException;
+    Number getCurrentValue(final Object object) throws HPersistException;
 }

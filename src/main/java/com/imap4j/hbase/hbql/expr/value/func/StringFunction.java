@@ -55,27 +55,27 @@ public class StringFunction extends GenericFunction implements StringValue {
     }
 
     @Override
-    public String getValue(final Object object) throws HPersistException {
+    public String getCurrentValue(final Object object) throws HPersistException {
 
         switch (this.getFunc()) {
             case TRIM: {
-                final String val = this.getExprs()[0].getValue(object);
+                final String val = this.getExprs()[0].getCurrentValue(object);
                 return val.trim();
             }
 
             case LOWER: {
-                final String val = this.getExprs()[0].getValue(object);
+                final String val = this.getExprs()[0].getCurrentValue(object);
                 return val.toLowerCase();
             }
 
             case UPPER: {
-                final String val = this.getExprs()[0].getValue(object);
+                final String val = this.getExprs()[0].getCurrentValue(object);
                 return val.toUpperCase();
             }
 
             case CONCAT: {
-                final String v1 = this.getExprs()[0].getValue(object);
-                final String v2 = this.getExprs()[1].getValue(object);
+                final String v1 = this.getExprs()[0].getCurrentValue(object);
+                final String v2 = this.getExprs()[1].getCurrentValue(object);
                 return v1 + v2;
             }
 

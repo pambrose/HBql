@@ -18,9 +18,9 @@ public class IntegerAttribRef extends GenericAttribRef implements NumberValue {
     }
 
     @Override
-    public Integer getValue(final Object object) throws HPersistException {
+    public Integer getCurrentValue(final Object object) throws HPersistException {
         final VariableAttrib variableAttrib = this.getExprVar().getVariableAttrib(this.getSchema());
-        return (Integer)variableAttrib.getValue(object);
+        return (Integer)variableAttrib.getCurrentValue(object);
     }
 
 }

@@ -14,7 +14,7 @@ public class StringNullLiteral extends GenericLiteral implements StringValue {
     }
 
     @Override
-    public String getValue(final Object object) {
+    public String getCurrentValue(final Object object) {
         return null;
     }
 }

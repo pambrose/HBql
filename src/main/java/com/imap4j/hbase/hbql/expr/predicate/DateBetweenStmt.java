@@ -21,17 +21,17 @@ public class DateBetweenStmt extends GenericBetweenStmt<DateValue> {
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.setExpr(new DateLiteral(this.getExpr().getValue(object)));
+            this.setExpr(new DateLiteral(this.getExpr().getCurrentValue(object)));
         else
             retval = false;
 
         if (this.getLower().optimizeForConstants(object))
-            this.setLower(new DateLiteral(this.getLower().getValue(object)));
+            this.setLower(new DateLiteral(this.getLower().getCurrentValue(object)));
         else
             retval = false;
 
         if (this.getUpper().optimizeForConstants(object))
-            this.setUpper(new DateLiteral(this.getUpper().getValue(object)));
+            this.setUpper(new DateLiteral(this.getUpper().getCurrentValue(object)));
         else
             retval = false;
 
@@ -41,9 +41,9 @@ public class DateBetweenStmt extends GenericBetweenStmt<DateValue> {
     @Override
     public Boolean evaluate(final Object object) throws HPersistException {
 
-        final long dateval = this.getExpr().getValue(object);
-        final boolean retval = dateval >= this.getLower().getValue(object)
-                               && dateval <= this.getUpper().getValue(object);
+        final long dateval = this.getExpr().getCurrentValue(object);
+        final boolean retval = dateval >= this.getLower().getCurrentValue(object)
+                               && dateval <= this.getUpper().getCurrentValue(object);
 
         return (this.isNot()) ? !retval : retval;
     }

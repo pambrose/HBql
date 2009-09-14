@@ -41,9 +41,9 @@ public abstract class GenericTernary<T extends ValueExpr> extends GenericTwoExpr
 
     public Object getValue(final Object object) throws HPersistException {
         if (this.getPred().evaluate(object))
-            return this.getExpr1().getValue(object);
+            return this.getExpr1().getCurrentValue(object);
         else
-            return this.getExpr2().getValue(object);
+            return this.getExpr2().getCurrentValue(object);
     }
 
     public boolean isAConstant() {

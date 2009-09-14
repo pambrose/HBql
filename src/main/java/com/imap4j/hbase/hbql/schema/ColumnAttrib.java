@@ -163,7 +163,7 @@ public abstract class ColumnAttrib extends VariableAttrib {
             return this.invokeGetterMethod(recordObj);
         }
         else {
-            final Object obj = this.getValue(recordObj);
+            final Object obj = this.getCurrentValue(recordObj);
 
             if (this.isArray())
                 return ser.getArrayasBytes(this.getFieldType(), obj);
@@ -187,11 +187,11 @@ public abstract class ColumnAttrib extends VariableAttrib {
         }
     }
 
-    public void setValue(final Serialization ser,
-                         final Object newobj,
-                         final byte[] b) throws IOException, HPersistException {
+    public void setCurrentValue(final Serialization ser,
+                                final Object newobj,
+                                final byte[] b) throws IOException, HPersistException {
         final Object val = this.getValueFromBytes(ser, newobj, b);
-        this.setValue(newobj, val);
+        this.setCurrentValue(newobj, val);
     }
 
 }

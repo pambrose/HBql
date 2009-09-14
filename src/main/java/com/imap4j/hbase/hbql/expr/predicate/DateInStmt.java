@@ -25,7 +25,7 @@ public class DateInStmt extends GenericInStmt<DateValue> {
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.setExpr(new DateLiteral(this.getExpr().getValue(object)));
+            this.setExpr(new DateLiteral(this.getExpr().getCurrentValue(object)));
         else
             retval = false;
 
@@ -42,7 +42,7 @@ public class DateInStmt extends GenericInStmt<DateValue> {
 
         for (final DateValue val : this.getValueList()) {
             if (val.optimizeForConstants(object)) {
-                newvalList.add(new DateLiteral(val.getValue(object)));
+                newvalList.add(new DateLiteral(val.getCurrentValue(object)));
             }
             else {
                 newvalList.add(val);
@@ -59,9 +59,9 @@ public class DateInStmt extends GenericInStmt<DateValue> {
 
     protected boolean evaluateList(final Object object) throws HPersistException {
 
-        final long attribVal = this.getExpr().getValue(object);
+        final long attribVal = this.getExpr().getCurrentValue(object);
         for (final DateValue obj : this.getValueList()) {
-            final long val = obj.getValue(object);
+            final long val = obj.getCurrentValue(object);
             if (attribVal == val)
                 return true;
         }

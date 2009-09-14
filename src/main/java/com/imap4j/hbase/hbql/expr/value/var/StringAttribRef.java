@@ -18,8 +18,8 @@ public class StringAttribRef extends GenericAttribRef implements StringValue {
     }
 
     @Override
-    public String getValue(final Object object) throws HPersistException {
+    public String getCurrentValue(final Object object) throws HPersistException {
         final VariableAttrib variableAttrib = this.getExprVar().getVariableAttrib(this.getSchema());
-        return (String)variableAttrib.getValue(object);
+        return (String)variableAttrib.getCurrentValue(object);
     }
 }

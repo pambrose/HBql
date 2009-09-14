@@ -52,7 +52,7 @@ public class HTransaction {
             for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {
 
                 if (attrib.isMapKeysAsColumns()) {
-                    final Map mapval = (Map)attrib.getValue(declaringObj);
+                    final Map mapval = (Map)attrib.getCurrentValue(declaringObj);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
                         final byte[] byteval = HUtil.ser.getObjectAsBytes(mapval.get(keyobj));

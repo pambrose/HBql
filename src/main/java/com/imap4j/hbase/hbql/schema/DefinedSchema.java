@@ -6,7 +6,6 @@ import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.util.Maps;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
-import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Result;
 
 import java.io.IOException;
@@ -143,52 +142,11 @@ public class DefinedSchema extends HBaseSchema {
         final ColumnAttrib keyattrib = this.getKeyColumnAttrib();
         if (keyattrib != null) {
             final byte[] keybytes = result.getRow();
-            keyattrib.setValue(ser, newobj, keybytes);
+            keyattrib.setCurrentValue(ser, newobj, keybytes);
         }
         return newobj;
     }
 
-    private void assignCurrentValues(final Serialization ser,
-                                     final List<String> fieldList,
-                                     final Result result,
-                                     final Object newobj) throws IOException, HPersistException {
-
-        for (final KeyValue keyValue : result.list()) {
-
-            final byte[] cbytes = keyValue.getColumn();
-            final byte[] vbytes = result.getValue(cbytes);
-            final String colname = ser.getStringFromBytes(cbytes);
-
-            if (colname.endsWith("]")) {
-                // TODO Need to finish this
-                /*
-                final int lbrace = colname.indexOf("[");
-                final String mapcolumn = colname.substring(0, lbrace);
-                final String mapKey = colname.substring(lbrace + 1, colname.length() - 1);
-                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(mapcolumn);
-                final Object val = attrib.getValueFromBytes(ser, newobj, vbytes);
-
-                Map mapval = (Map)attrib.getValue(newobj);
-
-                // TODO Need to check if variable was on select list like below
-
-                if (mapval == null) {
-                    mapval = Maps.newHashMap();
-                    attrib.setValue(newobj, mapval);
-                }
-
-                mapval.put(mapKey, val);
-                */
-            }
-            else {
-                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(colname);
-
-                // Check if variable was requested in select list
-                if (fieldList.contains(attrib.getVariableName()))
-                    attrib.setValue(ser, newobj, vbytes);
-            }
-        }
-    }
 
     private void assignVersionedValues(final Serialization ser,
                                        final List<String> fieldList,
@@ -221,11 +179,11 @@ public class DefinedSchema extends HBaseSchema {
                         continue;
 
                     final Object val = attrib.getValueFromBytes(ser, newobj, vbytes);
-                    Map mapval = (Map)attrib.getValue(newobj);
+                    Map mapval = (Map)attrib.getVersionedValue(newobj);
 
                     if (mapval == null) {
                         mapval = new TreeMap();
-                        attrib.setValue(newobj, mapval);
+                        attrib.setVersionedValue(newobj, mapval);
                     }
 
                     mapval.put(timestamp, val);

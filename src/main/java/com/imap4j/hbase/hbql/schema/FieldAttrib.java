@@ -76,7 +76,8 @@ public abstract class FieldAttrib extends ColumnAttrib {
         return this.getField().getType().isArray();
     }
 
-    public Object getValue(final Object recordObj) throws HPersistException {
+    @Override
+    public Object getCurrentValue(final Object recordObj) throws HPersistException {
         try {
             return this.getField().get(recordObj);
         }
@@ -86,12 +87,25 @@ public abstract class FieldAttrib extends ColumnAttrib {
     }
 
 
-    public void setValue(final Object newobj, final Object val) {
+    @Override
+    public void setCurrentValue(final Object newobj, final Object val) {
         try {
             this.getField().set(newobj, val);
         }
         catch (IllegalAccessException e) {
             throw new RuntimeException("Error setting value of " + this.getObjectQualifiedName());
         }
+    }
+
+    @Override
+    public Object getVersionedValue(final Object recordObj) throws HPersistException {
+        // Just call current value for version since we have different fields for each
+        return this.getCurrentValue(recordObj);
+    }
+
+    @Override
+    protected void setVersionedValue(final Object newobj, final Object val) {
+        // Just call current value for version since we have different fields for each
+        this.setCurrentValue(newobj, val);
     }
 }
