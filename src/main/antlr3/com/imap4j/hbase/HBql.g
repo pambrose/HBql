@@ -4,6 +4,7 @@ options {superClass=HBaseParser;}
 
 tokens {
 	DOT = '.';
+	DOLLAR = '$';
 	COLON = ':';
 	QMARK = '?';
 	STAR = '*';
@@ -451,7 +452,7 @@ multDiv returns [GenericCalcExpr.OP retval]
 	;
 		
 INT	: DIGIT+;
-ID	: CHAR (CHAR | DOT | DIGIT)* 
+ID	: CHAR (CHAR | DOT | DOLLAR | DIGIT)* 		// DOOLAR is for inner class table names
 	| CHAR (CHAR | DOT | DIGIT)* COLON (CHAR | DOT | DIGIT)*
 	;
 	

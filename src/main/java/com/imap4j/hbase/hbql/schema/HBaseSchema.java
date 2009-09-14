@@ -60,7 +60,7 @@ public abstract class HBaseSchema extends ExprSchema {
         if (schema != null)
             return schema;
 
-        throw new HPersistException("Unknown annotated table: " + tablename);
+        throw new HPersistException("Unknown table: " + tablename);
     }
 
     // *** columnAttribByFamilyQualifiedColumnNameMap calls

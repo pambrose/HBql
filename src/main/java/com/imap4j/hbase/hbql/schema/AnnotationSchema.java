@@ -100,9 +100,9 @@ public class AnnotationSchema extends HBaseSchema {
                     }
                 }
 
-                final File dir = new File(val);
-                if (dir.isDirectory())
-                    return searchDirectory(dir, "", objName + ".class");
+                final File rootdir = new File(val);
+                if (rootdir.isDirectory())
+                    return searchDirectory(rootdir, rootdir.getCanonicalPath(), "", objName + ".class");
             }
             catch (IOException e) {
                 // Go to next entry
@@ -113,6 +113,7 @@ public class AnnotationSchema extends HBaseSchema {
     }
 
     private static AnnotationSchema searchDirectory(final File dir,
+                                                    final String rootDir,
                                                     final String prefix,
                                                     final String dotClassName) throws HPersistException {
 
@@ -126,12 +127,11 @@ public class AnnotationSchema extends HBaseSchema {
                 subdirs.add(file);
             }
             else {
-                if (file.getName().endsWith(dotClassName)) {
-                    final String simplename = dotClassName.split(".class")[0];
-                    final String fullName = prefix
-                                            + ((prefix.length() > 0) ? "." : "")
-                                            + simplename;
-                    return setClassCache(fullName, simplename);
+                final String pathname = file.getAbsolutePath().replace('/', '.');
+                if (pathname.endsWith(dotClassName)) {
+                    final String rootprefix = rootDir.replace('/', '.');
+                    final String pathsuffix = pathname.substring(rootprefix.length() + 1);
+                    return setClassCache(stripDotClass(pathsuffix), stripDotClass(dotClassName));
                 }
             }
         }
@@ -139,12 +139,16 @@ public class AnnotationSchema extends HBaseSchema {
         // Now search the dirs
         for (final File subdir : subdirs) {
             final String nextdir = (prefix.length() == 0) ? subdir.getName() : prefix + "." + subdir.getName();
-            final AnnotationSchema schema = searchDirectory(subdir, nextdir, dotClassName);
+            final AnnotationSchema schema = searchDirectory(subdir, rootDir, nextdir, dotClassName);
             if (schema != null)
                 return schema;
         }
 
         return null;
+    }
+
+    private static String stripDotClass(final String str) {
+        return str.substring(0, str.length() - ".class".length());
     }
 
     private static AnnotationSchema searchPackage(final String packageName,

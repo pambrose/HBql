@@ -59,7 +59,7 @@ public class HBaseParser extends Parser {
             this.setExprSchema(schema);
         }
         catch (HPersistException e) {
-            System.out.println("Unknown annotated table: " + tablename);
+            System.out.println("Unknown table: " + tablename);
             throw new RecognitionException(input);
         }
     }
