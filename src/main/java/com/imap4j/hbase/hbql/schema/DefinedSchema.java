@@ -128,7 +128,7 @@ public class DefinedSchema extends HBaseSchema {
                                      final Result result) throws IOException, HPersistException {
 
         // Create new instance and set key value
-        final HRecord newobj = new HRecord();
+        final HRecord newobj = new HRecord(this);
         final ColumnAttrib keyattrib = this.getKeyColumnAttrib();
         if (keyattrib != null) {
             final byte[] keybytes = result.getRow();

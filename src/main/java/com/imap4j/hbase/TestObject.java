@@ -156,19 +156,19 @@ public class TestObject {
 
         for (HRecord val1 : results1) {
             System.out
-                    .println("Current Values: " + val1.getCurrentValue("keyval") + " - " + val1.getCurrentValue("strValue")
-                             + " - " + val1.getCurrentValue("family1:author") + " - " + val1.getCurrentValue("title"));
+                    .println("Current Values: " + val1.getCurrentValueByVariableName("keyval") + " - " + val1.getCurrentValueByVariableName("strValue")
+                             + " - " + val1.getCurrentValueByVariableName("family1:author") + " - " + val1.getCurrentValueByVariableName("title"));
 
             System.out.println("Historicals");
 
-            if (val1.getVersionedValue("family1:author") != null) {
-                Map<Long, String> versioned = (Map<Long, String>)val1.getVersionedValue("family1:author");
+            if (val1.getVersionedValueByVariableName("family1:author") != null) {
+                Map<Long, String> versioned = (Map<Long, String>)val1.getVersionedValueByVariableName("family1:author");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }
 
-            if (val1.getVersionedValue("family1:title") != null) {
-                Map<Long, String> versioned = (Map<Long, String>)val1.getVersionedValue("family1:title");
+            if (val1.getVersionedValueByVariableName("family1:title") != null) {
+                Map<Long, String> versioned = (Map<Long, String>)val1.getVersionedValueByVariableName("family1:title");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }
@@ -183,7 +183,8 @@ public class TestObject {
                               + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
                               + "VERSIONS 5 "
                               //+ "SERVER FILTER WHERE TRUE"
-                              + "SERVER FILTER WHERE author LIKE '.*282.*'"
+                              + "SERVER FILTER WHERE author LIKE '.*val.*'"
+                //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
                 //+ "CLIENT FILTER WHERE author LIKE '.*282.*'"
                 ;
 
