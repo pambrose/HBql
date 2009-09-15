@@ -39,15 +39,15 @@ public class WithValuesTest extends WhereValueTests {
     @Test
     public void clientFilterExpressions() throws HPersistException {
         assertValidInput("WITH CLIENT FILTER WHERE TRUE");
-        assertValidInput("WITH CLIENT FILTER WHERE {col1 as int} col1 < 4");
-        assertValidInput("WITH CLIENT FILTER WHERE {fam1:col1 as int} fam1:col1 < 4");
+        // assertValidInput("WITH CLIENT FILTER WHERE {col1 as int} col1 < 4");
+        // assertValidInput("WITH CLIENT FILTER WHERE {fam1:col1 as int} fam1:col1 < 4");
     }
 
     @Test
     public void serverFilterExpressions() throws HPersistException {
         assertValidInput("WITH SERVER FILTER WHERE TRUE");
-        assertValidInput("WITH SERVER FILTER WHERE {col1 as int} col1 < 4");
-        assertValidInput("WITH SERVER FILTER WHERE {fam1:col1 as int} fam1:col1 < 4");
+        // assertValidInput("WITH SERVER FILTER WHERE {col1 as int} col1 < 4");
+        // assertValidInput("WITH SERVER FILTER WHERE {fam1:col1 as int} fam1:col1 < 4");
     }
 
 }

@@ -75,40 +75,48 @@ public class HBaseParser extends Parser {
         if (this.getExprSchema() == null)
             return false;
 
-        final String s = input.LT(1).getText();
-        if (s == null)
+        final String varname = input.LT(1).getText();
+        if (varname == null)
             return false;
 
-        final VariableAttrib attrib = this.getExprSchema().getVariableAttribByVariableName(s);
-        return attrib != null && attrib.getFieldType() == type;
+        try {
+            final VariableAttrib attrib = this.getExprSchema().getVariableAttribByVariableName(varname);
+            return attrib.getFieldType() == type;
+        }
+        catch (HPersistException e) {
+            return false;
+        }
     }
 
 
     protected ValueExpr getValueExpr(final String var) throws RecognitionException {
 
-        if (this.getExprSchema() != null) {
+        try {
+            if (this.getExprSchema() != null) {
 
-            final VariableAttrib attrib = this.getExprSchema().getVariableAttribByVariableName(var);
+                final VariableAttrib attrib = this.getExprSchema().getVariableAttribByVariableName(var);
 
-            if (attrib != null) {
-                switch (attrib.getFieldType()) {
-                    case KeyType:
-                    case StringType:
-                        return new StringAttribRef(var);
+                if (attrib != null) {
+                    switch (attrib.getFieldType()) {
+                        case KeyType:
+                        case StringType:
+                            return new StringAttribRef(var);
 
-                    case LongType:
-                        return new LongAttribRef(var);
+                        case LongType:
+                            return new LongAttribRef(var);
 
-                    case IntegerType:
-                        return new IntegerAttribRef(var);
+                        case IntegerType:
+                            return new IntegerAttribRef(var);
 
-                    case DateType:
-                        return new DateAttribRef(var);
+                        case DateType:
+                            return new DateAttribRef(var);
+                    }
                 }
             }
         }
-
-        System.out.println("Unknown variable: " + var);
+        catch (HPersistException e) {
+            System.out.println(e.getClass().getName() + " - " + e.getMessage());
+        }
 
         throw new RecognitionException(input);
     }

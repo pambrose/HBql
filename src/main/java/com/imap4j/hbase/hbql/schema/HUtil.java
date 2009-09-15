@@ -57,10 +57,13 @@ public class HUtil {
 
             // Set column names
             for (final String name : fieldList) {
-                final ColumnAttrib attrib = (ColumnAttrib)schema.getVariableAttribByVariableName(name);
-
-                if (attrib == null)
+                final ColumnAttrib attrib;
+                try {
+                    attrib = (ColumnAttrib)schema.getVariableAttribByVariableName(name);
+                }
+                catch (HPersistException e) {
                     throw new HPersistException("Element " + name + " does not exist in " + schema.getSchemaName());
+                }
 
                 // If it is a map, then request all columns for family
                 if (attrib.isMapKeysAsColumns())

@@ -43,8 +43,11 @@ public abstract class ExprSchema implements Serializable {
         return this.getVariableAttribByVariableNameMap().values();
     }
 
-    public VariableAttrib getVariableAttribByVariableName(final String name) {
-        return this.getVariableAttribByVariableNameMap().get(name);
+    public VariableAttrib getVariableAttribByVariableName(final String name) throws HPersistException {
+        final VariableAttrib attrib = this.getVariableAttribByVariableNameMap().get(name);
+        if (attrib == null)
+            throw new HPersistException("Unknown variable: " + name);
+        return attrib;
     }
 
     protected void addVariableAttrib(final VariableAttrib variableAttrib) throws HPersistException {

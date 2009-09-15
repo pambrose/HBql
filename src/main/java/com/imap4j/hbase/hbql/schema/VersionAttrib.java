@@ -68,12 +68,12 @@ public class VersionAttrib extends FieldAttrib {
                 throw new HPersistException(annoname + " for " + getObjectQualifiedName(field)
                                             + " refers to invalid instance variable " + instance);
 
-            final ColumnAttrib columnAttrib = (ColumnAttrib)exprSchema.getVariableAttribByVariableName(instance);
+            final ColumnAttrib attrib = (ColumnAttrib)exprSchema.getVariableAttribByVariableName(instance);
 
-            if (!columnAttrib.isACurrentValue())
+            if (!attrib.isACurrentValue())
                 throw new HPersistException(getObjectQualifiedName(field) + "instance variable must have HColumn annotation");
 
-            final CurrentValueAttrib currentAttrib = (CurrentValueAttrib)columnAttrib;
+            final CurrentValueAttrib currentAttrib = (CurrentValueAttrib)attrib;
 
             // Make sure type of Value in map matches type of instance var
             if (!mapValueType.equals(currentAttrib.getField().getType()))

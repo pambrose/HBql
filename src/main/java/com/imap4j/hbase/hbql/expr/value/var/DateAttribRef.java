@@ -21,8 +21,8 @@ public class DateAttribRef extends GenericAttribRef implements DateValue {
 
     @Override
     public Long getCurrentValue(final Object object) throws HPersistException {
-        final VariableAttrib variableAttrib = this.getExprVar().getVariableAttrib(this.getSchema());
-        return ((Date)variableAttrib.getCurrentValue(object)).getTime();
+        final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(this.getExprVar().getName());
+        return ((Date)attrib.getCurrentValue(object)).getTime();
     }
 
 }

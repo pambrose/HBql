@@ -1,8 +1,6 @@
 package com.imap4j.hbase.hbql.expr;
 
-import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.FieldType;
-import com.imap4j.hbase.hbql.schema.VariableAttrib;
 
 import java.io.Serializable;
 
@@ -30,9 +28,4 @@ public class ExprVariable implements Serializable {
     public boolean equals(final Object o) {
         return (o instanceof ExprVariable) && this.getName().equals(((ExprVariable)o).getName());
     }
-
-    public VariableAttrib getVariableAttrib(final ExprSchema schema) {
-        return schema.getVariableAttribByVariableName(this.getName());
-    }
-
 }
