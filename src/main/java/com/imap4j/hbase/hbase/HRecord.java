@@ -3,6 +3,7 @@ package com.imap4j.hbase.hbase;
 import com.imap4j.hbase.hbql.schema.VarDescAttrib;
 import com.imap4j.hbase.util.Maps;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Map;
  * Date: Sep 12, 2009
  * Time: 11:06:07 PM
  */
-public class HRecord {
+public class HRecord implements Serializable {
 
     final Map<String, VarDescAttrib> types = Maps.newHashMap();
     final Map<String, Object> currentValues = Maps.newHashMap();

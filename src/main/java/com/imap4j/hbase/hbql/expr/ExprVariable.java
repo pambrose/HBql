@@ -4,13 +4,15 @@ import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.FieldType;
 import com.imap4j.hbase.hbql.schema.VariableAttrib;
 
+import java.io.Serializable;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
  * Date: Sep 1, 2009
  * Time: 8:11:19 PM
  */
-public class ExprVariable {
+public class ExprVariable implements Serializable {
 
     private final String attribName;
     private final FieldType fieldType;

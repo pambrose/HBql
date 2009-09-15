@@ -11,10 +11,13 @@ import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.util.Lists;
+import org.apache.commons.logging.Log;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 /**
@@ -74,6 +77,7 @@ public class HUtil {
                 serverFilter.optimize();
 
                 final List<ExprVariable> names = serverFilter.getExprVariables();
+                //boolean okay = HUtil.ser.isSerializable(schema) && HUtil.ser.isSerializable(serverFilter);
                 scan.setFilter(new HBqlFilter(schema, serverFilter));
             }
         }
@@ -111,4 +115,16 @@ public class HUtil {
         return value.getCurrentValue(null);
     }
 
+    public static void logException(final Log log, final Exception e) {
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final PrintWriter oos = new PrintWriter(baos);
+
+        e.printStackTrace(oos);
+        oos.flush();
+        oos.close();
+
+        log.info(baos.toString());
+
+    }
 }

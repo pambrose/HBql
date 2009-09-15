@@ -7,6 +7,7 @@ import com.imap4j.hbase.hbql.expr.value.literal.DateLiteral;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.util.Lists;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class ExprTree {
+public class ExprTree implements Serializable {
 
     private PredicateExpr expr = null;
     private long start, end;

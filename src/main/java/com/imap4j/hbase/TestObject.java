@@ -182,6 +182,7 @@ public class TestObject {
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
                               + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
                               + "VERSIONS 5 "
+                              //+ "SERVER FILTER WHERE TRUE"
                               + "SERVER FILTER WHERE author LIKE '.*282.*'"
                 //+ "CLIENT FILTER WHERE author LIKE '.*282.*'"
                 ;
