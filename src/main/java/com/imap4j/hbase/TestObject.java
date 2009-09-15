@@ -161,14 +161,14 @@ public class TestObject {
 
             System.out.println("Historicals");
 
-            if (val1.getVersionedValueByVariableName("family1:author") != null) {
-                Map<Long, String> versioned = (Map<Long, String>)val1.getVersionedValueByVariableName("family1:author");
+            if (val1.getVersionedValueMapByVariableName("family1:author") != null) {
+                Map<Long, String> versioned = (Map<Long, String>)val1.getVersionedValueMapByVariableName("family1:author");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }
 
-            if (val1.getVersionedValueByVariableName("family1:title") != null) {
-                Map<Long, String> versioned = (Map<Long, String>)val1.getVersionedValueByVariableName("family1:title");
+            if (val1.getVersionedValueMapByVariableName("family1:title") != null) {
+                Map<Long, String> versioned = (Map<Long, String>)val1.getVersionedValueMapByVariableName("family1:title");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }

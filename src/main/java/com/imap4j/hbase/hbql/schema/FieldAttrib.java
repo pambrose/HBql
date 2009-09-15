@@ -98,13 +98,13 @@ public abstract class FieldAttrib extends ColumnAttrib {
     }
 
     @Override
-    public Object getVersionedValue(final Object recordObj) throws HPersistException {
+    public Object getVersionedValueMap(final Object recordObj) throws HPersistException {
         // Just call current value for version since we have different fields for each
         return this.getCurrentValue(recordObj);
     }
 
     @Override
-    protected void setVersionedValue(final Object newobj, final Object val) {
+    protected void setVersionedValueMap(final Object newobj, final Object val) {
         // Just call current value for version since we have different fields for each
         this.setCurrentValue(newobj, val);
     }

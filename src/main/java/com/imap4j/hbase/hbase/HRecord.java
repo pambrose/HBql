@@ -1,8 +1,6 @@
 package com.imap4j.hbase.hbase;
 
-import com.imap4j.hbase.hbql.schema.ColumnAttrib;
 import com.imap4j.hbase.hbql.schema.HBaseSchema;
-import com.imap4j.hbase.hbql.schema.VarDescAttrib;
 import com.imap4j.hbase.util.Maps;
 
 import java.io.Serializable;
@@ -18,9 +16,7 @@ public class HRecord implements Serializable {
 
     private HBaseSchema schema = null;
 
-    private final Map<String, VarDescAttrib> types = Maps.newHashMap();
-    private final Map<String, Object> currentValues = Maps.newHashMap();
-    private final Map<String, Object> versionValues = Maps.newHashMap();
+    private final Map<String, HValue> values = Maps.newHashMap();
 
     public HRecord(final HBaseSchema schema) {
         this.schema = schema;
@@ -35,21 +31,33 @@ public class HRecord implements Serializable {
     }
 
     public Object getCurrentValueByVariableName(final String name) {
-        return this.currentValues.get(name);
+        return this.values.get(name).getCurrentValue();
     }
 
-    public Object setCurrentValueByVariableName(final String name, final Object val) {
-        return this.currentValues.put(name, val);
+    public void setCurrentValueByVariableName(final String name, final Object val) {
+        this.setCurrentValue(name, val);
     }
 
-    public Object getVersionedValueByVariableName(final String name) {
-        return this.versionValues.get(name);
+    public Object getVersionedValueMapByVariableName(final String name) {
+        return this.values.get(name).getVersionMap();
     }
 
-    public void setVersionedValueByVariableName(final String name, final Object val) {
-        this.versionValues.put(name, val);
+    public void setVersionedValueMapByVariableName(final String name, final Object val) {
+        this.values.get(name).setVersionMap(val);
     }
 
+    private void setCurrentValue(final String name, final Object val) {
+        final HValue hvalue = (!this.values.containsKey(name)) ? this.addValue(name) : this.values.get(name);
+        hvalue.setCurrentValue(val);
+    }
+
+    private HValue addValue(final String name) {
+        final HValue val = new HValue();
+        this.values.put(name, val);
+        return val;
+    }
+
+    /*
     public Object getCurrentValueByFamilyQualifiedName(final String name) {
         final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(name);
         return this.getCurrentValueByVariableName(attrib.getVariableName());
@@ -62,17 +70,16 @@ public class HRecord implements Serializable {
 
     public Object getVersionedValueByFamilyQualifiedName(final String name) {
         final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(name);
-        return this.getVersionedValueByVariableName(attrib.getVariableName());
+        return this.getVersionedValueMapByVariableName(attrib.getVariableName());
     }
 
     public void setVersionedValueByFamilyQualifiedName(final String name, final Object val) {
         final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(name);
-        this.setVersionedValueByVariableName(attrib.getVariableName(), val);
+        this.setVersionedValueMapByVariableName(attrib.getVariableName(), val);
     }
+    */
 
     public void clear() {
-        this.currentValues.clear();
-        this.versionValues.clear();
-        this.types.clear();
+        this.values.clear();
     }
 }

@@ -118,7 +118,7 @@ public abstract class HBaseSchema extends ExprSchema {
 
                 if (mapval == null) {
                     mapval = Maps.newHashMap();
-                    attrib.setVersionedValue(newobj, mapval);
+                    attrib.setVersionedValueMap(newobj, mapval);
                 }
 
                 mapval.put(mapKey, val);
@@ -161,11 +161,11 @@ public abstract class HBaseSchema extends ExprSchema {
                         continue;
 
                     final Object val = attrib.getValueFromBytes(ser, newobj, vbytes);
-                    Map mapval = (Map)attrib.getVersionedValue(newobj);
+                    Map mapval = (Map)attrib.getVersionedValueMap(newobj);
 
                     if (mapval == null) {
                         mapval = new TreeMap();
-                        attrib.setVersionedValue(newobj, mapval);
+                        attrib.setVersionedValueMap(newobj, mapval);
                     }
 
                     mapval.put(timestamp, val);

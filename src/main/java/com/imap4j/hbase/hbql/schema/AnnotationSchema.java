@@ -323,10 +323,10 @@ public class AnnotationSchema extends HBaseSchema {
     }
 
     public void setColumnAttribListByFamilyName(final String s,
-                                                final List<ColumnAttrib> columnAttribs) throws HPersistException {
+                                                final List<ColumnAttrib> attribList) throws HPersistException {
         if (this.containsFamilyName(s))
             throw new HPersistException(s + " already delcared");
-        this.getColumnAttribListByFamilyNameMap().put(s, columnAttribs);
+        this.getColumnAttribListByFamilyNameMap().put(s, attribList);
     }
 
     @Override
