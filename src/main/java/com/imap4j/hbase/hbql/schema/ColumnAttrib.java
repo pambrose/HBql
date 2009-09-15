@@ -43,8 +43,7 @@ public abstract class ColumnAttrib extends VariableAttrib {
                 final Class<?> returnType = this.getGetterMethod().getReturnType();
 
                 if (!(returnType.isArray() && returnType.getComponentType() == Byte.TYPE))
-                    throw new HPersistException(this.getEnclosingClassName()
-                                                + "." + this.getGetter() + "()"
+                    throw new HPersistException(this.getEnclosingClassName() + "." + this.getGetter() + "()"
                                                 + " does not have a return type of byte[]");
             }
         }
@@ -60,8 +59,8 @@ public abstract class ColumnAttrib extends VariableAttrib {
                 // Check if it takes single byte[] arg
                 final Class<?>[] args = this.getSetterMethod().getParameterTypes();
                 if (args.length != 1 || !(args[0].isArray() && args[0].getComponentType() == Byte.TYPE))
-                    throw new HPersistException(this.getEnclosingClassName()
-                                                + "." + this.getSetter() + "()" + " does not have single byte[] arg");
+                    throw new HPersistException(this.getEnclosingClassName() + "." + this.getSetter() + "()"
+                                                + " does not have single byte[] arg");
             }
         }
         catch (NoSuchMethodException e) {
@@ -73,7 +72,6 @@ public abstract class ColumnAttrib extends VariableAttrib {
             throw new HPersistException("Missing method " + this.getEnclosingClassName()
                                         + "." + this.getSetter() + "(byte[] arg)");
         }
-
     }
 
     public boolean isACurrentValue() {

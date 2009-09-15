@@ -54,18 +54,4 @@ public class ObjectSchema extends ExprSchema {
     private static Map<Class<?>, ObjectSchema> getObjectSchemaMap() {
         return objectSchemaMap;
     }
-
-    /*
-    private Class<?> getClazz() {
-        return clazz;
-    }
-
-    public String getSchemaName() {
-        return this.getTableName();
-    }
-
-    public String getTableName() {
-        return this.getClazz().getName();
-    }
-    */
 }
