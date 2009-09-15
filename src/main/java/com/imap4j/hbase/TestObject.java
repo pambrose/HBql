@@ -176,7 +176,7 @@ public class TestObject {
 
         results1.close();
 
-        final String query2 = "SELECT author, authorVersions "
+        final String query2 = "SELECT title, author, authorVersions "
                               + "FROM TestObject "
                               + "WITH "
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "

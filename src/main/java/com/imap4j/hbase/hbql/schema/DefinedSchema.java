@@ -58,8 +58,8 @@ public class DefinedSchema extends HBaseSchema {
         final VarDescAttrib attrib = new VarDescAttrib(var);
 
         this.addVariableAttrib(attrib);
-        this.setColumnAttribByFamilyQualifiedColumnName(var.getVariableName(), attrib);
-        this.setVersionAttribByFamilyQualifiedColumnName(attrib.getFamilyQualifiedName(), attrib);
+        this.addColumnAttrib(attrib);
+        this.addVersionAttrib(attrib);
 
         if (attrib.isKey()) {
             if (this.getKeyColumnAttrib() != null)

@@ -105,7 +105,10 @@ public abstract class ColumnAttrib extends VariableAttrib {
     }
 
     public String getFamilyQualifiedName() {
-        return this.getFamilyName() + ":" + this.getColumnName();
+        if (this.getFamilyName().length() > 0)
+            return this.getFamilyName() + ":" + this.getColumnName();
+        else
+            return this.getColumnName();
     }
 
     public String getFamilyName() {

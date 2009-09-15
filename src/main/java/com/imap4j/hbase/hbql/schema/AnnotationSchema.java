@@ -261,38 +261,38 @@ public class AnnotationSchema extends HBaseSchema {
 
     private void processColumnAnnotation(final Field field) throws HPersistException {
 
-        final ColumnAttrib columnAttrib = new CurrentValueAttrib(field);
+        final ColumnAttrib attrib = new CurrentValueAttrib(field);
 
-        this.addVariableAttrib(columnAttrib);
-        this.setColumnAttribByFamilyQualifiedColumnName(columnAttrib.getFamilyQualifiedName(), columnAttrib);
+        this.addVariableAttrib(attrib);
+        this.addColumnAttrib(attrib);
 
-        if (columnAttrib.isKey()) {
+        if (attrib.isKey()) {
             if (this.getKeyColumnAttrib() != null)
                 throw new HPersistException("Class " + this + " has multiple instance variables "
                                             + "annotated with @HColumn(key=true)");
 
-            this.setKeyColumnAttrib(columnAttrib);
+            this.setKeyColumnAttrib(attrib);
         }
         else {
-            final String family = columnAttrib.getFamilyName();
+            final String family = attrib.getFamilyName();
 
             if (family.length() == 0)
-                throw new HPersistException(columnAttrib.getObjectQualifiedName()
+                throw new HPersistException(attrib.getObjectQualifiedName()
                                             + " is missing family name in annotation");
 
             if (!this.containsFamilyName(family))
-                throw new HPersistException(columnAttrib.getObjectQualifiedName()
+                throw new HPersistException(attrib.getObjectQualifiedName()
                                             + " references unknown family: " + family);
 
-            this.getColumnAttribListByFamilyName(family).add(columnAttrib);
+            this.getColumnAttribListByFamilyName(family).add(attrib);
         }
 
     }
 
     private void processColumnVersionAnnotation(final Field field) throws HPersistException {
         final VersionAttrib attrib = VersionAttrib.newVersionAttrib(this, field);
-        this.setVersionAttribByFamilyQualifiedColumnName(attrib.getFamilyQualifiedName(), attrib);
         this.addVariableAttrib(attrib);
+        this.addVersionAttrib(attrib);
     }
 
     public String getTableName() {
@@ -380,7 +380,7 @@ public class AnnotationSchema extends HBaseSchema {
             final String coltype = (col.isKey())
                                    ? FieldType.KeyType.getFirstSynonym()
                                    : col.getFieldType().getFirstSynonym();
-            varList.add(VarDesc.newVarDesc(col.getFamilyQualifiedName(), coltype));
+            varList.add(VarDesc.newVarDesc(col.getVariableName(), col.getFamilyQualifiedName(), coltype));
         }
         return varList;
     }

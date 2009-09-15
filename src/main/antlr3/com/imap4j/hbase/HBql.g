@@ -81,7 +81,7 @@ defineStmt returns [DefineArgs retval]
 	;
 
 defineAttrib returns [VarDesc retval]
-	: n=ID t=ID 					{retval = VarDesc.newVarDesc($n.text, $t.text);}
+	: n=ID t=ID 					{retval = VarDesc.newVarDesc($n.text, $n.text, $t.text);}
 	;
 
 describeStmt returns [DescribeArgs retval]

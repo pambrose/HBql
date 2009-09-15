@@ -72,11 +72,11 @@ public abstract class HBaseSchema extends ExprSchema {
         return this.getColumnAttribByFamilyQualifiedColumnNameMap().get(s);
     }
 
-    protected void setColumnAttribByFamilyQualifiedColumnName(final String s,
-                                                              final ColumnAttrib columnAttrib) throws HPersistException {
-        if (this.getColumnAttribByFamilyQualifiedColumnNameMap().containsKey(s))
-            throw new HPersistException(s + " already delcared");
-        this.getColumnAttribByFamilyQualifiedColumnNameMap().put(s, columnAttrib);
+    protected void addColumnAttrib(final ColumnAttrib attrib) throws HPersistException {
+        final String name = attrib.getFamilyQualifiedName();
+        if (this.getColumnAttribByFamilyQualifiedColumnNameMap().containsKey(name))
+            throw new HPersistException(name + " already delcared");
+        this.getColumnAttribByFamilyQualifiedColumnNameMap().put(name, attrib);
     }
 
     // *** versionAttribByFamilyQualifiedColumnNameMap calls
@@ -88,12 +88,12 @@ public abstract class HBaseSchema extends ExprSchema {
         return this.getVersionAttribByFamilyQualifiedColumnNameMap().get(s);
     }
 
-    protected void setVersionAttribByFamilyQualifiedColumnName(final String columnName,
-                                                               final ColumnAttrib attrib) throws HPersistException {
-        if (this.getVersionAttribByFamilyQualifiedColumnNameMap().containsKey(columnName))
-            throw new HPersistException(columnName + " already delcared");
+    protected void addVersionAttrib(final ColumnAttrib attrib) throws HPersistException {
+        final String name = attrib.getFamilyQualifiedName();
+        if (this.getVersionAttribByFamilyQualifiedColumnNameMap().containsKey(name))
+            throw new HPersistException(name + " already delcared");
 
-        this.getVersionAttribByFamilyQualifiedColumnNameMap().put(columnName, attrib);
+        this.getVersionAttribByFamilyQualifiedColumnNameMap().put(name, attrib);
     }
 
     protected void assignCurrentValues(final Serialization ser,

@@ -24,10 +24,15 @@ public class VarDescAttrib extends ColumnAttrib {
         return this.varDesc.getTypeName();
     }
 
+    @Override
     public String getVariableName() {
         return this.varDesc.getVariableName();
     }
 
+    @Override
+    public String getFamilyQualifiedName() {
+        return this.varDesc.getQualifiedName();
+    }
 
     @Override
     public boolean isArray() {

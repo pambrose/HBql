@@ -14,17 +14,19 @@ import java.util.List;
  */
 public class VarDesc implements Serializable {
     private String variableName;
+    private String qualifiedName;
     private String typeName;
     private FieldType fieldType;
 
-    private VarDesc(final String variableName, final String typeName) {
+    private VarDesc(final String variableName, final String qualifiedName, final String typeName) {
         this.variableName = variableName;
+        this.qualifiedName = qualifiedName;
         this.typeName = typeName;
         this.fieldType = getFieldType(this.getTypeName());
     }
 
-    public static VarDesc newVarDesc(final String varName, final String typeName) {
-        return new VarDesc(varName, typeName);
+    public static VarDesc newVarDesc(final String variableName, final String qualifiedName, final String typeName) {
+        return new VarDesc(variableName, qualifiedName, typeName);
     }
 
     public static List<VarDesc> getList(final List<String> varList, final String typeName) {
@@ -32,7 +34,7 @@ public class VarDesc implements Serializable {
         final List<VarDesc> retval = Lists.newArrayList();
 
         for (final String var : varList)
-            retval.add(new VarDesc(var, typeName));
+            retval.add(new VarDesc(var, var, typeName));
 
         return retval;
     }
@@ -48,19 +50,23 @@ public class VarDesc implements Serializable {
     }
 
     public String getFamilyName() {
-        if (this.getVariableName().indexOf(":") != -1) {
-            String[] vals = this.getVariableName().split(":");
+        if (this.getQualifiedName().indexOf(":") != -1) {
+            final String[] vals = this.getQualifiedName().split(":");
             return vals[0];
         }
         return "";
     }
 
     public String getColumnName() {
-        if (this.getVariableName().indexOf(":") != -1) {
-            String[] vals = this.getVariableName().split(":");
+        if (this.getQualifiedName().indexOf(":") != -1) {
+            final String[] vals = this.getQualifiedName().split(":");
             return vals[1];
         }
         return this.getVariableName();
+    }
+
+    public String getQualifiedName() {
+        return qualifiedName;
     }
 
     public String getVariableName() {
