@@ -103,29 +103,31 @@ public abstract class HBaseSchema extends ExprSchema {
 
         for (final KeyValue keyValue : result.list()) {
 
-            final byte[] cbytes = keyValue.getColumn();
-            final byte[] vbytes = result.getValue(cbytes);
-            final String colname = ser.getStringFromBytes(cbytes);
+            final byte[] columnBytes = keyValue.getColumn();
+            final String columnName = ser.getStringFromBytes(columnBytes);
+            final long timestamp = keyValue.getTimestamp();
+            final byte[] valueBytes = result.getValue(columnBytes);
 
-            if (colname.endsWith("]")) {
-                final int lbrace = colname.indexOf("[");
-                final String mapcolumn = colname.substring(0, lbrace);
-                final String mapKey = colname.substring(lbrace + 1, colname.length() - 1);
+            if (columnName.endsWith("]")) {
+                final int lbrace = columnName.indexOf("[");
+                final String mapcolumn = columnName.substring(0, lbrace);
+                final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
                 final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(mapcolumn);
-                final Object val = attrib.getValueFromBytes(ser, newobj, vbytes);
 
                 Map mapval = (Map)attrib.getCurrentValue(newobj);
 
                 if (mapval == null) {
                     mapval = Maps.newHashMap();
+                    // TODO Check this
                     attrib.setVersionedValueMap(newobj, mapval);
                 }
 
+                final Object val = attrib.getValueFromBytes(ser, newobj, valueBytes);
                 mapval.put(mapKey, val);
             }
             else {
-                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(colname);
-                attrib.setCurrentValue(ser, newobj, vbytes);
+                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(columnName);
+                attrib.setCurrentValue(ser, timestamp, valueBytes);
             }
         }
     }
@@ -160,14 +162,14 @@ public abstract class HBaseSchema extends ExprSchema {
                     if (!fieldList.contains(attrib.getVariableName()))
                         continue;
 
-                    final Object val = attrib.getValueFromBytes(ser, newobj, vbytes);
-                    Map mapval = (Map)attrib.getVersionedValueMap(newobj);
+                    Map<Long, Object> mapval = (Map<Long, Object>)attrib.getVersionedValueMap(newobj);
 
                     if (mapval == null) {
                         mapval = new TreeMap();
                         attrib.setVersionedValueMap(newobj, mapval);
                     }
 
+                    final Object val = attrib.getValueFromBytes(ser, newobj, vbytes);
                     mapval.put(timestamp, val);
                 }
             }

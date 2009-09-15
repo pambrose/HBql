@@ -188,10 +188,11 @@ public abstract class ColumnAttrib extends VariableAttrib {
     }
 
     public void setCurrentValue(final Serialization ser,
+                                final long timestamp,
                                 final Object newobj,
                                 final byte[] b) throws IOException, HPersistException {
         final Object val = this.getValueFromBytes(ser, newobj, b);
-        this.setCurrentValue(newobj, val);
+        this.setCurrentValue(newobj, timestamp, val);
     }
 
 }

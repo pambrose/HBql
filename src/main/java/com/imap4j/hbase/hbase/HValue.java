@@ -10,24 +10,33 @@ import java.util.Map;
  */
 public class HValue {
 
-    private boolean valueset = false;
+    private boolean currentValueSet = false;
     private Object currentValue = null;
+    private long currentValueTimestamp = -1;
     private Map<Long, Object> versionMap = null;
 
     public Object getCurrentValue() {
         return this.currentValue;
     }
 
-    public void setCurrentValue(final Object currentValue) {
-        this.valueset = true;
-        this.currentValue = currentValue;
+    public void setCurrentValue(final long timestamp, final Object currentValue) {
+
+        if (timestamp > this.currentValueTimestamp) {
+            this.currentValueSet = true;
+            this.currentValueTimestamp = timestamp;
+            this.currentValue = currentValue;
+        }
     }
 
     public Map<Long, Object> getVersionMap() {
         return this.versionMap;
     }
 
-    public void setVersionMap(final Object versionMap) {
-        this.versionMap = (Map<Long, Object>)versionMap;
+    public void setVersionMap(final Map<Long, Object> versionMap) {
+        this.versionMap = versionMap;
+    }
+
+    public boolean isCurrentValueSet() {
+        return currentValueSet;
     }
 }

@@ -4,6 +4,7 @@ import com.imap4j.hbase.hbase.HPersistException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -88,7 +89,7 @@ public abstract class FieldAttrib extends ColumnAttrib {
 
 
     @Override
-    public void setCurrentValue(final Object newobj, final Object val) {
+    public void setCurrentValue(final Object newobj, final long timestamp, final Object val) {
         try {
             this.getField().set(newobj, val);
         }
@@ -104,8 +105,8 @@ public abstract class FieldAttrib extends ColumnAttrib {
     }
 
     @Override
-    protected void setVersionedValueMap(final Object newobj, final Object val) {
+    protected void setVersionedValueMap(final Object newobj, final Map<Long, Object> map) {
         // Just call current value for version since we have different fields for each
-        this.setCurrentValue(newobj, val);
+        this.setCurrentValue(newobj, 0, map);
     }
 }

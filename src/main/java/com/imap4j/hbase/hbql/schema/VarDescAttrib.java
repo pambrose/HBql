@@ -4,6 +4,7 @@ import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HRecord;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -66,9 +67,9 @@ public class VarDescAttrib extends ColumnAttrib {
     }
 
     @Override
-    protected void setCurrentValue(final Object newobj, final Object val) {
+    protected void setCurrentValue(final Object newobj, final long timestamp, final Object val) {
         final HRecord record = (HRecord)newobj;
-        record.setCurrentValueByVariableName(this.getVariableName(), val);
+        record.setCurrentValueByVariableName(this.getVariableName(), timestamp, val);
     }
 
     @Override
@@ -78,7 +79,7 @@ public class VarDescAttrib extends ColumnAttrib {
     }
 
     @Override
-    protected void setVersionedValueMap(final Object newobj, final Object map) {
+    protected void setVersionedValueMap(final Object newobj, final Map<Long, Object> map) {
         final HRecord record = (HRecord)newobj;
         record.setVersionedValueMapByVariableName(this.getVariableName(), map);
     }

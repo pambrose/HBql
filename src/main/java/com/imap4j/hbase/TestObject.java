@@ -118,7 +118,7 @@ public class TestObject {
                            + "("
                            + "keyval key, "
                            + "family1:author string, "
-                           + "family1:title string"
+                           + "family1:title string "
                            + ")");
         System.out.println(output);
 
@@ -143,7 +143,7 @@ public class TestObject {
 
         tx.commit();
 
-        final String query1 = "SELECT family1:author "
+        final String query1 = "SELECT family1:author, family1:title "
                               + "FROM testobjects "
                               + "WITH "
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
@@ -156,8 +156,10 @@ public class TestObject {
 
         for (HRecord val1 : results1) {
             System.out
-                    .println("Current Values: " + val1.getCurrentValueByVariableName("keyval") + " - " + val1.getCurrentValueByVariableName("strValue")
-                             + " - " + val1.getCurrentValueByVariableName("family1:author") + " - " + val1.getCurrentValueByVariableName("title"));
+                    .println("Current Values: " + val1.getCurrentValueByVariableName("keyval")
+                             + " - " + val1.getCurrentValueByVariableName("strValue")
+                             + " - " + val1.getCurrentValueByVariableName("family1:author")
+                             + " - " + val1.getCurrentValueByVariableName("family1:title"));
 
             System.out.println("Historicals");
 

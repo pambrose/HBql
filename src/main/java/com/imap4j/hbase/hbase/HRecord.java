@@ -1,5 +1,6 @@
 package com.imap4j.hbase.hbase;
 
+import com.imap4j.hbase.hbql.schema.ColumnAttrib;
 import com.imap4j.hbase.hbql.schema.HBaseSchema;
 import com.imap4j.hbase.util.Maps;
 
@@ -30,54 +31,56 @@ public class HRecord implements Serializable {
         this.schema = schema;
     }
 
-    public Object getCurrentValueByVariableName(final String name) {
-        return this.values.get(name).getCurrentValue();
-    }
-
-    public void setCurrentValueByVariableName(final String name, final Object val) {
-        this.setCurrentValue(name, val);
-    }
-
-    public Object getVersionedValueMapByVariableName(final String name) {
-        return this.values.get(name).getVersionMap();
-    }
-
-    public void setVersionedValueMapByVariableName(final String name, final Object val) {
-        this.values.get(name).setVersionMap(val);
-    }
-
-    private void setCurrentValue(final String name, final Object val) {
-        final HValue hvalue = (!this.values.containsKey(name)) ? this.addValue(name) : this.values.get(name);
-        hvalue.setCurrentValue(val);
-    }
-
     private HValue addValue(final String name) {
         final HValue val = new HValue();
         this.values.put(name, val);
         return val;
     }
 
-    /*
-    public Object getCurrentValueByFamilyQualifiedName(final String name) {
-        final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(name);
-        return this.getCurrentValueByVariableName(attrib.getVariableName());
+    private HValue getValue(final String name) {
+        return this.values.get(name);
     }
 
-    public void setCurrentValueByFamilyQualifiedName(final String name, final Object val) {
-        final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(name);
-        this.setCurrentValueByVariableName(attrib.getVariableName(), val);
+    private boolean isDefined(final String name) {
+        return this.values.containsKey(name);
     }
 
-    public Object getVersionedValueByFamilyQualifiedName(final String name) {
-        final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(name);
-        return this.getVersionedValueMapByVariableName(attrib.getVariableName());
+    public Object getCurrentValueByVariableName(final String name) {
+        if (this.values.containsKey(name))
+            return this.getValue(name).getCurrentValue();
+        else
+            return null;
     }
 
-    public void setVersionedValueByFamilyQualifiedName(final String name, final Object val) {
-        final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(name);
-        this.setVersionedValueMapByVariableName(attrib.getVariableName(), val);
+    public void setCurrentValueByVariableName(final String name, final long timestamp, final Object val) {
+        final HValue hvalue = (!this.isDefined(name)) ? this.addValue(name) : this.getValue(name);
+        hvalue.setCurrentValue(timestamp, val);
     }
-    */
+
+    public Object getVersionedValueMapByVariableName(final String name) {
+        if (this.isDefined(name))
+            return this.getValue(name).getVersionMap();
+        else
+            return null;
+    }
+
+    public void setVersionedValueMapByVariableName(final String name, final Map<Long, Object> val) {
+        this.getValue(name).setVersionMap(val);
+    }
+
+    public void setVersionedValueByVariableName(final String name, final long timestamp, final Object val) {
+        this.getValue(name).getVersionMap().put(timestamp, val);
+    }
+
+    public void setCurrentValueByFamilyQualifiedName(final String name, final long timestamp, final Object val) {
+        final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(name);
+        this.setCurrentValueByVariableName(attrib.getVariableName(), timestamp, val);
+    }
+
+    public void setVersionedValueByFamilyQualifiedName(final String name, final long timestamp, final Object val) {
+        final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(name);
+        this.setVersionedValueByVariableName(attrib.getVariableName(), timestamp, val);
+    }
 
     public void clear() {
         this.values.clear();
