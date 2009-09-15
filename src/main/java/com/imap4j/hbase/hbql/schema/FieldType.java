@@ -17,18 +17,18 @@ import java.util.List;
  */
 public enum FieldType {
 
-    BooleanType(Boolean.TYPE, Bytes.SIZEOF_BOOLEAN, "B", "BOOL", "BOOLEAN"),
+    BooleanType(Boolean.TYPE, Bytes.SIZEOF_BOOLEAN, "BOOLEAN", "BOOL"),
     ByteType(Byte.TYPE, Bytes.SIZEOF_BYTE, "BYTE"),
-    CharType(Short.TYPE, Bytes.SIZEOF_CHAR, "C", "CHAR"),
-    ShortType(Short.TYPE, Bytes.SIZEOF_SHORT, "S", "SHORT"),
-    IntegerType(Integer.TYPE, Bytes.SIZEOF_INT, "I", "INT", "INTEGER"),
-    LongType(Long.TYPE, Bytes.SIZEOF_LONG, "L", "LONG"),
-    FloatType(Float.TYPE, Bytes.SIZEOF_FLOAT, "F", "FLOAT"),
-    DoubleType(Double.TYPE, Bytes.SIZEOF_DOUBLE, "D", "DOUBLE"),
-    KeyType(String.class, -1, "S", "KEY"),
-    StringType(String.class, -1, "S", "STR", "STRING"),
-    DateType(Date.class, -1, "D", "DATE", "DATETIME"),
-    ObjectType(Object.class, -1, "O", "OBJ", "OBJECT");
+    CharType(Short.TYPE, Bytes.SIZEOF_CHAR, "CHAR"),
+    ShortType(Short.TYPE, Bytes.SIZEOF_SHORT, "SHORT"),
+    IntegerType(Integer.TYPE, Bytes.SIZEOF_INT, "INTEGER", "INT"),
+    LongType(Long.TYPE, Bytes.SIZEOF_LONG, "LONG"),
+    FloatType(Float.TYPE, Bytes.SIZEOF_FLOAT, "FLOAT"),
+    DoubleType(Double.TYPE, Bytes.SIZEOF_DOUBLE, "DOUBLE"),
+    KeyType(String.class, -1, "KEY"),
+    StringType(String.class, -1, "STRING", "STRING", "VARCHAR"),
+    DateType(Date.class, -1, "DATE", "DATETIME"),
+    ObjectType(Object.class, -1, "OBJECT", "OBJ");
 
     private final Class clazz;
     private final int size;
@@ -58,6 +58,10 @@ public enum FieldType {
     public static FieldType getFieldType(final Field field) {
         final Class fieldClass = field.getType();
         return getFieldType(fieldClass);
+    }
+
+    public String getFirstSynonym() {
+        return this.getSynonymList().get(0);
     }
 
     private List<String> getSynonymList() {

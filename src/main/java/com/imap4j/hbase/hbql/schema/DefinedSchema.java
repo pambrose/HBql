@@ -4,8 +4,6 @@ import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HRecord;
 import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.util.Maps;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.TokenStream;
 import org.apache.hadoop.hbase.client.Result;
 
 import java.io.IOException;
@@ -24,19 +22,12 @@ public class DefinedSchema extends HBaseSchema {
 
     final String tableName;
 
-    public DefinedSchema(final TokenStream input, final List<VarDesc> varList) throws RecognitionException {
+    public DefinedSchema(final List<VarDesc> varList) throws HPersistException {
 
         this.tableName = "declared";
 
-        try {
-            for (final VarDesc var : varList)
-                processColumn(var);
-        }
-        catch (HPersistException e) {
-            System.out.println(e.getMessage());
-            throw new RecognitionException(input);
-        }
-
+        for (final VarDesc var : varList)
+            processColumn(var);
     }
 
     private DefinedSchema(final String tableName, final List<VarDesc> varList) throws HPersistException {
@@ -49,12 +40,17 @@ public class DefinedSchema extends HBaseSchema {
                                                               final List<VarDesc> varList) throws HPersistException {
 
         DefinedSchema schema = getDefinedSchemaMap().get(tableName);
+
         if (schema != null)
             throw new HPersistException("Table " + tableName + " already defined");
 
         schema = new DefinedSchema(tableName, varList);
         getDefinedSchemaMap().put(tableName, schema);
         return schema;
+    }
+
+    public synchronized static DefinedSchema newDefinedSchema(final HBaseSchema schema) throws HPersistException {
+        return new DefinedSchema(schema.getTableName(), schema.getVarDescList());
     }
 
     private void processColumn(final VarDesc var) throws HPersistException {
@@ -69,20 +65,15 @@ public class DefinedSchema extends HBaseSchema {
             if (this.getKeyColumnAttrib() != null)
                 throw new HPersistException("Table " + this + " has multiple instance variables "
                                             + "marked as keys");
-
             this.setKeyColumnAttrib(attrib);
         }
         else {
-
             final String family = attrib.getFamilyName();
-
             if (family.length() == 0)
-                throw new HPersistException(attrib.getObjectQualifiedName()
-                                            + " is missing family name");
+                throw new HPersistException(attrib.getColumnName() + " is missing family name");
 
         }
     }
-
 
     private static Map<String, DefinedSchema> getDefinedSchemaMap() {
         return definedSchemaMap;

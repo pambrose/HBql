@@ -167,6 +167,8 @@ public class HConnection {
     private HOutput deleteCommand(final DeleteArgs args) throws HPersistException, IOException {
 
         final HOutput retval = new HOutput();
+
+        // TODO Need to grab schema from DeleteArgs (like QueryArgs in Select)
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getTableName());
 
         if (schema == null)

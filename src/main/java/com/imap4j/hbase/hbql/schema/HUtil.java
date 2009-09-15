@@ -5,12 +5,13 @@ import com.imap4j.hbase.antlr.args.VersionArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.ExprTree;
-import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.expr.node.DateValue;
 import com.imap4j.hbase.hbql.expr.node.NumberValue;
 import com.imap4j.hbase.hbql.expr.node.StringValue;
 import com.imap4j.hbase.hbql.io.Serialization;
 import com.imap4j.hbase.util.Lists;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.TokenStream;
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
@@ -71,14 +72,22 @@ public class HUtil {
             if (verArgs != null && verArgs.isValid())
                 scan.setMaxVersions(verArgs.getValue());
 
-            // Set server-side filter
+            // Set server-side filter.  It must be a DefinedSchema since the server uses HRecord evaluation
             if (serverFilter != null) {
-                serverFilter.setSchema(schema);
+
+                final DefinedSchema serverSchema;
+                if (schema instanceof DefinedSchema)
+                    serverSchema = (DefinedSchema)schema;
+                else
+                    serverSchema = DefinedSchema.newDefinedSchema(schema);
+
+                serverFilter.setSchema(serverSchema);
                 serverFilter.optimize();
 
-                final List<ExprVariable> names = serverFilter.getExprVariables();
-                //boolean okay = HUtil.ser.isSerializable(schema) && HUtil.ser.isSerializable(serverFilter);
-                scan.setFilter(new HBqlFilter(schema, serverFilter));
+                // final List<ExprVariable> names = serverFilter.getExprVariables();
+                // boolean okay = HUtil.ser.isSerializable(serverSchema) && HUtil.ser.isSerializable(serverFilter);
+
+                scan.setFilter(new HBqlFilter(serverSchema, serverFilter));
             }
         }
 
@@ -98,6 +107,18 @@ public class HUtil {
 
         sbuf.append(strval);
         return sbuf.toString();
+    }
+
+    // This keeps antlr code out of DefinedSchema, which is accessed server-side in HBase
+    public static DefinedSchema getNewDefinedSchema(final TokenStream input,
+                                                    final List<VarDesc> varList) throws RecognitionException {
+        try {
+            return new DefinedSchema(varList);
+        }
+        catch (HPersistException e) {
+            System.out.println(e.getMessage());
+            throw new RecognitionException(input);
+        }
     }
 
     public static String parseStringExpr(final String s) throws HPersistException {

@@ -139,9 +139,9 @@ public class HBaseParser extends Parser {
         throw new MismatchedTokenException(ttype, input);
     }
 
-    public Object recoverFromMismatchedSet(IntStream input,
-                                           RecognitionException e,
-                                           BitSet follow) throws RecognitionException {
+    public Object recoverFromMismatchedSet(final IntStream input,
+                                           final RecognitionException e,
+                                           final BitSet follow) throws RecognitionException {
         throw e;
     }
 
@@ -179,4 +179,5 @@ public class HBaseParser extends Parser {
             root = new DateCalcExpr(root, opList.get(i), exprList.get(i + 1));
         return root;
     }
+
 }

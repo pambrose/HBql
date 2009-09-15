@@ -18,28 +18,28 @@ import java.util.List;
  */
 public class ExprTree implements Serializable {
 
-    private PredicateExpr expr = null;
+    private PredicateExpr predicateExpr = null;
     private long start, end;
 
-    private ExprTree(final PredicateExpr expr) {
-        this.expr = expr;
+    private ExprTree(final PredicateExpr predicateExpr) {
+        this.predicateExpr = predicateExpr;
     }
 
     public static ExprTree newExprTree(final PredicateExpr expr) {
         return new ExprTree(expr);
     }
 
-    private PredicateExpr getExpr() {
-        return this.expr;
+    private PredicateExpr getPredicateExpr() {
+        return this.predicateExpr;
     }
 
-    private void setExpr(final PredicateExpr expr) {
-        this.expr = expr;
+    private void setPredicateExpr(final PredicateExpr predicateExpr) {
+        this.predicateExpr = predicateExpr;
     }
 
     public void setSchema(final ExprSchema schema) {
         if (schema != null)
-            this.getExpr().setSchema(schema);
+            this.getPredicateExpr().setSchema(schema);
     }
 
     public void optimize() throws HPersistException {
@@ -47,18 +47,18 @@ public class ExprTree implements Serializable {
     }
 
     public List<ExprVariable> getExprVariables() {
-        if (this.getExpr() == null)
+        if (this.getPredicateExpr() == null)
             return Lists.newArrayList();
         else
-            return this.getExpr().getExprVariables();
+            return this.getPredicateExpr().getExprVariables();
     }
 
     private boolean optimizeForConstants(final Object object) throws HPersistException {
 
         boolean retval = true;
 
-        if (this.getExpr().optimizeForConstants(object))
-            this.setExpr(new BooleanLiteral(this.getExpr().evaluate(object)));
+        if (this.getPredicateExpr().optimizeForConstants(object))
+            this.setPredicateExpr(new BooleanLiteral(this.getPredicateExpr().evaluate(object)));
         else
             retval = false;
 
@@ -72,7 +72,7 @@ public class ExprTree implements Serializable {
         // Set it once per evaluation
         DateLiteral.resetNow();
 
-        final boolean retval = (this.getExpr() == null) || (this.getExpr().evaluate(object));
+        final boolean retval = (this.getPredicateExpr() == null) || (this.getPredicateExpr().evaluate(object));
 
         this.end = System.nanoTime();
 

@@ -419,7 +419,7 @@ column 	: c=varRef;
 schemaDesc returns [ExprSchema retval]
 @init {List<VarDesc> varList = Lists.newArrayList();}
 	: LCURLY (varDesc[varList] (COMMA varDesc[varList])*)? RCURLY
-							{retval = new DefinedSchema(input, varList);}
+							{retval = HUtil.getNewDefinedSchema(input, varList);}
 	;
 	
 varDesc [List<VarDesc> list] 

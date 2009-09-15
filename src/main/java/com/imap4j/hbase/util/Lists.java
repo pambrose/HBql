@@ -1,5 +1,6 @@
 package com.imap4j.hbase.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -9,7 +10,7 @@ import java.util.Arrays;
  * Date: Sep 11, 2009
  * Time: 12:17:23 PM
  */
-public class Lists {
+public class Lists implements Serializable {
 
     public static <E> ArrayList<E> newArrayList() {
         return new ArrayList<E>();

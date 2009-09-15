@@ -64,7 +64,7 @@ public abstract class HBaseSchema extends ExprSchema {
     }
 
     // *** columnAttribByFamilyQualifiedColumnNameMap calls
-    private Map<String, ColumnAttrib> getColumnAttribByFamilyQualifiedColumnNameMap() {
+    protected Map<String, ColumnAttrib> getColumnAttribByFamilyQualifiedColumnNameMap() {
         return this.columnAttribByFamilyQualifiedColumnNameMap;
     }
 
@@ -174,4 +174,8 @@ public abstract class HBaseSchema extends ExprSchema {
         }
     }
 
+    // This is relevant only for AnnotatedSchema
+    public List<VarDesc> getVarDescList() {
+        return null;
+    }
 }

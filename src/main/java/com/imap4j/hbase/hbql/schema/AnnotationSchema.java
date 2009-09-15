@@ -373,4 +373,15 @@ public class AnnotationSchema extends HBaseSchema {
         }
         return newobj;
     }
+
+    public List<VarDesc> getVarDescList() {
+        final List<VarDesc> varList = Lists.newArrayList();
+        for (final ColumnAttrib col : this.getColumnAttribByFamilyQualifiedColumnNameMap().values()) {
+            final String coltype = (col.isKey())
+                                   ? FieldType.KeyType.getFirstSynonym()
+                                   : col.getFieldType().getFirstSynonym();
+            varList.add(VarDesc.newVarDesc(col.getFamilyQualifiedName(), coltype));
+        }
+        return varList;
+    }
 }
