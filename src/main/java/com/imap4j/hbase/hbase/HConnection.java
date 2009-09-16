@@ -16,6 +16,7 @@ import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.HUtil;
 import com.imap4j.hbase.hbql.schema.VarDescAttrib;
 import com.imap4j.hbase.hbql.schema.VariableAttrib;
+import com.imap4j.hbase.util.Maps;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -28,6 +29,7 @@ import org.apache.hadoop.hbase.client.Scan;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,14 +39,41 @@ import java.util.List;
  */
 public class HConnection {
 
+    private static Map<String, HConnection> connectionMap = Maps.newHashMap();
+
     final HBaseConfiguration config = new HBaseConfiguration();
+
+    final String name;
+
+    private HConnection(final String name) {
+        this.name = name;
+
+        if (this.getName() != null)
+            connectionMap.put(this.getName(), this);
+    }
+
+    public static synchronized HConnection newHConnection(final String name) {
+        return new HConnection(name);
+    }
+
+    public static HConnection newHConnection() {
+        return newHConnection(null);
+    }
+
+    public static HConnection getHConnection(final String name) {
+        return connectionMap.get(name);
+    }
 
     public <T> HQuery<T> newHQuery(final String query) throws IOException, HPersistException {
         return new HQuery<T>(this, query);
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public HBaseConfiguration getConfig() {
-        return config;
+        return this.config;
     }
 
     public HTransaction newHTransaction() {
@@ -227,5 +256,4 @@ public class HConnection {
 
         throw new HPersistException("Unknown variable: " + var);
     }
-
 }

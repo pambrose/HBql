@@ -39,7 +39,6 @@ public class HValue {
                 this.versionMap = new TreeMap<Long, Object>();
 
             return this.versionMap;
-
         }
     }
 

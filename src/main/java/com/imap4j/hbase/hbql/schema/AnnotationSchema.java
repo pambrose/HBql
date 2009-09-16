@@ -13,6 +13,7 @@ import org.apache.hadoop.hbase.client.Result;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -209,9 +210,18 @@ public class AnnotationSchema extends HBaseSchema {
         }
     }
 
-    private static Class getClass(final String str) {
+    private static Class getClass(final String str) throws HPersistException {
         try {
-            return Class.forName(str);
+            final Class<?> clazz = Class.forName(str);
+
+            // Make sure inner class is static
+            if (clazz.isMemberClass() && !Modifier.isStatic(clazz.getModifiers())) {
+                final String s = "Inner class " + clazz.getName() + " must be declared static";
+                System.err.println(s);
+                throw new HPersistException(s);
+            }
+
+            return clazz;
         }
         catch (ClassNotFoundException e) {
             return null;

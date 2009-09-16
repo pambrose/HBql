@@ -32,11 +32,15 @@ public class HTransaction {
         return connection;
     }
 
+    private Map<String, List<Put>> getUpdateList() {
+        return this.updateList;
+    }
+
     public synchronized List<Put> getUpdateList(final String tableName) {
-        List<Put> retval = updateList.get(tableName);
+        List<Put> retval = this.getUpdateList().get(tableName);
         if (retval == null) {
             retval = Lists.newArrayList();
-            updateList.put(tableName, retval);
+            this.getUpdateList().put(tableName, retval);
         }
         return retval;
     }
@@ -75,7 +79,7 @@ public class HTransaction {
 
 
     public void commit() throws IOException {
-        for (final String tableName : updateList.keySet()) {
+        for (final String tableName : this.getUpdateList().keySet()) {
             final HTable table = this.getConnection().getHTable(tableName);
             table.put(this.getUpdateList(tableName));
             table.flushCommits();

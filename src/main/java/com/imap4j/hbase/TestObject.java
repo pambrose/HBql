@@ -111,7 +111,7 @@ public class TestObject {
 
     public static void main(String[] args) throws IOException, HPersistException {
 
-        HConnection conn = new HConnection();
+        HConnection conn = HConnection.newHConnection();
         HOutput output;
 
         output = conn.exec("define table testobjects "
@@ -128,13 +128,13 @@ public class TestObject {
 
         output = conn.exec("create table using TestObject");
         System.out.println(output);
+        */
 
         output = conn.exec("show tables");
         System.out.println(output);
 
         output = conn.exec("describe table TestObject");
         System.out.println(output);
-        */
 
         final HTransaction tx = conn.newHTransaction();
         int cnt = 0;
@@ -183,7 +183,7 @@ public class TestObject {
                               + "WITH "
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
                               + "TIME RANGE NOW()-DAY(5) TO NOW()+DAY(1)"
-                              + "VERSIONS 5 "
+                              + "VERSIONS MAX "
                               + "SERVER FILTER WHERE author LIKE '.*282.*'"
                 //+ "CLIENT FILTER WHERE author LIKE '.*282.*'"
                 ;
