@@ -61,8 +61,7 @@ public class DefinedSchema extends HBaseSchema {
 
         if (attrib.isKey()) {
             if (this.getKeyColumnAttrib() != null)
-                throw new HPersistException("Table " + this + " has multiple instance variables "
-                                            + "marked as keys");
+                throw new HPersistException("Table " + this + " has multiple instance variables marked as keys");
             this.setKeyColumnAttrib(attrib);
         }
         else {

@@ -27,26 +27,30 @@ public class HRecord implements Serializable {
         return this.schema;
     }
 
+    private Map<String, HValue> getValues() {
+        return this.values;
+    }
+
     public void setSchema(final HBaseSchema schema) {
         this.schema = schema;
     }
 
     private HValue addValue(final String name) {
         final HValue val = new HValue();
-        this.values.put(name, val);
+        this.getValues().put(name, val);
         return val;
     }
 
     private HValue getValue(final String name) {
-        return this.values.get(name);
+        return this.getValues().get(name);
     }
 
     private boolean isDefined(final String name) {
-        return this.values.containsKey(name);
+        return this.getValues().containsKey(name);
     }
 
     public Object getCurrentValueByVariableName(final String name) throws HPersistException {
-        if (this.values.containsKey(name))
+        if (this.getValues().containsKey(name))
             return this.getValue(name).getCurrentValue();
         else
             throw new HPersistException("No value set for variable " + name);
@@ -58,10 +62,7 @@ public class HRecord implements Serializable {
     }
 
     public Map<Long, Object> getVersionedValueMapByVariableName(final String name) {
-        if (this.isDefined(name))
-            return this.getValue(name).getVersionMap();
-        else
-            return null;
+        return this.isDefined(name) ? this.getValue(name).getVersionMap() : null;
     }
 
     public void setVersionedValueMapByVariableName(final String name, final Map<Long, Object> val) {
@@ -83,6 +84,6 @@ public class HRecord implements Serializable {
     }
 
     public void clear() {
-        this.values.clear();
+        this.getValues().clear();
     }
 }
