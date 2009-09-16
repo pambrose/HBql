@@ -23,17 +23,15 @@ public class DefinedSchema extends HBaseSchema {
     final String tableName;
 
     public DefinedSchema(final List<VarDesc> varList) throws HPersistException {
-
-        this.tableName = "declared";
-
+        this.tableName = "embedded";
         for (final VarDesc var : varList)
-            processColumn(var);
+            processColumn(var, false);
     }
 
     private DefinedSchema(final String tableName, final List<VarDesc> varList) throws HPersistException {
         this.tableName = tableName;
         for (final VarDesc var : varList)
-            processColumn(var);
+            processColumn(var, true);
     }
 
     public synchronized static DefinedSchema newDefinedSchema(final String tableName,
@@ -53,7 +51,7 @@ public class DefinedSchema extends HBaseSchema {
         return new DefinedSchema(schema.getTableName(), schema.getVarDescList());
     }
 
-    private void processColumn(final VarDesc var) throws HPersistException {
+    private void processColumn(final VarDesc var, final boolean enforceFamilyName) throws HPersistException {
 
         final VarDescAttrib attrib = new VarDescAttrib(var);
 
@@ -69,7 +67,7 @@ public class DefinedSchema extends HBaseSchema {
         }
         else {
             final String family = attrib.getFamilyName();
-            if (family.length() == 0)
+            if (enforceFamilyName && family.length() == 0)
                 throw new HPersistException(attrib.getColumnName() + " is missing family name");
 
         }

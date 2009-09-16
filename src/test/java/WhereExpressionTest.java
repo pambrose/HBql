@@ -198,14 +198,14 @@ public class WhereExpressionTest extends WhereExprTests {
 
     @Test
     public void columnLookups() throws HPersistException {
-        assertInvalidInput("{a1, a2 as date} a1 < a2");
-        assertColumnsMatchTrue("{fam1:col1, fam2:col2 as int} TRUE");
+        assertInvalidInput("{a1 date, a2 date} a1 < a2");
+        assertColumnsMatchTrue("{fam1:col1 int, fam2:col2 int} TRUE");
         assertColumnsMatchFalse("TRUE", "intValue");
-//        assertColumnsMatchTrue("{intValue as int, int2 as integer} intValue between 2 AND 5", "intValue");
-//        assertInvalidInput("{xintValue as int} xintValue between 2 AND 5", "intValue");
-//        assertColumnsMatchTrue("{a1,a2 as date} a1 < a2", "a1", "a2");
-//        assertColumnsMatchFalse("{a1, a2, d1, k3 as int} a1 < a2 OR d1 > k3", "a1", "a2");
-//        assertColumnsMatchTrue("{a1, a2, d1 as date, k3 as date} a1 < a2 OR d1 > k3", "a1", "a2", "d1", "k3");
+        assertColumnsMatchTrue("{intValue  int, int2  integer} intValue between 2 AND 5", "intValue");
+        assertInvalidInput("{xintValue  int} xintValue between 2 AND 5", "intValue");
+        assertColumnsMatchTrue("{a1 date,a2  date} a1 < a2", "a1", "a2");
+        assertColumnsMatchFalse("{a1 int, a2 int, d1 int, k3 int} a1 < a2 OR d1 > k3", "a1", "a2");
+        assertColumnsMatchTrue("{a1 date, a2 date, d1 date, k3  date} a1 < a2 OR d1 > k3", "a1", "a2", "d1", "k3");
     }
 
 }

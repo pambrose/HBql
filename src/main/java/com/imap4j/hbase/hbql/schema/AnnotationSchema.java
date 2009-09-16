@@ -152,13 +152,12 @@ public class AnnotationSchema extends HBaseSchema {
         return str.substring(0, str.length() - ".class".length());
     }
 
-    private static AnnotationSchema searchPackage(final String packageName,
-                                                  final String objname) throws HPersistException {
+    private static AnnotationSchema searchPackage(final String pkgName, final String objName) throws HPersistException {
 
-        if (packageName == null)
+        if (pkgName == null)
             return null;
 
-        final String prefix = packageName.replaceAll("/", ".");
+        final String prefix = pkgName.replaceAll("/", ".");
 
         if (prefix.startsWith("META-INF.")
             || prefix.startsWith("antlr.")
@@ -192,15 +191,14 @@ public class AnnotationSchema extends HBaseSchema {
 
         final String fullname = prefix
                                 + ((!prefix.endsWith(".") && prefix.length() > 0) ? "." : "")
-                                + objname;
+                                + objName;
 
-        return setClassCache(fullname, objname);
+        return setClassCache(fullname, objName);
     }
 
-    private static AnnotationSchema setClassCache(final String fullname,
-                                                  final String objName) throws HPersistException {
+    private static AnnotationSchema setClassCache(final String name, final String objName) throws HPersistException {
 
-        final Class<?> clazz = getClass(fullname);
+        final Class<?> clazz = getClass(name);
         if (clazz == null) {
             return null;
         }

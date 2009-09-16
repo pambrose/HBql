@@ -74,15 +74,15 @@ createStmt returns [CreateArgs retval]
 	;
 	
 defineStmt returns [DefineArgs retval]
-@init {List<VarDesc> varList = Lists.newArrayList();}
-	: keyDEFINE keyTABLE t=ID LPAREN (a1=defineAttrib {varList.add($a1.retval);} 
-	  (COMMA a2=defineAttrib {varList.add($a2.retval);})*)? RPAREN
-							{retval = new DefineArgs($t.text, varList);}
-	;
+	: keyDEFINE keyTABLE t=ID LPAREN a=attribList RPAREN
+							{retval = new DefineArgs($t.text, $a.retval);};
 
+attribList returns [List<VarDesc> retval] 
+@init {retval = Lists.newArrayList();}
+	: (a1=defineAttrib {retval.add($a1.retval);} (COMMA a2=defineAttrib {retval.add($a2.retval);})*)?;
+	
 defineAttrib returns [VarDesc retval]
-	: n=ID t=ID 					{retval = VarDesc.newVarDesc($n.text, $n.text, $t.text);}
-	;
+	: n=ID t=ID 					{retval = VarDesc.newVarDesc($n.text, $n.text, $t.text);};
 
 describeStmt returns [DescribeArgs retval]
 	: keyDESCRIBE keyTABLE t=ID 			{retval = new DescribeArgs($t.text);};
@@ -420,22 +420,9 @@ qstringList returns [List<String> retval]
 column 	: c=varRef;
 	
 schemaDesc returns [ExprSchema retval]
-@init {List<VarDesc> varList = Lists.newArrayList();}
-	: LCURLY (varDesc[varList] (COMMA varDesc[varList])*)? RCURLY
-							{retval = HUtil.getNewDefinedSchema(input, varList);}
-	;
+	: LCURLY a=attribList RCURLY			{retval = HUtil.newDefinedSchema(input, $a.retval);};
 	
-varDesc [List<VarDesc> list] 
-	: v=varRefList keyAS t=varType			{list.addAll(VarDesc.getList($v.retval, $t.text));}
-	;
-
-varRefList returns [List<String> retval]
-@init {retval = Lists.newArrayList();}
-	: v1=varRef {retval.add($v1.text);} (COMMA v2=varRef {retval.add($v2.text);})*
-	;
-	
-varType	: ID;
-		
+			
 varRef	
 	: ID //((DOT | COLON) ID)*			
 	;

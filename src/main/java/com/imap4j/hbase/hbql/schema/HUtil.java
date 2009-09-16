@@ -130,8 +130,8 @@ public class HUtil {
     }
 
     // This keeps antlr code out of DefinedSchema, which is accessed server-side in HBase
-    public static DefinedSchema getNewDefinedSchema(final TokenStream input,
-                                                    final List<VarDesc> varList) throws RecognitionException {
+    public static DefinedSchema newDefinedSchema(final TokenStream input,
+                                                 final List<VarDesc> varList) throws RecognitionException {
         try {
             return new DefinedSchema(varList);
         }
@@ -168,4 +168,5 @@ public class HUtil {
         log.info(baos.toString());
 
     }
+
 }
