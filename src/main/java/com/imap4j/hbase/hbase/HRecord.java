@@ -57,7 +57,7 @@ public class HRecord implements Serializable {
         hvalue.setCurrentValue(timestamp, val);
     }
 
-    public Object getVersionedValueMapByVariableName(final String name) {
+    public Map<Long, Object> getVersionedValueMapByVariableName(final String name) {
         if (this.isDefined(name))
             return this.getValue(name).getVersionMap();
         else

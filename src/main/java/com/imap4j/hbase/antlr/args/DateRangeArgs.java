@@ -16,15 +16,18 @@ public class DateRangeArgs {
 
     public DateRangeArgs(final DateValue lower, final DateValue upper) {
         try {
-            if (this.lower != -1)
+            if (lower != null)
                 this.lower = lower.getCurrentValue(null);
-
-            if (this.upper != -1)
+            if (upper != null)
                 this.upper = upper.getCurrentValue(null);
         }
         catch (HPersistException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isValid() {
+        return this.getLower() != -1 && this.getUpper() != -1;
     }
 
     public long getLower() {

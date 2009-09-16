@@ -147,7 +147,7 @@ public class TestObject {
                               + "FROM testobjects "
                               + "WITH "
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
-                              + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
+                              + "TIME RANGE NOW()-DAY(5) TO NOW()+DAY(1)"
                               + "VERSIONS 5 "
                               + "SERVER FILTER WHERE family1:author LIKE '.*282.*' "
                 //+ "CLIENT FILTER WHERE family1:author LIKE '.*282.*'"
@@ -158,20 +158,19 @@ public class TestObject {
         for (HRecord val1 : results1) {
             System.out
                     .println("Current Values: " + val1.getCurrentValueByVariableName("keyval")
-                             //+ " - " + val1.getCurrentValueByVariableName("strValue")
                              + " - " + val1.getCurrentValueByVariableName("family1:author")
                              + " - " + val1.getCurrentValueByVariableName("family1:title"));
 
             System.out.println("Historicals");
 
             if (val1.getVersionedValueMapByVariableName("family1:author") != null) {
-                Map<Long, String> versioned = (Map<Long, String>)val1.getVersionedValueMapByVariableName("family1:author");
+                Map<Long, Object> versioned = val1.getVersionedValueMapByVariableName("family1:author");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }
 
             if (val1.getVersionedValueMapByVariableName("family1:title") != null) {
-                Map<Long, String> versioned = (Map<Long, String>)val1.getVersionedValueMapByVariableName("family1:title");
+                Map<Long, Object> versioned = val1.getVersionedValueMapByVariableName("family1:title");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }
@@ -179,11 +178,11 @@ public class TestObject {
 
         results1.close();
 
-        final String query2 = "SELECT title, author, authorVersions "
+        final String query2 = "SELECT title, titles, author, authorVersions "
                               + "FROM TestObject "
                               + "WITH "
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
-                              + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
+                              + "TIME RANGE NOW()-DAY(5) TO NOW()+DAY(1)"
                               + "VERSIONS 5 "
                               + "SERVER FILTER WHERE author LIKE '.*282.*'"
                 //+ "CLIENT FILTER WHERE author LIKE '.*282.*'"

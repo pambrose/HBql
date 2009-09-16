@@ -46,8 +46,9 @@ public class HQuery<T> {
 
         this.scanList = HUtil.getScanList(this.getSchema(),
                                           fieldList,
-                                          args.getWhereExpr().getKeyRange(),
-                                          args.getWhereExpr().getVersion(),
+                                          args.getWhereExpr().getKeyRangeArgs(),
+                                          args.getWhereExpr().getDateRangeArgs(),
+                                          args.getWhereExpr().getVersionArgs(),
                                           this.getExprTree(args.getWhereExpr().getServerFilter(),
                                                            this.getSchema(),
                                                            fieldList));

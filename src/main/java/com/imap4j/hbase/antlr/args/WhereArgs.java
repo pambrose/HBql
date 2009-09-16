@@ -16,7 +16,7 @@ public class WhereArgs {
     private ExprTree clientFilter = ExprTree.newExprTree(null);
     private ExprTree serverFilter = ExprTree.newExprTree(null);
 
-    public KeyRangeArgs getKeyRange() {
+    public KeyRangeArgs getKeyRangeArgs() {
         return this.keyRange;
     }
 
@@ -24,7 +24,7 @@ public class WhereArgs {
         this.keyRange = keyRange;
     }
 
-    public DateRangeArgs getDateRange() {
+    public DateRangeArgs getDateRangeArgs() {
         return this.dateRange;
     }
 
@@ -32,7 +32,7 @@ public class WhereArgs {
         this.dateRange = dateRange;
     }
 
-    public VersionArgs getVersion() {
+    public VersionArgs getVersionArgs() {
         return this.version;
     }
 

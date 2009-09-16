@@ -112,11 +112,15 @@ keys returns [KeyRangeArgs retval]
 	;
 	
 time returns [DateRangeArgs retval]
-	: keyTIME keyRANGE? d1=rangeExpr keyTO d2=rangeExpr		
-							{retval = new DateRangeArgs($d1.retval, $d2.retval);};
+	: keyTIME keyRANGE d1=rangeExpr keyTO d2=rangeExpr		
+							{retval = new DateRangeArgs($d1.retval, $d2.retval);}
+	| keyTIME keySTAMP d1=rangeExpr			{retval = new DateRangeArgs($d1.retval, $d1.retval);}
+	;
 		
 versions returns [VersionArgs retval]
-	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);};
+	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);}
+	| keyVERSIONS keyMAX				{retval = new VersionArgs(new NumberLiteral(-999));}
+	;
 	
 clientFilter [ExprSchema es] returns [ExprTree retval]
 	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr[es]	
@@ -145,7 +149,6 @@ descWhereExpr [ExprSchema es] returns [ExprTree retval]
 	: s=schemaDesc? 				{if ($s.retval != null) setExprSchema($s.retval);}			
 	  e=orExpr					{retval = ExprTree.newExprTree($e.retval);
 	  						 if ($s.retval != null) retval.setSchema($s.retval);};
-
 			
 orExpr returns [PredicateExpr retval]
 	: e1=andExpr (keyOR e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanExpr($e1.retval, BooleanExpr.OP.OR, $e2.retval);};
@@ -525,4 +528,6 @@ keySERVER	: {isKeyword(input, "SERVER")}? ID;
 keyVERSIONS	: {isKeyword(input, "VERSIONS")}? ID;
 keyTIME		: {isKeyword(input, "TIME")}? ID;
 keyRANGE	: {isKeyword(input, "RANGE")}? ID;
+keySTAMP	: {isKeyword(input, "STAMP")}? ID;
+keyMAX		: {isKeyword(input, "MAX")}? ID;
 keyKEYS		: {isKeyword(input, "KEYS")}? ID;

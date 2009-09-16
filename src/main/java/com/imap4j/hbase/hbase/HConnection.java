@@ -183,8 +183,9 @@ public class HConnection {
 
         final List<Scan> scanList = HUtil.getScanList(schema,
                                                       fieldList,
-                                                      args.getWhereExpr().getKeyRange(),
-                                                      args.getWhereExpr().getVersion(),
+                                                      args.getWhereExpr().getKeyRangeArgs(),
+                                                      args.getWhereExpr().getDateRangeArgs(),
+                                                      args.getWhereExpr().getVersionArgs(),
                                                       args.getWhereExpr().getServerFilter());
 
         for (final Scan scan : scanList) {

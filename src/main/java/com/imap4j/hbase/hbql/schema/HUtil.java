@@ -1,5 +1,6 @@
 package com.imap4j.hbase.hbql.schema;
 
+import com.imap4j.hbase.antlr.args.DateRangeArgs;
 import com.imap4j.hbase.antlr.args.KeyRangeArgs;
 import com.imap4j.hbase.antlr.args.VersionArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
@@ -33,12 +34,13 @@ public class HUtil {
 
     public static List<Scan> getScanList(final HBaseSchema schema,
                                          final List<String> fieldList,
-                                         final KeyRangeArgs keys,
-                                         final VersionArgs verArgs,
+                                         final KeyRangeArgs keyRangeArgs,
+                                         final DateRangeArgs dateRangeArgs,
+                                         final VersionArgs versionArgs,
                                          final ExprTree serverFilter) throws IOException, HPersistException {
 
         final List<Scan> scanList = Lists.newArrayList();
-        final List<KeyRangeArgs.Range> rangeList = keys.getRangeList();
+        final List<KeyRangeArgs.Range> rangeList = keyRangeArgs.getRangeList();
 
         if (rangeList.size() == 0) {
             scanList.add(new Scan());
@@ -72,8 +74,21 @@ public class HUtil {
                     scan.addColumn(attrib.getFamilyQualifiedName().getBytes());
             }
 
-            if (verArgs != null && verArgs.isValid())
-                scan.setMaxVersions(verArgs.getValue());
+            if (dateRangeArgs != null && dateRangeArgs.isValid()) {
+                if (dateRangeArgs.getLower() == dateRangeArgs.getUpper())
+                    scan.setTimeStamp(dateRangeArgs.getLower());
+                else
+                    scan.setTimeRange(dateRangeArgs.getLower(), dateRangeArgs.getUpper());
+            }
+
+            if (versionArgs != null && versionArgs.isValid()) {
+                final int max = versionArgs.getValue();
+                // -999 indicates MAX versions requested
+                if (max == -999)
+                    scan.setMaxVersions();
+                else
+                    scan.setMaxVersions(max);
+            }
 
             // Set server-side filter.  It must be a DefinedSchema since the server uses HRecord evaluation
             if (serverFilter != null) {
