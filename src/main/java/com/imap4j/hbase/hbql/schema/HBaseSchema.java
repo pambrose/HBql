@@ -127,7 +127,7 @@ public abstract class HBaseSchema extends ExprSchema {
             }
             else {
                 final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(columnName);
-                attrib.setCurrentValue(ser, timestamp, valueBytes);
+                attrib.setCurrentValue(ser, newobj, timestamp, valueBytes);
             }
         }
     }

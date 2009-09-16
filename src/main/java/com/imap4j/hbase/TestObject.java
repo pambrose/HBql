@@ -157,7 +157,7 @@ public class TestObject {
         for (HRecord val1 : results1) {
             System.out
                     .println("Current Values: " + val1.getCurrentValueByVariableName("keyval")
-                             + " - " + val1.getCurrentValueByVariableName("strValue")
+                             //+ " - " + val1.getCurrentValueByVariableName("strValue")
                              + " - " + val1.getCurrentValueByVariableName("family1:author")
                              + " - " + val1.getCurrentValueByVariableName("family1:title"));
 
@@ -194,8 +194,7 @@ public class TestObject {
         HResults<TestObject> results2 = q2.execute();
 
         for (TestObject val2 : results2) {
-            System.out.println("Current Values: " + val2.keyval + " - " + val2.strValue
-                               + " - " + val2.author + " - " + val2.title);
+            System.out.println("Current Values: " + val2.keyval + " - " + val2.author + " - " + val2.title);
 
             System.out.println("Historicals");
 

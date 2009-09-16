@@ -89,13 +89,15 @@ public class HUtil {
 
                 // final List<ExprVariable> names = serverFilter.getExprVariables();
                 // boolean okay = HUtil.ser.isSerializable(serverSchema) && HUtil.ser.isSerializable(serverFilter);
-
-                scan.setFilter(new HBqlFilter(serverSchema, serverFilter));
+                final HBqlFilter filter = new HBqlFilter(serverSchema, serverFilter);
+                HBqlFilter.testFilter(filter);
+                scan.setFilter(filter);
             }
         }
 
         return scanList;
     }
+
 
     public static String getZeroPaddedNumber(final int val, final int width) throws HPersistException {
 

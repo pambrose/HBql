@@ -45,11 +45,11 @@ public class HRecord implements Serializable {
         return this.values.containsKey(name);
     }
 
-    public Object getCurrentValueByVariableName(final String name) {
+    public Object getCurrentValueByVariableName(final String name) throws HPersistException {
         if (this.values.containsKey(name))
             return this.getValue(name).getCurrentValue();
         else
-            return null;
+            throw new HPersistException("No value set for variable " + name);
     }
 
     public void setCurrentValueByVariableName(final String name, final long timestamp, final Object val) {

@@ -132,7 +132,7 @@ public class DefinedSchema extends HBaseSchema {
         final ColumnAttrib keyattrib = this.getKeyColumnAttrib();
         if (keyattrib != null) {
             final byte[] keybytes = result.getRow();
-            keyattrib.setCurrentValue(ser, 0, keybytes);
+            keyattrib.setCurrentValue(ser, newobj, 0, keybytes);
         }
         return newobj;
     }

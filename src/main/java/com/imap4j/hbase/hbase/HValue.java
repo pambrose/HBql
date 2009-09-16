@@ -1,6 +1,7 @@
 package com.imap4j.hbase.hbase;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +30,17 @@ public class HValue {
     }
 
     public Map<Long, Object> getVersionMap() {
-        return this.versionMap;
+
+        if (this.versionMap != null)
+            return this.versionMap;
+
+        synchronized (this) {
+            if (this.versionMap == null)
+                this.versionMap = new TreeMap<Long, Object>();
+
+            return this.versionMap;
+
+        }
     }
 
     public void setVersionMap(final Map<Long, Object> versionMap) {

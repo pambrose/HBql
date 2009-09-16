@@ -362,7 +362,7 @@ public class AnnotationSchema extends HBaseSchema {
         try {
             newobj = this.newInstance();
             final byte[] keybytes = result.getRow();
-            keyattrib.setCurrentValue(ser, 0, keybytes);
+            keyattrib.setCurrentValue(ser, newobj, 0, keybytes);
         }
         catch (InstantiationException e) {
             throw new RuntimeException("Cannot create new instance of " + this.getSchemaName());

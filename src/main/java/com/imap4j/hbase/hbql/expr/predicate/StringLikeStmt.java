@@ -53,10 +53,15 @@ public class StringLikeStmt extends GenericNotStmt implements PredicateExpr {
         }
         else {
             final String pattern = this.getPatternExpr().getCurrentValue(object);
+            if (pattern == null)
+                throw new HPersistException("Null string for LIKE pattern");
             this.pattern = Pattern.compile(pattern);
         }
 
         final String val = this.getExpr().getCurrentValue(object);
+        if (val == null)
+            throw new HPersistException("Null string for LIKE value");
+
         final Matcher m = this.getPattern().matcher(val);
 
         final boolean retval = m.matches();
