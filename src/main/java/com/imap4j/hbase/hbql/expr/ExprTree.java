@@ -24,10 +24,7 @@ public class ExprTree implements Serializable {
     private boolean optimized = false;
 
     private ExprTree(final PredicateExpr predicateExpr) {
-        if (predicateExpr != null)
-            this.predicateExpr = predicateExpr;
-        else
-            this.predicateExpr = new BooleanLiteral("TRUE");
+        this.predicateExpr = predicateExpr;
     }
 
     public static ExprTree newExprTree(final PredicateExpr expr) {
@@ -46,6 +43,10 @@ public class ExprTree implements Serializable {
         return this.schema;
     }
 
+    public boolean isValid() {
+        return this.getPredicateExpr() != null;
+    }
+
     public void setSchema(final ExprSchema schema) {
         if (schema != null) {
             this.schema = schema;
@@ -54,10 +55,7 @@ public class ExprTree implements Serializable {
     }
 
     public void optimize() throws HPersistException {
-        //if (optimized)
-        //    throw new RuntimeException("Already optimized");
         this.optimizeForConstants(null);
-        this.optimized = true;
     }
 
     public List<ExprVariable> getExprVariables() {
@@ -97,4 +95,21 @@ public class ExprTree implements Serializable {
         return this.end - this.start;
     }
 
+    public ExprTree setSchema(final ExprSchema schema, final List<String> fieldList) throws HPersistException {
+
+        if (this.isValid()) {
+            this.setSchema(schema);
+            this.optimize();
+
+            // Check if all the variables referenced in the where clause are present in the fieldList.
+            final List<ExprVariable> vars = this.getExprVariables();
+            for (final ExprVariable var : vars) {
+                if (!fieldList.contains(var.getName()))
+                    throw new HPersistException("Variable " + var.getName() + " used in where clause but it is not "
+                                                + "not in the select list");
+            }
+        }
+
+        return this;
+    }
 }

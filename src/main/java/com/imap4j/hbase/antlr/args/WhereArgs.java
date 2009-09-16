@@ -14,8 +14,8 @@ public class WhereArgs {
     private DateRangeArgs dateRangeArgs = new DateRangeArgs(null, null);
     private VersionArgs versionArgs = new VersionArgs(null);
     private LimitArgs limitArgs = new LimitArgs(null);
-    private ExprTree clientFilter = ExprTree.newExprTree(null);
-    private ExprTree serverFilter = ExprTree.newExprTree(null);
+    private ExprTree clientExprTree = ExprTree.newExprTree(null);
+    private ExprTree serverExprTree = ExprTree.newExprTree(null);
 
     public KeyRangeArgs getKeyRangeArgs() {
         return this.keyRangeArgs;
@@ -53,21 +53,21 @@ public class WhereArgs {
             this.limitArgs = limitArgs;
     }
 
-    public ExprTree getClientFilter() {
-        return this.clientFilter;
+    public ExprTree getClientExprTree() {
+        return this.clientExprTree;
     }
 
-    public void setClientFilter(final ExprTree clientFilter) {
-        if (clientFilter != null)
-            this.clientFilter = clientFilter;
+    public void setClientExprTree(final ExprTree clientExprTree) {
+        if (clientExprTree != null)
+            this.clientExprTree = clientExprTree;
     }
 
-    public ExprTree getServerFilter() {
-        return serverFilter;
+    public ExprTree getServerExprTree() {
+        return serverExprTree;
     }
 
-    public void setServerFilter(final ExprTree serverFilter) {
-        if (serverFilter != null)
-            this.serverFilter = serverFilter;
+    public void setServerExprTree(final ExprTree serverExprTree) {
+        if (serverExprTree != null)
+            this.serverExprTree = serverExprTree;
     }
 }

@@ -108,8 +108,10 @@ public class HBqlFilter implements Filter {
 
     public boolean filterRow() {
 
-        if (this.getFilterExpr() == null)
+        if (this.getFilterExpr() == null || !getFilterExpr().isValid()) {
+            this.recordCount++;
             return false;
+        }
 
         LOG.info("PRA evaluating #2");
 

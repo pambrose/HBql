@@ -27,6 +27,7 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.HBqlFilter;
 
 import java.io.IOException;
 import java.util.List;
@@ -208,18 +209,20 @@ public class HConnection {
 
         final List<String> fieldList = schema.getFieldList();
         final HTable table = this.getHTable(schema.getTableName());
-        final ExprTree clientFilter = where.getClientFilter();
+        final ExprTree clientFilter = where.getClientExprTree();
         clientFilter.setSchema(schema);
         clientFilter.optimize();
         int cnt = 0;
 
-        final List<Scan> scanList = HUtil.getScanList(schema,
-                                                      fieldList,
-                                                      where.getKeyRangeArgs(),
-                                                      where.getDateRangeArgs(),
-                                                      where.getVersionArgs(),
-                                                      where.getLimitArgs(),
-                                                      where.getServerFilter());
+        final HBqlFilter serverFilter = schema.getHBqlFilter(where.getServerExprTree(),
+                                                             fieldList,
+                                                             where.getLimitArgs());
+
+        final List<Scan> scanList = schema.getScanList(fieldList,
+                                                       where.getKeyRangeArgs(),
+                                                       where.getDateRangeArgs(),
+                                                       where.getVersionArgs(),
+                                                       serverFilter);
 
         for (final Scan scan : scanList) {
             final ResultScanner resultsScanner = table.getScanner(scan);

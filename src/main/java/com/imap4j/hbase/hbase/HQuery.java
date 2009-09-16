@@ -4,13 +4,11 @@ import com.imap4j.hbase.antlr.args.QueryArgs;
 import com.imap4j.hbase.antlr.args.WhereArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.ExprTree;
-import com.imap4j.hbase.hbql.expr.ExprVariable;
-import com.imap4j.hbase.hbql.schema.AnnotationSchema;
 import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.HBaseSchema;
-import com.imap4j.hbase.hbql.schema.HUtil;
 import com.imap4j.hbase.util.Lists;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.HBqlFilter;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +25,7 @@ public class HQuery<T> {
     final String query;
     final HBaseSchema schema;
     final List<String> fieldList;
-    final ExprTree clientFilter;
+    final ExprTree clientExprTree;
     final List<Scan> scanList;
 
     private List<HQueryListener<T>> listeners = null;
@@ -44,19 +42,17 @@ public class HQuery<T> {
 
         this.fieldList = (args.getColumns() == null) ? this.getSchema().getFieldList() : args.getColumns();
 
-        this.clientFilter = this.getExprTree(where.getClientFilter(), this.getSchema(), fieldList);
+        this.clientExprTree = where.getClientExprTree().setSchema(this.getSchema(), this.getFieldList());
 
-        final ExprTree serverFilter = this.getExprTree(where.getServerFilter(),
-                                                       HUtil.getServerSchema(this.getSchema()),
-                                                       fieldList);
+        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(where.getServerExprTree(),
+                                                                       this.getFieldList(),
+                                                                       where.getLimitArgs());
 
-        this.scanList = HUtil.getScanList(this.getSchema(),
-                                          fieldList,
-                                          where.getKeyRangeArgs(),
-                                          where.getDateRangeArgs(),
-                                          where.getVersionArgs(),
-                                          where.getLimitArgs(),
-                                          serverFilter);
+        this.scanList = this.getSchema().getScanList(this.getFieldList(),
+                                                     where.getKeyRangeArgs(),
+                                                     where.getDateRangeArgs(),
+                                                     where.getVersionArgs(),
+                                                     serverFilter);
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {
@@ -74,8 +70,8 @@ public class HQuery<T> {
         return this.schema;
     }
 
-    ExprTree getClientFilter() {
-        return this.clientFilter;
+    ExprTree getClientExprTree() {
+        return this.clientExprTree;
     }
 
     List<String> getFieldList() {
@@ -90,10 +86,6 @@ public class HQuery<T> {
         return this.connection;
     }
 
-    public boolean isAnnotationSchema() {
-        return this.schema instanceof AnnotationSchema;
-    }
-
     public List<HQueryListener<T>> getListeners() {
         return this.listeners;
     }
@@ -103,25 +95,6 @@ public class HQuery<T> {
             this.getListeners().clear();
     }
 
-    ExprTree getExprTree(final ExprTree exprTree,
-                         final ExprSchema schema,
-                         final List<String> fieldList) throws HPersistException {
-
-        if (exprTree != null) {
-            exprTree.setSchema(schema);
-            exprTree.optimize();
-
-            // Check if all the variables referenced in the where clause are present in the fieldList.
-            final List<ExprVariable> vars = exprTree.getExprVariables();
-            for (final ExprVariable var : vars) {
-                if (!fieldList.contains(var.getName()))
-                    throw new HPersistException("Variable " + var.getName() + " used in where clause but it is not "
-                                                + "not in the select list");
-            }
-        }
-
-        return exprTree;
-    }
 
     public HResults<T> execute() throws IOException, HPersistException {
 
