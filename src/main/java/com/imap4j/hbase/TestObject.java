@@ -139,9 +139,9 @@ public class TestObject {
                               + "WITH "
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
                               + "TIME RANGE NOW()-DAY(5) TO NOW()+DAY(1)"
-                              + "VERSIONS 5 "
-                              + "LIMIT 2"
-                              + "SERVER FILTER WHERE family1:author LIKE '.*282.*' "
+                              + "VERSIONS 3 "
+                              + "SCAN LIMIT 2"
+                //+ "SERVER FILTER WHERE family1:author LIKE '.*282.*' "
                 //+ "CLIENT FILTER WHERE family1:author LIKE '.*282.*'"
                 ;
         HQuery<HRecord> q1 = conn.newHQuery(query1);

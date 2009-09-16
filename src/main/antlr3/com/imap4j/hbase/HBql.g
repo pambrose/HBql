@@ -124,7 +124,7 @@ versions returns [VersionArgs retval]
 	;
 	
 limit returns [LimitArgs retval]
-	: keyLIMIT v=integerLiteral			{retval = new LimitArgs($v.retval);}
+	: keySCAN keyLIMIT v=integerLiteral		{retval = new LimitArgs($v.retval);}
 	;
 	
 clientFilter [ExprSchema es] returns [ExprTree retval]
@@ -488,6 +488,7 @@ keyTHEN 	: {isKeyword(input, "THEN")}? ID;
 keyELSE 	: {isKeyword(input, "ELSE")}? ID;
 keyEND 		: {isKeyword(input, "END")}? ID;
 keyLAST		: {isKeyword(input, "LAST")}? ID;
+keySCAN 	: {isKeyword(input, "SCAN")}? ID;
 keyLIMIT 	: {isKeyword(input, "LIMIT")}? ID;
 keyLIKE		: {isKeyword(input, "LIKE")}? ID;
 keyTO 		: {isKeyword(input, "TO")}? ID;

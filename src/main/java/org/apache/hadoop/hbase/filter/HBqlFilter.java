@@ -45,31 +45,18 @@ public class HBqlFilter implements Filter {
     private static final Log LOG = LogFactory.getLog(HBqlFilter.class.getName());
 
     private ExprTree filterExpr;
-    private long limit = -1;
+    private long scanLimit = -1;
     private long recordCount = 0;
     public transient HRecord record = new HRecord(null);
 
-    public HBqlFilter(final ExprTree filterExpr, final long limit) {
+    public HBqlFilter(final ExprTree filterExpr, final long scanLimit) {
         this.filterExpr = filterExpr;
-        this.limit = limit;
+        this.scanLimit = scanLimit;
+        this.recordCount = 0;
         this.getRecord().setSchema(this.getSchema());
     }
 
     public HBqlFilter() {
-    }
-
-    public void reset() {
-        LOG.info("PRA called reset()");
-        this.getRecord().clear();
-        this.recordCount = 0;
-    }
-
-    public boolean filterRowKey(byte[] buffer, int offset, int length) {
-        return this.getLimit() > 0 && this.recordCount > this.getLimit();
-    }
-
-    public boolean filterAllRemaining() {
-        return false;
     }
 
     private HRecord getRecord() {
@@ -84,23 +71,55 @@ public class HBqlFilter implements Filter {
         return this.filterExpr;
     }
 
-    private long getLimit() {
-        return this.limit;
+    private long getScanLimit() {
+        return this.scanLimit;
+    }
+
+    private long getRecordCount() {
+        return this.recordCount;
+    }
+
+    private void incrementRecordCount() {
+        this.recordCount++;
+    }
+
+    private boolean hasValidExprTree() {
+        return this.getFilterExpr() != null && getFilterExpr().isValid();
+    }
+
+    public void reset() {
+        LOG.info("PRA in reset()");
+        this.getRecord().clear();
+    }
+
+    public boolean filterRowKey(byte[] buffer, int offset, int length) {
+        LOG.info("PRA in filterRowKey()");
+        return false;
+    }
+
+    public boolean filterAllRemaining() {
+        LOG.info("PRA in filterAllRemaining() " + this.getScanLimit() + " - " + this.getRecordCount());
+        return this.getScanLimit() > 0 && this.getRecordCount() > this.getScanLimit();
     }
 
     public ReturnCode filterKeyValue(KeyValue v) {
-        String qualColName = new String(v.getColumn());
-        try {
-            final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(qualColName);
-            final Object val = attrib.getValueFromBytes(HUtil.ser, null, v.getValue());
-            LOG.info("PRA setting value for: " + qualColName + " - " + val);
 
-            this.getRecord().setCurrentValueByFamilyQualifiedName(qualColName, v.getTimestamp(), val);
-            this.getRecord().setVersionedValueByFamilyQualifiedName(qualColName, v.getTimestamp(), val);
-        }
-        catch (Exception e) {
-            HUtil.logException(LOG, e);
-            LOG.info("PRA3 had exception: " + e.getClass().getName() + " - " + e.getMessage());
+        LOG.info("PRA in filterKeyValue()");
+
+        if (this.hasValidExprTree()) {
+            final String qualColName = new String(v.getColumn());
+            try {
+                final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(qualColName);
+                final Object val = attrib.getValueFromBytes(HUtil.ser, null, v.getValue());
+                LOG.info("PRA setting value for: " + qualColName + " - " + val);
+
+                this.getRecord().setCurrentValueByFamilyQualifiedName(qualColName, v.getTimestamp(), val);
+                this.getRecord().setVersionedValueByFamilyQualifiedName(qualColName, v.getTimestamp(), val);
+            }
+            catch (Exception e) {
+                HUtil.logException(LOG, e);
+                LOG.info("PRA3 had exception: " + e.getClass().getName() + " - " + e.getMessage());
+            }
         }
 
         return ReturnCode.INCLUDE;
@@ -108,32 +127,35 @@ public class HBqlFilter implements Filter {
 
     public boolean filterRow() {
 
-        if (this.getFilterExpr() == null || !getFilterExpr().isValid()) {
-            this.recordCount++;
+        LOG.info("PRA in filterRow()");
+
+        if (!this.hasValidExprTree()) {
+            this.incrementRecordCount();
             return false;
         }
+        else {
+            LOG.info("PRA evaluating #2");
 
-        LOG.info("PRA evaluating #2");
-
-        try {
-            final boolean filterRecord = !this.getFilterExpr().evaluate(this.getRecord());
-            LOG.info("PRA returning " + filterRecord);
-            if (!filterRecord)
-                this.recordCount++;
-            return filterRecord;
-        }
-        catch (HPersistException e) {
-            e.printStackTrace();
-            HUtil.logException(LOG, e);
-            LOG.info("PRA4 had exception: " + e.getMessage());
-            return true;
+            try {
+                final boolean filterRecord = !this.getFilterExpr().evaluate(this.getRecord());
+                LOG.info("PRA returning " + filterRecord);
+                if (!filterRecord)
+                    this.incrementRecordCount();
+                return filterRecord;
+            }
+            catch (HPersistException e) {
+                e.printStackTrace();
+                HUtil.logException(LOG, e);
+                LOG.info("PRA4 had exception: " + e.getMessage());
+                return true;
+            }
         }
     }
 
     public void write(DataOutput out) throws IOException {
         try {
             Bytes.writeByteArray(out, HUtil.ser.getObjectAsBytes(this.getFilterExpr()));
-            Bytes.writeByteArray(out, HUtil.ser.getScalarAsBytes(FieldType.LongType, this.getLimit()));
+            Bytes.writeByteArray(out, HUtil.ser.getScalarAsBytes(FieldType.LongType, this.getScanLimit()));
         }
         catch (HPersistException e) {
             e.printStackTrace();
@@ -144,10 +166,14 @@ public class HBqlFilter implements Filter {
     }
 
     public void readFields(DataInput in) throws IOException {
+
+        LOG.info("PRA called readFields()");
+
         try {
             this.filterExpr = (ExprTree)HUtil.ser.getObjectFromBytes(FieldType.ObjectType, Bytes.readByteArray(in));
-            this.limit = (Long)HUtil.ser.getScalarFromBytes(FieldType.LongType, Bytes.readByteArray(in));
+            this.scanLimit = (Long)HUtil.ser.getScalarFromBytes(FieldType.LongType, Bytes.readByteArray(in));
             this.getRecord().setSchema(this.getSchema());
+            this.recordCount = 0;
         }
         catch (HPersistException e) {
             e.printStackTrace();
