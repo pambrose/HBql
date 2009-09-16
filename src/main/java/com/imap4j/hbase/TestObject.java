@@ -149,8 +149,9 @@ public class TestObject {
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
                               + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
                               + "VERSIONS 5 "
-                              //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
-                              + "CLIENT FILTER WHERE family1:author LIKE '.*282.*'";
+                              + "SERVER FILTER WHERE family1:author LIKE '.*282.*' "
+                //+ "CLIENT FILTER WHERE family1:author LIKE '.*282.*'"
+                ;
         HQuery<HRecord> q1 = conn.newHQuery(query1);
         HResults<HRecord> results1 = q1.execute();
 
@@ -184,9 +185,7 @@ public class TestObject {
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
                               + "TIME RANGE NOW()-DAY(1) TO NOW()+DAY(1)"
                               + "VERSIONS 5 "
-                              //+ "SERVER FILTER WHERE TRUE"
-                              + "SERVER FILTER WHERE author LIKE '.*val.*'"
-                //+ "SERVER FILTER WHERE author LIKE '.*282.*'"
+                              + "SERVER FILTER WHERE author LIKE '.*282.*'"
                 //+ "CLIENT FILTER WHERE author LIKE '.*282.*'"
                 ;
 
@@ -204,8 +203,7 @@ public class TestObject {
 
             if (val2.titles != null)
                 for (final Long key : val2.titles.keySet())
-                    System.out.println(new Date(key) + " - "
-                                       + val2.titles.get(key));
+                    System.out.println(new Date(key) + " - " + val2.titles.get(key));
         }
 
         results2.close();

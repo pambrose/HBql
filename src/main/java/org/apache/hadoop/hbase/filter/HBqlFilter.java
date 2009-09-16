@@ -108,9 +108,8 @@ public class HBqlFilter implements Filter {
             e.printStackTrace();
             HUtil.logException(LOG, e);
             LOG.info("PRA4 had exception: " + e.getMessage());
+            return true;
         }
-
-        return false;
     }
 
     public void write(DataOutput out) throws IOException {

@@ -90,7 +90,7 @@ public class HUtil {
                 // final List<ExprVariable> names = serverFilter.getExprVariables();
                 // boolean okay = HUtil.ser.isSerializable(serverSchema) && HUtil.ser.isSerializable(serverFilter);
                 final HBqlFilter filter = new HBqlFilter(serverSchema, serverFilter);
-                HBqlFilter.testFilter(filter);
+                //HBqlFilter.testFilter(filter);
                 scan.setFilter(filter);
             }
         }
