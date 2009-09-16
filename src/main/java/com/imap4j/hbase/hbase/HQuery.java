@@ -1,6 +1,7 @@
 package com.imap4j.hbase.hbase;
 
 import com.imap4j.hbase.antlr.args.QueryArgs;
+import com.imap4j.hbase.antlr.args.WhereArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
@@ -26,33 +27,36 @@ public class HQuery<T> {
     final String query;
     final HBaseSchema schema;
     final List<String> fieldList;
-    final ExprTree clientExprTree;
+    final ExprTree clientFilter;
     final List<Scan> scanList;
 
     private List<HQueryListener<T>> listeners = null;
 
     public HQuery(final HConnection connection, final String query) throws IOException, HPersistException {
+
         this.connection = connection;
         this.query = query;
 
         final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ExprSchema)null);
         this.schema = (HBaseSchema)args.getSchema();
 
+        final WhereArgs where = args.getWhereExpr();
+
         this.fieldList = (args.getColumns() == null) ? this.getSchema().getFieldList() : args.getColumns();
 
-        this.clientExprTree = this.getExprTree(args.getWhereExpr().getClientFilter(),
-                                               this.getSchema(),
-                                               fieldList);
+        this.clientFilter = this.getExprTree(where.getClientFilter(), this.getSchema(), fieldList);
+
+        final ExprTree serverFilter = this.getExprTree(where.getServerFilter(),
+                                                       HUtil.getServerSchema(this.getSchema()),
+                                                       fieldList);
 
         this.scanList = HUtil.getScanList(this.getSchema(),
                                           fieldList,
-                                          args.getWhereExpr().getKeyRangeArgs(),
-                                          args.getWhereExpr().getDateRangeArgs(),
-                                          args.getWhereExpr().getVersionArgs(),
-                                          args.getWhereExpr().getLimitArgs(),
-                                          this.getExprTree(args.getWhereExpr().getServerFilter(),
-                                                           this.getSchema(),
-                                                           fieldList));
+                                          where.getKeyRangeArgs(),
+                                          where.getDateRangeArgs(),
+                                          where.getVersionArgs(),
+                                          where.getLimitArgs(),
+                                          serverFilter);
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {
@@ -70,8 +74,8 @@ public class HQuery<T> {
         return this.schema;
     }
 
-    ExprTree getClientExprTree() {
-        return this.clientExprTree;
+    ExprTree getClientFilter() {
+        return this.clientFilter;
     }
 
     List<String> getFieldList() {

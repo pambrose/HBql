@@ -95,18 +95,11 @@ public class HUtil {
             // Set server-side filter.  It must be a DefinedSchema since the server uses HRecord evaluation
             if (serverFilter != null) {
 
-                final DefinedSchema serverSchema;
-                if (schema instanceof DefinedSchema)
-                    serverSchema = (DefinedSchema)schema;
-                else
-                    serverSchema = DefinedSchema.newDefinedSchema(schema);
-
-                serverFilter.setSchema(serverSchema);
-                serverFilter.optimize();
-
                 // final List<ExprVariable> names = serverFilter.getExprVariables();
                 // boolean okay = HUtil.ser.isSerializable(serverSchema) && HUtil.ser.isSerializable(serverFilter);
-                final HBqlFilter filter = new HBqlFilter(serverSchema, serverFilter, limitArgs.getValue());
+
+                final long limit = (limitArgs != null) ? limitArgs.getValue() : 0;
+                final HBqlFilter filter = new HBqlFilter(serverFilter, limit);
                 //HBqlFilter.testFilter(filter);
                 scan.setFilter(filter);
             }
@@ -115,6 +108,13 @@ public class HUtil {
         return scanList;
     }
 
+    public static DefinedSchema getServerSchema(final HBaseSchema schema) throws HPersistException {
+        if (schema instanceof DefinedSchema)
+            return (DefinedSchema)schema;
+        else
+            return DefinedSchema.newDefinedSchema(schema);
+
+    }
 
     public static String getZeroPaddedNumber(final int val, final int width) throws HPersistException {
 

@@ -4,7 +4,6 @@ import com.imap4j.hbase.hbase.HColumn;
 import com.imap4j.hbase.hbase.HColumnVersionMap;
 import com.imap4j.hbase.hbase.HConnection;
 import com.imap4j.hbase.hbase.HFamily;
-import com.imap4j.hbase.hbase.HOutput;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbase.HQuery;
 import com.imap4j.hbase.hbase.HRecord;
@@ -112,29 +111,21 @@ public class TestObject {
     public static void main(String[] args) throws IOException, HPersistException {
 
         HConnection conn = HConnection.newHConnection();
-        HOutput output;
-
-        output = conn.exec("define table testobjects "
-                           + "("
-                           + "keyval key, "
-                           + "family1:author string, "
-                           + "family1:title string "
-                           + ")");
-        System.out.println(output);
+        System.out.println(conn.exec("define table testobjects "
+                                     + "("
+                                     + "keyval key, "
+                                     + "family1:author string, "
+                                     + "family1:title string "
+                                     + ")"));
 
         /*
-        output = conn.exec("delete from TestObject with client filter where true");
-        System.out.println(output);
-
-        output = conn.exec("create table using TestObject");
-        System.out.println(output);
+        System.out.println(conn.exec("delete from TestObject with client filter where true"));
+        System.out.println(conn.exec("create table using TestObject"));
         */
-
-        output = conn.exec("show tables");
-        System.out.println(output);
-
-        output = conn.exec("describe table TestObject");
-        System.out.println(output);
+        /*
+        System.out.println(conn.exec("show tables"));
+        System.out.println(conn.exec("describe table TestObject"));
+        */
 
         final HTransaction tx = conn.newHTransaction();
         int cnt = 0;
@@ -149,6 +140,7 @@ public class TestObject {
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
                               + "TIME RANGE NOW()-DAY(5) TO NOW()+DAY(1)"
                               + "VERSIONS 5 "
+                              + "LIMIT 2"
                               + "SERVER FILTER WHERE family1:author LIKE '.*282.*' "
                 //+ "CLIENT FILTER WHERE family1:author LIKE '.*282.*'"
                 ;

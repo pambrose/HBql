@@ -18,11 +18,16 @@ import java.util.List;
  */
 public class ExprTree implements Serializable {
 
+    private ExprSchema schema = null;
     private PredicateExpr predicateExpr = null;
     private long start, end;
+    private boolean optimized = false;
 
     private ExprTree(final PredicateExpr predicateExpr) {
-        this.predicateExpr = predicateExpr;
+        if (predicateExpr != null)
+            this.predicateExpr = predicateExpr;
+        else
+            this.predicateExpr = new BooleanLiteral("TRUE");
     }
 
     public static ExprTree newExprTree(final PredicateExpr expr) {
@@ -37,13 +42,22 @@ public class ExprTree implements Serializable {
         this.predicateExpr = predicateExpr;
     }
 
+    public ExprSchema getSchema() {
+        return this.schema;
+    }
+
     public void setSchema(final ExprSchema schema) {
-        if (schema != null)
+        if (schema != null) {
+            this.schema = schema;
             this.getPredicateExpr().setSchema(schema);
+        }
     }
 
     public void optimize() throws HPersistException {
+        //if (optimized)
+        //    throw new RuntimeException("Already optimized");
         this.optimizeForConstants(null);
+        this.optimized = true;
     }
 
     public List<ExprVariable> getExprVariables() {

@@ -7,6 +7,7 @@ import com.imap4j.hbase.antlr.args.DescribeArgs;
 import com.imap4j.hbase.antlr.args.ExecArgs;
 import com.imap4j.hbase.antlr.args.SetArgs;
 import com.imap4j.hbase.antlr.args.ShowArgs;
+import com.imap4j.hbase.antlr.args.WhereArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
@@ -197,6 +198,8 @@ public class HConnection {
 
         final HOutput retval = new HOutput();
 
+        final WhereArgs where = args.getWhereExpr();
+
         // TODO Need to grab schema from DeleteArgs (like QueryArgs in Select)
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(args.getTableName());
 
@@ -205,18 +208,18 @@ public class HConnection {
 
         final List<String> fieldList = schema.getFieldList();
         final HTable table = this.getHTable(schema.getTableName());
-        final ExprTree clientFilter = args.getWhereExpr().getClientFilter();
+        final ExprTree clientFilter = where.getClientFilter();
         clientFilter.setSchema(schema);
         clientFilter.optimize();
         int cnt = 0;
 
         final List<Scan> scanList = HUtil.getScanList(schema,
                                                       fieldList,
-                                                      args.getWhereExpr().getKeyRangeArgs(),
-                                                      args.getWhereExpr().getDateRangeArgs(),
-                                                      args.getWhereExpr().getVersionArgs(),
-                                                      args.getWhereExpr().getLimitArgs(),
-                                                      args.getWhereExpr().getServerFilter());
+                                                      where.getKeyRangeArgs(),
+                                                      where.getDateRangeArgs(),
+                                                      where.getVersionArgs(),
+                                                      where.getLimitArgs(),
+                                                      where.getServerFilter());
 
         for (final Scan scan : scanList) {
             final ResultScanner resultsScanner = table.getScanner(scan);

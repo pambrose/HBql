@@ -21,16 +21,18 @@ public class WhereArgs {
         return this.keyRangeArgs;
     }
 
-    public void setKeyRangeArgs(final KeyRangeArgs keyRange) {
-        this.keyRangeArgs = keyRange;
+    public void setKeyRangeArgs(final KeyRangeArgs keyRangeArgs) {
+        if (keyRangeArgs != null)
+            this.keyRangeArgs = keyRangeArgs;
     }
 
     public DateRangeArgs getDateRangeArgs() {
         return this.dateRangeArgs;
     }
 
-    public void setDateRangeArgs(final DateRangeArgs dateRange) {
-        this.dateRangeArgs = dateRange;
+    public void setDateRangeArgs(final DateRangeArgs dateRangeArgs) {
+        if (dateRangeArgs != null)
+            this.dateRangeArgs = dateRangeArgs;
     }
 
     public VersionArgs getVersionArgs() {
@@ -38,7 +40,8 @@ public class WhereArgs {
     }
 
     public void setVersionArgs(final VersionArgs versionArgs) {
-        this.versionArgs = versionArgs;
+        if (versionArgs != null)
+            this.versionArgs = versionArgs;
     }
 
     public LimitArgs getLimitArgs() {
@@ -46,15 +49,17 @@ public class WhereArgs {
     }
 
     public void setLimitArgs(final LimitArgs limitArgs) {
-        this.limitArgs = limitArgs;
+        if (limitArgs != null)
+            this.limitArgs = limitArgs;
     }
 
     public ExprTree getClientFilter() {
-        return clientFilter;
+        return this.clientFilter;
     }
 
     public void setClientFilter(final ExprTree clientFilter) {
-        this.clientFilter = clientFilter;
+        if (clientFilter != null)
+            this.clientFilter = clientFilter;
     }
 
     public ExprTree getServerFilter() {
@@ -62,6 +67,7 @@ public class WhereArgs {
     }
 
     public void setServerFilter(final ExprTree serverFilter) {
-        this.serverFilter = serverFilter;
+        if (serverFilter != null)
+            this.serverFilter = serverFilter;
     }
 }

@@ -104,8 +104,8 @@ whereValue [ExprSchema es] returns [WhereArgs retval]
 	  t=time?					{retval.setDateRangeArgs($t.retval);}	
 	  v=versions?					{retval.setVersionArgs($v.retval);}
 	  l=limit?					{retval.setLimitArgs($l.retval);}
-	  s=serverFilter[es]?				{retval.setServerFilterArgs($s.retval);}
-	  c=clientFilter[es]?				{retval.setClientFilterArgs($c.retval);}
+	  s=serverFilter[es]?				{retval.setServerFilter($s.retval);}
+	  c=clientFilter[es]?				{retval.setClientFilter($c.retval);}
 	;
 
 keys returns [KeyRangeArgs retval]

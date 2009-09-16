@@ -44,17 +44,15 @@ public class HBqlFilter implements Filter {
 
     private static final Log LOG = LogFactory.getLog(HBqlFilter.class.getName());
 
-    private DefinedSchema schema;
     private ExprTree filterExpr;
     private long limit = -1;
     private long recordCount = 0;
     public transient HRecord record = new HRecord(null);
 
-    public HBqlFilter(final DefinedSchema schema, final ExprTree filterExpr, final long limit) {
-        this.schema = schema;
-        this.getRecord().setSchema(this.getSchema());
+    public HBqlFilter(final ExprTree filterExpr, final long limit) {
         this.filterExpr = filterExpr;
         this.limit = limit;
+        this.getRecord().setSchema(this.getSchema());
     }
 
     public HBqlFilter() {
@@ -79,7 +77,7 @@ public class HBqlFilter implements Filter {
     }
 
     private DefinedSchema getSchema() {
-        return this.schema;
+        return (DefinedSchema)this.getFilterExpr().getSchema();
     }
 
     private ExprTree getFilterExpr() {
@@ -132,9 +130,8 @@ public class HBqlFilter implements Filter {
 
     public void write(DataOutput out) throws IOException {
         try {
-            Bytes.writeByteArray(out, HUtil.ser.getObjectAsBytes(this.getSchema()));
             Bytes.writeByteArray(out, HUtil.ser.getObjectAsBytes(this.getFilterExpr()));
-            Bytes.writeByteArray(out, HUtil.ser.getScalarAsBytes(FieldType.IntegerType, this.getLimit()));
+            Bytes.writeByteArray(out, HUtil.ser.getScalarAsBytes(FieldType.LongType, this.getLimit()));
         }
         catch (HPersistException e) {
             e.printStackTrace();
@@ -146,9 +143,8 @@ public class HBqlFilter implements Filter {
 
     public void readFields(DataInput in) throws IOException {
         try {
-            this.schema = (DefinedSchema)HUtil.ser.getObjectFromBytes(FieldType.ObjectType, Bytes.readByteArray(in));
             this.filterExpr = (ExprTree)HUtil.ser.getObjectFromBytes(FieldType.ObjectType, Bytes.readByteArray(in));
-            this.limit = (Integer)HUtil.ser.getScalarFromBytes(FieldType.IntegerType, Bytes.readByteArray(in));
+            this.limit = (Long)HUtil.ser.getScalarFromBytes(FieldType.LongType, Bytes.readByteArray(in));
             this.getRecord().setSchema(this.getSchema());
         }
         catch (HPersistException e) {
