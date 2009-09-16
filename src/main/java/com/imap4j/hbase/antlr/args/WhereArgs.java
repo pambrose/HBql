@@ -10,34 +10,43 @@ import com.imap4j.hbase.hbql.expr.ExprTree;
  */
 public class WhereArgs {
 
-    private KeyRangeArgs keyRange = new KeyRangeArgs(null);
-    private DateRangeArgs dateRange = new DateRangeArgs(null, null);
-    private VersionArgs version = new VersionArgs(null);
+    private KeyRangeArgs keyRangeArgs = new KeyRangeArgs(null);
+    private DateRangeArgs dateRangeArgs = new DateRangeArgs(null, null);
+    private VersionArgs versionArgs = new VersionArgs(null);
+    private LimitArgs limitArgs = new LimitArgs(null);
     private ExprTree clientFilter = ExprTree.newExprTree(null);
     private ExprTree serverFilter = ExprTree.newExprTree(null);
 
     public KeyRangeArgs getKeyRangeArgs() {
-        return this.keyRange;
+        return this.keyRangeArgs;
     }
 
-    public void setKeyRange(final KeyRangeArgs keyRange) {
-        this.keyRange = keyRange;
+    public void setKeyRangeArgs(final KeyRangeArgs keyRange) {
+        this.keyRangeArgs = keyRange;
     }
 
     public DateRangeArgs getDateRangeArgs() {
-        return this.dateRange;
+        return this.dateRangeArgs;
     }
 
-    public void setDateRange(final DateRangeArgs dateRange) {
-        this.dateRange = dateRange;
+    public void setDateRangeArgs(final DateRangeArgs dateRange) {
+        this.dateRangeArgs = dateRange;
     }
 
     public VersionArgs getVersionArgs() {
-        return this.version;
+        return this.versionArgs;
     }
 
-    public void setVersion(final VersionArgs version) {
-        this.version = version;
+    public void setVersionArgs(final VersionArgs versionArgs) {
+        this.versionArgs = versionArgs;
+    }
+
+    public LimitArgs getLimitArgs() {
+        return limitArgs;
+    }
+
+    public void setLimitArgs(final LimitArgs limitArgs) {
+        this.limitArgs = limitArgs;
     }
 
     public ExprTree getClientFilter() {

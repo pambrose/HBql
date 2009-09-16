@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.ExprTree;
+import com.imap4j.hbase.hbql.schema.HUtil;
 import com.imap4j.hbase.hbql.schema.ObjectSchema;
 
 /**
@@ -15,7 +16,6 @@ import com.imap4j.hbase.hbql.schema.ObjectSchema;
 public class ObjectQueryPredicate<T> implements Predicate<T> {
 
     private final String query;
-    private ObjectSchema schema;
     private ExprTree tree;
     private boolean initialized = false;
 
@@ -28,10 +28,8 @@ public class ObjectQueryPredicate<T> implements Predicate<T> {
 
         try {
             if (!initialized) {
-                this.schema = ObjectSchema.getObjectSchema(obj);
-                this.tree = (ExprTree)HBqlRule.NODESC_WHERE_EXPR.parse(this.query, schema);
-                this.tree.setSchema(schema);
-                this.tree.optimize();
+                final ObjectSchema schema = ObjectSchema.getObjectSchema(obj);
+                this.tree = HUtil.parseExprTree(HBqlRule.NODESC_WHERE_EXPR, this.query, schema, true);
                 initialized = true;
             }
 

@@ -215,6 +215,7 @@ public class HConnection {
                                                       args.getWhereExpr().getKeyRangeArgs(),
                                                       args.getWhereExpr().getDateRangeArgs(),
                                                       args.getWhereExpr().getVersionArgs(),
+                                                      args.getWhereExpr().getLimitArgs(),
                                                       args.getWhereExpr().getServerFilter());
 
         for (final Scan scan : scanList) {

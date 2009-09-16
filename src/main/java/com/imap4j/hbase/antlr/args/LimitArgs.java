@@ -9,25 +9,21 @@ import com.imap4j.hbase.hbql.expr.node.NumberValue;
  * Date: Sep 4, 2009
  * Time: 10:26:18 AM
  */
-public class VersionArgs {
+public class LimitArgs {
 
-    private int value = -1;
+    private long value = -1;
 
-    public VersionArgs(final NumberValue val) {
+    public LimitArgs(final NumberValue val) {
         try {
             if (val != null)
-                this.value = val.getCurrentValue(null).intValue();
+                this.value = val.getCurrentValue(null).longValue();
         }
         catch (HPersistException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean isValid() {
-        return this.getValue() != -1;
-    }
-
-    public int getValue() {
+    public long getValue() {
         return this.value;
     }
 }

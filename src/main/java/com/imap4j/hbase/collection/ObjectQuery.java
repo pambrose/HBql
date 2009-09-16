@@ -3,6 +3,7 @@ package com.imap4j.hbase.collection;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.ExprTree;
+import com.imap4j.hbase.hbql.schema.HUtil;
 import com.imap4j.hbase.hbql.schema.ObjectSchema;
 import com.imap4j.hbase.util.Lists;
 
@@ -51,11 +52,7 @@ public class ObjectQuery<T> {
     ExprTree getExprTree(final Collection<T> objects) throws HPersistException {
         final Object obj = objects.iterator().next();
         final ObjectSchema schema = ObjectSchema.getObjectSchema(obj);
-        final ExprTree tree = (ExprTree)HBqlRule.NODESC_WHERE_EXPR.parse(this.query, schema);
-        tree.setSchema(schema);
-        tree.optimize();
-        return tree;
-
+        return HUtil.parseExprTree(HBqlRule.NODESC_WHERE_EXPR, this.query, schema, true);
     }
 
     public ObjectResults<T> execute(final Collection<T> objs) throws HPersistException {

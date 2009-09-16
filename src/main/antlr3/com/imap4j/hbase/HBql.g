@@ -100,11 +100,12 @@ setStmt returns [SetArgs retval]
 whereValue [ExprSchema es] returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
 	: keyWITH
-	  k=keys?					{retval.setKeyRange($k.retval);}
-	  t=time?					{retval.setDateRange($t.retval);}	
-	  v=versions?					{retval.setVersion($v.retval);}
-	  s=serverFilter[es]?				{retval.setServerFilter($s.retval);}
-	  c=clientFilter[es]?				{retval.setClientFilter($c.retval);}
+	  k=keys?					{retval.setKeyRangeArgs($k.retval);}
+	  t=time?					{retval.setDateRangeArgs($t.retval);}	
+	  v=versions?					{retval.setVersionArgs($v.retval);}
+	  l=limit?					{retval.setLimitArgs($l.retval);}
+	  s=serverFilter[es]?				{retval.setServerFilterArgs($s.retval);}
+	  c=clientFilter[es]?				{retval.setClientFilterArgs($c.retval);}
 	;
 
 keys returns [KeyRangeArgs retval]
@@ -120,6 +121,10 @@ time returns [DateRangeArgs retval]
 versions returns [VersionArgs retval]
 	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);}
 	| keyVERSIONS keyMAX				{retval = new VersionArgs(new NumberLiteral(-999));}
+	;
+	
+limit returns [LimitArgs retval]
+	: keyLIMIT v=integerLiteral			{retval = new LimitArgs($v.retval);}
 	;
 	
 clientFilter [ExprSchema es] returns [ExprTree retval]
@@ -483,7 +488,7 @@ keyTHEN 	: {isKeyword(input, "THEN")}? ID;
 keyELSE 	: {isKeyword(input, "ELSE")}? ID;
 keyEND 		: {isKeyword(input, "END")}? ID;
 keyLAST		: {isKeyword(input, "LAST")}? ID;
-keyAS 		: {isKeyword(input, "AS")}? ID;
+keyLIMIT 	: {isKeyword(input, "LIMIT")}? ID;
 keyLIKE		: {isKeyword(input, "LIKE")}? ID;
 keyTO 		: {isKeyword(input, "TO")}? ID;
 keyOR 		: {isKeyword(input, "OR")}? ID;

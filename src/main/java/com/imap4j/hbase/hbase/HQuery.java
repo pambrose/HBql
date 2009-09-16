@@ -49,6 +49,7 @@ public class HQuery<T> {
                                           args.getWhereExpr().getKeyRangeArgs(),
                                           args.getWhereExpr().getDateRangeArgs(),
                                           args.getWhereExpr().getVersionArgs(),
+                                          args.getWhereExpr().getLimitArgs(),
                                           this.getExprTree(args.getWhereExpr().getServerFilter(),
                                                            this.getSchema(),
                                                            fieldList));

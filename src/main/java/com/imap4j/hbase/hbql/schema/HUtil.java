@@ -2,6 +2,7 @@ package com.imap4j.hbase.hbql.schema;
 
 import com.imap4j.hbase.antlr.args.DateRangeArgs;
 import com.imap4j.hbase.antlr.args.KeyRangeArgs;
+import com.imap4j.hbase.antlr.args.LimitArgs;
 import com.imap4j.hbase.antlr.args.VersionArgs;
 import com.imap4j.hbase.antlr.config.HBqlRule;
 import com.imap4j.hbase.hbase.HPersistException;
@@ -37,6 +38,7 @@ public class HUtil {
                                          final KeyRangeArgs keyRangeArgs,
                                          final DateRangeArgs dateRangeArgs,
                                          final VersionArgs versionArgs,
+                                         final LimitArgs limitArgs,
                                          final ExprTree serverFilter) throws IOException, HPersistException {
 
         final List<Scan> scanList = Lists.newArrayList();
@@ -104,7 +106,7 @@ public class HUtil {
 
                 // final List<ExprVariable> names = serverFilter.getExprVariables();
                 // boolean okay = HUtil.ser.isSerializable(serverSchema) && HUtil.ser.isSerializable(serverFilter);
-                final HBqlFilter filter = new HBqlFilter(serverSchema, serverFilter);
+                final HBqlFilter filter = new HBqlFilter(serverSchema, serverFilter, limitArgs.getValue());
                 //HBqlFilter.testFilter(filter);
                 scan.setFilter(filter);
             }
@@ -169,4 +171,14 @@ public class HUtil {
 
     }
 
+    public static ExprTree parseExprTree(final HBqlRule rule,
+                                         final String query,
+                                         final ExprSchema schema,
+                                         final boolean optimize) throws HPersistException {
+        final ExprTree exprTree = (ExprTree)rule.parse(query, schema);
+        exprTree.setSchema(schema);
+        if (optimize)
+            exprTree.optimize();
+        return exprTree;
+    }
 }

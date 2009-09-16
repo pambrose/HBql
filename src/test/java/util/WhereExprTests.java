@@ -5,8 +5,8 @@ import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.ExprTree;
 import com.imap4j.hbase.hbql.expr.ExprVariable;
 import com.imap4j.hbase.hbql.schema.AnnotationSchema;
-import com.imap4j.hbase.hbql.schema.ExprSchema;
 import com.imap4j.hbase.hbql.schema.FieldType;
+import com.imap4j.hbase.hbql.schema.HUtil;
 import com.imap4j.hbase.util.Lists;
 
 import java.util.List;
@@ -62,8 +62,7 @@ public class WhereExprTests {
     private static boolean evalExpr(final Object recordObj, final String expr) throws HPersistException {
 
         final AnnotationSchema schema = (recordObj != null) ? AnnotationSchema.getAnnotationSchema(recordObj) : null;
-        final ExprTree tree = (ExprTree)HBqlRule.DESC_WHERE_VALUE.parse(expr, schema);
-        tree.setSchema(schema);
+        final ExprTree tree = HUtil.parseExprTree(HBqlRule.DESC_WHERE_VALUE, expr, schema, false);
 
         final boolean no_opt_run = tree.evaluate(recordObj);
         final long no_opt_time = tree.getElapsedNanos();
@@ -84,7 +83,7 @@ public class WhereExprTests {
     private static boolean evalColumnNames(final String expr, String... vals) {
 
         try {
-            final ExprTree tree = (ExprTree)HBqlRule.DESC_WHERE_VALUE.parse(expr, (ExprSchema)null);
+            final ExprTree tree = HUtil.parseExprTree(HBqlRule.DESC_WHERE_VALUE, expr, null, true);
 
             final List<ExprVariable> attribs = tree.getExprVariables();
 

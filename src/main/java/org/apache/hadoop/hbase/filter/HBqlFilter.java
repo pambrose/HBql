@@ -46,12 +46,15 @@ public class HBqlFilter implements Filter {
 
     private DefinedSchema schema;
     private ExprTree filterExpr;
+    private long limit = -1;
+    private long recordCount = 0;
     public transient HRecord record = new HRecord(null);
 
-    public HBqlFilter(final DefinedSchema schema, final ExprTree filterExpr) {
+    public HBqlFilter(final DefinedSchema schema, final ExprTree filterExpr, final long limit) {
         this.schema = schema;
+        this.getRecord().setSchema(this.getSchema());
         this.filterExpr = filterExpr;
-        record.setSchema(this.schema);
+        this.limit = limit;
     }
 
     public HBqlFilter() {
@@ -59,11 +62,12 @@ public class HBqlFilter implements Filter {
 
     public void reset() {
         LOG.info("PRA called reset()");
-        this.record.clear();
+        this.getRecord().clear();
+        this.recordCount = 0;
     }
 
     public boolean filterRowKey(byte[] buffer, int offset, int length) {
-        return false;
+        return this.getLimit() > 0 && this.recordCount > this.getLimit();
     }
 
     public boolean filterAllRemaining() {
@@ -74,10 +78,22 @@ public class HBqlFilter implements Filter {
         return this.record;
     }
 
+    private DefinedSchema getSchema() {
+        return this.schema;
+    }
+
+    private ExprTree getFilterExpr() {
+        return this.filterExpr;
+    }
+
+    private long getLimit() {
+        return this.limit;
+    }
+
     public ReturnCode filterKeyValue(KeyValue v) {
         String qualColName = new String(v.getColumn());
         try {
-            final ColumnAttrib attrib = schema.getColumnAttribByFamilyQualifiedColumnName(qualColName);
+            final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(qualColName);
             final Object val = attrib.getValueFromBytes(HUtil.ser, null, v.getValue());
             LOG.info("PRA setting value for: " + qualColName + " - " + val);
 
@@ -94,15 +110,17 @@ public class HBqlFilter implements Filter {
 
     public boolean filterRow() {
 
-        if (this.filterExpr == null)
+        if (this.getFilterExpr() == null)
             return false;
 
         LOG.info("PRA evaluating #2");
 
         try {
-            final boolean val = !this.filterExpr.evaluate(this.record);
-            LOG.info("PRA returning " + val);
-            return val;
+            final boolean filterRecord = !this.getFilterExpr().evaluate(this.getRecord());
+            LOG.info("PRA returning " + filterRecord);
+            if (!filterRecord)
+                this.recordCount++;
+            return filterRecord;
         }
         catch (HPersistException e) {
             e.printStackTrace();
@@ -114,8 +132,9 @@ public class HBqlFilter implements Filter {
 
     public void write(DataOutput out) throws IOException {
         try {
-            Bytes.writeByteArray(out, HUtil.ser.getObjectAsBytes(this.schema));
-            Bytes.writeByteArray(out, HUtil.ser.getObjectAsBytes(this.filterExpr));
+            Bytes.writeByteArray(out, HUtil.ser.getObjectAsBytes(this.getSchema()));
+            Bytes.writeByteArray(out, HUtil.ser.getObjectAsBytes(this.getFilterExpr()));
+            Bytes.writeByteArray(out, HUtil.ser.getScalarAsBytes(FieldType.IntegerType, this.getLimit()));
         }
         catch (HPersistException e) {
             e.printStackTrace();
@@ -129,7 +148,8 @@ public class HBqlFilter implements Filter {
         try {
             this.schema = (DefinedSchema)HUtil.ser.getObjectFromBytes(FieldType.ObjectType, Bytes.readByteArray(in));
             this.filterExpr = (ExprTree)HUtil.ser.getObjectFromBytes(FieldType.ObjectType, Bytes.readByteArray(in));
-            record.setSchema(this.schema);
+            this.limit = (Integer)HUtil.ser.getScalarFromBytes(FieldType.IntegerType, Bytes.readByteArray(in));
+            this.getRecord().setSchema(this.getSchema());
         }
         catch (HPersistException e) {
             e.printStackTrace();
@@ -164,8 +184,8 @@ public class HBqlFilter implements Filter {
         };
 
         for (String val : vals) {
-            filter.record.setCurrentValueByFamilyQualifiedName(colname, 100, val);
-            filter.record.setVersionedValueByFamilyQualifiedName(colname, 100, val);
+            filter.getRecord().setCurrentValueByFamilyQualifiedName(colname, 100, val);
+            filter.getRecord().setVersionedValueByFamilyQualifiedName(colname, 100, val);
         }
 
         boolean v = filter.filterRow();
