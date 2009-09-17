@@ -21,18 +21,22 @@ public class VarDescAttrib extends ColumnAttrib {
         this.varDesc = varDesc;
     }
 
+    private VarDesc getVarDesc() {
+        return this.varDesc;
+    }
+
     public String getTypeName() {
-        return this.varDesc.getTypeName();
+        return this.getVarDesc().getTypeName();
     }
 
     @Override
     public String getVariableName() {
-        return this.varDesc.getVariableName();
+        return this.getVarDesc().getVariableName();
     }
 
     @Override
     public String getFamilyQualifiedName() {
-        return this.varDesc.getQualifiedName();
+        return this.getVarDesc().getFamilyQualifiedName();
     }
 
     @Override

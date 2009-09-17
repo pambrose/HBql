@@ -48,7 +48,8 @@ public class HTransaction {
     public void insert(final Object declaringObj) throws HPersistException, IOException {
 
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(declaringObj);
-        final byte[] keyval = schema.getKeyAttrib().getValueAsBytes(HUtil.ser, declaringObj);
+        final ColumnAttrib keyAttrib = schema.getKeyAttrib();
+        final byte[] keyval = keyAttrib.getValueAsBytes(HUtil.ser, declaringObj);
         final Put put = new Put(keyval);
 
         for (final String family : schema.getFamilyNameList()) {

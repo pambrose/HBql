@@ -18,15 +18,24 @@ public class KeyRangeArgs {
     private final List<Range> rangeList;
 
     public static class Range {
+        private final boolean recordRange;
         private final String lower;
         private final String upper;
 
-        public Range(final String val) {
-            this.lower = val;
-            this.upper = null;
+        public Range() {
+            this(false, null, null);
+        }
+
+        public Range(final String lower) {
+            this(true, lower, null);
         }
 
         public Range(final String lower, final String upper) {
+            this(true, lower, upper);
+        }
+
+        private Range(final boolean recordRange, final String lower, final String upper) {
+            this.recordRange = recordRange;
             this.lower = lower;
             this.upper = upper;
         }
@@ -50,6 +59,15 @@ public class KeyRangeArgs {
         public boolean isStartKeyOnly() {
             return this.getUpper() == null;
         }
+
+        public boolean isRecordRange() {
+            return this.recordRange;
+        }
+    }
+
+    public KeyRangeArgs() {
+        this.rangeList = Lists.newArrayList();
+        this.rangeList.add(new Range());
     }
 
     public KeyRangeArgs(final List<Range> rangeList) {

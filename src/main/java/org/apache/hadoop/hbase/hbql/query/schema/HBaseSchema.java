@@ -110,10 +110,11 @@ public abstract class HBaseSchema extends ExprSchema {
 
         for (final KeyValue keyValue : result.list()) {
 
-            final byte[] columnBytes = keyValue.getColumn();
+            final byte[] familyBytes = keyValue.getFamily();
+            final byte[] columnBytes = keyValue.getQualifier();
             final String columnName = ser.getStringFromBytes(columnBytes);
             final long timestamp = keyValue.getTimestamp();
-            final byte[] valueBytes = result.getValue(columnBytes);
+            final byte[] valueBytes = result.getValue(familyBytes, columnBytes);
 
             if (columnName.endsWith("]")) {
                 final int lbrace = columnName.indexOf("[");
@@ -203,10 +204,12 @@ public abstract class HBaseSchema extends ExprSchema {
         else {
             for (final KeyRangeArgs.Range range : rangeList) {
                 final Scan scan = new Scan();
-                scan.setStartRow(range.getLowerAsBytes());
-                if (!range.isStartKeyOnly())
-                    scan.setStopRow(range.getUpperAsBytes());
-                scanList.add(scan);
+                if (range.isRecordRange()) {
+                    scan.setStartRow(range.getLowerAsBytes());
+                    if (!range.isStartKeyOnly())
+                        scan.setStopRow(range.getUpperAsBytes());
+                    scanList.add(scan);
+                }
             }
         }
 
@@ -219,14 +222,14 @@ public abstract class HBaseSchema extends ExprSchema {
                     attrib = (ColumnAttrib)this.getVariableAttribByVariableName(name);
                 }
                 catch (HPersistException e) {
-                    throw new HPersistException("Element " + name + " does not exist in " + this.getSchemaName());
+                    throw new HPersistException("Column " + name + " does not exist in " + this.getSchemaName());
                 }
 
                 // If it is a map, then request all columns for family
                 if (attrib.isMapKeysAsColumns())
                     scan.addFamily(attrib.getFamilyName().getBytes());
                 else
-                    scan.addColumn(attrib.getFamilyQualifiedName().getBytes());
+                    scan.addColumn(attrib.getFamilyName().getBytes(), attrib.getColumnName().getBytes());
             }
 
             if (dateRangeArgs != null && dateRangeArgs.isValid()) {

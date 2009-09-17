@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql;
+package org.apache.hadoop.hbase.hbql.test;
 
 import org.apache.hadoop.hbase.hbql.client.HColumn;
 import org.apache.hadoop.hbase.hbql.client.HColumnVersionMap;
@@ -120,8 +120,8 @@ public class TestObject {
 
         //System.out.println(conn.exec("delete from TestObject with client filter where true"));
         //System.out.println(conn.exec("create table using TestObject"));
-        //System.out.println(conn.exec("show tables"));
-        //System.out.println(conn.exec("describe table TestObject"));
+        System.out.println(conn.exec("show tables"));
+        System.out.println(conn.exec("describe table TestObject"));
 
         final HTransaction tx = conn.newHTransaction();
         int cnt = 0;
@@ -133,11 +133,12 @@ public class TestObject {
         final String query1 = "SELECT family1:author, family1:title "
                               + "FROM testobjects "
                               + "WITH "
-                              + "KEYS  '000002' TO '000005', '000007' TO LAST "
-                              + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
-                              + "VERSIONS 3 "
+                              // + "KEYS  '000002' TO '000005', '000007' TO LAST "
+                              //+ "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
+                              //+ "VERSIONS 3 "
                               // + "SCAN LIMIT 1"
-                              + "SERVER FILTER WHERE family1:author LIKE '.*val.*' "
+                              + "SERVER FILTER WHERE TRUE "
+                //+ "SERVER FILTER WHERE family1:author LIKE '.*val.*' "
                 //+ "CLIENT FILTER WHERE family1:author LIKE '.*282.*'"
                 ;
         HQuery<HRecord> q1 = conn.newHQuery(query1);
@@ -166,14 +167,15 @@ public class TestObject {
 
         results1.close();
 
-        final String query2 = "SELECT title, titles, author, authorVersions "
+        /*
+§        final String query2 = "SELECT title, titles, author, authorVersions "
                               + "FROM TestObject "
                               + "WITH "
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
                               + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
                               + "VERSIONS MAX "
-                              + "SERVER FILTER WHERE author LIKE '.*val.*'"
-                //+ "CLIENT FILTER WHERE author LIKE '.*282.*'"
+                              //+ "SERVER FILTER WHERE author LIKE '.*val.*'"
+                              //+ "CLIENT FILTER WHERE author LIKE '.*282.*'"
                 ;
 
         HQuery<TestObject> q2 = conn.newHQuery(query2);
@@ -194,5 +196,6 @@ public class TestObject {
         }
 
         results2.close();
+        */
     }
 }

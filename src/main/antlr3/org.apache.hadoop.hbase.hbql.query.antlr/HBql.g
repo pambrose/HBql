@@ -101,7 +101,7 @@ setStmt returns [SetArgs retval]
 whereValue [ExprSchema es] returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
 	: keyWITH
-	  k=keys?					{retval.setKeyRangeArgs($k.retval);}
+	  k=keysRange?					{retval.setKeyRangeArgs($k.retval);}
 	  t=time?					{retval.setDateRangeArgs($t.retval);}	
 	  v=versions?					{retval.setVersionArgs($v.retval);}
 	  l=scanLimit?					{retval.setScanLimitArgs($l.retval);}
@@ -110,8 +110,9 @@ whereValue [ExprSchema es] returns [WhereArgs retval]
 	  c=clientFilter[es]?				{retval.setClientExprTree($c.retval);}
 	;
 
-keys returns [KeyRangeArgs retval]
+keysRange returns [KeyRangeArgs retval]
 	: keyKEYS k=keyRangeList			{retval = new KeyRangeArgs($k.retval);}	
+	| keyKEYS keyALL				{retval = new KeyRangeArgs();}	
 	;
 	
 time returns [DateRangeArgs retval]
@@ -530,3 +531,4 @@ keyRANGE	: {isKeyword(input, "RANGE")}? ID;
 keySTAMP	: {isKeyword(input, "STAMP")}? ID;
 keyMAX		: {isKeyword(input, "MAX")}? ID;
 keyKEYS		: {isKeyword(input, "KEYS")}? ID;
+keyALL		: {isKeyword(input, "ALL")}? ID;

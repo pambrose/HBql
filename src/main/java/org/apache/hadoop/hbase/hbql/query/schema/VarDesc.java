@@ -14,13 +14,13 @@ import java.util.List;
  */
 public class VarDesc implements Serializable {
     private String variableName;
-    private String qualifiedName;
+    private String familyQualifiedName;
     private String typeName;
     private FieldType fieldType;
 
-    private VarDesc(final String variableName, final String qualifiedName, final String typeName) {
-        this.variableName = (variableName == null) ? qualifiedName : variableName;
-        this.qualifiedName = qualifiedName;
+    private VarDesc(final String variableName, final String familyQualifiedName, final String typeName) {
+        this.variableName = (variableName == null) ? familyQualifiedName : variableName;
+        this.familyQualifiedName = familyQualifiedName;
         this.typeName = typeName;
         this.fieldType = getFieldType(this.getTypeName());
     }
@@ -49,23 +49,23 @@ public class VarDesc implements Serializable {
     }
 
     public String getFamilyName() {
-        if (this.getQualifiedName().indexOf(":") != -1) {
-            final String[] vals = this.getQualifiedName().split(":");
+        if (this.getFamilyQualifiedName().indexOf(":") != -1) {
+            final String[] vals = this.getFamilyQualifiedName().split(":");
             return vals[0];
         }
         return "";
     }
 
     public String getColumnName() {
-        if (this.getQualifiedName().indexOf(":") != -1) {
-            final String[] vals = this.getQualifiedName().split(":");
+        if (this.getFamilyQualifiedName().indexOf(":") != -1) {
+            final String[] vals = this.getFamilyQualifiedName().split(":");
             return vals[1];
         }
         return this.getVariableName();
     }
 
-    public String getQualifiedName() {
-        return qualifiedName;
+    public String getFamilyQualifiedName() {
+        return this.familyQualifiedName;
     }
 
     public String getVariableName() {

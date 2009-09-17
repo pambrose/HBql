@@ -98,8 +98,9 @@ public class HBqlFilter implements Filter {
     }
 
     public boolean filterAllRemaining() {
-        LOG.info("PRA in filterAllRemaining() " + this.getScanLimit() + " - " + this.getRecordCount());
-        return this.getScanLimit() > 0 && this.getRecordCount() > this.getScanLimit();
+        final boolean retval = this.getScanLimit() > 0 && this.getRecordCount() > this.getScanLimit();
+        LOG.info("PRA in filterAllRemaining() " + this.getScanLimit() + " - " + this.getRecordCount() + " - " + retval);
+        return retval;
     }
 
     public ReturnCode filterKeyValue(KeyValue v) {
@@ -107,7 +108,7 @@ public class HBqlFilter implements Filter {
         LOG.info("PRA in filterKeyValue()");
 
         if (this.hasValidExprTree()) {
-            final String qualColName = new String(v.getColumn());
+            final String qualColName = new String(v.getQualifier());
             try {
                 final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(qualColName);
                 final Object val = attrib.getValueFromBytes(HUtil.ser, null, v.getValue());

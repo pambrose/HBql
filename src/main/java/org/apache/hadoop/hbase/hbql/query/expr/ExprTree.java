@@ -56,6 +56,7 @@ public class ExprTree implements Serializable {
 
     public void optimize() throws HPersistException {
         this.optimizeForConstants(null);
+        this.optimized = true;
     }
 
     public List<ExprVariable> getExprVariables() {
