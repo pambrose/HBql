@@ -38,10 +38,12 @@ public abstract class FieldAttrib extends ColumnAttrib {
         return this.getObjectQualifiedName();
     }
 
+    @Override
     public String getVariableName() {
         return this.getField().getName();
     }
 
+    @Override
     public String getObjectQualifiedName() {
         return this.getEnclosingClass().getName() + "." + this.getVariableName();
     }
@@ -73,6 +75,7 @@ public abstract class FieldAttrib extends ColumnAttrib {
         return this.field;
     }
 
+    @Override
     public boolean isArray() {
         return this.getField().getType().isArray();
     }
@@ -108,5 +111,11 @@ public abstract class FieldAttrib extends ColumnAttrib {
     protected void setVersionedValueMap(final Object newobj, final Map<Long, Object> map) {
         // Just call current value for version since we have different fields for each
         this.setCurrentValue(newobj, 0, map);
+    }
+
+    protected static void setAccessible(final Field field) {
+        // Unlock private vars
+        if (!field.isAccessible())
+            field.setAccessible(true);
     }
 }

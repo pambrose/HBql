@@ -78,8 +78,6 @@ public abstract class ColumnAttrib extends VariableAttrib {
         return true;
     }
 
-    public abstract boolean isArray();
-
     protected abstract Method getMethod(final String methodName, final Class<?>... params) throws NoSuchMethodException;
 
     protected abstract Class getComponentType();

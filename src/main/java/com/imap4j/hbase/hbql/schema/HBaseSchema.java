@@ -27,7 +27,7 @@ import java.util.TreeMap;
  */
 public abstract class HBaseSchema extends ExprSchema {
 
-    private ColumnAttrib keyColumnAttrib = null;
+    private ColumnAttrib keyAttrib = null;
 
     private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedColumnNameMap = Maps.newHashMap();
     private final Map<String, ColumnAttrib> versionAttribByFamilyQualifiedColumnNameMap = Maps.newHashMap();
@@ -36,12 +36,12 @@ public abstract class HBaseSchema extends ExprSchema {
         return null;
     }
 
-    public ColumnAttrib getKeyColumnAttrib() {
-        return this.keyColumnAttrib;
+    public ColumnAttrib getKeyAttrib() {
+        return this.keyAttrib;
     }
 
-    protected void setKeyColumnAttrib(final ColumnAttrib keyColumnAttrib) {
-        this.keyColumnAttrib = keyColumnAttrib;
+    protected void setKeyAttrib(final ColumnAttrib keyAttrib) {
+        this.keyAttrib = keyAttrib;
     }
 
     public abstract String getSchemaName();

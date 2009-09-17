@@ -42,7 +42,7 @@ public class CurrentValueAttrib extends FieldAttrib {
     }
 
     @Override
-    public boolean isKey() {
+    public boolean isKeyAttrib() {
         return this.getColumnAnno().key();
     }
 

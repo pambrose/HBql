@@ -227,7 +227,7 @@ public class HConnection {
 
         final HBqlFilter serverFilter = schema.getHBqlFilter(where.getServerExprTree(),
                                                              fieldList,
-                                                             where.getScanLimitArgs());
+                                                             where.getScanLimit());
 
         final List<Scan> scanList = schema.getScanList(fieldList,
                                                        where.getKeyRangeArgs(),

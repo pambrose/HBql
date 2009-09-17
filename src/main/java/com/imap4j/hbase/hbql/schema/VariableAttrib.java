@@ -3,7 +3,6 @@ package com.imap4j.hbase.hbql.schema;
 import com.imap4j.hbase.hbase.HPersistException;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
@@ -20,6 +19,8 @@ public abstract class VariableAttrib implements Serializable {
         this.fieldType = fieldType;
     }
 
+    public abstract boolean isArray();
+
     public abstract String getVariableName();
 
     public abstract Object getCurrentValue(final Object recordObj) throws HPersistException;
@@ -34,14 +35,11 @@ public abstract class VariableAttrib implements Serializable {
         return this.fieldType;
     }
 
-    public boolean isKey() {
+    public boolean isHBaseAttrib() {
+        return true;
+    }
+
+    public boolean isKeyAttrib() {
         return false;
     }
-
-    protected static void setAccessible(final Field field) {
-        // Unlock private vars
-        if (!field.isAccessible())
-            field.setAccessible(true);
-    }
-
 }

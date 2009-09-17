@@ -19,7 +19,7 @@ public class VarDesc implements Serializable {
     private FieldType fieldType;
 
     private VarDesc(final String variableName, final String qualifiedName, final String typeName) {
-        this.variableName = variableName;
+        this.variableName = (variableName == null) ? qualifiedName : variableName;
         this.qualifiedName = qualifiedName;
         this.typeName = typeName;
         this.fieldType = getFieldType(this.getTypeName());
@@ -46,7 +46,6 @@ public class VarDesc implements Serializable {
         catch (HPersistException e) {
             return null;
         }
-
     }
 
     public String getFamilyName() {

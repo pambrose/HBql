@@ -59,10 +59,10 @@ public class DefinedSchema extends HBaseSchema {
         this.addColumnAttrib(attrib);
         this.addVersionAttrib(attrib);
 
-        if (attrib.isKey()) {
-            if (this.getKeyColumnAttrib() != null)
+        if (attrib.isKeyAttrib()) {
+            if (this.getKeyAttrib() != null)
                 throw new HPersistException("Table " + this + " has multiple instance variables marked as keys");
-            this.setKeyColumnAttrib(attrib);
+            this.setKeyAttrib(attrib);
         }
         else {
             final String family = attrib.getFamilyName();
@@ -126,7 +126,7 @@ public class DefinedSchema extends HBaseSchema {
 
         // Create new instance and set key value
         final HRecord newobj = new HRecord(this);
-        final ColumnAttrib keyattrib = this.getKeyColumnAttrib();
+        final ColumnAttrib keyattrib = this.getKeyAttrib();
         if (keyattrib != null) {
             final byte[] keybytes = result.getRow();
             keyattrib.setCurrentValue(ser, newobj, 0, keybytes);

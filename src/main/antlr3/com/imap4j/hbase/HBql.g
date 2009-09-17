@@ -82,7 +82,8 @@ attribList returns [List<VarDesc> retval]
 	: (a1=defineAttrib {retval.add($a1.retval);} (COMMA a2=defineAttrib {retval.add($a2.retval);})*)?;
 	
 defineAttrib returns [VarDesc retval]
-	: n=ID t=ID 					{retval = VarDesc.newVarDesc($n.text, $n.text, $t.text);};
+	: c=ID t=ID 					{retval = VarDesc.newVarDesc($c.text, $c.text, $t.text);}
+	| c=ID t=ID keyALIAS a=ID			{retval = VarDesc.newVarDesc($a.text, $c.text, $t.text);};
 
 describeStmt returns [DescribeArgs retval]
 	: keyDESCRIBE keyTABLE t=ID 			{retval = new DescribeArgs($t.text);};
@@ -487,6 +488,7 @@ keySET 		: {isKeyword(input, "SET")}? ID;
 keyIN 		: {isKeyword(input, "IN")}? ID;
 keyIS 		: {isKeyword(input, "IS")}? ID;
 keyIF 		: {isKeyword(input, "IF")}? ID;
+keyALIAS	: {isKeyword(input, "ALIAS")}? ID;
 keyTHEN 	: {isKeyword(input, "THEN")}? ID;
 keyELSE 	: {isKeyword(input, "ELSE")}? ID;
 keyEND 		: {isKeyword(input, "END")}? ID;

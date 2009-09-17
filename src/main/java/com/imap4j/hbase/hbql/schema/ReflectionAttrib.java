@@ -17,4 +17,8 @@ public class ReflectionAttrib extends FieldAttrib {
 
         this.defineAccessors();
     }
+
+    public boolean isHBaseAttrib() {
+        return false;
+    }
 }

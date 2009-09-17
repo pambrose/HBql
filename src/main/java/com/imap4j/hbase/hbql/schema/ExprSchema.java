@@ -22,7 +22,7 @@ public abstract class ExprSchema implements Serializable {
     public List<String> getFieldList() {
         final List<String> retval = Lists.newArrayList();
         for (final VariableAttrib attrib : this.getVariableAttribs()) {
-            if (attrib.isKey())
+            if (attrib.isKeyAttrib())
                 continue;
             retval.add(attrib.getVariableName());
         }
@@ -50,11 +50,18 @@ public abstract class ExprSchema implements Serializable {
         return attrib;
     }
 
-    protected void addVariableAttrib(final VariableAttrib variableAttrib) throws HPersistException {
-        final String name = variableAttrib.getVariableName();
-        if (this.getVariableAttribByVariableNameMap().containsKey(name))
-            throw new HPersistException("In " + this + " " + name + " already delcared");
-        this.getVariableAttribByVariableNameMap().put(name, variableAttrib);
-    }
+    protected void addVariableAttrib(final VariableAttrib attrib) throws HPersistException {
 
+        final String variableName = attrib.getVariableName();
+        if (this.getVariableAttribByVariableNameMap().containsKey(variableName))
+            throw new HPersistException("In " + this + " " + variableName + " already delcared");
+        this.getVariableAttribByVariableNameMap().put(variableName, attrib);
+
+        // If it is an HBase attrib, then add the variable name and the family qualified name
+        if (attrib.isHBaseAttrib()) {
+            final String familyQualifiedName = ((ColumnAttrib)attrib).getFamilyQualifiedName();
+            if (!familyQualifiedName.equals(variableName))
+                this.getVariableAttribByVariableNameMap().put(familyQualifiedName, attrib);
+        }
+    }
 }

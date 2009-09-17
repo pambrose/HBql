@@ -70,7 +70,7 @@ public class AnnotationSchema extends HBaseSchema {
             if (field.getAnnotation(HColumn.class) != null)
                 this.processColumnAnnotation(field);
 
-        if (this.getKeyColumnAttrib() == null)
+        if (this.getKeyAttrib() == null)
             throw new HPersistException("Class " + this + " is missing an instance variable "
                                         + "annotated with @HColumn(key=true)");
 
@@ -274,12 +274,12 @@ public class AnnotationSchema extends HBaseSchema {
         this.addVariableAttrib(attrib);
         this.addColumnAttrib(attrib);
 
-        if (attrib.isKey()) {
-            if (this.getKeyColumnAttrib() != null)
+        if (attrib.isKeyAttrib()) {
+            if (this.getKeyAttrib() != null)
                 throw new HPersistException("Class " + this + " has multiple instance variables "
                                             + "annotated with @HColumn(key=true)");
 
-            this.setKeyColumnAttrib(attrib);
+            this.setKeyAttrib(attrib);
         }
         else {
             final String family = attrib.getFamilyName();
@@ -365,7 +365,7 @@ public class AnnotationSchema extends HBaseSchema {
     private Object createNewObject(final Serialization ser, final Result result) throws IOException, HPersistException {
 
         // Create new instance and set key value
-        final ColumnAttrib keyattrib = this.getKeyColumnAttrib();
+        final ColumnAttrib keyattrib = this.getKeyAttrib();
         final Object newobj;
         try {
             newobj = this.newInstance();
@@ -385,7 +385,7 @@ public class AnnotationSchema extends HBaseSchema {
     public List<VarDesc> getVarDescList() {
         final List<VarDesc> varList = Lists.newArrayList();
         for (final ColumnAttrib col : this.getColumnAttribByFamilyQualifiedColumnNameMap().values()) {
-            final String coltype = (col.isKey())
+            final String coltype = (col.isKeyAttrib())
                                    ? FieldType.KeyType.getFirstSynonym()
                                    : col.getFieldType().getFirstSynonym();
             varList.add(VarDesc.newVarDesc(col.getVariableName(), col.getFamilyQualifiedName(), coltype));

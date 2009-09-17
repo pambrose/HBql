@@ -42,7 +42,7 @@ public class VarDescAttrib extends ColumnAttrib {
     }
 
     @Override
-    public boolean isKey() {
+    public boolean isKeyAttrib() {
         return this.getFieldType() == FieldType.KeyType;
     }
 
