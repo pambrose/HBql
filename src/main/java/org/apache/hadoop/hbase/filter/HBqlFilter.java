@@ -20,16 +20,16 @@
 
 package org.apache.hadoop.hbase.filter;
 
-import com.imap4j.hbase.hbase.HPersistException;
-import com.imap4j.hbase.hbase.HRecord;
-import com.imap4j.hbase.hbql.expr.ExprTree;
-import com.imap4j.hbase.hbql.schema.ColumnAttrib;
-import com.imap4j.hbase.hbql.schema.DefinedSchema;
-import com.imap4j.hbase.hbql.schema.FieldType;
-import com.imap4j.hbase.hbql.schema.HUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hbase.KeyValue;
+import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.ByteArrayInputStream;
