@@ -27,6 +27,7 @@ public class HQuery<T> {
     final List<String> fieldList;
     final ExprTree clientExprTree;
     final List<Scan> scanList;
+    final long queryLimit;
 
     private List<HQueryListener<T>> listeners = null;
 
@@ -40,13 +41,15 @@ public class HQuery<T> {
 
         final WhereArgs where = args.getWhereExpr();
 
+        this.queryLimit = where.getQueryLimit();
+
         this.fieldList = (args.getColumns() == null) ? this.getSchema().getFieldList() : args.getColumns();
 
         this.clientExprTree = where.getClientExprTree().setSchema(this.getSchema(), this.getFieldList());
 
         final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(where.getServerExprTree(),
                                                                        this.getFieldList(),
-                                                                       where.getLimitArgs());
+                                                                       where.getScanLimit());
 
         this.scanList = this.getSchema().getScanList(this.getFieldList(),
                                                      where.getKeyRangeArgs(),
@@ -80,6 +83,10 @@ public class HQuery<T> {
 
     public String getQuery() {
         return this.query;
+    }
+
+    public long getQueryLimit() {
+        return this.queryLimit;
     }
 
     HConnection getConnection() {

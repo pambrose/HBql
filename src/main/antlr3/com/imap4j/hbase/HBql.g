@@ -103,7 +103,8 @@ whereValue [ExprSchema es] returns [WhereArgs retval]
 	  k=keys?					{retval.setKeyRangeArgs($k.retval);}
 	  t=time?					{retval.setDateRangeArgs($t.retval);}	
 	  v=versions?					{retval.setVersionArgs($v.retval);}
-	  l=limit?					{retval.setLimitArgs($l.retval);}
+	  l=scanLimit?					{retval.setScanLimitArgs($l.retval);}
+	  q=queryLimit?					{retval.setQueryLimitArgs($q.retval);}
 	  s=serverFilter[es]?				{retval.setServerExprTree($s.retval);}
 	  c=clientFilter[es]?				{retval.setClientExprTree($c.retval);}
 	;
@@ -123,9 +124,11 @@ versions returns [VersionArgs retval]
 	| keyVERSIONS keyMAX				{retval = new VersionArgs(new NumberLiteral(-999));}
 	;
 	
-limit returns [LimitArgs retval]
-	: keySCAN keyLIMIT v=integerLiteral		{retval = new LimitArgs($v.retval);}
-	;
+scanLimit returns [LimitArgs retval]
+	: keySCAN keyLIMIT v=integerLiteral		{retval = new LimitArgs($v.retval);};
+	
+queryLimit returns [LimitArgs retval]
+	: keyQUERY keyLIMIT v=integerLiteral		{retval = new LimitArgs($v.retval);};
 	
 clientFilter [ExprSchema es] returns [ExprTree retval]
 	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr[es]	
@@ -489,6 +492,7 @@ keyELSE 	: {isKeyword(input, "ELSE")}? ID;
 keyEND 		: {isKeyword(input, "END")}? ID;
 keyLAST		: {isKeyword(input, "LAST")}? ID;
 keySCAN 	: {isKeyword(input, "SCAN")}? ID;
+keyQUERY 	: {isKeyword(input, "QUERY")}? ID;
 keyLIMIT 	: {isKeyword(input, "LIMIT")}? ID;
 keyLIKE		: {isKeyword(input, "LIKE")}? ID;
 keyTO 		: {isKeyword(input, "TO")}? ID;

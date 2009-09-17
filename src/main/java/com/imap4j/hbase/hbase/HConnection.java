@@ -43,23 +43,34 @@ public class HConnection {
 
     private static Map<String, HConnection> connectionMap = Maps.newHashMap();
 
-    final HBaseConfiguration config = new HBaseConfiguration();
+    final HBaseConfiguration config;
 
     final String name;
 
-    private HConnection(final String name) {
+    private HConnection(final String name, final HBaseConfiguration config) {
         this.name = name;
+
+        this.config = (config == null) ? new HBaseConfiguration() : config;
 
         if (this.getName() != null)
             connectionMap.put(this.getName(), this);
     }
 
     public static synchronized HConnection newHConnection(final String name) {
-        return new HConnection(name);
+        return new HConnection(name, null);
+    }
+
+    public static synchronized HConnection newHConnection(final String name,
+                                                          final HBaseConfiguration config) {
+        return new HConnection(name, config);
     }
 
     public static HConnection newHConnection() {
-        return newHConnection(null);
+        return newHConnection(null, null);
+    }
+
+    public static HConnection newHConnection(final HBaseConfiguration config) {
+        return newHConnection(null, config);
     }
 
     public static HConnection getHConnection(final String name) {
@@ -216,7 +227,7 @@ public class HConnection {
 
         final HBqlFilter serverFilter = schema.getHBqlFilter(where.getServerExprTree(),
                                                              fieldList,
-                                                             where.getLimitArgs());
+                                                             where.getScanLimitArgs());
 
         final List<Scan> scanList = schema.getScanList(fieldList,
                                                        where.getKeyRangeArgs(),

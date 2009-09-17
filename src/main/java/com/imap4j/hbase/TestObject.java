@@ -138,10 +138,10 @@ public class TestObject {
                               + "FROM testobjects "
                               + "WITH "
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
-                              + "TIME RANGE NOW()-DAY(5) TO NOW()+DAY(1)"
+                              + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
                               + "VERSIONS 3 "
-                              + "SCAN LIMIT 2"
-                //+ "SERVER FILTER WHERE family1:author LIKE '.*282.*' "
+                              // + "SCAN LIMIT 1"
+                              + "SERVER FILTER WHERE family1:author LIKE '.*282.*' "
                 //+ "CLIENT FILTER WHERE family1:author LIKE '.*282.*'"
                 ;
         HQuery<HRecord> q1 = conn.newHQuery(query1);
@@ -174,7 +174,7 @@ public class TestObject {
                               + "FROM TestObject "
                               + "WITH "
                               + "KEYS  '000002' TO '000005', '000007' TO LAST "
-                              + "TIME RANGE NOW()-DAY(5) TO NOW()+DAY(1)"
+                              + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
                               + "VERSIONS MAX "
                               + "SERVER FILTER WHERE author LIKE '.*282.*'"
                 //+ "CLIENT FILTER WHERE author LIKE '.*282.*'"

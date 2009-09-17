@@ -2,7 +2,6 @@ package com.imap4j.hbase.hbql.schema;
 
 import com.imap4j.hbase.antlr.args.DateRangeArgs;
 import com.imap4j.hbase.antlr.args.KeyRangeArgs;
-import com.imap4j.hbase.antlr.args.LimitArgs;
 import com.imap4j.hbase.antlr.args.VersionArgs;
 import com.imap4j.hbase.hbase.HPersistException;
 import com.imap4j.hbase.hbql.expr.ExprTree;
@@ -255,14 +254,12 @@ public abstract class HBaseSchema extends ExprSchema {
 
     public HBqlFilter getHBqlFilter(final ExprTree exprTree,
                                     final List<String> fieldList,
-                                    final LimitArgs limitArgs) throws HPersistException {
-
-        final long limit = (limitArgs != null) ? limitArgs.getValue() : 0;
+                                    final long scanLimit) throws HPersistException {
 
         if (!exprTree.isValid())
-            return (limit > 0) ? new HBqlFilter(ExprTree.newExprTree(null), limit) : null;
+            return (scanLimit > 0) ? new HBqlFilter(ExprTree.newExprTree(null), scanLimit) : null;
         else
-            return new HBqlFilter(exprTree.setSchema(HUtil.getServerSchema(this), fieldList), limit);
+            return new HBqlFilter(exprTree.setSchema(HUtil.getServerSchema(this), fieldList), scanLimit);
     }
 
 }

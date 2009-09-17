@@ -71,6 +71,7 @@ public class HResults<T> implements Iterable<T> {
                 int maxVersions = 0;
                 ResultScanner currentResultScanner = null;
                 Iterator<Result> resultIter = null;
+                long recordCount = 0;
 
                 // Prime the iterator with the first value
                 T nextObject = fetchNextObject();
@@ -118,10 +119,11 @@ public class HResults<T> implements Iterable<T> {
                             final Result result = resultIter.next();
                             final T val = (T)getHQuery().getSchema().getObject(HUtil.ser,
                                                                                getHQuery().getFieldList(),
-                                                                               maxVersions,
+                                                                               this.maxVersions,
                                                                                result);
 
                             if (clientExprTree == null || clientExprTree.evaluate(val)) {
+                                this.recordCount++;
                                 final List<HQueryListener<T>> listenerList = getHQuery().getListeners();
                                 if (listenerList != null)
                                     for (final HQueryListener<T> listener : listenerList)
@@ -141,13 +143,15 @@ public class HResults<T> implements Iterable<T> {
                 }
 
                 protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
+
                     this.nextObject = nextObject;
 
                     if (nextObject == null && !fromExceptionCatch) {
                         final List<HQueryListener<T>> listenerList = getHQuery().getListeners();
                         if (listenerList != null)
                             for (final HQueryListener<T> listener : listenerList)
-                                listener.onQueryInit();
+                                listener.onQueryComplete();
+
                     }
                 }
             };

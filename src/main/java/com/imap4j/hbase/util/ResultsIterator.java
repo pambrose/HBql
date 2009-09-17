@@ -27,7 +27,9 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
 
         // Now prefetch next value so that hasNext() will be correct
         try {
-            this.setNextObject(fetchNextObject(), false);
+            // Check if queryLimit has been exceeeded
+
+            this.setNextObject(this.fetchNextObject(), false);
         }
         catch (HPersistException e) {
             e.printStackTrace();

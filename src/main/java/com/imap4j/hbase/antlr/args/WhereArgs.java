@@ -13,7 +13,8 @@ public class WhereArgs {
     private KeyRangeArgs keyRangeArgs = new KeyRangeArgs(null);
     private DateRangeArgs dateRangeArgs = new DateRangeArgs(null, null);
     private VersionArgs versionArgs = new VersionArgs(null);
-    private LimitArgs limitArgs = new LimitArgs(null);
+    private LimitArgs scanLimitArgs = new LimitArgs(null);
+    private LimitArgs queryLimitArgs = new LimitArgs(null);
     private ExprTree clientExprTree = ExprTree.newExprTree(null);
     private ExprTree serverExprTree = ExprTree.newExprTree(null);
 
@@ -44,13 +45,22 @@ public class WhereArgs {
             this.versionArgs = versionArgs;
     }
 
-    public LimitArgs getLimitArgs() {
-        return limitArgs;
+    public LimitArgs getScanLimitArgs() {
+        return this.scanLimitArgs;
     }
 
-    public void setLimitArgs(final LimitArgs limitArgs) {
-        if (limitArgs != null)
-            this.limitArgs = limitArgs;
+    public void setScanLimitArgs(final LimitArgs scanLimitArgs) {
+        if (scanLimitArgs != null)
+            this.scanLimitArgs = scanLimitArgs;
+    }
+
+    public LimitArgs getQueryLimitArgs() {
+        return this.queryLimitArgs;
+    }
+
+    public void setQueryLimitArgs(final LimitArgs queryLimitArgs) {
+        if (queryLimitArgs != null)
+            this.queryLimitArgs = queryLimitArgs;
     }
 
     public ExprTree getClientExprTree() {
@@ -69,5 +79,13 @@ public class WhereArgs {
     public void setServerExprTree(final ExprTree serverExprTree) {
         if (serverExprTree != null)
             this.serverExprTree = serverExprTree;
+    }
+
+    public long getQueryLimit() {
+        return (this.getQueryLimitArgs() != null) ? this.getQueryLimitArgs().getValue() : 0;
+    }
+
+    public long getScanLimit() {
+        return (this.getScanLimitArgs() != null) ? this.getScanLimitArgs().getValue() : 0;
     }
 }
