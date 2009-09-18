@@ -20,6 +20,8 @@ public class IntegerAttribRef extends GenericAttribRef implements NumberValue {
     @Override
     public Integer getCurrentValue(final Object object) throws HPersistException {
         final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(this.getExprVar().getName());
+        if (attrib == null)
+            throw new HPersistException("Invalid variable name: " + this.getExprVar().getName());
         return (Integer)attrib.getCurrentValue(object);
     }
 

@@ -28,7 +28,7 @@ public class VersionAttrib extends FieldAttrib {
         this.defineAccessors();
     }
 
-    public static VersionAttrib newVersionAttrib(final Schema schema, final Field field) throws HPersistException {
+    public static VersionAttrib newVersionAttrib(final HBaseSchema schema, final Field field) throws HPersistException {
 
         final HColumnVersionMap versionAnno = field.getAnnotation(HColumnVersionMap.class);
         final String instance = versionAnno.instance();
@@ -58,6 +58,7 @@ public class VersionAttrib extends FieldAttrib {
             if (versionAnno.setter().length() > 0)
                 throw new HPersistException(getObjectQualifiedName(field)
                                             + " cannot have both an instance and setter value in " + annoname);
+
             // This doesn't test false values -- they wil be ignored
             if (versionAnno.mapKeysAsColumns())
                 throw new HPersistException(getObjectQualifiedName(field)
@@ -70,8 +71,13 @@ public class VersionAttrib extends FieldAttrib {
 
             final ColumnAttrib attrib = (ColumnAttrib)schema.getVariableAttribByVariableName(instance);
 
+            if (attrib == null)
+                throw new HPersistException("Instance variable " + instance
+                                            + " does not exist in " + schema.getTableName());
+
             if (!attrib.isACurrentValue())
-                throw new HPersistException(getObjectQualifiedName(field) + "instance variable must have HColumn annotation");
+                throw new HPersistException(getObjectQualifiedName(field)
+                                            + "instance variable must have HColumn annotation");
 
             final CurrentValueAttrib currentAttrib = (CurrentValueAttrib)attrib;
 

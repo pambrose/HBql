@@ -21,7 +21,7 @@ public class StringAttribRef extends GenericAttribRef implements StringValue {
     public String getCurrentValue(final Object object) throws HPersistException {
         final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(this.getExprVar().getName());
         if (attrib == null)
-            throw new HPersistException("Cannot find " + this.getExprVar().getName());
+            throw new HPersistException("Invalid variable name: " + this.getExprVar().getName());
         return (String)attrib.getCurrentValue(object);
     }
 }

@@ -73,7 +73,7 @@ public class VarDescAttrib extends ColumnAttrib {
     @Override
     protected void setCurrentValue(final Object newobj, final long timestamp, final Object val) {
         final HRecord record = (HRecord)newobj;
-        record.setCurrentValueByVariableName(this.getVariableName(), timestamp, val);
+        record.setCurrentValue(this.getVariableName(), timestamp, val);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class VarDescAttrib extends ColumnAttrib {
     @Override
     protected void setVersionedValueMap(final Object newobj, final Map<Long, Object> map) {
         final HRecord record = (HRecord)newobj;
-        record.setVersionedValueMapByVariableName(this.getVariableName(), map);
+        record.setVersionedValueMap(this.getVariableName(), map);
     }
 
     @Override

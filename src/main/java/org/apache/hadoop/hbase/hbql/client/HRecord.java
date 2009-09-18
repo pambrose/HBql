@@ -50,7 +50,7 @@ public class HRecord implements Serializable {
         return this.getValues().containsKey(name);
     }
 
-    private HValue getHValue(final String name) throws HPersistException {
+    private HValue getHValue(final String name) {
         // First try the name given.
         // If that doesn't work, then try variable and qualified (one hasn't been tried yet)
         if (this.containsName(name))
@@ -70,58 +70,39 @@ public class HRecord implements Serializable {
         }
 
         return null;
-
     }
 
     public Object getCurrentValue(final String name) {
-        try {
-            final HValue hvalue = this.getHValue(name);
-            return (hvalue != null) ? hvalue.getCurrentValue() : null;
-        }
-        catch (HPersistException e) {
-            // This should not be executed
-            return null;
-        }
+        final HValue hvalue = this.getHValue(name);
+        return (hvalue != null) ? hvalue.getCurrentValue() : null;
     }
 
-    public void setCurrentValueByVariableName(final String name, final long timestamp, final Object val) {
+    public void setCurrentValue(final String name, final long timestamp, final Object val) {
         final HValue hvalue = (!this.containsName(name)) ? this.addValue(name) : this.getValue(name);
         hvalue.setCurrentValue(timestamp, val);
     }
 
     public Map<Long, Object> getVersionedValueMap(final String name) {
-        try {
-            final HValue hvalue = this.getHValue(name);
-            return (hvalue != null) ? hvalue.getVersionMap() : null;
-        }
-        catch (HPersistException e) {
-            // This should not be executed
-            return null;
-        }
+        final HValue hvalue = this.getHValue(name);
+        return (hvalue != null) ? hvalue.getVersionMap() : null;
     }
 
-    public void setVersionedValueMapByVariableName(final String name, final Map<Long, Object> val) {
+    public void setVersionedValueMap(final String name, final Map<Long, Object> val) {
         this.getValue(name).setVersionMap(val);
     }
 
-    public void setVersionedValueByVariableName(final String name, final long timestamp, final Object val) {
+    public void setVersionedValue(final String name, final long timestamp, final Object val) {
         this.getValue(name).getVersionMap().put(timestamp, val);
     }
 
-    public void setCurrentValueByFamilyQualifiedName(final String family,
-                                                     final String column,
-                                                     final long timestamp,
-                                                     final Object val) {
+    public void setCurrentValue(final String family, final String column, final long timestamp, final Object val) {
         final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(family, column);
-        this.setCurrentValueByVariableName(attrib.getVariableName(), timestamp, val);
+        this.setCurrentValue(attrib.getVariableName(), timestamp, val);
     }
 
-    public void setVersionedValueByFamilyQualifiedName(final String family,
-                                                       final String column,
-                                                       final long timestamp,
-                                                       final Object val) {
+    public void setVersionedValue(final String family, final String column, final long timestamp, final Object val) {
         final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(family, column);
-        this.setVersionedValueByVariableName(attrib.getVariableName(), timestamp, val);
+        this.setVersionedValue(attrib.getVariableName(), timestamp, val);
     }
 
     public void clear() {

@@ -79,43 +79,33 @@ public class HBaseParser extends Parser {
         if (varname == null)
             return false;
 
-        try {
-            final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(varname);
-            return attrib.getFieldType() == type;
-        }
-        catch (HPersistException e) {
-            return false;
-        }
+        final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(varname);
+        return attrib != null && attrib.getFieldType() == type;
     }
 
 
     protected ValueExpr getValueExpr(final String var) throws RecognitionException {
 
-        try {
-            if (this.getSchema() != null) {
+        if (this.getSchema() != null) {
 
-                final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(var);
+            final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(var);
 
-                if (attrib != null) {
-                    switch (attrib.getFieldType()) {
-                        case KeyType:
-                        case StringType:
-                            return new StringAttribRef(var);
+            if (attrib != null) {
+                switch (attrib.getFieldType()) {
+                    case KeyType:
+                    case StringType:
+                        return new StringAttribRef(var);
 
-                        case LongType:
-                            return new LongAttribRef(var);
+                    case LongType:
+                        return new LongAttribRef(var);
 
-                        case IntegerType:
-                            return new IntegerAttribRef(var);
+                    case IntegerType:
+                        return new IntegerAttribRef(var);
 
-                        case DateType:
-                            return new DateAttribRef(var);
-                    }
+                    case DateType:
+                        return new DateAttribRef(var);
                 }
             }
-        }
-        catch (HPersistException e) {
-            System.out.println(e.getClass().getName() + " - " + e.getMessage());
         }
 
         throw new RecognitionException(input);

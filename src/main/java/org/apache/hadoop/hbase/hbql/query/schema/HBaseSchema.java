@@ -225,13 +225,11 @@ public abstract class HBaseSchema extends Schema {
 
             // Set column names
             for (final String name : fieldList) {
-                final ColumnAttrib attrib;
-                try {
-                    attrib = (ColumnAttrib)this.getVariableAttribByVariableName(name);
-                }
-                catch (HPersistException e) {
+
+                final ColumnAttrib attrib = (ColumnAttrib)this.getVariableAttribByVariableName(name);
+
+                if (attrib == null)
                     throw new HPersistException("Column " + name + " does not exist in " + this.getSchemaName());
-                }
 
                 // If it is a map, then request all columns for family
                 if (attrib.isMapKeysAsColumns())
