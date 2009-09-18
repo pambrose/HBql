@@ -16,30 +16,31 @@ import java.util.Map;
  * Date: Aug 19, 2009
  * Time: 4:39:06 PM
  */
-public class HRecordAccess {
+public class HRecordExample {
 
 
     public static void main(String[] args) throws IOException, HPersistException {
 
         HConnection conn = HConnection.newHConnection();
-        System.out.println(conn.exec("define table testobjects "
+        System.out.println(conn.exec("define table testobjects alias testobjects2"
                                      + "("
                                      + "keyval key, "
-                                     + "family1:author string, "
-                                     + "family1:title string "
+                                     + "family1:author string alias author, "
+                                     + "family1:title string  alias title"
                                      + ")"));
 
         //System.out.println(conn.exec("delete from TestObject with client filter where true"));
         // System.out.println(conn.exec("disable table testobjects"));
         // System.out.println(conn.exec("enable table testobjects"));
         // System.out.println(conn.exec("drop table testobjects"));
-        //if (conn.tableExists(test))
-        System.out.println(conn.exec("create table using testobjects"));
+        //if (conn.tableExists("testobjects"))
+        //System.out.println(conn.exec("create table using testobjects"));
         System.out.println(conn.exec("show tables"));
-        System.out.println(conn.exec("describe table TestObject"));
+        if (conn.tableEnabled("testobjects"))
+            System.out.println(conn.exec("describe table testobjects2"));
 
         final String query1 = "SELECT family1:author, family1:title "
-                              + "FROM testobjects "
+                              + "FROM testobjects2 "
                               + "WITH "
                 // + "KEYS  '000002' TO '000005', '000007' TO LAST "
                 //+ "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"

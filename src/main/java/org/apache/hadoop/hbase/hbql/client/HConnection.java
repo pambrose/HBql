@@ -82,6 +82,12 @@ public class HConnection {
         return admin.tableExists(schema.getTableName());
     }
 
+    public boolean tableEnabled(final String tableName) throws IOException, HPersistException {
+        final HBaseSchema schema = HBaseSchema.findSchema(tableName);
+        final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
+        return admin.isTableEnabled(schema.getTableName());
+    }
+
     public HOutput exec(final String str) throws HPersistException, IOException {
 
         final ExecCmd cmd = (ExecCmd)HBqlRule.EXEC.parse(str, (Schema)null);

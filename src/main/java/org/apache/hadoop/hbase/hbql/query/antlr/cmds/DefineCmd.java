@@ -19,21 +19,29 @@ import java.util.List;
  */
 public class DefineCmd extends TableCmd {
 
+    private String alias;
     private final List<VarDesc> varList;
 
-    public DefineCmd(final String tableName, final List<VarDesc> varList) {
+    public DefineCmd(final String tableName, final String alias, final List<VarDesc> varList) {
         super(tableName);
+        this.alias = alias;
         this.varList = varList;
     }
 
-    public List<VarDesc> getVarList() {
+    private String getAlias() {
+        return alias;
+    }
+
+    private List<VarDesc> getVarList() {
         return varList;
     }
 
     @Override
     public HOutput exec(final HConnection conn) throws HPersistException, IOException {
 
-        final DefinedSchema schema = DefinedSchema.newDefinedSchema(this.getTableName(), this.getVarList());
+        final DefinedSchema schema = DefinedSchema.newDefinedSchema(this.getTableName(),
+                                                                    this.getAlias(),
+                                                                    this.getVarList());
 
         for (final VariableAttrib attrib : schema.getVariableAttribs()) {
             final VarDescAttrib vdattrib = (VarDescAttrib)attrib;

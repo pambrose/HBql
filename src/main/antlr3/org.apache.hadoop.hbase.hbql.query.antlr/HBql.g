@@ -79,8 +79,8 @@ createStmt returns [CreateCmd retval]
 	;
 	
 defineStmt returns [DefineCmd retval]
-	: keyDEFINE keyTABLE t=ID LPAREN a=attribList RPAREN
-							{retval = new DefineCmd($t.text, $a.retval);};
+	: keyDEFINE keyTABLE t=ID (keyALIAS alias=ID)? LPAREN a=attribList RPAREN
+							{retval = new DefineCmd($t.text, $alias.text, $a.retval);};
 
 attribList returns [List<VarDesc> retval] 
 @init {retval = Lists.newArrayList();}

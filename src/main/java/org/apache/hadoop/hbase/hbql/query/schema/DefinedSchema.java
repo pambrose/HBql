@@ -23,34 +23,52 @@ public class DefinedSchema extends HBaseSchema {
     private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
     final String tableName;
+    final String aliasName;
 
     public DefinedSchema(final List<VarDesc> varList) throws HPersistException {
         this.tableName = "embedded";
+        this.aliasName = "embedded";
         for (final VarDesc var : varList)
             processColumn(var, false);
     }
 
-    private DefinedSchema(final String tableName, final List<VarDesc> varList) throws HPersistException {
+    private DefinedSchema(final String tableName,
+                          final String aliasName,
+                          final List<VarDesc> varList) throws HPersistException {
         this.tableName = tableName;
+        this.aliasName = aliasName;
         for (final VarDesc var : varList)
             processColumn(var, true);
     }
 
     public synchronized static DefinedSchema newDefinedSchema(final String tableName,
+                                                              final String aliasName,
                                                               final List<VarDesc> varList) throws HPersistException {
 
-        DefinedSchema schema = getDefinedSchemaMap().get(tableName);
-
-        if (schema != null)
+        if (doesDefinedSchemaExist(tableName))
             throw new HPersistException("Table " + tableName + " already defined");
 
-        schema = new DefinedSchema(tableName, varList);
+        if (aliasName != null && doesDefinedSchemaExist(aliasName))
+            throw new HPersistException("Alias " + aliasName + " already defined");
+
+        final DefinedSchema schema = new DefinedSchema(tableName, aliasName, varList);
+
         getDefinedSchemaMap().put(tableName, schema);
+
+        // Add in the same schema if there is an alias
+        if (aliasName != null && !tableName.equals(aliasName))
+            getDefinedSchemaMap().put(aliasName, schema);
+
         return schema;
     }
 
+    private static boolean doesDefinedSchemaExist(final String tableName) {
+        final DefinedSchema schema = getDefinedSchemaMap().get(tableName);
+        return schema != null;
+    }
+
     public synchronized static DefinedSchema newDefinedSchema(final HBaseSchema schema) throws HPersistException {
-        return new DefinedSchema(schema.getTableName(), schema.getVarDescList());
+        return new DefinedSchema(schema.getTableName(), null, schema.getVarDescList());
     }
 
     private void processColumn(final VarDesc var, final boolean enforceFamilyName) throws HPersistException {
@@ -85,6 +103,10 @@ public class DefinedSchema extends HBaseSchema {
     @Override
     public String toString() {
         return this.getTableName();
+    }
+
+    public String getAliasName() {
+        return this.aliasName;
     }
 
     @Override
