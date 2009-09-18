@@ -35,48 +35,20 @@ public class HTransaction {
         return retval;
     }
 
-    public void insert(final Object declaringObj) throws HPersistException, IOException {
-
-        final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(declaringObj);
-        final ColumnAttrib keyAttrib = schema.getKeyAttrib();
-        final byte[] keyval = keyAttrib.getValueAsBytes(HUtil.ser, declaringObj);
-        final Put put = new Put(keyval);
-
-        for (final String family : schema.getFamilySet()) {
-
-            for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {
-
-                if (attrib.isMapKeysAsColumns()) {
-                    final Map mapval = (Map)attrib.getCurrentValue(declaringObj);
-                    for (final Object keyobj : mapval.keySet()) {
-                        final String colname = keyobj.toString();
-                        final byte[] byteval = HUtil.ser.getObjectAsBytes(mapval.get(keyobj));
-
-                        // Use family:column[key] scheme to avoid column namespace collision
-                        put.add(attrib.getFamilyNameAsBytes(),
-                                HUtil.ser.getStringAsBytes(attrib.getColumnName() + "[" + colname + "]"),
-                                byteval);
-                    }
-                }
-                else {
-                    final byte[] instval = attrib.getValueAsBytes(HUtil.ser, declaringObj);
-                    put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), instval);
-                }
-            }
-        }
-
-        this.getUpdateList(schema.getTableName()).add(put);
+    public void insert(final Object newrec) throws HPersistException, IOException {
+        final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(newrec);
+        this.insert(schema, newrec);
     }
 
     public void insert(final HRecord newrec) throws HPersistException, IOException {
-
         final HBaseSchema schema = newrec.getSchema();
+        this.insert(schema, newrec);
+    }
+
+    private void insert(HBaseSchema schema, final Object newrec) throws IOException, HPersistException {
+
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
-
-        if (!newrec.isCurrentValueSet(keyAttrib))
-            throw new HPersistException("Key value is not set in HRecord");
-
-        final byte[] keyval = keyAttrib.getValueAsBytes(HUtil.ser, newrec);
+        final byte[] keyval = keyAttrib.getValueAsBytes(newrec);
         final Put put = new Put(keyval);
 
         for (final String family : schema.getFamilySet()) {
@@ -96,12 +68,13 @@ public class HTransaction {
                     }
                 }
                 else {
-                    final byte[] instval = attrib.getValueAsBytes(HUtil.ser, newrec);
+                    final byte[] instval = attrib.getValueAsBytes(newrec);
                     put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), instval);
                 }
             }
         }
 
         this.getUpdateList(schema.getTableName()).add(put);
+
     }
 }

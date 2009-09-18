@@ -13,7 +13,6 @@ import java.io.IOException;
  */
 public class SchemaManager {
 
-
     public static HOutput exec(final String str) throws HPersistException, IOException {
 
         final SchemaManagerExecCmd cmd = (SchemaManagerExecCmd)HBqlRule.SCHEMA_EXEC.parse(str);

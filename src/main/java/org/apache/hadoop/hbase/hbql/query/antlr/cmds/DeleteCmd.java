@@ -12,7 +12,6 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -68,10 +67,10 @@ public class DeleteCmd extends TableCmd implements ConnectionExecCmd {
             final ResultScanner resultsScanner = table.getScanner(scan);
             for (final Result result : resultsScanner) {
 
-                final Object recordObj = schema.getObject(HUtil.ser,
-                                                          schema.getFieldList(),
-                                                          scan.getMaxVersions(),
-                                                          result);
+                final Object recordObj = schema.getObject(
+                        schema.getFieldList(),
+                        scan.getMaxVersions(),
+                        result);
 
                 if (clientFilter == null || clientFilter.evaluate(recordObj)) {
                     final Delete delete = new Delete(result.getRow());

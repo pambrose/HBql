@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -154,8 +153,7 @@ public abstract class ColumnAttrib extends VariableAttrib {
         }
     }
 
-    public byte[] getValueAsBytes(final Serialization ser,
-                                  final Object recordObj) throws HPersistException, IOException {
+    public byte[] getValueAsBytes(final Object recordObj) throws HPersistException, IOException {
 
         if (this.hasGetter()) {
             return this.invokeGetterMethod(recordObj);
@@ -164,32 +162,29 @@ public abstract class ColumnAttrib extends VariableAttrib {
             final Object obj = this.getCurrentValue(recordObj);
 
             if (this.isArray())
-                return ser.getArrayasBytes(this.getFieldType(), obj);
+                return HUtil.ser.getArrayasBytes(this.getFieldType(), obj);
             else
-                return ser.getScalarAsBytes(this.getFieldType(), obj);
+                return HUtil.ser.getScalarAsBytes(this.getFieldType(), obj);
         }
     }
 
-    public Object getValueFromBytes(final Serialization ser,
-                                    final Object recordObj,
-                                    final byte[] b) throws IOException, HPersistException {
+    public Object getValueFromBytes(final Object recordObj, final byte[] b) throws IOException, HPersistException {
 
         if (this.hasSetter()) {
             return this.invokeSetterMethod(recordObj, b);
         }
         else {
             if (this.isArray())
-                return ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
+                return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
             else
-                return ser.getScalarFromBytes(this.getFieldType(), b);
+                return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
         }
     }
 
-    public void setCurrentValue(final Serialization ser,
-                                final Object newobj,
+    public void setCurrentValue(final Object newobj,
                                 final long timestamp,
                                 final byte[] b) throws IOException, HPersistException {
-        final Object val = this.getValueFromBytes(ser, newobj, b);
+        final Object val = this.getValueFromBytes(newobj, b);
         this.setCurrentValue(newobj, timestamp, val);
     }
 

@@ -5,7 +5,6 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.ResultsIterator;
 
@@ -117,8 +116,7 @@ public class HResults<T> implements Iterable<T> {
                     if (resultIter != null) {
                         while (resultIter.hasNext()) {
                             final Result result = resultIter.next();
-                            final T val = (T)getHQuery().getSchema().getObject(HUtil.ser,
-                                                                               getHQuery().getFieldList(),
+                            final T val = (T)getHQuery().getSchema().getObject(getHQuery().getFieldList(),
                                                                                this.maxVersions,
                                                                                result);
 

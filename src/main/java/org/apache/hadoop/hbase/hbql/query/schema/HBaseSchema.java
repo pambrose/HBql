@@ -10,7 +10,6 @@ import org.apache.hadoop.hbase.hbql.query.antlr.args.DateRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.KeyRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.VersionArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -57,10 +56,10 @@ public abstract class HBaseSchema extends Schema {
         return HUtil.ser.getStringAsBytes(this.getTableName());
     }
 
-    public abstract Object getObject(final Serialization ser,
-                                     final List<String> fieldList,
-                                     final int maxVersions,
-                                     final Result result) throws HPersistException;
+    public abstract Object getObject(
+            final List<String> fieldList,
+            final int maxVersions,
+            final Result result) throws HPersistException;
 
 
     public static HBaseSchema findSchema(final String tablename) throws HPersistException {
@@ -159,17 +158,17 @@ public abstract class HBaseSchema extends Schema {
     }
 
 
-    protected void assignCurrentValues(final Serialization ser,
-                                       final List<String> fieldList,
-                                       final Result result,
-                                       final Object newobj) throws IOException, HPersistException {
+    protected void assignCurrentValues(
+            final List<String> fieldList,
+            final Result result,
+            final Object newobj) throws IOException, HPersistException {
 
         for (final KeyValue keyValue : result.list()) {
 
             final byte[] familyBytes = keyValue.getFamily();
             final byte[] columnBytes = keyValue.getQualifier();
-            final String familyName = ser.getStringFromBytes(familyBytes);
-            final String columnName = ser.getStringFromBytes(columnBytes);
+            final String familyName = HUtil.ser.getStringFromBytes(familyBytes);
+            final String columnName = HUtil.ser.getStringFromBytes(columnBytes);
             final long timestamp = keyValue.getTimestamp();
             final byte[] valueBytes = result.getValue(familyBytes, columnBytes);
 
@@ -187,18 +186,17 @@ public abstract class HBaseSchema extends Schema {
                     attrib.setVersionedValueMap(newobj, mapval);
                 }
 
-                final Object val = attrib.getValueFromBytes(ser, newobj, valueBytes);
+                final Object val = attrib.getValueFromBytes(newobj, valueBytes);
                 mapval.put(mapKey, val);
             }
             else {
                 final ColumnAttrib attrib = this.getColumnAttribFromFamilyQualifiedNameMap(familyName, columnName);
-                attrib.setCurrentValue(ser, newobj, timestamp, valueBytes);
+                attrib.setCurrentValue(newobj, timestamp, valueBytes);
             }
         }
     }
 
-    protected void assignVersionedValues(final Serialization ser,
-                                         final List<String> fieldList,
+    protected void assignVersionedValues(final List<String> fieldList,
                                          final Result result,
                                          final Object newobj) throws IOException, HPersistException {
 
@@ -206,11 +204,11 @@ public abstract class HBaseSchema extends Schema {
 
         for (final byte[] fbytes : familyMap.keySet()) {
 
-            final String famname = ser.getStringFromBytes(fbytes) + ":";
+            final String famname = HUtil.ser.getStringFromBytes(fbytes) + ":";
             final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(fbytes);
 
             for (final byte[] cbytes : columnMap.keySet()) {
-                final String colname = ser.getStringFromBytes(cbytes);
+                final String colname = HUtil.ser.getStringFromBytes(cbytes);
                 final String qualifiedName = famname + colname;
                 final NavigableMap<Long, byte[]> tsMap = columnMap.get(cbytes);
 
@@ -234,7 +232,7 @@ public abstract class HBaseSchema extends Schema {
                         attrib.setVersionedValueMap(newobj, mapval);
                     }
 
-                    final Object val = attrib.getValueFromBytes(ser, newobj, vbytes);
+                    final Object val = attrib.getValueFromBytes(newobj, vbytes);
                     mapval.put(timestamp, val);
                 }
             }

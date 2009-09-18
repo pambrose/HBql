@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -131,21 +130,20 @@ public class DefinedSchema extends HBaseSchema {
     }
 
     @Override
-    public HRecord getObject(final Serialization ser,
-                             final List<String> fieldList,
+    public HRecord getObject(final List<String> fieldList,
                              final int maxVersions,
                              final Result result) throws HPersistException {
 
         try {
             // Create object and assign key value
-            final HRecord newobj = createNewHRecord(ser, result);
+            final HRecord newobj = createNewHRecord(result);
 
             // Assign most recent values
-            assignCurrentValues(ser, fieldList, result, newobj);
+            assignCurrentValues(fieldList, result, newobj);
 
             // Assign the versioned values
             if (maxVersions > 1)
-                assignVersionedValues(ser, fieldList, result, newobj);
+                assignVersionedValues(fieldList, result, newobj);
 
             return newobj;
         }
@@ -156,8 +154,7 @@ public class DefinedSchema extends HBaseSchema {
 
     }
 
-    private HRecord createNewHRecord(final Serialization ser,
-                                     final Result result) throws IOException, HPersistException {
+    private HRecord createNewHRecord(final Result result) throws IOException, HPersistException {
 
         // Create new instance and set key value
         final HRecord newrec = new HRecord();
@@ -165,7 +162,7 @@ public class DefinedSchema extends HBaseSchema {
         final ColumnAttrib keyattrib = this.getKeyAttrib();
         if (keyattrib != null) {
             final byte[] keybytes = result.getRow();
-            keyattrib.setCurrentValue(ser, newrec, 0, keybytes);
+            keyattrib.setCurrentValue(newrec, 0, keybytes);
         }
         return newrec;
     }

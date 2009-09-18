@@ -7,7 +7,6 @@ import org.apache.hadoop.hbase.hbql.client.HColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HFamily;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.client.HTable;
-import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -323,21 +322,21 @@ public class AnnotationSchema extends HBaseSchema {
     }
 
     @Override
-    public Object getObject(final Serialization ser,
-                            final List<String> fieldList,
-                            final int maxVersions,
-                            final Result result) throws HPersistException {
+    public Object getObject(
+            final List<String> fieldList,
+            final int maxVersions,
+            final Result result) throws HPersistException {
 
         try {
             // Create object and assign key value
-            final Object newobj = createNewObject(ser, result);
+            final Object newobj = createNewObject(result);
 
             // Assign most recent values
-            assignCurrentValues(ser, fieldList, result, newobj);
+            assignCurrentValues(fieldList, result, newobj);
 
             // Assign the versioned values
             if (maxVersions > 1)
-                assignVersionedValues(ser, fieldList, result, newobj);
+                assignVersionedValues(fieldList, result, newobj);
 
             return newobj;
         }
@@ -347,7 +346,7 @@ public class AnnotationSchema extends HBaseSchema {
         }
     }
 
-    private Object createNewObject(final Serialization ser, final Result result) throws IOException, HPersistException {
+    private Object createNewObject(final Result result) throws IOException, HPersistException {
 
         // Create new instance and set key value
         final ColumnAttrib keyattrib = this.getKeyAttrib();
@@ -355,7 +354,7 @@ public class AnnotationSchema extends HBaseSchema {
         try {
             newobj = this.newInstance();
             final byte[] keybytes = result.getRow();
-            keyattrib.setCurrentValue(ser, newobj, 0, keybytes);
+            keyattrib.setCurrentValue(newobj, 0, keybytes);
         }
         catch (InstantiationException e) {
             throw new RuntimeException("Cannot create new instance of " + this.getSchemaName());

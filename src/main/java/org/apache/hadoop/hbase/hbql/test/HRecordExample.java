@@ -60,7 +60,7 @@ public class HRecordExample {
         final String query1 = "SELECT author, title "
                               + "FROM testobjects2 "
                               + "WITH "
-                              + "KEYS  ALL "
+                              + "KEYS ALL "
                               + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
                               + "VERSIONS MAX "
                 //+ "SCAN LIMIT 4"
