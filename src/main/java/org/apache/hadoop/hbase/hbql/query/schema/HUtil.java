@@ -30,7 +30,6 @@ public class HUtil {
             return (DefinedSchema)schema;
         else
             return DefinedSchema.newDefinedSchema(schema);
-
     }
 
     public static String getZeroPaddedNumber(final int val, final int width) throws HPersistException {

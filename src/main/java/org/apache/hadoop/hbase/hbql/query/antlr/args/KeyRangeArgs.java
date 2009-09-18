@@ -17,27 +17,27 @@ public class KeyRangeArgs {
 
     private final List<Range> rangeList;
 
+    public enum Type {
+        LAST, RANGE
+    }
+
     public static class Range {
-        private final boolean recordRange;
         private final String lower;
         private final String upper;
+        private final Type type;
 
-        public Range() {
-            this(false, null, null);
-        }
-
-        public Range(final String lower) {
-            this(true, lower, null);
+        public Range(final String lower, final Type type) {
+            this(lower, null, type);
         }
 
         public Range(final String lower, final String upper) {
-            this(true, lower, upper);
+            this(lower, upper, Type.RANGE);
         }
 
-        private Range(final boolean recordRange, final String lower, final String upper) {
-            this.recordRange = recordRange;
+        private Range(final String lower, final String upper, final Type type) {
             this.lower = lower;
             this.upper = upper;
+            this.type = type;
         }
 
         public String getLower() {
@@ -48,6 +48,10 @@ public class KeyRangeArgs {
             return this.upper;
         }
 
+        public Type getType() {
+            return this.type;
+        }
+
         public byte[] getLowerAsBytes() throws IOException, HPersistException {
             return HUtil.ser.getStringAsBytes(this.getLower());
         }
@@ -56,13 +60,10 @@ public class KeyRangeArgs {
             return HUtil.ser.getStringAsBytes(this.getUpper());
         }
 
-        public boolean isStartKeyOnly() {
-            return this.getUpper() == null;
+        public boolean isStartLastRange() {
+            return this.getType() == Type.LAST;
         }
 
-        public boolean isRecordRange() {
-            return this.recordRange;
-        }
     }
 
     public KeyRangeArgs() {

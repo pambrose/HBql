@@ -45,7 +45,8 @@ public class HQuery<T> {
 
         this.fieldList = (args.getColumns() == null) ? this.getSchema().getFieldList() : args.getColumns();
 
-        this.clientExprTree = where.getClientExprTree().setSchema(this.getSchema(), this.getFieldList());
+        this.clientExprTree = where.getClientExprTree();
+        this.clientExprTree.setSchema(this.getSchema(), this.getFieldList());
 
         final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(where.getServerExprTree(),
                                                                        this.getFieldList(),

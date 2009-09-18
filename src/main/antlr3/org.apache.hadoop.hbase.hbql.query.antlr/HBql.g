@@ -146,7 +146,9 @@ keyRangeList returns [List<KeyRangeArgs.Range> retval]
 	;
 	
 keyRange returns [KeyRangeArgs.Range retval]
-	: q=QUOTED keyTO keyLAST			{retval = new KeyRangeArgs.Range($q.text);}
+//options {backtrack=true;}	
+	: q1=QUOTED keyTO keyLAST			{retval = new KeyRangeArgs.Range($q1.text, KeyRangeArgs.Type.LAST);}
+	//| q1=QUOTED 					{retval = new KeyRangeArgs.Range($q1.text, $q1.text);}
 	| q1=QUOTED keyTO q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
 	;
 	

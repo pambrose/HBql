@@ -29,6 +29,26 @@ public abstract class Schema implements Serializable {
         return retval;
     }
 
+    public List<String> getAliasAndQualifiedNameFieldList(final List<String> fieldList) {
+
+        final List<String> allVersionList = Lists.newArrayList();
+        for (final String field : fieldList) {
+
+            final VariableAttrib attrib = this.getVariableAttribByVariableName(field);
+            final String qualifiedname = attrib.getFamilyQualifiedName();
+            final String variableName = attrib.getVariableName();
+            if (qualifiedname.equals(variableName)) {
+                allVersionList.add(qualifiedname);
+            }
+            else {
+                allVersionList.add(qualifiedname);
+                allVersionList.add(variableName);
+            }
+
+        }
+        return allVersionList;
+    }
+
 
     // *** variableAttribByVariableNameMap calls
     private Map<String, VariableAttrib> getVariableAttribByVariableNameMap() {
@@ -61,4 +81,5 @@ public abstract class Schema implements Serializable {
                 this.getVariableAttribByVariableNameMap().put(familyQualifiedName, attrib);
         }
     }
+
 }

@@ -259,12 +259,10 @@ public abstract class HBaseSchema extends Schema {
         else {
             for (final KeyRangeArgs.Range range : rangeList) {
                 final Scan scan = new Scan();
-                if (range.isRecordRange()) {
-                    scan.setStartRow(range.getLowerAsBytes());
-                    if (!range.isStartKeyOnly())
-                        scan.setStopRow(range.getUpperAsBytes());
-                    scanList.add(scan);
-                }
+                scan.setStartRow(range.getLowerAsBytes());
+                if (!range.isStartLastRange())
+                    scan.setStopRow(range.getUpperAsBytes());
+                scanList.add(scan);
             }
         }
 
@@ -312,10 +310,13 @@ public abstract class HBaseSchema extends Schema {
                                     final List<String> fieldList,
                                     final long scanLimit) throws HPersistException {
 
-        if (!exprTree.isValid())
+        if (!exprTree.isValid()) {
             return (scanLimit > 0) ? new HBqlFilter(ExprTree.newExprTree(null), scanLimit) : null;
-        else
-            return new HBqlFilter(exprTree.setSchema(HUtil.getServerSchema(this), fieldList), scanLimit);
+        }
+        else {
+            exprTree.setSchema(HUtil.getServerSchema(this), fieldList);
+            return new HBqlFilter(exprTree, scanLimit);
+        }
     }
 
 }

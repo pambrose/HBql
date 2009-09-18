@@ -96,21 +96,21 @@ public class ExprTree implements Serializable {
         return this.end - this.start;
     }
 
-    public ExprTree setSchema(final Schema schema, final List<String> fieldList) throws HPersistException {
+    public void setSchema(final Schema schema, final List<String> fieldList) throws HPersistException {
 
         if (this.isValid()) {
             this.setSchema(schema);
             this.optimize();
 
             // Check if all the variables referenced in the where clause are present in the fieldList.
-            final List<ExprVariable> vars = this.getExprVariables();
-            for (final ExprVariable var : vars) {
-                if (!fieldList.contains(var.getName()))
+            final List<String> selectList = schema.getAliasAndQualifiedNameFieldList(fieldList);
+
+            final List<ExprVariable> referencedVars = this.getExprVariables();
+            for (final ExprVariable var : referencedVars) {
+                if (!selectList.contains(var.getName()))
                     throw new HPersistException("Variable " + var.getName() + " used in where clause but it is not "
                                                 + "not in the select list");
             }
         }
-
-        return this;
     }
 }

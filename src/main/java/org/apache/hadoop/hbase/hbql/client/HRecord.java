@@ -17,7 +17,7 @@ import java.util.Map;
 public class HRecord implements Serializable {
 
     private HBaseSchema schema = null;
-    private long now = System.currentTimeMillis();
+    private long timestamp = System.currentTimeMillis();
 
     private final Map<String, HValue> values = Maps.newHashMap();
 
@@ -87,16 +87,20 @@ public class HRecord implements Serializable {
         return (hvalue != null) ? hvalue.getCurrentValue() : null;
     }
 
+    public long getTimestamp() {
+        return this.timestamp;
+    }
+
+    public void setTimestamp(final long timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public void setCurrentValue(final String name, final Object val) throws HPersistException {
-        HValue hvalue = this.getHValue(name);
-
-        if (hvalue == null)
-            hvalue = this.addValue(name);
-
-        hvalue.setCurrentValue(now, val);
+        this.setCurrentValue(name, getTimestamp(), val);
     }
 
     public void setCurrentValue(final String name, final long timestamp, final Object val) throws HPersistException {
+
         HValue hvalue = this.getHValue(name);
 
         if (hvalue == null)
@@ -138,8 +142,8 @@ public class HRecord implements Serializable {
         this.setVersionedValue(attrib.getVariableName(), timestamp, val);
     }
 
-    public boolean isCurrentValueSet(final ColumnAttrib keyAttrib) {
-        final HValue hvalue = this.getHValue(keyAttrib.getVariableName());
+    public boolean isCurrentValueSet(final ColumnAttrib attrib) {
+        final HValue hvalue = this.getHValue(attrib.getVariableName());
         return hvalue != null && hvalue.isCurrentValueSet();
     }
 

@@ -42,6 +42,11 @@ public class HTransaction {
 
     public void insert(final HRecord newrec) throws HPersistException, IOException {
         final HBaseSchema schema = newrec.getSchema();
+
+        final ColumnAttrib keyAttrib = schema.getKeyAttrib();
+        if (!newrec.isCurrentValueSet(keyAttrib))
+            throw new HPersistException("Key value must be set in HRecord");
+
         this.insert(schema, newrec);
     }
 

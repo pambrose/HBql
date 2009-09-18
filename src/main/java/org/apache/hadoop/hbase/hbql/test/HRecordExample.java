@@ -47,22 +47,22 @@ public class HRecordExample {
             System.out.println(conn.exec("describe table testobjects2"));
 
         final HTransaction tx = new HTransaction();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 0; i++) {
             HRecord hrecord = new HRecord("testobjects");
             hrecord.setCurrentValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
             hrecord.setCurrentValue("author", "A new author value: " + i);
             hrecord.setCurrentValue("title", "A very new title value: " + i);
             tx.insert(hrecord);
         }
-        // Make sure key value is set
+
         conn.apply(tx);
 
         final String query1 = "SELECT author, title "
                               + "FROM testobjects2 "
                               + "WITH "
-                              + "KEYS ALL "
+                              + "KEYS '0000000002' TO '0000000003', '0000000008' TO LAST "
                               + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
-                              + "VERSIONS MAX "
+                              + "VERSIONS 2 "
                 //+ "SCAN LIMIT 4"
                 //+ "SERVER FILTER WHERE author LIKE '.*6200.*' "
                 //+ "CLIENT FILTER WHERE family1:author LIKE '.*282.*'"
