@@ -47,9 +47,6 @@ public class DeleteCmd extends TableCmd {
         // TODO Need to grab schema from DeleteArgs (like QueryArgs in Select)
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
 
-        if (schema == null)
-            throw new HPersistException("Unknown table name " + this.getTableName());
-
         final List<String> fieldList = schema.getFieldList();
         final HTable table = conn.getHTable(schema.getTableName());
         final ExprTree clientFilter = where.getClientExprTree();

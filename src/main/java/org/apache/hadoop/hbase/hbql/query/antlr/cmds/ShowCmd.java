@@ -21,6 +21,7 @@ public class ShowCmd implements ExecCmd {
 
     @Override
     public HOutput exec(final HConnection conn) throws HPersistException, IOException {
+
         final HOutput retval = new HOutput();
 
         final HBaseAdmin admin = new HBaseAdmin(conn.getConfig());

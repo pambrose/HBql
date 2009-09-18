@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.hbql.query.antlr.cmds.ExecCmd;
@@ -77,7 +76,7 @@ public class HConnection {
         return new HTable(this.getConfig(), tableName);
     }
 
-    public boolean tableExists(final String tableName) throws MasterNotRunningException, HPersistException {
+    public boolean tableExists(final String tableName) throws IOException, HPersistException {
         final HBaseSchema schema = HBaseSchema.findSchema(tableName);
         final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
         return admin.tableExists(schema.getTableName());

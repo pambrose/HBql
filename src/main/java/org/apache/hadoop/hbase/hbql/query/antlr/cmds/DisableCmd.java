@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
 import java.io.IOException;
 
@@ -21,11 +22,14 @@ public class DisableCmd extends TableCmd {
 
     @Override
     public HOutput exec(final HConnection conn) throws HPersistException, IOException {
+
+        final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
+
         final HBaseAdmin admin = new HBaseAdmin(conn.getConfig());
-        admin.disableTable(this.getTableName());
+        admin.disableTable(schema.getTableName());
 
         final HOutput retval = new HOutput();
-        retval.out.println("Table " + this.getTableName() + " disabled.");
+        retval.out.println("Table " + schema.getTableName() + " disabled.");
         retval.out.flush();
         return retval;
     }

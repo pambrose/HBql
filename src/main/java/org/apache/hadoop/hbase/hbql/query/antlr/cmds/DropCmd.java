@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
 import java.io.IOException;
 
@@ -22,11 +23,13 @@ public class DropCmd extends TableCmd {
     @Override
     public HOutput exec(final HConnection conn) throws HPersistException, IOException {
 
+        final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
+
         final HBaseAdmin admin = new HBaseAdmin(conn.getConfig());
-        admin.deleteTable(this.getTableName());
+        admin.deleteTable(schema.getTableName());
 
         final HOutput retval = new HOutput();
-        retval.out.println("Table " + this.getTableName() + " dropped.");
+        retval.out.println("Table " + schema.getTableName() + " dropped.");
         retval.out.flush();
         return retval;
     }

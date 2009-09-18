@@ -24,6 +24,7 @@ public class DescribeCmd extends TableCmd {
 
     @Override
     public HOutput exec(final HConnection conn) throws HPersistException, IOException {
+
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
 
         final HBaseAdmin admin = new HBaseAdmin(conn.getConfig());

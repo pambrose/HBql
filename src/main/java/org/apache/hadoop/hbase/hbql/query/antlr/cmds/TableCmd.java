@@ -14,7 +14,7 @@ public abstract class TableCmd implements ExecCmd {
         this.tableName = tableName;
     }
 
-    public String getTableName() {
+    protected String getTableName() {
         return tableName;
     }
 }

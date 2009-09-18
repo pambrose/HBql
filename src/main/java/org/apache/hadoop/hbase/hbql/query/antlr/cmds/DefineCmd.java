@@ -32,17 +32,18 @@ public class DefineCmd extends TableCmd {
 
     @Override
     public HOutput exec(final HConnection conn) throws HPersistException, IOException {
+
         final DefinedSchema schema = DefinedSchema.newDefinedSchema(this.getTableName(), this.getVarList());
 
         for (final VariableAttrib attrib : schema.getVariableAttribs()) {
             final VarDescAttrib vdattrib = (VarDescAttrib)attrib;
             if (attrib.getFieldType() == null)
-                throw new HPersistException(this.getTableName() + " attribute " + vdattrib.getVariableName()
+                throw new HPersistException(schema.getTableName() + " attribute " + vdattrib.getVariableName()
                                             + " has unknown type " + vdattrib.getTypeName());
         }
 
         final HOutput retval = new HOutput();
-        retval.out.println("Table " + this.getTableName() + " defined.");
+        retval.out.println("Table " + schema.getTableName() + " defined.");
         retval.out.flush();
         return retval;
     }
