@@ -18,7 +18,6 @@ import java.lang.reflect.Modifier;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -32,8 +31,6 @@ public class AnnotationSchema extends HBaseSchema {
 
     private final static Map<Class<?>, AnnotationSchema> annotationSchemaMap = Maps.newHashMap();
     private final static Map<String, Class<?>> classCacheMap = Maps.newHashMap();
-
-    private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
 
     private final Class<?> clazz;
     private final HTable table;
@@ -63,7 +60,7 @@ public class AnnotationSchema extends HBaseSchema {
 
         for (final HFamily family : families) {
             final List<ColumnAttrib> attribs = Lists.newArrayList();
-            this.setColumnAttribListByFamilyName(family.name(), attribs);
+            this.addColumnAttribListFamilyNameMap(family.name(), attribs);
         }
 
         // First process all HColumn fields so we can do lookup from HColumnVersionMaps
@@ -283,8 +280,8 @@ public class AnnotationSchema extends HBaseSchema {
 
         final ColumnAttrib attrib = new CurrentValueAttrib(field);
 
-        this.addVariableAttrib(attrib);
-        this.addColumnAttrib(attrib);
+        this.addVariableAttribToVariableNameMap(attrib);
+        this.addColumnAttribToFamilyQualifiedNameMap(attrib);
 
         if (attrib.isKeyAttrib()) {
             if (this.getKeyAttrib() != null)
@@ -300,7 +297,7 @@ public class AnnotationSchema extends HBaseSchema {
                 throw new HPersistException(attrib.getObjectQualifiedName()
                                             + " is missing family name in annotation");
 
-            if (!this.containsFamilyName(family))
+            if (!this.containsFamilyNameInFamilyNameMap(family))
                 throw new HPersistException(attrib.getObjectQualifiedName()
                                             + " references unknown family: " + family);
 
@@ -311,8 +308,8 @@ public class AnnotationSchema extends HBaseSchema {
 
     private void processColumnVersionAnnotation(final Field field) throws HPersistException {
         final VersionAttrib attrib = VersionAttrib.newVersionAttrib(this, field);
-        this.addVariableAttrib(attrib);
-        this.addVersionAttrib(attrib);
+        this.addVariableAttribToVariableNameMap(attrib);
+        this.addVersionAttribToFamilyQualifiedNameMap(attrib);
     }
 
     public String getTableName() {
@@ -323,30 +320,6 @@ public class AnnotationSchema extends HBaseSchema {
     @Override
     public Object newInstance() throws IllegalAccessException, InstantiationException {
         return this.getClazz().newInstance();
-    }
-
-    // *** columnAttribListByFamilyNameMap
-    private Map<String, List<ColumnAttrib>> getColumnAttribListByFamilyNameMap() {
-        return columnAttribListByFamilyNameMap;
-    }
-
-    public Set<String> getFamilySet() {
-        return this.getColumnAttribListByFamilyNameMap().keySet();
-    }
-
-    public List<ColumnAttrib> getColumnAttribListByFamilyName(final String familyName) {
-        return this.getColumnAttribListByFamilyNameMap().get(familyName);
-    }
-
-    private boolean containsFamilyName(final String s) {
-        return this.getColumnAttribListByFamilyNameMap().containsKey(s);
-    }
-
-    public void setColumnAttribListByFamilyName(final String s,
-                                                final List<ColumnAttrib> attribList) throws HPersistException {
-        if (this.containsFamilyName(s))
-            throw new HPersistException(s + " already delcared");
-        this.getColumnAttribListByFamilyNameMap().put(s, attribList);
     }
 
     @Override
@@ -396,7 +369,7 @@ public class AnnotationSchema extends HBaseSchema {
 
     public List<VarDesc> getVarDescList() {
         final List<VarDesc> varList = Lists.newArrayList();
-        for (final ColumnAttrib col : this.getColumnAttribByFamilyQualifiedColumnNameMap().values()) {
+        for (final ColumnAttrib col : this.getColumnAttribByFamilyQualifiedNameMap().values()) {
             final String coltype = (col.isKeyAttrib())
                                    ? FieldType.KeyType.getFirstSynonym()
                                    : col.getFieldType().getFirstSynonym();

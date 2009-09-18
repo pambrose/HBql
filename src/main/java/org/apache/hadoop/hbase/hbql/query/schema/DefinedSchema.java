@@ -7,12 +7,10 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
-import org.apache.hadoop.hbase.hbql.query.util.Sets;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -77,9 +75,10 @@ public class DefinedSchema extends HBaseSchema {
 
         final VarDescAttrib attrib = new VarDescAttrib(var);
 
-        this.addVariableAttrib(attrib);
-        this.addColumnAttrib(attrib);
-        this.addVersionAttrib(attrib);
+        this.addVariableAttribToVariableNameMap(attrib);
+        this.addColumnAttribToFamilyQualifiedNameMap(attrib);
+        this.addVersionAttribToFamilyQualifiedNameMap(attrib);
+        this.addColumnAttribListToFamilyNameMap(attrib);
 
         if (attrib.isKeyAttrib()) {
             if (this.getKeyAttrib() != null)
@@ -114,18 +113,6 @@ public class DefinedSchema extends HBaseSchema {
     @Override
     public String getTableName() {
         return this.tableName;
-    }
-
-    public Set<String> getFamilySet() {
-        final Set<String> familySet = Sets.newHashSet();
-        for (final ColumnAttrib attrib : this.getColumnAttribByFamilyQualifiedColumnNameMap().values()) {
-            if (attrib.isKeyAttrib())
-                continue;
-            final String familyName = attrib.getFamilyName();
-            if (!familySet.contains(familyName))
-                familySet.add(familyName);
-        }
-        return familySet;
     }
 
     @Override

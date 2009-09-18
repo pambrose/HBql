@@ -122,7 +122,7 @@ public class HRecord implements Serializable {
                                 final String column,
                                 final long timestamp,
                                 final Object val) throws HPersistException {
-        final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(family, column);
+        final ColumnAttrib attrib = this.getSchema().getColumnAttribFromFamilyQualifiedNameMap(family, column);
         if (attrib == null)
             throw new HPersistException("Invalid column name " + family + ":" + column);
         this.setCurrentValue(attrib.getVariableName(), timestamp, val);
@@ -132,7 +132,7 @@ public class HRecord implements Serializable {
                                   final String column,
                                   final long timestamp,
                                   final Object val) throws HPersistException {
-        final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(family, column);
+        final ColumnAttrib attrib = this.getSchema().getColumnAttribFromFamilyQualifiedNameMap(family, column);
         if (attrib == null)
             throw new HPersistException("Invalid column name " + family + ":" + column);
         this.setVersionedValue(attrib.getVariableName(), timestamp, val);

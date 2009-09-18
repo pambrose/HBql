@@ -47,7 +47,7 @@ public abstract class Schema implements Serializable {
         return this.getVariableAttribByVariableNameMap().get(name);
     }
 
-    protected void addVariableAttrib(final VariableAttrib attrib) throws HPersistException {
+    protected void addVariableAttribToVariableNameMap(final VariableAttrib attrib) throws HPersistException {
 
         final String variableName = attrib.getVariableName();
         if (this.getVariableAttribByVariableNameMap().containsKey(variableName))

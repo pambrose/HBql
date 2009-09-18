@@ -31,8 +31,9 @@ public abstract class HBaseSchema extends Schema {
 
     private ColumnAttrib keyAttrib = null;
 
-    private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedColumnNameMap = Maps.newHashMap();
-    private final Map<String, ColumnAttrib> versionAttribByFamilyQualifiedColumnNameMap = Maps.newHashMap();
+    private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
+    private final Map<String, ColumnAttrib> versionAttribByFamilyQualifiedNameMap = Maps.newHashMap();
+    private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
 
     public Object newInstance() throws IllegalAccessException, InstantiationException {
         return null;
@@ -49,10 +50,6 @@ public abstract class HBaseSchema extends Schema {
     public abstract String getSchemaName();
 
     public abstract String getTableName();
-
-    public abstract Set<String> getFamilySet();
-
-    public abstract List<ColumnAttrib> getColumnAttribListByFamilyName(final String familyName);
 
     public abstract List<HColumnDescriptor> getColumnDescriptors();
 
@@ -82,38 +79,85 @@ public abstract class HBaseSchema extends Schema {
         throw new HPersistException("Unknown table: " + tablename);
     }
 
-    // *** columnAttribByFamilyQualifiedColumnNameMap calls
-    protected Map<String, ColumnAttrib> getColumnAttribByFamilyQualifiedColumnNameMap() {
-        return this.columnAttribByFamilyQualifiedColumnNameMap;
+    // *** columnAttribByFamilyQualifiedNameMap calls
+    protected Map<String, ColumnAttrib> getColumnAttribByFamilyQualifiedNameMap() {
+        return this.columnAttribByFamilyQualifiedNameMap;
     }
 
-    public ColumnAttrib getColumnAttribByFamilyQualifiedColumnName(final String familyName, final String columnName) {
-        return this.getColumnAttribByFamilyQualifiedColumnNameMap().get(familyName + ":" + columnName);
+    public ColumnAttrib getColumnAttribFromFamilyQualifiedNameMap(final String familyName, final String columnName) {
+        return this.getColumnAttribByFamilyQualifiedNameMap().get(familyName + ":" + columnName);
     }
 
-    protected void addColumnAttrib(final ColumnAttrib attrib) throws HPersistException {
+    protected void addColumnAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HPersistException {
         final String name = attrib.getFamilyQualifiedName();
-        if (this.getColumnAttribByFamilyQualifiedColumnNameMap().containsKey(name))
+        if (this.getColumnAttribByFamilyQualifiedNameMap().containsKey(name))
             throw new HPersistException(name + " already delcared");
-        this.getColumnAttribByFamilyQualifiedColumnNameMap().put(name, attrib);
+        this.getColumnAttribByFamilyQualifiedNameMap().put(name, attrib);
     }
 
-    // *** versionAttribByFamilyQualifiedColumnNameMap calls
-    private Map<String, ColumnAttrib> getVersionAttribByFamilyQualifiedColumnNameMap() {
-        return versionAttribByFamilyQualifiedColumnNameMap;
+    // *** versionAttribByFamilyQualifiedNameMap calls
+    private Map<String, ColumnAttrib> getVersionAttribByFamilyQualifiedNameMap() {
+        return versionAttribByFamilyQualifiedNameMap;
     }
 
-    public ColumnAttrib getVersionAttribByFamilyQualifiedColumnName(final String s) {
-        return this.getVersionAttribByFamilyQualifiedColumnNameMap().get(s);
+    public ColumnAttrib getVersionAttribFromFamilyQualifiedNameMap(final String s) {
+        return this.getVersionAttribByFamilyQualifiedNameMap().get(s);
     }
 
-    protected void addVersionAttrib(final ColumnAttrib attrib) throws HPersistException {
+    protected void addVersionAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HPersistException {
         final String name = attrib.getFamilyQualifiedName();
-        if (this.getVersionAttribByFamilyQualifiedColumnNameMap().containsKey(name))
+        if (this.getVersionAttribByFamilyQualifiedNameMap().containsKey(name))
             throw new HPersistException(name + " already delcared");
 
-        this.getVersionAttribByFamilyQualifiedColumnNameMap().put(name, attrib);
+        this.getVersionAttribByFamilyQualifiedNameMap().put(name, attrib);
     }
+
+    // *** columnAttribListByFamilyNameMap
+    private Map<String, List<ColumnAttrib>> getColumnAttribListByFamilyNameMap() {
+        return columnAttribListByFamilyNameMap;
+    }
+
+    public Set<String> getFamilySet() {
+        return this.getColumnAttribListByFamilyNameMap().keySet();
+    }
+
+    public List<ColumnAttrib> getColumnAttribListByFamilyName(final String familyName) {
+        return this.getColumnAttribListByFamilyNameMap().get(familyName);
+    }
+
+    protected boolean containsFamilyNameInFamilyNameMap(final String s) {
+        return this.getColumnAttribListByFamilyNameMap().containsKey(s);
+    }
+
+    public void addColumnAttribListFamilyNameMap(final String familyName,
+                                                 final List<ColumnAttrib> attribList) throws HPersistException {
+        if (this.containsFamilyNameInFamilyNameMap(familyName))
+            throw new HPersistException(familyName + " already delcared");
+        this.getColumnAttribListByFamilyNameMap().put(familyName, attribList);
+    }
+
+    public void addColumnAttribListToFamilyNameMap(ColumnAttrib attrib) throws HPersistException {
+
+        if (attrib.isKeyAttrib())
+            return;
+
+        final String familyName = attrib.getFamilyName();
+
+        if (familyName == null || familyName.length() == 0)
+            return;
+
+        final List<ColumnAttrib> attribList;
+        if (!this.containsFamilyNameInFamilyNameMap(familyName)) {
+            attribList = Lists.newArrayList();
+            this.getColumnAttribListByFamilyNameMap().put(familyName, attribList);
+        }
+        else {
+            attribList = this.getColumnAttribListByFamilyName(familyName);
+        }
+
+        attribList.add(attrib);
+    }
+
 
     protected void assignCurrentValues(final Serialization ser,
                                        final List<String> fieldList,
@@ -133,7 +177,7 @@ public abstract class HBaseSchema extends Schema {
                 final int lbrace = columnName.indexOf("[");
                 final String mapcolumn = columnName.substring(0, lbrace);
                 final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
-                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(familyName, mapcolumn);
+                final ColumnAttrib attrib = this.getColumnAttribFromFamilyQualifiedNameMap(familyName, mapcolumn);
 
                 Map mapval = (Map)attrib.getCurrentValue(newobj);
 
@@ -147,7 +191,7 @@ public abstract class HBaseSchema extends Schema {
                 mapval.put(mapKey, val);
             }
             else {
-                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(familyName, columnName);
+                final ColumnAttrib attrib = this.getColumnAttribFromFamilyQualifiedNameMap(familyName, columnName);
                 attrib.setCurrentValue(ser, newobj, timestamp, valueBytes);
             }
         }
@@ -173,7 +217,7 @@ public abstract class HBaseSchema extends Schema {
                 for (final Long timestamp : tsMap.keySet()) {
                     final byte[] vbytes = tsMap.get(timestamp);
 
-                    final ColumnAttrib attrib = this.getVersionAttribByFamilyQualifiedColumnName(qualifiedName);
+                    final ColumnAttrib attrib = this.getVersionAttribFromFamilyQualifiedNameMap(qualifiedName);
 
                     // Ignore data if no version map exists for the column
                     if (attrib == null)

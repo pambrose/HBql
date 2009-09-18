@@ -50,7 +50,7 @@ public class HRecordExample {
             HRecord hrecord = new HRecord("testobjects");
             hrecord.setCurrentValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
             hrecord.setCurrentValue("author", "A new author value: " + i);
-            hrecord.setCurrentValue("title", "A new title value: " + i);
+            hrecord.setCurrentValue("title", "A very new title value: " + i);
             tx.insert(hrecord);
         }
         // Make sure key value is set
@@ -61,9 +61,9 @@ public class HRecordExample {
                               + "WITH "
                               + "KEYS  ALL "
                               + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
-                              + "VERSIONS 4 "
-                              //+ "SCAN LIMIT 4"
-                              + "SERVER FILTER WHERE author LIKE '.*6200.*' "
+                              + "VERSIONS MAX "
+                //+ "SCAN LIMIT 4"
+                //+ "SERVER FILTER WHERE author LIKE '.*6200.*' "
                 //+ "CLIENT FILTER WHERE family1:author LIKE '.*282.*'"
                 ;
         HQuery<HRecord> q1 = conn.newHQuery(query1);
