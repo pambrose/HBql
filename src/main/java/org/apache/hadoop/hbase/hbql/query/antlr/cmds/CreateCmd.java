@@ -32,9 +32,6 @@ public class CreateCmd implements ExecCmd {
 
         final HBaseSchema schema = HBaseSchema.findSchema(this.getClassName());
 
-        if (schema == null)
-            throw new HPersistException("Unknown class name " + this.getClassName());
-
         final HTableDescriptor tableDesc = new HTableDescriptor(schema.getTableName());
 
         for (final HColumnDescriptor columnDesc : schema.getColumnDescriptors())

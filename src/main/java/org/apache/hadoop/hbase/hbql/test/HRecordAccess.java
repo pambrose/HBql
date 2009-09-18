@@ -33,7 +33,8 @@ public class HRecordAccess {
         // System.out.println(conn.exec("disable table testobjects"));
         // System.out.println(conn.exec("enable table testobjects"));
         // System.out.println(conn.exec("drop table testobjects"));
-        //System.out.println(conn.exec("create table using testobjects"));
+        //if (conn.tableExists(test))
+        System.out.println(conn.exec("create table using testobjects"));
         System.out.println(conn.exec("show tables"));
         System.out.println(conn.exec("describe table TestObject"));
 
