@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.HTransaction;
+import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.io.IOException;
@@ -25,14 +26,14 @@ public class HRecordExample {
 
         HConnection conn = HConnection.newHConnection();
 
-        System.out.println(conn.exec("define table testobjects alias testobjects2"
-                                     + "("
-                                     + "keyval key, "
-                                     + "family1:author string alias author, "
-                                     + "family1:title string  alias title"
-                                     + ")"));
+        SchemaManager.exec("define table testobjects alias testobjects2"
+                           + "("
+                           + "keyval key, "
+                           + "family1:author string alias author, "
+                           + "family1:title string  alias title"
+                           + ")");
 
-        //System.out.println(conn.exec("delete from TestObject with client filter where true"));
+        // System.out.println(conn.exec("delete from TestObject with client filter where true"));
         // System.out.println(conn.exec("disable table testobjects"));
         // System.out.println(conn.exec("enable table testobjects"));
         // System.out.println(conn.exec("drop table testobjects"));

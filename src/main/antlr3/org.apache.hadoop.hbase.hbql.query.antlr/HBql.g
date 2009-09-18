@@ -61,7 +61,7 @@ columnList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
 	: c1=column {retval.add($c1.text);} (COMMA c2=column {retval.add($c2.text);})*;
 
-execCommand [Schema es] returns [ExecCmd retval]
+connectionExec returns [ConnectionExecCmd retval]
 options {backtrack=true;}	
 	: keyDROP keyTABLE t=ID 		 	{retval = new DropCmd($t.text);}
 	| keyDISABLE keyTABLE t=ID 		 	{retval = new DisableCmd($t.text);}
@@ -70,8 +70,11 @@ options {backtrack=true;}
 	| keySHOW keyTABLES 		 		{retval = new ShowCmd();}
 	| keySET i=ID EQ? v=QUOTED	 		{retval = new SetCmd($i.text, $v.text);}
 	| cr=createStmt					{retval = $cr.retval;}
-	| def=defineStmt 				{retval = $def.retval;}
-	| del=deleteStmt[es]		 		{retval = $del.retval;}
+	| del=deleteStmt		 		{retval = $del.retval;}
+	;
+
+schemaExec returns [SchemaManagerExecCmd retval]
+	: def=defineStmt 				{retval = $def.retval;}
 	;
 
 createStmt returns [CreateCmd retval]
@@ -90,9 +93,10 @@ defineAttrib returns [VarDesc retval]
 	: c=ID t=ID 					{retval = VarDesc.newVarDesc($c.text, $c.text, $t.text);}
 	| c=ID t=ID keyALIAS a=ID			{retval = VarDesc.newVarDesc($a.text, $c.text, $t.text);};
 
-deleteStmt [Schema es] returns [DeleteCmd retval]
-	: keyDELETE keyFROM t=ID 			{setSchema($t.text);}
-	  w=whereValue[es]?				{retval = new DeleteCmd($t.text, $w.retval);};
+deleteStmt  returns [DeleteCmd retval]
+@init {Schema schema = null;}
+	: keyDELETE keyFROM t=ID 			{schema = setSchema($t.text);}
+	  w=whereValue[schema]?				{retval = new DeleteCmd($t.text, $w.retval);};
 
 whereValue [Schema es] returns [WhereArgs retval]
 @init {retval = new WhereArgs();}

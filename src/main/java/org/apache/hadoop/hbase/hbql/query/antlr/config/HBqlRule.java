@@ -12,7 +12,8 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 public enum HBqlRule {
 
     SELECT(HBqlGrammar.HBql, "selectStmt"),
-    EXEC(HBqlGrammar.HBql, "execCommand"),
+    CONNECTION_EXEC(HBqlGrammar.HBql, "connectionExec"),
+    SCHEMA_EXEC(HBqlGrammar.HBql, "schemaExec"),
     NODESC_WHERE_EXPR(HBqlGrammar.HBql, "nodescWhereExpr"),
     DESC_WHERE_VALUE(HBqlGrammar.HBql, "descWhereExpr"),
     WITH_EXPR(HBqlGrammar.HBql, "whereValue"),

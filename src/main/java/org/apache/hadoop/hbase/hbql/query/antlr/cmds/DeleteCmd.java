@@ -23,7 +23,7 @@ import java.util.List;
  * Date: Aug 20, 2009
  * Time: 11:43:49 PM
  */
-public class DeleteCmd extends TableCmd {
+public class DeleteCmd extends TableCmd implements ConnectionExecCmd {
 
     private final WhereArgs whereExpr;
 

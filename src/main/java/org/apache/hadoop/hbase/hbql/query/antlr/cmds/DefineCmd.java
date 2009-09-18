@@ -1,6 +1,5 @@
 package org.apache.hadoop.hbase.hbql.query.antlr.cmds;
 
-import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
@@ -17,7 +16,7 @@ import java.util.List;
  * Date: Aug 24, 2009
  * Time: 10:31:14 PM
  */
-public class DefineCmd extends TableCmd {
+public class DefineCmd extends TableCmd implements SchemaManagerExecCmd {
 
     private String alias;
     private final List<VarDesc> varList;
@@ -37,7 +36,7 @@ public class DefineCmd extends TableCmd {
     }
 
     @Override
-    public HOutput exec(final HConnection conn) throws HPersistException, IOException {
+    public HOutput exec() throws HPersistException, IOException {
 
         final DefinedSchema schema = DefinedSchema.newDefinedSchema(this.getTableName(),
                                                                     this.getAlias(),

@@ -52,11 +52,12 @@ public class HBaseParser extends Parser {
             this.schema = schema;
     }
 
-    protected void setSchema(final String tablename) throws RecognitionException {
+    protected Schema setSchema(final String tablename) throws RecognitionException {
 
         try {
             final HBaseSchema schema = HBaseSchema.findSchema(tablename);
             this.setSchema(schema);
+            return schema;
         }
         catch (HPersistException e) {
             System.out.println("Unknown table: " + tablename);

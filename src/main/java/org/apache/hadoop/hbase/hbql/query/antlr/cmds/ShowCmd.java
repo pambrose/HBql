@@ -14,7 +14,7 @@ import java.io.IOException;
  * Date: Aug 20, 2009
  * Time: 11:43:49 PM
  */
-public class ShowCmd implements ExecCmd {
+public class ShowCmd implements ConnectionExecCmd {
 
     public ShowCmd() {
     }

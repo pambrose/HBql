@@ -13,7 +13,7 @@ import java.io.IOException;
  * Date: Aug 21, 2009
  * Time: 1:08:12 PM
  */
-public class SetCmd implements ExecCmd {
+public class SetCmd implements ConnectionExecCmd {
 
     private final String variable, value;
 
