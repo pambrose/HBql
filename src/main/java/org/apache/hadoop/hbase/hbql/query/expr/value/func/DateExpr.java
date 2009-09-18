@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.ExprSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -80,7 +80,7 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public void setSchema(final ExprSchema schema) {
+    public void setSchema(final Schema schema) {
         this.getFormatExpr().setSchema(schema);
         this.getExpr().setSchema(schema);
     }

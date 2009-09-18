@@ -15,7 +15,7 @@ import java.util.Map;
  * Date: Aug 19, 2009
  * Time: 5:30:59 PM
  */
-public abstract class ExprSchema implements Serializable {
+public abstract class Schema implements Serializable {
 
     private final Map<String, VariableAttrib> variableAttribByVariableNameMap = Maps.newHashMap();
 

@@ -13,7 +13,7 @@ import java.util.Map;
  * Date: Sep 9, 2009
  * Time: 10:19:00 AM
  */
-public class ObjectSchema extends ExprSchema {
+public class ObjectSchema extends Schema {
 
     private final static Map<Class<?>, ObjectSchema> objectSchemaMap = Maps.newHashMap();
 

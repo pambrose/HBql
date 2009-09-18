@@ -41,6 +41,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.func.*;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.*;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.*;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.*;
+import org.apache.hadoop.hbase.hbql.query.antlr.cmds.*;
 import org.apache.hadoop.hbase.hbql.query.antlr.*;
 import org.apache.hadoop.hbase.hbql.query.util.*;
 import org.apache.hadoop.hbase.hbql.query.schema.*;
@@ -52,30 +53,34 @@ package org.apache.hadoop.hbase.hbql.query.antlr;
 import org.apache.hadoop.hbase.hbql.query.util.*;
 }
 
-selectStmt [ExprSchema es] returns [QueryArgs retval]
-	: keySELECT (STAR | c=columnList) keyFROM t=ID 	{setExprSchema($t.text);}
-	  w=whereValue[es]?				{retval = new QueryArgs($c.retval, $t.text, $w.retval, getExprSchema());};
+selectStmt [Schema es] returns [QueryArgs retval]
+	: keySELECT (STAR | c=columnList) keyFROM t=ID 	{setSchema($t.text);}
+	  w=whereValue[es]?				{retval = new QueryArgs($c.retval, $t.text, $w.retval, getSchema());};
 
 columnList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
 	: c1=column {retval.add($c1.text);} (COMMA c2=column {retval.add($c2.text);})*;
 
-execCommand [ExprSchema es] returns [ExecArgs retval]
-	: create=createStmt				{retval = $create.retval;}
+execCommand [Schema es] returns [ExecCmd retval]
+options {backtrack=true;}	
+	: keyDROP keyTABLE t=ID 		 	{retval = new DropCmd($t.text);}
+	| keyDISABLE keyTABLE t=ID 		 	{retval = new DisableCmd($t.text);}
+	| keyENABLE keyTABLE t=ID 		 	{retval = new EnableCmd($t.text);}
+	| keyDESCRIBE keyTABLE t=ID 			{retval = new DescribeCmd($t.text);}
+	| keySHOW keyTABLES 		 		{retval = new ShowCmd();}
+	| keySET i=ID EQ? v=QUOTED	 		{retval = new SetCmd($i.text, $v.text);}
+	| cr=createStmt					{retval = $cr.retval;}
 	| def=defineStmt 				{retval = $def.retval;}
-	| desc=describeStmt 				{retval = $desc.retval;}
-	| show=showStmt 				{retval = $show.retval;}
 	| del=deleteStmt[es]		 		{retval = $del.retval;}
-	| set=setStmt					{retval = $set.retval;}
 	;
 
-createStmt returns [CreateArgs retval]
-	: keyCREATE keyTABLE keyUSING t=ID 		{retval = new CreateArgs($t.text);}
+createStmt returns [CreateCmd retval]
+	: keyCREATE keyTABLE keyUSING t=ID 		{retval = new CreateCmd($t.text);}
 	;
 	
-defineStmt returns [DefineArgs retval]
+defineStmt returns [DefineCmd retval]
 	: keyDEFINE keyTABLE t=ID LPAREN a=attribList RPAREN
-							{retval = new DefineArgs($t.text, $a.retval);};
+							{retval = new DefineCmd($t.text, $a.retval);};
 
 attribList returns [List<VarDesc> retval] 
 @init {retval = Lists.newArrayList();}
@@ -85,20 +90,11 @@ defineAttrib returns [VarDesc retval]
 	: c=ID t=ID 					{retval = VarDesc.newVarDesc($c.text, $c.text, $t.text);}
 	| c=ID t=ID keyALIAS a=ID			{retval = VarDesc.newVarDesc($a.text, $c.text, $t.text);};
 
-describeStmt returns [DescribeArgs retval]
-	: keyDESCRIBE keyTABLE t=ID 			{retval = new DescribeArgs($t.text);};
+deleteStmt [Schema es] returns [DeleteCmd retval]
+	: keyDELETE keyFROM t=ID 			{setSchema($t.text);}
+	  w=whereValue[es]?				{retval = new DeleteCmd($t.text, $w.retval);};
 
-showStmt returns [ShowArgs retval]
-	: keySHOW keyTABLES 		 		{retval = new ShowArgs();};
-
-deleteStmt [ExprSchema es] returns [DeleteArgs retval]
-	: keyDELETE keyFROM t=ID 			{setExprSchema($t.text);}
-	  w=whereValue[es]?				{retval = new DeleteArgs($t.text, $w.retval);};
-
-setStmt returns [SetArgs retval]
-	: keySET i=ID EQ? v=QUOTED	 		{retval = new SetArgs($i.text, $v.text);};
-
-whereValue [ExprSchema es] returns [WhereArgs retval]
+whereValue [Schema es] returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
 	: keyWITH
 	  k=keysRange?					{retval.setKeyRangeArgs($k.retval);}
@@ -132,11 +128,11 @@ scanLimit returns [LimitArgs retval]
 queryLimit returns [LimitArgs retval]
 	: keyQUERY keyLIMIT v=integerLiteral		{retval = new LimitArgs($v.retval);};
 	
-clientFilter [ExprSchema es] returns [ExprTree retval]
+clientFilter [Schema es] returns [ExprTree retval]
 	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr[es]	
 							{retval = $w.retval;};
 	
-serverFilter [ExprSchema es] returns [ExprTree retval]
+serverFilter [Schema es] returns [ExprTree retval]
 	: keySERVER keyFILTER keyWHERE w=descWhereExpr[es]	
 							{retval = $w.retval;};
 	
@@ -150,13 +146,13 @@ keyRange returns [KeyRangeArgs.Range retval]
 	| q1=QUOTED keyTO q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
 	;
 	
-nodescWhereExpr [ExprSchema es] returns [ExprTree retval]
-@init {setExprSchema(es);}
+nodescWhereExpr [Schema es] returns [ExprTree retval]
+@init {setSchema(es);}
 	 : e=orExpr					{retval = ExprTree.newExprTree($e.retval);};
 
-descWhereExpr [ExprSchema es] returns [ExprTree retval]
-@init {setExprSchema(es);}
-	: s=schemaDesc? 				{if ($s.retval != null) setExprSchema($s.retval);}			
+descWhereExpr [Schema es] returns [ExprTree retval]
+@init {setSchema(es);}
+	: s=schemaDesc? 				{if ($s.retval != null) setSchema($s.retval);}			
 	  e=orExpr					{retval = ExprTree.newExprTree($e.retval);
 	  						 if ($s.retval != null) retval.setSchema($s.retval);};
 			
@@ -429,7 +425,7 @@ qstringList returns [List<String> retval]
 
 column 	: c=varRef;
 	
-schemaDesc returns [ExprSchema retval]
+schemaDesc returns [Schema retval]
 	: LCURLY a=attribList RCURLY			{retval = HUtil.newDefinedSchema(input, $a.retval);};
 	
 			
@@ -479,6 +475,9 @@ keyDEFINE 	: {isKeyword(input, "DEFINE")}? ID;
 keyUSING 	: {isKeyword(input, "USING")}? ID;
 keyDESCRIBE 	: {isKeyword(input, "DESCRIBE")}? ID;
 keySHOW 	: {isKeyword(input, "SHOW")}? ID;
+keyENABLE 	: {isKeyword(input, "ENABLE")}? ID;
+keyDISABLE 	: {isKeyword(input, "DISABLE")}? ID;
+keyDROP 	: {isKeyword(input, "DROP")}? ID;
 keyTABLE 	: {isKeyword(input, "TABLE")}? ID;
 keyTABLES 	: {isKeyword(input, "TABLES")}? ID;
 keyWHERE	: {isKeyword(input, "WHERE")}? ID;

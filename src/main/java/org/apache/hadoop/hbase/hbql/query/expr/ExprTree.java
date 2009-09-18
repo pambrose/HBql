@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.PredicateExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.ExprSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.io.Serializable;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class ExprTree implements Serializable {
 
-    private ExprSchema schema = null;
+    private Schema schema = null;
     private PredicateExpr predicateExpr = null;
     private long start, end;
     private boolean optimized = false;
@@ -39,7 +39,7 @@ public class ExprTree implements Serializable {
         this.predicateExpr = predicateExpr;
     }
 
-    public ExprSchema getSchema() {
+    public Schema getSchema() {
         return this.schema;
     }
 
@@ -47,7 +47,7 @@ public class ExprTree implements Serializable {
         return this.getPredicateExpr() != null;
     }
 
-    public void setSchema(final ExprSchema schema) {
+    public void setSchema(final Schema schema) {
         if (schema != null) {
             this.schema = schema;
             this.getPredicateExpr().setSchema(schema);
@@ -96,7 +96,7 @@ public class ExprTree implements Serializable {
         return this.end - this.start;
     }
 
-    public ExprTree setSchema(final ExprSchema schema, final List<String> fieldList) throws HPersistException {
+    public ExprTree setSchema(final Schema schema, final List<String> fieldList) throws HPersistException {
 
         if (this.isValid()) {
             this.setSchema(schema);

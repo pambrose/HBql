@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.ExprSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 import java.util.List;
 
@@ -58,7 +58,7 @@ public class StringNullCompare extends GenericNotStmt {
     }
 
     @Override
-    public void setSchema(final ExprSchema schema) {
+    public void setSchema(final Schema schema) {
         this.getExpr().setSchema(schema);
     }
 

@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.PredicateExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.ExprSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 import java.util.List;
 
@@ -59,7 +59,7 @@ public class CondFactor implements PredicateExpr {
     }
 
     @Override
-    public void setSchema(final ExprSchema schema) {
+    public void setSchema(final Schema schema) {
         this.getExpr().setSchema(schema);
     }
 }

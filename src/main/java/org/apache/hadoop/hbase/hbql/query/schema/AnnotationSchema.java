@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
+import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HColumn;
 import org.apache.hadoop.hbase.hbql.client.HColumnVersionMap;
@@ -263,8 +264,19 @@ public class AnnotationSchema extends HBaseSchema {
         return this.clazz;
     }
 
-    public HFamily[] getFamilies() {
+    private HFamily[] getFamilies() {
         return this.families;
+    }
+
+    public List<HColumnDescriptor> getColumnDescriptors() {
+        final List<HColumnDescriptor> descList = Lists.newArrayList();
+        for (final HFamily family : this.getFamilies()) {
+            final HColumnDescriptor columnDesc = new HColumnDescriptor(family.name());
+            if (family.maxVersions() > 0)
+                columnDesc.setMaxVersions(family.maxVersions());
+            descList.add(columnDesc);
+        }
+        return descList;
     }
 
     private void processColumnAnnotation(final Field field) throws HPersistException {
@@ -306,10 +318,6 @@ public class AnnotationSchema extends HBaseSchema {
     public String getTableName() {
         final String tableName = this.table.name();
         return (tableName.length() > 0) ? tableName : clazz.getSimpleName();
-    }
-
-    public byte[] getTableNameAsBytes() throws IOException, HPersistException {
-        return HUtil.ser.getStringAsBytes(this.getTableName());
     }
 
     @Override

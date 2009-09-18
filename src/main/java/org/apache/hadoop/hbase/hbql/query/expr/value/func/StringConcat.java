@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.ExprSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
@@ -74,7 +74,7 @@ public class StringConcat implements StringValue {
     }
 
     @Override
-    public void setSchema(final ExprSchema schema) {
+    public void setSchema(final Schema schema) {
         this.val1.setSchema(schema);
         this.val2.setSchema(schema);
     }

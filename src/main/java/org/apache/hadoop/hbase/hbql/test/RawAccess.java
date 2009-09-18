@@ -27,7 +27,7 @@ public class RawAccess {
         HTable table = new HTable(new HBaseConfiguration(), "testobjects");
 
         for (int i = 0; i < 5; i++) {
-            Put put = new Put(("00000000" + i).getBytes());
+            Put put = new Put(Bytes.toBytes("00000000" + i));
             put.add(fbytes, cbytes, Bytes.toBytes("A value for author"));
             table.put(put);
             table.flushCommits();
@@ -39,6 +39,7 @@ public class RawAccess {
 
         for (Result result : scanner) {
             String val = Bytes.toString(result.getRow());
+            System.out.println(val);
         }
 
     }

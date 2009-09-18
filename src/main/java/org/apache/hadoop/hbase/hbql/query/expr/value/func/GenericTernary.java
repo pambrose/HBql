@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.PredicateExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
-import org.apache.hadoop.hbase.hbql.query.schema.ExprSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public abstract class GenericTernary<T extends ValueExpr> extends GenericTwoExpr
         return this.getPred().isAConstant() && this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
     }
 
-    public void setSchema(final ExprSchema schema) {
+    public void setSchema(final Schema schema) {
         this.getPred().setSchema(schema);
         this.getExpr1().setSchema(schema);
         this.getExpr2().setSchema(schema);

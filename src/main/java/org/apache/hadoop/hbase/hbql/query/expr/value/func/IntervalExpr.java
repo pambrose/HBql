@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.ExprSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 import java.util.List;
 
@@ -84,7 +84,7 @@ public class IntervalExpr implements DateValue {
     }
 
     @Override
-    public void setSchema(final ExprSchema schema) {
+    public void setSchema(final Schema schema) {
         this.getExpr().setSchema(schema);
     }
 

@@ -50,10 +50,7 @@ public class HRecord implements Serializable {
     }
 
     public Object getCurrentValueByVariableName(final String name) throws HPersistException {
-        if (this.getValues().containsKey(name))
-            return this.getValue(name).getCurrentValue();
-        else
-            throw new HPersistException("No value set for variable " + name);
+        return this.getValues().containsKey(name) ? this.getValue(name).getCurrentValue() : null;
     }
 
     public void setCurrentValueByVariableName(final String name, final long timestamp, final Object val) {

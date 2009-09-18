@@ -11,7 +11,7 @@ import java.io.PrintStream;
  */
 public class HOutput {
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    final PrintStream out = new PrintStream(baos);
+    public final PrintStream out = new PrintStream(baos);
 
     public String toString() {
         return baos.toString();

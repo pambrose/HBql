@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
-import org.apache.hadoop.hbase.hbql.query.schema.ExprSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 import java.util.List;
 
@@ -15,12 +15,12 @@ public class QueryArgs {
     private final List<String> columnList;
     private final String tableName;
     private final WhereArgs whereExpr;
-    private final ExprSchema schema;
+    private final Schema schema;
 
     public QueryArgs(final List<String> columnList,
                      final String tableName,
                      final WhereArgs whereExpr,
-                     final ExprSchema schema) {
+                     final Schema schema) {
         this.tableName = tableName;
         this.columnList = columnList;
         this.whereExpr = whereExpr;
@@ -42,7 +42,7 @@ public class QueryArgs {
             return new WhereArgs();
     }
 
-    public ExprSchema getSchema() {
+    public Schema getSchema() {
         return this.schema;
     }
 }

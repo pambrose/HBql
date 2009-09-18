@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.node;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
-import org.apache.hadoop.hbase.hbql.query.schema.ExprSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,6 +21,6 @@ public interface ExprTreeNode extends Serializable {
 
     boolean isAConstant();
 
-    void setSchema(ExprSchema schema);
+    void setSchema(Schema schema);
 
 }

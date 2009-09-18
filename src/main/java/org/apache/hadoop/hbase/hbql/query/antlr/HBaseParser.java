@@ -18,9 +18,9 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.var.DateAttribRef;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.IntegerAttribRef;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.LongAttribRef;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.StringAttribRef;
-import org.apache.hadoop.hbase.hbql.query.schema.ExprSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class HBaseParser extends Parser {
 
-    private ExprSchema exprSchema = null;
+    private Schema schema = null;
 
     public HBaseParser(final TokenStream input) {
         super(input);
@@ -43,20 +43,20 @@ public class HBaseParser extends Parser {
         super(input, state);
     }
 
-    protected ExprSchema getExprSchema() {
-        return this.exprSchema;
+    protected Schema getSchema() {
+        return this.schema;
     }
 
-    protected void setExprSchema(final ExprSchema exprSchema) {
-        if (exprSchema != null)
-            this.exprSchema = exprSchema;
+    protected void setSchema(final Schema schema) {
+        if (schema != null)
+            this.schema = schema;
     }
 
-    protected void setExprSchema(final String tablename) throws RecognitionException {
+    protected void setSchema(final String tablename) throws RecognitionException {
 
         try {
             final HBaseSchema schema = HBaseSchema.findSchema(tablename);
-            this.setExprSchema(schema);
+            this.setSchema(schema);
         }
         catch (HPersistException e) {
             System.out.println("Unknown table: " + tablename);
@@ -72,7 +72,7 @@ public class HBaseParser extends Parser {
 
     protected boolean isAttribType(final TokenStream input, final FieldType type) {
 
-        if (this.getExprSchema() == null)
+        if (this.getSchema() == null)
             return false;
 
         final String varname = input.LT(1).getText();
@@ -80,7 +80,7 @@ public class HBaseParser extends Parser {
             return false;
 
         try {
-            final VariableAttrib attrib = this.getExprSchema().getVariableAttribByVariableName(varname);
+            final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(varname);
             return attrib.getFieldType() == type;
         }
         catch (HPersistException e) {
@@ -92,9 +92,9 @@ public class HBaseParser extends Parser {
     protected ValueExpr getValueExpr(final String var) throws RecognitionException {
 
         try {
-            if (this.getExprSchema() != null) {
+            if (this.getSchema() != null) {
 
-                final VariableAttrib attrib = this.getExprSchema().getVariableAttribByVariableName(var);
+                final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(var);
 
                 if (attrib != null) {
                     switch (attrib.getFieldType()) {

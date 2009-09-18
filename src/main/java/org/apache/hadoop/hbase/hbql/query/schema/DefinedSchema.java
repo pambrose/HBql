@@ -1,9 +1,11 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
+import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
+import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.io.IOException;
@@ -89,6 +91,28 @@ public class DefinedSchema extends HBaseSchema {
     public String getTableName() {
         return this.tableName;
     }
+
+    private List<String> getFamilyList() {
+        final List<String> familyList = Lists.newArrayList();
+        for (final ColumnAttrib attrib : this.getColumnAttribByFamilyQualifiedColumnNameMap().values()) {
+            if (attrib.isKeyAttrib())
+                continue;
+            final String familyName = attrib.getFamilyName();
+            if (!familyList.contains(familyName))
+                familyList.add(familyName);
+        }
+        return familyList;
+    }
+
+    @Override
+    public List<HColumnDescriptor> getColumnDescriptors() {
+        final List<HColumnDescriptor> descList = Lists.newArrayList();
+        for (final String familyName : this.getFamilyList())
+            descList.add(new HColumnDescriptor(familyName));
+
+        return descList;
+    }
+
 
     @Override
     public String getSchemaName() {

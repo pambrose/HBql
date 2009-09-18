@@ -90,7 +90,7 @@ public class HUtil {
 
     public static ExprTree parseExprTree(final HBqlRule rule,
                                          final String query,
-                                         final ExprSchema schema,
+                                         final Schema schema,
                                          final boolean optimize) throws HPersistException {
         final ExprTree exprTree = (ExprTree)rule.parse(query, schema);
         exprTree.setSchema(schema);

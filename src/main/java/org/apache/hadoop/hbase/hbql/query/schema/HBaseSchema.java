@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
+import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
@@ -25,7 +26,7 @@ import java.util.TreeMap;
  * Date: Sep 13, 2009
  * Time: 8:26:14 AM
  */
-public abstract class HBaseSchema extends ExprSchema {
+public abstract class HBaseSchema extends Schema {
 
     private ColumnAttrib keyAttrib = null;
 
@@ -47,6 +48,12 @@ public abstract class HBaseSchema extends ExprSchema {
     public abstract String getSchemaName();
 
     public abstract String getTableName();
+
+    public abstract List<HColumnDescriptor> getColumnDescriptors();
+
+    public byte[] getTableNameAsBytes() throws IOException, HPersistException {
+        return HUtil.ser.getStringAsBytes(this.getTableName());
+    }
 
     public abstract Object getObject(final Serialization ser,
                                      final List<String> fieldList,
@@ -73,6 +80,10 @@ public abstract class HBaseSchema extends ExprSchema {
     // *** columnAttribByFamilyQualifiedColumnNameMap calls
     protected Map<String, ColumnAttrib> getColumnAttribByFamilyQualifiedColumnNameMap() {
         return this.columnAttribByFamilyQualifiedColumnNameMap;
+    }
+
+    public ColumnAttrib getColumnAttribByFamilyQualifiedColumnName(final String familyName, final String columnName) {
+        return this.getColumnAttribByFamilyQualifiedColumnName(familyName + ":" + columnName);
     }
 
     public ColumnAttrib getColumnAttribByFamilyQualifiedColumnName(final String s) {
@@ -112,6 +123,7 @@ public abstract class HBaseSchema extends ExprSchema {
 
             final byte[] familyBytes = keyValue.getFamily();
             final byte[] columnBytes = keyValue.getQualifier();
+            final String familyName = ser.getStringFromBytes(familyBytes);
             final String columnName = ser.getStringFromBytes(columnBytes);
             final long timestamp = keyValue.getTimestamp();
             final byte[] valueBytes = result.getValue(familyBytes, columnBytes);
@@ -134,7 +146,7 @@ public abstract class HBaseSchema extends ExprSchema {
                 mapval.put(mapKey, val);
             }
             else {
-                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(columnName);
+                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(familyName, columnName);
                 attrib.setCurrentValue(ser, newobj, timestamp, valueBytes);
             }
         }

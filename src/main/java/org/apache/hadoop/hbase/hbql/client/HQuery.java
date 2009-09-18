@@ -6,8 +6,8 @@ import org.apache.hadoop.hbase.hbql.query.antlr.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.config.HBqlRule;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.schema.ExprSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class HQuery<T> {
         this.connection = connection;
         this.query = query;
 
-        final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (ExprSchema)null);
+        final QueryArgs args = (QueryArgs)HBqlRule.SELECT.parse(this.getQuery(), (Schema)null);
         this.schema = (HBaseSchema)args.getSchema();
 
         final WhereArgs where = args.getWhereExpr();
