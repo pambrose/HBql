@@ -176,7 +176,7 @@ public class HConnection {
             throw new HPersistException("Unknown class name " + args.getClassName());
 
         final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
-        final HTableDescriptor tableDesc = admin.getTableDescriptor(schema.getTableName().getBytes());
+        final HTableDescriptor tableDesc = admin.getTableDescriptor(schema.getTableNameAsBytes());
 
         retval.out.println("Table name: " + tableDesc.getNameAsString());
         retval.out.println("Families:");

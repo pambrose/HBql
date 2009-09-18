@@ -287,7 +287,7 @@ public class HadoopSerialization extends Serialization {
 
             case CharType: {
                 final String s = new String((char[])obj);
-                return s.getBytes();
+                return Bytes.toBytes(s);
             }
 
             case ShortType: {

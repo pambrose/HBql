@@ -308,6 +308,10 @@ public class AnnotationSchema extends HBaseSchema {
         return (tableName.length() > 0) ? tableName : clazz.getSimpleName();
     }
 
+    public byte[] getTableNameAsBytes() throws IOException, HPersistException {
+        return HUtil.ser.getStringAsBytes(this.getTableName());
+    }
+
     @Override
     public Object newInstance() throws IllegalAccessException, InstantiationException {
         return this.getClazz().newInstance();

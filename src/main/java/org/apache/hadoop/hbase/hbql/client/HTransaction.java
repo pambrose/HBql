@@ -63,14 +63,14 @@ public class HTransaction {
                         final byte[] byteval = HUtil.ser.getObjectAsBytes(mapval.get(keyobj));
 
                         // Use family:column[key] scheme to avoid column namespace collision
-                        put.add(attrib.getFamilyName().getBytes(),
-                                (attrib.getColumnName() + "[" + colname + "]").getBytes(),
+                        put.add(attrib.getFamilyNameAsBytes(),
+                                HUtil.ser.getStringAsBytes(attrib.getColumnName() + "[" + colname + "]"),
                                 byteval);
                     }
                 }
                 else {
                     final byte[] instval = attrib.getValueAsBytes(HUtil.ser, declaringObj);
-                    put.add(attrib.getFamilyName().getBytes(), attrib.getColumnName().getBytes(), instval);
+                    put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), instval);
                 }
             }
         }

@@ -227,9 +227,9 @@ public abstract class HBaseSchema extends ExprSchema {
 
                 // If it is a map, then request all columns for family
                 if (attrib.isMapKeysAsColumns())
-                    scan.addFamily(attrib.getFamilyName().getBytes());
+                    scan.addFamily(attrib.getFamilyNameAsBytes());
                 else
-                    scan.addColumn(attrib.getFamilyName().getBytes(), attrib.getColumnName().getBytes());
+                    scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
             }
 
             if (dateRangeArgs != null && dateRangeArgs.isValid()) {

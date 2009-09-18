@@ -108,7 +108,7 @@ public class HBqlFilter implements Filter {
         LOG.info("PRA in filterKeyValue()");
 
         if (this.hasValidExprTree()) {
-            final String qualColName = new String(v.getQualifier());
+            final String qualColName = Bytes.toString(v.getQualifier());
             try {
                 final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(qualColName);
                 final Object val = attrib.getValueFromBytes(HUtil.ser, null, v.getValue());

@@ -192,4 +192,12 @@ public abstract class ColumnAttrib extends VariableAttrib {
         final Object val = this.getValueFromBytes(ser, newobj, b);
         this.setCurrentValue(newobj, timestamp, val);
     }
+
+    public byte[] getFamilyNameAsBytes() throws IOException, HPersistException {
+        return HUtil.ser.getStringAsBytes(this.getFamilyName());
+    }
+
+    public byte[] getColumnNameAsBytes() throws IOException, HPersistException {
+        return HUtil.ser.getStringAsBytes(this.getColumnName());
+    }
 }

@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 
@@ -20,21 +21,24 @@ public class RawAccess {
 
     public static void main(String[] args) throws IOException, HPersistException {
 
+        byte[] fbytes = Bytes.toBytes("family1");
+        byte[] cbytes = Bytes.toBytes("author");
+
         HTable table = new HTable(new HBaseConfiguration(), "testobjects");
 
         for (int i = 0; i < 5; i++) {
             Put put = new Put(("00000000" + i).getBytes());
-            put.add("family1".getBytes(), "author".getBytes(), "A value for author".getBytes());
+            put.add(fbytes, cbytes, Bytes.toBytes("A value for author"));
             table.put(put);
             table.flushCommits();
         }
 
         Scan scan = new Scan();
-        scan.addColumn("family1".getBytes(), "author".getBytes());
+        scan.addColumn(fbytes, cbytes);
         ResultScanner scanner = table.getScanner(scan);
 
         for (Result result : scanner) {
-            String val = new String(result.getRow());
+            String val = Bytes.toString(result.getRow());
         }
 
     }
