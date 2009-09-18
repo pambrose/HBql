@@ -36,7 +36,11 @@ public class HRecord implements Serializable {
         this.schema = schema;
     }
 
-    private HValue addValue(final String name) {
+    private HValue addValue(final String name) throws HPersistException {
+
+        if (!this.getSchema().constainsVariableName(name))
+            throw new HPersistException("Invalid variable name " + this.getSchema().getTableName() + "." + name);
+
         final HValue val = new HValue();
         this.getValues().put(name, val);
         return val;
@@ -51,15 +55,16 @@ public class HRecord implements Serializable {
     }
 
     private HValue getHValue(final String name) {
+
         // First try the name given.
         // If that doesn't work, then try variable and qualified (one hasn't been tried yet)
         if (this.containsName(name))
             return this.getValue(name);
 
-        if (this.getSchema().constainsVariableName(name)) {
-            // Look up by both variable name and qualified name
-            final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(name);
+        // Look up by both variable name and qualified name
+        final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(name);
 
+        if (attrib != null) {
             final String variableName = attrib.getVariableName();
             if (!variableName.equals(name) && containsName(variableName))
                 return this.getValue(variableName);
@@ -77,8 +82,12 @@ public class HRecord implements Serializable {
         return (hvalue != null) ? hvalue.getCurrentValue() : null;
     }
 
-    public void setCurrentValue(final String name, final long timestamp, final Object val) {
-        final HValue hvalue = (!this.containsName(name)) ? this.addValue(name) : this.getValue(name);
+    public void setCurrentValue(final String name, final long timestamp, final Object val) throws HPersistException {
+        HValue hvalue = this.getHValue(name);
+
+        if (hvalue == null)
+            hvalue = this.addValue(name);
+
         hvalue.setCurrentValue(timestamp, val);
     }
 
@@ -95,13 +104,23 @@ public class HRecord implements Serializable {
         this.getValue(name).getVersionMap().put(timestamp, val);
     }
 
-    public void setCurrentValue(final String family, final String column, final long timestamp, final Object val) {
+    public void setCurrentValue(final String family,
+                                final String column,
+                                final long timestamp,
+                                final Object val) throws HPersistException {
         final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(family, column);
+        if (attrib == null)
+            throw new HPersistException("Invalid column name " + family + ":" + column);
         this.setCurrentValue(attrib.getVariableName(), timestamp, val);
     }
 
-    public void setVersionedValue(final String family, final String column, final long timestamp, final Object val) {
+    public void setVersionedValue(final String family,
+                                  final String column,
+                                  final long timestamp,
+                                  final Object val) throws HPersistException {
         final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(family, column);
+        if (attrib == null)
+            throw new HPersistException("Invalid column name " + family + ":" + column);
         this.setVersionedValue(attrib.getVariableName(), timestamp, val);
     }
 

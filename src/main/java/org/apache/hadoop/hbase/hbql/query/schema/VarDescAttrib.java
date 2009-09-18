@@ -71,9 +71,9 @@ public class VarDescAttrib extends ColumnAttrib {
     }
 
     @Override
-    protected void setCurrentValue(final Object newobj, final long timestamp, final Object val) {
+    protected void setCurrentValue(final Object newobj, final long ts, final Object val) throws HPersistException {
         final HRecord record = (HRecord)newobj;
-        record.setCurrentValue(this.getVariableName(), timestamp, val);
+        record.setCurrentValue(this.getVariableName(), ts, val);
     }
 
     @Override

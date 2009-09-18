@@ -27,7 +27,7 @@ public abstract class VariableAttrib implements Serializable {
 
     public abstract Object getCurrentValue(final Object recordObj) throws HPersistException;
 
-    protected abstract void setCurrentValue(final Object newobj, final long timestamp, final Object val);
+    protected abstract void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HPersistException;
 
     public abstract Object getVersionedValueMap(final Object recordObj) throws HPersistException;
 
