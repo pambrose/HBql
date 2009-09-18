@@ -108,14 +108,16 @@ public class HBqlFilter implements Filter {
         LOG.info("PRA in filterKeyValue()");
 
         if (this.hasValidExprTree()) {
-            final String qualColName = Bytes.toString(v.getQualifier());
+            final String family = Bytes.toString(v.getFamily());
+            final String column = Bytes.toString(v.getQualifier());
             try {
-                final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(qualColName);
+                final DefinedSchema schema = this.getSchema();
+                final ColumnAttrib attrib = schema.getColumnAttribByFamilyQualifiedColumnName(family, column);
                 final Object val = attrib.getValueFromBytes(HUtil.ser, null, v.getValue());
-                LOG.info("PRA setting value for: " + qualColName + " - " + val);
+                LOG.info("PRA setting value for: " + family + ":" + column + " - " + val);
 
-                this.getRecord().setCurrentValueByFamilyQualifiedName(qualColName, v.getTimestamp(), val);
-                this.getRecord().setVersionedValueByFamilyQualifiedName(qualColName, v.getTimestamp(), val);
+                this.getRecord().setCurrentValueByFamilyQualifiedName(family, column, v.getTimestamp(), val);
+                this.getRecord().setVersionedValueByFamilyQualifiedName(family, column, v.getTimestamp(), val);
             }
             catch (Exception e) {
                 HUtil.logException(LOG, e);
@@ -200,7 +202,8 @@ public class HBqlFilter implements Filter {
 
         filter.reset();
 
-        final String colname = "family1:author";
+        final String family = "family1";
+        final String column = "author";
         final String[] vals = {"An author value-81252702162528282000",
                                "An author value-812527021593753270002009",
                                "An author value-81252702156610125000",
@@ -209,8 +212,8 @@ public class HBqlFilter implements Filter {
         };
 
         for (String val : vals) {
-            filter.getRecord().setCurrentValueByFamilyQualifiedName(colname, 100, val);
-            filter.getRecord().setVersionedValueByFamilyQualifiedName(colname, 100, val);
+            filter.getRecord().setCurrentValueByFamilyQualifiedName(family, column, 100, val);
+            filter.getRecord().setVersionedValueByFamilyQualifiedName(family, column, 100, val);
         }
 
         boolean v = filter.filterRow();

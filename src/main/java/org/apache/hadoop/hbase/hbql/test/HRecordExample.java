@@ -22,6 +22,7 @@ public class HRecordExample {
     public static void main(String[] args) throws IOException, HPersistException {
 
         HConnection conn = HConnection.newHConnection();
+
         System.out.println(conn.exec("define table testobjects alias testobjects2"
                                      + "("
                                      + "keyval key, "
@@ -39,10 +40,10 @@ public class HRecordExample {
         if (!conn.tableExists("testobjects"))
             System.out.println(conn.exec("create table using testobjects"));
 
-        if (conn.tableEnabled("testobjects"))
+        if (conn.tableEnabled("testobjects2"))
             System.out.println(conn.exec("describe table testobjects2"));
 
-        final String query1 = "SELECT family1:author, family1:title "
+        final String query1 = "SELECT author, title "
                               + "FROM testobjects2 "
                               + "WITH "
                               + "KEYS  ALL "

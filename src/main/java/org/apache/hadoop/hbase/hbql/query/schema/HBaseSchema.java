@@ -83,11 +83,7 @@ public abstract class HBaseSchema extends Schema {
     }
 
     public ColumnAttrib getColumnAttribByFamilyQualifiedColumnName(final String familyName, final String columnName) {
-        return this.getColumnAttribByFamilyQualifiedColumnName(familyName + ":" + columnName);
-    }
-
-    public ColumnAttrib getColumnAttribByFamilyQualifiedColumnName(final String s) {
-        return this.getColumnAttribByFamilyQualifiedColumnNameMap().get(s);
+        return this.getColumnAttribByFamilyQualifiedColumnNameMap().get(familyName + ":" + columnName);
     }
 
     protected void addColumnAttrib(final ColumnAttrib attrib) throws HPersistException {
@@ -132,7 +128,7 @@ public abstract class HBaseSchema extends Schema {
                 final int lbrace = columnName.indexOf("[");
                 final String mapcolumn = columnName.substring(0, lbrace);
                 final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
-                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(mapcolumn);
+                final ColumnAttrib attrib = this.getColumnAttribByFamilyQualifiedColumnName(familyName, mapcolumn);
 
                 Map mapval = (Map)attrib.getCurrentValue(newobj);
 

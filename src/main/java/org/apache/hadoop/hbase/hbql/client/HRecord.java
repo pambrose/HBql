@@ -70,13 +70,19 @@ public class HRecord implements Serializable {
         this.getValue(name).getVersionMap().put(timestamp, val);
     }
 
-    public void setCurrentValueByFamilyQualifiedName(final String name, final long timestamp, final Object val) {
-        final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(name);
+    public void setCurrentValueByFamilyQualifiedName(final String family,
+                                                     final String column,
+                                                     final long timestamp,
+                                                     final Object val) {
+        final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(family, column);
         this.setCurrentValueByVariableName(attrib.getVariableName(), timestamp, val);
     }
 
-    public void setVersionedValueByFamilyQualifiedName(final String name, final long timestamp, final Object val) {
-        final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(name);
+    public void setVersionedValueByFamilyQualifiedName(final String family,
+                                                       final String column,
+                                                       final long timestamp,
+                                                       final Object val) {
+        final ColumnAttrib attrib = this.getSchema().getColumnAttribByFamilyQualifiedColumnName(family, column);
         this.setVersionedValueByVariableName(attrib.getVariableName(), timestamp, val);
     }
 

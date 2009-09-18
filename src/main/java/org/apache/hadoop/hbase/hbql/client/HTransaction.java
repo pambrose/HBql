@@ -70,6 +70,9 @@ public class HTransaction {
                 }
                 else {
                     final byte[] instval = attrib.getValueAsBytes(HUtil.ser, declaringObj);
+                    String key = new String(keyval);
+                    String fstr = new String(attrib.getFamilyNameAsBytes());
+                    String cstr = new String(attrib.getColumnNameAsBytes());
                     put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), instval);
                 }
             }
