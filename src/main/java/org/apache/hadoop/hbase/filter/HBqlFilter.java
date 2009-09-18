@@ -88,24 +88,24 @@ public class HBqlFilter implements Filter {
     }
 
     public void reset() {
-        LOG.info("PRA in reset()");
+        LOG.info("In reset()");
         this.getRecord().clear();
     }
 
     public boolean filterRowKey(byte[] buffer, int offset, int length) {
-        LOG.info("PRA in filterRowKey()");
+        LOG.info("In filterRowKey()");
         return false;
     }
 
     public boolean filterAllRemaining() {
         final boolean retval = this.getScanLimit() > 0 && this.getRecordCount() >= this.getScanLimit();
-        LOG.info("PRA in filterAllRemaining() " + this.getScanLimit() + " - " + this.getRecordCount() + " - " + retval);
+        LOG.info("In filterAllRemaining() " + this.getScanLimit() + " - " + this.getRecordCount() + " - " + retval);
         return retval;
     }
 
     public ReturnCode filterKeyValue(KeyValue v) {
 
-        LOG.info("PRA in filterKeyValue()");
+        LOG.info("In filterKeyValue()");
 
         if (this.hasValidExprTree()) {
             final String family = Bytes.toString(v.getFamily());
@@ -114,14 +114,14 @@ public class HBqlFilter implements Filter {
                 final DefinedSchema schema = this.getSchema();
                 final ColumnAttrib attrib = schema.getColumnAttribByFamilyQualifiedColumnName(family, column);
                 final Object val = attrib.getValueFromBytes(HUtil.ser, null, v.getValue());
-                LOG.info("PRA setting value for: " + family + ":" + column + " - " + val);
+                LOG.info("In in filterKeyValue() setting value for: " + family + ":" + column);
 
                 this.getRecord().setCurrentValueByFamilyQualifiedName(family, column, v.getTimestamp(), val);
                 this.getRecord().setVersionedValueByFamilyQualifiedName(family, column, v.getTimestamp(), val);
             }
             catch (Exception e) {
                 HUtil.logException(LOG, e);
-                LOG.info("PRA3 had exception: " + e.getClass().getName() + " - " + e.getMessage());
+                LOG.info("Had exception in filterKeyValue(): " + e.getClass().getName() + " - " + e.getMessage());
             }
         }
 
@@ -130,18 +130,15 @@ public class HBqlFilter implements Filter {
 
     public boolean filterRow() {
 
-        LOG.info("PRA in filterRow()");
+        LOG.info("In filterRow()");
 
         if (!this.hasValidExprTree()) {
             this.incrementRecordCount();
             return false;
         }
         else {
-            LOG.info("PRA evaluating #2");
-
             try {
                 final boolean filterRecord = !this.getFilterExpr().evaluate(this.getRecord());
-                LOG.info("PRA returning " + filterRecord);
                 if (!filterRecord)
                     this.incrementRecordCount();
                 return filterRecord;
@@ -149,7 +146,7 @@ public class HBqlFilter implements Filter {
             catch (HPersistException e) {
                 e.printStackTrace();
                 HUtil.logException(LOG, e);
-                LOG.info("PRA4 had exception: " + e.getMessage());
+                LOG.info("In filterRow() had exception: " + e.getMessage());
                 return true;
             }
         }
@@ -163,14 +160,13 @@ public class HBqlFilter implements Filter {
         catch (HPersistException e) {
             e.printStackTrace();
             HUtil.logException(LOG, e);
-            LOG.info("HBqlFilter problem: " + e.getCause());
-            throw new IOException("HBqlFilter problem: " + e.getCause());
+            throw new IOException("HPersistException: " + e.getCause());
         }
     }
 
     public void readFields(DataInput in) throws IOException {
 
-        LOG.info("PRA called readFields()");
+        LOG.info("In readFields()");
 
         try {
             this.filterExpr = (ExprTree)HUtil.ser.getObjectFromBytes(FieldType.ObjectType, Bytes.readByteArray(in));
@@ -180,8 +176,8 @@ public class HBqlFilter implements Filter {
         }
         catch (HPersistException e) {
             e.printStackTrace();
-            LOG.info("HBqlFilter problem: " + e.getCause());
-            throw new IOException("HBqlFilter problem: " + e.getCause());
+            LOG.info("In read(): " + e.getCause());
+            throw new IOException("HPersistException: " + e.getCause());
         }
     }
 

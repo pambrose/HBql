@@ -71,10 +71,6 @@ public class HConnection {
         return this.config;
     }
 
-    public HTransaction newHTransaction() {
-        return new HTransaction(this);
-    }
-
     public HTable getHTable(final String tableName) throws IOException {
         return new HTable(this.getConfig(), tableName);
     }
@@ -108,4 +104,13 @@ public class HConnection {
 
         return cmd.exec(this);
     }
+
+    public void apply(final HTransaction tx) throws IOException {
+        for (final String tableName : tx.getUpdateList().keySet()) {
+            final HTable table = this.getHTable(tableName);
+            table.put(tx.getUpdateList(tableName));
+            table.flushCommits();
+        }
+    }
+
 }

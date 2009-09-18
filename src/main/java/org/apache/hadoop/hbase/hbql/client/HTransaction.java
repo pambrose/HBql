@@ -1,6 +1,5 @@
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.hbql.query.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
@@ -22,17 +21,7 @@ public class HTransaction {
 
     private final Map<String, List<Put>> updateList = Maps.newHashMap();
 
-    final HConnection connection;
-
-    public HTransaction(final HConnection connection) {
-        this.connection = connection;
-    }
-
-    HConnection getConnection() {
-        return connection;
-    }
-
-    private Map<String, List<Put>> getUpdateList() {
+    Map<String, List<Put>> getUpdateList() {
         return this.updateList;
     }
 
@@ -79,15 +68,6 @@ public class HTransaction {
         }
 
         this.getUpdateList(schema.getTableName()).add(put);
-    }
-
-
-    public void commit() throws IOException {
-        for (final String tableName : this.getUpdateList().keySet()) {
-            final HTable table = this.getConnection().getHTable(tableName);
-            table.put(this.getUpdateList(tableName));
-            table.flushCommits();
-        }
     }
 
 }

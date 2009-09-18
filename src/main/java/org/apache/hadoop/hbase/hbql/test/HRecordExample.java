@@ -48,8 +48,8 @@ public class HRecordExample {
                               + "WITH "
                               + "KEYS  ALL "
                               + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
-                              + "VERSIONS 3 "
-                              + "SCAN LIMIT 2"
+                              + "VERSIONS 4 "
+                              //+ "SCAN LIMIT 4"
                               + "SERVER FILTER WHERE TRUE "
                               + "CLIENT FILTER WHERE TRUE "
                 //+ "SERVER FILTER WHERE family1:author LIKE '.*val.*' "
@@ -61,19 +61,19 @@ public class HRecordExample {
         for (HRecord val1 : results1) {
             System.out
                     .println("Current Values: " + val1.getCurrentValueByVariableName("keyval")
-                             + " - " + val1.getCurrentValueByVariableName("family1:author")
-                             + " - " + val1.getCurrentValueByVariableName("family1:title"));
+                             + " - " + val1.getCurrentValueByVariableName("author")
+                             + " - " + val1.getCurrentValueByVariableName("title"));
 
             System.out.println("Historicals");
 
-            if (val1.getVersionedValueMapByVariableName("family1:author") != null) {
-                Map<Long, Object> versioned = val1.getVersionedValueMapByVariableName("family1:author");
+            if (val1.getVersionedValueMapByVariableName("author") != null) {
+                Map<Long, Object> versioned = val1.getVersionedValueMapByVariableName("author");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }
 
-            if (val1.getVersionedValueMapByVariableName("family1:title") != null) {
-                Map<Long, Object> versioned = val1.getVersionedValueMapByVariableName("family1:title");
+            if (val1.getVersionedValueMapByVariableName("title") != null) {
+                Map<Long, Object> versioned = val1.getVersionedValueMapByVariableName("title");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }

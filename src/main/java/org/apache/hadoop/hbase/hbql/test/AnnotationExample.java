@@ -31,12 +31,12 @@ public class AnnotationExample {
             System.out.println(conn.exec("create table using TestObject"));
         */
 
-        final HTransaction tx = conn.newHTransaction();
+        final HTransaction tx = new HTransaction();
         int cnt = 10;
         for (int i = 0; i < cnt; i++)
             tx.insert(new TestObject(i));
 
-        tx.commit();
+        conn.apply(tx);
 
         final String query2 = "SELECT title, titles, author, authorVersions "
                               + "FROM TestObject "
