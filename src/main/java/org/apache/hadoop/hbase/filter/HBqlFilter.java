@@ -98,7 +98,7 @@ public class HBqlFilter implements Filter {
     }
 
     public boolean filterAllRemaining() {
-        final boolean retval = this.getScanLimit() > 0 && this.getRecordCount() > this.getScanLimit();
+        final boolean retval = this.getScanLimit() > 0 && this.getRecordCount() >= this.getScanLimit();
         LOG.info("PRA in filterAllRemaining() " + this.getScanLimit() + " - " + this.getRecordCount() + " - " + retval);
         return retval;
     }

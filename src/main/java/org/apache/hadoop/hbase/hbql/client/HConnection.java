@@ -1,15 +1,18 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.hbql.query.antlr.cmds.ExecCmd;
 import org.apache.hadoop.hbase.hbql.query.antlr.config.HBqlRule;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
+import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -86,6 +89,14 @@ public class HConnection {
         final HBaseSchema schema = HBaseSchema.findSchema(tableName);
         final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
         return admin.isTableEnabled(schema.getTableName());
+    }
+
+    public List<String> getTableList() throws IOException, HPersistException {
+        final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
+        final List<String> tableList = Lists.newArrayList();
+        for (final HTableDescriptor table : admin.listTables())
+            tableList.add(table.getNameAsString());
+        return tableList;
     }
 
     public HOutput exec(final String str) throws HPersistException, IOException {

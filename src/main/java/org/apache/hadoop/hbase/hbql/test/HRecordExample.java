@@ -33,20 +33,24 @@ public class HRecordExample {
         // System.out.println(conn.exec("disable table testobjects"));
         // System.out.println(conn.exec("enable table testobjects"));
         // System.out.println(conn.exec("drop table testobjects"));
-        //if (conn.tableExists("testobjects"))
-        //System.out.println(conn.exec("create table using testobjects"));
+
         System.out.println(conn.exec("show tables"));
+
+        if (!conn.tableExists("testobjects"))
+            System.out.println(conn.exec("create table using testobjects"));
+
         if (conn.tableEnabled("testobjects"))
             System.out.println(conn.exec("describe table testobjects2"));
 
         final String query1 = "SELECT family1:author, family1:title "
                               + "FROM testobjects2 "
                               + "WITH "
-                // + "KEYS  '000002' TO '000005', '000007' TO LAST "
-                //+ "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
-                //+ "VERSIONS 3 "
-                // + "SCAN LIMIT 1"
-                //+ "SERVER FILTER WHERE TRUE "
+                              + "KEYS  ALL "
+                              + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
+                              + "VERSIONS 3 "
+                              + "SCAN LIMIT 2"
+                              + "SERVER FILTER WHERE TRUE "
+                              + "CLIENT FILTER WHERE TRUE "
                 //+ "SERVER FILTER WHERE family1:author LIKE '.*val.*' "
                 //+ "CLIENT FILTER WHERE family1:author LIKE '.*282.*'"
                 ;

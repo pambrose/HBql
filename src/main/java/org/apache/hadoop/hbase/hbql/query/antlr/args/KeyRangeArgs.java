@@ -67,7 +67,6 @@ public class KeyRangeArgs {
 
     public KeyRangeArgs() {
         this.rangeList = Lists.newArrayList();
-        this.rangeList.add(new Range());
     }
 
     public KeyRangeArgs(final List<Range> rangeList) {
@@ -78,6 +77,6 @@ public class KeyRangeArgs {
     }
 
     public List<Range> getRangeList() {
-        return rangeList;
+        return this.rangeList;
     }
 }
