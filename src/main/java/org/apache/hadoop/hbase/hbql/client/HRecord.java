@@ -17,14 +17,19 @@ import java.util.Map;
 public class HRecord implements Serializable {
 
     private HBaseSchema schema = null;
+    private long now = System.currentTimeMillis();
 
     private final Map<String, HValue> values = Maps.newHashMap();
 
-    public HRecord(final HBaseSchema schema) {
-        this.schema = schema;
+    public HRecord() {
     }
 
-    private HBaseSchema getSchema() {
+    public HRecord(final String tablename) throws HPersistException {
+        final HBaseSchema schema = HBaseSchema.findSchema(tablename);
+        this.setSchema(schema);
+    }
+
+    HBaseSchema getSchema() {
         return this.schema;
     }
 
@@ -82,6 +87,15 @@ public class HRecord implements Serializable {
         return (hvalue != null) ? hvalue.getCurrentValue() : null;
     }
 
+    public void setCurrentValue(final String name, final Object val) throws HPersistException {
+        HValue hvalue = this.getHValue(name);
+
+        if (hvalue == null)
+            hvalue = this.addValue(name);
+
+        hvalue.setCurrentValue(now, val);
+    }
+
     public void setCurrentValue(final String name, final long timestamp, final Object val) throws HPersistException {
         HValue hvalue = this.getHValue(name);
 
@@ -122,6 +136,11 @@ public class HRecord implements Serializable {
         if (attrib == null)
             throw new HPersistException("Invalid column name " + family + ":" + column);
         this.setVersionedValue(attrib.getVariableName(), timestamp, val);
+    }
+
+    public boolean isCurrentValueSet(final ColumnAttrib keyAttrib) {
+        final HValue hvalue = this.getHValue(keyAttrib.getVariableName());
+        return hvalue != null && hvalue.isCurrentValueSet();
     }
 
     public void clear() {

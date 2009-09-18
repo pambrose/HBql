@@ -330,12 +330,12 @@ public class AnnotationSchema extends HBaseSchema {
         return columnAttribListByFamilyNameMap;
     }
 
-    public Set<String> getFamilyNameList() {
+    public Set<String> getFamilySet() {
         return this.getColumnAttribListByFamilyNameMap().keySet();
     }
 
-    public List<ColumnAttrib> getColumnAttribListByFamilyName(final String s) {
-        return this.getColumnAttribListByFamilyNameMap().get(s);
+    public List<ColumnAttrib> getColumnAttribListByFamilyName(final String familyName) {
+        return this.getColumnAttribListByFamilyNameMap().get(familyName);
     }
 
     private boolean containsFamilyName(final String s) {

@@ -47,7 +47,7 @@ public class HBqlFilter implements Filter {
     private ExprTree filterExpr;
     private long scanLimit = -1;
     private long recordCount = 0;
-    public transient HRecord record = new HRecord(null);
+    public transient HRecord record = new HRecord();
 
     public HBqlFilter(final ExprTree filterExpr, final long scanLimit) {
         this.filterExpr = filterExpr;

@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.client;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.hbql.query.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
@@ -41,7 +42,7 @@ public class HTransaction {
         final byte[] keyval = keyAttrib.getValueAsBytes(HUtil.ser, declaringObj);
         final Put put = new Put(keyval);
 
-        for (final String family : schema.getFamilyNameList()) {
+        for (final String family : schema.getFamilySet()) {
 
             for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {
 
@@ -59,9 +60,6 @@ public class HTransaction {
                 }
                 else {
                     final byte[] instval = attrib.getValueAsBytes(HUtil.ser, declaringObj);
-                    String key = new String(keyval);
-                    String fstr = new String(attrib.getFamilyNameAsBytes());
-                    String cstr = new String(attrib.getColumnNameAsBytes());
                     put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), instval);
                 }
             }
@@ -70,4 +68,40 @@ public class HTransaction {
         this.getUpdateList(schema.getTableName()).add(put);
     }
 
+    public void insert(final HRecord newrec) throws HPersistException, IOException {
+
+        final HBaseSchema schema = newrec.getSchema();
+        final ColumnAttrib keyAttrib = schema.getKeyAttrib();
+
+        if (!newrec.isCurrentValueSet(keyAttrib))
+            throw new HPersistException("Key value is not set in HRecord");
+
+        final byte[] keyval = keyAttrib.getValueAsBytes(HUtil.ser, newrec);
+        final Put put = new Put(keyval);
+
+        for (final String family : schema.getFamilySet()) {
+
+            for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {
+
+                if (attrib.isMapKeysAsColumns()) {
+                    final Map mapval = (Map)attrib.getCurrentValue(newrec);
+                    for (final Object keyobj : mapval.keySet()) {
+                        final String colname = keyobj.toString();
+                        final byte[] byteval = HUtil.ser.getObjectAsBytes(mapval.get(keyobj));
+
+                        // Use family:column[key] scheme to avoid column namespace collision
+                        put.add(attrib.getFamilyNameAsBytes(),
+                                HUtil.ser.getStringAsBytes(attrib.getColumnName() + "[" + colname + "]"),
+                                byteval);
+                    }
+                }
+                else {
+                    final byte[] instval = attrib.getValueAsBytes(HUtil.ser, newrec);
+                    put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), instval);
+                }
+            }
+        }
+
+        this.getUpdateList(schema.getTableName()).add(put);
+    }
 }

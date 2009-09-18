@@ -7,10 +7,12 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
+import org.apache.hadoop.hbase.hbql.query.util.Sets;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -114,22 +116,22 @@ public class DefinedSchema extends HBaseSchema {
         return this.tableName;
     }
 
-    private List<String> getFamilyList() {
-        final List<String> familyList = Lists.newArrayList();
+    public Set<String> getFamilySet() {
+        final Set<String> familySet = Sets.newHashSet();
         for (final ColumnAttrib attrib : this.getColumnAttribByFamilyQualifiedColumnNameMap().values()) {
             if (attrib.isKeyAttrib())
                 continue;
             final String familyName = attrib.getFamilyName();
-            if (!familyList.contains(familyName))
-                familyList.add(familyName);
+            if (!familySet.contains(familyName))
+                familySet.add(familyName);
         }
-        return familyList;
+        return familySet;
     }
 
     @Override
     public List<HColumnDescriptor> getColumnDescriptors() {
         final List<HColumnDescriptor> descList = Lists.newArrayList();
-        for (final String familyName : this.getFamilyList())
+        for (final String familyName : this.getFamilySet())
             descList.add(new HColumnDescriptor(familyName));
 
         return descList;
@@ -171,12 +173,13 @@ public class DefinedSchema extends HBaseSchema {
                                      final Result result) throws IOException, HPersistException {
 
         // Create new instance and set key value
-        final HRecord newobj = new HRecord(this);
+        final HRecord newrec = new HRecord();
+        newrec.setSchema(this);
         final ColumnAttrib keyattrib = this.getKeyAttrib();
         if (keyattrib != null) {
             final byte[] keybytes = result.getRow();
-            keyattrib.setCurrentValue(ser, newobj, 0, keybytes);
+            keyattrib.setCurrentValue(ser, newrec, 0, keybytes);
         }
-        return newobj;
+        return newrec;
     }
 }

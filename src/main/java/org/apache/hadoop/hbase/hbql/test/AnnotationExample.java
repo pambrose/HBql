@@ -32,8 +32,7 @@ public class AnnotationExample {
         */
 
         final HTransaction tx = new HTransaction();
-        int cnt = 10;
-        for (int i = 0; i < cnt; i++)
+        for (int i = 0; i < 10; i++)
             tx.insert(new TestObject(i));
 
         conn.apply(tx);

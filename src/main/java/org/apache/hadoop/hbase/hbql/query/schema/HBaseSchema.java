@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -48,6 +49,10 @@ public abstract class HBaseSchema extends Schema {
     public abstract String getSchemaName();
 
     public abstract String getTableName();
+
+    public abstract Set<String> getFamilySet();
+
+    public abstract List<ColumnAttrib> getColumnAttribListByFamilyName(final String familyName);
 
     public abstract List<HColumnDescriptor> getColumnDescriptors();
 
