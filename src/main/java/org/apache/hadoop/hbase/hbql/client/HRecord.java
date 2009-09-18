@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.io.Serializable;
@@ -45,21 +46,58 @@ public class HRecord implements Serializable {
         return this.getValues().get(name);
     }
 
-    private boolean isDefined(final String name) {
+    private boolean containsName(final String name) {
         return this.getValues().containsKey(name);
     }
 
-    public Object getCurrentValueByVariableName(final String name) throws HPersistException {
-        return this.getValues().containsKey(name) ? this.getValue(name).getCurrentValue() : null;
+    private HValue getHValue(final String name) throws HPersistException {
+        // First try the name given.
+        // If that doesn't work, then try variable and qualified (one hasn't been tried yet)
+        if (this.containsName(name))
+            return this.getValue(name);
+
+        if (this.getSchema().constainsVariableName(name)) {
+            // Look up by both variable name and qualified name
+            final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(name);
+
+            final String variableName = attrib.getVariableName();
+            if (!variableName.equals(name) && containsName(variableName))
+                return this.getValue(variableName);
+
+            final String qualifiedName = attrib.getFamilyQualifiedName();
+            if (!qualifiedName.equals(name) && containsName(qualifiedName))
+                return this.getValue(qualifiedName);
+        }
+
+        return null;
+
+    }
+
+    public Object getCurrentValue(final String name) {
+        try {
+            final HValue hvalue = this.getHValue(name);
+            return (hvalue != null) ? hvalue.getCurrentValue() : null;
+        }
+        catch (HPersistException e) {
+            // This should not be executed
+            return null;
+        }
     }
 
     public void setCurrentValueByVariableName(final String name, final long timestamp, final Object val) {
-        final HValue hvalue = (!this.isDefined(name)) ? this.addValue(name) : this.getValue(name);
+        final HValue hvalue = (!this.containsName(name)) ? this.addValue(name) : this.getValue(name);
         hvalue.setCurrentValue(timestamp, val);
     }
 
-    public Map<Long, Object> getVersionedValueMapByVariableName(final String name) {
-        return this.isDefined(name) ? this.getValue(name).getVersionMap() : null;
+    public Map<Long, Object> getVersionedValueMap(final String name) {
+        try {
+            final HValue hvalue = this.getHValue(name);
+            return (hvalue != null) ? hvalue.getVersionMap() : null;
+        }
+        catch (HPersistException e) {
+            // This should not be executed
+            return null;
+        }
     }
 
     public void setVersionedValueMapByVariableName(final String name, final Map<Long, Object> val) {

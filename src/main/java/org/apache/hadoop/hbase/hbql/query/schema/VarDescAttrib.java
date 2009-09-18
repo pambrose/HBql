@@ -79,7 +79,7 @@ public class VarDescAttrib extends ColumnAttrib {
     @Override
     public Object getCurrentValue(final Object recordObj) throws HPersistException {
         final HRecord record = (HRecord)recordObj;
-        return record.getCurrentValueByVariableName(this.getVariableName());
+        return record.getCurrentValue(this.getVariableName());
     }
 
     @Override
@@ -91,7 +91,7 @@ public class VarDescAttrib extends ColumnAttrib {
     @Override
     public Object getVersionedValueMap(final Object recordObj) throws HPersistException {
         final HRecord record = (HRecord)recordObj;
-        return record.getVersionedValueMapByVariableName(this.getVariableName());
+        return record.getVersionedValueMap(this.getVariableName());
     }
 
 }

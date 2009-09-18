@@ -60,20 +60,20 @@ public class HRecordExample {
 
         for (HRecord val1 : results1) {
             System.out
-                    .println("Current Values: " + val1.getCurrentValueByVariableName("keyval")
-                             + " - " + val1.getCurrentValueByVariableName("author")
-                             + " - " + val1.getCurrentValueByVariableName("title"));
+                    .println("Current Values: " + val1.getCurrentValue("keyval")
+                             + " - " + val1.getCurrentValue("family1:author")
+                             + " - " + val1.getCurrentValue("title"));
 
             System.out.println("Historicals");
 
-            if (val1.getVersionedValueMapByVariableName("author") != null) {
-                Map<Long, Object> versioned = val1.getVersionedValueMapByVariableName("author");
+            if (val1.getVersionedValueMap("author") != null) {
+                Map<Long, Object> versioned = val1.getVersionedValueMap("family1:author");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }
 
-            if (val1.getVersionedValueMapByVariableName("title") != null) {
-                Map<Long, Object> versioned = val1.getVersionedValueMapByVariableName("title");
+            if (val1.getVersionedValueMap("title") != null) {
+                Map<Long, Object> versioned = val1.getVersionedValueMap("title");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }
