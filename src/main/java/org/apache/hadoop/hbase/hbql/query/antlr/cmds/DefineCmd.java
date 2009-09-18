@@ -17,18 +17,13 @@ import java.util.List;
  * Date: Aug 24, 2009
  * Time: 10:31:14 PM
  */
-public class DefineCmd implements ExecCmd {
+public class DefineCmd extends TableCmd {
 
-    private final String tableName;
     private final List<VarDesc> varList;
 
     public DefineCmd(final String tableName, final List<VarDesc> varList) {
-        this.tableName = tableName;
+        super(tableName);
         this.varList = varList;
-    }
-
-    public String getTableName() {
-        return this.tableName;
     }
 
     public List<VarDesc> getVarList() {

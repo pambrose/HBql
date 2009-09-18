@@ -23,18 +23,13 @@ import java.util.List;
  * Date: Aug 20, 2009
  * Time: 11:43:49 PM
  */
-public class DeleteCmd implements ExecCmd {
+public class DeleteCmd extends TableCmd {
 
-    private final String tableName;
     private final WhereArgs whereExpr;
 
     public DeleteCmd(final String tableName, final WhereArgs whereExpr) {
-        this.tableName = tableName;
+        super(tableName);
         this.whereExpr = whereExpr;
-    }
-
-    public String getTableName() {
-        return this.tableName;
     }
 
     public WhereArgs getWhereExpr() {

@@ -13,16 +13,10 @@ import java.io.IOException;
  * Date: Aug 24, 2009
  * Time: 10:31:14 PM
  */
-public class DropCmd implements ExecCmd {
-
-    private final String tableName;
+public class DropCmd extends TableCmd {
 
     public DropCmd(final String tableName) {
-        this.tableName = tableName;
-    }
-
-    public String getTableName() {
-        return this.tableName;
+        super(tableName);
     }
 
     @Override

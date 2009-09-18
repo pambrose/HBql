@@ -16,21 +16,15 @@ import java.io.IOException;
  * Date: Aug 24, 2009
  * Time: 10:31:14 PM
  */
-public class DescribeCmd implements ExecCmd {
+public class DescribeCmd extends TableCmd {
 
-    private final String className;
-
-    public DescribeCmd(final String className) {
-        this.className = className;
-    }
-
-    public String getClassName() {
-        return this.className;
+    public DescribeCmd(final String tableName) {
+        super(tableName);
     }
 
     @Override
     public HOutput exec(final HConnection conn) throws HPersistException, IOException {
-        final HBaseSchema schema = HBaseSchema.findSchema(this.getClassName());
+        final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
 
         final HBaseAdmin admin = new HBaseAdmin(conn.getConfig());
         final HTableDescriptor tableDesc = admin.getTableDescriptor(schema.getTableNameAsBytes());
