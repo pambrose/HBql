@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.antlr.config.HBqlRule;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
-import org.apache.hadoop.hbase.hbql.query.schema.ObjectSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.Collection;
@@ -51,7 +51,7 @@ public class ObjectQuery<T> {
 
     ExprTree getExprTree(final Collection<T> objects) throws HPersistException {
         final Object obj = objects.iterator().next();
-        final ObjectSchema schema = ObjectSchema.getObjectSchema(obj);
+        final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
         return HUtil.parseExprTree(HBqlRule.NODESC_WHERE_EXPR, this.query, schema, true);
     }
 

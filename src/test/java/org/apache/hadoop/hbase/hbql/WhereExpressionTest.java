@@ -132,10 +132,10 @@ public class WhereExpressionTest extends WhereExprTests {
     @Test
     public void booleanFunctions() throws HPersistException {
 
-        final AllTypes obj = new AllTypes("aaabbb", 3, "aaab");
-
         assertEvalTrue("'abc' CONTAINS 'b'");
         assertEvalFalse("'abc' CONTAINS 'n'");
+
+        final ObjectAllTypes obj = new ObjectAllTypes("aaabbb", 3, "aaab");
 
         assertEvalTrue(obj, "keyval CONTAINS 'ab'");
         assertEvalFalse(obj, "keyval CONTAINS 'ba'");
@@ -144,6 +144,16 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalTrue(obj, "keyval CONTAINS stringValue");
         assertEvalTrue(obj, "keyval+'zz' CONTAINS stringValue+'bbz'");
         assertEvalFalse(obj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
+
+        final AnnotatedAllTypes annoObj = new AnnotatedAllTypes("aaabbb", 3, "aaab");
+
+        assertEvalTrue(annoObj, "keyval CONTAINS 'ab'");
+        assertEvalFalse(annoObj, "keyval CONTAINS 'ba'");
+        assertEvalFalse(annoObj, "'asasas' CONTAINS stringValue");
+        assertEvalTrue(annoObj, "'xxaaabxx' CONTAINS stringValue");
+        assertEvalTrue(annoObj, "keyval CONTAINS stringValue");
+        assertEvalTrue(annoObj, "keyval+'zz' CONTAINS stringValue+'bbz'");
+        assertEvalFalse(annoObj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
     }
 
     @Test
@@ -191,7 +201,7 @@ public class WhereExpressionTest extends WhereExprTests {
     @Test
     public void regexFunctions() throws HPersistException {
 
-        final AllTypes obj = new AllTypes("aaa", 3, "aaab");
+        final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "aaab");
 
         assertEvalTrue("'abc' like 'abc'");
         assertEvalFalse("'abc' not like 'abc'");
@@ -205,7 +215,7 @@ public class WhereExpressionTest extends WhereExprTests {
     @Test
     public void objectFunctions() throws HPersistException {
 
-        final AllTypes obj = new AllTypes("aaa", 3, "bbb");
+        final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "bbb");
 
         assertEvalTrue(obj, "stringValue between 'aaa' AND 'ccc'");
         assertEvalTrue(obj, "stringValue between 'aaa' AND 'ccc' AND stringValue between 'aaa' AND 'ccc'");

@@ -13,13 +13,13 @@ import java.util.Map;
  * Date: Sep 9, 2009
  * Time: 10:19:00 AM
  */
-public class ObjectSchema extends Schema {
+public class ReflectionSchema extends Schema {
 
-    private final static Map<Class<?>, ObjectSchema> objectSchemaMap = Maps.newHashMap();
+    private final static Map<Class<?>, ReflectionSchema> ReflectionSchemaMap = Maps.newHashMap();
 
     private final Class<?> clazz;
 
-    private ObjectSchema(final Class clazz) throws HPersistException {
+    private ReflectionSchema(final Class clazz) throws HPersistException {
         this.clazz = clazz;
 
         for (final Field field : clazz.getDeclaredFields()) {
@@ -36,22 +36,22 @@ public class ObjectSchema extends Schema {
         }
     }
 
-    public static ObjectSchema getObjectSchema(final Object obj) throws HPersistException {
-        return getObjectSchema(obj.getClass());
+    public static ReflectionSchema getReflectionSchema(final Object obj) throws HPersistException {
+        return getReflectionSchema(obj.getClass());
     }
 
-    public synchronized static ObjectSchema getObjectSchema(final Class clazz) throws HPersistException {
+    public synchronized static ReflectionSchema getReflectionSchema(final Class clazz) throws HPersistException {
 
-        ObjectSchema schema = getObjectSchemaMap().get(clazz);
+        ReflectionSchema schema = getReflectionSchemaMap().get(clazz);
         if (schema != null)
             return schema;
 
-        schema = new ObjectSchema(clazz);
-        getObjectSchemaMap().put(clazz, schema);
+        schema = new ReflectionSchema(clazz);
+        getReflectionSchemaMap().put(clazz, schema);
         return schema;
     }
 
-    private static Map<Class<?>, ObjectSchema> getObjectSchemaMap() {
-        return objectSchemaMap;
+    private static Map<Class<?>, ReflectionSchema> getReflectionSchemaMap() {
+        return ReflectionSchemaMap;
     }
 }

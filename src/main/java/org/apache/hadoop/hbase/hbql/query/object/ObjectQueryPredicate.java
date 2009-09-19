@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.antlr.config.HBqlRule;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
-import org.apache.hadoop.hbase.hbql.query.schema.ObjectSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +28,7 @@ public class ObjectQueryPredicate<T> implements Predicate<T> {
 
         try {
             if (!initialized) {
-                final ObjectSchema schema = ObjectSchema.getObjectSchema(obj);
+                final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
                 this.tree = HUtil.parseExprTree(HBqlRule.NODESC_WHERE_EXPR, this.query, schema, true);
                 initialized = true;
             }

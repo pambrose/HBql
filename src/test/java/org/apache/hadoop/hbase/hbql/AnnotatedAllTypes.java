@@ -16,7 +16,7 @@ import org.apache.hadoop.hbase.hbql.client.HTable;
                 @HFamily(name = "family2"),
                 @HFamily(name = "family3", maxVersions = 5)
         })
-public class AllTypes {
+public class AnnotatedAllTypes {
 
     @HColumn(key = true)
     private String keyval = null;
@@ -27,10 +27,10 @@ public class AllTypes {
     @HColumn(family = "family1")
     private String stringValue = "";
 
-    public AllTypes() {
+    public AnnotatedAllTypes() {
     }
 
-    public AllTypes(final String keyval, final int intValue, final String stringValue) {
+    public AnnotatedAllTypes(final String keyval, final int intValue, final String stringValue) {
         this.keyval = keyval;
         this.intValue = intValue;
         this.stringValue = stringValue;
