@@ -148,6 +148,22 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
+    public void booleanFunctions() throws HPersistException {
+
+        final AllTypes obj = new AllTypes("aaabbb", 3, "aaab");
+
+        assertEvalTrue("'abc' CONTAINS 'b'");
+        assertEvalFalse("'abc' CONTAINS 'n'");
+
+        assertEvalTrue(obj, "keyval CONTAINS 'ab'");
+        assertEvalFalse(obj, "keyval CONTAINS 'ba'");
+        assertEvalFalse(obj, "'asasas' CONTAINS stringValue");
+        assertEvalTrue(obj, "'xxaaabxx' CONTAINS stringValue");
+        assertEvalTrue(obj, "keyval CONTAINS stringValue");
+        assertEvalTrue(obj, "keyval+'zz' CONTAINS stringValue+'bbz'");
+    }
+
+    @Test
     public void stringFunctions() throws HPersistException {
 
         assertEvalTrue("'bbb' between 'aaa' AND 'ccc'");

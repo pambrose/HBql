@@ -16,20 +16,21 @@ import java.util.List;
  */
 public abstract class GenericFunction {
 
-    public enum Func {
+    public enum Type {
         CONCAT,
         TRIM,
         LOWER,
         UPPER,
-        LENGTH
+        LENGTH,
+        CONTAINS,
     }
 
-    private final Func func;
+    private final Type functionType;
     private final StringValue[] stringExprs;
 
 
-    protected GenericFunction(final Func func, final StringValue... stringExprs) {
-        this.func = func;
+    protected GenericFunction(final Type functionType, final StringValue... stringExprs) {
+        this.functionType = functionType;
         this.stringExprs = stringExprs;
     }
 
@@ -38,8 +39,8 @@ public abstract class GenericFunction {
     }
 
 
-    protected Func getFunc() {
-        return this.func;
+    protected Type getFunctionType() {
+        return this.functionType;
     }
 
     public void setSchema(final Schema schema) {

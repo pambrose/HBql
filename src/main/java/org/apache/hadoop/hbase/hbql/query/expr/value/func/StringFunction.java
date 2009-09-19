@@ -11,14 +11,14 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
  */
 public class StringFunction extends GenericFunction implements StringValue {
 
-    public StringFunction(final Func func, final StringValue... stringExprs) {
-        super(func, stringExprs);
+    public StringFunction(final Type functionType, final StringValue... stringExprs) {
+        super(functionType, stringExprs);
     }
 
     @Override
     public String getCurrentValue(final Object object) throws HPersistException {
 
-        switch (this.getFunc()) {
+        switch (this.getFunctionType()) {
             case TRIM: {
                 final String val = this.getStringExprs()[0].getCurrentValue(object);
                 return val.trim();
@@ -41,7 +41,7 @@ public class StringFunction extends GenericFunction implements StringValue {
             }
 
             default:
-                throw new HPersistException("Error in StringFunction.getValue() " + this.getFunc());
+                throw new HPersistException("Error in StringFunction.getValue() " + this.getFunctionType());
         }
     }
 }

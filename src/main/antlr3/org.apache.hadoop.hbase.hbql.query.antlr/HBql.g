@@ -290,13 +290,14 @@ stringVal returns [StringValue retval]
 	;
 
 booleanExpr returns [BooleanValue retval]
+options {backtrack=true;}	
 	: b=booleanVal					{retval = $b.retval;}
 	| LPAREN e=orExpr RPAREN			{retval = new BooleanPredicate($e.retval);}
 	;
 
 booleanVal returns [BooleanValue retval]
 	: b=booleanLiteral				{retval = $b.retval;}
-	//| f=funcReturningBoolean
+	| f=funcReturningBoolean			{retval = $f.retval;}
 	| keyIF e=orExpr keyTHEN b1=booleanExpr keyELSE b2=booleanExpr keyEND	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	;
@@ -384,17 +385,21 @@ funcReturningDatetime returns [DateValue retval]
 
 funcReturningString returns [StringValue retval]
 	: keyCONCAT LPAREN s1=stringExpr COMMA s2=stringExpr RPAREN
-							{retval = new StringFunction(GenericFunction.Func.CONCAT, $s1.retval, $s2.retval);}
+							{retval = new StringFunction(GenericFunction.Type.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=stringExpr COMMA n1=numericExpr COMMA n2=numericExpr RPAREN
 							{retval = new Substring($s.retval, $n1.retval, $n2.retval);}
-	| keyTRIM LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Func.TRIM, $s.retval);}
-	| keyLOWER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Func.LOWER, $s.retval);} 
-	| keyUPPER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Func.UPPER, $s.retval);} 
+	| keyTRIM LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Type.TRIM, $s.retval);}
+	| keyLOWER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Type.LOWER, $s.retval);} 
+	| keyUPPER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Type.UPPER, $s.retval);} 
 	;
 
 funcReturningInteger returns [NumberValue retval]
-	: keyLENGTH LPAREN s=stringExpr RPAREN		{retval = new NumberFunction(GenericFunction.Func.LENGTH, $s.retval);}
+	: keyLENGTH LPAREN s=stringExpr RPAREN		{retval = new NumberFunction(GenericFunction.Type.LENGTH, $s.retval);}
 	//| keyABS LPAREN numericExpr RPAREN
+	;
+
+funcReturningBoolean returns [BooleanValue retval]
+	: s1=stringExpr keyCONTAINS s2=stringExpr	{retval = new BooleanFunction(GenericFunction.Type.CONTAINS, $s1.retval, $s2.retval);}
 	;
 
 /*	
@@ -537,3 +542,4 @@ keyMAX		: {isKeyword(input, "MAX")}? ID;
 keyKEYS		: {isKeyword(input, "KEYS")}? ID;
 keyALL		: {isKeyword(input, "ALL")}? ID;
 keyLENGTH	: {isKeyword(input, "LENGTH")}? ID;
+keyCONTAINS	: {isKeyword(input, "CONTAINS")}? ID;

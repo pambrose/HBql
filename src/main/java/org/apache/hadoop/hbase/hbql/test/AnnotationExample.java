@@ -44,8 +44,8 @@ public class AnnotationExample {
                               + "KEYS '0000000002' TO '0000000003', '0000000007' TO '0000000008' "
                               + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1) "
                               + "VERSIONS 3 "
-                              + "SERVER FILTER WHERE author LIKE '.*val.*'  "
-                              + "CLIENT FILTER WHERE author LIKE '.*val.*'";
+                              //+ "SERVER FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4 "
+                              + "CLIENT FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4";
 
         HQuery<TestObject> q2 = conn.newHQuery(query2);
         HResults<TestObject> results2 = q2.execute();
@@ -54,7 +54,6 @@ public class AnnotationExample {
             System.out.println("Current Values: " + val2.keyval + " - " + val2.author + " - " + val2.title);
 
             System.out.println("Historicals");
-
             if (val2.authorVersions != null)
                 for (final Long key : val2.authorVersions.keySet())
                     System.out.println(new Date(key) + " - " + val2.authorVersions.get(key));

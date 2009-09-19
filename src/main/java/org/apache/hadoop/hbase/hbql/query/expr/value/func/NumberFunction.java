@@ -12,14 +12,14 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
  */
 public class NumberFunction extends GenericFunction implements NumberValue {
 
-    public NumberFunction(final Func func, final StringValue... stringExprs) {
-        super(func, stringExprs);
+    public NumberFunction(final Type functionType, final StringValue... stringExprs) {
+        super(functionType, stringExprs);
     }
 
     @Override
     public Number getCurrentValue(final Object object) throws HPersistException {
 
-        switch (this.getFunc()) {
+        switch (this.getFunctionType()) {
             case LENGTH: {
                 final String val = this.getStringExprs()[0].getCurrentValue(object);
                 if (val == null)
@@ -29,7 +29,7 @@ public class NumberFunction extends GenericFunction implements NumberValue {
             }
 
             default:
-                throw new HPersistException("Error in NumberFunction.getValue() " + this.getFunc());
+                throw new HPersistException("Error in NumberFunction.getValue() " + this.getFunctionType());
         }
 
     }
