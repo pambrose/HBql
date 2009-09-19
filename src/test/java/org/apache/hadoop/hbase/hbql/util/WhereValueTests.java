@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.hbql.util;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
-import org.apache.hadoop.hbase.hbql.query.antlr.config.HBqlRule;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 /**
@@ -22,7 +22,7 @@ public class WhereValueTests {
     }
 
     private static boolean evalWhereValue(final String expr) throws HPersistException {
-        final WhereArgs args = (WhereArgs)HBqlRule.WITH_EXPR.parse(expr, (Schema)null);
+        final WhereArgs args = HBql.parseWithClause(expr, (Schema)null);
         return args != null;
     }
 

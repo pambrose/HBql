@@ -100,12 +100,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.imap4j</groupId>
-            <artifactId>imap4j</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
             <version>0.9.9</version>

@@ -2,11 +2,10 @@ package org.apache.hadoop.hbase.hbql.util;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.query.antlr.config.HBqlRule;
+import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -63,8 +62,7 @@ public class WhereExprTests {
     private static boolean evalExpr(final Object recordObj, final String expr) throws HPersistException {
 
         final Schema schema = SchemaManager.getObjectSchema(recordObj);
-
-        final ExprTree tree = HUtil.parseExprTree(HBqlRule.DESC_WHERE_VALUE, expr, schema, false);
+        final ExprTree tree = HBql.parseDescWhereExpr(expr, schema, false);
 
         final boolean no_opt_run = tree.evaluate(recordObj);
         final long no_opt_time = tree.getElapsedNanos();
@@ -85,7 +83,7 @@ public class WhereExprTests {
     private static boolean evalColumnNames(final String expr, String... vals) {
 
         try {
-            final ExprTree tree = HUtil.parseExprTree(HBqlRule.DESC_WHERE_VALUE, expr, null, true);
+            final ExprTree tree = HBql.parseDescWhereExpr(expr, null, true);
 
             final List<ExprVariable> attribs = tree.getExprVariables();
 

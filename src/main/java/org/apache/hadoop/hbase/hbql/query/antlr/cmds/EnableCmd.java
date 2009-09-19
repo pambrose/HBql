@@ -14,7 +14,7 @@ import java.io.IOException;
  * Date: Aug 24, 2009
  * Time: 10:31:14 PM
  */
-public class EnableCmd extends TableCmd implements ConnectionExecCmd {
+public class EnableCmd extends TableCmd implements ConnectionCmd {
 
     public EnableCmd(final String tableName) {
         super(tableName);

@@ -61,7 +61,7 @@ columnList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
 	: c1=column {retval.add($c1.text);} (COMMA c2=column {retval.add($c2.text);})*;
 
-connectionExec returns [ConnectionExecCmd retval]
+connectionExec returns [ConnectionCmd retval]
 options {backtrack=true;}	
 	: keyDROP keyTABLE t=ID 		 	{retval = new DropCmd($t.text);}
 	| keyDISABLE keyTABLE t=ID 		 	{retval = new DisableCmd($t.text);}
@@ -73,7 +73,7 @@ options {backtrack=true;}
 	| del=deleteStmt		 		{retval = $del.retval;}
 	;
 
-schemaExec returns [SchemaManagerExecCmd retval]
+schemaExec returns [SchemaManagerCmd retval]
 	: def=defineStmt 				{retval = $def.retval;}
 	;
 

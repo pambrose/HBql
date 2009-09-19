@@ -4,8 +4,8 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.hbql.query.antlr.cmds.ConnectionExecCmd;
-import org.apache.hadoop.hbase.hbql.query.antlr.config.HBqlRule;
+import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
+import org.apache.hadoop.hbase.hbql.query.antlr.cmds.ConnectionCmd;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
@@ -96,7 +96,8 @@ public class HConnection {
 
     public HOutput exec(final String str) throws HPersistException, IOException {
 
-        final ConnectionExecCmd cmd = (ConnectionExecCmd)HBqlRule.CONNECTION_EXEC.parse(str);
+        final ConnectionCmd cmd =
+                HBql.parseCommand(str);
 
         if (cmd == null)
             throw new HPersistException("Error parsing: " + str);

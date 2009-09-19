@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.hbql.query.antlr.cmds.SchemaManagerExecCmd;
-import org.apache.hadoop.hbase.hbql.query.antlr.config.HBqlRule;
+import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
+import org.apache.hadoop.hbase.hbql.query.antlr.cmds.SchemaManagerCmd;
 import org.apache.hadoop.hbase.hbql.query.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;
@@ -19,7 +19,7 @@ public class SchemaManager {
 
     public static HOutput parse(final String str) throws HPersistException, IOException {
 
-        final SchemaManagerExecCmd cmd = (SchemaManagerExecCmd)HBqlRule.SCHEMA_PARSE.parse(str);
+        final SchemaManagerCmd cmd = HBql.parseSchema(str);
 
         if (cmd == null)
             throw new HPersistException("Error parsing: " + str);

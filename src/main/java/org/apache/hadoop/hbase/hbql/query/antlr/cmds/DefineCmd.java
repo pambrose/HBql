@@ -16,7 +16,7 @@ import java.util.List;
  * Date: Aug 24, 2009
  * Time: 10:31:14 PM
  */
-public class DefineCmd extends TableCmd implements SchemaManagerExecCmd {
+public class DefineCmd extends TableCmd implements SchemaManagerCmd {
 
     private String alias;
     private final List<VarDesc> varList;

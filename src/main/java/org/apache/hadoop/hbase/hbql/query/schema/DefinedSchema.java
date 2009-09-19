@@ -6,7 +6,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.query.antlr.config.HBqlRule;
+import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
@@ -186,7 +186,7 @@ public class DefinedSchema extends HBaseSchema {
     }
 
     public HBqlFilter newHBqlFilter(final String query) throws HPersistException {
-        final ExprTree exprTree = HUtil.parseExprTree(HBqlRule.NODESC_WHERE_EXPR, query, this, true);
+        final ExprTree exprTree = HBql.parseNoDescWhereExpr(query, this, true);
         return new HBqlFilter(exprTree, -1);
     }
 }

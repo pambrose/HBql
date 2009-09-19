@@ -4,8 +4,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.antlr.config.HBqlRule;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
@@ -60,17 +59,17 @@ public class HUtil {
     }
 
     public static String parseStringExpr(final String s) throws HPersistException {
-        final StringValue value = (StringValue)HBqlRule.STRING_EXPR.parse(s);
+        final StringValue value = HBql.parseStringValue(s);
         return value.getCurrentValue(null);
     }
 
     public static Long parseDateExpr(final String s) throws HPersistException {
-        final DateValue value = (DateValue)HBqlRule.DATE_EXPR.parse(s);
+        final DateValue value = HBql.parseDateValue(s);
         return value.getCurrentValue(null);
     }
 
     public static Number parseNumericExpr(final String s) throws HPersistException {
-        final NumberValue value = (NumberValue)HBqlRule.NUMBER_EXPR.parse(s);
+        final NumberValue value = HBql.parseNumberValue(s);
         return value.getCurrentValue(null);
     }
 
@@ -86,16 +85,4 @@ public class HUtil {
         log.info(baos.toString());
 
     }
-
-    public static ExprTree parseExprTree(final HBqlRule rule,
-                                         final String query,
-                                         final Schema schema,
-                                         final boolean optimize) throws HPersistException {
-        final ExprTree exprTree = (ExprTree)rule.parse(query, schema);
-        exprTree.setSchema(schema);
-        if (optimize)
-            exprTree.optimize();
-        return exprTree;
-    }
-
 }

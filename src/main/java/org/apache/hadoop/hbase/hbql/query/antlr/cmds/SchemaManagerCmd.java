@@ -11,7 +11,7 @@ import java.io.IOException;
  * Date: Aug 23, 2009
  * Time: 10:46:03 PM
  */
-public interface SchemaManagerExecCmd {
+public interface SchemaManagerCmd {
 
     public HOutput exec() throws HPersistException, IOException;
 

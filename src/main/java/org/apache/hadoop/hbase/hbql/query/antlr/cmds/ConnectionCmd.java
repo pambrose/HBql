@@ -12,7 +12,7 @@ import java.io.IOException;
  * Date: Aug 23, 2009
  * Time: 10:46:03 PM
  */
-public interface ConnectionExecCmd {
+public interface ConnectionCmd {
 
     public HOutput exec(final HConnection conn) throws HPersistException, IOException;
 
