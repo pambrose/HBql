@@ -10,9 +10,6 @@ import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.cmds.ConnectionCmd;
 import org.apache.hadoop.hbase.hbql.query.antlr.cmds.SchemaManagerCmd;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 /**
@@ -23,8 +20,8 @@ import org.apache.hadoop.hbase.hbql.query.schema.Schema;
  */
 public class HBql {
 
-
     private static HBqlParser newParser(final String input) {
+        System.out.println("Parsing: " + input);
         final Lexer lex = new HBqlLexer(new ANTLRStringStream(input));
         final CommonTokenStream tokens = new CommonTokenStream(lex);
         return new HBqlParser(tokens);
@@ -64,10 +61,10 @@ public class HBql {
         }
     }
 
-    public static StringValue parseStringValue(final String input) throws HPersistException {
+    public static String parseStringValue(final String input) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.stringExpr();
+            return parser.stringExpr().getCurrentValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
@@ -75,10 +72,10 @@ public class HBql {
         }
     }
 
-    public static NumberValue parseNumberValue(final String input) throws HPersistException {
+    public static Number parseNumberValue(final String input) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.numericTest();
+            return parser.numericTest().getCurrentValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
@@ -86,10 +83,10 @@ public class HBql {
         }
     }
 
-    public static DateValue parseDateValue(final String input) throws HPersistException {
+    public static Long parseDateValue(final String input) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.dateTest();
+            return parser.dateTest().getCurrentValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();

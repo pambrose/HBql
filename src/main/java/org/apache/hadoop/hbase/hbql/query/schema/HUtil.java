@@ -4,10 +4,6 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
-import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 
 import java.io.ByteArrayOutputStream;
@@ -56,21 +52,6 @@ public class HUtil {
             System.out.println(e.getMessage());
             throw new RecognitionException(input);
         }
-    }
-
-    public static String parseStringExpr(final String s) throws HPersistException {
-        final StringValue value = HBql.parseStringValue(s);
-        return value.getCurrentValue(null);
-    }
-
-    public static Long parseDateExpr(final String s) throws HPersistException {
-        final DateValue value = HBql.parseDateValue(s);
-        return value.getCurrentValue(null);
-    }
-
-    public static Number parseNumericExpr(final String s) throws HPersistException {
-        final NumberValue value = HBql.parseNumberValue(s);
-        return value.getCurrentValue(null);
     }
 
     public static void logException(final Log log, final Exception e) {
