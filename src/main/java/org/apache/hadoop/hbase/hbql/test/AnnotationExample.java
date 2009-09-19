@@ -26,29 +26,26 @@ public class AnnotationExample {
             System.out.println(conn.exec("disable table TestObject"));
             System.out.println(conn.exec("drop table TestObject"));
         }
-
-        if (!conn.tableExists("TestObject"))
-            System.out.println(conn.exec("create table using TestObject"));
         */
 
-        final HTransaction tx = new HTransaction();
-        for (int i = 0; i < 0; i++)
-            tx.insert(new TestObject(i));
+        if (!conn.tableExists("TestObject")) {
+            System.out.println(conn.exec("create table using TestObject"));
 
-        conn.apply(tx);
+            final HTransaction tx = new HTransaction();
+            for (int i = 0; i < 10; i++)
+                tx.insert(new TestObject(i));
+
+            conn.apply(tx);
+        }
 
         final String query2 = "SELECT title, titles, author, authorVersions "
                               + "FROM TestObject "
                               + "WITH "
-                              // + "KEYS ALL "
-                              + "KEYS '0000000007' TO '0000000008' "
+                              + "KEYS '0000000002' TO '0000000003', '0000000007' TO '0000000008' "
                               + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1) "
                               + "VERSIONS 3 "
-                              //+ "SERVER FILTER WHERE TRUE "
-                              + "SERVER FILTER WHERE author LIKE '.*val.*'"
-                              + "CLIENT FILTER WHERE TRUE "
-                //+ "CLIENT FILTER WHERE author LIKE '.*val.*'"
-                ;
+                              + "SERVER FILTER WHERE author LIKE '.*val.*' AND title "
+                              + "CLIENT FILTER WHERE author LIKE '.*val.*'";
 
         HQuery<TestObject> q2 = conn.newHQuery(query2);
         HResults<TestObject> results2 = q2.execute();
