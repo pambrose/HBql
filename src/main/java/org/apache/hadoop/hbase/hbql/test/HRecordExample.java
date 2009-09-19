@@ -21,7 +21,6 @@ import java.util.Map;
  */
 public class HRecordExample {
 
-
     public static void main(String[] args) throws IOException, HPersistException {
 
         HConnection conn = HConnection.newHConnection();
@@ -57,16 +56,15 @@ public class HRecordExample {
 
         conn.apply(tx);
 
-        final String query1 = "SELECT author, title "
+        final String query1 = "SELECT keyval, author, title "
                               + "FROM testobjects2 "
                               + "WITH "
                               + "KEYS '0000000002' TO '0000000003', '0000000008' TO LAST "
                               + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
                               + "VERSIONS 2 "
-                //+ "SCAN LIMIT 4"
-                //+ "SERVER FILTER WHERE author LIKE '.*6200.*' "
-                //+ "CLIENT FILTER WHERE family1:author LIKE '.*282.*'"
-                ;
+                              //+ "SCAN LIMIT 4"
+                              //+ "SERVER FILTER WHERE author LIKE '.*6200.*' "
+                              + "CLIENT FILTER WHERE keyval = '0000000002' ";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
         HResults<HRecord> results1 = q1.execute();
 

@@ -81,7 +81,8 @@ public class HBaseParser extends Parser {
             return false;
 
         final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(varname);
-        return attrib != null && attrib.getFieldType() == type;
+        // Check for clazz so key attribs are matched as String vars
+        return attrib != null && attrib.getFieldType().getClazz() == type.getClazz();
     }
 
 

@@ -276,6 +276,10 @@ public abstract class HBaseSchema extends Schema {
                 if (attrib == null)
                     throw new HPersistException("Column " + name + " does not exist in " + this.getSchemaName());
 
+                // Do not bother to request because it will always be delivered
+                if (attrib.isKeyAttrib())
+                    continue;
+
                 // If it is a map, then request all columns for family
                 if (attrib.isMapKeysAsColumns())
                     scan.addFamily(attrib.getFamilyNameAsBytes());

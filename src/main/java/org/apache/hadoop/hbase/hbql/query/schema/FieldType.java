@@ -42,7 +42,8 @@ public enum FieldType {
         this.synonymList.addAll(Arrays.asList(synonyms));
     }
 
-    private Class getClazz() {
+
+    public Class getClazz() {
         return clazz;
     }
 
