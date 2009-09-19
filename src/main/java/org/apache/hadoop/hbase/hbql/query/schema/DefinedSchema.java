@@ -2,8 +2,12 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.query.antlr.config.HBqlRule;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -72,7 +76,7 @@ public class DefinedSchema extends HBaseSchema {
 
     private void processColumn(final VarDesc var, final boolean enforceFamilyName) throws HPersistException {
 
-        final VarDescAttrib attrib = new VarDescAttrib(var);
+        final DefinedAttrib attrib = new DefinedAttrib(var);
 
         this.addVariableAttribToVariableNameMap(attrib);
         this.addColumnAttribToFamilyQualifiedNameMap(attrib);
@@ -165,5 +169,24 @@ public class DefinedSchema extends HBaseSchema {
             keyattrib.setCurrentValue(newrec, 0, keybytes);
         }
         return newrec;
+    }
+
+    public Scan getScanForFields(final String... fields) throws IOException, HPersistException {
+
+        final Scan scan = new Scan();
+
+        for (final String field : fields) {
+            final DefinedAttrib attrib = (DefinedAttrib)this.getVariableAttribByVariableName(field);
+            if (attrib.isKeyAttrib())
+                continue;
+            scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
+        }
+
+        return scan;
+    }
+
+    public HBqlFilter newHBqlFilter(final String query) throws HPersistException {
+        final ExprTree exprTree = HUtil.parseExprTree(HBqlRule.NODESC_WHERE_EXPR, query, this, true);
+        return new HBqlFilter(exprTree, -1);
     }
 }

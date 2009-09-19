@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.test;
+package org.apache.hadoop.hbase.hbql.examples;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;

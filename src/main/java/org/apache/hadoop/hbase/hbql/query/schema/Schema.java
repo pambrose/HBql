@@ -87,19 +87,4 @@ public abstract class Schema implements Serializable {
         }
     }
 
-    // This is used for tests
-    public static Schema getSchema(final Object recordObj) throws HPersistException {
-
-        if (recordObj == null)
-            return null;
-
-        try {
-            return AnnotationSchema.getAnnotationSchema(recordObj);
-        }
-        catch (HPersistException e) {
-            // Not annotated properly
-        }
-
-        return ReflectionSchema.getReflectionSchema(recordObj);
-    }
 }

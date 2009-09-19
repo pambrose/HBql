@@ -12,11 +12,11 @@ import java.util.Map;
  * Date: Sep 6, 2009
  * Time: 5:19:35 PM
  */
-public class VarDescAttrib extends ColumnAttrib {
+public class DefinedAttrib extends ColumnAttrib {
 
     private final VarDesc varDesc;
 
-    public VarDescAttrib(final VarDesc varDesc) throws HPersistException {
+    public DefinedAttrib(final VarDesc varDesc) throws HPersistException {
         super(varDesc.getFieldType(), varDesc.getFamilyName(), varDesc.getColumnName(), null, null, false);
         this.varDesc = varDesc;
 

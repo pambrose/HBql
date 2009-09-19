@@ -2,9 +2,9 @@ package org.apache.hadoop.hbase.hbql.query.antlr.cmds;
 
 import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.schema.DefinedAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.VarDesc;
-import org.apache.hadoop.hbase.hbql.query.schema.VarDescAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class DefineCmd extends TableCmd implements SchemaManagerExecCmd {
                                                                     this.getVarList());
 
         for (final VariableAttrib attrib : schema.getVariableAttribs()) {
-            final VarDescAttrib vdattrib = (VarDescAttrib)attrib;
+            final DefinedAttrib vdattrib = (DefinedAttrib)attrib;
             if (attrib.getFieldType() == null)
                 throw new HPersistException(schema.getTableName() + " attribute " + vdattrib.getVariableName()
                                             + " has unknown type " + vdattrib.getTypeName());

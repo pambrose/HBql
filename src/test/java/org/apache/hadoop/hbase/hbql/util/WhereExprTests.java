@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.util;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.query.antlr.config.HBqlRule;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
@@ -61,7 +62,7 @@ public class WhereExprTests {
 
     private static boolean evalExpr(final Object recordObj, final String expr) throws HPersistException {
 
-        final Schema schema = Schema.getSchema(recordObj);
+        final Schema schema = SchemaManager.getObjectSchema(recordObj);
 
         final ExprTree tree = HUtil.parseExprTree(HBqlRule.DESC_WHERE_VALUE, expr, schema, false);
 

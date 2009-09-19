@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.test;
+package org.apache.hadoop.hbase.hbql.examples;
 
 import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -25,12 +25,12 @@ public class HRecordExample {
 
         HConnection conn = HConnection.newHConnection();
 
-        SchemaManager.exec("define table testobjects alias testobjects2"
-                           + "("
-                           + "keyval key, "
-                           + "family1:author string alias author, "
-                           + "family1:title string  alias title"
-                           + ")");
+        SchemaManager.parse("define table testobjects alias testobjects2"
+                            + "("
+                            + "keyval key, "
+                            + "family1:author string alias author, "
+                            + "family1:title string  alias title"
+                            + ")");
 
         // System.out.println(conn.exec("delete from TestObject with client filter where true"));
         // System.out.println(conn.exec("disable table testobjects"));
@@ -39,22 +39,23 @@ public class HRecordExample {
 
         System.out.println(conn.exec("show tables"));
 
-        if (!conn.tableExists("testobjects"))
+        if (!conn.tableExists("testobjects")) {
             System.out.println(conn.exec("create table using testobjects"));
+
+            final HBatch batch = new HBatch();
+            for (int i = 0; i < 10; i++) {
+                HRecord hrecord = new HRecord("testobjects");
+                hrecord.setCurrentValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
+                hrecord.setCurrentValue("author", "A new author value: " + i);
+                hrecord.setCurrentValue("title", "A very new title value: " + i);
+                batch.insert(hrecord);
+            }
+
+            conn.apply(batch);
+        }
 
         if (conn.tableEnabled("testobjects2"))
             System.out.println(conn.exec("describe table testobjects2"));
-
-        final HBatch batch = new HBatch();
-        for (int i = 0; i < 0; i++) {
-            HRecord hrecord = new HRecord("testobjects");
-            hrecord.setCurrentValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
-            hrecord.setCurrentValue("author", "A new author value: " + i);
-            hrecord.setCurrentValue("title", "A very new title value: " + i);
-            batch.insert(hrecord);
-        }
-
-        conn.apply(batch);
 
         final String query1 = "SELECT keyval, author, title "
                               + "FROM testobjects2 "
@@ -87,8 +88,6 @@ public class HRecordExample {
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }
         }
-
         results1.close();
     }
-
 }

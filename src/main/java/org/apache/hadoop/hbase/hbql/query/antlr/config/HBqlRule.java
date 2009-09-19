@@ -13,7 +13,7 @@ public enum HBqlRule {
 
     SELECT(HBqlGrammar.HBql, "selectStmt"),
     CONNECTION_EXEC(HBqlGrammar.HBql, "connectionExec"),
-    SCHEMA_EXEC(HBqlGrammar.HBql, "schemaExec"),
+    SCHEMA_PARSE(HBqlGrammar.HBql, "schemaExec"),
     NODESC_WHERE_EXPR(HBqlGrammar.HBql, "nodescWhereExpr"),
     DESC_WHERE_VALUE(HBqlGrammar.HBql, "descWhereExpr"),
     WITH_EXPR(HBqlGrammar.HBql, "whereValue"),
