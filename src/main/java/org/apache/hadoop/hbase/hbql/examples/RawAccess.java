@@ -21,25 +21,27 @@ public class RawAccess {
 
     public static void main(String[] args) throws IOException, HPersistException {
 
-        byte[] fbytes = Bytes.toBytes("family1");
-        byte[] cbytes = Bytes.toBytes("author");
+        final byte[] family = Bytes.toBytes("family1");
+        final byte[] author = Bytes.toBytes("author");
+        final byte[] title = Bytes.toBytes("title");
 
         HTable table = new HTable(new HBaseConfiguration(), "testobjects");
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 0; i++) {
             Put put = new Put(Bytes.toBytes("00000000" + i));
-            put.add(fbytes, cbytes, Bytes.toBytes("A value for author"));
+            put.add(family, author, Bytes.toBytes("A value for author"));
             table.put(put);
             table.flushCommits();
         }
 
         Scan scan = new Scan();
-        scan.addColumn(fbytes, cbytes);
+        scan.addColumn(family, author);
         ResultScanner scanner = table.getScanner(scan);
 
         for (Result result : scanner) {
-            String val = Bytes.toString(result.getRow());
-            System.out.println(val);
+            System.out.println(Bytes.toString(result.getRow()) + " - "
+                               + Bytes.toString(result.getValue(family, author)) + " - "
+                               + Bytes.toString(result.getValue(family, title)));
         }
 
     }

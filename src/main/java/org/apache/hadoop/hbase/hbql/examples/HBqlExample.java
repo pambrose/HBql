@@ -23,6 +23,10 @@ public class HBqlExample {
 
     public static void main(String[] args) throws IOException, HPersistException {
 
+        final byte[] family = Bytes.toBytes("family1");
+        final byte[] author = Bytes.toBytes("author");
+        final byte[] title = Bytes.toBytes("title");
+
         SchemaManager.parse("define table testobjects alias testobjects2"
                             + "("
                             + "keyval key, "
@@ -31,16 +35,15 @@ public class HBqlExample {
                             + ")");
 
         DefinedSchema schema = SchemaManager.getDefinedSchema("testobjects");
-        Scan scan = schema.getScanForFields("author", "title");
-        HBqlFilter filter = schema.newHBqlFilter("author LIKE '.*3.*'");
+        final HBqlFilter filter = schema.newHBqlFilter("title LIKE '.*3.*' OR author LIKE '.*4.*'");
+
+        Scan scan = new Scan();
+        scan.addColumn(family, author);
+        scan.addColumn(family, title);
         scan.setFilter(filter);
 
         HTable table = new HTable(new HBaseConfiguration(), "testobjects");
         ResultScanner scanner = table.getScanner(scan);
-
-        byte[] family = Bytes.toBytes("family1");
-        byte[] author = Bytes.toBytes("author");
-        byte[] title = Bytes.toBytes("title");
 
         for (Result result : scanner) {
             System.out.println(Bytes.toString(result.getRow()) + " - "
