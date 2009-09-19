@@ -359,8 +359,7 @@ stringLiteral returns [StringValue retval]
 	: v=QUOTED 					{retval = new StringLiteral($v.text);};
 	
 integerLiteral returns [NumberValue retval]
-	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};
-		
+	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};	
 
 booleanLiteral returns [BooleanValue retval]
 	: t=keyTRUE					{retval = new BooleanLiteral($t.text);}
@@ -391,22 +390,20 @@ funcReturningString returns [StringValue retval]
 	| keyTRIM LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Type.TRIM, $s.retval);}
 	| keyLOWER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Type.LOWER, $s.retval);} 
 	| keyUPPER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Type.UPPER, $s.retval);} 
+	| keyREPLACE LPAREN s1=stringExpr COMMA s2=stringExpr COMMA s3=stringExpr RPAREN		
+							{retval = new StringFunction(GenericFunction.Type.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
 	;
 
 funcReturningInteger returns [NumberValue retval]
 	: keyLENGTH LPAREN s=stringExpr RPAREN		{retval = new NumberFunction(GenericFunction.Type.LENGTH, $s.retval);}
+	| keyINDEXOF LPAREN s1=stringExpr COMMA s2=stringExpr RPAREN
+							{retval = new NumberFunction(GenericFunction.Type.INDEXOF, $s1.retval, $s2.retval);}
 	//| keyABS LPAREN numericExpr RPAREN
 	;
 
 funcReturningBoolean returns [BooleanValue retval]
 	: s1=stringExpr keyCONTAINS s2=stringExpr	{retval = new BooleanFunction(GenericFunction.Type.CONTAINS, $s1.retval, $s2.retval);}
 	;
-
-/*	
-funcReturningBoolean
-	: 
-	;
-*/
 		
 numberItemList returns [List<NumberValue> retval]
 @init {retval = Lists.newArrayList();}
@@ -458,8 +455,8 @@ multDiv returns [GenericCalcExpr.OP retval]
 	;
 		
 INT	: DIGIT+;
-ID	: CHAR (CHAR | DOT | DOLLAR | DIGIT)* 		// DOOLAR is for inner class table names
-	| CHAR (CHAR | DOT | DIGIT)* COLON (CHAR | DOT | DIGIT)*
+ID	: CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)* 		// DOOLAR is for inner class table names
+	| CHAR (CHAR | DOT | MINUS | DIGIT)* COLON (CHAR | DOT | MINUS | DIGIT)*
 	;
 	
 //PARAM	: COLON (CHAR | DIGIT  | DOT)*;
@@ -543,3 +540,5 @@ keyKEYS		: {isKeyword(input, "KEYS")}? ID;
 keyALL		: {isKeyword(input, "ALL")}? ID;
 keyLENGTH	: {isKeyword(input, "LENGTH")}? ID;
 keyCONTAINS	: {isKeyword(input, "CONTAINS")}? ID;
+keyINDEXOF	: {isKeyword(input, "INDEXOF")}? ID;
+keyREPLACE	: {isKeyword(input, "REPLACE")}? ID;

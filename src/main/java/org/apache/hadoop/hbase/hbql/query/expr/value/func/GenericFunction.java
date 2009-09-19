@@ -23,6 +23,8 @@ public abstract class GenericFunction {
         UPPER,
         LENGTH,
         CONTAINS,
+        REPLACE,
+        INDEXOF
     }
 
     private final Type functionType;

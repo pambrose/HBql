@@ -40,6 +40,13 @@ public class StringFunction extends GenericFunction implements StringValue {
                 return v1 + v2;
             }
 
+            case REPLACE: {
+                final String v1 = this.getStringExprs()[0].getCurrentValue(object);
+                final String v2 = this.getStringExprs()[1].getCurrentValue(object);
+                final String v3 = this.getStringExprs()[2].getCurrentValue(object);
+                return v1.replace(v2, v3);
+            }
+
             default:
                 throw new HPersistException("Error in StringFunction.getValue() " + this.getFunctionType());
         }

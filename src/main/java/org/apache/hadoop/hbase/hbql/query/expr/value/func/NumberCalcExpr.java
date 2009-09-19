@@ -31,7 +31,7 @@ public class NumberCalcExpr extends GenericCalcExpr<NumberValue> implements Numb
         else
             retval = false;
 
-        if (this.getExpr2().optimizeForConstants(object))
+        if (this.getExpr2() != null && this.getExpr2().optimizeForConstants(object))
             this.setExpr2(new NumberLiteral(this.getExpr2().getCurrentValue(object)));
         else
             retval = false;

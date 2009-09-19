@@ -98,6 +98,8 @@ public class WhereExpressionTest extends WhereExprTests {
     @Test
     public void numericCalculations() throws HPersistException {
 
+        assertEvalTrue("-9 = -9");
+        assertEvalFalse("-9 = -8");
         assertEvalTrue("9 = 9");
         assertEvalTrue("((4 + 5) = 9)");
         assertEvalTrue("(9) = 9");
@@ -128,6 +130,23 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
+    public void booleanFunctions() throws HPersistException {
+
+        final AllTypes obj = new AllTypes("aaabbb", 3, "aaab");
+
+        assertEvalTrue("'abc' CONTAINS 'b'");
+        assertEvalFalse("'abc' CONTAINS 'n'");
+
+        assertEvalTrue(obj, "keyval CONTAINS 'ab'");
+        assertEvalFalse(obj, "keyval CONTAINS 'ba'");
+        assertEvalFalse(obj, "'asasas' CONTAINS stringValue");
+        assertEvalTrue(obj, "'xxaaabxx' CONTAINS stringValue");
+        assertEvalTrue(obj, "keyval CONTAINS stringValue");
+        assertEvalTrue(obj, "keyval+'zz' CONTAINS stringValue+'bbz'");
+        assertEvalFalse(obj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
+    }
+
+    @Test
     public void numericFunctions() throws HPersistException {
 
         assertEvalTrue("3 between 2 AND 5");
@@ -145,22 +164,11 @@ public class WhereExpressionTest extends WhereExprTests {
 
         assertEvalTrue("LENGTH('abc') = 3");
         assertEvalTrue("LENGTH('') = 0");
-    }
 
-    @Test
-    public void booleanFunctions() throws HPersistException {
+        assertEvalTrue("INDEXOF('abc', 'b') = 1");
+        assertEvalTrue("INDEXOF('abc', 'v') = (-1)");
 
-        final AllTypes obj = new AllTypes("aaabbb", 3, "aaab");
-
-        assertEvalTrue("'abc' CONTAINS 'b'");
-        assertEvalFalse("'abc' CONTAINS 'n'");
-
-        assertEvalTrue(obj, "keyval CONTAINS 'ab'");
-        assertEvalFalse(obj, "keyval CONTAINS 'ba'");
-        assertEvalFalse(obj, "'asasas' CONTAINS stringValue");
-        assertEvalTrue(obj, "'xxaaabxx' CONTAINS stringValue");
-        assertEvalTrue(obj, "keyval CONTAINS stringValue");
-        assertEvalTrue(obj, "keyval+'zz' CONTAINS stringValue+'bbz'");
+        assertEvalTrue("REPLACE('abc', 'a', 'bb') = 'bb'+'b'+'c'");
     }
 
     @Test

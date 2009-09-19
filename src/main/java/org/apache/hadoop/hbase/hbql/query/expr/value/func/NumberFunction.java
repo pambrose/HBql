@@ -28,6 +28,15 @@ public class NumberFunction extends GenericFunction implements NumberValue {
                     return val.length();
             }
 
+            case INDEXOF: {
+                final String val1 = this.getStringExprs()[0].getCurrentValue(object);
+                final String val2 = this.getStringExprs()[1].getCurrentValue(object);
+                if (val1 == null || val2 == null)
+                    return -1;
+                else
+                    return val1.indexOf(val2);
+            }
+
             default:
                 throw new HPersistException("Error in NumberFunction.getValue() " + this.getFunctionType());
         }
