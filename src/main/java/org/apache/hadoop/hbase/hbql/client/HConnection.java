@@ -104,10 +104,16 @@ public class HConnection {
         return cmd.exec(this);
     }
 
-    public void apply(final HTransaction tx) throws IOException {
-        for (final String tableName : tx.getUpdateList().keySet()) {
+    public void apply(final HBatch batch) throws IOException {
+        for (final String tableName : batch.getActionList().keySet()) {
             final HTable table = this.getHTable(tableName);
-            table.put(tx.getUpdateList(tableName));
+            final List<HBatch.Action> actions = batch.getActionList(tableName);
+            for (HBatch.Action action : actions) {
+                if (action.isInsert())
+                    table.put(action.getPutValue());
+                if (action.isDelete())
+                    table.delete(action.getDeleteValue());
+            }
             table.flushCommits();
         }
     }

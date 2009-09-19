@@ -67,10 +67,7 @@ public class DeleteCmd extends TableCmd implements ConnectionExecCmd {
             final ResultScanner resultsScanner = table.getScanner(scan);
             for (final Result result : resultsScanner) {
 
-                final Object recordObj = schema.getObject(
-                        schema.getFieldList(),
-                        scan.getMaxVersions(),
-                        result);
+                final Object recordObj = schema.getObject(schema.getFieldList(), scan.getMaxVersions(), result);
 
                 if (clientFilter == null || clientFilter.evaluate(recordObj)) {
                     final Delete delete = new Delete(result.getRow());

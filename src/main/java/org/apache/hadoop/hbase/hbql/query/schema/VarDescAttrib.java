@@ -19,6 +19,9 @@ public class VarDescAttrib extends ColumnAttrib {
     public VarDescAttrib(final VarDesc varDesc) throws HPersistException {
         super(varDesc.getFieldType(), varDesc.getFamilyName(), varDesc.getColumnName(), null, null, false);
         this.varDesc = varDesc;
+
+        if (this.isKeyAttrib() && this.getFamilyName().length() > 0)
+            throw new HPersistException("Key value " + this.getObjectQualifiedName() + " cannot have a family name");
     }
 
     private VarDesc getVarDesc() {

@@ -1,10 +1,10 @@
 package org.apache.hadoop.hbase.hbql.test;
 
+import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HResults;
-import org.apache.hadoop.hbase.hbql.client.HTransaction;
 
 import java.io.IOException;
 import java.util.Date;
@@ -31,7 +31,7 @@ public class AnnotationExample {
         if (!conn.tableExists("TestObject")) {
             System.out.println(conn.exec("create table using TestObject"));
 
-            final HTransaction tx = new HTransaction();
+            final HBatch tx = new HBatch();
             for (int i = 0; i < 10; i++)
                 tx.insert(new TestObject(i));
 

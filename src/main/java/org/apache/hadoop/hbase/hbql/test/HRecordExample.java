@@ -1,11 +1,11 @@
 package org.apache.hadoop.hbase.hbql.test;
 
+import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResults;
-import org.apache.hadoop.hbase.hbql.client.HTransaction;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
@@ -45,16 +45,16 @@ public class HRecordExample {
         if (conn.tableEnabled("testobjects2"))
             System.out.println(conn.exec("describe table testobjects2"));
 
-        final HTransaction tx = new HTransaction();
+        final HBatch batch = new HBatch();
         for (int i = 0; i < 0; i++) {
             HRecord hrecord = new HRecord("testobjects");
             hrecord.setCurrentValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
             hrecord.setCurrentValue("author", "A new author value: " + i);
             hrecord.setCurrentValue("title", "A very new title value: " + i);
-            tx.insert(hrecord);
+            batch.insert(hrecord);
         }
 
-        conn.apply(tx);
+        conn.apply(batch);
 
         final String query1 = "SELECT keyval, author, title "
                               + "FROM testobjects2 "

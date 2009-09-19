@@ -62,6 +62,7 @@ public class WhereExprTests {
     private static boolean evalExpr(final Object recordObj, final String expr) throws HPersistException {
 
         final AnnotationSchema schema = (recordObj != null) ? AnnotationSchema.getAnnotationSchema(recordObj) : null;
+
         final ExprTree tree = HUtil.parseExprTree(HBqlRule.DESC_WHERE_VALUE, expr, schema, false);
 
         final boolean no_opt_run = tree.evaluate(recordObj);

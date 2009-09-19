@@ -26,7 +26,7 @@ public abstract class ColumnAttrib extends VariableAttrib {
                         final String setter,
                         final boolean mapKeysAsColumns) throws HPersistException {
         super(fieldType);
-        this.family = isKeyAttrib() ? "" : family;
+        this.family = family;
         this.column = column;
         this.getter = getter;
         this.setter = setter;

@@ -71,6 +71,10 @@ public class AnnotationSchema extends HBaseSchema {
             throw new HPersistException("Class " + this + " is missing an instance variable "
                                         + "annotated with @HColumn(key=true)");
 
+        if (this.getKeyAttrib().getFamilyName().length() > 0)
+            throw new HPersistException(this.getKeyAttrib().getObjectQualifiedName() + " @HColumn annotation " +
+                                        "cannot have a family name.");
+
         for (final Field field : this.getClazz().getDeclaredFields())
             if (field.getAnnotation(HColumnVersionMap.class) != null)
                 this.processColumnVersionAnnotation(field);
