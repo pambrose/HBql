@@ -168,7 +168,7 @@ andExpr returns [PredicateExpr retval]
 	: e1=condFactor (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, CompareExpr.OP.AND, $e2.retval);};
 
 condFactor returns [PredicateExpr retval]			 
-	: n=keyNOT? p=condPrimary			{$condFactor.retval = ($n.text != null) ? new CondFactor(true, $p.retval) :  $p.retval;};
+	: n=keyNOT? p=condPrimary			{retval = ($n.text != null) ? new CondFactor(true, $p.retval) :  $p.retval;};
 	
 condPrimary returns [PredicateExpr retval]
 options {backtrack=true;}	
@@ -178,15 +178,15 @@ options {backtrack=true;}
 
 simpleCondExpr returns [PredicateExpr retval]
 options {backtrack=true;}	
-	: n=nullCompareStmt				{retval = $n.retval;}
-	| c=compareStmt 				{retval = $c.retval;}
-	| b1=betweenStmt				{retval = $b1.retval;}
-	| l=likeStmt					{retval = $l.retval;}
-	| i=inStmt					{retval = $i.retval;}
+	: n=nullCompareExpr				{retval = $n.retval;}
+	| c=compareExpr 				{retval = $c.retval;}
+	| b1=betweenExpr				{retval = $b1.retval;}
+	| l=likeExpr					{retval = $l.retval;}
+	| i=inExpr					{retval = $i.retval;}
 	| b2=booleanExpr				{retval = new BooleanExpr($b2.retval);}
 	;
 
-betweenStmt returns [PredicateExpr retval]
+betweenExpr returns [PredicateExpr retval]
 options {backtrack=true;}	
 	: d1=dateValue n=keyNOT? keyBETWEEN d2=dateValue keyAND d3=dateValue
 							{retval = new DateBetweenStmt($d1.retval, ($n.text != null), $d2.retval, $d3.retval);}
@@ -196,11 +196,11 @@ options {backtrack=true;}
 							{retval = new StringBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
 	;
 
-likeStmt returns [PredicateExpr retval]
+likeExpr returns [PredicateExpr retval]
 	: s1=stringValue n=keyNOT? keyLIKE s2=stringValue 
 							{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);};
 
-inStmt returns [PredicateExpr retval]
+inExpr returns [PredicateExpr retval]
 options {backtrack=true;}	
 	: a3=dateValue n=keyNOT? keyIN LPAREN d=dateItemList RPAREN			
 							{retval = new DateInStmt($a3.retval, ($n.text != null), $d.retval);} 
@@ -210,11 +210,11 @@ options {backtrack=true;}
 							{retval = new StringInStmt($a2.retval, ($n.text != null), $s.retval);} 
 	;
 	
-nullCompareStmt returns [PredicateExpr retval]
+nullCompareExpr returns [PredicateExpr retval]
 	: s=stringValue keyIS (n=keyNOT)? keyNULL	{retval = new StringNullCompare(($n.text != null), $s.retval);}	
 	;	
 
-compareStmt returns [PredicateExpr retval]
+compareExpr returns [PredicateExpr retval]
 options {backtrack=true;}	
 	: d1=dateValue o=compOp d2=dateValue 		{retval = new DateCompare($d1.retval, $o.retval, $d2.retval);}	
 	| s1=stringValue o=compOp s2=stringValue	  	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
@@ -230,14 +230,11 @@ compOp returns [GenericCompare.OP retval]
 	| (LTGT | BANGEQ)				{retval = GenericCompare.OP.NOTEQ;}
 	;
 
-numericTest returns [NumberValue retval]
-	: n=numberValue					{retval = $n.retval;};
-	
 // Numeric calculations
 numberValue returns [NumberValue retval] 
 @init {List<NumberValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList(); }
 	: m=multNumericExpr {exprList.add($m.retval);} (op=plusMinus n=multNumericExpr {opList.add($op.retval); exprList.add($n.retval);})*	
-							{$numberValue.retval = getLeftAssociativeNumberValues(exprList, opList);};
+							{retval = getLeftAssociativeNumberValues(exprList, opList);};
 	
 multNumericExpr returns [NumberValue retval]
 @init {List<NumberValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList(); }
@@ -315,15 +312,11 @@ rangeVal returns [DateValue retval]
 							{retval = new DateTernary($e.retval, $r1.retval, $r2.retval);}
 	;
 
-dateTest returns [DateValue retval]
-	: d=dateValue					{retval = $d.retval;}
-	;
-		
 dateValue returns [DateValue retval]
 @init {List<DateValue> exprList = Lists.newArrayList(); 
        List<GenericCalcExpr.OP> opList = Lists.newArrayList();}
 	: m=datePrimary {exprList.add($m.retval);} (op=plusMinus n=datePrimary {opList.add($op.retval); exprList.add($n.retval);})*	
-							{$dateValue.retval = getLeftAssociativeDateValues(exprList, opList);};
+							{retval = getLeftAssociativeDateValues(exprList, opList);};
 
 datePrimary returns [DateValue retval]
 	: d1=dateVal					{retval = $d1.retval;}

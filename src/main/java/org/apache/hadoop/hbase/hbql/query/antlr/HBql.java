@@ -75,7 +75,7 @@ public class HBql {
     public static Number parseNumberValue(final String input) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.numericTest().getCurrentValue(null);
+            return parser.numberValue().getCurrentValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
@@ -86,7 +86,7 @@ public class HBql {
     public static Long parseDateValue(final String input) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.dateTest().getCurrentValue(null);
+            return parser.dateValue().getCurrentValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
