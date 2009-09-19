@@ -143,6 +143,8 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalFalse("3 = IF false THEN 3 else 2 END");
         assertEvalTrue("2 = IF false THEN 3 else 2 END");
 
+        assertEvalTrue("LENGTH('abc') = 3");
+        assertEvalTrue("LENGTH('') = 0");
     }
 
     @Test

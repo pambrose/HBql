@@ -376,4 +376,5 @@ public class AnnotationSchema extends HBaseSchema {
         }
         return varList;
     }
+
 }

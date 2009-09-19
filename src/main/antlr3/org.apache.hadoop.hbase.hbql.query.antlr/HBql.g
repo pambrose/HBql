@@ -323,7 +323,8 @@ dateTest returns [DateValue retval]
 	;
 		
 dateExpr returns [DateValue retval]
-@init {List<DateValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList();}
+@init {List<DateValue> exprList = Lists.newArrayList(); 
+       List<GenericCalcExpr.OP> opList = Lists.newArrayList();}
 	: m=datePrimary {exprList.add($m.retval);} (op=plusMinus n=datePrimary {opList.add($op.retval); exprList.add($n.retval);})*	
 							{$dateExpr.retval = getLeftAssociativeDateValues(exprList, opList);};
 
@@ -392,9 +393,8 @@ funcReturningString returns [StringValue retval]
 	;
 
 funcReturningInteger returns [NumberValue retval]
-	: keyLENGTH LPAREN stringExpr RPAREN
+	: keyLENGTH LPAREN s=stringExpr RPAREN		{retval = new NumberFunction(GenericFunction.Func.LENGTH, $s.retval);}
 	//| keyABS LPAREN numericExpr RPAREN
-	//| keyMOD LPAREN numericExpr COMMA numericExpr RPAREN
 	;
 
 /*	
