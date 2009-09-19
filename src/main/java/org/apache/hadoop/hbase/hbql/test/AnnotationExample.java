@@ -40,11 +40,13 @@ public class AnnotationExample {
         final String query2 = "SELECT title, titles, author, authorVersions "
                               + "FROM TestObject "
                               + "WITH "
-                              + "KEYS  ALL "
-                              //+ "KEYS  '000002' TO '000005', '000007' TO LAST "
-                              + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
-                              + "VERSIONS MAX "
+                              // + "KEYS ALL "
+                              + "KEYS '0000000007' TO '0000000008' "
+                              + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1) "
+                              + "VERSIONS 3 "
+                              //+ "SERVER FILTER WHERE TRUE "
                               + "SERVER FILTER WHERE author LIKE '.*val.*'"
+                              + "CLIENT FILTER WHERE TRUE "
                 //+ "CLIENT FILTER WHERE author LIKE '.*val.*'"
                 ;
 

@@ -25,7 +25,7 @@ public class HUtil {
 
     public final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.HADOOP);
 
-    public static DefinedSchema getServerSchema(final HBaseSchema schema) throws HPersistException {
+    public static DefinedSchema getDefinedSchemaForServerFilter(final HBaseSchema schema) throws HPersistException {
         if (schema instanceof DefinedSchema)
             return (DefinedSchema)schema;
         else

@@ -35,6 +35,11 @@ public abstract class Schema implements Serializable {
         for (final String field : fieldList) {
 
             final VariableAttrib attrib = this.getVariableAttribByVariableName(field);
+
+            // Annotated version values will be null
+            if (attrib == null)
+                continue;
+
             final String qualifiedname = attrib.getFamilyQualifiedName();
             final String variableName = attrib.getVariableName();
             if (qualifiedname.equals(variableName)) {

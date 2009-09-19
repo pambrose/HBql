@@ -40,6 +40,11 @@ public class VarDescAttrib extends ColumnAttrib {
     }
 
     @Override
+    public String toString() {
+        return this.getVariableName() + " - " + this.getFamilyQualifiedName();
+    }
+
+    @Override
     public boolean isArray() {
         // TODO This needs to be implemented
         return false;
