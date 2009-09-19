@@ -266,7 +266,7 @@ numericCond returns [NumberValue retval]
 numberVal returns [NumberValue retval]
 	: l=integerLiteral				{retval = $l.retval;} 
 	| i=numberAttribVar				{retval = $i.retval;}
-	//| f=funcReturningInteger
+	| f=funcReturningInteger			{retval = $f.retval;}
 	;
 	
 // String concatenation 
@@ -390,13 +390,12 @@ funcReturningString returns [StringValue retval]
 	| keyLOWER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Func.LOWER, $s.retval);} 
 	| keyUPPER LPAREN s=stringExpr RPAREN		{retval = new StringFunction(GenericFunction.Func.UPPER, $s.retval);} 
 	;
-/*
-funcReturningInteger
+
+funcReturningInteger returns [NumberValue retval]
 	: keyLENGTH LPAREN stringExpr RPAREN
-	| keyABS LPAREN numericExpr RPAREN
-	| keyMOD LPAREN numericExpr COMMA numericExpr RPAREN
+	//| keyABS LPAREN numericExpr RPAREN
+	//| keyMOD LPAREN numericExpr COMMA numericExpr RPAREN
 	;
-*/
 
 /*	
 funcReturningBoolean
@@ -537,3 +536,4 @@ keySTAMP	: {isKeyword(input, "STAMP")}? ID;
 keyMAX		: {isKeyword(input, "MAX")}? ID;
 keyKEYS		: {isKeyword(input, "KEYS")}? ID;
 keyALL		: {isKeyword(input, "ALL")}? ID;
+keyLENGTH	: {isKeyword(input, "LENGTH")}? ID;
