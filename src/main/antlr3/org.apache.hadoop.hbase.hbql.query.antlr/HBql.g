@@ -146,7 +146,6 @@ keyRangeList returns [List<KeyRangeArgs.Range> retval]
 	;
 	
 keyRange returns [KeyRangeArgs.Range retval]
-//options {backtrack=true;}	
 	: q1=QUOTED keyTO keyLAST			{retval = new KeyRangeArgs.Range($q1.text, KeyRangeArgs.Type.LAST);}
 	//| q1=QUOTED 					{retval = new KeyRangeArgs.Range($q1.text, $q1.text);}
 	| q1=QUOTED keyTO q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
@@ -179,12 +178,12 @@ options {backtrack=true;}
 
 simpleCondExpr returns [PredicateExpr retval]
 options {backtrack=true;}	
-	: n=nullCompExpr				{retval = $n.retval;}
-	| c=compareExpr 				{retval = $c.retval;}
+	: n=nullCompStmt				{retval = $n.retval;}
+	| c=compareStmt 				{retval = $c.retval;}
 	| b1=betweenStmt				{retval = $b1.retval;}
 	| l=likeStmt					{retval = $l.retval;}
 	| i=inStmt					{retval = $i.retval;}
-	| b2=booleanStmt				{retval = $b2.retval;}
+	| b2=booleanExpr				{retval = new BooleanStmt($b2.retval);}
 	;
 
 betweenStmt returns [PredicateExpr retval]
@@ -210,15 +209,12 @@ options {backtrack=true;}
 	| a2=stringExpr n=keyNOT? keyIN LPAREN s=stringItemList RPAREN			
 							{retval = new StringInStmt($a2.retval, ($n.text != null), $s.retval);} 
 	;
-
-booleanStmt returns [PredicateExpr retval]
-	: b=booleanExpr					{retval = new BooleanStmt($b.retval);};
 	
-nullCompExpr returns [PredicateExpr retval]
+nullCompStmt returns [PredicateExpr retval]
 	: s=stringExpr keyIS (n=keyNOT)? keyNULL	{retval = new StringNullCompare(($n.text != null), $s.retval);}	
 	;	
 
-compareExpr returns [PredicateExpr retval]
+compareStmt returns [PredicateExpr retval]
 options {backtrack=true;}	
 	: d1=dateExpr o=compOp d2=dateExpr 		{retval = new DateCompare($d1.retval, $o.retval, $d2.retval);}	
 	| s1=stringExpr o=compOp s2=stringExpr	  	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
