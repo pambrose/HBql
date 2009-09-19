@@ -17,14 +17,14 @@ import java.util.regex.Pattern;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringLikeStmt extends GenericNotStmt implements PredicateExpr {
+public class LikeStmt extends GenericNotStmt implements PredicateExpr {
 
     private StringValue expr = null;
     private StringValue patternExpr = null;
 
     private Pattern pattern = null;
 
-    public StringLikeStmt(final StringValue expr, final boolean not, final StringValue patternExpr) {
+    public LikeStmt(final StringValue expr, final boolean not, final StringValue patternExpr) {
         super(not);
         this.expr = expr;
         this.patternExpr = patternExpr;

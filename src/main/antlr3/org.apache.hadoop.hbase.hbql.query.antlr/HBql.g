@@ -169,7 +169,7 @@ andExpr returns [PredicateExpr retval]
 	: e1=condFactor (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanExpr($e1.retval, BooleanExpr.OP.AND, $e2.retval);};
 
 condFactor returns [PredicateExpr retval]			 
-	: n=keyNOT? p=condPrimary			{$condFactor.retval = ($n.text != null) ?  new CondFactor(true, $p.retval) :  $p.retval;};
+	: n=keyNOT? p=condPrimary			{$condFactor.retval = ($n.text != null) ? new CondFactor(true, $p.retval) :  $p.retval;};
 	
 condPrimary returns [PredicateExpr retval]
 options {backtrack=true;}	
@@ -199,7 +199,7 @@ options {backtrack=true;}
 
 likeStmt returns [PredicateExpr retval]
 	: s1=stringExpr n=keyNOT? keyLIKE s2=stringExpr 
-							{retval = new StringLikeStmt($s1.retval, ($n.text != null), $s2.retval);};
+							{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);};
 
 inStmt returns [PredicateExpr retval]
 options {backtrack=true;}	
