@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value;
 
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 import java.util.List;
 
@@ -48,9 +48,9 @@ public class GenericTwoExprExpr<T extends ValueExpr> {
         return this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
     }
 
-    public void setSchema(final Schema schema) {
-        this.getExpr1().setSchema(schema);
-        this.getExpr2().setSchema(schema);
+    public void setContext(final ExprTree context) {
+        this.getExpr1().setContext(context);
+        this.getExpr2().setContext(context);
     }
 
 }

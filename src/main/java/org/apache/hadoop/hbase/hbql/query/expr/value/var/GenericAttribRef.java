@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ExprTreeNode;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
@@ -18,7 +19,7 @@ import java.util.List;
 public abstract class GenericAttribRef implements ExprTreeNode {
 
     private final ExprVariable exprVar;
-    private Schema schema = null;
+    private ExprTree context = null;
 
     protected GenericAttribRef(final String attribName, final FieldType fieldType) {
         this.exprVar = new ExprVariable(attribName, fieldType);
@@ -43,12 +44,15 @@ public abstract class GenericAttribRef implements ExprTreeNode {
         return false;
     }
 
-    public void setSchema(final Schema schema) {
-        this.schema = schema;
+    public void setContext(final ExprTree context) {
+        this.context = context;
     }
 
-    public Schema getSchema() {
-        return schema;
+    protected ExprTree getContext() {
+        return this.context;
     }
 
+    protected Schema getSchema() {
+        return this.getContext().getSchema();
+    }
 }

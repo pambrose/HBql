@@ -50,7 +50,7 @@ public class ExprTree implements Serializable {
     public void setSchema(final Schema schema) {
         if (schema != null) {
             this.schema = schema;
-            this.getPredicateExpr().setSchema(schema);
+            this.getPredicateExpr().setContext(this);
         }
     }
 

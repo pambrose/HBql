@@ -1,9 +1,9 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
@@ -45,9 +45,9 @@ public abstract class GenericFunction {
         return this.functionType;
     }
 
-    public void setSchema(final Schema schema) {
+    public void setContext(final ExprTree context) {
         for (final StringValue val : this.getStringExprs())
-            val.setSchema(schema);
+            val.setContext(context);
     }
 
     // TODO Deal with this

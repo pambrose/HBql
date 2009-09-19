@@ -1,9 +1,9 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 import java.util.List;
 
@@ -58,10 +58,10 @@ public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotStmt 
     }
 
     @Override
-    public void setSchema(final Schema schema) {
-        this.getExpr().setSchema(schema);
+    public void setContext(final ExprTree context) {
+        this.getExpr().setContext(context);
         for (final T value : this.getValueList())
-            value.setSchema(schema);
+            value.setContext(context);
     }
 
     private boolean listIsConstant() {

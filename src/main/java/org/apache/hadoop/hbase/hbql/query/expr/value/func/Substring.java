@@ -1,12 +1,12 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 import java.util.List;
 
@@ -84,10 +84,10 @@ public class Substring implements StringValue {
     }
 
     @Override
-    public void setSchema(final Schema schema) {
-        this.getExpr().setSchema(schema);
-        this.getBegin().setSchema(schema);
-        this.getEnd().setSchema(schema);
+    public void setContext(final ExprTree context) {
+        this.getExpr().setContext(context);
+        this.getBegin().setContext(context);
+        this.getEnd().setContext(context);
     }
 
 }

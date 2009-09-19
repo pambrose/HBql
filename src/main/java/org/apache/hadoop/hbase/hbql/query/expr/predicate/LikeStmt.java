@@ -1,11 +1,11 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.PredicateExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -99,9 +99,9 @@ public class LikeStmt extends GenericNotStmt implements PredicateExpr {
     }
 
     @Override
-    public void setSchema(final Schema schema) {
-        this.getExpr().setSchema(schema);
-        this.getPatternExpr().setSchema(schema);
+    public void setContext(final ExprTree context) {
+        this.getExpr().setContext(context);
+        this.getPatternExpr().setContext(context);
     }
 
 }
