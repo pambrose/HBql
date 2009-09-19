@@ -64,7 +64,7 @@ public class HBql {
     public static String parseStringValue(final String input) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.stringExpr().getCurrentValue(null);
+            return parser.stringValue().getCurrentValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
