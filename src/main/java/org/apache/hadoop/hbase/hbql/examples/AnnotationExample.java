@@ -137,7 +137,7 @@ public class AnnotationExample {
                               + "KEYS '0000000002' TO '0000000003', '0000000007' TO '0000000008' "
                               + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1) "
                               + "VERSIONS 3 "
-                              //+ "SERVER FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4 "
+                              + "SERVER FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4 "
                               + "CLIENT FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4";
 
         HQuery<TestObject> q2 = conn.newHQuery(query2);

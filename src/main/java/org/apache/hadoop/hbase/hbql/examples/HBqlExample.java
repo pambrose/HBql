@@ -35,7 +35,7 @@ public class HBqlExample {
                             + ")");
 
         DefinedSchema schema = SchemaManager.getDefinedSchema("testobjects");
-        final HBqlFilter filter = schema.newHBqlFilter("title LIKE '.*3.*' OR author LIKE '.*4.*'");
+        final HBqlFilter filter = schema.newHBqlFilter("title LIKE '.*3.*' OR family1:author LIKE '.*4.*'");
 
         Scan scan = new Scan();
         scan.addColumn(family, author);
