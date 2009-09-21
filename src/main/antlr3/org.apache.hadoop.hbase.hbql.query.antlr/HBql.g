@@ -179,7 +179,7 @@ options {backtrack=true;}
 simpleCondExpr returns [PredicateExpr retval]
 options {backtrack=true;}	
 	: c=compareExpr 				{retval = $c.retval;}
-	| b2=booleanValue				{retval = new BooleanExpr($b2.retval);}
+	| b2=booleanValue				{retval = new BooleanValueAsPredicateExpr($b2.retval);}
 	;
 
 compareExpr returns [PredicateExpr retval]
@@ -220,7 +220,7 @@ numericPrimary returns [NumberValue retval]
 // Simple typed exprs
 numericCond returns [NumberValue retval]
 	: l=numberVal					{retval = $l.retval;} 
-	|  keyIF e=orExpr keyTHEN n1=numberValue  keyELSE  n2=numberValue keyEND 	
+	| keyIF e=orExpr keyTHEN n1=numberValue  keyELSE  n2=numberValue keyEND 	
 							{retval = new NumberTernary($e.retval, $n1.retval, $n2.retval);}
 	;
 
@@ -254,10 +254,14 @@ booleanValue returns [BooleanValue retval]
 options {backtrack=true;}	
 	: b=booleanLiteral				{retval = $b.retval;}
 	| f=funcReturningBoolean			{retval = $f.retval;}
-	| keyIF e=orExpr keyTHEN b1=booleanValue keyELSE b2=booleanValue keyEND	
+	| keyIF e=orExpr keyTHEN b1=booleanPred keyELSE b2=booleanPred keyEND	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	;
-	
+
+booleanPred returns [BooleanValue retval]
+	: o=orExpr					{retval = new BooleanPredicateAsValue($o.retval);}
+	;
+		
 rangeExpr returns [DateValue retval]
 @init {List<DateValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList();}
 	: m=rangePrimary {exprList.add($m.retval);} (op=plusMinus n=rangePrimary {opList.add($op.retval); exprList.add($n.retval);})*

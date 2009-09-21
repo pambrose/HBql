@@ -15,11 +15,11 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class BooleanExpr implements PredicateExpr {
+public class BooleanValueAsPredicateExpr implements PredicateExpr {
 
     private BooleanValue expr = null;
 
-    public BooleanExpr(final BooleanValue expr) {
+    public BooleanValueAsPredicateExpr(final BooleanValue expr) {
         this.expr = expr;
     }
 
