@@ -183,7 +183,7 @@ options {backtrack=true;}
 	| b1=betweenExpr				{retval = $b1.retval;}
 	| l=likeExpr					{retval = $l.retval;}
 	| i=inExpr					{retval = $i.retval;}
-	| b2=booleanExpr				{retval = new BooleanExpr($b2.retval);}
+	| b2=booleanValue				{retval = new BooleanExpr($b2.retval);}
 	;
 
 betweenExpr returns [PredicateExpr retval]
@@ -282,16 +282,10 @@ stringPrimary returns [StringValue retval]
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
 
-booleanExpr returns [BooleanValue retval]
-options {backtrack=true;}	
-	: b=booleanValue					{retval = $b.retval;}
-	| LPAREN e=orExpr RPAREN			{retval = new BooleanPredicate($e.retval);}
-	;
-
 booleanValue returns [BooleanValue retval]
 	: b=booleanLiteral				{retval = $b.retval;}
 	| f=funcReturningBoolean			{retval = $f.retval;}
-	| keyIF e=orExpr keyTHEN b1=booleanExpr keyELSE b2=booleanExpr keyEND	
+	| keyIF e=orExpr keyTHEN b1=booleanValue keyELSE b2=booleanValue keyEND	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	;
 	
