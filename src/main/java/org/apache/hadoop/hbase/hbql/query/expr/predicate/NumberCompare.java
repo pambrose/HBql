@@ -22,12 +22,12 @@ public class NumberCompare extends GenericCompare<NumberValue> {
         boolean retval = true;
 
         if (this.getExpr1().optimizeForConstants(object))
-            this.setExpr1(new NumberLiteral(this.getExpr1().getCurrentValue(object)));
+            this.setExpr1(new NumberLiteral(this.getExpr1().getValue(object)));
         else
             retval = false;
 
         if (this.getExpr2().optimizeForConstants(object))
-            this.setExpr2(new NumberLiteral(this.getExpr2().getCurrentValue(object)));
+            this.setExpr2(new NumberLiteral(this.getExpr2().getValue(object)));
         else
             retval = false;
 
@@ -37,8 +37,8 @@ public class NumberCompare extends GenericCompare<NumberValue> {
     @Override
     public Boolean evaluate(final Object object) throws HPersistException {
 
-        final long val1 = this.getExpr1().getCurrentValue(object).longValue();
-        final long val2 = this.getExpr2().getCurrentValue(object).longValue();
+        final long val1 = this.getExpr1().getValue(object).longValue();
+        final long val2 = this.getExpr2().getValue(object).longValue();
 
         switch (this.getOp()) {
             case EQ:

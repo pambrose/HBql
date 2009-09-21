@@ -26,7 +26,7 @@ public class StringInStmt extends GenericInStmt<StringValue> implements Predicat
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.setExpr(new StringLiteral(this.getExpr().getCurrentValue(object)));
+            this.setExpr(new StringLiteral(this.getExpr().getValue(object)));
         else
             retval = false;
 
@@ -43,7 +43,7 @@ public class StringInStmt extends GenericInStmt<StringValue> implements Predicat
 
         for (final StringValue val : this.getValueList()) {
             if (val.optimizeForConstants(object)) {
-                newvalList.add(new StringLiteral(val.getCurrentValue(object)));
+                newvalList.add(new StringLiteral(val.getValue(object)));
             }
             else {
                 newvalList.add(val);
@@ -60,9 +60,9 @@ public class StringInStmt extends GenericInStmt<StringValue> implements Predicat
 
     protected boolean evaluateList(final Object object) throws HPersistException {
 
-        final String attribVal = this.getExpr().getCurrentValue(object);
+        final String attribVal = this.getExpr().getValue(object);
         for (final StringValue obj : this.getValueList()) {
-            final String val = obj.getCurrentValue(object);
+            final String val = obj.getValue(object);
             if (attribVal.equals(val))
                 return true;
         }

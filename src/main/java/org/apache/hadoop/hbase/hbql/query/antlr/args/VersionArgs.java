@@ -16,7 +16,7 @@ public class VersionArgs {
     public VersionArgs(final NumberValue val) {
         try {
             if (val != null)
-                this.value = val.getCurrentValue(null).intValue();
+                this.value = val.getValue(null).intValue();
         }
         catch (HPersistException e) {
             e.printStackTrace();

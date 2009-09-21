@@ -28,12 +28,12 @@ public class BooleanTernary extends GenericTernary<BooleanValue> implements Bool
             retval = false;
 
         if (this.getExpr1().optimizeForConstants(object))
-            this.setExpr1(new BooleanLiteral(this.getExpr1().getCurrentValue(object)));
+            this.setExpr1(new BooleanLiteral(this.getExpr1().getValue(object)));
         else
             retval = false;
 
         if (this.getExpr2().optimizeForConstants(object))
-            this.setExpr2(new BooleanLiteral(this.getExpr2().getCurrentValue(object)));
+            this.setExpr2(new BooleanLiteral(this.getExpr2().getValue(object)));
         else
             retval = false;
 
@@ -41,7 +41,7 @@ public class BooleanTernary extends GenericTernary<BooleanValue> implements Bool
     }
 
     @Override
-    public Boolean getCurrentValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HPersistException {
         return (Boolean)super.getValue(object);
     }
 }

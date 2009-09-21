@@ -47,18 +47,18 @@ public class LikeStmt extends GenericNotStmt implements PredicateExpr {
 
         if (this.getPatternExpr().isAConstant()) {
             if (this.pattern == null) {
-                final String pattern = this.getPatternExpr().getCurrentValue(object);
+                final String pattern = this.getPatternExpr().getValue(object);
                 this.pattern = Pattern.compile(pattern);
             }
         }
         else {
-            final String pattern = this.getPatternExpr().getCurrentValue(object);
+            final String pattern = this.getPatternExpr().getValue(object);
             if (pattern == null)
                 throw new HPersistException("Null string for LIKE pattern");
             this.pattern = Pattern.compile(pattern);
         }
 
-        final String val = this.getExpr().getCurrentValue(object);
+        final String val = this.getExpr().getValue(object);
         if (val == null)
             throw new HPersistException("Null string for LIKE value");
 
@@ -74,12 +74,12 @@ public class LikeStmt extends GenericNotStmt implements PredicateExpr {
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.expr = new StringLiteral(this.getExpr().getCurrentValue(object));
+            this.expr = new StringLiteral(this.getExpr().getValue(object));
         else
             retval = false;
 
         if (this.getPatternExpr().optimizeForConstants(object))
-            this.patternExpr = new StringLiteral(this.getPatternExpr().getCurrentValue(object));
+            this.patternExpr = new StringLiteral(this.getPatternExpr().getValue(object));
         else
             retval = false;
 

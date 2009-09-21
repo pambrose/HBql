@@ -64,7 +64,7 @@ public class DateLiteral extends GenericLiteral implements DateValue {
     }
 
     @Override
-    public Long getCurrentValue(final Object object) {
+    public Long getValue(final Object object) {
         return this.dateval;
     }
 }

@@ -16,34 +16,34 @@ public class StringFunction extends GenericFunction implements StringValue {
     }
 
     @Override
-    public String getCurrentValue(final Object object) throws HPersistException {
+    public String getValue(final Object object) throws HPersistException {
 
         switch (this.getFunctionType()) {
             case TRIM: {
-                final String val = this.getStringExprs()[0].getCurrentValue(object);
+                final String val = this.getStringExprs()[0].getValue(object);
                 return val.trim();
             }
 
             case LOWER: {
-                final String val = this.getStringExprs()[0].getCurrentValue(object);
+                final String val = this.getStringExprs()[0].getValue(object);
                 return val.toLowerCase();
             }
 
             case UPPER: {
-                final String val = this.getStringExprs()[0].getCurrentValue(object);
+                final String val = this.getStringExprs()[0].getValue(object);
                 return val.toUpperCase();
             }
 
             case CONCAT: {
-                final String v1 = this.getStringExprs()[0].getCurrentValue(object);
-                final String v2 = this.getStringExprs()[1].getCurrentValue(object);
+                final String v1 = this.getStringExprs()[0].getValue(object);
+                final String v2 = this.getStringExprs()[1].getValue(object);
                 return v1 + v2;
             }
 
             case REPLACE: {
-                final String v1 = this.getStringExprs()[0].getCurrentValue(object);
-                final String v2 = this.getStringExprs()[1].getCurrentValue(object);
-                final String v3 = this.getStringExprs()[2].getCurrentValue(object);
+                final String v1 = this.getStringExprs()[0].getValue(object);
+                final String v2 = this.getStringExprs()[1].getValue(object);
+                final String v3 = this.getStringExprs()[2].getValue(object);
                 return v1.replace(v2, v3);
             }
 

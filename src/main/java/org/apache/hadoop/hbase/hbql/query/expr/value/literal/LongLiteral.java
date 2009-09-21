@@ -17,7 +17,7 @@ public class LongLiteral extends GenericLiteral implements NumberValue {
     }
 
     @Override
-    public Long getCurrentValue(final Object object) {
+    public Long getValue(final Object object) {
         return this.value;
     }
 }

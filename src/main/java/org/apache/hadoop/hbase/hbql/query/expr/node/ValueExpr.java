@@ -10,6 +10,6 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
  */
 public interface ValueExpr extends ExprTreeNode {
 
-    Object getCurrentValue(final Object object) throws HPersistException;
+    Object getValue(final Object object) throws HPersistException;
 
 }

@@ -26,7 +26,7 @@ public class NumberInStmt extends GenericInStmt<NumberValue> implements Predicat
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.setExpr(new NumberLiteral(this.getExpr().getCurrentValue(object)));
+            this.setExpr(new NumberLiteral(this.getExpr().getValue(object)));
         else
             retval = false;
 
@@ -43,7 +43,7 @@ public class NumberInStmt extends GenericInStmt<NumberValue> implements Predicat
 
         for (final NumberValue val : this.getValueList()) {
             if (val.optimizeForConstants(object)) {
-                newvalList.add(new NumberLiteral(val.getCurrentValue(object)));
+                newvalList.add(new NumberLiteral(val.getValue(object)));
             }
             else {
                 newvalList.add(val);
@@ -61,9 +61,9 @@ public class NumberInStmt extends GenericInStmt<NumberValue> implements Predicat
 
     protected boolean evaluateList(final Object object) throws HPersistException {
 
-        final long attribVal = this.getExpr().getCurrentValue(object).longValue();
+        final long attribVal = this.getExpr().getValue(object).longValue();
         for (final NumberValue obj : this.getValueList()) {
-            final long val = obj.getCurrentValue(object).longValue();
+            final long val = obj.getValue(object).longValue();
             if (attribVal == val)
                 return true;
         }

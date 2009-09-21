@@ -17,11 +17,11 @@ public class NumberFunction extends GenericFunction implements NumberValue {
     }
 
     @Override
-    public Number getCurrentValue(final Object object) throws HPersistException {
+    public Number getValue(final Object object) throws HPersistException {
 
         switch (this.getFunctionType()) {
             case LENGTH: {
-                final String val = this.getStringExprs()[0].getCurrentValue(object);
+                final String val = this.getStringExprs()[0].getValue(object);
                 if (val == null)
                     return 0;
                 else
@@ -29,8 +29,8 @@ public class NumberFunction extends GenericFunction implements NumberValue {
             }
 
             case INDEXOF: {
-                final String val1 = this.getStringExprs()[0].getCurrentValue(object);
-                final String val2 = this.getStringExprs()[1].getCurrentValue(object);
+                final String val1 = this.getStringExprs()[0].getValue(object);
+                final String val2 = this.getStringExprs()[1].getValue(object);
                 if (val1 == null || val2 == null)
                     return -1;
                 else

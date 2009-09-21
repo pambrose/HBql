@@ -10,5 +10,5 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
  */
 public interface StringValue extends ValueExpr {
 
-    String getCurrentValue(final Object object) throws HPersistException;
+    String getValue(final Object object) throws HPersistException;
 }

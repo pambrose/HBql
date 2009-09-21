@@ -17,12 +17,12 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
     }
 
     @Override
-    public Boolean getCurrentValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HPersistException {
 
         switch (this.getFunctionType()) {
             case CONTAINS: {
-                final String val1 = this.getStringExprs()[0].getCurrentValue(object);
-                final String val2 = this.getStringExprs()[1].getCurrentValue(object);
+                final String val1 = this.getStringExprs()[0].getValue(object);
+                final String val2 = this.getStringExprs()[1].getValue(object);
                 if (val1 == null || val2 == null)
                     return false;
                 else

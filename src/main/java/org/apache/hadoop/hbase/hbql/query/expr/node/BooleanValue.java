@@ -10,5 +10,5 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
  */
 public interface BooleanValue extends ValueExpr {
 
-    Boolean getCurrentValue(final Object object) throws HPersistException;
+    Boolean getValue(final Object object) throws HPersistException;
 }

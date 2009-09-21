@@ -17,7 +17,7 @@ public class StringLiteral extends GenericLiteral implements StringValue {
     }
 
     @Override
-    public String getCurrentValue(final Object object) {
+    public String getValue(final Object object) {
         return this.value;
     }
 }

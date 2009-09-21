@@ -17,9 +17,9 @@ public class DateRangeArgs {
     public DateRangeArgs(final DateValue lower, final DateValue upper) {
         try {
             if (lower != null)
-                this.lower = lower.getCurrentValue(null);
+                this.lower = lower.getValue(null);
             if (upper != null)
-                this.upper = upper.getCurrentValue(null);
+                this.upper = upper.getValue(null);
         }
         catch (HPersistException e) {
             e.printStackTrace();

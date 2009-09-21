@@ -30,12 +30,12 @@ public class DateTernary extends GenericTernary<DateValue> implements DateValue 
             retval = false;
 
         if (this.getExpr1().optimizeForConstants(object))
-            this.setExpr1(new DateLiteral(this.getExpr1().getCurrentValue(object)));
+            this.setExpr1(new DateLiteral(this.getExpr1().getValue(object)));
         else
             retval = false;
 
         if (this.getExpr2().optimizeForConstants(object))
-            this.setExpr2(new DateLiteral(this.getExpr2().getCurrentValue(object)));
+            this.setExpr2(new DateLiteral(this.getExpr2().getValue(object)));
         else
             retval = false;
 
@@ -43,7 +43,7 @@ public class DateTernary extends GenericTernary<DateValue> implements DateValue 
     }
 
     @Override
-    public Long getCurrentValue(final Object object) throws HPersistException {
+    public Long getValue(final Object object) throws HPersistException {
         return (Long)super.getValue(object);
     }
 }

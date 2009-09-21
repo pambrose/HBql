@@ -16,7 +16,7 @@ public class LimitArgs {
     public LimitArgs(final NumberValue val) {
         try {
             if (val != null)
-                this.value = val.getCurrentValue(null).longValue();
+                this.value = val.getValue(null).longValue();
         }
         catch (HPersistException e) {
             e.printStackTrace();

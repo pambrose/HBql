@@ -21,17 +21,17 @@ public class NumberBetweenStmt extends GenericBetweenStmt<NumberValue> {
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.setExpr(new NumberLiteral(this.getExpr().getCurrentValue(object)));
+            this.setExpr(new NumberLiteral(this.getExpr().getValue(object)));
         else
             retval = false;
 
         if (this.getLower().optimizeForConstants(object))
-            this.setLower(new NumberLiteral(this.getLower().getCurrentValue(object)));
+            this.setLower(new NumberLiteral(this.getLower().getValue(object)));
         else
             retval = false;
 
         if (this.getUpper().optimizeForConstants(object))
-            this.setUpper(new NumberLiteral(this.getUpper().getCurrentValue(object)));
+            this.setUpper(new NumberLiteral(this.getUpper().getValue(object)));
         else
             retval = false;
 
@@ -41,9 +41,9 @@ public class NumberBetweenStmt extends GenericBetweenStmt<NumberValue> {
     @Override
     public Boolean evaluate(final Object object) throws HPersistException {
 
-        final long numval = this.getExpr().getCurrentValue(object).longValue();
-        final boolean retval = numval >= this.getLower().getCurrentValue(object).longValue()
-                               && numval <= this.getUpper().getCurrentValue(object).longValue();
+        final long numval = this.getExpr().getValue(object).longValue();
+        final boolean retval = numval >= this.getLower().getValue(object).longValue()
+                               && numval <= this.getUpper().getValue(object).longValue();
 
         return (this.isNot()) ? !retval : retval;
     }

@@ -18,7 +18,7 @@ public class
     }
 
     @Override
-    public Number getCurrentValue(final Object object) {
+    public Number getValue(final Object object) {
         return this.value;
     }
 }

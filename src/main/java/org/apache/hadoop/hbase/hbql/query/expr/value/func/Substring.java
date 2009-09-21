@@ -53,17 +53,17 @@ public class Substring implements StringValue {
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.expr = new StringLiteral(this.getExpr().getCurrentValue(object));
+            this.expr = new StringLiteral(this.getExpr().getValue(object));
         else
             retval = false;
 
         if (this.getBegin().optimizeForConstants(object))
-            this.begin = new NumberLiteral(this.getBegin().getCurrentValue(object));
+            this.begin = new NumberLiteral(this.getBegin().getValue(object));
         else
             retval = false;
 
         if (this.getEnd().optimizeForConstants(object))
-            this.end = new NumberLiteral(this.getEnd().getCurrentValue(object));
+            this.end = new NumberLiteral(this.getEnd().getValue(object));
         else
             retval = false;
 
@@ -71,10 +71,10 @@ public class Substring implements StringValue {
     }
 
     @Override
-    public String getCurrentValue(final Object object) throws HPersistException {
-        final String val = this.getExpr().getCurrentValue(object);
-        final int begin = this.getBegin().getCurrentValue(object).intValue();
-        final int end = this.getEnd().getCurrentValue(object).intValue();
+    public String getValue(final Object object) throws HPersistException {
+        final String val = this.getExpr().getValue(object);
+        final int begin = this.getBegin().getValue(object).intValue();
+        final int end = this.getEnd().getValue(object).intValue();
         return val.substring(begin, end);
     }
 

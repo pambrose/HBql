@@ -38,7 +38,7 @@ public class StringNullCompare extends GenericNotStmt {
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.expr = new StringLiteral(this.getExpr().getCurrentValue(object));
+            this.expr = new StringLiteral(this.getExpr().getValue(object));
         else
             retval = false;
 
@@ -47,7 +47,7 @@ public class StringNullCompare extends GenericNotStmt {
 
     @Override
     public Boolean evaluate(final Object object) throws HPersistException {
-        final String val = this.getExpr().getCurrentValue(object);
+        final String val = this.getExpr().getValue(object);
         final boolean retval = (val == null);
         return (this.isNot()) ? !retval : retval;
     }

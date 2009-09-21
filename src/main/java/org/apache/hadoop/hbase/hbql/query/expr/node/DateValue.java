@@ -10,5 +10,5 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
  */
 public interface DateValue extends ValueExpr {
 
-    Long getCurrentValue(final Object object) throws HPersistException;
+    Long getValue(final Object object) throws HPersistException;
 }
