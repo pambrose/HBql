@@ -178,41 +178,9 @@ options {backtrack=true;}
 
 simpleCondExpr returns [PredicateExpr retval]
 options {backtrack=true;}	
-	: n=nullCompareExpr				{retval = $n.retval;}
-	| c=compareExpr 				{retval = $c.retval;}
-	| b1=betweenExpr				{retval = $b1.retval;}
-	| l=likeExpr					{retval = $l.retval;}
-	| i=inExpr					{retval = $i.retval;}
+	: c=compareExpr 				{retval = $c.retval;}
 	| b2=booleanValue				{retval = new BooleanExpr($b2.retval);}
 	;
-
-betweenExpr returns [PredicateExpr retval]
-options {backtrack=true;}	
-	: d1=dateValue n=keyNOT? keyBETWEEN d2=dateValue keyAND d3=dateValue
-							{retval = new DateBetweenStmt($d1.retval, ($n.text != null), $d2.retval, $d3.retval);}
-	| n1=numberValue n=keyNOT? keyBETWEEN n2=numberValue keyAND n3=numberValue		
-							{retval = new NumberBetweenStmt($n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
-	| s1=stringValue n=keyNOT? keyBETWEEN s2=stringValue keyAND s3=stringValue		
-							{retval = new StringBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
-	;
-
-likeExpr returns [PredicateExpr retval]
-	: s1=stringValue n=keyNOT? keyLIKE s2=stringValue 
-							{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);};
-
-inExpr returns [PredicateExpr retval]
-options {backtrack=true;}	
-	: a3=dateValue n=keyNOT? keyIN LPAREN d=dateItemList RPAREN			
-							{retval = new DateInStmt($a3.retval, ($n.text != null), $d.retval);} 
-	| a1=numberValue n=keyNOT? keyIN LPAREN i=numberItemList RPAREN			
-							{retval = new NumberInStmt($a1.retval,($n.text != null), $i.retval);} 
-	| a2=stringValue n=keyNOT? keyIN LPAREN s=stringItemList RPAREN			
-							{retval = new StringInStmt($a2.retval, ($n.text != null), $s.retval);} 
-	;
-	
-nullCompareExpr returns [PredicateExpr retval]
-	: s=stringValue keyIS (n=keyNOT)? keyNULL	{retval = new StringNullCompare(($n.text != null), $s.retval);}	
-	;	
 
 compareExpr returns [PredicateExpr retval]
 options {backtrack=true;}	
@@ -276,13 +244,14 @@ stringParen returns [StringValue retval]
 stringPrimary returns [StringValue retval]
 	: sl=stringLiteral				{retval = $sl.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
-	| n=keyNULL					{retval = new StringNullLiteral();}
+	| keyNULL					{retval = new StringNullLiteral();}
 	| a=stringAttribVar				{retval = $a.retval;}
 	| keyIF e=orExpr keyTHEN s1=stringValue keyELSE s2=stringValue keyEND	
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	;
 
 booleanValue returns [BooleanValue retval]
+options {backtrack=true;}	
 	: b=booleanLiteral				{retval = $b.retval;}
 	| f=funcReturningBoolean			{retval = $f.retval;}
 	| keyIF e=orExpr keyTHEN b1=booleanValue keyELSE b2=booleanValue keyEND	
@@ -385,8 +354,41 @@ funcReturningInteger returns [NumberValue retval]
 	;
 
 funcReturningBoolean returns [BooleanValue retval]
+options {backtrack=true;}	
 	: s1=stringValue keyCONTAINS s2=stringValue	{retval = new BooleanFunction(GenericFunction.Type.CONTAINS, $s1.retval, $s2.retval);}
+	| l=likeExpr					{retval = $l.retval;}
+	| b1=betweenExpr				{retval = $b1.retval;}
+	| i=inExpr					{retval = $i.retval;}
+	| n=nullCompareExpr				{retval = $n.retval;}
 	;
+
+betweenExpr returns [BooleanValue retval]
+options {backtrack=true;}	
+	: d1=dateValue n=keyNOT? keyBETWEEN d2=dateValue keyAND d3=dateValue
+							{retval = new DateBetweenStmt($d1.retval, ($n.text != null), $d2.retval, $d3.retval);}
+	| n1=numberValue n=keyNOT? keyBETWEEN n2=numberValue keyAND n3=numberValue		
+							{retval = new NumberBetweenStmt($n1.retval, ($n.text != null), $n2.retval, $n3.retval);}
+	| s1=stringValue n=keyNOT? keyBETWEEN s2=stringValue keyAND s3=stringValue		
+							{retval = new StringBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
+	;
+
+likeExpr returns [BooleanValue retval]
+	: s1=stringValue n=keyNOT? keyLIKE s2=stringValue 
+							{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);};
+
+inExpr returns [BooleanValue retval]
+options {backtrack=true;}	
+	: a3=dateValue n=keyNOT? keyIN LPAREN d=dateItemList RPAREN			
+							{retval = new DateInStmt($a3.retval, ($n.text != null), $d.retval);} 
+	| a1=numberValue n=keyNOT? keyIN LPAREN i=numberItemList RPAREN			
+							{retval = new NumberInStmt($a1.retval,($n.text != null), $i.retval);} 
+	| a2=stringValue n=keyNOT? keyIN LPAREN s=stringItemList RPAREN			
+							{retval = new StringInStmt($a2.retval, ($n.text != null), $s.retval);} 
+	;
+	
+nullCompareExpr returns [BooleanValue retval]
+	: s=stringValue keyIS (n=keyNOT)? keyNULL	{retval = new StringNullCompare(($n.text != null), $s.retval);}	
+	;	
 		
 numberItemList returns [List<NumberValue> retval]
 @init {retval = Lists.newArrayList();}

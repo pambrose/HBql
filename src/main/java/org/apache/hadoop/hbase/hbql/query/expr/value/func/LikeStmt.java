@@ -1,9 +1,8 @@
-package org.apache.hadoop.hbase.hbql.query.expr.predicate;
+package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
-import org.apache.hadoop.hbase.hbql.query.expr.node.PredicateExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 
@@ -17,7 +16,7 @@ import java.util.regex.Pattern;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class LikeStmt extends GenericNotStmt implements PredicateExpr {
+public class LikeStmt extends GenericNotValue {
 
     private StringValue expr = null;
     private StringValue patternExpr = null;
@@ -43,7 +42,7 @@ public class LikeStmt extends GenericNotStmt implements PredicateExpr {
     }
 
     @Override
-    public Boolean evaluate(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HPersistException {
 
         if (this.getPatternExpr().isAConstant()) {
             if (this.pattern == null) {

@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.expr.predicate;
+package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
@@ -14,7 +14,7 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class StringNullCompare extends GenericNotStmt {
+public class StringNullCompare extends GenericNotValue {
 
     private StringValue expr = null;
 
@@ -46,7 +46,7 @@ public class StringNullCompare extends GenericNotStmt {
     }
 
     @Override
-    public Boolean evaluate(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HPersistException {
         final String val = this.getExpr().getValue(object);
         final boolean retval = (val == null);
         return (this.isNot()) ? !retval : retval;

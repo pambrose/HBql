@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.expr.predicate;
+package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
@@ -39,7 +39,7 @@ public class DateBetweenStmt extends GenericBetweenStmt<DateValue> {
     }
 
     @Override
-    public Boolean evaluate(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HPersistException {
 
         final long dateval = this.getExpr().getValue(object);
         final boolean retval = dateval >= this.getLower().getValue(object)

@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.expr.predicate;
+package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
@@ -13,7 +13,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotStmt {
+public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotValue {
 
     private T expr = null;
     private final List<T> valueList;
@@ -47,7 +47,7 @@ public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotStmt 
     }
 
     @Override
-    public Boolean evaluate(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HPersistException {
         final boolean retval = this.evaluateList(object);
         return (this.isNot()) ? !retval : retval;
     }

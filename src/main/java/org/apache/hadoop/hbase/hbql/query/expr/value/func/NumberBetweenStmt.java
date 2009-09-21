@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.expr.predicate;
+package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -39,7 +39,7 @@ public class NumberBetweenStmt extends GenericBetweenStmt<NumberValue> {
     }
 
     @Override
-    public Boolean evaluate(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HPersistException {
 
         final long numval = this.getExpr().getValue(object).longValue();
         final boolean retval = numval >= this.getLower().getValue(object).longValue()

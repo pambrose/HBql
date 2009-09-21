@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.expr.predicate;
+package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
@@ -12,7 +12,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public abstract class GenericBetweenStmt<T extends ValueExpr> extends GenericNotStmt {
+public abstract class GenericBetweenStmt<T extends ValueExpr> extends GenericNotValue {
 
     private T expr = null;
     private T lower = null, upper = null;
