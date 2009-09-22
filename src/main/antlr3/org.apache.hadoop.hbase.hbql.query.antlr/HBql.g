@@ -220,7 +220,7 @@ numericPrimary returns [NumberValue retval]
 // Simple typed exprs
 numericCond returns [NumberValue retval]
 	: l=numberVal					{retval = $l.retval;} 
-	| keyIF e=orExpr keyTHEN n1=numberValue  keyELSE  n2=numberValue keyEND 	
+	| keyIF e=orExpr keyTHEN n1=numberValue keyELSE n2=numberValue keyEND 	
 							{retval = new NumberTernary($e.retval, $n1.retval, $n2.retval);}
 	;
 
@@ -293,7 +293,7 @@ dateVal returns [DateValue retval]
 	| d3=dateAttribVar				{retval = $d3.retval;} 			
 	;
 
-// Attrib
+// Variables
 numberAttribVar returns [NumberValue retval]
 	: {isAttribType(input, FieldType.IntegerType)}? v=varRef 
 							{retval = (NumberValue)this.getValueExpr($v.text);};
@@ -403,13 +403,13 @@ dateItemList returns [List<DateValue> retval]
 	: d1=dateItem {retval.add($d1.retval);} (COMMA d2=dateItem {retval.add($d2.retval);})*;
 	
 numberItem returns [NumberValue retval]
-	: n=numberValue					{$numberItem.retval = $n.retval;};
+	: n=numberValue					{retval = $n.retval;};
 
 stringItem returns [StringValue retval]
-	: s=stringValue					{$stringItem.retval = $s.retval;};
+	: s=stringValue					{retval = $s.retval;};
 
 dateItem returns [DateValue retval]
-	: d=dateValue					{$dateItem.retval = $d.retval;};
+	: d=dateValue					{retval = $d.retval;};
 
 qstringList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
