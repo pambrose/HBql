@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
 import java.util.List;
@@ -38,6 +39,14 @@ public class CompareExpr implements BooleanValue {
         return expr2;
     }
 
+    private void setExpr1(final BooleanValue expr1) {
+        this.expr1 = expr1;
+    }
+
+    private void setExpr2(final BooleanValue expr2) {
+        this.expr2 = expr2;
+    }
+
     private OP getOp() {
         return op;
     }
@@ -50,23 +59,12 @@ public class CompareExpr implements BooleanValue {
     }
 
     @Override
-    public boolean optimizeForConstants(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
 
-        boolean retval = true;
+        this.setExpr1((BooleanValue)this.getExpr1().getOptimizedValue(object));
+        this.setExpr2((BooleanValue)this.getExpr2().getOptimizedValue(object));
 
-        if (this.getExpr1().optimizeForConstants(object))
-            this.expr1 = new BooleanLiteral(this.getExpr1().getValue(object));
-        else
-            retval = false;
-
-        if (this.getExpr2() != null) {
-            if (this.getExpr2().optimizeForConstants(object))
-                this.expr2 = new BooleanLiteral(this.getExpr2().getValue(object));
-            else
-                retval = false;
-        }
-
-        return retval;
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(object)) : this;
     }
 
     @Override

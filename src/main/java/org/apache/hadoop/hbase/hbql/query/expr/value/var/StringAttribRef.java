@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringAttribRef extends GenericAttribRef implements StringValue {
+public class StringAttribRef extends GenericAttribRef<StringValue> implements StringValue {
 
     public StringAttribRef(final String attribName) {
         super(attribName, FieldType.StringType);

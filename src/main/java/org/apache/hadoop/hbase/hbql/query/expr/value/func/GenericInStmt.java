@@ -4,6 +4,8 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
+import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
 
@@ -36,7 +38,29 @@ public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotValue
         return valueList;
     }
 
-    abstract boolean evaluateList(final Object object) throws HPersistException;
+    protected abstract boolean evaluateList(final Object object) throws HPersistException;
+
+    private void optimizeList(final Object object) throws HPersistException {
+
+        final List<T> newvalList = Lists.newArrayList();
+
+        for (final T val : this.getValueList())
+            newvalList.add((T)val.getOptimizedValue(object));
+
+        // Swap new values to list
+        this.getValueList().clear();
+        this.getValueList().addAll(newvalList);
+    }
+
+    @Override
+    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+
+        this.setExpr((T)this.getExpr().getOptimizedValue(object));
+
+        this.optimizeList(object);
+
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(object)) : this;
+    }
 
     @Override
     public List<ExprVariable> getExprVariables() {

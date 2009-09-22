@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,24 +13,6 @@ public class DateCompare extends GenericCompare<DateValue> {
 
     public DateCompare(final DateValue expr1, final OP op, final DateValue expr2) {
         super(expr1, op, expr2);
-    }
-
-    @Override
-    public boolean optimizeForConstants(final Object object) throws HPersistException {
-
-        boolean retval = true;
-
-        if (this.getExpr1().optimizeForConstants(object))
-            this.setExpr1(new DateLiteral(this.getExpr1().getValue(object)));
-        else
-            retval = false;
-
-        if (this.getExpr2().optimizeForConstants(object))
-            this.setExpr2(new DateLiteral(this.getExpr2().getValue(object)));
-        else
-            retval = false;
-
-        return retval;
     }
 
     @Override

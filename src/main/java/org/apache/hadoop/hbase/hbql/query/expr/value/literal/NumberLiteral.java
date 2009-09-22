@@ -8,8 +8,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class
-        NumberLiteral extends GenericLiteral implements NumberValue {
+public class NumberLiteral extends GenericLiteral<NumberValue> implements NumberValue {
 
     private final Number value;
 

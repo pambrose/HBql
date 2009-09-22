@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public abstract class GenericFunction {
+public abstract class GenericFunction<T extends ValueExpr> {
 
     public enum Type {
         CONCAT,
@@ -51,8 +52,8 @@ public abstract class GenericFunction {
     }
 
     // TODO Deal with this
-    public boolean optimizeForConstants(final Object object) throws HPersistException {
-        return false;
+    public T getOptimizedValue(final Object object) throws HPersistException {
+        return (T)this;
     }
 
     // TODO Deal with this

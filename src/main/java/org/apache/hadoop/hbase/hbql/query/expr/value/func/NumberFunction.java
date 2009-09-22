@@ -10,7 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
  * Date: Aug 29, 2009
  * Time: 5:28:17 PM
  */
-public class NumberFunction extends GenericFunction implements NumberValue {
+public class NumberFunction extends GenericFunction<NumberValue> implements NumberValue {
 
     public NumberFunction(final Type functionType, final StringValue... stringExprs) {
         super(functionType, stringExprs);

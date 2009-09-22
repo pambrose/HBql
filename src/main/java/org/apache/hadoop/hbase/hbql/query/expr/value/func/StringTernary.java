@@ -3,8 +3,8 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,26 +19,13 @@ public class StringTernary extends GenericTernary<StringValue> implements String
     }
 
     @Override
-    public boolean optimizeForConstants(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
 
-        boolean retval = true;
+        this.setPred((BooleanValue)this.getPred().getOptimizedValue(object));
+        this.setExpr1((StringValue)this.getExpr1().getOptimizedValue(object));
+        this.setExpr2((StringValue)this.getExpr2().getOptimizedValue(object));
 
-        if (this.getPred().optimizeForConstants(object))
-            this.setPred(new BooleanLiteral(this.getPred().getValue(object)));
-        else
-            retval = false;
-
-        if (this.getExpr1().optimizeForConstants(object))
-            this.setExpr1(new StringLiteral(this.getExpr1().getValue(object)));
-        else
-            retval = false;
-
-        if (this.getExpr2().optimizeForConstants(object))
-            this.setExpr2(new StringLiteral(this.getExpr2().getValue(object)));
-        else
-            retval = false;
-
-        return retval;
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(object)) : this;
     }
 
     @Override

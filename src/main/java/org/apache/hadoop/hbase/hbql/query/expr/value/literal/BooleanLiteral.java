@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class BooleanLiteral extends GenericLiteral implements BooleanValue {
+public class BooleanLiteral extends GenericLiteral<BooleanValue> implements BooleanValue {
 
     private final Boolean value;
 

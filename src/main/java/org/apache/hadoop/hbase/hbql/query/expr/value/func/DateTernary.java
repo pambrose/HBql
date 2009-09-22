@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 
 /**
@@ -20,26 +20,13 @@ public class DateTernary extends GenericTernary<DateValue> implements DateValue 
     }
 
     @Override
-    public boolean optimizeForConstants(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
 
-        boolean retval = true;
+        this.setPred((BooleanValue)this.getPred().getOptimizedValue(object));
+        this.setExpr1((DateValue)this.getExpr1().getOptimizedValue(object));
+        this.setExpr2((DateValue)this.getExpr2().getOptimizedValue(object));
 
-        if (this.getPred().optimizeForConstants(object))
-            this.setPred(new BooleanLiteral(this.getPred().getValue(object)));
-        else
-            retval = false;
-
-        if (this.getExpr1().optimizeForConstants(object))
-            this.setExpr1(new DateLiteral(this.getExpr1().getValue(object)));
-        else
-            retval = false;
-
-        if (this.getExpr2().optimizeForConstants(object))
-            this.setExpr2(new DateLiteral(this.getExpr2().getValue(object)));
-        else
-            retval = false;
-
-        return retval;
+        return this.isAConstant() ? new DateLiteral(this.getValue(object)) : this;
     }
 
     @Override

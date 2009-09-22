@@ -5,7 +5,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,21 +36,12 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public boolean optimizeForConstants(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
 
-        boolean retval = true;
+        this.formatExpr = (StringValue)this.getFormatExpr().getOptimizedValue(object);
+        this.expr = (StringValue)this.getExpr().getOptimizedValue(object);
 
-        if (this.getFormatExpr().optimizeForConstants(object))
-            this.formatExpr = new StringLiteral(this.getFormatExpr().getValue(object));
-        else
-            retval = false;
-
-        if (this.getExpr().optimizeForConstants(object))
-            this.expr = new StringLiteral(this.getExpr().getValue(object));
-        else
-            retval = false;
-
-        return retval;
+        return this.isAConstant() ? new DateLiteral(this.getValue(object)) : this;
     }
 
     @Override

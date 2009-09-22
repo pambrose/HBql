@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,24 +13,6 @@ public class NumberCompare extends GenericCompare<NumberValue> {
 
     public NumberCompare(final NumberValue expr1, final OP op, final NumberValue expr2) {
         super(expr1, op, expr2);
-    }
-
-    @Override
-    public boolean optimizeForConstants(final Object object) throws HPersistException {
-
-        boolean retval = true;
-
-        if (this.getExpr1().optimizeForConstants(object))
-            this.setExpr1(new NumberLiteral(this.getExpr1().getValue(object)));
-        else
-            retval = false;
-
-        if (this.getExpr2().optimizeForConstants(object))
-            this.setExpr2(new NumberLiteral(this.getExpr2().getValue(object)));
-        else
-            retval = false;
-
-        return retval;
     }
 
     @Override

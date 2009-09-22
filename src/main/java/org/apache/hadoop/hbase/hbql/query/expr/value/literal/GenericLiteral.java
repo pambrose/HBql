@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ExprTreeNode;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 12:27:29 PM
  */
-public abstract class GenericLiteral implements ExprTreeNode {
+public abstract class GenericLiteral<T extends ValueExpr> implements ExprTreeNode {
 
     @Override
     public List<ExprVariable> getExprVariables() {
@@ -22,8 +23,8 @@ public abstract class GenericLiteral implements ExprTreeNode {
     }
 
     @Override
-    public boolean optimizeForConstants(final Object object) throws HPersistException {
-        return true;
+    public T getOptimizedValue(final Object object) throws HPersistException {
+        return (T)this;
     }
 
     @Override

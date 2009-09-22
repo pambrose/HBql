@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface ExprTreeNode extends Serializable {
 
-    boolean optimizeForConstants(final Object object) throws HPersistException;
+    ValueExpr getOptimizedValue(final Object object) throws HPersistException;
 
     List<ExprVariable> getExprVariables();
 

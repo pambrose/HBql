@@ -4,7 +4,8 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
 import java.util.List;
 
@@ -27,22 +28,21 @@ public class StringNullCompare extends GenericNotValue {
         return this.expr;
     }
 
+    private void setExpr(final StringValue expr) {
+        this.expr = expr;
+    }
+
     @Override
     public List<ExprVariable> getExprVariables() {
         return this.getExpr().getExprVariables();
     }
 
     @Override
-    public boolean optimizeForConstants(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
 
-        boolean retval = true;
+        this.setExpr((StringValue)this.getExpr().getOptimizedValue(object));
 
-        if (this.getExpr().optimizeForConstants(object))
-            this.expr = new StringLiteral(this.getExpr().getValue(object));
-        else
-            retval = false;
-
-        return retval;
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(object)) : this;
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.Date;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class DateLiteral extends GenericLiteral implements DateValue {
+public class DateLiteral extends GenericLiteral<DateValue> implements DateValue {
 
     private static long now = System.currentTimeMillis();
 

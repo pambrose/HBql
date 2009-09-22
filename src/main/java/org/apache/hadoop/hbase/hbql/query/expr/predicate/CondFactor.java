@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
 import java.util.List;
@@ -28,22 +29,21 @@ public class CondFactor implements BooleanValue {
         return this.expr;
     }
 
+    private void setExpr(final BooleanValue expr) {
+        this.expr = expr;
+    }
+
     @Override
     public List<ExprVariable> getExprVariables() {
         return this.getExpr().getExprVariables();
     }
 
     @Override
-    public boolean optimizeForConstants(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
 
-        boolean retval = true;
+        this.setExpr((BooleanValue)this.getExpr().getOptimizedValue(object));
 
-        if (this.getExpr().optimizeForConstants(object))
-            this.expr = new BooleanLiteral(this.getExpr().getValue(object));
-        else
-            retval = false;
-
-        return retval;
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(object)) : this;
     }
 
     @Override

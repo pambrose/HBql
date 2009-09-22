@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 
 import java.util.List;
@@ -48,26 +48,13 @@ public class Substring implements StringValue {
     }
 
     @Override
-    public boolean optimizeForConstants(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
 
-        boolean retval = true;
+        this.expr = (StringValue)this.getExpr().getOptimizedValue(object);
+        this.begin = (NumberValue)this.getBegin().getOptimizedValue(object);
+        this.end = (NumberValue)this.getEnd().getOptimizedValue(object);
 
-        if (this.getExpr().optimizeForConstants(object))
-            this.expr = new StringLiteral(this.getExpr().getValue(object));
-        else
-            retval = false;
-
-        if (this.getBegin().optimizeForConstants(object))
-            this.begin = new NumberLiteral(this.getBegin().getValue(object));
-        else
-            retval = false;
-
-        if (this.getEnd().optimizeForConstants(object))
-            this.end = new NumberLiteral(this.getEnd().getValue(object));
-        else
-            retval = false;
-
-        return retval;
+        return this.isAConstant() ? new StringLiteral(this.getValue(object)) : this;
     }
 
     @Override

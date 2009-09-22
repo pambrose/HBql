@@ -62,12 +62,14 @@ public class GenericTwoExprExpr<T extends ValueExpr> {
     }
 
     public boolean isAConstant() {
-        return this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
+        if (this.getExpr2() == null)
+            return this.getExpr1().isAConstant();
+        else
+            return (this.getExpr1().isAConstant() && this.getExpr2().isAConstant());
     }
 
     public void setContext(final ExprTree context) {
         this.getExpr1().setContext(context);
         this.getExpr2().setContext(context);
     }
-
 }

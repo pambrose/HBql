@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class LongAttribRef extends GenericAttribRef implements NumberValue {
+public class LongAttribRef extends GenericAttribRef<NumberValue> implements NumberValue {
 
     public LongAttribRef(final String attribName) {
         super(attribName, FieldType.LongType);

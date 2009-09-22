@@ -1,8 +1,10 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
+import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
 import java.util.List;
 
@@ -46,6 +48,16 @@ public abstract class GenericBetweenStmt<T extends ValueExpr> extends GenericNot
 
     public void setUpper(final T upper) {
         this.upper = upper;
+    }
+
+    @Override
+    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+
+        this.setExpr((T)this.getExpr().getOptimizedValue(object));
+        this.setLower((T)this.getLower().getOptimizedValue(object));
+        this.setUpper((T)this.getUpper().getOptimizedValue(object));
+
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(object)) : this;
     }
 
     @Override

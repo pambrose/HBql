@@ -13,7 +13,7 @@ import java.util.Date;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class DateAttribRef extends GenericAttribRef implements DateValue {
+public class DateAttribRef extends GenericAttribRef<DateValue> implements DateValue {
 
     public DateAttribRef(final String attribName) {
         super(attribName, FieldType.DateType);
