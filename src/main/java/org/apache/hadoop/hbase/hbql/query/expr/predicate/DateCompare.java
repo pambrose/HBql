@@ -54,7 +54,7 @@ public class DateCompare extends GenericCompare<DateValue> {
             case LTEQ:
                 return val1 <= val2;
         }
-        throw new HPersistException("Error in DateCompare.evaluate()");
+        throw new HPersistException("Error in DateCompare.getValue()");
     }
 
 }

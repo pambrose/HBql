@@ -56,6 +56,6 @@ public class StringCompare extends GenericCompare<StringValue> {
                 return val1.compareTo(val2) <= 0;
         }
 
-        throw new HPersistException("Error in StringCompare.evaluate()");
+        throw new HPersistException("Error in StringCompare.getValue()");
     }
 }

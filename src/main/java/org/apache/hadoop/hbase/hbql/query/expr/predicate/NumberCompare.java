@@ -55,6 +55,6 @@ public class NumberCompare extends GenericCompare<NumberValue> {
                 return val1 != val2;
         }
 
-        throw new HPersistException("Error in NumberCompare.evaluate()");
+        throw new HPersistException("Error in NumberCompare.getValue()");
     }
 }

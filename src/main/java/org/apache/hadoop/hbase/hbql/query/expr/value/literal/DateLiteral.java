@@ -38,13 +38,13 @@ public class DateLiteral extends GenericLiteral implements DateValue {
         }
     }
 
-    private final long dateval;
+    private final Long dateval;
 
     public DateLiteral(final Date dateval) {
         this.dateval = dateval.getTime();
     }
 
-    public DateLiteral(final long val) {
+    public DateLiteral(final Long val) {
         this.dateval = val;
     }
 

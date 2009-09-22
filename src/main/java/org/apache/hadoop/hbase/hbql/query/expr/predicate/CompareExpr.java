@@ -84,7 +84,7 @@ public class CompareExpr implements BooleanValue {
                 return expr1val && this.getExpr2().getValue(object);
 
             default:
-                throw new HPersistException("Error in BooleanExpr.evaluate()");
+                throw new HPersistException("Error in BooleanExpr.getValue()");
 
         }
     }
