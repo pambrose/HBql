@@ -184,20 +184,11 @@ options {backtrack=true;}
 
 compareExpr returns [BooleanValue retval]
 options {backtrack=true;}	
-	: d1=dateValue o=compOp d2=dateValue 		{retval = new DateCompare($d1.retval, $o.retval, $d2.retval);}	
-	| s1=stringValue o=compOp s2=stringValue	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
-	| n1=numberValue o=compOp n2=numberValue	{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
+	: d1=dateValue o=compareOp d2=dateValue 	{retval = new DateCompare($d1.retval, $o.retval, $d2.retval);}	
+	| s1=stringValue o=compareOp s2=stringValue	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
+	| n1=numberValue o=compareOp n2=numberValue	{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
 	;
 	
-compOp returns [GenericCompare.OP retval]
-	: EQ 						{retval = GenericCompare.OP.EQ;}
-	| GT 						{retval = GenericCompare.OP.GT;}
-	| GTEQ 						{retval = GenericCompare.OP.GTEQ;}
-	| LT 						{retval = GenericCompare.OP.LT;}
-	| LTEQ 						{retval = GenericCompare.OP.LTEQ;}
-	| (LTGT | BANGEQ)				{retval = GenericCompare.OP.NOTEQ;}
-	;
-
 // Numeric calculations
 numberValue returns [NumberValue retval] 
 @init {List<NumberValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList(); }
@@ -207,7 +198,7 @@ numberValue returns [NumberValue retval]
 multNumericExpr returns [NumberValue retval]
 @init {List<NumberValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList(); }
 	: m=signedNumericPrimary {exprList.add($m.retval);} (op=multDiv n=signedNumericPrimary {opList.add($op.retval); exprList.add($n.retval);})*	
-							{$multNumericExpr.retval = getLeftAssociativeNumberValues(exprList, opList);};
+							{retval = getLeftAssociativeNumberValues(exprList, opList);};
 	
 signedNumericPrimary returns [NumberValue retval]
 	: (s=plusMinus)? n=numericPrimary 		{$signedNumericPrimary.retval = ($s.retval == GenericCalcExpr.OP.MINUS) ? new NumberCalcExpr($n.retval, GenericCalcExpr.OP.NEGATIVE, null) :  $n.retval;};
@@ -420,6 +411,14 @@ column 	: c=varRef;
 schemaDesc returns [Schema retval]
 	: LCURLY a=attribList RCURLY			{retval = HUtil.newDefinedSchema(input, $a.retval);};
 	
+compareOp returns [GenericCompare.OP retval]
+	: EQ 						{retval = GenericCompare.OP.EQ;}
+	| GT 						{retval = GenericCompare.OP.GT;}
+	| GTEQ 						{retval = GenericCompare.OP.GTEQ;}
+	| LT 						{retval = GenericCompare.OP.LT;}
+	| LTEQ 						{retval = GenericCompare.OP.LTEQ;}
+	| (LTGT | BANGEQ)				{retval = GenericCompare.OP.NOTEQ;}
+	;
 			
 varRef	
 	: ID //((DOT | COLON) ID)*			
