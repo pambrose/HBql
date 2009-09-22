@@ -13,14 +13,9 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
  */
 public class NumberCalcExpr extends GenericCalcExpr<NumberValue> implements NumberValue {
 
-    public NumberCalcExpr(final NumberValue expr1) {
-        this(expr1, GenericCalcExpr.OP.NONE, null);
-    }
-
     public NumberCalcExpr(final NumberValue expr1, final GenericCalcExpr.OP op, final NumberValue expr2) {
         super(expr1, op, expr2);
     }
-
 
     @Override
     public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
@@ -51,8 +46,6 @@ public class NumberCalcExpr extends GenericCalcExpr<NumberValue> implements Numb
                 return val1 % val2;
             case NEGATIVE:
                 return val1 * -1;
-            case NONE:
-                return val1;
         }
 
         throw new HPersistException("Error in NumberCalcExpr.getValue() " + this.getOp());

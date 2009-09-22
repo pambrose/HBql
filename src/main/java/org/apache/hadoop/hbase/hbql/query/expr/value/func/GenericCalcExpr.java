@@ -17,8 +17,7 @@ public class GenericCalcExpr<T extends ValueExpr> extends GenericTwoExprExpr<T> 
         MULT,
         DIV,
         MOD,
-        NEGATIVE,
-        NONE
+        NEGATIVE
     }
 
     private final GenericCalcExpr.OP op;
