@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
-import org.apache.hadoop.hbase.hbql.query.expr.node.PredicateExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
 
@@ -17,18 +17,18 @@ import java.util.List;
  */
 public abstract class GenericTernary<T extends ValueExpr> extends GenericTwoExprExpr<T> {
 
-    private PredicateExpr pred = null;
+    private BooleanValue pred = null;
 
-    protected GenericTernary(final PredicateExpr pred, final T expr1, final T expr2) {
+    protected GenericTernary(final BooleanValue pred, final T expr1, final T expr2) {
         super(expr1, expr2);
         this.pred = pred;
     }
 
-    protected PredicateExpr getPred() {
+    protected BooleanValue getPred() {
         return this.pred;
     }
 
-    protected void setPred(final PredicateExpr pred) {
+    protected void setPred(final BooleanValue pred) {
         this.pred = pred;
     }
 
@@ -40,7 +40,7 @@ public abstract class GenericTernary<T extends ValueExpr> extends GenericTwoExpr
     }
 
     public Object getValue(final Object object) throws HPersistException {
-        if (this.getPred().evaluate(object))
+        if (this.getPred().getValue(object))
             return this.getExpr1().getValue(object);
         else
             return this.getExpr2().getValue(object);

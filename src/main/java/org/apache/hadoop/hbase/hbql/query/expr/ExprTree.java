@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.PredicateExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
@@ -19,24 +19,24 @@ import java.util.List;
 public class ExprTree implements Serializable {
 
     private Schema schema = null;
-    private PredicateExpr predicateExpr = null;
+    private BooleanValue booleanValue = null;
     private long start, end;
     private boolean optimized = false;
 
-    private ExprTree(final PredicateExpr predicateExpr) {
-        this.predicateExpr = predicateExpr;
+    private ExprTree(final BooleanValue booleanValue) {
+        this.booleanValue = booleanValue;
     }
 
-    public static ExprTree newExprTree(final PredicateExpr expr) {
-        return new ExprTree(expr);
+    public static ExprTree newExprTree(final BooleanValue booleanValue) {
+        return new ExprTree(booleanValue);
     }
 
-    private PredicateExpr getPredicateExpr() {
-        return this.predicateExpr;
+    private BooleanValue getBooleanValue() {
+        return this.booleanValue;
     }
 
-    private void setPredicateExpr(final PredicateExpr predicateExpr) {
-        this.predicateExpr = predicateExpr;
+    private void setBooleanValue(final BooleanValue booleanValue) {
+        this.booleanValue = booleanValue;
     }
 
     public Schema getSchema() {
@@ -44,13 +44,13 @@ public class ExprTree implements Serializable {
     }
 
     public boolean isValid() {
-        return this.getPredicateExpr() != null;
+        return this.getBooleanValue() != null;
     }
 
     public void setSchema(final Schema schema) {
         if (schema != null) {
             this.schema = schema;
-            this.getPredicateExpr().setContext(this);
+            this.getBooleanValue().setContext(this);
         }
     }
 
@@ -60,18 +60,18 @@ public class ExprTree implements Serializable {
     }
 
     public List<ExprVariable> getExprVariables() {
-        if (this.getPredicateExpr() == null)
+        if (this.getBooleanValue() == null)
             return Lists.newArrayList();
         else
-            return this.getPredicateExpr().getExprVariables();
+            return this.getBooleanValue().getExprVariables();
     }
 
     private boolean optimizeForConstants(final Object object) throws HPersistException {
 
         boolean retval = true;
 
-        if (this.getPredicateExpr().optimizeForConstants(object))
-            this.setPredicateExpr(new BooleanLiteral(this.getPredicateExpr().evaluate(object)));
+        if (this.getBooleanValue().optimizeForConstants(object))
+            this.setBooleanValue(new BooleanLiteral(this.getBooleanValue().getValue(object)));
         else
             retval = false;
 
@@ -85,7 +85,7 @@ public class ExprTree implements Serializable {
         // Set it once per evaluation
         DateLiteral.resetNow();
 
-        final boolean retval = (this.getPredicateExpr() == null) || (this.getPredicateExpr().evaluate(object));
+        final boolean retval = (this.getBooleanValue() == null) || (this.getBooleanValue().getValue(object));
 
         this.end = System.nanoTime();
 

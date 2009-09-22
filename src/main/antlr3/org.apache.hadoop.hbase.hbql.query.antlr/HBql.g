@@ -161,31 +161,31 @@ descWhereExpr [Schema es] returns [ExprTree retval]
 	  e=orExpr					{retval = ExprTree.newExprTree($e.retval);
 	  						 if ($s.retval != null) retval.setSchema($s.retval);};
 			
-orExpr returns [PredicateExpr retval]
+orExpr returns [BooleanValue retval]
 	: e1=andExpr (keyOR e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, CompareExpr.OP.OR, $e2.retval);};
 
-andExpr returns [PredicateExpr retval]
+andExpr returns [BooleanValue retval]
 	: e1=condFactor (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, CompareExpr.OP.AND, $e2.retval);};
 
-condFactor returns [PredicateExpr retval]			 
+condFactor returns [BooleanValue retval]			 
 	: n=keyNOT? p=condPrimary			{retval = ($n.text != null) ? new CondFactor(true, $p.retval) :  $p.retval;};
 	
-condPrimary returns [PredicateExpr retval]
+condPrimary returns [BooleanValue retval]
 options {backtrack=true;}	
 	: s=simpleCondExpr  				{retval = $s.retval;}
 	| LPAREN o=orExpr RPAREN			{retval = $o.retval;}
 	;
 
-simpleCondExpr returns [PredicateExpr retval]
+simpleCondExpr returns [BooleanValue retval]
 options {backtrack=true;}	
 	: c=compareExpr 				{retval = $c.retval;}
-	| b2=booleanValue				{retval = new BooleanValueAsPredicateExpr($b2.retval);}
+	| b2=booleanValue				{retval = $b2.retval;}
 	;
 
-compareExpr returns [PredicateExpr retval]
+compareExpr returns [BooleanValue retval]
 options {backtrack=true;}	
 	: d1=dateValue o=compOp d2=dateValue 		{retval = new DateCompare($d1.retval, $o.retval, $d2.retval);}	
-	| s1=stringValue o=compOp s2=stringValue	  	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
+	| s1=stringValue o=compOp s2=stringValue	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
 	| n1=numberValue o=compOp n2=numberValue	{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
 	;
 	
@@ -259,7 +259,7 @@ options {backtrack=true;}
 	;
 
 booleanPred returns [BooleanValue retval]
-	: o=orExpr					{retval = new BooleanPredicateAsValue($o.retval);}
+	: o=orExpr					{retval = $o.retval;}
 	;
 		
 rangeExpr returns [DateValue retval]

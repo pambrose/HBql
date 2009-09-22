@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.PredicateExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
@@ -14,8 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
  */
 public class StringTernary extends GenericTernary<StringValue> implements StringValue {
 
-
-    public StringTernary(final PredicateExpr pred, final StringValue expr1, final StringValue expr2) {
+    public StringTernary(final BooleanValue pred, final StringValue expr1, final StringValue expr2) {
         super(pred, expr1, expr2);
     }
 
@@ -25,7 +24,7 @@ public class StringTernary extends GenericTernary<StringValue> implements String
         boolean retval = true;
 
         if (this.getPred().optimizeForConstants(object))
-            this.setPred(new BooleanLiteral(this.getPred().evaluate(object)));
+            this.setPred(new BooleanLiteral(this.getPred().getValue(object)));
         else
             retval = false;
 

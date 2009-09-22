@@ -35,7 +35,7 @@ public class DateCompare extends GenericCompare<DateValue> {
     }
 
     @Override
-    public Boolean evaluate(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HPersistException {
 
         final long val1 = this.getExpr1().getValue(object);
         final long val2 = this.getExpr2().getValue(object);

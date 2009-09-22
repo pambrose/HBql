@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.PredicateExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 
@@ -11,7 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class StringCompare extends GenericCompare<StringValue> implements PredicateExpr {
+public class StringCompare extends GenericCompare<StringValue> {
 
     public StringCompare(final StringValue expr1, final OP op, final StringValue expr2) {
         super(expr1, op, expr2);
@@ -37,7 +36,7 @@ public class StringCompare extends GenericCompare<StringValue> implements Predic
 
 
     @Override
-    public Boolean evaluate(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HPersistException {
 
         final String val1 = this.getExpr1().getValue(object);
         final String val2 = this.getExpr2().getValue(object);

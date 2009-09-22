@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
-import org.apache.hadoop.hbase.hbql.query.expr.node.PredicateExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
 import java.util.List;
@@ -14,17 +14,17 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 8:28:06 PM
  */
-public class CondFactor implements PredicateExpr {
+public class CondFactor implements BooleanValue {
 
     private final boolean not;
-    private PredicateExpr expr = null;
+    private BooleanValue expr = null;
 
-    public CondFactor(final boolean not, final PredicateExpr expr) {
+    public CondFactor(final boolean not, final BooleanValue expr) {
         this.not = not;
         this.expr = expr;
     }
 
-    private PredicateExpr getExpr() {
+    private BooleanValue getExpr() {
         return this.expr;
     }
 
@@ -39,7 +39,7 @@ public class CondFactor implements PredicateExpr {
         boolean retval = true;
 
         if (this.getExpr().optimizeForConstants(object))
-            this.expr = new BooleanLiteral(this.getExpr().evaluate(object));
+            this.expr = new BooleanLiteral(this.getExpr().getValue(object));
         else
             retval = false;
 
@@ -47,8 +47,8 @@ public class CondFactor implements PredicateExpr {
     }
 
     @Override
-    public Boolean evaluate(final Object object) throws HPersistException {
-        final boolean retval = this.getExpr().evaluate(object);
+    public Boolean getValue(final Object object) throws HPersistException {
+        final boolean retval = this.getExpr().getValue(object);
         return (this.not) ? !retval : retval;
 
     }
