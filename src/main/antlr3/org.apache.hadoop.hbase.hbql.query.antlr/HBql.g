@@ -254,12 +254,8 @@ booleanValue returns [BooleanValue retval]
 options {backtrack=true;}	
 	: b=booleanLiteral				{retval = $b.retval;}
 	| f=funcReturningBoolean			{retval = $f.retval;}
-	| keyIF e=orExpr keyTHEN b1=booleanPred keyELSE b2=booleanPred keyEND	
+	| keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr keyEND	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
-	;
-
-booleanPred returns [BooleanValue retval]
-	: o=orExpr					{retval = $o.retval;}
 	;
 		
 rangeExpr returns [DateValue retval]
