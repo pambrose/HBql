@@ -17,7 +17,7 @@ public interface ValueExpr extends Serializable {
 
     Object getValue(final Object object) throws HPersistException;
 
-    ValueExpr getOptimizedValue(final Object object) throws HPersistException;
+    ValueExpr getOptimizedValue() throws HPersistException;
 
     List<ExprVariable> getExprVariables();
 

@@ -51,13 +51,13 @@ public abstract class GenericBetweenStmt<T extends ValueExpr> extends GenericNot
     }
 
     @Override
-    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setExpr((T)this.getExpr().getOptimizedValue(object));
-        this.setLower((T)this.getLower().getOptimizedValue(object));
-        this.setUpper((T)this.getUpper().getOptimizedValue(object));
+        this.setExpr((T)this.getExpr().getOptimizedValue());
+        this.setLower((T)this.getLower().getOptimizedValue());
+        this.setUpper((T)this.getUpper().getOptimizedValue());
 
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(object)) : this;
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     @Override

@@ -18,12 +18,12 @@ public class DateCalcExpr extends GenericCalcExpr<DateValue> implements DateValu
     }
 
     @Override
-    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setExpr1((DateValue)this.getExpr1().getOptimizedValue(object));
-        this.setExpr2((DateValue)this.getExpr2().getOptimizedValue(object));
+        this.setExpr1((DateValue)this.getExpr1().getOptimizedValue());
+        this.setExpr2((DateValue)this.getExpr2().getOptimizedValue());
 
-        return this.isAConstant() ? new DateLiteral(this.getValue(object)) : this;
+        return this.isAConstant() ? new DateLiteral(this.getValue(null)) : this;
     }
 
     @Override

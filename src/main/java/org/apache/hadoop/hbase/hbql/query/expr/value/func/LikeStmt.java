@@ -70,11 +70,11 @@ public class LikeStmt extends GenericNotValue {
     }
 
     @Override
-    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
-        this.expr = (StringValue)this.getExpr().getOptimizedValue(object);
-        this.patternExpr = (StringValue)this.getPatternExpr().getOptimizedValue(object);
+    public ValueExpr getOptimizedValue() throws HPersistException {
+        this.expr = (StringValue)this.getExpr().getOptimizedValue();
+        this.patternExpr = (StringValue)this.getPatternExpr().getOptimizedValue();
 
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(object)) : this;
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     @Override

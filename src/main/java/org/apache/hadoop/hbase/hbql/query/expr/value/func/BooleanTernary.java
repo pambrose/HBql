@@ -18,13 +18,13 @@ public class BooleanTernary extends GenericTernary<BooleanValue> implements Bool
     }
 
     @Override
-    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setPred((BooleanValue)this.getPred().getOptimizedValue(object));
-        this.setExpr1((BooleanValue)this.getExpr1().getOptimizedValue(object));
-        this.setExpr2((BooleanValue)this.getExpr2().getOptimizedValue(object));
+        this.setPred((BooleanValue)this.getPred().getOptimizedValue());
+        this.setExpr1((BooleanValue)this.getExpr1().getOptimizedValue());
+        this.setExpr2((BooleanValue)this.getExpr2().getOptimizedValue());
 
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(object)) : this;
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     @Override

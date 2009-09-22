@@ -188,7 +188,13 @@ options {backtrack=true;}
 	| s1=stringValue o=compareOp s2=stringValue	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
 	| n1=numberValue o=compareOp n2=numberValue	{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
 	;
-	
+/*
+valueExpr returns [ValueExpr retval]
+	: d=dateValue	
+	| s=stringValue
+	| n=numberValue
+	;
+*/	
 // Numeric calculations
 numberValue returns [NumberValue retval] 
 @init {List<NumberValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList(); }
@@ -228,7 +234,7 @@ stringValue returns [StringValue retval]
 	;
 
 stringParen returns [StringValue retval]
-	: s1=stringPrimary					{retval = $s1.retval;}
+	: s1=stringPrimary				{retval = $s1.retval;}
 	| LPAREN s2=stringValue	RPAREN			{retval = $s2.retval;}						
 	;
 			

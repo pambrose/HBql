@@ -35,12 +35,12 @@ public abstract class GenericCompare<T extends ValueExpr> extends GenericTwoExpr
     }
 
     @Override
-    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setExpr1((T)this.getExpr1().getOptimizedValue(object));
-        this.setExpr2((T)this.getExpr2().getOptimizedValue(object));
+        this.setExpr1((T)this.getExpr1().getOptimizedValue());
+        this.setExpr2((T)this.getExpr2().getOptimizedValue());
 
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(object)) : this;
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
 }

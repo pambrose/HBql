@@ -38,11 +38,11 @@ public class StringNullCompare extends GenericNotValue {
     }
 
     @Override
-    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setExpr((StringValue)this.getExpr().getOptimizedValue(object));
+        this.setExpr((StringValue)this.getExpr().getOptimizedValue());
 
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(object)) : this;
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     @Override

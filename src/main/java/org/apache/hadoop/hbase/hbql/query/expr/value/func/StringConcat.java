@@ -48,12 +48,12 @@ public class StringConcat implements StringValue {
     }
 
     @Override
-    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setExpr1((StringValue)this.getExpr1().getOptimizedValue(object));
-        this.setExpr2((StringValue)this.getExpr2().getOptimizedValue(object));
+        this.setExpr1((StringValue)this.getExpr1().getOptimizedValue());
+        this.setExpr2((StringValue)this.getExpr2().getOptimizedValue());
 
-        return this.isAConstant() ? new StringLiteral(this.getValue(object)) : this;
+        return this.isAConstant() ? new StringLiteral(this.getValue(null)) : this;
     }
 
     @Override

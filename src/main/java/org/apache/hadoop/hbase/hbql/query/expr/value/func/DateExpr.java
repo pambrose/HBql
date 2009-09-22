@@ -36,12 +36,12 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.formatExpr = (StringValue)this.getFormatExpr().getOptimizedValue(object);
-        this.expr = (StringValue)this.getExpr().getOptimizedValue(object);
+        this.formatExpr = (StringValue)this.getFormatExpr().getOptimizedValue();
+        this.expr = (StringValue)this.getExpr().getOptimizedValue();
 
-        return this.isAConstant() ? new DateLiteral(this.getValue(object)) : this;
+        return this.isAConstant() ? new DateLiteral(this.getValue(null)) : this;
     }
 
     @Override

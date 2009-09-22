@@ -33,7 +33,7 @@ public abstract class GenericAttribRef<T extends ValueExpr> {
         return Lists.newArrayList(this.getExprVar());
     }
 
-    public T getOptimizedValue(final Object object) throws HPersistException {
+    public T getOptimizedValue() throws HPersistException {
         return (T)this;
     }
 

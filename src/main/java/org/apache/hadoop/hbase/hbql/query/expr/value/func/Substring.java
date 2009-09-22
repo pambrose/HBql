@@ -48,13 +48,13 @@ public class Substring implements StringValue {
     }
 
     @Override
-    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.expr = (StringValue)this.getExpr().getOptimizedValue(object);
-        this.begin = (NumberValue)this.getBegin().getOptimizedValue(object);
-        this.end = (NumberValue)this.getEnd().getOptimizedValue(object);
+        this.expr = (StringValue)this.getExpr().getOptimizedValue();
+        this.begin = (NumberValue)this.getBegin().getOptimizedValue();
+        this.end = (NumberValue)this.getEnd().getOptimizedValue();
 
-        return this.isAConstant() ? new StringLiteral(this.getValue(object)) : this;
+        return this.isAConstant() ? new StringLiteral(this.getValue(null)) : this;
     }
 
     @Override

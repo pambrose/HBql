@@ -54,7 +54,7 @@ public class ExprTree implements Serializable {
     }
 
     public void optimize() throws HPersistException {
-        this.setTreeRoot((BooleanValue)this.getTreeRoot().getOptimizedValue(null));
+        this.setTreeRoot((BooleanValue)this.getTreeRoot().getOptimizedValue());
         this.optimized = true;
     }
 

@@ -20,7 +20,7 @@ public abstract class GenericLiteral<T extends ValueExpr> {
         return Lists.newArrayList();
     }
 
-    public T getOptimizedValue(final Object object) throws HPersistException {
+    public T getOptimizedValue() throws HPersistException {
         return (T)this;
     }
 

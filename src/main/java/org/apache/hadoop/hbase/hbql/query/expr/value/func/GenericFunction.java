@@ -52,7 +52,7 @@ public abstract class GenericFunction<T extends ValueExpr> {
     }
 
     // TODO Deal with this
-    public T getOptimizedValue(final Object object) throws HPersistException {
+    public T getOptimizedValue() throws HPersistException {
         return (T)this;
     }
 

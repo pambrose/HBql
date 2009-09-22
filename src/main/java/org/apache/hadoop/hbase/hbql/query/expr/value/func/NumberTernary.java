@@ -19,13 +19,13 @@ public class NumberTernary extends GenericTernary<NumberValue> implements Number
     }
 
     @Override
-    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setPred((BooleanValue)this.getPred().getOptimizedValue(object));
-        this.setExpr1((NumberValue)this.getExpr1().getOptimizedValue(object));
-        this.setExpr2((NumberValue)this.getExpr2().getOptimizedValue(object));
+        this.setPred((BooleanValue)this.getPred().getOptimizedValue());
+        this.setExpr1((NumberValue)this.getExpr1().getOptimizedValue());
+        this.setExpr2((NumberValue)this.getExpr2().getOptimizedValue());
 
-        return this.isAConstant() ? new NumberLiteral(this.getValue(object)) : this;
+        return this.isAConstant() ? new NumberLiteral(this.getValue(null)) : this;
     }
 
     @Override

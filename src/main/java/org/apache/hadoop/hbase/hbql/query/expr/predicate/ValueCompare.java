@@ -19,10 +19,10 @@ public class ValueCompare extends GenericCompare<ValueExpr> {
         super(expr1, op, expr2);
     }
 
-    public Class getType(final Object object) throws HPersistException {
+    public Class getType() throws HPersistException {
 
-        //  this.setExpr1Type(this.getExpr1().getType(object));
-        //  this.setExpr2Type(this.getExpr2().getType(object));
+        // this.setExpr1Type(this.getExpr1().getType(object));
+        // this.setExpr2Type(this.getExpr2().getType(object));
 
         if (!this.getExpr1Type().equals(getExpr2Type()))
             throw new HPersistException("Types in ValueCompare do not match");

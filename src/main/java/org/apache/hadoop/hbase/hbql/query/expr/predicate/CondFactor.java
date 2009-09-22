@@ -39,11 +39,11 @@ public class CondFactor implements BooleanValue {
     }
 
     @Override
-    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setExpr((BooleanValue)this.getExpr().getOptimizedValue(object));
+        this.setExpr((BooleanValue)this.getExpr().getOptimizedValue());
 
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(object)) : this;
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     @Override

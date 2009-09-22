@@ -40,12 +40,12 @@ public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotValue
 
     protected abstract boolean evaluateList(final Object object) throws HPersistException;
 
-    private void optimizeList(final Object object) throws HPersistException {
+    private void optimizeList() throws HPersistException {
 
         final List<T> newvalList = Lists.newArrayList();
 
         for (final T val : this.getValueList())
-            newvalList.add((T)val.getOptimizedValue(object));
+            newvalList.add((T)val.getOptimizedValue());
 
         // Swap new values to list
         this.getValueList().clear();
@@ -53,13 +53,13 @@ public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotValue
     }
 
     @Override
-    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setExpr((T)this.getExpr().getOptimizedValue(object));
+        this.setExpr((T)this.getExpr().getOptimizedValue());
 
-        this.optimizeList(object);
+        this.optimizeList();
 
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(object)) : this;
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     @Override

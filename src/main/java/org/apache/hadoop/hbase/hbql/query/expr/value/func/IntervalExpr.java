@@ -59,11 +59,11 @@ public class IntervalExpr implements DateValue {
     }
 
     @Override
-    public ValueExpr getOptimizedValue(final Object object) throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setExpr((NumberValue)this.getExpr().getOptimizedValue(object));
+        this.setExpr((NumberValue)this.getExpr().getOptimizedValue());
 
-        return this.isAConstant() ? new DateLiteral(this.getValue(object)) : this;
+        return this.isAConstant() ? new DateLiteral(this.getValue(null)) : this;
     }
 
     @Override
