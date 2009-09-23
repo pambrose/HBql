@@ -19,6 +19,8 @@ public interface ValueExpr extends Serializable {
 
     ValueExpr getOptimizedValue() throws HPersistException;
 
+    Class<? extends ValueExpr> validateType() throws HPersistException;
+
     List<ExprVariable> getExprVariables();
 
     boolean isAConstant();

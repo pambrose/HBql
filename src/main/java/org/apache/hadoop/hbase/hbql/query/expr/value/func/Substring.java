@@ -40,6 +40,24 @@ public class Substring implements StringValue {
     }
 
     @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        final Class<? extends ValueExpr> type1 = this.getExpr().validateType();
+        final Class<? extends ValueExpr> type2 = this.getBegin().validateType();
+        final Class<? extends ValueExpr> type3 = this.getEnd().validateType();
+
+        if (!ExprTree.isOfType(type1, StringValue.class))
+            throw new HPersistException("Type " + type1.getName() + " not valid in Substring");
+
+        if (!type2.equals(type3))
+            throw new HPersistException("Types in Substring do not match");
+
+        if (!ExprTree.isOfType(type2, NumberValue.class))
+            throw new HPersistException("Type " + type2.getName() + " not valid in Substring");
+
+        return StringValue.class;
+    }
+
+    @Override
     public List<ExprVariable> getExprVariables() {
         final List<ExprVariable> retval = this.getExpr().getExprVariables();
         retval.addAll(this.getBegin().getExprVariables());
@@ -76,5 +94,4 @@ public class Substring implements StringValue {
         this.getBegin().setContext(context);
         this.getEnd().setContext(context);
     }
-
 }

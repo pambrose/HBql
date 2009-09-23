@@ -52,4 +52,9 @@ public abstract class GenericAttribRef<T extends ValueExpr> {
     protected Schema getSchema() {
         return this.getContext().getSchema();
     }
+
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        return this.exprVar.getFieldType().getExprType();
+    }
+
 }

@@ -2,12 +2,10 @@ package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,54 +13,44 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class CompareExpr implements BooleanValue {
+public class CompareExpr extends GenericTwoExprExpr<BooleanValue> implements BooleanValue {
 
     public enum OP {
         AND,
         OR
     }
 
-    private BooleanValue expr1 = null, expr2 = null;
     private final CompareExpr.OP op;
 
     public CompareExpr(final BooleanValue expr1, final CompareExpr.OP op, final BooleanValue expr2) {
-        this.expr1 = expr1;
+        super(expr1, expr2);
         this.op = op;
-        this.expr2 = expr2;
-    }
-
-    private BooleanValue getExpr1() {
-        return expr1;
-    }
-
-    private BooleanValue getExpr2() {
-        return expr2;
-    }
-
-    private void setExpr1(final BooleanValue expr1) {
-        this.expr1 = expr1;
-    }
-
-    private void setExpr2(final BooleanValue expr2) {
-        this.expr2 = expr2;
     }
 
     private OP getOp() {
         return op;
     }
 
-    @Override
-    public List<ExprVariable> getExprVariables() {
-        final List<ExprVariable> retval = this.getExpr1().getExprVariables();
-        retval.addAll(this.getExpr2().getExprVariables());
-        return retval;
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+
+        final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
+        final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
+
+        if (!type1.equals(type2))
+            throw new HPersistException("Types in CompareExpr do not match");
+
+        if (!ExprTree.isOfType(type1, BooleanValue.class))
+            throw new HPersistException("Type " + type1.getName() + " not valid in CompareExpr");
+
+        return BooleanValue.class;
     }
 
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
         this.setExpr1((BooleanValue)this.getExpr1().getOptimizedValue());
-        this.setExpr2((BooleanValue)this.getExpr2().getOptimizedValue());
+        if (this.getExpr2() != null)
+            this.setExpr2((BooleanValue)this.getExpr2().getOptimizedValue());
 
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
@@ -83,18 +71,6 @@ public class CompareExpr implements BooleanValue {
 
             default:
                 throw new HPersistException("Error in BooleanExpr.getValue()");
-
         }
-    }
-
-    @Override
-    public boolean isAConstant() {
-        return this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
-    }
-
-    @Override
-    public void setContext(final ExprTree context) {
-        this.getExpr1().setContext(context);
-        this.getExpr2().setContext(context);
     }
 }

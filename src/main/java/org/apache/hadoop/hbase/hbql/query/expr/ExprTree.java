@@ -58,6 +58,10 @@ public class ExprTree implements Serializable {
         this.optimized = true;
     }
 
+    public void validateTypes() throws HPersistException {
+        this.getTreeRoot().validateType();
+    }
+
     public List<ExprVariable> getExprVariables() {
         if (this.getTreeRoot() == null)
             return Lists.newArrayList();
@@ -87,6 +91,7 @@ public class ExprTree implements Serializable {
 
         if (this.isValid()) {
             this.setSchema(schema);
+            this.validateTypes();
             this.optimize();
 
             // Check if all the variables referenced in the where clause are present in the fieldList.
@@ -100,4 +105,12 @@ public class ExprTree implements Serializable {
             }
         }
     }
+
+    public static boolean isOfType(final Class clazz, final Class... classes) {
+        for (Class aClass : classes)
+            if (clazz.equals(aClass))
+                return true;
+        return false;
+    }
+
 }

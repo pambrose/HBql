@@ -14,7 +14,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 12:27:29 PM
  */
-public abstract class GenericLiteral<T extends ValueExpr> {
+public abstract class GenericLiteral<T extends ValueExpr> implements ValueExpr {
 
     public List<ExprVariable> getExprVariables() {
         return Lists.newArrayList();

@@ -1,11 +1,13 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,58 +17,48 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  */
 public class ValueCompare extends GenericCompare<ValueExpr> {
 
+    private GenericCompare typedExpr = null;
+
     public ValueCompare(final ValueExpr expr1, final OP op, final ValueExpr expr2) {
         super(expr1, op, expr2);
     }
 
-    public Class getType() throws HPersistException {
+    @Override
+    public ValueExpr getOptimizedValue() throws HPersistException {
 
-        // this.setExpr1Type(this.getExpr1().getType(object));
-        // this.setExpr2Type(this.getExpr2().getType(object));
+        this.setExpr1(this.getExpr1().getOptimizedValue());
+        this.setExpr2(this.getExpr2().getOptimizedValue());
 
-        if (!this.getExpr1Type().equals(getExpr2Type()))
-            throw new HPersistException("Types in ValueCompare do not match");
+        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
+    }
 
-        if (!this.ofType(this.getExpr1Type(), StringValue.class, NumberValue.class, DateValue.class))
-            throw new HPersistException("Type " + this.getExpr1Type().getName() + " not allowed in ValueCompare");
+    @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+
+        final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
+        final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
+
+        if (!ExprTree.isOfType(type1, StringValue.class, NumberValue.class, DateValue.class))
+            throw new HPersistException("Type " + type1.getName() + " not valid in ValueCompare");
+
+        if (!ExprTree.isOfType(type2, StringValue.class, NumberValue.class, DateValue.class))
+            throw new HPersistException("Type " + type2.getName() + " not valid in ValueCompare");
+
+        if (type1.equals(DateValue.class))
+            typedExpr = new DateCompare((DateValue)this.getExpr1(), this.getOp(), (DateValue)this.getExpr2());
+        else if (type1.equals(StringValue.class))
+            typedExpr = new StringCompare((StringValue)this.getExpr1(), this.getOp(), (StringValue)this.getExpr2());
+        else if (type1.equals(NumberValue.class))
+            typedExpr = new NumberCompare((NumberValue)this.getExpr1(), this.getOp(), (NumberValue)this.getExpr2());
+        else
+            typedExpr = null;  // Never executed
 
         return BooleanValue.class;
     }
 
-    private boolean ofType(final Class clazz, final Class... classes) {
-        return true;
-    }
-
-    private ValueExpr getLiteral(final ValueExpr expr) {
-
-        //    if (expr.getType().equals(DateValue.class))
-        //         return new DateLiteral(expr.getValue(object));
-        return null;
-    }
-
     @Override
     public Boolean getValue(final Object object) throws HPersistException {
-
-        /*
-        final long val1 = this.getExpr1().getValue(object);
-        final long val2 = this.getExpr2().getValue(object);
-
-        switch (this.getOp()) {
-            case EQ:
-                return val1 == val2;
-            case NOTEQ:
-                return val1 != val2;
-            case GT:
-                return val1 > val2;
-            case GTEQ:
-                return val1 >= val2;
-            case LT:
-                return val1 < val2;
-            case LTEQ:
-                return val1 <= val2;
-        }
-        */
-        throw new HPersistException("Error in ValueExprCompare.getValue()");
+        return this.typedExpr.getValue(object);
     }
 
 }

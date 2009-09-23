@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 import java.util.List;
 
@@ -15,6 +16,11 @@ public class NumberInStmt extends GenericInStmt<NumberValue> {
 
     public NumberInStmt(final NumberValue expr, final boolean not, final List<NumberValue> vals) {
         super(not, expr, vals);
+    }
+
+    @Override
+    protected Class<? extends ValueExpr> getClassType() throws HPersistException {
+        return NumberValue.class;
     }
 
     protected boolean evaluateList(final Object object) throws HPersistException {

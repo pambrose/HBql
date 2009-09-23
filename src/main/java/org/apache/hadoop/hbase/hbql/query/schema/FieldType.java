@@ -1,6 +1,11 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -17,26 +22,28 @@ import java.util.List;
  */
 public enum FieldType {
 
-    BooleanType(Boolean.TYPE, Bytes.SIZEOF_BOOLEAN, "BOOLEAN", "BOOL"),
-    ByteType(Byte.TYPE, Bytes.SIZEOF_BYTE, "BYTE"),
-    CharType(Short.TYPE, Bytes.SIZEOF_CHAR, "CHAR"),
-    ShortType(Short.TYPE, Bytes.SIZEOF_SHORT, "SHORT"),
-    IntegerType(Integer.TYPE, Bytes.SIZEOF_INT, "INTEGER", "INT"),
-    LongType(Long.TYPE, Bytes.SIZEOF_LONG, "LONG"),
-    FloatType(Float.TYPE, Bytes.SIZEOF_FLOAT, "FLOAT"),
-    DoubleType(Double.TYPE, Bytes.SIZEOF_DOUBLE, "DOUBLE"),
-    KeyType(String.class, -1, "KEY"),
-    StringType(String.class, -1, "STRING", "STRING", "VARCHAR"),
-    DateType(Date.class, -1, "DATE", "DATETIME"),
-    ObjectType(Object.class, -1, "OBJECT", "OBJ");
+    BooleanType(Boolean.TYPE, BooleanValue.class, Bytes.SIZEOF_BOOLEAN, "BOOLEAN", "BOOL"),
+    ByteType(Byte.TYPE, NumberValue.class, Bytes.SIZEOF_BYTE, "BYTE"),
+    CharType(Short.TYPE, NumberValue.class, Bytes.SIZEOF_CHAR, "CHAR"),
+    ShortType(Short.TYPE, NumberValue.class, Bytes.SIZEOF_SHORT, "SHORT"),
+    IntegerType(Integer.TYPE, NumberValue.class, Bytes.SIZEOF_INT, "INTEGER", "INT"),
+    LongType(Long.TYPE, NumberValue.class, Bytes.SIZEOF_LONG, "LONG"),
+    FloatType(Float.TYPE, NumberValue.class, Bytes.SIZEOF_FLOAT, "FLOAT"),
+    DoubleType(Double.TYPE, NumberValue.class, Bytes.SIZEOF_DOUBLE, "DOUBLE"),
+    KeyType(String.class, StringValue.class, -1, "KEY"),
+    StringType(String.class, StringValue.class, -1, "STRING", "STRING", "VARCHAR"),
+    DateType(Date.class, DateValue.class, -1, "DATE", "DATETIME"),
+    ObjectType(Object.class, null, -1, "OBJECT", "OBJ");
 
     private final Class clazz;
+    private Class<? extends ValueExpr> exprType;
     private final int size;
     private final List<String> synonymList;
 
 
-    FieldType(final Class clazz, final int size, final String... synonyms) {
+    FieldType(final Class clazz, final Class<? extends ValueExpr> exprType, final int size, final String... synonyms) {
         this.clazz = clazz;
+        this.exprType = exprType;
         this.size = size;
         this.synonymList = Lists.newArrayList();
         this.synonymList.addAll(Arrays.asList(synonyms));
@@ -44,11 +51,15 @@ public enum FieldType {
 
 
     public Class getClazz() {
-        return clazz;
+        return this.clazz;
     }
 
     public int getSize() {
-        return size;
+        return this.size;
+    }
+
+    public Class<? extends ValueExpr> getExprType() {
+        return this.exprType;
     }
 
     public static FieldType getFieldType(final Object obj) {

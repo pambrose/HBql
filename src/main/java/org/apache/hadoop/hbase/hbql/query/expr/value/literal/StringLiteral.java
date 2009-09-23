@@ -1,6 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
+import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,4 +22,10 @@ public class StringLiteral extends GenericLiteral<StringValue> implements String
     public String getValue(final Object object) {
         return this.value;
     }
+
+    @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        return StringValue.class;
+    }
+
 }

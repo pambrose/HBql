@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
@@ -67,6 +68,21 @@ public class LikeStmt extends GenericNotValue {
         final boolean retval = m.matches();
 
         return (this.isNot()) ? !retval : retval;
+    }
+
+    @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+
+        final Class<? extends ValueExpr> type1 = this.getExpr().validateType();
+        final Class<? extends ValueExpr> type2 = this.getPatternExpr().validateType();
+
+        if (!type1.equals(type2))
+            throw new HPersistException("Types in LikeStmt do not match");
+
+        if (!ExprTree.isOfType(type1, StringValue.class))
+            throw new HPersistException("Type " + type1.getName() + " not valid in LikeStmt");
+
+        return BooleanValue.class;
     }
 
     @Override

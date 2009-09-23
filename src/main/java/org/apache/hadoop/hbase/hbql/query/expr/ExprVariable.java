@@ -21,7 +21,11 @@ public class ExprVariable implements Serializable {
     }
 
     public String getName() {
-        return attribName;
+        return this.attribName;
+    }
+
+    public FieldType getFieldType() {
+        return this.fieldType;
     }
 
     @Override

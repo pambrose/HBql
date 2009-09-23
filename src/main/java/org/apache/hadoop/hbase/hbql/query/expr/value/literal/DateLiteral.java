@@ -1,6 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
+import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 import java.util.Date;
 
@@ -67,4 +69,10 @@ public class DateLiteral extends GenericLiteral<DateValue> implements DateValue 
     public Long getValue(final Object object) {
         return this.dateval;
     }
+
+    @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        return DateValue.class;
+    }
+
 }

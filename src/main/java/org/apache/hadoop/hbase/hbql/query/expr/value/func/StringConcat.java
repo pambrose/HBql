@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 
 import java.util.List;
@@ -15,29 +16,11 @@ import java.util.List;
  * Date: Aug 29, 2009
  * Time: 6:20:20 PM
  */
-public class StringConcat implements StringValue {
+public class StringConcat extends GenericTwoExprExpr<StringValue> implements StringValue {
 
-    private StringValue expr1 = null, expr2 = null;
 
-    public StringConcat(final StringValue expr1, StringValue expr2) {
-        this.expr1 = expr1;
-        this.expr2 = expr2;
-    }
-
-    private StringValue getExpr1() {
-        return this.expr1;
-    }
-
-    private void setExpr1(final StringValue expr1) {
-        this.expr1 = expr1;
-    }
-
-    private StringValue getExpr2() {
-        return this.expr2;
-    }
-
-    private void setExpr2(final StringValue expr2) {
-        this.expr2 = expr2;
+    public StringConcat(final StringValue expr1, final StringValue expr2) {
+        super(expr1, expr2);
     }
 
     @Override
@@ -45,6 +28,21 @@ public class StringConcat implements StringValue {
         final List<ExprVariable> retval = getExpr1().getExprVariables();
         retval.addAll(this.getExpr2().getExprVariables());
         return retval;
+    }
+
+    @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+
+        final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
+        final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
+
+        if (!type1.equals(type2))
+            throw new HPersistException("Types in StringConcat do not match");
+
+        if (!ExprTree.isOfType(type1, StringValue.class))
+            throw new HPersistException("Type " + type1.getName() + " not valid in StringConcat");
+
+        return StringValue.class;
     }
 
     @Override

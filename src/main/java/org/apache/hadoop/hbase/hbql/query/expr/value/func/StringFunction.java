@@ -1,7 +1,9 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,6 +15,60 @@ public class StringFunction extends GenericFunction implements StringValue {
 
     public StringFunction(final Type functionType, final StringValue... stringExprs) {
         super(functionType, stringExprs);
+    }
+
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+
+        switch (this.getFunctionType()) {
+            case TRIM: {
+                final Class<? extends ValueExpr> type1 = this.getStringExprs()[0].validateType();
+                if (!ExprTree.isOfType(type1, StringValue.class))
+                    throw new HPersistException("Type " + type1.getName() + " not valid in TRIM");
+                break;
+            }
+
+            case LOWER: {
+                final Class<? extends ValueExpr> type1 = this.getStringExprs()[0].validateType();
+                if (!ExprTree.isOfType(type1, StringValue.class))
+                    throw new HPersistException("Type " + type1.getName() + " not valid in LOWER");
+                break;
+            }
+
+            case UPPER: {
+                final Class<? extends ValueExpr> type1 = this.getStringExprs()[0].validateType();
+                if (!ExprTree.isOfType(type1, StringValue.class))
+                    throw new HPersistException("Type " + type1.getName() + " not valid in UPPER");
+                break;
+            }
+
+            case CONCAT: {
+                final Class<? extends ValueExpr> type1 = this.getStringExprs()[0].validateType();
+                final Class<? extends ValueExpr> type2 = this.getStringExprs()[1].validateType();
+                if (!ExprTree.isOfType(type1, StringValue.class))
+                    throw new HPersistException("Type " + type1.getName() + " not valid in CONCAT");
+                if (!ExprTree.isOfType(type2, StringValue.class))
+                    throw new HPersistException("Type " + type2.getName() + " not valid in CONCAT");
+                break;
+            }
+
+            case REPLACE: {
+                final Class<? extends ValueExpr> type1 = this.getStringExprs()[0].validateType();
+                final Class<? extends ValueExpr> type2 = this.getStringExprs()[1].validateType();
+                final Class<? extends ValueExpr> type3 = this.getStringExprs()[2].validateType();
+                if (!ExprTree.isOfType(type1, StringValue.class))
+                    throw new HPersistException("Type " + type1.getName() + " not valid in REPLACE");
+                if (!ExprTree.isOfType(type2, StringValue.class))
+                    throw new HPersistException("Type " + type2.getName() + " not valid in REPLACE");
+                if (!ExprTree.isOfType(type3, StringValue.class))
+                    throw new HPersistException("Type " + type3.getName() + " not valid in REPLACE");
+                break;
+            }
+
+            default:
+                throw new HPersistException("Error in StringFunction.validateType() " + this.getFunctionType());
+        }
+
+        return StringValue.class;
     }
 
     @Override

@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,11 +35,14 @@ public abstract class GenericCompare<T extends ValueExpr> extends GenericTwoExpr
 
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
+        // This is not executed
+        return null;
+    }
 
-        this.setExpr1((T)this.getExpr1().getOptimizedValue());
-        this.setExpr2((T)this.getExpr2().getOptimizedValue());
-
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
+    @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        // This is not executed
+        return null;
     }
 
 }

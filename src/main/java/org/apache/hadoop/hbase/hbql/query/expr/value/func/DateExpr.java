@@ -36,6 +36,21 @@ public class DateExpr implements DateValue {
     }
 
     @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+
+        final Class<? extends ValueExpr> type1 = this.getFormatExpr().validateType();
+        final Class<? extends ValueExpr> type2 = this.getExpr().validateType();
+
+        if (!type1.equals(type2))
+            throw new HPersistException("Types in DateExpr do not match");
+
+        if (!ExprTree.isOfType(type1, StringValue.class))
+            throw new HPersistException("Type " + type1.getName() + " not valid in DateExpr");
+
+        return DateValue.class;
+    }
+
+    @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
         this.formatExpr = (StringValue)this.getFormatExpr().getOptimizedValue();
@@ -76,5 +91,4 @@ public class DateExpr implements DateValue {
         this.getFormatExpr().setContext(context);
         this.getExpr().setContext(context);
     }
-
 }

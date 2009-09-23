@@ -2,13 +2,11 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.GenericOneExprExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,9 +14,9 @@ import java.util.List;
  * Date: Sep 7, 2009
  * Time: 10:03:28 PM
  */
-public class IntervalExpr implements DateValue {
+public class IntervalExpr extends GenericOneExprExpr<NumberValue> implements DateValue {
 
-    public enum Type {
+    public enum IntervalType {
         MILLI(1),
         SECOND(1000 * MILLI.getIntervalMillis()),
         MINUTE(60 * SECOND.getIntervalMillis()),
@@ -29,7 +27,7 @@ public class IntervalExpr implements DateValue {
 
         private final long intervalMillis;
 
-        Type(final long intervalMillis) {
+        IntervalType(final long intervalMillis) {
             this.intervalMillis = intervalMillis;
         }
 
@@ -38,31 +36,30 @@ public class IntervalExpr implements DateValue {
         }
     }
 
-    private final Type type;
-    private NumberValue expr;
+    private final IntervalType intervalType;
 
-    public IntervalExpr(final Type type, final NumberValue expr) {
-        this.type = type;
-        this.expr = expr;
+    public IntervalExpr(final IntervalType intervalType, final NumberValue expr) {
+        super(expr);
+        this.intervalType = intervalType;
     }
 
-    private Type getType() {
-        return this.type;
+    private IntervalType getIntervalType() {
+        return this.intervalType;
     }
 
-    protected NumberValue getExpr() {
-        return this.expr;
-    }
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
 
-    protected void setExpr(final NumberValue expr) {
-        this.expr = expr;
+        final Class<? extends ValueExpr> type = this.getExpr().validateType();
+
+        if (!ExprTree.isOfType(type, NumberValue.class))
+            throw new HPersistException("Type " + type.getName() + " not valid in IntervalExpr");
+
+        return DateValue.class;
     }
 
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
-
         this.setExpr((NumberValue)this.getExpr().getOptimizedValue());
-
         return this.isAConstant() ? new DateLiteral(this.getValue(null)) : this;
     }
 
@@ -70,22 +67,6 @@ public class IntervalExpr implements DateValue {
     public Long getValue(final Object object) throws HPersistException {
         final Number num = this.getExpr().getValue(object);
         final long val = num.longValue();
-        return val * this.getType().getIntervalMillis();
+        return val * this.getIntervalType().getIntervalMillis();
     }
-
-    @Override
-    public List<ExprVariable> getExprVariables() {
-        return this.getExpr().getExprVariables();
-    }
-
-    @Override
-    public boolean isAConstant() {
-        return this.getExpr().isAConstant();
-    }
-
-    @Override
-    public void setContext(final ExprTree context) {
-        this.getExpr().setContext(context);
-    }
-
 }

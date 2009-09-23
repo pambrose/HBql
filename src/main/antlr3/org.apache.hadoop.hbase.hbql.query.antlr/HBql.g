@@ -121,6 +121,24 @@ time returns [DateRangeArgs retval]
 	| keyTIME keySTAMP d1=rangeExpr			{retval = new DateRangeArgs($d1.retval, $d1.retval);}
 	;
 		
+// Range Values
+rangeExpr returns [DateValue retval]
+@init {List<DateValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList();}
+	: m=rangePrimary {exprList.add($m.retval);} (op=plusMinus n=rangePrimary {opList.add($op.retval); exprList.add($n.retval);})*
+							{$rangeExpr.retval = getLeftAssociativeDateValues(exprList, opList);}
+	;
+
+rangePrimary returns [DateValue retval]
+	: d1=rangeVal					{retval = $d1.retval;}
+	| LPAREN d2=rangePrimary RPAREN			{retval = $d2.retval;}
+	;
+
+rangeVal returns [DateValue retval]
+	: d2=funcReturningDatetime			{retval = $d2.retval;}
+	| keyIF e=orExpr keyTHEN r1=rangeExpr keyELSE r2=rangeExpr keyEND	
+							{retval = new DateTernary($e.retval, $r1.retval, $r2.retval);}
+	;
+
 versions returns [VersionArgs retval]
 	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);}
 	| keyVERSIONS keyMAX				{retval = new VersionArgs(new NumberLiteral(-999));}
@@ -183,39 +201,45 @@ options {backtrack=true;}
 	;
 
 compareExpr returns [BooleanValue retval]
-options {backtrack=true;}	
-	: d1=dateValue o=compareOp d2=dateValue 	{retval = new DateCompare($d1.retval, $o.retval, $d2.retval);}	
-	| s1=stringValue o=compareOp s2=stringValue	{retval = new StringCompare($s1.retval, $o.retval, $s2.retval);}
-	| n1=numberValue o=compareOp n2=numberValue	{retval = new NumberCompare($n1.retval, $o.retval, $n2.retval);}
+	: v1=valueExpr o=compareOp v2=valueExpr 	{retval = new ValueCompare($v1.retval, $o.retval, $v2.retval);}	
 	;
-/*
+
 valueExpr returns [ValueExpr retval]
-	: d=dateValue	
-	| s=stringValue
-	| n=numberValue
+options {backtrack=true;}	
+	: d=dateValue					{retval = $d.retval;}
+	| s=stringValue					{retval = $s.retval;}
+	| n=numberValue					{retval = $n.retval;}
 	;
-*/	
+
+// Boolean Value
+booleanValue returns [BooleanValue retval]
+options {backtrack=true;}	
+	: b=booleanLiteral				{retval = $b.retval;}
+	| f=funcReturningBoolean			{retval = $f.retval;}
+	| keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr keyEND	
+							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
+	;
+		
 // Numeric calculations
 numberValue returns [NumberValue retval] 
 @init {List<NumberValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList(); }
-	: m=multNumericExpr {exprList.add($m.retval);} (op=plusMinus n=multNumericExpr {opList.add($op.retval); exprList.add($n.retval);})*	
+	: m=multNumber {exprList.add($m.retval);} (op=plusMinus n=multNumber {opList.add($op.retval); exprList.add($n.retval);})*	
 							{retval = getLeftAssociativeNumberValues(exprList, opList);};
 	
-multNumericExpr returns [NumberValue retval]
+multNumber returns [NumberValue retval]
 @init {List<NumberValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList(); }
-	: m=signedNumericPrimary {exprList.add($m.retval);} (op=multDiv n=signedNumericPrimary {opList.add($op.retval); exprList.add($n.retval);})*	
+	: m=signedNumberPrimary {exprList.add($m.retval);} (op=multDiv n=signedNumberPrimary {opList.add($op.retval); exprList.add($n.retval);})*	
 							{retval = getLeftAssociativeNumberValues(exprList, opList);};
 	
-signedNumericPrimary returns [NumberValue retval]
-	: (s=plusMinus)? n=numericPrimary 		{$signedNumericPrimary.retval = ($s.retval == GenericCalcExpr.OP.MINUS) ? new NumberCalcExpr($n.retval, GenericCalcExpr.OP.NEGATIVE, null) :  $n.retval;};
+signedNumberPrimary returns [NumberValue retval]
+	: (s=plusMinus)? n=numberParen 			{$signedNumberPrimary.retval = ($s.retval == GenericCalcExpr.OP.MINUS) ? new NumberCalcExpr($n.retval, GenericCalcExpr.OP.NEGATIVE, null) :  $n.retval;};
 
-numericPrimary returns [NumberValue retval]
-	: n=numericCond					{retval = $n.retval;}
+numberParen returns [NumberValue retval]
+	: n=numberCond					{retval = $n.retval;}
 	| LPAREN s=numberValue RPAREN			{retval = $s.retval;}
 	;
 	   						 
-// Simple typed exprs
-numericCond returns [NumberValue retval]
+numberCond returns [NumberValue retval]
 	: l=numberVal					{retval = $l.retval;} 
 	| keyIF e=orExpr keyTHEN n1=numberValue keyELSE n2=numberValue keyEND 	
 							{retval = new NumberTernary($e.retval, $n1.retval, $n2.retval);}
@@ -223,11 +247,11 @@ numericCond returns [NumberValue retval]
 
 numberVal returns [NumberValue retval]
 	: l=integerLiteral				{retval = $l.retval;} 
-	| i=numberAttribVar				{retval = $i.retval;}
 	| f=funcReturningInteger			{retval = $f.retval;}
+	| i=numberAttribVar				{retval = $i.retval;}
 	;
 	
-// String concatenation 
+// String Values 
 stringValue returns [StringValue retval]
 	: s1=stringParen (p=PLUS s2=stringValue)?
 							{retval = ($p.text == null) ? $s1.retval : new StringConcat($s1.retval, $s2.retval);}
@@ -242,45 +266,21 @@ stringPrimary returns [StringValue retval]
 	: sl=stringLiteral				{retval = $sl.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
 	| keyNULL					{retval = new StringNullLiteral();}
-	| a=stringAttribVar				{retval = $a.retval;}
 	| keyIF e=orExpr keyTHEN s1=stringValue keyELSE s2=stringValue keyEND	
 							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
+	| a=stringAttribVar				{retval = $a.retval;}
 	;
 
-booleanValue returns [BooleanValue retval]
-options {backtrack=true;}	
-	: b=booleanLiteral				{retval = $b.retval;}
-	| f=funcReturningBoolean			{retval = $f.retval;}
-	| keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr keyEND	
-							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
-	;
-		
-rangeExpr returns [DateValue retval]
-@init {List<DateValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList();}
-	: m=rangePrimary {exprList.add($m.retval);} (op=plusMinus n=rangePrimary {opList.add($op.retval); exprList.add($n.retval);})*
-							{$rangeExpr.retval = getLeftAssociativeDateValues(exprList, opList);}
-	;
-
-rangePrimary returns [DateValue retval]
-	: d1=rangeVal					{retval = $d1.retval;}
-	| LPAREN d2=rangePrimary RPAREN			{retval = $d2.retval;}
-	;
-
-rangeVal returns [DateValue retval]
-	: d2=funcReturningDatetime			{retval = $d2.retval;}
-	| keyIF e=orExpr keyTHEN r1=rangeExpr keyELSE r2=rangeExpr keyEND	
-							{retval = new DateTernary($e.retval, $r1.retval, $r2.retval);}
-	;
-
+// Date Values
 dateValue returns [DateValue retval]
 @init {List<DateValue> exprList = Lists.newArrayList(); 
        List<GenericCalcExpr.OP> opList = Lists.newArrayList();}
-	: m=datePrimary {exprList.add($m.retval);} (op=plusMinus n=datePrimary {opList.add($op.retval); exprList.add($n.retval);})*	
+	: m=dateParen {exprList.add($m.retval);} (op=plusMinus n=dateParen {opList.add($op.retval); exprList.add($n.retval);})*	
 							{retval = getLeftAssociativeDateValues(exprList, opList);};
 
-datePrimary returns [DateValue retval]
+dateParen returns [DateValue retval]
 	: d1=dateVal					{retval = $d1.retval;}
-	| LPAREN d2=datePrimary RPAREN			{retval = $d2.retval;}
+	| LPAREN d2=dateParen RPAREN			{retval = $d2.retval;}
 	;
 	
 dateVal returns [DateValue retval]
@@ -322,13 +322,13 @@ funcReturningDatetime returns [DateValue retval]
 	| keyMAXDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
 	| keyDATE LPAREN s1=stringValue COMMA s2=stringValue RPAREN
 							{retval = new DateExpr($s1.retval, $s2.retval);}
-	| keyYEAR LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.YEAR, $n.retval);}
-	| keyWEEK LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.WEEK, $n.retval);}
-	| keyDAY LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.DAY, $n.retval);}
-	| keyHOUR LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.HOUR, $n.retval);}
-	| keyMINUTE LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.MINUTE, $n.retval);}
-	| keySECOND LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.SECOND, $n.retval);}
-	| keyMILLI LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.Type.MILLI, $n.retval);}
+	| keyYEAR LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.YEAR, $n.retval);}
+	| keyWEEK LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.WEEK, $n.retval);}
+	| keyDAY LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.DAY, $n.retval);}
+	| keyHOUR LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.HOUR, $n.retval);}
+	| keyMINUTE LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.MINUTE, $n.retval);}
+	| keySECOND LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.SECOND, $n.retval);}
+	| keyMILLI LPAREN n=numberValue RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.MILLI, $n.retval);}
 	;
 
 funcReturningString returns [StringValue retval]

@@ -19,5 +19,4 @@ public abstract class GenericNotValue implements BooleanValue {
     public boolean isNot() {
         return not;
     }
-
 }

@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -40,6 +41,8 @@ public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotValue
 
     protected abstract boolean evaluateList(final Object object) throws HPersistException;
 
+    protected abstract Class<? extends ValueExpr> getClassType() throws HPersistException;
+
     private void optimizeList() throws HPersistException {
 
         final List<T> newvalList = Lists.newArrayList();
@@ -50,6 +53,23 @@ public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotValue
         // Swap new values to list
         this.getValueList().clear();
         this.getValueList().addAll(newvalList);
+    }
+
+    @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+
+        final Class<? extends ValueExpr> type1 = this.getExpr().validateType();
+
+        if (!ExprTree.isOfType(type1, this.getClassType()))
+            throw new HPersistException("Type " + type1.getName() + " not valid in GenericInStmt");
+
+        for (final T val : this.getValueList()) {
+            final Class<? extends ValueExpr> type = val.validateType();
+
+            if (!ExprTree.isOfType(type, this.getClassType()))
+                throw new HPersistException("Type " + type1.getName() + " not valid in GenericInStmt");
+        }
+        return BooleanValue.class;
     }
 
     @Override

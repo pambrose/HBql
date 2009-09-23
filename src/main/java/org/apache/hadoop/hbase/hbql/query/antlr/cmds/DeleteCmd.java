@@ -50,6 +50,7 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
         final HTable table = conn.getHTable(schema.getTableName());
         final ExprTree clientFilter = where.getClientExprTree();
         clientFilter.setSchema(schema);
+        clientFilter.validateTypes();
         clientFilter.optimize();
         int cnt = 0;
 

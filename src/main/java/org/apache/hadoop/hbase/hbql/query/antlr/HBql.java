@@ -34,6 +34,7 @@ public class HBql {
             final HBqlParser parser = newParser(input);
             final ExprTree exprTree = parser.descWhereExpr(schema);
             exprTree.setSchema(schema);
+            exprTree.validateTypes();
             if (optimize)
                 exprTree.optimize();
             return exprTree;
@@ -51,6 +52,7 @@ public class HBql {
             final HBqlParser parser = newParser(input);
             final ExprTree exprTree = parser.nodescWhereExpr(schema);
             exprTree.setSchema(schema);
+            exprTree.validateTypes();
             if (optimize)
                 exprTree.optimize();
             return exprTree;

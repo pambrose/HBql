@@ -1,6 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
+import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,5 +21,10 @@ public class NumberLiteral extends GenericLiteral<NumberValue> implements Number
     @Override
     public Number getValue(final Object object) {
         return this.value;
+    }
+
+    @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        return NumberValue.class;
     }
 }

@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
@@ -37,11 +38,19 @@ public class StringNullCompare extends GenericNotValue {
         return this.getExpr().getExprVariables();
     }
 
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+
+        final Class<? extends ValueExpr> type = this.getExpr().validateType();
+
+        if (!ExprTree.isOfType(type, StringValue.class))
+            throw new HPersistException("Type " + type.getName() + " not valid in StringNullCompare");
+
+        return BooleanValue.class;
+    }
+
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
-
         this.setExpr((StringValue)this.getExpr().getOptimizedValue());
-
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
