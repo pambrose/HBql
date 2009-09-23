@@ -30,7 +30,7 @@ public class StringTernary extends GenericTernary<StringValue> implements String
             throw new HPersistException("Type " + type1.getName() + " not valid in StringTernary");
 
         if (!type2.equals(type3))
-            throw new HPersistException("Types in StringTernary do not match");
+            throw new HPersistException("Type mismatch in StringTernary");
 
         if (!ExprTree.isOfType(type2, StringValue.class))
             throw new HPersistException("Type " + type2.getName() + " not valid in StringTernary");

@@ -84,12 +84,9 @@ public class WhereExprTests {
 
         try {
             final ExprTree tree = HBql.parseDescWhereExpr(expr, null, true);
-
             final List<ExprVariable> attribs = tree.getExprVariables();
-
-            boolean retval = true;
-
             final List<String> valList = Lists.newArrayList(vals);
+            boolean retval = true;
 
             for (final String val : valList) {
                 if (!attribs.contains(new ExprVariable(val, FieldType.StringType))) {
@@ -111,5 +108,4 @@ public class WhereExprTests {
             return false;
         }
     }
-
 }

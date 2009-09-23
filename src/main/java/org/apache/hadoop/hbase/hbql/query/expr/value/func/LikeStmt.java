@@ -77,7 +77,7 @@ public class LikeStmt extends GenericNotValue {
         final Class<? extends ValueExpr> type2 = this.getPatternExpr().validateType();
 
         if (!type1.equals(type2))
-            throw new HPersistException("Types in LikeStmt do not match");
+            throw new HPersistException("Type mismatch in LikeStmt");
 
         if (!ExprTree.isOfType(type1, StringValue.class))
             throw new HPersistException("Type " + type1.getName() + " not valid in LikeStmt");

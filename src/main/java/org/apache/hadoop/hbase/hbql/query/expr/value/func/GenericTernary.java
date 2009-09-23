@@ -15,16 +15,16 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 1:51:03 PM
  */
-public abstract class GenericTernary<T extends ValueExpr> extends GenericTwoExprExpr<T> {
+public abstract class GenericTernary<T extends ValueExpr> extends GenericTwoExprExpr<T> implements ValueExpr {
 
-    private BooleanValue pred = null;
+    private ValueExpr pred = null;
 
-    protected GenericTernary(final BooleanValue pred, final T expr1, final T expr2) {
+    protected GenericTernary(final ValueExpr pred, final T expr1, final T expr2) {
         super(expr1, expr2);
         this.pred = pred;
     }
 
-    protected BooleanValue getPred() {
+    protected ValueExpr getPred() {
         return this.pred;
     }
 
@@ -40,7 +40,7 @@ public abstract class GenericTernary<T extends ValueExpr> extends GenericTwoExpr
     }
 
     public Object getValue(final Object object) throws HPersistException {
-        if (this.getPred().getValue(object))
+        if (((BooleanValue)this.getPred()).getValue(object))
             return this.getExpr1().getValue(object);
         else
             return this.getExpr2().getValue(object);

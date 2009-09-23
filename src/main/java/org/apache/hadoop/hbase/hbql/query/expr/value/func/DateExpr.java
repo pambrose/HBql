@@ -42,7 +42,7 @@ public class DateExpr implements DateValue {
         final Class<? extends ValueExpr> type2 = this.getExpr().validateType();
 
         if (!type1.equals(type2))
-            throw new HPersistException("Types in DateExpr do not match");
+            throw new HPersistException("Type mismatch in DateExpr");
 
         if (!ExprTree.isOfType(type1, StringValue.class))
             throw new HPersistException("Type " + type1.getName() + " not valid in DateExpr");

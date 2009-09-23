@@ -37,7 +37,7 @@ public class CompareExpr extends GenericTwoExprExpr<BooleanValue> implements Boo
         final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
 
         if (!type1.equals(type2))
-            throw new HPersistException("Types in CompareExpr do not match");
+            throw new HPersistException("Type mismatch in CompareExpr");
 
         if (!ExprTree.isOfType(type1, BooleanValue.class))
             throw new HPersistException("Type " + type1.getName() + " not valid in CompareExpr");

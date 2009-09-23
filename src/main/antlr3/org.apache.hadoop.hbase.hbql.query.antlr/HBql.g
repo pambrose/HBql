@@ -176,9 +176,18 @@ nodescWhereExpr [Schema es] returns [ExprTree retval]
 descWhereExpr [Schema es] returns [ExprTree retval]
 @init {setSchema(es);}
 	: s=schemaDesc? 				{if ($s.retval != null) setSchema($s.retval);}			
-	  e=orExpr					{retval = ExprTree.newExprTree($e.retval);
-	  						 if ($s.retval != null) retval.setSchema($s.retval);};
-			
+	  e=orExpr					{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);};
+
+value returns [ValueExpr retval]
+	: o=orExpr					{retval = $o.retval;}
+	/*
+	| keyIF v1=value keyTHEN v2=value keyELSE v3=value keyEND	
+							{retval = new ValueTernary($v1.retval, $v2.retval, $v3.retval);}
+	| keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr keyEND	
+							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
+	*/
+	;
+				
 orExpr returns [BooleanValue retval]
 	: e1=andExpr (keyOR e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, CompareExpr.OP.OR, $e2.retval);};
 
@@ -186,18 +195,12 @@ andExpr returns [BooleanValue retval]
 	: e1=condFactor (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, CompareExpr.OP.AND, $e2.retval);};
 
 condFactor returns [BooleanValue retval]			 
-	: n=keyNOT? p=condPrimary			{retval = ($n.text != null) ? new CondFactor(true, $p.retval) :  $p.retval;};
+	: n=keyNOT? p=simpleCond			{retval = ($n.text != null) ? new CondFactor(true, $p.retval) :  $p.retval;};
 	
-condPrimary returns [BooleanValue retval]
+simpleCond returns [BooleanValue retval]
 options {backtrack=true;}	
-	: s=simpleCondExpr  				{retval = $s.retval;}
-	| LPAREN o=orExpr RPAREN			{retval = $o.retval;}
-	;
-
-simpleCondExpr returns [BooleanValue retval]
-options {backtrack=true;}	
-	: c=compareExpr 				{retval = $c.retval;}
-	| b2=booleanValue				{retval = $b2.retval;}
+	: b=booleanCond					{retval = $b.retval;}
+	| c=compareExpr 				{retval = $c.retval;}
 	;
 
 compareExpr returns [BooleanValue retval]
@@ -209,15 +212,34 @@ options {backtrack=true;}
 	: d=dateValue					{retval = $d.retval;}
 	| s=stringValue					{retval = $s.retval;}
 	| n=numberValue					{retval = $n.retval;}
+	| b=booleanValue				{retval = $b.retval;}
 	;
 
+booleanCond returns [BooleanValue retval]
+options {backtrack=true;}	
+	: b=booleanParen				{retval = $b.retval;}
+	| f=booleanFuncs				{retval = $f.retval;}
+	;
+
+booleanFuncs returns [BooleanValue retval]
+options {backtrack=true;}	
+	: s1=stringValue keyCONTAINS s2=stringValue	{retval = new BooleanFunction(GenericFunction.Type.CONTAINS, $s1.retval, $s2.retval);}
+	| l=likeExpr					{retval = $l.retval;}
+	| b1=betweenExpr				{retval = $b1.retval;}
+	| i=inExpr					{retval = $i.retval;}
+	| n=nullCompareExpr				{retval = $n.retval;}
+	;
+
+booleanParen returns [BooleanValue retval]
+options {backtrack=true;}	
+	: s=booleanValue  				{retval = $s.retval;}
+	| LPAREN o=orExpr RPAREN			{retval = $o.retval;}
+	;
+	
 // Boolean Value
 booleanValue returns [BooleanValue retval]
 options {backtrack=true;}	
 	: b=booleanLiteral				{retval = $b.retval;}
-	| f=funcReturningBoolean			{retval = $f.retval;}
-	| keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr keyEND	
-							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
 	;
 		
 // Numeric calculations
@@ -258,16 +280,20 @@ stringValue returns [StringValue retval]
 	;
 
 stringParen returns [StringValue retval]
-	: s1=stringPrimary				{retval = $s1.retval;}
+	: s1=stringCond					{retval = $s1.retval;}
 	| LPAREN s2=stringValue	RPAREN			{retval = $s2.retval;}						
 	;
-			
+
+stringCond returns [StringValue retval]
+	: s=stringPrimary				{retval = $s.retval;}
+	| keyIF e=orExpr keyTHEN s1=stringValue keyELSE s2=stringValue keyEND	
+							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
+	;
+				
 stringPrimary returns [StringValue retval]
 	: sl=stringLiteral				{retval = $sl.retval;}
 	| f=funcReturningString				{retval = $f.retval;}
 	| keyNULL					{retval = new StringNullLiteral();}
-	| keyIF e=orExpr keyTHEN s1=stringValue keyELSE s2=stringValue keyEND	
-							{retval = new StringTernary($e.retval, $s1.retval, $s2.retval);}
 	| a=stringAttribVar				{retval = $a.retval;}
 	;
 
@@ -279,28 +305,32 @@ dateValue returns [DateValue retval]
 							{retval = getLeftAssociativeDateValues(exprList, opList);};
 
 dateParen returns [DateValue retval]
-	: d1=dateVal					{retval = $d1.retval;}
+	: d1=dateCond					{retval = $d1.retval;}
 	| LPAREN d2=dateParen RPAREN			{retval = $d2.retval;}
 	;
-	
-dateVal returns [DateValue retval]
-	: d2=funcReturningDatetime			{retval = $d2.retval;}
+
+dateCond returns [DateValue retval]
+	: d=dateVal					{retval = $d.retval;}
 	| keyIF e=orExpr keyTHEN r1=dateValue keyELSE r2=dateValue keyEND	
 							{retval = new DateTernary($e.retval, $r1.retval, $r2.retval);}
+	;
+			
+dateVal returns [DateValue retval]
+	: d2=funcReturningDatetime			{retval = $d2.retval;}
 	| d3=dateAttribVar				{retval = $d3.retval;} 			
 	;
 
 // Variables
 numberAttribVar returns [NumberValue retval]
-	: {isAttribType(input, FieldType.IntegerType)}? v=varRef 
+	: {isAttribType(input, FieldType.IntegerType)}? v=variableRef 
 							{retval = (NumberValue)this.getValueExpr($v.text);};
 
 stringAttribVar returns [StringValue retval]
-	: {isAttribType(input, FieldType.StringType)}? v=varRef 
+	: {isAttribType(input, FieldType.StringType)}? v=variableRef 
 							{retval = (StringValue)this.getValueExpr($v.text);};
 
 dateAttribVar returns [DateValue retval]
-	: {isAttribType(input, FieldType.DateType)}? v=varRef 
+	: {isAttribType(input, FieldType.DateType)}? v=variableRef 
 							{retval = (DateValue)this.getValueExpr($v.text);};
 
 // Literals		
@@ -350,14 +380,6 @@ funcReturningInteger returns [NumberValue retval]
 	//| keyABS LPAREN numericExpr RPAREN
 	;
 
-funcReturningBoolean returns [BooleanValue retval]
-options {backtrack=true;}	
-	: s1=stringValue keyCONTAINS s2=stringValue	{retval = new BooleanFunction(GenericFunction.Type.CONTAINS, $s1.retval, $s2.retval);}
-	| l=likeExpr					{retval = $l.retval;}
-	| b1=betweenExpr				{retval = $b1.retval;}
-	| i=inExpr					{retval = $i.retval;}
-	| n=nullCompareExpr				{retval = $n.retval;}
-	;
 
 betweenExpr returns [BooleanValue retval]
 options {backtrack=true;}	
@@ -412,7 +434,7 @@ qstringList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
 	: qstring[retval] (COMMA qstring[retval])*;
 
-column 	: c=varRef;
+column 	: c=variableRef;
 	
 schemaDesc returns [Schema retval]
 	: LCURLY a=attribList RCURLY			{retval = HUtil.newDefinedSchema(input, $a.retval);};
@@ -426,10 +448,12 @@ compareOp returns [GenericCompare.OP retval]
 	| (LTGT | BANGEQ)				{retval = GenericCompare.OP.NOTEQ;}
 	;
 			
-varRef	
-	: ID //((DOT | COLON) ID)*			
-	;
+variableRef
+	: ID;
 
+paramRef
+	: PARAM ;
+	
 qstring	[List<String> list]
 	: QUOTED 					{if (list != null) list.add($QUOTED.text);};
 
@@ -448,6 +472,7 @@ INT	: DIGIT+;
 ID	: CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)* 		// DOOLAR is for inner class table names
 	| CHAR (CHAR | DOT | MINUS | DIGIT)* COLON (CHAR | DOT | MINUS | DIGIT)*
 	;
+PARAM	: COLON CHAR (CHAR | DOT | MINUS | DIGIT)*;	
 	
 //PARAM	: COLON (CHAR | DIGIT  | DOT)*;
  

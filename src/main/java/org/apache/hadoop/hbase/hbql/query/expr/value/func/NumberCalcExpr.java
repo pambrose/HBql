@@ -30,7 +30,7 @@ public class NumberCalcExpr extends GenericCalcExpr<NumberValue> implements Numb
             final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
 
             if (!type1.equals(type2))
-                throw new HPersistException("Types in NumberCalcExpr do not match");
+                throw new HPersistException("Type mismatch in NumberCalcExpr");
         }
 
         return NumberValue.class;

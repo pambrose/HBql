@@ -29,7 +29,7 @@ public class BooleanTernary extends GenericTernary<BooleanValue> implements Bool
             throw new HPersistException("Type " + type1.getName() + " not valid in BooleanTernary");
 
         if (!type2.equals(type3))
-            throw new HPersistException("Types in BooleanTernary do not match");
+            throw new HPersistException("Type mismatch in BooleanTernary");
 
         if (!ExprTree.isOfType(type2, BooleanValue.class))
             throw new HPersistException("Type " + type2.getName() + " not valid in BooleanTernary");

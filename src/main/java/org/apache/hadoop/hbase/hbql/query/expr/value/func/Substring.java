@@ -49,7 +49,7 @@ public class Substring implements StringValue {
             throw new HPersistException("Type " + type1.getName() + " not valid in Substring");
 
         if (!type2.equals(type3))
-            throw new HPersistException("Types in Substring do not match");
+            throw new HPersistException("Type mismatch in Substring");
 
         if (!ExprTree.isOfType(type2, NumberValue.class))
             throw new HPersistException("Type " + type2.getName() + " not valid in Substring");

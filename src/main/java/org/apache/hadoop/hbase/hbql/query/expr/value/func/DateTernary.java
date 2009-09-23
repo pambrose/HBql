@@ -15,7 +15,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
  */
 public class DateTernary extends GenericTernary<DateValue> implements DateValue {
 
-
     public DateTernary(final BooleanValue pred, final DateValue expr1, final DateValue expr2) {
         super(pred, expr1, expr2);
     }
@@ -31,7 +30,7 @@ public class DateTernary extends GenericTernary<DateValue> implements DateValue 
             throw new HPersistException("Type " + type1.getName() + " not valid in DateTernary");
 
         if (!type2.equals(type3))
-            throw new HPersistException("Types in DateTernary do not match");
+            throw new HPersistException("Type mismatch in DateTernary");
 
         if (!ExprTree.isOfType(type2, DateValue.class))
             throw new HPersistException("Type " + type2.getName() + " not valid in DateTernary");

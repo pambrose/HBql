@@ -30,7 +30,7 @@ public class NumberTernary extends GenericTernary<NumberValue> implements Number
             throw new HPersistException("Type " + type1.getName() + " not valid in NumberTernary");
 
         if (!type2.equals(type3))
-            throw new HPersistException("Types in DateExpr do not match");
+            throw new HPersistException("Type mismatch in DateExpr");
 
         if (!ExprTree.isOfType(type2, NumberValue.class))
             throw new HPersistException("Type " + type2.getName() + " not valid in NumberTernary");

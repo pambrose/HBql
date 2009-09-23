@@ -31,7 +31,6 @@ public abstract class GenericFunction<T extends ValueExpr> {
     private final Type functionType;
     private final StringValue[] stringExprs;
 
-
     protected GenericFunction(final Type functionType, final StringValue... stringExprs) {
         this.functionType = functionType;
         this.stringExprs = stringExprs;
@@ -40,7 +39,6 @@ public abstract class GenericFunction<T extends ValueExpr> {
     protected StringValue[] getStringExprs() {
         return stringExprs;
     }
-
 
     protected Type getFunctionType() {
         return this.functionType;
@@ -67,5 +65,4 @@ public abstract class GenericFunction<T extends ValueExpr> {
             retval.addAll(val.getExprVariables());
         return retval;
     }
-
 }

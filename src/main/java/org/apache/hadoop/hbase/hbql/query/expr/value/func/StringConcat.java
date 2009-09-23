@@ -37,7 +37,7 @@ public class StringConcat extends GenericTwoExprExpr<StringValue> implements Str
         final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
 
         if (!type1.equals(type2))
-            throw new HPersistException("Types in StringConcat do not match");
+            throw new HPersistException("Type mismatch in StringConcat");
 
         if (!ExprTree.isOfType(type1, StringValue.class))
             throw new HPersistException("Type " + type1.getName() + " not valid in StringConcat");

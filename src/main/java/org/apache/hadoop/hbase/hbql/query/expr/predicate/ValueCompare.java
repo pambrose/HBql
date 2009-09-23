@@ -7,7 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,25 +23,16 @@ public class ValueCompare extends GenericCompare<ValueExpr> {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
-
-        this.setExpr1(this.getExpr1().getOptimizedValue());
-        this.setExpr2(this.getExpr2().getOptimizedValue());
-
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
-    }
-
-    @Override
     public Class<? extends ValueExpr> validateType() throws HPersistException {
 
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
         final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
 
+        if (!type1.equals(type2))
+            throw new HPersistException("Type mismatch in ValueCompare");
+
         if (!ExprTree.isOfType(type1, StringValue.class, NumberValue.class, DateValue.class))
             throw new HPersistException("Type " + type1.getName() + " not valid in ValueCompare");
-
-        if (!ExprTree.isOfType(type2, StringValue.class, NumberValue.class, DateValue.class))
-            throw new HPersistException("Type " + type2.getName() + " not valid in ValueCompare");
 
         if (type1.equals(DateValue.class))
             typedExpr = new DateCompare((DateValue)this.getExpr1(), this.getOp(), (DateValue)this.getExpr2());
@@ -54,6 +44,11 @@ public class ValueCompare extends GenericCompare<ValueExpr> {
             typedExpr = null;  // Never executed
 
         return BooleanValue.class;
+    }
+
+    @Override
+    public ValueExpr getOptimizedValue() throws HPersistException {
+        return this.typedExpr.getOptimizedValue();
     }
 
     @Override
