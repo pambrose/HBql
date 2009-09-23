@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
 /**
@@ -15,19 +16,14 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
  */
 public class CompareExpr extends GenericTwoExprExpr<BooleanValue> implements BooleanValue {
 
-    public enum OP {
-        AND,
-        OR
-    }
+    private final Operator op;
 
-    private final CompareExpr.OP op;
-
-    public CompareExpr(final BooleanValue expr1, final CompareExpr.OP op, final BooleanValue expr2) {
+    public CompareExpr(final BooleanValue expr1, final Operator op, final BooleanValue expr2) {
         super(expr1, expr2);
         this.op = op;
     }
 
-    private OP getOp() {
+    private Operator getOp() {
         return op;
     }
 

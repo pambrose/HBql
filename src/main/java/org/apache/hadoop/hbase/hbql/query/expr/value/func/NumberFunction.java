@@ -14,7 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  */
 public class NumberFunction extends GenericFunction<NumberValue> implements NumberValue {
 
-    public NumberFunction(final Type functionType, final StringValue... stringExprs) {
+    public NumberFunction(final FunctionType functionType, final StringValue... stringExprs) {
         super(functionType, stringExprs);
     }
 

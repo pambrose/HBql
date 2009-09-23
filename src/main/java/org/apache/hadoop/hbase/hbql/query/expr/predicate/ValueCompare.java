@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +19,7 @@ public class ValueCompare extends GenericCompare<ValueExpr> {
 
     private GenericCompare typedExpr = null;
 
-    public ValueCompare(final ValueExpr expr1, final OP op, final ValueExpr expr2) {
+    public ValueCompare(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, op, expr2);
     }
 

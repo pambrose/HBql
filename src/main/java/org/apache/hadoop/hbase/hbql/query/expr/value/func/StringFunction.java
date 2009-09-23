@@ -13,7 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  */
 public class StringFunction extends GenericFunction implements StringValue {
 
-    public StringFunction(final Type functionType, final StringValue... stringExprs) {
+    public StringFunction(final FunctionType functionType, final StringValue... stringExprs) {
         super(functionType, stringExprs);
     }
 

@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
+import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 12:30:57 PM
  */
-public abstract class GenericAttribRef<T extends ValueExpr> {
+public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr {
 
     private final ExprVariable exprVar;
     private ExprTree context = null;
@@ -25,8 +26,12 @@ public abstract class GenericAttribRef<T extends ValueExpr> {
         this.exprVar = new ExprVariable(attribName, fieldType);
     }
 
-    public ExprVariable getExprVar() {
+    protected ExprVariable getExprVar() {
         return this.exprVar;
+    }
+
+    protected String getName() {
+        return this.getExprVar().getName();
     }
 
     public List<ExprVariable> getExprVariables() {
@@ -53,8 +58,15 @@ public abstract class GenericAttribRef<T extends ValueExpr> {
         return this.getContext().getSchema();
     }
 
+    protected VariableAttrib getVariableAttrib() throws HPersistException {
+        final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(this.getExprVar().getName());
+        if (attrib == null)
+            throw new HPersistException("Invalid variable name: " + this.getExprVar().getName());
+        return attrib;
+    }
+
     public Class<? extends ValueExpr> validateType() throws HPersistException {
-        return this.exprVar.getFieldType().getExprType();
+        return this.getExprVar().getFieldType().getExprType();
     }
 
 }

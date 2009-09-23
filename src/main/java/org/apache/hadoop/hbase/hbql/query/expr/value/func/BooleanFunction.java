@@ -14,7 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  */
 public class BooleanFunction extends GenericFunction implements BooleanValue {
 
-    public BooleanFunction(final Type functionType, final StringValue... stringExprs) {
+    public BooleanFunction(final FunctionType functionType, final StringValue... stringExprs) {
         super(functionType, stringExprs);
     }
 

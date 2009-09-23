@@ -14,7 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  * Date: Aug 29, 2009
  * Time: 2:35:57 PM
  */
-public class ValueTernary extends GenericTernary<ValueExpr> implements ValueExpr {
+public class ValueTernary extends GenericTernary<ValueExpr> {
 
     private GenericTernary typedExpr = null;
 

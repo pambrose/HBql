@@ -11,23 +11,14 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
  */
 public class GenericCalcExpr<T extends ValueExpr> extends GenericTwoExprExpr<T> {
 
-    public enum OP {
-        PLUS,
-        MINUS,
-        MULT,
-        DIV,
-        MOD,
-        NEGATIVE
-    }
+    private final Operator op;
 
-    private final GenericCalcExpr.OP op;
-
-    public GenericCalcExpr(final T expr1, final OP op, final T expr2) {
+    public GenericCalcExpr(final T expr1, final Operator op, final T expr2) {
         super(expr1, expr2);
         this.op = op;
     }
 
-    protected OP getOp() {
+    protected Operator getOp() {
         return op;
     }
 

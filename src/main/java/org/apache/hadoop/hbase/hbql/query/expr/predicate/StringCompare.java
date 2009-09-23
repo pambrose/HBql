@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,7 +12,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
  */
 public class StringCompare extends GenericCompare<StringValue> {
 
-    public StringCompare(final StringValue expr1, final OP op, final StringValue expr2) {
+    public StringCompare(final StringValue expr1, final Operator op, final StringValue expr2) {
         super(expr1, op, expr2);
     }
 

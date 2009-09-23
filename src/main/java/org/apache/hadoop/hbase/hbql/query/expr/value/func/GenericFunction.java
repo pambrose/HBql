@@ -17,21 +17,10 @@ import java.util.List;
  */
 public abstract class GenericFunction<T extends ValueExpr> {
 
-    public enum Type {
-        CONCAT,
-        TRIM,
-        LOWER,
-        UPPER,
-        LENGTH,
-        CONTAINS,
-        REPLACE,
-        INDEXOF
-    }
-
-    private final Type functionType;
+    private final FunctionType functionType;
     private final StringValue[] stringExprs;
 
-    protected GenericFunction(final Type functionType, final StringValue... stringExprs) {
+    protected GenericFunction(final FunctionType functionType, final StringValue... stringExprs) {
         this.functionType = functionType;
         this.stringExprs = stringExprs;
     }
@@ -40,7 +29,7 @@ public abstract class GenericFunction<T extends ValueExpr> {
         return stringExprs;
     }
 
-    protected Type getFunctionType() {
+    protected FunctionType getFunctionType() {
         return this.functionType;
     }
 

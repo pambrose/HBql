@@ -14,7 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
  */
 public class NumberCalcExpr extends GenericCalcExpr<NumberValue> implements NumberValue {
 
-    public NumberCalcExpr(final NumberValue expr1, final GenericCalcExpr.OP op, final NumberValue expr2) {
+    public NumberCalcExpr(final NumberValue expr1, final Operator op, final NumberValue expr2) {
         super(expr1, op, expr2);
     }
 

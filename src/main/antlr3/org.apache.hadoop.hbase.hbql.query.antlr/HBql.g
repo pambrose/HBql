@@ -123,7 +123,7 @@ time returns [DateRangeArgs retval]
 		
 // Range Values
 rangeExpr returns [DateValue retval]
-@init {List<DateValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList();}
+@init {List<DateValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList();}
 	: m=rangePrimary {exprList.add($m.retval);} (op=plusMinus n=rangePrimary {opList.add($op.retval); exprList.add($n.retval);})*
 							{$rangeExpr.retval = getLeftAssociativeDateValues(exprList, opList);}
 	;
@@ -178,33 +178,50 @@ descWhereExpr [Schema es] returns [ExprTree retval]
 	: s=schemaDesc? 				{if ($s.retval != null) setSchema($s.retval);}			
 	  e=orExpr					{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);};
 
+/*
 value returns [ValueExpr retval]
 	: o=orExpr					{retval = $o.retval;}
-	/*
 	| keyIF v1=value keyTHEN v2=value keyELSE v3=value keyEND	
 							{retval = new ValueTernary($v1.retval, $v2.retval, $v3.retval);}
 	| keyIF e=orExpr keyTHEN b1=orExpr keyELSE b2=orExpr keyEND	
 							{retval = new BooleanTernary($e.retval, $b1.retval, $b2.retval);}
-	*/
 	;
+	*/
 				
 orExpr returns [BooleanValue retval]
-	: e1=andExpr (keyOR e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, CompareExpr.OP.OR, $e2.retval);};
+	: e1=andExpr (keyOR e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, Operator.OR, $e2.retval);};
 
 andExpr returns [BooleanValue retval]
-	: e1=condFactor (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, CompareExpr.OP.AND, $e2.retval);};
+	: e1=condFactor (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, Operator.AND, $e2.retval);};
 
 condFactor returns [BooleanValue retval]			 
-	: n=keyNOT? p=simpleCond			{retval = ($n.text != null) ? new CondFactor(true, $p.retval) :  $p.retval;};
-	
-simpleCond returns [BooleanValue retval]
+	: n=keyNOT? p=booleanPrimary			{retval = ($n.text != null) ? new CondFactor(true, $p.retval) :  $p.retval;};
+
+booleanPrimary returns [BooleanValue retval]
 options {backtrack=true;}	
-	: b=booleanCond					{retval = $b.retval;}
-	| c=compareExpr 				{retval = $c.retval;}
+	: b=eqneCompare					{retval = $b.retval;}
+	| f=booleanFuncs				{retval = $f.retval;}
 	;
 
-compareExpr returns [BooleanValue retval]
-	: v1=valueExpr o=compareOp v2=valueExpr 	{retval = new ValueCompare($v1.retval, $o.retval, $v2.retval);}	
+booleanFuncs returns [BooleanValue retval]
+options {backtrack=true;}	
+	: s1=stringValue keyCONTAINS s2=stringValue	{retval = new BooleanFunction(FunctionType.CONTAINS, $s1.retval, $s2.retval);}
+	| l=likeExpr					{retval = $l.retval;}
+	| b=betweenExpr					{retval = $b.retval;}
+	| i=inExpr					{retval = $i.retval;}
+	| n=nullCompareExpr				{retval = $n.retval;}
+	;
+	
+eqneCompare returns [BooleanValue retval]
+options {backtrack=true;}	
+	: b=ltgtCompare					{retval = $b.retval;}
+	| v1=valueExpr o=eqneOp v2=valueExpr 		{retval = new ValueCompare($v1.retval, $o.retval, $v2.retval);}	
+	;
+
+ltgtCompare returns [BooleanValue retval]
+options {backtrack=true;}	
+	: b=booleanParen				{retval = $b.retval;}
+	| v1=valueExpr o=ltgtOp v2=valueExpr 		{retval = new ValueCompare($v1.retval, $o.retval, $v2.retval);}	
 	;
 
 valueExpr returns [ValueExpr retval]
@@ -212,49 +229,36 @@ options {backtrack=true;}
 	: d=dateValue					{retval = $d.retval;}
 	| s=stringValue					{retval = $s.retval;}
 	| n=numberValue					{retval = $n.retval;}
-	| b=booleanValue				{retval = $b.retval;}
-	;
-
-booleanCond returns [BooleanValue retval]
-options {backtrack=true;}	
-	: b=booleanParen				{retval = $b.retval;}
-	| f=booleanFuncs				{retval = $f.retval;}
-	;
-
-booleanFuncs returns [BooleanValue retval]
-options {backtrack=true;}	
-	: s1=stringValue keyCONTAINS s2=stringValue	{retval = new BooleanFunction(GenericFunction.Type.CONTAINS, $s1.retval, $s2.retval);}
-	| l=likeExpr					{retval = $l.retval;}
-	| b1=betweenExpr				{retval = $b1.retval;}
-	| i=inExpr					{retval = $i.retval;}
-	| n=nullCompareExpr				{retval = $n.retval;}
+	| b=booleanElem					{retval = $b.retval;}
 	;
 
 booleanParen returns [BooleanValue retval]
 options {backtrack=true;}	
-	: s=booleanValue  				{retval = $s.retval;}
+	: s=booleanElem  				{retval = $s.retval;}
 	| LPAREN o=orExpr RPAREN			{retval = $o.retval;}
 	;
 	
 // Boolean Value
-booleanValue returns [BooleanValue retval]
+booleanElem returns [BooleanValue retval]
 options {backtrack=true;}	
 	: b=booleanLiteral				{retval = $b.retval;}
+	| v=variableRef
+	| p=paramRef
 	;
 		
 // Numeric calculations
 numberValue returns [NumberValue retval] 
-@init {List<NumberValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList(); }
+@init {List<NumberValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
 	: m=multNumber {exprList.add($m.retval);} (op=plusMinus n=multNumber {opList.add($op.retval); exprList.add($n.retval);})*	
 							{retval = getLeftAssociativeNumberValues(exprList, opList);};
 	
 multNumber returns [NumberValue retval]
-@init {List<NumberValue> exprList = Lists.newArrayList(); List<GenericCalcExpr.OP> opList = Lists.newArrayList(); }
+@init {List<NumberValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
 	: m=signedNumberPrimary {exprList.add($m.retval);} (op=multDiv n=signedNumberPrimary {opList.add($op.retval); exprList.add($n.retval);})*	
 							{retval = getLeftAssociativeNumberValues(exprList, opList);};
 	
 signedNumberPrimary returns [NumberValue retval]
-	: (s=plusMinus)? n=numberParen 			{$signedNumberPrimary.retval = ($s.retval == GenericCalcExpr.OP.MINUS) ? new NumberCalcExpr($n.retval, GenericCalcExpr.OP.NEGATIVE, null) :  $n.retval;};
+	: (s=plusMinus)? n=numberParen 			{$signedNumberPrimary.retval = ($s.retval == Operator.MINUS) ? new NumberCalcExpr($n.retval, Operator.NEGATIVE, null) :  $n.retval;};
 
 numberParen returns [NumberValue retval]
 	: n=numberCond					{retval = $n.retval;}
@@ -300,7 +304,7 @@ stringPrimary returns [StringValue retval]
 // Date Values
 dateValue returns [DateValue retval]
 @init {List<DateValue> exprList = Lists.newArrayList(); 
-       List<GenericCalcExpr.OP> opList = Lists.newArrayList();}
+       List<Operator> opList = Lists.newArrayList();}
 	: m=dateParen {exprList.add($m.retval);} (op=plusMinus n=dateParen {opList.add($op.retval); exprList.add($n.retval);})*	
 							{retval = getLeftAssociativeDateValues(exprList, opList);};
 
@@ -363,20 +367,20 @@ funcReturningDatetime returns [DateValue retval]
 
 funcReturningString returns [StringValue retval]
 	: keyCONCAT LPAREN s1=stringValue COMMA s2=stringValue RPAREN
-							{retval = new StringFunction(GenericFunction.Type.CONCAT, $s1.retval, $s2.retval);}
+							{retval = new StringFunction(FunctionType.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=stringValue COMMA n1=numberValue COMMA n2=numberValue RPAREN
 							{retval = new Substring($s.retval, $n1.retval, $n2.retval);}
-	| keyTRIM LPAREN s=stringValue RPAREN		{retval = new StringFunction(GenericFunction.Type.TRIM, $s.retval);}
-	| keyLOWER LPAREN s=stringValue RPAREN		{retval = new StringFunction(GenericFunction.Type.LOWER, $s.retval);} 
-	| keyUPPER LPAREN s=stringValue RPAREN		{retval = new StringFunction(GenericFunction.Type.UPPER, $s.retval);} 
+	| keyTRIM LPAREN s=stringValue RPAREN		{retval = new StringFunction(FunctionType.TRIM, $s.retval);}
+	| keyLOWER LPAREN s=stringValue RPAREN		{retval = new StringFunction(FunctionType.LOWER, $s.retval);} 
+	| keyUPPER LPAREN s=stringValue RPAREN		{retval = new StringFunction(FunctionType.UPPER, $s.retval);} 
 	| keyREPLACE LPAREN s1=stringValue COMMA s2=stringValue COMMA s3=stringValue RPAREN		
-							{retval = new StringFunction(GenericFunction.Type.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
+							{retval = new StringFunction(FunctionType.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
 	;
 
 funcReturningInteger returns [NumberValue retval]
-	: keyLENGTH LPAREN s=stringValue RPAREN		{retval = new NumberFunction(GenericFunction.Type.LENGTH, $s.retval);}
+	: keyLENGTH LPAREN s=stringValue RPAREN		{retval = new NumberFunction(FunctionType.LENGTH, $s.retval);}
 	| keyINDEXOF LPAREN s1=stringValue COMMA s2=stringValue RPAREN
-							{retval = new NumberFunction(GenericFunction.Type.INDEXOF, $s1.retval, $s2.retval);}
+							{retval = new NumberFunction(FunctionType.INDEXOF, $s1.retval, $s2.retval);}
 	//| keyABS LPAREN numericExpr RPAREN
 	;
 
@@ -439,13 +443,16 @@ column 	: c=variableRef;
 schemaDesc returns [Schema retval]
 	: LCURLY a=attribList RCURLY			{retval = HUtil.newDefinedSchema(input, $a.retval);};
 	
-compareOp returns [GenericCompare.OP retval]
-	: EQ 						{retval = GenericCompare.OP.EQ;}
-	| GT 						{retval = GenericCompare.OP.GT;}
-	| GTEQ 						{retval = GenericCompare.OP.GTEQ;}
-	| LT 						{retval = GenericCompare.OP.LT;}
-	| LTEQ 						{retval = GenericCompare.OP.LTEQ;}
-	| (LTGT | BANGEQ)				{retval = GenericCompare.OP.NOTEQ;}
+ltgtOp returns [Operator retval]
+	: GT 						{retval = Operator.GT;}
+	| GTEQ 						{retval = Operator.GTEQ;}
+	| LT 						{retval = Operator.LT;}
+	| LTEQ 						{retval = Operator.LTEQ;}
+	;
+			
+eqneOp returns [Operator retval]
+	: EQ 						{retval = Operator.EQ;}
+	| (LTGT | BANGEQ)				{retval = Operator.NOTEQ;}
 	;
 			
 variableRef
@@ -457,15 +464,15 @@ paramRef
 qstring	[List<String> list]
 	: QUOTED 					{if (list != null) list.add($QUOTED.text);};
 
-plusMinus returns [GenericCalcExpr.OP retval]
-	: PLUS						{retval = GenericCalcExpr.OP.PLUS;}
-	| MINUS						{retval = GenericCalcExpr.OP.MINUS;}
+plusMinus returns [Operator retval]
+	: PLUS						{retval = Operator.PLUS;}
+	| MINUS						{retval = Operator.MINUS;}
 	;
 	
-multDiv returns [GenericCalcExpr.OP retval]
-	: STAR						{retval = GenericCalcExpr.OP.MULT;}
-	| DIV						{retval = GenericCalcExpr.OP.DIV;}
-	| MOD						{retval = GenericCalcExpr.OP.MOD;}
+multDiv returns [Operator retval]
+	: STAR						{retval = Operator.MULT;}
+	| DIV						{retval = Operator.DIV;}
+	| MOD						{retval = Operator.MOD;}
 	;
 		
 INT	: DIGIT+;

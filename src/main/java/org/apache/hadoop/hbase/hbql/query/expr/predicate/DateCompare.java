@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,7 +12,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
  */
 public class DateCompare extends GenericCompare<DateValue> {
 
-    public DateCompare(final DateValue expr1, final OP op, final DateValue expr2) {
+    public DateCompare(final DateValue expr1, final Operator op, final DateValue expr2) {
         super(expr1, op, expr2);
     }
 
