@@ -3,7 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -18,15 +17,15 @@ import java.util.List;
 public abstract class GenericFunction<T extends ValueExpr> {
 
     private final FunctionType functionType;
-    private final StringValue[] stringExprs;
+    private final ValueExpr[] valueExprs;
 
-    protected GenericFunction(final FunctionType functionType, final StringValue... stringExprs) {
+    protected GenericFunction(final FunctionType functionType, final ValueExpr... valueExprs) {
         this.functionType = functionType;
-        this.stringExprs = stringExprs;
+        this.valueExprs = valueExprs;
     }
 
-    protected StringValue[] getStringExprs() {
-        return stringExprs;
+    protected ValueExpr[] getValueExprs() {
+        return valueExprs;
     }
 
     protected FunctionType getFunctionType() {
@@ -34,7 +33,7 @@ public abstract class GenericFunction<T extends ValueExpr> {
     }
 
     public void setContext(final ExprTree context) {
-        for (final StringValue val : this.getStringExprs())
+        for (final ValueExpr val : this.getValueExprs())
             val.setContext(context);
     }
 
@@ -50,7 +49,7 @@ public abstract class GenericFunction<T extends ValueExpr> {
 
     public List<ExprVariable> getExprVariables() {
         final List<ExprVariable> retval = Lists.newArrayList();
-        for (final StringValue val : this.getStringExprs())
+        for (final ValueExpr val : this.getValueExprs())
             retval.addAll(val.getExprVariables());
         return retval;
     }

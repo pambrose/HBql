@@ -22,15 +22,15 @@ public class NumberFunction extends GenericFunction<NumberValue> implements Numb
     public Class<? extends ValueExpr> validateType() throws HPersistException {
         switch (this.getFunctionType()) {
             case LENGTH: {
-                final Class<? extends ValueExpr> type1 = this.getStringExprs()[0].validateType();
+                final Class<? extends ValueExpr> type1 = this.getValueExprs()[0].validateType();
                 if (!ExprTree.isOfType(type1, StringValue.class))
                     throw new HPersistException("Type " + type1.getName() + " not valid in LENGTH");
                 break;
             }
 
             case INDEXOF: {
-                final Class<? extends ValueExpr> type1 = this.getStringExprs()[0].validateType();
-                final Class<? extends ValueExpr> type2 = this.getStringExprs()[1].validateType();
+                final Class<? extends ValueExpr> type1 = this.getValueExprs()[0].validateType();
+                final Class<? extends ValueExpr> type2 = this.getValueExprs()[1].validateType();
                 if (!ExprTree.isOfType(type1, StringValue.class))
                     throw new HPersistException("Type " + type1.getName() + " not valid in INDEXOF");
                 if (!ExprTree.isOfType(type2, StringValue.class))
@@ -50,7 +50,7 @@ public class NumberFunction extends GenericFunction<NumberValue> implements Numb
 
         switch (this.getFunctionType()) {
             case LENGTH: {
-                final String val = this.getStringExprs()[0].getValue(object);
+                final String val = this.getValueExprs()[0].getValue(object);
                 if (val == null)
                     return 0;
                 else
@@ -58,8 +58,8 @@ public class NumberFunction extends GenericFunction<NumberValue> implements Numb
             }
 
             case INDEXOF: {
-                final String val1 = this.getStringExprs()[0].getValue(object);
-                final String val2 = this.getStringExprs()[1].getValue(object);
+                final String val1 = this.getValueExprs()[0].getValue(object);
+                final String val2 = this.getValueExprs()[1].getValue(object);
                 if (val1 == null || val2 == null)
                     return -1;
                 else

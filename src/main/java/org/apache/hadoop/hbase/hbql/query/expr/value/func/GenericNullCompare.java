@@ -16,10 +16,21 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class StringNullCompare extends GenericNullCompare<StringValue> {
+public class GenericNullCompare<T extends ValueExpr> extends GenericNotValue {
 
-    public StringNullCompare(final boolean not, final StringValue expr) {
-        super(not, expr);
+    private T expr = null;
+
+    public GenericNullCompare(final boolean not, final T expr) {
+        super(not);
+        this.expr = expr;
+    }
+
+    protected T getExpr() {
+        return this.expr;
+    }
+
+    protected void setExpr(final T expr) {
+        this.expr = expr;
     }
 
     @Override

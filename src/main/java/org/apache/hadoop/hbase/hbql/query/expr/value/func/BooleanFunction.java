@@ -14,16 +14,16 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  */
 public class BooleanFunction extends GenericFunction implements BooleanValue {
 
-    public BooleanFunction(final FunctionType functionType, final StringValue... stringExprs) {
-        super(functionType, stringExprs);
+    public BooleanFunction(final FunctionType functionType, final ValueExpr... valueExprs) {
+        super(functionType, valueExprs);
     }
 
     @Override
     public Class<? extends ValueExpr> validateType() throws HPersistException {
         switch (this.getFunctionType()) {
             case CONTAINS: {
-                final Class<? extends ValueExpr> type1 = this.getStringExprs()[0].validateType();
-                final Class<? extends ValueExpr> type2 = this.getStringExprs()[1].validateType();
+                final Class<? extends ValueExpr> type1 = this.getValueExprs()[0].validateType();
+                final Class<? extends ValueExpr> type2 = this.getValueExprs()[1].validateType();
                 if (!ExprTree.isOfType(type1, StringValue.class))
                     throw new HPersistException("Type " + type1.getName() + " not valid in CONTAINS");
                 if (!ExprTree.isOfType(type2, StringValue.class))
@@ -42,8 +42,8 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
 
         switch (this.getFunctionType()) {
             case CONTAINS: {
-                final String val1 = this.getStringExprs()[0].getValue(object);
-                final String val2 = this.getStringExprs()[1].getValue(object);
+                final String val1 = this.getValueExprs()[0].getValue(object);
+                final String val2 = this.getValueExprs()[1].getValue(object);
                 if (val1 == null || val2 == null)
                     return false;
                 else

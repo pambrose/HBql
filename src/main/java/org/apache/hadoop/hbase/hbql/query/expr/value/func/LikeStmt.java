@@ -20,22 +20,22 @@ import java.util.regex.Pattern;
  */
 public class LikeStmt extends GenericNotValue {
 
-    private StringValue expr = null;
-    private StringValue patternExpr = null;
+    private ValueExpr expr = null;
+    private ValueExpr patternExpr = null;
 
     private Pattern pattern = null;
 
-    public LikeStmt(final StringValue expr, final boolean not, final StringValue patternExpr) {
+    public LikeStmt(final ValueExpr expr, final boolean not, final StringValue patternExpr) {
         super(not);
         this.expr = expr;
         this.patternExpr = patternExpr;
     }
 
-    private StringValue getExpr() {
+    private ValueExpr getExpr() {
         return this.expr;
     }
 
-    private StringValue getPatternExpr() {
+    private ValueExpr getPatternExpr() {
         return this.patternExpr;
     }
 
@@ -48,18 +48,18 @@ public class LikeStmt extends GenericNotValue {
 
         if (this.getPatternExpr().isAConstant()) {
             if (this.pattern == null) {
-                final String pattern = this.getPatternExpr().getValue(object);
+                final String pattern = (String)this.getPatternExpr().getValue(object);
                 this.pattern = Pattern.compile(pattern);
             }
         }
         else {
-            final String pattern = this.getPatternExpr().getValue(object);
+            final String pattern = (String)this.getPatternExpr().getValue(object);
             if (pattern == null)
                 throw new HPersistException("Null string for LIKE pattern");
             this.pattern = Pattern.compile(pattern);
         }
 
-        final String val = this.getExpr().getValue(object);
+        final String val = (String)this.getExpr().getValue(object);
         if (val == null)
             throw new HPersistException("Null string for LIKE value");
 
@@ -87,8 +87,8 @@ public class LikeStmt extends GenericNotValue {
 
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
-        this.expr = (StringValue)this.getExpr().getOptimizedValue();
-        this.patternExpr = (StringValue)this.getPatternExpr().getOptimizedValue();
+        this.expr = this.getExpr().getOptimizedValue();
+        this.patternExpr = this.getPatternExpr().getOptimizedValue();
 
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }

@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
+import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
 
@@ -9,7 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
  * Date: Sep 7, 2009
  * Time: 9:29:44 PM
  */
-public class GenericCalcExpr<T extends ValueExpr> extends GenericTwoExprExpr<T> {
+public abstract class GenericCalcExpr<T extends ValueExpr> extends GenericTwoExprExpr<T> implements ValueExpr {
 
     private final Operator op;
 
@@ -22,4 +23,8 @@ public class GenericCalcExpr<T extends ValueExpr> extends GenericTwoExprExpr<T> 
         return op;
     }
 
+    @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        return null;
+    }
 }

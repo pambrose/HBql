@@ -21,29 +21,29 @@ public class StringFunction extends GenericFunction implements StringValue {
 
         switch (this.getFunctionType()) {
             case TRIM: {
-                final Class<? extends ValueExpr> type1 = this.getStringExprs()[0].validateType();
+                final Class<? extends ValueExpr> type1 = this.getValueExprs()[0].validateType();
                 if (!ExprTree.isOfType(type1, StringValue.class))
                     throw new HPersistException("Type " + type1.getName() + " not valid in TRIM");
                 break;
             }
 
             case LOWER: {
-                final Class<? extends ValueExpr> type1 = this.getStringExprs()[0].validateType();
+                final Class<? extends ValueExpr> type1 = this.getValueExprs()[0].validateType();
                 if (!ExprTree.isOfType(type1, StringValue.class))
                     throw new HPersistException("Type " + type1.getName() + " not valid in LOWER");
                 break;
             }
 
             case UPPER: {
-                final Class<? extends ValueExpr> type1 = this.getStringExprs()[0].validateType();
+                final Class<? extends ValueExpr> type1 = this.getValueExprs()[0].validateType();
                 if (!ExprTree.isOfType(type1, StringValue.class))
                     throw new HPersistException("Type " + type1.getName() + " not valid in UPPER");
                 break;
             }
 
             case CONCAT: {
-                final Class<? extends ValueExpr> type1 = this.getStringExprs()[0].validateType();
-                final Class<? extends ValueExpr> type2 = this.getStringExprs()[1].validateType();
+                final Class<? extends ValueExpr> type1 = this.getValueExprs()[0].validateType();
+                final Class<? extends ValueExpr> type2 = this.getValueExprs()[1].validateType();
                 if (!ExprTree.isOfType(type1, StringValue.class))
                     throw new HPersistException("Type " + type1.getName() + " not valid in CONCAT");
                 if (!ExprTree.isOfType(type2, StringValue.class))
@@ -52,9 +52,9 @@ public class StringFunction extends GenericFunction implements StringValue {
             }
 
             case REPLACE: {
-                final Class<? extends ValueExpr> type1 = this.getStringExprs()[0].validateType();
-                final Class<? extends ValueExpr> type2 = this.getStringExprs()[1].validateType();
-                final Class<? extends ValueExpr> type3 = this.getStringExprs()[2].validateType();
+                final Class<? extends ValueExpr> type1 = this.getValueExprs()[0].validateType();
+                final Class<? extends ValueExpr> type2 = this.getValueExprs()[1].validateType();
+                final Class<? extends ValueExpr> type3 = this.getValueExprs()[2].validateType();
                 if (!ExprTree.isOfType(type1, StringValue.class))
                     throw new HPersistException("Type " + type1.getName() + " not valid in REPLACE");
                 if (!ExprTree.isOfType(type2, StringValue.class))
@@ -76,30 +76,30 @@ public class StringFunction extends GenericFunction implements StringValue {
 
         switch (this.getFunctionType()) {
             case TRIM: {
-                final String val = this.getStringExprs()[0].getValue(object);
+                final String val = this.getValueExprs()[0].getValue(object);
                 return val.trim();
             }
 
             case LOWER: {
-                final String val = this.getStringExprs()[0].getValue(object);
+                final String val = this.getValueExprs()[0].getValue(object);
                 return val.toLowerCase();
             }
 
             case UPPER: {
-                final String val = this.getStringExprs()[0].getValue(object);
+                final String val = this.getValueExprs()[0].getValue(object);
                 return val.toUpperCase();
             }
 
             case CONCAT: {
-                final String v1 = this.getStringExprs()[0].getValue(object);
-                final String v2 = this.getStringExprs()[1].getValue(object);
+                final String v1 = this.getValueExprs()[0].getValue(object);
+                final String v2 = this.getValueExprs()[1].getValue(object);
                 return v1 + v2;
             }
 
             case REPLACE: {
-                final String v1 = this.getStringExprs()[0].getValue(object);
-                final String v2 = this.getStringExprs()[1].getValue(object);
-                final String v3 = this.getStringExprs()[2].getValue(object);
+                final String v1 = this.getValueExprs()[0].getValue(object);
+                final String v2 = this.getValueExprs()[1].getValue(object);
+                final String v3 = this.getValueExprs()[2].getValue(object);
                 return v1.replace(v2, v3);
             }
 

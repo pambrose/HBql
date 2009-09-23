@@ -8,12 +8,9 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.func.DateCalcExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.func.NumberCalcExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
+import org.apache.hadoop.hbase.hbql.query.expr.value.func.ValueCalcExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.BooleanAttribRef;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DateAttribRef;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.IntegerAttribRef;
@@ -162,25 +159,14 @@ public class HBaseParser extends Parser {
         }
     }
 
-    public NumberValue getLeftAssociativeNumberValues(final List<NumberValue> exprList, final List<Operator> opList) {
+    public ValueExpr getLeftAssociativeValueExprs(final List<ValueExpr> exprList, final List<Operator> opList) {
 
         if (exprList.size() == 1)
             return exprList.get(0);
 
-        NumberValue root = new NumberCalcExpr(exprList.get(0), opList.get(0), exprList.get(1));
+        ValueExpr root = new ValueCalcExpr(exprList.get(0), opList.get(0), exprList.get(1));
         for (int i = 1; i < opList.size(); i++)
-            root = new NumberCalcExpr(root, opList.get(i), exprList.get(i + 1));
-        return root;
-    }
-
-    public DateValue getLeftAssociativeDateValues(final List<DateValue> exprList, final List<Operator> opList) {
-
-        if (exprList.size() == 1)
-            return exprList.get(0);
-
-        DateValue root = new DateCalcExpr(exprList.get(0), opList.get(0), exprList.get(1));
-        for (int i = 1; i < opList.size(); i++)
-            root = new DateCalcExpr(root, opList.get(i), exprList.get(i + 1));
+            root = new ValueCalcExpr(root, opList.get(i), exprList.get(i + 1));
         return root;
     }
 
