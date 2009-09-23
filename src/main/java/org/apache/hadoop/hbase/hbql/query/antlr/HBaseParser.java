@@ -8,6 +8,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.ValueCalcExpr;
@@ -83,7 +84,7 @@ public class HBaseParser extends Parser {
         return attrib != null && attrib.getFieldType().getClazz() == type.getClazz();
     }
 
-    protected ValueExpr getValueExpr(final String var) throws RecognitionException {
+    protected ValueExpr getVariableRef(final String var) throws RecognitionException {
 
         if (this.getSchema() != null) {
 
@@ -104,6 +105,31 @@ public class HBaseParser extends Parser {
 
                     case DateType:
                         return new DateAttribRef(var);
+
+                    case BooleanType:
+                        return new BooleanAttribRef(var);
+                }
+            }
+        }
+
+        throw new RecognitionException(input);
+    }
+
+    protected BooleanValue getBooleanVariable(final String var) throws RecognitionException {
+
+        if (this.getSchema() != null) {
+
+            final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(var);
+
+            if (attrib != null) {
+                switch (attrib.getFieldType()) {
+                    case KeyType:
+                    case StringType:
+                    case LongType:
+                    case IntegerType:
+                    case DateType:
+                        System.out.println("Invalid type " + attrib.getFieldType().name());
+                        break;
 
                     case BooleanType:
                         return new BooleanAttribRef(var);

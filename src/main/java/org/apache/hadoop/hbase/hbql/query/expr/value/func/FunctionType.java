@@ -16,6 +16,7 @@ public enum FunctionType {
     UPPER(StringValue.class, (List)Arrays.asList(StringValue.class)),
     CONCAT(StringValue.class, (List)Arrays.asList(StringValue.class, StringValue.class)),
     REPLACE(StringValue.class, (List)Arrays.asList(StringValue.class, StringValue.class, StringValue.class)),
+    SUBSTRING(StringValue.class, (List)Arrays.asList(StringValue.class, NumberValue.class, NumberValue.class)),
 
     // Return Booleans
     CONTAINS(BooleanValue.class, (List)Arrays.asList(StringValue.class, StringValue.class)),

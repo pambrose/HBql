@@ -20,18 +20,18 @@ import java.util.List;
  */
 public class DateExpr implements DateValue {
 
-    private StringValue formatExpr = null, expr = null;
+    private ValueExpr formatExpr = null, expr = null;
 
-    public DateExpr(final StringValue formatExpr, final StringValue expr) {
+    public DateExpr(final ValueExpr formatExpr, final ValueExpr expr) {
         this.formatExpr = formatExpr;
         this.expr = expr;
     }
 
-    protected StringValue getFormatExpr() {
+    private ValueExpr getFormatExpr() {
         return this.formatExpr;
     }
 
-    protected StringValue getExpr() {
+    private ValueExpr getExpr() {
         return this.expr;
     }
 
@@ -41,11 +41,11 @@ public class DateExpr implements DateValue {
         final Class<? extends ValueExpr> type1 = this.getFormatExpr().validateType();
         final Class<? extends ValueExpr> type2 = this.getExpr().validateType();
 
-        if (!type1.equals(type2))
-            throw new HPersistException("Type mismatch in DateExpr");
-
-        if (!ExprTree.isOfType(type1, StringValue.class))
+        if (!type1.equals(StringValue.class))
             throw new HPersistException("Invalid type " + type1.getName() + " in DateExpr");
+
+        if (!type2.equals(StringValue.class))
+            throw new HPersistException("Invalid type " + type2.getName() + " in DateExpr");
 
         return DateValue.class;
     }
@@ -53,8 +53,8 @@ public class DateExpr implements DateValue {
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.formatExpr = (StringValue)this.getFormatExpr().getOptimizedValue();
-        this.expr = (StringValue)this.getExpr().getOptimizedValue();
+        this.formatExpr = this.getFormatExpr().getOptimizedValue();
+        this.expr = this.getExpr().getOptimizedValue();
 
         return this.isAConstant() ? new DateLiteral(this.getValue(null)) : this;
     }
@@ -62,8 +62,8 @@ public class DateExpr implements DateValue {
     @Override
     public Long getValue(final Object object) throws HPersistException {
 
-        final String pattern = this.getFormatExpr().getValue(object);
-        final String datestr = this.getExpr().getValue(object);
+        final String pattern = ((StringValue)this.getFormatExpr()).getValue(object);
+        final String datestr = ((StringValue)this.getExpr()).getValue(object);
         final SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 
         try {

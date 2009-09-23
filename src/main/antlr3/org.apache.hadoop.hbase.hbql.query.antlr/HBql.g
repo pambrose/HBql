@@ -207,7 +207,7 @@ booleanParen returns [BooleanValue retval]
 
 booleanAtom returns [BooleanValue retval]
 	: b=booleanLiteral				{retval = $b.retval;}
-	| v=varRef					{retval = this.getValueExpr($v.text);}
+	| v=varRef					{retval = this.getBooleanVariable($v.text);}
 	| p=paramRef
 	;
 		
@@ -239,7 +239,7 @@ multExpr returns [ValueExpr retval]
 							{retval = getLeftAssociativeValueExprs(exprList, opList);};
 	
 signedExpr returns [ValueExpr retval]
-	: (s=plusMinus)? n=parenExpr 			{$signedExpr.retval = ($s.retval == Operator.MINUS) ? new NumberCalcExpr($n.retval, Operator.NEGATIVE, null) :  $n.retval;};
+	: (s=plusMinus)? n=parenExpr 			{$signedExpr.retval = ($s.retval == Operator.MINUS) ? new ValueCalcExpr($n.retval, Operator.NEGATIVE, null) :  $n.retval;};
 
 parenExpr returns [ValueExpr retval]
 options {backtrack=true;}	
@@ -262,7 +262,7 @@ valueAtom returns [ValueExpr retval]
 	: s=stringLiteral				{retval = $s.retval;}
 	| i=integerLiteral				{retval = $i.retval;}
 	| keyNULL					{retval = new StringNullLiteral();}
-	| v=varRef					{retval = this.getValueExpr($v.text);}
+	| v=varRef					{retval = this.getVariableRef($v.text);}
 	| p=paramRef
 	;
 						
@@ -286,7 +286,7 @@ funcReturningString returns [StringValue retval]
 	: keyCONCAT LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
 							{retval = new StringFunction(FunctionType.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=valueExpr COMMA n1=valueExpr COMMA n2=valueExpr RPAREN
-							{retval = new Substring($s.retval, $n1.retval, $n2.retval);}
+							{retval = new StringFunction(FunctionType.SUBSTRING, $s.retval, $n1.retval, $n2.retval);}
 	| keyTRIM LPAREN s=valueExpr RPAREN		{retval = new StringFunction(FunctionType.TRIM, $s.retval);}
 	| keyLOWER LPAREN s=valueExpr RPAREN		{retval = new StringFunction(FunctionType.LOWER, $s.retval);} 
 	| keyUPPER LPAREN s=valueExpr RPAREN		{retval = new StringFunction(FunctionType.UPPER, $s.retval);} 

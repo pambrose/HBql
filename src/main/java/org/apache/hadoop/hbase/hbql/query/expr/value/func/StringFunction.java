@@ -42,10 +42,17 @@ public class StringFunction extends GenericFunction implements StringValue {
             }
 
             case REPLACE: {
-                final String v1 = (String)this.getValueExprs()[0].getValue(object);
+                final String val = (String)this.getValueExprs()[0].getValue(object);
                 final String v2 = (String)this.getValueExprs()[1].getValue(object);
                 final String v3 = (String)this.getValueExprs()[2].getValue(object);
-                return v1.replace(v2, v3);
+                return val.replace(v2, v3);
+            }
+
+            case SUBSTRING: {
+                final String val = (String)this.getValueExprs()[0].getValue(object);
+                final int begin = ((Number)this.getValueExprs()[1].getValue(object)).intValue();
+                final int end = ((Number)this.getValueExprs()[2].getValue(object)).intValue();
+                return val.substring(begin, end);
             }
 
         }

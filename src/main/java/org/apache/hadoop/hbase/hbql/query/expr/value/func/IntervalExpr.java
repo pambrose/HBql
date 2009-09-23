@@ -14,7 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
  * Date: Sep 7, 2009
  * Time: 10:03:28 PM
  */
-public class IntervalExpr extends GenericOneExprExpr<NumberValue> implements DateValue {
+public class IntervalExpr extends GenericOneExprExpr<ValueExpr> implements DateValue {
 
     public enum IntervalType {
         MILLI(1),
@@ -38,7 +38,7 @@ public class IntervalExpr extends GenericOneExprExpr<NumberValue> implements Dat
 
     private final IntervalType intervalType;
 
-    public IntervalExpr(final IntervalType intervalType, final NumberValue expr) {
+    public IntervalExpr(final IntervalType intervalType, final ValueExpr expr) {
         super(expr);
         this.intervalType = intervalType;
     }
@@ -47,6 +47,7 @@ public class IntervalExpr extends GenericOneExprExpr<NumberValue> implements Dat
         return this.intervalType;
     }
 
+    @Override
     public Class<? extends ValueExpr> validateType() throws HPersistException {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
@@ -59,13 +60,13 @@ public class IntervalExpr extends GenericOneExprExpr<NumberValue> implements Dat
 
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
-        this.setExpr((NumberValue)this.getExpr().getOptimizedValue());
+        this.setExpr(this.getExpr().getOptimizedValue());
         return this.isAConstant() ? new DateLiteral(this.getValue(null)) : this;
     }
 
     @Override
     public Long getValue(final Object object) throws HPersistException {
-        final Number num = this.getExpr().getValue(object);
+        final Number num = ((NumberValue)this.getExpr()).getValue(object);
         final long val = num.longValue();
         return val * this.getIntervalType().getIntervalMillis();
     }
