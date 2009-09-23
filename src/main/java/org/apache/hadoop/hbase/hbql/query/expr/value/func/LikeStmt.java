@@ -80,7 +80,7 @@ public class LikeStmt extends GenericNotValue {
             throw new HPersistException("Type mismatch in LikeStmt");
 
         if (!ExprTree.isOfType(type1, StringValue.class))
-            throw new HPersistException("Type " + type1.getName() + " not valid in LikeStmt");
+            throw new HPersistException("Invalid type " + type1.getName() + " in LikeStmt");
 
         return BooleanValue.class;
     }

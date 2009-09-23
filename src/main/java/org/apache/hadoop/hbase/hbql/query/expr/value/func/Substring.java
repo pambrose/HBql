@@ -46,13 +46,13 @@ public class Substring implements StringValue {
         final Class<? extends ValueExpr> type3 = this.getEnd().validateType();
 
         if (!ExprTree.isOfType(type1, StringValue.class))
-            throw new HPersistException("Type " + type1.getName() + " not valid in Substring");
+            throw new HPersistException("Invalid type " + type1.getName() + " in Substring");
 
         if (!type2.equals(type3))
             throw new HPersistException("Type mismatch in Substring");
 
         if (!ExprTree.isOfType(type2, NumberValue.class))
-            throw new HPersistException("Type " + type2.getName() + " not valid in Substring");
+            throw new HPersistException("Invalid type " + type2.getName() + " in Substring");
 
         return StringValue.class;
     }

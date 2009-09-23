@@ -45,7 +45,7 @@ public class DateExpr implements DateValue {
             throw new HPersistException("Type mismatch in DateExpr");
 
         if (!ExprTree.isOfType(type1, StringValue.class))
-            throw new HPersistException("Type " + type1.getName() + " not valid in DateExpr");
+            throw new HPersistException("Invalid type " + type1.getName() + " in DateExpr");
 
         return DateValue.class;
     }

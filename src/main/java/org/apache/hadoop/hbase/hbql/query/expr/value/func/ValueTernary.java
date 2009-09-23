@@ -30,37 +30,40 @@ public class ValueTernary extends GenericTernary<ValueExpr> {
         final Class<? extends ValueExpr> type3 = this.getExpr2().validateType();
 
         if (!ExprTree.isOfType(type1, BooleanValue.class))
-            throw new HPersistException("Type " + type1.getName() + " not valid in ValueTernary");
+            throw new HPersistException("Invalid type " + type1.getName() + " in ValueTernary");
 
         if (!type2.equals(type3))
             throw new HPersistException("Type mismatch in ValueTernary");
-
-        if (!ExprTree.isOfType(type2, DateValue.class, StringValue.class, NumberValue.class))
-            throw new HPersistException("Type " + type2.getName() + " not valid in ValueTernary");
 
         if (type2.equals(DateValue.class)) {
             this.typedExpr = new DateTernary((BooleanValue)this.getPred(),
                                              (DateValue)this.getExpr1(),
                                              (DateValue)this.getExpr2());
-            return DateValue.class;
+            return type2;
+        }
+
+        if (type2.equals(BooleanValue.class)) {
+            this.typedExpr = new BooleanTernary((BooleanValue)this.getPred(),
+                                                (BooleanValue)this.getExpr1(),
+                                                (BooleanValue)this.getExpr2());
+            return type2;
         }
 
         if (type2.equals(StringValue.class)) {
             this.typedExpr = new StringTernary((BooleanValue)this.getPred(),
                                                (StringValue)this.getExpr1(),
                                                (StringValue)this.getExpr2());
-            return StringValue.class;
+            return type2;
         }
 
         if (type2.equals(NumberValue.class)) {
             this.typedExpr = new NumberTernary((BooleanValue)this.getPred(),
                                                (NumberValue)this.getExpr1(),
                                                (NumberValue)this.getExpr2());
-            return NumberValue.class;
+            return type2;
         }
 
-        // Not reached
-        throw new HPersistException("Type " + type2.getName() + " not valid in ValueTernary");
+        throw new HPersistException("Invalid type " + type2.getName() + " in ValueTernary");
     }
 
 

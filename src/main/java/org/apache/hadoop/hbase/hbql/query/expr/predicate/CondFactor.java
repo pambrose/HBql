@@ -27,7 +27,7 @@ public class CondFactor extends GenericOneExprExpr<BooleanValue> implements Bool
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
 
         if (!ExprTree.isOfType(type, BooleanValue.class))
-            throw new HPersistException("Type " + type.getName() + " not valid in CondFactor");
+            throw new HPersistException("Invalid type " + type.getName() + " in CondFactor");
 
         return BooleanValue.class;
     }

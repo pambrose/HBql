@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 import java.util.List;
 
@@ -16,11 +15,6 @@ public class StringInStmt extends GenericInStmt<StringValue> {
 
     public StringInStmt(final StringValue expr, final boolean not, final List<StringValue> valList) {
         super(not, expr, valList);
-    }
-
-    @Override
-    protected Class<? extends ValueExpr> getClassType() throws HPersistException {
-        return StringValue.class;
     }
 
     protected boolean evaluateList(final Object object) throws HPersistException {

@@ -1,8 +1,12 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
 
@@ -14,24 +18,63 @@ import java.util.List;
  */
 public class ValueInStmt extends GenericInStmt<ValueExpr> {
 
-    public ValueInStmt(final StringValue expr, final boolean not, final List<StringValue> valList) {
+    private GenericInStmt typedExpr = null;
+
+    public ValueInStmt(final StringValue expr, final boolean not, final List<ValueExpr> valList) {
         super(not, expr, valList);
     }
 
     @Override
-    protected Class<? extends ValueExpr> getClassType() throws HPersistException {
-        return StringValue.class;
-    }
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
 
-    protected boolean evaluateList(final Object object) throws HPersistException {
+        final Class<? extends ValueExpr> type = this.getExpr().validateType();
 
-        final String attribVal = this.getExpr().getValue(object);
-        for (final StringValue obj : this.getValueList()) {
-            final String val = obj.getValue(object);
-            if (attribVal.equals(val))
-                return true;
+        // First make sure all the types are matched
+        for (final ValueExpr val : this.getValueList()) {
+            final Class<? extends ValueExpr> valtype = val.validateType();
+
+            if (!valtype.equals(type))
+                throw new HPersistException("Mismatched " + valtype.getName() + " in GenericInStmt");
         }
 
+        if (type.equals(StringValue.class)) {
+            final List<StringValue> list = Lists.newArrayList();
+            for (final ValueExpr val : this.getValueList())
+                list.add((StringValue)val);
+            this.typedExpr = new StringInStmt((StringValue)this.getExpr(), this.isNot(), list);
+        }
+        else if (type.equals(NumberValue.class)) {
+            final List<NumberValue> list = Lists.newArrayList();
+            for (final ValueExpr val : this.getValueList())
+                list.add((NumberValue)val);
+            this.typedExpr = new NumberInStmt((NumberValue)this.getExpr(), this.isNot(), list);
+        }
+        else if (type.equals(DateValue.class)) {
+            final List<DateValue> list = Lists.newArrayList();
+            for (final ValueExpr val : this.getValueList())
+                list.add((DateValue)val);
+            this.typedExpr = new DateInStmt((DateValue)this.getExpr(), this.isNot(), list);
+        }
+        else
+            throw new HPersistException("Invalid type " + type.getName() + " in GenericInStmt");
+
+        return BooleanValue.class;
+    }
+
+    @Override
+    protected boolean evaluateList(final Object object) throws HPersistException {
+        // Not used
         return false;
     }
+
+    @Override
+    public ValueExpr getOptimizedValue() throws HPersistException {
+        return this.typedExpr.getOptimizedValue();
+    }
+
+    @Override
+    public Boolean getValue(final Object object) throws HPersistException {
+        return this.typedExpr.getValue(object);
+    }
+
 }

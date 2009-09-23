@@ -52,7 +52,7 @@ public class IntervalExpr extends GenericOneExprExpr<NumberValue> implements Dat
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
 
         if (!ExprTree.isOfType(type, NumberValue.class))
-            throw new HPersistException("Type " + type.getName() + " not valid in IntervalExpr");
+            throw new HPersistException("Invalid type " + type.getName() + " in IntervalExpr");
 
         return DateValue.class;
     }

@@ -51,6 +51,11 @@ public abstract class GenericBetweenStmt<T extends ValueExpr> extends GenericNot
     }
 
     @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        return null;
+    }
+
+    @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
         this.setExpr((T)this.getExpr().getOptimizedValue());

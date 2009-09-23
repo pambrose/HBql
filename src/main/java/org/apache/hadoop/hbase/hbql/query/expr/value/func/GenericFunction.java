@@ -53,4 +53,24 @@ public abstract class GenericFunction<T extends ValueExpr> {
             retval.addAll(val.getExprVariables());
         return retval;
     }
+
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        switch (this.getFunctionType()) {
+
+            case TRIM:
+            case LOWER:
+            case UPPER:
+            case CONCAT:
+            case REPLACE:
+
+            case CONTAINS:
+
+            case LENGTH:
+            case INDEXOF:
+                this.getFunctionType().validateArgs(this.getValueExprs());
+                return this.getFunctionType().getReturnType();
+        }
+        throw new HPersistException("Invalid function in GenericFunction.validateType() " + this.getFunctionType());
+    }
+
 }

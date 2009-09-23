@@ -33,7 +33,7 @@ public class ValueCompare extends GenericCompare<ValueExpr> {
             throw new HPersistException("Type mismatch in ValueCompare");
 
         if (!ExprTree.isOfType(type1, StringValue.class, NumberValue.class, DateValue.class))
-            throw new HPersistException("Type " + type1.getName() + " not valid in ValueCompare");
+            throw new HPersistException("Invalid type " + type1.getName() + " in ValueCompare");
 
         if (type1.equals(DateValue.class))
             typedExpr = new DateCompare((DateValue)this.getExpr1(), this.getOp(), (DateValue)this.getExpr2());
