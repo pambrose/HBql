@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
@@ -31,6 +32,8 @@ public class ValueAttribRef extends GenericAttribRef<ValueExpr> {
         // TODO Need to add Long support to this
         if (clazz.equals(DateValue.class))
             typedExpr = new DateAttribRef(this.getName());
+        else if (clazz.equals(BooleanValue.class))
+            typedExpr = new BooleanAttribRef(this.getName());
         else if (clazz.equals(StringValue.class))
             typedExpr = new StringAttribRef(this.getName());
         else if (clazz.equals(NumberValue.class))

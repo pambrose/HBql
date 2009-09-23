@@ -14,6 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.DateCalcExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.NumberCalcExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.BooleanAttribRef;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DateAttribRef;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.IntegerAttribRef;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.LongAttribRef;
@@ -85,7 +86,6 @@ public class HBaseParser extends Parser {
         return attrib != null && attrib.getFieldType().getClazz() == type.getClazz();
     }
 
-
     protected ValueExpr getValueExpr(final String var) throws RecognitionException {
 
         if (this.getSchema() != null) {
@@ -94,6 +94,7 @@ public class HBaseParser extends Parser {
 
             if (attrib != null) {
                 switch (attrib.getFieldType()) {
+
                     case KeyType:
                     case StringType:
                         return new StringAttribRef(var);
@@ -106,6 +107,9 @@ public class HBaseParser extends Parser {
 
                     case DateType:
                         return new DateAttribRef(var);
+
+                    case BooleanType:
+                        return new BooleanAttribRef(var);
                 }
             }
         }

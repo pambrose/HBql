@@ -49,7 +49,6 @@ public enum FieldType {
         this.synonymList.addAll(Arrays.asList(synonyms));
     }
 
-
     public Class getClazz() {
         return this.clazz;
     }
@@ -98,7 +97,7 @@ public enum FieldType {
                     return type;
         }
 
-        throw new RuntimeException("Unknown type: " + clazz);
+        throw new RuntimeException("Unknown type: " + clazz + " in FieldType.getFieldType()");
     }
 
     public static FieldType getFieldType(final String desc) throws HPersistException {

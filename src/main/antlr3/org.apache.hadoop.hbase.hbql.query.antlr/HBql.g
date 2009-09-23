@@ -229,20 +229,20 @@ options {backtrack=true;}
 	: d=dateValue					{retval = $d.retval;}
 	| s=stringValue					{retval = $s.retval;}
 	| n=numberValue					{retval = $n.retval;}
-	| b=booleanElem					{retval = $b.retval;}
+	| b=valueAtom					{retval = $b.retval;}
 	;
 
 booleanParen returns [BooleanValue retval]
 options {backtrack=true;}	
-	: s=booleanElem  				{retval = $s.retval;}
+	: s=valueAtom  					{retval = $s.retval;}
 	| LPAREN o=orExpr RPAREN			{retval = $o.retval;}
 	;
 	
-// Boolean Value
-booleanElem returns [BooleanValue retval]
+// Value Atom
+valueAtom returns [BooleanValue retval]
 options {backtrack=true;}	
 	: b=booleanLiteral				{retval = $b.retval;}
-	| v=variableRef
+	| v=varRef					{retval = this.getValueExpr($v.text);}
 	| p=paramRef
 	;
 		
@@ -326,15 +326,15 @@ dateVal returns [DateValue retval]
 
 // Variables
 numberAttribVar returns [NumberValue retval]
-	: {isAttribType(input, FieldType.IntegerType)}? v=variableRef 
+	: {isAttribType(input, FieldType.IntegerType)}? v=varRef 
 							{retval = (NumberValue)this.getValueExpr($v.text);};
 
 stringAttribVar returns [StringValue retval]
-	: {isAttribType(input, FieldType.StringType)}? v=variableRef 
+	: {isAttribType(input, FieldType.StringType)}? v=varRef 
 							{retval = (StringValue)this.getValueExpr($v.text);};
 
 dateAttribVar returns [DateValue retval]
-	: {isAttribType(input, FieldType.DateType)}? v=variableRef 
+	: {isAttribType(input, FieldType.DateType)}? v=varRef 
 							{retval = (DateValue)this.getValueExpr($v.text);};
 
 // Literals		
@@ -438,7 +438,7 @@ qstringList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
 	: qstring[retval] (COMMA qstring[retval])*;
 
-column 	: c=variableRef;
+column 	: c=varRef;
 	
 schemaDesc returns [Schema retval]
 	: LCURLY a=attribList RCURLY			{retval = HUtil.newDefinedSchema(input, $a.retval);};
@@ -454,13 +454,7 @@ eqneOp returns [Operator retval]
 	: EQ 						{retval = Operator.EQ;}
 	| (LTGT | BANGEQ)				{retval = Operator.NOTEQ;}
 	;
-			
-variableRef
-	: ID;
-
-paramRef
-	: PARAM ;
-	
+				
 qstring	[List<String> list]
 	: QUOTED 					{if (list != null) list.add($QUOTED.text);};
 
@@ -474,8 +468,13 @@ multDiv returns [Operator retval]
 	| DIV						{retval = Operator.DIV;}
 	| MOD						{retval = Operator.MOD;}
 	;
+
+varRef 	: ID;
+
+paramRef: PARAM;
 		
 INT	: DIGIT+;
+
 ID	: CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)* 		// DOOLAR is for inner class table names
 	| CHAR (CHAR | DOT | MINUS | DIGIT)* COLON (CHAR | DOT | MINUS | DIGIT)*
 	;
