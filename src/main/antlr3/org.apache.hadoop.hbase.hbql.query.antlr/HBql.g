@@ -200,15 +200,9 @@ options {backtrack=true;}
 	;
 
 booleanParen returns [BooleanValue retval]
-//options {backtrack=true;}	
-	: s=booleanAtom  				{retval = $s.retval;}
+options {backtrack=true;}	
+	: s=valueExpr  					{retval = new BooleanExpr($s.retval);}
 	| LPAREN o=orExpr RPAREN			{retval = $o.retval;}
-	;
-
-booleanAtom returns [BooleanValue retval]
-	: b=booleanLiteral				{retval = $b.retval;}
-	| v=varRef					{retval = this.getBooleanVariable($v.text);}
-	| p=paramRef
 	;
 		
 // Literals		
@@ -261,6 +255,7 @@ atomExpr returns [ValueExpr retval]
 valueAtom returns [ValueExpr retval]
 	: s=stringLiteral				{retval = $s.retval;}
 	| i=integerLiteral				{retval = $i.retval;}
+	| b=booleanLiteral				{retval = $b.retval;}
 	| keyNULL					{retval = new StringNullLiteral();}
 	| v=varRef					{retval = this.getVariableRef($v.text);}
 	| p=paramRef
