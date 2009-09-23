@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,23 +12,25 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
  */
 public class VersionArgs {
 
-    private int value = -1;
+    private final ValueExpr value;
 
-    public VersionArgs(final NumberValue val) {
-        try {
-            if (val != null)
-                this.value = val.getValue(null).intValue();
-        }
-        catch (HPersistException e) {
-            e.printStackTrace();
-        }
+    public VersionArgs(final ValueExpr val) {
+        this.value = val;
     }
 
     public boolean isValid() {
-        return this.getValue() != -1;
+        return this.value != null;
     }
 
-    public int getValue() {
-        return this.value;
+    public int getValue() throws HPersistException {
+
+        if (this.value == null)
+            throw new HPersistException("Null value invalid in VersionArgs");
+
+        final Class clazz = this.value.getClass();
+        if (!clazz.equals(NumberValue.class))
+            throw new HPersistException("Invalid type " + clazz.getName() + " in VersionArgs");
+
+        return ((NumberValue)this.value).getValue(null).intValue();
     }
 }

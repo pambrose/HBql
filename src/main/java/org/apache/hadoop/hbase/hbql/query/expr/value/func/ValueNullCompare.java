@@ -16,7 +16,7 @@ public class ValueNullCompare extends GenericNullCompare<ValueExpr> {
 
     private GenericNullCompare typedExpr = null;
 
-    public ValueNullCompare(final boolean not, final StringValue expr) {
+    public ValueNullCompare(final boolean not, final ValueExpr expr) {
         super(not, expr);
     }
 

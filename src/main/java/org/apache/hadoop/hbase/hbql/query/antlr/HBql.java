@@ -10,6 +10,10 @@ import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.cmds.ConnectionCmd;
 import org.apache.hadoop.hbase.hbql.query.antlr.cmds.SchemaManagerCmd;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 /**
@@ -66,7 +70,8 @@ public class HBql {
     public static String parseStringValue(final String input) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.stringValue().getValue(null);
+            final ValueExpr val = parser.valueExpr();
+            return ((StringValue)val).getValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
@@ -77,7 +82,8 @@ public class HBql {
     public static Number parseNumberValue(final String input) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.numberValue().getValue(null);
+            final ValueExpr val = parser.valueExpr();
+            return ((NumberValue)val).getValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
@@ -88,7 +94,8 @@ public class HBql {
     public static Long parseDateValue(final String input) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.dateValue().getValue(null);
+            final ValueExpr val = parser.valueExpr();
+            return ((DateValue)val).getValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();

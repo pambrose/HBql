@@ -116,31 +116,13 @@ keysRange returns [KeyRangeArgs retval]
 	;
 	
 time returns [DateRangeArgs retval]
-	: keyTIME keyRANGE d1=rangeExpr keyTO d2=rangeExpr		
+	: keyTIME keyRANGE d1=valueExpr keyTO d2=valueExpr		
 							{retval = new DateRangeArgs($d1.retval, $d2.retval);}
-	| keyTIME keySTAMP d1=rangeExpr			{retval = new DateRangeArgs($d1.retval, $d1.retval);}
+	| keyTIME keySTAMP d1=valueExpr			{retval = new DateRangeArgs($d1.retval, $d1.retval);}
 	;
 		
-// Range Values
-rangeExpr returns [DateValue retval]
-@init {List<DateValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList();}
-	: m=rangePrimary {exprList.add($m.retval);} (op=plusMinus n=rangePrimary {opList.add($op.retval); exprList.add($n.retval);})*
-							{$rangeExpr.retval = getLeftAssociativeDateValues(exprList, opList);}
-	;
-
-rangePrimary returns [DateValue retval]
-	: d1=rangeVal					{retval = $d1.retval;}
-	| LPAREN d2=rangePrimary RPAREN			{retval = $d2.retval;}
-	;
-
-rangeVal returns [DateValue retval]
-	: d2=funcReturningDatetime			{retval = $d2.retval;}
-	| keyIF e=orExpr keyTHEN r1=rangeExpr keyELSE r2=rangeExpr keyEND	
-							{retval = new DateTernary($e.retval, $r1.retval, $r2.retval);}
-	;
-
 versions returns [VersionArgs retval]
-	: keyVERSIONS v=integerLiteral			{retval = new VersionArgs($v.retval);}
+	: keyVERSIONS v=valueExpr			{retval = new VersionArgs($v.retval);}
 	| keyVERSIONS keyMAX				{retval = new VersionArgs(new NumberLiteral(-999));}
 	;
 	
@@ -252,9 +234,9 @@ addExpr returns [ValueExpr retval]
 							{retval = getLeftAssociativeValueExprs(exprList, opList);};
 	
 multExpr returns [ValueExpr retval]
-@init {List<NumberValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
+@init {List<ValueExpr> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
 	: m=signedExpr {exprList.add($m.retval);} (op=multDiv n=signedExpr {opList.add($op.retval); exprList.add($n.retval);})*	
-							{retval = getLeftAssociativeNumberValues(exprList, opList);};
+							{retval = getLeftAssociativeValueExprs(exprList, opList);};
 	
 signedExpr returns [ValueExpr retval]
 	: (s=plusMinus)? n=parenExpr 			{$signedExpr.retval = ($s.retval == Operator.MINUS) ? new NumberCalcExpr($n.retval, Operator.NEGATIVE, null) :  $n.retval;};

@@ -25,7 +25,7 @@ public class LikeStmt extends GenericNotValue {
 
     private Pattern pattern = null;
 
-    public LikeStmt(final ValueExpr expr, final boolean not, final StringValue patternExpr) {
+    public LikeStmt(final ValueExpr expr, final boolean not, final ValueExpr patternExpr) {
         super(not);
         this.expr = expr;
         this.patternExpr = patternExpr;

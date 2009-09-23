@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,8 +12,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
  */
 public class StringFunction extends GenericFunction implements StringValue {
 
-    public StringFunction(final FunctionType functionType, final StringValue... stringExprs) {
-        super(functionType, stringExprs);
+    public StringFunction(final FunctionType functionType, final ValueExpr... valueExprs) {
+        super(functionType, valueExprs);
     }
 
     @Override

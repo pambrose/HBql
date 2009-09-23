@@ -20,7 +20,7 @@ public class ValueInStmt extends GenericInStmt<ValueExpr> {
 
     private GenericInStmt typedExpr = null;
 
-    public ValueInStmt(final StringValue expr, final boolean not, final List<ValueExpr> valList) {
+    public ValueInStmt(final ValueExpr expr, final boolean not, final List<ValueExpr> valList) {
         super(not, expr, valList);
     }
 
