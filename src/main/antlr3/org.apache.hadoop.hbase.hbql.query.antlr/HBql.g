@@ -152,16 +152,16 @@ keyRange returns [KeyRangeArgs.Range retval]
 	
 nodescWhereExpr [Schema es] returns [ExprTree retval]
 @init {setSchema(es);}
-	 : e=orExpr					{retval = ExprTree.newExprTree($e.retval);};
+	 : e=booleanExpr				{retval = ExprTree.newExprTree($e.retval);};
 
 descWhereExpr [Schema es] returns [ExprTree retval]
 @init {setSchema(es);}
 	: s=schemaDesc? 				{if ($s.retval != null) setSchema($s.retval);}			
-	  e=orExpr					{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);}
+	  e=booleanExpr					{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);}
 	;
 				
-orExpr returns [BooleanValue retval]
-	: e1=andExpr (keyOR e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, Operator.OR, $e2.retval);};
+booleanExpr returns [BooleanValue retval]
+	: e1=andExpr (keyOR e2=booleanExpr)?		{$booleanExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, Operator.OR, $e2.retval);};
 
 andExpr returns [BooleanValue retval]
 	: e1=condFactor (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, Operator.AND, $e2.retval);};
@@ -202,7 +202,7 @@ options {backtrack=true;}
 booleanParen returns [BooleanValue retval]
 options {backtrack=true;}	
 	: s=valueExpr  					{retval = new BooleanExpr($s.retval);}
-	| LPAREN o=orExpr RPAREN			{retval = $o.retval;}
+	| LPAREN o=booleanExpr RPAREN			{retval = $o.retval;}
 	;
 		
 // Literals		
@@ -217,12 +217,8 @@ booleanLiteral returns [BooleanValue retval]
 	| f=keyFALSE					{retval = new BooleanLiteral($f.text);}
 	;
 
-valueExpr returns [ValueExpr retval]
-	: a=addExpr					{retval = $a.retval;}
-	;
-			
 // Numeric calculations
-addExpr returns [ValueExpr retval] 
+valueExpr returns [ValueExpr retval] 
 @init {List<ValueExpr> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
 	: m=multExpr {exprList.add($m.retval);} (op=plusMinus n=multExpr {opList.add($op.retval); exprList.add($n.retval);})*	
 							{retval = getLeftAssociativeValueExprs(exprList, opList);};
@@ -239,7 +235,7 @@ parenExpr returns [ValueExpr retval]
 options {backtrack=true;}	
 	: n=atomExpr					{retval = $n.retval;}
 	| LPAREN s=valueExpr RPAREN			{retval = $s.retval;}
-	| LPAREN o=orExpr RPAREN			{retval = $o.retval;}
+	| LPAREN o=booleanExpr RPAREN			{retval = $o.retval;}
 	;
 	   						 
 atomExpr returns [ValueExpr retval]
@@ -247,7 +243,7 @@ atomExpr returns [ValueExpr retval]
 	| f1=funcReturningInteger			{retval = $f1.retval;}
 	| f2=funcReturningString			{retval = $f2.retval;}
 	| d2=funcReturningDatetime			{retval = $d2.retval;}
-	| keyIF v1=orExpr keyTHEN v2=valueExpr keyELSE v3=valueExpr keyEND	
+	| keyIF v1=booleanExpr keyTHEN v2=valueExpr keyELSE v3=valueExpr keyEND	
 							{retval = new ValueTernary($v1.retval, $v2.retval, $v3.retval);}
 	;
 
