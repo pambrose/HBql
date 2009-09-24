@@ -269,7 +269,6 @@ booleanLiteral returns [BooleanValue retval]
 
 // Functions
 valueFunctions returns [ValueExpr retval]
-options {memoize=true;}	
 	: keyNOW LPAREN	RPAREN				{retval = new DateLiteral(DateLiteral.Type.NOW);}
 	| keyMINDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
 	| keyMAXDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
