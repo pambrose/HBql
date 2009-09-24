@@ -28,11 +28,6 @@ public class NamedParameter extends GenericAttribRef<ValueExpr> {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
-        return this.typedExpr.getOptimizedValue();
-    }
-
-    @Override
     public Object getValue(final Object object) throws HPersistException {
         return this.typedExpr.getValue(object);
     }
@@ -40,21 +35,27 @@ public class NamedParameter extends GenericAttribRef<ValueExpr> {
     @Override
     public void setParam(final String param, final Object val) {
 
-        final String name = this.getName();
-        if (param.startsWith(":")) {
-            if (!param.equals(name))
-                return;
-        }
-        else {
-            if (!(":" + param).equals(name))
-                return;
-        }
+        if (!this.isAMatch(param))
+            return;
 
         if (val instanceof Boolean) {
             this.typedExpr = new BooleanLiteral((Boolean)val);
             return;
         }
 
+    }
+
+    private boolean isAMatch(final String param) {
+        final String name = this.getName();
+        if (param.startsWith(":")) {
+            if (param.equals(name))
+                return true;
+        }
+        else {
+            if ((":" + param).equals(name))
+                return true;
+        }
+        return false;
     }
 
 }
