@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericOneExprExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,8 +26,8 @@ public class CondFactor extends GenericOneExprExpr implements BooleanValue {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
 
-        if (!type.equals(BooleanValue.class))
-            throw new HPersistException("Invalid type " + type.getName() + " in CondFactor");
+        if (!HUtil.isParentClass(BooleanValue.class, type))
+            throw new HPersistException("Invalid type " + type.getName() + " in CondFactor.validateType()");
 
         return BooleanValue.class;
     }

@@ -54,7 +54,7 @@ public abstract class GenericInStmt extends GenericNotValue {
 
     @Override
     public Class<? extends ValueExpr> validateType() throws HPersistException {
-        return null;
+        throw new HPersistException("Missing impl for validateType()");
     }
 
     @Override

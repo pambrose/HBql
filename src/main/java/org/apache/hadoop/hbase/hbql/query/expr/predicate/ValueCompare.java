@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,17 +29,15 @@ public class ValueCompare extends GenericCompare implements BooleanValue {
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
         final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
 
-        if (!type1.equals(type2))
-            throw new HPersistException("Type mismatch in ValueCompare");
-
-        if (type1.equals(DateValue.class))
-            typedExpr = new DateCompare(this.getExpr1(), this.getOp(), this.getExpr2());
-        else if (type1.equals(StringValue.class))
+        if (HUtil.isParentClass(StringValue.class, type1, type2))
             typedExpr = new StringCompare(this.getExpr1(), this.getOp(), this.getExpr2());
-        else if (type1.equals(NumberValue.class))
+        else if (HUtil.isParentClass(NumberValue.class, type1, type2))
             typedExpr = new NumberCompare(this.getExpr1(), this.getOp(), this.getExpr2());
+        else if (HUtil.isParentClass(DateValue.class, type1, type2))
+            typedExpr = new DateCompare(this.getExpr1(), this.getOp(), this.getExpr2());
         else
-            throw new HPersistException("Invalid type " + type1.getName() + " in ValueCompare");
+            throw new HPersistException("Invalid types " + type1.getName() + " and " + type2.getName()
+                                        + " in ValueCompare.validateType()");
 
         return BooleanValue.class;
     }

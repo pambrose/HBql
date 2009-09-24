@@ -64,6 +64,12 @@ public class HUtil {
         oos.close();
 
         log.info(baos.toString());
+    }
 
+    public static boolean isParentClass(final Class parentClazz, final Class... clazzes) {
+        for (final Class clazz : clazzes)
+            if (!parentClazz.isAssignableFrom(clazz))
+                return false;
+        return true;
     }
 }

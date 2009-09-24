@@ -51,8 +51,8 @@ public class IntervalExpr extends GenericOneExprExpr implements DateValue {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
 
-        if (!type.equals(NumberValue.class))
-            throw new HPersistException("Invalid type " + type.getName() + " in IntervalExpr");
+        if (!NumberValue.class.isAssignableFrom(type))
+            throw new HPersistException("Invalid type " + type.getName() + " in IntervalExpr.validateType()");
 
         return DateValue.class;
     }

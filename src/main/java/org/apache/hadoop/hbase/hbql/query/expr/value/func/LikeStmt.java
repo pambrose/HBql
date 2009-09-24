@@ -76,11 +76,11 @@ public class LikeStmt extends GenericNotValue {
         final Class<? extends ValueExpr> type1 = this.getValueExpr().validateType();
         final Class<? extends ValueExpr> type2 = this.getPatternExpr().validateType();
 
-        if (!type1.equals(type2))
-            throw new HPersistException("Type mismatch in LikeStmt");
-
-        if (!type1.equals(StringValue.class))
+        if (!HUtil.isParentClass(StringValue.class, type1))
             throw new HPersistException("Invalid type " + type1.getName() + " in LikeStmt");
+
+        if (!StringValue.class.isAssignableFrom(type2))
+            throw new HPersistException("Invalid type " + type2.getName() + " in LikeStmt");
 
         return BooleanValue.class;
     }

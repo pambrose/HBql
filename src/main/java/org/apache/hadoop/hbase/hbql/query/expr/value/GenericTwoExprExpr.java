@@ -59,8 +59,7 @@ public class GenericTwoExprExpr {
     }
 
     public Class<? extends ValueExpr> validateType() throws HPersistException {
-        // This is not executed
-        return null;
+        throw new HPersistException("Missing impl for validateType()");
     }
 
     public void setParam(final String param, final Object val) throws HPersistException {

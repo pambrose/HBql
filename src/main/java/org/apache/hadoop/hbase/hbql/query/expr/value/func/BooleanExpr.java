@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericOneExprExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,8 +24,8 @@ public class BooleanExpr extends GenericOneExprExpr implements BooleanValue {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
 
-        if (!BooleanValue.class.isAssignableFrom(type))
-            throw new HPersistException("Invalid type " + type.getName() + " in BooleanExpr");
+        if (!HUtil.isParentClass(BooleanValue.class, type))
+            throw new HPersistException("Invalid type " + type.getName() + " in BooleanExpr.validateType()");
 
         return BooleanValue.class;
     }

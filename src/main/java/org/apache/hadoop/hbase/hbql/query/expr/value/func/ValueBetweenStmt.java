@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,17 +29,16 @@ public class ValueBetweenStmt extends GenericBetweenStmt {
         final Class<? extends ValueExpr> type2 = this.getLower().validateType();
         final Class<? extends ValueExpr> type3 = this.getUpper().validateType();
 
-        if (!type1.equals(type2) || !type1.equals(type3))
-            throw new HPersistException("Mismatched types in ValueBetweenStmt");
-
-        if (type1.equals(StringValue.class))
+        if (HUtil.isParentClass(StringValue.class, type1, type2, type3))
             this.typedExpr = new StringBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());
-        else if (type1.equals(NumberValue.class))
+        else if (HUtil.isParentClass(NumberValue.class, type1, type2, type3))
             this.typedExpr = new NumberBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());
-        else if (type1.equals(DateValue.class))
+        else if (HUtil.isParentClass(DateValue.class, type1, type2, type3))
             this.typedExpr = new DateBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());
         else
-            throw new HPersistException("Invalid type " + type1.getName() + " in ValueBetweenStmt");
+            throw new HPersistException("Invalid types "
+                                        + type1.getName() + " " + type2.getName() + " " + type3.getName()
+                                        + " in ValueBetweenStmt");
 
         return BooleanValue.class;
     }

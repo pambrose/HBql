@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,11 +32,11 @@ public class CompareExpr extends GenericTwoExprExpr implements BooleanValue {
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
         final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
 
-        if (!type1.equals(type2))
-            throw new HPersistException("Type mismatch in CompareExpr");
-
-        if (!type1.equals(BooleanValue.class))
+        if (!HUtil.isParentClass(BooleanValue.class, type1))
             throw new HPersistException("Invalid type " + type1.getName() + " in CompareExpr");
+
+        if (!HUtil.isParentClass(BooleanValue.class, type2))
+            throw new HPersistException("Invalid type " + type2.getName() + " in CompareExpr");
 
         return BooleanValue.class;
     }
