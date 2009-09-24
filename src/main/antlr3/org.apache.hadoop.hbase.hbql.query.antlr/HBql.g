@@ -256,10 +256,10 @@ valueAtom returns [ValueExpr retval]
 	;
 
 // Literals		
-stringLiteral returns [StringValue retval]
+stringLiteral returns [ValueExpr retval]
 	: v=QUOTED 					{retval = new StringLiteral($v.text);};
 	
-integerLiteral returns [NumberValue retval]
+integerLiteral returns [ValueExpr retval]
 	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};	
 
 booleanLiteral returns [BooleanValue retval]

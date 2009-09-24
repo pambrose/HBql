@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 
@@ -11,7 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
  * Date: Sep 7, 2009
  * Time: 9:51:01 PM
  */
-public class StringCalcExpr extends GenericCalcExpr implements StringValue {
+public class StringCalcExpr extends GenericCalcExpr {
 
     public StringCalcExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, op, expr2);

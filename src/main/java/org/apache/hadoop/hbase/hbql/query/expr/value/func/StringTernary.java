@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
@@ -11,7 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
  * Date: Aug 29, 2009
  * Time: 2:35:57 PM
  */
-public class StringTernary extends GenericTernary implements StringValue {
+public class StringTernary extends GenericTernary {
 
     public StringTernary(final ValueExpr pred, final ValueExpr expr1, final ValueExpr expr2) {
         super(pred, expr1, expr2);

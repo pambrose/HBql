@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,19 +12,25 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
  */
 public class LimitArgs {
 
-    private long value = -1;
+    private final ValueExpr value;
 
-    public LimitArgs(final NumberValue val) {
-        try {
-            if (val != null)
-                this.value = val.getValue(null).longValue();
-        }
-        catch (HPersistException e) {
-            e.printStackTrace();
-        }
+    public LimitArgs(final ValueExpr value) {
+        this.value = value;
     }
 
-    public long getValue() {
-        return this.value;
+    public boolean isValid() {
+        return this.value != null;
+    }
+
+    public long getValue() throws HPersistException {
+
+        if (this.value == null)
+            throw new HPersistException("Null value invalid in LimitArgs");
+
+        final Class clazz = this.value.getClass();
+        if (!clazz.equals(NumberValue.class))
+            throw new HPersistException("Invalid type " + clazz.getName() + " in LimitArgs");
+
+        return ((Number)this.value.getValue(null)).longValue();
     }
 }

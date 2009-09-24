@@ -10,14 +10,14 @@ import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class StringAttribRef extends GenericAttribRef<StringValue> implements StringValue {
+public class StringAttribRef extends GenericAttribRef<StringValue> {
 
     public StringAttribRef(final String attribName) {
         super(attribName, FieldType.StringType);
     }
 
     @Override
-    public String getValue(final Object object) throws HPersistException {
-        return (String)this.getVariableAttrib().getCurrentValue(object);
+    public Object getValue(final Object object) throws HPersistException {
+        return this.getVariableAttrib().getCurrentValue(object);
     }
 }
