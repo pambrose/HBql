@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
  * Date: Sep 7, 2009
  * Time: 9:51:01 PM
  */
-public class DateCalcExpr extends GenericCalcExpr<ValueExpr> implements DateValue {
+public class DateCalcExpr extends GenericCalcExpr implements DateValue {
 
     public DateCalcExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, op, expr2);

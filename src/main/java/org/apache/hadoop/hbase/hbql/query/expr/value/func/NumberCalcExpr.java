@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NumberCalcExpr extends GenericCalcExpr<ValueExpr> implements NumberValue {
+public class NumberCalcExpr extends GenericCalcExpr implements NumberValue {
 
     public NumberCalcExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, op, expr2);
@@ -30,8 +30,8 @@ public class NumberCalcExpr extends GenericCalcExpr<ValueExpr> implements Number
     @Override
     public Long getValue(final Object object) throws HPersistException {
 
-        final long val1 = ((NumberValue)this.getExpr1()).getValue(object).longValue();
-        final long val2 = (this.getExpr2() != null) ? (((NumberValue)this.getExpr2()).getValue(object)).longValue() : 0;
+        final long val1 = ((Number)this.getExpr1().getValue(object)).longValue();
+        final long val2 = (this.getExpr2() != null) ? (((Number)this.getExpr2().getValue(object))).longValue() : 0;
 
         switch (this.getOp()) {
             case PLUS:

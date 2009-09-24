@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
  * Date: Sep 7, 2009
  * Time: 9:51:01 PM
  */
-public class StringCalcExpr extends GenericCalcExpr<ValueExpr> implements StringValue {
+public class StringCalcExpr extends GenericCalcExpr implements StringValue {
 
     public StringCalcExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, op, expr2);
@@ -30,8 +30,8 @@ public class StringCalcExpr extends GenericCalcExpr<ValueExpr> implements String
     @Override
     public String getValue(final Object object) throws HPersistException {
 
-        final String val1 = ((StringValue)this.getExpr1()).getValue(object);
-        final String val2 = (this.getExpr2() != null) ? (((StringValue)this.getExpr2()).getValue(object)) : "";
+        final String val1 = (String)this.getExpr1().getValue(object);
+        final String val2 = (this.getExpr2() != null) ? ((String)this.getExpr2().getValue(object)) : "";
 
         switch (this.getOp()) {
             case PLUS:
