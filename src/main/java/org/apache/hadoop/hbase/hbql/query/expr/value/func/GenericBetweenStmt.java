@@ -14,39 +14,39 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public abstract class GenericBetweenStmt<T extends ValueExpr> extends GenericNotValue {
+public abstract class GenericBetweenStmt extends GenericNotValue {
 
-    private T expr = null;
-    private T lower = null, upper = null;
+    private ValueExpr expr = null;
+    private ValueExpr lower = null, upper = null;
 
-    protected GenericBetweenStmt(final boolean not, final T expr, final T lower, final T upper) {
+    protected GenericBetweenStmt(final boolean not, final ValueExpr expr, final ValueExpr lower, final ValueExpr upper) {
         super(not);
         this.expr = expr;
         this.lower = lower;
         this.upper = upper;
     }
 
-    protected T getExpr() {
+    protected ValueExpr getExpr() {
         return this.expr;
     }
 
-    protected T getLower() {
+    protected ValueExpr getLower() {
         return this.lower;
     }
 
-    protected T getUpper() {
+    protected ValueExpr getUpper() {
         return this.upper;
     }
 
-    public void setExpr(final T expr) {
+    public void setExpr(final ValueExpr expr) {
         this.expr = expr;
     }
 
-    public void setLower(final T lower) {
+    public void setLower(final ValueExpr lower) {
         this.lower = lower;
     }
 
-    public void setUpper(final T upper) {
+    public void setUpper(final ValueExpr upper) {
         this.upper = upper;
     }
 
@@ -58,9 +58,9 @@ public abstract class GenericBetweenStmt<T extends ValueExpr> extends GenericNot
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setExpr((T)this.getExpr().getOptimizedValue());
-        this.setLower((T)this.getLower().getOptimizedValue());
-        this.setUpper((T)this.getUpper().getOptimizedValue());
+        this.setExpr(this.getExpr().getOptimizedValue());
+        this.setLower(this.getLower().getOptimizedValue());
+        this.setUpper(this.getUpper().getOptimizedValue());
 
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
