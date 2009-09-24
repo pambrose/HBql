@@ -16,8 +16,6 @@ public class DateLiteral extends GenericLiteral<DateValue> implements DateValue 
 
     private static long now = System.currentTimeMillis();
 
-    private final static long day = 1000 * 60 * 60 * 24;
-
     public enum Type {
         NOW(true, 0),
         MINDATE(false, 0),

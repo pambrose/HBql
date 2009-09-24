@@ -233,9 +233,7 @@ options {backtrack=true;}
 	   						 
 atomExpr returns [ValueExpr retval]
 	: v=valueAtom					{retval = $v.retval;} 
-	| f1=functions					{retval = $f1.retval;}
-	| keyIF v1=booleanExpr keyTHEN v2=valueExpr keyELSE v3=valueExpr keyEND	
-							{retval = new ValueTernary($v1.retval, $v2.retval, $v3.retval);}
+	| f=functions					{retval = $f.retval;}
 	;
 
 // Value Atom
@@ -287,6 +285,8 @@ functions returns [ValueExpr retval]
 	| keyINDEXOF LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
 							{retval = new GenericFunction(FunctionType.INDEXOF, $s1.retval, $s2.retval);}
 	//| keyABS LPAREN numericExpr RPAREN
+	| keyIF v1=booleanExpr keyTHEN v2=valueExpr keyELSE v3=valueExpr keyEND	
+							{retval = new ValueTernary($v1.retval, $v2.retval, $v3.retval);}
 	;
 			
 valueItemList returns [List<ValueExpr> retval]
