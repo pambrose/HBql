@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 /**
@@ -9,14 +10,14 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  * Date: Aug 29, 2009
  * Time: 5:28:17 PM
  */
-public class BooleanFunction extends GenericFunction {
+public class BooleanFunction extends GenericFunction implements BooleanValue {
 
     public BooleanFunction(final FunctionType functionType, final ValueExpr... valueExprs) {
         super(functionType, valueExprs);
     }
 
     @Override
-    public Object getValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HPersistException {
 
         switch (this.getFunctionType()) {
             case CONTAINS: {

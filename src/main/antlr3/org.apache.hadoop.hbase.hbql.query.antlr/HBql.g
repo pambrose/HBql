@@ -175,7 +175,7 @@ options {backtrack=true;}
 	| p=booleanParen				{retval = $p.retval;}
 	;
 
-booleanFuncs returns [ValueExpr retval]
+booleanFuncs returns [BooleanValue retval]
 options {backtrack=true;}	
 	: s1=valueExpr keyCONTAINS s2=valueExpr		{retval = new BooleanFunction(FunctionType.CONTAINS, $s1.retval, $s2.retval);}
 	| s1=valueExpr n=keyNOT? keyLIKE s2=valueExpr 
@@ -200,7 +200,7 @@ ltgtCompare returns [ValueExpr retval]
 booleanParen returns [BooleanValue retval]
 options {backtrack=true;}	
 	: LPAREN o=booleanExpr RPAREN			{retval = $o.retval;}
-	| f=booleanFuncs				{retval = new BooleanExpr($f.retval);}
+	| f=booleanFuncs				{retval = $f.retval;}
 	| b=booleanAtom					{retval = new BooleanExpr($b.retval);}
 	;
 
