@@ -158,7 +158,8 @@ descWhereExpr [Schema es] returns [ExprTree retval]
 	: s=schemaDesc? 				{if ($s.retval != null) setSchema($s.retval);}			
 	  e=booleanExpr					{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);}
 	;
-				
+
+// Boolean Expressions				
 booleanExpr returns [BooleanValue retval]
 	: e1=andExpr (keyOR e2=booleanExpr)?		{$booleanExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, Operator.OR, $e2.retval);};
 
@@ -169,19 +170,19 @@ negateExpr returns [BooleanValue retval]
 	: (n=keyNOT)? p=booleanPrimary			{retval = ($n.text != null) ? new CondFactor(true, $p.retval) :  $p.retval;};
 
 booleanPrimary returns [BooleanValue retval]
-options {backtrack=true;}	
-	: b=eqneCompare					{retval = new BooleanExpr($b.retval);}
-	| p=booleanParen				{retval = $p.retval;}
+	: b=eqneCompare					{retval = $b.retval;}
 	;
 
-eqneCompare returns [ValueExpr retval]
+eqneCompare returns [BooleanValue retval]
 options {backtrack=true;}	
 	: v1=valueExpr o=eqneOp v2=valueExpr 		{retval = new ValueCompare($v1.retval, $o.retval, $v2.retval);}	
 	| c=ltgtCompare					{retval = $c.retval;}
 	;
 
-ltgtCompare returns [ValueExpr retval]
+ltgtCompare returns [BooleanValue retval]
+options {backtrack=true;}	
 	: v1=valueExpr o=ltgtOp v2=valueExpr		{retval = new ValueCompare($v1.retval, $o.retval, $v2.retval);}
+	| p=booleanParen				{retval = $p.retval;}
 	;
 
 booleanParen returns [BooleanValue retval]
@@ -196,12 +197,6 @@ options {backtrack=true;}
 	| b=booleanAtom					{retval = new BooleanExpr($b.retval);}
 	;
 	
-booleanAtom returns [ValueExpr retval]
-	: b=booleanLiteral				{retval = $b.retval;}
-	| v=varRef					{retval = this.getVariableRef($v.text);}
-	| p=paramRef
-	;
-			
 booleanFuncs returns [BooleanValue retval]
 options {backtrack=true;}	
 	: s1=valueExpr keyCONTAINS s2=valueExpr		{retval = new BooleanFunction(FunctionType.CONTAINS, $s1.retval, $s2.retval);}
@@ -214,7 +209,7 @@ options {backtrack=true;}
 	| s1=valueExpr keyIS (n=keyNOT)? keyNULL	{retval = new ValueNullCompare(($n.text != null), $s1.retval);}	
 	;
 
-// Expressions
+// Value Expressions
 valueExpr returns [ValueExpr retval] 
 @init {List<ValueExpr> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
 	: m=multExpr {exprList.add($m.retval);} (op=plusMinus n=multExpr {opList.add($op.retval); exprList.add($n.retval);})*	
@@ -246,7 +241,13 @@ valueAtom returns [ValueExpr retval]
 	| i=integerLiteral				{retval = $i.retval;}
 	| b=booleanAtom					{retval = $b.retval;}
 	;
-						
+
+booleanAtom returns [ValueExpr retval]
+	: b=booleanLiteral				{retval = $b.retval;}
+	| v=varRef					{retval = this.getVariableRef($v.text);}
+	| p=paramRef
+	;
+									
 // Literals		
 stringLiteral returns [StringValue retval]
 	: v=QUOTED 					{retval = new StringLiteral($v.text);}
