@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 
 /**
@@ -10,17 +11,17 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class StringCompare extends GenericCompare<StringValue> {
+public class StringCompare extends GenericCompare<ValueExpr> {
 
-    public StringCompare(final StringValue expr1, final Operator op, final StringValue expr2) {
+    public StringCompare(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, op, expr2);
     }
 
     @Override
     public Boolean getValue(final Object object) throws HPersistException {
 
-        final String val1 = this.getExpr1().getValue(object);
-        final String val2 = this.getExpr2().getValue(object);
+        final String val1 = ((StringValue)this.getExpr1()).getValue(object);
+        final String val2 = ((StringValue)this.getExpr2()).getValue(object);
 
         switch (this.getOp()) {
             case EQ:

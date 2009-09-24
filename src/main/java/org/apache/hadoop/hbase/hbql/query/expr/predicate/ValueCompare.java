@@ -36,11 +36,11 @@ public class ValueCompare extends GenericCompare<ValueExpr> {
             throw new HPersistException("Invalid type " + type1.getName() + " in ValueCompare");
 
         if (type1.equals(DateValue.class))
-            typedExpr = new DateCompare((DateValue)this.getExpr1(), this.getOp(), (DateValue)this.getExpr2());
+            typedExpr = new DateCompare(this.getExpr1(), this.getOp(), this.getExpr2());
         else if (type1.equals(StringValue.class))
-            typedExpr = new StringCompare((StringValue)this.getExpr1(), this.getOp(), (StringValue)this.getExpr2());
+            typedExpr = new StringCompare(this.getExpr1(), this.getOp(), this.getExpr2());
         else if (type1.equals(NumberValue.class))
-            typedExpr = new NumberCompare((NumberValue)this.getExpr1(), this.getOp(), (NumberValue)this.getExpr2());
+            typedExpr = new NumberCompare(this.getExpr1(), this.getOp(), this.getExpr2());
         else
             typedExpr = null;  // Never executed
 

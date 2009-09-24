@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 import java.util.List;
 
@@ -11,17 +12,17 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NumberInStmt extends GenericInStmt<NumberValue> {
+public class NumberInStmt extends GenericInStmt<ValueExpr> {
 
-    public NumberInStmt(final NumberValue expr, final boolean not, final List<NumberValue> vals) {
+    public NumberInStmt(final ValueExpr expr, final boolean not, final List<ValueExpr> vals) {
         super(not, expr, vals);
     }
 
     protected boolean evaluateList(final Object object) throws HPersistException {
 
-        final long attribVal = this.getExpr().getValue(object).longValue();
-        for (final NumberValue obj : this.getValueList()) {
-            final long val = obj.getValue(object).longValue();
+        final long attribVal = ((NumberValue)this.getExpr()).getValue(object).longValue();
+        for (final ValueExpr obj : this.getValueList()) {
+            final long val = ((NumberValue)obj).getValue(object).longValue();
             if (attribVal == val)
                 return true;
         }

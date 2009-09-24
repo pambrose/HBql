@@ -11,18 +11,18 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NumberCalcExpr extends GenericCalcExpr<NumberValue> implements NumberValue {
+public class NumberCalcExpr extends GenericCalcExpr<ValueExpr> implements NumberValue {
 
-    public NumberCalcExpr(final NumberValue expr1, final Operator op, final NumberValue expr2) {
+    public NumberCalcExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, op, expr2);
     }
 
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setExpr1((NumberValue)this.getExpr1().getOptimizedValue());
+        this.setExpr1(this.getExpr1().getOptimizedValue());
         if (this.getExpr2() != null)
-            this.setExpr2((NumberValue)this.getExpr2().getOptimizedValue());
+            this.setExpr2(this.getExpr2().getOptimizedValue());
 
         return this.isAConstant() ? new NumberLiteral(this.getValue(null)) : this;
     }
@@ -30,8 +30,8 @@ public class NumberCalcExpr extends GenericCalcExpr<NumberValue> implements Numb
     @Override
     public Long getValue(final Object object) throws HPersistException {
 
-        final long val1 = this.getExpr1().getValue(object).longValue();
-        final long val2 = (this.getExpr2() != null) ? (this.getExpr2().getValue(object)).longValue() : 0;
+        final long val1 = ((NumberValue)this.getExpr1()).getValue(object).longValue();
+        final long val2 = (this.getExpr2() != null) ? (((NumberValue)this.getExpr2()).getValue(object)).longValue() : 0;
 
         switch (this.getOp()) {
             case PLUS:

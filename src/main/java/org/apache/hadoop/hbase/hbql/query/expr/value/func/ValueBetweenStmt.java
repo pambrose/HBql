@@ -28,24 +28,15 @@ public class ValueBetweenStmt extends GenericBetweenStmt<ValueExpr> {
         final Class<? extends ValueExpr> type2 = this.getLower().validateType();
         final Class<? extends ValueExpr> type3 = this.getUpper().validateType();
 
-        if (!type1.equals(type2) || type1.equals(type3))
+        if (!type1.equals(type2) || !type1.equals(type3))
             throw new HPersistException("Mismatched types in ValueBetweenStmt");
 
         if (type1.equals(StringValue.class))
-            this.typedExpr = new StringBetweenStmt((StringValue)this.getExpr(),
-                                                   this.isNot(),
-                                                   (StringValue)this.getLower(),
-                                                   (StringValue)this.getUpper());
+            this.typedExpr = new StringBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());
         else if (type1.equals(NumberValue.class))
-            this.typedExpr = new NumberBetweenStmt((NumberValue)this.getExpr(),
-                                                   this.isNot(),
-                                                   (NumberValue)this.getLower(),
-                                                   (NumberValue)this.getUpper());
+            this.typedExpr = new NumberBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());
         else if (type1.equals(DateValue.class))
-            this.typedExpr = new DateBetweenStmt((DateValue)this.getExpr(),
-                                                 this.isNot(),
-                                                 (DateValue)this.getLower(),
-                                                 (DateValue)this.getUpper());
+            this.typedExpr = new DateBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());
         else
             throw new HPersistException("Invalid type " + type1.getName() + " in ValueBetweenStmt");
 

@@ -11,18 +11,18 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
  * Date: Sep 7, 2009
  * Time: 9:51:01 PM
  */
-public class StringCalcExpr extends GenericCalcExpr<StringValue> implements StringValue {
+public class StringCalcExpr extends GenericCalcExpr<ValueExpr> implements StringValue {
 
-    public StringCalcExpr(final StringValue expr1, final Operator op, final StringValue expr2) {
+    public StringCalcExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, op, expr2);
     }
 
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setExpr1((StringValue)this.getExpr1().getOptimizedValue());
+        this.setExpr1(this.getExpr1().getOptimizedValue());
         if (this.getExpr2() != null)
-            this.setExpr2((StringValue)this.getExpr2().getOptimizedValue());
+            this.setExpr2(this.getExpr2().getOptimizedValue());
 
         return this.isAConstant() ? new StringLiteral(this.getValue(null)) : this;
     }
@@ -30,8 +30,8 @@ public class StringCalcExpr extends GenericCalcExpr<StringValue> implements Stri
     @Override
     public String getValue(final Object object) throws HPersistException {
 
-        final String val1 = this.getExpr1().getValue(object);
-        final String val2 = (this.getExpr2() != null) ? (this.getExpr2().getValue(object)) : "";
+        final String val1 = ((StringValue)this.getExpr1()).getValue(object);
+        final String val2 = (this.getExpr2() != null) ? (((StringValue)this.getExpr2()).getValue(object)) : "";
 
         switch (this.getOp()) {
             case PLUS:

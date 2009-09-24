@@ -66,7 +66,7 @@ public class IntervalExpr extends GenericOneExprExpr<ValueExpr> implements DateV
 
     @Override
     public Long getValue(final Object object) throws HPersistException {
-        final Number num = ((NumberValue)this.getExpr()).getValue(object);
+        final Number num = (Number)this.getExpr().getValue(object);
         final long val = num.longValue();
         return val * this.getIntervalType().getIntervalMillis();
     }

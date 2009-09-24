@@ -30,11 +30,11 @@ public class ValueCalcExpr extends GenericCalcExpr<ValueExpr> {
             throw new HPersistException("Type mismatch in ValueCalcExpr");
 
         if (type1.equals(DateValue.class))
-            typedExpr = new DateCalcExpr((DateValue)this.getExpr1(), this.getOp(), (DateValue)this.getExpr2());
+            typedExpr = new DateCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
         else if (type1.equals(StringValue.class))
-            typedExpr = new StringCalcExpr((StringValue)this.getExpr1(), this.getOp(), (StringValue)this.getExpr2());
+            typedExpr = new StringCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
         else if (type1.equals(NumberValue.class))
-            typedExpr = new NumberCalcExpr((NumberValue)this.getExpr1(), this.getOp(), (NumberValue)this.getExpr2());
+            typedExpr = new NumberCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
         else
             throw new HPersistException("Invalid type in ValueCalcExpr: " + type1.getClass());
 

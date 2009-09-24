@@ -6,7 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
 
@@ -38,22 +37,13 @@ public class ValueInStmt extends GenericInStmt<ValueExpr> {
         }
 
         if (type.equals(StringValue.class)) {
-            final List<StringValue> list = Lists.newArrayList();
-            for (final ValueExpr val : this.getValueList())
-                list.add((StringValue)val);
-            this.typedExpr = new StringInStmt((StringValue)this.getExpr(), this.isNot(), list);
+            this.typedExpr = new StringInStmt(this.getExpr(), this.isNot(), this.getValueList());
         }
         else if (type.equals(NumberValue.class)) {
-            final List<NumberValue> list = Lists.newArrayList();
-            for (final ValueExpr val : this.getValueList())
-                list.add((NumberValue)val);
-            this.typedExpr = new NumberInStmt((NumberValue)this.getExpr(), this.isNot(), list);
+            this.typedExpr = new NumberInStmt(this.getExpr(), this.isNot(), this.getValueList());
         }
         else if (type.equals(DateValue.class)) {
-            final List<DateValue> list = Lists.newArrayList();
-            for (final ValueExpr val : this.getValueList())
-                list.add((DateValue)val);
-            this.typedExpr = new DateInStmt((DateValue)this.getExpr(), this.isNot(), list);
+            this.typedExpr = new DateInStmt(this.getExpr(), this.isNot(), this.getValueList());
         }
         else
             throw new HPersistException("Invalid type " + type.getName() + " in GenericInStmt");
