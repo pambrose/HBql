@@ -188,7 +188,7 @@ options {backtrack=true;}
 booleanParen returns [BooleanValue retval]
 options {backtrack=true;}	
 	: LPAREN o=booleanExpr RPAREN			{retval = $o.retval;}
-	| f=booleanVal					{retval = $f.retval;}
+	| b=booleanVal					{retval = $b.retval;}
 	;
 
 booleanVal returns [BooleanValue retval]
@@ -197,6 +197,12 @@ options {backtrack=true;}
 	| b=booleanAtom					{retval = new BooleanExpr($b.retval);}
 	;
 	
+booleanAtom returns [ValueExpr retval]
+	: b=booleanLiteral				{retval = $b.retval;}
+	| v=varRef					{retval = this.getVariableRef($v.text);}
+	| p=paramRef
+	;
+									
 booleanFuncs returns [BooleanValue retval]
 options {backtrack=true;}	
 	: s1=valueExpr keyCONTAINS s2=valueExpr		{retval = new BooleanFunction(FunctionType.CONTAINS, $s1.retval, $s2.retval);}
@@ -211,9 +217,16 @@ options {backtrack=true;}
 
 // Value Expressions
 valueExpr returns [ValueExpr retval] 
+options {backtrack=true;}	
+	: v=valuePrimary				{retval = $v.retval;}
+	| LPAREN o=booleanExpr RPAREN			{retval = $o.retval;}
+	;
+	
+valuePrimary returns [ValueExpr retval] 
 @init {List<ValueExpr> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
 	: m=multExpr {exprList.add($m.retval);} (op=plusMinus n=multExpr {opList.add($op.retval); exprList.add($n.retval);})*	
-							{retval = getLeftAssociativeValueExprs(exprList, opList);};
+							{retval = getLeftAssociativeValueExprs(exprList, opList);}
+	;
 	
 multExpr returns [ValueExpr retval]
 @init {List<ValueExpr> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
@@ -240,15 +253,8 @@ valueAtom returns [ValueExpr retval]
 	| i=integerLiteral				{retval = $i.retval;}
 	| b=booleanAtom					{retval = $b.retval;}
 	| keyNULL					{retval = new StringNullLiteral();}
-	| o=booleanExpr 				{retval = $o.retval;}
 	;
 
-booleanAtom returns [ValueExpr retval]
-	: b=booleanLiteral				{retval = $b.retval;}
-	| v=varRef					{retval = this.getVariableRef($v.text);}
-	| p=paramRef
-	;
-									
 // Literals		
 stringLiteral returns [StringValue retval]
 	: v=QUOTED 					{retval = new StringLiteral($v.text);};
