@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,7 +45,7 @@ public class DateExpr implements DateValue {
         if (!HUtil.isParentClass(StringValue.class, type1))
             throw new HPersistException("Invalid type " + type1.getName() + " in DateExpr.validateType()");
 
-        if (!StringValue.class.isAssignableFrom(type2))
+        if (!HUtil.isParentClass(StringValue.class, type2))
             throw new HPersistException("Invalid type " + type2.getName() + " in DateExpr.validateType()");
 
         return DateValue.class;

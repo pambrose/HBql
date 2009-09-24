@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.List;
 
@@ -36,15 +37,12 @@ public class ValueInStmt extends GenericInStmt {
                 throw new HPersistException("Mismatched " + valtype.getName() + " in GenericInStmt");
         }
 
-        if (type.equals(StringValue.class)) {
+        if (HUtil.isParentClass(StringValue.class, type))
             this.typedExpr = new StringInStmt(this.getExpr(), this.isNot(), this.getValueList());
-        }
-        else if (type.equals(NumberValue.class)) {
+        else if (HUtil.isParentClass(NumberValue.class, type))
             this.typedExpr = new NumberInStmt(this.getExpr(), this.isNot(), this.getValueList());
-        }
-        else if (type.equals(DateValue.class)) {
+        else if (HUtil.isParentClass(DateValue.class, type))
             this.typedExpr = new DateInStmt(this.getExpr(), this.isNot(), this.getValueList());
-        }
         else
             throw new HPersistException("Invalid type " + type.getName() + " in GenericInStmt");
 

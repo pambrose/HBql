@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,12 +33,12 @@ public class ValueCalcExpr extends GenericCalcExpr {
                 throw new HPersistException("Type mismatch in ValueCalcExpr");
         }
 
-        if (type1.equals(DateValue.class))
-            typedExpr = new DateCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
-        else if (type1.equals(StringValue.class))
+        if (HUtil.isParentClass(StringValue.class, type1))
             typedExpr = new StringCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
-        else if (type1.equals(NumberValue.class))
+        else if (HUtil.isParentClass(NumberValue.class, type1))
             typedExpr = new NumberCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
+        else if (HUtil.isParentClass(DateValue.class, type1))
+            typedExpr = new DateCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
         else
             throw new HPersistException("Invalid type in ValueCalcExpr: " + type1.getClass());
 

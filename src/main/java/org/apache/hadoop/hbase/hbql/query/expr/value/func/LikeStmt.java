@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -79,7 +80,7 @@ public class LikeStmt extends GenericNotValue {
         if (!HUtil.isParentClass(StringValue.class, type1))
             throw new HPersistException("Invalid type " + type1.getName() + " in LikeStmt");
 
-        if (!StringValue.class.isAssignableFrom(type2))
+        if (!HUtil.isParentClass(StringValue.class, type2))
             throw new HPersistException("Invalid type " + type2.getName() + " in LikeStmt");
 
         return BooleanValue.class;

@@ -66,8 +66,8 @@ public class GenericFunction implements ValueExpr {
 
     @Override
     public Class<? extends ValueExpr> validateType() throws HPersistException {
-        switch (this.getFunctionType()) {
 
+        switch (this.getFunctionType()) {
             case TRIM:
             case LOWER:
             case UPPER:
