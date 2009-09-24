@@ -62,8 +62,8 @@ public class DateExpr implements DateValue {
     @Override
     public Long getValue(final Object object) throws HPersistException {
 
-        final String pattern = ((StringValue)this.getFormatExpr()).getValue(object);
-        final String datestr = ((StringValue)this.getExpr()).getValue(object);
+        final String pattern = (String)this.getFormatExpr().getValue(object);
+        final String datestr = (String)this.getExpr().getValue(object);
         final SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 
         try {

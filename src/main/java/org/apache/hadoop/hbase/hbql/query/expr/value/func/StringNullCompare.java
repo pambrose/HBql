@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
@@ -13,7 +12,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
  */
 public class StringNullCompare extends GenericNullCompare {
 
-    public StringNullCompare(final boolean not, final StringValue expr) {
+    public StringNullCompare(final boolean not, final ValueExpr expr) {
         super(not, expr);
     }
 

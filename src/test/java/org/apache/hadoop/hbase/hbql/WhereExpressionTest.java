@@ -98,9 +98,9 @@ public class WhereExpressionTest extends WhereExprTests {
     @Test
     public void numericCalculations() throws HPersistException {
 
+        assertEvalTrue("9 = 9");
         assertEvalTrue("-9 = -9");
         assertEvalFalse("-9 = -8");
-        assertEvalTrue("9 = 9");
         assertEvalTrue("((4 + 5) = 9)");
         assertEvalTrue("(9) = 9");
         assertEvalTrue("(4 + 5) = 9");

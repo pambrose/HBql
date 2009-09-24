@@ -27,7 +27,7 @@ public class ValueNullCompare extends GenericNullCompare {
         if (!ExprTree.isOfType(type, StringValue.class))
             throw new HPersistException("Invalid type " + type.getName() + " in ValueNullCompare");
 
-        this.typedExpr = new StringNullCompare(this.isNot(), (StringValue)this.getExpr());
+        this.typedExpr = new StringNullCompare(this.isNot(), this.getExpr());
 
         return BooleanValue.class;
     }

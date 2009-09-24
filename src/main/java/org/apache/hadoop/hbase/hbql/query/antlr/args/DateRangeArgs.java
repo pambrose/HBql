@@ -33,7 +33,7 @@ public class DateRangeArgs {
         if (!clazz.equals(DateValue.class))
             throw new HPersistException("Invalid type " + clazz.getName() + " in DateRangeArgs");
 
-        return ((DateValue)this.lower).getValue(null);
+        return (Long)this.lower.getValue(null);
     }
 
     public long getUpper() throws HPersistException {
@@ -45,6 +45,6 @@ public class DateRangeArgs {
         if (!clazz.equals(DateValue.class))
             throw new HPersistException("Invalid type " + clazz.getName() + " in DateRangeArgs");
 
-        return ((DateValue)this.upper).getValue(null);
+        return (Long)this.upper.getValue(null);
     }
 }

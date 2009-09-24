@@ -39,11 +39,6 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
         return retval;
     }
 
-    @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
-        return null;
-    }
-
     public Object getValue(final Object object) throws HPersistException {
         if (((BooleanValue)this.getPred()).getValue(object))
             return this.getExpr1().getValue(object);

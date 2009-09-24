@@ -1,6 +1,5 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
 
@@ -21,10 +20,5 @@ public abstract class GenericCalcExpr extends GenericTwoExprExpr implements Valu
 
     protected Operator getOp() {
         return op;
-    }
-
-    @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
-        return null;
     }
 }

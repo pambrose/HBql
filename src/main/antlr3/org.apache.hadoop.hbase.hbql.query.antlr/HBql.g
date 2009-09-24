@@ -167,12 +167,12 @@ andExpr returns [BooleanValue retval]
 	: e1=negateExpr (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, Operator.AND, $e2.retval);};
 
 negateExpr returns [BooleanValue retval]			 
-	: n=keyNOT? p=booleanPrimary			{retval = ($n.text != null) ? new CondFactor(true, $p.retval) :  $p.retval;};
+	: (n=keyNOT)? p=booleanPrimary			{retval = ($n.text != null) ? new CondFactor(true, $p.retval) :  $p.retval;};
 
 booleanPrimary returns [BooleanValue retval]
 options {backtrack=true;}	
-	: f=booleanFuncs				{retval = $f.retval;}
-	| b=eqneCompare					{retval = $b.retval;}
+	: b=eqneCompare					{retval = new BooleanExpr($b.retval);}
+	| p=booleanParen				{retval = $p.retval;}
 	;
 
 booleanFuncs returns [BooleanValue retval]
@@ -186,26 +186,29 @@ options {backtrack=true;}
 							{retval = new ValueInStmt($s1.retval, ($n.text != null), $s.retval);} 
 	| s1=valueExpr keyIS (n=keyNOT)? keyNULL	{retval = new ValueNullCompare(($n.text != null), $s1.retval);}	
 	;
-	
-eqneCompare returns [BooleanValue retval]
+
+eqneCompare returns [ValueExpr retval]
 options {backtrack=true;}	
 	: v1=valueExpr o=eqneOp v2=valueExpr 		{retval = new ValueCompare($v1.retval, $o.retval, $v2.retval);}	
-	| b=ltgtCompare					{retval = $b.retval;}
+	| c=ltgtCompare					{retval = $c.retval;}
 	;
 
-ltgtCompare returns [BooleanValue retval]
-options {backtrack=true;}	
-	: v1=valueExpr o=ltgtOp v2=valueExpr 		{retval = new ValueCompare($v1.retval, $o.retval, $v2.retval);}	
-	| b=booleanParen				{retval = $b.retval;}
+ltgtCompare returns [ValueExpr retval]
+	: v1=valueExpr o=ltgtOp v2=valueExpr		{retval = new ValueCompare($v1.retval, $o.retval, $v2.retval);}
 	;
 
 booleanParen returns [BooleanValue retval]
+options {backtrack=true;}	
 	: LPAREN o=booleanExpr RPAREN			{retval = $o.retval;}
-	| b=booleanAtom					{retval = $b.retval;}
+	| f=booleanFuncs				{retval = $f.retval;}
+	| b=booleanAtom					{retval = new BooleanExpr($b.retval);}
 	;
 
-booleanAtom returns [BooleanValue retval]
-	: s=valueAtom  					{retval = new BooleanExpr($s.retval);};
+booleanAtom returns [ValueExpr retval]
+	: b=booleanLiteral				{retval = $b.retval;}
+	| v=varRef					{retval = this.getVariableRef($v.text);}
+	| p=paramRef
+	;
 			
 // Expressions
 valueExpr returns [ValueExpr retval] 
@@ -224,7 +227,7 @@ signedExpr returns [ValueExpr retval]
 parenExpr returns [ValueExpr retval]
 options {backtrack=true;}	
 	: n=atomExpr					{retval = $n.retval;}
-	//| LPAREN s=valueExpr RPAREN			{retval = $s.retval;}
+	| LPAREN s=valueExpr RPAREN			{retval = $s.retval;}
 	| LPAREN o=booleanExpr RPAREN			{retval = $o.retval;}
 	;
 	   						 
@@ -304,15 +307,15 @@ schemaDesc returns [Schema retval]
 	: LCURLY a=attribList RCURLY			{retval = HUtil.newDefinedSchema(input, $a.retval);};
 	
 ltgtOp returns [Operator retval]
-	: GT 						{retval = Operator.GT;}
-	| GTEQ 						{retval = Operator.GTEQ;}
-	| LT 						{retval = Operator.LT;}
-	| LTEQ 						{retval = Operator.LTEQ;}
+	: GT 						{$ltgtOp.retval = Operator.GT;}
+	| GTEQ 						{$ltgtOp.retval = Operator.GTEQ;}
+	| LT 						{$ltgtOp.retval = Operator.LT;}
+	| LTEQ 						{$ltgtOp.retval = Operator.LTEQ;}
 	;
 			
 eqneOp returns [Operator retval]
-	: EQ 						{retval = Operator.EQ;}
-	| (LTGT | BANGEQ)				{retval = Operator.NOTEQ;}
+	: EQ 						{$eqneOp.retval = Operator.EQ;}
+	| (LTGT | BANGEQ)				{$eqneOp.retval = Operator.NOTEQ;}
 	;
 				
 qstring	: QUOTED ;					

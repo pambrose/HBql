@@ -33,12 +33,4 @@ public abstract class GenericCompare extends GenericTwoExprExpr implements Boole
 
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
-
-
-    @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
-        // This is not executed
-        return null;
-    }
-
 }

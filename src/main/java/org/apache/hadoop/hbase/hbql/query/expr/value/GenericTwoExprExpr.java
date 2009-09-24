@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value;
 
+import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -56,4 +57,10 @@ public class GenericTwoExprExpr {
         if (this.getExpr2() != null)
             this.getExpr2().setContext(context);
     }
+
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        // This is not executed
+        return null;
+    }
+
 }

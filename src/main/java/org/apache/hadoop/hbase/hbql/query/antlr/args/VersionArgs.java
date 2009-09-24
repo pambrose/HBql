@@ -31,6 +31,6 @@ public class VersionArgs {
         if (!clazz.equals(NumberValue.class))
             throw new HPersistException("Invalid type " + clazz.getName() + " in VersionArgs");
 
-        return ((NumberValue)this.value).getValue(null).intValue();
+        return ((Number)this.value.getValue(null)).intValue();
     }
 }
