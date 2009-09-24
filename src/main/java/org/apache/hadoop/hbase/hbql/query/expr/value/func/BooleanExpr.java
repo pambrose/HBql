@@ -23,7 +23,7 @@ public class BooleanExpr extends GenericOneExprExpr implements BooleanValue {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
 
-        if (!type.equals(BooleanValue.class))
+        if (!BooleanValue.class.isAssignableFrom(type))
             throw new HPersistException("Invalid type " + type.getName() + " in BooleanExpr");
 
         return BooleanValue.class;

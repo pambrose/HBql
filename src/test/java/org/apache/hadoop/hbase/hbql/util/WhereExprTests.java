@@ -51,6 +51,25 @@ public class WhereExprTests {
         org.junit.Assert.assertFalse(evalExpr(recordObj, expr));
     }
 
+    public static void assertEvalTrue(final ExprTree tree) throws HPersistException {
+        assertEvalTrue(null, tree);
+    }
+
+    public static void assertEvalTrue(final Object recordObj, final ExprTree tree) throws HPersistException {
+        tree.validateTypes();
+        org.junit.Assert.assertTrue(evalExpr(recordObj, tree));
+    }
+
+    public static void assertEvalFalse(final ExprTree tree) throws HPersistException {
+        assertEvalFalse(null, tree);
+    }
+
+    public static void assertEvalFalse(final Object recordObj, final ExprTree tree) throws HPersistException {
+        tree.validateTypes();
+        org.junit.Assert.assertFalse(evalExpr(recordObj, tree));
+    }
+
+
     public static void assertColumnsMatchTrue(final String expr, String... vals) throws HPersistException {
         org.junit.Assert.assertTrue(evalColumnNames(expr, vals));
     }
@@ -74,21 +93,19 @@ public class WhereExprTests {
         final Schema schema = SchemaManager.getObjectSchema(recordObj);
         final ExprTree tree = HBql.parseDescWhereExpr(expr, schema, false);
 
+        return evalExpr(recordObj, tree);
+    }
+
+    private static boolean evalExpr(final Object recordObj, final ExprTree tree) throws HPersistException {
+        tree.validateTypes();
         final boolean no_opt_run = tree.evaluate(recordObj);
-        final long no_opt_time = tree.getElapsedNanos();
-
         tree.optimize();
-
         final boolean opt_run = tree.evaluate(recordObj);
-        final long opt_time = tree.getElapsedNanos();
-
         if (no_opt_run != opt_run)
             throw new HPersistException("Different outcome with call to optimize()");
-
-        // System.out.println("Time savings: " + (no_opt_time - opt_time));
-        return no_opt_run;
-
+        return opt_run;
     }
+
 
     private static boolean evalColumnNames(final String expr, String... vals) {
 

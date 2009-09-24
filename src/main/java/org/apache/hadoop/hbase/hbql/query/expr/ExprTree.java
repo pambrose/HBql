@@ -50,8 +50,13 @@ public class ExprTree implements Serializable {
     public void setSchema(final Schema schema) {
         if (schema != null) {
             this.schema = schema;
-            this.getTreeRoot().setContext(this);
         }
+
+        this.getTreeRoot().setContext(this);
+    }
+
+    public void setParam(final String param, final Object val) throws HPersistException {
+        this.getTreeRoot().setParam(param, val);
     }
 
     public void optimize() throws HPersistException {
@@ -72,13 +77,11 @@ public class ExprTree implements Serializable {
 
     public Boolean evaluate(final Object object) throws HPersistException {
 
-        this.start = System.nanoTime();
-
         // Set it once per evaluation
         DateLiteral.resetNow();
 
+        this.start = System.nanoTime();
         final boolean retval = (this.getTreeRoot() == null) || (Boolean)this.getTreeRoot().getValue(object);
-
         this.end = System.nanoTime();
 
         return retval;
@@ -107,7 +110,4 @@ public class ExprTree implements Serializable {
         }
     }
 
-    public void setParam(final String param, final Object val) {
-
-    }
 }

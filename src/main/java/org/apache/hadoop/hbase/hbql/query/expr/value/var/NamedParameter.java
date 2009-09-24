@@ -40,11 +40,15 @@ public class NamedParameter extends GenericAttribRef<ValueExpr> {
     @Override
     public void setParam(final String param, final Object val) {
 
-        if (param.startsWith(":"))
-            if (!param.equals(this.getName()))
+        final String name = this.getName();
+        if (param.startsWith(":")) {
+            if (!param.equals(name))
                 return;
-            else if (!(":" + param).equals(this.getName()))
+        }
+        else {
+            if (!(":" + param).equals(name))
                 return;
+        }
 
         if (val instanceof Boolean) {
             this.typedExpr = new BooleanLiteral((Boolean)val);

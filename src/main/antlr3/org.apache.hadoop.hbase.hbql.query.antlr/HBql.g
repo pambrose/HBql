@@ -200,7 +200,7 @@ options {backtrack=true;}
 booleanAtom returns [ValueExpr retval]
 	: b=booleanLiteral				{retval = $b.retval;}
 	| v=varRef					{retval = this.getVariableRef($v.text);}
-	| p=paramRef					{retval = new NamedParameter($v.text);}
+	| p=paramRef					{retval = new NamedParameter($p.text);}
 	;
 									
 booleanFuncs returns [BooleanValue retval]

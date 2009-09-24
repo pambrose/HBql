@@ -43,10 +43,16 @@ public class WhereExpressionTest extends WhereExprTests {
     @Test
     public void booleanParamExpressions() throws HPersistException {
 
-        ExprTree tree = parseExpr(":test");
-        tree.setParam(":test", Boolean.TRUE);
+        ExprTree tree;
 
-        //assertEvalTrue(tree);
+        tree = parseExpr(":test");
+        tree.setParam(":test", Boolean.TRUE);
+        assertEvalTrue(tree);
+
+        tree = parseExpr(":test AND :test");
+        tree.setParam(":test", Boolean.TRUE);
+        assertEvalTrue(tree);
+
     }
 
     @Test

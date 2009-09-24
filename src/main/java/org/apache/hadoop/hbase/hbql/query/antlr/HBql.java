@@ -35,9 +35,10 @@ public class HBql {
             final HBqlParser parser = newParser(input);
             final ExprTree exprTree = parser.descWhereExpr(schema);
             exprTree.setSchema(schema);
-            exprTree.validateTypes();
-            if (optimize)
+            if (optimize) {
+                exprTree.validateTypes();
                 exprTree.optimize();
+            }
             return exprTree;
         }
         catch (RecognitionException e) {
