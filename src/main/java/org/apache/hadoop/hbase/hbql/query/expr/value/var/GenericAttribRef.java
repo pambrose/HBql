@@ -54,7 +54,7 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
     }
 
     @Override
-    public void setParam(final String param, final Object val) {
+    public void setParam(final String param, final Object val) throws HPersistException {
     }
 
     protected ExprTree getContext() {

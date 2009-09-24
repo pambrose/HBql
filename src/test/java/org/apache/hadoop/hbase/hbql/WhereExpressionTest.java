@@ -56,6 +56,18 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalTrue(tree);
         tree.setParam(":test", Boolean.FALSE);
         assertEvalFalse(tree);
+
+        tree = parseExpr(":test1 OR :test2");
+        tree.setParam(":test1", Boolean.TRUE);
+        tree.setParam(":test2", Boolean.FALSE);
+        assertEvalTrue(tree);
+        tree.setParam(":test1", Boolean.FALSE);
+        assertEvalFalse(tree);
+
+        tree = parseExpr(":test1");
+        tree.setParam(":test", Boolean.TRUE);
+        assertEvalTrue(tree);
+
     }
 
     @Test
