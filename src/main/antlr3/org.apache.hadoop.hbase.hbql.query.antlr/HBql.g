@@ -146,7 +146,6 @@ keyRangeList returns [List<KeyRangeArgs.Range> retval]
 	
 keyRange returns [KeyRangeArgs.Range retval]
 	: q1=QUOTED keyTO keyLAST			{retval = new KeyRangeArgs.Range($q1.text, KeyRangeArgs.Type.LAST);}
-	//| q1=QUOTED 					{retval = new KeyRangeArgs.Range($q1.text, $q1.text);}
 	| q1=QUOTED keyTO q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
 	;
 	
@@ -245,15 +244,14 @@ atomExpr returns [ValueExpr retval]
 valueAtom returns [ValueExpr retval]
 	: s=stringLiteral				{retval = $s.retval;}
 	| i=integerLiteral				{retval = $i.retval;}
-	| b=booleanLiteral				{retval = $b.retval;}
-	| keyNULL					{retval = new StringNullLiteral();}
-	| v=varRef					{retval = this.getVariableRef($v.text);}
-	| p=paramRef
+	| b=booleanAtom					{retval = $b.retval;}
 	;
 						
 // Literals		
 stringLiteral returns [StringValue retval]
-	: v=QUOTED 					{retval = new StringLiteral($v.text);};
+	: v=QUOTED 					{retval = new StringLiteral($v.text);}
+	| keyNULL					{retval = new StringNullLiteral();}
+	;
 	
 integerLiteral returns [NumberValue retval]
 	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};	
@@ -289,7 +287,6 @@ valueFunctions returns [ValueExpr retval]
 	| keyLENGTH LPAREN s=valueExpr RPAREN		{retval = new GenericFunction(FunctionType.LENGTH, $s.retval);}
 	| keyINDEXOF LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
 							{retval = new GenericFunction(FunctionType.INDEXOF, $s1.retval, $s2.retval);}
-	//| keyABS LPAREN numericExpr RPAREN
 	| keyIF v1=booleanExpr keyTHEN v2=valueExpr keyELSE v3=valueExpr keyEND	
 							{retval = new ValueTernary($v1.retval, $v2.retval, $v3.retval);}
 	;
