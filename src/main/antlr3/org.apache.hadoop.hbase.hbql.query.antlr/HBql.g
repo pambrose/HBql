@@ -175,18 +175,6 @@ options {backtrack=true;}
 	| p=booleanParen				{retval = $p.retval;}
 	;
 
-booleanFuncs returns [BooleanValue retval]
-options {backtrack=true;}	
-	: s1=valueExpr keyCONTAINS s2=valueExpr		{retval = new BooleanFunction(FunctionType.CONTAINS, $s1.retval, $s2.retval);}
-	| s1=valueExpr n=keyNOT? keyLIKE s2=valueExpr 
-							{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);}
-	| s1=valueExpr n=keyNOT? keyBETWEEN s2=valueExpr keyAND s3=valueExpr		
-							{retval = new ValueBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
-	| s1=valueExpr n=keyNOT? keyIN LPAREN s=valueItemList RPAREN			
-							{retval = new ValueInStmt($s1.retval, ($n.text != null), $s.retval);} 
-	| s1=valueExpr keyIS (n=keyNOT)? keyNULL	{retval = new ValueNullCompare(($n.text != null), $s1.retval);}	
-	;
-
 eqneCompare returns [ValueExpr retval]
 options {backtrack=true;}	
 	: v1=valueExpr o=eqneOp v2=valueExpr 		{retval = new ValueCompare($v1.retval, $o.retval, $v2.retval);}	
@@ -200,16 +188,33 @@ ltgtCompare returns [ValueExpr retval]
 booleanParen returns [BooleanValue retval]
 options {backtrack=true;}	
 	: LPAREN o=booleanExpr RPAREN			{retval = $o.retval;}
-	| f=booleanFuncs				{retval = $f.retval;}
-	| b=booleanAtom					{retval = new BooleanExpr($b.retval);}
+	| f=booleanVal					{retval = $f.retval;}
 	;
 
+booleanVal returns [BooleanValue retval]
+options {backtrack=true;}	
+	: f=booleanFuncs				{retval = $f.retval;}
+	| b=booleanAtom					{retval = new BooleanExpr($b.retval);}
+	;
+	
 booleanAtom returns [ValueExpr retval]
 	: b=booleanLiteral				{retval = $b.retval;}
 	| v=varRef					{retval = this.getVariableRef($v.text);}
 	| p=paramRef
 	;
 			
+booleanFuncs returns [BooleanValue retval]
+options {backtrack=true;}	
+	: s1=valueExpr keyCONTAINS s2=valueExpr		{retval = new BooleanFunction(FunctionType.CONTAINS, $s1.retval, $s2.retval);}
+	| s1=valueExpr n=keyNOT? keyLIKE s2=valueExpr 
+							{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);}
+	| s1=valueExpr n=keyNOT? keyBETWEEN s2=valueExpr keyAND s3=valueExpr		
+							{retval = new ValueBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
+	| s1=valueExpr n=keyNOT? keyIN LPAREN s=valueItemList RPAREN			
+							{retval = new ValueInStmt($s1.retval, ($n.text != null), $s.retval);} 
+	| s1=valueExpr keyIS (n=keyNOT)? keyNULL	{retval = new ValueNullCompare(($n.text != null), $s1.retval);}	
+	;
+
 // Expressions
 valueExpr returns [ValueExpr retval] 
 @init {List<ValueExpr> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
@@ -233,7 +238,7 @@ options {backtrack=true;}
 	   						 
 atomExpr returns [ValueExpr retval]
 	: v=valueAtom					{retval = $v.retval;} 
-	| f=functions					{retval = $f.retval;}
+	| f=valueFunctions					{retval = $f.retval;}
 	;
 
 // Value Atom
@@ -259,7 +264,7 @@ booleanLiteral returns [BooleanValue retval]
 	;
 
 // Functions
-functions returns [ValueExpr retval]
+valueFunctions returns [ValueExpr retval]
 	: keyNOW LPAREN	RPAREN				{retval = new DateLiteral(DateLiteral.Type.NOW);}
 	| keyMINDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
 	| keyMAXDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
