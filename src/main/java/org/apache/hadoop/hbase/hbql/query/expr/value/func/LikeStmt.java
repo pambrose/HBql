@@ -112,7 +112,7 @@ public class LikeStmt extends GenericNotValue {
     }
 
     @Override
-    public void setParam(final String param, final Object val) {
+    public void setParam(final String param, final Object val) throws HPersistException {
         this.getValueExpr().setParam(param, val);
         this.getPatternExpr().setParam(param, val);
     }

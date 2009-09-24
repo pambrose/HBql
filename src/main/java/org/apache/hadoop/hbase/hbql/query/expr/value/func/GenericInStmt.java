@@ -91,7 +91,7 @@ public abstract class GenericInStmt extends GenericNotValue {
     }
 
     @Override
-    public void setParam(final String param, final Object val) {
+    public void setParam(final String param, final Object val) throws HPersistException {
         this.getExpr().setParam(param, val);
         for (final ValueExpr valueExpr : this.getValueList())
             valueExpr.setParam(param, val);

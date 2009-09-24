@@ -86,7 +86,7 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
     }
 
     @Override
-    public void setParam(final String param, final Object val) {
+    public void setParam(final String param, final Object val) throws HPersistException {
         this.getExpr().setParam(param, val);
         this.getLower().setParam(param, val);
         this.getUpper().setParam(param, val);

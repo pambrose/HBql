@@ -93,7 +93,7 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public void setParam(final String param, final Object val) {
+    public void setParam(final String param, final Object val) throws HPersistException {
         this.getFormatExpr().setParam(param, val);
         this.getValueExpr().setParam(param, val);
     }

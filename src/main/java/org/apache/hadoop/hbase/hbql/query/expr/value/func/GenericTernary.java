@@ -60,7 +60,7 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
     }
 
     @Override
-    public void setParam(final String param, final Object val) {
+    public void setParam(final String param, final Object val) throws HPersistException {
         this.getPred().setParam(param, val);
         this.getExpr1().setParam(param, val);
         this.getExpr2().setParam(param, val);

@@ -63,7 +63,7 @@ public class GenericTwoExprExpr {
         return null;
     }
 
-    public void setParam(final String param, final Object val) {
+    public void setParam(final String param, final Object val) throws HPersistException {
         this.getExpr1().setParam(param, val);
         if (this.getExpr2() != null)
             this.getExpr2().setParam(param, val);

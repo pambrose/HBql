@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value;
 
+import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -40,7 +41,7 @@ public class GenericOneExprExpr {
         this.getExpr().setContext(context);
     }
 
-    public void setParam(final String param, final Object val) {
+    public void setParam(final String param, final Object val) throws HPersistException {
         this.getExpr().setParam(param, val);
     }
 }
