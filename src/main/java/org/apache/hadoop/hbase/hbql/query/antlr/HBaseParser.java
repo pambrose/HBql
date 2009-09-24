@@ -107,10 +107,15 @@ public class HBaseParser extends Parser {
 
                     case BooleanType:
                         return new BooleanAttribRef(var);
+
+                    default:
+                        System.out.println("Invalid type: " + attrib.getFieldType().name() + " in getVariableRef()");
                 }
             }
+            else {
+                System.out.println("Invalid variable: " + var + " in getVariableRef()");
+            }
         }
-
         throw new RecognitionException(input);
     }
 
