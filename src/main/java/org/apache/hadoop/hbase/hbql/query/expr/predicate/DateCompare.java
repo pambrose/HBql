@@ -10,7 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class DateCompare extends GenericCompare<ValueExpr> {
+public class DateCompare extends GenericCompare {
 
     public DateCompare(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, op, expr2);

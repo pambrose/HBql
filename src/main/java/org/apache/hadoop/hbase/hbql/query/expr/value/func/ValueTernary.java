@@ -14,11 +14,11 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  * Date: Aug 29, 2009
  * Time: 2:35:57 PM
  */
-public class ValueTernary extends GenericTernary<ValueExpr> {
+public class ValueTernary extends GenericTernary {
 
     private GenericTernary typedExpr = null;
 
-    public ValueTernary(final BooleanValue pred, final ValueExpr expr1, final ValueExpr expr2) {
+    public ValueTernary(final ValueExpr pred, final ValueExpr expr1, final ValueExpr expr2) {
         super(pred, expr1, expr2);
     }
 
@@ -36,30 +36,22 @@ public class ValueTernary extends GenericTernary<ValueExpr> {
             throw new HPersistException("Type mismatch in ValueTernary");
 
         if (type2.equals(DateValue.class)) {
-            this.typedExpr = new DateTernary((BooleanValue)this.getPred(),
-                                             (DateValue)this.getExpr1(),
-                                             (DateValue)this.getExpr2());
+            this.typedExpr = new DateTernary(this.getPred(), this.getExpr1(), this.getExpr2());
             return type2;
         }
 
         if (type2.equals(BooleanValue.class)) {
-            this.typedExpr = new BooleanTernary((BooleanValue)this.getPred(),
-                                                (BooleanValue)this.getExpr1(),
-                                                (BooleanValue)this.getExpr2());
+            this.typedExpr = new BooleanTernary(this.getPred(), this.getExpr1(), this.getExpr2());
             return type2;
         }
 
         if (type2.equals(StringValue.class)) {
-            this.typedExpr = new StringTernary((BooleanValue)this.getPred(),
-                                               (StringValue)this.getExpr1(),
-                                               (StringValue)this.getExpr2());
+            this.typedExpr = new StringTernary(this.getPred(), this.getExpr1(), this.getExpr2());
             return type2;
         }
 
         if (type2.equals(NumberValue.class)) {
-            this.typedExpr = new NumberTernary((BooleanValue)this.getPred(),
-                                               (NumberValue)this.getExpr1(),
-                                               (NumberValue)this.getExpr2());
+            this.typedExpr = new NumberTernary(this.getPred(), this.getExpr1(), this.getExpr2());
             return type2;
         }
 

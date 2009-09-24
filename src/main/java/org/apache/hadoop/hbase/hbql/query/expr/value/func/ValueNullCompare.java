@@ -12,7 +12,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class ValueNullCompare extends GenericNullCompare<ValueExpr> {
+public class ValueNullCompare extends GenericNullCompare {
 
     private GenericNullCompare typedExpr = null;
 

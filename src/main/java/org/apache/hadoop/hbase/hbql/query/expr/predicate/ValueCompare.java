@@ -15,7 +15,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class ValueCompare extends GenericCompare<ValueExpr> {
+public class ValueCompare extends GenericCompare {
 
     private GenericCompare typedExpr = null;
 

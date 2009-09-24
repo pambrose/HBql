@@ -13,20 +13,20 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public abstract class GenericNullCompare<T extends ValueExpr> extends GenericNotValue {
+public abstract class GenericNullCompare extends GenericNotValue {
 
-    private T expr = null;
+    private ValueExpr expr = null;
 
-    public GenericNullCompare(final boolean not, final T expr) {
+    public GenericNullCompare(final boolean not, final ValueExpr expr) {
         super(not);
         this.expr = expr;
     }
 
-    protected T getExpr() {
+    protected ValueExpr getExpr() {
         return this.expr;
     }
 
-    protected void setExpr(final T expr) {
+    protected void setExpr(final ValueExpr expr) {
         this.expr = expr;
     }
 

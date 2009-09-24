@@ -12,9 +12,9 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
  * Date: Aug 29, 2009
  * Time: 2:35:57 PM
  */
-public class StringTernary extends GenericTernary<StringValue> implements StringValue {
+public class StringTernary extends GenericTernary implements StringValue {
 
-    public StringTernary(final BooleanValue pred, final StringValue expr1, final StringValue expr2) {
+    public StringTernary(final ValueExpr pred, final ValueExpr expr1, final ValueExpr expr2) {
         super(pred, expr1, expr2);
     }
 
@@ -22,8 +22,8 @@ public class StringTernary extends GenericTernary<StringValue> implements String
     public ValueExpr getOptimizedValue() throws HPersistException {
 
         this.setPred((BooleanValue)this.getPred().getOptimizedValue());
-        this.setExpr1((StringValue)this.getExpr1().getOptimizedValue());
-        this.setExpr2((StringValue)this.getExpr2().getOptimizedValue());
+        this.setExpr1(this.getExpr1().getOptimizedValue());
+        this.setExpr2(this.getExpr2().getOptimizedValue());
 
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }

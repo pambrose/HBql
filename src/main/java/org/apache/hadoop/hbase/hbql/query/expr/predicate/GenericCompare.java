@@ -13,11 +13,11 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public abstract class GenericCompare<T extends ValueExpr> extends GenericTwoExprExpr<T> implements BooleanValue {
+public abstract class GenericCompare extends GenericTwoExprExpr implements BooleanValue {
 
     private final Operator op;
 
-    protected GenericCompare(final T expr1, final Operator op, final T expr2) {
+    protected GenericCompare(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, expr2);
         this.op = op;
     }
@@ -28,8 +28,8 @@ public abstract class GenericCompare<T extends ValueExpr> extends GenericTwoExpr
 
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
-        this.setExpr1((T)this.getExpr1().getOptimizedValue());
-        this.setExpr2((T)this.getExpr2().getOptimizedValue());
+        this.setExpr1(this.getExpr1().getOptimizedValue());
+        this.setExpr2(this.getExpr2().getOptimizedValue());
 
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }

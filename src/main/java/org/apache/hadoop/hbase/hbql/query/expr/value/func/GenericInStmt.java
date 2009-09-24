@@ -15,26 +15,26 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotValue {
+public abstract class GenericInStmt extends GenericNotValue {
 
-    private T expr = null;
-    private final List<T> valueList;
+    private ValueExpr expr = null;
+    private final List<ValueExpr> valueList;
 
-    protected GenericInStmt(final boolean not, final T expr, final List<T> valueList) {
+    protected GenericInStmt(final boolean not, final ValueExpr expr, final List<ValueExpr> valueList) {
         super(not);
         this.expr = expr;
         this.valueList = valueList;
     }
 
-    protected T getExpr() {
+    protected ValueExpr getExpr() {
         return expr;
     }
 
-    protected void setExpr(final T expr) {
+    protected void setExpr(final ValueExpr expr) {
         this.expr = expr;
     }
 
-    protected List<T> getValueList() {
+    protected List<ValueExpr> getValueList() {
         return valueList;
     }
 
@@ -42,10 +42,10 @@ public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotValue
 
     private void optimizeList() throws HPersistException {
 
-        final List<T> newvalList = Lists.newArrayList();
+        final List<ValueExpr> newvalList = Lists.newArrayList();
 
-        for (final T val : this.getValueList())
-            newvalList.add((T)val.getOptimizedValue());
+        for (final ValueExpr val : this.getValueList())
+            newvalList.add(val.getOptimizedValue());
 
         // Swap new values to list
         this.getValueList().clear();
@@ -59,7 +59,7 @@ public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotValue
 
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
-        this.setExpr((T)this.getExpr().getOptimizedValue());
+        this.setExpr(this.getExpr().getOptimizedValue());
         this.optimizeList();
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
@@ -67,7 +67,7 @@ public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotValue
     @Override
     public List<ExprVariable> getExprVariables() {
         final List<ExprVariable> retval = this.getExpr().getExprVariables();
-        for (final T val : this.getValueList())
+        for (final ValueExpr val : this.getValueList())
             retval.addAll(val.getExprVariables());
         return retval;
     }
@@ -86,13 +86,13 @@ public abstract class GenericInStmt<T extends ValueExpr> extends GenericNotValue
     @Override
     public void setContext(final ExprTree context) {
         this.getExpr().setContext(context);
-        for (final T value : this.getValueList())
+        for (final ValueExpr value : this.getValueList())
             value.setContext(context);
     }
 
     private boolean listIsConstant() {
 
-        for (final T val : this.getValueList()) {
+        for (final ValueExpr val : this.getValueList()) {
             if (!val.isAConstant())
                 return false;
         }

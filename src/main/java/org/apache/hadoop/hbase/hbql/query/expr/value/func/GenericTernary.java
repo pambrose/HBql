@@ -15,11 +15,11 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 1:51:03 PM
  */
-public abstract class GenericTernary<T extends ValueExpr> extends GenericTwoExprExpr<T> implements ValueExpr {
+public abstract class GenericTernary extends GenericTwoExprExpr implements ValueExpr {
 
     private ValueExpr pred = null;
 
-    protected GenericTernary(final ValueExpr pred, final T expr1, final T expr2) {
+    protected GenericTernary(final ValueExpr pred, final ValueExpr expr1, final ValueExpr expr2) {
         super(expr1, expr2);
         this.pred = pred;
     }

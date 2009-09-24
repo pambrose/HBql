@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class StringNullCompare extends GenericNullCompare<StringValue> {
+public class StringNullCompare extends GenericNullCompare {
 
     public StringNullCompare(final boolean not, final StringValue expr) {
         super(not, expr);
@@ -19,13 +19,13 @@ public class StringNullCompare extends GenericNullCompare<StringValue> {
 
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
-        this.setExpr((StringValue)this.getExpr().getOptimizedValue());
+        this.setExpr(this.getExpr().getOptimizedValue());
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     @Override
     public Boolean getValue(final Object object) throws HPersistException {
-        final String val = this.getExpr().getValue(object);
+        final String val = (String)this.getExpr().getValue(object);
         final boolean retval = (val == null);
         return (this.isNot()) ? !retval : retval;
     }

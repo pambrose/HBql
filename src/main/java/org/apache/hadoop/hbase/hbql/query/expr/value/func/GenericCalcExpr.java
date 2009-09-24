@@ -10,7 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
  * Date: Sep 7, 2009
  * Time: 9:29:44 PM
  */
-public abstract class GenericCalcExpr extends GenericTwoExprExpr<ValueExpr> implements ValueExpr {
+public abstract class GenericCalcExpr extends GenericTwoExprExpr implements ValueExpr {
 
     private final Operator op;
 

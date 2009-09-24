@@ -15,7 +15,7 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class ValueInStmt extends GenericInStmt<ValueExpr> {
+public class ValueInStmt extends GenericInStmt {
 
     private GenericInStmt typedExpr = null;
 

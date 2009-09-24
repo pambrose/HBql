@@ -12,28 +12,28 @@ import java.util.List;
  * Date: Sep 10, 2009
  * Time: 11:33:09 AM
  */
-public class GenericTwoExprExpr<T extends ValueExpr> {
+public class GenericTwoExprExpr {
 
-    private T expr1 = null, expr2 = null;
+    private ValueExpr expr1 = null, expr2 = null;
 
-    public GenericTwoExprExpr(final T expr1, final T expr2) {
+    public GenericTwoExprExpr(final ValueExpr expr1, final ValueExpr expr2) {
         this.expr1 = expr1;
         this.expr2 = expr2;
     }
 
-    protected T getExpr1() {
+    protected ValueExpr getExpr1() {
         return this.expr1;
     }
 
-    protected void setExpr1(final T expr1) {
+    protected void setExpr1(final ValueExpr expr1) {
         this.expr1 = expr1;
     }
 
-    protected T getExpr2() {
+    protected ValueExpr getExpr2() {
         return this.expr2;
     }
 
-    protected void setExpr2(final T expr2) {
+    protected void setExpr2(final ValueExpr expr2) {
         this.expr2 = expr2;
     }
 

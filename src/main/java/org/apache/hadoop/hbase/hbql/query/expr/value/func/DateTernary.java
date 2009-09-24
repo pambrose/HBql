@@ -12,9 +12,9 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
  * Date: Aug 29, 2009
  * Time: 2:35:57 PM
  */
-public class DateTernary extends GenericTernary<DateValue> implements DateValue {
+public class DateTernary extends GenericTernary implements DateValue {
 
-    public DateTernary(final BooleanValue pred, final DateValue expr1, final DateValue expr2) {
+    public DateTernary(final ValueExpr pred, final ValueExpr expr1, final ValueExpr expr2) {
         super(pred, expr1, expr2);
     }
 
@@ -22,8 +22,8 @@ public class DateTernary extends GenericTernary<DateValue> implements DateValue 
     public ValueExpr getOptimizedValue() throws HPersistException {
 
         this.setPred((BooleanValue)this.getPred().getOptimizedValue());
-        this.setExpr1((DateValue)this.getExpr1().getOptimizedValue());
-        this.setExpr2((DateValue)this.getExpr2().getOptimizedValue());
+        this.setExpr1(this.getExpr1().getOptimizedValue());
+        this.setExpr2(this.getExpr2().getOptimizedValue());
 
         return this.isAConstant() ? new DateLiteral(this.getValue(null)) : this;
     }
