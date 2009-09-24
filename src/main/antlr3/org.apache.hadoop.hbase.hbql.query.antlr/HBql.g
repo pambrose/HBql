@@ -227,12 +227,11 @@ parenExpr returns [ValueExpr retval]
 options {backtrack=true;}	
 	: n=atomExpr					{retval = $n.retval;}
 	| LPAREN s=valueExpr RPAREN			{retval = $s.retval;}
-	| LPAREN o=booleanExpr RPAREN			{retval = $o.retval;}
 	;
 	   						 
 atomExpr returns [ValueExpr retval]
 	: v=valueAtom					{retval = $v.retval;} 
-	| f=valueFunctions					{retval = $f.retval;}
+	| f=valueFunctions				{retval = $f.retval;}
 	;
 
 // Value Atom
@@ -241,6 +240,7 @@ valueAtom returns [ValueExpr retval]
 	| i=integerLiteral				{retval = $i.retval;}
 	| b=booleanAtom					{retval = $b.retval;}
 	| keyNULL					{retval = new StringNullLiteral();}
+	| o=booleanExpr 				{retval = $o.retval;}
 	;
 
 booleanAtom returns [ValueExpr retval]
