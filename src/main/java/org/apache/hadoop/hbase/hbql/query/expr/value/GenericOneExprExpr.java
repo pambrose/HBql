@@ -12,19 +12,19 @@ import java.util.List;
  * Date: Sep 10, 2009
  * Time: 11:33:09 AM
  */
-public class GenericOneExprExpr<T extends ValueExpr> {
+public class GenericOneExprExpr {
 
-    private T expr = null;
+    private ValueExpr expr = null;
 
-    public GenericOneExprExpr(final T expr) {
+    public GenericOneExprExpr(final ValueExpr expr) {
         this.expr = expr;
     }
 
-    protected T getExpr() {
+    protected ValueExpr getExpr() {
         return this.expr;
     }
 
-    protected void setExpr(final T expr) {
+    protected void setExpr(final ValueExpr expr) {
         this.expr = expr;
     }
 

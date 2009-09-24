@@ -14,7 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
  * Date: Sep 7, 2009
  * Time: 10:03:28 PM
  */
-public class IntervalExpr extends GenericOneExprExpr<ValueExpr> implements DateValue {
+public class IntervalExpr extends GenericOneExprExpr implements DateValue {
 
     public enum IntervalType {
         MILLI(1),

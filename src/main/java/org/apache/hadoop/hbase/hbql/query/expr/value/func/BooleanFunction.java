@@ -16,7 +16,7 @@ public class BooleanFunction extends GenericFunction {
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Object getValue(final Object object) throws HPersistException {
 
         switch (this.getFunctionType()) {
             case CONTAINS: {

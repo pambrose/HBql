@@ -13,7 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
  * Date: Aug 25, 2009
  * Time: 8:28:06 PM
  */
-public class CondFactor extends GenericOneExprExpr<BooleanValue> implements BooleanValue {
+public class CondFactor extends GenericOneExprExpr implements BooleanValue {
 
     private final boolean not;
 
@@ -34,13 +34,13 @@ public class CondFactor extends GenericOneExprExpr<BooleanValue> implements Bool
 
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
-        this.setExpr((BooleanValue)this.getExpr().getOptimizedValue());
+        this.setExpr(this.getExpr().getOptimizedValue());
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     @Override
     public Boolean getValue(final Object object) throws HPersistException {
-        final boolean retval = this.getExpr().getValue(object);
+        final boolean retval = (Boolean)this.getExpr().getValue(object);
         return (this.not) ? !retval : retval;
 
     }

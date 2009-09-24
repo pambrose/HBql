@@ -233,9 +233,7 @@ options {backtrack=true;}
 	   						 
 atomExpr returns [ValueExpr retval]
 	: v=valueAtom					{retval = $v.retval;} 
-	| f1=funcReturningInteger			{retval = $f1.retval;}
-	| f2=funcReturningString			{retval = $f2.retval;}
-	| d2=funcReturningDatetime			{retval = $d2.retval;}
+	| f1=functions					{retval = $f1.retval;}
 	| keyIF v1=booleanExpr keyTHEN v2=valueExpr keyELSE v3=valueExpr keyEND	
 							{retval = new ValueTernary($v1.retval, $v2.retval, $v3.retval);}
 	;
@@ -263,7 +261,7 @@ booleanLiteral returns [BooleanValue retval]
 	;
 
 // Functions
-funcReturningDatetime returns [ValueExpr retval]
+functions returns [ValueExpr retval]
 	: keyNOW LPAREN	RPAREN				{retval = new DateLiteral(DateLiteral.Type.NOW);}
 	| keyMINDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
 	| keyMAXDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
@@ -276,24 +274,18 @@ funcReturningDatetime returns [ValueExpr retval]
 	| keyMINUTE LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.MINUTE, $n.retval);}
 	| keySECOND LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.SECOND, $n.retval);}
 	| keyMILLI LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.MILLI, $n.retval);}
-	;
-
-funcReturningString returns [ValueExpr retval]
-	: keyCONCAT LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
-							{retval = new StringFunction(FunctionType.CONCAT, $s1.retval, $s2.retval);}
+	| keyCONCAT LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
+							{retval = new GenericFunction(FunctionType.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=valueExpr COMMA n1=valueExpr COMMA n2=valueExpr RPAREN
-							{retval = new StringFunction(FunctionType.SUBSTRING, $s.retval, $n1.retval, $n2.retval);}
-	| keyTRIM LPAREN s=valueExpr RPAREN		{retval = new StringFunction(FunctionType.TRIM, $s.retval);}
-	| keyLOWER LPAREN s=valueExpr RPAREN		{retval = new StringFunction(FunctionType.LOWER, $s.retval);} 
-	| keyUPPER LPAREN s=valueExpr RPAREN		{retval = new StringFunction(FunctionType.UPPER, $s.retval);} 
+							{retval = new GenericFunction(FunctionType.SUBSTRING, $s.retval, $n1.retval, $n2.retval);}
+	| keyTRIM LPAREN s=valueExpr RPAREN		{retval = new GenericFunction(FunctionType.TRIM, $s.retval);}
+	| keyLOWER LPAREN s=valueExpr RPAREN		{retval = new GenericFunction(FunctionType.LOWER, $s.retval);} 
+	| keyUPPER LPAREN s=valueExpr RPAREN		{retval = new GenericFunction(FunctionType.UPPER, $s.retval);} 
 	| keyREPLACE LPAREN s1=valueExpr COMMA s2=valueExpr COMMA s3=valueExpr RPAREN		
-							{retval = new StringFunction(FunctionType.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
-	;
-
-funcReturningInteger returns [ValueExpr retval]
-	: keyLENGTH LPAREN s=valueExpr RPAREN		{retval = new NumberFunction(FunctionType.LENGTH, $s.retval);}
+							{retval = new GenericFunction(FunctionType.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
+	| keyLENGTH LPAREN s=valueExpr RPAREN		{retval = new GenericFunction(FunctionType.LENGTH, $s.retval);}
 	| keyINDEXOF LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
-							{retval = new NumberFunction(FunctionType.INDEXOF, $s1.retval, $s2.retval);}
+							{retval = new GenericFunction(FunctionType.INDEXOF, $s1.retval, $s2.retval);}
 	//| keyABS LPAREN numericExpr RPAREN
 	;
 			
