@@ -186,7 +186,7 @@ public class DefinedSchema extends HBaseSchema {
     }
 
     public HBqlFilter newHBqlFilter(final String query) throws HPersistException {
-        final ExprTree exprTree = HBql.parseNoDescWhereExpr(query, this, true);
+        final ExprTree exprTree = HBql.parseNoDescWhereExpr(query, this);
         return new HBqlFilter(exprTree, -1);
     }
 }

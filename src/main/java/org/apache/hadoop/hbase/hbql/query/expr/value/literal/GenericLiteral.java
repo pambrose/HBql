@@ -16,18 +16,26 @@ import java.util.List;
  */
 public abstract class GenericLiteral<T extends ValueExpr> implements ValueExpr {
 
+    @Override
     public List<ExprVariable> getExprVariables() {
         return Lists.newArrayList();
     }
 
+    @Override
     public T getOptimizedValue() throws HPersistException {
         return (T)this;
     }
 
+    @Override
     public boolean isAConstant() {
         return true;
     }
 
+    @Override
     public void setContext(final ExprTree context) {
+    }
+
+    @Override
+    public void setParam(final String param, final Object val) {
     }
 }

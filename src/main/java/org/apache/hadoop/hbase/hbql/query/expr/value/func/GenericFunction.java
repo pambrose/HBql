@@ -32,21 +32,31 @@ public class GenericFunction implements ValueExpr {
         return this.functionType;
     }
 
+    @Override
     public void setContext(final ExprTree context) {
-        for (final ValueExpr val : this.getValueExprs())
-            val.setContext(context);
+        for (final ValueExpr valExpr : this.getValueExprs())
+            valExpr.setContext(context);
+    }
+
+    @Override
+    public void setParam(final String param, final Object val) {
+        for (final ValueExpr valExpr : this.getValueExprs())
+            valExpr.setParam(param, val);
     }
 
     // TODO Deal with this
+    @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
         return this;
     }
 
     // TODO Deal with this
+    @Override
     public boolean isAConstant() {
         return false;
     }
 
+    @Override
     public List<ExprVariable> getExprVariables() {
         final List<ExprVariable> retval = Lists.newArrayList();
         for (final ValueExpr val : this.getValueExprs())
@@ -54,6 +64,7 @@ public class GenericFunction implements ValueExpr {
         return retval;
     }
 
+    @Override
     public Class<? extends ValueExpr> validateType() throws HPersistException {
         switch (this.getFunctionType()) {
 

@@ -34,10 +34,12 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
         return this.getExprVar().getName();
     }
 
+    @Override
     public List<ExprVariable> getExprVariables() {
         return Lists.newArrayList(this.getExprVar());
     }
 
+    @Override
     public T getOptimizedValue() throws HPersistException {
         return (T)this;
     }
@@ -46,8 +48,13 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
         return false;
     }
 
+    @Override
     public void setContext(final ExprTree context) {
         this.context = context;
+    }
+
+    @Override
+    public void setParam(final String param, final Object val) {
     }
 
     protected ExprTree getContext() {
@@ -65,6 +72,7 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
         return attrib;
     }
 
+    @Override
     public Class<? extends ValueExpr> validateType() throws HPersistException {
         return this.getExprVar().getFieldType().getExprType();
     }

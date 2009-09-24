@@ -28,7 +28,7 @@ public class ObjectQueryPredicate<T> implements Predicate<T> {
         try {
             if (!initialized) {
                 final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
-                this.tree = HBql.parseNoDescWhereExpr(this.query, schema, true);
+                this.tree = HBql.parseNoDescWhereExpr(this.query, schema);
                 initialized = true;
             }
 

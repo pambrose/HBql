@@ -84,4 +84,11 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
         this.getLower().setContext(context);
         this.getUpper().setContext(context);
     }
+
+    @Override
+    public void setParam(final String param, final Object val) {
+        this.getExpr().setParam(param, val);
+        this.getLower().setParam(param, val);
+        this.getUpper().setParam(param, val);
+    }
 }

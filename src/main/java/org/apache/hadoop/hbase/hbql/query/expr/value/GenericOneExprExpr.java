@@ -40,4 +40,7 @@ public class GenericOneExprExpr {
         this.getExpr().setContext(context);
     }
 
+    public void setParam(final String param, final Object val) {
+        this.getExpr().setParam(param, val);
+    }
 }

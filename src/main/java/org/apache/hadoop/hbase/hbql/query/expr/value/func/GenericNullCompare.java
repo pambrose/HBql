@@ -50,4 +50,8 @@ public abstract class GenericNullCompare extends GenericNotValue {
         this.getExpr().setContext(context);
     }
 
+    @Override
+    public void setParam(final String param, final Object val) {
+        this.getExpr().setParam(param, val);
+    }
 }

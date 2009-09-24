@@ -31,6 +31,7 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
         this.pred = pred;
     }
 
+    @Override
     public List<ExprVariable> getExprVariables() {
         final List<ExprVariable> retval = this.getPred().getExprVariables();
         retval.addAll(this.getExpr1().getExprVariables());
@@ -38,6 +39,7 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
         return retval;
     }
 
+    @Override
     public Object getValue(final Object object) throws HPersistException {
         if ((Boolean)this.getPred().getValue(object))
             return this.getExpr1().getValue(object);
@@ -45,14 +47,22 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
             return this.getExpr2().getValue(object);
     }
 
+    @Override
     public boolean isAConstant() {
         return this.getPred().isAConstant() && this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
     }
 
+    @Override
     public void setContext(final ExprTree context) {
         this.getPred().setContext(context);
         this.getExpr1().setContext(context);
         this.getExpr2().setContext(context);
     }
 
+    @Override
+    public void setParam(final String param, final Object val) {
+        this.getPred().setParam(param, val);
+        this.getExpr1().setParam(param, val);
+        this.getExpr2().setParam(param, val);
+    }
 }

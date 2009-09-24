@@ -86,12 +86,18 @@ public abstract class GenericInStmt extends GenericNotValue {
     @Override
     public void setContext(final ExprTree context) {
         this.getExpr().setContext(context);
-        for (final ValueExpr value : this.getValueList())
-            value.setContext(context);
+        for (final ValueExpr valueExpr : this.getValueList())
+            valueExpr.setContext(context);
+    }
+
+    @Override
+    public void setParam(final String param, final Object val) {
+        this.getExpr().setParam(param, val);
+        for (final ValueExpr valueExpr : this.getValueList())
+            valueExpr.setParam(param, val);
     }
 
     private boolean listIsConstant() {
-
         for (final ValueExpr val : this.getValueList()) {
             if (!val.isAConstant())
                 return false;

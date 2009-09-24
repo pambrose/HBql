@@ -20,19 +20,19 @@ import java.util.regex.Pattern;
  */
 public class LikeStmt extends GenericNotValue {
 
-    private ValueExpr expr = null;
+    private ValueExpr valueExpr = null;
     private ValueExpr patternExpr = null;
 
     private Pattern pattern = null;
 
-    public LikeStmt(final ValueExpr expr, final boolean not, final ValueExpr patternExpr) {
+    public LikeStmt(final ValueExpr valueExpr, final boolean not, final ValueExpr patternExpr) {
         super(not);
-        this.expr = expr;
+        this.valueExpr = valueExpr;
         this.patternExpr = patternExpr;
     }
 
-    private ValueExpr getExpr() {
-        return this.expr;
+    private ValueExpr getValueExpr() {
+        return this.valueExpr;
     }
 
     private ValueExpr getPatternExpr() {
@@ -59,7 +59,7 @@ public class LikeStmt extends GenericNotValue {
             this.pattern = Pattern.compile(pattern);
         }
 
-        final String val = (String)this.getExpr().getValue(object);
+        final String val = (String)this.getValueExpr().getValue(object);
         if (val == null)
             throw new HPersistException("Null string for LIKE value");
 
@@ -73,7 +73,7 @@ public class LikeStmt extends GenericNotValue {
     @Override
     public Class<? extends ValueExpr> validateType() throws HPersistException {
 
-        final Class<? extends ValueExpr> type1 = this.getExpr().validateType();
+        final Class<? extends ValueExpr> type1 = this.getValueExpr().validateType();
         final Class<? extends ValueExpr> type2 = this.getPatternExpr().validateType();
 
         if (!type1.equals(type2))
@@ -87,7 +87,7 @@ public class LikeStmt extends GenericNotValue {
 
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
-        this.expr = this.getExpr().getOptimizedValue();
+        this.valueExpr = this.getValueExpr().getOptimizedValue();
         this.patternExpr = this.getPatternExpr().getOptimizedValue();
 
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
@@ -95,20 +95,25 @@ public class LikeStmt extends GenericNotValue {
 
     @Override
     public List<ExprVariable> getExprVariables() {
-        final List<ExprVariable> retval = this.getExpr().getExprVariables();
+        final List<ExprVariable> retval = this.getValueExpr().getExprVariables();
         retval.addAll(this.getPatternExpr().getExprVariables());
         return retval;
     }
 
     @Override
     public boolean isAConstant() {
-        return this.getExpr().isAConstant() && this.getPatternExpr().isAConstant();
+        return this.getValueExpr().isAConstant() && this.getPatternExpr().isAConstant();
     }
 
     @Override
     public void setContext(final ExprTree context) {
-        this.getExpr().setContext(context);
+        this.getValueExpr().setContext(context);
         this.getPatternExpr().setContext(context);
     }
 
+    @Override
+    public void setParam(final String param, final Object val) {
+        this.getValueExpr().setParam(param, val);
+        this.getPatternExpr().setParam(param, val);
+    }
 }
