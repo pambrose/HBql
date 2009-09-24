@@ -215,6 +215,10 @@ options {backtrack=true; memoize=true;}
 	| s1=valueExpr keyIS (n=keyNOT)? keyNULL	{retval = new ValueNullCompare(($n.text != null), $s1.retval);}	
 	;
 
+valueItemList returns [List<ValueExpr> retval]
+@init {retval = Lists.newArrayList();}
+	: i1=valueExpr {retval.add($i1.retval);} (COMMA i2=valueExpr {retval.add($i2.retval);})*;
+	
 // Value Expressions
 valueExpr returns [ValueExpr retval] 
 options {backtrack=true; memoize=true;}	
@@ -297,10 +301,6 @@ valueFunctions returns [ValueExpr retval]
 							{retval = new ValueTernary($v1.retval, $v2.retval, $v3.retval);}
 	;
 			
-valueItemList returns [List<ValueExpr> retval]
-@init {retval = Lists.newArrayList();}
-	: i1=valueExpr {retval.add($i1.retval);} (COMMA i2=valueExpr {retval.add($i2.retval);})*;
-	
 column 	: c=varRef;
 	
 schemaDesc returns [Schema retval]

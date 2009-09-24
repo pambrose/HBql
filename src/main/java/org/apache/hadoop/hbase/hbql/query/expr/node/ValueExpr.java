@@ -27,5 +27,5 @@ public interface ValueExpr extends Serializable {
 
     void setContext(ExprTree context);
 
-    void setParam(String param, Object val);
+    void setParam(String param, Object val) throws HPersistException;
 }
