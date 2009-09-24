@@ -46,7 +46,7 @@ public class BooleanExpr implements BooleanValue {
 
     @Override
     public Boolean getValue(final Object object) throws HPersistException {
-        return ((BooleanValue)this.getExpr()).getValue(object);
+        return (Boolean)this.getExpr().getValue(object);
     }
 
     @Override

@@ -20,7 +20,7 @@ public class BooleanTernary extends GenericTernary implements BooleanValue {
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setPred((BooleanValue)this.getPred().getOptimizedValue());
+        this.setPred(this.getPred().getOptimizedValue());
         this.setExpr1(this.getExpr1().getOptimizedValue());
         this.setExpr2(this.getExpr2().getOptimizedValue());
 

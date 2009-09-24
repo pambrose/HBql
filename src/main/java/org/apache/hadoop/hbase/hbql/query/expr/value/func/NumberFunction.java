@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 /**
@@ -10,7 +9,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  * Date: Aug 29, 2009
  * Time: 5:28:17 PM
  */
-public class NumberFunction extends GenericFunction<NumberValue> implements NumberValue {
+public class NumberFunction extends GenericFunction {
 
     public NumberFunction(final FunctionType functionType, final ValueExpr... valueExprs) {
         super(functionType, valueExprs);

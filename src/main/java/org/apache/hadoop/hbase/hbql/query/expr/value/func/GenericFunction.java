@@ -14,7 +14,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public abstract class GenericFunction<T extends ValueExpr> {
+public abstract class GenericFunction implements ValueExpr {
 
     private final FunctionType functionType;
     private final ValueExpr[] valueExprs;
@@ -38,8 +38,8 @@ public abstract class GenericFunction<T extends ValueExpr> {
     }
 
     // TODO Deal with this
-    public T getOptimizedValue() throws HPersistException {
-        return (T)this;
+    public ValueExpr getOptimizedValue() throws HPersistException {
+        return this;
     }
 
     // TODO Deal with this
@@ -62,6 +62,7 @@ public abstract class GenericFunction<T extends ValueExpr> {
             case UPPER:
             case CONCAT:
             case REPLACE:
+            case SUBSTRING:
 
             case CONTAINS:
 

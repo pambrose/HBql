@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
@@ -21,7 +20,7 @@ public class DateTernary extends GenericTernary implements DateValue {
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
-        this.setPred((BooleanValue)this.getPred().getOptimizedValue());
+        this.setPred(this.getPred().getOptimizedValue());
         this.setExpr1(this.getExpr1().getOptimizedValue());
         this.setExpr2(this.getExpr2().getOptimizedValue());
 

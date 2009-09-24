@@ -67,8 +67,9 @@ public class HBql {
     public static String parseStringValue(final String input) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
-            final ValueExpr val = parser.valueExpr();
-            return (String)val.getValue(null);
+            final ValueExpr valueExpr = parser.valueExpr();
+            valueExpr.validateType();
+            return (String)valueExpr.getValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
@@ -79,8 +80,9 @@ public class HBql {
     public static Number parseNumberValue(final String input) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
-            final ValueExpr val = parser.valueExpr();
-            return (Number)val.getValue(null);
+            final ValueExpr valueExpr = parser.valueExpr();
+            valueExpr.validateType();
+            return (Number)valueExpr.getValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
@@ -91,8 +93,9 @@ public class HBql {
     public static Long parseDateValue(final String input) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
-            final ValueExpr val = parser.valueExpr();
-            return (Long)val.getValue(null);
+            final ValueExpr valueExpr = parser.valueExpr();
+            valueExpr.validateType();
+            return (Long)valueExpr.getValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();

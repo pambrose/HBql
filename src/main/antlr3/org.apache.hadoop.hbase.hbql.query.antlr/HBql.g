@@ -175,7 +175,7 @@ options {backtrack=true;}
 	| p=booleanParen				{retval = $p.retval;}
 	;
 
-booleanFuncs returns [BooleanValue retval]
+booleanFuncs returns [ValueExpr retval]
 options {backtrack=true;}	
 	: s1=valueExpr keyCONTAINS s2=valueExpr		{retval = new BooleanFunction(FunctionType.CONTAINS, $s1.retval, $s2.retval);}
 	| s1=valueExpr n=keyNOT? keyLIKE s2=valueExpr 
@@ -200,7 +200,7 @@ ltgtCompare returns [ValueExpr retval]
 booleanParen returns [BooleanValue retval]
 options {backtrack=true;}	
 	: LPAREN o=booleanExpr RPAREN			{retval = $o.retval;}
-	| f=booleanFuncs				{retval = $f.retval;}
+	| f=booleanFuncs				{retval = new BooleanExpr($f.retval);}
 	| b=booleanAtom					{retval = new BooleanExpr($b.retval);}
 	;
 
@@ -263,7 +263,7 @@ booleanLiteral returns [BooleanValue retval]
 	;
 
 // Functions
-funcReturningDatetime returns [DateValue retval]
+funcReturningDatetime returns [ValueExpr retval]
 	: keyNOW LPAREN	RPAREN				{retval = new DateLiteral(DateLiteral.Type.NOW);}
 	| keyMINDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
 	| keyMAXDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
@@ -278,7 +278,7 @@ funcReturningDatetime returns [DateValue retval]
 	| keyMILLI LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.MILLI, $n.retval);}
 	;
 
-funcReturningString returns [StringValue retval]
+funcReturningString returns [ValueExpr retval]
 	: keyCONCAT LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
 							{retval = new StringFunction(FunctionType.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=valueExpr COMMA n1=valueExpr COMMA n2=valueExpr RPAREN
@@ -290,7 +290,7 @@ funcReturningString returns [StringValue retval]
 							{retval = new StringFunction(FunctionType.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
 	;
 
-funcReturningInteger returns [NumberValue retval]
+funcReturningInteger returns [ValueExpr retval]
 	: keyLENGTH LPAREN s=valueExpr RPAREN		{retval = new NumberFunction(FunctionType.LENGTH, $s.retval);}
 	| keyINDEXOF LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
 							{retval = new NumberFunction(FunctionType.INDEXOF, $s1.retval, $s2.retval);}

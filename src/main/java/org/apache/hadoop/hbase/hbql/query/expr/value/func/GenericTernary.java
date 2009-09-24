@@ -3,7 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
-import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
 
@@ -28,7 +27,7 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
         return this.pred;
     }
 
-    protected void setPred(final BooleanValue pred) {
+    protected void setPred(final ValueExpr pred) {
         this.pred = pred;
     }
 
@@ -40,7 +39,7 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
     }
 
     public Object getValue(final Object object) throws HPersistException {
-        if (((BooleanValue)this.getPred()).getValue(object))
+        if ((Boolean)this.getPred().getValue(object))
             return this.getExpr1().getValue(object);
         else
             return this.getExpr2().getValue(object);
