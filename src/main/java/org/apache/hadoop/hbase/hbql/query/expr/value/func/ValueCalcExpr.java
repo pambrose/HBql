@@ -24,10 +24,13 @@ public class ValueCalcExpr extends GenericCalcExpr {
     public Class<? extends ValueExpr> validateType() throws HPersistException {
 
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
-        final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
 
-        if (!type1.equals(type2))
-            throw new HPersistException("Type mismatch in ValueCalcExpr");
+        if (this.getExpr2() != null) {
+            final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
+
+            if (!type1.equals(type2))
+                throw new HPersistException("Type mismatch in ValueCalcExpr");
+        }
 
         if (type1.equals(DateValue.class))
             typedExpr = new DateCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
