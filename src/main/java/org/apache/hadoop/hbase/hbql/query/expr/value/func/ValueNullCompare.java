@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -24,7 +23,7 @@ public class ValueNullCompare extends GenericNullCompare {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
 
-        if (!ExprTree.isOfType(type, StringValue.class))
+        if (!type.equals(StringValue.class))
             throw new HPersistException("Invalid type " + type.getName() + " in ValueNullCompare");
 
         this.typedExpr = new StringNullCompare(this.isNot(), this.getExpr());

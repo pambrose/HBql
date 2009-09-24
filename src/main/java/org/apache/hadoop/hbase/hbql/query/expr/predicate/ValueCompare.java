@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -32,9 +31,6 @@ public class ValueCompare extends GenericCompare implements BooleanValue {
         if (!type1.equals(type2))
             throw new HPersistException("Type mismatch in ValueCompare");
 
-        if (!ExprTree.isOfType(type1, StringValue.class, NumberValue.class, DateValue.class))
-            throw new HPersistException("Invalid type " + type1.getName() + " in ValueCompare");
-
         if (type1.equals(DateValue.class))
             typedExpr = new DateCompare(this.getExpr1(), this.getOp(), this.getExpr2());
         else if (type1.equals(StringValue.class))
@@ -42,7 +38,7 @@ public class ValueCompare extends GenericCompare implements BooleanValue {
         else if (type1.equals(NumberValue.class))
             typedExpr = new NumberCompare(this.getExpr1(), this.getOp(), this.getExpr2());
         else
-            typedExpr = null;  // Never executed
+            throw new HPersistException("Invalid type " + type1.getName() + " in ValueCompare");
 
         return BooleanValue.class;
     }

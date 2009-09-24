@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -52,7 +51,7 @@ public class IntervalExpr extends GenericOneExprExpr implements DateValue {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
 
-        if (!ExprTree.isOfType(type, NumberValue.class))
+        if (!type.equals(NumberValue.class))
             throw new HPersistException("Invalid type " + type.getName() + " in IntervalExpr");
 
         return DateValue.class;

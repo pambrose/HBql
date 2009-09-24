@@ -47,15 +47,13 @@ public class HBql {
     }
 
     public static ExprTree parseNoDescWhereExpr(final String input,
-                                                final Schema schema,
-                                                final boolean optimize) throws HPersistException {
+                                                final Schema schema) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
             final ExprTree exprTree = parser.nodescWhereExpr(schema);
             exprTree.setSchema(schema);
             exprTree.validateTypes();
-            if (optimize)
-                exprTree.optimize();
+            exprTree.optimize();
             return exprTree;
         }
         catch (RecognitionException e) {

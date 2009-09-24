@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -29,7 +28,7 @@ public class ValueTernary extends GenericTernary {
         final Class<? extends ValueExpr> type2 = this.getExpr1().validateType();
         final Class<? extends ValueExpr> type3 = this.getExpr2().validateType();
 
-        if (!ExprTree.isOfType(type1, BooleanValue.class))
+        if (!type1.equals(BooleanValue.class))
             throw new HPersistException("Invalid type " + type1.getName() + " in ValueTernary");
 
         if (!type2.equals(type3))

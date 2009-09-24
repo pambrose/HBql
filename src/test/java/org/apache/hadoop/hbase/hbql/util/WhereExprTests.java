@@ -59,6 +59,16 @@ public class WhereExprTests {
         org.junit.Assert.assertFalse(evalColumnNames(expr, vals));
     }
 
+    public ExprTree parseExpr(final String expr) throws HPersistException {
+        return this.parseExpr(null, expr);
+    }
+
+    public ExprTree parseExpr(final Object recordObj, final String expr) throws HPersistException {
+        final Schema schema = SchemaManager.getObjectSchema(recordObj);
+        return HBql.parseDescWhereExpr(expr, schema, false);
+
+    }
+
     private static boolean evalExpr(final Object recordObj, final String expr) throws HPersistException {
 
         final Schema schema = SchemaManager.getObjectSchema(recordObj);

@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericOneExprExpr;
@@ -26,7 +25,7 @@ public class CondFactor extends GenericOneExprExpr implements BooleanValue {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
 
-        if (!ExprTree.isOfType(type, BooleanValue.class))
+        if (!type.equals(BooleanValue.class))
             throw new HPersistException("Invalid type " + type.getName() + " in CondFactor");
 
         return BooleanValue.class;

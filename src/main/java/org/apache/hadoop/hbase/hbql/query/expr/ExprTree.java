@@ -107,11 +107,7 @@ public class ExprTree implements Serializable {
         }
     }
 
-    public static boolean isOfType(final Class clazz, final Class... classes) {
-        for (Class aClass : classes)
-            if (clazz.equals(aClass))
-                return true;
-        return false;
-    }
+    public void setParam(final String param, final Object val) {
 
+    }
 }

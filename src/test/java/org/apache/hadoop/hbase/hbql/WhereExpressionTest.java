@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.util.WhereExprTests;
 import org.junit.Test;
 
@@ -37,6 +38,15 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalTrue("TRUE OR ((true) or true) OR FALSE");
         assertEvalFalse("(false AND ((true) OR true)) AND TRUE");
         assertEvalTrue("(false AND ((true) OR true)) OR TRUE");
+    }
+
+    @Test
+    public void booleanParamExpressions() throws HPersistException {
+
+        ExprTree tree = parseExpr(":test");
+        tree.setParam(":test", Boolean.TRUE);
+
+        //assertEvalTrue(tree);
     }
 
     @Test
