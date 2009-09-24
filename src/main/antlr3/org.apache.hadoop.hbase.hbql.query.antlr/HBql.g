@@ -240,6 +240,7 @@ valueAtom returns [ValueExpr retval]
 	: s=stringLiteral				{retval = $s.retval;}
 	| i=integerLiteral				{retval = $i.retval;}
 	| b=booleanAtom					{retval = $b.retval;}
+	| keyNULL					{retval = new StringNullLiteral();}
 	;
 
 booleanAtom returns [ValueExpr retval]
@@ -250,9 +251,7 @@ booleanAtom returns [ValueExpr retval]
 									
 // Literals		
 stringLiteral returns [StringValue retval]
-	: v=QUOTED 					{retval = new StringLiteral($v.text);}
-	| keyNULL					{retval = new StringNullLiteral();}
-	;
+	: v=QUOTED 					{retval = new StringLiteral($v.text);};
 	
 integerLiteral returns [NumberValue retval]
 	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};	
