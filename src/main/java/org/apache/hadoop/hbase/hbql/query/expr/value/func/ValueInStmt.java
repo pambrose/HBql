@@ -28,23 +28,30 @@ public class ValueInStmt extends GenericInStmt {
     public Class<? extends ValueExpr> validateType() throws HPersistException {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
+        final Class<? extends ValueExpr> clazz;
+
+        if (HUtil.isParentClass(StringValue.class, type)) {
+            clazz = StringValue.class;
+            this.typedExpr = new StringInStmt(this.getExpr(), this.isNot(), this.getValueList());
+        }
+        else if (HUtil.isParentClass(NumberValue.class, type)) {
+            clazz = NumberValue.class;
+            this.typedExpr = new NumberInStmt(this.getExpr(), this.isNot(), this.getValueList());
+        }
+        else if (HUtil.isParentClass(DateValue.class, type)) {
+            clazz = DateValue.class;
+            this.typedExpr = new DateInStmt(this.getExpr(), this.isNot(), this.getValueList());
+        }
+        else
+            throw new HPersistException("Invalid type " + type.getName() + " in GenericInStmt");
 
         // First make sure all the types are matched
         for (final ValueExpr val : this.getValueList()) {
             final Class<? extends ValueExpr> valtype = val.validateType();
 
-            if (!valtype.equals(type))
-                throw new HPersistException("Mismatched " + valtype.getName() + " in GenericInStmt");
+            if (!HUtil.isParentClass(clazz, valtype))
+                throw new HPersistException("Invalid type " + type.getName() + " in GenericInStmt");
         }
-
-        if (HUtil.isParentClass(StringValue.class, type))
-            this.typedExpr = new StringInStmt(this.getExpr(), this.isNot(), this.getValueList());
-        else if (HUtil.isParentClass(NumberValue.class, type))
-            this.typedExpr = new NumberInStmt(this.getExpr(), this.isNot(), this.getValueList());
-        else if (HUtil.isParentClass(DateValue.class, type))
-            this.typedExpr = new DateInStmt(this.getExpr(), this.isNot(), this.getValueList());
-        else
-            throw new HPersistException("Invalid type " + type.getName() + " in GenericInStmt");
 
         return BooleanValue.class;
     }
