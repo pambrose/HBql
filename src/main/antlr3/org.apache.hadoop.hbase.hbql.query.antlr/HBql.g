@@ -204,7 +204,7 @@ booleanAtom returns [ValueExpr retval]
 	;
 									
 booleanFuncs returns [BooleanValue retval]
-options {backtrack=true;}	
+options {backtrack=true; memoize=true;}	
 	: s1=valueExpr keyCONTAINS s2=valueExpr		{retval = new BooleanFunction(FunctionType.CONTAINS, $s1.retval, $s2.retval);}
 	| s1=valueExpr n=keyNOT? keyLIKE s2=valueExpr 
 							{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);}
@@ -217,7 +217,7 @@ options {backtrack=true;}
 
 // Value Expressions
 valueExpr returns [ValueExpr retval] 
-options {backtrack=true;}	
+options {backtrack=true; memoize=true;}	
 	: v=valuePrimary				{retval = $v.retval;}
 	| LPAREN o=booleanExpr RPAREN			{retval = $o.retval;}
 	;
@@ -237,7 +237,7 @@ signedExpr returns [ValueExpr retval]
 	: (s=plusMinus)? n=parenExpr 			{$signedExpr.retval = ($s.retval == Operator.MINUS) ? new ValueCalcExpr($n.retval, Operator.NEGATIVE, null) :  $n.retval;};
 
 parenExpr returns [ValueExpr retval]
-options {backtrack=true;}	
+options {backtrack=true; memoize=true;}	
 	: n=atomExpr					{retval = $n.retval;}
 	| LPAREN s=valueExpr RPAREN			{retval = $s.retval;}
 	;
@@ -269,6 +269,7 @@ booleanLiteral returns [BooleanValue retval]
 
 // Functions
 valueFunctions returns [ValueExpr retval]
+options {memoize=true;}	
 	: keyNOW LPAREN	RPAREN				{retval = new DateLiteral(DateLiteral.Type.NOW);}
 	| keyMINDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
 	| keyMAXDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}

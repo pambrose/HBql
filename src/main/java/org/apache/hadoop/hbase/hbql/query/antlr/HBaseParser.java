@@ -16,7 +16,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.var.DateAttribRef;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.IntegerAttribRef;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.LongAttribRef;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.StringAttribRef;
-import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
@@ -65,22 +64,7 @@ public class HBaseParser extends Parser {
 
     protected boolean isKeyword(final TokenStream input, final String str) {
         final String s = input.LT(1).getText();
-        //System.out.println("Checking for " + str + " and " + s);
         return s != null && s.equalsIgnoreCase(str);
-    }
-
-    protected boolean isAttribType(final TokenStream input, final FieldType type) {
-
-        if (this.getSchema() == null)
-            return false;
-
-        final String varname = input.LT(1).getText();
-        if (varname == null)
-            return false;
-
-        final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(varname);
-        // Check for clazz so key attribs are matched as String vars
-        return attrib != null && attrib.getFieldType().getClazz() == type.getClazz();
     }
 
     protected ValueExpr getVariableRef(final String var) throws RecognitionException {
