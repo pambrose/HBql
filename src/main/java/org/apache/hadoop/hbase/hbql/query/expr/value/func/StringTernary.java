@@ -19,7 +19,7 @@ public class StringTernary extends GenericTernary {
 
     @Override
     public Class<? extends ValueExpr> validateType() throws HBqlException {
-        return this.validateType(StringValue.class, "StringTernary");
+        return this.validateType(StringValue.class);
     }
 
     @Override

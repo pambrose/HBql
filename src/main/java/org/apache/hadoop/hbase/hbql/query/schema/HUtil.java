@@ -4,7 +4,9 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
+import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -67,12 +69,49 @@ public class HUtil {
     }
 
     public static boolean isParentClass(final Class parentClazz, final Class... clazzes) {
+
         for (final Class clazz : clazzes) {
+
             if (clazz == null)
                 continue;
+
             if (!parentClazz.isAssignableFrom(clazz))
                 return false;
         }
         return true;
+    }
+
+    public static void validateParentClass(final Class parentClazz, final Class... clazzes) throws TypeException {
+
+        List<Class> classList = null;
+
+        for (final Class clazz : clazzes) {
+
+            if (clazz == null)
+                continue;
+
+            if (!parentClazz.isAssignableFrom(clazz)) {
+                if (classList == null)
+                    classList = Lists.newArrayList();
+                classList.add(clazz);
+            }
+        }
+
+        if (classList != null) {
+            final StringBuilder msg = new StringBuilder("Expecting type " + parentClazz.getName()
+                                                        + " but encountered type "
+                                                        + ((classList.size() > 0) ? "s" : "") + ": ");
+            boolean first = true;
+            for (final Class clazz : classList) {
+                if (!first)
+                    msg.append(", ");
+                msg.append(clazz.getName());
+                first = false;
+            }
+
+            msg.append(" in expression");
+
+            throw new TypeException(msg.toString());
+        }
     }
 }

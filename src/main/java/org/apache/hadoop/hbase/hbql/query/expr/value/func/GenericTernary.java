@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -50,20 +51,18 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
         this.getExpr2().setContext(context);
     }
 
-    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz,
-                                                      final String caller) throws HBqlException {
+    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws HBqlException {
 
         final Class<? extends ValueExpr> pred = this.getPred().validateType();
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
         final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
 
         if (HUtil.isParentClass(BooleanValue.class, pred))
-            throw new HBqlException("Invalid predicate type " + pred.getName() + " in NumberTernary");
+            throw new TypeException("Invalid predicate type " + pred.getName());
 
         if (HUtil.isParentClass(clazz, type1, type2))
-            throw new HBqlException("Invalid types " + type1.getName() + " " + type2.getName() + " in " + caller);
+            throw new TypeException("Invalid types " + type1.getName() + " " + type2.getName());
 
         return clazz;
     }
-
 }

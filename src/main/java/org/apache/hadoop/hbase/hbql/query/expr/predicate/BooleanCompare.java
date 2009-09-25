@@ -18,7 +18,7 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
     }
 
     public Class<? extends ValueExpr> validateType() throws HBqlException {
-        return this.validateType(BooleanValue.class, "BooleanCompare");
+        return this.validateType(BooleanValue.class);
     }
 
     @Override

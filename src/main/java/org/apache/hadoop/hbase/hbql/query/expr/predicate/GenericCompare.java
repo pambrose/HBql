@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
@@ -36,18 +37,17 @@ public abstract class GenericCompare extends GenericTwoExprExpr implements Boole
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
-    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz, final String caller) throws HBqlException {
+    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws HBqlException {
 
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
 
         if (!HUtil.isParentClass(clazz, type1))
-            throw new HBqlException("Invalid type "
-                                    + type1.getName() + " in " + caller);
+            throw new TypeException("Invalid type " + type1.getName());
 
         if (this.getExpr2() != null) {
             final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
             if (!HUtil.isParentClass(clazz, type2))
-                throw new HBqlException("Invalid types " + type2.getName() + " in " + caller);
+                throw new TypeException("Invalid types " + type2.getName());
         }
 
         return BooleanValue.class;

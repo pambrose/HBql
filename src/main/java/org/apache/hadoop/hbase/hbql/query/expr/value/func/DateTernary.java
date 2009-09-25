@@ -19,7 +19,7 @@ public class DateTernary extends GenericTernary implements DateValue {
 
     @Override
     public Class<? extends ValueExpr> validateType() throws HBqlException {
-        return this.validateType(DateValue.class, "DateTernary");
+        return this.validateType(DateValue.class);
     }
 
     @Override

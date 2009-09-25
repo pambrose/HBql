@@ -19,7 +19,7 @@ public class DateCompare extends GenericCompare {
 
     @Override
     public Class<? extends ValueExpr> validateType() throws HBqlException {
-        return this.validateType(DateValue.class, "DateCompare");
+        return this.validateType(DateValue.class);
     }
 
     @Override

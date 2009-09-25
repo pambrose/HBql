@@ -19,7 +19,7 @@ public class StringCompare extends GenericCompare {
 
     @Override
     public Class<? extends ValueExpr> validateType() throws HBqlException {
-        return this.validateType(StringValue.class, "StringCompare");
+        return this.validateType(StringValue.class);
     }
 
     @Override
