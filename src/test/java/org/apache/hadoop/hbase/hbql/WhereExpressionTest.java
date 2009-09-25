@@ -195,6 +195,7 @@ public class WhereExpressionTest extends WhereExprTests {
 
     @Test
     public void nullParamCompares() throws HBqlException {
+
         ExprTree tree;
 
         tree = parseExpr(":a IS NULL");
@@ -208,12 +209,31 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalTrue(tree);
         tree.setParameter("a", null);
         assertEvalFalse(tree);
+
+        tree.setParameter("a", 1);
+        assertHasException(tree, TypeException.class);
     }
 
     @Test
     public void numericCalculations() throws HBqlException {
 
-        assertEvalTrue("9 = 9");
+        ExprTree tree;
+
+        tree = parseExpr(":a = :b");
+        tree.setParameter("a", 8);
+        tree.setParameter("b", 8);
+        assertEvalTrue(tree);
+
+        tree = parseExpr("(-1*:a) = :b");
+        tree.setParameter("a", 8);
+        tree.setParameter("b", -8);
+        assertEvalTrue(tree);
+
+        tree = parseExpr("(-1*-1*:a) = :b");
+        tree.setParameter("a", 8);
+        tree.setParameter("b", 8);
+        assertEvalTrue(tree);
+
         assertEvalTrue("-9 = -9");
         assertEvalFalse("-9 = -8");
         assertEvalTrue("((4 + 5) = 9)");
@@ -243,6 +263,25 @@ public class WhereExpressionTest extends WhereExprTests {
         assertTrue(HBql.parseNumberValue("((2+4)*(9-2))").intValue() == ((2 + 4) * (9 - 2)));
         assertTrue(HBql.parseNumberValue("(((4+3)*(2-1))*(3/1))").intValue() == (((4 + 3) * (2 - 1)) * (3 / 1)));
     }
+
+    @Test
+    public void numericParamCalculations() throws HBqlException {
+
+        assertEvalTrue("9 = 9");
+        assertEvalTrue("-9 = -9");
+        assertEvalFalse("-9 = -8");
+        assertEvalTrue("((4 + 5) = 9)");
+        assertEvalTrue("(9) = 9");
+        assertEvalTrue("(4 + 5) = 9");
+        assertEvalFalse("(4 + 5) = 8");
+        assertEvalTrue("(4 + 5 + 10 + 10 - 20) = 9");
+        assertEvalFalse("(4 + 5 + 10 + 10 - 20) != 9");
+
+        assertEvalTrue("(4 * 5) = 20");
+        assertEvalTrue("(40 % 6) = 4");
+        assertEvalFalse("(40 % 6) = 3");
+    }
+
 
     @Test
     public void booleanFunctions() throws HBqlException {
