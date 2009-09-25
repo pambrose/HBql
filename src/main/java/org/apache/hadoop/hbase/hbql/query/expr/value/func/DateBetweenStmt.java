@@ -18,7 +18,7 @@ public class DateBetweenStmt extends GenericBetweenStmt {
 
     @Override
     public Class<? extends ValueExpr> validateTypes() throws HBqlException {
-        return this.validateType(DateValue.class, "DateBetweenStmt");
+        return this.validateType(DateValue.class);
     }
 
     @Override

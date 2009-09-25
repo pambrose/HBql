@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
@@ -82,8 +83,8 @@ public class NamedParameter implements ValueExpr {
             return;
         }
 
-        throw new HBqlException("Parameter " + this.getParamName() + " assigned an unsupported type "
-                                + val.getClass().getName());
+        throw new TypeException("Parameter " + this.getParamName()
+                                + " assigned an unsupported type " + val.getClass().getName());
     }
 
     @Override

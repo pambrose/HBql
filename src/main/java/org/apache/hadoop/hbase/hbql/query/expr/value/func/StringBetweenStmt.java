@@ -18,7 +18,7 @@ public class StringBetweenStmt extends GenericBetweenStmt {
 
     @Override
     public Class<? extends ValueExpr> validateTypes() throws HBqlException {
-        return this.validateType(StringValue.class, "StringBetweenStmt");
+        return this.validateType(StringValue.class);
     }
 
     @Override

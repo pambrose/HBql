@@ -34,7 +34,7 @@ public class ValueCalcExpr extends GenericCalcExpr {
         else if (HUtil.isParentClass(DateValue.class, type1, type2))
             typedExpr = new DateCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
         else
-            HUtil.reportTypeConflict(this, type1, type2);
+            HUtil.reportInvalidTypes(this, type1, type2);
 
         return type1;
     }

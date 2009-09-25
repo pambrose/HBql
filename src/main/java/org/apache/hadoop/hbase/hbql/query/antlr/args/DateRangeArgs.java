@@ -30,7 +30,7 @@ public class DateRangeArgs {
             throw new HBqlException("Null value invalid in DateRangeArgs");
 
         final Class clazz = this.lower.getClass();
-        if (!clazz.equals(DateValue.class))
+        if (!DateValue.class.isAssignableFrom(clazz))
             throw new HBqlException("Invalid type " + clazz.getName() + " in DateRangeArgs");
 
         return (Long)this.lower.getValue(null);
@@ -42,7 +42,7 @@ public class DateRangeArgs {
             throw new HBqlException("Null value invalid in DateRangeArgs");
 
         final Class clazz = this.upper.getClass();
-        if (!clazz.equals(DateValue.class))
+        if (!DateValue.class.isAssignableFrom(clazz))
             throw new HBqlException("Invalid type " + clazz.getName() + " in DateRangeArgs");
 
         return (Long)this.upper.getValue(null);

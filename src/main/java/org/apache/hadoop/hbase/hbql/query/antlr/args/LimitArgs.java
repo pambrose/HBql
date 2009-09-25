@@ -28,7 +28,7 @@ public class LimitArgs {
             throw new HBqlException("Null value invalid in LimitArgs");
 
         final Class clazz = this.value.getClass();
-        if (!clazz.equals(NumberValue.class))
+        if (!NumberValue.class.isAssignableFrom(clazz))
             throw new HBqlException("Invalid type " + clazz.getName() + " in LimitArgs");
 
         return ((Number)this.value.getValue(null)).longValue();

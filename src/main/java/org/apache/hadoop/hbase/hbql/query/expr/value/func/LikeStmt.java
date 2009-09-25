@@ -71,14 +71,10 @@ public class LikeStmt extends GenericNotValue {
 
     @Override
     public Class<? extends ValueExpr> validateTypes() throws HBqlException {
-
-        final Class<? extends ValueExpr> value = this.getValueExpr().validateTypes();
-        final Class<? extends ValueExpr> pattern = this.getPatternExpr().validateTypes();
-
-        if (!HUtil.isParentClass(StringValue.class, value, pattern))
-            throw new HBqlException("Invalid types "
-                                    + value.getName() + " " + pattern.getName() + " in LikeStmt");
-
+        HUtil.validateParentClass(this,
+                                  StringValue.class,
+                                  this.getValueExpr().validateTypes(),
+                                  this.getPatternExpr().validateTypes());
         return BooleanValue.class;
     }
 

@@ -38,8 +38,7 @@ public class ValueCompare extends GenericCompare implements BooleanValue {
         else if (HUtil.isParentClass(BooleanValue.class, type1, type2))
             typedExpr = new BooleanCompare(this.getExpr1(), this.getOp(), this.getExpr2());
         else
-            throw new HBqlException("Invalid types " + type1.getName() + " and " + type2.getName()
-                                    + " in ValueCompare.validateType()");
+            HUtil.reportInvalidTypes(this, type1, type2);
 
         return BooleanValue.class;
     }

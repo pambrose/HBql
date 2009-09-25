@@ -28,7 +28,7 @@ public class VersionArgs {
             throw new HBqlException("Null value invalid in VersionArgs");
 
         final Class clazz = this.value.getClass();
-        if (!clazz.equals(NumberValue.class))
+        if (!NumberValue.class.isAssignableFrom(clazz))
             throw new HBqlException("Invalid type " + clazz.getName() + " in VersionArgs");
 
         return ((Number)this.value.getValue(null)).intValue();

@@ -102,7 +102,7 @@ public class HUtil {
 
         if (classList != null) {
             final StringBuilder sbuf = new StringBuilder("Expecting type " + parentClazz.getName()
-                                                         + " but encountered type "
+                                                         + " but encountered type"
                                                          + ((classList.size() > 0) ? "s" : "") + ": ");
             boolean first = true;
             for (final Class clazz : classList) {
@@ -118,14 +118,20 @@ public class HUtil {
         }
     }
 
-    public static void reportTypeConflict(final ValueExpr expr,
+    public static void reportInvalidTypes(final ValueExpr expr,
                                           final Class<? extends ValueExpr>... clazzes) throws TypeException {
 
-        final StringBuilder sbuf = new StringBuilder("Incompatible types ");
+        final List<Class> classList = Lists.newArrayList();
+
+        for (final Class clazz : clazzes)
+            if (clazz != null)
+                classList.add(clazz);
+
+        final StringBuilder sbuf = new StringBuilder("Invalid type");
+        sbuf.append(((classList.size() > 0) ? "s " : " "));
+
         boolean first = true;
         for (final Class<? extends ValueExpr> clazz : clazzes) {
-            if (clazz == null)
-                continue;
             if (!first)
                 sbuf.append(", ");
             sbuf.append(clazz.getSimpleName());

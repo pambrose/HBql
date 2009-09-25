@@ -19,7 +19,7 @@ public class NumberCalcExpr extends GenericCalcExpr implements NumberValue {
 
     @Override
     public Class<? extends ValueExpr> validateTypes() throws HBqlException {
-        return this.validateType(NumberValue.class, "NumberCalcExpr");
+        return this.validateType(NumberValue.class);
     }
 
     @Override

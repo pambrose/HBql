@@ -21,12 +21,8 @@ public class BooleanExpr extends GenericOneExprExpr implements BooleanValue {
 
     @Override
     public Class<? extends ValueExpr> validateTypes() throws HBqlException {
-
         final Class<? extends ValueExpr> type = this.getExpr().validateTypes();
-
-        if (!HUtil.isParentClass(BooleanValue.class, type))
-            throw new HBqlException("Invalid type " + type.getName() + " in BooleanExpr.validateType()");
-
+        HUtil.validateParentClass(this, BooleanValue.class, type);
         return BooleanValue.class;
     }
 

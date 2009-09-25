@@ -101,16 +101,14 @@ public abstract class GenericInStmt extends GenericNotValue {
             clazz = NumberValue.class;
         else if (HUtil.isParentClass(DateValue.class, type))
             clazz = DateValue.class;
-        else
-            throw new HBqlException("Invalid type " + type.getName() + " in GenericInStmt");
+        else {
+            clazz = null;
+            HUtil.reportInvalidTypes(this, type);
+        }
 
         // First make sure all the types are matched
-        for (final ValueExpr val : this.getValueExprList()) {
-            final Class<? extends ValueExpr> valtype = val.validateTypes();
-
-            if (!HUtil.isParentClass(clazz, valtype))
-                throw new HBqlException("Invalid type " + type.getName() + " in GenericInStmt");
-        }
+        for (final ValueExpr val : this.getValueExprList())
+            HUtil.validateParentClass(this, clazz, val.validateTypes());
 
         return BooleanValue.class;
     }

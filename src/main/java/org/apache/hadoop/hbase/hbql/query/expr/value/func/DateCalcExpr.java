@@ -19,7 +19,7 @@ public class DateCalcExpr extends GenericCalcExpr implements DateValue {
 
     @Override
     public Class<? extends ValueExpr> validateTypes() throws HBqlException {
-        return this.validateType(DateValue.class, "DateCalcExpr");
+        return this.validateType(DateValue.class);
     }
 
     @Override
