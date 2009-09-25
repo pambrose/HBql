@@ -194,6 +194,23 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
+    public void nullParamCompares() throws HBqlException {
+        ExprTree tree;
+
+        tree = parseExpr(":a IS NULL");
+        tree.setParameter("a", null);
+        assertEvalTrue(tree);
+        tree.setParameter("a", "val");
+        assertEvalFalse(tree);
+
+        tree = parseExpr(":a IS NOT NULL");
+        tree.setParameter("a", "vall");
+        assertEvalTrue(tree);
+        tree.setParameter("a", null);
+        assertEvalFalse(tree);
+    }
+
+    @Test
     public void numericCalculations() throws HBqlException {
 
         assertEvalTrue("9 = 9");

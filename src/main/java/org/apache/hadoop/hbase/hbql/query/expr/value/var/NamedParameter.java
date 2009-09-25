@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringNullLiteral;
 
 import java.util.Date;
 
@@ -61,7 +62,12 @@ public class NamedParameter implements ValueExpr {
         return paramName;
     }
 
-    public void setParam(final Object val) throws HBqlException {
+    public void setParameter(final Object val) throws HBqlException {
+
+        if (val == null) {
+            this.typedExpr = new StringNullLiteral();
+            return;
+        }
 
         if (val instanceof Boolean) {
             this.typedExpr = new BooleanLiteral((Boolean)val);

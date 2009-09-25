@@ -95,7 +95,7 @@ public class ExprTree implements Serializable {
 
         final List<NamedParameter> paramList = this.namedParamsMap.get(name);
         for (final NamedParameter param : paramList)
-            param.setParam(val);
+            param.setParameter(val);
 
         this.setInNeedOfTypeValidation(true);
     }
