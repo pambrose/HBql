@@ -32,11 +32,9 @@ public class CompareExpr extends GenericTwoExprExpr implements BooleanValue {
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
         final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
 
-        if (!HUtil.isParentClass(BooleanValue.class, type1))
-            throw new HPersistException("Invalid type " + type1.getName() + " in CompareExpr");
-
-        if (!HUtil.isParentClass(BooleanValue.class, type2))
-            throw new HPersistException("Invalid type " + type2.getName() + " in CompareExpr");
+        if (!HUtil.isParentClass(BooleanValue.class, type1, type2))
+            throw new HPersistException("Invalid types "
+                                        + type1.getName() + " " + type2.getName() + " in CompareExpr");
 
         return BooleanValue.class;
     }

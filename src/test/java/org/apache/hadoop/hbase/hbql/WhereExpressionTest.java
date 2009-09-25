@@ -84,6 +84,21 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
+    public void numericParamExpressions() throws HPersistException {
+
+        ExprTree tree;
+
+        tree = parseExpr(":val1 < :val2");
+        tree.setParam("val1", 4);
+        tree.setParam("val2", 5);
+        assertEvalTrue(tree);
+        tree.setParam(":val2", 3);
+        assertEvalFalse(tree);
+
+    }
+
+
+    @Test
     public void dateCompares() throws HPersistException {
         assertEvalTrue("NOW() = NOW()");
         assertEvalTrue("NOW() != NOW()-HOUR(1)");
