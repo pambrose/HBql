@@ -74,12 +74,12 @@ public class LikeStmt extends GenericNotValue {
     @Override
     public Class<? extends ValueExpr> validateType() throws HPersistException {
 
-        final Class<? extends ValueExpr> type1 = this.getValueExpr().validateType();
-        final Class<? extends ValueExpr> type2 = this.getPatternExpr().validateType();
+        final Class<? extends ValueExpr> value = this.getValueExpr().validateType();
+        final Class<? extends ValueExpr> pattern = this.getPatternExpr().validateType();
 
-        if (!HUtil.isParentClass(StringValue.class, type1, type2))
+        if (!HUtil.isParentClass(StringValue.class, value, pattern))
             throw new HPersistException("Invalid types "
-                                        + type1.getName() + " " + type2.getName() + " in LikeStmt");
+                                        + value.getName() + " " + pattern.getName() + " in LikeStmt");
 
         return BooleanValue.class;
     }

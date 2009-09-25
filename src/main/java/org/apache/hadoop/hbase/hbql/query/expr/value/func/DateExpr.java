@@ -39,12 +39,12 @@ public class DateExpr implements DateValue {
     @Override
     public Class<? extends ValueExpr> validateType() throws HPersistException {
 
-        final Class<? extends ValueExpr> type1 = this.getFormatExpr().validateType();
-        final Class<? extends ValueExpr> type2 = this.getValueExpr().validateType();
+        final Class<? extends ValueExpr> format = this.getFormatExpr().validateType();
+        final Class<? extends ValueExpr> value = this.getValueExpr().validateType();
 
-        if (!HUtil.isParentClass(StringValue.class, type1, type2))
+        if (!HUtil.isParentClass(StringValue.class, format, value))
             throw new HPersistException("Invalid types "
-                                        + type1.getName() + " " + type2.getName() + " in DateExpr.validateType()");
+                                        + format.getName() + " " + value.getName() + " in DateExpr.validateType()");
 
         return DateValue.class;
     }
