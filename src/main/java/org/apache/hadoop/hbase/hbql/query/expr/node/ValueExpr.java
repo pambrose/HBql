@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.node;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 
 import java.io.Serializable;
@@ -17,7 +18,7 @@ public interface ValueExpr extends Serializable {
 
     ValueExpr getOptimizedValue() throws HBqlException;
 
-    Class<? extends ValueExpr> validateTypes() throws HBqlException;
+    Class<? extends ValueExpr> validateTypes() throws TypeException;
 
     boolean isAConstant();
 

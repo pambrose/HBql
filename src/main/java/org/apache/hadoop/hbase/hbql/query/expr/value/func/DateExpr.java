@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
@@ -35,7 +36,7 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws TypeException {
         HUtil.validateParentClass(this,
                                   StringValue.class,
                                   this.getFormatExpr().validateTypes(),

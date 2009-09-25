@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -23,7 +24,7 @@ public class ValueBetweenStmt extends GenericBetweenStmt {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws TypeException {
 
         final Class<? extends ValueExpr> type1 = this.getExpr().validateTypes();
         final Class<? extends ValueExpr> type2 = this.getLower().validateTypes();

@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
@@ -18,7 +19,7 @@ public class DateCompare extends GenericCompare {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws TypeException {
         return this.validateType(DateValue.class);
     }
 

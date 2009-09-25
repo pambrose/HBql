@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -50,7 +51,7 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
         this.getExpr2().setContext(context);
     }
 
-    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws HBqlException {
+    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
         HUtil.validateParentClass(this, BooleanValue.class, this.getPred().validateTypes());
         HUtil.validateParentClass(this,
                                   clazz,

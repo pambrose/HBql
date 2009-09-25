@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.util.WhereExprTests;
@@ -69,7 +70,7 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalFalse(tree);
 
         tree = parseExpr(":test1");
-        assertHasException(tree, HBqlException.class);
+        assertHasException(tree, TypeException.class);
 
         tree = parseExpr(":b1 == :b2");
         tree.setParameter("b1", Boolean.TRUE);
@@ -182,7 +183,7 @@ public class WhereExpressionTest extends WhereExprTests {
 
         tree = parseExpr("'aaa' = 'a'+:s1");
         tree.setParameter("s1", 1);
-        assertEvalTrue(tree);
+        assertHasException(tree, TypeException.class);
     }
 
     @Test

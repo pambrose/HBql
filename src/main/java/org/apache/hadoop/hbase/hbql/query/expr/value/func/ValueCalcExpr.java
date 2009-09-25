@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
@@ -22,7 +23,7 @@ public class ValueCalcExpr extends GenericCalcExpr {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws TypeException {
 
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateTypes();
         final Class<? extends ValueExpr> type2 = (this.getExpr2() != null) ? this.getExpr2().validateTypes() : null;

@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
@@ -70,7 +71,7 @@ public class LikeStmt extends GenericNotValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws TypeException {
         HUtil.validateParentClass(this,
                                   StringValue.class,
                                   this.getValueExpr().validateTypes(),

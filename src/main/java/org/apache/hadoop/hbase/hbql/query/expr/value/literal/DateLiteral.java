@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
@@ -69,7 +69,7 @@ public class DateLiteral extends GenericLiteral implements DateValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws TypeException {
         return DateValue.class;
     }
 

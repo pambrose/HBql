@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
@@ -24,7 +24,7 @@ public abstract class GenericCalcExpr extends GenericTwoExprExpr implements Valu
         return op;
     }
 
-    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws HBqlException {
+    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
         HUtil.validateParentClass(this, clazz, this.getExpr1().validateTypes());
         if (this.getExpr2() != null)
             HUtil.validateParentClass(this, clazz, this.getExpr2().validateTypes());

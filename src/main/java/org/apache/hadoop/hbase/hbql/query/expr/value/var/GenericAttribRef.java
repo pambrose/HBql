@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -62,7 +63,7 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws TypeException {
         return this.getExprVar().getFieldType().getExprType();
     }
 

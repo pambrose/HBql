@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
@@ -36,10 +37,8 @@ public abstract class GenericCompare extends GenericTwoExprExpr implements Boole
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
-    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws HBqlException {
-
+    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
         HUtil.validateParentClass(this, clazz, this.getExpr1().validateTypes());
-
         if (this.getExpr2() != null)
             HUtil.validateParentClass(this, clazz, this.getExpr2().validateTypes());
 

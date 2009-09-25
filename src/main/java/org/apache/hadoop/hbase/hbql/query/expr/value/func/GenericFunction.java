@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
@@ -47,7 +48,7 @@ public class GenericFunction implements ValueExpr {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws TypeException {
 
         switch (this.getFunctionType()) {
             case TRIM:
@@ -64,7 +65,7 @@ public class GenericFunction implements ValueExpr {
                 this.getFunctionType().validateArgs(this.getValueExprs());
                 return this.getFunctionType().getReturnType();
         }
-        throw new HBqlException("Invalid function in GenericFunction.validateType() " + this.getFunctionType());
+        throw new TypeException("Invalid function " + this.getFunctionType() + " in " + this.asString());
     }
 
     @Override
