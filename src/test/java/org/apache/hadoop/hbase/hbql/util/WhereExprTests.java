@@ -69,6 +69,24 @@ public class WhereExprTests {
         org.junit.Assert.assertFalse(evalExpr(recordObj, tree));
     }
 
+    public void assertHasException(final ExprTree tree, final Class clazz) {
+        this.assertHasException(tree, clazz);
+    }
+
+
+    public void assertHasException(final Object recordObj, final ExprTree tree, final Class clazz) {
+        Class eclazz = null;
+        try {
+            tree.validateTypes();
+            evalExpr(recordObj, tree);
+        }
+        catch (HPersistException e) {
+            e.printStackTrace();
+            eclazz = e.getClass();
+        }
+        org.junit.Assert.assertTrue(eclazz != null && eclazz.equals(clazz));
+    }
+
 
     public static void assertColumnsMatchTrue(final String expr, String... vals) throws HPersistException {
         org.junit.Assert.assertTrue(evalColumnNames(expr, vals));
