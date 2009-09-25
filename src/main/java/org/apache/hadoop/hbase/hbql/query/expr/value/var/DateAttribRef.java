@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 import java.util.Date;
 
@@ -14,8 +15,8 @@ import java.util.Date;
  */
 public class DateAttribRef extends GenericAttribRef<DateValue> implements DateValue {
 
-    public DateAttribRef(final String attribName) {
-        super(attribName, FieldType.DateType);
+    public DateAttribRef(final VariableAttrib attrib) {
+        super(attrib, FieldType.DateType);
     }
 
     @Override

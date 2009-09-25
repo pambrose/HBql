@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,8 +13,8 @@ import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
  */
 public class StringAttribRef extends GenericAttribRef<StringValue> {
 
-    public StringAttribRef(final String attribName) {
-        super(attribName, FieldType.StringType);
+    public StringAttribRef(final VariableAttrib attrib) {
+        super(attrib, FieldType.StringType);
     }
 
     @Override

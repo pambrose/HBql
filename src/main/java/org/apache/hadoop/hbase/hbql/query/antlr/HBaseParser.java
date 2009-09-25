@@ -78,19 +78,19 @@ public class HBaseParser extends Parser {
 
                     case KeyType:
                     case StringType:
-                        return new StringAttribRef(var);
+                        return new StringAttribRef(attrib);
 
                     case LongType:
-                        return new LongAttribRef(var);
+                        return new LongAttribRef(attrib);
 
                     case IntegerType:
-                        return new IntegerAttribRef(var);
+                        return new IntegerAttribRef(attrib);
 
                     case DateType:
-                        return new DateAttribRef(var);
+                        return new DateAttribRef(attrib);
 
                     case BooleanType:
-                        return new BooleanAttribRef(var);
+                        return new BooleanAttribRef(attrib);
 
                     default:
                         System.out.println("Invalid type: " + attrib.getFieldType().name() + " in getVariableRef()");

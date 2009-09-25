@@ -20,7 +20,7 @@ public class NamedParameter extends GenericAttribRef<ValueExpr> {
     private ValueExpr typedExpr = null;
 
     public NamedParameter(final String attribName) {
-        super(attribName, null);
+        super(attribName);
     }
 
     @Override

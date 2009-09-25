@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,8 +14,8 @@ import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
  */
 public class BooleanAttribRef extends GenericAttribRef<NumberValue> implements BooleanValue {
 
-    public BooleanAttribRef(final String attribName) {
-        super(attribName, FieldType.BooleanType);
+    public BooleanAttribRef(final VariableAttrib attrib) {
+        super(attrib, FieldType.BooleanType);
     }
 
     @Override

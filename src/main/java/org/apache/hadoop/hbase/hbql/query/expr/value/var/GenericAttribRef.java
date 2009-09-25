@@ -20,10 +20,18 @@ import java.util.List;
 public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr {
 
     private final ExprVariable exprVar;
+    private final VariableAttrib variableAttrib;
+
     private ExprTree context = null;
 
-    protected GenericAttribRef(final String attribName, final FieldType fieldType) {
-        this.exprVar = new ExprVariable(attribName, fieldType);
+    protected GenericAttribRef(final VariableAttrib attrib, final FieldType fieldType) {
+        this.exprVar = new ExprVariable(attrib.getVariableName(), fieldType);
+        this.variableAttrib = attrib;
+    }
+
+    protected GenericAttribRef(final String attribName) {
+        this.exprVar = new ExprVariable(attribName, null);
+        this.variableAttrib = null;
     }
 
     protected ExprVariable getExprVar() {
@@ -66,10 +74,7 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
     }
 
     protected VariableAttrib getVariableAttrib() throws HPersistException {
-        final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(this.getExprVar().getName());
-        if (attrib == null)
-            throw new HPersistException("Invalid variable name: " + this.getExprVar().getName());
-        return attrib;
+        return this.variableAttrib;
     }
 
     @Override
