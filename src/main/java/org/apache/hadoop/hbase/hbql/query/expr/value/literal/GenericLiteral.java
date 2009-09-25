@@ -10,11 +10,11 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  * Date: Aug 31, 2009
  * Time: 12:27:29 PM
  */
-public abstract class GenericLiteral<T extends ValueExpr> implements ValueExpr {
+public abstract class GenericLiteral implements ValueExpr {
 
     @Override
-    public T getOptimizedValue() throws HPersistException {
-        return (T)this;
+    public ValueExpr getOptimizedValue() throws HPersistException {
+        return this;
     }
 
     @Override
@@ -25,5 +25,4 @@ public abstract class GenericLiteral<T extends ValueExpr> implements ValueExpr {
     @Override
     public void setContext(final ExprTree context) {
     }
-
 }
