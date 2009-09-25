@@ -31,7 +31,7 @@ public class HQuery<T> {
 
     private List<HQueryListener<T>> listeners = null;
 
-    public HQuery(final HConnection connection, final String query) throws IOException, HPersistException {
+    public HQuery(final HConnection connection, final String query) throws IOException, HBqlException {
 
         this.connection = connection;
         this.query = query;
@@ -104,7 +104,7 @@ public class HQuery<T> {
     }
 
 
-    public HResults<T> execute() throws IOException, HPersistException {
+    public HResults<T> execute() throws IOException, HBqlException {
 
         if (this.getListeners() != null) {
             for (final HQueryListener<T> listener : this.getListeners())

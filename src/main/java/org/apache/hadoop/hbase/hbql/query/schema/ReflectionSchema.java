@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.lang.reflect.Field;
@@ -19,7 +19,7 @@ public class ReflectionSchema extends Schema {
 
     private final Class<?> clazz;
 
-    private ReflectionSchema(final Class clazz) throws HPersistException {
+    private ReflectionSchema(final Class clazz) throws HBqlException {
         this.clazz = clazz;
 
         for (final Field field : clazz.getDeclaredFields()) {
@@ -36,11 +36,11 @@ public class ReflectionSchema extends Schema {
         }
     }
 
-    public static ReflectionSchema getReflectionSchema(final Object obj) throws HPersistException {
+    public static ReflectionSchema getReflectionSchema(final Object obj) throws HBqlException {
         return getReflectionSchema(obj.getClass());
     }
 
-    public synchronized static ReflectionSchema getReflectionSchema(final Class clazz) throws HPersistException {
+    public synchronized static ReflectionSchema getReflectionSchema(final Class clazz) throws HBqlException {
 
         ReflectionSchema schema = getReflectionSchemaMap().get(clazz);
         if (schema != null)

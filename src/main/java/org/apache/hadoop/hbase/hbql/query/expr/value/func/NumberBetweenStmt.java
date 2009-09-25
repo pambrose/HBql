@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
@@ -17,12 +17,12 @@ public class NumberBetweenStmt extends GenericBetweenStmt {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
         return this.validateType(NumberValue.class, "NumberBetweenStmt");
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HBqlException {
 
         final long numval = ((Number)this.getExpr().getValue(object)).longValue();
         final boolean retval = numval >= ((Number)this.getLower().getValue(object)).longValue()

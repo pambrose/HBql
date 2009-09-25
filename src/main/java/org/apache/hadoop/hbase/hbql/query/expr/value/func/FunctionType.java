@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
@@ -43,20 +43,20 @@ public enum FunctionType {
     }
 
 
-    public void validateArgs(final ValueExpr[] valueExprs) throws HPersistException {
+    public void validateArgs(final ValueExpr[] valueExprs) throws HBqlException {
 
         int i = 0;
 
         if (valueExprs.length != this.getTypeSig().size())
-            throw new HPersistException("Incorrect number of arguments in function " + this.name());
+            throw new HBqlException("Incorrect number of arguments in function " + this.name());
 
         for (final Class clazz : this.getTypeSig()) {
 
             final Class type = valueExprs[i].validateType();
 
             if (!clazz.equals(type))
-                throw new HPersistException("Invalid type " + type.getName() + " for arg " + i + " in function "
-                                            + this.name() + ".  Expecting type " + clazz.getName());
+                throw new HBqlException("Invalid type " + type.getName() + " for arg " + i + " in function "
+                                        + this.name() + ".  Expecting type " + clazz.getName());
             i++;
         }
 

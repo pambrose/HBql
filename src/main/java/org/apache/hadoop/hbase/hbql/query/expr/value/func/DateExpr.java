@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
@@ -35,20 +35,20 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
 
         final Class<? extends ValueExpr> format = this.getFormatExpr().validateType();
         final Class<? extends ValueExpr> value = this.getValueExpr().validateType();
 
         if (!HUtil.isParentClass(StringValue.class, format, value))
-            throw new HPersistException("Invalid types "
-                                        + format.getName() + " " + value.getName() + " in DateExpr.validateType()");
+            throw new HBqlException("Invalid types "
+                                    + format.getName() + " " + value.getName() + " in DateExpr.validateType()");
 
         return DateValue.class;
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
 
         this.formatExpr = this.getFormatExpr().getOptimizedValue();
         this.valueExpr = this.getValueExpr().getOptimizedValue();
@@ -57,7 +57,7 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public Long getValue(final Object object) throws HPersistException {
+    public Long getValue(final Object object) throws HBqlException {
 
         final String pattern = (String)this.getFormatExpr().getValue(object);
         final String datestr = (String)this.getValueExpr().getValue(object);
@@ -67,7 +67,7 @@ public class DateExpr implements DateValue {
             return formatter.parse(datestr).getTime();
         }
         catch (ParseException e) {
-            throw new HPersistException(e.getMessage());
+            throw new HBqlException(e.getMessage());
         }
     }
 

@@ -58,7 +58,7 @@ public class HConnection {
         return connectionMap.get(name);
     }
 
-    public <T> HQuery<T> newHQuery(final String query) throws IOException, HPersistException {
+    public <T> HQuery<T> newHQuery(final String query) throws IOException, HBqlException {
         return new HQuery<T>(this, query);
     }
 
@@ -74,19 +74,19 @@ public class HConnection {
         return new HTable(this.getConfig(), tableName);
     }
 
-    public boolean tableExists(final String tableName) throws IOException, HPersistException {
+    public boolean tableExists(final String tableName) throws IOException, HBqlException {
         final HBaseSchema schema = HBaseSchema.findSchema(tableName);
         final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
         return admin.tableExists(schema.getTableName());
     }
 
-    public boolean tableEnabled(final String tableName) throws IOException, HPersistException {
+    public boolean tableEnabled(final String tableName) throws IOException, HBqlException {
         final HBaseSchema schema = HBaseSchema.findSchema(tableName);
         final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
         return admin.isTableEnabled(schema.getTableName());
     }
 
-    public List<String> getTableList() throws IOException, HPersistException {
+    public List<String> getTableList() throws IOException, HBqlException {
         final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
         final List<String> tableList = Lists.newArrayList();
         for (final HTableDescriptor table : admin.listTables())
@@ -94,13 +94,13 @@ public class HConnection {
         return tableList;
     }
 
-    public HOutput execute(final String str) throws HPersistException, IOException {
+    public HOutput execute(final String str) throws HBqlException, IOException {
 
         final ConnectionCmd cmd =
                 HBql.parseCommand(str);
 
         if (cmd == null)
-            throw new HPersistException("Error parsing: " + str);
+            throw new HBqlException("Error parsing: " + str);
 
         return cmd.execute(this);
     }

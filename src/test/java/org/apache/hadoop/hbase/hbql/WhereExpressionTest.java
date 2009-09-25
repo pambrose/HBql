@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.util.WhereExprTests;
@@ -18,7 +18,7 @@ public class WhereExpressionTest extends WhereExprTests {
 
 
     @Test
-    public void booleanExpressions() throws HPersistException {
+    public void booleanExpressions() throws HBqlException {
         assertEvalTrue("TRUE");
         assertEvalTrue("TRUE == TRUE");
         assertEvalTrue("TRUE != FALSE");
@@ -45,7 +45,7 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
-    public void booleanParamExpressions() throws HPersistException {
+    public void booleanParamExpressions() throws HBqlException {
 
         ExprTree tree;
 
@@ -69,7 +69,7 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalFalse(tree);
 
         tree = parseExpr(":test1");
-        assertHasException(tree, HPersistException.class);
+        assertHasException(tree, HBqlException.class);
 
         tree = parseExpr(":b1 == :b2");
         tree.setParameter("b1", Boolean.TRUE);
@@ -97,7 +97,7 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
-    public void numericCompares() throws HPersistException {
+    public void numericCompares() throws HBqlException {
 
         assertEvalTrue("4 < 5");
         assertEvalFalse("4 = 5");
@@ -110,7 +110,7 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
-    public void numericParamExpressions() throws HPersistException {
+    public void numericParamExpressions() throws HBqlException {
 
         ExprTree tree;
 
@@ -125,7 +125,7 @@ public class WhereExpressionTest extends WhereExprTests {
 
 
     @Test
-    public void dateCompares() throws HPersistException {
+    public void dateCompares() throws HBqlException {
         assertEvalTrue("NOW() = NOW()");
         assertEvalTrue("NOW() != NOW()-HOUR(1)");
         assertEvalTrue("NOW() > NOW()-DAY(1)");
@@ -144,7 +144,7 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
-    public void dateParamCompares() throws HPersistException {
+    public void dateParamCompares() throws HBqlException {
         ExprTree tree;
 
         tree = parseExpr("NOW() - DAY(1) = :d1");
@@ -157,7 +157,7 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
-    public void stringCompares() throws HPersistException {
+    public void stringCompares() throws HBqlException {
 
         assertEvalTrue("'aaa' = 'aaa'");
         assertEvalFalse("'aaa' != 'aaa'");
@@ -173,7 +173,7 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
-    public void stringParamCompares() throws HPersistException {
+    public void stringParamCompares() throws HBqlException {
 
         ExprTree tree;
 
@@ -183,14 +183,14 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
-    public void nullCompares() throws HPersistException {
+    public void nullCompares() throws HBqlException {
 
         assertEvalTrue("NULL IS NULL");
         assertEvalFalse("NULL IS NOT NULL");
     }
 
     @Test
-    public void numericCalculations() throws HPersistException {
+    public void numericCalculations() throws HBqlException {
 
         assertEvalTrue("9 = 9");
         assertEvalTrue("-9 = -9");
@@ -224,7 +224,7 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
-    public void booleanFunctions() throws HPersistException {
+    public void booleanFunctions() throws HBqlException {
 
         assertEvalTrue("'abc' CONTAINS 'b'");
         assertEvalFalse("'abc' CONTAINS 'n'");
@@ -251,7 +251,7 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
-    public void numericFunctions() throws HPersistException {
+    public void numericFunctions() throws HBqlException {
 
         assertEvalTrue("3 between 2 AND 5");
         assertEvalTrue("3 between (1+1) AND (3+2)");
@@ -276,7 +276,7 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
-    public void stringFunctions() throws HPersistException {
+    public void stringFunctions() throws HBqlException {
 
         assertEvalTrue("'bbb' between 'aaa' AND 'ccc'");
         assertEvalTrue("'bbb' between 'aaa' AND 'ccc'");
@@ -293,7 +293,7 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
-    public void regexFunctions() throws HPersistException {
+    public void regexFunctions() throws HBqlException {
 
         final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "aaab");
 
@@ -307,7 +307,7 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
-    public void objectFunctions() throws HPersistException {
+    public void objectFunctions() throws HBqlException {
 
         final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "bbb");
 
@@ -329,7 +329,7 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
-    public void columnLookups() throws HPersistException {
+    public void columnLookups() throws HBqlException {
         assertInvalidInput("{a1 date, a2 date} a1 < a2");
         assertColumnsMatchTrue("{fam1:col1 int, fam2:col2 int} TRUE");
         assertColumnsMatchFalse("TRUE", "intValue");

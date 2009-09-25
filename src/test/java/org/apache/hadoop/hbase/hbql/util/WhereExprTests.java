@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.util;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
@@ -19,51 +19,51 @@ import java.util.List;
  */
 public class WhereExprTests {
 
-    public void assertValidInput(final String expr, String... vals) throws HPersistException {
+    public void assertValidInput(final String expr, String... vals) throws HBqlException {
         org.junit.Assert.assertTrue(evalColumnNames(expr, vals));
     }
 
-    public void assertInvalidInput(final String expr, String... vals) throws HPersistException {
+    public void assertInvalidInput(final String expr, String... vals) throws HBqlException {
         org.junit.Assert.assertFalse(evalColumnNames(expr, vals));
     }
 
-    public static void assertTrue(final boolean val) throws HPersistException {
+    public static void assertTrue(final boolean val) throws HBqlException {
         org.junit.Assert.assertTrue(val);
     }
 
-    public static void assertFalse(final boolean val) throws HPersistException {
+    public static void assertFalse(final boolean val) throws HBqlException {
         org.junit.Assert.assertFalse(val);
     }
 
-    public static void assertEvalTrue(final String expr) throws HPersistException {
+    public static void assertEvalTrue(final String expr) throws HBqlException {
         assertEvalTrue(null, expr);
     }
 
-    public static void assertEvalTrue(final Object recordObj, final String expr) throws HPersistException {
+    public static void assertEvalTrue(final Object recordObj, final String expr) throws HBqlException {
         org.junit.Assert.assertTrue(evalExpr(recordObj, expr));
     }
 
-    public static void assertEvalFalse(final String expr) throws HPersistException {
+    public static void assertEvalFalse(final String expr) throws HBqlException {
         assertEvalFalse(null, expr);
     }
 
-    public static void assertEvalFalse(final Object recordObj, final String expr) throws HPersistException {
+    public static void assertEvalFalse(final Object recordObj, final String expr) throws HBqlException {
         org.junit.Assert.assertFalse(evalExpr(recordObj, expr));
     }
 
-    public static void assertEvalTrue(final ExprTree tree) throws HPersistException {
+    public static void assertEvalTrue(final ExprTree tree) throws HBqlException {
         assertEvalTrue(null, tree);
     }
 
-    public static void assertEvalTrue(final Object recordObj, final ExprTree tree) throws HPersistException {
+    public static void assertEvalTrue(final Object recordObj, final ExprTree tree) throws HBqlException {
         org.junit.Assert.assertTrue(evalExpr(recordObj, tree));
     }
 
-    public static void assertEvalFalse(final ExprTree tree) throws HPersistException {
+    public static void assertEvalFalse(final ExprTree tree) throws HBqlException {
         assertEvalFalse(null, tree);
     }
 
-    public static void assertEvalFalse(final Object recordObj, final ExprTree tree) throws HPersistException {
+    public static void assertEvalFalse(final Object recordObj, final ExprTree tree) throws HBqlException {
         org.junit.Assert.assertFalse(evalExpr(recordObj, tree));
     }
 
@@ -77,32 +77,32 @@ public class WhereExprTests {
         try {
             evalExpr(recordObj, tree);
         }
-        catch (HPersistException e) {
+        catch (HBqlException e) {
             eclazz = e.getClass();
         }
         org.junit.Assert.assertTrue(eclazz != null && eclazz.equals(clazz));
     }
 
 
-    public static void assertColumnsMatchTrue(final String expr, String... vals) throws HPersistException {
+    public static void assertColumnsMatchTrue(final String expr, String... vals) throws HBqlException {
         org.junit.Assert.assertTrue(evalColumnNames(expr, vals));
     }
 
-    public static void assertColumnsMatchFalse(final String expr, String... vals) throws HPersistException {
+    public static void assertColumnsMatchFalse(final String expr, String... vals) throws HBqlException {
         org.junit.Assert.assertFalse(evalColumnNames(expr, vals));
     }
 
-    public ExprTree parseExpr(final String expr) throws HPersistException {
+    public ExprTree parseExpr(final String expr) throws HBqlException {
         return this.parseExpr(null, expr);
     }
 
-    public ExprTree parseExpr(final Object recordObj, final String expr) throws HPersistException {
+    public ExprTree parseExpr(final Object recordObj, final String expr) throws HBqlException {
         final Schema schema = SchemaManager.getObjectSchema(recordObj);
         return HBql.parseDescWhereExpr(expr, schema);
 
     }
 
-    private static boolean evalExpr(final Object recordObj, final String expr) throws HPersistException {
+    private static boolean evalExpr(final Object recordObj, final String expr) throws HBqlException {
 
         final Schema schema = SchemaManager.getObjectSchema(recordObj);
         final ExprTree tree = HBql.parseDescWhereExpr(expr, schema);
@@ -110,7 +110,7 @@ public class WhereExprTests {
         return evalExpr(recordObj, tree);
     }
 
-    private static boolean evalExpr(final Object recordObj, final ExprTree tree) throws HPersistException {
+    private static boolean evalExpr(final Object recordObj, final ExprTree tree) throws HBqlException {
         return tree.evaluate(recordObj);
     }
 
@@ -139,7 +139,7 @@ public class WhereExprTests {
 
             return retval;
         }
-        catch (HPersistException e) {
+        catch (HBqlException e) {
             return false;
         }
     }

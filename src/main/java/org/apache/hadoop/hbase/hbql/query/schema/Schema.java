@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -72,11 +72,11 @@ public abstract class Schema implements Serializable {
         return this.getVariableAttribByVariableNameMap().get(name);
     }
 
-    protected void addVariableAttribToVariableNameMap(final VariableAttrib attrib) throws HPersistException {
+    protected void addVariableAttribToVariableNameMap(final VariableAttrib attrib) throws HBqlException {
 
         final String variableName = attrib.getVariableName();
         if (this.getVariableAttribByVariableNameMap().containsKey(variableName))
-            throw new HPersistException("In " + this + " " + variableName + " already delcared");
+            throw new HBqlException("In " + this + " " + variableName + " already delcared");
         this.getVariableAttribByVariableNameMap().put(variableName, attrib);
 
         // If it is an HBase attrib, then add the variable name and the family qualified name

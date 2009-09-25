@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.object;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.util.ResultsIterator;
 
@@ -45,7 +45,7 @@ public class ObjectResults<T> implements Iterable<T> {
                 // Prime the iterator with the first value
                 T nextObject = fetchNextObject();
 
-                protected T fetchNextObject() throws HPersistException {
+                protected T fetchNextObject() throws HBqlException {
 
                     if (objectIter == null)
                         objectIter = getObjects().iterator();
@@ -69,7 +69,7 @@ public class ObjectResults<T> implements Iterable<T> {
                 }
             };
         }
-        catch (HPersistException e) {
+        catch (HBqlException e) {
             e.printStackTrace();
         }
 

@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -43,7 +43,7 @@ public class SerializationTest extends WhereExprTests {
     }
 
     @Test
-    public void hadoopSerialization() throws IOException, HPersistException {
+    public void hadoopSerialization() throws IOException, HBqlException {
 
         final int total = 1000;
         int pos = 0;

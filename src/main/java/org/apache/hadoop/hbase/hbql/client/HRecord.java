@@ -24,7 +24,7 @@ public class HRecord implements Serializable {
     public HRecord() {
     }
 
-    public HRecord(final String tablename) throws HPersistException {
+    public HRecord(final String tablename) throws HBqlException {
         final HBaseSchema schema = HBaseSchema.findSchema(tablename);
         this.setSchema(schema);
     }
@@ -41,10 +41,10 @@ public class HRecord implements Serializable {
         this.schema = schema;
     }
 
-    private HValue addValue(final String name) throws HPersistException {
+    private HValue addValue(final String name) throws HBqlException {
 
         if (!this.getSchema().constainsVariableName(name))
-            throw new HPersistException("Invalid variable name " + this.getSchema().getTableName() + "." + name);
+            throw new HBqlException("Invalid variable name " + this.getSchema().getTableName() + "." + name);
 
         final HValue val = new HValue();
         this.getValues().put(name, val);
@@ -95,11 +95,11 @@ public class HRecord implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public void setCurrentValue(final String name, final Object val) throws HPersistException {
+    public void setCurrentValue(final String name, final Object val) throws HBqlException {
         this.setCurrentValue(name, getTimestamp(), val);
     }
 
-    public void setCurrentValue(final String name, final long timestamp, final Object val) throws HPersistException {
+    public void setCurrentValue(final String name, final long timestamp, final Object val) throws HBqlException {
 
         HValue hvalue = this.getHValue(name);
 
@@ -125,20 +125,20 @@ public class HRecord implements Serializable {
     public void setCurrentValue(final String family,
                                 final String column,
                                 final long timestamp,
-                                final Object val) throws HPersistException {
+                                final Object val) throws HBqlException {
         final ColumnAttrib attrib = this.getSchema().getColumnAttribFromFamilyQualifiedNameMap(family, column);
         if (attrib == null)
-            throw new HPersistException("Invalid column name " + family + ":" + column);
+            throw new HBqlException("Invalid column name " + family + ":" + column);
         this.setCurrentValue(attrib.getVariableName(), timestamp, val);
     }
 
     public void setVersionedValue(final String family,
                                   final String column,
                                   final long timestamp,
-                                  final Object val) throws HPersistException {
+                                  final Object val) throws HBqlException {
         final ColumnAttrib attrib = this.getSchema().getColumnAttribFromFamilyQualifiedNameMap(family, column);
         if (attrib == null)
-            throw new HPersistException("Invalid column name " + family + ":" + column);
+            throw new HBqlException("Invalid column name " + family + ":" + column);
         this.setVersionedValue(attrib.getVariableName(), timestamp, val);
     }
 

@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
@@ -20,7 +20,7 @@ public class DateAttribRef extends GenericAttribRef<DateValue> implements DateVa
     }
 
     @Override
-    public Long getValue(final Object object) throws HPersistException {
+    public Long getValue(final Object object) throws HBqlException {
         return ((Date)this.getVariableAttrib().getCurrentValue(object)).getTime();
     }
 

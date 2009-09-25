@@ -76,48 +76,48 @@ public class HBatch {
         return retval;
     }
 
-    public void insert(final Object newrec) throws HPersistException, IOException {
+    public void insert(final Object newrec) throws HBqlException, IOException {
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(newrec);
         this.insert(schema, newrec);
     }
 
-    public void insert(final HRecord newrec) throws HPersistException, IOException {
+    public void insert(final HRecord newrec) throws HBqlException, IOException {
         final HBaseSchema schema = newrec.getSchema();
 
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         if (!newrec.isCurrentValueSet(keyAttrib))
-            throw new HPersistException("HRecord key value must be assigned");
+            throw new HBqlException("HRecord key value must be assigned");
 
         this.insert(schema, newrec);
     }
 
-    public void delete(final Object newrec) throws HPersistException, IOException {
+    public void delete(final Object newrec) throws HBqlException, IOException {
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(newrec);
         this.delete(schema, newrec);
     }
 
-    public void delete(final HRecord newrec) throws HPersistException, IOException {
+    public void delete(final HRecord newrec) throws HBqlException, IOException {
         final HBaseSchema schema = newrec.getSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         if (!newrec.isCurrentValueSet(keyAttrib))
-            throw new HPersistException("HRecord key value must be assigned");
+            throw new HBqlException("HRecord key value must be assigned");
         this.delete(schema, newrec);
     }
 
-    private void insert(HBaseSchema schema, final Object newrec) throws IOException, HPersistException {
+    private void insert(HBaseSchema schema, final Object newrec) throws IOException, HBqlException {
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         final byte[] keyval = keyAttrib.getValueAsBytes(newrec);
         final Put put = createPut(schema, newrec, keyval);
         this.getActionList(schema.getTableName()).add(Action.newInsert(put));
     }
 
-    private void delete(HBaseSchema schema, final Object newrec) throws IOException, HPersistException {
+    private void delete(HBaseSchema schema, final Object newrec) throws IOException, HBqlException {
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         final byte[] keyval = keyAttrib.getValueAsBytes(newrec);
         this.getActionList(schema.getTableName()).add(Action.newDelete(new Delete(keyval)));
     }
 
-    private Put createPut(final HBaseSchema schema, final Object newrec, final byte[] keyval) throws HPersistException, IOException {
+    private Put createPut(final HBaseSchema schema, final Object newrec, final byte[] keyval) throws HBqlException, IOException {
         final Put put = new Put(keyval);
         for (final String family : schema.getFamilySet()) {
             for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {

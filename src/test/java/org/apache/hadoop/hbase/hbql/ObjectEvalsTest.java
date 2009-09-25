@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.object.ObjectQuery;
 import org.apache.hadoop.hbase.hbql.query.object.ObjectQueryListenerAdapter;
 import org.apache.hadoop.hbase.hbql.query.object.ObjectQueryPredicate;
@@ -41,7 +41,7 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
     }
 
     @Test
-    public void objectExpressions() throws HPersistException {
+    public void objectExpressions() throws HBqlException {
 
         final List<SimpleObject> objList = Lists.newArrayList();
         for (int i = 0; i < 10; i++)
@@ -63,7 +63,7 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
         final ObjectQuery<SimpleObject> query = ObjectQuery.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
         query.addListener(
                 new ObjectQueryListenerAdapter<SimpleObject>() {
-                    public void onEachObject(final SimpleObject val) throws HPersistException {
+                    public void onEachObject(final SimpleObject val) throws HBqlException {
                         cnt1.increment();
                     }
                 }

@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -24,7 +24,7 @@ public class ValueCompare extends GenericCompare implements BooleanValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
 
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
         final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
@@ -38,19 +38,19 @@ public class ValueCompare extends GenericCompare implements BooleanValue {
         else if (HUtil.isParentClass(BooleanValue.class, type1, type2))
             typedExpr = new BooleanCompare(this.getExpr1(), this.getOp(), this.getExpr2());
         else
-            throw new HPersistException("Invalid types " + type1.getName() + " and " + type2.getName()
-                                        + " in ValueCompare.validateType()");
+            throw new HBqlException("Invalid types " + type1.getName() + " and " + type2.getName()
+                                    + " in ValueCompare.validateType()");
 
         return BooleanValue.class;
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
         return this.typedExpr.getOptimizedValue();
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HBqlException {
         return this.typedExpr.getValue(object);
     }
 

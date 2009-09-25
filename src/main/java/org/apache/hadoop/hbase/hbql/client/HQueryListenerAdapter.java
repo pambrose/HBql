@@ -13,7 +13,7 @@ public abstract class HQueryListenerAdapter<T> implements HQueryListener<T>, Ser
     public void onQueryInit() {
     }
 
-    public void onEachRow(T val) throws HPersistException {
+    public void onEachRow(T val) throws HBqlException {
     }
 
     public void onQueryComplete() {

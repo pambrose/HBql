@@ -3,9 +3,9 @@ package org.apache.hadoop.hbase.hbql.query.antlr.cmds;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class CreateCmd extends TableCmd implements ConnectionCmd {
         super(tableName);
     }
 
-    public HOutput execute(final HConnection conn) throws HPersistException, IOException {
+    public HOutput execute(final HConnection conn) throws HBqlException, IOException {
 
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
 

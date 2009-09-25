@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -23,14 +23,14 @@ public class ValueTernary extends GenericTernary {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
 
         final Class<? extends ValueExpr> pred = this.getPred().validateType();
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
         final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
 
         if (!HUtil.isParentClass(BooleanValue.class, pred))
-            throw new HPersistException("Invalid type " + pred.getName() + " in ValueTernary");
+            throw new HBqlException("Invalid type " + pred.getName() + " in ValueTernary");
 
         if (HUtil.isParentClass(StringValue.class, type1, type2)) {
             this.typedExpr = new StringTernary(this.getPred(), this.getExpr1(), this.getExpr2());
@@ -52,17 +52,17 @@ public class ValueTernary extends GenericTernary {
             return type1;
         }
 
-        throw new HPersistException("Invalid type " + type1.getName() + " in ValueTernary");
+        throw new HBqlException("Invalid type " + type1.getName() + " in ValueTernary");
     }
 
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
         return this.typedExpr.getOptimizedValue();
     }
 
     @Override
-    public Object getValue(final Object object) throws HPersistException {
+    public Object getValue(final Object object) throws HBqlException {
         return this.typedExpr.getValue(object);
     }
 

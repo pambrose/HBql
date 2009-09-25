@@ -17,18 +17,18 @@ import java.io.IOException;
  */
 public class SchemaManager {
 
-    public static HOutput parse(final String str) throws HPersistException, IOException {
+    public static HOutput parse(final String str) throws HBqlException, IOException {
 
         final SchemaManagerCmd cmd = HBql.parseSchema(str);
 
         if (cmd == null)
-            throw new HPersistException("Error parsing: " + str);
+            throw new HBqlException("Error parsing: " + str);
 
         return cmd.execute();
     }
 
     // This is used for tests
-    public static Schema getObjectSchema(final Object recordObj) throws HPersistException {
+    public static Schema getObjectSchema(final Object recordObj) throws HBqlException {
 
         if (recordObj == null)
             return null;
@@ -36,14 +36,14 @@ public class SchemaManager {
         try {
             return AnnotationSchema.getAnnotationSchema(recordObj);
         }
-        catch (HPersistException e) {
+        catch (HBqlException e) {
             // Not annotated properly
         }
 
         return ReflectionSchema.getReflectionSchema(recordObj);
     }
 
-    public static DefinedSchema getDefinedSchema(final String tablename) throws HPersistException {
+    public static DefinedSchema getDefinedSchema(final String tablename) throws HBqlException {
         return DefinedSchema.getDefinedSchema(tablename);
     }
 }

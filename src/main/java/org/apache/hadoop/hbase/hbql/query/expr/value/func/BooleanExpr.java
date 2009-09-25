@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericOneExprExpr;
@@ -20,24 +20,24 @@ public class BooleanExpr extends GenericOneExprExpr implements BooleanValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
 
         if (!HUtil.isParentClass(BooleanValue.class, type))
-            throw new HPersistException("Invalid type " + type.getName() + " in BooleanExpr.validateType()");
+            throw new HBqlException("Invalid type " + type.getName() + " in BooleanExpr.validateType()");
 
         return BooleanValue.class;
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
         this.setExpr(this.getExpr().getOptimizedValue());
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HBqlException {
         return (Boolean)this.getExpr().getValue(object);
     }
 }

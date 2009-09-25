@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.apache.commons.logging.Log;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 
 import java.io.ByteArrayOutputStream;
@@ -20,19 +20,19 @@ public class HUtil {
 
     public final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.HADOOP);
 
-    public static DefinedSchema getDefinedSchemaForServerFilter(final HBaseSchema schema) throws HPersistException {
+    public static DefinedSchema getDefinedSchemaForServerFilter(final HBaseSchema schema) throws HBqlException {
         if (schema instanceof DefinedSchema)
             return (DefinedSchema)schema;
         else
             return DefinedSchema.newDefinedSchema(schema);
     }
 
-    public static String getZeroPaddedNumber(final int val, final int width) throws HPersistException {
+    public static String getZeroPaddedNumber(final int val, final int width) throws HBqlException {
 
         final String strval = "" + val;
         final int padsize = width - strval.length();
         if (padsize < 0)
-            throw new HPersistException("Value " + val + " exceeded width " + width);
+            throw new HBqlException("Value " + val + " exceeded width " + width);
 
         StringBuilder sbuf = new StringBuilder();
         for (int i = 0; i < padsize; i++)
@@ -48,7 +48,7 @@ public class HUtil {
         try {
             return new DefinedSchema(varList);
         }
-        catch (HPersistException e) {
+        catch (HBqlException e) {
             System.out.println(e.getMessage());
             throw new RecognitionException(input);
         }

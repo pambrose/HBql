@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
@@ -42,9 +42,9 @@ public abstract class GenericInStmt extends GenericNotValue {
         return valueList;
     }
 
-    protected abstract boolean evaluateList(final Object object) throws HPersistException;
+    protected abstract boolean evaluateList(final Object object) throws HBqlException;
 
-    private void optimizeList() throws HPersistException {
+    private void optimizeList() throws HBqlException {
 
         final List<ValueExpr> newvalList = Lists.newArrayList();
 
@@ -57,14 +57,14 @@ public abstract class GenericInStmt extends GenericNotValue {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
         this.setExpr(this.getExpr().getOptimizedValue());
         this.optimizeList();
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HBqlException {
         final boolean retval = this.evaluateList(object);
         return (this.isNot()) ? !retval : retval;
     }
@@ -90,7 +90,7 @@ public abstract class GenericInStmt extends GenericNotValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
         final Class<? extends ValueExpr> clazz;
@@ -102,14 +102,14 @@ public abstract class GenericInStmt extends GenericNotValue {
         else if (HUtil.isParentClass(DateValue.class, type))
             clazz = DateValue.class;
         else
-            throw new HPersistException("Invalid type " + type.getName() + " in GenericInStmt");
+            throw new HBqlException("Invalid type " + type.getName() + " in GenericInStmt");
 
         // First make sure all the types are matched
         for (final ValueExpr val : this.getValueList()) {
             final Class<? extends ValueExpr> valtype = val.validateType();
 
             if (!HUtil.isParentClass(clazz, valtype))
-                throw new HPersistException("Invalid type " + type.getName() + " in GenericInStmt");
+                throw new HBqlException("Invalid type " + type.getName() + " in GenericInStmt");
         }
 
         return BooleanValue.class;

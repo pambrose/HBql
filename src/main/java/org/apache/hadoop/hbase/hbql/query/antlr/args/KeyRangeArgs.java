@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -52,11 +52,11 @@ public class KeyRangeArgs {
             return this.type;
         }
 
-        public byte[] getLowerAsBytes() throws IOException, HPersistException {
+        public byte[] getLowerAsBytes() throws IOException, HBqlException {
             return HUtil.ser.getStringAsBytes(this.getLower());
         }
 
-        public byte[] getUpperAsBytes() throws IOException, HPersistException {
+        public byte[] getUpperAsBytes() throws IOException, HBqlException {
             return HUtil.ser.getStringAsBytes(this.getUpper());
         }
 

@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
@@ -28,7 +28,7 @@ public class BooleanLiteral extends GenericLiteral implements BooleanValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
         return BooleanValue.class;
     }
 }

@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
@@ -18,12 +18,12 @@ public class StringTernary extends GenericTernary {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
         return this.validateType(StringValue.class, "StringTernary");
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
 
         this.setPred(this.getPred().getOptimizedValue());
         this.setExpr1(this.getExpr1().getOptimizedValue());
@@ -33,7 +33,7 @@ public class StringTernary extends GenericTernary {
     }
 
     @Override
-    public String getValue(final Object object) throws HPersistException {
+    public String getValue(final Object object) throws HBqlException {
         return (String)super.getValue(object);
     }
 }

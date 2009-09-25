@@ -6,9 +6,9 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
@@ -39,7 +39,7 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
     }
 
     @Override
-    public HOutput execute(final HConnection conn) throws HPersistException, IOException {
+    public HOutput execute(final HConnection conn) throws HBqlException, IOException {
 
         final WhereArgs where = this.getWhereExpr();
 

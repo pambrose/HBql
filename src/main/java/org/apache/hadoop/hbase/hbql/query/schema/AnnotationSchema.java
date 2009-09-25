@@ -2,10 +2,10 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HColumn;
 import org.apache.hadoop.hbase.hbql.client.HColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HFamily;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.client.HTable;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
@@ -35,7 +35,7 @@ public class AnnotationSchema extends HBaseSchema {
     private final HTable table;
     private final HFamily[] families;
 
-    private AnnotationSchema(final Class clazz) throws HPersistException {
+    private AnnotationSchema(final Class clazz) throws HBqlException {
 
         this.clazz = clazz;
 
@@ -44,18 +44,18 @@ public class AnnotationSchema extends HBaseSchema {
             this.getClazz().getConstructor();
         }
         catch (NoSuchMethodException e) {
-            throw new HPersistException("Class " + this + " is missing a null constructor");
+            throw new HBqlException("Class " + this + " is missing a null constructor");
         }
 
         this.table = this.getClazz().getAnnotation(HTable.class);
 
         if (this.table == null)
-            throw new HPersistException("Class " + this + " is missing @HTable annotation");
+            throw new HBqlException("Class " + this + " is missing @HTable annotation");
 
         this.families = this.table.families();
 
         if (this.families == null)
-            throw new HPersistException("Class " + this + " is missing @HFamily values in @HTable annotation");
+            throw new HBqlException("Class " + this + " is missing @HFamily values in @HTable annotation");
 
         for (final HFamily family : families) {
             final List<ColumnAttrib> attribs = Lists.newArrayList();
@@ -68,19 +68,19 @@ public class AnnotationSchema extends HBaseSchema {
                 this.processColumnAnnotation(field);
 
         if (this.getKeyAttrib() == null)
-            throw new HPersistException("Class " + this + " is missing an instance variable "
-                                        + "annotated with @HColumn(key=true)");
+            throw new HBqlException("Class " + this + " is missing an instance variable "
+                                    + "annotated with @HColumn(key=true)");
 
         if (this.getKeyAttrib().getFamilyName().length() > 0)
-            throw new HPersistException(this.getKeyAttrib().getObjectQualifiedName() + " @HColumn annotation " +
-                                        "cannot have a family name.");
+            throw new HBqlException(this.getKeyAttrib().getObjectQualifiedName() + " @HColumn annotation " +
+                                    "cannot have a family name.");
 
         for (final Field field : this.getClazz().getDeclaredFields())
             if (field.getAnnotation(HColumnVersionMap.class) != null)
                 this.processColumnVersionAnnotation(field);
     }
 
-    public synchronized static AnnotationSchema getAnnotationSchema(final String objName) throws HPersistException {
+    public synchronized static AnnotationSchema getAnnotationSchema(final String objName) throws HBqlException {
 
         // First see if already cached
         Class<?> clazz = getClassCacheMap().get(objName);
@@ -117,7 +117,7 @@ public class AnnotationSchema extends HBaseSchema {
     private static AnnotationSchema searchDirectory(final File dir,
                                                     final String rootDir,
                                                     final String prefix,
-                                                    final String dotClassName) throws HPersistException {
+                                                    final String dotClassName) throws HBqlException {
 
         final List<File> subdirs = Lists.newArrayList();
         final String[] contents = dir.list();
@@ -153,7 +153,7 @@ public class AnnotationSchema extends HBaseSchema {
         return str.substring(0, str.length() - ".class".length());
     }
 
-    private static AnnotationSchema searchPackage(final String pkgName, final String objName) throws HPersistException {
+    private static AnnotationSchema searchPackage(final String pkgName, final String objName) throws HBqlException {
 
         if (pkgName == null)
             return null;
@@ -197,7 +197,7 @@ public class AnnotationSchema extends HBaseSchema {
         return setClassCache(fullname, objName);
     }
 
-    private static AnnotationSchema setClassCache(final String name, final String objName) throws HPersistException {
+    private static AnnotationSchema setClassCache(final String name, final String objName) throws HBqlException {
 
         final Class<?> clazz = getClass(name);
         if (clazz == null) {
@@ -209,7 +209,7 @@ public class AnnotationSchema extends HBaseSchema {
         }
     }
 
-    private static Class getClass(final String str) throws HPersistException {
+    private static Class getClass(final String str) throws HBqlException {
         try {
             final Class<?> clazz = Class.forName(str);
 
@@ -217,7 +217,7 @@ public class AnnotationSchema extends HBaseSchema {
             if (clazz.isMemberClass() && !Modifier.isStatic(clazz.getModifiers())) {
                 final String s = "Inner class " + clazz.getName() + " must be declared static";
                 System.err.println(s);
-                throw new HPersistException(s);
+                throw new HBqlException(s);
             }
 
             return clazz;
@@ -227,11 +227,11 @@ public class AnnotationSchema extends HBaseSchema {
         }
     }
 
-    public static AnnotationSchema getAnnotationSchema(final Object obj) throws HPersistException {
+    public static AnnotationSchema getAnnotationSchema(final Object obj) throws HBqlException {
         return getAnnotationSchema(obj.getClass());
     }
 
-    public synchronized static AnnotationSchema getAnnotationSchema(final Class<?> clazz) throws HPersistException {
+    public synchronized static AnnotationSchema getAnnotationSchema(final Class<?> clazz) throws HBqlException {
 
         AnnotationSchema schema = getAnnotationSchemaMap().get(clazz);
         if (schema != null)
@@ -279,7 +279,7 @@ public class AnnotationSchema extends HBaseSchema {
         return descList;
     }
 
-    private void processColumnAnnotation(final Field field) throws HPersistException {
+    private void processColumnAnnotation(final Field field) throws HBqlException {
 
         final ColumnAttrib attrib = new CurrentValueAttrib(field);
 
@@ -288,8 +288,8 @@ public class AnnotationSchema extends HBaseSchema {
 
         if (attrib.isKeyAttrib()) {
             if (this.getKeyAttrib() != null)
-                throw new HPersistException("Class " + this + " has multiple instance variables "
-                                            + "annotated with @HColumn(key=true)");
+                throw new HBqlException("Class " + this + " has multiple instance variables "
+                                        + "annotated with @HColumn(key=true)");
 
             this.setKeyAttrib(attrib);
         }
@@ -297,19 +297,19 @@ public class AnnotationSchema extends HBaseSchema {
             final String family = attrib.getFamilyName();
 
             if (family.length() == 0)
-                throw new HPersistException(attrib.getObjectQualifiedName()
-                                            + " is missing family name in annotation");
+                throw new HBqlException(attrib.getObjectQualifiedName()
+                                        + " is missing family name in annotation");
 
             if (!this.containsFamilyNameInFamilyNameMap(family))
-                throw new HPersistException(attrib.getObjectQualifiedName()
-                                            + " references unknown family: " + family);
+                throw new HBqlException(attrib.getObjectQualifiedName()
+                                        + " references unknown family: " + family);
 
             this.getColumnAttribListByFamilyName(family).add(attrib);
         }
 
     }
 
-    private void processColumnVersionAnnotation(final Field field) throws HPersistException {
+    private void processColumnVersionAnnotation(final Field field) throws HBqlException {
         final VersionAttrib attrib = VersionAttrib.newVersionAttrib(this, field);
         this.addVariableAttribToVariableNameMap(attrib);
         this.addVersionAttribToFamilyQualifiedNameMap(attrib);
@@ -329,7 +329,7 @@ public class AnnotationSchema extends HBaseSchema {
     public Object getObject(
             final List<String> fieldList,
             final int maxVersions,
-            final Result result) throws HPersistException {
+            final Result result) throws HBqlException {
 
         try {
             // Create object and assign key value
@@ -346,11 +346,11 @@ public class AnnotationSchema extends HBaseSchema {
         }
         catch (Exception e) {
             e.printStackTrace();
-            throw new HPersistException("Error in getObject()");
+            throw new HBqlException("Error in getObject()");
         }
     }
 
-    private Object createNewObject(final Result result) throws IOException, HPersistException {
+    private Object createNewObject(final Result result) throws IOException, HBqlException {
 
         // Create new instance and set key value
         final ColumnAttrib keyattrib = this.getKeyAttrib();

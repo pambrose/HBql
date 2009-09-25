@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
@@ -36,7 +36,7 @@ public class GenericFunction implements ValueExpr {
 
     // TODO Deal with this
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
         return this;
     }
 
@@ -47,7 +47,7 @@ public class GenericFunction implements ValueExpr {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
 
         switch (this.getFunctionType()) {
             case TRIM:
@@ -64,11 +64,11 @@ public class GenericFunction implements ValueExpr {
                 this.getFunctionType().validateArgs(this.getValueExprs());
                 return this.getFunctionType().getReturnType();
         }
-        throw new HPersistException("Invalid function in GenericFunction.validateType() " + this.getFunctionType());
+        throw new HBqlException("Invalid function in GenericFunction.validateType() " + this.getFunctionType());
     }
 
     @Override
-    public Object getValue(final Object object) throws HPersistException {
+    public Object getValue(final Object object) throws HBqlException {
 
         switch (this.getFunctionType()) {
 
@@ -128,7 +128,7 @@ public class GenericFunction implements ValueExpr {
 
         }
 
-        throw new HPersistException("Invalid function in GenericFunction.getValue() " + this.getFunctionType());
+        throw new HBqlException("Invalid function in GenericFunction.getValue() " + this.getFunctionType());
     }
 
 }

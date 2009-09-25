@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.antlr.cmds;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.schema.EnvVars;
 
 import java.io.IOException;
@@ -31,12 +31,12 @@ public class SetCmd implements ConnectionCmd {
     }
 
     @Override
-    public HOutput execute(final HConnection conn) throws HPersistException, IOException {
+    public HOutput execute(final HConnection conn) throws HBqlException, IOException {
         final HOutput retval = new HOutput();
         final String var = this.getVariable();
 
         if (var == null)
-            throw new HPersistException("Error in SET command");
+            throw new HBqlException("Error in SET command");
 
         if (var.equalsIgnoreCase("packagepath")) {
             EnvVars.setPackagePath(this.getValue());
@@ -45,7 +45,7 @@ public class SetCmd implements ConnectionCmd {
             return retval;
         }
 
-        throw new HPersistException("Unknown variable: " + var);
+        throw new HBqlException("Unknown variable: " + var);
     }
 
 }

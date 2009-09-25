@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
@@ -17,7 +17,7 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HBqlException {
 
         switch (this.getFunctionType()) {
             case CONTAINS: {
@@ -30,7 +30,7 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
             }
 
             default:
-                throw new HPersistException("Invalid function in BooleanFunction.getValue() " + this.getFunctionType());
+                throw new HBqlException("Invalid function in BooleanFunction.getValue() " + this.getFunctionType());
         }
     }
 

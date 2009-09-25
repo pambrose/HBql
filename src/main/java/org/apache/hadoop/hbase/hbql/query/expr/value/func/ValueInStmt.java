@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -25,7 +25,7 @@ public class ValueInStmt extends GenericInStmt {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
         final Class<? extends ValueExpr> clazz;
@@ -43,32 +43,32 @@ public class ValueInStmt extends GenericInStmt {
             this.typedExpr = new DateInStmt(this.getExpr(), this.isNot(), this.getValueList());
         }
         else
-            throw new HPersistException("Invalid type " + type.getName() + " in GenericInStmt");
+            throw new HBqlException("Invalid type " + type.getName() + " in GenericInStmt");
 
         // First make sure all the types are matched
         for (final ValueExpr val : this.getValueList()) {
             final Class<? extends ValueExpr> valtype = val.validateType();
 
             if (!HUtil.isParentClass(clazz, valtype))
-                throw new HPersistException("Invalid type " + type.getName() + " in GenericInStmt");
+                throw new HBqlException("Invalid type " + type.getName() + " in GenericInStmt");
         }
 
         return BooleanValue.class;
     }
 
     @Override
-    protected boolean evaluateList(final Object object) throws HPersistException {
+    protected boolean evaluateList(final Object object) throws HBqlException {
         // Not used
         return false;
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
         return this.typedExpr.getOptimizedValue();
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HBqlException {
         return this.typedExpr.getValue(object);
     }
 

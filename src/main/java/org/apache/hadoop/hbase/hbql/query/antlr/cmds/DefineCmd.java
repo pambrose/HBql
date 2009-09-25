@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.antlr.cmds;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.VarDesc;
@@ -36,7 +36,7 @@ public class DefineCmd extends TableCmd implements SchemaManagerCmd {
     }
 
     @Override
-    public HOutput execute() throws HPersistException, IOException {
+    public HOutput execute() throws HBqlException, IOException {
 
         final DefinedSchema schema = DefinedSchema.newDefinedSchema(this.getTableName(),
                                                                     this.getAlias(),
@@ -45,8 +45,8 @@ public class DefineCmd extends TableCmd implements SchemaManagerCmd {
         for (final VariableAttrib attrib : schema.getVariableAttribs()) {
             final DefinedAttrib vdattrib = (DefinedAttrib)attrib;
             if (attrib.getFieldType() == null)
-                throw new HPersistException(schema.getTableName() + " attribute " + vdattrib.getVariableName()
-                                            + " has unknown type " + vdattrib.getTypeName());
+                throw new HBqlException(schema.getTableName() + " attribute " + vdattrib.getVariableName()
+                                        + " has unknown type " + vdattrib.getTypeName());
         }
 
         final HOutput retval = new HOutput();

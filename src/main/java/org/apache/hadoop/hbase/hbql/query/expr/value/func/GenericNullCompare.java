@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -39,10 +39,10 @@ public abstract class GenericNullCompare extends GenericNotValue {
         this.getExpr().setContext(context);
     }
 
-    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz, final String caller) throws HPersistException {
+    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz, final String caller) throws HBqlException {
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
         if (!HUtil.isParentClass(clazz, type))
-            throw new HPersistException("Invalid type " + type.getName() + " in " + caller);
+            throw new HBqlException("Invalid type " + type.getName() + " in " + caller);
         return BooleanValue.class;
     }
 }

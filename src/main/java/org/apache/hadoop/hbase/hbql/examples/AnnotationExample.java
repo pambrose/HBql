@@ -1,11 +1,11 @@
 package org.apache.hadoop.hbase.hbql.examples;
 
 import org.apache.hadoop.hbase.hbql.client.HBatch;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HColumn;
 import org.apache.hadoop.hbase.hbql.client.HColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HFamily;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.HTable;
@@ -83,7 +83,7 @@ public class AnnotationExample {
         public TestObject() {
         }
 
-        public TestObject(int val) throws HPersistException {
+        public TestObject(int val) throws HBqlException {
             this.keyval = HUtil.getZeroPaddedNumber(val, 6);
 
             this.title = "A title value";
@@ -110,7 +110,7 @@ public class AnnotationExample {
         }
     }
 
-    public static void main(String[] args) throws IOException, HPersistException {
+    public static void main(String[] args) throws IOException, HBqlException {
 
         HConnection conn = HConnection.newHConnection();
 

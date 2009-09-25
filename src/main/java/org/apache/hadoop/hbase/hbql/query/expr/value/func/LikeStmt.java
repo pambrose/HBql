@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
@@ -43,7 +43,7 @@ public class LikeStmt extends GenericNotValue {
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HBqlException {
 
         if (this.getPatternExpr().isAConstant()) {
             if (this.pattern == null) {
@@ -54,13 +54,13 @@ public class LikeStmt extends GenericNotValue {
         else {
             final String pattern = (String)this.getPatternExpr().getValue(object);
             if (pattern == null)
-                throw new HPersistException("Null string for LIKE pattern");
+                throw new HBqlException("Null string for LIKE pattern");
             this.pattern = Pattern.compile(pattern);
         }
 
         final String val = (String)this.getValueExpr().getValue(object);
         if (val == null)
-            throw new HPersistException("Null string for LIKE value");
+            throw new HBqlException("Null string for LIKE value");
 
         final Matcher m = this.getPattern().matcher(val);
 
@@ -70,20 +70,20 @@ public class LikeStmt extends GenericNotValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
 
         final Class<? extends ValueExpr> value = this.getValueExpr().validateType();
         final Class<? extends ValueExpr> pattern = this.getPatternExpr().validateType();
 
         if (!HUtil.isParentClass(StringValue.class, value, pattern))
-            throw new HPersistException("Invalid types "
-                                        + value.getName() + " " + pattern.getName() + " in LikeStmt");
+            throw new HBqlException("Invalid types "
+                                    + value.getName() + " " + pattern.getName() + " in LikeStmt");
 
         return BooleanValue.class;
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
         this.valueExpr = this.getValueExpr().getOptimizedValue();
         this.patternExpr = this.getPatternExpr().getOptimizedValue();
 

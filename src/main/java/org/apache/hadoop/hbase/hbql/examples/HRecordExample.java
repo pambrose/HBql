@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.hbql.examples;
 
 import org.apache.hadoop.hbase.hbql.client.HBatch;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResults;
@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class HRecordExample {
 
-    public static void main(String[] args) throws IOException, HPersistException {
+    public static void main(String[] args) throws IOException, HBqlException {
 
         HConnection conn = HConnection.newHConnection();
 

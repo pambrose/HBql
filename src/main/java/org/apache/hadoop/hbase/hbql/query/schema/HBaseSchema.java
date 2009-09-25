@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.DateRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.KeyRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.VersionArgs;
@@ -52,17 +52,17 @@ public abstract class HBaseSchema extends Schema {
 
     public abstract List<HColumnDescriptor> getColumnDescriptors();
 
-    public byte[] getTableNameAsBytes() throws IOException, HPersistException {
+    public byte[] getTableNameAsBytes() throws IOException, HBqlException {
         return HUtil.ser.getStringAsBytes(this.getTableName());
     }
 
     public abstract Object getObject(
             final List<String> fieldList,
             final int maxVersions,
-            final Result result) throws HPersistException;
+            final Result result) throws HBqlException;
 
 
-    public static HBaseSchema findSchema(final String tablename) throws HPersistException {
+    public static HBaseSchema findSchema(final String tablename) throws HBqlException {
 
         // First look in defined schema, then try annotation schema
         HBaseSchema schema;
@@ -75,7 +75,7 @@ public abstract class HBaseSchema extends Schema {
         if (schema != null)
             return schema;
 
-        throw new HPersistException("Unknown table: " + tablename);
+        throw new HBqlException("Unknown table: " + tablename);
     }
 
     // *** columnAttribByFamilyQualifiedNameMap calls
@@ -87,10 +87,10 @@ public abstract class HBaseSchema extends Schema {
         return this.getColumnAttribByFamilyQualifiedNameMap().get(familyName + ":" + columnName);
     }
 
-    protected void addColumnAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HPersistException {
+    protected void addColumnAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HBqlException {
         final String name = attrib.getFamilyQualifiedName();
         if (this.getColumnAttribByFamilyQualifiedNameMap().containsKey(name))
-            throw new HPersistException(name + " already delcared");
+            throw new HBqlException(name + " already delcared");
         this.getColumnAttribByFamilyQualifiedNameMap().put(name, attrib);
     }
 
@@ -103,10 +103,10 @@ public abstract class HBaseSchema extends Schema {
         return this.getVersionAttribByFamilyQualifiedNameMap().get(s);
     }
 
-    protected void addVersionAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HPersistException {
+    protected void addVersionAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HBqlException {
         final String name = attrib.getFamilyQualifiedName();
         if (this.getVersionAttribByFamilyQualifiedNameMap().containsKey(name))
-            throw new HPersistException(name + " already delcared");
+            throw new HBqlException(name + " already delcared");
 
         this.getVersionAttribByFamilyQualifiedNameMap().put(name, attrib);
     }
@@ -129,13 +129,13 @@ public abstract class HBaseSchema extends Schema {
     }
 
     public void addColumnAttribListFamilyNameMap(final String familyName,
-                                                 final List<ColumnAttrib> attribList) throws HPersistException {
+                                                 final List<ColumnAttrib> attribList) throws HBqlException {
         if (this.containsFamilyNameInFamilyNameMap(familyName))
-            throw new HPersistException(familyName + " already delcared");
+            throw new HBqlException(familyName + " already delcared");
         this.getColumnAttribListByFamilyNameMap().put(familyName, attribList);
     }
 
-    public void addColumnAttribListToFamilyNameMap(ColumnAttrib attrib) throws HPersistException {
+    public void addColumnAttribListToFamilyNameMap(ColumnAttrib attrib) throws HBqlException {
 
         if (attrib.isKeyAttrib())
             return;
@@ -161,7 +161,7 @@ public abstract class HBaseSchema extends Schema {
     protected void assignCurrentValues(
             final List<String> fieldList,
             final Result result,
-            final Object newobj) throws IOException, HPersistException {
+            final Object newobj) throws IOException, HBqlException {
 
         for (final KeyValue keyValue : result.list()) {
 
@@ -198,7 +198,7 @@ public abstract class HBaseSchema extends Schema {
 
     protected void assignVersionedValues(final List<String> fieldList,
                                          final Result result,
-                                         final Object newobj) throws IOException, HPersistException {
+                                         final Object newobj) throws IOException, HBqlException {
 
         final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
 
@@ -248,7 +248,7 @@ public abstract class HBaseSchema extends Schema {
                                   final KeyRangeArgs keyRangeArgs,
                                   final DateRangeArgs dateRangeArgs,
                                   final VersionArgs versionArgs,
-                                  final HBqlFilter serverFilter) throws IOException, HPersistException {
+                                  final HBqlFilter serverFilter) throws IOException, HBqlException {
 
         final List<Scan> scanList = Lists.newArrayList();
         final List<KeyRangeArgs.Range> rangeList = keyRangeArgs.getRangeList();
@@ -274,7 +274,7 @@ public abstract class HBaseSchema extends Schema {
                 final ColumnAttrib attrib = (ColumnAttrib)this.getVariableAttribByVariableName(name);
 
                 if (attrib == null)
-                    throw new HPersistException("Column " + name + " does not exist in " + this.getSchemaName());
+                    throw new HBqlException("Column " + name + " does not exist in " + this.getSchemaName());
 
                 // Do not bother to request because it will always be delivered
                 if (attrib.isKeyAttrib())
@@ -312,7 +312,7 @@ public abstract class HBaseSchema extends Schema {
 
     public HBqlFilter getHBqlFilter(final ExprTree exprTree,
                                     final List<String> fieldList,
-                                    final long scanLimit) throws HPersistException {
+                                    final long scanLimit) throws HBqlException {
 
         if (!exprTree.isValid()) {
             return (scanLimit > 0) ? new HBqlFilter(ExprTree.newExprTree(null), scanLimit) : null;

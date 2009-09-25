@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
@@ -86,12 +86,12 @@ public class ExprTree implements Serializable {
     }
 
 
-    public void setParameter(final String str, final Object val) throws HPersistException {
+    public void setParameter(final String str, final Object val) throws HBqlException {
 
         final String name = str.startsWith(":") ? str : (":" + str);
 
         if (!this.namedParamsMap.containsKey(name))
-            throw new HPersistException("Parameter name " + str + " does not exist");
+            throw new HBqlException("Parameter name " + str + " does not exist");
 
         final List<NamedParameter> paramList = this.namedParamsMap.get(name);
         for (final NamedParameter param : paramList)
@@ -100,12 +100,12 @@ public class ExprTree implements Serializable {
         this.setInNeedOfTypeValidation(true);
     }
 
-    private void optimize() throws HPersistException {
+    private void optimize() throws HBqlException {
         this.setTreeRoot(this.getTreeRoot().getOptimizedValue());
         this.setInNeedOfOptimization(false);
     }
 
-    private void validateTypes() throws HPersistException {
+    private void validateTypes() throws HBqlException {
         this.getTreeRoot().validateType();
         this.setInNeedOfTypeValidation(false);
     }
@@ -114,7 +114,7 @@ public class ExprTree implements Serializable {
         return this.exprVariablesList;
     }
 
-    public Boolean evaluate(final Object object) throws HPersistException {
+    public Boolean evaluate(final Object object) throws HBqlException {
 
         if (this.isInNeedOfTypeValidation())
             this.validateTypes();
@@ -136,7 +136,7 @@ public class ExprTree implements Serializable {
         return this.end - this.start;
     }
 
-    public void setSchema(final Schema schema, final List<String> fieldList) throws HPersistException {
+    public void setSchema(final Schema schema, final List<String> fieldList) throws HBqlException {
 
         if (this.isValid()) {
             this.setSchema(schema);
@@ -147,8 +147,8 @@ public class ExprTree implements Serializable {
             final List<ExprVariable> referencedVars = this.getExprVariablesList();
             for (final ExprVariable var : referencedVars) {
                 if (!selectList.contains(var.getName()))
-                    throw new HPersistException("Variable " + var.getName() + " used in where clause but it is not "
-                                                + "not in the select list");
+                    throw new HBqlException("Variable " + var.getName() + " used in where clause but it is not "
+                                            + "not in the select list");
             }
         }
     }

@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
@@ -28,16 +28,16 @@ public class NamedParameter implements ValueExpr {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
 
         if (this.typedExpr == null)
-            throw new HPersistException("Parameter " + this.getParamName() + " not assigned a value");
+            throw new HBqlException("Parameter " + this.getParamName() + " not assigned a value");
 
         return this.typedExpr.getClass();
     }
 
     @Override
-    public Object getValue(final Object object) throws HPersistException {
+    public Object getValue(final Object object) throws HBqlException {
         return this.typedExpr.getValue(object);
     }
 
@@ -48,7 +48,7 @@ public class NamedParameter implements ValueExpr {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
         return this;
     }
 
@@ -60,7 +60,7 @@ public class NamedParameter implements ValueExpr {
         return paramName;
     }
 
-    public void setParam(final Object val) throws HPersistException {
+    public void setParam(final Object val) throws HBqlException {
 
         if (val instanceof Boolean) {
             this.typedExpr = new BooleanLiteral((Boolean)val);
@@ -82,7 +82,7 @@ public class NamedParameter implements ValueExpr {
             return;
         }
 
-        throw new HPersistException("Parameter " + this.getParamName() + " assigned an unsupported type "
-                                    + val.getClass().getName());
+        throw new HBqlException("Parameter " + this.getParamName() + " assigned an unsupported type "
+                                + val.getClass().getName());
     }
 }

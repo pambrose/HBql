@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -100,14 +100,14 @@ public enum FieldType {
         throw new RuntimeException("Unknown type: " + clazz + " in FieldType.getFieldType()");
     }
 
-    public static FieldType getFieldType(final String desc) throws HPersistException {
+    public static FieldType getFieldType(final String desc) throws HBqlException {
 
         for (final FieldType type : values()) {
             if (type.matchesSynonym(desc))
                 return type;
         }
 
-        throw new HPersistException("Unknown type description: " + desc);
+        throw new HBqlException("Unknown type description: " + desc);
     }
 
     private boolean matchesSynonym(final String str) {

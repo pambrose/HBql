@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -24,7 +24,7 @@ public abstract class ColumnAttrib extends VariableAttrib {
                         final String column,
                         final String getter,
                         final String setter,
-                        final boolean mapKeysAsColumns) throws HPersistException {
+                        final boolean mapKeysAsColumns) throws HBqlException {
         super(fieldType);
         this.family = family;
         this.column = column;
@@ -33,7 +33,7 @@ public abstract class ColumnAttrib extends VariableAttrib {
         this.mapKeysAsColumns = mapKeysAsColumns;
     }
 
-    protected void defineAccessors() throws HPersistException {
+    protected void defineAccessors() throws HBqlException {
         try {
             if (this.getGetter() != null && this.getGetter().length() > 0) {
                 this.getterMethod = this.getMethod(this.getGetter());
@@ -42,13 +42,13 @@ public abstract class ColumnAttrib extends VariableAttrib {
                 final Class<?> returnType = this.getGetterMethod().getReturnType();
 
                 if (!(returnType.isArray() && returnType.getComponentType() == Byte.TYPE))
-                    throw new HPersistException(this.getEnclosingClassName() + "." + this.getGetter() + "()"
-                                                + " does not have a return type of byte[]");
+                    throw new HBqlException(this.getEnclosingClassName() + "." + this.getGetter() + "()"
+                                            + " does not have a return type of byte[]");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new HPersistException("Missing method byte[] " + this.getEnclosingClassName() + "."
-                                        + this.getGetter() + "()");
+            throw new HBqlException("Missing method byte[] " + this.getEnclosingClassName() + "."
+                                    + this.getGetter() + "()");
         }
 
         try {
@@ -58,18 +58,18 @@ public abstract class ColumnAttrib extends VariableAttrib {
                 // Check if it takes single byte[] arg
                 final Class<?>[] args = this.getSetterMethod().getParameterTypes();
                 if (args.length != 1 || !(args[0].isArray() && args[0].getComponentType() == Byte.TYPE))
-                    throw new HPersistException(this.getEnclosingClassName() + "." + this.getSetter() + "()"
-                                                + " does not have single byte[] arg");
+                    throw new HBqlException(this.getEnclosingClassName() + "." + this.getSetter() + "()"
+                                            + " does not have single byte[] arg");
             }
         }
         catch (NoSuchMethodException e) {
-            throw new HPersistException("Missing method " + this.getEnclosingClassName()
-                                        + "." + this.getSetter() + "(byte[] arg)");
+            throw new HBqlException("Missing method " + this.getEnclosingClassName()
+                                    + "." + this.getSetter() + "(byte[] arg)");
         }
         catch (ClassNotFoundException e) {
             // This will not be hit
-            throw new HPersistException("Missing method " + this.getEnclosingClassName()
-                                        + "." + this.getSetter() + "(byte[] arg)");
+            throw new HBqlException("Missing method " + this.getEnclosingClassName()
+                                    + "." + this.getSetter() + "(byte[] arg)");
         }
     }
 
@@ -128,32 +128,32 @@ public abstract class ColumnAttrib extends VariableAttrib {
         return this.getSetterMethod() != null;
     }
 
-    public byte[] invokeGetterMethod(final Object recordObj) throws HPersistException {
+    public byte[] invokeGetterMethod(final Object recordObj) throws HBqlException {
         try {
             return (byte[])this.getGetterMethod().invoke(recordObj);
         }
         catch (IllegalAccessException e) {
-            throw new HPersistException("Error getting value of " + this.getObjectQualifiedName());
+            throw new HBqlException("Error getting value of " + this.getObjectQualifiedName());
         }
         catch (InvocationTargetException e) {
-            throw new HPersistException("Error getting value of " + this.getObjectQualifiedName());
+            throw new HBqlException("Error getting value of " + this.getObjectQualifiedName());
         }
     }
 
-    public Object invokeSetterMethod(final Object recordObj, final byte[] b) throws HPersistException {
+    public Object invokeSetterMethod(final Object recordObj, final byte[] b) throws HBqlException {
         try {
             // TODO Resolve passing primitive to Object varargs
             return this.getSetterMethod().invoke(recordObj, b);
         }
         catch (IllegalAccessException e) {
-            throw new HPersistException("Error setting value of " + this.getObjectQualifiedName());
+            throw new HBqlException("Error setting value of " + this.getObjectQualifiedName());
         }
         catch (InvocationTargetException e) {
-            throw new HPersistException("Error setting value of " + this.getObjectQualifiedName());
+            throw new HBqlException("Error setting value of " + this.getObjectQualifiedName());
         }
     }
 
-    public byte[] getValueAsBytes(final Object recordObj) throws HPersistException, IOException {
+    public byte[] getValueAsBytes(final Object recordObj) throws HBqlException, IOException {
 
         if (this.hasGetter()) {
             return this.invokeGetterMethod(recordObj);
@@ -168,7 +168,7 @@ public abstract class ColumnAttrib extends VariableAttrib {
         }
     }
 
-    public Object getValueFromBytes(final Object recordObj, final byte[] b) throws IOException, HPersistException {
+    public Object getValueFromBytes(final Object recordObj, final byte[] b) throws IOException, HBqlException {
 
         if (this.hasSetter()) {
             return this.invokeSetterMethod(recordObj, b);
@@ -183,16 +183,16 @@ public abstract class ColumnAttrib extends VariableAttrib {
 
     public void setCurrentValue(final Object newobj,
                                 final long timestamp,
-                                final byte[] b) throws IOException, HPersistException {
+                                final byte[] b) throws IOException, HBqlException {
         final Object val = this.getValueFromBytes(newobj, b);
         this.setCurrentValue(newobj, timestamp, val);
     }
 
-    public byte[] getFamilyNameAsBytes() throws IOException, HPersistException {
+    public byte[] getFamilyNameAsBytes() throws IOException, HBqlException {
         return HUtil.ser.getStringAsBytes(this.getFamilyName());
     }
 
-    public byte[] getColumnNameAsBytes() throws IOException, HPersistException {
+    public byte[] getColumnNameAsBytes() throws IOException, HBqlException {
         return HUtil.ser.getStringAsBytes(this.getColumnName());
     }
 }

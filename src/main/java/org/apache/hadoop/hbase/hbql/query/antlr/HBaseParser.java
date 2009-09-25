@@ -7,7 +7,7 @@ import org.antlr.runtime.Parser;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.ValueCalcExpr;
@@ -56,7 +56,7 @@ public class HBaseParser extends Parser {
             this.setSchema(schema);
             return schema;
         }
-        catch (HPersistException e) {
+        catch (HBqlException e) {
             System.out.println("Unknown table: " + tablename);
             throw new RecognitionException(input);
         }

@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -31,7 +31,7 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
     }
 
     @Override
-    public Object getValue(final Object object) throws HPersistException {
+    public Object getValue(final Object object) throws HBqlException {
         if ((Boolean)this.getPred().getValue(object))
             return this.getExpr1().getValue(object);
         else
@@ -50,17 +50,18 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
         this.getExpr2().setContext(context);
     }
 
-    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz, final String caller) throws HPersistException {
+    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz,
+                                                      final String caller) throws HBqlException {
 
         final Class<? extends ValueExpr> pred = this.getPred().validateType();
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
         final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
 
         if (HUtil.isParentClass(BooleanValue.class, pred))
-            throw new HPersistException("Invalid predicate type " + pred.getName() + " in NumberTernary");
+            throw new HBqlException("Invalid predicate type " + pred.getName() + " in NumberTernary");
 
         if (HUtil.isParentClass(clazz, type1, type2))
-            throw new HPersistException("Invalid types " + type1.getName() + " " + type2.getName() + " in " + caller);
+            throw new HBqlException("Invalid types " + type1.getName() + " " + type2.getName() + " in " + caller);
 
         return clazz;
     }

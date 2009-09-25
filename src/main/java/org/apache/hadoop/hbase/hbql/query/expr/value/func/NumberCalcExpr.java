@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
@@ -18,12 +18,12 @@ public class NumberCalcExpr extends GenericCalcExpr implements NumberValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
         return this.validateType(NumberValue.class, "NumberCalcExpr");
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
 
         this.setExpr1(this.getExpr1().getOptimizedValue());
         if (this.getExpr2() != null)
@@ -33,7 +33,7 @@ public class NumberCalcExpr extends GenericCalcExpr implements NumberValue {
     }
 
     @Override
-    public Long getValue(final Object object) throws HPersistException {
+    public Long getValue(final Object object) throws HBqlException {
 
         final long val1 = ((Number)this.getExpr1().getValue(object)).longValue();
         final long val2 = (this.getExpr2() != null) ? (((Number)this.getExpr2().getValue(object))).longValue() : 0;
@@ -53,7 +53,7 @@ public class NumberCalcExpr extends GenericCalcExpr implements NumberValue {
                 return val1 * -1;
         }
 
-        throw new HPersistException("Invalid operator in NumberCalcExpr.getValue() " + this.getOp());
+        throw new HBqlException("Invalid operator in NumberCalcExpr.getValue() " + this.getOp());
 
     }
 }

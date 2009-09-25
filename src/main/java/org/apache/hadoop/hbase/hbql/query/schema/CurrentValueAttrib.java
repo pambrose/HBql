@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HColumn;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -16,7 +16,7 @@ import java.util.Map;
 public class CurrentValueAttrib extends FieldAttrib {
 
 
-    public CurrentValueAttrib(final Field field) throws HPersistException {
+    public CurrentValueAttrib(final Field field) throws HBqlException {
         super(field,
               FieldType.getFieldType(field),
               field.getAnnotation(HColumn.class).family(),
@@ -28,13 +28,13 @@ public class CurrentValueAttrib extends FieldAttrib {
         this.defineAccessors();
 
         if (isFinal(this.getField()))
-            throw new HPersistException(this + "." + this.getField().getName() + " cannot have a @HColumn "
-                                        + "annotation and be marked final");
+            throw new HBqlException(this + "." + this.getField().getName() + " cannot have a @HColumn "
+                                    + "annotation and be marked final");
 
         // Make sure type implements Map if this is true
         if (this.isMapKeysAsColumns() && (!Map.class.isAssignableFrom(this.getField().getType())))
-            throw new HPersistException(this.getObjectQualifiedName() + " has @HColumn(mapKeysAsColumns=true) " +
-                                        "annotation but doesn't implement the Map interface");
+            throw new HBqlException(this.getObjectQualifiedName() + " has @HColumn(mapKeysAsColumns=true) " +
+                                    "annotation but doesn't implement the Map interface");
     }
 
     private HColumn getColumnAnno() {

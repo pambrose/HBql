@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 
 import java.lang.reflect.Method;
@@ -16,12 +16,12 @@ public class DefinedAttrib extends ColumnAttrib {
 
     private final VarDesc varDesc;
 
-    public DefinedAttrib(final VarDesc varDesc) throws HPersistException {
+    public DefinedAttrib(final VarDesc varDesc) throws HBqlException {
         super(varDesc.getFieldType(), varDesc.getFamilyName(), varDesc.getColumnName(), null, null, false);
         this.varDesc = varDesc;
 
         if (this.isKeyAttrib() && this.getFamilyName().length() > 0)
-            throw new HPersistException("Key value " + this.getObjectQualifiedName() + " cannot have a family name");
+            throw new HBqlException("Key value " + this.getObjectQualifiedName() + " cannot have a family name");
     }
 
     private VarDesc getVarDesc() {
@@ -79,13 +79,13 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     @Override
-    protected void setCurrentValue(final Object newobj, final long ts, final Object val) throws HPersistException {
+    protected void setCurrentValue(final Object newobj, final long ts, final Object val) throws HBqlException {
         final HRecord record = (HRecord)newobj;
         record.setCurrentValue(this.getVariableName(), ts, val);
     }
 
     @Override
-    public Object getCurrentValue(final Object recordObj) throws HPersistException {
+    public Object getCurrentValue(final Object recordObj) throws HBqlException {
         final HRecord record = (HRecord)recordObj;
         return record.getCurrentValue(this.getVariableName());
     }
@@ -97,7 +97,7 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     @Override
-    public Object getVersionedValueMap(final Object recordObj) throws HPersistException {
+    public Object getVersionedValueMap(final Object recordObj) throws HBqlException {
         final HRecord record = (HRecord)recordObj;
         return record.getVersionedValueMap(this.getVariableName());
     }

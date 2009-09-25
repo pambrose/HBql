@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
@@ -18,12 +18,12 @@ public class NumberCompare extends GenericCompare {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
         return this.validateType(NumberValue.class, "NumberCompare");
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HBqlException {
 
         final long val1 = ((Number)this.getExpr1().getValue(object)).longValue();
         final long val2 = ((Number)this.getExpr2().getValue(object)).longValue();
@@ -43,6 +43,6 @@ public class NumberCompare extends GenericCompare {
                 return val1 != val2;
         }
 
-        throw new HPersistException("Error in NumberCompare.getValue()");
+        throw new HBqlException("Error in NumberCompare.getValue()");
     }
 }

@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
@@ -17,17 +17,17 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
         super(expr1, op, expr2);
     }
 
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
         return this.validateType(BooleanValue.class, "BooleanCompare");
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HBqlException {
 
         final boolean expr1val = (Boolean)this.getExpr1().getValue(object);
 
         if (this.getExpr2() == null)
-            throw new HPersistException("Null value in BooleanCompare.getValue()");
+            throw new HBqlException("Null value in BooleanCompare.getValue()");
 
         final boolean expr2val = (Boolean)this.getExpr2().getValue(object);
 
@@ -41,7 +41,7 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
             case NOTEQ:
                 return expr1val != expr2val;
             default:
-                throw new HPersistException("Error in BooleanCompare.getValue()");
+                throw new HBqlException("Error in BooleanCompare.getValue()");
         }
     }
 }

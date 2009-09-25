@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.antlr.cmds;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
 
 import java.io.IOException;
 
@@ -13,6 +13,6 @@ import java.io.IOException;
  */
 public interface SchemaManagerCmd {
 
-    public HOutput execute() throws HPersistException, IOException;
+    public HOutput execute() throws HBqlException, IOException;
 
 }

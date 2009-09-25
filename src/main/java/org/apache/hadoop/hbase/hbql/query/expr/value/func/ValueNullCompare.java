@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -20,12 +20,12 @@ public class ValueNullCompare extends GenericNullCompare {
         super(not, expr);
     }
 
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
 
         if (!HUtil.isParentClass(StringValue.class, type))
-            throw new HPersistException("Invalid type " + type.getName() + " in ValueNullCompare");
+            throw new HBqlException("Invalid type " + type.getName() + " in ValueNullCompare");
 
         this.typedExpr = new StringNullCompare(this.isNot(), this.getExpr());
 
@@ -33,12 +33,12 @@ public class ValueNullCompare extends GenericNullCompare {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
         return this.typedExpr.getOptimizedValue();
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HBqlException {
         return this.typedExpr.getValue(object);
     }
 }

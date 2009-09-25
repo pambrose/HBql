@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -48,24 +48,24 @@ public class IntervalExpr extends GenericOneExprExpr implements DateValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
 
         final Class<? extends ValueExpr> type = this.getExpr().validateType();
 
         if (!HUtil.isParentClass(NumberValue.class, type))
-            throw new HPersistException("Invalid type " + type.getName() + " in IntervalExpr.validateType()");
+            throw new HBqlException("Invalid type " + type.getName() + " in IntervalExpr.validateType()");
 
         return DateValue.class;
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
         this.setExpr(this.getExpr().getOptimizedValue());
         return this.isAConstant() ? new DateLiteral(this.getValue(null)) : this;
     }
 
     @Override
-    public Long getValue(final Object object) throws HPersistException {
+    public Long getValue(final Object object) throws HBqlException {
         final Number num = (Number)this.getExpr().getValue(object);
         final long val = num.longValue();
         return val * this.getIntervalType().getIntervalMillis();

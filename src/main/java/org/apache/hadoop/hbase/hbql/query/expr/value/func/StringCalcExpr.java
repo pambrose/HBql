@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
@@ -18,12 +18,12 @@ public class StringCalcExpr extends GenericCalcExpr {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
         return this.validateType(StringValue.class, "StringCalcExpr");
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
 
         this.setExpr1(this.getExpr1().getOptimizedValue());
         if (this.getExpr2() != null)
@@ -33,7 +33,7 @@ public class StringCalcExpr extends GenericCalcExpr {
     }
 
     @Override
-    public String getValue(final Object object) throws HPersistException {
+    public String getValue(final Object object) throws HBqlException {
 
         final String val1 = (String)this.getExpr1().getValue(object);
         final String val2 = (this.getExpr2() != null) ? ((String)this.getExpr2().getValue(object)) : "";
@@ -43,7 +43,7 @@ public class StringCalcExpr extends GenericCalcExpr {
                 return val1 + val2;
         }
 
-        throw new HPersistException("Invalid operator in StringCalcExpr.getValue() " + this.getOp());
+        throw new HBqlException("Invalid operator in StringCalcExpr.getValue() " + this.getOp());
     }
 
 }

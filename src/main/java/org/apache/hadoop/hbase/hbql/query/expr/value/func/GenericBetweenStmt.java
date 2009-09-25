@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -50,7 +50,7 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
 
         this.setExpr(this.getExpr().getOptimizedValue());
         this.setLower(this.getLower().getOptimizedValue());
@@ -72,15 +72,15 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
     }
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz,
-                                                      final String caller) throws HPersistException {
+                                                      final String caller) throws HBqlException {
 
         final Class<? extends ValueExpr> expr = this.getExpr().validateType();
         final Class<? extends ValueExpr> lower = this.getLower().validateType();
         final Class<? extends ValueExpr> upper = this.getUpper().validateType();
 
         if (HUtil.isParentClass(clazz, expr, lower, upper))
-            throw new HPersistException("Invalid types " + expr.getName() + " "
-                                        + lower.getName() + " " + upper.getName() + " in " + caller);
+            throw new HBqlException("Invalid types " + expr.getName() + " "
+                                    + lower.getName() + " " + upper.getName() + " in " + caller);
 
         return BooleanValue.class;
     }

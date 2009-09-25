@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.lang.reflect.Field;
 
@@ -12,7 +12,7 @@ import java.lang.reflect.Field;
  */
 public class ReflectionAttrib extends FieldAttrib {
 
-    public ReflectionAttrib(final Field field) throws HPersistException {
+    public ReflectionAttrib(final Field field) throws HBqlException {
         super(field, FieldType.getFieldType(field.getType()), null, null, null, null, false);
 
         this.defineAccessors();

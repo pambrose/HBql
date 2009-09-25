@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.io;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -22,7 +22,7 @@ public class HadoopSerialization extends Serialization {
     private static final int arraysize = Bytes.SIZEOF_INT;
 
     @Override
-    public Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws IOException, HPersistException {
+    public Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws IOException, HBqlException {
 
         try {
             switch (fieldType) {
@@ -68,17 +68,17 @@ public class HadoopSerialization extends Serialization {
                 }
 
                 default:
-                    throw new HPersistException("Error in getScalarfromBytes() - " + fieldType);
+                    throw new HBqlException("Error in getScalarfromBytes() - " + fieldType);
             }
         }
         catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new HPersistException("Error in getScalarfromBytes()");
+            throw new HBqlException("Error in getScalarfromBytes()");
         }
     }
 
     @Override
-    public byte[] getScalarAsBytes(final FieldType fieldType, final Object obj) throws IOException, HPersistException {
+    public byte[] getScalarAsBytes(final FieldType fieldType, final Object obj) throws IOException, HBqlException {
 
         switch (fieldType) {
 
@@ -124,12 +124,12 @@ public class HadoopSerialization extends Serialization {
                 }
 
             default:
-                throw new HPersistException("Error in getScalarfromBytes() - " + fieldType);
+                throw new HBqlException("Error in getScalarfromBytes() - " + fieldType);
         }
     }
 
     @Override
-    public Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws IOException, HPersistException {
+    public Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws IOException, HBqlException {
 
         try {
 
@@ -248,17 +248,17 @@ public class HadoopSerialization extends Serialization {
                 }
 
                 default:
-                    throw new HPersistException("Error in getScalarfromBytes() - " + fieldType);
+                    throw new HBqlException("Error in getScalarfromBytes() - " + fieldType);
             }
         }
         catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new HPersistException("Error in getScalarfromBytes()");
+            throw new HBqlException("Error in getScalarfromBytes()");
         }
     }
 
     @Override
-    public byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws IOException, HPersistException {
+    public byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws IOException, HBqlException {
 
         switch (fieldType) {
 
@@ -374,7 +374,7 @@ public class HadoopSerialization extends Serialization {
             }
 
             default:
-                throw new HPersistException("Error in getArrayasBytes() - " + fieldType);
+                throw new HBqlException("Error in getArrayasBytes() - " + fieldType);
         }
     }
 

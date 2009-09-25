@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
@@ -19,7 +19,7 @@ public class BooleanAttribRef extends GenericAttribRef<NumberValue> implements B
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HBqlException {
         return (Boolean)this.getVariableAttrib().getCurrentValue(object);
     }
 

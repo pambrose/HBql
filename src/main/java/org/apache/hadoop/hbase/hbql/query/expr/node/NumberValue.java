@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.node;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,5 +10,5 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
  */
 public interface NumberValue extends ValueExpr {
 
-    Number getValue(final Object object) throws HPersistException;
+    Number getValue(final Object object) throws HBqlException;
 }

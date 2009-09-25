@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -23,7 +23,7 @@ public class ValueBetweenStmt extends GenericBetweenStmt {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
 
         final Class<? extends ValueExpr> type1 = this.getExpr().validateType();
         final Class<? extends ValueExpr> type2 = this.getLower().validateType();
@@ -36,20 +36,20 @@ public class ValueBetweenStmt extends GenericBetweenStmt {
         else if (HUtil.isParentClass(DateValue.class, type1, type2, type3))
             this.typedExpr = new DateBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());
         else
-            throw new HPersistException("Invalid types "
-                                        + type1.getName() + " " + type2.getName() + " " + type3.getName()
-                                        + " in ValueBetweenStmt");
+            throw new HBqlException("Invalid types "
+                                    + type1.getName() + " " + type2.getName() + " " + type3.getName()
+                                    + " in ValueBetweenStmt");
 
         return BooleanValue.class;
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
         return this.typedExpr.getOptimizedValue();
     }
 
     @Override
-    public Boolean getValue(final Object object) throws HPersistException {
+    public Boolean getValue(final Object object) throws HBqlException {
         return this.typedExpr.getValue(object);
     }
 }

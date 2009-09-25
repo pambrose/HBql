@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 
 /**
@@ -82,12 +82,12 @@ public class WhereArgs {
             this.serverExprTree = serverExprTree;
     }
 
-    public long getQueryLimit() throws HPersistException {
+    public long getQueryLimit() throws HBqlException {
         return (this.getQueryLimitArgs() != null && this.getQueryLimitArgs().isValid())
                ? this.getQueryLimitArgs().getValue() : 0;
     }
 
-    public long getScanLimit() throws HPersistException {
+    public long getScanLimit() throws HBqlException {
         return (this.getScanLimitArgs() != null && this.getScanLimitArgs().isValid())
                ? this.getScanLimitArgs().getValue() : 0;
     }

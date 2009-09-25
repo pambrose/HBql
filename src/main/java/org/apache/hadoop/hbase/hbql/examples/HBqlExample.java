@@ -6,7 +6,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 public class HBqlExample {
 
-    public static void main(String[] args) throws IOException, HPersistException {
+    public static void main(String[] args) throws IOException, HBqlException {
 
         final byte[] family = Bytes.toBytes("family1");
         final byte[] author = Bytes.toBytes("author");

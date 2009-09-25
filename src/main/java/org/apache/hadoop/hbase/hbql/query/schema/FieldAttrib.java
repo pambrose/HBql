@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -22,7 +22,7 @@ public abstract class FieldAttrib extends ColumnAttrib {
                           final String column,
                           final String getter,
                           final String setter,
-                          final boolean mapKeysAsColumns) throws HPersistException {
+                          final boolean mapKeysAsColumns) throws HBqlException {
         super(fieldType,
               family,
               (column != null && column.length() > 0) ? column : field.getName(),
@@ -81,12 +81,12 @@ public abstract class FieldAttrib extends ColumnAttrib {
     }
 
     @Override
-    public Object getCurrentValue(final Object recordObj) throws HPersistException {
+    public Object getCurrentValue(final Object recordObj) throws HBqlException {
         try {
             return this.getField().get(recordObj);
         }
         catch (IllegalAccessException e) {
-            throw new HPersistException("Error getting value of " + this.getObjectQualifiedName());
+            throw new HBqlException("Error getting value of " + this.getObjectQualifiedName());
         }
     }
 
@@ -102,7 +102,7 @@ public abstract class FieldAttrib extends ColumnAttrib {
     }
 
     @Override
-    public Object getVersionedValueMap(final Object recordObj) throws HPersistException {
+    public Object getVersionedValueMap(final Object recordObj) throws HBqlException {
         // Just call current value for version since we have different fields for each
         return this.getCurrentValue(recordObj);
     }

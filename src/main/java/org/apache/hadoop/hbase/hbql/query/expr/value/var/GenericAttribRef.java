@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -39,7 +39,7 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
     }
 
     @Override
-    public T getOptimizedValue() throws HPersistException {
+    public T getOptimizedValue() throws HBqlException {
         return (T)this;
     }
 
@@ -57,12 +57,12 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
         return this.context;
     }
 
-    protected VariableAttrib getVariableAttrib() throws HPersistException {
+    protected VariableAttrib getVariableAttrib() throws HBqlException {
         return this.variableAttrib;
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
         return this.getExprVar().getFieldType().getExprType();
     }
 

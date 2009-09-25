@@ -94,7 +94,7 @@ public class HResults<T> implements Iterable<T> {
                     }
                 }
 
-                protected T fetchNextObject() throws HPersistException, IOException {
+                protected T fetchNextObject() throws HBqlException, IOException {
 
                     T val = doFetch();
 
@@ -108,7 +108,7 @@ public class HResults<T> implements Iterable<T> {
                     return val;
                 }
 
-                private T doFetch() throws HPersistException, IOException {
+                private T doFetch() throws HBqlException, IOException {
 
                     if (resultIter == null)
                         resultIter = getNextResultScanner();
@@ -154,7 +154,7 @@ public class HResults<T> implements Iterable<T> {
                 }
             };
         }
-        catch (HPersistException e) {
+        catch (HBqlException e) {
             e.printStackTrace();
         }
         catch (IOException e) {

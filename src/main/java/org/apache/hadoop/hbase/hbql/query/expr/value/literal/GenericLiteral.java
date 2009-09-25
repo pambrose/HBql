@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
@@ -13,7 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 public abstract class GenericLiteral implements ValueExpr {
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
         return this;
     }
 

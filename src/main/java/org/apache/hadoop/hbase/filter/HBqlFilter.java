@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.filter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hbase.KeyValue;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
@@ -143,7 +143,7 @@ public class HBqlFilter implements Filter {
                     this.incrementRecordCount();
                 return filterRecord;
             }
-            catch (HPersistException e) {
+            catch (HBqlException e) {
                 e.printStackTrace();
                 HUtil.logException(LOG, e);
                 LOG.info("In filterRow() had exception: " + e.getMessage());
@@ -157,7 +157,7 @@ public class HBqlFilter implements Filter {
             Bytes.writeByteArray(out, HUtil.ser.getObjectAsBytes(this.getFilterExpr()));
             Bytes.writeByteArray(out, HUtil.ser.getScalarAsBytes(FieldType.LongType, this.getScanLimit()));
         }
-        catch (HPersistException e) {
+        catch (HBqlException e) {
             e.printStackTrace();
             HUtil.logException(LOG, e);
             throw new IOException("HPersistException: " + e.getCause());
@@ -174,14 +174,14 @@ public class HBqlFilter implements Filter {
             this.getRecord().setSchema(this.getSchema());
             this.recordCount = 0;
         }
-        catch (HPersistException e) {
+        catch (HBqlException e) {
             e.printStackTrace();
             LOG.info("In read(): " + e.getCause());
             throw new IOException("HPersistException: " + e.getCause());
         }
     }
 
-    public static void testFilter(final HBqlFilter origFilter) throws IOException, HPersistException {
+    public static void testFilter(final HBqlFilter origFilter) throws IOException, HBqlException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);

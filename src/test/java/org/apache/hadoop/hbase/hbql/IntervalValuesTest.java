@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.util.WhereExprTests;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ import org.junit.Test;
 public class IntervalValuesTest extends WhereExprTests {
 
     @Test
-    public void keysExpressions() throws HPersistException {
+    public void keysExpressions() throws HBqlException {
         assertEvalTrue("NOW() < NOW()+YEAR(1)");
         assertEvalTrue("NOW() = NOW()+YEAR(1)-YEAR(1)");
         assertEvalTrue("NOW()+YEAR(2) > NOW()+YEAR(1)");

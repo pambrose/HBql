@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.object;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +12,7 @@ public interface ObjectQueryListener<T> {
 
     void onQueryInit();
 
-    void onEachObject(T val) throws HPersistException;
+    void onEachObject(T val) throws HBqlException;
 
     void onQueryComplete();
 

@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.node;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 
 import java.io.Serializable;
@@ -13,11 +13,11 @@ import java.io.Serializable;
  */
 public interface ValueExpr extends Serializable {
 
-    Object getValue(final Object object) throws HPersistException;
+    Object getValue(final Object object) throws HBqlException;
 
-    ValueExpr getOptimizedValue() throws HPersistException;
+    ValueExpr getOptimizedValue() throws HBqlException;
 
-    Class<? extends ValueExpr> validateType() throws HPersistException;
+    Class<? extends ValueExpr> validateType() throws HBqlException;
 
     boolean isAConstant();
 

@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.util;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.object.ObjectQuery;
 import org.apache.hadoop.hbase.hbql.query.object.ObjectResults;
 
@@ -14,7 +14,7 @@ import java.util.Collection;
  */
 public class ObjectTests<T> {
 
-    protected void assertResultCount(final Collection<T> objList, final String expr, final int expected_cnt) throws HPersistException {
+    protected void assertResultCount(final Collection<T> objList, final String expr, final int expected_cnt) throws HBqlException {
 
         final ObjectQuery<T> query = ObjectQuery.newObjectQuery(expr);
 

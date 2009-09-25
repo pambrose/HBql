@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.io.Serializable;
@@ -43,7 +43,7 @@ public class VarDesc implements Serializable {
         try {
             return FieldType.getFieldType(typeName);
         }
-        catch (HPersistException e) {
+        catch (HBqlException e) {
             return null;
         }
     }

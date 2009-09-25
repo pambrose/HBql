@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
@@ -28,7 +28,7 @@ public class DefinedSchema extends HBaseSchema {
     final String tableName;
     final String aliasName;
 
-    public DefinedSchema(final List<VarDesc> varList) throws HPersistException {
+    public DefinedSchema(final List<VarDesc> varList) throws HBqlException {
         this.tableName = "embedded";
         this.aliasName = "embedded";
         for (final VarDesc var : varList)
@@ -37,7 +37,7 @@ public class DefinedSchema extends HBaseSchema {
 
     private DefinedSchema(final String tableName,
                           final String aliasName,
-                          final List<VarDesc> varList) throws HPersistException {
+                          final List<VarDesc> varList) throws HBqlException {
         this.tableName = tableName;
         this.aliasName = aliasName;
         for (final VarDesc var : varList)
@@ -46,13 +46,13 @@ public class DefinedSchema extends HBaseSchema {
 
     public synchronized static DefinedSchema newDefinedSchema(final String tableName,
                                                               final String aliasName,
-                                                              final List<VarDesc> varList) throws HPersistException {
+                                                              final List<VarDesc> varList) throws HBqlException {
 
         if (doesDefinedSchemaExist(tableName))
-            throw new HPersistException("Table " + tableName + " already defined");
+            throw new HBqlException("Table " + tableName + " already defined");
 
         if (aliasName != null && doesDefinedSchemaExist(aliasName))
-            throw new HPersistException("Alias " + aliasName + " already defined");
+            throw new HBqlException("Alias " + aliasName + " already defined");
 
         final DefinedSchema schema = new DefinedSchema(tableName, aliasName, varList);
 
@@ -70,11 +70,11 @@ public class DefinedSchema extends HBaseSchema {
         return schema != null;
     }
 
-    public synchronized static DefinedSchema newDefinedSchema(final HBaseSchema schema) throws HPersistException {
+    public synchronized static DefinedSchema newDefinedSchema(final HBaseSchema schema) throws HBqlException {
         return new DefinedSchema(schema.getTableName(), null, schema.getVarDescList());
     }
 
-    private void processColumn(final VarDesc var, final boolean enforceFamilyName) throws HPersistException {
+    private void processColumn(final VarDesc var, final boolean enforceFamilyName) throws HBqlException {
 
         final DefinedAttrib attrib = new DefinedAttrib(var);
 
@@ -85,13 +85,13 @@ public class DefinedSchema extends HBaseSchema {
 
         if (attrib.isKeyAttrib()) {
             if (this.getKeyAttrib() != null)
-                throw new HPersistException("Table " + this + " has multiple instance variables marked as keys");
+                throw new HBqlException("Table " + this + " has multiple instance variables marked as keys");
             this.setKeyAttrib(attrib);
         }
         else {
             final String family = attrib.getFamilyName();
             if (enforceFamilyName && family.length() == 0)
-                throw new HPersistException(attrib.getColumnName() + " is missing family name");
+                throw new HBqlException(attrib.getColumnName() + " is missing family name");
 
         }
     }
@@ -136,7 +136,7 @@ public class DefinedSchema extends HBaseSchema {
     @Override
     public HRecord getObject(final List<String> fieldList,
                              final int maxVersions,
-                             final Result result) throws HPersistException {
+                             final Result result) throws HBqlException {
 
         try {
             // Create object and assign key value
@@ -153,12 +153,12 @@ public class DefinedSchema extends HBaseSchema {
         }
         catch (Exception e) {
             e.printStackTrace();
-            throw new HPersistException("Error in getObject()");
+            throw new HBqlException("Error in getObject()");
         }
 
     }
 
-    private HRecord createNewHRecord(final Result result) throws IOException, HPersistException {
+    private HRecord createNewHRecord(final Result result) throws IOException, HBqlException {
 
         // Create new instance and set key value
         final HRecord newrec = new HRecord();
@@ -171,7 +171,7 @@ public class DefinedSchema extends HBaseSchema {
         return newrec;
     }
 
-    public Scan getScanForFields(final String... fields) throws IOException, HPersistException {
+    public Scan getScanForFields(final String... fields) throws IOException, HBqlException {
 
         final Scan scan = new Scan();
 
@@ -185,7 +185,7 @@ public class DefinedSchema extends HBaseSchema {
         return scan;
     }
 
-    public HBqlFilter newHBqlFilter(final String query) throws HPersistException {
+    public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
         final ExprTree exprTree = HBql.parseNoDescWhereExpr(query, this);
         return new HBqlFilter(exprTree, -1);
     }

@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
@@ -22,7 +22,7 @@ public class ValueCalcExpr extends GenericCalcExpr {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
+    public Class<? extends ValueExpr> validateType() throws HBqlException {
 
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
         final Class<? extends ValueExpr> type2 = (this.getExpr2() != null) ? this.getExpr2().validateType() : null;
@@ -34,19 +34,19 @@ public class ValueCalcExpr extends GenericCalcExpr {
         else if (HUtil.isParentClass(DateValue.class, type1, type2))
             typedExpr = new DateCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
         else
-            throw new HPersistException("Invalid types in ValueCalcExpr: " + type1.getName() + " "
-                                        + ((type2 != null) ? type2.getName() : ""));
+            throw new HBqlException("Invalid types in ValueCalcExpr: " + type1.getName() + " "
+                                    + ((type2 != null) ? type2.getName() : ""));
 
         return type1;
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HPersistException {
+    public ValueExpr getOptimizedValue() throws HBqlException {
         return this.typedExpr.getOptimizedValue();
     }
 
     @Override
-    public Object getValue(final Object object) throws HPersistException {
+    public Object getValue(final Object object) throws HBqlException {
         return this.typedExpr.getValue(object);
     }
 }

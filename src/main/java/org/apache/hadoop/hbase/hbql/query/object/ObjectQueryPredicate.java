@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.object;
 
 import com.google.common.base.Predicate;
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;
@@ -34,7 +34,7 @@ public class ObjectQueryPredicate<T> implements Predicate<T> {
 
             return tree.evaluate(obj);
         }
-        catch (HPersistException e) {
+        catch (HBqlException e) {
             e.printStackTrace();
             return false;
         }

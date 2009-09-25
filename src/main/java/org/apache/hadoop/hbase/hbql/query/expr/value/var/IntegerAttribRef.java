@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
@@ -18,7 +18,7 @@ public class IntegerAttribRef extends GenericAttribRef<NumberValue> implements N
     }
 
     @Override
-    public Integer getValue(final Object object) throws HPersistException {
+    public Integer getValue(final Object object) throws HBqlException {
         return (Integer)this.getVariableAttrib().getCurrentValue(object);
     }
 
