@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
@@ -35,8 +34,7 @@ public class ValueCalcExpr extends GenericCalcExpr {
         else if (HUtil.isParentClass(DateValue.class, type1, type2))
             typedExpr = new DateCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
         else
-            throw new TypeException("Invalid types: " + type1.getSimpleName() + " "
-                                    + ((type2 != null) ? type2.getSimpleName() : "") + " in " + this.asString());
+            HUtil.reportTypeConflict(this, type1, type2);
 
         return type1;
     }

@@ -5,6 +5,7 @@ import org.antlr.runtime.TokenStream;
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -81,7 +82,9 @@ public class HUtil {
         return true;
     }
 
-    public static void validateParentClass(final Class parentClazz, final Class... clazzes) throws TypeException {
+    public static void validateParentClass(final ValueExpr expr,
+                                           final Class parentClazz,
+                                           final Class... clazzes) throws TypeException {
 
         List<Class> classList = null;
 
@@ -98,20 +101,38 @@ public class HUtil {
         }
 
         if (classList != null) {
-            final StringBuilder msg = new StringBuilder("Expecting type " + parentClazz.getName()
-                                                        + " but encountered type "
-                                                        + ((classList.size() > 0) ? "s" : "") + ": ");
+            final StringBuilder sbuf = new StringBuilder("Expecting type " + parentClazz.getName()
+                                                         + " but encountered type "
+                                                         + ((classList.size() > 0) ? "s" : "") + ": ");
             boolean first = true;
             for (final Class clazz : classList) {
                 if (!first)
-                    msg.append(", ");
-                msg.append(clazz.getName());
+                    sbuf.append(", ");
+                sbuf.append(clazz.getName());
                 first = false;
             }
 
-            msg.append(" in expression");
+            sbuf.append(" in expression: " + expr.asString());
 
-            throw new TypeException(msg.toString());
+            throw new TypeException(sbuf.toString());
         }
+    }
+
+    public static void reportTypeConflict(final ValueExpr expr,
+                                          final Class<? extends ValueExpr>... clazzes) throws TypeException {
+
+        final StringBuilder sbuf = new StringBuilder("Incompatible types ");
+        boolean first = true;
+        for (final Class<? extends ValueExpr> clazz : clazzes) {
+            if (clazz == null)
+                continue;
+            if (!first)
+                sbuf.append(", ");
+            sbuf.append(clazz.getSimpleName());
+            first = false;
+        }
+        sbuf.append(" in expression: " + expr.asString());
+
+        throw new TypeException(sbuf.toString());
     }
 }
