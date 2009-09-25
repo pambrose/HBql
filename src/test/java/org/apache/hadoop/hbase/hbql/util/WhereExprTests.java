@@ -70,7 +70,7 @@ public class WhereExprTests {
     }
 
     public void assertHasException(final ExprTree tree, final Class clazz) {
-        this.assertHasException(tree, clazz);
+        this.assertHasException(null, tree, clazz);
     }
 
 
@@ -81,7 +81,6 @@ public class WhereExprTests {
             evalExpr(recordObj, tree);
         }
         catch (HPersistException e) {
-            e.printStackTrace();
             eclazz = e.getClass();
         }
         org.junit.Assert.assertTrue(eclazz != null && eclazz.equals(clazz));
