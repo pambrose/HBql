@@ -30,12 +30,13 @@ public class ExprTree implements Serializable {
     private final Map<String, List<NamedParameter>> namedParamsMap = Maps.newHashMap();
     private final List<ExprVariable> exprVariablesList = Lists.newArrayList();
 
-    private ExprTree(final ValueExpr treeRoot) {
-        this.treeRoot = treeRoot;
+    private ExprTree() {
     }
 
     public static ExprTree newExprTree(final BooleanValue booleanValue) {
-        return new ExprTree(booleanValue);
+        final ExprTree tree = new ExprTree();
+        tree.setTreeRoot(booleanValue);
+        return tree;
     }
 
     private ValueExpr getTreeRoot() {
@@ -44,6 +45,8 @@ public class ExprTree implements Serializable {
 
     private void setTreeRoot(final ValueExpr treeRoot) {
         this.treeRoot = treeRoot;
+        if (this.getTreeRoot() != null)
+            this.getTreeRoot().setContext(this);
     }
 
     public Schema getSchema() {
@@ -71,11 +74,8 @@ public class ExprTree implements Serializable {
     }
 
     public void setSchema(final Schema schema) {
-        if (schema != null) {
+        if (schema != null)
             this.schema = schema;
-        }
-
-        this.getTreeRoot().setContext(this);
     }
 
     public void addNamedParameter(final NamedParameter param) {
