@@ -34,4 +34,9 @@ public abstract class GenericCalcExpr extends GenericTwoExprExpr implements Valu
 
         return clazz;
     }
+
+    @Override
+    public String asString() {
+        return this.getExpr1().asString() + " " + this.op.opAsString() + " " + this.getExpr2().asString();
+    }
 }

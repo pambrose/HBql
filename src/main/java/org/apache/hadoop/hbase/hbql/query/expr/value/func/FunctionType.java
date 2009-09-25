@@ -33,7 +33,6 @@ public enum FunctionType {
         this.typeSig = typeSig;
     }
 
-
     public Class<? extends ValueExpr> getReturnType() {
         return returnType;
     }
@@ -59,6 +58,5 @@ public enum FunctionType {
                                         + this.name() + ".  Expecting type " + clazz.getName());
             i++;
         }
-
     }
 }

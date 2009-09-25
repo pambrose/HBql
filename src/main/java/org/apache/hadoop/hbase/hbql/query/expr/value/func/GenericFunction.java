@@ -131,4 +131,61 @@ public class GenericFunction implements ValueExpr {
         throw new HBqlException("Invalid function in GenericFunction.getValue() " + this.getFunctionType());
     }
 
+    @Override
+    public String asString() {
+
+        final StringBuilder sbuf = new StringBuilder(this.getFunctionType().name() + "(");
+
+        switch (this.getFunctionType()) {
+
+            case TRIM:
+                sbuf.append(this.getValueExprs()[0].asString());
+                break;
+
+            case LOWER:
+                sbuf.append(this.getValueExprs()[0].asString());
+                break;
+
+            case UPPER:
+                sbuf.append(this.getValueExprs()[0].asString());
+                break;
+
+            case CONCAT:
+                sbuf.append(this.getValueExprs()[0].asString());
+                sbuf.append(", ");
+                sbuf.append(this.getValueExprs()[1].asString());
+                break;
+
+            case REPLACE:
+                sbuf.append(this.getValueExprs()[0].asString());
+                sbuf.append(", ");
+                sbuf.append(this.getValueExprs()[1].asString());
+                sbuf.append(", ");
+                sbuf.append(this.getValueExprs()[2].asString());
+                break;
+
+            case SUBSTRING:
+                sbuf.append(this.getValueExprs()[0].asString());
+                sbuf.append(", ");
+                sbuf.append(this.getValueExprs()[1].asString());
+                sbuf.append(", ");
+                sbuf.append(this.getValueExprs()[2].asString());
+                break;
+
+            case LENGTH:
+                sbuf.append(this.getValueExprs()[0].asString());
+                break;
+
+            case INDEXOF:
+                sbuf.append(this.getValueExprs()[0].asString());
+                sbuf.append(", ");
+                sbuf.append(this.getValueExprs()[1].asString());
+                break;
+        }
+
+        sbuf.append(")");
+
+        return sbuf.toString();
+    }
+
 }

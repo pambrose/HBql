@@ -45,4 +45,10 @@ public abstract class GenericNullCompare extends GenericNotValue {
             throw new HBqlException("Invalid type " + type.getName() + " in " + caller);
         return BooleanValue.class;
     }
+
+    @Override
+    public String asString() {
+        return this.getExpr().asString() + " IS" + notAsString() + " NULL";
+    }
+
 }

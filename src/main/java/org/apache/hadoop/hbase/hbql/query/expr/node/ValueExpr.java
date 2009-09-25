@@ -22,4 +22,6 @@ public interface ValueExpr extends Serializable {
     boolean isAConstant();
 
     void setContext(ExprTree context);
+
+    String asString();
 }

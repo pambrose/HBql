@@ -19,4 +19,9 @@ public abstract class GenericNotValue implements BooleanValue {
     public boolean isNot() {
         return not;
     }
+
+    protected String notAsString() {
+        return (this.isNot()) ? " NOT" : "";
+    }
+
 }

@@ -20,7 +20,7 @@ public class NumberInStmt extends GenericInStmt {
     protected boolean evaluateList(final Object object) throws HBqlException {
 
         final long attribVal = ((Number)this.getExpr().getValue(object)).longValue();
-        for (final ValueExpr obj : this.getValueList()) {
+        for (final ValueExpr obj : this.getValueExprList()) {
             final long val = ((Number)obj.getValue(object)).longValue();
             if (attribVal == val)
                 return true;

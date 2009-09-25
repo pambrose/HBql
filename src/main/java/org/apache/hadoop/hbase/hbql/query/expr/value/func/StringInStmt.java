@@ -20,7 +20,7 @@ public class StringInStmt extends GenericInStmt {
     protected boolean evaluateList(final Object object) throws HBqlException {
 
         final String attribVal = (String)this.getExpr().getValue(object);
-        for (final ValueExpr obj : this.getValueList()) {
+        for (final ValueExpr obj : this.getValueExprList()) {
             final String val = (String)obj.getValue(object);
             if (attribVal.equals(val))
                 return true;

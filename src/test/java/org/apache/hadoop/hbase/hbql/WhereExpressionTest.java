@@ -120,7 +120,6 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalTrue(tree);
         tree.setParameter(":val2", 3);
         assertEvalFalse(tree);
-
     }
 
 
@@ -179,6 +178,10 @@ public class WhereExpressionTest extends WhereExprTests {
 
         tree = parseExpr("'aaa' = 'a'+:s1");
         tree.setParameter("s1", "aa");
+        assertEvalTrue(tree);
+
+        tree = parseExpr("'aaa' = 'a'+:s1");
+        tree.setParameter("s1", 1);
         assertEvalTrue(tree);
     }
 

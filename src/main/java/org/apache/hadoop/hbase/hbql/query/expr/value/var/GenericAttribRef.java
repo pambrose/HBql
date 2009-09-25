@@ -66,4 +66,8 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
         return this.getExprVar().getFieldType().getExprType();
     }
 
+    @Override
+    public String asString() {
+        return this.getName();
+    }
 }

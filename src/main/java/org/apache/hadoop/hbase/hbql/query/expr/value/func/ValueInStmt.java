@@ -32,21 +32,21 @@ public class ValueInStmt extends GenericInStmt {
 
         if (HUtil.isParentClass(StringValue.class, type)) {
             clazz = StringValue.class;
-            this.typedExpr = new StringInStmt(this.getExpr(), this.isNot(), this.getValueList());
+            this.typedExpr = new StringInStmt(this.getExpr(), this.isNot(), this.getValueExprList());
         }
         else if (HUtil.isParentClass(NumberValue.class, type)) {
             clazz = NumberValue.class;
-            this.typedExpr = new NumberInStmt(this.getExpr(), this.isNot(), this.getValueList());
+            this.typedExpr = new NumberInStmt(this.getExpr(), this.isNot(), this.getValueExprList());
         }
         else if (HUtil.isParentClass(DateValue.class, type)) {
             clazz = DateValue.class;
-            this.typedExpr = new DateInStmt(this.getExpr(), this.isNot(), this.getValueList());
+            this.typedExpr = new DateInStmt(this.getExpr(), this.isNot(), this.getValueExprList());
         }
         else
             throw new HBqlException("Invalid type " + type.getName() + " in GenericInStmt");
 
         // First make sure all the types are matched
-        for (final ValueExpr val : this.getValueList()) {
+        for (final ValueExpr val : this.getValueExprList()) {
             final Class<? extends ValueExpr> valtype = val.validateType();
 
             if (!HUtil.isParentClass(clazz, valtype))

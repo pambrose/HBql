@@ -84,4 +84,10 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
 
         return BooleanValue.class;
     }
+
+    @Override
+    public String asString() {
+        return this.getExpr().asString() + notAsString() + " BETWEEN "
+               + this.getLower().asString() + " AND " + this.getUpper().asString();
+    }
 }
