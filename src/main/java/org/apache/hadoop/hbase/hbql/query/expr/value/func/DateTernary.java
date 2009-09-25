@@ -18,6 +18,11 @@ public class DateTernary extends GenericTernary implements DateValue {
     }
 
     @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        return this.validateType(DateValue.class, "DateTernary");
+    }
+
+    @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
         this.setPred(this.getPred().getOptimizedValue());

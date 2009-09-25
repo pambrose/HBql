@@ -3,7 +3,9 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.List;
 
@@ -36,11 +38,6 @@ public abstract class GenericNullCompare extends GenericNotValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
-        throw new HPersistException("Missing impl for validateType()");
-    }
-
-    @Override
     public boolean isAConstant() {
         return this.getExpr().isAConstant();
     }
@@ -53,5 +50,12 @@ public abstract class GenericNullCompare extends GenericNotValue {
     @Override
     public void setParam(final String param, final Object val) throws HPersistException {
         this.getExpr().setParam(param, val);
+    }
+
+    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz, final String caller) throws HPersistException {
+        final Class<? extends ValueExpr> type = this.getExpr().validateType();
+        if (!HUtil.isParentClass(clazz, type))
+            throw new HPersistException("Invalid type " + type.getName() + " in " + caller);
+        return BooleanValue.class;
     }
 }

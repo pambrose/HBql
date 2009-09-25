@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 /**
@@ -13,6 +14,11 @@ public class DateBetweenStmt extends GenericBetweenStmt {
 
     public DateBetweenStmt(final ValueExpr expr, final boolean not, final ValueExpr lower, final ValueExpr upper) {
         super(not, expr, lower, upper);
+    }
+
+    @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        return this.validateType(DateValue.class, "DateBetweenStmt");
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 
@@ -14,6 +15,11 @@ public class StringCalcExpr extends GenericCalcExpr {
 
     public StringCalcExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, op, expr2);
+    }
+
+    @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        return this.validateType(StringValue.class, "StringCalcExpr");
     }
 
     @Override

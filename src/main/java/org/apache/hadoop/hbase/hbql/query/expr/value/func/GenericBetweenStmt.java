@@ -3,8 +3,10 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.List;
 
@@ -51,11 +53,6 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
-        throw new HPersistException("Missing impl for validateType()");
-    }
-
-    @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
         this.setExpr(this.getExpr().getOptimizedValue());
@@ -90,5 +87,19 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
         this.getExpr().setParam(param, val);
         this.getLower().setParam(param, val);
         this.getUpper().setParam(param, val);
+    }
+
+    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz,
+                                                      final String caller) throws HPersistException {
+
+        final Class<? extends ValueExpr> expr = this.getExpr().validateType();
+        final Class<? extends ValueExpr> lower = this.getLower().validateType();
+        final Class<? extends ValueExpr> upper = this.getUpper().validateType();
+
+        if (HUtil.isParentClass(clazz, expr, lower, upper))
+            throw new HPersistException("Invalid types " + expr.getName() + " "
+                                        + lower.getName() + " " + upper.getName() + " in " + caller);
+
+        return BooleanValue.class;
     }
 }

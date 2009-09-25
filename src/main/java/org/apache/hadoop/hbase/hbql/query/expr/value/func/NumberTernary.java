@@ -18,6 +18,11 @@ public class NumberTernary extends GenericTernary implements NumberValue {
     }
 
     @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        return this.validateType(NumberValue.class, "NumberTernary");
+    }
+
+    @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
         this.setPred(this.getPred().getOptimizedValue());

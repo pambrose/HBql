@@ -25,7 +25,6 @@ public class StringInStmt extends GenericInStmt {
             if (attribVal.equals(val))
                 return true;
         }
-
         return false;
     }
 }

@@ -18,6 +18,11 @@ public class NumberCalcExpr extends GenericCalcExpr implements NumberValue {
     }
 
     @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        return this.validateType(NumberValue.class, "NumberCalcExpr");
+    }
+
+    @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
         this.setExpr1(this.getExpr1().getOptimizedValue());

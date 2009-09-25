@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
@@ -14,6 +15,11 @@ public class StringTernary extends GenericTernary {
 
     public StringTernary(final ValueExpr pred, final ValueExpr expr1, final ValueExpr expr2) {
         super(pred, expr1, expr2);
+    }
+
+    @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        return this.validateType(StringValue.class, "StringTernary");
     }
 
     @Override

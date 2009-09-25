@@ -18,6 +18,11 @@ public class BooleanTernary extends GenericTernary implements BooleanValue {
     }
 
     @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+        return this.validateType(BooleanValue.class, "BooleanTernary");
+    }
+
+    @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
 
         this.setPred(this.getPred().getOptimizedValue());

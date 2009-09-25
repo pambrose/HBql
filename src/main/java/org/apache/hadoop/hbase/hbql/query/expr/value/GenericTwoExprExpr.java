@@ -58,10 +58,6 @@ public class GenericTwoExprExpr {
             this.getExpr2().setContext(context);
     }
 
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
-        throw new HPersistException("Missing impl for validateType()");
-    }
-
     public void setParam(final String param, final Object val) throws HPersistException {
         this.getExpr1().setParam(param, val);
         if (this.getExpr2() != null)

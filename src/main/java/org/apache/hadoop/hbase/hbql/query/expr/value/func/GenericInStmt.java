@@ -3,8 +3,13 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
@@ -50,11 +55,6 @@ public abstract class GenericInStmt extends GenericNotValue {
         // Swap new values to list
         this.getValueList().clear();
         this.getValueList().addAll(newvalList);
-    }
-
-    @Override
-    public Class<? extends ValueExpr> validateType() throws HPersistException {
-        throw new HPersistException("Missing impl for validateType()");
     }
 
     @Override
@@ -104,4 +104,31 @@ public abstract class GenericInStmt extends GenericNotValue {
         }
         return true;
     }
+
+    @Override
+    public Class<? extends ValueExpr> validateType() throws HPersistException {
+
+        final Class<? extends ValueExpr> type = this.getExpr().validateType();
+        final Class<? extends ValueExpr> clazz;
+
+        if (HUtil.isParentClass(StringValue.class, type))
+            clazz = StringValue.class;
+        else if (HUtil.isParentClass(NumberValue.class, type))
+            clazz = NumberValue.class;
+        else if (HUtil.isParentClass(DateValue.class, type))
+            clazz = DateValue.class;
+        else
+            throw new HPersistException("Invalid type " + type.getName() + " in GenericInStmt");
+
+        // First make sure all the types are matched
+        for (final ValueExpr val : this.getValueList()) {
+            final Class<? extends ValueExpr> valtype = val.validateType();
+
+            if (!HUtil.isParentClass(clazz, valtype))
+                throw new HPersistException("Invalid type " + type.getName() + " in GenericInStmt");
+        }
+
+        return BooleanValue.class;
+    }
+
 }
