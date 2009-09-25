@@ -6,6 +6,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.util.WhereExprTests;
 import org.junit.Test;
 
+import java.util.Date;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -82,6 +84,16 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalTrue(tree);
         tree.setParameter("b2", Boolean.TRUE);
         assertEvalFalse(tree);
+
+        tree = parseExpr("((((:b1 OR :b1 OR :b1))))" + " OR " + "((((:b1 OR :b1 OR :b1))))");
+        tree.setParameter("b1", Boolean.FALSE);
+        assertEvalFalse(tree);
+
+        tree = parseExpr(":b1 OR ((:b1) or :b1) OR :b2");
+        tree.setParameter("b1", Boolean.TRUE);
+        tree.setParameter("b2", Boolean.FALSE);
+        assertEvalTrue(tree);
+
     }
 
     @Test
@@ -89,7 +101,7 @@ public class WhereExpressionTest extends WhereExprTests {
 
         assertEvalTrue("4 < 5");
         assertEvalFalse("4 = 5");
-        assertEvalFalse("4 = 5");
+        assertEvalFalse("4 == 5");
         assertEvalTrue("4 != 5");
         assertEvalTrue("4 <> 5");
         assertEvalTrue("4 <= 5");
@@ -129,7 +141,19 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalFalse("DATE('mm/dd/yy', '10/31/94') - DAY(1) < DATE('mm/dd/yy', '10/30/94')");
         assertEvalTrue("DATE('mm/dd/yyyy', '10/31/1994') - DAY(1) - MILLI(1) < DATE('mm/dd/yyyy', '10/31/1994')  - DAY(1) ");
         assertEvalTrue("DATE('mm/dd/yyyy', '10/31/1994') - DAY(1) - MILLI(1) = DATE('mm/dd/yyyy', '10/30/1994')  - MILLI(1) ");
+    }
 
+    @Test
+    public void dateParamCompares() throws HPersistException {
+        ExprTree tree;
+
+        tree = parseExpr("NOW() - DAY(1) = :d1");
+        tree.setParameter("d1", new Date());
+        assertEvalFalse(tree);
+
+        tree = parseExpr("NOW() - DAY(1) < :d1");
+        tree.setParameter("d1", new Date());
+        assertEvalTrue(tree);
     }
 
     @Test
@@ -146,6 +170,16 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalTrue("'bbb' > 'aaa'");
         assertEvalTrue("'bbb' >= 'aaa'");
         assertEvalTrue("'aaa' >= 'aaa'");
+    }
+
+    @Test
+    public void stringParamCompares() throws HPersistException {
+
+        ExprTree tree;
+
+        tree = parseExpr("'aaa' = 'a'+:s1");
+        tree.setParameter("s1", "aa");
+        assertEvalTrue(tree);
     }
 
     @Test
