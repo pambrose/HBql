@@ -22,13 +22,16 @@ import java.util.Map;
  */
 public class ExprTree implements Serializable {
 
+    private final Map<String, List<NamedParameter>> namedParamsMap = Maps.newHashMap();
+    private final List<ExprVariable> exprVariablesList = Lists.newArrayList();
+
     private Schema schema = null;
     private ValueExpr treeRoot = null;
     private long start, end;
+
     private boolean inNeedOfTypeValidation = true;
     private boolean inNeedOfOptimization = true;
-    private final Map<String, List<NamedParameter>> namedParamsMap = Maps.newHashMap();
-    private final List<ExprVariable> exprVariablesList = Lists.newArrayList();
+    private boolean inNeedOfSettingContext = true;
 
     private ExprTree() {
     }
@@ -45,8 +48,11 @@ public class ExprTree implements Serializable {
 
     private void setTreeRoot(final ValueExpr treeRoot) {
         this.treeRoot = treeRoot;
-        if (this.getTreeRoot() != null)
+
+        if (this.getTreeRoot() != null && this.isInNeedOfSettingContext()) {
             this.getTreeRoot().setContext(this);
+            this.setInNeedOfSettingContext(false);
+        }
     }
 
     public Schema getSchema() {
@@ -55,22 +61,6 @@ public class ExprTree implements Serializable {
 
     public boolean isValid() {
         return this.getTreeRoot() != null;
-    }
-
-    private boolean isInNeedOfTypeValidation() {
-        return inNeedOfTypeValidation;
-    }
-
-    private void setInNeedOfTypeValidation(final boolean inNeedOfTypeValidation) {
-        this.inNeedOfTypeValidation = inNeedOfTypeValidation;
-    }
-
-    private boolean isInNeedOfOptimization() {
-        return inNeedOfOptimization;
-    }
-
-    private void setInNeedOfOptimization(final boolean inNeedOfOptimization) {
-        this.inNeedOfOptimization = inNeedOfOptimization;
     }
 
     public void setSchema(final Schema schema) {
@@ -163,4 +153,27 @@ public class ExprTree implements Serializable {
         }
     }
 
+    private boolean isInNeedOfTypeValidation() {
+        return inNeedOfTypeValidation;
+    }
+
+    private void setInNeedOfTypeValidation(final boolean inNeedOfTypeValidation) {
+        this.inNeedOfTypeValidation = inNeedOfTypeValidation;
+    }
+
+    private boolean isInNeedOfOptimization() {
+        return inNeedOfOptimization;
+    }
+
+    private void setInNeedOfOptimization(final boolean inNeedOfOptimization) {
+        this.inNeedOfOptimization = inNeedOfOptimization;
+    }
+
+    public boolean isInNeedOfSettingContext() {
+        return inNeedOfSettingContext;
+    }
+
+    public void setInNeedOfSettingContext(final boolean inNeedOfSettingContext) {
+        this.inNeedOfSettingContext = inNeedOfSettingContext;
+    }
 }
