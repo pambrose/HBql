@@ -5,11 +5,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
-import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,17 +30,12 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
         this.variableAttrib = null;
     }
 
-    protected ExprVariable getExprVar() {
+    public ExprVariable getExprVar() {
         return this.exprVar;
     }
 
-    protected String getName() {
+    public String getName() {
         return this.getExprVar().getName();
-    }
-
-    @Override
-    public List<ExprVariable> getExprVariables() {
-        return Lists.newArrayList(this.getExprVar());
     }
 
     @Override
@@ -59,18 +50,11 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
     @Override
     public void setContext(final ExprTree context) {
         this.context = context;
-    }
-
-    @Override
-    public void setParam(final String param, final Object val) throws HPersistException {
+        this.getContext().addAttribRef(this);
     }
 
     protected ExprTree getContext() {
         return this.context;
-    }
-
-    protected Schema getSchema() {
-        return this.getContext().getSchema();
     }
 
     protected VariableAttrib getVariableAttrib() throws HPersistException {

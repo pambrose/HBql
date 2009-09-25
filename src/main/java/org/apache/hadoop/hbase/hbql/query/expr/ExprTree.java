@@ -4,11 +4,15 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericAttribRef;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
+import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,6 +27,8 @@ public class ExprTree implements Serializable {
     private long start, end;
     private boolean inNeedOfTypeValidation = true;
     private boolean inNeedOfOptimization = true;
+    private final Map<String, List<NamedParameter>> namedParamsMap = Maps.newHashMap();
+    private final List<ExprVariable> exprVariablesList = Lists.newArrayList();
 
     private ExprTree(final ValueExpr treeRoot) {
         this.treeRoot = treeRoot;
@@ -72,8 +78,35 @@ public class ExprTree implements Serializable {
         this.getTreeRoot().setContext(this);
     }
 
-    public void setParam(final String param, final Object val) throws HPersistException {
-        this.getTreeRoot().setParam(param, val);
+    public void addNamedParameter(final NamedParameter param) {
+        final String name = param.getParamName();
+        final List<NamedParameter> paramList;
+        if (!this.namedParamsMap.containsKey(name)) {
+            paramList = Lists.newArrayList();
+            this.namedParamsMap.put(name, paramList);
+        }
+        else {
+            paramList = this.namedParamsMap.get(name);
+        }
+        paramList.add(param);
+    }
+
+    public void addAttribRef(final GenericAttribRef attribRef) {
+        this.getExprVariablesList().add(attribRef.getExprVar());
+    }
+
+
+    public void setParam(final String str, final Object val) throws HPersistException {
+
+        final String name = str.startsWith(":") ? str : (":" + str);
+
+        if (!this.namedParamsMap.containsKey(name))
+            throw new HPersistException("Parameter name " + str + " does not exist");
+
+        final List<NamedParameter> paramList = this.namedParamsMap.get(name);
+        for (final NamedParameter param : paramList)
+            param.setParam(val);
+
         this.setInNeedOfTypeValidation(true);
     }
 
@@ -87,11 +120,8 @@ public class ExprTree implements Serializable {
         this.setInNeedOfTypeValidation(false);
     }
 
-    public List<ExprVariable> getExprVariables() {
-        if (this.getTreeRoot() == null)
-            return Lists.newArrayList();
-        else
-            return this.getTreeRoot().getExprVariables();
+    public List<ExprVariable> getExprVariablesList() {
+        return this.exprVariablesList;
     }
 
     public Boolean evaluate(final Object object) throws HPersistException {
@@ -124,7 +154,7 @@ public class ExprTree implements Serializable {
             // Check if all the variables referenced in the where clause are present in the fieldList.
             final List<String> selectList = schema.getAliasAndQualifiedNameFieldList(fieldList);
 
-            final List<ExprVariable> referencedVars = this.getExprVariables();
+            final List<ExprVariable> referencedVars = this.getExprVariablesList();
             for (final ExprVariable var : referencedVars) {
                 if (!selectList.contains(var.getName()))
                     throw new HPersistException("Variable " + var.getName() + " used in where clause but it is not "

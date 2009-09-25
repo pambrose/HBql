@@ -2,10 +2,8 @@ package org.apache.hadoop.hbase.hbql.query.expr.node;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,11 +19,7 @@ public interface ValueExpr extends Serializable {
 
     Class<? extends ValueExpr> validateType() throws HPersistException;
 
-    List<ExprVariable> getExprVariables();
-
     boolean isAConstant();
 
     void setContext(ExprTree context);
-
-    void setParam(String param, Object val) throws HPersistException;
 }

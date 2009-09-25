@@ -2,13 +2,10 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -63,14 +60,6 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
     }
 
     @Override
-    public List<ExprVariable> getExprVariables() {
-        final List<ExprVariable> retval = this.getExpr().getExprVariables();
-        retval.addAll(this.getLower().getExprVariables());
-        retval.addAll(this.getUpper().getExprVariables());
-        return retval;
-    }
-
-    @Override
     public boolean isAConstant() {
         return this.getExpr().isAConstant() && this.getLower().isAConstant() && this.getUpper().isAConstant();
     }
@@ -80,13 +69,6 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
         this.getExpr().setContext(context);
         this.getLower().setContext(context);
         this.getUpper().setContext(context);
-    }
-
-    @Override
-    public void setParam(final String param, final Object val) throws HPersistException {
-        this.getExpr().setParam(param, val);
-        this.getLower().setParam(param, val);
-        this.getUpper().setParam(param, val);
     }
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz,

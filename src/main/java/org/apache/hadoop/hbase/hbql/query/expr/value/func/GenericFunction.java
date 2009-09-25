@@ -2,11 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,12 +34,6 @@ public class GenericFunction implements ValueExpr {
             valExpr.setContext(context);
     }
 
-    @Override
-    public void setParam(final String param, final Object val) throws HPersistException {
-        for (final ValueExpr valExpr : this.getValueExprs())
-            valExpr.setParam(param, val);
-    }
-
     // TODO Deal with this
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
@@ -54,14 +44,6 @@ public class GenericFunction implements ValueExpr {
     @Override
     public boolean isAConstant() {
         return false;
-    }
-
-    @Override
-    public List<ExprVariable> getExprVariables() {
-        final List<ExprVariable> retval = Lists.newArrayList();
-        for (final ValueExpr val : this.getValueExprs())
-            retval.addAll(val.getExprVariables());
-        return retval;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
@@ -15,19 +16,22 @@ import java.util.Date;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NamedParameter extends GenericAttribRef<ValueExpr> {
+public class NamedParameter implements ValueExpr {
+
+    private ExprTree context = null;
+    private final String paramName;
 
     private ValueExpr typedExpr = null;
 
-    public NamedParameter(final String attribName) {
-        super(attribName);
+    public NamedParameter(final String paramName) {
+        this.paramName = paramName;
     }
 
     @Override
     public Class<? extends ValueExpr> validateType() throws HPersistException {
 
         if (this.typedExpr == null)
-            throw new HPersistException("Parameter " + this.getName() + " not assigned a value");
+            throw new HPersistException("Parameter " + this.getParamName() + " not assigned a value");
 
         return this.typedExpr.getClass();
     }
@@ -38,10 +42,25 @@ public class NamedParameter extends GenericAttribRef<ValueExpr> {
     }
 
     @Override
-    public void setParam(final String param, final Object val) throws HPersistException {
+    public void setContext(final ExprTree context) {
+        this.context = context;
+        this.context.addNamedParameter(this);
+    }
 
-        if (!this.isAMatch(param))
-            return;
+    @Override
+    public ValueExpr getOptimizedValue() throws HPersistException {
+        return this;
+    }
+
+    public boolean isAConstant() {
+        return false;
+    }
+
+    public String getParamName() {
+        return paramName;
+    }
+
+    public void setParam(final Object val) throws HPersistException {
 
         if (val instanceof Boolean) {
             this.typedExpr = new BooleanLiteral((Boolean)val);
@@ -63,21 +82,7 @@ public class NamedParameter extends GenericAttribRef<ValueExpr> {
             return;
         }
 
-        throw new HPersistException("Parameter " + this.getName() + " assigned an unsupported type "
+        throw new HPersistException("Parameter " + this.getParamName() + " assigned an unsupported type "
                                     + val.getClass().getName());
     }
-
-    private boolean isAMatch(final String param) {
-        final String name = this.getName();
-        if (param.startsWith(":")) {
-            if (param.equals(name))
-                return true;
-        }
-        else {
-            if ((":" + param).equals(name))
-                return true;
-        }
-        return false;
-    }
-
 }

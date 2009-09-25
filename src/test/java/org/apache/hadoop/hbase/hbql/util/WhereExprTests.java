@@ -119,7 +119,7 @@ public class WhereExprTests {
 
         try {
             final ExprTree tree = HBql.parseDescWhereExpr(expr, null);
-            final List<ExprVariable> attribs = tree.getExprVariables();
+            final List<ExprVariable> attribs = tree.getExprVariablesList();
             final List<String> valList = Lists.newArrayList(vals);
             boolean retval = true;
 

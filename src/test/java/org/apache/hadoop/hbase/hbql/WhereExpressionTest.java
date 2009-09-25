@@ -65,7 +65,6 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalFalse(tree);
 
         tree = parseExpr(":test1");
-        tree.setParam(":test", Boolean.TRUE);
         assertHasException(tree, HPersistException.class);
 
     }

@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -65,14 +64,6 @@ public abstract class GenericInStmt extends GenericNotValue {
     }
 
     @Override
-    public List<ExprVariable> getExprVariables() {
-        final List<ExprVariable> retval = this.getExpr().getExprVariables();
-        for (final ValueExpr val : this.getValueList())
-            retval.addAll(val.getExprVariables());
-        return retval;
-    }
-
-    @Override
     public Boolean getValue(final Object object) throws HPersistException {
         final boolean retval = this.evaluateList(object);
         return (this.isNot()) ? !retval : retval;
@@ -88,13 +79,6 @@ public abstract class GenericInStmt extends GenericNotValue {
         this.getExpr().setContext(context);
         for (final ValueExpr valueExpr : this.getValueList())
             valueExpr.setContext(context);
-    }
-
-    @Override
-    public void setParam(final String param, final Object val) throws HPersistException {
-        this.getExpr().setParam(param, val);
-        for (final ValueExpr valueExpr : this.getValueList())
-            valueExpr.setParam(param, val);
     }
 
     private boolean listIsConstant() {

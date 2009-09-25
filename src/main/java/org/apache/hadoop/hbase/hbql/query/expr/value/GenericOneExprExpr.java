@@ -1,11 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value;
 
-import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,19 +25,11 @@ public class GenericOneExprExpr {
         this.expr = expr;
     }
 
-    public List<ExprVariable> getExprVariables() {
-        return this.getExpr().getExprVariables();
-    }
-
     public boolean isAConstant() {
         return this.getExpr().isAConstant();
     }
 
     public void setContext(final ExprTree context) {
         this.getExpr().setContext(context);
-    }
-
-    public void setParam(final String param, final Object val) throws HPersistException {
-        this.getExpr().setParam(param, val);
     }
 }

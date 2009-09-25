@@ -2,13 +2,10 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,14 +31,6 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
     }
 
     @Override
-    public List<ExprVariable> getExprVariables() {
-        final List<ExprVariable> retval = this.getPred().getExprVariables();
-        retval.addAll(this.getExpr1().getExprVariables());
-        retval.addAll(this.getExpr2().getExprVariables());
-        return retval;
-    }
-
-    @Override
     public Object getValue(final Object object) throws HPersistException {
         if ((Boolean)this.getPred().getValue(object))
             return this.getExpr1().getValue(object);
@@ -59,13 +48,6 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
         this.getPred().setContext(context);
         this.getExpr1().setContext(context);
         this.getExpr2().setContext(context);
-    }
-
-    @Override
-    public void setParam(final String param, final Object val) throws HPersistException {
-        this.getPred().setParam(param, val);
-        this.getExpr1().setParam(param, val);
-        this.getExpr2().setParam(param, val);
     }
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz, final String caller) throws HPersistException {

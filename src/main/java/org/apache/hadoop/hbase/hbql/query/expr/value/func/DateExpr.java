@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -11,7 +10,6 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -74,13 +72,6 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public List<ExprVariable> getExprVariables() {
-        final List<ExprVariable> retval = this.getFormatExpr().getExprVariables();
-        retval.addAll(this.getValueExpr().getExprVariables());
-        return retval;
-    }
-
-    @Override
     public boolean isAConstant() {
         return this.getFormatExpr().isAConstant() && this.getValueExpr().isAConstant();
     }
@@ -89,11 +80,5 @@ public class DateExpr implements DateValue {
     public void setContext(final ExprTree context) {
         this.getFormatExpr().setContext(context);
         this.getValueExpr().setContext(context);
-    }
-
-    @Override
-    public void setParam(final String param, final Object val) throws HPersistException {
-        this.getFormatExpr().setParam(param, val);
-        this.getValueExpr().setParam(param, val);
     }
 }

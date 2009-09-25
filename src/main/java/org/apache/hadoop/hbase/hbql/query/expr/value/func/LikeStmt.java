@@ -2,14 +2,12 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -93,13 +91,6 @@ public class LikeStmt extends GenericNotValue {
     }
 
     @Override
-    public List<ExprVariable> getExprVariables() {
-        final List<ExprVariable> retval = this.getValueExpr().getExprVariables();
-        retval.addAll(this.getPatternExpr().getExprVariables());
-        return retval;
-    }
-
-    @Override
     public boolean isAConstant() {
         return this.getValueExpr().isAConstant() && this.getPatternExpr().isAConstant();
     }
@@ -110,9 +101,4 @@ public class LikeStmt extends GenericNotValue {
         this.getPatternExpr().setContext(context);
     }
 
-    @Override
-    public void setParam(final String param, final Object val) throws HPersistException {
-        this.getValueExpr().setParam(param, val);
-        this.getPatternExpr().setParam(param, val);
-    }
 }
