@@ -108,7 +108,6 @@ public class GenericFunction implements ValueExpr {
                 return val.substring(begin, end);
             }
 
-            // Returns a number
             case LENGTH: {
                 final String val = (String)this.getValueExprs()[0].getValue(object);
                 if (val == null)
@@ -125,9 +124,7 @@ public class GenericFunction implements ValueExpr {
                 else
                     return val1.indexOf(val2);
             }
-
         }
-
         throw new HBqlException("Invalid function in GenericFunction.getValue() " + this.getFunctionType());
     }
 

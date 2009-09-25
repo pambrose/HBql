@@ -42,6 +42,11 @@ public class BooleanNot extends GenericOneExprExpr implements BooleanValue {
     public Boolean getValue(final Object object) throws HBqlException {
         final boolean retval = (Boolean)this.getExpr().getValue(object);
         return (this.not) ? !retval : retval;
-
     }
+
+    @Override
+    public String asString() {
+        return (this.not ? "NOT " : "") + this.getExpr().asString();
+    }
+
 }

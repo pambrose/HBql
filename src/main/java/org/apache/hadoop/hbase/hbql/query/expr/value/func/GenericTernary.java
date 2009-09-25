@@ -65,4 +65,11 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
 
         return clazz;
     }
+
+    @Override
+    public String asString() {
+        return "IF " + this.getPred().asString() + " THEN "
+               + this.getExpr1().asString() + " ELSE " + this.getExpr2().asString() + " END";
+    }
+
 }

@@ -31,4 +31,10 @@ public class BooleanLiteral extends GenericLiteral implements BooleanValue {
     public Class<? extends ValueExpr> validateType() throws HBqlException {
         return BooleanValue.class;
     }
+
+    @Override
+    public String asString() {
+        return this.value ? "TRUE" : "FALSE";
+    }
+
 }

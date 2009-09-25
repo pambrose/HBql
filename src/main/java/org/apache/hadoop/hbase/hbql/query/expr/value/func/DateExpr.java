@@ -81,4 +81,10 @@ public class DateExpr implements DateValue {
         this.getFormatExpr().setContext(context);
         this.getValueExpr().setContext(context);
     }
+
+    @Override
+    public String asString() {
+        return "DATE(" + this.getFormatExpr().asString() + ", " + this.getValueExpr().asString() + ")";
+    }
+
 }

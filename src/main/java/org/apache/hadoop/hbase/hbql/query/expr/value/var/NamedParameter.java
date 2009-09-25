@@ -85,4 +85,9 @@ public class NamedParameter implements ValueExpr {
         throw new HBqlException("Parameter " + this.getParamName() + " assigned an unsupported type "
                                 + val.getClass().getName());
     }
+
+    @Override
+    public String asString() {
+        return this.getParamName();
+    }
 }

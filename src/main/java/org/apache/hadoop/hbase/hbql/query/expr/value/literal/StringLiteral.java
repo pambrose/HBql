@@ -28,4 +28,8 @@ public class StringLiteral extends GenericLiteral implements StringValue {
         return StringValue.class;
     }
 
+    @Override
+    public String asString() {
+        return "\"" + this.value + "\"";
+    }
 }

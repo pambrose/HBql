@@ -53,4 +53,13 @@ public abstract class GenericCompare extends GenericTwoExprExpr implements Boole
         return BooleanValue.class;
     }
 
+    @Override
+    public String asString() {
+        final StringBuilder sbuf = new StringBuilder(this.getExpr1().asString());
+        if (this.getExpr2() != null)
+            sbuf.append(this.getOp()).append(this.getExpr2().asString());
+
+        return sbuf.toString();
+    }
+
 }

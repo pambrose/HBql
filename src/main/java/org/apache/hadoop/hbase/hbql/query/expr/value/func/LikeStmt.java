@@ -101,4 +101,10 @@ public class LikeStmt extends GenericNotValue {
         this.getPatternExpr().setContext(context);
     }
 
+    @Override
+    public String asString() {
+        return this.getValueExpr().asString() + notAsString() + " LIKE "
+               + this.getPatternExpr().asString();
+    }
+
 }

@@ -28,4 +28,8 @@ public class IntegerLiteral extends GenericLiteral implements NumberValue {
         return NumberValue.class;
     }
 
+    @Override
+    public String asString() {
+        return "" + this.value;
+    }
 }

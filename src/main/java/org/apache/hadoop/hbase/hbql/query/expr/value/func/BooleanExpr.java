@@ -40,4 +40,9 @@ public class BooleanExpr extends GenericOneExprExpr implements BooleanValue {
     public Boolean getValue(final Object object) throws HBqlException {
         return (Boolean)this.getExpr().getValue(object);
     }
+
+    @Override
+    public String asString() {
+        return this.getExpr().asString();
+    }
 }

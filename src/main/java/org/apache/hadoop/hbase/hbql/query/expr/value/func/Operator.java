@@ -24,7 +24,7 @@ public enum Operator {
         this.opStr = opStr;
     }
 
-    public String opAsString() {
+    public String toString() {
         return this.opStr;
     }
 }
