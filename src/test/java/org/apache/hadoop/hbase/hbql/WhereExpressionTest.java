@@ -234,18 +234,16 @@ public class WhereExpressionTest extends WhereExprTests {
         tree.setParameter("b", 8);
         assertEvalTrue(tree);
 
-        assertEvalTrue("-9 = -9");
-        assertEvalFalse("-9 = -8");
-        assertEvalTrue("((4 + 5) = 9)");
-        assertEvalTrue("(9) = 9");
-        assertEvalTrue("(4 + 5) = 9");
-        assertEvalFalse("(4 + 5) = 8");
-        assertEvalTrue("(4 + 5 + 10 + 10 - 20) = 9");
-        assertEvalFalse("(4 + 5 + 10 + 10 - 20) != 9");
+        tree = parseExpr("(:a + :a + :a + :a - :a) = :b");
+        tree.setParameter("a", 5);
+        tree.setParameter("b", 15);
+        assertEvalTrue(tree);
 
-        assertEvalTrue("(4 * 5) = 20");
-        assertEvalTrue("(40 % 6) = 4");
-        assertEvalFalse("(40 % 6) = 3");
+        tree = parseExpr("(:a % :b) = :c");
+        tree.setParameter("a", 40);
+        tree.setParameter("b", 6);
+        tree.setParameter("c", 4);
+        assertEvalTrue(tree);
 
         assertTrue(HBql.parseNumberValue("1-2-3-4").intValue() == (1 - 2 - 3 - 4));
         assertTrue(HBql.parseNumberValue("(2-2)-2").intValue() == ((2 - 2) - 2));
