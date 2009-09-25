@@ -14,6 +14,6 @@ import java.io.IOException;
  */
 public interface ConnectionCmd {
 
-    public HOutput exec(final HConnection conn) throws HPersistException, IOException;
+    public HOutput execute(final HConnection conn) throws HPersistException, IOException;
 
 }

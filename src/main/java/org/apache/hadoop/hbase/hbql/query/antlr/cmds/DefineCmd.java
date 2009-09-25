@@ -36,7 +36,7 @@ public class DefineCmd extends TableCmd implements SchemaManagerCmd {
     }
 
     @Override
-    public HOutput exec() throws HPersistException, IOException {
+    public HOutput execute() throws HPersistException, IOException {
 
         final DefinedSchema schema = DefinedSchema.newDefinedSchema(this.getTableName(),
                                                                     this.getAlias(),

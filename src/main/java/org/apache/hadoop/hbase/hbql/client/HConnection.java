@@ -94,7 +94,7 @@ public class HConnection {
         return tableList;
     }
 
-    public HOutput exec(final String str) throws HPersistException, IOException {
+    public HOutput execute(final String str) throws HPersistException, IOException {
 
         final ConnectionCmd cmd =
                 HBql.parseCommand(str);
@@ -102,7 +102,7 @@ public class HConnection {
         if (cmd == null)
             throw new HPersistException("Error parsing: " + str);
 
-        return cmd.exec(this);
+        return cmd.execute(this);
     }
 
     public void apply(final HBatch batch) throws IOException {

@@ -46,22 +46,22 @@ public class WhereExpressionTest extends WhereExprTests {
         ExprTree tree;
 
         tree = parseExpr(":test");
-        tree.setParam(":test", Boolean.TRUE);
+        tree.setParameter(":test", Boolean.TRUE);
         assertEvalTrue(tree);
-        tree.setParam(":test", Boolean.FALSE);
+        tree.setParameter(":test", Boolean.FALSE);
         assertEvalFalse(tree);
 
         tree = parseExpr(":test AND :test");
-        tree.setParam(":test", Boolean.TRUE);
+        tree.setParameter(":test", Boolean.TRUE);
         assertEvalTrue(tree);
-        tree.setParam(":test", Boolean.FALSE);
+        tree.setParameter(":test", Boolean.FALSE);
         assertEvalFalse(tree);
 
         tree = parseExpr(":test1 OR :test2");
-        tree.setParam(":test1", Boolean.TRUE);
-        tree.setParam(":test2", Boolean.FALSE);
+        tree.setParameter(":test1", Boolean.TRUE);
+        tree.setParameter(":test2", Boolean.FALSE);
         assertEvalTrue(tree);
-        tree.setParam(":test1", Boolean.FALSE);
+        tree.setParameter(":test1", Boolean.FALSE);
         assertEvalFalse(tree);
 
         tree = parseExpr(":test1");
@@ -88,10 +88,10 @@ public class WhereExpressionTest extends WhereExprTests {
         ExprTree tree;
 
         tree = parseExpr(":val1 < :val2");
-        tree.setParam("val1", 4);
-        tree.setParam("val2", 5);
+        tree.setParameter("val1", 4);
+        tree.setParameter("val2", 5);
         assertEvalTrue(tree);
-        tree.setParam(":val2", 3);
+        tree.setParameter(":val2", 3);
         assertEvalFalse(tree);
 
     }

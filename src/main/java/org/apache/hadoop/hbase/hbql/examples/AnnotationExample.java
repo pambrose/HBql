@@ -116,13 +116,13 @@ public class AnnotationExample {
 
         /*
         if (conn.tableExists("TestObject")) {
-            System.out.println(conn.exec("disable table TestObject"));
-            System.out.println(conn.exec("drop table TestObject"));
+            System.out.println(conn.execute("disable table TestObject"));
+            System.out.println(conn.execute("drop table TestObject"));
         }
         */
 
         if (!conn.tableExists("TestObject")) {
-            System.out.println(conn.exec("create table using TestObject"));
+            System.out.println(conn.execute("create table using TestObject"));
 
             final HBatch batch = new HBatch();
             for (int i = 0; i < 10; i++)

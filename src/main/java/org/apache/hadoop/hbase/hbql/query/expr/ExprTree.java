@@ -86,7 +86,7 @@ public class ExprTree implements Serializable {
     }
 
 
-    public void setParam(final String str, final Object val) throws HPersistException {
+    public void setParameter(final String str, final Object val) throws HPersistException {
 
         final String name = str.startsWith(":") ? str : (":" + str);
 

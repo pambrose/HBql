@@ -24,7 +24,7 @@ public class SchemaManager {
         if (cmd == null)
             throw new HPersistException("Error parsing: " + str);
 
-        return cmd.exec();
+        return cmd.execute();
     }
 
     // This is used for tests

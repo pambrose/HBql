@@ -31,7 +31,7 @@ public class SetCmd implements ConnectionCmd {
     }
 
     @Override
-    public HOutput exec(final HConnection conn) throws HPersistException, IOException {
+    public HOutput execute(final HConnection conn) throws HPersistException, IOException {
         final HOutput retval = new HOutput();
         final String var = this.getVariable();
 

@@ -23,7 +23,7 @@ public class DescribeCmd extends TableCmd implements ConnectionCmd {
     }
 
     @Override
-    public HOutput exec(final HConnection conn) throws HPersistException, IOException {
+    public HOutput execute(final HConnection conn) throws HPersistException, IOException {
 
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
 

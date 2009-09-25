@@ -13,6 +13,6 @@ import java.io.IOException;
  */
 public interface SchemaManagerCmd {
 
-    public HOutput exec() throws HPersistException, IOException;
+    public HOutput execute() throws HPersistException, IOException;
 
 }

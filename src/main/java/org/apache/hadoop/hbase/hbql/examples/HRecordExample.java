@@ -32,15 +32,15 @@ public class HRecordExample {
                             + "family1:title string  alias title"
                             + ")");
 
-        // System.out.println(conn.exec("delete from TestObject with client filter where true"));
-        // System.out.println(conn.exec("disable table testobjects"));
-        // System.out.println(conn.exec("enable table testobjects"));
-        // System.out.println(conn.exec("drop table testobjects"));
+        // System.out.println(conn.execute("delete from TestObject with client filter where true"));
+        // System.out.println(conn.execute("disable table testobjects"));
+        // System.out.println(conn.execute("enable table testobjects"));
+        // System.out.println(conn.execute("drop table testobjects"));
 
-        System.out.println(conn.exec("show tables"));
+        System.out.println(conn.execute("show tables"));
 
         if (!conn.tableExists("testobjects")) {
-            System.out.println(conn.exec("create table using testobjects"));
+            System.out.println(conn.execute("create table using testobjects"));
 
             final HBatch batch = new HBatch();
             for (int i = 0; i < 10; i++) {
@@ -55,7 +55,7 @@ public class HRecordExample {
         }
 
         if (conn.tableEnabled("testobjects2"))
-            System.out.println(conn.exec("describe table testobjects2"));
+            System.out.println(conn.execute("describe table testobjects2"));
 
         final String query1 = "SELECT keyval, author, title "
                               + "FROM testobjects2 "

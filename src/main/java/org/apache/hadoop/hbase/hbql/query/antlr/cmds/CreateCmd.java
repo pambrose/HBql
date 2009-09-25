@@ -22,7 +22,7 @@ public class CreateCmd extends TableCmd implements ConnectionCmd {
         super(tableName);
     }
 
-    public HOutput exec(final HConnection conn) throws HPersistException, IOException {
+    public HOutput execute(final HConnection conn) throws HPersistException, IOException {
 
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
 
