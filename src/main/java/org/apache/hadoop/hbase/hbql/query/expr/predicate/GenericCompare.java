@@ -30,18 +30,25 @@ public abstract class GenericCompare extends GenericTwoExprExpr implements Boole
     @Override
     public ValueExpr getOptimizedValue() throws HPersistException {
         this.setExpr1(this.getExpr1().getOptimizedValue());
-        this.setExpr2(this.getExpr2().getOptimizedValue());
+        if (this.getExpr2() != null)
+            this.setExpr2(this.getExpr2().getOptimizedValue());
 
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz, final String caller) throws HPersistException {
-        final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
-        final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
 
-        if (!HUtil.isParentClass(clazz, type1, type2))
-            throw new HPersistException("Invalid types "
-                                        + type1.getName() + " " + type2.getName() + " in " + caller);
+        final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
+
+        if (!HUtil.isParentClass(clazz, type1))
+            throw new HPersistException("Invalid type "
+                                        + type1.getName() + " in " + caller);
+
+        if (this.getExpr2() != null) {
+            final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
+            if (!HUtil.isParentClass(clazz, type2))
+                throw new HPersistException("Invalid types " + type2.getName() + " in " + caller);
+        }
 
         return BooleanValue.class;
     }

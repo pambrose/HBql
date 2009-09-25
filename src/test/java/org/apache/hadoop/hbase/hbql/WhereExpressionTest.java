@@ -18,6 +18,8 @@ public class WhereExpressionTest extends WhereExprTests {
     @Test
     public void booleanExpressions() throws HPersistException {
         assertEvalTrue("TRUE");
+        assertEvalTrue("TRUE == TRUE");
+        assertEvalTrue("TRUE != FALSE");
         assertEvalFalse("NOT TRUE");
         assertEvalFalse("NOT TRUE");
         assertEvalFalse("NOT TRUE");
@@ -67,6 +69,19 @@ public class WhereExpressionTest extends WhereExprTests {
         tree = parseExpr(":test1");
         assertHasException(tree, HPersistException.class);
 
+        tree = parseExpr(":b1 == :b2");
+        tree.setParameter("b1", Boolean.TRUE);
+        tree.setParameter("b2", Boolean.TRUE);
+        assertEvalTrue(tree);
+        tree.setParameter("b2", Boolean.FALSE);
+        assertEvalFalse(tree);
+
+        tree = parseExpr(":b1 != :b2");
+        tree.setParameter("b1", Boolean.TRUE);
+        tree.setParameter("b2", Boolean.FALSE);
+        assertEvalTrue(tree);
+        tree.setParameter("b2", Boolean.TRUE);
+        assertEvalFalse(tree);
     }
 
     @Test

@@ -35,6 +35,8 @@ public class ValueCompare extends GenericCompare implements BooleanValue {
             typedExpr = new NumberCompare(this.getExpr1(), this.getOp(), this.getExpr2());
         else if (HUtil.isParentClass(DateValue.class, type1, type2))
             typedExpr = new DateCompare(this.getExpr1(), this.getOp(), this.getExpr2());
+        else if (HUtil.isParentClass(BooleanValue.class, type1, type2))
+            typedExpr = new BooleanCompare(this.getExpr1(), this.getOp(), this.getExpr2());
         else
             throw new HPersistException("Invalid types " + type1.getName() + " and " + type2.getName()
                                         + " in ValueCompare.validateType()");

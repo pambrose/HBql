@@ -25,13 +25,13 @@ public class ExprTree implements Serializable {
     private final Map<String, List<NamedParameter>> namedParamsMap = Maps.newHashMap();
     private final List<ExprVariable> exprVariablesList = Lists.newArrayList();
 
-    private Schema schema = null;
-    private ValueExpr treeRoot = null;
-    private long start, end;
-
     private boolean inNeedOfTypeValidation = true;
     private boolean inNeedOfOptimization = true;
     private boolean inNeedOfSettingContext = true;
+
+    private Schema schema = null;
+    private ValueExpr treeRoot = null;
+    private long start, end;
 
     private ExprTree() {
     }

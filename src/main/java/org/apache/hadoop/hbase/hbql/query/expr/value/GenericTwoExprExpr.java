@@ -43,6 +43,7 @@ public class GenericTwoExprExpr {
 
     public void setContext(final ExprTree context) {
         this.getExpr1().setContext(context);
+
         if (this.getExpr2() != null)
             this.getExpr2().setContext(context);
     }

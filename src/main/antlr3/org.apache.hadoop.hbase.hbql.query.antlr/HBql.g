@@ -170,8 +170,7 @@ booleanNot returns [BooleanValue retval]
 	: (n=keyNOT)? p=booleanPrimary			{retval = ($n.text != null) ? new BooleanNot(true, $p.retval) :  $p.retval;};
 
 booleanPrimary returns [BooleanValue retval]
-	: b=eqneCompare					{retval = $b.retval;}
-	;
+	: b=eqneCompare					{retval = $b.retval;};
 
 eqneCompare returns [BooleanValue retval]
 options {backtrack=true;}	
@@ -314,7 +313,7 @@ ltgtOp returns [Operator retval]
 	;
 			
 eqneOp returns [Operator retval]
-	: EQ 						{$eqneOp.retval = Operator.EQ;}
+	: EQ EQ?					{$eqneOp.retval = Operator.EQ;}
 	| (LTGT | BANGEQ)				{$eqneOp.retval = Operator.NOTEQ;}
 	;
 				
@@ -340,10 +339,9 @@ INT	: DIGIT+;
 ID	: CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)* 		// DOOLAR is for inner class table names
 	| CHAR (CHAR | DOT | MINUS | DIGIT)* COLON (CHAR | DOT | MINUS | DIGIT)*
 	;
-PARAM	: COLON CHAR (CHAR | DOT | MINUS | DIGIT)*;	
 	
-//PARAM	: COLON (CHAR | DIGIT  | DOT)*;
- 
+PARAM	: COLON CHAR (CHAR | DOT | MINUS | DIGIT)*;	
+	 
 QUOTED		
 @init {final StringBuilder sbuf = new StringBuilder();}	
 	: DQUOTE (options {greedy=false;} : any=. {sbuf.append((char)$any);})* DQUOTE {setText(sbuf.toString());}
