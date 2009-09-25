@@ -21,7 +21,8 @@ public class ExprTree implements Serializable {
     private Schema schema = null;
     private ValueExpr treeRoot = null;
     private long start, end;
-    private boolean optimized = false;
+    private boolean inNeedOfTypeValidation = true;
+    private boolean inNeedOfOptimization = true;
 
     private ExprTree(final ValueExpr treeRoot) {
         this.treeRoot = treeRoot;
@@ -47,6 +48,22 @@ public class ExprTree implements Serializable {
         return this.getTreeRoot() != null;
     }
 
+    private boolean isInNeedOfTypeValidation() {
+        return inNeedOfTypeValidation;
+    }
+
+    private void setInNeedOfTypeValidation(final boolean inNeedOfTypeValidation) {
+        this.inNeedOfTypeValidation = inNeedOfTypeValidation;
+    }
+
+    private boolean isInNeedOfOptimization() {
+        return inNeedOfOptimization;
+    }
+
+    private void setInNeedOfOptimization(final boolean inNeedOfOptimization) {
+        this.inNeedOfOptimization = inNeedOfOptimization;
+    }
+
     public void setSchema(final Schema schema) {
         if (schema != null) {
             this.schema = schema;
@@ -57,15 +74,17 @@ public class ExprTree implements Serializable {
 
     public void setParam(final String param, final Object val) throws HPersistException {
         this.getTreeRoot().setParam(param, val);
+        this.setInNeedOfTypeValidation(true);
     }
 
-    public void optimize() throws HPersistException {
+    private void optimize() throws HPersistException {
         this.setTreeRoot(this.getTreeRoot().getOptimizedValue());
-        this.optimized = true;
+        this.setInNeedOfOptimization(false);
     }
 
-    public void validateTypes() throws HPersistException {
+    private void validateTypes() throws HPersistException {
         this.getTreeRoot().validateType();
+        this.setInNeedOfTypeValidation(false);
     }
 
     public List<ExprVariable> getExprVariables() {
@@ -76,6 +95,12 @@ public class ExprTree implements Serializable {
     }
 
     public Boolean evaluate(final Object object) throws HPersistException {
+
+        if (this.isInNeedOfTypeValidation())
+            this.validateTypes();
+
+        if (this.isInNeedOfOptimization())
+            this.optimize();
 
         // Set it once per evaluation
         DateLiteral.resetNow();
@@ -95,8 +120,6 @@ public class ExprTree implements Serializable {
 
         if (this.isValid()) {
             this.setSchema(schema);
-            this.validateTypes();
-            this.optimize();
 
             // Check if all the variables referenced in the where clause are present in the fieldList.
             final List<String> selectList = schema.getAliasAndQualifiedNameFieldList(fieldList);

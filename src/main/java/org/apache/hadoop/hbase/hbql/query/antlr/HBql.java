@@ -29,16 +29,11 @@ public class HBql {
     }
 
     public static ExprTree parseDescWhereExpr(final String input,
-                                              final Schema schema,
-                                              final boolean optimize) throws HPersistException {
+                                              final Schema schema) throws HPersistException {
         try {
             final HBqlParser parser = newParser(input);
             final ExprTree exprTree = parser.descWhereExpr(schema);
             exprTree.setSchema(schema);
-            if (optimize) {
-                exprTree.validateTypes();
-                exprTree.optimize();
-            }
             return exprTree;
         }
         catch (RecognitionException e) {
@@ -53,8 +48,6 @@ public class HBql {
             final HBqlParser parser = newParser(input);
             final ExprTree exprTree = parser.nodescWhereExpr(schema);
             exprTree.setSchema(schema);
-            exprTree.validateTypes();
-            exprTree.optimize();
             return exprTree;
         }
         catch (RecognitionException e) {

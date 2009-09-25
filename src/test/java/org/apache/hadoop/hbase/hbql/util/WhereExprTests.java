@@ -56,7 +56,6 @@ public class WhereExprTests {
     }
 
     public static void assertEvalTrue(final Object recordObj, final ExprTree tree) throws HPersistException {
-        tree.validateTypes();
         org.junit.Assert.assertTrue(evalExpr(recordObj, tree));
     }
 
@@ -65,7 +64,6 @@ public class WhereExprTests {
     }
 
     public static void assertEvalFalse(final Object recordObj, final ExprTree tree) throws HPersistException {
-        tree.validateTypes();
         org.junit.Assert.assertFalse(evalExpr(recordObj, tree));
     }
 
@@ -77,7 +75,6 @@ public class WhereExprTests {
     public void assertHasException(final Object recordObj, final ExprTree tree, final Class clazz) {
         Class eclazz = null;
         try {
-            tree.validateTypes();
             evalExpr(recordObj, tree);
         }
         catch (HPersistException e) {
@@ -101,33 +98,27 @@ public class WhereExprTests {
 
     public ExprTree parseExpr(final Object recordObj, final String expr) throws HPersistException {
         final Schema schema = SchemaManager.getObjectSchema(recordObj);
-        return HBql.parseDescWhereExpr(expr, schema, false);
+        return HBql.parseDescWhereExpr(expr, schema);
 
     }
 
     private static boolean evalExpr(final Object recordObj, final String expr) throws HPersistException {
 
         final Schema schema = SchemaManager.getObjectSchema(recordObj);
-        final ExprTree tree = HBql.parseDescWhereExpr(expr, schema, false);
+        final ExprTree tree = HBql.parseDescWhereExpr(expr, schema);
 
         return evalExpr(recordObj, tree);
     }
 
     private static boolean evalExpr(final Object recordObj, final ExprTree tree) throws HPersistException {
-        tree.validateTypes();
-        final boolean no_opt_run = tree.evaluate(recordObj);
-        tree.optimize();
-        final boolean opt_run = tree.evaluate(recordObj);
-        if (no_opt_run != opt_run)
-            throw new HPersistException("Different outcome with call to optimize()");
-        return opt_run;
+        return tree.evaluate(recordObj);
     }
 
 
     private static boolean evalColumnNames(final String expr, String... vals) {
 
         try {
-            final ExprTree tree = HBql.parseDescWhereExpr(expr, null, true);
+            final ExprTree tree = HBql.parseDescWhereExpr(expr, null);
             final List<ExprVariable> attribs = tree.getExprVariables();
             final List<String> valList = Lists.newArrayList(vals);
             boolean retval = true;
