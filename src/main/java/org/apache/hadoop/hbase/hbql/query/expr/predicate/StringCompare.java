@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HPersistException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,15 +19,7 @@ public class StringCompare extends GenericCompare {
 
     @Override
     public Class<? extends ValueExpr> validateType() throws HPersistException {
-
-        final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
-        final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
-
-        if (!HUtil.isParentClass(StringValue.class, type1, type2))
-            throw new HPersistException("Invalid types "
-                                        + type1.getName() + " " + type2.getName() + " in StringCompare");
-
-        return StringValue.class;
+        return this.validateType(StringValue.class, "StringCompare");
     }
 
     @Override
