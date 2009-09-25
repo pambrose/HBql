@@ -13,11 +13,11 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Aug 25, 2009
  * Time: 8:28:06 PM
  */
-public class CondFactor extends GenericOneExprExpr implements BooleanValue {
+public class BooleanNot extends GenericOneExprExpr implements BooleanValue {
 
     private final boolean not;
 
-    public CondFactor(final boolean not, final BooleanValue expr) {
+    public BooleanNot(final boolean not, final BooleanValue expr) {
         super(expr);
         this.not = not;
     }

@@ -161,13 +161,13 @@ descWhereExpr [Schema es] returns [ExprTree retval]
 
 // Boolean Expressions				
 booleanExpr returns [BooleanValue retval]
-	: e1=andExpr (keyOR e2=booleanExpr)?		{$booleanExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, Operator.OR, $e2.retval);};
+	: e1=andExpr (keyOR e2=booleanExpr)?		{$booleanExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanCompare($e1.retval, Operator.OR, $e2.retval);};
 
 andExpr returns [BooleanValue retval]
-	: e1=negateExpr (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new CompareExpr($e1.retval, Operator.AND, $e2.retval);};
+	: e1=booleanNot (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanCompare($e1.retval, Operator.AND, $e2.retval);};
 
-negateExpr returns [BooleanValue retval]			 
-	: (n=keyNOT)? p=booleanPrimary			{retval = ($n.text != null) ? new CondFactor(true, $p.retval) :  $p.retval;};
+booleanNot returns [BooleanValue retval]			 
+	: (n=keyNOT)? p=booleanPrimary			{retval = ($n.text != null) ? new BooleanNot(true, $p.retval) :  $p.retval;};
 
 booleanPrimary returns [BooleanValue retval]
 	: b=eqneCompare					{retval = $b.retval;}

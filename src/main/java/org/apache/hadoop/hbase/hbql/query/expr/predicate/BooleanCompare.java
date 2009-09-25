@@ -14,11 +14,11 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class CompareExpr extends GenericTwoExprExpr implements BooleanValue {
+public class BooleanCompare extends GenericTwoExprExpr implements BooleanValue {
 
     private final Operator op;
 
-    public CompareExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
+    public BooleanCompare(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, expr2);
         this.op = op;
     }
@@ -34,7 +34,7 @@ public class CompareExpr extends GenericTwoExprExpr implements BooleanValue {
 
         if (!HUtil.isParentClass(BooleanValue.class, type1, type2))
             throw new HPersistException("Invalid types "
-                                        + type1.getName() + " " + type2.getName() + " in CompareExpr");
+                                        + type1.getName() + " " + type2.getName() + " in BooleanCompare");
 
         return BooleanValue.class;
     }
@@ -64,7 +64,7 @@ public class CompareExpr extends GenericTwoExprExpr implements BooleanValue {
                 return expr1val && (Boolean)this.getExpr2().getValue(object);
 
             default:
-                throw new HPersistException("Error in BooleanExpr.getValue()");
+                throw new HPersistException("Error in BooleanCompare.getValue()");
         }
     }
 }
