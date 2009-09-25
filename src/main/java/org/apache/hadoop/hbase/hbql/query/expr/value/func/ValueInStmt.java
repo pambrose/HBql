@@ -44,7 +44,7 @@ public class ValueInStmt extends GenericInStmt {
         }
         else {
             clazz = null;
-            HUtil.reportInvalidTypes(this, type);
+            HUtil.throwInvalidTypeException(this, type);
         }
 
         // First make sure all the types are matched

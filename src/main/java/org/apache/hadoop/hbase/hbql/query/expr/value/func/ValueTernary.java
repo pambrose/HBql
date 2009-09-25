@@ -25,11 +25,10 @@ public class ValueTernary extends GenericTernary {
     @Override
     public Class<? extends ValueExpr> validateTypes() throws HBqlException {
 
-        final Class<? extends ValueExpr> pred = this.getPred().validateTypes();
+        HUtil.validateParentClass(this, BooleanValue.class, this.getPred().validateTypes());
+
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateTypes();
         final Class<? extends ValueExpr> type2 = this.getExpr2().validateTypes();
-
-        HUtil.validateParentClass(this, BooleanValue.class, pred);
 
         if (HUtil.isParentClass(StringValue.class, type1, type2)) {
             this.typedExpr = new StringTernary(this.getPred(), this.getExpr1(), this.getExpr2());
@@ -51,7 +50,7 @@ public class ValueTernary extends GenericTernary {
             return type1;
         }
 
-        HUtil.reportInvalidTypes(this, type1, type2);
+        HUtil.throwInvalidTypeException(this, type1, type2);
 
         // Not reached
         return null;

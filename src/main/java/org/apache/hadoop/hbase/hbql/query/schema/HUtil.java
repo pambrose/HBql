@@ -118,8 +118,8 @@ public class HUtil {
         }
     }
 
-    public static void reportInvalidTypes(final ValueExpr expr,
-                                          final Class<? extends ValueExpr>... clazzes) throws TypeException {
+    public static void throwInvalidTypeException(final ValueExpr expr,
+                                                 final Class<? extends ValueExpr>... clazzes) throws TypeException {
 
         final List<Class> classList = Lists.newArrayList();
 

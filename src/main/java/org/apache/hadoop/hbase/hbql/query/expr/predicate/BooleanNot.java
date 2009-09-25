@@ -23,8 +23,7 @@ public class BooleanNot extends GenericOneExprExpr implements BooleanValue {
     }
 
     public Class<? extends ValueExpr> validateTypes() throws HBqlException {
-        final Class<? extends ValueExpr> type = this.getExpr().validateTypes();
-        HUtil.validateParentClass(this, BooleanValue.class, type);
+        HUtil.validateParentClass(this, BooleanValue.class, this.getExpr().validateTypes());
         return BooleanValue.class;
     }
 

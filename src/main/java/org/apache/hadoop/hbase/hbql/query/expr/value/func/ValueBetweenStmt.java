@@ -36,7 +36,7 @@ public class ValueBetweenStmt extends GenericBetweenStmt {
         else if (HUtil.isParentClass(DateValue.class, type1, type2, type3))
             this.typedExpr = new DateBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());
         else
-            HUtil.reportInvalidTypes(this, type1, type2, type3);
+            HUtil.throwInvalidTypeException(this, type1, type2, type3);
 
         return BooleanValue.class;
     }
