@@ -217,6 +217,40 @@ public class WhereExpressionTest extends WhereExprTests {
     @Test
     public void numericCalculations() throws HBqlException {
 
+        assertEvalTrue("-9 = -9");
+        assertEvalFalse("-9 = -8");
+        assertEvalTrue("9 = 9");
+        assertEvalTrue("((4 + 5) = 9)");
+        assertEvalTrue("(9) = 9");
+        assertEvalTrue("(4 + 5) = 9");
+        assertEvalFalse("(4 + 5) = 8");
+        assertEvalTrue("(4 + 5 + 10 + 10 - 20) = 9");
+        assertEvalFalse("(4 + 5 + 10 + 10 - 20) != 9");
+
+        assertEvalTrue("(4 * 5) = 20");
+        assertEvalTrue("(40 % 6) = 4");
+        assertEvalFalse("(40 % 6) = 3");
+
+        assertTrue(HBql.parseNumberValue("1-2-3-4").intValue() == (1 - 2 - 3 - 4));
+        assertTrue(HBql.parseNumberValue("(2-2)-2").intValue() == ((2 - 2) - 2));
+        assertTrue(HBql.parseNumberValue("2-(2-2)").intValue() == (2 - (2 - 2)));
+        assertTrue(HBql.parseNumberValue("2-2-2").intValue() == (2 - 2 - 2));
+        assertTrue(HBql.parseNumberValue("2*3-4*(((20/5)))+2-(2-3-4*3)").intValue()
+                   == (2 * 3 - 4 * (((20 / 5))) + 2 - (2 - 3 - 4 * 3)));
+        assertTrue(HBql.parseNumberValue("2-(-4)").intValue() == (2 - (-4)));
+        assertTrue(HBql.parseNumberValue("(7-4)+2").intValue() == ((7 - 4) + 2));
+        assertTrue(HBql.parseNumberValue("7-(4+2)").intValue() == (7 - (4 + 2)));
+
+        assertTrue(HBql.parseNumberValue("((((4+3)*(2-1))*(3/1))-((2+5)*(1+1)))").intValue()
+                   == (((4 + 3) * (2 - 1)) * (3 / 1)) - ((2 + 5) * (1 + 1)));
+
+        assertTrue(HBql.parseNumberValue("((2+4)*(9-2))").intValue() == ((2 + 4) * (9 - 2)));
+        assertTrue(HBql.parseNumberValue("(((4+3)*(2-1))*(3/1))").intValue() == (((4 + 3) * (2 - 1)) * (3 / 1)));
+    }
+
+    @Test
+    public void numericParamCalculations() throws HBqlException {
+
         ExprTree tree;
 
         tree = parseExpr(":a = :b");
@@ -244,40 +278,6 @@ public class WhereExpressionTest extends WhereExprTests {
         tree.setParameter("b", 6);
         tree.setParameter("c", 4);
         assertEvalTrue(tree);
-
-        assertTrue(HBql.parseNumberValue("1-2-3-4").intValue() == (1 - 2 - 3 - 4));
-        assertTrue(HBql.parseNumberValue("(2-2)-2").intValue() == ((2 - 2) - 2));
-        assertTrue(HBql.parseNumberValue("2-(2-2)").intValue() == (2 - (2 - 2)));
-        assertTrue(HBql.parseNumberValue("2-2-2").intValue() == (2 - 2 - 2));
-        assertTrue(HBql.parseNumberValue("2*3-4*(((20/5)))+2-(2-3-4*3)").intValue()
-                   == (2 * 3 - 4 * (((20 / 5))) + 2 - (2 - 3 - 4 * 3)));
-        assertTrue(HBql.parseNumberValue("2-(-4)").intValue() == (2 - (-4)));
-        assertTrue(HBql.parseNumberValue("(7-4)+2").intValue() == ((7 - 4) + 2));
-        assertTrue(HBql.parseNumberValue("7-(4+2)").intValue() == (7 - (4 + 2)));
-
-        assertTrue(HBql.parseNumberValue("((((4+3)*(2-1))*(3/1))-((2+5)*(1+1)))").intValue()
-                   == (((4 + 3) * (2 - 1)) * (3 / 1)) - ((2 + 5) * (1 + 1)));
-
-        assertTrue(HBql.parseNumberValue("((2+4)*(9-2))").intValue() == ((2 + 4) * (9 - 2)));
-        assertTrue(HBql.parseNumberValue("(((4+3)*(2-1))*(3/1))").intValue() == (((4 + 3) * (2 - 1)) * (3 / 1)));
-    }
-
-    @Test
-    public void numericParamCalculations() throws HBqlException {
-
-        assertEvalTrue("9 = 9");
-        assertEvalTrue("-9 = -9");
-        assertEvalFalse("-9 = -8");
-        assertEvalTrue("((4 + 5) = 9)");
-        assertEvalTrue("(9) = 9");
-        assertEvalTrue("(4 + 5) = 9");
-        assertEvalFalse("(4 + 5) = 8");
-        assertEvalTrue("(4 + 5 + 10 + 10 - 20) = 9");
-        assertEvalFalse("(4 + 5 + 10 + 10 - 20) != 9");
-
-        assertEvalTrue("(4 * 5) = 20");
-        assertEvalTrue("(40 % 6) = 4");
-        assertEvalFalse("(40 % 6) = 3");
     }
 
 
