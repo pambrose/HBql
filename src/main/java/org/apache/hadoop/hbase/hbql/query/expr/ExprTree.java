@@ -106,7 +106,7 @@ public class ExprTree implements Serializable {
     }
 
     private void validateTypes() throws HBqlException {
-        this.getTreeRoot().validateType();
+        this.getTreeRoot().validateTypes();
         this.setInNeedOfTypeValidation(false);
     }
 

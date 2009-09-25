@@ -26,13 +26,13 @@ public abstract class GenericCalcExpr extends GenericTwoExprExpr implements Valu
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz, final String caller) throws HBqlException {
 
-        final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
+        final Class<? extends ValueExpr> type1 = this.getExpr1().validateTypes();
 
         if (HUtil.isParentClass(clazz, type1))
             throw new HBqlException("Invalid types " + type1.getName() + " " + " in " + caller);
 
         if (this.getExpr2() != null) {
-            final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
+            final Class<? extends ValueExpr> type2 = this.getExpr2().validateTypes();
 
             if (HUtil.isParentClass(clazz, type2))
                 throw new HBqlException("Invalid types " + type2.getName() + " in " + caller);

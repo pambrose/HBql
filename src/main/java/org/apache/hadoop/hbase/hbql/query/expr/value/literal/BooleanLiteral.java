@@ -28,7 +28,7 @@ public class BooleanLiteral extends GenericLiteral implements BooleanValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
         return BooleanValue.class;
     }
 

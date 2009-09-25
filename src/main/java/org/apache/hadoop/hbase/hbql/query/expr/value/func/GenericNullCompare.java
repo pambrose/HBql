@@ -40,7 +40,7 @@ public abstract class GenericNullCompare extends GenericNotValue {
     }
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz, final String caller) throws HBqlException {
-        final Class<? extends ValueExpr> type = this.getExpr().validateType();
+        final Class<? extends ValueExpr> type = this.getExpr().validateTypes();
         if (!HUtil.isParentClass(clazz, type))
             throw new HBqlException("Invalid type " + type.getName() + " in " + caller);
         return BooleanValue.class;

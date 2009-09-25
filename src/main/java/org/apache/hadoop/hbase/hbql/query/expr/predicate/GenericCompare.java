@@ -39,13 +39,13 @@ public abstract class GenericCompare extends GenericTwoExprExpr implements Boole
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws HBqlException {
 
-        final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
+        final Class<? extends ValueExpr> type1 = this.getExpr1().validateTypes();
 
         if (!HUtil.isParentClass(clazz, type1))
             throw new TypeException("Invalid type " + type1.getName());
 
         if (this.getExpr2() != null) {
-            final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
+            final Class<? extends ValueExpr> type2 = this.getExpr2().validateTypes();
             if (!HUtil.isParentClass(clazz, type2))
                 throw new TypeException("Invalid types " + type2.getName());
         }

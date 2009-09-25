@@ -69,7 +69,7 @@ public class DateLiteral extends GenericLiteral implements DateValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
         return DateValue.class;
     }
 

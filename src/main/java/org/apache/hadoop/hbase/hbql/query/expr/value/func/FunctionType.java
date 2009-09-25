@@ -51,7 +51,7 @@ public enum FunctionType {
 
         for (final Class clazz : this.getTypeSig()) {
 
-            final Class type = valueExprs[i].validateType();
+            final Class type = valueExprs[i].validateTypes();
 
             if (!clazz.equals(type))
                 throw new HBqlException("Invalid type " + type.getName() + " for arg " + i + " in function "

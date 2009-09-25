@@ -74,9 +74,9 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz,
                                                       final String caller) throws HBqlException {
 
-        final Class<? extends ValueExpr> expr = this.getExpr().validateType();
-        final Class<? extends ValueExpr> lower = this.getLower().validateType();
-        final Class<? extends ValueExpr> upper = this.getUpper().validateType();
+        final Class<? extends ValueExpr> expr = this.getExpr().validateTypes();
+        final Class<? extends ValueExpr> lower = this.getLower().validateTypes();
+        final Class<? extends ValueExpr> upper = this.getUpper().validateTypes();
 
         if (HUtil.isParentClass(clazz, expr, lower, upper))
             throw new HBqlException("Invalid types " + expr.getName() + " "

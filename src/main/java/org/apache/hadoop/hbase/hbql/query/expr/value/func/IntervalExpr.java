@@ -48,9 +48,9 @@ public class IntervalExpr extends GenericOneExprExpr implements DateValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
 
-        final Class<? extends ValueExpr> type = this.getExpr().validateType();
+        final Class<? extends ValueExpr> type = this.getExpr().validateTypes();
 
         if (!HUtil.isParentClass(NumberValue.class, type))
             throw new HBqlException("Invalid type " + type.getName() + " in IntervalExpr.validateType()");
@@ -70,4 +70,10 @@ public class IntervalExpr extends GenericOneExprExpr implements DateValue {
         final long val = num.longValue();
         return val * this.getIntervalType().getIntervalMillis();
     }
+
+    @Override
+    public String asString() {
+        return this.getIntervalType().name() + "(" + this.getExpr().asString() + ")";
+    }
+
 }

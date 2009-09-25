@@ -24,7 +24,7 @@ public class StringLiteral extends GenericLiteral implements StringValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
         return StringValue.class;
     }
 

@@ -24,10 +24,10 @@ public class ValueCompare extends GenericCompare implements BooleanValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
 
-        final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
-        final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
+        final Class<? extends ValueExpr> type1 = this.getExpr1().validateTypes();
+        final Class<? extends ValueExpr> type2 = this.getExpr2().validateTypes();
 
         if (HUtil.isParentClass(StringValue.class, type1, type2))
             typedExpr = new StringCompare(this.getExpr1(), this.getOp(), this.getExpr2());

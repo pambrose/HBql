@@ -35,10 +35,10 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
 
-        final Class<? extends ValueExpr> format = this.getFormatExpr().validateType();
-        final Class<? extends ValueExpr> value = this.getValueExpr().validateType();
+        final Class<? extends ValueExpr> format = this.getFormatExpr().validateTypes();
+        final Class<? extends ValueExpr> value = this.getValueExpr().validateTypes();
 
         if (!HUtil.isParentClass(StringValue.class, format, value))
             throw new HBqlException("Invalid types "

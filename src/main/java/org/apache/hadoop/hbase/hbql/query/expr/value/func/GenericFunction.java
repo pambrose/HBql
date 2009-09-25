@@ -47,7 +47,7 @@ public class GenericFunction implements ValueExpr {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
 
         switch (this.getFunctionType()) {
             case TRIM:

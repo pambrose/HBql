@@ -60,7 +60,7 @@ public class HBql {
         try {
             final HBqlParser parser = newParser(input);
             final ValueExpr valueExpr = parser.valueExpr();
-            valueExpr.validateType();
+            valueExpr.validateTypes();
             return (String)valueExpr.getValue(null);
         }
         catch (RecognitionException e) {
@@ -73,7 +73,7 @@ public class HBql {
         try {
             final HBqlParser parser = newParser(input);
             final ValueExpr valueExpr = parser.valueExpr();
-            valueExpr.validateType();
+            valueExpr.validateTypes();
             return (Number)valueExpr.getValue(null);
         }
         catch (RecognitionException e) {
@@ -86,7 +86,7 @@ public class HBql {
         try {
             final HBqlParser parser = newParser(input);
             final ValueExpr valueExpr = parser.valueExpr();
-            valueExpr.validateType();
+            valueExpr.validateTypes();
             return (Long)valueExpr.getValue(null);
         }
         catch (RecognitionException e) {

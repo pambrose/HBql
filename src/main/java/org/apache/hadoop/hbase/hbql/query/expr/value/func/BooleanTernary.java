@@ -18,7 +18,7 @@ public class BooleanTernary extends GenericTernary implements BooleanValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
         return this.validateType(BooleanValue.class);
     }
 

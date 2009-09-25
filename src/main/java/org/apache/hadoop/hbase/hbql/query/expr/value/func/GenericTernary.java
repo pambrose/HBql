@@ -53,9 +53,9 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws HBqlException {
 
-        final Class<? extends ValueExpr> pred = this.getPred().validateType();
-        final Class<? extends ValueExpr> type1 = this.getExpr1().validateType();
-        final Class<? extends ValueExpr> type2 = this.getExpr2().validateType();
+        final Class<? extends ValueExpr> pred = this.getPred().validateTypes();
+        final Class<? extends ValueExpr> type1 = this.getExpr1().validateTypes();
+        final Class<? extends ValueExpr> type2 = this.getExpr2().validateTypes();
 
         if (HUtil.isParentClass(BooleanValue.class, pred))
             throw new TypeException("Invalid predicate type " + pred.getName());

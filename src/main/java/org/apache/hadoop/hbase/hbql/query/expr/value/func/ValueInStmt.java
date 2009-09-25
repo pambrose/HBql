@@ -25,9 +25,9 @@ public class ValueInStmt extends GenericInStmt {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
 
-        final Class<? extends ValueExpr> type = this.getExpr().validateType();
+        final Class<? extends ValueExpr> type = this.getExpr().validateTypes();
         final Class<? extends ValueExpr> clazz;
 
         if (HUtil.isParentClass(StringValue.class, type)) {
@@ -47,7 +47,7 @@ public class ValueInStmt extends GenericInStmt {
 
         // First make sure all the types are matched
         for (final ValueExpr val : this.getValueExprList()) {
-            final Class<? extends ValueExpr> valtype = val.validateType();
+            final Class<? extends ValueExpr> valtype = val.validateTypes();
 
             if (!HUtil.isParentClass(clazz, valtype))
                 throw new HBqlException("Invalid type " + type.getName() + " in GenericInStmt");

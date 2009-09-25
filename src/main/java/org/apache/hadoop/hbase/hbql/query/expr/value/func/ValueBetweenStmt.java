@@ -23,11 +23,11 @@ public class ValueBetweenStmt extends GenericBetweenStmt {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
 
-        final Class<? extends ValueExpr> type1 = this.getExpr().validateType();
-        final Class<? extends ValueExpr> type2 = this.getLower().validateType();
-        final Class<? extends ValueExpr> type3 = this.getUpper().validateType();
+        final Class<? extends ValueExpr> type1 = this.getExpr().validateTypes();
+        final Class<? extends ValueExpr> type2 = this.getLower().validateTypes();
+        final Class<? extends ValueExpr> type3 = this.getUpper().validateTypes();
 
         if (HUtil.isParentClass(StringValue.class, type1, type2, type3))
             this.typedExpr = new StringBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());

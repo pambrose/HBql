@@ -24,7 +24,7 @@ public class IntegerLiteral extends GenericLiteral implements NumberValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
         return NumberValue.class;
     }
 

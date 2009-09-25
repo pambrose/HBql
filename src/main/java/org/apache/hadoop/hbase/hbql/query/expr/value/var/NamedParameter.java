@@ -28,7 +28,7 @@ public class NamedParameter implements ValueExpr {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
 
         if (this.typedExpr == null)
             throw new HBqlException("Parameter " + this.getParamName() + " not assigned a value");

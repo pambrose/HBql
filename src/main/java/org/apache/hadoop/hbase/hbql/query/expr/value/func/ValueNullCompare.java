@@ -20,9 +20,9 @@ public class ValueNullCompare extends GenericNullCompare {
         super(not, expr);
     }
 
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
 
-        final Class<? extends ValueExpr> type = this.getExpr().validateType();
+        final Class<? extends ValueExpr> type = this.getExpr().validateTypes();
 
         if (!HUtil.isParentClass(StringValue.class, type))
             throw new HBqlException("Invalid type " + type.getName() + " in ValueNullCompare");

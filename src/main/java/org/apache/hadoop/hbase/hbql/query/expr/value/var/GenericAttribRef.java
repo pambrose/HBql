@@ -62,7 +62,7 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
     }
 
     @Override
-    public Class<? extends ValueExpr> validateType() throws HBqlException {
+    public Class<? extends ValueExpr> validateTypes() throws HBqlException {
         return this.getExprVar().getFieldType().getExprType();
     }
 
