@@ -2,7 +2,9 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -21,9 +23,18 @@ public class StringInStmt extends GenericInStmt {
 
         final String attribVal = (String)this.getExpr().getValue(object);
         for (final ValueExpr obj : this.getValueExprList()) {
-            final String val = (String)obj.getValue(object);
-            if (attribVal.equals(val))
-                return true;
+            // Check if the value returned is a collection
+            final Object objval = obj.getValue(object);
+            if (HUtil.isParentClass(Collection.class, objval.getClass())) {
+                for (final ValueExpr val : (Collection<ValueExpr>)objval) {
+                    if (attribVal.equals(val.getValue(object)))
+                        return true;
+                }
+            }
+            else {
+                if (attribVal.equals(objval))
+                    return true;
+            }
         }
         return false;
     }

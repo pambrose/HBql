@@ -34,7 +34,7 @@ public class NamedParameter implements ValueExpr {
         this.paramName = paramName;
     }
 
-    private String getParamName() {
+    public String getParamName() {
         return this.paramName;
     }
 
@@ -88,7 +88,10 @@ public class NamedParameter implements ValueExpr {
 
     @Override
     public Object getValue(final Object object) throws HBqlException {
-        return this.getTypedExpr().getValue(object);
+        if (this.isScalar())
+            return this.getTypedExpr().getValue(object);
+        else
+            return this.getTypedExprList();
     }
 
     @Override
