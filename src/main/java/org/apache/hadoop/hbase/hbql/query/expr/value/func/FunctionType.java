@@ -48,7 +48,7 @@ public enum FunctionType {
 
         for (final Class clazz : this.getTypeSig()) {
 
-            final Class type = valueExprs[i].validateTypes(parentExpr);
+            final Class type = valueExprs[i].validateTypes(parentExpr, false);
 
             if (!HUtil.isParentClass(clazz, type))
                 throw new TypeException("Invalid type " + type.getSimpleName() + " for arg " + i + " in function "

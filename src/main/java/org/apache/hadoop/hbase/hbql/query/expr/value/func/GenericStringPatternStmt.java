@@ -37,11 +37,12 @@ public abstract class GenericStringPatternStmt extends GenericNotValue {
     protected abstract String getFunctionName();
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
+                                                    final boolean allowsCollections) throws TypeException {
         HUtil.validateParentClass(this,
                                   StringValue.class,
-                                  this.getValueExpr().validateTypes(this),
-                                  this.getPatternExpr().validateTypes(this));
+                                  this.getValueExpr().validateTypes(this, false),
+                                  this.getPatternExpr().validateTypes(this, false));
         return BooleanValue.class;
     }
 

@@ -25,9 +25,9 @@ public abstract class GenericCalcExpr extends GenericTwoExprExpr implements Valu
     }
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
-        HUtil.validateParentClass(this, clazz, this.getExpr1().validateTypes(this));
+        HUtil.validateParentClass(this, clazz, this.getExpr1().validateTypes(this, false));
         if (this.getExpr2() != null)
-            HUtil.validateParentClass(this, clazz, this.getExpr2().validateTypes(this));
+            HUtil.validateParentClass(this, clazz, this.getExpr2().validateTypes(this, false));
 
         return clazz;
     }

@@ -75,9 +75,9 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
         HUtil.validateParentClass(this,
                                   clazz,
-                                  this.getExpr().validateTypes(this),
-                                  this.getLower().validateTypes(this),
-                                  this.getUpper().validateTypes(this));
+                                  this.getExpr().validateTypes(this, false),
+                                  this.getLower().validateTypes(this, false),
+                                  this.getUpper().validateTypes(this, false));
         return BooleanValue.class;
     }
 

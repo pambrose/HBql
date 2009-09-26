@@ -91,25 +91,26 @@ public abstract class GenericInStmt extends GenericNotValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
+                                                    final boolean allowsCollections) throws TypeException {
 
-        final Class<? extends ValueExpr> type = this.getExpr().validateTypes(this);
-        final Class<? extends ValueExpr> clazz;
+        final Class<? extends ValueExpr> type = this.getExpr().validateTypes(this, false);
+        final Class<? extends ValueExpr> inClazz;
 
         if (HUtil.isParentClass(StringValue.class, type))
-            clazz = StringValue.class;
+            inClazz = StringValue.class;
         else if (HUtil.isParentClass(NumberValue.class, type))
-            clazz = NumberValue.class;
+            inClazz = NumberValue.class;
         else if (HUtil.isParentClass(DateValue.class, type))
-            clazz = DateValue.class;
+            inClazz = DateValue.class;
         else {
-            clazz = null;
+            inClazz = null;
             HUtil.throwInvalidTypeException(this, type);
         }
 
         // First make sure all the types are matched
-        for (final ValueExpr val : this.getValueExprList())
-            HUtil.validateParentClass(this, clazz, val.validateTypes(this));
+        for (final ValueExpr inVal : this.getValueExprList())
+            HUtil.validateParentClass(this, inClazz, inVal.validateTypes(this, true));
 
         return BooleanValue.class;
     }

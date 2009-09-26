@@ -40,7 +40,7 @@ public abstract class GenericNullCompare extends GenericNotValue {
     }
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
-        HUtil.validateParentClass(this, clazz, this.getExpr().validateTypes(this));
+        HUtil.validateParentClass(this, clazz, this.getExpr().validateTypes(this, false));
         return BooleanValue.class;
     }
 

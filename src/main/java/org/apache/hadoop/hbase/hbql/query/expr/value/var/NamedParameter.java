@@ -38,7 +38,7 @@ public class NamedParameter implements ValueExpr {
         return this.paramName;
     }
 
-    private boolean isScalar() {
+    private boolean isScalarValueSet() {
         return this.getTypedExpr() != null;
     }
 
@@ -51,44 +51,53 @@ public class NamedParameter implements ValueExpr {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
+                                                    final boolean allowsCollections) throws TypeException {
 
         if (this.getTypedExpr() == null && this.getTypedExprList() == null)
             throw new TypeException("Parameter " + this.getParamName() + " not assigned a value");
 
-        if (this.isScalar())
+        if (this.isScalarValueSet()) {
             return this.getTypedExpr().getClass();
-
-        // if it is a list, then ensure that all the types in list are consistent
-        if (this.getTypedExprList().size() == 0)
-            throw new TypeException("Parameter " + this.getParamName() + " not assigned a list with any values");
-
-        // Look at the type of the first item and then make sure the rest match that one
-        final ValueExpr firstval = this.getTypedExprList().get(0);
-        final Class<? extends ValueExpr> clazzToMatch = HUtil.getValueDescType(firstval);
-
-        for (final ValueExpr val : this.getTypedExprList()) {
-
-            final Class<? extends ValueExpr> clazz = HUtil.getValueDescType(val);
-
-            if (clazz == null)
-                throw new TypeException("Parameter " + this.getParamName()
-                                        + " assigned a collection value with invalid type "
-                                        + firstval.getClass().getSimpleName());
-
-            if (!clazz.equals(clazzToMatch))
-                throw new TypeException("Parameter " + this.getParamName()
-                                        + " assigned a collection value with type "
-                                        + firstval.getClass().getSimpleName()
-                                        + " which is inconsistent with the type of the first element");
         }
+        else {
+            // Make sure a list is legal in this expr
+            if (!allowsCollections)
+                throw new TypeException("Parameter " + this.getParamName()
+                                        + " is assigned a collection which is not allowed in the context "
+                                        + parentExpr.asString());
 
-        return clazzToMatch;
+            // if it is a list, then ensure that all the types in list are valid and consistent
+            if (this.getTypedExprList().size() == 0)
+                throw new TypeException("Parameter " + this.getParamName() + " is assigned a collection with no values");
+
+            // Look at the type of the first item and then make sure the rest match that one
+            final ValueExpr firstval = this.getTypedExprList().get(0);
+            final Class<? extends ValueExpr> clazzToMatch = HUtil.getValueExprType(firstval);
+
+            for (final ValueExpr val : this.getTypedExprList()) {
+
+                final Class<? extends ValueExpr> clazz = HUtil.getValueExprType(val);
+
+                if (clazz == null)
+                    throw new TypeException("Parameter " + this.getParamName()
+                                            + " assigned a collection value with invalid type "
+                                            + firstval.getClass().getSimpleName());
+
+                if (!clazz.equals(clazzToMatch))
+                    throw new TypeException("Parameter " + this.getParamName()
+                                            + " assigned a collection value with type "
+                                            + firstval.getClass().getSimpleName()
+                                            + " which is inconsistent with the type of the first element");
+            }
+
+            return clazzToMatch;
+        }
     }
 
     @Override
     public Object getValue(final Object object) throws HBqlException {
-        if (this.isScalar())
+        if (this.isScalarValueSet())
             return this.getTypedExpr().getValue(object);
         else
             return this.getTypedExprList();
@@ -111,6 +120,10 @@ public class NamedParameter implements ValueExpr {
     }
 
     public void setParameter(final Object val) throws HBqlException {
+
+        // Reset both values
+        this.typedExpr = null;
+        this.typedExprList = null;
 
         if (val != null && HUtil.isParentClass(Collection.class, val.getClass())) {
             this.typedExprList = Lists.newArrayList();

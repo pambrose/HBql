@@ -24,11 +24,12 @@ public class ValueBetweenStmt extends GenericBetweenStmt {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
+                                                    final boolean allowsCollections) throws TypeException {
 
-        final Class<? extends ValueExpr> type1 = this.getExpr().validateTypes(this);
-        final Class<? extends ValueExpr> type2 = this.getLower().validateTypes(this);
-        final Class<? extends ValueExpr> type3 = this.getUpper().validateTypes(this);
+        final Class<? extends ValueExpr> type1 = this.getExpr().validateTypes(this, false);
+        final Class<? extends ValueExpr> type2 = this.getLower().validateTypes(this, false);
+        final Class<? extends ValueExpr> type3 = this.getUpper().validateTypes(this, false);
 
         if (HUtil.isParentClass(StringValue.class, type1, type2, type3))
             this.typedExpr = new StringBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());

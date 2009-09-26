@@ -77,6 +77,7 @@ public class WhereExprTests {
             evalExpr(recordObj, tree);
         }
         catch (HBqlException e) {
+            e.printStackTrace();
             eclazz = e.getClass();
         }
         org.junit.Assert.assertTrue(eclazz != null && eclazz.equals(clazz));

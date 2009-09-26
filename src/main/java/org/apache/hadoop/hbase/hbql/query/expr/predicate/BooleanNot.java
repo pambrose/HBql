@@ -23,8 +23,9 @@ public class BooleanNot extends GenericOneExprExpr implements BooleanValue {
         this.not = not;
     }
 
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
-        HUtil.validateParentClass(this, BooleanValue.class, this.getExpr().validateTypes(this));
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
+                                                    final boolean allowsCollections) throws TypeException {
+        HUtil.validateParentClass(this, BooleanValue.class, this.getExpr().validateTypes(this, false));
         return BooleanValue.class;
     }
 

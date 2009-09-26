@@ -146,7 +146,7 @@ public class HUtil {
         throw new TypeException(sbuf.toString());
     }
 
-    public static Class<? extends ValueExpr> getValueDescType(final ValueExpr val) {
+    public static Class<? extends ValueExpr> getValueExprType(final ValueExpr val) {
 
         final Class clazz = val.getClass();
 

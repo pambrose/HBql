@@ -48,7 +48,8 @@ public class GenericFunction implements ValueExpr {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
+                                                    final boolean allowsCollections) throws TypeException {
 
         switch (this.getFunctionType()) {
             case TRIM:

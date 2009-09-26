@@ -26,31 +26,26 @@ public class ValueInStmt extends GenericInStmt {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
+                                                    final boolean allowsCollections) throws TypeException {
 
-        final Class<? extends ValueExpr> type = this.getExpr().validateTypes(this);
-        final Class<? extends ValueExpr> clazz;
+        final Class<? extends ValueExpr> type = this.getExpr().validateTypes(this, false);
 
-        if (HUtil.isParentClass(StringValue.class, type)) {
-            clazz = StringValue.class;
+        if (HUtil.isParentClass(StringValue.class, type))
             this.typedExpr = new StringInStmt(this.getExpr(), this.isNot(), this.getValueExprList());
-        }
-        else if (HUtil.isParentClass(NumberValue.class, type)) {
-            clazz = NumberValue.class;
+        else if (HUtil.isParentClass(NumberValue.class, type))
             this.typedExpr = new NumberInStmt(this.getExpr(), this.isNot(), this.getValueExprList());
-        }
-        else if (HUtil.isParentClass(DateValue.class, type)) {
-            clazz = DateValue.class;
+        else if (HUtil.isParentClass(DateValue.class, type))
             this.typedExpr = new DateInStmt(this.getExpr(), this.isNot(), this.getValueExprList());
-        }
-        else {
-            clazz = null;
+        else
             HUtil.throwInvalidTypeException(this, type);
-        }
 
+        this.typedExpr.validateTypes(parentExpr, false);
+        /*
         // Make sure all items in list are of correct type
-        for (final ValueExpr val : this.getValueExprList())
-            HUtil.validateParentClass(this, clazz, val.validateTypes(this));
+        for (final ValueExpr inVal : this.getValueExprList())
+            HUtil.validateParentClass(this, inClazz, inVal.validateTypes(this, true));
+        */
 
         return BooleanValue.class;
     }

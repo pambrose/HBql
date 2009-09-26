@@ -350,6 +350,9 @@ public class WhereExpressionTest extends WhereExprTests {
         tree.setParameter("b", Arrays.asList("a", "b", "c"));
         assertEvalTrue(tree);
 
+        // Test for list where scalar is required
+        tree.setParameter("a", Arrays.asList("a", "b", "c"));
+        assertHasException(tree, TypeException.class);
     }
 
     @Test
