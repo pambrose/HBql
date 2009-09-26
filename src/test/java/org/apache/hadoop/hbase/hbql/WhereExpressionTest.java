@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.util.WhereExprTests;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -342,6 +343,11 @@ public class WhereExpressionTest extends WhereExprTests {
         tree.setParameter("a", "a");
         tree.setParameter("b", "b");
         tree.setParameter("c", "a");
+        assertEvalTrue(tree);
+
+        tree = parseExpr(":a IN (:b)");
+        tree.setParameter("a", "a");
+        tree.setParameter("b", Arrays.asList("a", "b", "c"));
         assertEvalTrue(tree);
 
     }

@@ -5,6 +5,10 @@ import org.antlr.runtime.TokenStream;
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -140,5 +144,24 @@ public class HUtil {
         sbuf.append(" in expression " + expr.asString());
 
         throw new TypeException(sbuf.toString());
+    }
+
+    public static Class<? extends ValueExpr> getValueDescType(final ValueExpr val) {
+
+        final Class clazz = val.getClass();
+
+        if (HUtil.isParentClass(NumberValue.class, clazz))
+            return NumberValue.class;
+
+        if (HUtil.isParentClass(StringValue.class, clazz))
+            return StringValue.class;
+
+        if (HUtil.isParentClass(DateValue.class, clazz))
+            return DateValue.class;
+
+        if (HUtil.isParentClass(BooleanValue.class, clazz))
+            return BooleanValue.class;
+
+        return null;
     }
 }

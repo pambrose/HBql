@@ -32,7 +32,7 @@ public class CurrentValueAttrib extends FieldAttrib {
                                     + "annotation and be marked final");
 
         // Make sure type implements Map if this is true
-        if (this.isMapKeysAsColumns() && (!Map.class.isAssignableFrom(this.getField().getType())))
+        if (this.isMapKeysAsColumns() && !HUtil.isParentClass(Map.class, this.getField().getType()))
             throw new HBqlException(this.getObjectQualifiedName() + " has @HColumn(mapKeysAsColumns=true) " +
                                     "annotation but doesn't implement the Map interface");
     }

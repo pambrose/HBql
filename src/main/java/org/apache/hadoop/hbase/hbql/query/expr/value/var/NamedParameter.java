@@ -9,8 +9,12 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringNullLiteral;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
+import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,23 +28,51 @@ public class NamedParameter implements ValueExpr {
     private final String paramName;
 
     private ValueExpr typedExpr = null;
+    private List<ValueExpr> typedExprList = null;
 
     public NamedParameter(final String paramName) {
         this.paramName = paramName;
     }
 
+    private String getParamName() {
+        return this.paramName;
+    }
+
+    private boolean isScalar() {
+        return this.getTypedExpr() != null;
+    }
+
+    private ValueExpr getTypedExpr() {
+        return this.typedExpr;
+    }
+
+    private List<ValueExpr> getTypedExprList() {
+        return this.typedExprList;
+    }
+
     @Override
     public Class<? extends ValueExpr> validateTypes() throws TypeException {
 
-        if (this.typedExpr == null)
+        if (this.getTypedExpr() == null && this.getTypedExprList() == null)
             throw new TypeException("Parameter " + this.getParamName() + " not assigned a value");
 
-        return this.typedExpr.getClass();
+        if (this.isScalar())
+            return this.getTypedExpr().getClass();
+
+        // if it is a list, then ensure that all the types in list are consistent
+        if (this.getTypedExprList().size() == 0)
+            throw new TypeException("Parameter " + this.getParamName() + " not assigned a list with any values");
+
+        // Look at the type of the first item and then make sure the rest match that one
+        final Class<? extends ValueExpr> clazzToMatch = HUtil.getValueDescType(this.getTypedExprList().get(0));
+
+        return clazzToMatch;
+
     }
 
     @Override
     public Object getValue(final Object object) throws HBqlException {
-        return this.typedExpr.getValue(object);
+        return this.getTypedExpr().getValue(object);
     }
 
     @Override
@@ -54,44 +86,44 @@ public class NamedParameter implements ValueExpr {
         return this;
     }
 
+    @Override
     public boolean isAConstant() {
         return false;
     }
 
-    public String getParamName() {
-        return paramName;
-    }
-
     public void setParameter(final Object val) throws HBqlException {
 
-        if (val == null) {
-            this.typedExpr = new StringNullLiteral();
-            return;
+        if (val != null && HUtil.isParentClass(Collection.class, val.getClass())) {
+            this.typedExprList = Lists.newArrayList();
+            for (final Object elem : (Collection)val)
+                this.typedExprList.add(this.getValueExpr(elem));
         }
+        else {
+            this.typedExpr = this.getValueExpr(val);
+        }
+    }
 
-        if (val instanceof Boolean) {
-            this.typedExpr = new BooleanLiteral((Boolean)val);
-            return;
-        }
+    private ValueExpr getValueExpr(final Object val) throws TypeException {
 
-        if (val instanceof String) {
-            this.typedExpr = new StringLiteral((String)val);
-            return;
-        }
+        if (val == null)
+            return new StringNullLiteral();
 
-        if (val instanceof Integer) {
-            this.typedExpr = new IntegerLiteral((Integer)val);
-            return;
-        }
+        if (val instanceof Boolean)
+            return new BooleanLiteral((Boolean)val);
 
-        if (val instanceof Date) {
-            this.typedExpr = new DateLiteral((Date)val);
-            return;
-        }
+        if (val instanceof String)
+            return new StringLiteral((String)val);
+
+        if (val instanceof Integer)
+            return new IntegerLiteral((Integer)val);
+
+        if (val instanceof Date)
+            return new DateLiteral((Date)val);
 
         throw new TypeException("Parameter " + this.getParamName()
                                 + " assigned an unsupported type " + val.getClass().getSimpleName());
     }
+
 
     @Override
     public String asString() {

@@ -36,7 +36,7 @@ public class VersionAttrib extends FieldAttrib {
         final String annoname = "@HColumnVersionMap annotation";
 
         // Check if type is a Map
-        if (!Map.class.isAssignableFrom(field.getType()))
+        if (!HUtil.isParentClass(Map.class, field.getType()))
             throw new HBqlException(getObjectQualifiedName(field) + "has a " + annoname + " so it "
                                     + "must implement the Map interface");
 

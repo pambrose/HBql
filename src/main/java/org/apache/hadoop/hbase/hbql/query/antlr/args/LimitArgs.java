@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.antlr.args;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +29,7 @@ public class LimitArgs {
             throw new HBqlException("Null value invalid in LimitArgs");
 
         final Class clazz = this.value.getClass();
-        if (!NumberValue.class.isAssignableFrom(clazz))
+        if (!HUtil.isParentClass(NumberValue.class, clazz))
             throw new HBqlException("Invalid type " + clazz.getSimpleName() + " in LimitArgs");
 
         return ((Number)this.value.getValue(null)).longValue();

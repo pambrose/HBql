@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +50,7 @@ public enum FunctionType {
 
             final Class type = valueExprs[i].validateTypes();
 
-            if (!clazz.isAssignableFrom(type))
+            if (!HUtil.isParentClass(clazz, type))
                 throw new TypeException("Invalid type " + type.getSimpleName() + " for arg " + i + " in function "
                                         + this.name() + ".  Expecting type " + clazz.getSimpleName());
             i++;

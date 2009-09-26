@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.antlr.args;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,7 +31,7 @@ public class DateRangeArgs {
             throw new HBqlException("Null value invalid in DateRangeArgs");
 
         final Class clazz = this.lower.getClass();
-        if (!DateValue.class.isAssignableFrom(clazz))
+        if (!HUtil.isParentClass(DateValue.class, clazz))
             throw new HBqlException("Invalid type " + clazz.getSimpleName() + " in DateRangeArgs");
 
         return (Long)this.lower.getValue(null);
@@ -42,7 +43,7 @@ public class DateRangeArgs {
             throw new HBqlException("Null value invalid in DateRangeArgs");
 
         final Class clazz = this.upper.getClass();
-        if (!DateValue.class.isAssignableFrom(clazz))
+        if (!HUtil.isParentClass(DateValue.class, clazz))
             throw new HBqlException("Invalid type " + clazz.getSimpleName() + " in DateRangeArgs");
 
         return (Long)this.upper.getValue(null);
