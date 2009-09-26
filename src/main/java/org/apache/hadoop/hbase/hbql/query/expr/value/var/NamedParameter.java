@@ -64,10 +64,26 @@ public class NamedParameter implements ValueExpr {
             throw new TypeException("Parameter " + this.getParamName() + " not assigned a list with any values");
 
         // Look at the type of the first item and then make sure the rest match that one
-        final Class<? extends ValueExpr> clazzToMatch = HUtil.getValueDescType(this.getTypedExprList().get(0));
+        final ValueExpr firstval = this.getTypedExprList().get(0);
+        final Class<? extends ValueExpr> clazzToMatch = HUtil.getValueDescType(firstval);
+
+        for (final ValueExpr val : this.getTypedExprList()) {
+
+            final Class<? extends ValueExpr> clazz = HUtil.getValueDescType(val);
+
+            if (clazz == null)
+                throw new TypeException("Parameter " + this.getParamName()
+                                        + " assigned a collection value with invalid type "
+                                        + firstval.getClass().getSimpleName());
+
+            if (!clazz.equals(clazzToMatch))
+                throw new TypeException("Parameter " + this.getParamName()
+                                        + " assigned a collection value with type "
+                                        + firstval.getClass().getSimpleName()
+                                        + " which is inconsistent with the type of the first element");
+        }
 
         return clazzToMatch;
-
     }
 
     @Override
