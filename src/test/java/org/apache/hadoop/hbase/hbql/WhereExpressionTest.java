@@ -338,6 +338,12 @@ public class WhereExpressionTest extends WhereExprTests {
         tree.setParameter("a", "ba");
         assertEvalFalse(obj, tree);
 
+        tree = parseExpr(":a IN (:b, :c)");
+        tree.setParameter("a", "a");
+        tree.setParameter("b", "b");
+        tree.setParameter("c", "a");
+        assertEvalTrue(tree);
+
     }
 
     @Test

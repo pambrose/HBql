@@ -101,18 +101,18 @@ public class HUtil {
         }
 
         if (classList != null) {
-            final StringBuilder sbuf = new StringBuilder("Expecting type " + parentClazz.getName()
+            final StringBuilder sbuf = new StringBuilder("Expecting type " + parentClazz.getSimpleName()
                                                          + " but encountered type"
-                                                         + ((classList.size() > 0) ? "s" : "") + ": ");
+                                                         + ((classList.size() > 1) ? "s" : "") + ": ");
             boolean first = true;
             for (final Class clazz : classList) {
                 if (!first)
                     sbuf.append(", ");
-                sbuf.append(clazz.getName());
+                sbuf.append(clazz.getSimpleName());
                 first = false;
             }
 
-            sbuf.append(" in expression: " + expr.asString());
+            sbuf.append(" in expression " + expr.asString());
 
             throw new TypeException(sbuf.toString());
         }
@@ -128,7 +128,7 @@ public class HUtil {
                 classList.add(clazz);
 
         final StringBuilder sbuf = new StringBuilder("Invalid type");
-        sbuf.append(((classList.size() > 0) ? "s " : " "));
+        sbuf.append(((classList.size() > 1) ? "s " : " "));
 
         boolean first = true;
         for (final Class<? extends ValueExpr> clazz : clazzes) {
@@ -137,7 +137,7 @@ public class HUtil {
             sbuf.append(clazz.getSimpleName());
             first = false;
         }
-        sbuf.append(" in expression: " + expr.asString());
+        sbuf.append(" in expression " + expr.asString());
 
         throw new TypeException(sbuf.toString());
     }
