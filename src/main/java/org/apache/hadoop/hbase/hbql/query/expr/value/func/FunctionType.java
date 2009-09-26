@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
@@ -17,9 +16,6 @@ public enum FunctionType {
     CONCAT(StringValue.class, (List)Arrays.asList(StringValue.class, StringValue.class)),
     REPLACE(StringValue.class, (List)Arrays.asList(StringValue.class, StringValue.class, StringValue.class)),
     SUBSTRING(StringValue.class, (List)Arrays.asList(StringValue.class, NumberValue.class, NumberValue.class)),
-
-    // Return Booleans
-    CONTAINS(BooleanValue.class, (List)Arrays.asList(StringValue.class, StringValue.class)),
 
     // Return Numbers
     LENGTH(NumberValue.class, (List)Arrays.asList(StringValue.class)),

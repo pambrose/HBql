@@ -57,9 +57,6 @@ public class GenericFunction implements ValueExpr {
             case CONCAT:
             case REPLACE:
             case SUBSTRING:
-
-            case CONTAINS:
-
             case LENGTH:
             case INDEXOF:
                 this.getFunctionType().validateArgs(this.getValueExprs());

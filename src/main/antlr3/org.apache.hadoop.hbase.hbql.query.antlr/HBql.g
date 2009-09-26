@@ -204,9 +204,9 @@ booleanAtom returns [ValueExpr retval]
 									
 booleanFuncs returns [BooleanValue retval]
 options {backtrack=true; memoize=true;}	
-	: s1=valueExpr keyCONTAINS s2=valueExpr		{retval = new BooleanFunction(FunctionType.CONTAINS, $s1.retval, $s2.retval);}
-	| s1=valueExpr n=keyNOT? keyLIKE s2=valueExpr 
-							{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);}
+	: s1=valueExpr n=keyNOT? keyCONTAINS s2=valueExpr		
+							{retval = new ContainsStmt($s1.retval, ($n.text != null), $s2.retval);}
+	| s1=valueExpr n=keyNOT? keyLIKE s2=valueExpr 	{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);}
 	| s1=valueExpr n=keyNOT? keyBETWEEN s2=valueExpr keyAND s3=valueExpr		
 							{retval = new ValueBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
 	| s1=valueExpr n=keyNOT? keyIN LPAREN s=valueItemList RPAREN			

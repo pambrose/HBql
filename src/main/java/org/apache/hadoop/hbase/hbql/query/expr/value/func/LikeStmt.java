@@ -1,13 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,25 +12,12 @@ import java.util.regex.Pattern;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class LikeStmt extends GenericNotValue {
-
-    private ValueExpr valueExpr = null;
-    private ValueExpr patternExpr = null;
+public class LikeStmt extends GenericStringPatternStmt {
 
     private Pattern pattern = null;
 
     public LikeStmt(final ValueExpr valueExpr, final boolean not, final ValueExpr patternExpr) {
-        super(not);
-        this.valueExpr = valueExpr;
-        this.patternExpr = patternExpr;
-    }
-
-    private ValueExpr getValueExpr() {
-        return this.valueExpr;
-    }
-
-    private ValueExpr getPatternExpr() {
-        return this.patternExpr;
+        super(valueExpr, not, patternExpr);
     }
 
     private Pattern getPattern() {
@@ -44,64 +25,35 @@ public class LikeStmt extends GenericNotValue {
     }
 
     @Override
+    protected String getFunctionName() {
+        return "LIKE";
+    }
+
+    @Override
     public Boolean getValue(final Object object) throws HBqlException {
 
         if (this.getPatternExpr().isAConstant()) {
-            if (this.pattern == null) {
+            if (this.getPattern() == null) {
                 final String pattern = (String)this.getPatternExpr().getValue(object);
                 this.pattern = Pattern.compile(pattern);
             }
         }
         else {
-            final String pattern = (String)this.getPatternExpr().getValue(object);
-            if (pattern == null)
-                throw new HBqlException("Null string for LIKE pattern");
-            this.pattern = Pattern.compile(pattern);
+            final String pvalue = (String)this.getPatternExpr().getValue(object);
+            if (pvalue == null)
+                throw new HBqlException("Null string for pattern in " + this.asString());
+            this.pattern = Pattern.compile(pvalue);
         }
 
         final String val = (String)this.getValueExpr().getValue(object);
         if (val == null)
-            throw new HBqlException("Null string for LIKE value");
+            throw new HBqlException("Null string for value in " + this.asString());
 
         final Matcher m = this.getPattern().matcher(val);
 
         final boolean retval = m.matches();
 
         return (this.isNot()) ? !retval : retval;
-    }
-
-    @Override
-    public Class<? extends ValueExpr> validateTypes() throws TypeException {
-        HUtil.validateParentClass(this,
-                                  StringValue.class,
-                                  this.getValueExpr().validateTypes(),
-                                  this.getPatternExpr().validateTypes());
-        return BooleanValue.class;
-    }
-
-    @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
-        this.valueExpr = this.getValueExpr().getOptimizedValue();
-        this.patternExpr = this.getPatternExpr().getOptimizedValue();
-
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
-    }
-
-    @Override
-    public boolean isAConstant() {
-        return this.getValueExpr().isAConstant() && this.getPatternExpr().isAConstant();
-    }
-
-    @Override
-    public void setContext(final ExprTree context) {
-        this.getValueExpr().setContext(context);
-        this.getPatternExpr().setContext(context);
-    }
-
-    @Override
-    public String asString() {
-        return this.getValueExpr().asString() + notAsString() + " LIKE "
-               + this.getPatternExpr().asString();
     }
 
 }

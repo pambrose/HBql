@@ -326,11 +326,13 @@ public class WhereExpressionTest extends WhereExprTests {
         tree = parseExpr(obj, "keyval CONTAINS :a");
         tree.setParameter("a", "ab");
         assertEvalTrue(obj, tree);
-
         tree.setParameter("a", "ba");
         assertEvalFalse(obj, tree);
 
         assertEvalFalse(obj, "'asasas' CONTAINS stringValue");
+        assertEvalTrue(obj, "NOT 'asasas' CONTAINS stringValue");
+        assertEvalTrue(obj, "NOT ((('asasas' CONTAINS stringValue)))");
+
         assertEvalTrue(obj, "'xxaaabxx' CONTAINS stringValue");
         assertEvalTrue(obj, "keyval CONTAINS stringValue");
         assertEvalTrue(obj, "keyval+'zz' CONTAINS stringValue+'bbz'");
