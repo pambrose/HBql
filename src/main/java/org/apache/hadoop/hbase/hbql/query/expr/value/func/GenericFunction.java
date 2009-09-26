@@ -48,7 +48,7 @@ public class GenericFunction implements ValueExpr {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
 
         switch (this.getFunctionType()) {
             case TRIM:
@@ -59,7 +59,7 @@ public class GenericFunction implements ValueExpr {
             case SUBSTRING:
             case LENGTH:
             case INDEXOF:
-                this.getFunctionType().validateArgs(this.getValueExprs());
+                this.getFunctionType().validateArgs(this, this.getValueExprs());
                 return this.getFunctionType().getReturnType();
         }
         throw new TypeException("Invalid function " + this.getFunctionType() + " in " + this.asString());

@@ -36,11 +36,11 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
         HUtil.validateParentClass(this,
                                   StringValue.class,
-                                  this.getFormatExpr().validateTypes(),
-                                  this.getValueExpr().validateTypes());
+                                  this.getFormatExpr().validateTypes(this),
+                                  this.getValueExpr().validateTypes(this));
         return DateValue.class;
     }
 

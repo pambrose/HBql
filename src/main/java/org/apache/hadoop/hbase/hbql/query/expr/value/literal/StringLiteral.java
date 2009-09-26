@@ -24,7 +24,7 @@ public class StringLiteral extends GenericLiteral implements StringValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
         return StringValue.class;
     }
 

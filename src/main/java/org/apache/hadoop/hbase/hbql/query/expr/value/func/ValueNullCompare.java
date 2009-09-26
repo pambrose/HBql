@@ -21,9 +21,9 @@ public class ValueNullCompare extends GenericNullCompare {
         super(not, expr);
     }
 
-    public Class<? extends ValueExpr> validateTypes() throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
 
-        HUtil.validateParentClass(this, StringValue.class, this.getExpr().validateTypes());
+        HUtil.validateParentClass(this, StringValue.class, this.getExpr().validateTypes(this));
 
         this.typedExpr = new StringNullCompare(this.isNot(), this.getExpr());
 

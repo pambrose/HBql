@@ -28,7 +28,7 @@ public class BooleanLiteral extends GenericLiteral implements BooleanValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
         return BooleanValue.class;
     }
 

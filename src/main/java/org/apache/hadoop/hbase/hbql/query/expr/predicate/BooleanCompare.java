@@ -18,7 +18,7 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
         super(expr1, op, expr2);
     }
 
-    public Class<? extends ValueExpr> validateTypes() throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
         return this.validateType(BooleanValue.class);
     }
 

@@ -51,7 +51,7 @@ public class NamedParameter implements ValueExpr {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
 
         if (this.getTypedExpr() == null && this.getTypedExprList() == null)
             throw new TypeException("Parameter " + this.getParamName() + " not assigned a value");

@@ -49,8 +49,8 @@ public class IntervalExpr extends GenericOneExprExpr implements DateValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws TypeException {
-        HUtil.validateParentClass(this, NumberValue.class, this.getExpr().validateTypes());
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
+        HUtil.validateParentClass(this, NumberValue.class, this.getExpr().validateTypes(this));
         return DateValue.class;
     }
 

@@ -52,11 +52,11 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
     }
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
-        HUtil.validateParentClass(this, BooleanValue.class, this.getPred().validateTypes());
+        HUtil.validateParentClass(this, BooleanValue.class, this.getPred().validateTypes(this));
         HUtil.validateParentClass(this,
                                   clazz,
-                                  this.getExpr1().validateTypes(),
-                                  this.getExpr2().validateTypes());
+                                  this.getExpr1().validateTypes(this),
+                                  this.getExpr2().validateTypes(this));
         return clazz;
     }
 

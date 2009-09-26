@@ -91,9 +91,9 @@ public abstract class GenericInStmt extends GenericNotValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
 
-        final Class<? extends ValueExpr> type = this.getExpr().validateTypes();
+        final Class<? extends ValueExpr> type = this.getExpr().validateTypes(this);
         final Class<? extends ValueExpr> clazz;
 
         if (HUtil.isParentClass(StringValue.class, type))
@@ -109,7 +109,7 @@ public abstract class GenericInStmt extends GenericNotValue {
 
         // First make sure all the types are matched
         for (final ValueExpr val : this.getValueExprList())
-            HUtil.validateParentClass(this, clazz, val.validateTypes());
+            HUtil.validateParentClass(this, clazz, val.validateTypes(this));
 
         return BooleanValue.class;
     }

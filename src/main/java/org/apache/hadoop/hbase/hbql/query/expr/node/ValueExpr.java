@@ -18,7 +18,7 @@ public interface ValueExpr extends Serializable {
 
     ValueExpr getOptimizedValue() throws HBqlException;
 
-    Class<? extends ValueExpr> validateTypes() throws TypeException;
+    Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException;
 
     boolean isAConstant();
 

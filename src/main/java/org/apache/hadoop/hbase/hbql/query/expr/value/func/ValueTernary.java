@@ -24,12 +24,12 @@ public class ValueTernary extends GenericTernary {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
 
-        HUtil.validateParentClass(this, BooleanValue.class, this.getPred().validateTypes());
+        HUtil.validateParentClass(this, BooleanValue.class, this.getPred().validateTypes(this));
 
-        final Class<? extends ValueExpr> type1 = this.getExpr1().validateTypes();
-        final Class<? extends ValueExpr> type2 = this.getExpr2().validateTypes();
+        final Class<? extends ValueExpr> type1 = this.getExpr1().validateTypes(this);
+        final Class<? extends ValueExpr> type2 = this.getExpr2().validateTypes(this);
 
         if (HUtil.isParentClass(StringValue.class, type1, type2)) {
             this.typedExpr = new StringTernary(this.getPred(), this.getExpr1(), this.getExpr2());

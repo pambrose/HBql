@@ -39,7 +39,7 @@ public enum FunctionType {
     }
 
 
-    public void validateArgs(final ValueExpr[] valueExprs) throws TypeException {
+    public void validateArgs(final ValueExpr parentExpr, final ValueExpr[] valueExprs) throws TypeException {
 
         int i = 0;
 
@@ -48,7 +48,7 @@ public enum FunctionType {
 
         for (final Class clazz : this.getTypeSig()) {
 
-            final Class type = valueExprs[i].validateTypes();
+            final Class type = valueExprs[i].validateTypes(parentExpr);
 
             if (!HUtil.isParentClass(clazz, type))
                 throw new TypeException("Invalid type " + type.getSimpleName() + " for arg " + i + " in function "

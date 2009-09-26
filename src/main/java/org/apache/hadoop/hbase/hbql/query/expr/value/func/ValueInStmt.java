@@ -26,9 +26,9 @@ public class ValueInStmt extends GenericInStmt {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes() throws TypeException {
+    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr) throws TypeException {
 
-        final Class<? extends ValueExpr> type = this.getExpr().validateTypes();
+        final Class<? extends ValueExpr> type = this.getExpr().validateTypes(this);
         final Class<? extends ValueExpr> clazz;
 
         if (HUtil.isParentClass(StringValue.class, type)) {
@@ -50,7 +50,7 @@ public class ValueInStmt extends GenericInStmt {
 
         // Make sure all items in list are of correct type
         for (final ValueExpr val : this.getValueExprList())
-            HUtil.validateParentClass(this, clazz, val.validateTypes());
+            HUtil.validateParentClass(this, clazz, val.validateTypes(this));
 
         return BooleanValue.class;
     }
