@@ -40,6 +40,8 @@ public class ValueBetweenStmt extends GenericBetweenStmt {
         else
             HUtil.throwInvalidTypeException(this, type1, type2, type3);
 
+        this.typedExpr.validateTypes(parentExpr, false);
+
         return BooleanValue.class;
     }
 

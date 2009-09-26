@@ -27,8 +27,8 @@ public class ValueCalcExpr extends GenericCalcExpr {
                                                     final boolean allowsCollections) throws TypeException {
 
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateTypes(this, false);
-        final Class<? extends ValueExpr> type2 = (this.getExpr2() != null) ? this.getExpr2()
-                .validateTypes(this, false) : null;
+        final Class<? extends ValueExpr> type2 = (this.getExpr2() != null)
+                                                 ? this.getExpr2().validateTypes(this, false) : null;
 
         if (HUtil.isParentClass(StringValue.class, type1, type2))
             typedExpr = new StringCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
@@ -38,6 +38,8 @@ public class ValueCalcExpr extends GenericCalcExpr {
             typedExpr = new DateCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
         else
             HUtil.throwInvalidTypeException(this, type1, type2);
+
+        this.typedExpr.validateTypes(parentExpr, false);
 
         return type1;
     }

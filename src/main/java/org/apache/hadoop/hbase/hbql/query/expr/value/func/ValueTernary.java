@@ -32,30 +32,20 @@ public class ValueTernary extends GenericTernary {
         final Class<? extends ValueExpr> type1 = this.getExpr1().validateTypes(this, false);
         final Class<? extends ValueExpr> type2 = this.getExpr2().validateTypes(this, false);
 
-        if (HUtil.isParentClass(StringValue.class, type1, type2)) {
+        if (HUtil.isParentClass(StringValue.class, type1, type2))
             this.typedExpr = new StringTernary(this.getPred(), this.getExpr1(), this.getExpr2());
-            return type1;
-        }
-
-        if (HUtil.isParentClass(NumberValue.class, type1, type2)) {
+        else if (HUtil.isParentClass(NumberValue.class, type1, type2))
             this.typedExpr = new NumberTernary(this.getPred(), this.getExpr1(), this.getExpr2());
-            return type1;
-        }
-
-        if (HUtil.isParentClass(DateValue.class, type1, type2)) {
+        else if (HUtil.isParentClass(DateValue.class, type1, type2))
             this.typedExpr = new DateTernary(this.getPred(), this.getExpr1(), this.getExpr2());
-            return type1;
-        }
-
-        if (HUtil.isParentClass(BooleanValue.class, type1, type2)) {
+        else if (HUtil.isParentClass(BooleanValue.class, type1, type2))
             this.typedExpr = new BooleanTernary(this.getPred(), this.getExpr1(), this.getExpr2());
-            return type1;
-        }
+        else
+            HUtil.throwInvalidTypeException(this, type1, type2);
 
-        HUtil.throwInvalidTypeException(this, type1, type2);
+        this.typedExpr.validateTypes(parentExpr, false);
 
-        // Not reached
-        return null;
+        return type1;
     }
 
 

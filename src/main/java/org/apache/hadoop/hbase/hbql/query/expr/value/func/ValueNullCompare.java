@@ -28,6 +28,8 @@ public class ValueNullCompare extends GenericNullCompare {
 
         this.typedExpr = new StringNullCompare(this.isNot(), this.getExpr());
 
+        this.typedExpr.validateTypes(parentExpr, false);
+
         return BooleanValue.class;
     }
 
