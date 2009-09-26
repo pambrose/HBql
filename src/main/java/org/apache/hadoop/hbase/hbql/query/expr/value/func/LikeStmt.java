@@ -32,13 +32,9 @@ public class LikeStmt extends GenericStringPatternStmt {
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
 
-        if (this.getPatternExpr().isAConstant()) {
-            if (this.getPattern() == null) {
-                final String pattern = (String)this.getPatternExpr().getValue(object);
-                this.pattern = Pattern.compile(pattern);
-            }
-        }
-        else {
+        final boolean patternConstant = this.getPatternExpr().isAConstant();
+
+        if (!patternConstant || this.getPattern() == null) {
             final String pvalue = (String)this.getPatternExpr().getValue(object);
             if (pvalue == null)
                 throw new HBqlException("Null string for pattern in " + this.asString());

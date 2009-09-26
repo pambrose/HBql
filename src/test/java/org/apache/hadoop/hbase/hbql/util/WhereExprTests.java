@@ -71,7 +71,6 @@ public class WhereExprTests {
         this.assertHasException(null, tree, clazz);
     }
 
-
     public void assertHasException(final Object recordObj, final ExprTree tree, final Class clazz) {
         Class eclazz = null;
         try {
@@ -82,7 +81,6 @@ public class WhereExprTests {
         }
         org.junit.Assert.assertTrue(eclazz != null && eclazz.equals(clazz));
     }
-
 
     public static void assertColumnsMatchTrue(final String expr, String... vals) throws HBqlException {
         org.junit.Assert.assertTrue(evalColumnNames(expr, vals));
