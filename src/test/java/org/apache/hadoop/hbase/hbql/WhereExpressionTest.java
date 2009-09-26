@@ -287,6 +287,12 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalTrue("'abc' CONTAINS 'b'");
         assertEvalFalse("'abc' CONTAINS 'n'");
 
+        assertEvalTrue("'a' IN ('a', 'b')");
+        assertEvalFalse("'a' NOT IN ('a', 'b')");
+        assertEvalTrue("NOT 'a' NOT IN ('a', 'b')");
+        assertEvalFalse("'a' IN ('d', 'b')");
+        assertEvalTrue("'a' NOT IN ('d', 'b')");
+
         final ObjectAllTypes obj = new ObjectAllTypes("aaabbb", 3, "aaab");
 
         assertEvalTrue(obj, "keyval CONTAINS 'ab'");
@@ -308,6 +314,7 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalTrue(annoObj, "keyval+'zz' CONTAINS stringValue+'bbz'");
         assertEvalFalse(annoObj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
         assertEvalTrue(obj, "NOT(keyval+'zz' NOT CONTAINS stringValue+'bbz')");
+
     }
 
     @Test
@@ -433,6 +440,39 @@ public class WhereExpressionTest extends WhereExprTests {
         assertColumnsMatchTrue("{a1 date,a2  date} a1 < a2", "a1", "a2");
         assertColumnsMatchFalse("{a1 int, a2 int, d1 int, k3 int} a1 < a2 OR d1 > k3", "a1", "a2");
         assertColumnsMatchTrue("{a1 date, a2 date, d1 date, k3  date} a1 < a2 OR d1 > k3", "a1", "a2", "d1", "k3");
+    }
+
+    @Test
+    public void intervalExpressions() throws HBqlException {
+        assertEvalTrue("NOW() < NOW()+YEAR(1)");
+        assertEvalTrue("NOW() = NOW()+YEAR(1)-YEAR(1)");
+        assertEvalTrue("NOW()+YEAR(2) > NOW()+YEAR(1)");
+
+        assertEvalTrue("NOW() < NOW()+WEEK(1)");
+        assertEvalTrue("YEAR(2) = WEEK(52*2)");
+        assertEvalTrue("NOW()+YEAR(2) = NOW()+WEEK(52*2)");
+
+        assertEvalTrue("NOW()+YEAR(2) = NOW()+WEEK(52)+DAY(364)");
+
+        assertEvalTrue("NOW() BETWEEN NOW()-DAY(1) AND NOW()+DAY(1)");
+        assertEvalTrue("NOW() between NOW()-DAY(1) AND NOW()+DAY(1)");
+        assertEvalFalse("NOW() BETWEEN NOW()+DAY(1) AND NOW()+DAY(1)");
+    }
+
+    @Test
+    public void intervalParamExpressions() throws HBqlException {
+
+        ExprTree tree;
+
+        tree = parseExpr("NOW() < NOW()+MINUTE(:a)");
+        tree.setParameter("a", 1);
+        assertEvalTrue(tree);
+
+        tree = parseExpr("NOW()+YEAR(:a) = NOW()+WEEK(:b)+DAY(:c)");
+        tree.setParameter("a", 2);
+        tree.setParameter("b", 52);
+        tree.setParameter("c", 364);
+        assertEvalTrue(tree);
     }
 
 }

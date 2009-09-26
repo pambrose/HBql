@@ -9,9 +9,7 @@ package org.apache.hadoop.hbase.hbql;
 public class ObjectAllTypes {
 
     private String keyval = null;
-
     private int intValue = -1;
-
     private String stringValue = "";
 
     public ObjectAllTypes() {
