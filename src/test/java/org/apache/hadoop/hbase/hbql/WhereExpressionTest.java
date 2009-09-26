@@ -296,6 +296,7 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalTrue(obj, "keyval CONTAINS stringValue");
         assertEvalTrue(obj, "keyval+'zz' CONTAINS stringValue+'bbz'");
         assertEvalFalse(obj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
+        assertEvalFalse(obj, "NOT ((('asasas' NOT CONTAINS stringValue)))");
 
         final AnnotatedAllTypes annoObj = new AnnotatedAllTypes("aaabbb", 3, "aaab");
 
@@ -306,6 +307,7 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalTrue(annoObj, "keyval CONTAINS stringValue");
         assertEvalTrue(annoObj, "keyval+'zz' CONTAINS stringValue+'bbz'");
         assertEvalFalse(annoObj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
+        assertEvalTrue(obj, "NOT(keyval+'zz' NOT CONTAINS stringValue+'bbz')");
     }
 
     @Test
@@ -378,6 +380,30 @@ public class WhereExpressionTest extends WhereExprTests {
     public void stringFunctions() throws HBqlException {
 
         assertEvalTrue("'bbb' between 'aaa' AND 'ccc'");
+        assertEvalTrue("'bbb' between 'aaa' AND 'ccc'");
+        assertEvalTrue("'bbb' between 'bbb' AND 'ccc'");
+        assertEvalFalse("'bbb' between 'ccc' AND 'ddd'");
+        assertEvalTrue("('bbb' between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
+        assertEvalTrue("('bbb' between 'bbb' AND 'ccc') OR ('fff' between 'eee' AND 'ggg')");
+        assertEvalFalse("('bbb' not between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
+        assertEvalTrue("'bbb' = LOWER('BBB')");
+        assertEvalTrue("'ABABAB' = UPPER(CONCAT('aba', 'bab'))");
+        assertEvalTrue("'bbb' = SUBSTRING('BBBbbbAAA', 3, 6)");
+        assertEvalTrue("'AAA' = 'A' + 'A' + 'A'");
+        assertEvalTrue("'aaa' = LOWER('A' + 'A' + 'A')");
+    }
+
+    @Test
+    public void stringParamFunctions() throws HBqlException {
+
+        ExprTree tree;
+
+        tree = parseExpr(":a between :b AND :c");
+        tree.setParameter("a", "bbb");
+        tree.setParameter("b", "aaa");
+        tree.setParameter("c", "ccc");
+        assertEvalTrue(tree);
+
         assertEvalTrue("'bbb' between 'aaa' AND 'ccc'");
         assertEvalTrue("'bbb' between 'bbb' AND 'ccc'");
         assertEvalFalse("'bbb' between 'ccc' AND 'ddd'");
