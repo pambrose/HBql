@@ -331,24 +331,6 @@ public class WhereExpressionTest extends WhereExprTests {
         tree.setParameter("a", "ba");
         assertEvalFalse(obj, tree);
 
-        assertEvalFalse(obj, "'asasas' CONTAINS stringValue");
-        assertEvalTrue(obj, "NOT 'asasas' CONTAINS stringValue");
-        assertEvalTrue(obj, "NOT ((('asasas' CONTAINS stringValue)))");
-
-        assertEvalTrue(obj, "'xxaaabxx' CONTAINS stringValue");
-        assertEvalTrue(obj, "keyval CONTAINS stringValue");
-        assertEvalTrue(obj, "keyval+'zz' CONTAINS stringValue+'bbz'");
-        assertEvalFalse(obj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
-
-        final AnnotatedAllTypes annoObj = new AnnotatedAllTypes("aaabbb", 3, "aaab");
-
-        assertEvalTrue(annoObj, "keyval CONTAINS 'ab'");
-        assertEvalFalse(annoObj, "keyval CONTAINS 'ba'");
-        assertEvalFalse(annoObj, "'asasas' CONTAINS stringValue");
-        assertEvalTrue(annoObj, "'xxaaabxx' CONTAINS stringValue");
-        assertEvalTrue(annoObj, "keyval CONTAINS stringValue");
-        assertEvalTrue(annoObj, "keyval+'zz' CONTAINS stringValue+'bbz'");
-        assertEvalFalse(annoObj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
     }
 
     @Test
@@ -403,18 +385,6 @@ public class WhereExpressionTest extends WhereExprTests {
         tree.setParameter("b", "aaa");
         tree.setParameter("c", "ccc");
         assertEvalTrue(tree);
-
-        assertEvalTrue("'bbb' between 'aaa' AND 'ccc'");
-        assertEvalTrue("'bbb' between 'bbb' AND 'ccc'");
-        assertEvalFalse("'bbb' between 'ccc' AND 'ddd'");
-        assertEvalTrue("('bbb' between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
-        assertEvalTrue("('bbb' between 'bbb' AND 'ccc') OR ('fff' between 'eee' AND 'ggg')");
-        assertEvalFalse("('bbb' not between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
-        assertEvalTrue("'bbb' = LOWER('BBB')");
-        assertEvalTrue("'ABABAB' = UPPER(CONCAT('aba', 'bab'))");
-        assertEvalTrue("'bbb' = SUBSTRING('BBBbbbAAA', 3, 6)");
-        assertEvalTrue("'AAA' = 'A' + 'A' + 'A'");
-        assertEvalTrue("'aaa' = LOWER('A' + 'A' + 'A')");
     }
 
     @Test

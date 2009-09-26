@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.util.WhereExprTests;
 import org.junit.Test;
 
@@ -27,6 +28,22 @@ public class IntervalValuesTest extends WhereExprTests {
         assertEvalTrue("NOW() BETWEEN NOW()-DAY(1) AND NOW()+DAY(1)");
         assertEvalTrue("NOW() between NOW()-DAY(1) AND NOW()+DAY(1)");
         assertEvalFalse("NOW() BETWEEN NOW()+DAY(1) AND NOW()+DAY(1)");
+    }
+
+    @Test
+    public void keysParamExpressions() throws HBqlException {
+
+        ExprTree tree;
+
+        tree = parseExpr("NOW() < NOW()+MINUTE(:a)");
+        tree.setParameter("a", 1);
+        assertEvalTrue(tree);
+
+        tree = parseExpr("NOW()+YEAR(:a) = NOW()+WEEK(:b)+DAY(:c)");
+        tree.setParameter("a", 2);
+        tree.setParameter("b", 52);
+        tree.setParameter("c", 364);
+        assertEvalTrue(tree);
     }
 
 }
