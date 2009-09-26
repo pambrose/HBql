@@ -48,7 +48,7 @@ public class ValueInStmt extends GenericInStmt {
             HUtil.throwInvalidTypeException(this, type);
         }
 
-        // First make sure all the types are matched
+        // Make sure all items in list are of correct type
         for (final ValueExpr val : this.getValueExprList())
             HUtil.validateParentClass(this, clazz, val.validateTypes());
 

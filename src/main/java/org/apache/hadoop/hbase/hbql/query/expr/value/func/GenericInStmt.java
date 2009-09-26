@@ -32,7 +32,7 @@ public abstract class GenericInStmt extends GenericNotValue {
     }
 
     protected ValueExpr getExpr() {
-        return expr;
+        return this.expr;
     }
 
     protected void setExpr(final ValueExpr expr) {
@@ -40,7 +40,7 @@ public abstract class GenericInStmt extends GenericNotValue {
     }
 
     protected List<ValueExpr> getValueExprList() {
-        return valueExprList;
+        return this.valueExprList;
     }
 
     protected abstract boolean evaluateList(final Object object) throws HBqlException;
