@@ -309,6 +309,45 @@ public class WhereExpressionTest extends WhereExprTests {
     }
 
     @Test
+    public void booleanParamFunctions() throws HBqlException {
+
+        ExprTree tree;
+
+        tree = parseExpr(":a CONTAINS :b");
+        tree.setParameter("a", "abc");
+        tree.setParameter("b", "b");
+        assertEvalTrue(tree);
+
+        tree.setParameter("b", "z");
+        assertEvalFalse(tree);
+
+        final ObjectAllTypes obj = new ObjectAllTypes("aaabbb", 3, "aaab");
+
+        tree = parseExpr(obj, "keyval CONTAINS :a");
+        tree.setParameter("a", "ab");
+        assertEvalTrue(obj, tree);
+
+        tree.setParameter("a", "ba");
+        assertEvalFalse(obj, tree);
+
+        assertEvalFalse(obj, "'asasas' CONTAINS stringValue");
+        assertEvalTrue(obj, "'xxaaabxx' CONTAINS stringValue");
+        assertEvalTrue(obj, "keyval CONTAINS stringValue");
+        assertEvalTrue(obj, "keyval+'zz' CONTAINS stringValue+'bbz'");
+        assertEvalFalse(obj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
+
+        final AnnotatedAllTypes annoObj = new AnnotatedAllTypes("aaabbb", 3, "aaab");
+
+        assertEvalTrue(annoObj, "keyval CONTAINS 'ab'");
+        assertEvalFalse(annoObj, "keyval CONTAINS 'ba'");
+        assertEvalFalse(annoObj, "'asasas' CONTAINS stringValue");
+        assertEvalTrue(annoObj, "'xxaaabxx' CONTAINS stringValue");
+        assertEvalTrue(annoObj, "keyval CONTAINS stringValue");
+        assertEvalTrue(annoObj, "keyval+'zz' CONTAINS stringValue+'bbz'");
+        assertEvalFalse(annoObj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
+    }
+
+    @Test
     public void numericFunctions() throws HBqlException {
 
         assertEvalTrue("3 between 2 AND 5");

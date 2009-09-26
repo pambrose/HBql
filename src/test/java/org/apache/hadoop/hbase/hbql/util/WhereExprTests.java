@@ -99,21 +99,17 @@ public class WhereExprTests {
     public ExprTree parseExpr(final Object recordObj, final String expr) throws HBqlException {
         final Schema schema = SchemaManager.getObjectSchema(recordObj);
         return HBql.parseDescWhereExpr(expr, schema);
-
     }
 
     private static boolean evalExpr(final Object recordObj, final String expr) throws HBqlException {
-
         final Schema schema = SchemaManager.getObjectSchema(recordObj);
         final ExprTree tree = HBql.parseDescWhereExpr(expr, schema);
-
         return evalExpr(recordObj, tree);
     }
 
     private static boolean evalExpr(final Object recordObj, final ExprTree tree) throws HBqlException {
         return tree.evaluate(recordObj);
     }
-
 
     private static boolean evalColumnNames(final String expr, String... vals) {
 

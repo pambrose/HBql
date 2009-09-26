@@ -53,9 +53,9 @@ public enum FunctionType {
 
             final Class type = valueExprs[i].validateTypes();
 
-            if (!clazz.equals(type))
-                throw new TypeException("Invalid type " + type.getName() + " for arg " + i + " in function "
-                                        + this.name() + ".  Expecting type " + clazz.getName());
+            if (!clazz.isAssignableFrom(type))
+                throw new TypeException("Invalid type " + type.getSimpleName() + " for arg " + i + " in function "
+                                        + this.name() + ".  Expecting type " + clazz.getSimpleName());
             i++;
         }
     }
