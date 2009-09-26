@@ -90,7 +90,7 @@ public class NamedParameter implements ValueExpr {
         }
 
         throw new TypeException("Parameter " + this.getParamName()
-                                + " assigned an unsupported type " + val.getClass().getName());
+                                + " assigned an unsupported type " + val.getClass().getSimpleName());
     }
 
     @Override

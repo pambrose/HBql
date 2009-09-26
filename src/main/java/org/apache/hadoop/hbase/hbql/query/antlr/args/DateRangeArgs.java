@@ -31,7 +31,7 @@ public class DateRangeArgs {
 
         final Class clazz = this.lower.getClass();
         if (!DateValue.class.isAssignableFrom(clazz))
-            throw new HBqlException("Invalid type " + clazz.getName() + " in DateRangeArgs");
+            throw new HBqlException("Invalid type " + clazz.getSimpleName() + " in DateRangeArgs");
 
         return (Long)this.lower.getValue(null);
     }
@@ -43,7 +43,7 @@ public class DateRangeArgs {
 
         final Class clazz = this.upper.getClass();
         if (!DateValue.class.isAssignableFrom(clazz))
-            throw new HBqlException("Invalid type " + clazz.getName() + " in DateRangeArgs");
+            throw new HBqlException("Invalid type " + clazz.getSimpleName() + " in DateRangeArgs");
 
         return (Long)this.upper.getValue(null);
     }

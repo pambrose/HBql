@@ -29,7 +29,7 @@ public class VersionArgs {
 
         final Class clazz = this.value.getClass();
         if (!NumberValue.class.isAssignableFrom(clazz))
-            throw new HBqlException("Invalid type " + clazz.getName() + " in VersionArgs");
+            throw new HBqlException("Invalid type " + clazz.getSimpleName() + " in VersionArgs");
 
         return ((Number)this.value.getValue(null)).intValue();
     }
