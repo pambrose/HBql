@@ -6,6 +6,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.Arrays;
@@ -48,6 +50,9 @@ public class Function implements ValueExpr {
             return typeSig;
         }
 
+        public String asString() {
+            return this.name();
+        }
 
         public void validateArgs(final ValueExpr parentExpr, final ValueExpr[] valueExprs) throws TypeException {
 
@@ -76,11 +81,15 @@ public class Function implements ValueExpr {
         this.valueExprs = valueExprs;
     }
 
-    protected ValueExpr[] getValueExprs() {
+    private ValueExpr[] getValueExprs() {
         return valueExprs;
     }
 
-    protected Type getFunctionType() {
+    private ValueExpr getValueExpr(final int i) {
+        return this.getValueExprs()[i];
+    }
+
+    private Type getFunctionType() {
         return this.type;
     }
 
@@ -88,12 +97,6 @@ public class Function implements ValueExpr {
     public void setContext(final ExprTree context) {
         for (final ValueExpr valExpr : this.getValueExprs())
             valExpr.setContext(context);
-    }
-
-    // TODO Deal with this
-    @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
-        return this;
     }
 
     @Override
@@ -111,8 +114,70 @@ public class Function implements ValueExpr {
             case INDEXOF:
                 this.getFunctionType().validateArgs(this, this.getValueExprs());
                 return this.getFunctionType().getReturnType();
+            default:
+                throw new TypeException("Invalid function " + this.getFunctionType() + " in " + this.asString());
         }
-        throw new TypeException("Invalid function " + this.getFunctionType() + " in " + this.asString());
+    }
+
+    private void getOptimizedValue(final int i) throws HBqlException {
+        this.getValueExprs()[i] = this.getValueExpr(i).getOptimizedValue();
+    }
+
+    @Override
+    public ValueExpr getOptimizedValue() throws HBqlException {
+
+        switch (this.getFunctionType()) {
+
+            // Returns a string
+            case TRIM: {
+                this.getOptimizedValue(0);
+                return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
+            }
+
+            case LOWER: {
+                this.getOptimizedValue(0);
+                return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
+            }
+
+            case UPPER: {
+                this.getOptimizedValue(0);
+                return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
+            }
+
+            case CONCAT: {
+                this.getOptimizedValue(0);
+                this.getOptimizedValue(1);
+                return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
+            }
+
+            case REPLACE: {
+                this.getOptimizedValue(0);
+                this.getOptimizedValue(1);
+                this.getOptimizedValue(2);
+                return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
+            }
+
+            case SUBSTRING: {
+                this.getOptimizedValue(0);
+                this.getOptimizedValue(1);
+                this.getOptimizedValue(2);
+                return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
+            }
+
+            case LENGTH: {
+                this.getOptimizedValue(0);
+                return this.isAConstant() ? new IntegerLiteral((Integer)this.getValue(null)) : this;
+            }
+
+            case INDEXOF: {
+                this.getOptimizedValue(0);
+                this.getOptimizedValue(1);
+                return this.isAConstant() ? new IntegerLiteral((Integer)this.getValue(null)) : this;
+            }
+
+            default:
+                throw new HBqlException("Invalid function: " + this.getFunctionType());
+        }
     }
 
     @Override
@@ -122,42 +187,42 @@ public class Function implements ValueExpr {
 
             // Returns a string
             case TRIM: {
-                final String val = (String)this.getValueExprs()[0].getValue(object);
+                final String val = (String)this.getValueExpr(0).getValue(object);
                 return val.trim();
             }
 
             case LOWER: {
-                final String val = (String)this.getValueExprs()[0].getValue(object);
+                final String val = (String)this.getValueExpr(0).getValue(object);
                 return val.toLowerCase();
             }
 
             case UPPER: {
-                final String val = (String)this.getValueExprs()[0].getValue(object);
+                final String val = (String)this.getValueExpr(0).getValue(object);
                 return val.toUpperCase();
             }
 
             case CONCAT: {
-                final String v1 = (String)this.getValueExprs()[0].getValue(object);
-                final String v2 = (String)this.getValueExprs()[1].getValue(object);
+                final String v1 = (String)this.getValueExpr(0).getValue(object);
+                final String v2 = (String)this.getValueExpr(1).getValue(object);
                 return v1 + v2;
             }
 
             case REPLACE: {
-                final String val = (String)this.getValueExprs()[0].getValue(object);
-                final String v2 = (String)this.getValueExprs()[1].getValue(object);
-                final String v3 = (String)this.getValueExprs()[2].getValue(object);
+                final String val = (String)this.getValueExpr(0).getValue(object);
+                final String v2 = (String)this.getValueExpr(1).getValue(object);
+                final String v3 = (String)this.getValueExpr(2).getValue(object);
                 return val.replace(v2, v3);
             }
 
             case SUBSTRING: {
-                final String val = (String)this.getValueExprs()[0].getValue(object);
-                final int begin = ((Number)this.getValueExprs()[1].getValue(object)).intValue();
-                final int end = ((Number)this.getValueExprs()[2].getValue(object)).intValue();
+                final String val = (String)this.getValueExpr(0).getValue(object);
+                final int begin = ((Number)this.getValueExpr(1).getValue(object)).intValue();
+                final int end = ((Number)this.getValueExpr(2).getValue(object)).intValue();
                 return val.substring(begin, end);
             }
 
             case LENGTH: {
-                final String val = (String)this.getValueExprs()[0].getValue(object);
+                final String val = (String)this.getValueExpr(0).getValue(object);
                 if (val == null)
                     return 0;
                 else
@@ -165,15 +230,16 @@ public class Function implements ValueExpr {
             }
 
             case INDEXOF: {
-                final String val1 = (String)this.getValueExprs()[0].getValue(object);
-                final String val2 = (String)this.getValueExprs()[1].getValue(object);
+                final String val1 = (String)this.getValueExpr(0).getValue(object);
+                final String val2 = (String)this.getValueExpr(1).getValue(object);
                 if (val1 == null || val2 == null)
                     return -1;
                 else
                     return val1.indexOf(val2);
             }
+            default:
+                throw new HBqlException("Invalid function: " + this.getFunctionType());
         }
-        throw new HBqlException("Invalid function: " + this.getFunctionType());
     }
 
     @Override
@@ -182,35 +248,39 @@ public class Function implements ValueExpr {
         switch (this.getFunctionType()) {
 
             case TRIM:
-                return this.getValueExprs()[0].isAConstant();
+                return this.getValueExpr(0).isAConstant();
 
             case LOWER:
-                return this.getValueExprs()[0].isAConstant();
+                return this.getValueExpr(0).isAConstant();
 
             case UPPER:
-                return this.getValueExprs()[0].isAConstant();
+                return this.getValueExpr(0).isAConstant();
 
             case CONCAT:
-                return this.getValueExprs()[0].isAConstant() && this.getValueExprs()[1].isAConstant();
+                return this.getValueExpr(0).isAConstant()
+                       && this.getValueExpr(1).isAConstant();
 
             case REPLACE:
-                return this.getValueExprs()[0].isAConstant()
-                       && this.getValueExprs()[1].isAConstant()
-                       && this.getValueExprs()[2].isAConstant();
+                return this.getValueExpr(0).isAConstant()
+                       && this.getValueExpr(1).isAConstant()
+                       && this.getValueExpr(2).isAConstant();
 
             case SUBSTRING:
-                return this.getValueExprs()[0].isAConstant()
-                       && this.getValueExprs()[1].isAConstant()
-                       && this.getValueExprs()[2].isAConstant();
+                return this.getValueExpr(0).isAConstant()
+                       && this.getValueExpr(1).isAConstant()
+                       && this.getValueExpr(2).isAConstant();
 
             case LENGTH:
-                return this.getValueExprs()[0].isAConstant();
+                return this.getValueExpr(0).isAConstant();
 
             case INDEXOF:
-                return this.getValueExprs()[0].isAConstant() && this.getValueExprs()[1].isAConstant();
+                return this.getValueExpr(0).isAConstant()
+                       && this.getValueExpr(1).isAConstant();
+
+            default:
+                throw new HBqlException("Invalid function: " + this.getFunctionType());
         }
 
-        throw new HBqlException("Invalid function: " + this.getFunctionType());
     }
 
     @Override
@@ -221,48 +291,50 @@ public class Function implements ValueExpr {
         switch (this.getFunctionType()) {
 
             case TRIM:
-                sbuf.append(this.getValueExprs()[0].asString());
+                sbuf.append(this.getValueExpr(0).asString());
                 break;
 
             case LOWER:
-                sbuf.append(this.getValueExprs()[0].asString());
+                sbuf.append(this.getValueExpr(0).asString());
                 break;
 
             case UPPER:
-                sbuf.append(this.getValueExprs()[0].asString());
+                sbuf.append(this.getValueExpr(0).asString());
                 break;
 
             case CONCAT:
-                sbuf.append(this.getValueExprs()[0].asString());
+                sbuf.append(this.getValueExpr(0).asString());
                 sbuf.append(", ");
-                sbuf.append(this.getValueExprs()[1].asString());
+                sbuf.append(this.getValueExpr(1).asString());
                 break;
 
             case REPLACE:
-                sbuf.append(this.getValueExprs()[0].asString());
+                sbuf.append(this.getValueExpr(0).asString());
                 sbuf.append(", ");
-                sbuf.append(this.getValueExprs()[1].asString());
+                sbuf.append(this.getValueExpr(1).asString());
                 sbuf.append(", ");
-                sbuf.append(this.getValueExprs()[2].asString());
+                sbuf.append(this.getValueExpr(2).asString());
                 break;
 
             case SUBSTRING:
-                sbuf.append(this.getValueExprs()[0].asString());
+                sbuf.append(this.getValueExpr(0).asString());
                 sbuf.append(", ");
-                sbuf.append(this.getValueExprs()[1].asString());
+                sbuf.append(this.getValueExpr(1).asString());
                 sbuf.append(", ");
-                sbuf.append(this.getValueExprs()[2].asString());
+                sbuf.append(this.getValueExpr(2).asString());
                 break;
 
             case LENGTH:
-                sbuf.append(this.getValueExprs()[0].asString());
+                sbuf.append(this.getValueExpr(0).asString());
                 break;
 
             case INDEXOF:
-                sbuf.append(this.getValueExprs()[0].asString());
+                sbuf.append(this.getValueExpr(0).asString());
                 sbuf.append(", ");
-                sbuf.append(this.getValueExprs()[1].asString());
+                sbuf.append(this.getValueExpr(1).asString());
                 break;
+            default:
+                sbuf.append("Unknown Function: " + this.getFunctionType());
         }
 
         sbuf.append(")");
