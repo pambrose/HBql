@@ -70,7 +70,7 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public boolean isAConstant() {
+    public boolean isAConstant() throws HBqlException {
         return this.getFormatExpr().isAConstant() && this.getValueExpr().isAConstant();
     }
 

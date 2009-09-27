@@ -44,7 +44,7 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
         return (T)this;
     }
 
-    public boolean isAConstant() {
+    public boolean isAConstant() throws HBqlException {
         return false;
     }
 

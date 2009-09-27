@@ -21,7 +21,7 @@ public interface ValueExpr extends Serializable {
     Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
                                              final boolean allowsCollections) throws TypeException;
 
-    boolean isAConstant();
+    boolean isAConstant() throws HBqlException;
 
     void setContext(ExprTree context);
 

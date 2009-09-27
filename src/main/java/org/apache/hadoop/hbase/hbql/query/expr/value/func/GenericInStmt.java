@@ -71,7 +71,7 @@ public abstract class GenericInStmt extends GenericNotValue {
     }
 
     @Override
-    public boolean isAConstant() {
+    public boolean isAConstant() throws HBqlException {
         return this.getExpr().isAConstant() && this.listIsConstant();
     }
 
@@ -84,8 +84,13 @@ public abstract class GenericInStmt extends GenericNotValue {
 
     private boolean listIsConstant() {
         for (final ValueExpr val : this.getValueExprList()) {
-            if (!val.isAConstant())
-                return false;
+            try {
+                if (!val.isAConstant())
+                    return false;
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+            }
         }
         return true;
     }

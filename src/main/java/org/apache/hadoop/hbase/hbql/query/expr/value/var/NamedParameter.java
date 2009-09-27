@@ -115,7 +115,7 @@ public class NamedParameter implements ValueExpr {
     }
 
     @Override
-    public boolean isAConstant() {
+    public boolean isAConstant() throws HBqlException {
         return false;
     }
 

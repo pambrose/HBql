@@ -208,10 +208,10 @@ options {backtrack=true; memoize=true;}
 							{retval = new ContainsStmt($s1.retval, ($n.text != null), $s2.retval);}
 	| s1=valueExpr n=keyNOT? keyLIKE s2=valueExpr 	{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);}
 	| s1=valueExpr n=keyNOT? keyBETWEEN s2=valueExpr keyAND s3=valueExpr		
-							{retval = new ValueBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
+							{retval = new DelegateBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
 	| s1=valueExpr n=keyNOT? keyIN LPAREN l=valueItemList RPAREN			
-							{retval = new ValueInStmt($s1.retval, ($n.text != null), $l.retval);} 
-	| s1=valueExpr keyIS (n=keyNOT)? keyNULL	{retval = new ValueNullCompare(($n.text != null), $s1.retval);}	
+							{retval = new DelegateInStmt($s1.retval, ($n.text != null), $l.retval);} 
+	| s1=valueExpr keyIS (n=keyNOT)? keyNULL	{retval = new DelegateNullCompare(($n.text != null), $s1.retval);}	
 	;
 
 valueItemList returns [List<ValueExpr> retval]
@@ -237,7 +237,7 @@ multExpr returns [ValueExpr retval]
 							{retval = getLeftAssociativeValueExprs(exprList, opList);};
 	
 signedExpr returns [ValueExpr retval]
-	: (s=plusMinus)? n=parenExpr 			{$signedExpr.retval = ($s.retval == Operator.MINUS) ? new ValueCalcExpr($n.retval, Operator.NEGATIVE, null) :  $n.retval;};
+	: (s=plusMinus)? n=parenExpr 			{$signedExpr.retval = ($s.retval == Operator.MINUS) ? new DelegateCalcExpr($n.retval, Operator.NEGATIVE, null) :  $n.retval;};
 
 parenExpr returns [ValueExpr retval]
 options {backtrack=true; memoize=true;}	
@@ -285,19 +285,19 @@ valueFunctions returns [ValueExpr retval]
 	| keySECOND LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.SECOND, $n.retval);}
 	| keyMILLI LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.MILLI, $n.retval);}
 	| keyCONCAT LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
-							{retval = new GenericFunction(FunctionType.CONCAT, $s1.retval, $s2.retval);}
+							{retval = new Function(FunctionType.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=valueExpr COMMA n1=valueExpr COMMA n2=valueExpr RPAREN
-							{retval = new GenericFunction(FunctionType.SUBSTRING, $s.retval, $n1.retval, $n2.retval);}
-	| keyTRIM LPAREN s=valueExpr RPAREN		{retval = new GenericFunction(FunctionType.TRIM, $s.retval);}
-	| keyLOWER LPAREN s=valueExpr RPAREN		{retval = new GenericFunction(FunctionType.LOWER, $s.retval);} 
-	| keyUPPER LPAREN s=valueExpr RPAREN		{retval = new GenericFunction(FunctionType.UPPER, $s.retval);} 
+							{retval = new Function(FunctionType.SUBSTRING, $s.retval, $n1.retval, $n2.retval);}
+	| keyTRIM LPAREN s=valueExpr RPAREN		{retval = new Function(FunctionType.TRIM, $s.retval);}
+	| keyLOWER LPAREN s=valueExpr RPAREN		{retval = new Function(FunctionType.LOWER, $s.retval);} 
+	| keyUPPER LPAREN s=valueExpr RPAREN		{retval = new Function(FunctionType.UPPER, $s.retval);} 
 	| keyREPLACE LPAREN s1=valueExpr COMMA s2=valueExpr COMMA s3=valueExpr RPAREN		
-							{retval = new GenericFunction(FunctionType.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
-	| keyLENGTH LPAREN s=valueExpr RPAREN		{retval = new GenericFunction(FunctionType.LENGTH, $s.retval);}
+							{retval = new Function(FunctionType.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
+	| keyLENGTH LPAREN s=valueExpr RPAREN		{retval = new Function(FunctionType.LENGTH, $s.retval);}
 	| keyINDEXOF LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
-							{retval = new GenericFunction(FunctionType.INDEXOF, $s1.retval, $s2.retval);}
+							{retval = new Function(FunctionType.INDEXOF, $s1.retval, $s2.retval);}
 	| keyIF v1=booleanExpr keyTHEN v2=valueExpr keyELSE v3=valueExpr keyEND	
-							{retval = new ValueTernary($v1.retval, $v2.retval, $v3.retval);}
+							{retval = new DelegateTernary($v1.retval, $v2.retval, $v3.retval);}
 	;
 			
 column 	: c=varRef;

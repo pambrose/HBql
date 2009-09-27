@@ -54,7 +54,7 @@ public abstract class GenericStringPatternStmt extends GenericNotValue {
     }
 
     @Override
-    public boolean isAConstant() {
+    public boolean isAConstant() throws HBqlException {
         return this.getValueExpr().isAConstant() && this.getPatternExpr().isAConstant();
     }
 

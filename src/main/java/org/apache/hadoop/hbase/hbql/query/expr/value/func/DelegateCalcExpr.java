@@ -14,11 +14,11 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class ValueCalcExpr extends GenericCalcExpr {
+public class DelegateCalcExpr extends GenericCalcExpr {
 
     private GenericCalcExpr typedExpr = null;
 
-    public ValueCalcExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
+    public DelegateCalcExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, op, expr2);
     }
 

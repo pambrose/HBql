@@ -13,11 +13,11 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class ValueNullCompare extends GenericNullCompare {
+public class DelegateNullCompare extends GenericNullCompare {
 
     private GenericNullCompare typedExpr = null;
 
-    public ValueNullCompare(final boolean not, final ValueExpr expr) {
+    public DelegateNullCompare(final boolean not, final ValueExpr expr) {
         super(not, expr);
     }
 

@@ -9,46 +9,40 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class ValueInStmt extends GenericInStmt {
+public class DelegateBetweenStmt extends GenericBetweenStmt {
 
-    private GenericInStmt typedExpr = null;
+    private GenericBetweenStmt typedExpr = null;
 
-    public ValueInStmt(final ValueExpr expr, final boolean not, final List<ValueExpr> valList) {
-        super(not, expr, valList);
+    public DelegateBetweenStmt(final ValueExpr expr, final boolean not, final ValueExpr lower, final ValueExpr upper) {
+        super(not, expr, lower, upper);
     }
 
     @Override
     public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
                                                     final boolean allowsCollections) throws TypeException {
 
-        final Class<? extends ValueExpr> type = this.getExpr().validateTypes(this, false);
+        final Class<? extends ValueExpr> type1 = this.getExpr().validateTypes(this, false);
+        final Class<? extends ValueExpr> type2 = this.getLower().validateTypes(this, false);
+        final Class<? extends ValueExpr> type3 = this.getUpper().validateTypes(this, false);
 
-        if (HUtil.isParentClass(StringValue.class, type))
-            this.typedExpr = new StringInStmt(this.getExpr(), this.isNot(), this.getValueExprList());
-        else if (HUtil.isParentClass(NumberValue.class, type))
-            this.typedExpr = new NumberInStmt(this.getExpr(), this.isNot(), this.getValueExprList());
-        else if (HUtil.isParentClass(DateValue.class, type))
-            this.typedExpr = new DateInStmt(this.getExpr(), this.isNot(), this.getValueExprList());
+        if (HUtil.isParentClass(StringValue.class, type1, type2, type3))
+            this.typedExpr = new StringBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());
+        else if (HUtil.isParentClass(NumberValue.class, type1, type2, type3))
+            this.typedExpr = new NumberBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());
+        else if (HUtil.isParentClass(DateValue.class, type1, type2, type3))
+            this.typedExpr = new DateBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());
         else
-            HUtil.throwInvalidTypeException(this, type);
+            HUtil.throwInvalidTypeException(this, type1, type2, type3);
 
         this.typedExpr.validateTypes(parentExpr, false);
 
         return BooleanValue.class;
-    }
-
-    @Override
-    protected boolean evaluateList(final Object object) throws HBqlException {
-        // Not used
-        return false;
     }
 
     @Override
@@ -60,5 +54,4 @@ public class ValueInStmt extends GenericInStmt {
     public Boolean getValue(final Object object) throws HBqlException {
         return this.typedExpr.getValue(object);
     }
-
 }

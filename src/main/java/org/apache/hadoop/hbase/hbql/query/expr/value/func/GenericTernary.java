@@ -40,7 +40,7 @@ public abstract class GenericTernary extends GenericTwoExprExpr implements Value
     }
 
     @Override
-    public boolean isAConstant() {
+    public boolean isAConstant() throws HBqlException {
         return this.getPred().isAConstant() && this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
     }
 

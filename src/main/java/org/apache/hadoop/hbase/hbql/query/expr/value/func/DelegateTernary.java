@@ -15,11 +15,11 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Aug 29, 2009
  * Time: 2:35:57 PM
  */
-public class ValueTernary extends GenericTernary {
+public class DelegateTernary extends GenericTernary {
 
     private GenericTernary typedExpr = null;
 
-    public ValueTernary(final ValueExpr pred, final ValueExpr expr1, final ValueExpr expr2) {
+    public DelegateTernary(final ValueExpr pred, final ValueExpr expr1, final ValueExpr expr2) {
         super(pred, expr1, expr2);
     }
 

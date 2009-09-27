@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
@@ -34,7 +35,7 @@ public class GenericTwoExprExpr {
         this.expr2 = expr2;
     }
 
-    public boolean isAConstant() {
+    public boolean isAConstant() throws HBqlException {
         if (this.getExpr2() == null)
             return this.getExpr1().isAConstant();
         else

@@ -61,7 +61,7 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
     }
 
     @Override
-    public boolean isAConstant() {
+    public boolean isAConstant() throws HBqlException {
         return this.getExpr().isAConstant() && this.getLower().isAConstant() && this.getUpper().isAConstant();
     }
 

@@ -18,7 +18,7 @@ public abstract class GenericLiteral implements ValueExpr {
     }
 
     @Override
-    public boolean isAConstant() {
+    public boolean isAConstant() throws HBqlException {
         return true;
     }
 

@@ -11,12 +11,12 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public class GenericFunction implements ValueExpr {
+public class Function implements ValueExpr {
 
     private final FunctionType functionType;
     private final ValueExpr[] valueExprs;
 
-    public GenericFunction(final FunctionType functionType, final ValueExpr... valueExprs) {
+    public Function(final FunctionType functionType, final ValueExpr... valueExprs) {
         this.functionType = functionType;
         this.valueExprs = valueExprs;
     }
@@ -39,12 +39,6 @@ public class GenericFunction implements ValueExpr {
     @Override
     public ValueExpr getOptimizedValue() throws HBqlException {
         return this;
-    }
-
-    // TODO Deal with this
-    @Override
-    public boolean isAConstant() {
-        return false;
     }
 
     @Override
@@ -124,7 +118,44 @@ public class GenericFunction implements ValueExpr {
                     return val1.indexOf(val2);
             }
         }
-        throw new HBqlException("Invalid function in GenericFunction.getValue() " + this.getFunctionType());
+        throw new HBqlException("Invalid function: " + this.getFunctionType());
+    }
+
+    @Override
+    public boolean isAConstant() throws HBqlException {
+
+        switch (this.getFunctionType()) {
+
+            case TRIM:
+                return this.getValueExprs()[0].isAConstant();
+
+            case LOWER:
+                return this.getValueExprs()[0].isAConstant();
+
+            case UPPER:
+                return this.getValueExprs()[0].isAConstant();
+
+            case CONCAT:
+                return this.getValueExprs()[0].isAConstant() && this.getValueExprs()[1].isAConstant();
+
+            case REPLACE:
+                return this.getValueExprs()[0].isAConstant()
+                       && this.getValueExprs()[1].isAConstant()
+                       && this.getValueExprs()[2].isAConstant();
+
+            case SUBSTRING:
+                return this.getValueExprs()[0].isAConstant()
+                       && this.getValueExprs()[1].isAConstant()
+                       && this.getValueExprs()[2].isAConstant();
+
+            case LENGTH:
+                return this.getValueExprs()[0].isAConstant();
+
+            case INDEXOF:
+                return this.getValueExprs()[0].isAConstant() && this.getValueExprs()[1].isAConstant();
+        }
+
+        throw new HBqlException("Invalid function: " + this.getFunctionType());
     }
 
     @Override

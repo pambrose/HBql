@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
@@ -30,7 +31,7 @@ public abstract class GenericNullCompare extends GenericNotValue {
     }
 
     @Override
-    public boolean isAConstant() {
+    public boolean isAConstant() throws HBqlException {
         return this.getExpr().isAConstant();
     }
 
