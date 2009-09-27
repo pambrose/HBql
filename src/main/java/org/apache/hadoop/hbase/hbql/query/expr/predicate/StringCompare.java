@@ -43,8 +43,8 @@ public class StringCompare extends GenericCompare {
                 return val1.compareTo(val2) < 0;
             case LTEQ:
                 return val1.compareTo(val2) <= 0;
+            default:
+                throw new HBqlException("Invalid operator: " + this.getOp());
         }
-
-        throw new HBqlException("Error in StringCompare.getValue()");
     }
 }

@@ -12,9 +12,9 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class BooleanAttribRef extends GenericAttribRef<NumberValue> implements BooleanValue {
+public class BooleanVariable extends GenericVariable<NumberValue> implements BooleanValue {
 
-    public BooleanAttribRef(final VariableAttrib attrib) {
+    public BooleanVariable(final VariableAttrib attrib) {
         super(attrib, FieldType.BooleanType);
     }
 

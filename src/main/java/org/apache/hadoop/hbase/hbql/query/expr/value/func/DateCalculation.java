@@ -47,7 +47,7 @@ public class DateCalculation extends GenericCalculation implements DateValue {
                 return val1 - val2;
         }
 
-        throw new HBqlException("Invalid operator in DateCalcExpr.getValue() " + this.getOp());
+        throw new HBqlException("Invalid operator:" + this.getOp());
     }
 
 }

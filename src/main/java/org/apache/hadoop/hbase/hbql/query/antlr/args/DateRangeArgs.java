@@ -28,11 +28,11 @@ public class DateRangeArgs {
     public long getLower() throws HBqlException {
 
         if (this.lower == null)
-            throw new HBqlException("Null value invalid in DateRangeArgs");
+            throw new HBqlException("Null value not valid");
 
         final Class clazz = this.lower.getClass();
         if (!HUtil.isParentClass(DateValue.class, clazz))
-            throw new HBqlException("Invalid type " + clazz.getSimpleName() + " in DateRangeArgs");
+            throw new HBqlException("Invalid type " + clazz.getSimpleName());
 
         return (Long)this.lower.getValue(null);
     }
@@ -40,11 +40,11 @@ public class DateRangeArgs {
     public long getUpper() throws HBqlException {
 
         if (this.upper == null)
-            throw new HBqlException("Null value invalid in DateRangeArgs");
+            throw new HBqlException("Null value not valid");
 
         final Class clazz = this.upper.getClass();
         if (!HUtil.isParentClass(DateValue.class, clazz))
-            throw new HBqlException("Invalid type " + clazz.getSimpleName() + " in DateRangeArgs");
+            throw new HBqlException("Invalid type " + clazz.getSimpleName());
 
         return (Long)this.upper.getValue(null);
     }

@@ -11,11 +11,11 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.DelegateCalculation;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.BooleanAttribRef;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.DateAttribRef;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.IntegerAttribRef;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.LongAttribRef;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.StringAttribRef;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.BooleanVariable;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.DateVariable;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.IntegerVariable;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.LongVariable;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.StringVariable;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
@@ -67,7 +67,7 @@ public class HBaseParser extends Parser {
         return s != null && s.equalsIgnoreCase(str);
     }
 
-    protected ValueExpr getVariableRef(final String var) throws RecognitionException {
+    protected ValueExpr getVariable(final String var) throws RecognitionException {
 
         if (this.getSchema() != null) {
 
@@ -78,26 +78,26 @@ public class HBaseParser extends Parser {
 
                     case KeyType:
                     case StringType:
-                        return new StringAttribRef(attrib);
+                        return new StringVariable(attrib);
 
                     case LongType:
-                        return new LongAttribRef(attrib);
+                        return new LongVariable(attrib);
 
                     case IntegerType:
-                        return new IntegerAttribRef(attrib);
+                        return new IntegerVariable(attrib);
 
                     case DateType:
-                        return new DateAttribRef(attrib);
+                        return new DateVariable(attrib);
 
                     case BooleanType:
-                        return new BooleanAttribRef(attrib);
+                        return new BooleanVariable(attrib);
 
                     default:
-                        System.out.println("Invalid type: " + attrib.getFieldType().name() + " in getVariableRef()");
+                        System.out.println("Invalid type: " + attrib.getFieldType().name());
                 }
             }
             else {
-                System.out.println("Invalid variable: " + var + " in getVariableRef()");
+                System.out.println("Invalid variable: " + var);
             }
         }
         throw new RecognitionException(input);

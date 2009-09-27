@@ -43,9 +43,8 @@ public class StringCalculation extends GenericCalculation {
         switch (this.getOp()) {
             case PLUS:
                 return val1 + val2;
+            default:
+                throw new HBqlException("Invalid operator: " + this.getOp());
         }
-
-        throw new HBqlException("Invalid operator in StringCalcExpr.getValue() " + this.getOp());
     }
-
 }

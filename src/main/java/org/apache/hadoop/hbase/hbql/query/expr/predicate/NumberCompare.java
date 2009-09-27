@@ -43,8 +43,8 @@ public class NumberCompare extends GenericCompare {
                 return val1 <= val2;
             case NOTEQ:
                 return val1 != val2;
+            default:
+                throw new HBqlException("Invalid operator: " + this.getOp());
         }
-
-        throw new HBqlException("Error in NumberCompare.getValue()");
     }
 }

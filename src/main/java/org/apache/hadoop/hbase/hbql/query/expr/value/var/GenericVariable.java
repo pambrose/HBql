@@ -3,7 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
@@ -14,29 +13,32 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  * Date: Aug 31, 2009
  * Time: 12:30:57 PM
  */
-public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr {
+public abstract class GenericVariable<T extends ValueExpr> implements ValueExpr {
 
-    private final ExprVariable exprVar;
+    private final String attribName;
+    private final FieldType fieldType;
     private final VariableAttrib variableAttrib;
 
     private ExprTree context = null;
 
-    protected GenericAttribRef(final VariableAttrib attrib, final FieldType fieldType) {
-        this.exprVar = new ExprVariable(attrib.getVariableName(), fieldType);
+    protected GenericVariable(final VariableAttrib attrib, final FieldType fieldType) {
+        this.attribName = attrib.getVariableName();
+        this.fieldType = fieldType;
         this.variableAttrib = attrib;
     }
 
-    protected GenericAttribRef(final String attribName) {
-        this.exprVar = new ExprVariable(attribName, null);
+    protected GenericVariable(final String attribName) {
+        this.attribName = attribName;
+        this.fieldType = null;
         this.variableAttrib = null;
     }
 
-    public ExprVariable getExprVar() {
-        return this.exprVar;
+    public String getName() {
+        return this.attribName;
     }
 
-    public String getName() {
-        return this.getExprVar().getName();
+    public FieldType getFieldType() {
+        return this.fieldType;
     }
 
     @Override
@@ -51,7 +53,7 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
     @Override
     public void setContext(final ExprTree context) {
         this.context = context;
-        this.getContext().addAttribRef(this);
+        this.getContext().addVariable(this);
     }
 
     protected ExprTree getContext() {
@@ -65,7 +67,7 @@ public abstract class GenericAttribRef<T extends ValueExpr> implements ValueExpr
     @Override
     public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
                                                     final boolean allowsCollections) throws TypeException {
-        return this.getExprVar().getFieldType().getExprType();
+        return this.getFieldType().getExprType();
     }
 
     @Override

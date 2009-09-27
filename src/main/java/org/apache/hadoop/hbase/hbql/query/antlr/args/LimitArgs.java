@@ -26,11 +26,11 @@ public class LimitArgs {
     public long getValue() throws HBqlException {
 
         if (this.value == null)
-            throw new HBqlException("Null value invalid in LimitArgs");
+            throw new HBqlException("Null value not valid");
 
         final Class clazz = this.value.getClass();
         if (!HUtil.isParentClass(NumberValue.class, clazz))
-            throw new HBqlException("Invalid type " + clazz.getSimpleName() + " in LimitArgs");
+            throw new HBqlException("Invalid type " + clazz.getSimpleName());
 
         return ((Number)this.value.getValue(null)).longValue();
     }

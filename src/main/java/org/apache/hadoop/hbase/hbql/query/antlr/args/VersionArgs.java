@@ -26,11 +26,11 @@ public class VersionArgs {
     public int getValue() throws HBqlException {
 
         if (this.value == null)
-            throw new HBqlException("Null value invalid in VersionArgs");
+            throw new HBqlException("Null value invalid");
 
         final Class clazz = this.value.getClass();
         if (!HUtil.isParentClass(NumberValue.class, clazz))
-            throw new HBqlException("Invalid type " + clazz.getSimpleName() + " in VersionArgs");
+            throw new HBqlException("Invalid type " + clazz.getSimpleName());
 
         return ((Number)this.value.getValue(null)).intValue();
     }

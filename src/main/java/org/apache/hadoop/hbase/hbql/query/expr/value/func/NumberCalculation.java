@@ -53,9 +53,8 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
                 return val1 % val2;
             case NEGATIVE:
                 return val1 * -1;
+            default:
+                throw new HBqlException("Invalid operator: " + this.getOp());
         }
-
-        throw new HBqlException("Invalid operator in NumberCalcExpr.getValue() " + this.getOp());
-
     }
 }

@@ -43,8 +43,8 @@ public class DateCompare extends GenericCompare {
                 return val1 < val2;
             case LTEQ:
                 return val1 <= val2;
+            default:
+                throw new HBqlException("Invalid operator: " + this.getOp());
         }
-        throw new HBqlException("Error in DateCompare.getValue()");
     }
-
 }

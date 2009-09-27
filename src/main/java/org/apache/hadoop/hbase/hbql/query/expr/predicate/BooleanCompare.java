@@ -29,7 +29,7 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
         final boolean expr1val = (Boolean)this.getExpr1().getValue(object);
 
         if (this.getExpr2() == null)
-            throw new HBqlException("Null value in BooleanCompare.getValue()");
+            throw new HBqlException("Null value");
 
         final boolean expr2val = (Boolean)this.getExpr2().getValue(object);
 
@@ -43,7 +43,7 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
             case NOTEQ:
                 return expr1val != expr2val;
             default:
-                throw new HBqlException("Error in BooleanCompare.getValue()");
+                throw new HBqlException("Invalid operator: " + this.getOp());
         }
     }
 }

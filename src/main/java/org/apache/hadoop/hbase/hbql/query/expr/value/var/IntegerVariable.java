@@ -11,15 +11,15 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class LongAttribRef extends GenericAttribRef<NumberValue> implements NumberValue {
+public class IntegerVariable extends GenericVariable<NumberValue> implements NumberValue {
 
-    public LongAttribRef(VariableAttrib attrib) {
-        super(attrib, FieldType.LongType);
+    public IntegerVariable(VariableAttrib attrib) {
+        super(attrib, FieldType.IntegerType);
     }
 
     @Override
-    public Long getValue(final Object object) throws HBqlException {
-        return (Long)this.getVariableAttrib().getCurrentValue(object);
+    public Integer getValue(final Object object) throws HBqlException {
+        return (Integer)this.getVariableAttrib().getCurrentValue(object);
     }
 
 }
