@@ -28,8 +28,7 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
     public ValueExpr getOptimizedValue() throws HBqlException {
 
         this.setExpr1(this.getExpr1().getOptimizedValue());
-        if (this.getExpr2() != null)
-            this.setExpr2(this.getExpr2().getOptimizedValue());
+        this.setExpr2(this.getExpr2().getOptimizedValue());
 
         return this.isAConstant() ? new NumberLiteral(this.getValue(null)) : this;
     }
@@ -38,7 +37,7 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
     public Long getValue(final Object object) throws HBqlException {
 
         final long val1 = ((Number)this.getExpr1().getValue(object)).longValue();
-        final long val2 = (this.getExpr2() != null) ? (((Number)this.getExpr2().getValue(object))).longValue() : 0;
+        final long val2 = (((Number)this.getExpr2().getValue(object))).longValue();
 
         switch (this.getOperator()) {
             case PLUS:

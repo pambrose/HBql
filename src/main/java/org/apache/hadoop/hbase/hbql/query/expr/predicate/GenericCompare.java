@@ -31,25 +31,24 @@ public abstract class GenericCompare extends GenericTwoExpr implements BooleanVa
     @Override
     public ValueExpr getOptimizedValue() throws HBqlException {
         this.setExpr1(this.getExpr1().getOptimizedValue());
-        if (this.getExpr2() != null)
-            this.setExpr2(this.getExpr2().getOptimizedValue());
+        this.setExpr2(this.getExpr2().getOptimizedValue());
 
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
         HUtil.validateParentClass(this, clazz, this.getExpr1().validateTypes(this, false));
-        if (this.getExpr2() != null)
-            HUtil.validateParentClass(this, clazz, this.getExpr2().validateTypes(this, false));
+        HUtil.validateParentClass(this, clazz, this.getExpr2().validateTypes(this, false));
 
         return BooleanValue.class;
     }
 
     @Override
     public String asString() {
-        final StringBuilder sbuf = new StringBuilder(this.getExpr1().asString());
-        if (this.getExpr2() != null)
-            sbuf.append(this.getOperator()).append(this.getExpr2().asString());
+        final StringBuilder sbuf = new StringBuilder();
+        sbuf.append(this.getExpr1().asString());
+        sbuf.append(this.getOperator());
+        sbuf.append(this.getExpr2().asString());
 
         return sbuf.toString();
     }

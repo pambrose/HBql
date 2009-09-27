@@ -36,16 +36,11 @@ public class GenericTwoExpr {
     }
 
     public boolean isAConstant() throws HBqlException {
-        if (this.getExpr2() == null)
-            return this.getExpr1().isAConstant();
-        else
-            return (this.getExpr1().isAConstant() && this.getExpr2().isAConstant());
+        return (this.getExpr1().isAConstant() && this.getExpr2().isAConstant());
     }
 
     public void setContext(final ExprTree context) {
         this.getExpr1().setContext(context);
-
-        if (this.getExpr2() != null)
-            this.getExpr2().setContext(context);
+        this.getExpr2().setContext(context);
     }
 }

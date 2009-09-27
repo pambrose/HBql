@@ -26,8 +26,8 @@ public abstract class GenericCalculation extends GenericTwoExpr implements Value
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
         HUtil.validateParentClass(this, clazz, this.getExpr1().validateTypes(this, false));
-        if (this.getExpr2() != null)
-            HUtil.validateParentClass(this, clazz, this.getExpr2().validateTypes(this, false));
+        HUtil.validateParentClass(this, clazz, this.getExpr2().validateTypes(this, false));
+
         return clazz;
     }
 
@@ -35,8 +35,6 @@ public abstract class GenericCalculation extends GenericTwoExpr implements Value
     public String asString() {
         if (this.getOperator() == Operator.NEGATIVE)
             return "-" + this.getExpr1().asString();
-        else if (this.getExpr2() == null)
-            return this.getExpr1().asString();
         else
             return this.getExpr1().asString() + " " + this.getOperator() + " " + this.getExpr2().asString();
     }

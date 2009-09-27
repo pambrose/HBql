@@ -28,8 +28,7 @@ public class StringCalculation extends GenericCalculation {
     public ValueExpr getOptimizedValue() throws HBqlException {
 
         this.setExpr1(this.getExpr1().getOptimizedValue());
-        if (this.getExpr2() != null)
-            this.setExpr2(this.getExpr2().getOptimizedValue());
+        this.setExpr2(this.getExpr2().getOptimizedValue());
 
         return this.isAConstant() ? new StringLiteral(this.getValue(null)) : this;
     }
@@ -38,7 +37,7 @@ public class StringCalculation extends GenericCalculation {
     public String getValue(final Object object) throws HBqlException {
 
         final String val1 = (String)this.getExpr1().getValue(object);
-        final String val2 = (this.getExpr2() != null) ? ((String)this.getExpr2().getValue(object)) : "";
+        final String val2 = (String)this.getExpr2().getValue(object);
 
         switch (this.getOperator()) {
             case PLUS:
