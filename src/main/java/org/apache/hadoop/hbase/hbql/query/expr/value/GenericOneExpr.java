@@ -10,11 +10,11 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  * Date: Sep 10, 2009
  * Time: 11:33:09 AM
  */
-public class GenericOneExprExpr {
+public class GenericOneExpr {
 
     private ValueExpr expr = null;
 
-    public GenericOneExprExpr(final ValueExpr expr) {
+    public GenericOneExpr(final ValueExpr expr) {
         this.expr = expr;
     }
 

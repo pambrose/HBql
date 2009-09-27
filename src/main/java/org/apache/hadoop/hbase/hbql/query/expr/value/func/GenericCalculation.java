@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Sep 7, 2009
  * Time: 9:29:44 PM
  */
-public abstract class GenericCalculation extends GenericTwoExprExpr implements ValueExpr {
+public abstract class GenericCalculation extends GenericTwoExpr implements ValueExpr {
 
     private final Operator op;
 

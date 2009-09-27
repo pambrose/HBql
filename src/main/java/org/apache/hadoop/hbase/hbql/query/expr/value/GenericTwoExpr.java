@@ -10,11 +10,11 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  * Date: Sep 10, 2009
  * Time: 11:33:09 AM
  */
-public class GenericTwoExprExpr {
+public class GenericTwoExpr {
 
     private ValueExpr expr1 = null, expr2 = null;
 
-    public GenericTwoExprExpr(final ValueExpr expr1, final ValueExpr expr2) {
+    public GenericTwoExpr(final ValueExpr expr1, final ValueExpr expr2) {
         this.expr1 = expr1;
         this.expr2 = expr2;
     }

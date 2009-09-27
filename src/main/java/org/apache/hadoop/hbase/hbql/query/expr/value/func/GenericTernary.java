@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
@@ -14,7 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Aug 31, 2009
  * Time: 1:51:03 PM
  */
-public abstract class GenericTernary extends GenericTwoExprExpr implements ValueExpr {
+public abstract class GenericTernary extends GenericTwoExpr implements ValueExpr {
 
     private ValueExpr pred = null;
 

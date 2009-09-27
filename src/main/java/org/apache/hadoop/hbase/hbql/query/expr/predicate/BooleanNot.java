@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.GenericOneExprExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.GenericOneExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
@@ -14,7 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Aug 25, 2009
  * Time: 8:28:06 PM
  */
-public class BooleanNot extends GenericOneExprExpr implements BooleanValue {
+public class BooleanNot extends GenericOneExpr implements BooleanValue {
 
     private final boolean not;
 

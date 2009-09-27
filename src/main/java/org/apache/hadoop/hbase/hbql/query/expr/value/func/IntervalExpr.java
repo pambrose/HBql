@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.GenericOneExprExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.GenericOneExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
@@ -15,7 +15,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Sep 7, 2009
  * Time: 10:03:28 PM
  */
-public class IntervalExpr extends GenericOneExprExpr implements DateValue {
+public class IntervalExpr extends GenericOneExpr implements DateValue {
 
     public enum IntervalType {
         MILLI(1),

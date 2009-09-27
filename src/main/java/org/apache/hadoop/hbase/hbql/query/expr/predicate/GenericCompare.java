@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExprExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
@@ -15,7 +15,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public abstract class GenericCompare extends GenericTwoExprExpr implements BooleanValue {
+public abstract class GenericCompare extends GenericTwoExpr implements BooleanValue {
 
     private final Operator op;
 
