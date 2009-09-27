@@ -15,9 +15,9 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Sep 7, 2009
  * Time: 10:03:28 PM
  */
-public class IntervalExpr extends GenericOneExpr implements DateValue {
+public class Interval extends GenericOneExpr implements DateValue {
 
-    public enum IntervalType {
+    public enum Type {
         MILLI(1),
         SECOND(1000 * MILLI.getIntervalMillis()),
         MINUTE(60 * SECOND.getIntervalMillis()),
@@ -28,7 +28,7 @@ public class IntervalExpr extends GenericOneExpr implements DateValue {
 
         private final long intervalMillis;
 
-        IntervalType(final long intervalMillis) {
+        Type(final long intervalMillis) {
             this.intervalMillis = intervalMillis;
         }
 
@@ -37,15 +37,15 @@ public class IntervalExpr extends GenericOneExpr implements DateValue {
         }
     }
 
-    private final IntervalType intervalType;
+    private final Type type;
 
-    public IntervalExpr(final IntervalType intervalType, final ValueExpr expr) {
+    public Interval(final Type type, final ValueExpr expr) {
         super(expr);
-        this.intervalType = intervalType;
+        this.type = type;
     }
 
-    private IntervalType getIntervalType() {
-        return this.intervalType;
+    private Type getIntervalType() {
+        return this.type;
     }
 
     @Override

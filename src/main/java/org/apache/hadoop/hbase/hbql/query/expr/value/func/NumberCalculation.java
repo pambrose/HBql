@@ -14,8 +14,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
  */
 public class NumberCalculation extends GenericCalculation implements NumberValue {
 
-    public NumberCalculation(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
-        super(expr1, op, expr2);
+    public NumberCalculation(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
+        super(expr1, operator, expr2);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
         final long val1 = ((Number)this.getExpr1().getValue(object)).longValue();
         final long val2 = (this.getExpr2() != null) ? (((Number)this.getExpr2().getValue(object))).longValue() : 0;
 
-        switch (this.getOp()) {
+        switch (this.getOperator()) {
             case PLUS:
                 return val1 + val2;
             case MINUS:
@@ -54,7 +54,7 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
             case NEGATIVE:
                 return val1 * -1;
             default:
-                throw new HBqlException("Invalid operator: " + this.getOp());
+                throw new HBqlException("Invalid operator: " + this.getOperator());
         }
     }
 }

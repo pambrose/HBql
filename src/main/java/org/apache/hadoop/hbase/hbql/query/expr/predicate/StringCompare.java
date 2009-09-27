@@ -14,8 +14,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
  */
 public class StringCompare extends GenericCompare {
 
-    public StringCompare(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
-        super(expr1, op, expr2);
+    public StringCompare(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
+        super(expr1, operator, expr2);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class StringCompare extends GenericCompare {
         final String val1 = (String)this.getExpr1().getValue(object);
         final String val2 = (String)this.getExpr2().getValue(object);
 
-        switch (this.getOp()) {
+        switch (this.getOperator()) {
             case EQ:
                 return val1.equals(val2);
             case NOTEQ:
@@ -44,7 +44,7 @@ public class StringCompare extends GenericCompare {
             case LTEQ:
                 return val1.compareTo(val2) <= 0;
             default:
-                throw new HBqlException("Invalid operator: " + this.getOp());
+                throw new HBqlException("Invalid operator: " + this.getOperator());
         }
     }
 }

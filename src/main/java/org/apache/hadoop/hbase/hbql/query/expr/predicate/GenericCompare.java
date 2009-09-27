@@ -17,15 +17,15 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  */
 public abstract class GenericCompare extends GenericTwoExpr implements BooleanValue {
 
-    private final Operator op;
+    private final Operator operator;
 
-    protected GenericCompare(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
+    protected GenericCompare(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
         super(expr1, expr2);
-        this.op = op;
+        this.operator = operator;
     }
 
-    protected Operator getOp() {
-        return op;
+    protected Operator getOperator() {
+        return this.operator;
     }
 
     @Override
@@ -49,7 +49,7 @@ public abstract class GenericCompare extends GenericTwoExpr implements BooleanVa
     public String asString() {
         final StringBuilder sbuf = new StringBuilder(this.getExpr1().asString());
         if (this.getExpr2() != null)
-            sbuf.append(this.getOp()).append(this.getExpr2().asString());
+            sbuf.append(this.getOperator()).append(this.getExpr2().asString());
 
         return sbuf.toString();
     }

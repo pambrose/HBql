@@ -18,8 +18,8 @@ public class DelegateCalculation extends GenericCalculation {
 
     private GenericCalculation typedExpr = null;
 
-    public DelegateCalculation(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
-        super(expr1, op, expr2);
+    public DelegateCalculation(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
+        super(expr1, operator, expr2);
     }
 
     @Override
@@ -31,11 +31,11 @@ public class DelegateCalculation extends GenericCalculation {
                                                  ? this.getExpr2().validateTypes(this, false) : null;
 
         if (HUtil.isParentClass(StringValue.class, type1, type2))
-            typedExpr = new StringCalculation(this.getExpr1(), this.getOp(), this.getExpr2());
+            typedExpr = new StringCalculation(this.getExpr1(), this.getOperator(), this.getExpr2());
         else if (HUtil.isParentClass(NumberValue.class, type1, type2))
-            typedExpr = new NumberCalculation(this.getExpr1(), this.getOp(), this.getExpr2());
+            typedExpr = new NumberCalculation(this.getExpr1(), this.getOperator(), this.getExpr2());
         else if (HUtil.isParentClass(DateValue.class, type1, type2))
-            typedExpr = new DateCalculation(this.getExpr1(), this.getOp(), this.getExpr2());
+            typedExpr = new DateCalculation(this.getExpr1(), this.getOperator(), this.getExpr2());
         else
             HUtil.throwInvalidTypeException(this, type1, type2);
 

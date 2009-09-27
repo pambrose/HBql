@@ -277,13 +277,13 @@ valueFunctions returns [ValueExpr retval]
 	| keyMAXDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
 	| keyDATE LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
 							{retval = new DateExpr($s1.retval, $s2.retval);}
-	| keyYEAR LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.YEAR, $n.retval);}
-	| keyWEEK LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.WEEK, $n.retval);}
-	| keyDAY LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.DAY, $n.retval);}
-	| keyHOUR LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.HOUR, $n.retval);}
-	| keyMINUTE LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.MINUTE, $n.retval);}
-	| keySECOND LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.SECOND, $n.retval);}
-	| keyMILLI LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.MILLI, $n.retval);}
+	| keyYEAR LPAREN n=valueExpr RPAREN		{retval = new Interval(Interval.Type.YEAR, $n.retval);}
+	| keyWEEK LPAREN n=valueExpr RPAREN		{retval = new Interval(Interval.Type.WEEK, $n.retval);}
+	| keyDAY LPAREN n=valueExpr RPAREN		{retval = new Interval(Interval.Type.DAY, $n.retval);}
+	| keyHOUR LPAREN n=valueExpr RPAREN		{retval = new Interval(Interval.Type.HOUR, $n.retval);}
+	| keyMINUTE LPAREN n=valueExpr RPAREN		{retval = new Interval(Interval.Type.MINUTE, $n.retval);}
+	| keySECOND LPAREN n=valueExpr RPAREN		{retval = new Interval(Interval.Type.SECOND, $n.retval);}
+	| keyMILLI LPAREN n=valueExpr RPAREN		{retval = new Interval(Interval.Type.MILLI, $n.retval);}
 	| keyCONCAT LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
 							{retval = new Function(Function.Type.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=valueExpr COMMA n1=valueExpr COMMA n2=valueExpr RPAREN

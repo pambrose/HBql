@@ -13,15 +13,15 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  */
 public abstract class GenericCalculation extends GenericTwoExpr implements ValueExpr {
 
-    private final Operator op;
+    private final Operator operator;
 
-    public GenericCalculation(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
+    public GenericCalculation(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
         super(expr1, expr2);
-        this.op = op;
+        this.operator = operator;
     }
 
-    protected Operator getOp() {
-        return op;
+    protected Operator getOperator() {
+        return this.operator;
     }
 
     protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
@@ -33,11 +33,11 @@ public abstract class GenericCalculation extends GenericTwoExpr implements Value
 
     @Override
     public String asString() {
-        if (this.getOp() == Operator.NEGATIVE)
+        if (this.getOperator() == Operator.NEGATIVE)
             return "-" + this.getExpr1().asString();
         else if (this.getExpr2() == null)
             return this.getExpr1().asString();
         else
-            return this.getExpr1().asString() + " " + this.getOp() + " " + this.getExpr2().asString();
+            return this.getExpr1().asString() + " " + this.getOperator() + " " + this.getExpr2().asString();
     }
 }

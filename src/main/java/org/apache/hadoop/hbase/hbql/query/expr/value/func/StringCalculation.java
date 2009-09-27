@@ -14,8 +14,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
  */
 public class StringCalculation extends GenericCalculation {
 
-    public StringCalculation(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
-        super(expr1, op, expr2);
+    public StringCalculation(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
+        super(expr1, operator, expr2);
     }
 
     @Override
@@ -40,11 +40,11 @@ public class StringCalculation extends GenericCalculation {
         final String val1 = (String)this.getExpr1().getValue(object);
         final String val2 = (this.getExpr2() != null) ? ((String)this.getExpr2().getValue(object)) : "";
 
-        switch (this.getOp()) {
+        switch (this.getOperator()) {
             case PLUS:
                 return val1 + val2;
             default:
-                throw new HBqlException("Invalid operator: " + this.getOp());
+                throw new HBqlException("Invalid operator: " + this.getOperator());
         }
     }
 }

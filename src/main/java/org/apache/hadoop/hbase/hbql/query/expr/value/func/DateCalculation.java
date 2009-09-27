@@ -14,8 +14,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
  */
 public class DateCalculation extends GenericCalculation implements DateValue {
 
-    public DateCalculation(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
-        super(expr1, op, expr2);
+    public DateCalculation(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
+        super(expr1, operator, expr2);
     }
 
     @Override
@@ -40,14 +40,14 @@ public class DateCalculation extends GenericCalculation implements DateValue {
         final long val1 = (Long)this.getExpr1().getValue(object);
         final long val2 = (this.getExpr2() != null) ? ((Long)this.getExpr2().getValue(object)) : 0;
 
-        switch (this.getOp()) {
+        switch (this.getOperator()) {
             case PLUS:
                 return val1 + val2;
             case MINUS:
                 return val1 - val2;
         }
 
-        throw new HBqlException("Invalid operator:" + this.getOp());
+        throw new HBqlException("Invalid operator:" + this.getOperator());
     }
 
 }

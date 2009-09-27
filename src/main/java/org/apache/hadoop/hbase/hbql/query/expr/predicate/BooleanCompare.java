@@ -14,8 +14,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
  */
 public class BooleanCompare extends GenericCompare implements BooleanValue {
 
-    public BooleanCompare(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
-        super(expr1, op, expr2);
+    public BooleanCompare(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
+        super(expr1, operator, expr2);
     }
 
     public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
@@ -33,7 +33,7 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
 
         final boolean expr2val = (Boolean)this.getExpr2().getValue(object);
 
-        switch (this.getOp()) {
+        switch (this.getOperator()) {
             case OR:
                 return expr1val || expr2val;
             case AND:
@@ -43,7 +43,7 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
             case NOTEQ:
                 return expr1val != expr2val;
             default:
-                throw new HBqlException("Invalid operator: " + this.getOp());
+                throw new HBqlException("Invalid operator: " + this.getOperator());
         }
     }
 }

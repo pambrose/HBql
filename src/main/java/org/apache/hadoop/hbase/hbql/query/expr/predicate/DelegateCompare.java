@@ -20,8 +20,8 @@ public class DelegateCompare extends GenericCompare implements BooleanValue {
 
     private GenericCompare typedExpr = null;
 
-    public DelegateCompare(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
-        super(expr1, op, expr2);
+    public DelegateCompare(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
+        super(expr1, operator, expr2);
     }
 
     @Override
@@ -32,13 +32,13 @@ public class DelegateCompare extends GenericCompare implements BooleanValue {
         final Class<? extends ValueExpr> type2 = this.getExpr2().validateTypes(this, false);
 
         if (HUtil.isParentClass(StringValue.class, type1, type2))
-            typedExpr = new StringCompare(this.getExpr1(), this.getOp(), this.getExpr2());
+            typedExpr = new StringCompare(this.getExpr1(), this.getOperator(), this.getExpr2());
         else if (HUtil.isParentClass(NumberValue.class, type1, type2))
-            typedExpr = new NumberCompare(this.getExpr1(), this.getOp(), this.getExpr2());
+            typedExpr = new NumberCompare(this.getExpr1(), this.getOperator(), this.getExpr2());
         else if (HUtil.isParentClass(DateValue.class, type1, type2))
-            typedExpr = new DateCompare(this.getExpr1(), this.getOp(), this.getExpr2());
+            typedExpr = new DateCompare(this.getExpr1(), this.getOperator(), this.getExpr2());
         else if (HUtil.isParentClass(BooleanValue.class, type1, type2))
-            typedExpr = new BooleanCompare(this.getExpr1(), this.getOp(), this.getExpr2());
+            typedExpr = new BooleanCompare(this.getExpr1(), this.getOperator(), this.getExpr2());
         else
             HUtil.throwInvalidTypeException(this, type1, type2);
 
