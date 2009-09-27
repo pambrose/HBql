@@ -43,9 +43,7 @@ public class DelegateTernary extends GenericTernary {
         else
             HUtil.throwInvalidTypeException(this, type1, type2);
 
-        this.typedExpr.validateTypes(parentExpr, false);
-
-        return type1;
+        return this.typedExpr.validateTypes(parentExpr, false);
     }
 
 

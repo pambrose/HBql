@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
@@ -28,9 +27,7 @@ public class DelegateNullCompare extends GenericNullCompare {
 
         this.typedExpr = new StringNullCompare(this.isNot(), this.getExpr());
 
-        this.typedExpr.validateTypes(parentExpr, false);
-
-        return BooleanValue.class;
+        return this.typedExpr.validateTypes(parentExpr, false);
     }
 
     @Override

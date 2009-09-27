@@ -16,11 +16,11 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Aug 25, 2009
  * Time: 10:30:32 PM
  */
-public class ValueCompare extends GenericCompare implements BooleanValue {
+public class DelegateCompare extends GenericCompare implements BooleanValue {
 
     private GenericCompare typedExpr = null;
 
-    public ValueCompare(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
+    public DelegateCompare(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, op, expr2);
     }
 
@@ -42,7 +42,7 @@ public class ValueCompare extends GenericCompare implements BooleanValue {
         else
             HUtil.throwInvalidTypeException(this, type1, type2);
 
-        return BooleanValue.class;
+        return this.typedExpr.validateTypes(parentExpr, allowsCollections);
     }
 
     @Override

@@ -285,17 +285,17 @@ valueFunctions returns [ValueExpr retval]
 	| keySECOND LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.SECOND, $n.retval);}
 	| keyMILLI LPAREN n=valueExpr RPAREN		{retval = new IntervalExpr(IntervalExpr.IntervalType.MILLI, $n.retval);}
 	| keyCONCAT LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
-							{retval = new Function(FunctionType.CONCAT, $s1.retval, $s2.retval);}
+							{retval = new Function(Function.Type.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=valueExpr COMMA n1=valueExpr COMMA n2=valueExpr RPAREN
-							{retval = new Function(FunctionType.SUBSTRING, $s.retval, $n1.retval, $n2.retval);}
-	| keyTRIM LPAREN s=valueExpr RPAREN		{retval = new Function(FunctionType.TRIM, $s.retval);}
-	| keyLOWER LPAREN s=valueExpr RPAREN		{retval = new Function(FunctionType.LOWER, $s.retval);} 
-	| keyUPPER LPAREN s=valueExpr RPAREN		{retval = new Function(FunctionType.UPPER, $s.retval);} 
+							{retval = new Function(Function.Type.SUBSTRING, $s.retval, $n1.retval, $n2.retval);}
+	| keyTRIM LPAREN s=valueExpr RPAREN		{retval = new Function(Function.Type.TRIM, $s.retval);}
+	| keyLOWER LPAREN s=valueExpr RPAREN		{retval = new Function(Function.Type.LOWER, $s.retval);} 
+	| keyUPPER LPAREN s=valueExpr RPAREN		{retval = new Function(Function.Type.UPPER, $s.retval);} 
 	| keyREPLACE LPAREN s1=valueExpr COMMA s2=valueExpr COMMA s3=valueExpr RPAREN		
-							{retval = new Function(FunctionType.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
-	| keyLENGTH LPAREN s=valueExpr RPAREN		{retval = new Function(FunctionType.LENGTH, $s.retval);}
+							{retval = new Function(Function.Type.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
+	| keyLENGTH LPAREN s=valueExpr RPAREN		{retval = new Function(Function.Type.LENGTH, $s.retval);}
 	| keyINDEXOF LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
-							{retval = new Function(FunctionType.INDEXOF, $s1.retval, $s2.retval);}
+							{retval = new Function(Function.Type.INDEXOF, $s1.retval, $s2.retval);}
 	| keyIF v1=booleanExpr keyTHEN v2=valueExpr keyELSE v3=valueExpr keyEND	
 							{retval = new DelegateTernary($v1.retval, $v2.retval, $v3.retval);}
 	;

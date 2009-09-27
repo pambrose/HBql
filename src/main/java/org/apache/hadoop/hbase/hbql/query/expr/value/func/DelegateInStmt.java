@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
@@ -40,9 +39,7 @@ public class DelegateInStmt extends GenericInStmt {
         else
             HUtil.throwInvalidTypeException(this, type);
 
-        this.typedExpr.validateTypes(parentExpr, false);
-
-        return BooleanValue.class;
+        return this.typedExpr.validateTypes(parentExpr, false);
     }
 
     @Override
