@@ -14,11 +14,11 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class DelegateCalcExpr extends GenericCalcExpr {
+public class DelegateCalculation extends GenericCalculation {
 
-    private GenericCalcExpr typedExpr = null;
+    private GenericCalculation typedExpr = null;
 
-    public DelegateCalcExpr(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
+    public DelegateCalculation(final ValueExpr expr1, final Operator op, final ValueExpr expr2) {
         super(expr1, op, expr2);
     }
 
@@ -31,11 +31,11 @@ public class DelegateCalcExpr extends GenericCalcExpr {
                                                  ? this.getExpr2().validateTypes(this, false) : null;
 
         if (HUtil.isParentClass(StringValue.class, type1, type2))
-            typedExpr = new StringCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
+            typedExpr = new StringCalculation(this.getExpr1(), this.getOp(), this.getExpr2());
         else if (HUtil.isParentClass(NumberValue.class, type1, type2))
-            typedExpr = new NumberCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
+            typedExpr = new NumberCalculation(this.getExpr1(), this.getOp(), this.getExpr2());
         else if (HUtil.isParentClass(DateValue.class, type1, type2))
-            typedExpr = new DateCalcExpr(this.getExpr1(), this.getOp(), this.getExpr2());
+            typedExpr = new DateCalculation(this.getExpr1(), this.getOp(), this.getExpr2());
         else
             HUtil.throwInvalidTypeException(this, type1, type2);
 

@@ -237,7 +237,7 @@ multExpr returns [ValueExpr retval]
 							{retval = getLeftAssociativeValueExprs(exprList, opList);};
 	
 signedExpr returns [ValueExpr retval]
-	: (s=plusMinus)? n=parenExpr 			{$signedExpr.retval = ($s.retval == Operator.MINUS) ? new DelegateCalcExpr($n.retval, Operator.NEGATIVE, null) :  $n.retval;};
+	: (s=plusMinus)? n=parenExpr 			{$signedExpr.retval = ($s.retval == Operator.MINUS) ? new DelegateCalculation($n.retval, Operator.NEGATIVE, null) :  $n.retval;};
 
 parenExpr returns [ValueExpr retval]
 options {backtrack=true; memoize=true;}	

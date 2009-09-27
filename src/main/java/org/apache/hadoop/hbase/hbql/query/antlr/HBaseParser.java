@@ -9,7 +9,7 @@ import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.func.DelegateCalcExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.func.DelegateCalculation;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.BooleanAttribRef;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DateAttribRef;
@@ -153,9 +153,9 @@ public class HBaseParser extends Parser {
         if (exprList.size() == 1)
             return exprList.get(0);
 
-        ValueExpr root = new DelegateCalcExpr(exprList.get(0), opList.get(0), exprList.get(1));
+        ValueExpr root = new DelegateCalculation(exprList.get(0), opList.get(0), exprList.get(1));
         for (int i = 1; i < opList.size(); i++)
-            root = new DelegateCalcExpr(root, opList.get(i), exprList.get(i + 1));
+            root = new DelegateCalculation(root, opList.get(i), exprList.get(i + 1));
         return root;
     }
 
