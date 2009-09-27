@@ -2,8 +2,8 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 
 /**
@@ -14,18 +14,18 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
  */
 public class StringCalculation extends GenericCalculation {
 
-    public StringCalculation(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
+    public StringCalculation(final GenericValue expr1, final Operator operator, final GenericValue expr2) {
         super(expr1, operator, expr2);
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
         return this.validateType(StringValue.class);
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
 
         this.setExpr1(this.getExpr1().getOptimizedValue());
         this.setExpr2(this.getExpr2().getOptimizedValue());

@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
@@ -13,10 +13,10 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  */
 public class DateRangeArgs {
 
-    private final ValueExpr lower;
-    private final ValueExpr upper;
+    private final GenericValue lower;
+    private final GenericValue upper;
 
-    public DateRangeArgs(final ValueExpr lower, final ValueExpr upper) {
+    public DateRangeArgs(final GenericValue lower, final GenericValue upper) {
         this.lower = lower;
         this.upper = upper;
     }

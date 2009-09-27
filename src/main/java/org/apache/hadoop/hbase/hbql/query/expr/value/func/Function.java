@@ -3,9 +3,9 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
@@ -19,7 +19,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public class Function implements ValueExpr {
+public class Function implements GenericValue {
 
     public static enum Type {
         // Return Strings
@@ -34,15 +34,15 @@ public class Function implements ValueExpr {
         LENGTH(NumberValue.class, (List)Arrays.asList(StringValue.class)),
         INDEXOF(NumberValue.class, (List)Arrays.asList(StringValue.class, StringValue.class));
 
-        private final Class<? extends ValueExpr> returnType;
+        private final Class<? extends GenericValue> returnType;
         private final List<Class> typeSig;
 
-        Type(final Class<? extends ValueExpr> returnType, final List<Class> typeSig) {
+        Type(final Class<? extends GenericValue> returnType, final List<Class> typeSig) {
             this.returnType = returnType;
             this.typeSig = typeSig;
         }
 
-        public Class<? extends ValueExpr> getReturnType() {
+        public Class<? extends GenericValue> getReturnType() {
             return returnType;
         }
 
@@ -54,7 +54,7 @@ public class Function implements ValueExpr {
             return this.name();
         }
 
-        public void validateArgs(final ValueExpr parentExpr, final ValueExpr[] valueExprs) throws TypeException {
+        public void validateArgs(final GenericValue parentExpr, final GenericValue[] valueExprs) throws TypeException {
 
             int i = 0;
 
@@ -74,18 +74,18 @@ public class Function implements ValueExpr {
     }
 
     private final Type type;
-    private final ValueExpr[] valueExprs;
+    private final GenericValue[] valueExprs;
 
-    public Function(final Type type, final ValueExpr... valueExprs) {
+    public Function(final Type type, final GenericValue... valueExprs) {
         this.type = type;
         this.valueExprs = valueExprs;
     }
 
-    private ValueExpr[] getValueExprs() {
+    private GenericValue[] getValueExprs() {
         return valueExprs;
     }
 
-    private ValueExpr getValueExpr(final int i) {
+    private GenericValue getValueExpr(final int i) {
         return this.getValueExprs()[i];
     }
 
@@ -95,13 +95,13 @@ public class Function implements ValueExpr {
 
     @Override
     public void setContext(final ExprTree context) {
-        for (final ValueExpr valExpr : this.getValueExprs())
+        for (final GenericValue valExpr : this.getValueExprs())
             valExpr.setContext(context);
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
 
         switch (this.getFunctionType()) {
             case TRIM:
@@ -124,7 +124,7 @@ public class Function implements ValueExpr {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
 
         switch (this.getFunctionType()) {
 

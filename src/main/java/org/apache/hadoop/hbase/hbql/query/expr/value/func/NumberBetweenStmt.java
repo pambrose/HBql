@@ -2,8 +2,8 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,13 +13,13 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  */
 public class NumberBetweenStmt extends GenericBetweenStmt {
 
-    public NumberBetweenStmt(final ValueExpr expr, final boolean not, final ValueExpr lower, final ValueExpr upper) {
+    public NumberBetweenStmt(final GenericValue expr, final boolean not, final GenericValue lower, final GenericValue upper) {
         super(not, expr, lower, upper);
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
         return this.validateType(NumberValue.class);
     }
 

@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
@@ -16,42 +16,42 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  */
 public abstract class GenericBetweenStmt extends GenericNotValue {
 
-    private ValueExpr expr = null;
-    private ValueExpr lower = null, upper = null;
+    private GenericValue expr = null;
+    private GenericValue lower = null, upper = null;
 
-    protected GenericBetweenStmt(final boolean not, final ValueExpr expr, final ValueExpr lower, final ValueExpr upper) {
+    protected GenericBetweenStmt(final boolean not, final GenericValue expr, final GenericValue lower, final GenericValue upper) {
         super(not);
         this.expr = expr;
         this.lower = lower;
         this.upper = upper;
     }
 
-    protected ValueExpr getExpr() {
+    protected GenericValue getExpr() {
         return this.expr;
     }
 
-    protected ValueExpr getLower() {
+    protected GenericValue getLower() {
         return this.lower;
     }
 
-    protected ValueExpr getUpper() {
+    protected GenericValue getUpper() {
         return this.upper;
     }
 
-    public void setExpr(final ValueExpr expr) {
+    public void setExpr(final GenericValue expr) {
         this.expr = expr;
     }
 
-    public void setLower(final ValueExpr lower) {
+    public void setLower(final GenericValue lower) {
         this.lower = lower;
     }
 
-    public void setUpper(final ValueExpr upper) {
+    public void setUpper(final GenericValue upper) {
         this.upper = upper;
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
 
         this.setExpr(this.getExpr().getOptimizedValue());
         this.setLower(this.getLower().getOptimizedValue());
@@ -72,7 +72,7 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
         this.getUpper().setContext(context);
     }
 
-    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
+    protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {
         HUtil.validateParentClass(this,
                                   clazz,
                                   this.getExpr().validateTypes(this, false),

@@ -3,9 +3,9 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.List;
@@ -20,15 +20,15 @@ public class DelegateInStmt extends GenericInStmt {
 
     private GenericInStmt typedExpr = null;
 
-    public DelegateInStmt(final ValueExpr expr, final boolean not, final List<ValueExpr> valList) {
+    public DelegateInStmt(final GenericValue expr, final boolean not, final List<GenericValue> valList) {
         super(not, expr, valList);
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
 
-        final Class<? extends ValueExpr> type = this.getExpr().validateTypes(this, false);
+        final Class<? extends GenericValue> type = this.getExpr().validateTypes(this, false);
 
         if (HUtil.isParentClass(StringValue.class, type))
             this.typedExpr = new StringInStmt(this.getExpr(), this.isNot(), this.getValueExprList());
@@ -49,7 +49,7 @@ public class DelegateInStmt extends GenericInStmt {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
         return this.typedExpr.getOptimizedValue();
     }
 

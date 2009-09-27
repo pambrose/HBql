@@ -10,7 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.cmds.ConnectionCmd;
 import org.apache.hadoop.hbase.hbql.query.antlr.cmds.SchemaManagerCmd;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 /**
@@ -59,7 +59,7 @@ public class HBql {
     public static String parseStringValue(final String input) throws HBqlException {
         try {
             final HBqlParser parser = newParser(input);
-            final ValueExpr valueExpr = parser.valueExpr();
+            final GenericValue valueExpr = parser.valueExpr();
             valueExpr.validateTypes(null, false);
             return (String)valueExpr.getValue(null);
         }
@@ -72,7 +72,7 @@ public class HBql {
     public static Number parseNumberValue(final String input) throws HBqlException {
         try {
             final HBqlParser parser = newParser(input);
-            final ValueExpr valueExpr = parser.valueExpr();
+            final GenericValue valueExpr = parser.valueExpr();
             valueExpr.validateTypes(null, false);
             return (Number)valueExpr.getValue(null);
         }
@@ -85,7 +85,7 @@ public class HBql {
     public static Long parseDateValue(final String input) throws HBqlException {
         try {
             final HBqlParser parser = newParser(input);
-            final ValueExpr valueExpr = parser.valueExpr();
+            final GenericValue valueExpr = parser.valueExpr();
             valueExpr.validateTypes(null, false);
             return (Long)valueExpr.getValue(null);
         }

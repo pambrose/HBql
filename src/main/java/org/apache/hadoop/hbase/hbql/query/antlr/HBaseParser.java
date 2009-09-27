@@ -8,7 +8,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.DelegateCalculation;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.BooleanVariable;
@@ -67,7 +67,7 @@ public class HBaseParser extends Parser {
         return s != null && s.equalsIgnoreCase(str);
     }
 
-    protected ValueExpr getVariable(final String var) throws RecognitionException {
+    protected GenericValue getVariable(final String var) throws RecognitionException {
 
         if (this.getSchema() != null) {
 
@@ -148,12 +148,12 @@ public class HBaseParser extends Parser {
         }
     }
 
-    public ValueExpr getLeftAssociativeValueExprs(final List<ValueExpr> exprList, final List<Operator> opList) {
+    public GenericValue getLeftAssociativeGenericValues(final List<GenericValue> exprList, final List<Operator> opList) {
 
         if (exprList.size() == 1)
             return exprList.get(0);
 
-        ValueExpr root = new DelegateCalculation(exprList.get(0), opList.get(0), exprList.get(1));
+        GenericValue root = new DelegateCalculation(exprList.get(0), opList.get(0), exprList.get(1));
         for (int i = 1; i < opList.size(); i++)
             root = new DelegateCalculation(root, opList.get(i), exprList.get(i + 1));
         return root;

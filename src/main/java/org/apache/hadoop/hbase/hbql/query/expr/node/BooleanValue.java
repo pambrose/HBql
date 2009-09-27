@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
  * Date: Aug 29, 2009
  * Time: 7:16:27 PM
  */
-public interface BooleanValue extends ValueExpr {
+public interface BooleanValue extends GenericValue {
 
     Boolean getValue(final Object object) throws HBqlException;
 }

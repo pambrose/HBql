@@ -4,8 +4,8 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
@@ -20,24 +20,24 @@ import java.text.SimpleDateFormat;
  */
 public class DateExpr implements DateValue {
 
-    private ValueExpr formatExpr = null, valueExpr = null;
+    private GenericValue formatExpr = null, valueExpr = null;
 
-    public DateExpr(final ValueExpr formatExpr, final ValueExpr valueExpr) {
+    public DateExpr(final GenericValue formatExpr, final GenericValue valueExpr) {
         this.formatExpr = formatExpr;
         this.valueExpr = valueExpr;
     }
 
-    private ValueExpr getFormatExpr() {
+    private GenericValue getFormatExpr() {
         return this.formatExpr;
     }
 
-    private ValueExpr getValueExpr() {
+    private GenericValue getValueExpr() {
         return this.valueExpr;
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
         HUtil.validateParentClass(this,
                                   StringValue.class,
                                   this.getFormatExpr().validateTypes(this, false),
@@ -46,7 +46,7 @@ public class DateExpr implements DateValue {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
 
         this.formatExpr = this.getFormatExpr().getOptimizedValue();
         this.valueExpr = this.getValueExpr().getOptimizedValue();

@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  */
 public class ContainsStmt extends GenericStringPatternStmt {
 
-    public ContainsStmt(final ValueExpr valueExpr, final boolean not, final ValueExpr patternExpr) {
+    public ContainsStmt(final GenericValue valueExpr, final boolean not, final GenericValue patternExpr) {
         super(valueExpr, not, patternExpr);
     }
 

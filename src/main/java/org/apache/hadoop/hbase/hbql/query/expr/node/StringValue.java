@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
  * Date: Aug 29, 2009
  * Time: 7:16:27 PM
  */
-public interface StringValue extends ValueExpr {
+public interface StringValue extends GenericValue {
 
     String getValue(final Object object) throws HBqlException;
 }

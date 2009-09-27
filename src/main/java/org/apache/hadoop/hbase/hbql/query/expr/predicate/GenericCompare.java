@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
@@ -19,7 +19,7 @@ public abstract class GenericCompare extends GenericTwoExpr implements BooleanVa
 
     private final Operator operator;
 
-    protected GenericCompare(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
+    protected GenericCompare(final GenericValue expr1, final Operator operator, final GenericValue expr2) {
         super(expr1, expr2);
         this.operator = operator;
     }
@@ -29,14 +29,14 @@ public abstract class GenericCompare extends GenericTwoExpr implements BooleanVa
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
         this.setExpr1(this.getExpr1().getOptimizedValue());
         this.setExpr2(this.getExpr2().getOptimizedValue());
 
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
-    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
+    protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {
         HUtil.validateParentClass(this, clazz, this.getExpr1().validateTypes(this, false));
         HUtil.validateParentClass(this, clazz, this.getExpr2().validateTypes(this, false));
 

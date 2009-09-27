@@ -3,9 +3,9 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -36,12 +36,12 @@ public enum FieldType {
     ObjectType(Object.class, null, -1, "OBJECT", "OBJ");
 
     private final Class clazz;
-    private Class<? extends ValueExpr> exprType;
+    private Class<? extends GenericValue> exprType;
     private final int size;
     private final List<String> synonymList;
 
 
-    FieldType(final Class clazz, final Class<? extends ValueExpr> exprType, final int size, final String... synonyms) {
+    FieldType(final Class clazz, final Class<? extends GenericValue> exprType, final int size, final String... synonyms) {
         this.clazz = clazz;
         this.exprType = exprType;
         this.size = size;
@@ -57,7 +57,7 @@ public enum FieldType {
         return this.size;
     }
 
-    public Class<? extends ValueExpr> getExprType() {
+    public Class<? extends GenericValue> getExprType() {
         return this.exprType;
     }
 

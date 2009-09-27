@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
@@ -22,13 +22,13 @@ import java.util.List;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NamedParameter implements ValueExpr {
+public class NamedParameter implements GenericValue {
 
     private ExprTree context = null;
     private final String paramName;
 
-    private ValueExpr typedExpr = null;
-    private List<ValueExpr> typedExprList = null;
+    private GenericValue typedExpr = null;
+    private List<GenericValue> typedExprList = null;
 
     public NamedParameter(final String paramName) {
         this.paramName = paramName;
@@ -42,17 +42,17 @@ public class NamedParameter implements ValueExpr {
         return this.getTypedExpr() != null;
     }
 
-    private ValueExpr getTypedExpr() {
+    private GenericValue getTypedExpr() {
         return this.typedExpr;
     }
 
-    private List<ValueExpr> getTypedExprList() {
+    private List<GenericValue> getTypedExprList() {
         return this.typedExprList;
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
 
         if (this.getTypedExpr() == null && this.getTypedExprList() == null)
             throw new TypeException("Parameter " + this.getParamName() + " not assigned a value");
@@ -72,12 +72,12 @@ public class NamedParameter implements ValueExpr {
                 throw new TypeException("Parameter " + this.getParamName() + " is assigned a collection with no values");
 
             // Look at the type of the first item and then make sure the rest match that one
-            final ValueExpr firstval = this.getTypedExprList().get(0);
-            final Class<? extends ValueExpr> clazzToMatch = HUtil.getValueExprType(firstval);
+            final GenericValue firstval = this.getTypedExprList().get(0);
+            final Class<? extends GenericValue> clazzToMatch = HUtil.getValueExprType(firstval);
 
-            for (final ValueExpr val : this.getTypedExprList()) {
+            for (final GenericValue val : this.getTypedExprList()) {
 
-                final Class<? extends ValueExpr> clazz = HUtil.getValueExprType(val);
+                final Class<? extends GenericValue> clazz = HUtil.getValueExprType(val);
 
                 if (clazz == null)
                     throw new TypeException("Parameter " + this.getParamName()
@@ -110,7 +110,7 @@ public class NamedParameter implements ValueExpr {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
         return this;
     }
 
@@ -135,7 +135,7 @@ public class NamedParameter implements ValueExpr {
         }
     }
 
-    private ValueExpr getValueExpr(final Object val) throws TypeException {
+    private GenericValue getValueExpr(final Object val) throws TypeException {
 
         if (val == null)
             return new StringNullLiteral();

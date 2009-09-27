@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,10 +10,10 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  * Date: Aug 31, 2009
  * Time: 12:27:29 PM
  */
-public abstract class GenericLiteral implements ValueExpr {
+public abstract class GenericLiteral implements GenericValue {
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
         return this;
     }
 

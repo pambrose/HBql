@@ -7,9 +7,9 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -86,7 +86,7 @@ public class HUtil {
         return true;
     }
 
-    public static void validateParentClass(final ValueExpr expr,
+    public static void validateParentClass(final GenericValue expr,
                                            final Class parentClazz,
                                            final Class... clazzes) throws TypeException {
 
@@ -122,8 +122,8 @@ public class HUtil {
         }
     }
 
-    public static void throwInvalidTypeException(final ValueExpr expr,
-                                                 final Class<? extends ValueExpr>... clazzes) throws TypeException {
+    public static void throwInvalidTypeException(final GenericValue expr,
+                                                 final Class<? extends GenericValue>... clazzes) throws TypeException {
 
         final List<Class> classList = Lists.newArrayList();
 
@@ -135,7 +135,7 @@ public class HUtil {
         sbuf.append(((classList.size() > 1) ? "s " : " "));
 
         boolean first = true;
-        for (final Class<? extends ValueExpr> clazz : clazzes) {
+        for (final Class<? extends GenericValue> clazz : clazzes) {
             if (!first)
                 sbuf.append(", ");
             sbuf.append(clazz.getSimpleName());
@@ -146,7 +146,7 @@ public class HUtil {
         throw new TypeException(sbuf.toString());
     }
 
-    public static Class<? extends ValueExpr> getValueExprType(final ValueExpr val) {
+    public static Class<? extends GenericValue> getValueExprType(final GenericValue val) {
 
         final Class clazz = val.getClass();
 

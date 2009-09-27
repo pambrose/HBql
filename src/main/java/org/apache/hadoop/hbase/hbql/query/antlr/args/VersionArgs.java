@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
@@ -13,9 +13,9 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  */
 public class VersionArgs {
 
-    private final ValueExpr value;
+    private final GenericValue value;
 
-    public VersionArgs(final ValueExpr val) {
+    public VersionArgs(final GenericValue val) {
         this.value = val;
     }
 

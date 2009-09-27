@@ -3,9 +3,9 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
@@ -18,17 +18,17 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
 
     private GenericBetweenStmt typedExpr = null;
 
-    public DelegateBetweenStmt(final ValueExpr expr, final boolean not, final ValueExpr lower, final ValueExpr upper) {
+    public DelegateBetweenStmt(final GenericValue expr, final boolean not, final GenericValue lower, final GenericValue upper) {
         super(not, expr, lower, upper);
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
 
-        final Class<? extends ValueExpr> type1 = this.getExpr().validateTypes(this, false);
-        final Class<? extends ValueExpr> type2 = this.getLower().validateTypes(this, false);
-        final Class<? extends ValueExpr> type3 = this.getUpper().validateTypes(this, false);
+        final Class<? extends GenericValue> type1 = this.getExpr().validateTypes(this, false);
+        final Class<? extends GenericValue> type2 = this.getLower().validateTypes(this, false);
+        final Class<? extends GenericValue> type3 = this.getUpper().validateTypes(this, false);
 
         if (HUtil.isParentClass(StringValue.class, type1, type2, type3))
             this.typedExpr = new StringBetweenStmt(this.getExpr(), this.isNot(), this.getLower(), this.getUpper());
@@ -43,7 +43,7 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
         return this.typedExpr.getOptimizedValue();
     }
 

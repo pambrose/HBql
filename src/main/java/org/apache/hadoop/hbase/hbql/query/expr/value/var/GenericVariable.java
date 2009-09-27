@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
@@ -13,7 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  * Date: Aug 31, 2009
  * Time: 12:30:57 PM
  */
-public abstract class GenericVariable<T extends ValueExpr> implements ValueExpr {
+public abstract class GenericVariable<T extends GenericValue> implements GenericValue {
 
     private final String attribName;
     private final FieldType fieldType;
@@ -65,8 +65,8 @@ public abstract class GenericVariable<T extends ValueExpr> implements ValueExpr 
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
         return this.getFieldType().getExprType();
     }
 

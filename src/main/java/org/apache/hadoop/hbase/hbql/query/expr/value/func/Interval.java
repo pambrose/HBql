@@ -3,8 +3,8 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericOneExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
@@ -39,7 +39,7 @@ public class Interval extends GenericOneExpr implements DateValue {
 
     private final Type type;
 
-    public Interval(final Type type, final ValueExpr expr) {
+    public Interval(final Type type, final GenericValue expr) {
         super(expr);
         this.type = type;
     }
@@ -49,14 +49,14 @@ public class Interval extends GenericOneExpr implements DateValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
         HUtil.validateParentClass(this, NumberValue.class, this.getExpr().validateTypes(this, false));
         return DateValue.class;
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
         this.setExpr(this.getExpr().getOptimizedValue());
         return this.isAConstant() ? new DateLiteral(this.getValue(null)) : this;
     }

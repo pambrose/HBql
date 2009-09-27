@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,8 +24,8 @@ public class IntegerLiteral extends GenericLiteral implements NumberValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
         return NumberValue.class;
     }
 

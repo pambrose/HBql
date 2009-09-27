@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericOneExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
@@ -23,14 +23,14 @@ public class BooleanNot extends GenericOneExpr implements BooleanValue {
         this.not = not;
     }
 
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
         HUtil.validateParentClass(this, BooleanValue.class, this.getExpr().validateTypes(this, false));
         return BooleanValue.class;
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
         this.setExpr(this.getExpr().getOptimizedValue());
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }

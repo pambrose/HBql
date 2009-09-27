@@ -5,9 +5,9 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -22,24 +22,24 @@ import java.util.List;
  */
 public abstract class GenericInStmt extends GenericNotValue {
 
-    private ValueExpr expr = null;
-    private final List<ValueExpr> valueExprList;
+    private GenericValue expr = null;
+    private final List<GenericValue> valueExprList;
 
-    protected GenericInStmt(final boolean not, final ValueExpr expr, final List<ValueExpr> valueExprList) {
+    protected GenericInStmt(final boolean not, final GenericValue expr, final List<GenericValue> valueExprList) {
         super(not);
         this.expr = expr;
         this.valueExprList = valueExprList;
     }
 
-    protected ValueExpr getExpr() {
+    protected GenericValue getExpr() {
         return this.expr;
     }
 
-    protected void setExpr(final ValueExpr expr) {
+    protected void setExpr(final GenericValue expr) {
         this.expr = expr;
     }
 
-    protected List<ValueExpr> getValueExprList() {
+    protected List<GenericValue> getValueExprList() {
         return this.valueExprList;
     }
 
@@ -47,9 +47,9 @@ public abstract class GenericInStmt extends GenericNotValue {
 
     private void optimizeList() throws HBqlException {
 
-        final List<ValueExpr> newvalList = Lists.newArrayList();
+        final List<GenericValue> newvalList = Lists.newArrayList();
 
-        for (final ValueExpr val : this.getValueExprList())
+        for (final GenericValue val : this.getValueExprList())
             newvalList.add(val.getOptimizedValue());
 
         // Swap new values to list
@@ -58,7 +58,7 @@ public abstract class GenericInStmt extends GenericNotValue {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
         this.setExpr(this.getExpr().getOptimizedValue());
         this.optimizeList();
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
@@ -78,12 +78,12 @@ public abstract class GenericInStmt extends GenericNotValue {
     @Override
     public void setContext(final ExprTree context) {
         this.getExpr().setContext(context);
-        for (final ValueExpr valueExpr : this.getValueExprList())
+        for (final GenericValue valueExpr : this.getValueExprList())
             valueExpr.setContext(context);
     }
 
     private boolean listIsConstant() {
-        for (final ValueExpr val : this.getValueExprList()) {
+        for (final GenericValue val : this.getValueExprList()) {
             try {
                 if (!val.isAConstant())
                     return false;
@@ -96,11 +96,11 @@ public abstract class GenericInStmt extends GenericNotValue {
     }
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
 
-        final Class<? extends ValueExpr> type = this.getExpr().validateTypes(this, false);
-        final Class<? extends ValueExpr> inClazz;
+        final Class<? extends GenericValue> type = this.getExpr().validateTypes(this, false);
+        final Class<? extends GenericValue> inClazz;
 
         if (HUtil.isParentClass(StringValue.class, type))
             inClazz = StringValue.class;
@@ -114,7 +114,7 @@ public abstract class GenericInStmt extends GenericNotValue {
         }
 
         // First make sure all the types are matched
-        for (final ValueExpr inVal : this.getValueExprList())
+        for (final GenericValue inVal : this.getValueExprList())
             HUtil.validateParentClass(this, inClazz, inVal.validateTypes(this, true));
 
         return BooleanValue.class;
@@ -125,7 +125,7 @@ public abstract class GenericInStmt extends GenericNotValue {
         final StringBuilder sbuf = new StringBuilder(this.getExpr().asString() + notAsString() + " IN (");
 
         boolean first = true;
-        for (final ValueExpr valueExpr : this.getValueExprList()) {
+        for (final GenericValue valueExpr : this.getValueExprList()) {
             if (!first)
                 sbuf.append(", ");
             sbuf.append(valueExpr.asString());

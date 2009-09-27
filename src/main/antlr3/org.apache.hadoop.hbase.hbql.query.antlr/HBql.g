@@ -196,7 +196,7 @@ options {backtrack=true;}
 	| b=booleanAtom					{retval = new BooleanExpr($b.retval);}
 	;
 	
-booleanAtom returns [ValueExpr retval]
+booleanAtom returns [GenericValue retval]
 	: b=booleanLiteral				{retval = $b.retval;}
 	| v=varRef					{retval = this.getVariable($v.text);}
 	| p=paramRef					{retval = new NamedParameter($p.text);}
@@ -214,44 +214,44 @@ options {backtrack=true; memoize=true;}
 	| s1=valueExpr keyIS (n=keyNOT)? keyNULL	{retval = new DelegateNullCompare(($n.text != null), $s1.retval);}	
 	;
 
-valueItemList returns [List<ValueExpr> retval]
+valueItemList returns [List<GenericValue> retval]
 @init {retval = Lists.newArrayList();}
 	: i1=valueExpr {retval.add($i1.retval);} (COMMA i2=valueExpr {retval.add($i2.retval);})*;
 	
 // Value Expressions
-valueExpr returns [ValueExpr retval] 
+valueExpr returns [GenericValue retval] 
 options {backtrack=true; memoize=true;}	
 	: v=valuePrimary				{retval = $v.retval;}
 	| LPAREN o=booleanExpr RPAREN			{retval = $o.retval;}
 	;
 	
-valuePrimary returns [ValueExpr retval] 
-@init {List<ValueExpr> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
+valuePrimary returns [GenericValue retval] 
+@init {List<GenericValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
 	: m=multExpr {exprList.add($m.retval);} (op=plusMinus n=multExpr {opList.add($op.retval); exprList.add($n.retval);})*	
-							{retval = getLeftAssociativeValueExprs(exprList, opList);}
+							{retval = getLeftAssociativeGenericValues(exprList, opList);}
 	;
 	
-multExpr returns [ValueExpr retval]
-@init {List<ValueExpr> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
+multExpr returns [GenericValue retval]
+@init {List<GenericValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
 	: m=signedExpr {exprList.add($m.retval);} (op=multDiv n=signedExpr {opList.add($op.retval); exprList.add($n.retval);})*	
-							{retval = getLeftAssociativeValueExprs(exprList, opList);};
+							{retval = getLeftAssociativeGenericValues(exprList, opList);};
 	
-signedExpr returns [ValueExpr retval]
+signedExpr returns [GenericValue retval]
 	: (s=plusMinus)? n=parenExpr 			{$signedExpr.retval = ($s.retval == Operator.MINUS) ? new DelegateCalculation($n.retval, Operator.NEGATIVE, new IntegerLiteral(0)) :  $n.retval;};
 
-parenExpr returns [ValueExpr retval]
+parenExpr returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
 	: n=atomExpr					{retval = $n.retval;}
 	| LPAREN s=valueExpr RPAREN			{retval = $s.retval;}
 	;
 	   						 
-atomExpr returns [ValueExpr retval]
+atomExpr returns [GenericValue retval]
 	: v=valueAtom					{retval = $v.retval;} 
 	| f=valueFunctions				{retval = $f.retval;}
 	;
 
 // Value Atom
-valueAtom returns [ValueExpr retval]
+valueAtom returns [GenericValue retval]
 	: s=stringLiteral				{retval = $s.retval;}
 	| i=integerLiteral				{retval = $i.retval;}
 	| b=booleanAtom					{retval = $b.retval;}
@@ -259,10 +259,10 @@ valueAtom returns [ValueExpr retval]
 	;
 
 // Literals		
-stringLiteral returns [ValueExpr retval]
+stringLiteral returns [GenericValue retval]
 	: v=QUOTED 					{retval = new StringLiteral($v.text);};
 	
-integerLiteral returns [ValueExpr retval]
+integerLiteral returns [GenericValue retval]
 	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};	
 
 booleanLiteral returns [BooleanValue retval]
@@ -271,7 +271,7 @@ booleanLiteral returns [BooleanValue retval]
 	;
 
 // Functions
-valueFunctions returns [ValueExpr retval]
+valueFunctions returns [GenericValue retval]
 	: keyNOW LPAREN	RPAREN				{retval = new DateLiteral(DateLiteral.Type.NOW);}
 	| keyMINDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
 	| keyMAXDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}

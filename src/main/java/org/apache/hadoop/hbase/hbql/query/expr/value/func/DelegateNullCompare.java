@@ -2,8 +2,8 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
@@ -16,12 +16,12 @@ public class DelegateNullCompare extends GenericNullCompare {
 
     private GenericNullCompare typedExpr = null;
 
-    public DelegateNullCompare(final boolean not, final ValueExpr expr) {
+    public DelegateNullCompare(final boolean not, final GenericValue expr) {
         super(not, expr);
     }
 
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
 
         HUtil.validateParentClass(this, StringValue.class, this.getExpr().validateTypes(this, false));
 
@@ -31,7 +31,7 @@ public class DelegateNullCompare extends GenericNullCompare {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
         return this.typedExpr.getOptimizedValue();
     }
 

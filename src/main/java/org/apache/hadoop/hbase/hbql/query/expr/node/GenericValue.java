@@ -12,14 +12,14 @@ import java.io.Serializable;
  * Date: Sep 3, 2009
  * Time: 8:13:01 PM
  */
-public interface ValueExpr extends Serializable {
+public interface GenericValue extends Serializable {
 
     Object getValue(final Object object) throws HBqlException;
 
-    ValueExpr getOptimizedValue() throws HBqlException;
+    GenericValue getOptimizedValue() throws HBqlException;
 
-    Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                             final boolean allowsCollections) throws TypeException;
+    Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                final boolean allowsCollections) throws TypeException;
 
     boolean isAConstant() throws HBqlException;
 

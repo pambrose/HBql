@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
@@ -11,11 +11,11 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Sep 7, 2009
  * Time: 9:29:44 PM
  */
-public abstract class GenericCalculation extends GenericTwoExpr implements ValueExpr {
+public abstract class GenericCalculation extends GenericTwoExpr implements GenericValue {
 
     private final Operator operator;
 
-    protected GenericCalculation(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
+    protected GenericCalculation(final GenericValue expr1, final Operator operator, final GenericValue expr2) {
         super(expr1, expr2);
         this.operator = operator;
     }
@@ -24,7 +24,7 @@ public abstract class GenericCalculation extends GenericTwoExpr implements Value
         return this.operator;
     }
 
-    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
+    protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {
         HUtil.validateParentClass(this, clazz, this.getExpr1().validateTypes(this, false));
         HUtil.validateParentClass(this, clazz, this.getExpr2().validateTypes(this, false));
 

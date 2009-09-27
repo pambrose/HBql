@@ -4,8 +4,8 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
@@ -17,28 +17,28 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  */
 public abstract class GenericStringPatternStmt extends GenericNotValue {
 
-    private ValueExpr valueExpr = null;
-    private ValueExpr patternExpr = null;
+    private GenericValue valueExpr = null;
+    private GenericValue patternExpr = null;
 
-    protected GenericStringPatternStmt(final ValueExpr valueExpr, final boolean not, final ValueExpr patternExpr) {
+    protected GenericStringPatternStmt(final GenericValue valueExpr, final boolean not, final GenericValue patternExpr) {
         super(not);
         this.valueExpr = valueExpr;
         this.patternExpr = patternExpr;
     }
 
-    protected ValueExpr getValueExpr() {
+    protected GenericValue getValueExpr() {
         return this.valueExpr;
     }
 
-    protected ValueExpr getPatternExpr() {
+    protected GenericValue getPatternExpr() {
         return this.patternExpr;
     }
 
     protected abstract String getFunctionName();
 
     @Override
-    public Class<? extends ValueExpr> validateTypes(final ValueExpr parentExpr,
-                                                    final boolean allowsCollections) throws TypeException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
         HUtil.validateParentClass(this,
                                   StringValue.class,
                                   this.getValueExpr().validateTypes(this, false),
@@ -47,7 +47,7 @@ public abstract class GenericStringPatternStmt extends GenericNotValue {
     }
 
     @Override
-    public ValueExpr getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() throws HBqlException {
         this.valueExpr = this.getValueExpr().getOptimizedValue();
         this.patternExpr = this.getPatternExpr().getOptimizedValue();
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;

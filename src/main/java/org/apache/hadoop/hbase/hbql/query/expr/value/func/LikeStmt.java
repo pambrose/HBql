@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,7 +16,7 @@ public class LikeStmt extends GenericStringPatternStmt {
 
     private Pattern pattern = null;
 
-    public LikeStmt(final ValueExpr valueExpr, final boolean not, final ValueExpr patternExpr) {
+    public LikeStmt(final GenericValue valueExpr, final boolean not, final GenericValue patternExpr) {
         super(valueExpr, not, patternExpr);
     }
 

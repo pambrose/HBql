@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
@@ -14,20 +14,20 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Aug 31, 2009
  * Time: 1:51:03 PM
  */
-public abstract class GenericTernary extends GenericTwoExpr implements ValueExpr {
+public abstract class GenericTernary extends GenericTwoExpr implements GenericValue {
 
-    private ValueExpr pred = null;
+    private GenericValue pred = null;
 
-    protected GenericTernary(final ValueExpr pred, final ValueExpr expr1, final ValueExpr expr2) {
+    protected GenericTernary(final GenericValue pred, final GenericValue expr1, final GenericValue expr2) {
         super(expr1, expr2);
         this.pred = pred;
     }
 
-    protected ValueExpr getPred() {
+    protected GenericValue getPred() {
         return this.pred;
     }
 
-    protected void setPred(final ValueExpr pred) {
+    protected void setPred(final GenericValue pred) {
         this.pred = pred;
     }
 
@@ -51,7 +51,7 @@ public abstract class GenericTernary extends GenericTwoExpr implements ValueExpr
         this.getExpr2().setContext(context);
     }
 
-    protected Class<? extends ValueExpr> validateType(final Class<? extends ValueExpr> clazz) throws TypeException {
+    protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {
         HUtil.validateParentClass(this, BooleanValue.class, this.getPred().validateTypes(this, false));
         HUtil.validateParentClass(this,
                                   clazz,

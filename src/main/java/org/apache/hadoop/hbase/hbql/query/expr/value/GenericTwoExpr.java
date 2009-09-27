@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,26 +12,26 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
  */
 public class GenericTwoExpr {
 
-    private ValueExpr expr1 = null, expr2 = null;
+    private GenericValue expr1 = null, expr2 = null;
 
-    public GenericTwoExpr(final ValueExpr expr1, final ValueExpr expr2) {
+    public GenericTwoExpr(final GenericValue expr1, final GenericValue expr2) {
         this.expr1 = expr1;
         this.expr2 = expr2;
     }
 
-    protected ValueExpr getExpr1() {
+    protected GenericValue getExpr1() {
         return this.expr1;
     }
 
-    protected void setExpr1(final ValueExpr expr1) {
+    protected void setExpr1(final GenericValue expr1) {
         this.expr1 = expr1;
     }
 
-    protected ValueExpr getExpr2() {
+    protected GenericValue getExpr2() {
         return this.expr2;
     }
 
-    protected void setExpr2(final ValueExpr expr2) {
+    protected void setExpr2(final GenericValue expr2) {
         this.expr2 = expr2;
     }
 

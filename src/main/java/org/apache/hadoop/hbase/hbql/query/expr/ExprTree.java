@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ValueExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.NamedParameter;
@@ -30,7 +30,7 @@ public class ExprTree implements Serializable {
     private boolean inNeedOfSettingContext = true;
 
     private Schema schema = null;
-    private ValueExpr treeRoot = null;
+    private GenericValue treeRoot = null;
     private long start, end;
 
     private ExprTree() {
@@ -42,11 +42,11 @@ public class ExprTree implements Serializable {
         return tree;
     }
 
-    private ValueExpr getTreeRoot() {
+    private GenericValue getTreeRoot() {
         return this.treeRoot;
     }
 
-    private void setTreeRoot(final ValueExpr treeRoot) {
+    private void setTreeRoot(final GenericValue treeRoot) {
         this.treeRoot = treeRoot;
 
         if (this.getTreeRoot() != null && this.isInNeedOfSettingContext()) {
