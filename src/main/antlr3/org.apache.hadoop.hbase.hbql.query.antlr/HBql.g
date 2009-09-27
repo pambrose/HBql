@@ -174,13 +174,13 @@ booleanPrimary returns [BooleanValue retval]
 
 eqneCompare returns [BooleanValue retval]
 options {backtrack=true;}	
-	: v1=valueExpr o=eqneOp v2=valueExpr 		{retval = new ValueCompare($v1.retval, $o.retval, $v2.retval);}	
+	: v1=valueExpr o=eqneOp v2=valueExpr 		{retval = new DelegateCompare($v1.retval, $o.retval, $v2.retval);}	
 	| c=ltgtCompare					{retval = $c.retval;}
 	;
 
 ltgtCompare returns [BooleanValue retval]
 options {backtrack=true;}	
-	: v1=valueExpr o=ltgtOp v2=valueExpr		{retval = new ValueCompare($v1.retval, $o.retval, $v2.retval);}
+	: v1=valueExpr o=ltgtOp v2=valueExpr		{retval = new DelegateCompare($v1.retval, $o.retval, $v2.retval);}
 	| p=booleanParen				{retval = $p.retval;}
 	;
 
