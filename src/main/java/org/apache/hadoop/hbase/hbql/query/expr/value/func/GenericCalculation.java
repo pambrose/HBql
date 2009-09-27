@@ -15,7 +15,7 @@ public abstract class GenericCalculation extends GenericTwoExpr implements Value
 
     private final Operator operator;
 
-    public GenericCalculation(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
+    protected GenericCalculation(final ValueExpr expr1, final Operator operator, final ValueExpr expr2) {
         super(expr1, expr2);
         this.operator = operator;
     }

@@ -17,7 +17,7 @@ public abstract class GenericNullCompare extends GenericNotValue {
 
     private ValueExpr expr = null;
 
-    public GenericNullCompare(final boolean not, final ValueExpr expr) {
+    protected GenericNullCompare(final boolean not, final ValueExpr expr) {
         super(not);
         this.expr = expr;
     }

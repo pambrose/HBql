@@ -20,7 +20,7 @@ public abstract class GenericStringPatternStmt extends GenericNotValue {
     private ValueExpr valueExpr = null;
     private ValueExpr patternExpr = null;
 
-    public GenericStringPatternStmt(final ValueExpr valueExpr, final boolean not, final ValueExpr patternExpr) {
+    protected GenericStringPatternStmt(final ValueExpr valueExpr, final boolean not, final ValueExpr patternExpr) {
         super(not);
         this.valueExpr = valueExpr;
         this.patternExpr = patternExpr;
