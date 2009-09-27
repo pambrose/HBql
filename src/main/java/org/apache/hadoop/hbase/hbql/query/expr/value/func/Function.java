@@ -208,10 +208,10 @@ public class Function implements ValueExpr {
             }
 
             case REPLACE: {
-                final String val = (String)this.getValueExpr(0).getValue(object);
+                final String v1 = (String)this.getValueExpr(0).getValue(object);
                 final String v2 = (String)this.getValueExpr(1).getValue(object);
                 final String v3 = (String)this.getValueExpr(2).getValue(object);
-                return val.replace(v2, v3);
+                return v1.replace(v2, v3);
             }
 
             case SUBSTRING: {
@@ -230,12 +230,12 @@ public class Function implements ValueExpr {
             }
 
             case INDEXOF: {
-                final String val1 = (String)this.getValueExpr(0).getValue(object);
-                final String val2 = (String)this.getValueExpr(1).getValue(object);
-                if (val1 == null || val2 == null)
+                final String v1 = (String)this.getValueExpr(0).getValue(object);
+                final String v2 = (String)this.getValueExpr(1).getValue(object);
+                if (v1 == null || v2 == null)
                     return -1;
                 else
-                    return val1.indexOf(val2);
+                    return v1.indexOf(v2);
             }
             default:
                 throw new HBqlException("Invalid function: " + this.getFunctionType());
@@ -333,6 +333,7 @@ public class Function implements ValueExpr {
                 sbuf.append(", ");
                 sbuf.append(this.getValueExpr(1).asString());
                 break;
+
             default:
                 sbuf.append("Unknown Function: " + this.getFunctionType());
         }
