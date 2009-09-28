@@ -22,6 +22,7 @@ public class NumberInStmt extends GenericInStmt {
     protected boolean evaluateList(final Object object) throws HBqlException {
 
         final long attribVal = ((Number)this.getExpr().getValue(object)).longValue();
+
         for (final GenericValue obj : this.getValueExprList()) {
 
             // Check if the value returned is a collection

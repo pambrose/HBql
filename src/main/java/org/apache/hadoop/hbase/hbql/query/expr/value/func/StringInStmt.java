@@ -22,7 +22,9 @@ public class StringInStmt extends GenericInStmt {
     protected boolean evaluateList(final Object object) throws HBqlException {
 
         final String attribVal = (String)this.getExpr().getValue(object);
+
         for (final GenericValue obj : this.getValueExprList()) {
+
             // Check if the value returned is a collection
             final Object objval = obj.getValue(object);
             if (HUtil.isParentClass(Collection.class, objval.getClass())) {
