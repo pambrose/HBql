@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,8 +13,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
  */
 public abstract class GenericNullCompare extends GenericNotValue {
 
-    protected GenericNullCompare(final boolean not, final GenericValue arg0) {
-        super(null, not, arg0);
+    protected GenericNullCompare(final TypeSignature typeSignature, final boolean not, final GenericValue arg0) {
+        super(typeSignature, not, arg0);
     }
 
     protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {

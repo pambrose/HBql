@@ -44,8 +44,7 @@ public class DelegateInStmt extends GenericInStmt {
 
     @Override
     protected boolean evaluateList(final Object object) throws HBqlException {
-        // Not used
-        return false;
+        throw new HBqlException("Internal error");
     }
 
     @Override

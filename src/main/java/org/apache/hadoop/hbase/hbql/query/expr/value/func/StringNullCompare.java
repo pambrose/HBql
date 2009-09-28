@@ -1,10 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,19 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 public class StringNullCompare extends GenericNullCompare {
 
     public StringNullCompare(final boolean not, final GenericValue arg0) {
-        super(not, arg0);
-    }
-
-    @Override
-    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
-        return this.validateType(StringValue.class);
-    }
-
-    @Override
-    public GenericValue getOptimizedValue() throws HBqlException {
-        this.optimizeArgs();
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
+        super(TypeSignature.Type.STRINGNULL.getTypeSignature(), not, arg0);
     }
 
     @Override

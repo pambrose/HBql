@@ -1,9 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
@@ -18,11 +16,7 @@ public class NumberBetweenStmt extends GenericBetweenStmt {
                              final boolean not,
                              final GenericValue arg1,
                              final GenericValue arg2) {
-        super(new TypeSignature(BooleanValue.class, NumberValue.class, NumberValue.class, NumberValue.class),
-              not,
-              arg0,
-              arg1,
-              arg2);
+        super(TypeSignature.Type.NUMBERBETWEEN.getTypeSignature(), not, arg0, arg1, arg2);
     }
 
     @Override

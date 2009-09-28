@@ -1,8 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
@@ -15,11 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 public class DateBetweenStmt extends GenericBetweenStmt {
 
     public DateBetweenStmt(final GenericValue expr, final boolean not, final GenericValue lower, final GenericValue upper) {
-        super(new TypeSignature(BooleanValue.class, DateValue.class, DateValue.class, DateValue.class),
-              not,
-              expr,
-              lower,
-              upper);
+        super(TypeSignature.Type.DATEBETWEEN.getTypeSignature(), not, expr, lower, upper);
     }
 
     @Override

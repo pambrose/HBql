@@ -26,7 +26,15 @@ public class TypeSignature {
 
         STRINGCALCULATION(new TypeSignature(StringValue.class, StringValue.class, StringValue.class)),
         DATECALCULATION(new TypeSignature(DateValue.class, DateValue.class, DateValue.class)),
-        NUMBERCALCULATION(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),;
+        NUMBERCALCULATION(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
+
+        STRINGBETWEEN(new TypeSignature(BooleanValue.class, StringValue.class, StringValue.class, StringValue.class)),
+        DATEBETWEEN(new TypeSignature(BooleanValue.class, DateValue.class, DateValue.class, DateValue.class)),
+        NUMBERBETWEEN(new TypeSignature(BooleanValue.class, NumberValue.class, NumberValue.class, NumberValue.class)),
+
+        STRINGNULL(new TypeSignature(BooleanValue.class, StringValue.class)),
+
+        STRINGPATTERN(new TypeSignature(BooleanValue.class, StringValue.class, StringValue.class));
 
         private final TypeSignature typeSignature;
 

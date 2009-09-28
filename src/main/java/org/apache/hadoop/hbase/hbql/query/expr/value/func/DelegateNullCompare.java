@@ -16,7 +16,7 @@ public class DelegateNullCompare extends GenericNullCompare {
     private GenericNullCompare typedExpr = null;
 
     public DelegateNullCompare(final boolean not, final GenericValue expr) {
-        super(not, expr);
+        super(null, not, expr);
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
