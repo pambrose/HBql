@@ -20,7 +20,7 @@ public class DelegateTernary extends GenericTernary {
     private GenericTernary typedExpr = null;
 
     public DelegateTernary(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
-        super(arg0, arg1, arg2);
+        super(null, arg0, arg1, arg2);
     }
 
     @Override

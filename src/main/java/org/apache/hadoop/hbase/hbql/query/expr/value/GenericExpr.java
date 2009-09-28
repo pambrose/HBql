@@ -107,7 +107,7 @@ public abstract class GenericExpr implements GenericValue {
             return this.isAConstant() ? new DateConstant((Long)this.getValue(null)) : this;
 
         if (this.getTypeSignature().getReturnType().equals(NumberValue.class))
-            return this.isAConstant() ? new NumberLiteral((Long)this.getValue(null)) : this;
+            return this.isAConstant() ? new NumberLiteral((Number)this.getValue(null)) : this;
 
         throw new HBqlException("Internal error");
     }

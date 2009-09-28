@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
 /**
@@ -15,7 +16,10 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 public class BooleanTernary extends GenericTernary implements BooleanValue {
 
     public BooleanTernary(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
-        super(arg0, arg1, arg2);
+        super(new TypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class, BooleanValue.class),
+              arg0,
+              arg1,
+              arg2);
     }
 
     @Override

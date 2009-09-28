@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,8 +15,11 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
  */
 public abstract class GenericTernary extends GenericExpr {
 
-    protected GenericTernary(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
-        super(null, arg0, arg1, arg2);
+    protected GenericTernary(final TypeSignature typeSignature,
+                             final GenericValue arg0,
+                             final GenericValue arg1,
+                             final GenericValue arg2) {
+        super(typeSignature, arg0, arg1, arg2);
     }
 
     @Override
@@ -40,5 +44,4 @@ public abstract class GenericTernary extends GenericExpr {
                + this.getArg(1).asString()
                + " ELSE " + this.getArg(2).asString() + " END";
     }
-
 }
