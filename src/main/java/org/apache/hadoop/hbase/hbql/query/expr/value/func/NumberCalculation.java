@@ -14,8 +14,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
  */
 public class NumberCalculation extends GenericCalculation implements NumberValue {
 
-    public NumberCalculation(final GenericValue expr1, final Operator operator, final GenericValue expr2) {
-        super(expr1, operator, expr2);
+    public NumberCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
+        super(arg0, operator, arg1);
     }
 
     @Override
@@ -27,8 +27,8 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
 
-        this.setExpr1(this.getExpr1().getOptimizedValue());
-        this.setExpr2(this.getExpr2().getOptimizedValue());
+        this.setArg(0, this.getArg(0).getOptimizedValue());
+        this.setArg(1, this.getArg(1).getOptimizedValue());
 
         return this.isAConstant() ? new NumberLiteral(this.getValue(null)) : this;
     }
@@ -36,8 +36,8 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
     @Override
     public Long getValue(final Object object) throws HBqlException {
 
-        final long val1 = ((Number)this.getExpr1().getValue(object)).longValue();
-        final long val2 = (((Number)this.getExpr2().getValue(object))).longValue();
+        final long val1 = ((Number)this.getArg(0).getValue(object)).longValue();
+        final long val2 = (((Number)this.getArg(1).getValue(object))).longValue();
 
         switch (this.getOperator()) {
             case PLUS:

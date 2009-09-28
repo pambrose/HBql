@@ -14,8 +14,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
  */
 public class BooleanTernary extends GenericTernary implements BooleanValue {
 
-    public BooleanTernary(final GenericValue pred, final GenericValue expr1, final GenericValue expr2) {
-        super(pred, expr1, expr2);
+    public BooleanTernary(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
+        super(arg0, arg1, arg2);
     }
 
     @Override
@@ -27,9 +27,9 @@ public class BooleanTernary extends GenericTernary implements BooleanValue {
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
 
-        this.setPred(this.getPred().getOptimizedValue());
-        this.setExpr1(this.getExpr1().getOptimizedValue());
-        this.setExpr2(this.getExpr2().getOptimizedValue());
+        this.setArg(0, this.getArg(0).getOptimizedValue());
+        this.setArg(1, this.getArg(1).getOptimizedValue());
+        this.setArg(2, this.getArg(2).getOptimizedValue());
 
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }

@@ -14,8 +14,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
  */
 public class StringCalculation extends GenericCalculation {
 
-    public StringCalculation(final GenericValue expr1, final Operator operator, final GenericValue expr2) {
-        super(expr1, operator, expr2);
+    public StringCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
+        super(arg0, operator, arg1);
     }
 
     @Override
@@ -27,8 +27,8 @@ public class StringCalculation extends GenericCalculation {
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
 
-        this.setExpr1(this.getExpr1().getOptimizedValue());
-        this.setExpr2(this.getExpr2().getOptimizedValue());
+        this.setArg(0, this.getArg(0).getOptimizedValue());
+        this.setArg(1, this.getArg(1).getOptimizedValue());
 
         return this.isAConstant() ? new StringLiteral(this.getValue(null)) : this;
     }
@@ -36,8 +36,8 @@ public class StringCalculation extends GenericCalculation {
     @Override
     public String getValue(final Object object) throws HBqlException {
 
-        final String val1 = (String)this.getExpr1().getValue(object);
-        final String val2 = (String)this.getExpr2().getValue(object);
+        final String val1 = (String)this.getArg(0).getValue(object);
+        final String val2 = (String)this.getArg(1).getValue(object);
 
         switch (this.getOperator()) {
             case PLUS:

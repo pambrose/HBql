@@ -14,8 +14,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
  */
 public class BooleanCompare extends GenericCompare implements BooleanValue {
 
-    public BooleanCompare(final GenericValue expr1, final Operator operator, final GenericValue expr2) {
-        super(expr1, operator, expr2);
+    public BooleanCompare(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
+        super(arg0, operator, arg1);
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
@@ -26,12 +26,8 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
 
-        final boolean expr1val = (Boolean)this.getExpr1().getValue(object);
-
-        if (this.getExpr2() == null)
-            throw new HBqlException("Null value");
-
-        final boolean expr2val = (Boolean)this.getExpr2().getValue(object);
+        final boolean expr1val = (Boolean)this.getArg(0).getValue(object);
+        final boolean expr2val = (Boolean)this.getArg(1).getValue(object);
 
         switch (this.getOperator()) {
             case OR:

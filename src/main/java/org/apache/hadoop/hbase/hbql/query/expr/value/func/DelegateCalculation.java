@@ -18,23 +18,23 @@ public class DelegateCalculation extends GenericCalculation {
 
     private GenericCalculation typedExpr = null;
 
-    public DelegateCalculation(final GenericValue expr1, final Operator operator, final GenericValue expr2) {
-        super(expr1, operator, expr2);
+    public DelegateCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
+        super(arg0, operator, arg1);
     }
 
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
-        final Class<? extends GenericValue> type1 = this.getExpr1().validateTypes(this, false);
-        final Class<? extends GenericValue> type2 = this.getExpr2().validateTypes(this, false);
+        final Class<? extends GenericValue> type1 = this.getArg(0).validateTypes(this, false);
+        final Class<? extends GenericValue> type2 = this.getArg(1).validateTypes(this, false);
 
         if (HUtil.isParentClass(StringValue.class, type1, type2))
-            typedExpr = new StringCalculation(this.getExpr1(), this.getOperator(), this.getExpr2());
+            typedExpr = new StringCalculation(this.getArg(0), this.getOperator(), this.getArg(1));
         else if (HUtil.isParentClass(NumberValue.class, type1, type2))
-            typedExpr = new NumberCalculation(this.getExpr1(), this.getOperator(), this.getExpr2());
+            typedExpr = new NumberCalculation(this.getArg(0), this.getOperator(), this.getArg(1));
         else if (HUtil.isParentClass(DateValue.class, type1, type2))
-            typedExpr = new DateCalculation(this.getExpr1(), this.getOperator(), this.getExpr2());
+            typedExpr = new DateCalculation(this.getArg(0), this.getOperator(), this.getArg(1));
         else
             HUtil.throwInvalidTypeException(this, type1, type2);
 

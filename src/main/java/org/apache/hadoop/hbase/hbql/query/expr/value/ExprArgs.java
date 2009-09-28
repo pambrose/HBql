@@ -22,6 +22,11 @@ public class ExprArgs {
         this.genericValues = genericValues;
     }
 
+    public ExprArgs(final GenericValue... genericValues) {
+        this.typeSignature = null;
+        this.genericValues = genericValues;
+    }
+
     public Class<? extends GenericValue> getSignatureReturnType() {
         return getTypeSignature().getSignatureReturnType();
     }
@@ -44,6 +49,10 @@ public class ExprArgs {
 
     public GenericValue getArg(final int i) {
         return this.getArgs()[i];
+    }
+
+    public void setArg(final int i, final GenericValue val) {
+        this.getArgs()[i] = val;
     }
 
     public void setContext(final ExprTree context) {

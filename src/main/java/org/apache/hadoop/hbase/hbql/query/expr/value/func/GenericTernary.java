@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.GenericTwoExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
@@ -14,56 +14,45 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Aug 31, 2009
  * Time: 1:51:03 PM
  */
-public abstract class GenericTernary extends GenericTwoExpr implements GenericValue {
+public abstract class GenericTernary extends GenericExpr implements GenericValue {
 
-    private GenericValue pred = null;
-
-    protected GenericTernary(final GenericValue pred, final GenericValue expr1, final GenericValue expr2) {
-        super(expr1, expr2);
-        this.pred = pred;
-    }
-
-    protected GenericValue getPred() {
-        return this.pred;
-    }
-
-    protected void setPred(final GenericValue pred) {
-        this.pred = pred;
+    protected GenericTernary(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
+        super(arg0, arg1, arg2);
     }
 
     @Override
     public Object getValue(final Object object) throws HBqlException {
-        if ((Boolean)this.getPred().getValue(object))
-            return this.getExpr1().getValue(object);
+        if ((Boolean)this.getArg(0).getValue(object))
+            return this.getArg(1).getValue(object);
         else
-            return this.getExpr2().getValue(object);
+            return this.getArg(2).getValue(object);
     }
 
     @Override
     public boolean isAConstant() throws HBqlException {
-        return this.getPred().isAConstant() && this.getExpr1().isAConstant() && this.getExpr2().isAConstant();
+        return this.getArg(0).isAConstant() && this.getArg(1).isAConstant() && this.getArg(2).isAConstant();
     }
 
     @Override
     public void setContext(final ExprTree context) {
-        this.getPred().setContext(context);
-        this.getExpr1().setContext(context);
-        this.getExpr2().setContext(context);
+        this.getArg(0).setContext(context);
+        this.getArg(1).setContext(context);
+        this.getArg(2).setContext(context);
     }
 
     protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {
-        HUtil.validateParentClass(this, BooleanValue.class, this.getPred().validateTypes(this, false));
+        HUtil.validateParentClass(this, BooleanValue.class, this.getArg(0).validateTypes(this, false));
         HUtil.validateParentClass(this,
                                   clazz,
-                                  this.getExpr1().validateTypes(this, false),
-                                  this.getExpr2().validateTypes(this, false));
+                                  this.getArg(1).validateTypes(this, false),
+                                  this.getArg(2).validateTypes(this, false));
         return clazz;
     }
 
     @Override
     public String asString() {
-        return "IF " + this.getPred().asString() + " THEN "
-               + this.getExpr1().asString() + " ELSE " + this.getExpr2().asString() + " END";
+        return "IF " + this.getArg(0).asString() + " THEN "
+               + this.getArg(1).asString() + " ELSE " + this.getArg(2).asString() + " END";
     }
 
 }

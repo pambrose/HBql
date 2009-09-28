@@ -19,27 +19,27 @@ public class DelegateTernary extends GenericTernary {
 
     private GenericTernary typedExpr = null;
 
-    public DelegateTernary(final GenericValue pred, final GenericValue expr1, final GenericValue expr2) {
-        super(pred, expr1, expr2);
+    public DelegateTernary(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
+        super(arg0, arg1, arg2);
     }
 
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
-        HUtil.validateParentClass(this, BooleanValue.class, this.getPred().validateTypes(this, false));
+        HUtil.validateParentClass(this, BooleanValue.class, this.getArg(0).validateTypes(this, false));
 
-        final Class<? extends GenericValue> type1 = this.getExpr1().validateTypes(this, false);
-        final Class<? extends GenericValue> type2 = this.getExpr2().validateTypes(this, false);
+        final Class<? extends GenericValue> type1 = this.getArg(1).validateTypes(this, false);
+        final Class<? extends GenericValue> type2 = this.getArg(2).validateTypes(this, false);
 
         if (HUtil.isParentClass(StringValue.class, type1, type2))
-            this.typedExpr = new StringTernary(this.getPred(), this.getExpr1(), this.getExpr2());
+            this.typedExpr = new StringTernary(this.getArg(0), this.getArg(1), this.getArg(2));
         else if (HUtil.isParentClass(NumberValue.class, type1, type2))
-            this.typedExpr = new NumberTernary(this.getPred(), this.getExpr1(), this.getExpr2());
+            this.typedExpr = new NumberTernary(this.getArg(0), this.getArg(1), this.getArg(2));
         else if (HUtil.isParentClass(DateValue.class, type1, type2))
-            this.typedExpr = new DateTernary(this.getPred(), this.getExpr1(), this.getExpr2());
+            this.typedExpr = new DateTernary(this.getArg(0), this.getArg(1), this.getArg(2));
         else if (HUtil.isParentClass(BooleanValue.class, type1, type2))
-            this.typedExpr = new BooleanTernary(this.getPred(), this.getExpr1(), this.getExpr2());
+            this.typedExpr = new BooleanTernary(this.getArg(0), this.getArg(1), this.getArg(2));
         else
             HUtil.throwInvalidTypeException(this, type1, type2);
 

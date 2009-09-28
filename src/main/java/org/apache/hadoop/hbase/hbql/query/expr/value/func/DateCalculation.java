@@ -14,8 +14,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateConstant;
  */
 public class DateCalculation extends GenericCalculation implements DateValue {
 
-    public DateCalculation(final GenericValue expr1, final Operator operator, final GenericValue expr2) {
-        super(expr1, operator, expr2);
+    public DateCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
+        super(arg0, operator, arg1);
     }
 
     @Override
@@ -27,8 +27,8 @@ public class DateCalculation extends GenericCalculation implements DateValue {
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
 
-        this.setExpr1(this.getExpr1().getOptimizedValue());
-        this.setExpr2(this.getExpr2().getOptimizedValue());
+        this.setArg(0, this.getArg(0).getOptimizedValue());
+        this.setArg(1, this.getArg(1).getOptimizedValue());
 
         return this.isAConstant() ? new DateConstant(this.getValue(null)) : this;
     }
@@ -36,8 +36,8 @@ public class DateCalculation extends GenericCalculation implements DateValue {
     @Override
     public Long getValue(final Object object) throws HBqlException {
 
-        final long val1 = (Long)this.getExpr1().getValue(object);
-        final long val2 = (Long)this.getExpr2().getValue(object);
+        final long val1 = (Long)this.getArg(0).getValue(object);
+        final long val2 = (Long)this.getArg(1).getValue(object);
 
         switch (this.getOperator()) {
             case PLUS:

@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.GenericOneExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
@@ -14,7 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  * Date: Sep 7, 2009
  * Time: 10:03:28 PM
  */
-public class Interval extends GenericOneExpr implements DateValue {
+public class Interval extends GenericExpr implements DateValue {
 
     public enum Type {
         MILLI(1),
@@ -38,8 +38,8 @@ public class Interval extends GenericOneExpr implements DateValue {
 
     private final Type type;
 
-    public Interval(final Type type, final GenericValue expr) {
-        super(expr);
+    public Interval(final Type type, final GenericValue arg0) {
+        super(arg0);
         this.type = type;
     }
 
@@ -50,26 +50,26 @@ public class Interval extends GenericOneExpr implements DateValue {
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
-        HUtil.validateParentClass(this, NumberValue.class, this.getExpr().validateTypes(this, false));
+        HUtil.validateParentClass(this, NumberValue.class, this.getArg(0).validateTypes(this, false));
         return DateValue.class;
     }
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        this.setExpr(this.getExpr().getOptimizedValue());
+        this.setArg(0, this.getArg(0).getOptimizedValue());
         return this.isAConstant() ? new DateConstant(this.getValue(null)) : this;
     }
 
     @Override
     public Long getValue(final Object object) throws HBqlException {
-        final Number num = (Number)this.getExpr().getValue(object);
+        final Number num = (Number)this.getArg(0).getValue(object);
         final long val = num.longValue();
         return val * this.getIntervalType().getIntervalMillis();
     }
 
     @Override
     public String asString() {
-        return this.getIntervalType().name() + "(" + this.getExpr().asString() + ")";
+        return this.getIntervalType().name() + "(" + this.getArg(0).asString() + ")";
     }
 
 }

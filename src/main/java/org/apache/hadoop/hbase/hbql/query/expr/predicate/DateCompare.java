@@ -14,8 +14,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
  */
 public class DateCompare extends GenericCompare {
 
-    public DateCompare(final GenericValue expr1, final Operator operator, final GenericValue expr2) {
-        super(expr1, operator, expr2);
+    public DateCompare(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
+        super(arg0, operator, arg1);
     }
 
     @Override
@@ -27,8 +27,8 @@ public class DateCompare extends GenericCompare {
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
 
-        final long val1 = (Long)this.getExpr1().getValue(object);
-        final long val2 = (Long)this.getExpr2().getValue(object);
+        final long val1 = (Long)this.getArg(0).getValue(object);
+        final long val2 = (Long)this.getArg(1).getValue(object);
 
         switch (this.getOperator()) {
             case EQ:
