@@ -36,5 +36,4 @@ public class ContainsStmt extends GenericStringPatternStmt {
 
         return (this.isNot()) ? !retval : retval;
     }
-
 }

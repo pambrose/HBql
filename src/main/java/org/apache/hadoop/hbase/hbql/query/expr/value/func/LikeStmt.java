@@ -40,9 +40,12 @@ public class LikeStmt extends GenericStringPatternStmt {
         final boolean patternConstant = this.getArg(1).isAConstant();
 
         if (!patternConstant || this.getPattern() == null) {
+
             final String pvalue = (String)this.getArg(1).getValue(object);
+
             if (pvalue == null)
                 throw new HBqlException("Null string for pattern in " + this.asString());
+
             this.pattern = Pattern.compile(pvalue);
         }
 
