@@ -15,14 +15,14 @@ import java.util.List;
 public class ExprArgs {
 
     private final TypeSignature typeSignature;
-    private final GenericValue[] genericValues;
+    private final List<GenericValue> genericValues;
 
-    public ExprArgs(final TypeSignature typeSignature, final GenericValue... genericValues) {
+    public ExprArgs(final TypeSignature typeSignature, final List<GenericValue> genericValues) {
         this.typeSignature = typeSignature;
         this.genericValues = genericValues;
     }
 
-    public ExprArgs(final GenericValue... genericValues) {
+    public ExprArgs(final List<GenericValue> genericValues) {
         this.typeSignature = null;
         this.genericValues = genericValues;
     }
@@ -39,20 +39,20 @@ public class ExprArgs {
         return this.typeSignature;
     }
 
-    private GenericValue[] getArgs() {
+    private List<GenericValue> getArgs() {
         return this.genericValues;
     }
 
     public int size() {
-        return this.getArgs().length;
+        return this.getArgs().size();
     }
 
     public GenericValue getArg(final int i) {
-        return this.getArgs()[i];
+        return this.getArgs().get(i);
     }
 
     public void setArg(final int i, final GenericValue val) {
-        this.getArgs()[i] = val;
+        this.getArgs().set(i, val);
     }
 
     public void setContext(final ExprTree context) {
@@ -62,7 +62,7 @@ public class ExprArgs {
 
     public void optimizeArgs() throws HBqlException {
         for (int i = 0; i < this.size(); i++)
-            this.getArgs()[i] = this.getArg(i).getOptimizedValue();
+            this.setArg(i, this.getArg(i).getOptimizedValue());
     }
 
     public boolean isAConstant() throws HBqlException {

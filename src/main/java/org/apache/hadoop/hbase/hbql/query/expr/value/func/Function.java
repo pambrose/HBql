@@ -13,6 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -55,7 +56,7 @@ public class Function implements GenericValue {
 
     public Function(final Type functionType, final GenericValue... genericValues) {
         this.functionType = functionType;
-        this.exprArgs = new ExprArgs(functionType.getTypeSignature(), genericValues);
+        this.exprArgs = new ExprArgs(functionType.getTypeSignature(), Arrays.asList(genericValues));
     }
 
     private Type getFunctionType() {

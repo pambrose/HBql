@@ -4,6 +4,9 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -15,6 +18,10 @@ public class GenericExpr {
     private ExprArgs exprArgs;
 
     public GenericExpr(final GenericValue... exprs) {
+        this.exprArgs = new ExprArgs(Arrays.asList(exprs));
+    }
+
+    public GenericExpr(final List<GenericValue> exprs) {
         this.exprArgs = new ExprArgs(exprs);
     }
 

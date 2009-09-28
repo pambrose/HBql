@@ -4,6 +4,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -15,6 +17,11 @@ public abstract class GenericNotValue extends GenericExpr implements BooleanValu
     private final boolean not;
 
     protected GenericNotValue(final boolean not, final GenericValue... args) {
+        super(args);
+        this.not = not;
+    }
+
+    protected GenericNotValue(final boolean not, final List<GenericValue> args) {
         super(args);
         this.not = not;
     }
