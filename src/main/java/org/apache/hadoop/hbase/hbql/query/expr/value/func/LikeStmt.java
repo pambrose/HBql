@@ -16,8 +16,8 @@ public class LikeStmt extends GenericStringPatternStmt {
 
     private Pattern pattern = null;
 
-    public LikeStmt(final GenericValue valueExpr, final boolean not, final GenericValue patternExpr) {
-        super(valueExpr, not, patternExpr);
+    public LikeStmt(final GenericValue arg0, final boolean not, final GenericValue arg1) {
+        super(arg0, not, arg1);
     }
 
     private Pattern getPattern() {
@@ -32,14 +32,15 @@ public class LikeStmt extends GenericStringPatternStmt {
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
 
-        final String val = (String)this.getValueExpr().getValue(object);
+        final String val = (String)this.getArg(0).getValue(object);
+
         if (val == null)
             throw new HBqlException("Null string for value in " + this.asString());
 
-        final boolean patternConstant = this.getPatternExpr().isAConstant();
+        final boolean patternConstant = this.getArg(1).isAConstant();
 
         if (!patternConstant || this.getPattern() == null) {
-            final String pvalue = (String)this.getPatternExpr().getValue(object);
+            final String pvalue = (String)this.getArg(1).getValue(object);
             if (pvalue == null)
                 throw new HBqlException("Null string for pattern in " + this.asString());
             this.pattern = Pattern.compile(pvalue);

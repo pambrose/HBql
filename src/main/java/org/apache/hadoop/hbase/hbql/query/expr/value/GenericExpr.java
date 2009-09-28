@@ -18,20 +18,24 @@ public class GenericExpr {
         this.exprArgs = new ExprArgs(exprs);
     }
 
+    public ExprArgs getArgs() {
+        return this.exprArgs;
+    }
+
     public boolean isAConstant() throws HBqlException {
-        return this.exprArgs.isAConstant();
+        return this.getArgs().isAConstant();
     }
 
     public void setContext(final ExprTree context) {
-        this.exprArgs.setContext(context);
+        this.getArgs().setContext(context);
     }
 
     public GenericValue getArg(final int i) {
-        return this.exprArgs.getArg(i);
+        return this.getArgs().getArg(i);
     }
 
     public void setArg(final int i, final GenericValue val) {
-        this.exprArgs.setArg(i, val);
+        this.getArgs().setArg(i, val);
     }
 
 }

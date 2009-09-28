@@ -23,8 +23,8 @@ public class ContainsStmt extends GenericStringPatternStmt {
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
 
-        final String val1 = (String)this.getValueExpr().getValue(object);
-        final String val2 = (String)this.getPatternExpr().getValue(object);
+        final String val1 = (String)this.getArg(0).getValue(object);
+        final String val2 = (String)this.getArg(1).getValue(object);
 
         if (val1 == null)
             throw new HBqlException("Null string for value in " + this.asString());

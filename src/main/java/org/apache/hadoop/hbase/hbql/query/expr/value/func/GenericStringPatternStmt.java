@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
@@ -17,21 +16,8 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
  */
 public abstract class GenericStringPatternStmt extends GenericNotValue {
 
-    private GenericValue valueExpr = null;
-    private GenericValue patternExpr = null;
-
-    protected GenericStringPatternStmt(final GenericValue valueExpr, final boolean not, final GenericValue patternExpr) {
-        super(not);
-        this.valueExpr = valueExpr;
-        this.patternExpr = patternExpr;
-    }
-
-    protected GenericValue getValueExpr() {
-        return this.valueExpr;
-    }
-
-    protected GenericValue getPatternExpr() {
-        return this.patternExpr;
+    protected GenericStringPatternStmt(final GenericValue arg0, final boolean not, final GenericValue arg1) {
+        super(not, arg0, arg1);
     }
 
     protected abstract String getFunctionName();
@@ -41,33 +27,27 @@ public abstract class GenericStringPatternStmt extends GenericNotValue {
                                                        final boolean allowsCollections) throws TypeException {
         HUtil.validateParentClass(this,
                                   StringValue.class,
-                                  this.getValueExpr().validateTypes(this, false),
-                                  this.getPatternExpr().validateTypes(this, false));
+                                  this.getArg(0).validateTypes(this, false),
+                                  this.getArg(1).validateTypes(this, false));
         return BooleanValue.class;
     }
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        this.valueExpr = this.getValueExpr().getOptimizedValue();
-        this.patternExpr = this.getPatternExpr().getOptimizedValue();
+        this.setArg(0, this.getArg(0).getOptimizedValue());
+        this.setArg(1, this.getArg(1).getOptimizedValue());
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     @Override
     public boolean isAConstant() throws HBqlException {
-        return this.getValueExpr().isAConstant() && this.getPatternExpr().isAConstant();
-    }
-
-    @Override
-    public void setContext(final ExprTree context) {
-        this.getValueExpr().setContext(context);
-        this.getPatternExpr().setContext(context);
+        return this.getArg(0).isAConstant() && this.getArg(1).isAConstant();
     }
 
     @Override
     public String asString() {
-        return this.getValueExpr().asString() + notAsString()
-               + " " + this.getFunctionName() + " " + this.getPatternExpr().asString();
+        return this.getArg(0).asString() + notAsString()
+               + " " + this.getFunctionName() + " " + this.getArg(1).asString();
     }
 
 }

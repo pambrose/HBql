@@ -1,6 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -8,11 +10,12 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public abstract class GenericNotValue implements BooleanValue {
+public abstract class GenericNotValue extends GenericExpr implements BooleanValue {
 
     private final boolean not;
 
-    protected GenericNotValue(final boolean not) {
+    protected GenericNotValue(final boolean not, final GenericValue... args) {
+        super(args);
         this.not = not;
     }
 

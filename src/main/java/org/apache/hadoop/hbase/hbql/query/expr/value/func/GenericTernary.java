@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
@@ -28,18 +27,6 @@ public abstract class GenericTernary extends GenericExpr implements GenericValue
             return this.getArg(2).getValue(object);
     }
 
-    @Override
-    public boolean isAConstant() throws HBqlException {
-        return this.getArg(0).isAConstant() && this.getArg(1).isAConstant() && this.getArg(2).isAConstant();
-    }
-
-    @Override
-    public void setContext(final ExprTree context) {
-        this.getArg(0).setContext(context);
-        this.getArg(1).setContext(context);
-        this.getArg(2).setContext(context);
-    }
-
     protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {
         HUtil.validateParentClass(this, BooleanValue.class, this.getArg(0).validateTypes(this, false));
         HUtil.validateParentClass(this,
@@ -52,7 +39,8 @@ public abstract class GenericTernary extends GenericExpr implements GenericValue
     @Override
     public String asString() {
         return "IF " + this.getArg(0).asString() + " THEN "
-               + this.getArg(1).asString() + " ELSE " + this.getArg(2).asString() + " END";
+               + this.getArg(1).asString()
+               + " ELSE " + this.getArg(2).asString() + " END";
     }
 
 }
