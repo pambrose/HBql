@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,20 +19,24 @@ public abstract class GenericExpr implements GenericValue {
 
     private final List<GenericValue> argList = Lists.newArrayList();
 
-    public GenericExpr(final List<GenericValue> exprList) {
+    protected GenericExpr(final GenericValue... exprs) {
+        this(Arrays.asList(exprs));
+    }
+
+    protected GenericExpr(final List<GenericValue> exprList) {
         this.argList.addAll(exprList);
     }
 
-    public GenericExpr(final GenericValue expr, final List<GenericValue> exprList) {
+    protected GenericExpr(final GenericValue expr, final List<GenericValue> exprList) {
         this.argList.add(expr);
         this.argList.addAll(exprList);
     }
 
-    public List<GenericValue> getArgList() {
+    protected List<GenericValue> getArgList() {
         return this.argList;
     }
 
-    public List<GenericValue> getSubArgs(final int i) {
+    protected List<GenericValue> getSubArgs(final int i) {
         return this.getArgList().subList(i, this.getArgList().size());
     }
 

@@ -4,8 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
-import java.util.Arrays;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -15,7 +13,7 @@ import java.util.Arrays;
 public abstract class GenericNullCompare extends GenericNotValue {
 
     protected GenericNullCompare(final boolean not, final GenericValue arg0) {
-        super(not, Arrays.asList(arg0));
+        super(not, arg0);
     }
 
     protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {

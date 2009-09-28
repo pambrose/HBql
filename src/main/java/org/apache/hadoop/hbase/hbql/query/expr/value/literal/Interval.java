@@ -7,8 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 
-import java.util.Arrays;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -40,7 +38,7 @@ public class Interval extends GenericExpr implements DateValue {
     private final Type type;
 
     public Interval(final Type type, final GenericValue arg0) {
-        super(Arrays.asList(arg0));
+        super(arg0);
         this.type = type;
     }
 

@@ -46,7 +46,6 @@ public class DelegateTernary extends GenericTernary {
         return this.typedExpr.validateTypes(parentExpr, false);
     }
 
-
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
         return this.typedExpr.getOptimizedValue();

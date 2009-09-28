@@ -9,7 +9,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +19,7 @@ import java.util.Arrays;
 public class DateLiteral extends GenericExpr implements DateValue {
 
     public DateLiteral(final GenericValue arg0, final GenericValue arg1) {
-        super(Arrays.asList(arg0, arg1));
+        super(arg0, arg1);
     }
 
     @Override

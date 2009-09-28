@@ -4,8 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 
-import java.util.Arrays;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -17,7 +15,7 @@ public abstract class GenericCalculation extends GenericExpr {
     private final Operator operator;
 
     protected GenericCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
-        super(Arrays.asList(arg0, arg1));
+        super(arg0, arg1);
         this.operator = operator;
     }
 

@@ -7,8 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
-import java.util.Arrays;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -18,7 +16,7 @@ import java.util.Arrays;
 public abstract class GenericStringPatternStmt extends GenericNotValue {
 
     protected GenericStringPatternStmt(final GenericValue arg0, final boolean not, final GenericValue arg1) {
-        super(not, Arrays.asList(arg0, arg1));
+        super(not, arg0, arg1);
     }
 
     protected abstract String getFunctionName();

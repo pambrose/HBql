@@ -12,7 +12,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,8 +51,8 @@ public class Function extends GenericExpr {
 
     private final Type functionType;
 
-    public Function(final Type functionType, final GenericValue... genericValues) {
-        super(Arrays.asList(genericValues));
+    public Function(final Type functionType, final GenericValue... exprs) {
+        super(exprs);
         this.functionType = functionType;
     }
 
@@ -61,16 +60,20 @@ public class Function extends GenericExpr {
         return this.functionType;
     }
 
+    protected TypeSignature getTypeSignature() {
+        return this.getFunctionType().getTypeSignature();
+    }
+
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
         int i = 0;
-        if (this.getArgList().size() != this.getFunctionType().getTypeSignature().size())
+        if (this.getArgList().size() != this.getTypeSignature().size())
             throw new TypeException("Incorrect number of arguments in function " + this.getFunctionType().name()
                                     + " in " + this.asString());
 
-        for (final Class<? extends GenericValue> clazz : this.getFunctionType().getTypeSignature().getSignatureArgs()) {
+        for (final Class<? extends GenericValue> clazz : this.getTypeSignature().getSignatureArgs()) {
             final Class<? extends GenericValue> type = this.getArg(i).validateTypes(this, false);
             if (!HUtil.isParentClass(clazz, type))
                 throw new TypeException("Invalid type " + type.getSimpleName() + " for arg " + i + " in function "
@@ -79,7 +82,7 @@ public class Function extends GenericExpr {
             i++;
         }
 
-        return this.getFunctionType().getTypeSignature().getSignatureReturnType();
+        return this.getTypeSignature().getSignatureReturnType();
     }
 
     @Override

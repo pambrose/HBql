@@ -6,8 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 
-import java.util.Arrays;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -17,7 +15,7 @@ import java.util.Arrays;
 public class BooleanExpr extends GenericExpr implements BooleanValue {
 
     public BooleanExpr(final GenericValue arg0) {
-        super(Arrays.asList(arg0));
+        super(arg0);
     }
 
     @Override

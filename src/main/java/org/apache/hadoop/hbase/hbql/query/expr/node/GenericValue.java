@@ -26,4 +26,7 @@ public interface GenericValue extends Serializable {
     void setContext(ExprTree context);
 
     String asString();
+
+    // TypeSignature getTypeSignature();
+
 }
