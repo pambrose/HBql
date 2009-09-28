@@ -18,8 +18,11 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
 
     private GenericBetweenStmt typedExpr = null;
 
-    public DelegateBetweenStmt(final GenericValue expr, final boolean not, final GenericValue lower, final GenericValue upper) {
-        super(not, expr, lower, upper);
+    public DelegateBetweenStmt(final GenericValue arg0,
+                               final boolean not,
+                               final GenericValue arg1,
+                               final GenericValue arg2) {
+        super(not, arg0, arg1, arg2);
     }
 
     @Override

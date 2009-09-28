@@ -13,8 +13,11 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
  */
 public class StringBetweenStmt extends GenericBetweenStmt {
 
-    public StringBetweenStmt(final GenericValue expr, final boolean not, final GenericValue lower, final GenericValue upper) {
-        super(not, expr, lower, upper);
+    public StringBetweenStmt(final GenericValue arg0,
+                             final boolean not,
+                             final GenericValue arg1,
+                             final GenericValue arg2) {
+        super(not, arg0, arg1, arg2);
     }
 
     @Override
