@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
@@ -17,9 +18,15 @@ import java.util.List;
 public class TypeSignature {
 
     public enum Type {
-        DATETERNARY(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class, DateValue.class)),
+
         BOOLEANTERNARY(new TypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class, BooleanValue.class)),
-        NUMBERTERNARY(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class, NumberValue.class));
+        STRINGTERNARY(new TypeSignature(StringValue.class, BooleanValue.class, StringValue.class, StringValue.class)),
+        DATETERNARY(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class, DateValue.class)),
+        NUMBERTERNARY(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class, NumberValue.class)),
+
+        STRINGCALCULATION(new TypeSignature(StringValue.class, StringValue.class, StringValue.class)),
+        DATECALCULATION(new TypeSignature(DateValue.class, DateValue.class, DateValue.class)),
+        NUMBERCALCULATION(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),;
 
         private final TypeSignature typeSignature;
 

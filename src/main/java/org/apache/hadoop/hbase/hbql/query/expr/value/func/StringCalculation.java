@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
@@ -14,7 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 public class StringCalculation extends GenericCalculation {
 
     public StringCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
-        super(new TypeSignature(StringValue.class, StringValue.class, StringValue.class), arg0, operator, arg1);
+        super(TypeSignature.Type.STRINGCALCULATION.getTypeSignature(), arg0, operator, arg1);
     }
 
     @Override

@@ -1,9 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
@@ -15,10 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 public class StringTernary extends GenericTernary {
 
     public StringTernary(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
-        super(new TypeSignature(StringValue.class, BooleanValue.class, StringValue.class, StringValue.class),
-              arg0,
-              arg1,
-              arg2);
+        super(TypeSignature.Type.STRINGTERNARY.getTypeSignature(), arg0, arg1, arg2);
     }
 
     @Override

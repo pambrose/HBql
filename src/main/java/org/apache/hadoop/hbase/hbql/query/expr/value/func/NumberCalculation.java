@@ -14,7 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 public class NumberCalculation extends GenericCalculation implements NumberValue {
 
     public NumberCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
-        super(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class), arg0, operator, arg1);
+        super(TypeSignature.Type.NUMBERCALCULATION.getTypeSignature(), arg0, operator, arg1);
     }
 
     @Override
