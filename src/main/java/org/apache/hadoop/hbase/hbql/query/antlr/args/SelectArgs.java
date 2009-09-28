@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
@@ -19,6 +20,8 @@ public class SelectArgs {
 
     public static enum Type {
 
+        DATERANGE(new TypeSignature(null, DateValue.class, DateValue.class)),
+        LIMIT(new TypeSignature(null, NumberValue.class)),
         VERSION(new TypeSignature(null, NumberValue.class));
 
         private final TypeSignature typeSignature;
@@ -44,16 +47,19 @@ public class SelectArgs {
         return argList;
     }
 
+    public void validateType(final int i) throws HBqlException {
+
+        if (this.getArg(i) == null)
+            throw new HBqlException("Null value invalid");
+
+        if (!this.type.getTypeSignature().getArg(i).isAssignableFrom(this.getArg(i).getClass()))
+            throw new HBqlException("Invalid type " + this.getArg(i).getClass().getSimpleName());
+
+    }
+
     public void validateTypes() throws HBqlException {
-
-        for (int i = 0; i < this.type.getTypeSignature().getArgCount(); i++) {
-
-            if (this.getArg(i) == null)
-                throw new HBqlException("Null value invalid");
-
-            if (!this.type.getTypeSignature().getArg(i).isAssignableFrom(this.getArg(i).getClass()))
-                throw new HBqlException("Invalid type " + this.getArg(i).getClass().getSimpleName());
-        }
+        for (int i = 0; i < this.type.getTypeSignature().getArgCount(); i++)
+            validateType(i);
     }
 
     public boolean isValid() {

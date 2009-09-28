@@ -16,9 +16,7 @@ public class VersionArgs extends SelectArgs {
     }
 
     public int getValue() throws HBqlException {
-
         this.validateTypes();
-
         return ((Number)this.getArg(0).getValue(null)).intValue();
     }
 }
