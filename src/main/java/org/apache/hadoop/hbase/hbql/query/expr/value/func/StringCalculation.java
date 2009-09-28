@@ -1,10 +1,9 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,19 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 public class StringCalculation extends GenericCalculation {
 
     public StringCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
-        super(arg0, operator, arg1);
-    }
-
-    @Override
-    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
-        return this.validateType(StringValue.class);
-    }
-
-    @Override
-    public GenericValue getOptimizedValue() throws HBqlException {
-        this.optimizeArgs();
-        return this.isAConstant() ? new StringLiteral(this.getValue(null)) : this;
+        super(new TypeSignature(StringValue.class, StringValue.class, StringValue.class), arg0, operator, arg1);
     }
 
     @Override

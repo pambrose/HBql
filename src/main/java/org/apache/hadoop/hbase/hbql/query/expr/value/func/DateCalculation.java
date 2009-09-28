@@ -1,10 +1,9 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateConstant;
+import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,19 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateConstant;
 public class DateCalculation extends GenericCalculation implements DateValue {
 
     public DateCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
-        super(arg0, operator, arg1);
-    }
-
-    @Override
-    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
-        return this.validateType(DateValue.class);
-    }
-
-    @Override
-    public GenericValue getOptimizedValue() throws HBqlException {
-        this.optimizeArgs();
-        return this.isAConstant() ? new DateConstant(this.getValue(null)) : this;
+        super(new TypeSignature(DateValue.class, DateValue.class, DateValue.class), arg0, operator, arg1);
     }
 
     @Override

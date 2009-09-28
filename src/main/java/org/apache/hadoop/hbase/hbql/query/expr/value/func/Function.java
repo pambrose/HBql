@@ -69,11 +69,11 @@ public class Function extends GenericExpr {
                                                        final boolean allowsCollections) throws TypeException {
 
         int i = 0;
-        if (this.getArgList().size() != this.getTypeSignature().size())
+        if (this.getArgList().size() != this.getTypeSignature().getArgCount())
             throw new TypeException("Incorrect number of arguments in function " + this.getFunctionType().name()
                                     + " in " + this.asString());
 
-        for (final Class<? extends GenericValue> clazz : this.getTypeSignature().getSignatureArgs()) {
+        for (final Class<? extends GenericValue> clazz : this.getTypeSignature().getArgs()) {
             final Class<? extends GenericValue> type = this.getArg(i).validateTypes(this, false);
             if (!HUtil.isParentClass(clazz, type))
                 throw new TypeException("Invalid type " + type.getSimpleName() + " for arg " + i + " in function "
@@ -82,7 +82,7 @@ public class Function extends GenericExpr {
             i++;
         }
 
-        return this.getTypeSignature().getSignatureReturnType();
+        return this.getTypeSignature().getReturnType();
     }
 
     @Override

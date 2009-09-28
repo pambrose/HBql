@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,21 +14,16 @@ public abstract class GenericCalculation extends GenericExpr {
 
     private final Operator operator;
 
-    protected GenericCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
-        super(null, arg0, arg1);
+    protected GenericCalculation(final TypeSignature typeSignature,
+                                 final GenericValue arg0,
+                                 final Operator operator,
+                                 final GenericValue arg1) {
+        super(typeSignature, arg0, arg1);
         this.operator = operator;
     }
 
     protected Operator getOperator() {
         return this.operator;
-    }
-
-    protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {
-        this.validateParentClass(clazz,
-                                 this.getArg(0).validateTypes(this, false),
-                                 this.getArg(1).validateTypes(this, false));
-
-        return clazz;
     }
 
     @Override

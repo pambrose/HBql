@@ -3,7 +3,15 @@ package org.apache.hadoop.hbase.hbql.query.expr.value;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateConstant;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.Arrays;
@@ -33,6 +41,10 @@ public abstract class GenericExpr implements GenericValue {
         this.typeSignature = typeSignature;
         this.argList.add(expr);
         this.argList.addAll(exprList);
+    }
+
+    protected TypeSignature getTypeSignature() {
+        return this.typeSignature;
     }
 
     protected List<GenericValue> getArgList() {
@@ -68,9 +80,38 @@ public abstract class GenericExpr implements GenericValue {
         this.getArgList().set(i, val);
     }
 
-    protected TypeSignature getTypeSignature() {
-        return this.typeSignature;
+    @Override
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
+
+        for (int i = 0; i < this.getTypeSignature().getArgCount(); i++)
+            this.validateParentClass(this.getTypeSignature().getArg(i),
+                                     this.getArg(i).validateTypes(this, false));
+
+        return this.getTypeSignature().getReturnType();
+
     }
+
+    @Override
+    public GenericValue getOptimizedValue() throws HBqlException {
+
+        this.optimizeArgs();
+
+        if (this.getTypeSignature().getReturnType().equals(BooleanValue.class))
+            return this.isAConstant() ? new BooleanLiteral((Boolean)this.getValue(null)) : this;
+
+        if (this.getTypeSignature().getReturnType().equals(StringValue.class))
+            return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
+
+        if (this.getTypeSignature().getReturnType().equals(DateValue.class))
+            return this.isAConstant() ? new DateConstant((Long)this.getValue(null)) : this;
+
+        if (this.getTypeSignature().getReturnType().equals(NumberValue.class))
+            return this.isAConstant() ? new NumberLiteral((Long)this.getValue(null)) : this;
+
+        throw new HBqlException("Internal error");
+    }
+
 
     public String asString() {
 
