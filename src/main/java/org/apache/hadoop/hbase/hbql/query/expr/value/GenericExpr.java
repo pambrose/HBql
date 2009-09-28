@@ -9,7 +9,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateConstant;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -104,7 +104,7 @@ public abstract class GenericExpr implements GenericValue {
             return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
 
         if (this.getTypeSignature().getReturnType().equals(DateValue.class))
-            return this.isAConstant() ? new DateConstant((Long)this.getValue(null)) : this;
+            return this.isAConstant() ? new DateLiteral((Long)this.getValue(null)) : this;
 
         if (this.getTypeSignature().getReturnType().equals(NumberValue.class))
             return this.isAConstant() ? new NumberLiteral((Number)this.getValue(null)) : this;

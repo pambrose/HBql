@@ -1,11 +1,10 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,25 +37,12 @@ public class Interval extends GenericExpr implements DateValue {
     private final Type type;
 
     public Interval(final Type type, final GenericValue arg0) {
-        super(null, arg0);
+        super(TypeSignature.Type.INTERVAL.getTypeSignature(), arg0);
         this.type = type;
     }
 
     private Type getIntervalType() {
         return this.type;
-    }
-
-    @Override
-    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
-        this.validateParentClass(NumberValue.class, this.getArg(0).validateTypes(this, false));
-        return DateValue.class;
-    }
-
-    @Override
-    public GenericValue getOptimizedValue() throws HBqlException {
-        this.optimizeArgs();
-        return this.isAConstant() ? new DateConstant(this.getValue(null)) : this;
     }
 
     @Override

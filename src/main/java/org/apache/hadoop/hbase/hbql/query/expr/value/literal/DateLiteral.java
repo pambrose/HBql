@@ -1,59 +1,81 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
- * Date: Aug 29, 2009
- * Time: 2:35:57 PM
+ * Date: Aug 25, 2009
+ * Time: 6:58:31 PM
  */
-public class DateLiteral extends GenericExpr implements DateValue {
+public class DateLiteral extends GenericLiteral implements DateValue {
 
-    public DateLiteral(final GenericValue arg0, final GenericValue arg1) {
-        super(null, arg0, arg1);
+    private static long now = System.currentTimeMillis();
+
+    public enum Type {
+        NOW(true, 0),
+        MINDATE(false, 0),
+        MAXDATE(false, Long.MAX_VALUE);
+
+        final boolean adjusted;
+        final long value;
+
+        Type(final boolean adjusted, final long value) {
+            this.adjusted = adjusted;
+            this.value = value;
+        }
+
+        public boolean isAdjustment() {
+            return this.adjusted;
+        }
+
+        public long getValue() {
+            return this.value;
+        }
+    }
+
+    private final Long dateval;
+
+    public DateLiteral(final Date dateval) {
+        this.dateval = dateval.getTime();
+    }
+
+    public DateLiteral(final Long val) {
+        this.dateval = val;
+    }
+
+    public DateLiteral(final Type type) {
+        if (type.isAdjustment())
+            this.dateval = getNow() + type.getValue();
+        else
+            this.dateval = type.getValue();
+    }
+
+    private static long getNow() {
+        return now;
+    }
+
+    public static void resetNow() {
+        now = System.currentTimeMillis();
+    }
+
+    @Override
+    public Long getValue(final Object object) {
+        return this.dateval;
     }
 
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
-        this.validateParentClass(StringValue.class,
-                                 this.getArg(0).validateTypes(this, false),
-                                 this.getArg(1).validateTypes(this, false));
         return DateValue.class;
     }
 
     @Override
-    public GenericValue getOptimizedValue() throws HBqlException {
-        this.optimizeArgs();
-        return this.isAConstant() ? new DateConstant(this.getValue(null)) : this;
-    }
-
-    @Override
-    public Long getValue(final Object object) throws HBqlException {
-
-        final String datestr = (String)this.getArg(0).getValue(object);
-        final String pattern = (String)this.getArg(1).getValue(object);
-        final SimpleDateFormat formatter = new SimpleDateFormat(pattern);
-
-        try {
-            return formatter.parse(datestr).getTime();
-        }
-        catch (ParseException e) {
-            throw new HBqlException(e.getMessage());
-        }
-    }
-
-    @Override
     public String asString() {
-        return "DATE" + super.asString();
+        return "\"" + String.format("%ta %tb %td %tT %tZ %tY", new Date(this.dateval)) + "\"";
     }
 }

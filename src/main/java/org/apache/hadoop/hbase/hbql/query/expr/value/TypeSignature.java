@@ -34,7 +34,13 @@ public class TypeSignature {
 
         STRINGNULL(new TypeSignature(BooleanValue.class, StringValue.class)),
 
-        STRINGPATTERN(new TypeSignature(BooleanValue.class, StringValue.class, StringValue.class));
+        STRINGPATTERN(new TypeSignature(BooleanValue.class, StringValue.class, StringValue.class)),
+
+        DATESTRING(new TypeSignature(DateValue.class, StringValue.class, StringValue.class)),
+
+        INTERVAL(new TypeSignature(DateValue.class, NumberValue.class)),
+
+        BOOLEANEXPR(new TypeSignature(BooleanValue.class, BooleanValue.class));
 
         private final TypeSignature typeSignature;
 

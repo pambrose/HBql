@@ -272,11 +272,11 @@ booleanLiteral returns [BooleanValue retval]
 
 // Functions
 valueFunctions returns [GenericValue retval]
-	: keyNOW LPAREN	RPAREN				{retval = new DateConstant(DateConstant.Type.NOW);}
-	| keyMINDATE LPAREN RPAREN			{retval = new DateConstant(DateConstant.Type.MINDATE);}
-	| keyMAXDATE LPAREN RPAREN			{retval = new DateConstant(DateConstant.Type.MAXDATE);}
+	: keyNOW LPAREN	RPAREN				{retval = new DateLiteral(DateLiteral.Type.NOW);}
+	| keyMINDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
+	| keyMAXDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
 	| keyDATE LPAREN s1=valueExpr COMMA s2=valueExpr RPAREN
-							{retval = new DateLiteral($s1.retval, $s2.retval);}
+							{retval = new DateString($s1.retval, $s2.retval);}
 	| keyYEAR LPAREN n=valueExpr RPAREN		{retval = new Interval(Interval.Type.YEAR, $n.retval);}
 	| keyWEEK LPAREN n=valueExpr RPAREN		{retval = new Interval(Interval.Type.WEEK, $n.retval);}
 	| keyDAY LPAREN n=valueExpr RPAREN		{retval = new Interval(Interval.Type.DAY, $n.retval);}
