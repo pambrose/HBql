@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 public abstract class GenericStringPatternStmt extends GenericNotValue {
 
     protected GenericStringPatternStmt(final GenericValue arg0, final boolean not, final GenericValue arg1) {
-        super(TypeSignature.Type.STRINGPATTERN.getTypeSignature(), not, arg0, arg1);
+        super(Type.STRINGPATTERN, not, arg0, arg1);
     }
 
     protected abstract String getFunctionName();

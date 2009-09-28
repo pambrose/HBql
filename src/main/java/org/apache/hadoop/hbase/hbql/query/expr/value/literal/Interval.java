@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,15 +33,15 @@ public class Interval extends GenericExpr implements DateValue {
         }
     }
 
-    private final Type type;
+    private final Type intervalType;
 
-    public Interval(final Type type, final GenericValue arg0) {
-        super(TypeSignature.Type.INTERVAL.getTypeSignature(), arg0);
-        this.type = type;
+    public Interval(final Type intervalType, final GenericValue arg0) {
+        super(GenericExpr.Type.INTERVAL, arg0);
+        this.intervalType = intervalType;
     }
 
     private Type getIntervalType() {
-        return this.type;
+        return this.intervalType;
     }
 
     @Override

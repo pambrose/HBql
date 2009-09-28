@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,7 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 public class BooleanExpr extends GenericExpr implements BooleanValue {
 
     public BooleanExpr(final GenericValue arg0) {
-        super(TypeSignature.Type.BOOLEANEXPR.getTypeSignature(), arg0);
+        super(Type.BOOLEANEXPR, arg0);
     }
 
     @Override

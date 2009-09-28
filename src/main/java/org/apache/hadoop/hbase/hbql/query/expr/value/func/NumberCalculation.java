@@ -3,7 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,7 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 public class NumberCalculation extends GenericCalculation implements NumberValue {
 
     public NumberCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
-        super(TypeSignature.Type.NUMBERCALCULATION.getTypeSignature(), arg0, operator, arg1);
+        super(Type.NUMBERCALCULATION, arg0, operator, arg1);
     }
 
     @Override

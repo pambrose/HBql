@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,7 +17,7 @@ import java.text.SimpleDateFormat;
 public class DateString extends GenericExpr implements DateValue {
 
     public DateString(final GenericValue arg0, final GenericValue arg1) {
-        super(TypeSignature.Type.DATESTRING.getTypeSignature(), arg0, arg1);
+        super(Type.DATESTRING, arg0, arg1);
     }
 
     @Override

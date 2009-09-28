@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,11 +13,11 @@ public abstract class GenericCalculation extends GenericExpr {
 
     private final Operator operator;
 
-    protected GenericCalculation(final TypeSignature typeSignature,
+    protected GenericCalculation(final Type type,
                                  final GenericValue arg0,
                                  final Operator operator,
                                  final GenericValue arg1) {
-        super(typeSignature, arg0, arg1);
+        super(type, arg0, arg1);
         this.operator = operator;
     }
 

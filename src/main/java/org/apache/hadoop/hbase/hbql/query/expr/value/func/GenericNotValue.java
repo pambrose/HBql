@@ -3,7 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 import java.util.List;
 
@@ -17,18 +16,18 @@ public abstract class GenericNotValue extends GenericExpr implements BooleanValu
 
     private final boolean not;
 
-    protected GenericNotValue(final TypeSignature typeSignature, final boolean not, GenericValue... args) {
-        super(typeSignature, args);
+    protected GenericNotValue(final Type type, final boolean not, GenericValue... args) {
+        super(type, args);
         this.not = not;
     }
 
-    protected GenericNotValue(final TypeSignature typeSignature, final boolean not, final List<GenericValue> args) {
-        super(typeSignature, args);
+    protected GenericNotValue(final Type type, final boolean not, final List<GenericValue> args) {
+        super(type, args);
         this.not = not;
     }
 
-    protected GenericNotValue(final TypeSignature typeSignature, final boolean not, final GenericValue arg, final List<GenericValue> argList) {
-        super(typeSignature, arg, argList);
+    protected GenericNotValue(final Type type, final boolean not, final GenericValue arg, final List<GenericValue> argList) {
+        super(type, arg, argList);
         this.not = not;
     }
 

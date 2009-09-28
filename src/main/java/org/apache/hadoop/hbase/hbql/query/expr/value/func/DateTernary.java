@@ -3,7 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,7 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 public class DateTernary extends GenericTernary implements DateValue {
 
     public DateTernary(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
-        super(TypeSignature.Type.DATETERNARY.getTypeSignature(), arg0, arg1, arg2);
+        super(Type.DATETERNARY, arg0, arg1, arg2);
     }
 
     @Override

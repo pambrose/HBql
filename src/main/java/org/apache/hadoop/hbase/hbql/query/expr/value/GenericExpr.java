@@ -25,26 +25,65 @@ import java.util.List;
  */
 public abstract class GenericExpr implements GenericValue {
 
-    private final TypeSignature typeSignature;
-    private final List<GenericValue> argList = Lists.newArrayList();
+    public enum Type {
 
-    protected GenericExpr(final TypeSignature typeSignature, final GenericValue... exprs) {
-        this(typeSignature, Arrays.asList(exprs));
+        BOOLEANTERNARY(new TypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class, BooleanValue.class)),
+        STRINGTERNARY(new TypeSignature(StringValue.class, BooleanValue.class, StringValue.class, StringValue.class)),
+        DATETERNARY(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class, DateValue.class)),
+        NUMBERTERNARY(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class, NumberValue.class)),
+
+        STRINGCALCULATION(new TypeSignature(StringValue.class, StringValue.class, StringValue.class)),
+        DATECALCULATION(new TypeSignature(DateValue.class, DateValue.class, DateValue.class)),
+        NUMBERCALCULATION(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
+
+        STRINGBETWEEN(new TypeSignature(BooleanValue.class, StringValue.class, StringValue.class, StringValue.class)),
+        DATEBETWEEN(new TypeSignature(BooleanValue.class, DateValue.class, DateValue.class, DateValue.class)),
+        NUMBERBETWEEN(new TypeSignature(BooleanValue.class, NumberValue.class, NumberValue.class, NumberValue.class)),
+
+        STRINGNULL(new TypeSignature(BooleanValue.class, StringValue.class)),
+
+        STRINGPATTERN(new TypeSignature(BooleanValue.class, StringValue.class, StringValue.class)),
+
+        DATESTRING(new TypeSignature(DateValue.class, StringValue.class, StringValue.class)),
+
+        INTERVAL(new TypeSignature(DateValue.class, NumberValue.class)),
+
+        BOOLEANEXPR(new TypeSignature(BooleanValue.class, BooleanValue.class)),
+
+        // Args are left unspecified for IN Stmt
+        GENERICINSTMT(new TypeSignature(BooleanValue.class));
+
+        private final TypeSignature typeSignature;
+
+        Type(final TypeSignature typeSignature) {
+            this.typeSignature = typeSignature;
+        }
+
+        private TypeSignature getTypeSignature() {
+            return typeSignature;
+        }
     }
 
-    protected GenericExpr(final TypeSignature typeSignature, final List<GenericValue> exprList) {
-        this.typeSignature = typeSignature;
+    private final Type type;
+    private final List<GenericValue> argList = Lists.newArrayList();
+
+    protected GenericExpr(final Type type, final GenericValue... exprs) {
+        this(type, Arrays.asList(exprs));
+    }
+
+    protected GenericExpr(final Type type, final List<GenericValue> exprList) {
+        this.type = type;
         this.argList.addAll(exprList);
     }
 
-    protected GenericExpr(final TypeSignature typeSignature, final GenericValue expr, final List<GenericValue> exprList) {
-        this.typeSignature = typeSignature;
+    protected GenericExpr(final Type type, final GenericValue expr, final List<GenericValue> exprList) {
+        this.type = type;
         this.argList.add(expr);
         this.argList.addAll(exprList);
     }
 
     protected TypeSignature getTypeSignature() {
-        return this.typeSignature;
+        return this.type.getTypeSignature();
     }
 
     protected List<GenericValue> getArgList() {
@@ -89,7 +128,6 @@ public abstract class GenericExpr implements GenericValue {
                                      this.getArg(i).validateTypes(this, false));
 
         return this.getTypeSignature().getReturnType();
-
     }
 
     @Override
