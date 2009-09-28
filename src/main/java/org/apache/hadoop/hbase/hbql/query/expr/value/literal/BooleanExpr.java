@@ -28,7 +28,7 @@ public class BooleanExpr extends GenericExpr implements BooleanValue {
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        this.setArg(0, this.getArg(0).getOptimizedValue());
+        this.optimizeArgs();
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 

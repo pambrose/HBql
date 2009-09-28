@@ -26,10 +26,7 @@ public class StringCalculation extends GenericCalculation {
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-
-        this.setArg(0, this.getArg(0).getOptimizedValue());
-        this.setArg(1, this.getArg(1).getOptimizedValue());
-
+        this.optimizeArgs();
         return this.isAConstant() ? new StringLiteral(this.getValue(null)) : this;
     }
 

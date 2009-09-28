@@ -30,6 +30,11 @@ public class GenericExpr {
         this.getArgs().setContext(context);
     }
 
+    public void optimizeArgs() throws HBqlException {
+        this.getArgs().optimizeArgs();
+
+    }
+
     public GenericValue getArg(final int i) {
         return this.getArgs().getArg(i);
     }

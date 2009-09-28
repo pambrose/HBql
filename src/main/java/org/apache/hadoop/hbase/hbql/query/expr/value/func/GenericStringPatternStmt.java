@@ -34,14 +34,8 @@ public abstract class GenericStringPatternStmt extends GenericNotValue {
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        this.setArg(0, this.getArg(0).getOptimizedValue());
-        this.setArg(1, this.getArg(1).getOptimizedValue());
+        this.optimizeArgs();
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
-    }
-
-    @Override
-    public boolean isAConstant() throws HBqlException {
-        return this.getArg(0).isAConstant() && this.getArg(1).isAConstant();
     }
 
     @Override

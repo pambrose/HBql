@@ -26,10 +26,7 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-
-        this.setArg(0, this.getArg(0).getOptimizedValue());
-        this.setArg(1, this.getArg(1).getOptimizedValue());
-
+        this.optimizeArgs();
         return this.isAConstant() ? new NumberLiteral(this.getValue(null)) : this;
     }
 

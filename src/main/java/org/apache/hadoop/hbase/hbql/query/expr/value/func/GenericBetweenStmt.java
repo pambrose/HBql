@@ -21,11 +21,7 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-
-        this.setArg(0, this.getArg(0).getOptimizedValue());
-        this.setArg(1, this.getArg(1).getOptimizedValue());
-        this.setArg(2, this.getArg(2).getOptimizedValue());
-
+        this.optimizeArgs();
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 

@@ -26,10 +26,7 @@ public class DateCalculation extends GenericCalculation implements DateValue {
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-
-        this.setArg(0, this.getArg(0).getOptimizedValue());
-        this.setArg(1, this.getArg(1).getOptimizedValue());
-
+        this.optimizeArgs();
         return this.isAConstant() ? new DateConstant(this.getValue(null)) : this;
     }
 
