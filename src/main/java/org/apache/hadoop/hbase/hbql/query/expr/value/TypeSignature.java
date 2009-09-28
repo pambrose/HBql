@@ -40,7 +40,10 @@ public class TypeSignature {
 
         INTERVAL(new TypeSignature(DateValue.class, NumberValue.class)),
 
-        BOOLEANEXPR(new TypeSignature(BooleanValue.class, BooleanValue.class));
+        BOOLEANEXPR(new TypeSignature(BooleanValue.class, BooleanValue.class)),
+
+        // Args are left unspecified for IN Stmt
+        GENERICINSTMT(new TypeSignature(BooleanValue.class));
 
         private final TypeSignature typeSignature;
 

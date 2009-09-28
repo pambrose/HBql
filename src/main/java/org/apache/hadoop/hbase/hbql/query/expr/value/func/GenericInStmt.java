@@ -7,7 +7,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.List;
@@ -21,19 +21,13 @@ import java.util.List;
 public abstract class GenericInStmt extends GenericNotValue {
 
     protected GenericInStmt(final GenericValue arg0, final boolean not, final List<GenericValue> inList) {
-        super(null, not, arg0, inList);
-    }
-
-    protected List<GenericValue> getInList() {
-        return this.getSubArgs(1);
+        super(TypeSignature.Type.GENERICINSTMT.getTypeSignature(), not, arg0, inList);
     }
 
     protected abstract boolean evaluateList(final Object object) throws HBqlException;
 
-    @Override
-    public GenericValue getOptimizedValue() throws HBqlException {
-        this.optimizeArgs();
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
+    protected List<GenericValue> getInList() {
+        return this.getSubArgs(1);
     }
 
     @Override
