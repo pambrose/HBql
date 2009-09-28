@@ -45,7 +45,7 @@ public abstract class GenericCompare extends GenericExpr implements BooleanValue
     public String asString() {
         final StringBuilder sbuf = new StringBuilder();
         sbuf.append(this.getArg(0).asString());
-        sbuf.append(this.getOperator());
+        sbuf.append(" " + this.getOperator() + " ");
         sbuf.append(this.getArg(1).asString());
         return sbuf.toString();
     }

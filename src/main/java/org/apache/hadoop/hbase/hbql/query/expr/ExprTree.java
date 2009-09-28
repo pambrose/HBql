@@ -55,6 +55,10 @@ public class ExprTree implements Serializable {
         }
     }
 
+    public String asString() {
+        return this.getTreeRoot().asString();
+    }
+
     public Schema getSchema() {
         return this.schema;
     }

@@ -6,8 +6,8 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.DateRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.KeyRangeArgs;
+import org.apache.hadoop.hbase.hbql.query.antlr.args.TimeRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.VersionArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -246,7 +246,7 @@ public abstract class HBaseSchema extends Schema {
 
     public List<Scan> getScanList(final List<String> fieldList,
                                   final KeyRangeArgs keyRangeArgs,
-                                  final DateRangeArgs dateRangeArgs,
+                                  final TimeRangeArgs timeRangeArgs,
                                   final VersionArgs versionArgs,
                                   final HBqlFilter serverFilter) throws IOException, HBqlException {
 
@@ -287,17 +287,16 @@ public abstract class HBaseSchema extends Schema {
                     scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
             }
 
-            if (dateRangeArgs != null && dateRangeArgs.isValid()) {
-                if (dateRangeArgs.getLower() == dateRangeArgs.getUpper())
-                    scan.setTimeStamp(dateRangeArgs.getLower());
+            if (timeRangeArgs != null && timeRangeArgs.isValid()) {
+                if (timeRangeArgs.getLower() == timeRangeArgs.getUpper())
+                    scan.setTimeStamp(timeRangeArgs.getLower());
                 else
-                    scan.setTimeRange(dateRangeArgs.getLower(), dateRangeArgs.getUpper());
+                    scan.setTimeRange(timeRangeArgs.getLower(), timeRangeArgs.getUpper());
             }
 
             if (versionArgs != null && versionArgs.isValid()) {
                 final int max = versionArgs.getValue();
-                // -999 indicates MAX versions requested
-                if (max == -999)
+                if (max == Integer.MAX_VALUE)
                     scan.setMaxVersions();
                 else
                     scan.setMaxVersions(max);

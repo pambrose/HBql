@@ -12,7 +12,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 public class WhereArgs {
 
     private KeyRangeArgs keyRangeArgs = new KeyRangeArgs(null);
-    private DateRangeArgs dateRangeArgs = new DateRangeArgs(null, null);
+    private TimeRangeArgs timeRangeArgs = new TimeRangeArgs(null, null);
     private VersionArgs versionArgs = new VersionArgs(null);
     private LimitArgs scanLimitArgs = new LimitArgs(null);
     private LimitArgs queryLimitArgs = new LimitArgs(null);
@@ -28,13 +28,13 @@ public class WhereArgs {
             this.keyRangeArgs = keyRangeArgs;
     }
 
-    public DateRangeArgs getDateRangeArgs() {
-        return this.dateRangeArgs;
+    public TimeRangeArgs getTimeRangeArgs() {
+        return this.timeRangeArgs;
     }
 
-    public void setDateRangeArgs(final DateRangeArgs dateRangeArgs) {
-        if (dateRangeArgs != null)
-            this.dateRangeArgs = dateRangeArgs;
+    public void setTimeRangeArgs(final TimeRangeArgs timeRangeArgs) {
+        if (timeRangeArgs != null)
+            this.timeRangeArgs = timeRangeArgs;
     }
 
     public VersionArgs getVersionArgs() {
@@ -90,5 +90,33 @@ public class WhereArgs {
     public long getScanLimit() throws HBqlException {
         return (this.getScanLimitArgs() != null && this.getScanLimitArgs().isValid())
                ? this.getScanLimitArgs().getValue() : 0;
+    }
+
+    public String asString() {
+
+        final StringBuilder sbuf = new StringBuilder("WITH ");
+
+        if (this.getKeyRangeArgs().isValid())
+            sbuf.append(this.getKeyRangeArgs().asString() + "\n");
+
+        if (this.getTimeRangeArgs().isValid())
+            sbuf.append(this.getTimeRangeArgs().asString() + "\n");
+
+        if (this.getVersionArgs().isValid())
+            sbuf.append(this.getVersionArgs().asString() + "\n");
+
+        if (this.getScanLimitArgs().isValid())
+            sbuf.append("SCAN " + this.getScanLimitArgs().asString() + "\n");
+
+        if (this.getQueryLimitArgs().isValid())
+            sbuf.append("QUERY " + this.getQueryLimitArgs().asString() + "\n");
+
+        if (this.getServerExprTree().isValid())
+            sbuf.append("SERVER FILTER " + this.getServerExprTree().asString() + "\n");
+
+        if (this.getClientExprTree().isValid())
+            sbuf.append("CLIENT FILTER " + this.getClientExprTree().asString() + "\n");
+
+        return sbuf.toString();
     }
 }

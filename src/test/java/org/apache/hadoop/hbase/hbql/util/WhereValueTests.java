@@ -23,6 +23,7 @@ public class WhereValueTests {
 
     private static boolean evalWhereValue(final String expr) throws HBqlException {
         final WhereArgs args = HBql.parseWithClause(expr, (Schema)null);
+        System.out.println("Evaluating: " + args.asString());
         return args != null;
     }
 

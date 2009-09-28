@@ -95,7 +95,6 @@ public class WhereExpressionTest extends WhereExprTests {
         tree.setParameter("b1", Boolean.TRUE);
         tree.setParameter("b2", Boolean.FALSE);
         assertEvalTrue(tree);
-
     }
 
     @Test

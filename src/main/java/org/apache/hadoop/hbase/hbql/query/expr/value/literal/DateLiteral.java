@@ -76,6 +76,6 @@ public class DateLiteral extends GenericLiteral implements DateValue {
 
     @Override
     public String asString() {
-        return "\"" + String.format("%ta %tb %td %tT %tZ %tY", new Date(this.dateval)) + "\"";
+        return "\"" + String.format("%1$ta %1$tb %1$td %1$tT %1$tZ %1$tY", new Date(this.dateval)) + "\"";
     }
 }

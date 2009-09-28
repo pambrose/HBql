@@ -58,7 +58,7 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
 
         final List<Scan> scanList = schema.getScanList(fieldList,
                                                        where.getKeyRangeArgs(),
-                                                       where.getDateRangeArgs(),
+                                                       where.getTimeRangeArgs(),
                                                        where.getVersionArgs(),
                                                        serverFilter);
 

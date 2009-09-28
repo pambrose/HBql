@@ -31,6 +31,9 @@ public class NumberLiteral extends GenericLiteral implements NumberValue {
 
     @Override
     public String asString() {
-        return "" + this.value;
+        if (this.value.intValue() == Integer.MAX_VALUE)
+            return "MAX";
+        else
+            return "" + this.value;
     }
 }

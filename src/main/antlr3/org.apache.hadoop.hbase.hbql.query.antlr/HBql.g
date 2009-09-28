@@ -102,7 +102,7 @@ whereValue [Schema es] returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
 	: keyWITH
 	  k=keysRange?					{retval.setKeyRangeArgs($k.retval);}
-	  t=time?					{retval.setDateRangeArgs($t.retval);}	
+	  t=time?					{retval.setTimeRangeArgs($t.retval);}	
 	  v=versions?					{retval.setVersionArgs($v.retval);}
 	  l=scanLimit?					{retval.setScanLimitArgs($l.retval);}
 	  q=queryLimit?					{retval.setQueryLimitArgs($q.retval);}
@@ -115,15 +115,15 @@ keysRange returns [KeyRangeArgs retval]
 	| keyKEYS keyALL				{retval = new KeyRangeArgs();}	
 	;
 	
-time returns [DateRangeArgs retval]
+time returns [TimeRangeArgs retval]
 	: keyTIME keyRANGE d1=valueExpr keyTO d2=valueExpr		
-							{retval = new DateRangeArgs($d1.retval, $d2.retval);}
-	| keyTIME keySTAMP d1=valueExpr			{retval = new DateRangeArgs($d1.retval, $d1.retval);}
+							{retval = new TimeRangeArgs($d1.retval, $d2.retval);}
+	| keyTIME keySTAMP d1=valueExpr			{retval = new TimeRangeArgs($d1.retval, $d1.retval);}
 	;
 		
 versions returns [VersionArgs retval]
 	: keyVERSIONS v=valueExpr			{retval = new VersionArgs($v.retval);}
-	| keyVERSIONS keyMAX				{retval = new VersionArgs(new NumberLiteral(-999));}
+	| keyVERSIONS keyMAX				{retval = new VersionArgs(new NumberLiteral(Integer.MAX_VALUE));}
 	;
 	
 scanLimit returns [LimitArgs retval]

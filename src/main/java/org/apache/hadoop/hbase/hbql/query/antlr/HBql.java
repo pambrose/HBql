@@ -21,28 +21,14 @@ import org.apache.hadoop.hbase.hbql.query.schema.Schema;
  */
 public class HBql {
 
-    private static HBqlParser newParser(final String input) {
+    public static HBqlParser newParser(final String input) {
         System.out.println("Parsing: " + input);
         final Lexer lex = new HBqlLexer(new ANTLRStringStream(input));
         final CommonTokenStream tokens = new CommonTokenStream(lex);
         return new HBqlParser(tokens);
     }
 
-    public static ExprTree parseDescWhereExpr(final String input,
-                                              final Schema schema) throws HBqlException {
-        try {
-            final HBqlParser parser = newParser(input);
-            final ExprTree exprTree = parser.descWhereExpr(schema);
-            exprTree.setSchema(schema);
-            return exprTree;
-        }
-        catch (RecognitionException e) {
-            e.printStackTrace();
-            throw new HBqlException("Error parsing");
-        }
-    }
-
-    public static ExprTree parseNoDescWhereExpr(final String input,
+    public static ExprTree parseWhereExpression(final String input,
                                                 final Schema schema) throws HBqlException {
         try {
             final HBqlParser parser = newParser(input);

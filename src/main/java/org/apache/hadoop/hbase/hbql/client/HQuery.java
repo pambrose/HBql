@@ -54,7 +54,7 @@ public class HQuery<T> {
 
         this.scanList = this.getSchema().getScanList(this.getFieldList(),
                                                      where.getKeyRangeArgs(),
-                                                     where.getDateRangeArgs(),
+                                                     where.getTimeRangeArgs(),
                                                      where.getVersionArgs(),
                                                      serverFilter);
     }

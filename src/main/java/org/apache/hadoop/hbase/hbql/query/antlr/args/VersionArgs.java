@@ -19,4 +19,9 @@ public class VersionArgs extends SelectArgs {
         this.validateTypes();
         return ((Number)this.getArg(0).getValue(null)).intValue();
     }
+
+    public String asString() {
+        return "VERSIONS " + this.getArg(0).asString();
+    }
+
 }

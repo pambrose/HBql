@@ -64,6 +64,16 @@ public class KeyRangeArgs {
             return this.getType() == Type.LAST;
         }
 
+        public String asString() {
+            final StringBuilder sbuf = new StringBuilder();
+            sbuf.append("'" + this.lower + "' TO ");
+            if (this.isStartLastRange())
+                sbuf.append("LAST");
+            else
+                sbuf.append("'" + this.upper + "'");
+            return sbuf.toString();
+        }
+
     }
 
     public KeyRangeArgs() {
@@ -77,7 +87,23 @@ public class KeyRangeArgs {
             this.rangeList = rangeList;
     }
 
+    public boolean isValid() {
+        return this.getRangeList().size() > 0;
+    }
+
     public List<Range> getRangeList() {
         return this.rangeList;
+    }
+
+    public String asString() {
+        final StringBuilder sbuf = new StringBuilder("KEYS ");
+        boolean first = true;
+        for (final Range range : this.getRangeList()) {
+            if (!first)
+                sbuf.append(", ");
+            sbuf.append(range.asString());
+            first = false;
+        }
+        return sbuf.toString();
     }
 }

@@ -16,11 +16,11 @@ import java.util.List;
  * Date: Sep 28, 2009
  * Time: 2:38:26 PM
  */
-public class SelectArgs {
+public abstract class SelectArgs {
 
     public static enum Type {
 
-        DATERANGE(new TypeSignature(null, DateValue.class, DateValue.class)),
+        TIMERANGE(new TypeSignature(null, DateValue.class, DateValue.class)),
         LIMIT(new TypeSignature(null, NumberValue.class)),
         VERSION(new TypeSignature(null, NumberValue.class));
 
@@ -62,6 +62,9 @@ public class SelectArgs {
     }
 
     public boolean isValid() {
+        if (this.getArgList().size() == 0)
+            return false;
+
         for (final GenericValue val : this.getArgList())
             if (val == null)
                 return false;
@@ -71,5 +74,7 @@ public class SelectArgs {
     public GenericValue getArg(final int i) {
         return this.getArgList().get(i);
     }
+
+    abstract public String asString();
 
 }

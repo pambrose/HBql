@@ -51,7 +51,7 @@ public class ObjectQuery<T> {
     ExprTree getExprTree(final Collection<T> objects) throws HBqlException {
         final Object obj = objects.iterator().next();
         final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
-        return HBql.parseNoDescWhereExpr(this.getQuery(), schema);
+        return HBql.parseWhereExpression(this.getQuery(), schema);
     }
 
     public ObjectResults<T> execute(final Collection<T> objs) throws HBqlException {
