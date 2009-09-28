@@ -56,7 +56,7 @@ public class Function implements GenericValue {
 
     public Function(final Type functionType, final GenericValue... genericValues) {
         this.functionType = functionType;
-        this.exprArgs = new ExprArgs(functionType.getTypeSignature(), Arrays.asList(genericValues));
+        this.exprArgs = new ExprArgs(Arrays.asList(genericValues));
     }
 
     private Type getFunctionType() {
@@ -81,11 +81,11 @@ public class Function implements GenericValue {
                                                        final boolean allowsCollections) throws TypeException {
 
         int i = 0;
-        if (this.getArgs().size() != this.getArgs().getTypeSignature().size())
+        if (this.getArgs().size() != this.getFunctionType().getTypeSignature().size())
             throw new TypeException("Incorrect number of arguments in function " + this.getFunctionType().name()
                                     + " in " + this.asString());
 
-        for (final Class<? extends GenericValue> clazz : this.getArgs().getSignatureArgs()) {
+        for (final Class<? extends GenericValue> clazz : this.getFunctionType().getTypeSignature().getSignatureArgs()) {
             final Class<? extends GenericValue> type = this.getArg(i).validateTypes(this, false);
             if (!HUtil.isParentClass(clazz, type))
                 throw new TypeException("Invalid type " + type.getSimpleName() + " for arg " + i + " in function "
@@ -94,7 +94,7 @@ public class Function implements GenericValue {
             i++;
         }
 
-        return this.getArgs().getSignatureReturnType();
+        return this.getFunctionType().getTypeSignature().getSignatureReturnType();
     }
 
     @Override

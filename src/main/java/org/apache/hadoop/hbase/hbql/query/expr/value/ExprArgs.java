@@ -14,29 +14,10 @@ import java.util.List;
  */
 public class ExprArgs {
 
-    private final TypeSignature typeSignature;
     private final List<GenericValue> genericValues;
 
-    public ExprArgs(final TypeSignature typeSignature, final List<GenericValue> genericValues) {
-        this.typeSignature = typeSignature;
-        this.genericValues = genericValues;
-    }
-
     public ExprArgs(final List<GenericValue> genericValues) {
-        this.typeSignature = null;
         this.genericValues = genericValues;
-    }
-
-    public Class<? extends GenericValue> getSignatureReturnType() {
-        return getTypeSignature().getSignatureReturnType();
-    }
-
-    public List<Class<? extends GenericValue>> getSignatureArgs() {
-        return this.getTypeSignature().getSignatureArgs();
-    }
-
-    public TypeSignature getTypeSignature() {
-        return this.typeSignature;
     }
 
     private List<GenericValue> getArgs() {
