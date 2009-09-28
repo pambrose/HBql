@@ -35,7 +35,7 @@ public class WithValuesTest extends WhereValueTests {
     public void timerangeExpressions() throws HBqlException {
         assertValidInput("WITH TIME RANGE NOW() TO NOW()+DAY(1)");
         assertValidInput("WITH TIME RANGE NOW() - DAY(1) TO NOW() + DAY(1) + DAY(2)");
-        assertValidInput("WITH TIME RANGE DATE('mm/dd/yy', '10/31/94') - DAY(1) TO NOW()+DAY(1) + DAY(2)");
+        assertValidInput("WITH TIME RANGE DATE('10/31/94', 'mm/dd/yy') - DAY(1) TO NOW()+DAY(1) + DAY(2)");
     }
 
     @Test

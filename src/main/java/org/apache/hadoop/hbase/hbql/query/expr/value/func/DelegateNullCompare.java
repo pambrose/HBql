@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,7 +22,7 @@ public class DelegateNullCompare extends GenericNullCompare {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
-        HUtil.validateParentClass(this, StringValue.class, this.getArg(0).validateTypes(this, false));
+        this.validateParentClass(StringValue.class, this.getArg(0).validateTypes(this, false));
 
         this.typedExpr = new StringNullCompare(this.isNot(), this.getArg(0));
 

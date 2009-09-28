@@ -5,7 +5,6 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.Arrays;
 
@@ -15,7 +14,7 @@ import java.util.Arrays;
  * Date: Aug 31, 2009
  * Time: 1:51:03 PM
  */
-public abstract class GenericTernary extends GenericExpr implements GenericValue {
+public abstract class GenericTernary extends GenericExpr {
 
     protected GenericTernary(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
         super(Arrays.asList(arg0, arg1, arg2));
@@ -30,11 +29,10 @@ public abstract class GenericTernary extends GenericExpr implements GenericValue
     }
 
     protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {
-        HUtil.validateParentClass(this, BooleanValue.class, this.getArg(0).validateTypes(this, false));
-        HUtil.validateParentClass(this,
-                                  clazz,
-                                  this.getArg(1).validateTypes(this, false),
-                                  this.getArg(2).validateTypes(this, false));
+        this.validateParentClass(BooleanValue.class, this.getArg(0).validateTypes(this, false));
+        this.validateParentClass(clazz,
+                                 this.getArg(1).validateTypes(this, false),
+                                 this.getArg(2).validateTypes(this, false));
         return clazz;
     }
 

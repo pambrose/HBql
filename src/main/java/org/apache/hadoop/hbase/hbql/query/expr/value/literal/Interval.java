@@ -6,7 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.Arrays;
 
@@ -52,7 +51,7 @@ public class Interval extends GenericExpr implements DateValue {
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
-        HUtil.validateParentClass(this, NumberValue.class, this.getArg(0).validateTypes(this, false));
+        this.validateParentClass(NumberValue.class, this.getArg(0).validateTypes(this, false));
         return DateValue.class;
     }
 

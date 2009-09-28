@@ -21,7 +21,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public class Function extends GenericExpr implements GenericValue {
+public class Function extends GenericExpr {
 
     public static enum Type {
         // Return Strings
@@ -66,7 +66,7 @@ public class Function extends GenericExpr implements GenericValue {
                                                        final boolean allowsCollections) throws TypeException {
 
         int i = 0;
-        if (this.getArgs().size() != this.getFunctionType().getTypeSignature().size())
+        if (this.getArgList().size() != this.getFunctionType().getTypeSignature().size())
             throw new TypeException("Incorrect number of arguments in function " + this.getFunctionType().name()
                                     + " in " + this.asString());
 
@@ -86,7 +86,7 @@ public class Function extends GenericExpr implements GenericValue {
     public GenericValue getOptimizedValue() throws HBqlException {
 
         // First optimize all the args
-        this.getArgs().optimizeArgs();
+        this.optimizeArgs();
 
         switch (this.getFunctionType()) {
 
@@ -181,6 +181,6 @@ public class Function extends GenericExpr implements GenericValue {
 
     @Override
     public String asString() {
-        return this.getFunctionType().name() + "(" + this.getArgs().asString() + ")";
+        return this.getFunctionType().name() + "(" + super.asString() + ")";
     }
 }

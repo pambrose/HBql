@@ -5,7 +5,6 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.Arrays;
 
@@ -28,11 +27,10 @@ public abstract class GenericBetweenStmt extends GenericNotValue {
     }
 
     protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {
-        HUtil.validateParentClass(this,
-                                  clazz,
-                                  this.getArg(0).validateTypes(this, false),
-                                  this.getArg(1).validateTypes(this, false),
-                                  this.getArg(2).validateTypes(this, false));
+        this.validateParentClass(clazz,
+                                 this.getArg(0).validateTypes(this, false),
+                                 this.getArg(1).validateTypes(this, false),
+                                 this.getArg(2).validateTypes(this, false));
         return BooleanValue.class;
     }
 

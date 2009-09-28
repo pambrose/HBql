@@ -133,15 +133,15 @@ public class WhereExpressionTest extends WhereExprTests {
         assertEvalTrue("NOW()-DAY(1) < NOW()");
         assertEvalTrue("NOW() <= NOW()+DAY(1)");
         assertEvalTrue("NOW()+DAY(1) >= NOW()");
-        assertEvalTrue("NOW() < Date('mm/dd/yyyy', '12/21/2020')");
+        assertEvalTrue("NOW() < Date('12/21/2020', 'mm/dd/yyyy')");
         assertEvalTrue("NOW() BETWEEN NOW()-DAY(1) AND NOW()+DAY(1)");
-        assertEvalTrue("NOW() IN (NOW()-DAY(1), NOW(), NOW()+DAY(1), Date('mm/dd/yyyy', '12/21/2020'))");
-        assertEvalFalse("NOW() IN (NOW()-DAY(1), NOW()+DAY(1), Date('mm/dd/yyyy', '12/21/2020'))");
-        assertEvalTrue("DATE('mm/dd/yy', '10/31/94') - DAY(1) = DATE('mm/dd/yy', '10/30/94')");
-        assertEvalTrue("DATE('mm/dd/yy', '10/31/94') - DAY(2) < DATE('mm/dd/yy', '10/30/94')");
-        assertEvalFalse("DATE('mm/dd/yy', '10/31/94') - DAY(1) < DATE('mm/dd/yy', '10/30/94')");
-        assertEvalTrue("DATE('mm/dd/yyyy', '10/31/1994') - DAY(1) - MILLI(1) < DATE('mm/dd/yyyy', '10/31/1994')  - DAY(1) ");
-        assertEvalTrue("DATE('mm/dd/yyyy', '10/31/1994') - DAY(1) - MILLI(1) = DATE('mm/dd/yyyy', '10/30/1994')  - MILLI(1) ");
+        assertEvalTrue("NOW() IN (NOW()-DAY(1), NOW(), NOW()+DAY(1), Date('12/21/2020', 'mm/dd/yyyy'))");
+        assertEvalFalse("NOW() IN (NOW()-DAY(1), NOW()+DAY(1), Date('12/21/2020', 'mm/dd/yyyy'))");
+        assertEvalTrue("DATE('10/31/94', 'mm/dd/yy') - DAY(1) = DATE('10/30/94', 'mm/dd/yy')");
+        assertEvalTrue("DATE('10/31/94', 'mm/dd/yy') - DAY(2) < DATE('10/30/94', 'mm/dd/yy')");
+        assertEvalFalse("DATE('10/31/94', 'mm/dd/yy') - DAY(1) < DATE('10/30/94', 'mm/dd/yy')");
+        assertEvalTrue("DATE('10/31/1994', 'mm/dd/yyyy') - DAY(1) - MILLI(1) < DATE('10/31/1994', 'mm/dd/yyyy')  - DAY(1) ");
+        assertEvalTrue("DATE('10/31/1994', 'mm/dd/yyyy') - DAY(1) - MILLI(1) = DATE('10/30/1994', 'mm/dd/yyyy')  - MILLI(1) ");
     }
 
     @Test

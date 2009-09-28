@@ -3,7 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.Arrays;
 
@@ -13,7 +12,7 @@ import java.util.Arrays;
  * Date: Sep 7, 2009
  * Time: 9:29:44 PM
  */
-public abstract class GenericCalculation extends GenericExpr implements GenericValue {
+public abstract class GenericCalculation extends GenericExpr {
 
     private final Operator operator;
 
@@ -27,8 +26,9 @@ public abstract class GenericCalculation extends GenericExpr implements GenericV
     }
 
     protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {
-        HUtil.validateParentClass(this, clazz, this.getArg(0).validateTypes(this, false));
-        HUtil.validateParentClass(this, clazz, this.getArg(1).validateTypes(this, false));
+        this.validateParentClass(clazz,
+                                 this.getArg(0).validateTypes(this, false),
+                                 this.getArg(1).validateTypes(this, false));
 
         return clazz;
     }

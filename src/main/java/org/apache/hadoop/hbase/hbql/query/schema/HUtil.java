@@ -86,42 +86,6 @@ public class HUtil {
         return true;
     }
 
-    public static void validateParentClass(final GenericValue expr,
-                                           final Class<? extends GenericValue> parentClazz,
-                                           final Class<? extends GenericValue>... clazzes) throws TypeException {
-
-        List<Class<? extends GenericValue>> classList = null;
-
-        for (final Class<? extends GenericValue> clazz : clazzes) {
-
-            if (clazz == null)
-                continue;
-
-            if (!parentClazz.isAssignableFrom(clazz)) {
-                if (classList == null)
-                    classList = Lists.newArrayList();
-                classList.add(clazz);
-            }
-        }
-
-        if (classList != null) {
-            final StringBuilder sbuf = new StringBuilder("Expecting type " + parentClazz.getSimpleName()
-                                                         + " but encountered type"
-                                                         + ((classList.size() > 1) ? "s" : "") + ": ");
-            boolean first = true;
-            for (final Class clazz : classList) {
-                if (!first)
-                    sbuf.append(", ");
-                sbuf.append(clazz.getSimpleName());
-                first = false;
-            }
-
-            sbuf.append(" in expression " + expr.asString());
-
-            throw new TypeException(sbuf.toString());
-        }
-    }
-
     public static void throwInvalidTypeException(final GenericValue expr,
                                                  final Class<? extends GenericValue>... clazzes) throws TypeException {
 

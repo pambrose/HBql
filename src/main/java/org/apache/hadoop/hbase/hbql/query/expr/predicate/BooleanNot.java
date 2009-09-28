@@ -6,7 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.Arrays;
 
@@ -27,7 +26,7 @@ public class BooleanNot extends GenericExpr implements BooleanValue {
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
-        HUtil.validateParentClass(this, BooleanValue.class, this.getArg(0).validateTypes(this, false));
+        this.validateParentClass(BooleanValue.class, this.getArg(0).validateTypes(this, false));
         return BooleanValue.class;
     }
 

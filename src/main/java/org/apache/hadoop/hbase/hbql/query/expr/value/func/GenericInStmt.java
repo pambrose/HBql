@@ -63,7 +63,7 @@ public abstract class GenericInStmt extends GenericNotValue {
 
         // Make sure all the types are matched
         for (final GenericValue inVal : this.getInList())
-            HUtil.validateParentClass(this, inClazz, inVal.validateTypes(this, true));
+            this.validateParentClass(inClazz, inVal.validateTypes(this, true));
 
         return BooleanValue.class;
     }
