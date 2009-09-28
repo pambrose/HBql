@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
@@ -10,7 +9,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
 
@@ -22,33 +20,19 @@ import java.util.List;
  */
 public abstract class GenericInStmt extends GenericNotValue {
 
-
-    protected GenericInStmt(final boolean not, final GenericValue expr, final List<GenericValue> valueExprList) {
-        super(not, expr, valueExprList);
+    protected GenericInStmt(final GenericValue arg0, final boolean not, final List<GenericValue> inList) {
+        super(not, arg0, inList);
     }
 
-    protected List<GenericValue> getValueExprList() {
+    protected List<GenericValue> getInList() {
         return this.getSubArgs(1);
     }
 
     protected abstract boolean evaluateList(final Object object) throws HBqlException;
 
-    private void optimizeList() throws HBqlException {
-
-        final List<GenericValue> newvalList = Lists.newArrayList();
-
-        for (final GenericValue val : this.getValueExprList())
-            newvalList.add(val.getOptimizedValue());
-
-        // Swap new values to list
-        this.getValueExprList().clear();
-        this.getValueExprList().addAll(newvalList);
-    }
-
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        this.setArg(0, this.getArg(0).getOptimizedValue());
-        this.optimizeList();
+        this.optimizeArgs();
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
@@ -59,35 +43,11 @@ public abstract class GenericInStmt extends GenericNotValue {
     }
 
     @Override
-    public boolean isAConstant() throws HBqlException {
-        return this.getArg(0).isAConstant() && this.listIsConstant();
-    }
-
-    @Override
-    public void setContext(final ExprTree context) {
-        this.getArg(0).setContext(context);
-        for (final GenericValue valueExpr : this.getValueExprList())
-            valueExpr.setContext(context);
-    }
-
-    private boolean listIsConstant() {
-        for (final GenericValue val : this.getValueExprList()) {
-            try {
-                if (!val.isAConstant())
-                    return false;
-            }
-            catch (HBqlException e) {
-                e.printStackTrace();
-            }
-        }
-        return true;
-    }
-
-    @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
         final Class<? extends GenericValue> type = this.getArg(0).validateTypes(this, false);
+
         final Class<? extends GenericValue> inClazz;
 
         if (HUtil.isParentClass(StringValue.class, type))
@@ -101,8 +61,8 @@ public abstract class GenericInStmt extends GenericNotValue {
             HUtil.throwInvalidTypeException(this, type);
         }
 
-        // First make sure all the types are matched
-        for (final GenericValue inVal : this.getValueExprList())
+        // Make sure all the types are matched
+        for (final GenericValue inVal : this.getInList())
             HUtil.validateParentClass(this, inClazz, inVal.validateTypes(this, true));
 
         return BooleanValue.class;
@@ -113,7 +73,7 @@ public abstract class GenericInStmt extends GenericNotValue {
         final StringBuilder sbuf = new StringBuilder(this.getArg(0).asString() + notAsString() + " IN (");
 
         boolean first = true;
-        for (final GenericValue valueExpr : this.getValueExprList()) {
+        for (final GenericValue valueExpr : this.getInList()) {
             if (!first)
                 sbuf.append(", ");
             sbuf.append(valueExpr.asString());

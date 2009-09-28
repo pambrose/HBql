@@ -7,6 +7,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
+import java.util.Arrays;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -16,7 +18,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 public abstract class GenericTernary extends GenericExpr implements GenericValue {
 
     protected GenericTernary(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
-        super(arg0, arg1, arg2);
+        super(Arrays.asList(arg0, arg1, arg2));
     }
 
     @Override

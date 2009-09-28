@@ -7,6 +7,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
+import java.util.Arrays;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -16,7 +18,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 public abstract class GenericBetweenStmt extends GenericNotValue {
 
     protected GenericBetweenStmt(final boolean not, final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
-        super(not, arg0, arg1, arg2);
+        super(not, Arrays.asList(arg0, arg1, arg2));
     }
 
     @Override

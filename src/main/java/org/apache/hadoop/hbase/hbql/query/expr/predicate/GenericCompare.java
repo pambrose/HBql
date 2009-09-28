@@ -9,6 +9,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
+import java.util.Arrays;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -20,7 +22,7 @@ public abstract class GenericCompare extends GenericExpr implements BooleanValue
     private final Operator operator;
 
     protected GenericCompare(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
-        super(arg0, arg1);
+        super(Arrays.asList(arg0, arg1));
         this.operator = operator;
     }
 

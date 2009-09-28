@@ -8,6 +8,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
+import java.util.Arrays;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -19,7 +21,7 @@ public class BooleanNot extends GenericExpr implements BooleanValue {
     private final boolean not;
 
     public BooleanNot(final boolean not, final BooleanValue arg0) {
-        super(arg0);
+        super(Arrays.asList((GenericValue)arg0));
         this.not = not;
     }
 

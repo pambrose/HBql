@@ -15,15 +15,15 @@ import java.util.List;
  */
 public class NumberInStmt extends GenericInStmt {
 
-    public NumberInStmt(final GenericValue expr, final boolean not, final List<GenericValue> vals) {
-        super(not, expr, vals);
+    public NumberInStmt(final GenericValue arg0, final boolean not, final List<GenericValue> inList) {
+        super(arg0, not, inList);
     }
 
     protected boolean evaluateList(final Object object) throws HBqlException {
 
         final long attribVal = ((Number)this.getArg(0).getValue(object)).longValue();
 
-        for (final GenericValue obj : this.getValueExprList()) {
+        for (final GenericValue obj : this.getInList()) {
 
             // Check if the value returned is a collection
             final Object objval = obj.getValue(object);
