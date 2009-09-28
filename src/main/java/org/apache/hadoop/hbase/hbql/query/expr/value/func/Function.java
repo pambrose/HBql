@@ -2,11 +2,10 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.ExprArgs;
+import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
@@ -22,7 +21,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public class Function implements GenericValue {
+public class Function extends GenericExpr implements GenericValue {
 
     public static enum Type {
         // Return Strings
@@ -52,28 +51,14 @@ public class Function implements GenericValue {
     }
 
     private final Type functionType;
-    private final ExprArgs exprArgs;
 
     public Function(final Type functionType, final GenericValue... genericValues) {
+        super(Arrays.asList(genericValues));
         this.functionType = functionType;
-        this.exprArgs = new ExprArgs(Arrays.asList(genericValues));
     }
 
     private Type getFunctionType() {
         return this.functionType;
-    }
-
-    private ExprArgs getArgs() {
-        return this.exprArgs;
-    }
-
-    private GenericValue getArg(final int i) {
-        return this.getArgs().getArg(i);
-    }
-
-    @Override
-    public void setContext(final ExprTree context) {
-        this.getArgs().setContext(context);
     }
 
     @Override
@@ -192,11 +177,6 @@ public class Function implements GenericValue {
             default:
                 throw new HBqlException("Invalid function: " + this.getFunctionType());
         }
-    }
-
-    @Override
-    public boolean isAConstant() throws HBqlException {
-        return this.getArgs().isAConstant();
     }
 
     @Override

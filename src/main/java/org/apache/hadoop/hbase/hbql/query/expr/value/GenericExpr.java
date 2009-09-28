@@ -12,7 +12,7 @@ import java.util.List;
  * Date: Sep 10, 2009
  * Time: 11:33:09 AM
  */
-public class GenericExpr {
+public abstract class GenericExpr implements GenericValue {
 
     private ExprArgs exprArgs;
 
