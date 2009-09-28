@@ -1,6 +1,9 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value;
 
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
@@ -12,6 +15,22 @@ import java.util.List;
  * Time: 9:40:01 PM
  */
 public class TypeSignature {
+
+    public enum Type {
+        DATETERNARY(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class, DateValue.class)),
+        BOOLEANTERNARY(new TypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class, BooleanValue.class)),
+        NUMBERTERNARY(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class, NumberValue.class));
+
+        private final TypeSignature typeSignature;
+
+        Type(final TypeSignature typeSignature) {
+            this.typeSignature = typeSignature;
+        }
+
+        public TypeSignature getTypeSignature() {
+            return typeSignature;
+        }
+    }
 
     private final Class<? extends GenericValue> returnType;
     private final List<Class<? extends GenericValue>> typeSig;

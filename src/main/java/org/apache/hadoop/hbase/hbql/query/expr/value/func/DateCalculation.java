@@ -14,7 +14,10 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 public class DateCalculation extends GenericCalculation implements DateValue {
 
     public DateCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
-        super(new TypeSignature(DateValue.class, DateValue.class, DateValue.class), arg0, operator, arg1);
+        super(new TypeSignature(DateValue.class, DateValue.class, DateValue.class),
+              arg0,
+              operator,
+              arg1);
     }
 
     @Override

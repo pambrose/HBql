@@ -10,9 +10,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,24 +21,21 @@ public class Function extends GenericExpr {
 
     public static enum Type {
         // Return Strings
-        TRIM(StringValue.class, StringValue.class),
-        LOWER(StringValue.class, StringValue.class),
-        UPPER(StringValue.class, StringValue.class),
-        CONCAT(StringValue.class, StringValue.class, StringValue.class),
-        REPLACE(StringValue.class, StringValue.class, StringValue.class, StringValue.class),
-        SUBSTRING(StringValue.class, StringValue.class, NumberValue.class, NumberValue.class),
+        TRIM(new TypeSignature(StringValue.class, StringValue.class)),
+        LOWER(new TypeSignature(StringValue.class, StringValue.class)),
+        UPPER(new TypeSignature(StringValue.class, StringValue.class)),
+        CONCAT(new TypeSignature(StringValue.class, StringValue.class, StringValue.class)),
+        REPLACE(new TypeSignature(StringValue.class, StringValue.class, StringValue.class, StringValue.class)),
+        SUBSTRING(new TypeSignature(StringValue.class, StringValue.class, NumberValue.class, NumberValue.class)),
 
         // Return Numbers
-        LENGTH(NumberValue.class, StringValue.class),
-        INDEXOF(NumberValue.class, StringValue.class, StringValue.class);
+        LENGTH(new TypeSignature(NumberValue.class, StringValue.class)),
+        INDEXOF(new TypeSignature(NumberValue.class, StringValue.class, StringValue.class));
 
         private final TypeSignature typeSignature;
 
-        Type(final Class<? extends GenericValue> returnType, final Class<? extends GenericValue>... clazzes) {
-            final List<Class<? extends GenericValue>> typeSig = Lists.newArrayList();
-            for (final Class<? extends GenericValue> clazz : clazzes)
-                typeSig.add(clazz);
-            this.typeSignature = new TypeSignature(returnType, typeSig);
+        Type(final TypeSignature typeSignature) {
+            this.typeSignature = typeSignature;
         }
 
         private TypeSignature getTypeSignature() {
