@@ -87,12 +87,12 @@ public class HUtil {
     }
 
     public static void validateParentClass(final GenericValue expr,
-                                           final Class parentClazz,
-                                           final Class... clazzes) throws TypeException {
+                                           final Class<? extends GenericValue> parentClazz,
+                                           final Class<? extends GenericValue>... clazzes) throws TypeException {
 
-        List<Class> classList = null;
+        List<Class<? extends GenericValue>> classList = null;
 
-        for (final Class clazz : clazzes) {
+        for (final Class<? extends GenericValue> clazz : clazzes) {
 
             if (clazz == null)
                 continue;

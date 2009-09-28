@@ -14,8 +14,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
  */
 public class StringNullCompare extends GenericNullCompare {
 
-    public StringNullCompare(final boolean not, final GenericValue expr) {
-        super(not, expr);
+    public StringNullCompare(final boolean not, final GenericValue arg0) {
+        super(not, arg0);
     }
 
     @Override

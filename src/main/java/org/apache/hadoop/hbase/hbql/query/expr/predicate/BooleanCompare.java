@@ -26,18 +26,18 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
 
-        final boolean expr1val = (Boolean)this.getArg(0).getValue(object);
-        final boolean expr2val = (Boolean)this.getArg(1).getValue(object);
+        final boolean v1 = (Boolean)this.getArg(0).getValue(object);
+        final boolean v2 = (Boolean)this.getArg(1).getValue(object);
 
         switch (this.getOperator()) {
             case OR:
-                return expr1val || expr2val;
+                return v1 || v2;
             case AND:
-                return expr1val && expr2val;
+                return v1 && v2;
             case EQ:
-                return expr1val == expr2val;
+                return v1 == v2;
             case NOTEQ:
-                return expr1val != expr2val;
+                return v1 != v2;
             default:
                 throw new HBqlException("Invalid operator: " + this.getOperator());
         }
