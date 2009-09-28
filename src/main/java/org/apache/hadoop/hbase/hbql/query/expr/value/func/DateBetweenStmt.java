@@ -1,9 +1,10 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,13 +15,11 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 public class DateBetweenStmt extends GenericBetweenStmt {
 
     public DateBetweenStmt(final GenericValue expr, final boolean not, final GenericValue lower, final GenericValue upper) {
-        super(not, expr, lower, upper);
-    }
-
-    @Override
-    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
-        return this.validateType(DateValue.class);
+        super(new TypeSignature(BooleanValue.class, DateValue.class, DateValue.class, DateValue.class),
+              not,
+              expr,
+              lower,
+              upper);
     }
 
     @Override

@@ -1,9 +1,10 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,13 +18,11 @@ public class StringBetweenStmt extends GenericBetweenStmt {
                              final boolean not,
                              final GenericValue arg1,
                              final GenericValue arg2) {
-        super(not, arg0, arg1, arg2);
-    }
-
-    @Override
-    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
-        return this.validateType(StringValue.class);
+        super(new TypeSignature(BooleanValue.class, StringValue.class, StringValue.class, StringValue.class),
+              not,
+              arg0,
+              arg1,
+              arg2);
     }
 
     @Override

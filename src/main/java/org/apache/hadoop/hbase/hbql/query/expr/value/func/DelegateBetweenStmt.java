@@ -22,7 +22,7 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
                                final boolean not,
                                final GenericValue arg1,
                                final GenericValue arg2) {
-        super(not, arg0, arg1, arg2);
+        super(null, not, arg0, arg1, arg2);
     }
 
     @Override
