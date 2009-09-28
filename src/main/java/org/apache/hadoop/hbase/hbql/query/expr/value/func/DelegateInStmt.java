@@ -37,7 +37,7 @@ public class DelegateInStmt extends GenericInStmt {
         else if (HUtil.isParentClass(DateValue.class, type))
             this.typedExpr = new DateInStmt(this.getArg(0), this.isNot(), this.getInList());
         else
-            HUtil.throwInvalidTypeException(this, type);
+            this.throwInvalidTypeException(type);
 
         return this.typedExpr.validateTypes(parentExpr, false);
     }

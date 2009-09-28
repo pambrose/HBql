@@ -40,7 +40,7 @@ public class DelegateCompare extends GenericCompare {
         else if (HUtil.isParentClass(BooleanValue.class, type0, type1))
             typedExpr = new BooleanCompare(this.getArg(0), this.getOperator(), this.getArg(1));
         else
-            HUtil.throwInvalidTypeException(this, type0, type1);
+            this.throwInvalidTypeException(type0, type1);
 
         return this.typedExpr.validateTypes(parentExpr, allowsCollections);
     }

@@ -36,7 +36,7 @@ public class DelegateCalculation extends GenericCalculation {
         else if (HUtil.isParentClass(DateValue.class, type1, type2))
             typedExpr = new DateCalculation(this.getArg(0), this.getOperator(), this.getArg(1));
         else
-            HUtil.throwInvalidTypeException(this, type1, type2);
+            this.throwInvalidTypeException(type1, type2);
 
         return this.typedExpr.validateTypes(parentExpr, false);
     }

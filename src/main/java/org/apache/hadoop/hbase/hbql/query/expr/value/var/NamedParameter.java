@@ -73,11 +73,11 @@ public class NamedParameter implements GenericValue {
 
             // Look at the type of the first item and then make sure the rest match that one
             final GenericValue firstval = this.getTypedExprList().get(0);
-            final Class<? extends GenericValue> clazzToMatch = HUtil.getValueExprType(firstval);
+            final Class<? extends GenericValue> clazzToMatch = HUtil.getGenericExprType(firstval);
 
             for (final GenericValue val : this.getTypedExprList()) {
 
-                final Class<? extends GenericValue> clazz = HUtil.getValueExprType(val);
+                final Class<? extends GenericValue> clazz = HUtil.getGenericExprType(val);
 
                 if (clazz == null)
                     throw new TypeException("Parameter " + this.getParamName()

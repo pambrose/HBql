@@ -4,14 +4,12 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -86,31 +84,7 @@ public class HUtil {
         return true;
     }
 
-    public static void throwInvalidTypeException(final GenericValue expr,
-                                                 final Class<? extends GenericValue>... clazzes) throws TypeException {
-
-        final List<Class> classList = Lists.newArrayList();
-
-        for (final Class clazz : clazzes)
-            if (clazz != null)
-                classList.add(clazz);
-
-        final StringBuilder sbuf = new StringBuilder("Invalid type");
-        sbuf.append(((classList.size() > 1) ? "s " : " "));
-
-        boolean first = true;
-        for (final Class<? extends GenericValue> clazz : clazzes) {
-            if (!first)
-                sbuf.append(", ");
-            sbuf.append(clazz.getSimpleName());
-            first = false;
-        }
-        sbuf.append(" in expression " + expr.asString());
-
-        throw new TypeException(sbuf.toString());
-    }
-
-    public static Class<? extends GenericValue> getValueExprType(final GenericValue val) {
+    public static Class<? extends GenericValue> getGenericExprType(final GenericValue val) {
 
         final Class clazz = val.getClass();
 

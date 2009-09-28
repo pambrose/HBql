@@ -54,7 +54,6 @@ public class SelectArgs {
 
         if (!this.type.getTypeSignature().getArg(i).isAssignableFrom(this.getArg(i).getClass()))
             throw new HBqlException("Invalid type " + this.getArg(i).getClass().getSimpleName());
-
     }
 
     public void validateTypes() throws HBqlException {

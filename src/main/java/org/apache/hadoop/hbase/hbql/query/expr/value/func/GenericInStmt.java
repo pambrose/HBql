@@ -51,7 +51,7 @@ public abstract class GenericInStmt extends GenericNotValue {
             inClazz = DateValue.class;
         else {
             inClazz = null;
-            HUtil.throwInvalidTypeException(this, type);
+            this.throwInvalidTypeException(type);
         }
 
         // Make sure all the types are matched

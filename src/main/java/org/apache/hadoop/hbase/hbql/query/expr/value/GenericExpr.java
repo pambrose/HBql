@@ -203,4 +203,27 @@ public abstract class GenericExpr implements GenericValue {
         }
     }
 
+    public void throwInvalidTypeException(final Class<? extends GenericValue>... clazzes) throws TypeException {
+
+        final List<Class> classList = Lists.newArrayList();
+
+        for (final Class clazz : clazzes)
+            if (clazz != null)
+                classList.add(clazz);
+
+        final StringBuilder sbuf = new StringBuilder("Invalid type");
+        sbuf.append(((classList.size() > 1) ? "s " : " "));
+
+        boolean first = true;
+        for (final Class<? extends GenericValue> clazz : clazzes) {
+            if (!first)
+                sbuf.append(", ");
+            sbuf.append(clazz.getSimpleName());
+            first = false;
+        }
+        sbuf.append(" in expression " + this.asString());
+
+        throw new TypeException(sbuf.toString());
+    }
+
 }

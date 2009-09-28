@@ -40,7 +40,7 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
         else if (HUtil.isParentClass(DateValue.class, type1, type2, type3))
             this.typedExpr = new DateBetweenStmt(this.getArg(0), this.isNot(), this.getArg(1), this.getArg(2));
         else
-            HUtil.throwInvalidTypeException(this, type1, type2, type3);
+            this.throwInvalidTypeException(type1, type2, type3);
 
         return this.typedExpr.validateTypes(parentExpr, false);
     }
