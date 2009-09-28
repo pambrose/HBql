@@ -21,7 +21,7 @@ public class StringInStmt extends GenericInStmt {
 
     protected boolean evaluateList(final Object object) throws HBqlException {
 
-        final String attribVal = (String)this.getExpr().getValue(object);
+        final String attribVal = (String)this.getArg(0).getValue(object);
 
         for (final GenericValue obj : this.getValueExprList()) {
 

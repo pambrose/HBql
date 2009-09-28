@@ -21,12 +21,20 @@ public class GenericExpr {
         this.exprArgs = new ExprArgs(Arrays.asList(exprs));
     }
 
-    public GenericExpr(final List<GenericValue> exprs) {
-        this.exprArgs = new ExprArgs(exprs);
+    public GenericExpr(final List<GenericValue> exprList) {
+        this.exprArgs = new ExprArgs(exprList);
+    }
+
+    public GenericExpr(final GenericValue expr, final List<GenericValue> exprList) {
+        this.exprArgs = new ExprArgs(expr, exprList);
     }
 
     public ExprArgs getArgs() {
         return this.exprArgs;
+    }
+
+    public List<GenericValue> getSubArgs(final int i) {
+        return this.exprArgs.getSubArgList(i);
     }
 
     public boolean isAConstant() throws HBqlException {
@@ -39,7 +47,6 @@ public class GenericExpr {
 
     public void optimizeArgs() throws HBqlException {
         this.getArgs().optimizeArgs();
-
     }
 
     public GenericValue getArg(final int i) {

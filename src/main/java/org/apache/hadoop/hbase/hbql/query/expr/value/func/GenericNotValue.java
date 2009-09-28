@@ -26,6 +26,11 @@ public abstract class GenericNotValue extends GenericExpr implements BooleanValu
         this.not = not;
     }
 
+    protected GenericNotValue(final boolean not, final GenericValue arg, final List<GenericValue> argList) {
+        super(arg, argList);
+        this.not = not;
+    }
+
     public boolean isNot() {
         return not;
     }

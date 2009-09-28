@@ -21,7 +21,7 @@ public class DateInStmt extends GenericInStmt {
 
     protected boolean evaluateList(final Object object) throws HBqlException {
 
-        final long attribVal = (Long)this.getExpr().getValue(object);
+        final long attribVal = (Long)this.getArg(0).getValue(object);
 
         for (final GenericValue obj : this.getValueExprList()) {
 

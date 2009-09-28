@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
 
@@ -14,30 +15,39 @@ import java.util.List;
  */
 public class ExprArgs {
 
-    private final List<GenericValue> genericValues;
+    private final List<GenericValue> argList = Lists.newArrayList();
 
-    public ExprArgs(final List<GenericValue> genericValues) {
-        this.genericValues = genericValues;
+    public ExprArgs(final List<GenericValue> exprList) {
+        this.argList.addAll(exprList);
     }
 
-    private List<GenericValue> getArgs() {
-        return this.genericValues;
+    public ExprArgs(final GenericValue expr, final List<GenericValue> exprList) {
+        this.argList.add(expr);
+        this.argList.addAll(exprList);
+    }
+
+    private List<GenericValue> getArgList() {
+        return this.argList;
+    }
+
+    public List<GenericValue> getSubArgList(final int i) {
+        return this.getArgList().subList(i, this.getArgList().size());
     }
 
     public int size() {
-        return this.getArgs().size();
+        return this.getArgList().size();
     }
 
     public GenericValue getArg(final int i) {
-        return this.getArgs().get(i);
+        return this.getArgList().get(i);
     }
 
     public void setArg(final int i, final GenericValue val) {
-        this.getArgs().set(i, val);
+        this.getArgList().set(i, val);
     }
 
     public void setContext(final ExprTree context) {
-        for (final GenericValue val : this.getArgs())
+        for (final GenericValue val : this.getArgList())
             val.setContext(context);
     }
 
@@ -47,7 +57,7 @@ public class ExprArgs {
     }
 
     public boolean isAConstant() throws HBqlException {
-        for (final GenericValue val : this.getArgs())
+        for (final GenericValue val : this.getArgList())
             if (!val.isAConstant())
                 return false;
         return true;
@@ -58,7 +68,7 @@ public class ExprArgs {
         final StringBuilder sbuf = new StringBuilder("(");
 
         boolean first = true;
-        for (final GenericValue val : this.getArgs()) {
+        for (final GenericValue val : this.getArgList()) {
             if (!first)
                 sbuf.append(", ");
             sbuf.append(val.asString());
@@ -69,5 +79,4 @@ public class ExprArgs {
 
         return sbuf.toString();
     }
-
 }

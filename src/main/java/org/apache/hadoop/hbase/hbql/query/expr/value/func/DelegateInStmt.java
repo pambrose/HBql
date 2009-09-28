@@ -28,14 +28,14 @@ public class DelegateInStmt extends GenericInStmt {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
-        final Class<? extends GenericValue> type = this.getExpr().validateTypes(this, false);
+        final Class<? extends GenericValue> type = this.getArg(0).validateTypes(this, false);
 
         if (HUtil.isParentClass(StringValue.class, type))
-            this.typedExpr = new StringInStmt(this.getExpr(), this.isNot(), this.getValueExprList());
+            this.typedExpr = new StringInStmt(this.getArg(0), this.isNot(), this.getValueExprList());
         else if (HUtil.isParentClass(NumberValue.class, type))
-            this.typedExpr = new NumberInStmt(this.getExpr(), this.isNot(), this.getValueExprList());
+            this.typedExpr = new NumberInStmt(this.getArg(0), this.isNot(), this.getValueExprList());
         else if (HUtil.isParentClass(DateValue.class, type))
-            this.typedExpr = new DateInStmt(this.getExpr(), this.isNot(), this.getValueExprList());
+            this.typedExpr = new DateInStmt(this.getArg(0), this.isNot(), this.getValueExprList());
         else
             HUtil.throwInvalidTypeException(this, type);
 
