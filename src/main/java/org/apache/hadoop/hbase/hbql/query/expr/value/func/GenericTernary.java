@@ -15,7 +15,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 public abstract class GenericTernary extends GenericExpr {
 
     protected GenericTernary(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
-        super(arg0, arg1, arg2);
+        super(null, arg0, arg1, arg2);
     }
 
     @Override

@@ -19,7 +19,7 @@ public abstract class GenericCompare extends GenericExpr implements BooleanValue
     private final Operator operator;
 
     protected GenericCompare(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
-        super(arg0, arg1);
+        super(null, arg0, arg1);
         this.operator = operator;
     }
 

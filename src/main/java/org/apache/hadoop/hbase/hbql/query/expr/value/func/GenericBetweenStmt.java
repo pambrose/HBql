@@ -15,7 +15,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 public abstract class GenericBetweenStmt extends GenericNotValue {
 
     protected GenericBetweenStmt(final boolean not, final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
-        super(not, arg0, arg1, arg2);
+        super(null, not, arg0, arg1, arg2);
     }
 
     @Override

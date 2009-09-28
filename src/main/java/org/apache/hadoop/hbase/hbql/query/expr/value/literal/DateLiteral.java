@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 public class DateLiteral extends GenericExpr implements DateValue {
 
     public DateLiteral(final GenericValue arg0, final GenericValue arg1) {
-        super(arg0, arg1);
+        super(null, arg0, arg1);
     }
 
     @Override

@@ -13,7 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 public abstract class GenericNullCompare extends GenericNotValue {
 
     protected GenericNullCompare(final boolean not, final GenericValue arg0) {
-        super(not, arg0);
+        super(null, not, arg0);
     }
 
     protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {

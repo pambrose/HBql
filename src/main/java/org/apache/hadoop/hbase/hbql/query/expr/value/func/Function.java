@@ -52,7 +52,7 @@ public class Function extends GenericExpr {
     private final Type functionType;
 
     public Function(final Type functionType, final GenericValue... exprs) {
-        super(exprs);
+        super(null, exprs);
         this.functionType = functionType;
     }
 

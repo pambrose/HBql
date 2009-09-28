@@ -15,7 +15,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 public class BooleanExpr extends GenericExpr implements BooleanValue {
 
     public BooleanExpr(final GenericValue arg0) {
-        super(arg0);
+        super(null, arg0);
     }
 
     @Override

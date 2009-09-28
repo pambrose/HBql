@@ -17,17 +17,20 @@ import java.util.List;
  */
 public abstract class GenericExpr implements GenericValue {
 
+    private final TypeSignature typeSignature;
     private final List<GenericValue> argList = Lists.newArrayList();
 
-    protected GenericExpr(final GenericValue... exprs) {
-        this(Arrays.asList(exprs));
+    protected GenericExpr(final TypeSignature typeSignature, final GenericValue... exprs) {
+        this(typeSignature, Arrays.asList(exprs));
     }
 
-    protected GenericExpr(final List<GenericValue> exprList) {
+    protected GenericExpr(final TypeSignature typeSignature, final List<GenericValue> exprList) {
+        this.typeSignature = typeSignature;
         this.argList.addAll(exprList);
     }
 
-    protected GenericExpr(final GenericValue expr, final List<GenericValue> exprList) {
+    protected GenericExpr(final TypeSignature typeSignature, final GenericValue expr, final List<GenericValue> exprList) {
+        this.typeSignature = typeSignature;
         this.argList.add(expr);
         this.argList.addAll(exprList);
     }
@@ -63,6 +66,10 @@ public abstract class GenericExpr implements GenericValue {
 
     public void setArg(final int i, final GenericValue val) {
         this.getArgList().set(i, val);
+    }
+
+    protected TypeSignature getTypeSignature() {
+        return this.typeSignature;
     }
 
     public String asString() {

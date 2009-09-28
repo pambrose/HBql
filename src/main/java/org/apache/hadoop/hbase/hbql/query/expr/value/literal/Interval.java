@@ -38,7 +38,7 @@ public class Interval extends GenericExpr implements DateValue {
     private final Type type;
 
     public Interval(final Type type, final GenericValue arg0) {
-        super(arg0);
+        super(null, arg0);
         this.type = type;
     }
 

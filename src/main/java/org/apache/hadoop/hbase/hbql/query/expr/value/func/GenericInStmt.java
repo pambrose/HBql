@@ -21,7 +21,7 @@ import java.util.List;
 public abstract class GenericInStmt extends GenericNotValue {
 
     protected GenericInStmt(final GenericValue arg0, final boolean not, final List<GenericValue> inList) {
-        super(not, arg0, inList);
+        super(null, not, arg0, inList);
     }
 
     protected List<GenericValue> getInList() {

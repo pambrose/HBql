@@ -16,7 +16,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 public abstract class GenericStringPatternStmt extends GenericNotValue {
 
     protected GenericStringPatternStmt(final GenericValue arg0, final boolean not, final GenericValue arg1) {
-        super(not, arg0, arg1);
+        super(null, not, arg0, arg1);
     }
 
     protected abstract String getFunctionName();

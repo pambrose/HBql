@@ -27,6 +27,4 @@ public interface GenericValue extends Serializable {
 
     String asString();
 
-    // TypeSignature getTypeSignature();
-
 }
