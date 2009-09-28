@@ -1,81 +1,86 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
-import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
- * Date: Aug 25, 2009
- * Time: 6:58:31 PM
+ * Date: Aug 29, 2009
+ * Time: 2:35:57 PM
  */
-public class DateLiteral extends GenericLiteral implements DateValue {
+public class DateLiteral implements DateValue {
 
-    private static long now = System.currentTimeMillis();
+    private GenericValue formatExpr = null, valueExpr = null;
 
-    public enum Type {
-        NOW(true, 0),
-        MINDATE(false, 0),
-        MAXDATE(false, Long.MAX_VALUE);
-
-        final boolean adjusted;
-        final long value;
-
-        Type(final boolean adjusted, final long value) {
-            this.adjusted = adjusted;
-            this.value = value;
-        }
-
-        public boolean isAdjustment() {
-            return this.adjusted;
-        }
-
-        public long getValue() {
-            return this.value;
-        }
+    public DateLiteral(final GenericValue formatExpr, final GenericValue valueExpr) {
+        this.formatExpr = formatExpr;
+        this.valueExpr = valueExpr;
     }
 
-    private final Long dateval;
-
-    public DateLiteral(final Date dateval) {
-        this.dateval = dateval.getTime();
+    private GenericValue getFormatExpr() {
+        return this.formatExpr;
     }
 
-    public DateLiteral(final Long val) {
-        this.dateval = val;
-    }
-
-    public DateLiteral(final Type type) {
-        if (type.isAdjustment())
-            this.dateval = getNow() + type.getValue();
-        else
-            this.dateval = type.getValue();
-    }
-
-    private static long getNow() {
-        return now;
-    }
-
-    public static void resetNow() {
-        now = System.currentTimeMillis();
-    }
-
-    @Override
-    public Long getValue(final Object object) {
-        return this.dateval;
+    private GenericValue getValueExpr() {
+        return this.valueExpr;
     }
 
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
+        HUtil.validateParentClass(this,
+                                  StringValue.class,
+                                  this.getFormatExpr().validateTypes(this, false),
+                                  this.getValueExpr().validateTypes(this, false));
         return DateValue.class;
     }
 
     @Override
+    public GenericValue getOptimizedValue() throws HBqlException {
+
+        this.formatExpr = this.getFormatExpr().getOptimizedValue();
+        this.valueExpr = this.getValueExpr().getOptimizedValue();
+
+        return this.isAConstant() ? new DateConstant(this.getValue(null)) : this;
+    }
+
+    @Override
+    public Long getValue(final Object object) throws HBqlException {
+
+        final String pattern = (String)this.getFormatExpr().getValue(object);
+        final String datestr = (String)this.getValueExpr().getValue(object);
+        final SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+
+        try {
+            return formatter.parse(datestr).getTime();
+        }
+        catch (ParseException e) {
+            throw new HBqlException(e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean isAConstant() throws HBqlException {
+        return this.getFormatExpr().isAConstant() && this.getValueExpr().isAConstant();
+    }
+
+    @Override
+    public void setContext(final ExprTree context) {
+        this.getFormatExpr().setContext(context);
+        this.getValueExpr().setContext(context);
+    }
+
+    @Override
     public String asString() {
-        return "\"" + String.format("%ta %tb %td %tT %tZ %tY", new Date(this.dateval)) + "\"";
+        return "DATE(" + this.getFormatExpr().asString() + ", " + this.getValueExpr().asString() + ")";
     }
 }

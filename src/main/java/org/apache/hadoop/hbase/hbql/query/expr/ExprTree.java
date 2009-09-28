@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateConstant;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericVariable;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
@@ -123,7 +123,7 @@ public class ExprTree implements Serializable {
             this.optimize();
 
         // Set it once per evaluation
-        DateLiteral.resetNow();
+        DateConstant.resetNow();
 
         this.start = System.nanoTime();
         final boolean retval = (this.getTreeRoot() == null) || (Boolean)this.getTreeRoot().getValue(object);

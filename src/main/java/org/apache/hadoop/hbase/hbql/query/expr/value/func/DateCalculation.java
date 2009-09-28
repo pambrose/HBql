@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateConstant;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,7 +30,7 @@ public class DateCalculation extends GenericCalculation implements DateValue {
         this.setExpr1(this.getExpr1().getOptimizedValue());
         this.setExpr2(this.getExpr2().getOptimizedValue());
 
-        return this.isAConstant() ? new DateLiteral(this.getValue(null)) : this;
+        return this.isAConstant() ? new DateConstant(this.getValue(null)) : this;
     }
 
     @Override

@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateConstant;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringNullLiteral;
@@ -150,7 +150,7 @@ public class NamedParameter implements GenericValue {
             return new IntegerLiteral((Integer)val);
 
         if (val instanceof Date)
-            return new DateLiteral((Date)val);
+            return new DateConstant((Date)val);
 
         throw new TypeException("Parameter " + this.getParamName()
                                 + " assigned an unsupported type " + val.getClass().getSimpleName());

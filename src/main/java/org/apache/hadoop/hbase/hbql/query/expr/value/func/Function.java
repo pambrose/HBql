@@ -54,12 +54,13 @@ public class Function implements GenericValue {
             return this.name();
         }
 
-        public void validateArgs(final GenericValue parentExpr, final GenericValue[] valueExprs) throws TypeException {
+        private void validateArgs(final GenericValue parentExpr, final GenericValue[] valueExprs) throws TypeException {
 
             int i = 0;
 
             if (valueExprs.length != this.getTypeSig().size())
-                throw new TypeException("Incorrect number of arguments in function " + this.name());
+                throw new TypeException("Incorrect number of arguments in function " + this.name()
+                                        + " in " + parentExpr.asString());
 
             for (final Class clazz : this.getTypeSig()) {
 
@@ -67,26 +68,27 @@ public class Function implements GenericValue {
 
                 if (!HUtil.isParentClass(clazz, type))
                     throw new TypeException("Invalid type " + type.getSimpleName() + " for arg " + i + " in function "
-                                            + this.name() + ".  Expecting type " + clazz.getSimpleName());
+                                            + this.name() + " in " + parentExpr.asString() + ".  Expecting type "
+                                            + clazz.getSimpleName());
                 i++;
             }
         }
     }
 
     private final Type type;
-    private final GenericValue[] valueExprs;
+    private final GenericValue[] genericValues;
 
-    public Function(final Type type, final GenericValue... valueExprs) {
+    public Function(final Type type, final GenericValue... genericValues) {
         this.type = type;
-        this.valueExprs = valueExprs;
+        this.genericValues = genericValues;
     }
 
-    private GenericValue[] getValueExprs() {
-        return valueExprs;
+    private GenericValue[] getGenericValues() {
+        return this.genericValues;
     }
 
     private GenericValue getValueExpr(final int i) {
-        return this.getValueExprs()[i];
+        return this.getGenericValues()[i];
     }
 
     private Type getFunctionType() {
@@ -95,89 +97,51 @@ public class Function implements GenericValue {
 
     @Override
     public void setContext(final ExprTree context) {
-        for (final GenericValue valExpr : this.getValueExprs())
-            valExpr.setContext(context);
+        for (final GenericValue val : this.getGenericValues())
+            val.setContext(context);
     }
 
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
-        switch (this.getFunctionType()) {
-            case TRIM:
-            case LOWER:
-            case UPPER:
-            case CONCAT:
-            case REPLACE:
-            case SUBSTRING:
-            case LENGTH:
-            case INDEXOF:
-                this.getFunctionType().validateArgs(this, this.getValueExprs());
-                return this.getFunctionType().getReturnType();
-            default:
-                throw new TypeException("Invalid function " + this.getFunctionType() + " in " + this.asString());
-        }
-    }
-
-    private void getOptimizedValue(final int i) throws HBqlException {
-        this.getValueExprs()[i] = this.getValueExpr(i).getOptimizedValue();
+        this.getFunctionType().validateArgs(this, this.getGenericValues());
+        return this.getFunctionType().getReturnType();
     }
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
 
+        // First optimize all the args
+        for (int i = 0; i < this.getGenericValues().length; i++) {
+            this.getGenericValues()[i] = this.getValueExpr(i).getOptimizedValue();
+        }
+
         switch (this.getFunctionType()) {
 
-            // Returns a string
-            case TRIM: {
-                this.getOptimizedValue(0);
-                return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
-            }
-
-            case LOWER: {
-                this.getOptimizedValue(0);
-                return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
-            }
-
-            case UPPER: {
-                this.getOptimizedValue(0);
-                return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
-            }
-
-            case CONCAT: {
-                this.getOptimizedValue(0);
-                this.getOptimizedValue(1);
-                return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
-            }
-
-            case REPLACE: {
-                this.getOptimizedValue(0);
-                this.getOptimizedValue(1);
-                this.getOptimizedValue(2);
-                return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
-            }
-
+            case TRIM:
+            case LOWER:
+            case UPPER:
+            case CONCAT:
+            case REPLACE:
             case SUBSTRING: {
-                this.getOptimizedValue(0);
-                this.getOptimizedValue(1);
-                this.getOptimizedValue(2);
                 return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
             }
 
-            case LENGTH: {
-                this.getOptimizedValue(0);
-                return this.isAConstant() ? new IntegerLiteral((Integer)this.getValue(null)) : this;
-            }
-
+            case LENGTH:
             case INDEXOF: {
-                this.getOptimizedValue(0);
-                this.getOptimizedValue(1);
                 return this.isAConstant() ? new IntegerLiteral((Integer)this.getValue(null)) : this;
             }
 
             default:
                 throw new HBqlException("Invalid function: " + this.getFunctionType());
         }
+    }
+
+    private void checkForNull(final String... vals) throws HBqlException {
+        for (final Object val : vals)
+            if (val == null)
+                throw new HBqlException("Null string for value in " + this.asString());
     }
 
     @Override
@@ -188,22 +152,26 @@ public class Function implements GenericValue {
             // Returns a string
             case TRIM: {
                 final String val = (String)this.getValueExpr(0).getValue(object);
+                this.checkForNull(val);
                 return val.trim();
             }
 
             case LOWER: {
                 final String val = (String)this.getValueExpr(0).getValue(object);
+                this.checkForNull(val);
                 return val.toLowerCase();
             }
 
             case UPPER: {
                 final String val = (String)this.getValueExpr(0).getValue(object);
+                this.checkForNull(val);
                 return val.toUpperCase();
             }
 
             case CONCAT: {
                 final String v1 = (String)this.getValueExpr(0).getValue(object);
                 final String v2 = (String)this.getValueExpr(1).getValue(object);
+                this.checkForNull(v1, v2);
                 return v1 + v2;
             }
 
@@ -211,6 +179,7 @@ public class Function implements GenericValue {
                 final String v1 = (String)this.getValueExpr(0).getValue(object);
                 final String v2 = (String)this.getValueExpr(1).getValue(object);
                 final String v3 = (String)this.getValueExpr(2).getValue(object);
+                this.checkForNull(v1, v2, v3);
                 return v1.replace(v2, v3);
             }
 
@@ -218,24 +187,21 @@ public class Function implements GenericValue {
                 final String val = (String)this.getValueExpr(0).getValue(object);
                 final int begin = ((Number)this.getValueExpr(1).getValue(object)).intValue();
                 final int end = ((Number)this.getValueExpr(2).getValue(object)).intValue();
+                this.checkForNull(val);
                 return val.substring(begin, end);
             }
 
             case LENGTH: {
                 final String val = (String)this.getValueExpr(0).getValue(object);
-                if (val == null)
-                    return 0;
-                else
-                    return val.length();
+                this.checkForNull(val);
+                return val.length();
             }
 
             case INDEXOF: {
                 final String v1 = (String)this.getValueExpr(0).getValue(object);
                 final String v2 = (String)this.getValueExpr(1).getValue(object);
-                if (v1 == null || v2 == null)
-                    return -1;
-                else
-                    return v1.indexOf(v2);
+                this.checkForNull(v1, v2);
+                return v1.indexOf(v2);
             }
             default:
                 throw new HBqlException("Invalid function: " + this.getFunctionType());
@@ -244,43 +210,10 @@ public class Function implements GenericValue {
 
     @Override
     public boolean isAConstant() throws HBqlException {
-
-        switch (this.getFunctionType()) {
-
-            case TRIM:
-                return this.getValueExpr(0).isAConstant();
-
-            case LOWER:
-                return this.getValueExpr(0).isAConstant();
-
-            case UPPER:
-                return this.getValueExpr(0).isAConstant();
-
-            case CONCAT:
-                return this.getValueExpr(0).isAConstant()
-                       && this.getValueExpr(1).isAConstant();
-
-            case REPLACE:
-                return this.getValueExpr(0).isAConstant()
-                       && this.getValueExpr(1).isAConstant()
-                       && this.getValueExpr(2).isAConstant();
-
-            case SUBSTRING:
-                return this.getValueExpr(0).isAConstant()
-                       && this.getValueExpr(1).isAConstant()
-                       && this.getValueExpr(2).isAConstant();
-
-            case LENGTH:
-                return this.getValueExpr(0).isAConstant();
-
-            case INDEXOF:
-                return this.getValueExpr(0).isAConstant()
-                       && this.getValueExpr(1).isAConstant();
-
-            default:
-                throw new HBqlException("Invalid function: " + this.getFunctionType());
-        }
-
+        for (final GenericValue val : this.getGenericValues())
+            if (!val.isAConstant())
+                return false;
+        return true;
     }
 
     @Override
@@ -288,54 +221,12 @@ public class Function implements GenericValue {
 
         final StringBuilder sbuf = new StringBuilder(this.getFunctionType().name() + "(");
 
-        switch (this.getFunctionType()) {
-
-            case TRIM:
-                sbuf.append(this.getValueExpr(0).asString());
-                break;
-
-            case LOWER:
-                sbuf.append(this.getValueExpr(0).asString());
-                break;
-
-            case UPPER:
-                sbuf.append(this.getValueExpr(0).asString());
-                break;
-
-            case CONCAT:
-                sbuf.append(this.getValueExpr(0).asString());
+        boolean first = true;
+        for (final GenericValue val : this.getGenericValues()) {
+            if (!first)
                 sbuf.append(", ");
-                sbuf.append(this.getValueExpr(1).asString());
-                break;
-
-            case REPLACE:
-                sbuf.append(this.getValueExpr(0).asString());
-                sbuf.append(", ");
-                sbuf.append(this.getValueExpr(1).asString());
-                sbuf.append(", ");
-                sbuf.append(this.getValueExpr(2).asString());
-                break;
-
-            case SUBSTRING:
-                sbuf.append(this.getValueExpr(0).asString());
-                sbuf.append(", ");
-                sbuf.append(this.getValueExpr(1).asString());
-                sbuf.append(", ");
-                sbuf.append(this.getValueExpr(2).asString());
-                break;
-
-            case LENGTH:
-                sbuf.append(this.getValueExpr(0).asString());
-                break;
-
-            case INDEXOF:
-                sbuf.append(this.getValueExpr(0).asString());
-                sbuf.append(", ");
-                sbuf.append(this.getValueExpr(1).asString());
-                break;
-
-            default:
-                sbuf.append("Unknown Function: " + this.getFunctionType());
+            sbuf.append(val.asString());
+            first = false;
         }
 
         sbuf.append(")");
