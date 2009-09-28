@@ -26,9 +26,9 @@ public class DateBetweenStmt extends GenericBetweenStmt {
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
 
-        final long dateval = (Long)this.getExpr().getValue(object);
-        final boolean retval = dateval >= (Long)this.getLower().getValue(object)
-                               && dateval <= (Long)this.getUpper().getValue(object);
+        final long dateval = (Long)this.getArg(0).getValue(object);
+        final boolean retval = dateval >= (Long)this.getArg(1).getValue(object)
+                               && dateval <= (Long)this.getArg(2).getValue(object);
 
         return (this.isNot()) ? !retval : retval;
     }

@@ -26,9 +26,9 @@ public class StringBetweenStmt extends GenericBetweenStmt {
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
 
-        final String strval = (String)this.getExpr().getValue(object);
-        final boolean retval = strval.compareTo((String)this.getLower().getValue(object)) >= 0
-                               && strval.compareTo((String)this.getUpper().getValue(object)) <= 0;
+        final String strval = (String)this.getArg(0).getValue(object);
+        final boolean retval = strval.compareTo((String)this.getArg(1).getValue(object)) >= 0
+                               && strval.compareTo((String)this.getArg(2).getValue(object)) <= 0;
 
         return (this.isNot()) ? !retval : retval;
     }

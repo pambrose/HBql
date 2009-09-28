@@ -26,13 +26,13 @@ public class StringNullCompare extends GenericNullCompare {
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        this.setExpr(this.getExpr().getOptimizedValue());
+        this.setArg(0, this.getArg(0).getOptimizedValue());
         return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
     }
 
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
-        final String val = (String)this.getExpr().getValue(object);
+        final String val = (String)this.getArg(0).getValue(object);
         final boolean retval = (val == null);
         return (this.isNot()) ? !retval : retval;
     }
