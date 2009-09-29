@@ -7,10 +7,13 @@ import org.antlr.runtime.Parser;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.DelegateCalculation;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
+import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.VarDesc;
 
 import java.util.List;
 
@@ -93,5 +96,17 @@ public class ParserSupport extends Parser {
         for (int i = 1; i < opList.size(); i++)
             root = new DelegateCalculation(root, opList.get(i), exprList.get(i + 1));
         return root;
+    }
+
+    // This keeps antlr code out of DefinedSchema, which is accessed server-side in HBase
+    public static DefinedSchema newDefinedSchema(final TokenStream input,
+                                                 final List<VarDesc> varList) throws RecognitionException {
+        try {
+            return new DefinedSchema(varList);
+        }
+        catch (HBqlException e) {
+            System.out.println(e.getMessage());
+            throw new RecognitionException(input);
+        }
     }
 }

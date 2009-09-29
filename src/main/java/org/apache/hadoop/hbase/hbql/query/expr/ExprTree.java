@@ -38,9 +38,7 @@ public class ExprTree extends ExprContext implements Serializable {
         // Set it once per evaluation
         DateLiteral.resetNow();
 
-        final boolean retval = (this.getGenericValue() == null) || (Boolean)this.getGenericValue().getValue(object);
-
-        return retval;
+        return (this.getGenericValue() == null) || (Boolean)this.getGenericValue().getValue(object);
     }
 
     public void setSchema(final Schema schema, final List<String> fieldList) throws HBqlException {

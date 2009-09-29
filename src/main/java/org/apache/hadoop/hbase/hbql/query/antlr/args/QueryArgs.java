@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
 import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.TokenStream;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -23,8 +22,7 @@ public class QueryArgs {
 
     private HBaseSchema schema = null;
 
-    public QueryArgs(final TokenStream input,
-                     final List<SelectColumn> selectColumnList,
+    public QueryArgs(final List<SelectColumn> selectColumnList,
                      final String tableName,
                      final WhereArgs whereExpr) throws RecognitionException {
         this.tableName = tableName;

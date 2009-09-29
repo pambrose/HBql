@@ -1,7 +1,5 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.TokenStream;
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
@@ -13,7 +11,6 @@ import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,18 +42,6 @@ public class HUtil {
 
         sbuf.append(strval);
         return sbuf.toString();
-    }
-
-    // This keeps antlr code out of DefinedSchema, which is accessed server-side in HBase
-    public static DefinedSchema newDefinedSchema(final TokenStream input,
-                                                 final List<VarDesc> varList) throws RecognitionException {
-        try {
-            return new DefinedSchema(varList);
-        }
-        catch (HBqlException e) {
-            System.out.println(e.getMessage());
-            throw new RecognitionException(input);
-        }
     }
 
     public static void logException(final Log log, final Exception e) {

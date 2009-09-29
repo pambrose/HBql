@@ -182,16 +182,16 @@ public class TestSupport {
         }
     }
 
-    public static ExprTree parseDescWhereExpr(final String input, final Schema schema) throws HBqlException {
+    public static ExprTree parseDescWhereExpr(final String str, final Schema schema) throws HBqlException {
         try {
-            final HBqlParser parser = HBql.newParser(input);
+            final HBqlParser parser = HBql.newParser(str);
             final ExprTree exprTree = parser.descWhereExpr();
             exprTree.setSchema(schema);
             return exprTree;
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new HBqlException("Error parsing");
+            throw new HBqlException("Error parsing: " + str);
         }
     }
 

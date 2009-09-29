@@ -91,7 +91,7 @@ deleteStmt  returns [DeleteCmd retval]
 
 selectStmt returns [QueryArgs retval]
 	: keySELECT c=selectColumns keyFROM t=ID w=whereValue?			
-							{retval = new QueryArgs(input, $c.retval, $t.text, $w.retval);};
+							{retval = new QueryArgs($c.retval, $t.text, $w.retval);};
 
 selectColumns returns [List<SelectColumn> retval]
 	: STAR						{retval = Lists.newArrayList(); retval.add( SelectColumn.newAllColumns());}
@@ -307,7 +307,7 @@ valueFunctions returns [GenericValue retval]
 	;
 			
 schemaDesc returns [Schema retval]
-	: LCURLY a=attribList RCURLY			{retval = HUtil.newDefinedSchema(input, $a.retval);};
+	: LCURLY a=attribList RCURLY			{retval = newDefinedSchema(input, $a.retval);};
 	
 ltgtOp returns [Operator retval]
 	: GT 						{$ltgtOp.retval = Operator.GT;}

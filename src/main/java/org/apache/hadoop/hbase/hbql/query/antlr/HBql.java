@@ -21,109 +21,109 @@ import org.apache.hadoop.hbase.hbql.query.schema.Schema;
  */
 public class HBql {
 
-    public static HBqlParser newParser(final String input) {
-        System.out.println("Parsing: " + input);
-        final Lexer lex = new HBqlLexer(new ANTLRStringStream(input));
+    public static HBqlParser newParser(final String str) {
+        System.out.println("Parsing: " + str);
+        final Lexer lex = new HBqlLexer(new ANTLRStringStream(str));
         final CommonTokenStream tokens = new CommonTokenStream(lex);
         return new HBqlParser(tokens);
     }
 
-    public static ExprTree parseWhereExpression(final String input,
+    public static ExprTree parseWhereExpression(final String str,
                                                 final Schema schema) throws HBqlException {
         try {
-            final HBqlParser parser = newParser(input);
+            final HBqlParser parser = newParser(str);
             final ExprTree exprTree = parser.nodescWhereExpr();
             exprTree.setSchema(schema);
             return exprTree;
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new HBqlException("Error parsing");
+            throw new HBqlException("Error parsing: " + str);
         }
     }
 
-    public static String parseStringValue(final String input) throws HBqlException {
+    public static String parseStringValue(final String str) throws HBqlException {
         try {
-            final HBqlParser parser = newParser(input);
+            final HBqlParser parser = newParser(str);
             final GenericValue valueExpr = parser.valueExpr();
             valueExpr.validateTypes(null, false);
             return (String)valueExpr.getValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new HBqlException("Error parsing");
+            throw new HBqlException("Error parsing: " + str);
         }
     }
 
-    public static Number parseNumberValue(final String input) throws HBqlException {
+    public static Number parseNumberValue(final String str) throws HBqlException {
         try {
-            final HBqlParser parser = newParser(input);
+            final HBqlParser parser = newParser(str);
             final GenericValue valueExpr = parser.valueExpr();
             valueExpr.validateTypes(null, false);
             return (Number)valueExpr.getValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new HBqlException("Error parsing");
+            throw new HBqlException("Error parsing: " + str);
         }
     }
 
-    public static Long parseDateValue(final String input) throws HBqlException {
+    public static Long parseDateValue(final String str) throws HBqlException {
         try {
-            final HBqlParser parser = newParser(input);
+            final HBqlParser parser = newParser(str);
             final GenericValue valueExpr = parser.valueExpr();
             valueExpr.validateTypes(null, false);
             return (Long)valueExpr.getValue(null);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new HBqlException("Error parsing");
+            throw new HBqlException("Error parsing: " + str);
         }
     }
 
-    public static WhereArgs parseWithClause(final String input) throws HBqlException {
+    public static WhereArgs parseWithClause(final String str) throws HBqlException {
         try {
-            final HBqlParser parser = newParser(input);
+            final HBqlParser parser = newParser(str);
             return parser.whereValue();
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new HBqlException("Error parsing");
+            throw new HBqlException("Error parsing: " + str);
         }
     }
 
-    public static SchemaManagerCmd parseSchema(final String input) throws HBqlException {
+    public static SchemaManagerCmd parseSchema(final String str) throws HBqlException {
         try {
-            final HBqlParser parser = newParser(input);
+            final HBqlParser parser = newParser(str);
             return parser.schemaStmt();
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new HBqlException("Error parsing");
+            throw new HBqlException("Error parsing: " + str);
         }
     }
 
-    public static ConnectionCmd parseCommand(final String input) throws HBqlException {
+    public static ConnectionCmd parseCommand(final String str) throws HBqlException {
         try {
-            final HBqlParser parser = newParser(input);
+            final HBqlParser parser = newParser(str);
             return parser.commandStmt();
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new HBqlException("Error parsing");
+            throw new HBqlException("Error parsing: " + str);
         }
     }
 
-    public static QueryArgs parseQuery(final String input) throws HBqlException {
+    public static QueryArgs parseQuery(final String str) throws HBqlException {
         try {
-            final HBqlParser parser = newParser(input);
+            final HBqlParser parser = newParser(str);
             final QueryArgs args = parser.selectStmt();
             args.validate();
             return args;
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new HBqlException("Error parsing");
+            throw new HBqlException("Error parsing: " + str);
         }
     }
 
