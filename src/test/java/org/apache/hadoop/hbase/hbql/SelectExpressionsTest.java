@@ -28,7 +28,7 @@ public class SelectExpressionsTest extends TestSupport {
                             + "family3:val2 string alias val6"
                             + ")");
 
-        assertSelectColumnsMatchTrue("SELECT * FROM table1", "intValue");
+        assertSelectColumnsMatchTrue("SELECT * FROM table1", "family1:val1, family1:val2, family2:val1, family2:val2, family3:val1, family3:val2");
 
     }
 

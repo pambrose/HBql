@@ -110,19 +110,19 @@ public class TestSupport {
     }
 
     private static boolean evaluateExprTree(final Object recordObj, final ExprTree tree) throws HBqlException {
-        System.out.println("Evaluating: " + tree);
+        System.out.println("Evaluating: " + tree.asString());
         return tree.evaluate(recordObj);
     }
 
-    public static void assertSelectColumnsMatchTrue(final String expr, String... vals) throws HBqlException {
+    public static void assertSelectColumnsMatchTrue(final String expr, String vals) throws HBqlException {
         assertTrue(evalSelectNames(expr, vals));
     }
 
-    private static boolean evalSelectNames(final String expr, String... vals) {
+    private static boolean evalSelectNames(final String expr, String vals) {
 
         try {
             final QueryArgs args = HBql.parseQuery(expr);
-            final List<String> valList = Lists.newArrayList(vals);
+            final List<String> valList = Lists.newArrayList(vals.replace(" ", "").split(","));
 
             final List<String> attribList = args.getColumnNameList();
 
@@ -130,14 +130,14 @@ public class TestSupport {
 
             for (final String val : valList) {
                 if (!attribList.contains(val)) {
-                    System.out.println("Missing column name: " + val);
+                    System.out.println("Missing column name in attrib list: " + val);
                     retval = false;
                 }
             }
 
             for (final String var : attribList) {
                 if (!valList.contains(var)) {
-                    System.out.println("Missing column name: " + var);
+                    System.out.println("Missing column name in specified list: " + var);
                     retval = false;
                 }
             }
@@ -163,14 +163,14 @@ public class TestSupport {
 
             for (final String val : valList) {
                 if (!attribList.contains(val)) {
-                    System.out.println("Missing column name: " + val);
+                    System.out.println("Missing column name in attrib list : " + val);
                     retval = false;
                 }
             }
 
             for (final String var : attribList) {
                 if (!valList.contains(var)) {
-                    System.out.println("Missing column name: " + var);
+                    System.out.println("Missing column name in specified list : " + var);
                     retval = false;
                 }
             }
