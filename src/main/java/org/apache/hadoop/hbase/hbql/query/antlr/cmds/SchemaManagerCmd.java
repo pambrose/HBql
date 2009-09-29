@@ -3,8 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.antlr.cmds;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
 
-import java.io.IOException;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -13,6 +11,6 @@ import java.io.IOException;
  */
 public interface SchemaManagerCmd {
 
-    public HOutput execute() throws HBqlException, IOException;
+    public HOutput execute() throws HBqlException;
 
 }

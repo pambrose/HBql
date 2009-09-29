@@ -7,7 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.VarDesc;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -36,7 +35,7 @@ public class DefineCmd extends TableCmd implements SchemaManagerCmd {
     }
 
     @Override
-    public HOutput execute() throws HBqlException, IOException {
+    public HOutput execute() throws HBqlException {
 
         final DefinedSchema schema = DefinedSchema.newDefinedSchema(this.getTableName(),
                                                                     this.getAlias(),

@@ -22,11 +22,11 @@ import java.util.List;
 public class TestSupport {
 
     public void assertValidInput(final String expr, String... vals) throws HBqlException {
-        org.junit.Assert.assertTrue(evalColumnNames(expr, vals));
+        assertTrue(evalExprColumnNames(expr, vals));
     }
 
     public void assertInvalidInput(final String expr, String... vals) throws HBqlException {
-        org.junit.Assert.assertFalse(evalColumnNames(expr, vals));
+        assertFalse(evalExprColumnNames(expr, vals));
     }
 
     public static void assertTrue(final boolean val) throws HBqlException {
@@ -42,41 +42,41 @@ public class TestSupport {
     }
 
     public static void assertEvalTrue(final Object recordObj, final String expr) throws HBqlException {
-        org.junit.Assert.assertTrue(evaluateExpression(recordObj, expr));
+        assertTrue(evaluateExpr(recordObj, expr));
     }
 
     public static void assertEvalFalse(final String expr) throws HBqlException {
-        assertEvalFalse(null, expr);
+        assertExprEvalFalse(null, expr);
     }
 
-    public static void assertEvalFalse(final Object recordObj, final String expr) throws HBqlException {
-        org.junit.Assert.assertFalse(evaluateExpression(recordObj, expr));
+    public static void assertExprEvalFalse(final Object recordObj, final String expr) throws HBqlException {
+        assertFalse(evaluateExpr(recordObj, expr));
     }
 
-    public static void assertEvalTrue(final ExprTree tree) throws HBqlException {
-        assertEvalTrue(null, tree);
+    public static void assertExprTreeEvalTrue(final ExprTree tree) throws HBqlException {
+        assertExprTreeEvalTrue(null, tree);
     }
 
-    public static void assertEvalTrue(final Object recordObj, final ExprTree tree) throws HBqlException {
-        org.junit.Assert.assertTrue(evaluateTree(recordObj, tree));
+    public static void assertExprTreeEvalTrue(final Object recordObj, final ExprTree tree) throws HBqlException {
+        assertTrue(evaluateExprTree(recordObj, tree));
     }
 
-    public static void assertEvalFalse(final ExprTree tree) throws HBqlException {
+    public static void assertExprTreeEvalFalse(final ExprTree tree) throws HBqlException {
         assertEvalFalse(null, tree);
     }
 
     public static void assertEvalFalse(final Object recordObj, final ExprTree tree) throws HBqlException {
-        org.junit.Assert.assertFalse(evaluateTree(recordObj, tree));
+        assertFalse(evaluateExprTree(recordObj, tree));
     }
 
     public void assertHasException(final ExprTree tree, final Class clazz) {
-        this.assertHasException(null, tree, clazz);
+        this.assertExprTreeHasException(null, tree, clazz);
     }
 
-    public void assertHasException(final Object recordObj, final ExprTree tree, final Class clazz) {
+    public void assertExprTreeHasException(final Object recordObj, final ExprTree tree, final Class clazz) {
         Class eclazz = null;
         try {
-            evaluateTree(recordObj, tree);
+            evaluateExprTree(recordObj, tree);
         }
         catch (HBqlException e) {
             e.printStackTrace();
@@ -85,12 +85,16 @@ public class TestSupport {
         org.junit.Assert.assertTrue(eclazz != null && eclazz.equals(clazz));
     }
 
-    public static void assertColumnsMatchTrue(final String expr, String... vals) throws HBqlException {
-        org.junit.Assert.assertTrue(evalColumnNames(expr, vals));
+    public static void assertSelectColumnsMatchTrue(final String expr, String... vals) throws HBqlException {
+        assertTrue(evalExprColumnNames(expr, vals));
     }
 
-    public static void assertColumnsMatchFalse(final String expr, String... vals) throws HBqlException {
-        org.junit.Assert.assertFalse(evalColumnNames(expr, vals));
+    public static void assertExprColumnsMatchTrue(final String expr, String... vals) throws HBqlException {
+        assertTrue(evalExprColumnNames(expr, vals));
+    }
+
+    public static void assertExprColumnsMatchFalse(final String expr, String... vals) throws HBqlException {
+        assertFalse(evalExprColumnNames(expr, vals));
     }
 
     public ExprTree parseExpr(final String expr) throws HBqlException {
@@ -102,18 +106,18 @@ public class TestSupport {
         return parseDescWhereExpr(expr, schema);
     }
 
-    private static boolean evaluateExpression(final Object recordObj, final String expr) throws HBqlException {
+    private static boolean evaluateExpr(final Object recordObj, final String expr) throws HBqlException {
         final Schema schema = SchemaManager.getObjectSchema(recordObj);
         final ExprTree tree = parseDescWhereExpr(expr, schema);
-        return evaluateTree(recordObj, tree);
+        return evaluateExprTree(recordObj, tree);
     }
 
-    private static boolean evaluateTree(final Object recordObj, final ExprTree tree) throws HBqlException {
+    private static boolean evaluateExprTree(final Object recordObj, final ExprTree tree) throws HBqlException {
         System.out.println("Evaluating: " + tree);
         return tree.evaluate(recordObj);
     }
 
-    private static boolean evalColumnNames(final String expr, String... vals) {
+    private static boolean evalExprColumnNames(final String expr, String... vals) {
 
         try {
             final ExprTree tree = parseDescWhereExpr(expr, null);
@@ -138,10 +142,10 @@ public class TestSupport {
                     retval = false;
                 }
             }
-
             return retval;
         }
         catch (HBqlException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -161,11 +165,11 @@ public class TestSupport {
     }
 
     public void assertValidInput(final String expr) throws HBqlException {
-        org.junit.Assert.assertTrue(evalWhereValue(expr));
+        assertTrue(evalWhereValue(expr));
     }
 
     public void assertInvalidInput(final String expr) throws HBqlException {
-        org.junit.Assert.assertFalse(evalWhereValue(expr));
+        assertFalse(evalWhereValue(expr));
     }
 
     private static boolean evalWhereValue(final String expr) {

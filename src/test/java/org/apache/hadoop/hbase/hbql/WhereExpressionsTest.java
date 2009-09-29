@@ -53,22 +53,22 @@ public class WhereExpressionsTest extends TestSupport {
 
         tree = parseExpr(":test");
         tree.setParameter(":test", Boolean.TRUE);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
         tree.setParameter(":test", Boolean.FALSE);
-        assertEvalFalse(tree);
+        assertExprTreeEvalFalse(tree);
 
         tree = parseExpr(":test AND :test");
         tree.setParameter(":test", Boolean.TRUE);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
         tree.setParameter(":test", Boolean.FALSE);
-        assertEvalFalse(tree);
+        assertExprTreeEvalFalse(tree);
 
         tree = parseExpr(":test1 OR :test2");
         tree.setParameter(":test1", Boolean.TRUE);
         tree.setParameter(":test2", Boolean.FALSE);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
         tree.setParameter(":test1", Boolean.FALSE);
-        assertEvalFalse(tree);
+        assertExprTreeEvalFalse(tree);
 
         tree = parseExpr(":test1");
         assertHasException(tree, TypeException.class);
@@ -76,25 +76,25 @@ public class WhereExpressionsTest extends TestSupport {
         tree = parseExpr(":b1 == :b2");
         tree.setParameter("b1", Boolean.TRUE);
         tree.setParameter("b2", Boolean.TRUE);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
         tree.setParameter("b2", Boolean.FALSE);
-        assertEvalFalse(tree);
+        assertExprTreeEvalFalse(tree);
 
         tree = parseExpr(":b1 != :b2");
         tree.setParameter("b1", Boolean.TRUE);
         tree.setParameter("b2", Boolean.FALSE);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
         tree.setParameter("b2", Boolean.TRUE);
-        assertEvalFalse(tree);
+        assertExprTreeEvalFalse(tree);
 
         tree = parseExpr("((((:b1 OR :b1 OR :b1))))" + " OR " + "((((:b1 OR :b1 OR :b1))))");
         tree.setParameter("b1", Boolean.FALSE);
-        assertEvalFalse(tree);
+        assertExprTreeEvalFalse(tree);
 
         tree = parseExpr(":b1 OR ((:b1) or :b1) OR :b2");
         tree.setParameter("b1", Boolean.TRUE);
         tree.setParameter("b2", Boolean.FALSE);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
     }
 
     @Test
@@ -118,9 +118,9 @@ public class WhereExpressionsTest extends TestSupport {
         tree = parseExpr(":val1 < :val2");
         tree.setParameter("val1", 4);
         tree.setParameter("val2", 5);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
         tree.setParameter(":val2", 3);
-        assertEvalFalse(tree);
+        assertExprTreeEvalFalse(tree);
     }
 
 
@@ -149,11 +149,11 @@ public class WhereExpressionsTest extends TestSupport {
 
         tree = parseExpr("NOW() - DAY(1) = :d1");
         tree.setParameter("d1", new Date());
-        assertEvalFalse(tree);
+        assertExprTreeEvalFalse(tree);
 
         tree = parseExpr("NOW() - DAY(1) < :d1");
         tree.setParameter("d1", new Date());
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
     }
 
     @Test
@@ -179,7 +179,7 @@ public class WhereExpressionsTest extends TestSupport {
 
         tree = parseExpr("'aaa' = 'a'+:s1");
         tree.setParameter("s1", "aa");
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
 
         tree = parseExpr("'aaa' = 'a'+:s1");
         tree.setParameter("s1", 1);
@@ -200,15 +200,15 @@ public class WhereExpressionsTest extends TestSupport {
 
         tree = parseExpr(":a IS NULL");
         tree.setParameter("a", null);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
         tree.setParameter("a", "val");
-        assertEvalFalse(tree);
+        assertExprTreeEvalFalse(tree);
 
         tree = parseExpr(":a IS NOT NULL");
         tree.setParameter("a", "vall");
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
         tree.setParameter("a", null);
-        assertEvalFalse(tree);
+        assertExprTreeEvalFalse(tree);
 
         tree.setParameter("a", 1);
         assertHasException(tree, TypeException.class);
@@ -256,28 +256,28 @@ public class WhereExpressionsTest extends TestSupport {
         tree = parseExpr(":a = :b");
         tree.setParameter("a", 8);
         tree.setParameter("b", 8);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
 
         tree = parseExpr("(-1*:a) = :b");
         tree.setParameter("a", 8);
         tree.setParameter("b", -8);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
 
         tree = parseExpr("(-1*-1*:a) = :b");
         tree.setParameter("a", 8);
         tree.setParameter("b", 8);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
 
         tree = parseExpr("(:a + :a + :a + :a - :a) = :b");
         tree.setParameter("a", 5);
         tree.setParameter("b", 15);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
 
         tree = parseExpr("(:a % :b) = :c");
         tree.setParameter("a", 40);
         tree.setParameter("b", 6);
         tree.setParameter("c", 4);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
     }
 
 
@@ -296,23 +296,23 @@ public class WhereExpressionsTest extends TestSupport {
         final ObjectAllTypes obj = new ObjectAllTypes("aaabbb", 3, "aaab");
 
         assertEvalTrue(obj, "keyval CONTAINS 'ab'");
-        assertEvalFalse(obj, "keyval CONTAINS 'ba'");
-        assertEvalFalse(obj, "'asasas' CONTAINS stringValue");
+        assertExprEvalFalse(obj, "keyval CONTAINS 'ba'");
+        assertExprEvalFalse(obj, "'asasas' CONTAINS stringValue");
         assertEvalTrue(obj, "'xxaaabxx' CONTAINS stringValue");
         assertEvalTrue(obj, "keyval CONTAINS stringValue");
         assertEvalTrue(obj, "keyval+'zz' CONTAINS stringValue+'bbz'");
-        assertEvalFalse(obj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
-        assertEvalFalse(obj, "NOT ((('asasas' NOT CONTAINS stringValue)))");
+        assertExprEvalFalse(obj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
+        assertExprEvalFalse(obj, "NOT ((('asasas' NOT CONTAINS stringValue)))");
 
         final AnnotatedAllTypes annoObj = new AnnotatedAllTypes("aaabbb", 3, "aaab");
 
         assertEvalTrue(annoObj, "keyval CONTAINS 'ab'");
-        assertEvalFalse(annoObj, "keyval CONTAINS 'ba'");
-        assertEvalFalse(annoObj, "'asasas' CONTAINS stringValue");
+        assertExprEvalFalse(annoObj, "keyval CONTAINS 'ba'");
+        assertExprEvalFalse(annoObj, "'asasas' CONTAINS stringValue");
         assertEvalTrue(annoObj, "'xxaaabxx' CONTAINS stringValue");
         assertEvalTrue(annoObj, "keyval CONTAINS stringValue");
         assertEvalTrue(annoObj, "keyval+'zz' CONTAINS stringValue+'bbz'");
-        assertEvalFalse(annoObj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
+        assertExprEvalFalse(annoObj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
         assertEvalTrue(obj, "NOT(keyval+'zz' NOT CONTAINS stringValue+'bbz')");
 
     }
@@ -325,16 +325,16 @@ public class WhereExpressionsTest extends TestSupport {
         tree = parseExpr(":a CONTAINS :b");
         tree.setParameter("a", "abc");
         tree.setParameter("b", "b");
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
 
         tree.setParameter("b", "z");
-        assertEvalFalse(tree);
+        assertExprTreeEvalFalse(tree);
 
         final ObjectAllTypes obj = new ObjectAllTypes("aaabbb", 3, "aaab");
 
         tree = parseExpr(obj, "keyval CONTAINS :a");
         tree.setParameter("a", "ab");
-        assertEvalTrue(obj, tree);
+        assertExprTreeEvalTrue(obj, tree);
         tree.setParameter("a", "ba");
         assertEvalFalse(obj, tree);
 
@@ -342,12 +342,12 @@ public class WhereExpressionsTest extends TestSupport {
         tree.setParameter("a", "a");
         tree.setParameter("b", "b");
         tree.setParameter("c", "a");
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
 
         tree = parseExpr(":a IN (:b)");
         tree.setParameter("a", "a");
         tree.setParameter("b", Arrays.asList("a", "b", "c"));
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
 
         // Test for list where scalar is required
         tree.setParameter("a", Arrays.asList("a", "b", "c"));
@@ -405,7 +405,7 @@ public class WhereExpressionsTest extends TestSupport {
         tree.setParameter("a", "bbb");
         tree.setParameter("b", "aaa");
         tree.setParameter("c", "ccc");
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
     }
 
     @Test
@@ -430,31 +430,31 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalTrue(obj, "stringValue between 'aaa' AND 'ccc'");
         assertEvalTrue(obj, "stringValue between 'aaa' AND 'ccc' AND stringValue between 'aaa' AND 'ccc'");
         assertEvalTrue(obj, "stringValue between 'bbb' AND 'ccc'");
-        assertEvalFalse(obj, "stringValue between 'ccc' AND 'ddd'");
+        assertExprEvalFalse(obj, "stringValue between 'ccc' AND 'ddd'");
         assertEvalTrue(obj, "('bbb' between stringValue AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
 
         assertEvalTrue(obj, "intValue between 2 AND 5");
         assertEvalTrue(obj, "intValue between (1+1) AND (intValue+2)");
-        assertEvalFalse(obj, "stringValue IN ('v2', 'v0', 'v999')");
+        assertExprEvalFalse(obj, "stringValue IN ('v2', 'v0', 'v999')");
         assertEvalTrue(obj, "'v19' = 'v19'");
-        assertEvalFalse(obj, "'v19'= stringValue");
-        assertEvalFalse(obj, "stringValue = 'v19'");
-        assertEvalFalse(obj, "stringValue = 'v19' OR stringValue IN ('v2', 'v0', 'v999')");
+        assertExprEvalFalse(obj, "'v19'= stringValue");
+        assertExprEvalFalse(obj, "stringValue = 'v19'");
+        assertExprEvalFalse(obj, "stringValue = 'v19' OR stringValue IN ('v2', 'v0', 'v999')");
         assertEvalTrue(obj, "stringValue IS NOT NULL");
-        assertEvalFalse(obj, "stringValue IS NULL");
+        assertExprEvalFalse(obj, "stringValue IS NULL");
     }
 
     @Test
     public void columnLookups() throws HBqlException {
         assertInvalidInput("{a1 date, a2 date} a1 < a2");
 
-        assertColumnsMatchTrue("{fam1:col1 int, fam2:col2 int} TRUE");
-        assertColumnsMatchFalse("TRUE", "intValue");
-        assertColumnsMatchTrue("{intValue  int, int2  integer} intValue between 2 AND 5", "intValue");
+        assertExprColumnsMatchTrue("{fam1:col1 int, fam2:col2 int} TRUE");
+        assertExprColumnsMatchFalse("TRUE", "intValue");
+        assertExprColumnsMatchTrue("{intValue  int, int2  integer} intValue between 2 AND 5", "intValue");
         assertInvalidInput("{xintValue  int} xintValue between 2 AND 5", "intValue");
-        assertColumnsMatchTrue("{a1 date,a2  date} a1 < a2", "a1", "a2");
-        assertColumnsMatchFalse("{a1 int, a2 int, d1 int, k3 int} a1 < a2 OR d1 > k3", "a1", "a2");
-        assertColumnsMatchTrue("{a1 date, a2 date, d1 date, k3  date} a1 < a2 OR d1 > k3", "a1", "a2", "d1", "k3");
+        assertExprColumnsMatchTrue("{a1 date,a2  date} a1 < a2", "a1", "a2");
+        assertExprColumnsMatchFalse("{a1 int, a2 int, d1 int, k3 int} a1 < a2 OR d1 > k3", "a1", "a2");
+        assertExprColumnsMatchTrue("{a1 date, a2 date, d1 date, k3  date} a1 < a2 OR d1 > k3", "a1", "a2", "d1", "k3");
     }
 
     @Test
@@ -481,13 +481,13 @@ public class WhereExpressionsTest extends TestSupport {
 
         tree = parseExpr("NOW() < NOW()+MINUTE(:a)");
         tree.setParameter("a", 1);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
 
         tree = parseExpr("NOW()+YEAR(:a) = NOW()+WEEK(:b)+DAY(:c)");
         tree.setParameter("a", 2);
         tree.setParameter("b", 52);
         tree.setParameter("c", 364);
-        assertEvalTrue(tree);
+        assertExprTreeEvalTrue(tree);
     }
 
 }
