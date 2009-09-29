@@ -17,7 +17,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public abstract class GenericInStmt extends GenericNotValue<GenericInStmt> {
+public abstract class GenericInStmt extends GenericNotValue {
 
     protected GenericInStmt(final GenericValue arg0, final boolean not, final List<GenericValue> inList) {
         super(Type.GENERICINSTMT, not, arg0, inList);
