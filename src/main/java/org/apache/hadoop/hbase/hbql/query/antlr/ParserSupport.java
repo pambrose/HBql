@@ -14,6 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.func.DelegateCalculation;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.BooleanColumn;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DateColumn;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.IntegerColumn;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.LongColumn;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.StringColumn;
@@ -29,15 +30,15 @@ import java.util.List;
  * Date: Aug 20, 2009
  * Time: 9:35:18 PM
  */
-public class HBaseParser extends Parser {
+public class ParserSupport extends Parser {
 
     private Schema schema = null;
 
-    public HBaseParser(final TokenStream input) {
+    public ParserSupport(final TokenStream input) {
         super(input);
     }
 
-    public HBaseParser(final TokenStream input, final RecognizerSharedState state) {
+    public ParserSupport(final TokenStream input, final RecognizerSharedState state) {
         super(input, state);
     }
 
@@ -69,8 +70,8 @@ public class HBaseParser extends Parser {
 
     protected GenericValue findVariable(final String var) throws FailedPredicateException {
 
-        if (this.getSchema() != null)
-            throw new FailedPredicateException(input, "findVariable()", "No schema set");
+        if (this.getSchema() == null)
+            return new DelegateColumn(var);
 
         final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(var);
 

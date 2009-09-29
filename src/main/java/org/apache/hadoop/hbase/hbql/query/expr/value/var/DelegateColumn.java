@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,9 +12,16 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 public class DelegateColumn extends GenericColumn<GenericValue> {
 
     private GenericColumn typedColumn = null;
+    private String attribName;
 
-    public DelegateColumn(final VariableAttrib attrib) {
-        super(attrib, null);
+    public DelegateColumn(final String attribName) {
+        super(null, null);
+        this.attribName = attribName;
+    }
+
+    @Override
+    public String getName() {
+        return this.attribName;
     }
 
     @Override

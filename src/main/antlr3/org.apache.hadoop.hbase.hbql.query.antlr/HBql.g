@@ -1,6 +1,6 @@
 grammar HBql;
 
-options {superClass=HBaseParser;}
+options {superClass=ParserSupport;}
 
 tokens {
 	DOT = '.';
