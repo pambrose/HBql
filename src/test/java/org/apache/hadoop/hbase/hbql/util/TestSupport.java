@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBqlParser;
+import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
@@ -18,7 +19,7 @@ import java.util.List;
  * Date: Aug 23, 2009
  * Time: 4:49:02 PM
  */
-public class WhereExprTests {
+public class TestSupport {
 
     public void assertValidInput(final String expr, String... vals) throws HBqlException {
         org.junit.Assert.assertTrue(evalColumnNames(expr, vals));
@@ -159,4 +160,22 @@ public class WhereExprTests {
         }
     }
 
+    public void assertValidInput(final String expr) throws HBqlException {
+        org.junit.Assert.assertTrue(evalWhereValue(expr));
+    }
+
+    public void assertInvalidInput(final String expr) throws HBqlException {
+        org.junit.Assert.assertFalse(evalWhereValue(expr));
+    }
+
+    private static boolean evalWhereValue(final String expr) {
+        try {
+            final WhereArgs args = HBql.parseWithClause(expr, (Schema)null);
+            System.out.println("Evaluating: " + args.asString());
+            return true;
+        }
+        catch (HBqlException e) {
+            return false;
+        }
+    }
 }

@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.util.WhereExprTests;
+import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import java.util.Date;
  * Date: Aug 27, 2009
  * Time: 2:13:47 PM
  */
-public class WhereExpressionTest extends WhereExprTests {
+public class WhereExpressionTest extends TestSupport {
 
 
     @Test
@@ -447,6 +447,7 @@ public class WhereExpressionTest extends WhereExprTests {
     @Test
     public void columnLookups() throws HBqlException {
         assertInvalidInput("{a1 date, a2 date} a1 < a2");
+
         assertColumnsMatchTrue("{fam1:col1 int, fam2:col2 int} TRUE");
         assertColumnsMatchFalse("TRUE", "intValue");
         assertColumnsMatchTrue("{intValue  int, int2  integer} intValue between 2 AND 5", "intValue");

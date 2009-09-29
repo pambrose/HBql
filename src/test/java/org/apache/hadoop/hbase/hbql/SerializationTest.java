@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
-import org.apache.hadoop.hbase.hbql.util.WhereExprTests;
+import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ import java.util.Random;
  * Date: Sep 4, 2009
  * Time: 7:39:16 AM
  */
-public class SerializationTest extends WhereExprTests {
+public class SerializationTest extends TestSupport {
 
     public static class TestClass implements Serializable {
         String strval;

@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.util.WhereValueTests;
+import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 
 /**
@@ -10,7 +10,7 @@ import org.junit.Test;
  * Date: Aug 27, 2009
  * Time: 2:13:47 PM
  */
-public class WithValuesTest extends WhereValueTests {
+public class WithValuesTest extends TestSupport {
 
 
     @Test
