@@ -23,7 +23,7 @@ public interface GenericValue extends Serializable {
 
     boolean isAConstant() throws HBqlException;
 
-    void setContext(ExprContext context);
+    void setContext(ExprContext context) throws HBqlException;
 
     String asString();
 

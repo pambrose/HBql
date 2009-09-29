@@ -104,7 +104,7 @@ public class NamedParameter implements GenericValue {
     }
 
     @Override
-    public void setContext(final ExprContext context) {
+    public void setContext(final ExprContext context) throws HBqlException {
         this.context = context;
         this.context.addNamedParameter(this);
     }

@@ -47,7 +47,7 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
     }
 
     @Override
-    public void setContext(final ExprContext context) {
+    public void setContext(final ExprContext context) throws HBqlException {
         this.context = context;
         this.getContext().addVariable(this);
     }

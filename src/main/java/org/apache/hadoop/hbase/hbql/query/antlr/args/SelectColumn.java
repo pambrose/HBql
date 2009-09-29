@@ -48,10 +48,4 @@ public class SelectColumn extends ExprContext {
         return genericValue;
     }
 
-    public void setContext() {
-        if (this.getGenericValue() != null)
-            this.getGenericValue().setContext(this);
-
-    }
-
 }

@@ -12,15 +12,9 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.DelegateCalculation;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.BooleanColumn;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.DateColumn;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.IntegerColumn;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.LongColumn;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.StringColumn;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 import java.util.List;
 
@@ -68,39 +62,8 @@ public class ParserSupport extends Parser {
         return s != null && s.equalsIgnoreCase(str);
     }
 
-    protected GenericValue findVariable(final String var) throws FailedPredicateException {
-
-        if (this.getSchema() == null)
-            return new DelegateColumn(var);
-
-        final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(var);
-
-        if (attrib == null)
-            throw new FailedPredicateException(input, "findVariable()", "Invalid variable: " + var);
-
-        switch (attrib.getFieldType()) {
-
-            case KeyType:
-            case StringType:
-                return new StringColumn(attrib);
-
-            case LongType:
-                return new LongColumn(attrib);
-
-            case IntegerType:
-                return new IntegerColumn(attrib);
-
-            case DateType:
-                return new DateColumn(attrib);
-
-            case BooleanType:
-                return new BooleanColumn(attrib);
-
-            default:
-                throw new FailedPredicateException(input,
-                                                   "findVariable()",
-                                                   "Invalid type: " + attrib.getFieldType().name());
-        }
+    protected GenericValue findVariable(final String var) {
+        return new DelegateColumn(var);
     }
 
     /*

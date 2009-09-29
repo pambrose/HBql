@@ -51,7 +51,7 @@ public class QueryArgs {
                     break;
 
                 case GENERICEXPR:
-                    column.setContext();
+                    column.setSchema(schema);
                     this.columnNameList.addAll(column.getColumnNameList());
                     break;
             }

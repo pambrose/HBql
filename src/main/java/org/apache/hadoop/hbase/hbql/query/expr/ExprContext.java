@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.NamedParameter;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -25,6 +26,7 @@ public class ExprContext {
     private final List<GenericColumn> columnList = Lists.newArrayList();
     private final Map<String, List<NamedParameter>> namedParamMap = Maps.newHashMap();
 
+    private Schema schema = null;
     private GenericValue genericValue = null;
 
     public List<GenericColumn> getColumnList() {
@@ -44,28 +46,13 @@ public class ExprContext {
         return this.namedParamMap;
     }
 
-    private boolean isInNeedOfTypeValidation() {
-        return inNeedOfTypeValidation;
+    public Schema getSchema() {
+        return this.schema;
     }
 
-    private void setInNeedOfTypeValidation(final boolean inNeedOfTypeValidation) {
-        this.inNeedOfTypeValidation = inNeedOfTypeValidation;
-    }
-
-    private boolean isInNeedOfOptimization() {
-        return inNeedOfOptimization;
-    }
-
-    private void setInNeedOfOptimization(final boolean inNeedOfOptimization) {
-        this.inNeedOfOptimization = inNeedOfOptimization;
-    }
-
-    private boolean isInNeedOfSettingContext() {
-        return inNeedOfSettingContext;
-    }
-
-    private void setInNeedOfSettingContext(final boolean inNeedOfSettingContext) {
-        this.inNeedOfSettingContext = inNeedOfSettingContext;
+    public void setSchema(final Schema schema) {
+        this.schema = schema;
+        this.setContext();
     }
 
     protected GenericValue getGenericValue() {
@@ -76,13 +63,21 @@ public class ExprContext {
         return this.getGenericValue() != null;
     }
 
+    public void setContext() {
+        if (this.getGenericValue() != null && this.isInNeedOfSettingContext()) {
+            try {
+                this.getGenericValue().setContext(this);
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+            }
+            this.setInNeedOfSettingContext(false);
+        }
+    }
+
     protected void setGenericValue(final GenericValue treeRoot) {
         this.genericValue = treeRoot;
 
-        if (this.getGenericValue() != null && this.isInNeedOfSettingContext()) {
-            this.getGenericValue().setContext(this);
-            this.setInNeedOfSettingContext(false);
-        }
     }
 
     protected void optimize() throws HBqlException {
@@ -128,6 +123,30 @@ public class ExprContext {
             param.setParameter(val);
 
         this.setInNeedOfTypeValidation(true);
+    }
+
+    private boolean isInNeedOfTypeValidation() {
+        return inNeedOfTypeValidation;
+    }
+
+    private void setInNeedOfTypeValidation(final boolean inNeedOfTypeValidation) {
+        this.inNeedOfTypeValidation = inNeedOfTypeValidation;
+    }
+
+    private boolean isInNeedOfOptimization() {
+        return inNeedOfOptimization;
+    }
+
+    private void setInNeedOfOptimization(final boolean inNeedOfOptimization) {
+        this.inNeedOfOptimization = inNeedOfOptimization;
+    }
+
+    private boolean isInNeedOfSettingContext() {
+        return inNeedOfSettingContext;
+    }
+
+    private void setInNeedOfSettingContext(final boolean inNeedOfSettingContext) {
+        this.inNeedOfSettingContext = inNeedOfSettingContext;
     }
 
 }

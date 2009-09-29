@@ -23,6 +23,6 @@ public abstract class GenericLiteral implements GenericValue {
     }
 
     @Override
-    public void setContext(final ExprContext context) {
+    public void setContext(final ExprContext context) throws HBqlException {
     }
 }

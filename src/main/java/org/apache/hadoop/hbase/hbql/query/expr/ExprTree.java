@@ -17,9 +17,6 @@ import java.util.List;
  */
 public class ExprTree extends ExprContext implements Serializable {
 
-    private Schema schema = null;
-    private long start, end;
-
     private ExprTree() {
     }
 
@@ -33,15 +30,6 @@ public class ExprTree extends ExprContext implements Serializable {
         return this.getGenericValue().asString();
     }
 
-    public Schema getSchema() {
-        return this.schema;
-    }
-
-    public void setSchema(final Schema schema) {
-        if (schema != null)
-            this.schema = schema;
-    }
-
     public Boolean evaluate(final Object object) throws HBqlException {
 
         this.validateTypes();
@@ -50,15 +38,9 @@ public class ExprTree extends ExprContext implements Serializable {
         // Set it once per evaluation
         DateLiteral.resetNow();
 
-        this.start = System.nanoTime();
         final boolean retval = (this.getGenericValue() == null) || (Boolean)this.getGenericValue().getValue(object);
-        this.end = System.nanoTime();
 
         return retval;
-    }
-
-    public long getElapsedNanos() {
-        return this.end - this.start;
     }
 
     public void setSchema(final Schema schema, final List<String> fieldList) throws HBqlException {
