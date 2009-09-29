@@ -36,13 +36,8 @@ public class ParserSupport extends Parser {
         super(input, state);
     }
 
-    protected Schema getSchema() {
-        return this.schema;
-    }
-
     protected void setSchema(final Schema schema) {
-        if (schema != null)
-            this.schema = schema;
+        this.schema = schema;
     }
 
     protected Schema setSchema(final String tablename) throws FailedPredicateException {

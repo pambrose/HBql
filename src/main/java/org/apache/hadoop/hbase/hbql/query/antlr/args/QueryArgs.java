@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -19,25 +20,27 @@ public class QueryArgs {
     private final List<String> columnNameList = Lists.newArrayList();
     private final String tableName;
     private final WhereArgs whereExpr;
-    private final HBaseSchema schema;
+
+    private HBaseSchema schema = null;
 
     public QueryArgs(final TokenStream input,
                      final List<SelectColumn> selectColumnList,
                      final String tableName,
-                     final WhereArgs whereExpr,
-                     final HBaseSchema schema) throws RecognitionException {
+                     final WhereArgs whereExpr) throws RecognitionException {
         this.tableName = tableName;
         this.selectColumnList = selectColumnList;
         this.whereExpr = whereExpr;
-        this.schema = schema;
-
-        this.validateSelectColumns(input);
     }
 
-    private void validateSelectColumns(final TokenStream input) throws RecognitionException {
+    public void validate() throws HBqlException {
+        this.schema = HBaseSchema.findSchema(this.getTableName());
+        this.validateSelectColumns();
+    }
+
+    private void validateSelectColumns() throws HBqlException {
 
         for (final SelectColumn column : this.getSelectColumnList()) {
-            final String familyName = column.getFamilyName();
+
             switch (column.getType()) {
                 case ALLTABLECOLUMNS:
                     this.columnNameList.addAll(this.getSchema().getFamilyQualifiedNameList());
@@ -45,7 +48,7 @@ public class QueryArgs {
 
                 case ALLFAMILYCOLUMNS:
                     if (!this.getSchema().containsFamilyNameInFamilyNameMap(column.getFamilyName()))
-                        throw new RecognitionException(input);
+                        throw new HBqlException("Invalid family name: " + column.getFamilyName());
 
                     this.columnNameList.addAll(this.getSchema().getFieldList(column.getFamilyName()));
                     break;

@@ -39,6 +39,8 @@ public class SelectExpressionsTest extends TestSupport {
         assertSelectColumnsMatchTrue("SELECT f1:*, f2:val1 FROM tab1", "f1:val1, f1:val2, f2:val1");
         assertSelectColumnsMatchTrue("SELECT f1:*, f2:val1, f3:* FROM tab1", "f1:val1, f1:val2, f2:val1, f3:val1, f3:val2");
 
+        assertSelectColumnsMatchTrue("SELECT f1:val1, f2:val1, f3:* FROM tab1", "f1:val1, f2:val1, f3:val1, f3:val2");
+
     }
 
 }

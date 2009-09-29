@@ -117,7 +117,9 @@ public class HBql {
     public static QueryArgs parseQuery(final String input) throws HBqlException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.selectStmt();
+            final QueryArgs args = parser.selectStmt();
+            args.validate();
+            return args;
         }
         catch (RecognitionException e) {
             e.printStackTrace();

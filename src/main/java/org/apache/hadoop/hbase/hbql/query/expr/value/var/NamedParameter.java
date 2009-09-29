@@ -25,10 +25,10 @@ import java.util.List;
 public class NamedParameter implements GenericValue {
 
     private ExprContext context = null;
-    private final String paramName;
-
     private GenericValue typedExpr = null;
     private List<GenericValue> typedExprList = null;
+
+    private final String paramName;
 
     public NamedParameter(final String paramName) {
         this.paramName = paramName;
@@ -107,6 +107,10 @@ public class NamedParameter implements GenericValue {
     public void setContext(final ExprContext context) throws HBqlException {
         this.context = context;
         this.context.addNamedParameter(this);
+    }
+
+    public ExprContext getContext() {
+        return this.context;
     }
 
     @Override

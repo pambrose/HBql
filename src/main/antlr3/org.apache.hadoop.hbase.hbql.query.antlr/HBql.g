@@ -87,13 +87,13 @@ defineAttrib returns [VarDesc retval]
 
 deleteStmt  returns [DeleteCmd retval]
 @init {Schema schema = null;}
-	: keyDELETE keyFROM t=ID 			{schema = setSchema($t.text);}
-	  w=whereValue[schema]?				{retval = new DeleteCmd($t.text, $w.retval);};
+	: keyDELETE keyFROM t=ID w=whereValue[schema]?			
+	  						{retval = new DeleteCmd($t.text, $w.retval);};
 
 selectStmt returns [QueryArgs retval]
 @init {Schema schema = null;}
-	: keySELECT c=selectColumns keyFROM t=ID 	{schema = setSchema($t.text);}
-	  w=whereValue[schema]?				{retval = new QueryArgs(input, $c.retval, $t.text, $w.retval, (HBaseSchema)getSchema());};
+	: keySELECT c=selectColumns keyFROM t=ID w=whereValue[schema]?			
+							{retval = new QueryArgs(input, $c.retval, $t.text, $w.retval);};
 
 selectColumns returns [List<SelectColumn> retval]
 	: STAR						{retval = Lists.newArrayList(); retval.add( SelectColumn.newAllColumns());}
