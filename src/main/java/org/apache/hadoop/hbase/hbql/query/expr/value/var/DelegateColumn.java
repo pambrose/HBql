@@ -31,7 +31,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
     }
 
     @Override
-    public String getName() {
+    public String getVariableName() {
         return this.attribName;
     }
 
@@ -49,10 +49,10 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
     @Override
     public void setContext(ExprContext context) throws HBqlException {
 
-        final VariableAttrib attrib = context.getSchema().getVariableAttribByVariableName(this.getName());
+        final VariableAttrib attrib = context.getSchema().getVariableAttribByVariableName(this.getVariableName());
 
         if (attrib == null)
-            throw new HBqlException("Invalid variable: " + this.getName());
+            throw new HBqlException("Invalid variable: " + this.getVariableName());
 
         switch (attrib.getFieldType()) {
 

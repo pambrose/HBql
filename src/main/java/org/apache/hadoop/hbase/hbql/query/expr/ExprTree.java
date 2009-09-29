@@ -53,8 +53,8 @@ public class ExprTree extends ExprContext implements Serializable {
             final List<String> selectList = schema.getAliasAndQualifiedNameFieldList(fieldList);
 
             for (final GenericColumn var : this.getColumnList()) {
-                if (!selectList.contains(var.getName()))
-                    throw new HBqlException("Variable " + var.getName() + " used in where clause but it is not "
+                if (!selectList.contains(var.getVariableName()))
+                    throw new HBqlException("Variable " + var.getVariableName() + " used in where clause but it is not "
                                             + "not in the select list");
             }
         }

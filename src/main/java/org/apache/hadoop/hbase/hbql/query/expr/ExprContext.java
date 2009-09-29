@@ -33,11 +33,11 @@ public class ExprContext {
         return this.columnList;
     }
 
-    public List<String> getColumnNameList() {
+    public List<String> getFamilyQualifiedColumnNameList() {
         final List<String> nameList = Lists.newArrayList();
 
         for (final GenericColumn col : this.getColumnList())
-            nameList.add(col.getName());
+            nameList.add(col.getFamilyQualifiedName());
 
         return nameList;
     }

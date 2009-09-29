@@ -52,7 +52,7 @@ public class QueryArgs {
 
                 case GENERICEXPR:
                     column.setSchema(schema);
-                    this.columnNameList.addAll(column.getColumnNameList());
+                    this.columnNameList.addAll(column.getFamilyQualifiedColumnNameList());
                     break;
             }
         }

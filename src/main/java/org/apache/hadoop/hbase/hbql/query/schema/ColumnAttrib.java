@@ -14,20 +14,20 @@ import java.lang.reflect.Method;
  */
 public abstract class ColumnAttrib extends VariableAttrib {
 
-    private final String family, column, getter, setter;
+    private final String familyName, columnName, getter, setter;
     private final boolean mapKeysAsColumns;
 
     protected transient Method getterMethod = null, setterMethod = null;
 
     public ColumnAttrib(final FieldType fieldType,
-                        final String family,
-                        final String column,
+                        final String familyName,
+                        final String columnName,
                         final String getter,
                         final String setter,
                         final boolean mapKeysAsColumns) throws HBqlException {
         super(fieldType);
-        this.family = family;
-        this.column = column;
+        this.familyName = familyName;
+        this.columnName = columnName;
         this.getter = getter;
         this.setter = setter;
         this.mapKeysAsColumns = mapKeysAsColumns;
@@ -109,11 +109,11 @@ public abstract class ColumnAttrib extends VariableAttrib {
     }
 
     public String getFamilyName() {
-        return this.family;
+        return this.familyName;
     }
 
     public String getColumnName() {
-        return this.column;
+        return this.columnName;
     }
 
     public boolean isMapKeysAsColumns() {
