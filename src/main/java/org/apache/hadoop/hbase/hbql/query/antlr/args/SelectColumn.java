@@ -20,7 +20,7 @@ public class SelectColumn extends ExprContext {
 
     private SelectColumn(final Type type, final String familyName, final GenericValue genericValue) {
         this.type = type;
-        this.familyName = familyName;
+        this.familyName = (familyName == null) ? null : familyName.replace(" ", "").replace(":*", "");
         this.genericValue = genericValue;
     }
 
