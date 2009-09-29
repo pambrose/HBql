@@ -25,6 +25,14 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
         super(null, not, arg0, arg1, arg2);
     }
 
+    private GenericBetweenStmt getTypedExpr() {
+        return typedExpr;
+    }
+
+    private void setTypedExpr(final GenericBetweenStmt typedExpr) {
+        this.typedExpr = typedExpr;
+    }
+
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
@@ -34,24 +42,24 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
         final Class<? extends GenericValue> type3 = this.getArg(2).validateTypes(this, false);
 
         if (HUtil.isParentClass(StringValue.class, type1, type2, type3))
-            this.typedExpr = new StringBetweenStmt(this.getArg(0), this.isNot(), this.getArg(1), this.getArg(2));
+            this.setTypedExpr(new StringBetweenStmt(this.getArg(0), this.isNot(), this.getArg(1), this.getArg(2)));
         else if (HUtil.isParentClass(NumberValue.class, type1, type2, type3))
-            this.typedExpr = new NumberBetweenStmt(this.getArg(0), this.isNot(), this.getArg(1), this.getArg(2));
+            this.setTypedExpr(new NumberBetweenStmt(this.getArg(0), this.isNot(), this.getArg(1), this.getArg(2)));
         else if (HUtil.isParentClass(DateValue.class, type1, type2, type3))
-            this.typedExpr = new DateBetweenStmt(this.getArg(0), this.isNot(), this.getArg(1), this.getArg(2));
+            this.setTypedExpr(new DateBetweenStmt(this.getArg(0), this.isNot(), this.getArg(1), this.getArg(2)));
         else
             this.throwInvalidTypeException(type1, type2, type3);
 
-        return this.typedExpr.validateTypes(parentExpr, false);
+        return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        return this.typedExpr.getOptimizedValue();
+        return this.getTypedExpr().getOptimizedValue();
     }
 
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
-        return this.typedExpr.getValue(object);
+        return this.getTypedExpr().getValue(object);
     }
 }

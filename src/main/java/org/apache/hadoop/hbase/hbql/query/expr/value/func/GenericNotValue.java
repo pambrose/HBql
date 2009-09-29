@@ -12,7 +12,7 @@ import java.util.List;
  * Date: Aug 31, 2009
  * Time: 2:00:25 PM
  */
-public abstract class GenericNotValue extends GenericExpr implements BooleanValue {
+public abstract class GenericNotValue<T> extends GenericExpr<T> implements BooleanValue {
 
     private final boolean not;
 

@@ -19,23 +19,31 @@ public class DelegateNullCompare extends GenericNullCompare {
         super(null, not, expr);
     }
 
+    private GenericNullCompare getTypedExpr() {
+        return typedExpr;
+    }
+
+    private void setTypedExpr(final GenericNullCompare typedExpr) {
+        this.typedExpr = typedExpr;
+    }
+
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
         this.validateParentClass(StringValue.class, this.getArg(0).validateTypes(this, false));
 
-        this.typedExpr = new StringNullCompare(this.isNot(), this.getArg(0));
+        this.setTypedExpr(new StringNullCompare(this.isNot(), this.getArg(0)));
 
-        return this.typedExpr.validateTypes(parentExpr, false);
+        return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        return this.typedExpr.getOptimizedValue();
+        return this.getTypedExpr().getOptimizedValue();
     }
 
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
-        return this.typedExpr.getValue(object);
+        return this.getTypedExpr().getValue(object);
     }
 }

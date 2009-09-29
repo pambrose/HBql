@@ -23,6 +23,14 @@ public class DelegateTernary extends GenericTernary {
         super(null, arg0, arg1, arg2);
     }
 
+    private GenericTernary getTypedExpr() {
+        return typedExpr;
+    }
+
+    private void setTypedExpr(final GenericTernary typedExpr) {
+        this.typedExpr = typedExpr;
+    }
+
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
@@ -33,27 +41,27 @@ public class DelegateTernary extends GenericTernary {
         final Class<? extends GenericValue> type2 = this.getArg(2).validateTypes(this, false);
 
         if (HUtil.isParentClass(StringValue.class, type1, type2))
-            this.typedExpr = new StringTernary(this.getArg(0), this.getArg(1), this.getArg(2));
+            this.setTypedExpr(new StringTernary(this.getArg(0), this.getArg(1), this.getArg(2)));
         else if (HUtil.isParentClass(NumberValue.class, type1, type2))
-            this.typedExpr = new NumberTernary(this.getArg(0), this.getArg(1), this.getArg(2));
+            this.setTypedExpr(new NumberTernary(this.getArg(0), this.getArg(1), this.getArg(2)));
         else if (HUtil.isParentClass(DateValue.class, type1, type2))
-            this.typedExpr = new DateTernary(this.getArg(0), this.getArg(1), this.getArg(2));
+            this.setTypedExpr(new DateTernary(this.getArg(0), this.getArg(1), this.getArg(2)));
         else if (HUtil.isParentClass(BooleanValue.class, type1, type2))
-            this.typedExpr = new BooleanTernary(this.getArg(0), this.getArg(1), this.getArg(2));
+            this.setTypedExpr(new BooleanTernary(this.getArg(0), this.getArg(1), this.getArg(2)));
         else
             this.throwInvalidTypeException(type1, type2);
 
-        return this.typedExpr.validateTypes(parentExpr, false);
+        return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        return this.typedExpr.getOptimizedValue();
+        return this.getTypedExpr().getOptimizedValue();
     }
 
     @Override
     public Object getValue(final Object object) throws HBqlException {
-        return this.typedExpr.getValue(object);
+        return this.getTypedExpr().getValue(object);
     }
 
 }

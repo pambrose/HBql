@@ -24,6 +24,14 @@ public class DelegateInStmt extends GenericInStmt {
         super(arg0, not, inList);
     }
 
+    private GenericInStmt getTypedExpr() {
+        return typedExpr;
+    }
+
+    private void setTypedExpr(final GenericInStmt typedExpr) {
+        this.typedExpr = typedExpr;
+    }
+
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
@@ -31,15 +39,15 @@ public class DelegateInStmt extends GenericInStmt {
         final Class<? extends GenericValue> type = this.getArg(0).validateTypes(this, false);
 
         if (HUtil.isParentClass(StringValue.class, type))
-            this.typedExpr = new StringInStmt(this.getArg(0), this.isNot(), this.getInList());
+            this.setTypedExpr(new StringInStmt(this.getArg(0), this.isNot(), this.getInList()));
         else if (HUtil.isParentClass(NumberValue.class, type))
-            this.typedExpr = new NumberInStmt(this.getArg(0), this.isNot(), this.getInList());
+            this.setTypedExpr(new NumberInStmt(this.getArg(0), this.isNot(), this.getInList()));
         else if (HUtil.isParentClass(DateValue.class, type))
-            this.typedExpr = new DateInStmt(this.getArg(0), this.isNot(), this.getInList());
+            this.setTypedExpr(new DateInStmt(this.getArg(0), this.isNot(), this.getInList()));
         else
             this.throwInvalidTypeException(type);
 
-        return this.typedExpr.validateTypes(parentExpr, false);
+        return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
     @Override
@@ -49,12 +57,12 @@ public class DelegateInStmt extends GenericInStmt {
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        return this.typedExpr.getOptimizedValue();
+        return this.getTypedExpr().getOptimizedValue();
     }
 
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
-        return this.typedExpr.getValue(object);
+        return this.getTypedExpr().getValue(object);
     }
 
 }

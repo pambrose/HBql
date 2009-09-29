@@ -22,6 +22,14 @@ public class DelegateCalculation extends GenericCalculation {
         super(null, arg0, operator, arg1);
     }
 
+    private GenericCalculation getTypedExpr() {
+        return typedExpr;
+    }
+
+    private void setTypedExpr(final GenericCalculation typedExpr) {
+        this.typedExpr = typedExpr;
+    }
+
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
@@ -30,24 +38,24 @@ public class DelegateCalculation extends GenericCalculation {
         final Class<? extends GenericValue> type2 = this.getArg(1).validateTypes(this, false);
 
         if (HUtil.isParentClass(StringValue.class, type1, type2))
-            typedExpr = new StringCalculation(this.getArg(0), this.getOperator(), this.getArg(1));
+            this.setTypedExpr(new StringCalculation(this.getArg(0), this.getOperator(), this.getArg(1)));
         else if (HUtil.isParentClass(NumberValue.class, type1, type2))
-            typedExpr = new NumberCalculation(this.getArg(0), this.getOperator(), this.getArg(1));
+            this.setTypedExpr(new NumberCalculation(this.getArg(0), this.getOperator(), this.getArg(1)));
         else if (HUtil.isParentClass(DateValue.class, type1, type2))
-            typedExpr = new DateCalculation(this.getArg(0), this.getOperator(), this.getArg(1));
+            this.setTypedExpr(new DateCalculation(this.getArg(0), this.getOperator(), this.getArg(1)));
         else
             this.throwInvalidTypeException(type1, type2);
 
-        return this.typedExpr.validateTypes(parentExpr, false);
+        return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        return this.typedExpr.getOptimizedValue();
+        return this.getTypedExpr().getOptimizedValue();
     }
 
     @Override
     public Object getValue(final Object object) throws HBqlException {
-        return this.typedExpr.getValue(object);
+        return this.getTypedExpr().getValue(object);
     }
 }

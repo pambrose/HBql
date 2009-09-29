@@ -23,7 +23,7 @@ import java.util.List;
  * Date: Sep 10, 2009
  * Time: 11:33:09 AM
  */
-public abstract class GenericExpr implements GenericValue {
+public abstract class GenericExpr<T> implements GenericValue {
 
     public enum Type {
 
