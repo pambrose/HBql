@@ -69,39 +69,37 @@ public class HBaseParser extends Parser {
 
     protected GenericValue findVariable(final String var) throws FailedPredicateException {
 
-        String errMsg = "No schema set";
-        if (this.getSchema() != null) {
+        if (this.getSchema() != null)
+            throw new FailedPredicateException(input, "findVariable()", "No schema set");
 
-            final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(var);
+        final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(var);
 
-            if (attrib != null) {
-                switch (attrib.getFieldType()) {
+        if (attrib == null)
+            throw new FailedPredicateException(input, "findVariable()", "Invalid variable: " + var);
 
-                    case KeyType:
-                    case StringType:
-                        return new StringColumn(attrib);
+        switch (attrib.getFieldType()) {
 
-                    case LongType:
-                        return new LongColumn(attrib);
+            case KeyType:
+            case StringType:
+                return new StringColumn(attrib);
 
-                    case IntegerType:
-                        return new IntegerColumn(attrib);
+            case LongType:
+                return new LongColumn(attrib);
 
-                    case DateType:
-                        return new DateColumn(attrib);
+            case IntegerType:
+                return new IntegerColumn(attrib);
 
-                    case BooleanType:
-                        return new BooleanColumn(attrib);
+            case DateType:
+                return new DateColumn(attrib);
 
-                    default:
-                        errMsg = "Invalid type: " + attrib.getFieldType().name();
-                }
-            }
-            else {
-                errMsg = "Invalid variable: " + var;
-            }
+            case BooleanType:
+                return new BooleanColumn(attrib);
+
+            default:
+                throw new FailedPredicateException(input,
+                                                   "findVariable()",
+                                                   "Invalid type: " + attrib.getFieldType().name());
         }
-        throw new FailedPredicateException(input, "findVariable()", errMsg);
     }
 
     /*

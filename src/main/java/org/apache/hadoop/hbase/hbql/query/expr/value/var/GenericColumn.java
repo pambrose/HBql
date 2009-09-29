@@ -15,29 +15,21 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  */
 public abstract class GenericColumn<T extends GenericValue> implements GenericValue {
 
-    private final String attribName;
     private final FieldType fieldType;
     private final VariableAttrib variableAttrib;
 
     private ExprContext context = null;
 
     protected GenericColumn(final VariableAttrib attrib, final FieldType fieldType) {
-        this.attribName = attrib.getVariableName();
-        this.fieldType = fieldType;
         this.variableAttrib = attrib;
-    }
-
-    protected GenericColumn(final String attribName) {
-        this.attribName = attribName;
-        this.fieldType = null;
-        this.variableAttrib = null;
+        this.fieldType = fieldType;
     }
 
     public String getName() {
-        return this.attribName;
+        return this.getVariableAttrib().getVariableName();
     }
 
-    public FieldType getFieldType() {
+    private FieldType getFieldType() {
         return this.fieldType;
     }
 
@@ -60,7 +52,7 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         return this.context;
     }
 
-    protected VariableAttrib getVariableAttrib() throws HBqlException {
+    protected VariableAttrib getVariableAttrib() {
         return this.variableAttrib;
     }
 
