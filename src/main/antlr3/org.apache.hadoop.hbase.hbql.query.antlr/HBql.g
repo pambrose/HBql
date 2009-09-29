@@ -90,7 +90,7 @@ deleteStmt  returns [DeleteCmd retval]
 	: keyDELETE keyFROM t=ID 			{schema = setSchema($t.text);}
 	  w=whereValue[schema]?				{retval = new DeleteCmd($t.text, $w.retval);};
 
-selectStmt [Schema es] returns [QueryArgs retval]
+selectStmt returns [QueryArgs retval]
 @init {Schema schema = null;}
 	: keySELECT c=selectColumns keyFROM t=ID 	{schema = setSchema($t.text);}
 	  w=whereValue[schema]?				{retval = new QueryArgs(input, $c.retval, $t.text, $w.retval, (HBaseSchema)getSchema());};

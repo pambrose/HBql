@@ -114,10 +114,10 @@ public class HBql {
         }
     }
 
-    public static QueryArgs parseQuery(final String input, final Schema schema) throws HBqlException {
+    public static QueryArgs parseQuery(final String input) throws HBqlException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.selectStmt(schema);
+            return parser.selectStmt();
         }
         catch (RecognitionException e) {
             e.printStackTrace();
