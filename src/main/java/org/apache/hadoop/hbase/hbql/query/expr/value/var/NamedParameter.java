@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class NamedParameter implements GenericValue {
 
-    private ExprTree context = null;
+    private ExprContext context = null;
     private final String paramName;
 
     private GenericValue typedExpr = null;
@@ -104,7 +104,7 @@ public class NamedParameter implements GenericValue {
     }
 
     @Override
-    public void setContext(final ExprTree context) {
+    public void setContext(final ExprContext context) {
         this.context = context;
         this.context.addNamedParameter(this);
     }

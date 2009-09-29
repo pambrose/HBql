@@ -11,9 +11,9 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class IntegerVariable extends GenericVariable<NumberValue> implements NumberValue {
+public class IntegerColumn extends GenericColumn<NumberValue> implements NumberValue {
 
-    public IntegerVariable(VariableAttrib attrib) {
+    public IntegerColumn(VariableAttrib attrib) {
         super(attrib, FieldType.IntegerType);
     }
 

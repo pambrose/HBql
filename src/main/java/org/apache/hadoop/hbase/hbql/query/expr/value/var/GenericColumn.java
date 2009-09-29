@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
@@ -13,21 +13,21 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  * Date: Aug 31, 2009
  * Time: 12:30:57 PM
  */
-public abstract class GenericVariable<T extends GenericValue> implements GenericValue {
+public abstract class GenericColumn<T extends GenericValue> implements GenericValue {
 
     private final String attribName;
     private final FieldType fieldType;
     private final VariableAttrib variableAttrib;
 
-    private ExprTree context = null;
+    private ExprContext context = null;
 
-    protected GenericVariable(final VariableAttrib attrib, final FieldType fieldType) {
+    protected GenericColumn(final VariableAttrib attrib, final FieldType fieldType) {
         this.attribName = attrib.getVariableName();
         this.fieldType = fieldType;
         this.variableAttrib = attrib;
     }
 
-    protected GenericVariable(final String attribName) {
+    protected GenericColumn(final String attribName) {
         this.attribName = attribName;
         this.fieldType = null;
         this.variableAttrib = null;
@@ -51,12 +51,12 @@ public abstract class GenericVariable<T extends GenericValue> implements Generic
     }
 
     @Override
-    public void setContext(final ExprTree context) {
+    public void setContext(final ExprContext context) {
         this.context = context;
         this.getContext().addVariable(this);
     }
 
-    protected ExprTree getContext() {
+    protected ExprContext getContext() {
         return this.context;
     }
 

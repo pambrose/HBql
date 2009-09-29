@@ -29,6 +29,17 @@ public abstract class Schema implements Serializable {
         return retval;
     }
 
+    public List<String> getFieldList(final String familyName) {
+        final List<String> retval = Lists.newArrayList();
+        for (final VariableAttrib attrib : this.getVariableAttribs()) {
+            if (attrib.isKeyAttrib())
+                continue;
+            if (attrib.getFamilyName().length() > 0 && attrib.getFamilyName().equals(familyName))
+                retval.add(attrib.getVariableName());
+        }
+        return retval;
+    }
+
     public List<String> getAliasAndQualifiedNameFieldList(final List<String> fieldList) {
 
         final List<String> allVersionList = Lists.newArrayList();

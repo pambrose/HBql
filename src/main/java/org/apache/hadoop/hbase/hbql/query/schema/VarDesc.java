@@ -13,6 +13,7 @@ import java.util.List;
  * Time: 11:38:01 AM
  */
 public class VarDesc implements Serializable {
+
     private String variableName;
     private String familyQualifiedName;
     private String typeName;

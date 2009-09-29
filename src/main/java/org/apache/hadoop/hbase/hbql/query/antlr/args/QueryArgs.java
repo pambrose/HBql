@@ -1,6 +1,9 @@
 package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
-import org.apache.hadoop.hbase.hbql.query.schema.Schema;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.TokenStream;
+import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
 
@@ -12,23 +15,54 @@ import java.util.List;
  */
 public class QueryArgs {
 
-    private final List<String> columnList;
+    private final List<SelectColumn> selectColumnList;
+    private final List<String> columnNameList = Lists.newArrayList();
     private final String tableName;
     private final WhereArgs whereExpr;
-    private final Schema schema;
+    private final HBaseSchema schema;
 
-    public QueryArgs(final List<String> columnList,
+    public QueryArgs(final TokenStream input,
+                     final List<SelectColumn> selectColumnList,
                      final String tableName,
                      final WhereArgs whereExpr,
-                     final Schema schema) {
+                     final HBaseSchema schema) throws RecognitionException {
         this.tableName = tableName;
-        this.columnList = columnList;
+        this.selectColumnList = selectColumnList;
         this.whereExpr = whereExpr;
         this.schema = schema;
+
+        this.validateSelectColumns(input);
     }
 
-    public List<String> getColumns() {
-        return this.columnList;
+    private void validateSelectColumns(final TokenStream input) throws RecognitionException {
+
+        for (final SelectColumn column : this.getSelectColumnList()) {
+            switch (column.getType()) {
+                case ALLTABLECOLUMNS:
+                    this.columnNameList.addAll(this.getSchema().getFieldList());
+                    return;
+
+                case ALLFAMILYCOLUMNS:
+                    if (!this.getSchema().containsFamilyNameInFamilyNameMap(column.getFamilyName()))
+                        throw new RecognitionException(input);
+
+                    this.columnNameList.addAll(this.getSchema().getFieldList(column.getFamilyName()));
+                    break;
+
+                case GENERICEXPR:
+                    column.setContext();
+                    this.columnNameList.addAll(column.getColumnNameList());
+                    break;
+            }
+        }
+    }
+
+    public List<SelectColumn> getSelectColumnList() {
+        return this.selectColumnList;
+    }
+
+    public List<String> getColumnNameList() {
+        return columnNameList;
     }
 
     public String getTableName() {
@@ -42,7 +76,7 @@ public class QueryArgs {
             return new WhereArgs();
     }
 
-    public Schema getSchema() {
+    public HBaseSchema getSchema() {
         return this.schema;
     }
 }

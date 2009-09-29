@@ -43,6 +43,11 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     @Override
+    public String getFamilyName() {
+        return this.getVarDesc().getFamilyName();
+    }
+
+    @Override
     public String toString() {
         return this.getVariableName() + " - " + this.getFamilyQualifiedName();
     }

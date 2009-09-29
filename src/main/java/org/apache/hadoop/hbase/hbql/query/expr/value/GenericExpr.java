@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
@@ -101,7 +101,7 @@ public abstract class GenericExpr implements GenericValue {
         return true;
     }
 
-    public void setContext(final ExprTree context) {
+    public void setContext(final ExprContext context) {
         for (final GenericValue val : this.getArgList())
             val.setContext(context);
     }

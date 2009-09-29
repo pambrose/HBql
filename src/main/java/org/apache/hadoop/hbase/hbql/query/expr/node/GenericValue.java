@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.node;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 
 import java.io.Serializable;
 
@@ -23,7 +23,7 @@ public interface GenericValue extends Serializable {
 
     boolean isAConstant() throws HBqlException;
 
-    void setContext(ExprTree context);
+    void setContext(ExprContext context);
 
     String asString();
 

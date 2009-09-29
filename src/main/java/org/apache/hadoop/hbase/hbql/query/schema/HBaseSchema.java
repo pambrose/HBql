@@ -124,7 +124,7 @@ public abstract class HBaseSchema extends Schema {
         return this.getColumnAttribListByFamilyNameMap().get(familyName);
     }
 
-    protected boolean containsFamilyNameInFamilyNameMap(final String s) {
+    public boolean containsFamilyNameInFamilyNameMap(final String s) {
         return this.getColumnAttribListByFamilyNameMap().containsKey(s);
     }
 

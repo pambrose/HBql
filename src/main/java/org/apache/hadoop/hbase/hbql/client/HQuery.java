@@ -37,13 +37,14 @@ public class HQuery<T> {
         this.query = query;
 
         final QueryArgs args = HBql.parseQuery(this.getQuery(), (Schema)null);
-        this.schema = (HBaseSchema)args.getSchema();
+
+        this.schema = args.getSchema();
 
         final WhereArgs where = args.getWhereExpr();
 
         this.queryLimit = where.getQueryLimit();
 
-        this.fieldList = (args.getColumns() == null) ? this.getSchema().getFieldList() : args.getColumns();
+        this.fieldList = args.getColumnNameList();
 
         this.clientExprTree = where.getClientExprTree();
         this.clientExprTree.setSchema(this.getSchema(), this.getFieldList());

@@ -6,7 +6,7 @@ import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericVariable;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -119,8 +119,8 @@ public class WhereExprTests {
             final List<String> valList = Lists.newArrayList(vals);
 
             final List<String> attribList = Lists.newArrayList();
-            for (final GenericVariable variable : tree.getVariableList())
-                attribList.add(variable.getName());
+            for (final GenericColumn column : tree.getColumnList())
+                attribList.add(column.getName());
 
             boolean retval = true;
 

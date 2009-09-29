@@ -11,11 +11,11 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.DelegateCalculation;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.BooleanVariable;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.DateVariable;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.IntegerVariable;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.LongVariable;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.StringVariable;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.BooleanColumn;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.DateColumn;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.IntegerColumn;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.LongColumn;
+import org.apache.hadoop.hbase.hbql.query.expr.value.var.StringColumn;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
@@ -78,19 +78,19 @@ public class HBaseParser extends Parser {
 
                     case KeyType:
                     case StringType:
-                        return new StringVariable(attrib);
+                        return new StringColumn(attrib);
 
                     case LongType:
-                        return new LongVariable(attrib);
+                        return new LongColumn(attrib);
 
                     case IntegerType:
-                        return new IntegerVariable(attrib);
+                        return new IntegerColumn(attrib);
 
                     case DateType:
-                        return new DateVariable(attrib);
+                        return new DateColumn(attrib);
 
                     case BooleanType:
-                        return new BooleanVariable(attrib);
+                        return new BooleanColumn(attrib);
 
                     default:
                         System.out.println("Invalid type: " + attrib.getFieldType().name());

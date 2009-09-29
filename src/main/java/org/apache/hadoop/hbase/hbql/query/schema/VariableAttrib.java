@@ -25,6 +25,8 @@ public abstract class VariableAttrib implements Serializable {
 
     public abstract String getFamilyQualifiedName();
 
+    public abstract String getFamilyName();
+
     public abstract Object getCurrentValue(final Object recordObj) throws HBqlException;
 
     protected abstract void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException;

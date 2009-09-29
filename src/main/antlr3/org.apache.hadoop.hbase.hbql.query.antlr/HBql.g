@@ -53,14 +53,6 @@ package org.apache.hadoop.hbase.hbql.query.antlr;
 import org.apache.hadoop.hbase.hbql.query.util.*;
 }
 
-selectStmt [Schema es] returns [QueryArgs retval]
-	: keySELECT (STAR | c=columnList) keyFROM t=ID 	{setSchema($t.text);}
-	  w=whereValue[es]?				{retval = new QueryArgs($c.retval, $t.text, $w.retval, getSchema());};
-
-columnList returns [List<String> retval]
-@init {retval = Lists.newArrayList();}
-	: c1=column {retval.add($c1.text);} (COMMA c2=column {retval.add($c2.text);})*;
-
 connectionExec returns [ConnectionCmd retval]
 options {backtrack=true;}	
 	: keyDROP keyTABLE t=ID 		 	{retval = new DropCmd($t.text);}
@@ -74,7 +66,7 @@ options {backtrack=true;}
 	;
 
 schemaExec returns [SchemaManagerCmd retval]
-	: def=defineStmt 				{retval = $def.retval;}
+	: d=defineStmt 					{retval = $d.retval;}
 	;
 
 createStmt returns [CreateCmd retval]
@@ -82,8 +74,8 @@ createStmt returns [CreateCmd retval]
 	;
 	
 defineStmt returns [DefineCmd retval]
-	: keyDEFINE keyTABLE t=ID (keyALIAS alias=ID)? LPAREN a=attribList RPAREN
-							{retval = new DefineCmd($t.text, $alias.text, $a.retval);};
+	: keyDEFINE keyTABLE t=ID (keyALIAS a=ID)? LPAREN l=attribList RPAREN
+							{retval = new DefineCmd($t.text, $a.text, $l.retval);};
 
 attribList returns [List<VarDesc> retval] 
 @init {retval = Lists.newArrayList();}
@@ -98,7 +90,30 @@ deleteStmt  returns [DeleteCmd retval]
 	: keyDELETE keyFROM t=ID 			{schema = setSchema($t.text);}
 	  w=whereValue[schema]?				{retval = new DeleteCmd($t.text, $w.retval);};
 
-whereValue [Schema es] returns [WhereArgs retval]
+selectStmt [Schema es] returns [QueryArgs retval]
+@init {Schema schema = null;}
+	: keySELECT c=selectColumns keyFROM t=ID 	{schema = setSchema($t.text);}
+	  w=whereValue[schema]?				{retval = new QueryArgs(input, $c.retval, $t.text, $w.retval, (HBaseSchema)getSchema());};
+
+selectColumns returns [List<SelectColumn> retval]
+	: STAR						{retval = Lists.newArrayList(); retval.add( SelectColumn.newAllColumns());}
+	| c=columnList					{retval = $c.retval;}
+	;
+	
+columnList returns [List<SelectColumn> retval]
+@init {retval = Lists.newArrayList();}
+	: c1=column {retval.add($c1.retval);} (COMMA c2=column {retval.add($c2.retval);})*;
+
+column returns [SelectColumn retval]
+	: c=valueExpr					{$column.retval = SelectColumn.newColumn($c.retval);}
+	| f=familyRef					{$column.retval = SelectColumn.newFamilyColumns($f.retval);}
+	;
+
+familyRef returns [String retval]
+	: f=ID COLON STAR				{retval = $f.text;}
+	;	
+
+whereValue [Schema schema] returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
 	: keyWITH
 	  k=keysRange?					{retval.setKeyRangeArgs($k.retval);}
@@ -106,8 +121,8 @@ whereValue [Schema es] returns [WhereArgs retval]
 	  v=versions?					{retval.setVersionArgs($v.retval);}
 	  l=scanLimit?					{retval.setScanLimitArgs($l.retval);}
 	  q=queryLimit?					{retval.setQueryLimitArgs($q.retval);}
-	  s=serverFilter[es]?				{retval.setServerExprTree($s.retval);}
-	  c=clientFilter[es]?				{retval.setClientExprTree($c.retval);}
+	  s=serverFilter[schema]?			{retval.setServerExprTree($s.retval);}
+	  c=clientFilter[schema]?			{retval.setClientExprTree($c.retval);}
 	;
 
 keysRange returns [KeyRangeArgs retval]
@@ -132,12 +147,12 @@ scanLimit returns [LimitArgs retval]
 queryLimit returns [LimitArgs retval]
 	: keyQUERY keyLIMIT v=integerLiteral		{retval = new LimitArgs($v.retval);};
 	
-clientFilter [Schema es] returns [ExprTree retval]
-	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr[es]	
+clientFilter [Schema schema] returns [ExprTree retval]
+	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr[schema]	
 							{retval = $w.retval;};
 	
-serverFilter [Schema es] returns [ExprTree retval]
-	: keySERVER keyFILTER keyWHERE w=descWhereExpr[es]	
+serverFilter [Schema schema] returns [ExprTree retval]
+	: keySERVER keyFILTER keyWHERE w=descWhereExpr[schema]	
 							{retval = $w.retval;};
 	
 keyRangeList returns [List<KeyRangeArgs.Range> retval]
@@ -153,8 +168,8 @@ nodescWhereExpr [Schema es] returns [ExprTree retval]
 @init {setSchema(es);}
 	 : e=booleanExpr				{retval = ExprTree.newExprTree($e.retval);};
 
-descWhereExpr [Schema es] returns [ExprTree retval]
-@init {setSchema(es);}
+descWhereExpr [Schema schema] returns [ExprTree retval]
+@init {setSchema(schema);}
 	: s=schemaDesc? 				{if ($s.retval != null) setSchema($s.retval);}			
 	  e=booleanExpr					{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);}
 	;
@@ -300,8 +315,6 @@ valueFunctions returns [GenericValue retval]
 							{retval = new DelegateTernary($v1.retval, $v2.retval, $v3.retval);}
 	;
 			
-column 	: c=varRef;
-	
 schemaDesc returns [Schema retval]
 	: LCURLY a=attribList RCURLY			{retval = HUtil.newDefinedSchema(input, $a.retval);};
 	
@@ -336,7 +349,7 @@ paramRef: PARAM;
 		
 INT	: DIGIT+;
 
-ID	: CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)* 		// DOOLAR is for inner class table names
+ID	: CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)* 		// DOLLAR is for inner class table names
 	| CHAR (CHAR | DOT | MINUS | DIGIT)* COLON (CHAR | DOT | MINUS | DIGIT)*
 	;
 	
