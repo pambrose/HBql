@@ -209,7 +209,7 @@ options {backtrack=true;}
 	
 booleanAtom returns [GenericValue retval]
 	: b=booleanLiteral				{retval = $b.retval;}
-	| v=varRef					{retval = this.getVariable($v.text);}
+	| v=varRef					{retval = this.findVariable($v.text);}
 	| p=paramRef					{retval = new NamedParameter($p.text);}
 	;
 									

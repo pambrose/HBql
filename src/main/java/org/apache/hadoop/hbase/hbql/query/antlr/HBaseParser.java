@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.antlr;
 
 import org.antlr.runtime.BitSet;
+import org.antlr.runtime.FailedPredicateException;
 import org.antlr.runtime.IntStream;
 import org.antlr.runtime.MismatchedTokenException;
 import org.antlr.runtime.Parser;
@@ -49,7 +50,7 @@ public class HBaseParser extends Parser {
             this.schema = schema;
     }
 
-    protected Schema setSchema(final String tablename) throws RecognitionException {
+    protected Schema setSchema(final String tablename) throws FailedPredicateException {
 
         try {
             final HBaseSchema schema = HBaseSchema.findSchema(tablename);
@@ -57,8 +58,7 @@ public class HBaseParser extends Parser {
             return schema;
         }
         catch (HBqlException e) {
-            System.out.println("Unknown table: " + tablename);
-            throw new RecognitionException(input);
+            throw new FailedPredicateException(input, "setSchema()", "Unknown table: " + tablename);
         }
     }
 
@@ -67,8 +67,9 @@ public class HBaseParser extends Parser {
         return s != null && s.equalsIgnoreCase(str);
     }
 
-    protected GenericValue getVariable(final String var) throws RecognitionException {
+    protected GenericValue findVariable(final String var) throws FailedPredicateException {
 
+        String errMsg = "No schema set";
         if (this.getSchema() != null) {
 
             final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(var);
@@ -93,14 +94,14 @@ public class HBaseParser extends Parser {
                         return new BooleanColumn(attrib);
 
                     default:
-                        System.out.println("Invalid type: " + attrib.getFieldType().name());
+                        errMsg = "Invalid type: " + attrib.getFieldType().name();
                 }
             }
             else {
-                System.out.println("Invalid variable: " + var);
+                errMsg = "Invalid variable: " + var;
             }
         }
-        throw new RecognitionException(input);
+        throw new FailedPredicateException(input, "findVariable()", errMsg);
     }
 
     /*
@@ -158,5 +159,4 @@ public class HBaseParser extends Parser {
             root = new DelegateCalculation(root, opList.get(i), exprList.get(i + 1));
         return root;
     }
-
 }
