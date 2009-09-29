@@ -32,7 +32,7 @@ public class HBql {
                                                 final Schema schema) throws HBqlException {
         try {
             final HBqlParser parser = newParser(input);
-            final ExprTree exprTree = parser.nodescWhereExpr(schema);
+            final ExprTree exprTree = parser.nodescWhereExpr();
             exprTree.setSchema(schema);
             return exprTree;
         }
@@ -81,10 +81,10 @@ public class HBql {
         }
     }
 
-    public static WhereArgs parseWithClause(final String input, final Schema schema) throws HBqlException {
+    public static WhereArgs parseWithClause(final String input) throws HBqlException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.whereValue(schema);
+            return parser.whereValue();
         }
         catch (RecognitionException e) {
             e.printStackTrace();

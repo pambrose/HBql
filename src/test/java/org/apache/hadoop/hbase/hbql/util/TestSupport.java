@@ -182,11 +182,10 @@ public class TestSupport {
         }
     }
 
-    public static ExprTree parseDescWhereExpr(final String input,
-                                              final Schema schema) throws HBqlException {
+    public static ExprTree parseDescWhereExpr(final String input, final Schema schema) throws HBqlException {
         try {
             final HBqlParser parser = HBql.newParser(input);
-            final ExprTree exprTree = parser.descWhereExpr(schema);
+            final ExprTree exprTree = parser.descWhereExpr();
             exprTree.setSchema(schema);
             return exprTree;
         }
@@ -206,7 +205,7 @@ public class TestSupport {
 
     private static boolean evalWhereValue(final String expr) {
         try {
-            final WhereArgs args = HBql.parseWithClause(expr, (Schema)null);
+            final WhereArgs args = HBql.parseWithClause(expr);
             System.out.println("Evaluating: " + args.asString());
             return true;
         }

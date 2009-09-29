@@ -1,20 +1,16 @@
 package org.apache.hadoop.hbase.hbql.query.antlr;
 
 import org.antlr.runtime.BitSet;
-import org.antlr.runtime.FailedPredicateException;
 import org.antlr.runtime.IntStream;
 import org.antlr.runtime.MismatchedTokenException;
 import org.antlr.runtime.Parser;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.DelegateCalculation;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
-import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 import java.util.List;
 
@@ -26,30 +22,12 @@ import java.util.List;
  */
 public class ParserSupport extends Parser {
 
-    private Schema schema = null;
-
     public ParserSupport(final TokenStream input) {
         super(input);
     }
 
     public ParserSupport(final TokenStream input, final RecognizerSharedState state) {
         super(input, state);
-    }
-
-    protected void setSchema(final Schema schema) {
-        this.schema = schema;
-    }
-
-    protected Schema setSchema(final String tablename) throws FailedPredicateException {
-
-        try {
-            final HBaseSchema schema = HBaseSchema.findSchema(tablename);
-            this.setSchema(schema);
-            return schema;
-        }
-        catch (HBqlException e) {
-            throw new FailedPredicateException(input, "setSchema()", "Unknown table: " + tablename);
-        }
     }
 
     protected boolean isKeyword(final TokenStream input, final String str) {

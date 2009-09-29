@@ -63,7 +63,7 @@ public class ExprContext {
         return this.getGenericValue() != null;
     }
 
-    public void setContext() {
+    private void setContext() {
         if (this.getGenericValue() != null && this.isInNeedOfSettingContext()) {
             try {
                 this.getGenericValue().setContext(this);

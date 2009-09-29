@@ -45,6 +45,9 @@ public class ExprTree extends ExprContext implements Serializable {
 
     public void setSchema(final Schema schema, final List<String> fieldList) throws HBqlException {
 
+        if (schema == null)
+            return;
+
         if (this.isValid()) {
 
             this.setSchema(schema);

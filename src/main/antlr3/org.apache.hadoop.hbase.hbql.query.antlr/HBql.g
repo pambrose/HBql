@@ -86,13 +86,11 @@ defineAttrib returns [VarDesc retval]
 	| c=ID t=ID keyALIAS a=ID			{retval = VarDesc.newVarDesc($a.text, $c.text, $t.text);};
 
 deleteStmt  returns [DeleteCmd retval]
-@init {Schema schema = null;}
-	: keyDELETE keyFROM t=ID w=whereValue[schema]?			
+	: keyDELETE keyFROM t=ID w=whereValue?			
 	  						{retval = new DeleteCmd($t.text, $w.retval);};
 
 selectStmt returns [QueryArgs retval]
-@init {Schema schema = null;}
-	: keySELECT c=selectColumns keyFROM t=ID w=whereValue[schema]?			
+	: keySELECT c=selectColumns keyFROM t=ID w=whereValue?			
 							{retval = new QueryArgs(input, $c.retval, $t.text, $w.retval);};
 
 selectColumns returns [List<SelectColumn> retval]
@@ -109,7 +107,7 @@ column returns [SelectColumn retval]
 	| f=familyRef					{$column.retval = SelectColumn.newFamilyColumns($f.text);}
 	;
 
-whereValue [Schema schema] returns [WhereArgs retval]
+whereValue returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
 	: keyWITH
 	  k=keysRange?					{retval.setKeyRangeArgs($k.retval);}
@@ -117,8 +115,8 @@ whereValue [Schema schema] returns [WhereArgs retval]
 	  v=versions?					{retval.setVersionArgs($v.retval);}
 	  l=scanLimit?					{retval.setScanLimitArgs($l.retval);}
 	  q=queryLimit?					{retval.setQueryLimitArgs($q.retval);}
-	  s=serverFilter[schema]?			{retval.setServerExprTree($s.retval);}
-	  c=clientFilter[schema]?			{retval.setClientExprTree($c.retval);}
+	  s=serverFilter?				{retval.setServerExprTree($s.retval);}
+	  c=clientFilter?				{retval.setClientExprTree($c.retval);}
 	;
 
 keysRange returns [KeyRangeArgs retval]
@@ -143,12 +141,12 @@ scanLimit returns [LimitArgs retval]
 queryLimit returns [LimitArgs retval]
 	: keyQUERY keyLIMIT v=integerLiteral		{retval = new LimitArgs($v.retval);};
 	
-clientFilter [Schema schema] returns [ExprTree retval]
-	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr[schema]	
+clientFilter returns [ExprTree retval]
+	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr	
 							{retval = $w.retval;};
 	
-serverFilter [Schema schema] returns [ExprTree retval]
-	: keySERVER keyFILTER keyWHERE w=descWhereExpr[schema]	
+serverFilter returns [ExprTree retval]
+	: keySERVER keyFILTER keyWHERE w=descWhereExpr	
 							{retval = $w.retval;};
 	
 keyRangeList returns [List<KeyRangeArgs.Range> retval]
@@ -160,14 +158,11 @@ keyRange returns [KeyRangeArgs.Range retval]
 	| q1=QUOTED keyTO q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
 	;
 	
-nodescWhereExpr [Schema es] returns [ExprTree retval]
-@init {setSchema(es);}
+nodescWhereExpr returns [ExprTree retval]
 	 : e=booleanExpr				{retval = ExprTree.newExprTree($e.retval);};
 
-descWhereExpr [Schema schema] returns [ExprTree retval]
-@init {setSchema(schema);}
-	: s=schemaDesc? 				{if ($s.retval != null) setSchema($s.retval);}			
-	  e=booleanExpr					{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);}
+descWhereExpr returns [ExprTree retval]
+	: s=schemaDesc? e=booleanExpr			{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);}
 	;
 
 // Boolean Expressions				
