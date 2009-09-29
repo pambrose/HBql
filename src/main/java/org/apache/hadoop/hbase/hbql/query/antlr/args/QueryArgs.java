@@ -37,6 +37,7 @@ public class QueryArgs {
     private void validateSelectColumns(final TokenStream input) throws RecognitionException {
 
         for (final SelectColumn column : this.getSelectColumnList()) {
+            final String familyName = column.getFamilyName();
             switch (column.getType()) {
                 case ALLTABLECOLUMNS:
                     this.columnNameList.addAll(this.getSchema().getFamilyQualifiedNameList());

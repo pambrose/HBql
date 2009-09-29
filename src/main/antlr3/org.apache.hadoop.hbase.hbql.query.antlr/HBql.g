@@ -106,12 +106,8 @@ columnList returns [List<SelectColumn> retval]
 
 column returns [SelectColumn retval]
 	: c=valueExpr					{$column.retval = SelectColumn.newColumn($c.retval);}
-	| f=familyRef					{$column.retval = SelectColumn.newFamilyColumns($f.retval);}
+	| f=familyRef					{$column.retval = SelectColumn.newFamilyColumns($f.text);}
 	;
-
-familyRef returns [String retval]
-	: f=ID COLON STAR				{retval = $f.text;}
-	;	
 
 whereValue [Schema schema] returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
@@ -344,7 +340,7 @@ multDiv returns [Operator retval]
 	;
 
 varRef 	: ID;
-
+familyRef : FAMILY;	
 paramRef: PARAM;
 		
 INT	: DIGIT+;
@@ -352,6 +348,8 @@ INT	: DIGIT+;
 ID	: CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)* 		// DOLLAR is for inner class table names
 	| CHAR (CHAR | DOT | MINUS | DIGIT)* COLON (CHAR | DOT | MINUS | DIGIT)*
 	;
+
+FAMILY	: CHAR (CHAR | DOT | MINUS | DIGIT)* COLON STAR;
 	
 PARAM	: COLON CHAR (CHAR | DOT | MINUS | DIGIT)*;	
 	 

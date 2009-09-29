@@ -20,15 +20,18 @@ public class SelectExpressionsTest extends TestSupport {
         SchemaManager.parse("define table table1 alias tab1"
                             + "("
                             + "keyval key, "
-                            + "family1:val1 string alias val1, "
-                            + "family1:val2 string alias val2, "
-                            + "family2:val1 string alias val3, "
-                            + "family2:val2 string alias val4, "
-                            + "family3:val1 string alias val5, "
-                            + "family3:val2 string alias val6"
+                            + "f1:val1 string alias val1, "
+                            + "f1:val2 string alias val2, "
+                            + "f2:val1 string alias val3, "
+                            + "f2:val2 string alias val4, "
+                            + "f3:val1 string alias val5, "
+                            + "f3:val2 string alias val6"
                             + ")");
 
-        assertSelectColumnsMatchTrue("SELECT * FROM table1", "family1:val1, family1:val2, family2:val1, family2:val2, family3:val1, family3:val2");
+        assertSelectColumnsMatchTrue("SELECT * FROM table1", "f1:val1, f1:val2, f2:val1, f2:val2, f3:val1, f3:val2");
+        assertSelectColumnsMatchTrue("SELECT * FROM tab1", "f1:val1, f1:val2, f2:val1, f2:val2, f3:val1, f3:val2");
+
+        assertSelectColumnsMatchTrue("SELECT f1:* FROM table1", "f1:val1, f1:val2");
 
     }
 
