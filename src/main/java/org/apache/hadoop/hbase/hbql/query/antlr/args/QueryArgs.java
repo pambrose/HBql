@@ -39,7 +39,7 @@ public class QueryArgs {
         for (final SelectColumn column : this.getSelectColumnList()) {
             switch (column.getType()) {
                 case ALLTABLECOLUMNS:
-                    this.columnNameList.addAll(this.getSchema().getFieldList());
+                    this.columnNameList.addAll(this.getSchema().getFamilyQualifiedNameList());
                     return;
 
                 case ALLFAMILYCOLUMNS:

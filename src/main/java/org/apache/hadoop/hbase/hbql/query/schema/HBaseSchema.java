@@ -56,10 +56,9 @@ public abstract class HBaseSchema extends Schema {
         return HUtil.ser.getStringAsBytes(this.getTableName());
     }
 
-    public abstract Object getObject(
-            final List<String> fieldList,
-            final int maxVersions,
-            final Result result) throws HBqlException;
+    public abstract Object newObject(final List<String> fieldList,
+                                     final int maxVersions,
+                                     final Result result) throws HBqlException;
 
 
     public static HBaseSchema findSchema(final String tablename) throws HBqlException {

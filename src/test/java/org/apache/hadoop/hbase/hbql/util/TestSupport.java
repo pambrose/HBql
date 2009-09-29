@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBqlParser;
+import org.apache.hadoop.hbase.hbql.query.antlr.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
@@ -85,10 +86,6 @@ public class TestSupport {
         org.junit.Assert.assertTrue(eclazz != null && eclazz.equals(clazz));
     }
 
-    public static void assertSelectColumnsMatchTrue(final String expr, String... vals) throws HBqlException {
-        assertTrue(evalExprColumnNames(expr, vals));
-    }
-
     public static void assertExprColumnsMatchTrue(final String expr, String... vals) throws HBqlException {
         assertTrue(evalExprColumnNames(expr, vals));
     }
@@ -115,6 +112,41 @@ public class TestSupport {
     private static boolean evaluateExprTree(final Object recordObj, final ExprTree tree) throws HBqlException {
         System.out.println("Evaluating: " + tree);
         return tree.evaluate(recordObj);
+    }
+
+    public static void assertSelectColumnsMatchTrue(final String expr, String... vals) throws HBqlException {
+        assertTrue(evalSelectNames(expr, vals));
+    }
+
+    private static boolean evalSelectNames(final String expr, String... vals) {
+
+        try {
+            final QueryArgs args = HBql.parseQuery(expr);
+            final List<String> valList = Lists.newArrayList(vals);
+
+            final List<String> attribList = args.getColumnNameList();
+
+            boolean retval = true;
+
+            for (final String val : valList) {
+                if (!attribList.contains(val)) {
+                    System.out.println("Missing column name: " + val);
+                    retval = false;
+                }
+            }
+
+            for (final String var : attribList) {
+                if (!valList.contains(var)) {
+                    System.out.println("Missing column name: " + var);
+                    retval = false;
+                }
+            }
+            return retval;
+        }
+        catch (HBqlException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private static boolean evalExprColumnNames(final String expr, String... vals) {

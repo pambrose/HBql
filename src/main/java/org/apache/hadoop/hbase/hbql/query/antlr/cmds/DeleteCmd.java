@@ -46,7 +46,7 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
         // TODO Need to grab schema from DeleteArgs (like QueryArgs in Select)
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
 
-        final List<String> fieldList = schema.getFieldList();
+        final List<String> fieldList = schema.getAllNamesList();
         final HTable table = conn.getHTable(schema.getTableName());
         final ExprTree clientFilter = where.getClientExprTree();
         clientFilter.setSchema(schema);
@@ -66,7 +66,7 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
             final ResultScanner resultsScanner = table.getScanner(scan);
             for (final Result result : resultsScanner) {
 
-                final Object recordObj = schema.getObject(schema.getFieldList(), scan.getMaxVersions(), result);
+                final Object recordObj = schema.newObject(fieldList, scan.getMaxVersions(), result);
 
                 if (clientFilter == null || clientFilter.evaluate(recordObj)) {
                     final Delete delete = new Delete(result.getRow());

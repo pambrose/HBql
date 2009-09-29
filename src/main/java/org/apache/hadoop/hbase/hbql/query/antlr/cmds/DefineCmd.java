@@ -5,7 +5,6 @@ import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.VarDesc;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 import java.util.List;
 
@@ -41,11 +40,13 @@ public class DefineCmd extends TableCmd implements SchemaManagerCmd {
                                                                     this.getAlias(),
                                                                     this.getVarList());
 
-        for (final VariableAttrib attrib : schema.getVariableAttribs()) {
-            final DefinedAttrib vdattrib = (DefinedAttrib)attrib;
+        for (final String name : schema.getVariableAttribNames()) {
+
+            final DefinedAttrib attrib = (DefinedAttrib)schema.getVariableAttribByVariableName(name);
+
             if (attrib.getFieldType() == null)
-                throw new HBqlException(schema.getTableName() + " attribute " + vdattrib.getVariableName()
-                                        + " has unknown type " + vdattrib.getTypeName());
+                throw new HBqlException(schema.getTableName() + " attribute " + attrib.getVariableName()
+                                        + " has unknown type " + attrib.getTypeName());
         }
 
         final HOutput retval = new HOutput();

@@ -116,7 +116,7 @@ public class HResults<T> implements Iterable<T> {
                     if (resultIter != null) {
                         while (resultIter.hasNext()) {
                             final Result result = resultIter.next();
-                            final T val = (T)getHQuery().getSchema().getObject(getHQuery().getFieldList(),
+                            final T val = (T)getHQuery().getSchema().newObject(getHQuery().getFieldList(),
                                                                                this.maxVersions,
                                                                                result);
 

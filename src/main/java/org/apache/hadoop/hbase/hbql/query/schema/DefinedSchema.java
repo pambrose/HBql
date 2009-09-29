@@ -134,7 +134,7 @@ public class DefinedSchema extends HBaseSchema {
     }
 
     @Override
-    public HRecord getObject(final List<String> fieldList,
+    public HRecord newObject(final List<String> fieldList,
                              final int maxVersions,
                              final Result result) throws HBqlException {
 

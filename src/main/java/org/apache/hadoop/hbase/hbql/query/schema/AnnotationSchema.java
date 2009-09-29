@@ -326,7 +326,7 @@ public class AnnotationSchema extends HBaseSchema {
     }
 
     @Override
-    public Object getObject(
+    public Object newObject(
             final List<String> fieldList,
             final int maxVersions,
             final Result result) throws HBqlException {
