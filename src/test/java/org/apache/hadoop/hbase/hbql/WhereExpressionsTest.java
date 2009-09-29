@@ -16,7 +16,7 @@ import java.util.Date;
  * Date: Aug 27, 2009
  * Time: 2:13:47 PM
  */
-public class WhereExpressionTest extends TestSupport {
+public class WhereExpressionsTest extends TestSupport {
 
 
     @Test

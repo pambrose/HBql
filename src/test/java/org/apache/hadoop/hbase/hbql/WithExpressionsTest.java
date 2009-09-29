@@ -10,7 +10,7 @@ import org.junit.Test;
  * Date: Aug 27, 2009
  * Time: 2:13:47 PM
  */
-public class WithValuesTest extends TestSupport {
+public class WithExpressionsTest extends TestSupport {
 
 
     @Test
