@@ -53,7 +53,7 @@ package org.apache.hadoop.hbase.hbql.query.antlr;
 import org.apache.hadoop.hbase.hbql.query.util.*;
 }
 
-connectionExec returns [ConnectionCmd retval]
+commandStmt returns [ConnectionCmd retval]
 options {backtrack=true;}	
 	: keyDROP keyTABLE t=ID 		 	{retval = new DropCmd($t.text);}
 	| keyDISABLE keyTABLE t=ID 		 	{retval = new DisableCmd($t.text);}
@@ -65,7 +65,7 @@ options {backtrack=true;}
 	| del=deleteStmt		 		{retval = $del.retval;}
 	;
 
-schemaExec returns [SchemaManagerCmd retval]
+schemaStmt returns [SchemaManagerCmd retval]
 	: d=defineStmt 					{retval = $d.retval;}
 	;
 

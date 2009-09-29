@@ -95,7 +95,7 @@ public class HBql {
     public static SchemaManagerCmd parseSchema(final String input) throws HBqlException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.schemaExec();
+            return parser.schemaStmt();
         }
         catch (RecognitionException e) {
             e.printStackTrace();
@@ -106,7 +106,7 @@ public class HBql {
     public static ConnectionCmd parseCommand(final String input) throws HBqlException {
         try {
             final HBqlParser parser = newParser(input);
-            return parser.connectionExec();
+            return parser.commandStmt();
         }
         catch (RecognitionException e) {
             e.printStackTrace();
