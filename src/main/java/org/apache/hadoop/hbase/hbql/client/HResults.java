@@ -150,8 +150,9 @@ public class HResults<T> implements Iterable<T> {
 
                                 final List<VariableAttrib> attribList = getHQuery().getSelectAttribList();
 
-                                final T val = (T)getHQuery().getSchema()
-                                        .newObject(attribList, this.maxVersions, result);
+                                final T val = (T)getHQuery().getSchema().newObject(attribList,
+                                                                                   this.maxVersions,
+                                                                                   result);
 
                                 final List<HQueryListener<T>> listenerList = getHQuery().getListeners();
                                 if (listenerList != null)

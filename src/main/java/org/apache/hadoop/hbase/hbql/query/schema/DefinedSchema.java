@@ -74,9 +74,10 @@ public class DefinedSchema extends HBaseSchema {
         return new DefinedSchema(schema.getTableName(), null, schema.getColumnDescriptionList());
     }
 
-    private void processColumn(final ColumnDescription var, final boolean enforceFamilyName) throws HBqlException {
+    private void processColumn(final ColumnDescription columnDescription,
+                               final boolean enforceFamilyName) throws HBqlException {
 
-        final DefinedAttrib attrib = new DefinedAttrib(var);
+        final DefinedAttrib attrib = new DefinedAttrib(columnDescription);
 
         this.addVariableAttribToVariableNameMap(attrib);
         this.addColumnAttribToFamilyQualifiedNameMap(attrib);

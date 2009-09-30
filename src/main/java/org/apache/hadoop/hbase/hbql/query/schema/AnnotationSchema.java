@@ -365,7 +365,7 @@ public class AnnotationSchema extends HBaseSchema {
         }
         catch (IllegalAccessException e) {
             e.printStackTrace();
-            throw new HBqlException("Cannot set value for key  " + keyattrib.getVariableName()
+            throw new HBqlException("Cannot set value for key  " + keyattrib.getColumnName()
                                     + " for " + this.getSchemaName());
         }
         return newobj;
@@ -373,11 +373,13 @@ public class AnnotationSchema extends HBaseSchema {
 
     public List<ColumnDescription> getColumnDescriptionList() {
         final List<ColumnDescription> varList = Lists.newArrayList();
-        for (final ColumnAttrib col : this.getColumnAttribByFamilyQualifiedNameMap().values()) {
-            final String coltype = (col.isKeyAttrib())
-                                   ? FieldType.KeyType.getFirstSynonym()
-                                   : col.getFieldType().getFirstSynonym();
-            varList.add(ColumnDescription.newColumnDescription(col.getVariableName(), col.getFamilyQualifiedName(), coltype));
+        for (final ColumnAttrib columnAttrib : this.getColumnAttribByFamilyQualifiedNameMap().values()) {
+            final String columnType = (columnAttrib.isKeyAttrib())
+                                      ? FieldType.KeyType.getFirstSynonym()
+                                      : columnAttrib.getFieldType().getFirstSynonym();
+            varList.add(ColumnDescription.newColumnDescription(columnAttrib.getColumnName(),
+                                                               columnAttrib.getFamilyQualifiedName(),
+                                                               columnType));
         }
         return varList;
     }

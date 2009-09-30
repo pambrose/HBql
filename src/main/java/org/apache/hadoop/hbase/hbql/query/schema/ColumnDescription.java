@@ -26,7 +26,9 @@ public class ColumnDescription implements Serializable {
         this.fieldType = getFieldType(this.getTypeName());
     }
 
-    public static ColumnDescription newColumnDescription(final String variableName, final String qualifiedName, final String typeName) {
+    public static ColumnDescription newColumnDescription(final String variableName,
+                                                         final String qualifiedName,
+                                                         final String typeName) {
         return new ColumnDescription(variableName, qualifiedName, typeName);
     }
 

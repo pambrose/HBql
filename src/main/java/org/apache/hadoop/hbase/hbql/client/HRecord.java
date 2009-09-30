@@ -70,7 +70,7 @@ public class HRecord implements Serializable {
         final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(name);
 
         if (attrib != null) {
-            final String variableName = attrib.getVariableName();
+            final String variableName = attrib.getColumnName();
             if (!variableName.equals(name) && containsName(variableName))
                 return this.getValue(variableName);
 
@@ -129,7 +129,7 @@ public class HRecord implements Serializable {
         final ColumnAttrib attrib = this.getSchema().getColumnAttribFromFamilyQualifiedNameMap(family, column);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + family + ":" + column);
-        this.setCurrentValue(attrib.getVariableName(), timestamp, val);
+        this.setCurrentValue(attrib.getColumnName(), timestamp, val);
     }
 
     public void setVersionedValue(final String family,
@@ -139,11 +139,11 @@ public class HRecord implements Serializable {
         final ColumnAttrib attrib = this.getSchema().getColumnAttribFromFamilyQualifiedNameMap(family, column);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + family + ":" + column);
-        this.setVersionedValue(attrib.getVariableName(), timestamp, val);
+        this.setVersionedValue(attrib.getColumnName(), timestamp, val);
     }
 
     public boolean isCurrentValueSet(final ColumnAttrib attrib) {
-        final HValue hvalue = this.getHValue(attrib.getVariableName());
+        final HValue hvalue = this.getHValue(attrib.getColumnName());
         return hvalue != null && hvalue.isCurrentValueSet();
     }
 

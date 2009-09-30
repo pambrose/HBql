@@ -15,6 +15,7 @@ public abstract class VariableAttrib implements Serializable {
 
     private final FieldType fieldType;
     private byte[] familyBytes = null;
+    private byte[] columnBytes = null;
 
     protected VariableAttrib(final FieldType fieldType) {
         this.fieldType = fieldType;
@@ -22,11 +23,9 @@ public abstract class VariableAttrib implements Serializable {
 
     public abstract boolean isArray();
 
-    public abstract String getVariableName();
-
-    public abstract String getFamilyQualifiedName();
-
     public abstract String getFamilyName();
+
+    public abstract String getColumnName();
 
     public abstract Object getCurrentValue(final Object recordObj) throws HBqlException;
 
@@ -35,6 +34,13 @@ public abstract class VariableAttrib implements Serializable {
     public abstract Object getVersionedValueMap(final Object recordObj) throws HBqlException;
 
     protected abstract void setVersionedValueMap(final Object newobj, final Map<Long, Object> map);
+
+    public String getFamilyQualifiedName() {
+        if (this.getFamilyName() != null && this.getFamilyName().length() > 0)
+            return this.getFamilyName() + ":" + this.getColumnName();
+        else
+            return this.getColumnName();
+    }
 
     public FieldType getFieldType() {
         return this.fieldType;
@@ -54,7 +60,14 @@ public abstract class VariableAttrib implements Serializable {
 
         this.familyBytes = HUtil.ser.getStringAsBytes(this.getFamilyName());
         return this.familyBytes;
+    }
 
+    public byte[] getColumnNameBytes() throws HBqlException {
+        if (this.columnBytes != null)
+            return this.columnBytes;
+
+        this.columnBytes = HUtil.ser.getStringAsBytes(this.getColumnName());
+        return this.columnBytes;
     }
 
     @Override
@@ -64,7 +77,7 @@ public abstract class VariableAttrib implements Serializable {
 
         final VariableAttrib var = (VariableAttrib)o;
 
-        return var.getVariableName().equals(this.getVariableName())
+        return var.getColumnName().equals(this.getColumnName())
                && var.getFamilyQualifiedName().equals(this.getFamilyQualifiedName());
     }
 }

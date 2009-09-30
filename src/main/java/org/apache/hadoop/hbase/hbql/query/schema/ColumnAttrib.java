@@ -19,9 +19,9 @@ public abstract class ColumnAttrib extends VariableAttrib {
 
     protected transient Method getterMethod = null, setterMethod = null;
 
-    public ColumnAttrib(final FieldType fieldType,
-                        final String familyName,
+    public ColumnAttrib(final String familyName,
                         final String columnName,
+                        final FieldType fieldType,
                         final String getter,
                         final String setter,
                         final boolean mapKeysAsColumns) throws HBqlException {
@@ -99,13 +99,6 @@ public abstract class ColumnAttrib extends VariableAttrib {
 
     protected Method getSetterMethod() {
         return this.setterMethod;
-    }
-
-    public String getFamilyQualifiedName() {
-        if (this.getFamilyName().length() > 0)
-            return this.getFamilyName() + ":" + this.getColumnName();
-        else
-            return this.getColumnName();
     }
 
     public String getFamilyName() {

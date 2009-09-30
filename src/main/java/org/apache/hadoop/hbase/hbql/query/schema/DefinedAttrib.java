@@ -17,9 +17,9 @@ public class DefinedAttrib extends ColumnAttrib {
     private final ColumnDescription columnDescription;
 
     public DefinedAttrib(final ColumnDescription columnDescription) throws HBqlException {
-        super(columnDescription.getFieldType(),
-              columnDescription.getFamilyName(),
+        super(columnDescription.getFamilyName(),
               columnDescription.getColumnName(),
+              columnDescription.getFieldType(),
               null,
               null,
               false);
@@ -39,14 +39,16 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     @Override
-    public String getVariableName() {
+    public String getColumnName() {
         return this.getColumnDescription().getVariableName();
     }
 
+    /*
     @Override
     public String getFamilyQualifiedName() {
         return this.getColumnDescription().getFamilyQualifiedName();
     }
+    */
 
     @Override
     public String getFamilyName() {
@@ -55,7 +57,7 @@ public class DefinedAttrib extends ColumnAttrib {
 
     @Override
     public String toString() {
-        return this.getVariableName() + " - " + this.getFamilyQualifiedName();
+        return this.getColumnName() + " - " + this.getFamilyQualifiedName();
     }
 
     @Override
@@ -72,25 +74,25 @@ public class DefinedAttrib extends ColumnAttrib {
     @Override
     public Object getCurrentValue(final Object recordObj) throws HBqlException {
         final HRecord record = (HRecord)recordObj;
-        return record.getCurrentValue(this.getVariableName());
+        return record.getCurrentValue(this.getColumnName());
     }
 
     @Override
     protected void setCurrentValue(final Object newobj, final long ts, final Object val) throws HBqlException {
         final HRecord record = (HRecord)newobj;
-        record.setCurrentValue(this.getVariableName(), ts, val);
+        record.setCurrentValue(this.getColumnName(), ts, val);
     }
 
     @Override
     public Object getVersionedValueMap(final Object recordObj) throws HBqlException {
         final HRecord record = (HRecord)recordObj;
-        return record.getVersionedValueMap(this.getVariableName());
+        return record.getVersionedValueMap(this.getColumnName());
     }
 
     @Override
     protected void setVersionedValueMap(final Object newobj, final Map<Long, Object> map) {
         final HRecord record = (HRecord)newobj;
-        record.setVersionedValueMap(this.getVariableName(), map);
+        record.setVersionedValueMap(this.getColumnName(), map);
     }
 
     @Override

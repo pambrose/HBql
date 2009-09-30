@@ -84,5 +84,4 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
         return retval;
 
     }
-
 }
