@@ -41,7 +41,7 @@ public abstract class ExprContext {
 
     public abstract String asString();
 
-    public abstract boolean readFromHBaseMap();
+    public abstract boolean useHBaseResult();
 
     public List<GenericColumn> getColumnList() {
         return this.columnList;
@@ -96,7 +96,7 @@ public abstract class ExprContext {
         if (this.isValid() && this.isInNeedOfSettingContext()) {
             try {
                 for (final GenericValue val : this.getGenericValues())
-                    val.setContext(this);
+                    val.setExprContext(this);
             }
             catch (HBqlException e) {
                 e.printStackTrace();
@@ -118,6 +118,7 @@ public abstract class ExprContext {
     }
 
     public void validateTypes(final boolean allowColumns) throws TypeException {
+
         if (this.isValid() && this.isInNeedOfTypeValidation()) {
 
             if (!allowColumns && this.getColumnList().size() > 0) {

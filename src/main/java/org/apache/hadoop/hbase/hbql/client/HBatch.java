@@ -117,7 +117,9 @@ public class HBatch {
         this.getActionList(schema.getTableName()).add(Action.newDelete(new Delete(keyval)));
     }
 
-    private Put createPut(final HBaseSchema schema, final Object newrec, final byte[] keyval) throws HBqlException, IOException {
+    private Put createPut(final HBaseSchema schema,
+                          final Object newrec,
+                          final byte[] keyval) throws HBqlException, IOException {
         final Put put = new Put(keyval);
         for (final String family : schema.getFamilySet()) {
             for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {

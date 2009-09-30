@@ -3,8 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.io;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 
-import java.io.IOException;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -32,27 +30,27 @@ public abstract class Serialization {
         return null;
     }
 
-    abstract public Object getScalarFromBytes(FieldType fieldType, byte[] b) throws IOException, HBqlException;
+    abstract public Object getScalarFromBytes(FieldType fieldType, byte[] b) throws HBqlException;
 
-    abstract public byte[] getScalarAsBytes(FieldType fieldType, Object obj) throws IOException, HBqlException;
+    abstract public byte[] getScalarAsBytes(FieldType fieldType, Object obj) throws HBqlException;
 
-    abstract public Object getArrayFromBytes(FieldType fieldType, Class clazz, byte[] b) throws IOException, HBqlException;
+    abstract public Object getArrayFromBytes(FieldType fieldType, Class clazz, byte[] b) throws HBqlException;
 
-    abstract public byte[] getArrayasBytes(FieldType fieldType, Object obj) throws IOException, HBqlException;
+    abstract public byte[] getArrayasBytes(FieldType fieldType, Object obj) throws HBqlException;
 
-    public byte[] getStringAsBytes(final String obj) throws IOException, HBqlException {
+    public byte[] getStringAsBytes(final String obj) throws HBqlException {
         return this.getScalarAsBytes(FieldType.StringType, obj);
     }
 
-    public byte[] getObjectAsBytes(final Object obj) throws IOException, HBqlException {
+    public byte[] getObjectAsBytes(final Object obj) throws HBqlException {
         return this.getScalarAsBytes(FieldType.getFieldType(obj), obj);
     }
 
-    public String getStringFromBytes(final byte[] b) throws IOException, HBqlException {
+    public String getStringFromBytes(final byte[] b) throws HBqlException {
         return (String)this.getScalarFromBytes(FieldType.StringType, b);
     }
 
-    public Object getObjectFromBytes(final FieldType type, final byte[] b) throws IOException, HBqlException {
+    public Object getObjectFromBytes(final FieldType type, final byte[] b) throws HBqlException {
         return this.getScalarFromBytes(type, b);
     }
 
@@ -61,10 +59,6 @@ public abstract class Serialization {
         try {
             final byte[] b = getObjectAsBytes(obj);
             final Object newobj = getObjectFromBytes(FieldType.getFieldType(obj), b);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return false;
         }
         catch (HBqlException e) {
             e.printStackTrace();

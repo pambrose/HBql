@@ -157,8 +157,6 @@ public abstract class HBaseSchema extends Schema {
 
     protected void assignCurrentValues(final Object newobj, final Result result) throws IOException, HBqlException {
 
-        final NavigableMap<byte[], NavigableMap<byte[], byte[]>> familyMap = result.getNoVersionMap();
-
         for (final KeyValue keyValue : result.list()) {
 
             final byte[] fbytes = keyValue.getFamily();

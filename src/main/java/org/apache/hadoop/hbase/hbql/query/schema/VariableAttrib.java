@@ -14,6 +14,7 @@ import java.util.Map;
 public abstract class VariableAttrib implements Serializable {
 
     private final FieldType fieldType;
+    private byte[] familyBytes = null;
 
     protected VariableAttrib(final FieldType fieldType) {
         this.fieldType = fieldType;
@@ -45,6 +46,15 @@ public abstract class VariableAttrib implements Serializable {
 
     public boolean isKeyAttrib() {
         return false;
+    }
+
+    public byte[] getFamilyNameBytes() throws HBqlException {
+        if (this.familyBytes != null)
+            return this.familyBytes;
+
+        this.familyBytes = HUtil.ser.getStringAsBytes(this.getFamilyName());
+        return this.familyBytes;
+
     }
 
     @Override

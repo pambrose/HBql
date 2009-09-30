@@ -144,13 +144,14 @@ public class HResults<T> implements Iterable<T> {
 
                             final Result result = this.getResultIter().next();
 
-                            final List<VariableAttrib> attribList = getHQuery().getSelectAttribList();
-
-                            final T val = (T)getHQuery().getSchema().newObject(attribList, this.maxVersions, result);
-
-                            if (getClientExprTree() == null || getClientExprTree().evaluate(val)) {
+                            if (getClientExprTree() == null || getClientExprTree().evaluate(result)) {
 
                                 this.recordCount++;
+
+                                final List<VariableAttrib> attribList = getHQuery().getSelectAttribList();
+
+                                final T val = (T)getHQuery().getSchema()
+                                        .newObject(attribList, this.maxVersions, result);
 
                                 final List<HQueryListener<T>> listenerList = getHQuery().getListeners();
                                 if (listenerList != null)

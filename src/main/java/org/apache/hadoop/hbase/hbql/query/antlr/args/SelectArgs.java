@@ -36,7 +36,7 @@ public abstract class SelectArgs extends ExprContext {
     }
 
     @Override
-    public boolean readFromHBaseMap() {
+    public boolean useHBaseResult() {
         return false;
     }
 }

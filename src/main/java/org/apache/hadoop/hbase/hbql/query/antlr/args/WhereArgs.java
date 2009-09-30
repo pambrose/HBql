@@ -36,8 +36,8 @@ public class WhereArgs {
         this.getVersionArgs().validateTypes(false);
         this.getScanLimitArgs().validateTypes(false);
         this.getQueryLimitArgs().validateTypes(false);
-        this.getServerExprTree().validateTypes(true);
-        this.getClientExprTree().validateTypes(true);
+        //this.getServerExprTree().validateTypes(true);
+        //this.getClientExprTree().validateTypes(true);
     }
 
     public void optimize() throws HBqlException {
@@ -46,8 +46,8 @@ public class WhereArgs {
         this.getVersionArgs().optimize();
         this.getScanLimitArgs().optimize();
         this.getQueryLimitArgs().optimize();
-        this.getServerExprTree().optimize();
-        this.getClientExprTree().optimize();
+        //this.getServerExprTree().optimize();
+        //this.getClientExprTree().optimize();
     }
 
     public KeyRangeArgs getKeyRangeArgs() {

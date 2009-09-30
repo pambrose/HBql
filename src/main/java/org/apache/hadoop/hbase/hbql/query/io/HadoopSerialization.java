@@ -22,7 +22,7 @@ public class HadoopSerialization extends Serialization {
     private static final int arraysize = Bytes.SIZEOF_INT;
 
     @Override
-    public Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws IOException, HBqlException {
+    public Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws HBqlException {
 
         try {
             switch (fieldType) {
@@ -68,68 +68,75 @@ public class HadoopSerialization extends Serialization {
                 }
 
                 default:
-                    throw new HBqlException("Error in getScalarfromBytes() - " + fieldType);
+                    throw new HBqlException("Unknown type in getScalarfromBytes() - " + fieldType);
             }
         }
+        catch (IOException e) {
+            throw new HBqlException("Error in getScalarfromBytes() " + e.getMessage());
+        }
         catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new HBqlException("Error in getScalarfromBytes()");
+            throw new HBqlException("Error in getScalarfromBytes() " + e.getMessage());
         }
     }
 
     @Override
-    public byte[] getScalarAsBytes(final FieldType fieldType, final Object obj) throws IOException, HBqlException {
+    public byte[] getScalarAsBytes(final FieldType fieldType, final Object obj) throws HBqlException {
 
-        switch (fieldType) {
+        try {
+            switch (fieldType) {
 
-            case BooleanType:
-                return Bytes.toBytes((Boolean)obj);
+                case BooleanType:
+                    return Bytes.toBytes((Boolean)obj);
 
-            case ByteType:
-                return Bytes.toBytes((Short)obj);
+                case ByteType:
+                    return Bytes.toBytes((Short)obj);
 
-            case CharType:
-                return Bytes.toBytes((Short)obj);
+                case CharType:
+                    return Bytes.toBytes((Short)obj);
 
-            case ShortType:
-                return Bytes.toBytes((Short)obj);
+                case ShortType:
+                    return Bytes.toBytes((Short)obj);
 
-            case IntegerType:
-                return Bytes.toBytes((Integer)obj);
+                case IntegerType:
+                    return Bytes.toBytes((Integer)obj);
 
-            case LongType:
-                return Bytes.toBytes((Long)obj);
+                case LongType:
+                    return Bytes.toBytes((Long)obj);
 
-            case FloatType:
-                return Bytes.toBytes((Float)obj);
+                case FloatType:
+                    return Bytes.toBytes((Float)obj);
 
-            case DoubleType:
-                return Bytes.toBytes((Double)obj);
+                case DoubleType:
+                    return Bytes.toBytes((Double)obj);
 
-            case KeyType:
-            case StringType:
-                return Bytes.toBytes((String)obj);
+                case KeyType:
+                case StringType:
+                    return Bytes.toBytes((String)obj);
 
-            case DateType:
-            case ObjectType:
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                final ObjectOutputStream oos = new ObjectOutputStream(baos);
-                oos.writeObject(obj);
-                oos.flush();
-                try {
-                    return baos.toByteArray();
-                }
-                finally {
-                    oos.close();
-                }
+                case DateType:
+                case ObjectType:
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    final ObjectOutputStream oos = new ObjectOutputStream(baos);
+                    oos.writeObject(obj);
+                    oos.flush();
+                    try {
+                        return baos.toByteArray();
+                    }
+                    finally {
+                        oos.close();
+                    }
 
-            default:
-                throw new HBqlException("Error in getScalarfromBytes() - " + fieldType);
+                default:
+                    throw new HBqlException("Unknown type in getScalarfromBytes() - " + fieldType);
+            }
+        }
+        catch (IOException e) {
+            throw new HBqlException("Error in getScalarfromBytes() - " + e.getMessage());
         }
     }
 
     @Override
-    public Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws IOException, HBqlException {
+    public Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws HBqlException {
 
         try {
 
@@ -248,133 +255,140 @@ public class HadoopSerialization extends Serialization {
                 }
 
                 default:
-                    throw new HBqlException("Error in getScalarfromBytes() - " + fieldType);
+                    throw new HBqlException("Unknown type in getScalarfromBytes() - " + fieldType);
             }
         }
+        catch (IOException e) {
+            throw new HBqlException("Error in getScalarfromBytes() " + e.getMessage());
+        }
         catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new HBqlException("Error in getScalarfromBytes()");
+            throw new HBqlException("Error in getScalarfromBytes() " + e.getMessage());
         }
     }
 
     @Override
-    public byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws IOException, HBqlException {
+    public byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws HBqlException {
 
-        switch (fieldType) {
+        try {
+            switch (fieldType) {
 
-            case BooleanType: {
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                final ObjectOutputStream oos = new ObjectOutputStream(baos);
-                oos.writeInt(((boolean[])obj).length);
-                for (final boolean val : (boolean[])obj) {
-                    oos.writeBoolean(val);
+                case BooleanType: {
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    final ObjectOutputStream oos = new ObjectOutputStream(baos);
+                    oos.writeInt(((boolean[])obj).length);
+                    for (final boolean val : (boolean[])obj) {
+                        oos.writeBoolean(val);
+                    }
+                    oos.flush();
+                    return baos.toByteArray();
                 }
-                oos.flush();
-                return baos.toByteArray();
-            }
 
-            case ByteType: {
-                final int length = ((byte[])obj).length;
-                final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
-                this.writeLength(b, length);
-                int offset = arraysize;
-                for (final byte val : (byte[])obj) {
-                    Bytes.putByte(b, offset, val);
-                    offset += fieldType.getSize();
+                case ByteType: {
+                    final int length = ((byte[])obj).length;
+                    final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
+                    this.writeLength(b, length);
+                    int offset = arraysize;
+                    for (final byte val : (byte[])obj) {
+                        Bytes.putByte(b, offset, val);
+                        offset += fieldType.getSize();
+                    }
+                    return b;
                 }
-                return b;
-            }
 
-            case CharType: {
-                final String s = new String((char[])obj);
-                return Bytes.toBytes(s);
-            }
-
-            case ShortType: {
-                final int length = ((short[])obj).length;
-                final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
-                this.writeLength(b, length);
-                int offset = arraysize;
-                for (final short val : (short[])obj) {
-                    Bytes.putShort(b, offset, val);
-                    offset += fieldType.getSize();
+                case CharType: {
+                    final String s = new String((char[])obj);
+                    return Bytes.toBytes(s);
                 }
-                return b;
-            }
 
-            case IntegerType: {
-                final int length = ((int[])obj).length;
-                final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
-                this.writeLength(b, length);
-                int offset = arraysize;
-                for (final int val : (int[])obj) {
-                    Bytes.putInt(b, offset, val);
-                    offset += fieldType.getSize();
+                case ShortType: {
+                    final int length = ((short[])obj).length;
+                    final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
+                    this.writeLength(b, length);
+                    int offset = arraysize;
+                    for (final short val : (short[])obj) {
+                        Bytes.putShort(b, offset, val);
+                        offset += fieldType.getSize();
+                    }
+                    return b;
                 }
-                return b;
-            }
 
-            case LongType: {
-                final int length = ((long[])obj).length;
-                final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
-                this.writeLength(b, length);
-                int offset = arraysize;
-                for (final long val : (long[])obj) {
-                    Bytes.putLong(b, offset, val);
-                    offset += fieldType.getSize();
+                case IntegerType: {
+                    final int length = ((int[])obj).length;
+                    final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
+                    this.writeLength(b, length);
+                    int offset = arraysize;
+                    for (final int val : (int[])obj) {
+                        Bytes.putInt(b, offset, val);
+                        offset += fieldType.getSize();
+                    }
+                    return b;
                 }
-                return b;
-            }
 
-            case FloatType: {
-                final int length = ((float[])obj).length;
-                final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
-                this.writeLength(b, length);
-                int offset = arraysize;
-                for (final float val : (float[])obj) {
-                    Bytes.putFloat(b, offset, val);
-                    offset += fieldType.getSize();
+                case LongType: {
+                    final int length = ((long[])obj).length;
+                    final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
+                    this.writeLength(b, length);
+                    int offset = arraysize;
+                    for (final long val : (long[])obj) {
+                        Bytes.putLong(b, offset, val);
+                        offset += fieldType.getSize();
+                    }
+                    return b;
                 }
-                return b;
-            }
 
-            case DoubleType: {
-                final int length = ((double[])obj).length;
-                final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
-                this.writeLength(b, length);
-                int offset = arraysize;
-                for (final double val : (double[])obj) {
-                    Bytes.putDouble(b, offset, val);
-                    offset += fieldType.getSize();
+                case FloatType: {
+                    final int length = ((float[])obj).length;
+                    final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
+                    this.writeLength(b, length);
+                    int offset = arraysize;
+                    for (final float val : (float[])obj) {
+                        Bytes.putFloat(b, offset, val);
+                        offset += fieldType.getSize();
+                    }
+                    return b;
                 }
-                return b;
-            }
 
-            case StringType: {
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                final ObjectOutputStream oos = new ObjectOutputStream(baos);
-                oos.writeInt(((Object[])obj).length);
-                for (final String val : (String[])obj) {
-                    oos.writeUTF(val);
+                case DoubleType: {
+                    final int length = ((double[])obj).length;
+                    final byte[] b = new byte[(length * fieldType.getSize()) + arraysize];
+                    this.writeLength(b, length);
+                    int offset = arraysize;
+                    for (final double val : (double[])obj) {
+                        Bytes.putDouble(b, offset, val);
+                        offset += fieldType.getSize();
+                    }
+                    return b;
                 }
-                oos.flush();
-                return baos.toByteArray();
-            }
 
-            case DateType:
-            case ObjectType: {
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                final ObjectOutputStream oos = new ObjectOutputStream(baos);
-                oos.writeInt(((Object[])obj).length);
-                for (final Object val : (Object[])obj) {
-                    oos.writeObject(val);
+                case StringType: {
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    final ObjectOutputStream oos = new ObjectOutputStream(baos);
+                    oos.writeInt(((Object[])obj).length);
+                    for (final String val : (String[])obj) {
+                        oos.writeUTF(val);
+                    }
+                    oos.flush();
+                    return baos.toByteArray();
                 }
-                oos.flush();
-                return baos.toByteArray();
-            }
 
-            default:
-                throw new HBqlException("Error in getArrayasBytes() - " + fieldType);
+                case DateType:
+                case ObjectType: {
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    final ObjectOutputStream oos = new ObjectOutputStream(baos);
+                    oos.writeInt(((Object[])obj).length);
+                    for (final Object val : (Object[])obj) {
+                        oos.writeObject(val);
+                    }
+                    oos.flush();
+                    return baos.toByteArray();
+                }
+
+                default:
+                    throw new HBqlException("Unknown type in getArrayasBytes() - " + fieldType);
+            }
+        }
+        catch (IOException e) {
+            throw new HBqlException("Error in getArrayasBytes() - " + e.getMessage());
         }
     }
 

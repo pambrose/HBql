@@ -21,11 +21,11 @@ public class ExprTree extends ExprContext implements Serializable {
 
     private static TypeSignature exprSignature = new TypeSignature(null, BooleanValue.class);
 
-    private final boolean readFromHBaseMap;
+    private final boolean useHBaseResult;
 
-    private ExprTree(final boolean readFromHBaseMap, final GenericValue rootValue) {
+    private ExprTree(final boolean useHBaseResult, final GenericValue rootValue) {
         super(exprSignature, rootValue);
-        this.readFromHBaseMap = readFromHBaseMap;
+        this.useHBaseResult = useHBaseResult;
     }
 
     public static ExprTree newExprTree(final boolean readFromHBaseMap, final BooleanValue booleanValue) {
@@ -59,7 +59,7 @@ public class ExprTree extends ExprContext implements Serializable {
     }
 
     @Override
-    public boolean readFromHBaseMap() {
-        return this.readFromHBaseMap;
+    public boolean useHBaseResult() {
+        return this.useHBaseResult;
     }
 }

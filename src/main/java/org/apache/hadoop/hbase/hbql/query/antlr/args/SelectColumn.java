@@ -54,7 +54,7 @@ public class SelectColumn extends ExprContext {
     }
 
     @Override
-    public boolean readFromHBaseMap() {
+    public boolean useHBaseResult() {
         return true;
     }
 }

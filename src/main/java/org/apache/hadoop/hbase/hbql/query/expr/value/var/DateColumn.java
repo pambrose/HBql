@@ -1,11 +1,13 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 import java.util.Date;
+import java.util.NavigableMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,7 +23,17 @@ public class DateColumn extends GenericColumn<DateValue> implements DateValue {
 
     @Override
     public Long getValue(final Object object) throws HBqlException {
-        return ((Date)this.getVariableAttrib().getCurrentValue(object)).getTime();
+
+        if (this.getExprContext().useHBaseResult()) {
+            final Result result = (Result)object;
+            final NavigableMap<byte[], NavigableMap<byte[], byte[]>> familyMap = result.getNoVersionMap();
+
+            familyMap.get(this.getVariableAttrib().getFamilyNameBytes());
+            return null;
+        }
+        else {
+            return ((Date)this.getVariableAttrib().getCurrentValue(object)).getTime();
+        }
     }
 
 }

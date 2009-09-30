@@ -18,7 +18,7 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
     private final FieldType fieldType;
     private final VariableAttrib variableAttrib;
 
-    private ExprContext context = null;
+    private ExprContext exprContext = null;
 
     protected GenericColumn(final VariableAttrib attrib, final FieldType fieldType) {
         this.variableAttrib = attrib;
@@ -51,13 +51,13 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
     }
 
     @Override
-    public void setContext(final ExprContext context) throws HBqlException {
-        this.context = context;
-        this.getContext().addVariable(this);
+    public void setExprContext(final ExprContext context) throws HBqlException {
+        this.exprContext = context;
+        this.getExprContext().addVariable(this);
     }
 
-    protected ExprContext getContext() {
-        return this.context;
+    protected ExprContext getExprContext() {
+        return this.exprContext;
     }
 
     @Override

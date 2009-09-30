@@ -101,9 +101,9 @@ public abstract class GenericExpr implements GenericValue {
         return true;
     }
 
-    public void setContext(final ExprContext context) throws HBqlException {
+    public void setExprContext(final ExprContext context) throws HBqlException {
         for (final GenericValue val : this.getArgList())
-            val.setContext(context);
+            val.setExprContext(context);
     }
 
     public void optimizeArgs() throws HBqlException {
