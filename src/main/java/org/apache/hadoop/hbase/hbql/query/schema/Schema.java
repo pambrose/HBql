@@ -69,29 +69,6 @@ public abstract class Schema implements Serializable {
         return retval;
     }
 
-    public List<String> getAliasAndQualifiedNameCurrentValueList(final List<String> fieldList) {
-
-        final List<String> allVersionList = Lists.newArrayList();
-        for (final String field : fieldList) {
-
-            final VariableAttrib attrib = this.getVariableAttribByVariableName(field);
-
-            // Annotated version values will be null
-            if (attrib == null)
-                continue;
-
-            final String qualifiedName = attrib.getFamilyQualifiedName();
-            final String variableName = attrib.getVariableName();
-
-            allVersionList.add(qualifiedName);
-
-            if (!qualifiedName.equals(variableName))
-                allVersionList.add(variableName);
-        }
-        return allVersionList;
-    }
-
-
     // *** variableAttribByVariableNameMap calls
     private Map<String, VariableAttrib> getVariableAttribByVariableNameMap() {
         return this.variableAttribByVariableNameMap;
