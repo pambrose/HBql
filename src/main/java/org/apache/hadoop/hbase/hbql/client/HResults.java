@@ -116,9 +116,10 @@ public class HResults<T> implements Iterable<T> {
                     if (resultIter != null) {
                         while (resultIter.hasNext()) {
                             final Result result = resultIter.next();
-                            final T val = (T)getHQuery().getSchema().newObject(getHQuery().getSelectColumnNameList(),
-                                                                               this.maxVersions,
-                                                                               result);
+                            final T val = (T)getHQuery().getSchema()
+                                    .newObject(getHQuery().getSelectVariableAttribList(),
+                                               this.maxVersions,
+                                               result);
 
                             if (clientExprTree == null || clientExprTree.evaluate(val)) {
                                 this.recordCount++;

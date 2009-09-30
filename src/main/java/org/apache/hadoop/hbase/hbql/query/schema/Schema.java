@@ -35,8 +35,8 @@ public abstract class Schema implements Serializable {
         return retval;
     }
 
-    public List<String> getFamilyQualifiedNameList() {
-        final List<String> retval = Lists.newArrayList();
+    public List<VariableAttrib> getVariableAttribList() {
+        final List<VariableAttrib> retval = Lists.newArrayList();
         for (final String name : this.getVariableAttribNames()) {
 
             VariableAttrib attrib = this.getVariableAttribByVariableName(name);
@@ -44,18 +44,13 @@ public abstract class Schema implements Serializable {
             if (attrib.isKeyAttrib())
                 continue;
 
-            // Attribs are present twice if an alias is assigned.
-            // So add only qualifgied names
-            if (!name.equals(attrib.getFamilyQualifiedName()))
-                continue;
-
-            retval.add(attrib.getFamilyQualifiedName());
+            retval.add(attrib);
         }
         return retval;
     }
 
-    public List<String> getFieldList(final String familyName) {
-        final List<String> retval = Lists.newArrayList();
+    public List<VariableAttrib> getVariableAttribForFamily(final String familyName) {
+        final List<VariableAttrib> retval = Lists.newArrayList();
         for (final String name : this.getVariableAttribNames()) {
 
             VariableAttrib attrib = this.getVariableAttribByVariableName(name);
@@ -69,7 +64,7 @@ public abstract class Schema implements Serializable {
                 continue;
 
             if (attrib.getFamilyName().length() > 0 && attrib.getFamilyName().equals(familyName))
-                retval.add(attrib.getFamilyQualifiedName());
+                retval.add(attrib);
         }
         return retval;
     }

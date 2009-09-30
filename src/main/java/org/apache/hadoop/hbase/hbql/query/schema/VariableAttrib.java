@@ -46,4 +46,15 @@ public abstract class VariableAttrib implements Serializable {
     public boolean isKeyAttrib() {
         return false;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof VariableAttrib))
+            return false;
+
+        final VariableAttrib var = (VariableAttrib)o;
+
+        return var.getVariableName().equals(this.getVariableName())
+               && var.getFamilyQualifiedName().equals(this.getFamilyQualifiedName());
+    }
 }

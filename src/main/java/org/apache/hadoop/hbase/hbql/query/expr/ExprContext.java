@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
+import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -33,13 +34,13 @@ public class ExprContext {
         return this.columnList;
     }
 
-    public List<String> getFamilyQualifiedColumnNameList() {
-        final List<String> nameList = Lists.newArrayList();
+    public List<VariableAttrib> getFamilyQualifiedColumnNameList() {
+        final List<VariableAttrib> retval = Lists.newArrayList();
 
         for (final GenericColumn col : this.getColumnList())
-            nameList.add(col.getFamilyQualifiedName());
+            retval.add(col.getVariableAttrib());
 
-        return nameList;
+        return retval;
     }
 
     public Map<String, List<NamedParameter>> getNamedParamMap() {

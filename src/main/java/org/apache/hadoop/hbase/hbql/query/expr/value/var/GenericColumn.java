@@ -25,7 +25,7 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         this.fieldType = fieldType;
     }
 
-    protected VariableAttrib getVariableAttrib() {
+    public VariableAttrib getVariableAttrib() {
         return this.variableAttrib;
     }
 

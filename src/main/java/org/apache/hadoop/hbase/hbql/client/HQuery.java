@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.hbql.query.antlr.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.io.IOException;
@@ -37,13 +38,13 @@ public class HQuery<T> {
 
         this.clientExprTree = this.getWhereArgs().getClientExprTree();
         this.clientExprTree.setSchema(this.getSchema());
-        this.clientExprTree.validate(this.getSelectColumnNameList());
+        this.clientExprTree.validate(this.getSelectVariableAttribList());
 
         final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getWhereArgs().getServerExprTree(),
-                                                                       this.getSelectColumnNameList(),
+                                                                       this.getSelectVariableAttribList(),
                                                                        this.getWhereArgs().getScanLimit());
 
-        this.scanList = this.getSchema().getScanList(this.getSelectColumnNameList(),
+        this.scanList = this.getSchema().getScanList(this.getSelectVariableAttribList(),
                                                      this.getWhereArgs().getKeyRangeArgs(),
                                                      this.getWhereArgs().getTimeRangeArgs(),
                                                      this.getWhereArgs().getVersionArgs(),
@@ -77,8 +78,8 @@ public class HQuery<T> {
         return this.clientExprTree;
     }
 
-    List<String> getSelectColumnNameList() {
-        return this.getQueryArgs().getSelectColumnNameList();
+    List<VariableAttrib> getSelectVariableAttribList() {
+        return this.getQueryArgs().getSelectVariableAttribList();
     }
 
     public String getQuery() {

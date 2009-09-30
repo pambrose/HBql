@@ -10,6 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
+import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
@@ -124,20 +125,36 @@ public class TestSupport {
             final QueryArgs args = HBql.parseQuery(expr);
             final List<String> valList = Lists.newArrayList(vals.replace(" ", "").split(","));
 
-            final List<String> attribList = args.getSelectColumnNameList();
+            final Schema schema = args.getSchema();
+
+            final List<VariableAttrib> attribList = args.getSelectVariableAttribList();
+
+            final List<VariableAttrib> specifiedAttribList = Lists.newArrayList();
 
             boolean retval = true;
 
             for (final String val : valList) {
-                if (!attribList.contains(val)) {
+
+                final VariableAttrib attrib = schema.getVariableAttribByVariableName(val);
+
+                if (attrib == null) {
+                    System.out.println("Invalid column name: " + val);
+                    retval = false;
+                    continue;
+                }
+
+                if (!attribList.contains(attrib)) {
                     System.out.println("Missing column name in attrib list: " + val);
                     retval = false;
+                    continue;
                 }
+
+                specifiedAttribList.add(attrib);
             }
 
-            for (final String var : attribList) {
-                if (!valList.contains(var)) {
-                    System.out.println("Missing column name in specified list: " + var);
+            for (final VariableAttrib attrib : attribList) {
+                if (!specifiedAttribList.contains(attrib)) {
+                    System.out.println("Missing column name in specified list: " + attrib.getFamilyQualifiedName());
                     retval = false;
                 }
             }

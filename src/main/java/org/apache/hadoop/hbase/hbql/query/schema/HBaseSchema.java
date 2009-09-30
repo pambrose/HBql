@@ -243,7 +243,7 @@ public abstract class HBaseSchema extends Schema {
         return null;
     }
 
-    public List<Scan> getScanList(final List<String> fieldList,
+    public List<Scan> getScanList(final List<VariableAttrib> attribList,
                                   final KeyRangeArgs keyRangeArgs,
                                   final TimeRangeArgs timeRangeArgs,
                                   final VersionArgs versionArgs,
@@ -268,12 +268,9 @@ public abstract class HBaseSchema extends Schema {
         for (final Scan scan : scanList) {
 
             // Set column names
-            for (final String name : fieldList) {
+            for (final VariableAttrib variableAttrib : attribList) {
 
-                final ColumnAttrib attrib = (ColumnAttrib)this.getVariableAttribByVariableName(name);
-
-                if (attrib == null)
-                    throw new HBqlException("Column " + name + " does not exist in " + this.getSchemaName());
+                final ColumnAttrib attrib = (ColumnAttrib)variableAttrib;
 
                 // Do not bother to request because it will always be delivered
                 if (attrib.isKeyAttrib())
@@ -309,7 +306,7 @@ public abstract class HBaseSchema extends Schema {
     }
 
     public HBqlFilter getHBqlFilter(final ExprTree exprTree,
-                                    final List<String> fieldList,
+                                    final List<VariableAttrib> attribList,
                                     final long scanLimit) throws HBqlException {
 
         if (!exprTree.isValid()) {
@@ -318,7 +315,7 @@ public abstract class HBaseSchema extends Schema {
         else {
             final DefinedSchema schema = HUtil.getDefinedSchemaForServerFilter(this);
             exprTree.setSchema(schema);
-            exprTree.validate(fieldList);
+            exprTree.validate(attribList);
             return new HBqlFilter(exprTree, scanLimit);
         }
     }
