@@ -36,8 +36,9 @@ public class ObjectResults<T> implements Iterable<T> {
 
         try {
             return new ResultsIterator<T>() {
+
                 // In theory, this should be done only once and in ObjectQuery, but
-                // since it requires the objects to get the scema, I do it here
+                // since it requires the objects to get the schema, I do it here
                 final ExprTree exprTree = getObjectQuery().getExprTree(getObjects());
 
                 Iterator<T> objectIter = null;

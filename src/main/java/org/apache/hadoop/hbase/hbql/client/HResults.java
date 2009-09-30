@@ -100,7 +100,7 @@ public class HResults<T> implements Iterable<T> {
                     if (this.getScanIter().hasNext()) {
 
                         final Scan scan = this.getScanIter().next();
-                        maxVersions = scan.getMaxVersions();
+                        this.maxVersions = scan.getMaxVersions();
 
                         // First close previous ResultScanner before reassigning
                         closeCurrentScanner(this.getCurrentResultScanner(), true);
@@ -135,7 +135,9 @@ public class HResults<T> implements Iterable<T> {
                         resultIter = getNextResultScanner();
 
                     if (this.getResultIter() != null) {
+
                         while (this.getResultIter().hasNext()) {
+
                             final Result result = this.getResultIter().next();
 
                             final List<VariableAttrib> attribList = getHQuery().getSelectAttribList();
@@ -143,11 +145,14 @@ public class HResults<T> implements Iterable<T> {
                             final T val = (T)getHQuery().getSchema().newObject(attribList, this.maxVersions, result);
 
                             if (getClientExprTree() == null || getClientExprTree().evaluate(val)) {
+
                                 this.recordCount++;
+
                                 final List<HQueryListener<T>> listenerList = getHQuery().getListeners();
                                 if (listenerList != null)
                                     for (final HQueryListener<T> listener : listenerList)
                                         listener.onEachRow(val);
+
                                 return val;
                             }
                         }
