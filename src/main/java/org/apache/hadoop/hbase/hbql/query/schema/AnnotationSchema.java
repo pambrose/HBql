@@ -360,11 +360,13 @@ public class AnnotationSchema extends HBaseSchema {
             keyattrib.setCurrentValue(newobj, 0, keybytes);
         }
         catch (InstantiationException e) {
-            throw new RuntimeException("Cannot create new instance of " + this.getSchemaName());
+            e.printStackTrace();
+            throw new HBqlException("Cannot create new instance of " + this.getSchemaName());
         }
         catch (IllegalAccessException e) {
-            throw new RuntimeException("Cannot set value for key  " + keyattrib.getVariableName()
-                                       + " for " + this.getSchemaName());
+            e.printStackTrace();
+            throw new HBqlException("Cannot set value for key  " + keyattrib.getVariableName()
+                                    + " for " + this.getSchemaName());
         }
         return newobj;
     }
