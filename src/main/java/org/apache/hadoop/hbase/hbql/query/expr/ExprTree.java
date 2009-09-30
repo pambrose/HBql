@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
-import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
 import java.io.Serializable;
 import java.util.List;
@@ -41,20 +40,15 @@ public class ExprTree extends ExprContext implements Serializable {
         return (this.getGenericValue() == null) || (Boolean)this.getGenericValue().getValue(object);
     }
 
-    public void setSchema(final Schema schema, final List<String> fieldList) throws HBqlException {
+    public void validate(final List<String> fieldList) throws HBqlException {
 
-        if (this.isValid()) {
+        // Check if all the variables referenced in the where clause are present in the fieldList.
+        final List<String> selectList = this.getSchema().getAliasAndQualifiedNameCurrentValueList(fieldList);
 
-            this.setSchema(schema);
-
-            // Check if all the variables referenced in the where clause are present in the fieldList.
-            final List<String> selectList = schema.getAliasAndQualifiedNameFieldList(fieldList);
-
-            for (final GenericColumn var : this.getColumnList()) {
-                if (!selectList.contains(var.getVariableName()))
-                    throw new HBqlException("Variable " + var.getVariableName() + " used in where clause but it is not "
-                                            + "not in the select list");
-            }
+        for (final GenericColumn var : this.getColumnList()) {
+            if (!selectList.contains(var.getVariableName()))
+                throw new HBqlException("Variable " + var.getVariableName() + " used in where clause but it is not "
+                                        + "not in the select list");
         }
     }
 

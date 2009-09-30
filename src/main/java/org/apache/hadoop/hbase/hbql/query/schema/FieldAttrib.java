@@ -18,14 +18,14 @@ public abstract class FieldAttrib extends ColumnAttrib {
 
     protected FieldAttrib(final Field field,
                           final FieldType fieldType,
-                          final String family,
-                          final String column,
+                          final String familyName,
+                          final String columnName,
                           final String getter,
                           final String setter,
                           final boolean mapKeysAsColumns) throws HBqlException {
         super(fieldType,
-              family,
-              (column != null && column.length() > 0) ? column : field.getName(),
+              familyName,
+              (columnName != null && columnName.length() > 0) ? columnName : field.getName(),
               getter,
               setter,
               mapKeysAsColumns);

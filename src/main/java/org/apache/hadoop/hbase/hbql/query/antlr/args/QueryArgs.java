@@ -16,7 +16,7 @@ import java.util.List;
 public class QueryArgs {
 
     private final List<SelectColumn> selectColumnList;
-    private final List<String> columnNameList = Lists.newArrayList();
+    private final List<String> selectColumnNameList = Lists.newArrayList();
     private final String tableName;
     private final WhereArgs whereExpr;
 
@@ -41,19 +41,19 @@ public class QueryArgs {
 
             switch (column.getType()) {
                 case ALLTABLECOLUMNS:
-                    this.columnNameList.addAll(this.getSchema().getFamilyQualifiedNameList());
+                    this.selectColumnNameList.addAll(this.getSchema().getFamilyQualifiedNameList());
                     return;
 
                 case ALLFAMILYCOLUMNS:
                     if (!this.getSchema().containsFamilyNameInFamilyNameMap(column.getFamilyName()))
                         throw new HBqlException("Invalid family name: " + column.getFamilyName());
 
-                    this.columnNameList.addAll(this.getSchema().getFieldList(column.getFamilyName()));
+                    this.selectColumnNameList.addAll(this.getSchema().getFieldList(column.getFamilyName()));
                     break;
 
                 case GENERICEXPR:
                     column.setSchema(schema);
-                    this.columnNameList.addAll(column.getFamilyQualifiedColumnNameList());
+                    this.selectColumnNameList.addAll(column.getFamilyQualifiedColumnNameList());
                     break;
             }
         }
@@ -63,8 +63,8 @@ public class QueryArgs {
         return this.selectColumnList;
     }
 
-    public List<String> getColumnNameList() {
-        return columnNameList;
+    public List<String> getSelectColumnNameList() {
+        return this.selectColumnNameList;
     }
 
     public String getTableName() {

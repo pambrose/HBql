@@ -18,12 +18,12 @@ public class VersionAttrib extends FieldAttrib {
 
     private VersionAttrib(final Field field,
                           final FieldType fieldType,
-                          final String family,
-                          final String column,
+                          final String familyName,
+                          final String columnName,
                           final String getter,
                           final String setter,
                           final boolean mapKeysAsColumns) throws HBqlException {
-        super(field, fieldType, family, column, getter, setter, mapKeysAsColumns);
+        super(field, fieldType, familyName, columnName, getter, setter, mapKeysAsColumns);
 
         this.defineAccessors();
     }

@@ -124,7 +124,7 @@ public class TestSupport {
             final QueryArgs args = HBql.parseQuery(expr);
             final List<String> valList = Lists.newArrayList(vals.replace(" ", "").split(","));
 
-            final List<String> attribList = args.getColumnNameList();
+            final List<String> attribList = args.getSelectColumnNameList();
 
             boolean retval = true;
 

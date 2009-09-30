@@ -74,7 +74,7 @@ public abstract class Schema implements Serializable {
         return retval;
     }
 
-    public List<String> getAliasAndQualifiedNameFieldList(final List<String> fieldList) {
+    public List<String> getAliasAndQualifiedNameCurrentValueList(final List<String> fieldList) {
 
         final List<String> allVersionList = Lists.newArrayList();
         for (final String field : fieldList) {
@@ -85,17 +85,13 @@ public abstract class Schema implements Serializable {
             if (attrib == null)
                 continue;
 
-            final String qualifiedname = attrib.getFamilyQualifiedName();
+            final String qualifiedName = attrib.getFamilyQualifiedName();
             final String variableName = attrib.getVariableName();
 
-            if (qualifiedname.equals(variableName)) {
-                allVersionList.add(qualifiedname);
-            }
-            else {
-                allVersionList.add(qualifiedname);
-                allVersionList.add(variableName);
-            }
+            allVersionList.add(qualifiedName);
 
+            if (!qualifiedName.equals(variableName))
+                allVersionList.add(variableName);
         }
         return allVersionList;
     }

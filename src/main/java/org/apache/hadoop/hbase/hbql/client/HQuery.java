@@ -20,13 +20,11 @@ import java.util.List;
  */
 public class HQuery<T> {
 
-    final HConnection connection;
-    final String query;
-    final HBaseSchema schema;
-    final List<String> fieldList;
-    final ExprTree clientExprTree;
-    final List<Scan> scanList;
-    final long queryLimit;
+    private final HConnection connection;
+    private final String query;
+    private final ExprTree clientExprTree;
+    private final List<Scan> scanList;
+    private final QueryArgs queryArgs;
 
     private List<HQueryListener<T>> listeners = null;
 
@@ -35,27 +33,20 @@ public class HQuery<T> {
         this.connection = connection;
         this.query = query;
 
-        final QueryArgs args = HBql.parseQuery(this.getQuery());
+        this.queryArgs = HBql.parseQuery(this.getQuery());
 
-        this.schema = args.getSchema();
+        this.clientExprTree = this.getWhereArgs().getClientExprTree();
+        this.clientExprTree.setSchema(this.getSchema());
+        this.clientExprTree.validate(this.getSelectColumnNameList());
 
-        final WhereArgs where = args.getWhereExpr();
+        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getWhereArgs().getServerExprTree(),
+                                                                       this.getSelectColumnNameList(),
+                                                                       this.getWhereArgs().getScanLimit());
 
-        this.queryLimit = where.getQueryLimit();
-
-        this.fieldList = args.getColumnNameList();
-
-        this.clientExprTree = where.getClientExprTree();
-        this.clientExprTree.setSchema(this.getSchema(), this.getFieldList());
-
-        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(where.getServerExprTree(),
-                                                                       this.getFieldList(),
-                                                                       where.getScanLimit());
-
-        this.scanList = this.getSchema().getScanList(this.getFieldList(),
-                                                     where.getKeyRangeArgs(),
-                                                     where.getTimeRangeArgs(),
-                                                     where.getVersionArgs(),
+        this.scanList = this.getSchema().getScanList(this.getSelectColumnNameList(),
+                                                     this.getWhereArgs().getKeyRangeArgs(),
+                                                     this.getWhereArgs().getTimeRangeArgs(),
+                                                     this.getWhereArgs().getVersionArgs(),
                                                      serverFilter);
     }
 
@@ -66,28 +57,36 @@ public class HQuery<T> {
         this.getListeners().add(listener);
     }
 
+    private QueryArgs getQueryArgs() {
+        return this.queryArgs;
+    }
+
+    private WhereArgs getWhereArgs() {
+        return this.getQueryArgs().getWhereExpr();
+    }
+
     List<Scan> getScanList() {
         return this.scanList;
     }
 
     HBaseSchema getSchema() {
-        return this.schema;
+        return this.getQueryArgs().getSchema();
     }
 
     ExprTree getClientExprTree() {
         return this.clientExprTree;
     }
 
-    List<String> getFieldList() {
-        return this.fieldList;
+    List<String> getSelectColumnNameList() {
+        return this.getQueryArgs().getSelectColumnNameList();
     }
 
     public String getQuery() {
         return this.query;
     }
 
-    public long getQueryLimit() {
-        return this.queryLimit;
+    public long getQueryLimit() throws HBqlException {
+        return this.getQueryArgs().getWhereExpr().getQueryLimit();
     }
 
     HConnection getConnection() {

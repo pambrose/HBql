@@ -317,7 +317,8 @@ public abstract class HBaseSchema extends Schema {
         }
         else {
             final DefinedSchema schema = HUtil.getDefinedSchemaForServerFilter(this);
-            exprTree.setSchema(schema, fieldList);
+            exprTree.setSchema(schema);
+            exprTree.validate(fieldList);
             return new HBqlFilter(exprTree, scanLimit);
         }
     }
