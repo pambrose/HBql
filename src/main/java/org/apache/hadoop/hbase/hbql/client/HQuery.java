@@ -41,13 +41,13 @@ public class HQuery<T> {
         this.getWhereArgs().optimize();
 
         this.clientExprTree = this.getWhereArgs().getClientExprTree();
-        this.clientExprTree.validate(this.getSelectVariableAttribList());
+        this.clientExprTree.validate(this.getSelectAttribList());
 
         final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getWhereArgs().getServerExprTree(),
-                                                                       this.getSelectVariableAttribList(),
+                                                                       this.getSelectAttribList(),
                                                                        this.getWhereArgs().getScanLimit());
 
-        this.scanList = this.getSchema().getScanList(this.getSelectVariableAttribList(),
+        this.scanList = this.getSchema().getScanList(this.getSelectAttribList(),
                                                      this.getWhereArgs().getKeyRangeArgs(),
                                                      this.getWhereArgs().getTimeRangeArgs(),
                                                      this.getWhereArgs().getVersionArgs(),
@@ -81,7 +81,7 @@ public class HQuery<T> {
         return this.clientExprTree;
     }
 
-    List<VariableAttrib> getSelectVariableAttribList() {
+    List<VariableAttrib> getSelectAttribList() {
         return this.getQueryArgs().getSelectVariableAttribList();
     }
 

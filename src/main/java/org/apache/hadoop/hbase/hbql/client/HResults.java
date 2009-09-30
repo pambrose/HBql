@@ -28,11 +28,11 @@ public class HResults<T> implements Iterable<T> {
     }
 
     private HQuery getHQuery() {
-        return hquery;
+        return this.hquery;
     }
 
     private List<ResultScanner> getScannerList() {
-        return scannerList;
+        return this.scannerList;
     }
 
     public void close() {
@@ -116,10 +116,9 @@ public class HResults<T> implements Iterable<T> {
                     if (resultIter != null) {
                         while (resultIter.hasNext()) {
                             final Result result = resultIter.next();
-                            final T val = (T)getHQuery().getSchema()
-                                    .newObject(getHQuery().getSelectVariableAttribList(),
-                                               this.maxVersions,
-                                               result);
+                            final T val = (T)getHQuery().getSchema().newObject(getHQuery().getSelectAttribList(),
+                                                                               this.maxVersions,
+                                                                               result);
 
                             if (clientExprTree == null || clientExprTree.evaluate(val)) {
                                 this.recordCount++;
