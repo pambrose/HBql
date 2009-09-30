@@ -16,11 +16,11 @@ public class LimitArgs extends SelectArgs {
     }
 
     public long getValue() throws HBqlException {
-        return ((Number)this.getArg(0).getValue(null)).longValue();
+        return ((Number)this.getGenericValue(0).getValue(null)).longValue();
     }
 
     public String asString() {
-        return "LIMIT " + this.getArg(0).asString();
+        return "LIMIT " + this.getGenericValue(0).asString();
     }
 
 }

@@ -16,14 +16,14 @@ public class TimeRangeArgs extends SelectArgs {
     }
 
     public long getLower() throws HBqlException {
-        return (Long)this.getArg(0).getValue(null);
+        return (Long)this.getGenericValue(0).getValue(null);
     }
 
     public long getUpper() throws HBqlException {
-        return (Long)this.getArg(1).getValue(null);
+        return (Long)this.getGenericValue(1).getValue(null);
     }
 
     public String asString() {
-        return "TIME RANGE " + this.getArg(0).asString() + " TO " + this.getArg(1);
+        return "TIME RANGE " + this.getGenericValue(0).asString() + " TO " + this.getGenericValue(1);
     }
 }

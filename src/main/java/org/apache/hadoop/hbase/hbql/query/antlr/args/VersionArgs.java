@@ -16,11 +16,11 @@ public class VersionArgs extends SelectArgs {
     }
 
     public int getValue() throws HBqlException {
-        return ((Number)this.getArg(0).getValue(null)).intValue();
+        return ((Number)this.getGenericValue(0).getValue(null)).intValue();
     }
 
     public String asString() {
-        return "VERSIONS " + this.getArg(0).asString();
+        return "VERSIONS " + this.getGenericValue(0).asString();
     }
 
 }

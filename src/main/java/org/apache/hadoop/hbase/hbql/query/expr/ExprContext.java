@@ -62,7 +62,8 @@ public class ExprContext {
 
     public void setSchema(final Schema schema) {
         this.schema = schema;
-        this.setContext();
+        if (this.isValid())
+            this.setContext();
     }
 
     protected GenericValue getGenericValue(final int i) {
@@ -98,7 +99,7 @@ public class ExprContext {
     }
 
     public void optimize() throws HBqlException {
-        if (this.isInNeedOfOptimization()) {
+        if (this.isValid() && this.isInNeedOfOptimization()) {
             for (int i = 0; i < this.getGenericValues().size(); i++)
                 this.setGenericValue(i, this.getGenericValue(i).getOptimizedValue());
             this.setInNeedOfOptimization(false);
@@ -106,7 +107,7 @@ public class ExprContext {
     }
 
     public void validateTypes() throws HBqlException {
-        if (this.isInNeedOfTypeValidation()) {
+        if (this.isValid() && this.isInNeedOfTypeValidation()) {
             for (final GenericValue val : this.getGenericValues())
                 val.validateTypes(null, false);
             this.setInNeedOfTypeValidation(false);
