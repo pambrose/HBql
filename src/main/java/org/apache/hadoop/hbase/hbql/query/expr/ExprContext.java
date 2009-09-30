@@ -9,6 +9,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,11 @@ public class ExprContext {
     private final Map<String, List<NamedParameter>> namedParamMap = Maps.newHashMap();
 
     private Schema schema = null;
-    private GenericValue genericValue = null;
+    private List<GenericValue> genericValues = Lists.newArrayList();
+
+    protected ExprContext(final GenericValue... vals) {
+        this.getGenericValues().addAll(Arrays.asList(vals));
+    }
 
     public List<GenericColumn> getColumnList() {
         return this.columnList;
@@ -47,6 +52,10 @@ public class ExprContext {
         return this.namedParamMap;
     }
 
+    protected List<GenericValue> getGenericValues() {
+        return this.genericValues;
+    }
+
     public Schema getSchema() {
         return this.schema;
     }
@@ -56,18 +65,25 @@ public class ExprContext {
         this.setContext();
     }
 
-    protected GenericValue getGenericValue() {
-        return this.genericValue;
+    protected GenericValue getGenericValue(final int i) {
+        return this.getGenericValues().get(i);
     }
 
     public boolean isValid() {
-        return this.getGenericValue() != null;
+        if (this.getGenericValues().size() == 0)
+            return false;
+
+        for (final GenericValue val : this.getGenericValues())
+            if (val == null)
+                return false;
+        return true;
     }
 
-    public void setContext() {
-        if (this.getGenericValue() != null && this.isInNeedOfSettingContext()) {
+    protected void setContext() {
+        if (this.isValid() && this.isInNeedOfSettingContext()) {
             try {
-                this.getGenericValue().setContext(this);
+                for (final GenericValue val : this.getGenericValues())
+                    val.setContext(this);
             }
             catch (HBqlException e) {
                 e.printStackTrace();
@@ -76,21 +92,23 @@ public class ExprContext {
         }
     }
 
-    protected void setGenericValue(final GenericValue treeRoot) {
-        this.genericValue = treeRoot;
+    protected void setGenericValue(final int i, final GenericValue treeRoot) {
+        this.getGenericValues().set(i, treeRoot);
 
     }
 
     public void optimize() throws HBqlException {
         if (this.isInNeedOfOptimization()) {
-            this.setGenericValue(this.getGenericValue().getOptimizedValue());
+            for (int i = 0; i < this.getGenericValues().size(); i++)
+                this.setGenericValue(i, this.getGenericValue(i).getOptimizedValue());
             this.setInNeedOfOptimization(false);
         }
     }
 
     public void validateTypes() throws HBqlException {
         if (this.isInNeedOfTypeValidation()) {
-            this.getGenericValue().validateTypes(null, false);
+            for (final GenericValue val : this.getGenericValues())
+                val.validateTypes(null, false);
             this.setInNeedOfTypeValidation(false);
         }
     }

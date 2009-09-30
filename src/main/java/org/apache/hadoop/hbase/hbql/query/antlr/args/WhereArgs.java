@@ -21,11 +21,11 @@ public class WhereArgs {
     private ExprTree serverExprTree = ExprTree.newExprTree(null);
 
     public void setSchema(final HBaseSchema schema) {
-        // this.getKeyRangeArgs().setSchema(schema);
-        this.getTimeRangeArgs().setSchema(schema);
-        this.getVersionArgs().setSchema(schema);
-        this.getScanLimitArgs().setSchema(schema);
-        this.getQueryLimitArgs().setSchema(schema);
+        // this.getKeyRangeArgs().setSchema(null);
+        this.getTimeRangeArgs().setSchema(null);
+        this.getVersionArgs().setSchema(null);
+        this.getScanLimitArgs().setSchema(null);
+        this.getQueryLimitArgs().setSchema(null);
         this.getClientExprTree().setSchema(schema);
     }
 

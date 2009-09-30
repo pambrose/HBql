@@ -6,10 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,15 +33,10 @@ public abstract class SelectArgs extends ExprContext {
     }
 
     private final Type type;
-    private final List<GenericValue> argList = Lists.newArrayList();
 
     protected SelectArgs(final Type type, final GenericValue... exprs) {
+        super(exprs);
         this.type = type;
-        this.argList.addAll(Arrays.asList(exprs));
-    }
-
-    public List<GenericValue> getArgList() {
-        return argList;
     }
 
     private void validateType(final int i) throws HBqlException {
@@ -62,14 +53,14 @@ public abstract class SelectArgs extends ExprContext {
     }
 
     public void optimize() throws HBqlException {
-        for (int i = 0; i < this.getArgList().size(); i++)
-            this.getArgList().set(i, this.getArgList().get(i).getOptimizedValue());
+        for (int i = 0; i < this.getGenericValues().size(); i++)
+            this.setGenericValue(i, this.getGenericValues().get(i).getOptimizedValue());
     }
 
-    public void setContext() {
-        for (final GenericValue arg : this.getArgList()) {
+    protected void setContext() {
+        for (final GenericValue val : this.getGenericValues()) {
             try {
-                arg.setContext(this);
+                val.setContext(this);
             }
             catch (HBqlException e) {
                 e.printStackTrace();
@@ -79,25 +70,15 @@ public abstract class SelectArgs extends ExprContext {
 
     public void validateTypes() throws HBqlException {
 
-        for (final GenericValue arg : this.getArgList())
+        for (final GenericValue arg : this.getGenericValues())
             arg.validateTypes(null, false);
 
         for (int i = 0; i < this.type.getTypeSignature().getArgCount(); i++)
             validateType(i);
     }
 
-    public boolean isValid() {
-        if (this.getArgList().size() == 0)
-            return false;
-
-        for (final GenericValue val : this.getArgList())
-            if (val == null)
-                return false;
-        return true;
-    }
-
     public GenericValue getArg(final int i) {
-        return this.getArgList().get(i);
+        return this.getGenericValues().get(i);
     }
 
     abstract public String asString();

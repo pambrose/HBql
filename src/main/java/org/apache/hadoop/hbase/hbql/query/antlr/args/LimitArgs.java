@@ -11,7 +11,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
  */
 public class LimitArgs extends SelectArgs {
 
-
     public LimitArgs(final GenericValue arg0) {
         super(SelectArgs.Type.LIMIT, arg0);
     }

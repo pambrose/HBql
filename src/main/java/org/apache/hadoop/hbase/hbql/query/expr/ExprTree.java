@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
@@ -17,17 +18,16 @@ import java.util.List;
  */
 public class ExprTree extends ExprContext implements Serializable {
 
-    private ExprTree() {
+    private ExprTree(final GenericValue rootValue) {
+        super(rootValue);
     }
 
     public static ExprTree newExprTree(final BooleanValue booleanValue) {
-        final ExprTree tree = new ExprTree();
-        tree.setGenericValue(booleanValue);
-        return tree;
+        return new ExprTree(booleanValue);
     }
 
     public String asString() {
-        return this.getGenericValue().asString();
+        return this.getGenericValue(0).asString();
     }
 
     public Boolean evaluate(final Object object) throws HBqlException {
@@ -38,7 +38,7 @@ public class ExprTree extends ExprContext implements Serializable {
         // Set it once per evaluation
         DateLiteral.resetNow();
 
-        return (this.getGenericValue() == null) || (Boolean)this.getGenericValue().getValue(object);
+        return (this.getGenericValue(0) == null) || (Boolean)this.getGenericValue(0).getValue(object);
     }
 
     public void validate(final List<VariableAttrib> attribList) throws HBqlException {

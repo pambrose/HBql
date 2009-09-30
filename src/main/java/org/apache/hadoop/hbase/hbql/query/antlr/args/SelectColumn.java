@@ -16,12 +16,11 @@ public class SelectColumn extends ExprContext {
 
     private final Type type;
     private final String familyName;
-    private final GenericValue genericValue;
 
     private SelectColumn(final Type type, final String familyName, final GenericValue genericValue) {
+        super(genericValue);
         this.type = type;
         this.familyName = (familyName == null) ? null : familyName.replace(" ", "").replace(":*", "");
-        this.genericValue = genericValue;
     }
 
     public static SelectColumn newAllColumns() {
@@ -45,7 +44,7 @@ public class SelectColumn extends ExprContext {
     }
 
     public GenericValue getGenericValue() {
-        return genericValue;
+        return this.getGenericValue(0);
     }
 
 }
