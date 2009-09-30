@@ -308,15 +308,13 @@ public abstract class HBaseSchema extends Schema {
                                     final List<VariableAttrib> attribList,
                                     final long scanLimit) throws HBqlException {
 
-        if (!exprTree.isValid()) {
-            return (scanLimit > 0) ? new HBqlFilter(ExprTree.newExprTree(null), scanLimit) : null;
-        }
-        else {
-            final DefinedSchema schema = HUtil.getDefinedSchemaForServerFilter(this);
-            exprTree.setSchema(schema);
-            exprTree.validate(attribList);
-            return new HBqlFilter(exprTree, scanLimit);
-        }
+        if (!exprTree.isValid())
+            return (scanLimit > 0) ? new HBqlFilter(ExprTree.newExprTree(true, null), scanLimit) : null;
+
+        final DefinedSchema schema = HUtil.getDefinedSchemaForServerFilter(this);
+        exprTree.setSchema(schema);
+        exprTree.validate(attribList);
+        return new HBqlFilter(exprTree, scanLimit);
     }
 
 }

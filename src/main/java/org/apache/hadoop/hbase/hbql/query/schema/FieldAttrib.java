@@ -90,7 +90,6 @@ public abstract class FieldAttrib extends ColumnAttrib {
         }
     }
 
-
     @Override
     public void setCurrentValue(final Object newobj, final long timestamp, final Object val) {
         try {

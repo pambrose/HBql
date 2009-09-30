@@ -96,6 +96,10 @@ public class HResults<T> implements Iterable<T> {
                     return this.nextObject;
                 }
 
+                private HTable getTable() {
+                    return this.table;
+                }
+
                 private Iterator<Result> getNextResultScanner() throws IOException {
                     if (this.getScanIter().hasNext()) {
 
@@ -105,7 +109,7 @@ public class HResults<T> implements Iterable<T> {
                         // First close previous ResultScanner before reassigning
                         closeCurrentScanner(this.getCurrentResultScanner(), true);
 
-                        currentResultScanner = table.getScanner(scan);
+                        currentResultScanner = this.getTable().getScanner(scan);
                         getScannerList().add(this.getCurrentResultScanner());
 
                         return this.getCurrentResultScanner().iterator();

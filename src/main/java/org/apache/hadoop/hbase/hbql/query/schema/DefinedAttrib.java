@@ -17,7 +17,13 @@ public class DefinedAttrib extends ColumnAttrib {
     private final ColumnDescription columnDescription;
 
     public DefinedAttrib(final ColumnDescription columnDescription) throws HBqlException {
-        super(columnDescription.getFieldType(), columnDescription.getFamilyName(), columnDescription.getColumnName(), null, null, false);
+        super(columnDescription.getFieldType(),
+              columnDescription.getFamilyName(),
+              columnDescription.getColumnName(),
+              null,
+              null,
+              false);
+
         this.columnDescription = columnDescription;
 
         if (this.isKeyAttrib() && this.getFamilyName().length() > 0)
@@ -64,6 +70,30 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     @Override
+    public Object getCurrentValue(final Object recordObj) throws HBqlException {
+        final HRecord record = (HRecord)recordObj;
+        return record.getCurrentValue(this.getVariableName());
+    }
+
+    @Override
+    protected void setCurrentValue(final Object newobj, final long ts, final Object val) throws HBqlException {
+        final HRecord record = (HRecord)newobj;
+        record.setCurrentValue(this.getVariableName(), ts, val);
+    }
+
+    @Override
+    public Object getVersionedValueMap(final Object recordObj) throws HBqlException {
+        final HRecord record = (HRecord)recordObj;
+        return record.getVersionedValueMap(this.getVariableName());
+    }
+
+    @Override
+    protected void setVersionedValueMap(final Object newobj, final Map<Long, Object> map) {
+        final HRecord record = (HRecord)newobj;
+        record.setVersionedValueMap(this.getVariableName(), map);
+    }
+
+    @Override
     protected Method getMethod(final String methodName, final Class<?>... params) throws NoSuchMethodException {
         return null;
     }
@@ -81,30 +111,6 @@ public class DefinedAttrib extends ColumnAttrib {
     @Override
     public String getEnclosingClassName() {
         return null;
-    }
-
-    @Override
-    protected void setCurrentValue(final Object newobj, final long ts, final Object val) throws HBqlException {
-        final HRecord record = (HRecord)newobj;
-        record.setCurrentValue(this.getVariableName(), ts, val);
-    }
-
-    @Override
-    public Object getCurrentValue(final Object recordObj) throws HBqlException {
-        final HRecord record = (HRecord)recordObj;
-        return record.getCurrentValue(this.getVariableName());
-    }
-
-    @Override
-    protected void setVersionedValueMap(final Object newobj, final Map<Long, Object> map) {
-        final HRecord record = (HRecord)newobj;
-        record.setVersionedValueMap(this.getVariableName(), map);
-    }
-
-    @Override
-    public Object getVersionedValueMap(final Object recordObj) throws HBqlException {
-        final HRecord record = (HRecord)recordObj;
-        return record.getVersionedValueMap(this.getVariableName());
     }
 
 }

@@ -21,12 +21,15 @@ public class ExprTree extends ExprContext implements Serializable {
 
     private static TypeSignature exprSignature = new TypeSignature(null, BooleanValue.class);
 
-    private ExprTree(final GenericValue rootValue) {
+    private final boolean readFromHBaseMap;
+
+    private ExprTree(final boolean readFromHBaseMap, final GenericValue rootValue) {
         super(exprSignature, rootValue);
+        this.readFromHBaseMap = readFromHBaseMap;
     }
 
-    public static ExprTree newExprTree(final BooleanValue booleanValue) {
-        return new ExprTree(booleanValue);
+    public static ExprTree newExprTree(final boolean readFromHBaseMap, final BooleanValue booleanValue) {
+        return new ExprTree(readFromHBaseMap, booleanValue);
     }
 
     public Boolean evaluate(final Object object) throws HBqlException {
@@ -57,6 +60,6 @@ public class ExprTree extends ExprContext implements Serializable {
 
     @Override
     public boolean readFromHBaseMap() {
-        return true;
+        return this.readFromHBaseMap;
     }
 }
