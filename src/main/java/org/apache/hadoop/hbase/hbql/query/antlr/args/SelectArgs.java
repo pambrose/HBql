@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -16,7 +17,7 @@ import java.util.List;
  * Date: Sep 28, 2009
  * Time: 2:38:26 PM
  */
-public abstract class SelectArgs {
+public abstract class SelectArgs extends ExprContext {
 
     public static enum Type {
 
@@ -47,16 +48,40 @@ public abstract class SelectArgs {
         return argList;
     }
 
-    public void validateType(final int i) throws HBqlException {
+    private void validateType(final int i) throws HBqlException {
 
-        if (this.getArg(i) == null)
+        final GenericValue arg = this.getArg(i);
+
+        if (arg == null)
             throw new HBqlException("Null value invalid");
 
-        if (!this.type.getTypeSignature().getArg(i).isAssignableFrom(this.getArg(i).getClass()))
+        final Class<? extends GenericValue> sigarg = this.type.getTypeSignature().getArg(i);
+
+        if (!sigarg.isAssignableFrom(arg.getClass()))
             throw new HBqlException("Invalid type " + this.getArg(i).getClass().getSimpleName());
     }
 
+    public void optimize() throws HBqlException {
+        for (int i = 0; i < this.getArgList().size(); i++)
+            this.getArgList().set(i, this.getArgList().get(i).getOptimizedValue());
+    }
+
+    public void setContext() {
+        for (final GenericValue arg : this.getArgList()) {
+            try {
+                arg.setContext(this);
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void validateTypes() throws HBqlException {
+
+        for (final GenericValue arg : this.getArgList())
+            arg.validateTypes(null, false);
+
         for (int i = 0; i < this.type.getTypeSignature().getArgCount(); i++)
             validateType(i);
     }

@@ -36,8 +36,11 @@ public class HQuery<T> {
 
         this.queryArgs = HBql.parseQuery(this.getQuery());
 
+        this.getWhereArgs().setSchema(this.getSchema());
+        this.getWhereArgs().validateTypes();
+        this.getWhereArgs().optimize();
+
         this.clientExprTree = this.getWhereArgs().getClientExprTree();
-        this.clientExprTree.setSchema(this.getSchema());
         this.clientExprTree.validate(this.getSelectVariableAttribList());
 
         final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getWhereArgs().getServerExprTree(),

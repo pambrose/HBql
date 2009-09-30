@@ -16,12 +16,10 @@ public class TimeRangeArgs extends SelectArgs {
     }
 
     public long getLower() throws HBqlException {
-        this.validateType(0);
         return (Long)this.getArg(0).getValue(null);
     }
 
     public long getUpper() throws HBqlException {
-        this.validateType(1);
         return (Long)this.getArg(1).getValue(null);
     }
 

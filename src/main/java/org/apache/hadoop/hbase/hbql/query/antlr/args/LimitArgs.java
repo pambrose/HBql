@@ -17,7 +17,6 @@ public class LimitArgs extends SelectArgs {
     }
 
     public long getValue() throws HBqlException {
-        this.validateTypes();
         return ((Number)this.getArg(0).getValue(null)).longValue();
     }
 

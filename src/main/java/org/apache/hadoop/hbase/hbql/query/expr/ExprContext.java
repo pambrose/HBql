@@ -64,7 +64,7 @@ public class ExprContext {
         return this.getGenericValue() != null;
     }
 
-    private void setContext() {
+    public void setContext() {
         if (this.getGenericValue() != null && this.isInNeedOfSettingContext()) {
             try {
                 this.getGenericValue().setContext(this);
@@ -81,14 +81,14 @@ public class ExprContext {
 
     }
 
-    protected void optimize() throws HBqlException {
+    public void optimize() throws HBqlException {
         if (this.isInNeedOfOptimization()) {
             this.setGenericValue(this.getGenericValue().getOptimizedValue());
             this.setInNeedOfOptimization(false);
         }
     }
 
-    protected void validateTypes() throws HBqlException {
+    public void validateTypes() throws HBqlException {
         if (this.isInNeedOfTypeValidation()) {
             this.getGenericValue().validateTypes(null, false);
             this.setInNeedOfTypeValidation(false);

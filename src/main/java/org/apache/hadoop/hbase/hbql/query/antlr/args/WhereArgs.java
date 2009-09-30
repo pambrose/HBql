@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,6 +19,33 @@ public class WhereArgs {
     private LimitArgs queryLimitArgs = new LimitArgs(null);
     private ExprTree clientExprTree = ExprTree.newExprTree(null);
     private ExprTree serverExprTree = ExprTree.newExprTree(null);
+
+    public void setSchema(final HBaseSchema schema) {
+        // this.getKeyRangeArgs().setSchema(schema);
+        this.getTimeRangeArgs().setSchema(schema);
+        this.getVersionArgs().setSchema(schema);
+        this.getScanLimitArgs().setSchema(schema);
+        this.getQueryLimitArgs().setSchema(schema);
+        this.getClientExprTree().setSchema(schema);
+    }
+
+    public void validateTypes() throws HBqlException {
+        // this.getKeyRangeArgs().validateTypes();
+        this.getTimeRangeArgs().validateTypes();
+        this.getVersionArgs().validateTypes();
+        this.getScanLimitArgs().validateTypes();
+        this.getQueryLimitArgs().validateTypes();
+        this.getClientExprTree().validateTypes();
+    }
+
+    public void optimize() throws HBqlException {
+        // this.getKeyRangeArgs().optimize();
+        this.getTimeRangeArgs().optimize();
+        this.getVersionArgs().optimize();
+        this.getScanLimitArgs().optimize();
+        this.getQueryLimitArgs().optimize();
+        this.getClientExprTree().optimize();
+    }
 
     public KeyRangeArgs getKeyRangeArgs() {
         return this.keyRangeArgs;
