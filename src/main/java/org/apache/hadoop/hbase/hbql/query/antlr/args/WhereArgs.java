@@ -26,16 +26,18 @@ public class WhereArgs {
         this.getVersionArgs().setSchema(null);
         this.getScanLimitArgs().setSchema(null);
         this.getQueryLimitArgs().setSchema(null);
+        this.getServerExprTree().setSchema(schema);
         this.getClientExprTree().setSchema(schema);
     }
 
     public void validateTypes() throws HBqlException {
         // this.getKeyRangeArgs().validateTypes();
-        this.getTimeRangeArgs().validateTypes();
-        this.getVersionArgs().validateTypes();
-        this.getScanLimitArgs().validateTypes();
-        this.getQueryLimitArgs().validateTypes();
-        this.getClientExprTree().validateTypes();
+        this.getTimeRangeArgs().validateTypes(false);
+        this.getVersionArgs().validateTypes(false);
+        this.getScanLimitArgs().validateTypes(false);
+        this.getQueryLimitArgs().validateTypes(false);
+        this.getServerExprTree().validateTypes(true);
+        this.getClientExprTree().validateTypes(true);
     }
 
     public void optimize() throws HBqlException {
@@ -44,6 +46,7 @@ public class WhereArgs {
         this.getVersionArgs().optimize();
         this.getScanLimitArgs().optimize();
         this.getQueryLimitArgs().optimize();
+        this.getServerExprTree().optimize();
         this.getClientExprTree().optimize();
     }
 

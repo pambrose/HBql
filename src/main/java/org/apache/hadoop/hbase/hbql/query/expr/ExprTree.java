@@ -35,7 +35,7 @@ public class ExprTree extends ExprContext implements Serializable {
 
     public Boolean evaluate(final Object object) throws HBqlException {
 
-        this.validateTypes();
+        this.validateTypes(true);
         this.optimize();
 
         // Set it once per evaluation

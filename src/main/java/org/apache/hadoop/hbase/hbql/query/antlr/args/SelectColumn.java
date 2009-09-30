@@ -48,4 +48,8 @@ public class SelectColumn extends ExprContext {
         return this.getGenericValue(0);
     }
 
+    @Override
+    public String asString() {
+        return this.getGenericValue(0).asString();
+    }
 }

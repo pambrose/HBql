@@ -21,7 +21,7 @@ import java.util.Map;
  * Date: Sep 28, 2009
  * Time: 9:56:12 PM
  */
-public class ExprContext {
+public abstract class ExprContext {
 
     private boolean inNeedOfTypeValidation = true;
     private boolean inNeedOfOptimization = true;
@@ -38,6 +38,8 @@ public class ExprContext {
         this.typeSignature = typeSignature;
         this.getGenericValues().addAll(Arrays.asList(vals));
     }
+
+    public abstract String asString();
 
     public List<GenericColumn> getColumnList() {
         return this.columnList;
@@ -113,8 +115,13 @@ public class ExprContext {
         }
     }
 
-    public void validateTypes() throws TypeException {
+    public void validateTypes(final boolean allowColumns) throws TypeException {
         if (this.isValid() && this.isInNeedOfTypeValidation()) {
+
+            if (!allowColumns && this.getColumnList().size() > 0) {
+                throw new TypeException("Invalid column reference" + (this.getColumnList().size() > 1 ? "s" : "")
+                                        + " in " + this.asString());
+            }
 
             // Collect return types of all args
             final List<Class<? extends GenericValue>> clazzList = Lists.newArrayList();
@@ -125,7 +132,7 @@ public class ExprContext {
             if (this.getTypeSignature() != null) {
 
                 if (this.getGenericValues().size() != this.getTypeSignature().getArgCount())
-                    throw new TypeException("Incorrect number of variables");
+                    throw new TypeException("Incorrect number of variables in " + this.asString());
 
                 for (int i = 0; i < this.getTypeSignature().getArgCount(); i++) {
 
@@ -133,7 +140,8 @@ public class ExprContext {
 
                     if (!parentClazz.isAssignableFrom(clazzList.get(i)))
                         throw new TypeException("Expecting type " + parentClazz.getSimpleName()
-                                                + " but encountered type " + clazzList.get(i).getSimpleName());
+                                                + " but encountered type " + clazzList.get(i).getSimpleName()
+                                                + " in " + this.asString());
                 }
             }
         }
@@ -162,7 +170,7 @@ public class ExprContext {
         final String name = str.startsWith(":") ? str : (":" + str);
 
         if (!this.getNamedParamMap().containsKey(name))
-            throw new HBqlException("Parameter name " + str + " does not exist");
+            throw new HBqlException("Parameter name " + str + " does not exist in " + this.asString());
 
         final List<NamedParameter> paramList = this.getNamedParamMap().get(name);
         for (final NamedParameter param : paramList)
