@@ -10,8 +10,9 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
  * Time: 5:31:29 PM
  */
 public class SelectColumn extends ExprContext {
+
     public enum Type {
-        ALLTABLECOLUMNS, ALLFAMILYCOLUMNS, GENERICEXPR;
+        ALLTABLECOLUMNS, ALLFAMILYCOLUMNS, GENERICEXPR
     }
 
     private final Type type;
