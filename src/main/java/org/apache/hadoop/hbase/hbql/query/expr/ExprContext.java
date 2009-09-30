@@ -116,22 +116,24 @@ public class ExprContext {
     public void validateTypes() throws TypeException {
         if (this.isValid() && this.isInNeedOfTypeValidation()) {
 
-            if (this.getTypeSignature() == null) {
-                for (final GenericValue val : this.getGenericValues())
-                    val.validateTypes(null, false);
-            }
-            else {
+            // Collect return types of all args
+            final List<Class<? extends GenericValue>> clazzList = Lists.newArrayList();
+            for (final GenericValue val : this.getGenericValues())
+                clazzList.add(val.validateTypes(null, false));
+
+            // Check against signature if there is one
+            if (this.getTypeSignature() != null) {
+
                 if (this.getGenericValues().size() != this.getTypeSignature().getArgCount())
                     throw new TypeException("Incorrect number of variables");
 
                 for (int i = 0; i < this.getTypeSignature().getArgCount(); i++) {
 
                     final Class<? extends GenericValue> parentClazz = this.getTypeSignature().getArg(i);
-                    final Class<? extends GenericValue> clazz = this.getGenericValue(i).validateTypes(null, false);
 
-                    if (!parentClazz.isAssignableFrom(clazz))
+                    if (!parentClazz.isAssignableFrom(clazzList.get(i)))
                         throw new TypeException("Expecting type " + parentClazz.getSimpleName()
-                                                + " but encountered type " + clazz.getSimpleName());
+                                                + " but encountered type " + clazzList.get(i).getSimpleName());
                 }
             }
         }
