@@ -1,7 +1,9 @@
 package org.apache.hadoop.hbase.hbql.query.expr;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
@@ -29,9 +31,11 @@ public class ExprContext {
     private final Map<String, List<NamedParameter>> namedParamMap = Maps.newHashMap();
 
     private Schema schema = null;
+    private final TypeSignature typeSignature;
     private List<GenericValue> genericValues = Lists.newArrayList();
 
-    protected ExprContext(final GenericValue... vals) {
+    protected ExprContext(final TypeSignature typeSignature, final GenericValue... vals) {
+        this.typeSignature = typeSignature;
         this.getGenericValues().addAll(Arrays.asList(vals));
     }
 
@@ -54,6 +58,10 @@ public class ExprContext {
 
     protected List<GenericValue> getGenericValues() {
         return this.genericValues;
+    }
+
+    private TypeSignature getTypeSignature() {
+        return this.typeSignature;
     }
 
     public Schema getSchema() {
@@ -95,7 +103,6 @@ public class ExprContext {
 
     protected void setGenericValue(final int i, final GenericValue treeRoot) {
         this.getGenericValues().set(i, treeRoot);
-
     }
 
     public void optimize() throws HBqlException {
@@ -106,12 +113,29 @@ public class ExprContext {
         }
     }
 
-    public void validateTypes() throws HBqlException {
+    public void validateTypes() throws TypeException {
         if (this.isValid() && this.isInNeedOfTypeValidation()) {
-            for (final GenericValue val : this.getGenericValues())
-                val.validateTypes(null, false);
-            this.setInNeedOfTypeValidation(false);
+
+            if (this.getTypeSignature() == null) {
+                for (final GenericValue val : this.getGenericValues())
+                    val.validateTypes(null, false);
+            }
+            else {
+                if (this.getGenericValues().size() != this.getTypeSignature().getArgCount())
+                    throw new TypeException("Incorrect number of variables");
+
+                for (int i = 0; i < this.getTypeSignature().getArgCount(); i++) {
+
+                    final Class<? extends GenericValue> parentClazz = this.getTypeSignature().getArg(i);
+                    final Class<? extends GenericValue> clazz = this.getGenericValue(i).validateTypes(null, false);
+
+                    if (!parentClazz.isAssignableFrom(clazz))
+                        throw new TypeException("Expecting type " + parentClazz.getSimpleName()
+                                                + " but encountered type " + clazz.getSimpleName());
+                }
+            }
         }
+        this.setInNeedOfTypeValidation(false);
     }
 
     public void addNamedParameter(final NamedParameter param) {

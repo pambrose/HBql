@@ -123,9 +123,11 @@ public abstract class GenericExpr implements GenericValue {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
+        if (this.getArgList().size() != this.getTypeSignature().getArgCount())
+            throw new TypeException("Incorrect number of variables in " + this.asString());
+
         for (int i = 0; i < this.getTypeSignature().getArgCount(); i++)
-            this.validateParentClass(this.getTypeSignature().getArg(i),
-                                     this.getArg(i).validateTypes(this, false));
+            this.validateParentClass(this.getTypeSignature().getArg(i), this.getArg(i).validateTypes(this, false));
 
         return this.getTypeSignature().getReturnType();
     }

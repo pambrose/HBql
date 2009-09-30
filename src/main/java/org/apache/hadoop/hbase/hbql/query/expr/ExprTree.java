@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
@@ -18,8 +19,10 @@ import java.util.List;
  */
 public class ExprTree extends ExprContext implements Serializable {
 
+    private static TypeSignature exprSignature = new TypeSignature(null, BooleanValue.class);
+
     private ExprTree(final GenericValue rootValue) {
-        super(rootValue);
+        super(exprSignature, rootValue);
     }
 
     public static ExprTree newExprTree(final BooleanValue booleanValue) {

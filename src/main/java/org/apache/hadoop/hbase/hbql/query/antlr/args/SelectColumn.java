@@ -18,7 +18,7 @@ public class SelectColumn extends ExprContext {
     private final String familyName;
 
     private SelectColumn(final Type type, final String familyName, final GenericValue genericValue) {
-        super(genericValue);
+        super(null, genericValue);
         this.type = type;
         this.familyName = (familyName == null) ? null : familyName.replace(" ", "").replace(":*", "");
     }

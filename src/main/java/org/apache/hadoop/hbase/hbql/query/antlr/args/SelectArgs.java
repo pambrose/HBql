@@ -31,11 +31,8 @@ public abstract class SelectArgs extends ExprContext {
         }
     }
 
-    private final Type type;
-
     protected SelectArgs(final Type type, final GenericValue... exprs) {
-        super(exprs);
-        this.type = type;
+        super(type.getTypeSignature(), exprs);
     }
 
     abstract public String asString();
