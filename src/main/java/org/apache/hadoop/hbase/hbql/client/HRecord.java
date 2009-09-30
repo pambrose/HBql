@@ -21,12 +21,12 @@ public class HRecord implements Serializable {
 
     private final Map<String, HValue> values = Maps.newHashMap();
 
-    public HRecord() {
+    public HRecord(final HBaseSchema schema) {
+        this.setSchema(schema);
     }
 
     public HRecord(final String tablename) throws HBqlException {
-        final HBaseSchema schema = HBaseSchema.findSchema(tablename);
-        this.setSchema(schema);
+        this(HBaseSchema.findSchema(tablename));
     }
 
     HBaseSchema getSchema() {

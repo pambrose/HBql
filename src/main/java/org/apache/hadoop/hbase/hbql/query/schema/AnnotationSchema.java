@@ -336,11 +336,11 @@ public class AnnotationSchema extends HBaseSchema {
             final Object newobj = createNewObject(result);
 
             // Assign most recent values
-            assignCurrentValues(result, newobj);
+            assignCurrentValues(newobj, result);
 
             // Assign the versioned values
             if (maxVersions > 1)
-                assignVersionedValues(attribList, result, newobj);
+                assignVersionedValues(newobj, result, attribList);
 
             return newobj;
         }

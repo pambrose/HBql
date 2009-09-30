@@ -29,6 +29,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -47,7 +48,7 @@ public class HBqlFilter implements Filter {
     private ExprTree filterExpr;
     private long scanLimit = -1;
     private long recordCount = 0;
-    public transient HRecord record = new HRecord();
+    public transient HRecord record = new HRecord((HBaseSchema)null);
 
     public HBqlFilter(final ExprTree filterExpr, final long scanLimit) {
         this.filterExpr = filterExpr;

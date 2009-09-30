@@ -140,14 +140,14 @@ public class DefinedSchema extends HBaseSchema {
 
         try {
             // Create object and assign key value
-            final HRecord newobj = createNewHRecord(result);
+            final HRecord newobj = this.createNewHRecord(result);
 
             // Assign most recent values
-            assignCurrentValues(result, newobj);
+            this.assignCurrentValues(newobj, result);
 
             // Assign the versioned values
             if (maxVersions > 1)
-                assignVersionedValues(attribList, result, newobj);
+                this.assignVersionedValues(newobj, result, attribList);
 
             return newobj;
         }
@@ -160,9 +160,10 @@ public class DefinedSchema extends HBaseSchema {
 
     private HRecord createNewHRecord(final Result result) throws IOException, HBqlException {
 
-        // Create new instance and set key value
-        final HRecord newrec = new HRecord();
-        newrec.setSchema(this);
+        // Create new instance
+        final HRecord newrec = new HRecord(this);
+
+        // Set key value
         final ColumnAttrib keyattrib = this.getKeyAttrib();
         if (keyattrib != null) {
             final byte[] keybytes = result.getRow();

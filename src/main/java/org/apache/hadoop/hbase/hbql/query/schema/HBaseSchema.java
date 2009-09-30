@@ -157,8 +157,7 @@ public abstract class HBaseSchema extends Schema {
     }
 
 
-    protected void assignCurrentValues(final Result result,
-                                       final Object newobj) throws IOException, HBqlException {
+    protected void assignCurrentValues(final Object newobj, final Result result) throws IOException, HBqlException {
 
         for (final KeyValue keyValue : result.list()) {
 
@@ -193,9 +192,9 @@ public abstract class HBaseSchema extends Schema {
         }
     }
 
-    protected void assignVersionedValues(final List<VariableAttrib> attribList,
+    protected void assignVersionedValues(final Object newobj,
                                          final Result result,
-                                         final Object newobj) throws IOException, HBqlException {
+                                         final List<VariableAttrib> attribList) throws IOException, HBqlException {
 
         final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
 
