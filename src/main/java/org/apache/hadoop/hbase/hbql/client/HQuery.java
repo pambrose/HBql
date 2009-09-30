@@ -59,6 +59,14 @@ public class HQuery<T> {
         this.getListeners().add(listener);
     }
 
+    HConnection getConnection() {
+        return this.connection;
+    }
+
+    public String getQuery() {
+        return this.query;
+    }
+
     private QueryArgs getQueryArgs() {
         return this.queryArgs;
     }
@@ -69,6 +77,10 @@ public class HQuery<T> {
 
     List<Scan> getScanList() {
         return this.scanList;
+    }
+
+    public List<HQueryListener<T>> getListeners() {
+        return this.listeners;
     }
 
     HBaseSchema getSchema() {
@@ -83,20 +95,8 @@ public class HQuery<T> {
         return this.getQueryArgs().getSelectVariableAttribList();
     }
 
-    public String getQuery() {
-        return this.query;
-    }
-
     public long getQueryLimit() throws HBqlException {
         return this.getQueryArgs().getWhereExpr().getQueryLimit();
-    }
-
-    HConnection getConnection() {
-        return this.connection;
-    }
-
-    public List<HQueryListener<T>> getListeners() {
-        return this.listeners;
     }
 
     public void clearListeners() {

@@ -77,13 +77,13 @@ defineStmt returns [DefineCmd retval]
 	: keyDEFINE keyTABLE t=ID (keyALIAS a=ID)? LPAREN l=attribList RPAREN
 							{retval = new DefineCmd($t.text, $a.text, $l.retval);};
 
-attribList returns [List<VarDesc> retval] 
+attribList returns [List<ColumnDescription> retval] 
 @init {retval = Lists.newArrayList();}
 	: (a1=defineAttrib {retval.add($a1.retval);} (COMMA a2=defineAttrib {retval.add($a2.retval);})*)?;
 	
-defineAttrib returns [VarDesc retval]
-	: c=ID t=ID 					{retval = VarDesc.newVarDesc($c.text, $c.text, $t.text);}
-	| c=ID t=ID keyALIAS a=ID			{retval = VarDesc.newVarDesc($a.text, $c.text, $t.text);};
+defineAttrib returns [ColumnDescription retval]
+	: c=ID t=ID 					{retval = ColumnDescription.newColumnDescription($c.text, $c.text, $t.text);}
+	| c=ID t=ID keyALIAS a=ID			{retval = ColumnDescription.newColumnDescription($a.text, $c.text, $t.text);};
 
 deleteStmt  returns [DeleteCmd retval]
 	: keyDELETE keyFROM t=ID w=whereValue?			

@@ -2,9 +2,9 @@ package org.apache.hadoop.hbase.hbql.query.antlr.cmds;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.VarDesc;
 
 import java.util.List;
 
@@ -17,9 +17,9 @@ import java.util.List;
 public class DefineCmd extends TableCmd implements SchemaManagerCmd {
 
     private String alias;
-    private final List<VarDesc> varList;
+    private final List<ColumnDescription> varList;
 
-    public DefineCmd(final String tableName, final String alias, final List<VarDesc> varList) {
+    public DefineCmd(final String tableName, final String alias, final List<ColumnDescription> varList) {
         super(tableName);
         this.alias = alias;
         this.varList = varList;
@@ -29,7 +29,7 @@ public class DefineCmd extends TableCmd implements SchemaManagerCmd {
         return alias;
     }
 
-    private List<VarDesc> getVarList() {
+    private List<ColumnDescription> getVarList() {
         return varList;
     }
 

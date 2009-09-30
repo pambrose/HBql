@@ -238,7 +238,7 @@ public abstract class HBaseSchema extends Schema {
     }
 
     // This is relevant only for AnnotatedSchema
-    public List<VarDesc> getVarDescList() {
+    public List<ColumnDescription> getColumnDescriptionList() {
         return null;
     }
 

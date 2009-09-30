@@ -12,8 +12,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.DelegateCalculation;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.VarDesc;
 
 import java.util.List;
 
@@ -100,7 +100,7 @@ public class ParserSupport extends Parser {
 
     // This keeps antlr code out of DefinedSchema, which is accessed server-side in HBase
     public static DefinedSchema newDefinedSchema(final TokenStream input,
-                                                 final List<VarDesc> varList) throws RecognitionException {
+                                                 final List<ColumnDescription> varList) throws RecognitionException {
         try {
             return new DefinedSchema(varList);
         }

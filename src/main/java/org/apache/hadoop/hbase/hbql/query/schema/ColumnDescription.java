@@ -12,30 +12,30 @@ import java.util.List;
  * Date: Sep 3, 2009
  * Time: 11:38:01 AM
  */
-public class VarDesc implements Serializable {
+public class ColumnDescription implements Serializable {
 
     private String variableName;
     private String familyQualifiedName;
     private String typeName;
     private FieldType fieldType;
 
-    private VarDesc(final String variableName, final String familyQualifiedName, final String typeName) {
+    private ColumnDescription(final String variableName, final String familyQualifiedName, final String typeName) {
         this.variableName = (variableName == null) ? familyQualifiedName : variableName;
         this.familyQualifiedName = familyQualifiedName;
         this.typeName = typeName;
         this.fieldType = getFieldType(this.getTypeName());
     }
 
-    public static VarDesc newVarDesc(final String variableName, final String qualifiedName, final String typeName) {
-        return new VarDesc(variableName, qualifiedName, typeName);
+    public static ColumnDescription newColumnDescription(final String variableName, final String qualifiedName, final String typeName) {
+        return new ColumnDescription(variableName, qualifiedName, typeName);
     }
 
-    public static List<VarDesc> getList(final List<String> varList, final String typeName) {
+    public static List<ColumnDescription> getList(final List<String> varList, final String typeName) {
 
-        final List<VarDesc> retval = Lists.newArrayList();
+        final List<ColumnDescription> retval = Lists.newArrayList();
 
         for (final String var : varList)
-            retval.add(new VarDesc(var, var, typeName));
+            retval.add(new ColumnDescription(var, var, typeName));
 
         return retval;
     }

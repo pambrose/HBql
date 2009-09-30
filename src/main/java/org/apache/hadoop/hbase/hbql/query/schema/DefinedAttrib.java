@@ -14,37 +14,37 @@ import java.util.Map;
  */
 public class DefinedAttrib extends ColumnAttrib {
 
-    private final VarDesc varDesc;
+    private final ColumnDescription columnDescription;
 
-    public DefinedAttrib(final VarDesc varDesc) throws HBqlException {
-        super(varDesc.getFieldType(), varDesc.getFamilyName(), varDesc.getColumnName(), null, null, false);
-        this.varDesc = varDesc;
+    public DefinedAttrib(final ColumnDescription columnDescription) throws HBqlException {
+        super(columnDescription.getFieldType(), columnDescription.getFamilyName(), columnDescription.getColumnName(), null, null, false);
+        this.columnDescription = columnDescription;
 
         if (this.isKeyAttrib() && this.getFamilyName().length() > 0)
             throw new HBqlException("Key value " + this.getObjectQualifiedName() + " cannot have a family name");
     }
 
-    private VarDesc getVarDesc() {
-        return this.varDesc;
+    private ColumnDescription getColumnDescription() {
+        return this.columnDescription;
     }
 
     public String getTypeName() {
-        return this.getVarDesc().getTypeName();
+        return this.getColumnDescription().getTypeName();
     }
 
     @Override
     public String getVariableName() {
-        return this.getVarDesc().getVariableName();
+        return this.getColumnDescription().getVariableName();
     }
 
     @Override
     public String getFamilyQualifiedName() {
-        return this.getVarDesc().getFamilyQualifiedName();
+        return this.getColumnDescription().getFamilyQualifiedName();
     }
 
     @Override
     public String getFamilyName() {
-        return this.getVarDesc().getFamilyName();
+        return this.getColumnDescription().getFamilyName();
     }
 
     @Override

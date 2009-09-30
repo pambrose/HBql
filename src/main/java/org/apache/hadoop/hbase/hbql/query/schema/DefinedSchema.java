@@ -28,25 +28,25 @@ public class DefinedSchema extends HBaseSchema {
     final String tableName;
     final String aliasName;
 
-    public DefinedSchema(final List<VarDesc> varList) throws HBqlException {
+    public DefinedSchema(final List<ColumnDescription> varList) throws HBqlException {
         this.tableName = "embedded";
         this.aliasName = "embedded";
-        for (final VarDesc var : varList)
+        for (final ColumnDescription var : varList)
             processColumn(var, false);
     }
 
     private DefinedSchema(final String tableName,
                           final String aliasName,
-                          final List<VarDesc> varList) throws HBqlException {
+                          final List<ColumnDescription> varList) throws HBqlException {
         this.tableName = tableName;
         this.aliasName = aliasName;
-        for (final VarDesc var : varList)
+        for (final ColumnDescription var : varList)
             processColumn(var, true);
     }
 
     public synchronized static DefinedSchema newDefinedSchema(final String tableName,
                                                               final String aliasName,
-                                                              final List<VarDesc> varList) throws HBqlException {
+                                                              final List<ColumnDescription> varList) throws HBqlException {
 
         if (doesDefinedSchemaExist(tableName))
             throw new HBqlException("Table " + tableName + " already defined");
@@ -71,10 +71,10 @@ public class DefinedSchema extends HBaseSchema {
     }
 
     public synchronized static DefinedSchema newDefinedSchema(final HBaseSchema schema) throws HBqlException {
-        return new DefinedSchema(schema.getTableName(), null, schema.getVarDescList());
+        return new DefinedSchema(schema.getTableName(), null, schema.getColumnDescriptionList());
     }
 
-    private void processColumn(final VarDesc var, final boolean enforceFamilyName) throws HBqlException {
+    private void processColumn(final ColumnDescription var, final boolean enforceFamilyName) throws HBqlException {
 
         final DefinedAttrib attrib = new DefinedAttrib(var);
 
