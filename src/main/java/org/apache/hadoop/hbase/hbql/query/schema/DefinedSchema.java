@@ -134,7 +134,7 @@ public class DefinedSchema extends HBaseSchema {
     }
 
     @Override
-    public HRecord newObject(final List<String> fieldList,
+    public HRecord newObject(final List<VariableAttrib> attribList,
                              final int maxVersions,
                              final Result result) throws HBqlException {
 
@@ -143,11 +143,11 @@ public class DefinedSchema extends HBaseSchema {
             final HRecord newobj = createNewHRecord(result);
 
             // Assign most recent values
-            assignCurrentValues(fieldList, result, newobj);
+            assignCurrentValues(result, newobj);
 
             // Assign the versioned values
             if (maxVersions > 1)
-                assignVersionedValues(fieldList, result, newobj);
+                assignVersionedValues(attribList, result, newobj);
 
             return newobj;
         }

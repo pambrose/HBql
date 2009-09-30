@@ -56,7 +56,7 @@ public abstract class HBaseSchema extends Schema {
         return HUtil.ser.getStringAsBytes(this.getTableName());
     }
 
-    public abstract Object newObject(final List<String> fieldList,
+    public abstract Object newObject(final List<VariableAttrib> attribList,
                                      final int maxVersions,
                                      final Result result) throws HBqlException;
 
@@ -157,10 +157,8 @@ public abstract class HBaseSchema extends Schema {
     }
 
 
-    protected void assignCurrentValues(
-            final List<String> fieldList,
-            final Result result,
-            final Object newobj) throws IOException, HBqlException {
+    protected void assignCurrentValues(final Result result,
+                                       final Object newobj) throws IOException, HBqlException {
 
         for (final KeyValue keyValue : result.list()) {
 
@@ -195,7 +193,7 @@ public abstract class HBaseSchema extends Schema {
         }
     }
 
-    protected void assignVersionedValues(final List<String> fieldList,
+    protected void assignVersionedValues(final List<VariableAttrib> attribList,
                                          final Result result,
                                          final Object newobj) throws IOException, HBqlException {
 
@@ -221,7 +219,7 @@ public abstract class HBaseSchema extends Schema {
                         continue;
 
                     // Ignore if not in select list
-                    if (!fieldList.contains(attrib.getVariableName()))
+                    if (!attribList.contains(attrib))
                         continue;
 
                     Map<Long, Object> mapval = (Map<Long, Object>)attrib.getVersionedValueMap(newobj);

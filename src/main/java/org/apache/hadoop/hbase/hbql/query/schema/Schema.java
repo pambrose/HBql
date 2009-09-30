@@ -35,7 +35,7 @@ public abstract class Schema implements Serializable {
         return retval;
     }
 
-    public List<VariableAttrib> getVariableAttribList() {
+    public List<VariableAttrib> getAllVariableAttrib() {
         final List<VariableAttrib> retval = Lists.newArrayList();
         for (final String name : this.getVariableAttribNames()) {
 

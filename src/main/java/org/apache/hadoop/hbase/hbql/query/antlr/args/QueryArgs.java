@@ -42,7 +42,7 @@ public class QueryArgs {
 
             switch (column.getType()) {
                 case ALLTABLECOLUMNS:
-                    this.selectVariableAttribList.addAll(this.getSchema().getVariableAttribList());
+                    this.selectVariableAttribList.addAll(this.getSchema().getAllVariableAttrib());
                     return;
 
                 case ALLFAMILYCOLUMNS:
