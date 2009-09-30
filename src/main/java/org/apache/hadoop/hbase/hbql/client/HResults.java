@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.ResultsIterator;
 
@@ -75,19 +76,39 @@ public class HResults<T> implements Iterable<T> {
                 // Prime the iterator with the first value
                 T nextObject = fetchNextObject();
 
-                private Iterator<Result> getNextResultScanner() throws IOException {
-                    if (scanIter.hasNext()) {
+                private ExprTree getClientExprTree() {
+                    return this.clientExprTree;
+                }
 
-                        final Scan scan = scanIter.next();
+                private Iterator<Scan> getScanIter() {
+                    return this.scanIter;
+                }
+
+                private ResultScanner getCurrentResultScanner() {
+                    return this.currentResultScanner;
+                }
+
+                private Iterator<Result> getResultIter() {
+                    return this.resultIter;
+                }
+
+                protected T getNextObject() {
+                    return this.nextObject;
+                }
+
+                private Iterator<Result> getNextResultScanner() throws IOException {
+                    if (this.getScanIter().hasNext()) {
+
+                        final Scan scan = this.getScanIter().next();
                         maxVersions = scan.getMaxVersions();
 
                         // First close previous ResultScanner before reassigning
-                        closeCurrentScanner(currentResultScanner, true);
+                        closeCurrentScanner(this.getCurrentResultScanner(), true);
 
                         currentResultScanner = table.getScanner(scan);
-                        getScannerList().add(currentResultScanner);
+                        getScannerList().add(this.getCurrentResultScanner());
 
-                        return currentResultScanner.iterator();
+                        return this.getCurrentResultScanner().iterator();
                     }
                     else {
                         return null;
@@ -104,23 +125,24 @@ public class HResults<T> implements Iterable<T> {
                     // Try one more time
                     val = doFetch();
                     if (val == null)
-                        closeCurrentScanner(currentResultScanner, true);
+                        closeCurrentScanner(this.getCurrentResultScanner(), true);
                     return val;
                 }
 
                 private T doFetch() throws HBqlException, IOException {
 
-                    if (resultIter == null)
+                    if (this.getResultIter() == null)
                         resultIter = getNextResultScanner();
 
-                    if (resultIter != null) {
-                        while (resultIter.hasNext()) {
-                            final Result result = resultIter.next();
-                            final T val = (T)getHQuery().getSchema().newObject(getHQuery().getSelectAttribList(),
-                                                                               this.maxVersions,
-                                                                               result);
+                    if (this.getResultIter() != null) {
+                        while (this.getResultIter().hasNext()) {
+                            final Result result = this.getResultIter().next();
 
-                            if (clientExprTree == null || clientExprTree.evaluate(val)) {
+                            final List<VariableAttrib> attribList = getHQuery().getSelectAttribList();
+
+                            final T val = (T)getHQuery().getSchema().newObject(attribList, this.maxVersions, result);
+
+                            if (getClientExprTree() == null || getClientExprTree().evaluate(val)) {
                                 this.recordCount++;
                                 final List<HQueryListener<T>> listenerList = getHQuery().getListeners();
                                 if (listenerList != null)
@@ -134,10 +156,6 @@ public class HResults<T> implements Iterable<T> {
                     // Reset to get next scanner
                     resultIter = null;
                     return null;
-                }
-
-                protected T getNextObject() {
-                    return this.nextObject;
                 }
 
                 protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
