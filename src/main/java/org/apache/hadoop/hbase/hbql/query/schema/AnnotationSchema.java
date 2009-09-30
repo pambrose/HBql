@@ -326,21 +326,20 @@ public class AnnotationSchema extends HBaseSchema {
     }
 
     @Override
-    public Object newObject(
-            final List<VariableAttrib> attribList,
-            final int maxVersions,
-            final Result result) throws HBqlException {
+    public Object newObject(final List<VariableAttrib> attribList,
+                            final int maxVersions,
+                            final Result result) throws HBqlException {
 
         try {
             // Create object and assign key value
-            final Object newobj = createNewObject(result);
+            final Object newobj = this.createNewObject(result);
 
             // Assign most recent values
-            assignCurrentValues(newobj, result);
+            this.assignCurrentValues(newobj, result);
 
             // Assign the versioned values
             if (maxVersions > 1)
-                assignVersionedValues(newobj, result, attribList);
+                this.assignVersionedValues(newobj, result, attribList);
 
             return newobj;
         }

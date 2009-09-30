@@ -64,9 +64,7 @@ public abstract class HBaseSchema extends Schema {
     public static HBaseSchema findSchema(final String tablename) throws HBqlException {
 
         // First look in defined schema, then try annotation schema
-        HBaseSchema schema;
-
-        schema = DefinedSchema.getDefinedSchema(tablename);
+        HBaseSchema schema = DefinedSchema.getDefinedSchema(tablename);
         if (schema != null)
             return schema;
 
@@ -95,7 +93,7 @@ public abstract class HBaseSchema extends Schema {
 
     // *** versionAttribByFamilyQualifiedNameMap calls
     private Map<String, ColumnAttrib> getVersionAttribByFamilyQualifiedNameMap() {
-        return versionAttribByFamilyQualifiedNameMap;
+        return this.versionAttribByFamilyQualifiedNameMap;
     }
 
     public ColumnAttrib getVersionAttribFromFamilyQualifiedNameMap(final String s) {
@@ -112,7 +110,7 @@ public abstract class HBaseSchema extends Schema {
 
     // *** columnAttribListByFamilyNameMap
     private Map<String, List<ColumnAttrib>> getColumnAttribListByFamilyNameMap() {
-        return columnAttribListByFamilyNameMap;
+        return this.columnAttribListByFamilyNameMap;
     }
 
     public Set<String> getFamilySet() {
