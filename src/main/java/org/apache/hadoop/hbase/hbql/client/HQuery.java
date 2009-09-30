@@ -23,9 +23,8 @@ public class HQuery<T> {
 
     private final HConnection connection;
     private final String query;
-    private final ExprTree clientExprTree;
-    private final List<Scan> scanList;
     private final QueryArgs queryArgs;
+    private final List<Scan> scanList;
 
     private List<HQueryListener<T>> listeners = null;
 
@@ -40,8 +39,7 @@ public class HQuery<T> {
         this.getWhereArgs().validateTypes();
         this.getWhereArgs().optimize();
 
-        this.clientExprTree = this.getWhereArgs().getClientExprTree();
-        this.clientExprTree.validate(this.getSelectAttribList());
+        this.getClientExprTree().validate(this.getSelectAttribList());
 
         final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getWhereArgs().getServerExprTree(),
                                                                        this.getSelectAttribList(),
@@ -78,7 +76,7 @@ public class HQuery<T> {
     }
 
     ExprTree getClientExprTree() {
-        return this.clientExprTree;
+        return this.getWhereArgs().getClientExprTree();
     }
 
     List<VariableAttrib> getSelectAttribList() {

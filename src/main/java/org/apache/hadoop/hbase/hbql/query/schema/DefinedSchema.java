@@ -153,7 +153,7 @@ public class DefinedSchema extends HBaseSchema {
         }
         catch (Exception e) {
             e.printStackTrace();
-            throw new HBqlException("Error in getObject()");
+            throw new HBqlException("Error in newObject() " + e.getMessage());
         }
 
     }
