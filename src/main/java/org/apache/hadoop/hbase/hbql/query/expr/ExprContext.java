@@ -41,6 +41,8 @@ public abstract class ExprContext {
 
     public abstract String asString();
 
+    public abstract boolean readFromHBaseMap();
+
     public List<GenericColumn> getColumnList() {
         return this.columnList;
     }

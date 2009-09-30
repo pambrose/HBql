@@ -29,10 +29,6 @@ public class ExprTree extends ExprContext implements Serializable {
         return new ExprTree(booleanValue);
     }
 
-    public String asString() {
-        return this.getGenericValue(0).asString();
-    }
-
     public Boolean evaluate(final Object object) throws HBqlException {
 
         this.validateTypes(true);
@@ -54,4 +50,13 @@ public class ExprTree extends ExprContext implements Serializable {
         }
     }
 
+    @Override
+    public String asString() {
+        return this.getGenericValue(0).asString();
+    }
+
+    @Override
+    public boolean readFromHBaseMap() {
+        return true;
+    }
 }

@@ -35,6 +35,8 @@ public abstract class SelectArgs extends ExprContext {
         super(type.getTypeSignature(), exprs);
     }
 
-    abstract public String asString();
-
+    @Override
+    public boolean readFromHBaseMap() {
+        return false;
+    }
 }

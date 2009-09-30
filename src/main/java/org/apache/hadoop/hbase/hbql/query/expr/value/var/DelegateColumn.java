@@ -47,7 +47,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
     }
 
     @Override
-    public void setContext(ExprContext context) throws HBqlException {
+    public void setContext(final ExprContext context) throws HBqlException {
 
         final VariableAttrib attrib = context.getSchema().getVariableAttribByVariableName(this.getVariableName());
 

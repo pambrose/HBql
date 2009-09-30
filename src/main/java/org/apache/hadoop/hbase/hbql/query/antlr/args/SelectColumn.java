@@ -52,4 +52,9 @@ public class SelectColumn extends ExprContext {
     public String asString() {
         return this.getGenericValue(0).asString();
     }
+
+    @Override
+    public boolean readFromHBaseMap() {
+        return true;
+    }
 }
