@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
@@ -18,7 +19,10 @@ public class IntegerColumn extends GenericColumn<NumberValue> implements NumberV
 
     @Override
     public Integer getValue(final Object object) throws HBqlException {
-        return (Integer)this.getColumnAttrib().getCurrentValue(object);
+        if (this.getExprContext().useHBaseResult())
+            return (Integer)this.getColumnAttrib().getValueFromBytes((Result)object);
+        else
+            return (Integer)this.getColumnAttrib().getCurrentValue(object);
     }
 
 }

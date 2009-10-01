@@ -17,8 +17,8 @@ public class WhereArgs {
     private VersionArgs versionArgs = new VersionArgs(null);
     private LimitArgs scanLimitArgs = new LimitArgs(null);
     private LimitArgs queryLimitArgs = new LimitArgs(null);
-    private ExprTree clientExprTree = ExprTree.newExprTree(true, null);
-    private ExprTree serverExprTree = ExprTree.newExprTree(true, null);
+    private ExprTree clientExprTree = ExprTree.newExprTree(null);
+    private ExprTree serverExprTree = ExprTree.newExprTree(null);
 
     public void setSchema(final HBaseSchema schema) {
         // this.getKeyRangeArgs().setSchema(null);

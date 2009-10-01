@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
@@ -18,6 +19,9 @@ public class StringColumn extends GenericColumn<StringValue> {
 
     @Override
     public Object getValue(final Object object) throws HBqlException {
-        return this.getColumnAttrib().getCurrentValue(object);
+        if (this.getExprContext().useHBaseResult())
+            return this.getColumnAttrib().getValueFromBytes((Result)object);
+        else
+            return this.getColumnAttrib().getCurrentValue(object);
     }
 }

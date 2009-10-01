@@ -65,7 +65,7 @@ public class HRecordExample {
                               + "VERSIONS 2 "
                               //+ "SCAN LIMIT 4"
                               //+ "SERVER FILTER WHERE author LIKE '.*6200.*' "
-                              + "CLIENT FILTER WHERE keyval = '0000000002' ";
+                              + "CLIENT FILTER WHERE keyval = '0000000002' OR author LIKE '.*val.*'";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
         HResults<HRecord> results1 = q1.execute();
 

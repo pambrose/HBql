@@ -242,6 +242,11 @@ public abstract class ColumnAttrib implements Serializable {
 
     public Object getValueFromBytes(final Result result) throws HBqlException {
 
+        if (this.isKeyAttrib()) {
+            final byte[] b = result.getRow();
+            return HUtil.ser.getStringFromBytes(b);
+        }
+
         final NavigableMap<byte[], NavigableMap<byte[], byte[]>> familyMap = result.getNoVersionMap();
 
         final NavigableMap<byte[], byte[]> columnMap = familyMap.get(this.getFamilyNameBytes());

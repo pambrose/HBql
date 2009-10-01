@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -19,7 +20,9 @@ public class BooleanColumn extends GenericColumn<NumberValue> implements Boolean
 
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
-        return (Boolean)this.getColumnAttrib().getCurrentValue(object);
+        if (this.getExprContext().useHBaseResult())
+            return (Boolean)this.getColumnAttrib().getValueFromBytes((Result)object);
+        else
+            return (Boolean)this.getColumnAttrib().getCurrentValue(object);
     }
-
 }

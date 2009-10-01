@@ -20,21 +20,27 @@ public class QueryArgs {
     private final List<SelectColumn> selectColumnList;
     private final Set<ColumnAttrib> selectColumnAttribSet = Sets.newHashSet();
     private final String tableName;
-    private final WhereArgs whereExpr;
+    private final WhereArgs whereArgs;
 
     private HBaseSchema schema = null;
 
     public QueryArgs(final List<SelectColumn> selectColumnList,
                      final String tableName,
-                     final WhereArgs whereExpr) throws RecognitionException {
+                     final WhereArgs whereArgs) throws RecognitionException {
         this.tableName = tableName;
         this.selectColumnList = selectColumnList;
-        this.whereExpr = whereExpr;
+        this.whereArgs = whereArgs;
     }
 
     public void validate() throws HBqlException {
         this.schema = HBaseSchema.findSchema(this.getTableName());
         this.processSelectColumns();
+
+        if (this.getWhereArgs().getServerExprTree() != null)
+            this.getWhereArgs().getServerExprTree().setUseHBaseResult(true);
+
+        if (this.getWhereArgs().getClientExprTree() != null)
+            this.getWhereArgs().getClientExprTree().setUseHBaseResult(true);
     }
 
     private void processSelectColumns() throws HBqlException {
@@ -75,9 +81,9 @@ public class QueryArgs {
         return this.tableName;
     }
 
-    public WhereArgs getWhereExpr() {
-        if (this.whereExpr != null)
-            return this.whereExpr;
+    public WhereArgs getWhereArgs() {
+        if (this.whereArgs != null)
+            return this.whereArgs;
         else
             return new WhereArgs();
     }

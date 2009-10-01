@@ -73,7 +73,7 @@ public class HQuery<T> {
     }
 
     private WhereArgs getWhereArgs() {
-        return this.getQueryArgs().getWhereExpr();
+        return this.getQueryArgs().getWhereArgs();
     }
 
     List<Scan> getScanList() {
@@ -97,7 +97,7 @@ public class HQuery<T> {
     }
 
     public long getQueryLimit() throws HBqlException {
-        return this.getQueryArgs().getWhereExpr().getQueryLimit();
+        return this.getQueryArgs().getWhereArgs().getQueryLimit();
     }
 
     public void clearListeners() {

@@ -159,10 +159,10 @@ keyRange returns [KeyRangeArgs.Range retval]
 	;
 	
 nodescWhereExpr returns [ExprTree retval]
-	 : e=booleanExpr				{retval = ExprTree.newExprTree(false, $e.retval);};
+	 : e=booleanExpr				{retval = ExprTree.newExprTree($e.retval);};
 
 descWhereExpr returns [ExprTree retval]
-	: s=schemaDesc? e=booleanExpr			{retval = ExprTree.newExprTree(false, $e.retval); if ($s.retval != null) retval.setSchema($s.retval);}
+	: s=schemaDesc? e=booleanExpr			{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);}
 	;
 
 // Boolean Expressions				
