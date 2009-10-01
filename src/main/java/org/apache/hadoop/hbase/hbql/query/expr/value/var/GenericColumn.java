@@ -15,15 +15,15 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  */
 public abstract class GenericColumn<T extends GenericValue> implements GenericValue {
 
-    private final FieldType fieldType;
     private final VariableAttrib variableAttrib;
 
     private ExprContext exprContext = null;
 
-    protected GenericColumn(final VariableAttrib attrib, final FieldType fieldType) {
+    protected GenericColumn(final VariableAttrib attrib) {
         this.variableAttrib = attrib;
-        this.fieldType = fieldType;
     }
+
+    protected abstract FieldType getFieldType();
 
     public VariableAttrib getVariableAttrib() {
         return this.variableAttrib;
@@ -31,14 +31,6 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
 
     public String getColumnName() {
         return this.getVariableAttrib().getColumnName();
-    }
-
-    public String getFamilyQualifiedName() {
-        return this.getVariableAttrib().getFamilyQualifiedName();
-    }
-
-    private FieldType getFieldType() {
-        return this.fieldType;
     }
 
     @Override

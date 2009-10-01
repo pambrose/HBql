@@ -15,8 +15,14 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 public class BooleanColumn extends GenericColumn<NumberValue> implements BooleanValue {
 
     public BooleanColumn(final VariableAttrib attrib) {
-        super(attrib, FieldType.BooleanType);
+        super(attrib);
     }
+
+    @Override
+    protected FieldType getFieldType() {
+        return FieldType.BooleanType;
+    }
+
 
     @Override
     public Boolean getValue(final Object object) throws HBqlException {

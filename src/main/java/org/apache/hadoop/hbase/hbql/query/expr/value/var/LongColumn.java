@@ -14,7 +14,12 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 public class LongColumn extends GenericColumn<NumberValue> implements NumberValue {
 
     public LongColumn(VariableAttrib attrib) {
-        super(attrib, FieldType.LongType);
+        super(attrib);
+    }
+
+    @Override
+    protected FieldType getFieldType() {
+        return FieldType.LongType;
     }
 
     @Override

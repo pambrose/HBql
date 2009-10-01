@@ -14,7 +14,12 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 public class StringColumn extends GenericColumn<StringValue> {
 
     public StringColumn(final VariableAttrib attrib) {
-        super(attrib, FieldType.StringType);
+        super(attrib);
+    }
+
+    @Override
+    protected FieldType getFieldType() {
+        return FieldType.StringType;
     }
 
     @Override

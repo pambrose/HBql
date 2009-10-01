@@ -14,7 +14,12 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 public class IntegerColumn extends GenericColumn<NumberValue> implements NumberValue {
 
     public IntegerColumn(VariableAttrib attrib) {
-        super(attrib, FieldType.IntegerType);
+        super(attrib);
+    }
+
+    @Override
+    protected FieldType getFieldType() {
+        return FieldType.IntegerType;
     }
 
     @Override
