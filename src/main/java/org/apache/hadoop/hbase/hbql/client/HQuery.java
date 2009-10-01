@@ -12,7 +12,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,13 +39,13 @@ public class HQuery<T> {
         this.getWhereArgs().validateTypes();
         this.getWhereArgs().optimize();
 
-        this.getClientExprTree().validate(this.getSelectAttribSet());
+        this.getClientExprTree().validate(this.getSelectAttribList());
 
         final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getWhereArgs().getServerExprTree(),
-                                                                       this.getSelectAttribSet(),
+                                                                       this.getSelectAttribList(),
                                                                        this.getWhereArgs().getScanLimit());
 
-        this.scanList = this.getSchema().getScanList(this.getSelectAttribSet(),
+        this.scanList = this.getSchema().getScanList(this.getSelectAttribList(),
                                                      this.getWhereArgs().getKeyRangeArgs(),
                                                      this.getWhereArgs().getTimeRangeArgs(),
                                                      this.getWhereArgs().getVersionArgs(),
@@ -92,8 +91,8 @@ public class HQuery<T> {
         return this.getWhereArgs().getClientExprTree();
     }
 
-    Set<ColumnAttrib> getSelectAttribSet() {
-        return this.getQueryArgs().getSelectAttribSet();
+    List<ColumnAttrib> getSelectAttribList() {
+        return this.getQueryArgs().getSelectAttribList();
     }
 
     public long getQueryLimit() throws HBqlException {

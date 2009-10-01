@@ -14,7 +14,6 @@ import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -117,10 +116,10 @@ public class TestSupport {
     }
 
     public static void assertSelectColumnsMatchTrue(final String expr, String vals) throws HBqlException {
-        assertTrue(evalSelectNames(expr, vals));
+        assertTrue(evaluateSelectNames(expr, vals));
     }
 
-    private static boolean evalSelectNames(final String expr, String vals) {
+    private static boolean evaluateSelectNames(final String expr, String vals) {
 
         try {
             final QueryArgs args = HBql.parseQuery(expr);
@@ -128,7 +127,7 @@ public class TestSupport {
 
             final Schema schema = args.getSchema();
 
-            final Set<ColumnAttrib> attribSet = args.getSelectAttribSet();
+            final List<ColumnAttrib> attribList = args.getSelectAttribList();
 
             final List<ColumnAttrib> specifiedAttribList = Lists.newArrayList();
 
@@ -144,7 +143,7 @@ public class TestSupport {
                     continue;
                 }
 
-                if (!attribSet.contains(attrib)) {
+                if (!attribList.contains(attrib)) {
                     System.out.println("Missing column name in attrib list: " + val);
                     retval = false;
                     continue;
@@ -153,7 +152,7 @@ public class TestSupport {
                 specifiedAttribList.add(attrib);
             }
 
-            for (final ColumnAttrib attrib : attribSet) {
+            for (final ColumnAttrib attrib : attribList) {
                 if (!specifiedAttribList.contains(attrib)) {
                     System.out.println("Missing column name in specified list: " + attrib.getFamilyQualifiedName());
                     retval = false;

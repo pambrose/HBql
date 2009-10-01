@@ -60,7 +60,7 @@ public abstract class HBaseSchema extends Schema {
         return HUtil.ser.getStringAsBytes(this.getTableName());
     }
 
-    public abstract Object newObject(final Set<ColumnAttrib> attribSet,
+    public abstract Object newObject(final List<ColumnAttrib> attribList,
                                      final int maxVersions,
                                      final Result result) throws HBqlException;
 
@@ -154,7 +154,6 @@ public abstract class HBaseSchema extends Schema {
         else {
             attribList = this.getColumnAttribListByFamilyName(familyName);
         }
-
         attribList.add(attrib);
     }
 
@@ -198,7 +197,7 @@ public abstract class HBaseSchema extends Schema {
 
     protected void assignVersionedValues(final Object newobj,
                                          final Result result,
-                                         final Set<ColumnAttrib> attribSet) throws IOException, HBqlException {
+                                         final List<ColumnAttrib> attribList) throws IOException, HBqlException {
 
         final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
 
@@ -222,7 +221,7 @@ public abstract class HBaseSchema extends Schema {
                         continue;
 
                     // Ignore if not in select list
-                    if (!attribSet.contains(attrib))
+                    if (!attribList.contains(attrib))
                         continue;
 
                     Map<Long, Object> mapval = (Map<Long, Object>)attrib.getVersionedValueMap(newobj);
@@ -244,7 +243,7 @@ public abstract class HBaseSchema extends Schema {
         return null;
     }
 
-    public List<Scan> getScanList(final Set<ColumnAttrib> attribSet,
+    public List<Scan> getScanList(final List<ColumnAttrib> attribList,
                                   final KeyRangeArgs keyRangeArgs,
                                   final TimeRangeArgs timeRangeArgs,
                                   final VersionArgs versionArgs,
@@ -269,7 +268,7 @@ public abstract class HBaseSchema extends Schema {
         for (final Scan scan : scanList) {
 
             // Set column names
-            for (final ColumnAttrib columnAttrib : attribSet) {
+            for (final ColumnAttrib columnAttrib : attribList) {
 
                 final ColumnAttrib attrib = (ColumnAttrib)columnAttrib;
 
@@ -307,7 +306,7 @@ public abstract class HBaseSchema extends Schema {
     }
 
     public HBqlFilter getHBqlFilter(final ExprTree exprTree,
-                                    final Set<ColumnAttrib> attribSet,
+                                    final List<ColumnAttrib> attribList,
                                     final long scanLimit) throws HBqlException {
 
         if (!exprTree.isValid())
@@ -315,7 +314,7 @@ public abstract class HBaseSchema extends Schema {
 
         final DefinedSchema schema = HUtil.getDefinedSchemaForServerFilter(this);
         exprTree.setSchema(schema);
-        exprTree.validate(attribSet);
+        exprTree.validate(attribList);
         return new HBqlFilter(exprTree, scanLimit);
     }
 

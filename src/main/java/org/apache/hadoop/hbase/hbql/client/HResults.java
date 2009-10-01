@@ -12,7 +12,6 @@ import org.apache.hadoop.hbase.hbql.query.util.ResultsIterator;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -149,9 +148,9 @@ public class HResults<T> implements Iterable<T> {
 
                                 this.recordCount++;
 
-                                final Set<ColumnAttrib> attribList = getHQuery().getSelectAttribSet();
+                                final List<ColumnAttrib> selectAttribList = getHQuery().getSelectAttribList();
 
-                                final T val = (T)getHQuery().getSchema().newObject(attribList,
+                                final T val = (T)getHQuery().getSchema().newObject(selectAttribList,
                                                                                    this.maxVersions,
                                                                                    result);
 

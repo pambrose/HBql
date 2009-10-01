@@ -14,7 +14,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -134,7 +133,7 @@ public class DefinedSchema extends HBaseSchema {
     }
 
     @Override
-    public HRecord newObject(final Set<ColumnAttrib> attribSet,
+    public HRecord newObject(final List<ColumnAttrib> attribList,
                              final int maxVersions,
                              final Result result) throws HBqlException {
 
@@ -147,7 +146,7 @@ public class DefinedSchema extends HBaseSchema {
 
             // Assign the versioned values
             if (maxVersions > 1)
-                this.assignVersionedValues(newobj, result, attribSet);
+                this.assignVersionedValues(newobj, result, attribList);
 
             return newobj;
         }
