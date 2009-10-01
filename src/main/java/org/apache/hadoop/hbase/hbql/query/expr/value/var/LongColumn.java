@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 /**
@@ -15,11 +14,6 @@ public class LongColumn extends GenericColumn<NumberValue> implements NumberValu
 
     public LongColumn(VariableAttrib attrib) {
         super(attrib);
-    }
-
-    @Override
-    protected FieldType getFieldType() {
-        return FieldType.LongType;
     }
 
     @Override

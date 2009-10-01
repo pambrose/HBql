@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 /**
@@ -29,11 +28,6 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
 
     private void setTypedColumn(final GenericColumn typedColumn) {
         this.typedColumn = typedColumn;
-    }
-
-    @Override
-    protected FieldType getFieldType() {
-        return null;
     }
 
     @Override

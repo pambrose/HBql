@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
@@ -23,10 +24,16 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         this.variableAttrib = attrib;
     }
 
-    protected abstract FieldType getFieldType();
+    protected FieldType getFieldType() {
+        return this.getVariableAttrib().getFieldType();
+    }
 
     public VariableAttrib getVariableAttrib() {
         return this.variableAttrib;
+    }
+
+    public ColumnAttrib getColumnAttrib() {
+        return (ColumnAttrib)this.getVariableAttrib();
     }
 
     public String getColumnName() {

@@ -1,9 +1,11 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.NavigableMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -172,6 +174,19 @@ public abstract class ColumnAttrib extends VariableAttrib {
                 return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
         }
     }
+
+    public Object getValueFromBytes(final Result result) throws HBqlException {
+
+        final NavigableMap<byte[], NavigableMap<byte[], byte[]>> familyMap = result.getNoVersionMap();
+        final NavigableMap<byte[], byte[]> columnMap = familyMap.get(this.getFamilyNameBytes());
+        final byte[] b = columnMap.get(this.getColumnNameBytes());
+
+        if (this.isArray())
+            return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
+        else
+            return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
+    }
+
 
     public void setCurrentValue(final Object newobj,
                                 final long timestamp,
