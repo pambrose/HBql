@@ -178,8 +178,15 @@ public abstract class ColumnAttrib extends VariableAttrib {
     public Object getValueFromBytes(final Result result) throws HBqlException {
 
         final NavigableMap<byte[], NavigableMap<byte[], byte[]>> familyMap = result.getNoVersionMap();
+
         final NavigableMap<byte[], byte[]> columnMap = familyMap.get(this.getFamilyNameBytes());
+        if (columnMap == null)
+            throw new HBqlException("Invalid family name: " + this.getFamilyName());
+
         final byte[] b = columnMap.get(this.getColumnNameBytes());
+
+        if (b == null)
+            throw new HBqlException("Null value for column: " + this.getFamilyQualifiedName());
 
         if (this.isArray())
             return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
