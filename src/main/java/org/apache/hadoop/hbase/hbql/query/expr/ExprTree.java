@@ -9,7 +9,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +43,7 @@ public class ExprTree extends ExprContext implements Serializable {
         return (this.getGenericValue(0) == null) || (Boolean)this.getGenericValue(0).getValue(object);
     }
 
-    public void validate(final List<VariableAttrib> attribList) throws HBqlException {
+    public void validate(final Set<VariableAttrib> attribList) throws HBqlException {
 
         // Check if all the variables referenced in the where clause are present in the fieldList.
         for (final GenericColumn var : this.getColumnList()) {

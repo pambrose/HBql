@@ -46,10 +46,6 @@ public abstract class VariableAttrib implements Serializable {
         return this.fieldType;
     }
 
-    public boolean isHBaseAttrib() {
-        return true;
-    }
-
     public boolean isKeyAttrib() {
         return false;
     }

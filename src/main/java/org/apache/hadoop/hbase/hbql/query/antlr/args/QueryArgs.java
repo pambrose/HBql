@@ -4,9 +4,10 @@ import org.antlr.runtime.RecognitionException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
+import org.apache.hadoop.hbase.hbql.query.util.Sets;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,7 +18,7 @@ import java.util.List;
 public class QueryArgs {
 
     private final List<SelectColumn> selectColumnList;
-    private final List<VariableAttrib> selectVariableAttribList = Lists.newArrayList();
+    private final Set<VariableAttrib> selectVariableAttribSet = Sets.newHashSet();
     private final String tableName;
     private final WhereArgs whereExpr;
 
@@ -33,29 +34,30 @@ public class QueryArgs {
 
     public void validate() throws HBqlException {
         this.schema = HBaseSchema.findSchema(this.getTableName());
-        this.validateSelectColumns();
+        this.processSelectColumns();
     }
 
-    private void validateSelectColumns() throws HBqlException {
+    private void processSelectColumns() throws HBqlException {
 
         for (final SelectColumn column : this.getSelectColumnList()) {
 
+            column.setSchema(this.getSchema());
+
             switch (column.getType()) {
                 case ALLTABLECOLUMNS:
-                    this.selectVariableAttribList.addAll(this.getSchema().getAllVariableAttrib());
-                    return;
+                    this.selectVariableAttribSet.addAll(this.getSchema().getAllVariableAttribs());
+                    break;
 
                 case ALLFAMILYCOLUMNS:
-                    if (!this.getSchema().containsFamilyNameInFamilyNameMap(column.getFamilyName()))
-                        throw new HBqlException("Invalid family name: " + column.getFamilyName());
+                    final String familyName = column.getFamilyName();
+                    if (!this.getSchema().containsFamilyNameInFamilyNameMap(familyName))
+                        throw new HBqlException("Invalid family name: " + familyName);
 
-                    this.selectVariableAttribList
-                            .addAll(this.getSchema().getVariableAttribForFamily(column.getFamilyName()));
+                    this.selectVariableAttribSet.addAll(this.getSchema().getVariableAttribForFamily(familyName));
                     break;
 
                 case GENERICEXPR:
-                    column.setSchema(schema);
-                    this.selectVariableAttribList.addAll(column.getFamilyQualifiedColumnNameList());
+                    this.selectVariableAttribSet.addAll(column.getFamilyQualifiedColumnNameList());
                     break;
             }
         }
@@ -65,8 +67,8 @@ public class QueryArgs {
         return this.selectColumnList;
     }
 
-    public List<VariableAttrib> getSelectVariableAttribList() {
-        return this.selectVariableAttribList;
+    public Set<VariableAttrib> getSelectVariableAttribSet() {
+        return this.selectVariableAttribSet;
     }
 
     public String getTableName() {

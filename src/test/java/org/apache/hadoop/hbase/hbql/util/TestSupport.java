@@ -14,6 +14,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -127,7 +128,7 @@ public class TestSupport {
 
             final Schema schema = args.getSchema();
 
-            final List<VariableAttrib> attribList = args.getSelectVariableAttribList();
+            final Set<VariableAttrib> attribSet = args.getSelectVariableAttribSet();
 
             final List<VariableAttrib> specifiedAttribList = Lists.newArrayList();
 
@@ -143,7 +144,7 @@ public class TestSupport {
                     continue;
                 }
 
-                if (!attribList.contains(attrib)) {
+                if (!attribSet.contains(attrib)) {
                     System.out.println("Missing column name in attrib list: " + val);
                     retval = false;
                     continue;
@@ -152,7 +153,7 @@ public class TestSupport {
                 specifiedAttribList.add(attrib);
             }
 
-            for (final VariableAttrib attrib : attribList) {
+            for (final VariableAttrib attrib : attribSet) {
                 if (!specifiedAttribList.contains(attrib)) {
                     System.out.println("Missing column name in specified list: " + attrib.getFamilyQualifiedName());
                     retval = false;

@@ -1,12 +1,10 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import org.apache.hadoop.hbase.hbql.query.util.Sets;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,8 +19,8 @@ public abstract class Schema implements Serializable {
     private final Map<String, VariableAttrib> variableAttribByVariableNameMap = Maps.newHashMap();
     private final Set<VariableAttrib> variableAttribSet = Sets.newHashSet();
 
-    public List<VariableAttrib> getAllVariableAttrib() {
-        final List<VariableAttrib> retval = Lists.newArrayList();
+    public Set<VariableAttrib> getAllVariableAttribs() {
+        final Set<VariableAttrib> retval = Sets.newHashSet();
         for (final VariableAttrib attrib : this.getVariableAttribSet()) {
 
             if (attrib.isKeyAttrib())
@@ -33,8 +31,8 @@ public abstract class Schema implements Serializable {
         return retval;
     }
 
-    public List<VariableAttrib> getVariableAttribForFamily(final String familyName) {
-        final List<VariableAttrib> retval = Lists.newArrayList();
+    public Set<VariableAttrib> getVariableAttribForFamily(final String familyName) {
+        final Set<VariableAttrib> retval = Sets.newHashSet();
         for (final VariableAttrib attrib : this.getVariableAttribSet()) {
 
             if (attrib.isKeyAttrib())

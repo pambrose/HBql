@@ -17,6 +17,7 @@ import java.lang.reflect.Modifier;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -326,7 +327,7 @@ public class AnnotationSchema extends HBaseSchema {
     }
 
     @Override
-    public Object newObject(final List<VariableAttrib> attribList,
+    public Object newObject(final Set<VariableAttrib> attribSet,
                             final int maxVersions,
                             final Result result) throws HBqlException {
 
@@ -339,7 +340,7 @@ public class AnnotationSchema extends HBaseSchema {
 
             // Assign the versioned values
             if (maxVersions > 1)
-                this.assignVersionedValues(newobj, result, attribList);
+                this.assignVersionedValues(newobj, result, attribSet);
 
             return newobj;
         }
