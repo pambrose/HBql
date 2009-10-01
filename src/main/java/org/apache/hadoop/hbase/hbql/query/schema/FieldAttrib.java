@@ -36,7 +36,7 @@ public abstract class FieldAttrib extends ColumnAttrib {
 
     @Override
     public String toString() {
-        return this.getObjectQualifiedName();
+        return this.getSimpleObjectQualifiedName() + " " + this.getFamilyQualifiedName();
     }
 
     @Override
@@ -47,6 +47,10 @@ public abstract class FieldAttrib extends ColumnAttrib {
     @Override
     public String getObjectQualifiedName() {
         return this.getEnclosingClass().getName() + "." + this.getColumnName();
+    }
+
+    public String getSimpleObjectQualifiedName() {
+        return this.getEnclosingClass().getSimpleName() + "." + this.getColumnName();
     }
 
     public static String getObjectQualifiedName(final Field field) {

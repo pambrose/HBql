@@ -80,7 +80,7 @@ public class DefinedSchema extends HBaseSchema {
 
         final DefinedAttrib attrib = new DefinedAttrib(columnDescription);
 
-        this.addAttribToVariableNameMap(attrib);
+        this.addAttribToVariableNameMap(attrib, attrib.getNamesForColumn());
         this.addColumnAttribToFamilyQualifiedNameMap(attrib);
         this.addVersionAttribToFamilyQualifiedNameMap(attrib);
         this.addColumnAttribListToFamilyNameMap(attrib);

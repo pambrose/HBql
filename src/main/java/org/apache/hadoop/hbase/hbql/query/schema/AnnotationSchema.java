@@ -282,9 +282,9 @@ public class AnnotationSchema extends HBaseSchema {
 
     private void processColumnAnnotation(final Field field) throws HBqlException {
 
-        final ColumnAttrib attrib = new CurrentValueAttrib(field);
+        final CurrentValueAnnotationAttrib attrib = new CurrentValueAnnotationAttrib(field);
 
-        this.addAttribToVariableNameMap(attrib);
+        this.addAttribToVariableNameMap(attrib, attrib.getAliasName());
         this.addColumnAttribToFamilyQualifiedNameMap(attrib);
 
         if (attrib.isKeyAttrib()) {
@@ -311,8 +311,8 @@ public class AnnotationSchema extends HBaseSchema {
     }
 
     private void processColumnVersionAnnotation(final Field field) throws HBqlException {
-        final VersionAttrib attrib = VersionAttrib.newVersionAttrib(this, field);
-        this.addAttribToVariableNameMap(attrib);
+        final VersionAnnotationAttrib attrib = VersionAnnotationAttrib.newVersionAttrib(this, field);
+        this.addAttribToVariableNameMap(attrib, attrib.getAliasName());
         this.addVersionAttribToFamilyQualifiedNameMap(attrib);
     }
 

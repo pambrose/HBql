@@ -17,4 +17,8 @@ public class ReflectionAttrib extends FieldAttrib {
 
         this.defineAccessors();
     }
+
+    final String getVariableName() {
+        return this.getColumnName();
+    }
 }

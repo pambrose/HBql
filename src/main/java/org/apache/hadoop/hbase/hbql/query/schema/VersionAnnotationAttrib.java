@@ -14,21 +14,21 @@ import java.util.Map;
  * Date: Sep 5, 2009
  * Time: 10:03:49 PM
  */
-public class VersionAttrib extends FieldAttrib {
+public class VersionAnnotationAttrib extends FieldAttrib {
 
-    private VersionAttrib(final String familyName,
-                          final String columnName,
-                          final Field field,
-                          final FieldType fieldType,
-                          final boolean mapKeysAsColumns,
-                          final String getter,
-                          final String setter) throws HBqlException {
+    private VersionAnnotationAttrib(final String familyName,
+                                    final String columnName,
+                                    final Field field,
+                                    final FieldType fieldType,
+                                    final boolean mapKeysAsColumns,
+                                    final String getter,
+                                    final String setter) throws HBqlException {
         super(familyName, columnName, field, fieldType, mapKeysAsColumns, getter, setter);
 
         this.defineAccessors();
     }
 
-    public static VersionAttrib newVersionAttrib(final HBaseSchema schema, final Field field) throws HBqlException {
+    public static VersionAnnotationAttrib newVersionAttrib(final HBaseSchema schema, final Field field) throws HBqlException {
 
         final HColumnVersionMap versionAnno = field.getAnnotation(HColumnVersionMap.class);
         final String instance = versionAnno.instance();
@@ -79,29 +79,29 @@ public class VersionAttrib extends FieldAttrib {
                 throw new HBqlException(getObjectQualifiedName(field)
                                         + "instance variable must have HColumn annotation");
 
-            final CurrentValueAttrib currentAttrib = (CurrentValueAttrib)attrib;
+            final CurrentValueAnnotationAttrib currentAnnotationAttrib = (CurrentValueAnnotationAttrib)attrib;
 
             // Make sure type of Value in map matches type of instance var
-            if (!mapValueType.equals(currentAttrib.getField().getType()))
+            if (!mapValueType.equals(currentAnnotationAttrib.getField().getType()))
                 throw new HBqlException("Type of " + getObjectQualifiedName(field) + " map value type does not " +
-                                        "match type of " + currentAttrib.getObjectQualifiedName());
+                                        "match type of " + currentAnnotationAttrib.getObjectQualifiedName());
 
-            return new VersionAttrib(currentAttrib.getFamilyName(),
-                                     currentAttrib.getColumnName(),
-                                     field,
-                                     currentAttrib.getFieldType(),
-                                     currentAttrib.isMapKeysAsColumns(),
-                                     currentAttrib.getGetter(),
-                                     currentAttrib.getSetter());
+            return new VersionAnnotationAttrib(currentAnnotationAttrib.getFamilyName(),
+                                               currentAnnotationAttrib.getColumnName(),
+                                               field,
+                                               currentAnnotationAttrib.getFieldType(),
+                                               currentAnnotationAttrib.isMapKeysAsColumns(),
+                                               currentAnnotationAttrib.getGetter(),
+                                               currentAnnotationAttrib.getSetter());
         }
         else {
-            return new VersionAttrib(versionAnno.family(),
-                                     versionAnno.column(),
-                                     field,
-                                     FieldType.getFieldType(mapValueType),
-                                     versionAnno.mapKeysAsColumns(),
-                                     versionAnno.getter(),
-                                     versionAnno.setter());
+            return new VersionAnnotationAttrib(versionAnno.family(),
+                                               versionAnno.column(),
+                                               field,
+                                               FieldType.getFieldType(mapValueType),
+                                               versionAnno.mapKeysAsColumns(),
+                                               versionAnno.getter(),
+                                               versionAnno.setter());
         }
     }
 

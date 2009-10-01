@@ -13,9 +13,9 @@ import java.util.Map;
  * Date: Sep 6, 2009
  * Time: 5:17:59 PM
  */
-public class CurrentValueAttrib extends FieldAttrib {
+public class CurrentValueAnnotationAttrib extends FieldAttrib {
 
-    public CurrentValueAttrib(final Field field) throws HBqlException {
+    public CurrentValueAnnotationAttrib(final Field field) throws HBqlException {
         super(field.getAnnotation(HColumn.class).family(),
               field.getAnnotation(HColumn.class).column(),
               field,
