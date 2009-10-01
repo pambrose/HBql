@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -52,11 +51,11 @@ public class KeyRangeArgs {
             return this.type;
         }
 
-        public byte[] getLowerAsBytes() throws IOException, HBqlException {
+        public byte[] getLowerAsBytes() throws HBqlException {
             return HUtil.ser.getStringAsBytes(this.getLower());
         }
 
-        public byte[] getUpperAsBytes() throws IOException, HBqlException {
+        public byte[] getUpperAsBytes() throws HBqlException {
             return HUtil.ser.getStringAsBytes(this.getUpper());
         }
 

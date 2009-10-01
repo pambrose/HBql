@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -146,7 +145,7 @@ public abstract class ColumnAttrib extends VariableAttrib {
         }
     }
 
-    public byte[] getValueAsBytes(final Object recordObj) throws HBqlException, IOException {
+    public byte[] getValueAsBytes(final Object recordObj) throws HBqlException {
 
         if (this.hasGetter()) {
             return this.invokeGetterMethod(recordObj);
@@ -161,7 +160,7 @@ public abstract class ColumnAttrib extends VariableAttrib {
         }
     }
 
-    public Object getValueFromBytes(final Object recordObj, final byte[] b) throws IOException, HBqlException {
+    public Object getValueFromBytes(final Object recordObj, final byte[] b) throws HBqlException {
 
         if (this.hasSetter()) {
             return this.invokeSetterMethod(recordObj, b);
@@ -176,16 +175,16 @@ public abstract class ColumnAttrib extends VariableAttrib {
 
     public void setCurrentValue(final Object newobj,
                                 final long timestamp,
-                                final byte[] b) throws IOException, HBqlException {
+                                final byte[] b) throws HBqlException {
         final Object val = this.getValueFromBytes(newobj, b);
         this.setCurrentValue(newobj, timestamp, val);
     }
 
-    public byte[] getFamilyNameAsBytes() throws IOException, HBqlException {
+    public byte[] getFamilyNameAsBytes() throws HBqlException {
         return HUtil.ser.getStringAsBytes(this.getFamilyName());
     }
 
-    public byte[] getColumnNameAsBytes() throws IOException, HBqlException {
+    public byte[] getColumnNameAsBytes() throws HBqlException {
         return HUtil.ser.getStringAsBytes(this.getColumnName());
     }
 }

@@ -70,12 +70,12 @@ public class HRecord implements Serializable {
         final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(name);
 
         if (attrib != null) {
-            final String variableName = attrib.getColumnName();
-            if (!variableName.equals(name) && containsName(variableName))
-                return this.getValue(variableName);
+            final String columnName = attrib.getColumnName();
+            if (!columnName.equals(name) && this.containsName(columnName))
+                return this.getValue(columnName);
 
             final String qualifiedName = attrib.getFamilyQualifiedName();
-            if (!qualifiedName.equals(name) && containsName(qualifiedName))
+            if (!qualifiedName.equals(name) && this.containsName(qualifiedName))
                 return this.getValue(qualifiedName);
         }
 

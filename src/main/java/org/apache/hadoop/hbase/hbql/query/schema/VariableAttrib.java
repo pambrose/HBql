@@ -27,6 +27,10 @@ public abstract class VariableAttrib implements Serializable {
 
     public abstract String getColumnName();
 
+    public String getAliasName() {
+        return null;
+    }
+
     public abstract Object getCurrentValue(final Object recordObj) throws HBqlException;
 
     protected abstract void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException;

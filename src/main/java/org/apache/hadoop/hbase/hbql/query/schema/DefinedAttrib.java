@@ -40,19 +40,22 @@ public class DefinedAttrib extends ColumnAttrib {
 
     @Override
     public String getColumnName() {
-        return this.getColumnDescription().getVariableName();
+        return this.getColumnDescription().getAliasName();
     }
 
-    /*
     @Override
     public String getFamilyQualifiedName() {
         return this.getColumnDescription().getFamilyQualifiedName();
     }
-    */
 
     @Override
     public String getFamilyName() {
         return this.getColumnDescription().getFamilyName();
+    }
+
+    @Override
+    public String getAliasName() {
+        return this.getColumnDescription().getAliasName();
     }
 
     @Override

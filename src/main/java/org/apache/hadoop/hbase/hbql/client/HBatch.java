@@ -9,7 +9,6 @@ import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -76,12 +75,12 @@ public class HBatch {
         return retval;
     }
 
-    public void insert(final Object newrec) throws HBqlException, IOException {
+    public void insert(final Object newrec) throws HBqlException {
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(newrec);
         this.insert(schema, newrec);
     }
 
-    public void insert(final HRecord newrec) throws HBqlException, IOException {
+    public void insert(final HRecord newrec) throws HBqlException {
         final HBaseSchema schema = newrec.getSchema();
 
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
@@ -91,12 +90,12 @@ public class HBatch {
         this.insert(schema, newrec);
     }
 
-    public void delete(final Object newrec) throws HBqlException, IOException {
+    public void delete(final Object newrec) throws HBqlException {
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(newrec);
         this.delete(schema, newrec);
     }
 
-    public void delete(final HRecord newrec) throws HBqlException, IOException {
+    public void delete(final HRecord newrec) throws HBqlException {
         final HBaseSchema schema = newrec.getSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         if (!newrec.isCurrentValueSet(keyAttrib))
@@ -104,14 +103,14 @@ public class HBatch {
         this.delete(schema, newrec);
     }
 
-    private void insert(HBaseSchema schema, final Object newrec) throws IOException, HBqlException {
+    private void insert(HBaseSchema schema, final Object newrec) throws HBqlException {
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         final byte[] keyval = keyAttrib.getValueAsBytes(newrec);
         final Put put = createPut(schema, newrec, keyval);
         this.getActionList(schema.getTableName()).add(Action.newInsert(put));
     }
 
-    private void delete(HBaseSchema schema, final Object newrec) throws IOException, HBqlException {
+    private void delete(HBaseSchema schema, final Object newrec) throws HBqlException {
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         final byte[] keyval = keyAttrib.getValueAsBytes(newrec);
         this.getActionList(schema.getTableName()).add(Action.newDelete(new Delete(keyval)));
@@ -119,7 +118,7 @@ public class HBatch {
 
     private Put createPut(final HBaseSchema schema,
                           final Object newrec,
-                          final byte[] keyval) throws HBqlException, IOException {
+                          final byte[] keyval) throws HBqlException {
         final Put put = new Put(keyval);
         for (final String family : schema.getFamilySet()) {
             for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {

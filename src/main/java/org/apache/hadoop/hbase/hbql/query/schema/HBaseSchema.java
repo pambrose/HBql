@@ -50,6 +50,10 @@ public abstract class HBaseSchema extends Schema {
 
     public abstract String getTableName();
 
+    public String getAliasName() {
+        return this.getTableName();
+    }
+
     public abstract List<HColumnDescriptor> getColumnDescriptors();
 
     public byte[] getTableNameAsBytes() throws IOException, HBqlException {

@@ -68,17 +68,20 @@ public abstract class Schema implements Serializable {
 
     protected void addVariableAttribToVariableNameMap(final VariableAttrib attrib) throws HBqlException {
 
-        final String columnName = attrib.getColumnName();
+        final String familyQualifiedName = attrib.getFamilyQualifiedName();
 
-        if (this.getVariableAttribByVariableNameMap().containsKey(columnName))
-            throw new HBqlException("In " + this + " " + columnName + " already delcared");
+        if (this.getVariableAttribByVariableNameMap().containsKey(familyQualifiedName))
+            throw new HBqlException(familyQualifiedName + " already delcared");
 
         this.getVariableAttribSet().add(attrib);
 
-        this.getVariableAttribByVariableNameMap().put(columnName, attrib);
+        this.getVariableAttribByVariableNameMap().put(familyQualifiedName, attrib);
 
-        final String familyQualifiedName = attrib.getFamilyQualifiedName();
-        if (!familyQualifiedName.equals(columnName))
-            this.getVariableAttribByVariableNameMap().put(familyQualifiedName, attrib);
+        final String aliasName = attrib.getAliasName();
+        if (aliasName != null && !aliasName.equals(familyQualifiedName)) {
+            if (this.getVariableAttribByVariableNameMap().containsKey(aliasName))
+                throw new HBqlException(aliasName + " already delcared");
+            this.getVariableAttribByVariableNameMap().put(aliasName, attrib);
+        }
     }
 }

@@ -33,16 +33,16 @@ public class DefinedSchema extends HBaseSchema {
         this.tableName = "embedded";
         this.aliasName = "embedded";
         for (final ColumnDescription var : varList)
-            processColumn(var, false);
+            this.processColumn(var, false);
     }
 
     private DefinedSchema(final String tableName,
                           final String aliasName,
-                          final List<ColumnDescription> varList) throws HBqlException {
+                          final List<ColumnDescription> columnDescriptionList) throws HBqlException {
         this.tableName = tableName;
         this.aliasName = aliasName;
-        for (final ColumnDescription var : varList)
-            processColumn(var, true);
+        for (final ColumnDescription columnDescription : columnDescriptionList)
+            processColumn(columnDescription, true);
     }
 
     public synchronized static DefinedSchema newDefinedSchema(final String tableName,
@@ -94,7 +94,6 @@ public class DefinedSchema extends HBaseSchema {
             final String family = attrib.getFamilyName();
             if (enforceFamilyName && family.length() == 0)
                 throw new HBqlException(attrib.getColumnName() + " is missing family name");
-
         }
     }
 
@@ -128,7 +127,6 @@ public class DefinedSchema extends HBaseSchema {
 
         return descList;
     }
-
 
     @Override
     public String getSchemaName() {

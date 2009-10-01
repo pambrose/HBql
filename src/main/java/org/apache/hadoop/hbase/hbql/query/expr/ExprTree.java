@@ -48,7 +48,7 @@ public class ExprTree extends ExprContext implements Serializable {
         // Check if all the variables referenced in the where clause are present in the fieldList.
         for (final GenericColumn var : this.getColumnList()) {
             if (!attribList.contains(var.getVariableAttrib()))
-                throw new HBqlException("Variable " + var.getVariableName() + " used in where clause but it is not "
+                throw new HBqlException("Variable " + var.getColumnName() + " used in where clause but it is not "
                                         + "not in the select list");
         }
     }
