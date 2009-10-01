@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.KeyRangeArgs;
+import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectColumn;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.TimeRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.VersionArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
@@ -61,6 +62,7 @@ public abstract class HBaseSchema extends Schema {
     }
 
     public abstract Object newObject(final List<ColumnAttrib> attribList,
+                                     final List<SelectColumn> selectColumnList,
                                      final int maxVersions,
                                      final Result result) throws HBqlException;
 
@@ -85,7 +87,11 @@ public abstract class HBaseSchema extends Schema {
     }
 
     public ColumnAttrib getColumnAttribFromFamilyQualifiedNameMap(final String familyName, final String columnName) {
-        return this.getColumnAttribByFamilyQualifiedNameMap().get(familyName + ":" + columnName);
+        return this.getColumnAttribFromFamilyQualifiedNameMap(familyName + ":" + columnName);
+    }
+
+    public ColumnAttrib getColumnAttribFromFamilyQualifiedNameMap(final String familyQualifiedName) {
+        return this.getColumnAttribByFamilyQualifiedNameMap().get(familyQualifiedName);
     }
 
     protected void addColumnAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HBqlException {
@@ -158,7 +164,39 @@ public abstract class HBaseSchema extends Schema {
     }
 
 
-    protected void assignCurrentValues(final Object newobj, final Result result) throws IOException, HBqlException {
+    protected void assignCurrentValuesFromExpr(final Object newobj,
+                                               final List<SelectColumn> selectColumnList) throws HBqlException {
+
+        for (final SelectColumn selectColumn : selectColumnList) {
+
+            final String name = selectColumn.getAsName();
+            /*
+            if (cname.endsWith("]")) {
+                final int lbrace = cname.indexOf("[");
+                final String mapcolumn = cname.substring(0, lbrace);
+                final String mapKey = cname.substring(lbrace + 1, cname.length() - 1);
+                final ColumnAttrib attrib = this.getColumnAttribFromFamilyQualifiedNameMap(fname, mapcolumn);
+
+                Map mapval = (Map)attrib.getCurrentValue(newobj);
+
+                if (mapval == null) {
+                    mapval = Maps.newHashMap();
+                    // TODO Check this
+                    attrib.setVersionedValueMap(newobj, mapval);
+                }
+
+                final Object val = attrib.getValueFromBytes(newobj, b);
+                mapval.put(mapKey, val);
+            }
+            else {
+                final ColumnAttrib attrib = this.getColumnAttribFromFamilyQualifiedNameMap(selectColumn.getAsName());
+                attrib.setCurrentValue(newobj, timestamp, b);
+            }
+            */
+        }
+    }
+
+    protected void assignCurrentValuesFromResult(final Object newobj, final Result result) throws HBqlException {
 
         for (final KeyValue keyValue : result.list()) {
 
@@ -169,7 +207,7 @@ public abstract class HBaseSchema extends Schema {
             final String cname = HUtil.ser.getStringFromBytes(cbytes);
 
             final long timestamp = keyValue.getTimestamp();
-            final byte[] valueBytes = result.getValue(fbytes, cbytes);
+            final byte[] b = result.getValue(fbytes, cbytes);
 
             if (cname.endsWith("]")) {
                 final int lbrace = cname.indexOf("[");
@@ -185,12 +223,12 @@ public abstract class HBaseSchema extends Schema {
                     attrib.setVersionedValueMap(newobj, mapval);
                 }
 
-                final Object val = attrib.getValueFromBytes(newobj, valueBytes);
+                final Object val = attrib.getValueFromBytes(newobj, b);
                 mapval.put(mapKey, val);
             }
             else {
                 final ColumnAttrib attrib = this.getColumnAttribFromFamilyQualifiedNameMap(fname, cname);
-                attrib.setCurrentValue(newobj, timestamp, valueBytes);
+                attrib.setCurrentValue(newobj, timestamp, b);
             }
         }
     }

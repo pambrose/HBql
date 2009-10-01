@@ -217,30 +217,26 @@ public abstract class ColumnAttrib implements Serializable {
 
     public byte[] getValueAsBytes(final Object recordObj) throws HBqlException {
 
-        if (this.hasGetter()) {
+        if (this.hasGetter())
             return this.invokeGetterMethod(recordObj);
-        }
-        else {
-            final Object obj = this.getCurrentValue(recordObj);
 
-            if (this.isArray())
-                return HUtil.ser.getArrayasBytes(this.getFieldType(), obj);
-            else
-                return HUtil.ser.getScalarAsBytes(this.getFieldType(), obj);
-        }
+        final Object obj = this.getCurrentValue(recordObj);
+
+        if (this.isArray())
+            return HUtil.ser.getArrayasBytes(this.getFieldType(), obj);
+        else
+            return HUtil.ser.getScalarAsBytes(this.getFieldType(), obj);
     }
 
     public Object getValueFromBytes(final Object recordObj, final byte[] b) throws HBqlException {
 
-        if (this.hasSetter()) {
+        if (this.hasSetter())
             return this.invokeSetterMethod(recordObj, b);
-        }
-        else {
-            if (this.isArray())
-                return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
-            else
-                return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
-        }
+
+        if (this.isArray())
+            return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
+        else
+            return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
     }
 
     public Object getValueFromBytes(final Result result) throws HBqlException {

@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.hbql.client.HColumn;
 import org.apache.hadoop.hbase.hbql.client.HColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HFamily;
 import org.apache.hadoop.hbase.hbql.client.HTable;
+import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectColumn;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -327,6 +328,7 @@ public class AnnotationSchema extends HBaseSchema {
 
     @Override
     public Object newObject(final List<ColumnAttrib> attribList,
+                            final List<SelectColumn> selectColumnList,
                             final int maxVersions,
                             final Result result) throws HBqlException {
 
@@ -335,7 +337,7 @@ public class AnnotationSchema extends HBaseSchema {
             final Object newobj = this.createNewObject(result);
 
             // Assign most recent values
-            this.assignCurrentValues(newobj, result);
+            this.assignCurrentValuesFromResult(newobj, result);
 
             // Assign the versioned values
             if (maxVersions > 1)

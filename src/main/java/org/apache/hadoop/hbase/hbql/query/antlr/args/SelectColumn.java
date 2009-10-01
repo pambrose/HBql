@@ -1,5 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
@@ -18,6 +20,7 @@ public class SelectColumn extends ExprContext {
     private final Type type;
     private final String familyName;
     private final String asName;
+    private Object evaluationValue = null;
 
     private SelectColumn(final Type type,
                          final String familyName,
@@ -55,6 +58,14 @@ public class SelectColumn extends ExprContext {
 
     public GenericValue getGenericValue() {
         return this.getGenericValue(0);
+    }
+
+    public Object getEvaluationValue() {
+        return evaluationValue;
+    }
+
+    public void evaluate(final Result result) throws HBqlException {
+        this.evaluationValue = this.getGenericValue().getValue(result);
     }
 
     @Override

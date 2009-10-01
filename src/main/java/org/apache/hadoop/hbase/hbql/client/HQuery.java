@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.client;
 
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
@@ -109,8 +110,12 @@ public class HQuery<T> {
             this.getListeners().clear();
     }
 
+    public void evaluateSelectValues(final Result result) throws HBqlException {
+        for (final SelectColumn selectColumn : this.getSelectColumnList())
+            selectColumn.evaluate(result);
+    }
 
-    public HResults<T> execute() throws IOException, HBqlException {
+    public HResults<T> execute() throws HBqlException {
 
         if (this.getListeners() != null) {
             for (final HQueryListener<T> listener : this.getListeners())

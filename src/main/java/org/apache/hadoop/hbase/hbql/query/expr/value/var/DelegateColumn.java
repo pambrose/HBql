@@ -15,11 +15,11 @@ import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 public class DelegateColumn extends GenericColumn<GenericValue> {
 
     private GenericColumn typedColumn = null;
-    private String columnName;
+    private String text;
 
-    public DelegateColumn(final String columnName) {
+    public DelegateColumn(final String text) {
         super(null);
-        this.columnName = columnName;
+        this.text = text;
     }
 
     private GenericColumn getTypedColumn() {
@@ -31,8 +31,8 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
     }
 
     @Override
-    public String getColumnName() {
-        return this.columnName;
+    public String getVariableName() {
+        return this.text;
     }
 
     @Override
@@ -49,10 +49,10 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
     @Override
     public void setExprContext(final ExprContext context) throws HBqlException {
 
-        final ColumnAttrib attrib = context.getSchema().getAttribByVariableName(this.getColumnName());
+        final ColumnAttrib attrib = context.getSchema().getAttribByVariableName(this.getVariableName());
 
         if (attrib == null)
-            throw new HBqlException("Invalid variable: " + this.getColumnName());
+            throw new HBqlException("Invalid variable: " + this.getVariableName());
 
         switch (attrib.getFieldType()) {
 

@@ -30,8 +30,8 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         return this.columnAttrib;
     }
 
-    public String getColumnName() {
-        return this.getColumnAttrib().getColumnName();
+    public String getVariableName() {
+        return this.getColumnAttrib().getFamilyQualifiedName();
     }
 
     @Override
@@ -61,6 +61,6 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
 
     @Override
     public String asString() {
-        return this.getColumnName();
+        return this.getVariableName();
     }
 }

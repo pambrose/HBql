@@ -7,11 +7,11 @@ import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
+import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectColumn;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -134,6 +134,7 @@ public class DefinedSchema extends HBaseSchema {
 
     @Override
     public HRecord newObject(final List<ColumnAttrib> attribList,
+                             final List<SelectColumn> selectColumnList,
                              final int maxVersions,
                              final Result result) throws HBqlException {
 
@@ -142,7 +143,8 @@ public class DefinedSchema extends HBaseSchema {
             final HRecord newobj = this.newHRecord(result);
 
             // Assign most recent values
-            this.assignCurrentValues(newobj, result);
+            this.assignCurrentValuesFromResult(newobj, result);
+            //this.assignCurrentValuesFromExpr(newobj, selectColumnList);
 
             // Assign the versioned values
             if (maxVersions > 1)
@@ -157,7 +159,7 @@ public class DefinedSchema extends HBaseSchema {
 
     }
 
-    private HRecord newHRecord(final Result result) throws IOException, HBqlException {
+    private HRecord newHRecord(final Result result) throws HBqlException {
 
         // Create new instance
         final HRecord newrec = new HRecord(this);
@@ -171,7 +173,7 @@ public class DefinedSchema extends HBaseSchema {
         return newrec;
     }
 
-    public Scan getScanForFields(final String... fields) throws IOException, HBqlException {
+    public Scan getScanForFields(final String... fields) throws HBqlException {
 
         final Scan scan = new Scan();
 
