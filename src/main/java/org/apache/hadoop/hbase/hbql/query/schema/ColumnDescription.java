@@ -16,9 +16,7 @@ public class ColumnDescription implements Serializable {
     private final String familyName, columnName;
     private final FieldType fieldType;
 
-    private ColumnDescription(final String aliasName,
-                              final String familyQualifiedName,
-                              final String typeName) {
+    private ColumnDescription(final String familyQualifiedName, final String aliasName, final String typeName) {
         this.aliasName = aliasName;
         this.fieldType = getFieldType(typeName);
 
@@ -27,10 +25,9 @@ public class ColumnDescription implements Serializable {
 
     }
 
-    public static ColumnDescription newColumnDescription(final String aliasName,
-                                                         final String familyQualifiedName,
+    public static ColumnDescription newColumnDescription(final String familyQualifiedName, final String aliasName,
                                                          final String typeName) {
-        return new ColumnDescription(aliasName, familyQualifiedName, typeName);
+        return new ColumnDescription(familyQualifiedName, aliasName, typeName);
     }
 
     private static FieldType getFieldType(final String typeName) {
