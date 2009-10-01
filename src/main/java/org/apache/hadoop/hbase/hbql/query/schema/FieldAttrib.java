@@ -39,7 +39,7 @@ public abstract class FieldAttrib extends ColumnAttrib {
     }
 
     @Override
-    public String getColumnName() {
+    public String getAliasName() {
         return this.getField().getName();
     }
 
