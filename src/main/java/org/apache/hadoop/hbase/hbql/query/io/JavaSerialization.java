@@ -21,6 +21,9 @@ public class JavaSerialization extends Serialization {
     @Override
     public Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws HBqlException {
 
+        if (b == null)
+            return null;
+
         ObjectInputStream ois = null;
 
         try {
@@ -91,6 +94,9 @@ public class JavaSerialization extends Serialization {
     @Override
     public byte[] getScalarAsBytes(final FieldType fieldType, final Object obj) throws HBqlException {
 
+        if (obj == null)
+            return null;
+
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -153,6 +159,9 @@ public class JavaSerialization extends Serialization {
 
     @Override
     public Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws HBqlException {
+
+        if (b == null)
+            return null;
 
         if (fieldType == FieldType.CharType) {
             final String s = new String(b);
@@ -246,6 +255,9 @@ public class JavaSerialization extends Serialization {
 
     @Override
     public byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws HBqlException {
+
+        if (obj == null)
+            return null;
 
         if (fieldType == FieldType.CharType) {
             final String s = new String((char[])obj);

@@ -56,8 +56,8 @@ public class QueryArgs {
                 case ALLTABLECOLUMNS:
                     for (final ColumnAttrib attrib : this.getSchema().getAllAttribs())
                         this.getSelectColumnList().add(this.getSelectColumnForColumnAttrib(attrib));
-                    this.selectColumnAttribList.addAll(this.getSchema().getAllAttribs());
 
+                    this.getSelectAttribList().addAll(this.getSchema().getAllAttribs());
                     break;
 
                 case ALLFAMILYCOLUMNS:
@@ -67,12 +67,14 @@ public class QueryArgs {
 
                     for (final ColumnAttrib attrib : this.getSchema().getAttribForFamily(familyName))
                         this.getSelectColumnList().add(this.getSelectColumnForColumnAttrib(attrib));
-                    this.selectColumnAttribList.addAll(this.getSchema().getAttribForFamily(familyName));
+
+                    this.getSelectAttribList().addAll(this.getSchema().getAttribForFamily(familyName));
                     break;
 
                 case GENERICEXPR:
                     this.getSelectColumnList().add(selectColumn);
-                    this.selectColumnAttribList.addAll(selectColumn.getFamilyQualifiedColumnNameList());
+
+                    this.getSelectAttribList().addAll(selectColumn.getFamilyQualifiedColumnNameList());
                     break;
             }
         }
@@ -80,7 +82,9 @@ public class QueryArgs {
 
     private SelectColumn getSelectColumnForColumnAttrib(final ColumnAttrib attrib) {
         final GenericValue val = new DelegateColumn(attrib.getAliasName());
-        return SelectColumn.newColumn(val, attrib.getAliasName());
+        final SelectColumn selectColumn = SelectColumn.newColumn(val, attrib.getAliasName());
+        selectColumn.setSchema(this.getSchema());
+        return selectColumn;
     }
 
     public List<SelectColumn> getSelectColumnList() {

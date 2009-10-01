@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.QueryArgs;
+import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectColumn;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
@@ -93,6 +94,10 @@ public class HQuery<T> {
 
     List<ColumnAttrib> getSelectAttribList() {
         return this.getQueryArgs().getSelectAttribList();
+    }
+
+    List<SelectColumn> getSelectColumnList() {
+        return this.getQueryArgs().getSelectColumnList();
     }
 
     public long getQueryLimit() throws HBqlException {

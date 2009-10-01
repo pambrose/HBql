@@ -258,9 +258,6 @@ public abstract class ColumnAttrib implements Serializable {
 
         final byte[] b = columnMap.get(this.getColumnNameBytes());
 
-        if (b == null)
-            throw new HBqlException("Null value for column: " + this.getFamilyQualifiedName());
-
         if (this.isArray())
             return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
         else

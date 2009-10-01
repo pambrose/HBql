@@ -24,6 +24,9 @@ public class HadoopSerialization extends Serialization {
     @Override
     public Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws HBqlException {
 
+        if (b == null)
+            return null;
+
         try {
             switch (fieldType) {
 
@@ -82,6 +85,9 @@ public class HadoopSerialization extends Serialization {
     @Override
     public byte[] getScalarAsBytes(final FieldType fieldType, final Object obj) throws HBqlException {
 
+        if (obj == null)
+            return null;
+
         try {
             switch (fieldType) {
 
@@ -138,8 +144,10 @@ public class HadoopSerialization extends Serialization {
     @Override
     public Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws HBqlException {
 
-        try {
+        if (b == null)
+            return null;
 
+        try {
             switch (fieldType) {
 
                 case BooleanType: {
@@ -268,6 +276,9 @@ public class HadoopSerialization extends Serialization {
 
     @Override
     public byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws HBqlException {
+
+        if (obj == null)
+            return null;
 
         try {
             switch (fieldType) {
