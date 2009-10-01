@@ -15,15 +15,14 @@ import java.util.Map;
  */
 public class CurrentValueAttrib extends FieldAttrib {
 
-
     public CurrentValueAttrib(final Field field) throws HBqlException {
-        super(field,
-              FieldType.getFieldType(field),
-              field.getAnnotation(HColumn.class).family(),
+        super(field.getAnnotation(HColumn.class).family(),
               field.getAnnotation(HColumn.class).column(),
+              field,
+              FieldType.getFieldType(field),
+              field.getAnnotation(HColumn.class).mapKeysAsColumns(),
               field.getAnnotation(HColumn.class).getter(),
-              field.getAnnotation(HColumn.class).setter(),
-              field.getAnnotation(HColumn.class).mapKeysAsColumns());
+              field.getAnnotation(HColumn.class).setter());
 
         this.defineAccessors();
 

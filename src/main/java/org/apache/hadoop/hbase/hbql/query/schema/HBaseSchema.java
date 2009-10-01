@@ -60,7 +60,7 @@ public abstract class HBaseSchema extends Schema {
         return HUtil.ser.getStringAsBytes(this.getTableName());
     }
 
-    public abstract Object newObject(final Set<VariableAttrib> attribSet,
+    public abstract Object newObject(final Set<ColumnAttrib> attribSet,
                                      final int maxVersions,
                                      final Result result) throws HBqlException;
 
@@ -198,7 +198,7 @@ public abstract class HBaseSchema extends Schema {
 
     protected void assignVersionedValues(final Object newobj,
                                          final Result result,
-                                         final Set<VariableAttrib> attribSet) throws IOException, HBqlException {
+                                         final Set<ColumnAttrib> attribSet) throws IOException, HBqlException {
 
         final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
 
@@ -244,7 +244,7 @@ public abstract class HBaseSchema extends Schema {
         return null;
     }
 
-    public List<Scan> getScanList(final Set<VariableAttrib> attribSet,
+    public List<Scan> getScanList(final Set<ColumnAttrib> attribSet,
                                   final KeyRangeArgs keyRangeArgs,
                                   final TimeRangeArgs timeRangeArgs,
                                   final VersionArgs versionArgs,
@@ -269,9 +269,9 @@ public abstract class HBaseSchema extends Schema {
         for (final Scan scan : scanList) {
 
             // Set column names
-            for (final VariableAttrib variableAttrib : attribSet) {
+            for (final ColumnAttrib columnAttrib : attribSet) {
 
-                final ColumnAttrib attrib = (ColumnAttrib)variableAttrib;
+                final ColumnAttrib attrib = (ColumnAttrib)columnAttrib;
 
                 // Do not bother to request because it will always be delivered
                 if (attrib.isKeyAttrib())
@@ -307,7 +307,7 @@ public abstract class HBaseSchema extends Schema {
     }
 
     public HBqlFilter getHBqlFilter(final ExprTree exprTree,
-                                    final Set<VariableAttrib> attribSet,
+                                    final Set<ColumnAttrib> attribSet,
                                     final long scanLimit) throws HBqlException {
 
         if (!exprTree.isValid())

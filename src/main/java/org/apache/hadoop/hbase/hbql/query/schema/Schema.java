@@ -16,12 +16,12 @@ import java.util.Set;
  */
 public abstract class Schema implements Serializable {
 
-    private final Map<String, VariableAttrib> variableAttribByVariableNameMap = Maps.newHashMap();
-    private final Set<VariableAttrib> variableAttribSet = Sets.newHashSet();
+    private final Map<String, ColumnAttrib> columnAttribByVariableNameMap = Maps.newHashMap();
+    private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
 
-    public Set<VariableAttrib> getAllVariableAttribs() {
-        final Set<VariableAttrib> retval = Sets.newHashSet();
-        for (final VariableAttrib attrib : this.getVariableAttribSet()) {
+    public Set<ColumnAttrib> getAllAttribs() {
+        final Set<ColumnAttrib> retval = Sets.newHashSet();
+        for (final ColumnAttrib attrib : this.getColumnAttribSet()) {
 
             if (attrib.isKeyAttrib())
                 continue;
@@ -31,9 +31,9 @@ public abstract class Schema implements Serializable {
         return retval;
     }
 
-    public Set<VariableAttrib> getVariableAttribForFamily(final String familyName) {
-        final Set<VariableAttrib> retval = Sets.newHashSet();
-        for (final VariableAttrib attrib : this.getVariableAttribSet()) {
+    public Set<ColumnAttrib> getAttribForFamily(final String familyName) {
+        final Set<ColumnAttrib> retval = Sets.newHashSet();
+        for (final ColumnAttrib attrib : this.getColumnAttribSet()) {
 
             if (attrib.isKeyAttrib())
                 continue;
@@ -44,39 +44,39 @@ public abstract class Schema implements Serializable {
         return retval;
     }
 
-    public Set<VariableAttrib> getVariableAttribSet() {
-        return this.variableAttribSet;
+    public Set<ColumnAttrib> getColumnAttribSet() {
+        return this.columnAttribSet;
     }
 
-    // *** variableAttribByVariableNameMap calls
-    private Map<String, VariableAttrib> getVariableAttribByVariableNameMap() {
-        return this.variableAttribByVariableNameMap;
+    // *** columnAttribByVariableNameMap calls
+    private Map<String, ColumnAttrib> getColumnAttribByVariableNameMap() {
+        return this.columnAttribByVariableNameMap;
     }
 
     public boolean constainsVariableName(final String varname) {
-        return this.getVariableAttribByVariableNameMap().containsKey(varname);
+        return this.getColumnAttribByVariableNameMap().containsKey(varname);
     }
 
-    public VariableAttrib getVariableAttribByVariableName(final String name) {
-        return this.getVariableAttribByVariableNameMap().get(name);
+    public ColumnAttrib getAttribByVariableName(final String name) {
+        return this.getColumnAttribByVariableNameMap().get(name);
     }
 
-    protected void addVariableAttribToVariableNameMap(final VariableAttrib attrib) throws HBqlException {
+    protected void addAttribToVariableNameMap(final ColumnAttrib attrib) throws HBqlException {
 
         final String familyQualifiedName = attrib.getFamilyQualifiedName();
 
-        if (this.getVariableAttribByVariableNameMap().containsKey(familyQualifiedName))
+        if (this.getColumnAttribByVariableNameMap().containsKey(familyQualifiedName))
             throw new HBqlException(familyQualifiedName + " already delcared");
 
-        this.getVariableAttribSet().add(attrib);
+        this.getColumnAttribSet().add(attrib);
 
-        this.getVariableAttribByVariableNameMap().put(familyQualifiedName, attrib);
+        this.getColumnAttribByVariableNameMap().put(familyQualifiedName, attrib);
 
         final String aliasName = attrib.getAliasName();
         if (aliasName != null && !aliasName.equals(familyQualifiedName)) {
-            if (this.getVariableAttribByVariableNameMap().containsKey(aliasName))
+            if (this.getColumnAttribByVariableNameMap().containsKey(aliasName))
                 throw new HBqlException(aliasName + " already delcared");
-            this.getVariableAttribByVariableNameMap().put(aliasName, attrib);
+            this.getColumnAttribByVariableNameMap().put(aliasName, attrib);
         }
     }
 }

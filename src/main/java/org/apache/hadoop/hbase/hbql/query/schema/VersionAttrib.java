@@ -16,14 +16,14 @@ import java.util.Map;
  */
 public class VersionAttrib extends FieldAttrib {
 
-    private VersionAttrib(final Field field,
-                          final FieldType fieldType,
-                          final String familyName,
+    private VersionAttrib(final String familyName,
                           final String columnName,
+                          final Field field,
+                          final FieldType fieldType,
+                          final boolean mapKeysAsColumns,
                           final String getter,
-                          final String setter,
-                          final boolean mapKeysAsColumns) throws HBqlException {
-        super(field, fieldType, familyName, columnName, getter, setter, mapKeysAsColumns);
+                          final String setter) throws HBqlException {
+        super(familyName, columnName, field, fieldType, mapKeysAsColumns, getter, setter);
 
         this.defineAccessors();
     }
@@ -69,7 +69,7 @@ public class VersionAttrib extends FieldAttrib {
                 throw new HBqlException(annoname + " for " + getObjectQualifiedName(field)
                                         + " refers to invalid instance variable " + instance);
 
-            final ColumnAttrib attrib = (ColumnAttrib)schema.getVariableAttribByVariableName(instance);
+            final ColumnAttrib attrib = (ColumnAttrib)schema.getAttribByVariableName(instance);
 
             if (attrib == null)
                 throw new HBqlException("Instance variable " + instance
@@ -86,24 +86,23 @@ public class VersionAttrib extends FieldAttrib {
                 throw new HBqlException("Type of " + getObjectQualifiedName(field) + " map value type does not " +
                                         "match type of " + currentAttrib.getObjectQualifiedName());
 
-            return new VersionAttrib(field,
-                                     currentAttrib.getFieldType(),
-                                     currentAttrib.getFamilyName(),
+            return new VersionAttrib(currentAttrib.getFamilyName(),
                                      currentAttrib.getColumnName(),
+                                     field,
+                                     currentAttrib.getFieldType(),
+                                     currentAttrib.isMapKeysAsColumns(),
                                      currentAttrib.getGetter(),
-                                     currentAttrib.getSetter(),
-                                     currentAttrib.isMapKeysAsColumns());
+                                     currentAttrib.getSetter());
         }
         else {
-            return new VersionAttrib(field,
-                                     FieldType.getFieldType(mapValueType),
-                                     versionAnno.family(),
+            return new VersionAttrib(versionAnno.family(),
                                      versionAnno.column(),
+                                     field,
+                                     FieldType.getFieldType(mapValueType),
+                                     versionAnno.mapKeysAsColumns(),
                                      versionAnno.getter(),
-                                     versionAnno.setter(),
-                                     versionAnno.mapKeysAsColumns());
+                                     versionAnno.setter());
         }
-
     }
 
     @Override

@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,12 +12,12 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  */
 public class StringColumn extends GenericColumn<StringValue> {
 
-    public StringColumn(final VariableAttrib attrib) {
+    public StringColumn(final ColumnAttrib attrib) {
         super(attrib);
     }
 
     @Override
     public Object getValue(final Object object) throws HBqlException {
-        return this.getVariableAttrib().getCurrentValue(object);
+        return this.getColumnAttrib().getCurrentValue(object);
     }
 }

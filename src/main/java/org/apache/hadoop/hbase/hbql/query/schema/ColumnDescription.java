@@ -14,14 +14,12 @@ public class ColumnDescription implements Serializable {
 
     private String aliasName;
     private String familyQualifiedName;
-    private String typeName;
     private FieldType fieldType;
 
     private ColumnDescription(final String aliasName, final String familyQualifiedName, final String typeName) {
         this.aliasName = (aliasName == null) ? familyQualifiedName : aliasName;
         this.familyQualifiedName = familyQualifiedName;
-        this.typeName = typeName;
-        this.fieldType = getFieldType(this.getTypeName());
+        this.fieldType = getFieldType(typeName);
     }
 
     public static ColumnDescription newColumnDescription(final String aliasName,
@@ -61,10 +59,6 @@ public class ColumnDescription implements Serializable {
 
     public String getAliasName() {
         return this.aliasName;
-    }
-
-    public String getTypeName() {
-        return this.typeName;
     }
 
     public FieldType getFieldType() {

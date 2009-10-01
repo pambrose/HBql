@@ -2,8 +2,8 @@ package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
 import org.antlr.runtime.RecognitionException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Sets;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.Set;
 public class QueryArgs {
 
     private final List<SelectColumn> selectColumnList;
-    private final Set<VariableAttrib> selectVariableAttribSet = Sets.newHashSet();
+    private final Set<ColumnAttrib> selectColumnAttribSet = Sets.newHashSet();
     private final String tableName;
     private final WhereArgs whereExpr;
 
@@ -45,7 +45,7 @@ public class QueryArgs {
 
             switch (column.getType()) {
                 case ALLTABLECOLUMNS:
-                    this.selectVariableAttribSet.addAll(this.getSchema().getAllVariableAttribs());
+                    this.selectColumnAttribSet.addAll(this.getSchema().getAllAttribs());
                     break;
 
                 case ALLFAMILYCOLUMNS:
@@ -53,11 +53,11 @@ public class QueryArgs {
                     if (!this.getSchema().containsFamilyNameInFamilyNameMap(familyName))
                         throw new HBqlException("Invalid family name: " + familyName);
 
-                    this.selectVariableAttribSet.addAll(this.getSchema().getVariableAttribForFamily(familyName));
+                    this.selectColumnAttribSet.addAll(this.getSchema().getAttribForFamily(familyName));
                     break;
 
                 case GENERICEXPR:
-                    this.selectVariableAttribSet.addAll(column.getFamilyQualifiedColumnNameList());
+                    this.selectColumnAttribSet.addAll(column.getFamilyQualifiedColumnNameList());
                     break;
             }
         }
@@ -67,8 +67,8 @@ public class QueryArgs {
         return this.selectColumnList;
     }
 
-    public Set<VariableAttrib> getSelectVariableAttribSet() {
-        return this.selectVariableAttribSet;
+    public Set<ColumnAttrib> getSelectAttribSet() {
+        return this.selectColumnAttribSet;
     }
 
     public String getTableName() {

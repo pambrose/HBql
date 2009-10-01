@@ -20,9 +20,9 @@ public class DefinedAttrib extends ColumnAttrib {
         super(columnDescription.getFamilyName(),
               columnDescription.getColumnName(),
               columnDescription.getFieldType(),
+              false,
               null,
-              null,
-              false);
+              null);
 
         this.columnDescription = columnDescription;
 
@@ -32,10 +32,6 @@ public class DefinedAttrib extends ColumnAttrib {
 
     private ColumnDescription getColumnDescription() {
         return this.columnDescription;
-    }
-
-    public String getTypeName() {
-        return this.getColumnDescription().getTypeName();
     }
 
     @Override

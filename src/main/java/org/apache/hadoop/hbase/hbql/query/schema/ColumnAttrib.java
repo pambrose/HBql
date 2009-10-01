@@ -3,35 +3,108 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.NavigableMap;
 
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
- * Date: Sep 6, 2009
- * Time: 5:27:00 PM
+ * Date: Aug 19, 2009
+ * Time: 6:07:31 PM
  */
-public abstract class ColumnAttrib extends VariableAttrib {
+public abstract class ColumnAttrib implements Serializable {
 
-    private final String familyName, columnName, getter, setter;
-    private final boolean mapKeysAsColumns;
+    private final FieldType fieldType;
+    private byte[] familyBytes = null;
+    private byte[] columnBytes = null;
+    protected final String familyName;
+    protected final String columnName;
+    protected final String getter;
+    protected final String setter;
+    protected final boolean mapKeysAsColumns;
+    protected transient Method getterMethod = null;
+    protected transient Method setterMethod = null;
 
-    protected transient Method getterMethod = null, setterMethod = null;
-
-    public ColumnAttrib(final String familyName,
-                        final String columnName,
-                        final FieldType fieldType,
-                        final String getter,
-                        final String setter,
-                        final boolean mapKeysAsColumns) throws HBqlException {
-        super(fieldType);
-        this.familyName = familyName;
-        this.columnName = columnName;
+    protected ColumnAttrib(final String familyName,
+                           final String columnName,
+                           final FieldType fieldType,
+                           final boolean mapKeysAsColumns,
+                           final String getter,
+                           final String setter
+    ) {
+        this.fieldType = fieldType;
+        this.mapKeysAsColumns = mapKeysAsColumns;
         this.getter = getter;
         this.setter = setter;
-        this.mapKeysAsColumns = mapKeysAsColumns;
+        this.familyName = familyName;
+        this.columnName = columnName;
+    }
+
+    public abstract boolean isArray();
+
+    public String getFamilyName() {
+        return this.familyName;
+    }
+
+    public String getColumnName() {
+        return this.columnName;
+    }
+
+    public String getAliasName() {
+        return null;
+    }
+
+    public abstract Object getCurrentValue(final Object recordObj) throws HBqlException;
+
+    protected abstract void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException;
+
+    public abstract Object getVersionedValueMap(final Object recordObj) throws HBqlException;
+
+    protected abstract void setVersionedValueMap(final Object newobj, final Map<Long, Object> map);
+
+    public String getFamilyQualifiedName() {
+        if (this.getFamilyName() != null && this.getFamilyName().length() > 0)
+            return this.getFamilyName() + ":" + this.getColumnName();
+        else
+            return this.getColumnName();
+    }
+
+    public FieldType getFieldType() {
+        return this.fieldType;
+    }
+
+    public boolean isKeyAttrib() {
+        return false;
+    }
+
+    public byte[] getFamilyNameBytes() throws HBqlException {
+        if (this.familyBytes != null)
+            return this.familyBytes;
+
+        this.familyBytes = HUtil.ser.getStringAsBytes(this.getFamilyName());
+        return this.familyBytes;
+    }
+
+    public byte[] getColumnNameBytes() throws HBqlException {
+        if (this.columnBytes != null)
+            return this.columnBytes;
+
+        this.columnBytes = HUtil.ser.getStringAsBytes(this.getColumnName());
+        return this.columnBytes;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof ColumnAttrib))
+            return false;
+
+        final ColumnAttrib var = (ColumnAttrib)o;
+
+        return var.getColumnName().equals(this.getColumnName())
+               && var.getFamilyQualifiedName().equals(this.getFamilyQualifiedName());
     }
 
     protected void defineAccessors() throws HBqlException {
@@ -100,14 +173,6 @@ public abstract class ColumnAttrib extends VariableAttrib {
 
     protected Method getSetterMethod() {
         return this.setterMethod;
-    }
-
-    public String getFamilyName() {
-        return this.familyName;
-    }
-
-    public String getColumnName() {
-        return this.columnName;
     }
 
     public boolean isMapKeysAsColumns() {
@@ -193,7 +258,6 @@ public abstract class ColumnAttrib extends VariableAttrib {
         else
             return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
     }
-
 
     public void setCurrentValue(final Object newobj,
                                 final long timestamp,

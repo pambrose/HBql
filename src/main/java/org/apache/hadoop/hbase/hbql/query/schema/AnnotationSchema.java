@@ -284,7 +284,7 @@ public class AnnotationSchema extends HBaseSchema {
 
         final ColumnAttrib attrib = new CurrentValueAttrib(field);
 
-        this.addVariableAttribToVariableNameMap(attrib);
+        this.addAttribToVariableNameMap(attrib);
         this.addColumnAttribToFamilyQualifiedNameMap(attrib);
 
         if (attrib.isKeyAttrib()) {
@@ -312,7 +312,7 @@ public class AnnotationSchema extends HBaseSchema {
 
     private void processColumnVersionAnnotation(final Field field) throws HBqlException {
         final VersionAttrib attrib = VersionAttrib.newVersionAttrib(this, field);
-        this.addVariableAttribToVariableNameMap(attrib);
+        this.addAttribToVariableNameMap(attrib);
         this.addVersionAttribToFamilyQualifiedNameMap(attrib);
     }
 
@@ -327,7 +327,7 @@ public class AnnotationSchema extends HBaseSchema {
     }
 
     @Override
-    public Object newObject(final Set<VariableAttrib> attribSet,
+    public Object newObject(final Set<ColumnAttrib> attribSet,
                             final int maxVersions,
                             final Result result) throws HBqlException {
 

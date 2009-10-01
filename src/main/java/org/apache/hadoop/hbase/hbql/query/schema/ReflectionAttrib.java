@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 public class ReflectionAttrib extends FieldAttrib {
 
     public ReflectionAttrib(final Field field) throws HBqlException {
-        super(field, FieldType.getFieldType(field.getType()), null, null, null, null, false);
+        super(null, null, field, FieldType.getFieldType(field.getType()), false, null, null);
 
         this.defineAccessors();
     }

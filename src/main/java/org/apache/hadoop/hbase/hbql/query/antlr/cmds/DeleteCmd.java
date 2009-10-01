@@ -11,8 +11,8 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 import java.io.IOException;
 import java.util.List;
@@ -48,7 +48,7 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
         // TODO Need to grab schema from DeleteArgs (like QueryArgs in Select)
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
 
-        final Set<VariableAttrib> attribSet = schema.getAllVariableAttribs();
+        final Set<ColumnAttrib> attribSet = schema.getAllAttribs();
         final HTable table = conn.getHTable(schema.getTableName());
         final ExprTree clientFilter = where.getClientExprTree();
         clientFilter.setSchema(schema);

@@ -2,9 +2,9 @@ package org.apache.hadoop.hbase.hbql.query.antlr.cmds;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class DefineCmd extends TableCmd implements SchemaManagerCmd {
                                                                     this.getAlias(),
                                                                     this.getColumnDescriptionList());
 
-        for (final VariableAttrib attrib : schema.getVariableAttribSet()) {
+        for (final ColumnAttrib attrib : schema.getColumnAttribSet()) {
             if (attrib.getFieldType() == null)
                 throw new HBqlException(schema.getTableName() + " attribute " + attrib.getFamilyQualifiedName()
                                         + " has unknown type.");

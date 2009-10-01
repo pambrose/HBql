@@ -9,8 +9,8 @@ import org.apache.hadoop.hbase.hbql.query.antlr.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
@@ -128,15 +128,15 @@ public class TestSupport {
 
             final Schema schema = args.getSchema();
 
-            final Set<VariableAttrib> attribSet = args.getSelectVariableAttribSet();
+            final Set<ColumnAttrib> attribSet = args.getSelectAttribSet();
 
-            final List<VariableAttrib> specifiedAttribList = Lists.newArrayList();
+            final List<ColumnAttrib> specifiedAttribList = Lists.newArrayList();
 
             boolean retval = true;
 
             for (final String val : valList) {
 
-                final VariableAttrib attrib = schema.getVariableAttribByVariableName(val);
+                final ColumnAttrib attrib = schema.getAttribByVariableName(val);
 
                 if (attrib == null) {
                     System.out.println("Invalid column name: " + val);
@@ -153,7 +153,7 @@ public class TestSupport {
                 specifiedAttribList.add(attrib);
             }
 
-            for (final VariableAttrib attrib : attribSet) {
+            for (final ColumnAttrib attrib : attribSet) {
                 if (!specifiedAttribList.contains(attrib)) {
                     System.out.println("Missing column name in specified list: " + attrib.getFamilyQualifiedName());
                     retval = false;

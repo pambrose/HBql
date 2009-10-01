@@ -80,7 +80,7 @@ public class DefinedSchema extends HBaseSchema {
 
         final DefinedAttrib attrib = new DefinedAttrib(columnDescription);
 
-        this.addVariableAttribToVariableNameMap(attrib);
+        this.addAttribToVariableNameMap(attrib);
         this.addColumnAttribToFamilyQualifiedNameMap(attrib);
         this.addVersionAttribToFamilyQualifiedNameMap(attrib);
         this.addColumnAttribListToFamilyNameMap(attrib);
@@ -134,7 +134,7 @@ public class DefinedSchema extends HBaseSchema {
     }
 
     @Override
-    public HRecord newObject(final Set<VariableAttrib> attribSet,
+    public HRecord newObject(final Set<ColumnAttrib> attribSet,
                              final int maxVersions,
                              final Result result) throws HBqlException {
 
@@ -177,7 +177,7 @@ public class DefinedSchema extends HBaseSchema {
         final Scan scan = new Scan();
 
         for (final String field : fields) {
-            final DefinedAttrib attrib = (DefinedAttrib)this.getVariableAttribByVariableName(field);
+            final DefinedAttrib attrib = (DefinedAttrib)this.getAttribByVariableName(field);
             if (attrib.isKeyAttrib())
                 continue;
             scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());

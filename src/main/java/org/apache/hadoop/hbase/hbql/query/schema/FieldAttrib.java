@@ -16,19 +16,20 @@ public abstract class FieldAttrib extends ColumnAttrib {
 
     private final transient Field field;
 
-    protected FieldAttrib(final Field field,
-                          final FieldType fieldType,
-                          final String familyName,
+    protected FieldAttrib(final String familyName,
                           final String columnName,
+                          final Field field,
+                          final FieldType fieldType,
+                          final boolean mapKeysAsColumns,
                           final String getter,
-                          final String setter,
-                          final boolean mapKeysAsColumns) throws HBqlException {
+                          final String setter) throws HBqlException {
         super(familyName,
               (columnName != null && columnName.length() > 0) ? columnName : field.getName(),
               fieldType,
+              mapKeysAsColumns,
               getter,
-              setter,
-              mapKeysAsColumns);
+              setter
+        );
         this.field = field;
         setAccessible(this.getField());
     }

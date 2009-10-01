@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 
 import java.util.Date;
 
@@ -15,7 +15,7 @@ import java.util.Date;
  */
 public class DateColumn extends GenericColumn<DateValue> implements DateValue {
 
-    public DateColumn(final VariableAttrib attrib) {
+    public DateColumn(final ColumnAttrib attrib) {
         super(attrib);
     }
 
@@ -27,7 +27,7 @@ public class DateColumn extends GenericColumn<DateValue> implements DateValue {
         if (this.getExprContext().useHBaseResult())
             val = (Date)this.getColumnAttrib().getValueFromBytes((Result)object);
         else
-            val = (Date)this.getVariableAttrib().getCurrentValue(object);
+            val = (Date)this.getColumnAttrib().getCurrentValue(object);
 
         return val.getTime();
     }

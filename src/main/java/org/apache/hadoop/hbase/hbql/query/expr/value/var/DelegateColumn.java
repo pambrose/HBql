@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,7 +49,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
     @Override
     public void setExprContext(final ExprContext context) throws HBqlException {
 
-        final VariableAttrib attrib = context.getSchema().getVariableAttribByVariableName(this.getColumnName());
+        final ColumnAttrib attrib = context.getSchema().getAttribByVariableName(this.getColumnName());
 
         if (attrib == null)
             throw new HBqlException("Invalid variable: " + this.getColumnName());

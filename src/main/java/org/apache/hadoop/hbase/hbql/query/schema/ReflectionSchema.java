@@ -31,7 +31,7 @@ public class ReflectionSchema extends Schema {
                 || field.getType().equals(String.class)
                 || field.getType().equals(Date.class)) {
                 final ReflectionAttrib attrib = new ReflectionAttrib(field);
-                addVariableAttribToVariableNameMap(attrib);
+                addAttribToVariableNameMap(attrib);
             }
         }
     }

@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,13 +12,13 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  */
 public class LongColumn extends GenericColumn<NumberValue> implements NumberValue {
 
-    public LongColumn(VariableAttrib attrib) {
+    public LongColumn(ColumnAttrib attrib) {
         super(attrib);
     }
 
     @Override
     public Long getValue(final Object object) throws HBqlException {
-        return (Long)this.getVariableAttrib().getCurrentValue(object);
+        return (Long)this.getColumnAttrib().getCurrentValue(object);
     }
 
 }

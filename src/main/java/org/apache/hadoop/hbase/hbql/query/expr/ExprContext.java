@@ -6,8 +6,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.NamedParameter;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -47,11 +47,11 @@ public abstract class ExprContext {
         return this.columnList;
     }
 
-    public List<VariableAttrib> getFamilyQualifiedColumnNameList() {
-        final List<VariableAttrib> retval = Lists.newArrayList();
+    public List<ColumnAttrib> getFamilyQualifiedColumnNameList() {
+        final List<ColumnAttrib> retval = Lists.newArrayList();
 
         for (final GenericColumn col : this.getColumnList())
-            retval.add(col.getVariableAttrib());
+            retval.add(col.getColumnAttrib());
 
         return retval;
     }

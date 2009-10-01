@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,13 +12,13 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  */
 public class IntegerColumn extends GenericColumn<NumberValue> implements NumberValue {
 
-    public IntegerColumn(VariableAttrib attrib) {
+    public IntegerColumn(ColumnAttrib attrib) {
         super(attrib);
     }
 
     @Override
     public Integer getValue(final Object object) throws HBqlException {
-        return (Integer)this.getVariableAttrib().getCurrentValue(object);
+        return (Integer)this.getColumnAttrib().getCurrentValue(object);
     }
 
 }

@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.io.Serializable;
@@ -67,7 +66,7 @@ public class HRecord implements Serializable {
             return this.getValue(name);
 
         // Look up by both variable name and qualified name
-        final VariableAttrib attrib = this.getSchema().getVariableAttribByVariableName(name);
+        final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
 
         if (attrib != null) {
             final String columnName = attrib.getColumnName();

@@ -6,7 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,28 +15,23 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  */
 public abstract class GenericColumn<T extends GenericValue> implements GenericValue {
 
-    private final VariableAttrib variableAttrib;
-
+    private final ColumnAttrib columnAttrib;
     private ExprContext exprContext = null;
 
-    protected GenericColumn(final VariableAttrib attrib) {
-        this.variableAttrib = attrib;
+    protected GenericColumn(final ColumnAttrib attrib) {
+        this.columnAttrib = attrib;
     }
 
     protected FieldType getFieldType() {
-        return this.getVariableAttrib().getFieldType();
-    }
-
-    public VariableAttrib getVariableAttrib() {
-        return this.variableAttrib;
+        return this.getColumnAttrib().getFieldType();
     }
 
     public ColumnAttrib getColumnAttrib() {
-        return (ColumnAttrib)this.getVariableAttrib();
+        return this.columnAttrib;
     }
 
     public String getColumnName() {
-        return this.getVariableAttrib().getColumnName();
+        return this.getColumnAttrib().getColumnName();
     }
 
     @Override

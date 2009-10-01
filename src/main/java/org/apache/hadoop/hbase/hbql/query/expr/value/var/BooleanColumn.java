@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,13 +13,13 @@ import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
  */
 public class BooleanColumn extends GenericColumn<NumberValue> implements BooleanValue {
 
-    public BooleanColumn(final VariableAttrib attrib) {
+    public BooleanColumn(final ColumnAttrib attrib) {
         super(attrib);
     }
 
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
-        return (Boolean)this.getVariableAttrib().getCurrentValue(object);
+        return (Boolean)this.getColumnAttrib().getCurrentValue(object);
     }
 
 }

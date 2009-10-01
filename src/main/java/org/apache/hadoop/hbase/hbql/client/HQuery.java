@@ -6,8 +6,8 @@ import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.VariableAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.io.IOException;
@@ -92,8 +92,8 @@ public class HQuery<T> {
         return this.getWhereArgs().getClientExprTree();
     }
 
-    Set<VariableAttrib> getSelectAttribSet() {
-        return this.getQueryArgs().getSelectVariableAttribSet();
+    Set<ColumnAttrib> getSelectAttribSet() {
+        return this.getQueryArgs().getSelectAttribSet();
     }
 
     public long getQueryLimit() throws HBqlException {
