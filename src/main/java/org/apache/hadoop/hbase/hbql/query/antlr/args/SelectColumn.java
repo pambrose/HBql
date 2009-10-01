@@ -17,23 +17,28 @@ public class SelectColumn extends ExprContext {
 
     private final Type type;
     private final String familyName;
+    private final String asName;
 
-    private SelectColumn(final Type type, final String familyName, final GenericValue genericValue) {
+    private SelectColumn(final Type type,
+                         final String familyName,
+                         final String asName,
+                         final GenericValue genericValue) {
         super(null, genericValue);
         this.type = type;
+        this.asName = asName;
         this.familyName = (familyName == null) ? null : familyName.replace(" ", "").replace(":*", "");
     }
 
     public static SelectColumn newAllColumns() {
-        return new SelectColumn(Type.ALLTABLECOLUMNS, null, null);
+        return new SelectColumn(Type.ALLTABLECOLUMNS, null, null, null);
     }
 
     public static SelectColumn newFamilyColumns(final String family) {
-        return new SelectColumn(Type.ALLFAMILYCOLUMNS, family, null);
+        return new SelectColumn(Type.ALLFAMILYCOLUMNS, family, null, null);
     }
 
-    public static SelectColumn newColumn(final GenericValue expr) {
-        return new SelectColumn(Type.GENERICEXPR, null, expr);
+    public static SelectColumn newColumn(final GenericValue expr, final String as) {
+        return new SelectColumn(Type.GENERICEXPR, null, as, expr);
     }
 
     public Type getType() {
@@ -42,6 +47,10 @@ public class SelectColumn extends ExprContext {
 
     public String getFamilyName() {
         return this.familyName;
+    }
+
+    public String getAsName() {
+        return this.asName;
     }
 
     public GenericValue getGenericValue() {

@@ -12,20 +12,25 @@ import java.io.Serializable;
  */
 public class ColumnDescription implements Serializable {
 
-    private String aliasName;
-    private String familyQualifiedName;
-    private FieldType fieldType;
+    private final String aliasName;
+    private final String familyName, columnName;
+    private final FieldType fieldType;
 
-    private ColumnDescription(final String aliasName, final String familyQualifiedName, final String typeName) {
-        this.aliasName = (aliasName == null) ? familyQualifiedName : aliasName;
-        this.familyQualifiedName = familyQualifiedName;
+    private ColumnDescription(final String aliasName,
+                              final String familyQualifiedName,
+                              final String typeName) {
+        this.aliasName = aliasName;
         this.fieldType = getFieldType(typeName);
+
+        familyName = (familyQualifiedName.indexOf(":") != -1) ? familyQualifiedName.split(":")[0] : "";
+        columnName = (familyQualifiedName.indexOf(":") != -1) ? familyQualifiedName.split(":")[1] : "";
+
     }
 
     public static ColumnDescription newColumnDescription(final String aliasName,
-                                                         final String qualifiedName,
+                                                         final String familyQualifiedName,
                                                          final String typeName) {
-        return new ColumnDescription(aliasName, qualifiedName, typeName);
+        return new ColumnDescription(aliasName, familyQualifiedName, typeName);
     }
 
     private static FieldType getFieldType(final String typeName) {
@@ -38,23 +43,11 @@ public class ColumnDescription implements Serializable {
     }
 
     public String getFamilyName() {
-        if (this.getFamilyQualifiedName().indexOf(":") != -1) {
-            final String[] vals = this.getFamilyQualifiedName().split(":");
-            return vals[0];
-        }
-        return "";
+        return this.familyName;
     }
 
     public String getColumnName() {
-        if (this.getFamilyQualifiedName().indexOf(":") != -1) {
-            final String[] vals = this.getFamilyQualifiedName().split(":");
-            return vals[1];
-        }
-        return this.getAliasName();
-    }
-
-    public String getFamilyQualifiedName() {
-        return this.familyQualifiedName;
+        return this.columnName;
     }
 
     public String getAliasName() {

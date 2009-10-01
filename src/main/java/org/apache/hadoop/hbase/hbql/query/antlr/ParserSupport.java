@@ -11,7 +11,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.DelegateCalculation;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 
@@ -36,10 +35,6 @@ public class ParserSupport extends Parser {
     protected boolean isKeyword(final TokenStream input, final String str) {
         final String s = input.LT(1).getText();
         return s != null && s.equalsIgnoreCase(str);
-    }
-
-    protected GenericValue findVariable(final String var) {
-        return new DelegateColumn(var);
     }
 
     /*

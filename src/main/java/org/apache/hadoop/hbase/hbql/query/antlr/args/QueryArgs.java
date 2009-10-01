@@ -44,17 +44,19 @@ public class QueryArgs {
 
     private void processSelectColumns() throws HBqlException {
 
-        for (final SelectColumn column : this.getSelectColumnList()) {
+        for (final SelectColumn selectColumn : this.getSelectColumnList()) {
 
-            column.setSchema(this.getSchema());
+            selectColumn.setSchema(this.getSchema());
 
-            switch (column.getType()) {
+            switch (selectColumn.getType()) {
                 case ALLTABLECOLUMNS:
+                    //for (final )
                     this.selectColumnAttribList.addAll(this.getSchema().getAllAttribs());
+
                     break;
 
                 case ALLFAMILYCOLUMNS:
-                    final String familyName = column.getFamilyName();
+                    final String familyName = selectColumn.getFamilyName();
                     if (!this.getSchema().containsFamilyNameInFamilyNameMap(familyName))
                         throw new HBqlException("Invalid family name: " + familyName);
 
@@ -62,7 +64,7 @@ public class QueryArgs {
                     break;
 
                 case GENERICEXPR:
-                    this.selectColumnAttribList.addAll(column.getFamilyQualifiedColumnNameList());
+                    this.selectColumnAttribList.addAll(selectColumn.getFamilyQualifiedColumnNameList());
                     break;
             }
         }

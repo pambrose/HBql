@@ -17,11 +17,12 @@ import java.util.NavigableMap;
  */
 public abstract class ColumnAttrib implements Serializable {
 
+    protected final String familyName;
+    protected final String columnName;
+    protected final String aliasName;
     private final FieldType fieldType;
     private byte[] familyBytes = null;
     private byte[] columnBytes = null;
-    protected final String familyName;
-    protected final String columnName;
     protected final String getter;
     protected final String setter;
     protected final boolean mapKeysAsColumns;
@@ -30,17 +31,18 @@ public abstract class ColumnAttrib implements Serializable {
 
     protected ColumnAttrib(final String familyName,
                            final String columnName,
+                           final String aliasName,
                            final FieldType fieldType,
                            final boolean mapKeysAsColumns,
                            final String getter,
-                           final String setter
-    ) {
+                           final String setter) {
+        this.familyName = familyName;
+        this.columnName = columnName;
+        this.aliasName = aliasName;
         this.fieldType = fieldType;
         this.mapKeysAsColumns = mapKeysAsColumns;
         this.getter = getter;
         this.setter = setter;
-        this.familyName = familyName;
-        this.columnName = columnName;
     }
 
     public abstract boolean isArray();
@@ -54,8 +56,17 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public String getAliasName() {
-        return null;
+        return (this.aliasName == null
+                || this.aliasName.length() == 0) ? this.getFamilyQualifiedName() : this.aliasName;
     }
+
+    public String getFamilyQualifiedName() {
+        if (this.getFamilyName() != null && this.getFamilyName().length() > 0)
+            return this.getFamilyName() + ":" + this.getColumnName();
+        else
+            return this.getColumnName();
+    }
+
 
     public abstract Object getCurrentValue(final Object recordObj) throws HBqlException;
 
@@ -64,13 +75,6 @@ public abstract class ColumnAttrib implements Serializable {
     public abstract Object getVersionedValueMap(final Object recordObj) throws HBqlException;
 
     protected abstract void setVersionedValueMap(final Object newobj, final Map<Long, Object> map);
-
-    public String getFamilyQualifiedName() {
-        if (this.getFamilyName() != null && this.getFamilyName().length() > 0)
-            return this.getFamilyName() + ":" + this.getColumnName();
-        else
-            return this.getColumnName();
-    }
 
     public FieldType getFieldType() {
         return this.fieldType;

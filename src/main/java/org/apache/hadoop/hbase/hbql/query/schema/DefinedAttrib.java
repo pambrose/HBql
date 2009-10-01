@@ -21,6 +21,7 @@ public class DefinedAttrib extends ColumnAttrib {
     public DefinedAttrib(final ColumnDescription columnDescription) throws HBqlException {
         super(columnDescription.getFamilyName(),
               columnDescription.getColumnName(),
+              columnDescription.getAliasName(),
               columnDescription.getFieldType(),
               false,
               null,
@@ -42,18 +43,8 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     @Override
-    public String getFamilyQualifiedName() {
-        return this.getColumnDescription().getFamilyQualifiedName();
-    }
-
-    @Override
     public String getFamilyName() {
         return this.getColumnDescription().getFamilyName();
-    }
-
-    @Override
-    public String getAliasName() {
-        return this.getColumnDescription().getAliasName();
     }
 
     @Override

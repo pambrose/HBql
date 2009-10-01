@@ -25,6 +25,7 @@ public abstract class FieldAttrib extends ColumnAttrib {
                           final String setter) throws HBqlException {
         super(familyName,
               (columnName != null && columnName.length() > 0) ? columnName : field.getName(),
+              field.getName(),
               fieldType,
               mapKeysAsColumns,
               getter,
@@ -37,11 +38,6 @@ public abstract class FieldAttrib extends ColumnAttrib {
     @Override
     public String toString() {
         return this.getSimpleObjectQualifiedName() + " " + this.getFamilyQualifiedName();
-    }
-
-    @Override
-    public String getAliasName() {
-        return this.getField().getName();
     }
 
     @Override

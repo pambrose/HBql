@@ -11,7 +11,6 @@ import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +35,9 @@ public abstract class ExprContext {
 
     protected ExprContext(final TypeSignature typeSignature, final GenericValue... vals) {
         this.typeSignature = typeSignature;
-        this.getGenericValues().addAll(Arrays.asList(vals));
+        if (vals != null)
+            for (final GenericValue val : vals)
+                this.addGenericValue(val);
     }
 
     public abstract String asString();
@@ -45,6 +46,10 @@ public abstract class ExprContext {
 
     public List<GenericColumn> getColumnList() {
         return this.columnList;
+    }
+
+    public void addGenericValue(final GenericValue genericValue) {
+        this.getGenericValues().add(genericValue);
     }
 
     public List<ColumnAttrib> getFamilyQualifiedColumnNameList() {

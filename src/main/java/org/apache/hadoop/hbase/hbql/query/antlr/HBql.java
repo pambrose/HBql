@@ -45,7 +45,7 @@ public class HBql {
     public static String parseStringValue(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
-            final GenericValue valueExpr = parser.valueExpr();
+            final GenericValue valueExpr = parser.valExpr();
             valueExpr.validateTypes(null, false);
             return (String)valueExpr.getValue(null);
         }
@@ -58,7 +58,7 @@ public class HBql {
     public static Number parseNumberValue(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
-            final GenericValue valueExpr = parser.valueExpr();
+            final GenericValue valueExpr = parser.valExpr();
             valueExpr.validateTypes(null, false);
             return (Number)valueExpr.getValue(null);
         }
@@ -71,7 +71,7 @@ public class HBql {
     public static Long parseDateValue(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
-            final GenericValue valueExpr = parser.valueExpr();
+            final GenericValue valueExpr = parser.valExpr();
             valueExpr.validateTypes(null, false);
             return (Long)valueExpr.getValue(null);
         }
