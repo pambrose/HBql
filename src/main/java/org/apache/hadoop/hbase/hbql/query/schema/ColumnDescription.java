@@ -23,7 +23,7 @@ public class ColumnDescription implements Serializable {
         this.fieldType = getFieldType(typeName);
 
         familyName = (familyQualifiedName.indexOf(":") != -1) ? familyQualifiedName.split(":")[0] : "";
-        columnName = (familyQualifiedName.indexOf(":") != -1) ? familyQualifiedName.split(":")[1] : "";
+        columnName = (familyQualifiedName.indexOf(":") != -1) ? familyQualifiedName.split(":")[1] : familyQualifiedName;
 
     }
 

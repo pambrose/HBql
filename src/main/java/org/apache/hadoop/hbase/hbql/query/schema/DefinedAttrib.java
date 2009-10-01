@@ -39,7 +39,7 @@ public class DefinedAttrib extends ColumnAttrib {
 
     @Override
     public String getColumnName() {
-        return this.getColumnDescription().getAliasName();
+        return this.getColumnDescription().getColumnName();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class DefinedAttrib extends ColumnAttrib {
 
     @Override
     public String toString() {
-        return this.getColumnName() + " - " + this.getFamilyQualifiedName();
+        return this.getAliasName() + " - " + this.getFamilyQualifiedName();
     }
 
     @Override
@@ -112,8 +112,7 @@ public class DefinedAttrib extends ColumnAttrib {
         nameList.add(this.getFamilyQualifiedName());
         if (!this.getAliasName().equals(this.getFamilyQualifiedName()))
             nameList.add(this.getAliasName());
-        String[] names = new String[nameList.size()];
-        return nameList.toArray(names);
+        return nameList.toArray(new String[nameList.size()]);
     }
 
 }

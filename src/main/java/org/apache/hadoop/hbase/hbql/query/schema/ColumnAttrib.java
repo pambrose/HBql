@@ -55,11 +55,6 @@ public abstract class ColumnAttrib implements Serializable {
         return this.columnName;
     }
 
-    public String getAliasName() {
-        return (this.aliasName == null
-                || this.aliasName.length() == 0) ? this.getFamilyQualifiedName() : this.aliasName;
-    }
-
     public String getFamilyQualifiedName() {
         if (this.getFamilyName() != null && this.getFamilyName().length() > 0)
             return this.getFamilyName() + ":" + this.getColumnName();
@@ -67,6 +62,10 @@ public abstract class ColumnAttrib implements Serializable {
             return this.getColumnName();
     }
 
+    public String getAliasName() {
+        return (this.aliasName != null
+                && this.aliasName.length() > 0) ? this.aliasName : this.getFamilyQualifiedName();
+    }
 
     public abstract Object getCurrentValue(final Object recordObj) throws HBqlException;
 

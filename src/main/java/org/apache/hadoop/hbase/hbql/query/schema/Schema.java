@@ -70,7 +70,7 @@ public abstract class Schema implements Serializable {
 
         for (final String attribName : attribNames) {
             if (this.getColumnAttribByVariableNameMap().containsKey(attribName))
-                throw new HBqlException(attribName + " already delcared");
+                throw new HBqlException(attribName + " already declared");
 
             this.getColumnAttribByVariableNameMap().put(attribName, attrib);
         }

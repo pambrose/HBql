@@ -446,10 +446,9 @@ public class WhereExpressionsTest extends TestSupport {
 
     @Test
     public void columnLookups() throws HBqlException {
-        assertInvalidInput("{a1 date, a2 date} a1 < a2");
 
-        assertExprColumnsMatchTrue("{fam1:col1 int, fam2:col2 int} TRUE");
-        assertExprColumnsMatchFalse("TRUE", "intValue");
+        // assertExprColumnsMatchTrue("{fam1:col1 int, fam2:col2 int} TRUE");
+        // assertExprColumnsMatchFalse("TRUE", "intValue");
         assertExprColumnsMatchTrue("{intValue  int, int2  integer} intValue between 2 AND 5", "intValue");
         assertInvalidInput("{xintValue  int} xintValue between 2 AND 5", "intValue");
         assertExprColumnsMatchTrue("{a1 date,a2  date} a1 < a2", "a1", "a2");

@@ -26,20 +26,20 @@ public class DefinedSchema extends HBaseSchema {
     private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
     final String tableName;
-    final String aliasName;
+    final String tableAliasName;
 
     public DefinedSchema(final List<ColumnDescription> varList) throws HBqlException {
         this.tableName = "embedded";
-        this.aliasName = "embedded";
+        this.tableAliasName = "embedded";
         for (final ColumnDescription var : varList)
             this.processColumn(var, false);
     }
 
     private DefinedSchema(final String tableName,
-                          final String aliasName,
+                          final String tableAliasName,
                           final List<ColumnDescription> columnDescriptionList) throws HBqlException {
         this.tableName = tableName;
-        this.aliasName = aliasName;
+        this.tableAliasName = tableAliasName;
         for (final ColumnDescription columnDescription : columnDescriptionList)
             processColumn(columnDescription, true);
     }
@@ -75,7 +75,7 @@ public class DefinedSchema extends HBaseSchema {
     }
 
     private void processColumn(final ColumnDescription columnDescription,
-                               final boolean enforceFamilyName) throws HBqlException {
+                               final boolean requireFamilyName) throws HBqlException {
 
         final DefinedAttrib attrib = new DefinedAttrib(columnDescription);
 
@@ -91,7 +91,7 @@ public class DefinedSchema extends HBaseSchema {
         }
         else {
             final String family = attrib.getFamilyName();
-            if (enforceFamilyName && family.length() == 0)
+            if (requireFamilyName && family.length() == 0)
                 throw new HBqlException(attrib.getColumnName() + " is missing family name");
         }
     }
@@ -109,8 +109,8 @@ public class DefinedSchema extends HBaseSchema {
         return this.getTableName();
     }
 
-    public String getAliasName() {
-        return this.aliasName;
+    public String getTableAliasName() {
+        return this.tableAliasName;
     }
 
     @Override

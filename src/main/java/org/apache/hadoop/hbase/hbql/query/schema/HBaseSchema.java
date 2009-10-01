@@ -50,7 +50,7 @@ public abstract class HBaseSchema extends Schema {
 
     public abstract String getTableName();
 
-    public String getAliasName() {
+    public String getTableAliasName() {
         return this.getTableName();
     }
 
@@ -91,7 +91,7 @@ public abstract class HBaseSchema extends Schema {
     protected void addColumnAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HBqlException {
         final String name = attrib.getFamilyQualifiedName();
         if (this.getColumnAttribByFamilyQualifiedNameMap().containsKey(name))
-            throw new HBqlException(name + " already delcared");
+            throw new HBqlException(name + " already declared");
         this.getColumnAttribByFamilyQualifiedNameMap().put(name, attrib);
     }
 
@@ -107,7 +107,7 @@ public abstract class HBaseSchema extends Schema {
     protected void addVersionAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HBqlException {
         final String name = attrib.getFamilyQualifiedName();
         if (this.getVersionAttribByFamilyQualifiedNameMap().containsKey(name))
-            throw new HBqlException(name + " already delcared");
+            throw new HBqlException(name + " already declared");
 
         this.getVersionAttribByFamilyQualifiedNameMap().put(name, attrib);
     }
@@ -132,7 +132,7 @@ public abstract class HBaseSchema extends Schema {
     public void addColumnAttribListFamilyNameMap(final String familyName,
                                                  final List<ColumnAttrib> attribList) throws HBqlException {
         if (this.containsFamilyNameInFamilyNameMap(familyName))
-            throw new HBqlException(familyName + " already delcared");
+            throw new HBqlException(familyName + " already declared");
         this.getColumnAttribListByFamilyNameMap().put(familyName, attribList);
     }
 

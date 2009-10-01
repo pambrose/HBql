@@ -24,11 +24,11 @@ import java.util.List;
 public class TestSupport {
 
     public void assertValidInput(final String expr, String... vals) throws HBqlException {
-        assertTrue(evalExprColumnNames(expr, vals));
+        assertTrue(evaluateExprColumnNames(expr, vals));
     }
 
     public void assertInvalidInput(final String expr, String... vals) throws HBqlException {
-        assertFalse(evalExprColumnNames(expr, vals));
+        assertFalse(evaluateExprColumnNames(expr, vals));
     }
 
     public static void assertTrue(final boolean val) throws HBqlException {
@@ -88,11 +88,11 @@ public class TestSupport {
     }
 
     public static void assertExprColumnsMatchTrue(final String expr, String... vals) throws HBqlException {
-        assertTrue(evalExprColumnNames(expr, vals));
+        assertTrue(evaluateExprColumnNames(expr, vals));
     }
 
     public static void assertExprColumnsMatchFalse(final String expr, String... vals) throws HBqlException {
-        assertFalse(evalExprColumnNames(expr, vals));
+        assertFalse(evaluateExprColumnNames(expr, vals));
     }
 
     public ExprTree parseExpr(final String expr) throws HBqlException {
@@ -166,7 +166,7 @@ public class TestSupport {
         }
     }
 
-    private static boolean evalExprColumnNames(final String expr, String... vals) {
+    private static boolean evaluateExprColumnNames(final String expr, String... vals) {
 
         try {
             final ExprTree tree = parseDescWhereExpr(expr, null);
@@ -213,14 +213,14 @@ public class TestSupport {
     }
 
     public void assertValidInput(final String expr) throws HBqlException {
-        assertTrue(evalWhereValue(expr));
+        assertTrue(evaluateWhereValue(expr));
     }
 
     public void assertInvalidInput(final String expr) throws HBqlException {
-        assertFalse(evalWhereValue(expr));
+        assertFalse(evaluateWhereValue(expr));
     }
 
-    private static boolean evalWhereValue(final String expr) {
+    private static boolean evaluateWhereValue(final String expr) {
         try {
             final WhereArgs args = HBql.parseWithClause(expr);
             System.out.println("Evaluating: " + args.asString());

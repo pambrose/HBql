@@ -95,9 +95,9 @@ public class ParserSupport extends Parser {
 
     // This keeps antlr code out of DefinedSchema, which is accessed server-side in HBase
     public static DefinedSchema newDefinedSchema(final TokenStream input,
-                                                 final List<ColumnDescription> varList) throws RecognitionException {
+                                                 final List<ColumnDescription> columList) throws RecognitionException {
         try {
-            return new DefinedSchema(varList);
+            return new DefinedSchema(columList);
         }
         catch (HBqlException e) {
             System.out.println(e.getMessage());
