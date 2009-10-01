@@ -38,11 +38,6 @@ public abstract class Schema implements Serializable {
             if (attrib.isKeyAttrib())
                 continue;
 
-            // Attribs are present twice if an alias is assigned.
-            // So add only qualifgied names
-            if (!attrib.getColumnName().equals(attrib.getFamilyQualifiedName()))
-                continue;
-
             if (attrib.getFamilyName().length() > 0 && attrib.getFamilyName().equals(familyName))
                 retval.add(attrib);
         }
