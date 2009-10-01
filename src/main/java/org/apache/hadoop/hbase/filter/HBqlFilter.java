@@ -155,7 +155,7 @@ public class HBqlFilter implements Filter {
 
     public void write(DataOutput out) throws IOException {
         try {
-            Bytes.writeByteArray(out, HUtil.ser.getObjectAsBytes(this.getFilterExpr()));
+            Bytes.writeByteArray(out, HUtil.ser.getScalarAsBytes(this.getFilterExpr()));
             Bytes.writeByteArray(out, HUtil.ser.getScalarAsBytes(FieldType.LongType, this.getScanLimit()));
         }
         catch (HBqlException e) {
@@ -170,7 +170,7 @@ public class HBqlFilter implements Filter {
         LOG.info("In readFields()");
 
         try {
-            this.filterExpr = (ExprTree)HUtil.ser.getObjectFromBytes(FieldType.ObjectType, Bytes.readByteArray(in));
+            this.filterExpr = (ExprTree)HUtil.ser.getScalarFromBytes(FieldType.ObjectType, Bytes.readByteArray(in));
             this.scanLimit = (Long)HUtil.ser.getScalarFromBytes(FieldType.LongType, Bytes.readByteArray(in));
             this.getRecord().setSchema(this.getSchema());
             this.recordCount = 0;

@@ -126,7 +126,7 @@ public class HBatch {
                     final Map mapval = (Map)attrib.getCurrentValue(newrec);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
-                        final byte[] byteval = HUtil.ser.getObjectAsBytes(mapval.get(keyobj));
+                        final byte[] byteval = HUtil.ser.getScalarAsBytes(mapval.get(keyobj));
 
                         // Use family:column[key] scheme to avoid column namespace collision
                         put.add(attrib.getFamilyNameAsBytes(),

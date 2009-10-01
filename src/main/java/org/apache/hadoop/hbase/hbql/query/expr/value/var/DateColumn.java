@@ -35,7 +35,7 @@ public class DateColumn extends GenericColumn<DateValue> implements DateValue {
             final NavigableMap<byte[], NavigableMap<byte[], byte[]>> familyMap = result.getNoVersionMap();
             final NavigableMap<byte[], byte[]> columnMap = familyMap.get(this.getVariableAttrib().getFamilyNameBytes());
             final byte[] val = columnMap.get(this.getVariableAttrib().getColumnNameBytes());
-            final Date date = (Date)HUtil.ser.getObjectFromBytes(this.getFieldType(), val);
+            final Date date = (Date)HUtil.ser.getScalarFromBytes(this.getFieldType(), val);
             return date.getTime();
         }
         else {

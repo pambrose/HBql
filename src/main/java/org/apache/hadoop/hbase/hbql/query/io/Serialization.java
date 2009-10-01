@@ -42,7 +42,7 @@ public abstract class Serialization {
         return this.getScalarAsBytes(FieldType.StringType, obj);
     }
 
-    public byte[] getObjectAsBytes(final Object obj) throws HBqlException {
+    public byte[] getScalarAsBytes(final Object obj) throws HBqlException {
         return this.getScalarAsBytes(FieldType.getFieldType(obj), obj);
     }
 
@@ -50,15 +50,11 @@ public abstract class Serialization {
         return (String)this.getScalarFromBytes(FieldType.StringType, b);
     }
 
-    public Object getObjectFromBytes(final FieldType type, final byte[] b) throws HBqlException {
-        return this.getScalarFromBytes(type, b);
-    }
-
     public boolean isSerializable(final Object obj) {
 
         try {
-            final byte[] b = getObjectAsBytes(obj);
-            final Object newobj = getObjectFromBytes(FieldType.getFieldType(obj), b);
+            final byte[] b = getScalarAsBytes(obj);
+            final Object newobj = getScalarFromBytes(FieldType.getFieldType(obj), b);
         }
         catch (HBqlException e) {
             e.printStackTrace();
