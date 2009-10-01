@@ -20,12 +20,19 @@ public class ColumnDescription implements Serializable {
         this.aliasName = aliasName;
         this.fieldType = getFieldType(typeName);
 
-        familyName = (familyQualifiedName.indexOf(":") != -1) ? familyQualifiedName.split(":")[0] : "";
-        columnName = (familyQualifiedName.indexOf(":") != -1) ? familyQualifiedName.split(":")[1] : familyQualifiedName;
-
+        if (familyQualifiedName.indexOf(":") != -1) {
+            final String[] names = familyQualifiedName.split(":");
+            familyName = names[0];
+            columnName = names[1];
+        }
+        else {
+            familyName = "";
+            columnName = familyQualifiedName;
+        }
     }
 
-    public static ColumnDescription newColumnDescription(final String familyQualifiedName, final String aliasName,
+    public static ColumnDescription newColumnDescription(final String familyQualifiedName,
+                                                         final String aliasName,
                                                          final String typeName) {
         return new ColumnDescription(familyQualifiedName, aliasName, typeName);
     }
