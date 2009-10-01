@@ -18,7 +18,7 @@ public abstract class GenericLiteral implements GenericValue {
     }
 
     @Override
-    public boolean isAConstant() throws HBqlException {
+    public boolean isAConstant() {
         return true;
     }
 

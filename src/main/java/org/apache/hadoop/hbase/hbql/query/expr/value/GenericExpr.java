@@ -94,7 +94,7 @@ public abstract class GenericExpr implements GenericValue {
         return this.getArgList().subList(i, this.getArgList().size());
     }
 
-    public boolean isAConstant() throws HBqlException {
+    public boolean isAConstant() {
         for (final GenericValue val : this.getArgList())
             if (!val.isAConstant())
                 return false;

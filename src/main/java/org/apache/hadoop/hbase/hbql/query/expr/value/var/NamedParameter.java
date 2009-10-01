@@ -119,7 +119,7 @@ public class NamedParameter implements GenericValue {
     }
 
     @Override
-    public boolean isAConstant() throws HBqlException {
+    public boolean isAConstant() {
         return false;
     }
 

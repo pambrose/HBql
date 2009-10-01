@@ -38,7 +38,7 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         return (T)this;
     }
 
-    public boolean isAConstant() throws HBqlException {
+    public boolean isAConstant() {
         return false;
     }
 

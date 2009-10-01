@@ -14,6 +14,8 @@ import java.io.Serializable;
  */
 public interface GenericValue extends Serializable {
 
+    void setExprContext(final ExprContext context) throws HBqlException;
+
     Object getValue(final Object object) throws HBqlException;
 
     GenericValue getOptimizedValue() throws HBqlException;
@@ -21,9 +23,7 @@ public interface GenericValue extends Serializable {
     Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                 final boolean allowsCollections) throws TypeException;
 
-    boolean isAConstant() throws HBqlException;
-
-    void setExprContext(final ExprContext context) throws HBqlException;
+    boolean isAConstant();
 
     String asString();
 
