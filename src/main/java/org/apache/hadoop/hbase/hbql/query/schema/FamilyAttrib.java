@@ -14,7 +14,7 @@ import java.util.Map;
 public class FamilyAttrib extends ColumnAttrib {
 
     public FamilyAttrib(final String familyName) {
-        super(familyName, null, null, null, true, null, null);
+        super(familyName, "", "", null, true, null, null);
     }
 
     public boolean isAFamilyAttrib() {

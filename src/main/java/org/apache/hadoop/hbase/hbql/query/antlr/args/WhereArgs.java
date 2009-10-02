@@ -152,11 +152,10 @@ public class WhereArgs {
         return sbuf.toString();
     }
 
-    public Set<ColumnAttrib> getAllFamilyQualifiedColumnAttribList() {
+    public Set<ColumnAttrib> getAllColumnsUsedInExprs() {
         final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
-        allAttribs.addAll(this.getServerExprTree().getFamilyQualifiedColumnAttribList());
-        allAttribs.addAll(this.getClientExprTree().getFamilyQualifiedColumnAttribList());
+        allAttribs.addAll(this.getServerExprTree().getAttribsUsedInExpr());
+        allAttribs.addAll(this.getClientExprTree().getAttribsUsedInExpr());
         return allAttribs;
-
     }
 }

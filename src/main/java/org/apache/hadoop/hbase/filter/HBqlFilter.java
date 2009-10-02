@@ -45,13 +45,13 @@ public class HBqlFilter implements Filter {
 
     private static final Log LOG = LogFactory.getLog(HBqlFilter.class.getName());
 
-    private ExprTree filterExpr;
+    private ExprTree exprTree;
     private long scanLimit = -1;
     private long recordCount = 0;
     public transient HRecord record = new HRecord((HBaseSchema)null);
 
-    public HBqlFilter(final ExprTree filterExpr, final long scanLimit) {
-        this.filterExpr = filterExpr;
+    public HBqlFilter(final ExprTree exprTree, final long scanLimit) {
+        this.exprTree = exprTree;
         this.scanLimit = scanLimit;
         this.recordCount = 0;
         this.getRecord().setSchema(this.getSchema());
@@ -65,11 +65,11 @@ public class HBqlFilter implements Filter {
     }
 
     private DefinedSchema getSchema() {
-        return (DefinedSchema)this.getFilterExpr().getSchema();
+        return (DefinedSchema)this.getExprTree().getSchema();
     }
 
-    private ExprTree getFilterExpr() {
-        return this.filterExpr;
+    private ExprTree getExprTree() {
+        return this.exprTree;
     }
 
     private long getScanLimit() {
@@ -85,7 +85,7 @@ public class HBqlFilter implements Filter {
     }
 
     private boolean hasValidExprTree() {
-        return this.getFilterExpr() != null && getFilterExpr().isValid();
+        return this.getExprTree() != null && getExprTree().isValid();
     }
 
     public void reset() {
@@ -109,20 +109,24 @@ public class HBqlFilter implements Filter {
         LOG.info("In filterKeyValue()");
 
         if (this.hasValidExprTree()) {
-            final String family = Bytes.toString(v.getFamily());
-            final String column = Bytes.toString(v.getQualifier());
-            try {
-                final DefinedSchema schema = this.getSchema();
-                final ColumnAttrib attrib = schema.getAttribFromFamilyQualifiedName(family, column);
-                final Object val = attrib.getValueFromBytes(null, v.getValue());
-                LOG.info("In in filterKeyValue() setting value for: " + family + ":" + column);
 
-                this.getRecord().setCurrentValue(family, column, v.getTimestamp(), val);
-                this.getRecord().setVersionedValue(family, column, v.getTimestamp(), val);
-            }
-            catch (Exception e) {
-                HUtil.logException(LOG, e);
-                LOG.info("Had exception in filterKeyValue(): " + e.getClass().getName() + " - " + e.getMessage());
+            final String familyName = Bytes.toString(v.getFamily());
+            final String columnName = Bytes.toString(v.getQualifier());
+            final DefinedSchema schema = this.getSchema();
+            final ColumnAttrib attrib = schema.getAttribFromFamilyQualifiedName(familyName, columnName);
+
+            // Do not bother setting value if it is not used in expression
+            if (this.getExprTree().getAttribsUsedInExpr().contains(attrib)) {
+                try {
+                    LOG.info("In in filterKeyValue() setting value for: " + familyName + ":" + columnName);
+                    final Object val = attrib.getValueFromBytes(null, v.getValue());
+                    this.getRecord().setCurrentValue(familyName, columnName, v.getTimestamp(), val);
+                    this.getRecord().setVersionedValue(familyName, columnName, v.getTimestamp(), val);
+                }
+                catch (Exception e) {
+                    HUtil.logException(LOG, e);
+                    LOG.info("Had exception in filterKeyValue(): " + e.getClass().getName() + " - " + e.getMessage());
+                }
             }
         }
 
@@ -139,7 +143,7 @@ public class HBqlFilter implements Filter {
         }
         else {
             try {
-                final boolean filterRecord = !this.getFilterExpr().evaluate(this.getRecord());
+                final boolean filterRecord = !this.getExprTree().evaluate(this.getRecord());
                 if (!filterRecord)
                     this.incrementRecordCount();
                 return filterRecord;
@@ -155,7 +159,7 @@ public class HBqlFilter implements Filter {
 
     public void write(DataOutput out) throws IOException {
         try {
-            Bytes.writeByteArray(out, HUtil.ser.getScalarAsBytes(this.getFilterExpr()));
+            Bytes.writeByteArray(out, HUtil.ser.getScalarAsBytes(this.getExprTree()));
             Bytes.writeByteArray(out, HUtil.ser.getScalarAsBytes(FieldType.LongType, this.getScanLimit()));
         }
         catch (HBqlException e) {
@@ -170,7 +174,7 @@ public class HBqlFilter implements Filter {
         LOG.info("In readFields()");
 
         try {
-            this.filterExpr = (ExprTree)HUtil.ser.getScalarFromBytes(FieldType.ObjectType, Bytes.readByteArray(in));
+            this.exprTree = (ExprTree)HUtil.ser.getScalarFromBytes(FieldType.ObjectType, Bytes.readByteArray(in));
             this.scanLimit = (Long)HUtil.ser.getScalarFromBytes(FieldType.LongType, Bytes.readByteArray(in));
             this.getRecord().setSchema(this.getSchema());
             this.recordCount = 0;

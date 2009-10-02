@@ -48,7 +48,7 @@ public class HQuery<T> {
         // Get list of all columns that are used in select list and expr tree
         final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
         allAttribs.addAll(this.getQueryArgs().getSelectAttribList());
-        allAttribs.addAll(where.getAllFamilyQualifiedColumnAttribList());
+        allAttribs.addAll(where.getAllColumnsUsedInExprs());
 
         final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(where.getServerExprTree(),
                                                                        where.getScanLimit());

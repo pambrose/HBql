@@ -86,12 +86,11 @@ public class SelectExprElement extends ExprContext implements SelectElement {
     }
 
     @Override
-    public void validate(final HBaseSchema schema,
-                         final List<ColumnAttrib> selectAttribList) throws HBqlException {
+    public void validate(final HBaseSchema schema, final List<ColumnAttrib> selectAttribList) throws HBqlException {
 
         this.setSchema(schema);
 
-        selectAttribList.addAll(this.getFamilyQualifiedColumnAttribList());
+        selectAttribList.addAll(this.getAttribsUsedInExpr());
 
         // Look up stuff for simple column references
         if (this.getGenericValue(0) instanceof DelegateColumn) {
@@ -139,8 +138,8 @@ public class SelectExprElement extends ExprContext implements SelectElement {
             return;
 
         // Ignore if not in select list
-        if (!columnAttribs.contains(this.getColumnAttrib()))
-            continue;
+        //  if (!columnAttribs.contains(this.getColumnAttrib()))
+        //      continue;
 
         for (final Long timestamp : timeStampMap.keySet()) {
 

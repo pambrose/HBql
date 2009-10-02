@@ -62,8 +62,7 @@ public class SelectFamilyElement implements SelectElement {
     }
 
     @Override
-    public void validate(final HBaseSchema schema,
-                         final List<ColumnAttrib> selectAttribList) throws HBqlException {
+    public void validate(final HBaseSchema schema, final List<ColumnAttrib> selectAttribList) throws HBqlException {
 
         this.schema = schema;
 

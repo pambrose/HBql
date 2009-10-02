@@ -6,15 +6,13 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 
-import java.io.Serializable;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class ExprTree extends ExprContext implements Serializable {
+public class ExprTree extends ExprContext {
 
     private static TypeSignature exprSignature = new TypeSignature(null, BooleanValue.class);
 
@@ -42,6 +40,7 @@ public class ExprTree extends ExprContext implements Serializable {
     public void validate() throws HBqlException {
         // Noop for now
     }
+
 
     @Override
     public String asString() {

@@ -47,7 +47,7 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
 
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
 
-        final Set<ColumnAttrib> allWhereAttribs = this.getWhereArgs().getAllFamilyQualifiedColumnAttribList();
+        final Set<ColumnAttrib> allWhereAttribs = this.getWhereArgs().getAllColumnsUsedInExprs();
 
         final HTable table = conn.getHTable(schema.getTableName());
         final ExprTree clientFilter = where.getClientExprTree();

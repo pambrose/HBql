@@ -11,6 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -20,51 +21,49 @@ import java.util.Map;
  * Date: Sep 28, 2009
  * Time: 9:56:12 PM
  */
-public abstract class ExprContext {
+public abstract class ExprContext implements Serializable {
 
     private boolean inNeedOfTypeValidation = true;
     private boolean inNeedOfOptimization = true;
     private boolean inNeedOfSettingContext = true;
 
-    private final List<GenericColumn> columnList = Lists.newArrayList();
+    private final List<GenericColumn> columnsUsedInExpr = Lists.newArrayList();
+    private final List<ColumnAttrib> attribsUsedInExpr = Lists.newArrayList();
     private final Map<String, List<NamedParameter>> namedParamMap = Maps.newHashMap();
 
     private Schema schema = null;
     private final TypeSignature typeSignature;
-    private List<GenericValue> genericValues = Lists.newArrayList();
+    private List<GenericValue> expressions = Lists.newArrayList();
 
     protected ExprContext(final TypeSignature typeSignature, final GenericValue... vals) {
         this.typeSignature = typeSignature;
         if (vals != null)
             for (final GenericValue val : vals)
-                this.addGenericValue(val);
+                this.addExpression(val);
     }
 
     public abstract String asString();
 
     public abstract boolean useHBaseResult();
 
-    public List<GenericColumn> getColumnList() {
-        return this.columnList;
+    public List<GenericColumn> getColumnsUsedInExpr() {
+        return this.columnsUsedInExpr;
     }
 
-    public void addGenericValue(final GenericValue genericValue) {
-        this.getGenericValues().add(genericValue);
+    public List<ColumnAttrib> getAttribsUsedInExpr() {
+        return this.attribsUsedInExpr;
     }
 
-    public List<ColumnAttrib> getFamilyQualifiedColumnAttribList() {
-        final List<ColumnAttrib> retval = Lists.newArrayList();
-        for (final GenericColumn col : this.getColumnList())
-            retval.add(col.getColumnAttrib());
-        return retval;
+    public void addExpression(final GenericValue genericValue) {
+        this.getExpressions().add(genericValue);
     }
 
     public Map<String, List<NamedParameter>> getNamedParamMap() {
         return this.namedParamMap;
     }
 
-    protected List<GenericValue> getGenericValues() {
-        return this.genericValues;
+    protected List<GenericValue> getExpressions() {
+        return this.expressions;
     }
 
     private TypeSignature getTypeSignature() {
@@ -82,14 +81,14 @@ public abstract class ExprContext {
     }
 
     protected GenericValue getGenericValue(final int i) {
-        return this.getGenericValues().get(i);
+        return this.getExpressions().get(i);
     }
 
     public boolean isValid() {
-        if (this.getGenericValues().size() == 0)
+        if (this.getExpressions().size() == 0)
             return false;
 
-        for (final GenericValue val : this.getGenericValues())
+        for (final GenericValue val : this.getExpressions())
             if (val == null)
                 return false;
         return true;
@@ -98,7 +97,7 @@ public abstract class ExprContext {
     protected void setContext() {
         if (this.isValid() && this.isInNeedOfSettingContext()) {
             try {
-                for (final GenericValue val : this.getGenericValues())
+                for (final GenericValue val : this.getExpressions())
                     val.setExprContext(this);
             }
             catch (HBqlException e) {
@@ -109,12 +108,12 @@ public abstract class ExprContext {
     }
 
     protected void setGenericValue(final int i, final GenericValue treeRoot) {
-        this.getGenericValues().set(i, treeRoot);
+        this.getExpressions().set(i, treeRoot);
     }
 
     public void optimize() throws HBqlException {
         if (this.isValid() && this.isInNeedOfOptimization()) {
-            for (int i = 0; i < this.getGenericValues().size(); i++)
+            for (int i = 0; i < this.getExpressions().size(); i++)
                 this.setGenericValue(i, this.getGenericValue(i).getOptimizedValue());
             this.setInNeedOfOptimization(false);
         }
@@ -124,20 +123,20 @@ public abstract class ExprContext {
 
         if (this.isValid() && this.isInNeedOfTypeValidation()) {
 
-            if (!allowColumns && this.getColumnList().size() > 0) {
-                throw new TypeException("Invalid column reference" + (this.getColumnList().size() > 1 ? "s" : "")
+            if (!allowColumns && this.getColumnsUsedInExpr().size() > 0) {
+                throw new TypeException("Invalid column reference" + (this.getColumnsUsedInExpr().size() > 1 ? "s" : "")
                                         + " in " + this.asString());
             }
 
             // Collect return types of all args
             final List<Class<? extends GenericValue>> clazzList = Lists.newArrayList();
-            for (final GenericValue val : this.getGenericValues())
+            for (final GenericValue val : this.getExpressions())
                 clazzList.add(val.validateTypes(null, false));
 
             // Check against signature if there is one
             if (this.getTypeSignature() != null) {
 
-                if (this.getGenericValues().size() != this.getTypeSignature().getArgCount())
+                if (this.getExpressions().size() != this.getTypeSignature().getArgCount())
                     throw new TypeException("Incorrect number of variables in " + this.asString());
 
                 for (int i = 0; i < this.getTypeSignature().getArgCount(); i++) {
@@ -167,8 +166,9 @@ public abstract class ExprContext {
         paramList.add(param);
     }
 
-    public void addVariable(final GenericColumn column) {
-        this.getColumnList().add(column);
+    public void addColumnToUsedList(final GenericColumn column) {
+        this.getColumnsUsedInExpr().add(column);
+        this.getAttribsUsedInExpr().add(column.getColumnAttrib());
     }
 
     public void setParameter(final String str, final Object val) throws HBqlException {
