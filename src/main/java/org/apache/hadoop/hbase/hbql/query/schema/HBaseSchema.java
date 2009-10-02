@@ -57,7 +57,7 @@ public abstract class HBaseSchema extends Schema {
 
     public abstract List<HColumnDescriptor> getColumnDescriptors();
 
-    public byte[] getTableNameAsBytes() throws IOException, HBqlException {
+    public byte[] getTableNameAsBytes() throws HBqlException {
         return HUtil.ser.getStringAsBytes(this.getTableName());
     }
 
@@ -242,7 +242,7 @@ public abstract class HBaseSchema extends Schema {
 
     protected void assignVersionedValues(final Object newobj,
                                          final Result result,
-                                         final List<ColumnAttrib> attribList) throws IOException, HBqlException {
+                                         final List<ColumnAttrib> attribList) throws HBqlException {
 
         final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
 

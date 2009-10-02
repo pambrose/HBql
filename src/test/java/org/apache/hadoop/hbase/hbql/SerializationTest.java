@@ -7,7 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
@@ -43,7 +42,7 @@ public class SerializationTest extends TestSupport {
     }
 
     @Test
-    public void hadoopSerialization() throws IOException, HBqlException {
+    public void hadoopSerialization() throws HBqlException {
 
         final int total = 1000;
         int pos = 0;

@@ -73,7 +73,9 @@ public class HRecordExample {
         for (HRecord val1 : results1) {
             System.out.println("Current Values: " + val1.getCurrentValue("keyval")
                                + " - " + val1.getCurrentValue("family1:author")
-                               + " - " + val1.getCurrentValue("title"));
+                               + " - " + val1.getCurrentValue("title")
+                               + " - " + val1.getCurrentValue("comp1")
+            );
 
             System.out.println("Historicals");
 

@@ -351,7 +351,7 @@ public class AnnotationSchema extends HBaseSchema {
         }
     }
 
-    private Object createNewObject(final Result result) throws IOException, HBqlException {
+    private Object createNewObject(final Result result) throws HBqlException {
 
         // Create new instance and set key value
         final ColumnAttrib keyattrib = this.getKeyAttrib();
