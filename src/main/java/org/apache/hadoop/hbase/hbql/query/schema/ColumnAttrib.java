@@ -73,7 +73,7 @@ public abstract class ColumnAttrib implements Serializable {
 
     public abstract Object getCurrentValue(final Object recordObj) throws HBqlException;
 
-    protected abstract void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException;
+    public abstract void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException;
 
     public abstract Object getVersionedValueMap(final Object recordObj) throws HBqlException;
 

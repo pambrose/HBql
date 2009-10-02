@@ -35,7 +35,7 @@ public class QueryArgs {
         this.schema = HBaseSchema.findSchema(this.getTableName());
 
         for (final SelectElement selectElement : this.getSelectElementList())
-            selectElement.processSelectElement(this.getSchema(), this.getSelectAttribList());
+            selectElement.validate(this.getSchema(), this.getSelectAttribList());
 
         if (this.getWhereArgs().getServerExprTree() != null)
             this.getWhereArgs().getServerExprTree().setUseHBaseResult(true);

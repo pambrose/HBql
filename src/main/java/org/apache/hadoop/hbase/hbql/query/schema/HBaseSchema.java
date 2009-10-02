@@ -8,7 +8,6 @@ import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.KeyRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectElement;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectExprElement;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectFamilyElement;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.TimeRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.VersionArgs;
@@ -172,43 +171,11 @@ public abstract class HBaseSchema extends Schema {
 
         for (final SelectElement selectElement : selectElementList) {
 
-            if (selectElement instanceof SelectExprElement) {
-
-                final SelectExprElement exprElement = (SelectExprElement)selectElement;
-
-                if (exprElement.isSimpleColumnReference()) {
-                    final byte[] b = result.getValue(exprElement.getFamilyNameBytes(),
-                                                     exprElement.getColumnNameBytes());
-                    exprElement.getColumnAttrib().setCurrentValue(newobj, 0, b);
-                }
-                else {
-                    exprElement.evaluate(result);
-                    final String name = exprElement.getAsName();
-                    final ColumnAttrib attrib = this.getAttribByVariableName(name);
-                    if (attrib != null)
-                        attrib.setCurrentValue(newobj, 0, exprElement.getEvaluationValue());
-                }
-                continue;
-            }
+            selectElement.evaluate(newobj, result);
 
             if (selectElement instanceof SelectFamilyElement) {
 
                 final SelectFamilyElement familyElement = (SelectFamilyElement)selectElement;
-
-                for (int i = 0; i < familyElement.getFamilyNameBytesList().size(); i++) {
-                    final String familyName = familyElement.getFamilyNameList().get(i);
-                    final byte[] familyNameBytes = familyElement.getFamilyNameBytesList().get(i);
-
-                    final NavigableMap<byte[], byte[]> columnMap = result.getFamilyMap(familyNameBytes);
-                    for (final byte[] columnBytes : columnMap.keySet()) {
-                        final String columnName = HUtil.ser.getStringFromBytes(columnBytes);
-                        final ColumnAttrib attrib = this.getAttribFromFamilyQualifiedName(familyName, columnName);
-                        if (attrib != null) {
-                            attrib.setCurrentValue(newobj, 0, columnMap.get(columnBytes));
-                        }
-                    }
-
-                }
 
             }
             /*
