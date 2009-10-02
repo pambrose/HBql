@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.antlr.cmds;
+package org.apache.hadoop.hbase.hbql.query.cmds;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;

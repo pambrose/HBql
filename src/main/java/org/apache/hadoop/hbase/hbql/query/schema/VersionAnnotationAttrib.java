@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HColumnVersionMap;
+import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;

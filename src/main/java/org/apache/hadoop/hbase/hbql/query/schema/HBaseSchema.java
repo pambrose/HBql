@@ -6,11 +6,12 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.KeyRangeArgs;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectElement;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.TimeRangeArgs;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.VersionArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.KeyRangeArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.TimeRangeArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.VersionArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.select.SelectElement;
+import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 

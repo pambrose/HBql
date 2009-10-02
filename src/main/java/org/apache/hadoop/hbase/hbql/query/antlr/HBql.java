@@ -5,13 +5,13 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.RecognitionException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.QueryArgs;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
-import org.apache.hadoop.hbase.hbql.query.antlr.cmds.ConnectionCmd;
-import org.apache.hadoop.hbase.hbql.query.antlr.cmds.SchemaManagerCmd;
+import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCmd;
+import org.apache.hadoop.hbase.hbql.query.cmds.SchemaManagerCmd;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
 
 /**
  * Created by IntelliJ IDEA.

@@ -40,9 +40,10 @@ import org.apache.hadoop.hbase.hbql.query.expr.predicate.*;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.*;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.*;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.*;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.*;
-import org.apache.hadoop.hbase.hbql.query.antlr.cmds.*;
+import org.apache.hadoop.hbase.hbql.query.cmds.*;
 import org.apache.hadoop.hbase.hbql.query.antlr.*;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.*;
+import org.apache.hadoop.hbase.hbql.query.stmt.select.*;
 import org.apache.hadoop.hbase.hbql.query.util.*;
 import org.apache.hadoop.hbase.hbql.query.schema.*;
 import java.util.Date;
@@ -94,7 +95,7 @@ selectStmt returns [QueryArgs retval]
 							{retval = new QueryArgs($c.retval, $t.text, $w.retval);};
 
 selectElems returns [List<SelectElement> retval]
-	: STAR						{retval = Lists.newArrayList(); retval.add(SelectFamilyElement.newAllFamilies());}
+	: STAR						{retval = Lists.newArrayList(); retval.add(FamilySelectElement.newAllFamilies());}
 	| c=selectElemList				{retval = $c.retval;}
 	;
 	
@@ -103,8 +104,8 @@ selectElemList returns [List<SelectElement> retval]
 	: c1=selectElem {retval.add($c1.retval);} (COMMA c2=selectElem {retval.add($c2.retval);})*;
 
 selectElem returns [SelectElement retval]
-	: c=valExpr (keyAS i=ID)?			{$selectElem.retval = SelectExprElement.newExprElement($c.retval, $i.text);}
-	| f=familyRef					{$selectElem.retval = SelectFamilyElement.newFamilyElement($f.text);}
+	: c=valExpr (keyAS i=ID)?			{$selectElem.retval = ExprSelectElement.newExprElement($c.retval, $i.text);}
+	| f=familyRef					{$selectElem.retval = FamilySelectElement.newFamilyElement($f.text);}
 	;
 
 whereValue returns [WhereArgs retval]

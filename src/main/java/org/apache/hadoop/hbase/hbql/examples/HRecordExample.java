@@ -7,7 +7,7 @@ import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
+import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 import java.io.IOException;
 import java.util.Date;

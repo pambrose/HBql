@@ -9,7 +9,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringNullLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
+import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.Collection;

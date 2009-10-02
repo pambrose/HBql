@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.antlr.args;
+package org.apache.hadoop.hbase.hbql.query.stmt.select;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
+import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.TreeMap;
  * Date: Oct 1, 2009
  * Time: 8:39:47 PM
  */
-public class SelectExprElement extends ExprContext implements SelectElement {
+public class ExprSelectElement extends ExprContext implements SelectElement {
 
     private final String asName;
 
@@ -33,13 +33,13 @@ public class SelectExprElement extends ExprContext implements SelectElement {
 
     private Object evaluationValue = null;
 
-    public SelectExprElement(final GenericValue genericValue, final String asName) {
+    public ExprSelectElement(final GenericValue genericValue, final String asName) {
         super(null, genericValue);
         this.asName = (asName != null) ? asName : genericValue.asString();
     }
 
-    public static SelectExprElement newExprElement(final GenericValue expr, final String as) {
-        return new SelectExprElement(expr, as);
+    public static ExprSelectElement newExprElement(final GenericValue expr, final String as) {
+        return new ExprSelectElement(expr, as);
     }
 
     public String getAsName() {

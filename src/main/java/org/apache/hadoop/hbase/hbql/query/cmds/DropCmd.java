@@ -1,7 +1,5 @@
-package org.apache.hadoop.hbase.hbql.query.antlr.cmds;
+package org.apache.hadoop.hbase.hbql.query.cmds;
 
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -16,27 +14,22 @@ import java.io.IOException;
  * Date: Aug 24, 2009
  * Time: 10:31:14 PM
  */
-public class CreateCmd extends TableCmd implements ConnectionCmd {
+public class DropCmd extends TableCmd implements ConnectionCmd {
 
-    public CreateCmd(final String tableName) {
+    public DropCmd(final String tableName) {
         super(tableName);
     }
 
+    @Override
     public HOutput execute(final HConnection conn) throws HBqlException, IOException {
 
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
 
-        final HTableDescriptor tableDesc = new HTableDescriptor(schema.getTableName());
-
-        for (final HColumnDescriptor columnDesc : schema.getColumnDescriptors())
-            tableDesc.addFamily(columnDesc);
-
         final HBaseAdmin admin = new HBaseAdmin(conn.getConfig());
-
-        admin.createTable(tableDesc);
+        admin.deleteTable(schema.getTableName());
 
         final HOutput retval = new HOutput();
-        retval.out.println("Table " + tableDesc.getNameAsString() + " created.");
+        retval.out.println("Table " + schema.getTableName() + " dropped.");
         retval.out.flush();
         return retval;
     }

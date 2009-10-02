@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;

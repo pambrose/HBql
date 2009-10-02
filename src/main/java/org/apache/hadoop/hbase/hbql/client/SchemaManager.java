@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
-import org.apache.hadoop.hbase.hbql.query.antlr.cmds.SchemaManagerCmd;
+import org.apache.hadoop.hbase.hbql.query.cmds.SchemaManagerCmd;
 import org.apache.hadoop.hbase.hbql.query.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;

@@ -1,9 +1,10 @@
-package org.apache.hadoop.hbase.hbql.query.antlr.args;
+package org.apache.hadoop.hbase.hbql.query.stmt.args;
 
 import org.antlr.runtime.RecognitionException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.query.stmt.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;

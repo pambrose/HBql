@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.antlr.cmds;
+package org.apache.hadoop.hbase.hbql.query.cmds;
 
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -14,9 +14,9 @@ import java.io.IOException;
  * Date: Aug 24, 2009
  * Time: 10:31:14 PM
  */
-public class DropCmd extends TableCmd implements ConnectionCmd {
+public class EnableCmd extends TableCmd implements ConnectionCmd {
 
-    public DropCmd(final String tableName) {
+    public EnableCmd(final String tableName) {
         super(tableName);
     }
 
@@ -26,12 +26,11 @@ public class DropCmd extends TableCmd implements ConnectionCmd {
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
 
         final HBaseAdmin admin = new HBaseAdmin(conn.getConfig());
-        admin.deleteTable(schema.getTableName());
+        admin.enableTable(schema.getTableName());
 
         final HOutput retval = new HOutput();
-        retval.out.println("Table " + schema.getTableName() + " dropped.");
+        retval.out.println("Table " + schema.getTableName() + " enabled.");
         retval.out.flush();
         return retval;
     }
-
 }

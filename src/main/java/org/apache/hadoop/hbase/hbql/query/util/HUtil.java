@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.schema;
+package org.apache.hadoop.hbase.hbql.query.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -8,6 +8,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
+import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;

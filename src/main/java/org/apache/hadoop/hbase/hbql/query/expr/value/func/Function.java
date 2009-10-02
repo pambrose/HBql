@@ -9,7 +9,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
+import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 /**
  * Created by IntelliJ IDEA.

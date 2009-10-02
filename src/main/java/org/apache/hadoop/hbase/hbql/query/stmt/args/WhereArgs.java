@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.antlr.args;
+package org.apache.hadoop.hbase.hbql.query.stmt.args;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;

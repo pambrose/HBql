@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.antlr.cmds;
+package org.apache.hadoop.hbase.hbql.query.cmds;
 
 /**
  * Created by IntelliJ IDEA.

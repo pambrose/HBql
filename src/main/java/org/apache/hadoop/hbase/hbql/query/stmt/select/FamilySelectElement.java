@@ -1,11 +1,11 @@
-package org.apache.hadoop.hbase.hbql.query.antlr.args;
+package org.apache.hadoop.hbase.hbql.query.stmt.select;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.FamilyAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
+import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -19,7 +19,7 @@ import java.util.NavigableMap;
  * Date: Oct 1, 2009
  * Time: 8:40:58 PM
  */
-public class SelectFamilyElement implements SelectElement {
+public class FamilySelectElement implements SelectElement {
 
     private final boolean useAllFamilies;
     private final List<String> familyNameList = Lists.newArrayList();
@@ -27,7 +27,7 @@ public class SelectFamilyElement implements SelectElement {
 
     private HBaseSchema schema;
 
-    public SelectFamilyElement(final String familyName) {
+    public FamilySelectElement(final String familyName) {
         if (familyName != null && familyName.equals("*")) {
             this.useAllFamilies = true;
         }
@@ -42,11 +42,11 @@ public class SelectFamilyElement implements SelectElement {
     }
 
     public static SelectElement newAllFamilies() {
-        return new SelectFamilyElement("*");
+        return new FamilySelectElement("*");
     }
 
-    public static SelectFamilyElement newFamilyElement(final String family) {
-        return new SelectFamilyElement(family);
+    public static FamilySelectElement newFamilyElement(final String family) {
+        return new FamilySelectElement(family);
     }
 
     public List<String> getFamilyNameList() {
