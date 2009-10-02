@@ -143,8 +143,8 @@ public class DefinedSchema extends HBaseSchema {
             final HRecord newobj = this.newHRecord(result);
 
             // Assign most recent values
+            this.assignCurrentValuesFromExpr(newobj, selectColumnList);
             this.assignCurrentValuesFromResult(newobj, result);
-            //this.assignCurrentValuesFromExpr(newobj, selectColumnList);
 
             // Assign the versioned values
             if (maxVersions > 1)

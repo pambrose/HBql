@@ -115,6 +115,15 @@ public class HQuery<T> {
             selectColumn.evaluate(result);
     }
 
+    public SelectColumn getSelectValue(final String name) {
+        // TODO Convert to Map
+        for (final SelectColumn selectColumn : this.getSelectColumnList())
+            if (selectColumn.getAsName().equals(name))
+                return selectColumn;
+        return null;
+    }
+
+
     public HResults<T> execute() throws HBqlException {
 
         if (this.getListeners() != null) {

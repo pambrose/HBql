@@ -29,7 +29,8 @@ public class HRecordExample {
                             + "("
                             + "keyval key, "
                             + "family1:author string alias author, "
-                            + "family1:title string  alias title"
+                            + "family1:title string  alias title, "
+                            + "family1:intval int alias comp1"
                             + ")");
 
         // System.out.println(conn.execute("delete from TestObject with client filter where true"));
@@ -57,7 +58,7 @@ public class HRecordExample {
         if (conn.tableEnabled("testobjects2"))
             System.out.println(conn.execute("describe table testobjects2"));
 
-        final String query1 = "SELECT keyval, author, title "
+        final String query1 = "SELECT keyval, author, title, (3*12) as comp1 "
                               + "FROM testobjects2 "
                               + "WITH "
                               + "KEYS '0000000002' TO '0000000003', '0000000008' TO LAST "

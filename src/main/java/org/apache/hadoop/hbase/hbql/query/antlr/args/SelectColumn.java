@@ -28,7 +28,7 @@ public class SelectColumn extends ExprContext {
                          final GenericValue genericValue) {
         super(null, genericValue);
         this.type = type;
-        this.asName = asName;
+        this.asName = (asName != null) ? asName : genericValue.asString();
         this.familyName = (familyName == null) ? null : familyName.replace(" ", "").replace(":*", "");
     }
 
@@ -65,7 +65,9 @@ public class SelectColumn extends ExprContext {
     }
 
     public void evaluate(final Result result) throws HBqlException {
-        this.evaluationValue = this.getGenericValue().getValue(result);
+        this.validateTypes(true);
+        this.optimize();
+        this.evaluationValue = this.getGenericValue(0).getValue(result);
     }
 
     @Override

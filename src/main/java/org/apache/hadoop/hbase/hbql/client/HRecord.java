@@ -61,7 +61,7 @@ public class HRecord implements Serializable {
     private HValue getHValue(final String name) {
 
         // First try the name given.
-        // If that doesn't work, then try variable and qualified (one hasn't been tried yet)
+        // If that doesn't work, then try alias and qualified (one hasn't been tried yet)
         if (this.containsName(name))
             return this.getValue(name);
 
@@ -69,9 +69,10 @@ public class HRecord implements Serializable {
         final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
 
         if (attrib != null) {
-            final String columnName = attrib.getColumnName();
-            if (!columnName.equals(name) && this.containsName(columnName))
-                return this.getValue(columnName);
+
+            final String aliasName = attrib.getAliasName();
+            if (!aliasName.equals(name) && this.containsName(aliasName))
+                return this.getValue(aliasName);
 
             final String qualifiedName = attrib.getFamilyQualifiedName();
             if (!qualifiedName.equals(name) && this.containsName(qualifiedName))

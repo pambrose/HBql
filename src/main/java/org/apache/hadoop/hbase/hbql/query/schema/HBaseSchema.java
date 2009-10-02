@@ -170,6 +170,13 @@ public abstract class HBaseSchema extends Schema {
         for (final SelectColumn selectColumn : selectColumnList) {
 
             final String name = selectColumn.getAsName();
+
+            final ColumnAttrib attrib = this.getAttribByVariableName(name);
+
+            if (attrib != null) {
+                attrib.setCurrentValue(newobj, 0, selectColumn.getEvaluationValue());
+            }
+
             /*
             if (cname.endsWith("]")) {
                 final int lbrace = cname.indexOf("[");
