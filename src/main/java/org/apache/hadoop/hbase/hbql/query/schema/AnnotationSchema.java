@@ -367,8 +367,8 @@ public class AnnotationSchema extends HBaseSchema {
         }
         catch (IllegalAccessException e) {
             e.printStackTrace();
-            throw new HBqlException("Cannot set value for key  " + keyattrib.getColumnName()
-                                    + " for " + this.getSchemaName());
+            throw new HBqlException("Cannot set value for key  " + this.getSchemaName()
+                                    + "." + keyattrib.getFamilyQualifiedName());
         }
         return newobj;
     }
@@ -380,7 +380,7 @@ public class AnnotationSchema extends HBaseSchema {
                                       ? FieldType.KeyType.getFirstSynonym()
                                       : columnAttrib.getFieldType().getFirstSynonym();
             varList.add(ColumnDescription.newColumnDescription(columnAttrib.getFamilyQualifiedName(),
-                                                               columnAttrib.getColumnName(),
+                                                               columnAttrib.getAliasName(),
                                                                columnType));
         }
         return varList;

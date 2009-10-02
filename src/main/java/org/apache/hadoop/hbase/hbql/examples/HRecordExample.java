@@ -30,7 +30,7 @@ public class HRecordExample {
                             + "keyval key, "
                             + "family1:author string alias author, "
                             + "family1:title string  alias title, "
-                            + "family1:intval int alias comp1"
+                            + "family1:intValue int alias comp1"
                             + ")");
 
         // System.out.println(conn.execute("delete from TestObject with client filter where true"));

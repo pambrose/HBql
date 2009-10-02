@@ -129,7 +129,7 @@ public class HRecord implements Serializable {
         final ColumnAttrib attrib = this.getSchema().getColumnAttribFromFamilyQualifiedNameMap(family, column);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + family + ":" + column);
-        this.setCurrentValue(attrib.getColumnName(), timestamp, val);
+        this.setCurrentValue(attrib.getAliasName(), timestamp, val);
     }
 
     public void setVersionedValue(final String family,
@@ -143,7 +143,7 @@ public class HRecord implements Serializable {
     }
 
     public boolean isCurrentValueSet(final ColumnAttrib attrib) {
-        final HValue hvalue = this.getHValue(attrib.getColumnName());
+        final HValue hvalue = this.getHValue(attrib.getAliasName());
         return hvalue != null && hvalue.isCurrentValueSet();
     }
 

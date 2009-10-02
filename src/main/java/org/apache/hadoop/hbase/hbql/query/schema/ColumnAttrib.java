@@ -106,7 +106,7 @@ public abstract class ColumnAttrib implements Serializable {
 
         final ColumnAttrib var = (ColumnAttrib)o;
 
-        return var.getColumnName().equals(this.getColumnName())
+        return var.getAliasName().equals(this.getAliasName())
                && var.getFamilyQualifiedName().equals(this.getFamilyQualifiedName());
     }
 
