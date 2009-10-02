@@ -17,5 +17,7 @@ public interface SelectElement {
 
     void validate(HBaseSchema schema, List<ColumnAttrib> selectAttribList) throws HBqlException;
 
-    void evaluate(Object newobj, Result result) throws HBqlException;
+    void assignCurrentValue(Object newobj, Result result) throws HBqlException;
+
+    void assignVersionValue(Object newobj, Result result) throws HBqlException;
 }

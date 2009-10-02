@@ -174,7 +174,7 @@ public abstract class HBaseSchema extends Schema {
                                                final Result result) throws HBqlException {
 
         for (final SelectElement selectElement : selectElementList)
-            selectElement.evaluate(newobj, result);
+            selectElement.assignCurrentValue(newobj, result);
     }
 
     protected void assignCurrentValuesFromResult(final Object newobj, final Result result) throws HBqlException {
@@ -232,7 +232,6 @@ public abstract class HBaseSchema extends Schema {
                 final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(cbytes);
 
                 for (final Long timestamp : timeStampMap.keySet()) {
-                    final byte[] vbytes = timeStampMap.get(timestamp);
 
                     final ColumnAttrib attrib = this.getVersionAttribFromFamilyQualifiedNameMap(familyName, columnName);
 
@@ -251,7 +250,8 @@ public abstract class HBaseSchema extends Schema {
                         attrib.setMapValue(newobj, mapval);
                     }
 
-                    final Object val = attrib.getValueFromBytes(newobj, vbytes);
+                    final byte[] b = timeStampMap.get(timestamp);
+                    final Object val = attrib.getValueFromBytes(newobj, b);
                     mapval.put(timestamp, val);
                 }
             }
@@ -274,7 +274,6 @@ public abstract class HBaseSchema extends Schema {
                 final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(cbytes);
 
                 for (final Long timestamp : timeStampMap.keySet()) {
-                    final byte[] vbytes = timeStampMap.get(timestamp);
 
                     final ColumnAttrib attrib = this.getVersionAttribFromFamilyQualifiedNameMap(familyName, columnName);
 
@@ -293,7 +292,8 @@ public abstract class HBaseSchema extends Schema {
                         attrib.setMapValue(newobj, mapval);
                     }
 
-                    final Object val = attrib.getValueFromBytes(newobj, vbytes);
+                    final byte[] b = timeStampMap.get(timestamp);
+                    final Object val = attrib.getValueFromBytes(newobj, b);
                     mapval.put(timestamp, val);
                 }
             }

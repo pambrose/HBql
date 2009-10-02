@@ -92,7 +92,23 @@ public class SelectExprElement extends ExprContext implements SelectElement {
     }
 
     @Override
-    public void evaluate(final Object newobj, final Result result) throws HBqlException {
+    public void assignCurrentValue(final Object newobj, final Result result) throws HBqlException {
+        if (this.isSimpleColumnReference()) {
+            final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
+            this.getColumnAttrib().setCurrentValue(newobj, 0, b);
+        }
+        else {
+            this.evaluate(result);
+            final String name = this.getAsName();
+            final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
+            if (attrib != null)
+                attrib.setCurrentValue(newobj, 0, this.getEvaluationValue());
+        }
+
+    }
+
+    @Override
+    public void assignVersionValue(final Object newobj, final Result result) throws HBqlException {
         if (this.isSimpleColumnReference()) {
             final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
             this.getColumnAttrib().setCurrentValue(newobj, 0, b);
