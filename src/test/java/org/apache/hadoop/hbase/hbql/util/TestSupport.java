@@ -122,7 +122,7 @@ public class TestSupport {
     private static boolean evaluateSelectNames(final String expr, String vals) {
 
         try {
-            final QueryArgs args = HBql.parseQuery(expr);
+            final QueryArgs args = HBql.parseQuery(null, expr);
             final List<String> valList = Lists.newArrayList(vals.replace(" ", "").split(","));
 
             final Schema schema = args.getSchema();

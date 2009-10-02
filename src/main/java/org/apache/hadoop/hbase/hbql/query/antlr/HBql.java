@@ -5,6 +5,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.RecognitionException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCmd;
 import org.apache.hadoop.hbase.hbql.query.cmds.SchemaManagerCmd;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
@@ -114,11 +115,11 @@ public class HBql {
         }
     }
 
-    public static QueryArgs parseQuery(final String str) throws HBqlException {
+    public static QueryArgs parseQuery(final HConnection connection, final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
             final QueryArgs args = parser.selectStmt();
-            args.validate();
+            args.validate(connection);
             return args;
         }
         catch (RecognitionException e) {

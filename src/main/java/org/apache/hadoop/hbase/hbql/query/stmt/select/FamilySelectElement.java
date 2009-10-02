@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.stmt.select;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.FamilyAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
@@ -64,12 +65,17 @@ public class FamilySelectElement implements SelectElement {
     }
 
     @Override
-    public void validate(final HBaseSchema schema, final List<ColumnAttrib> selectAttribList) throws HBqlException {
+    public void validate(final HConnection connection, final HBaseSchema schema, final List<ColumnAttrib> selectAttribList) throws HBqlException {
 
         this.schema = schema;
 
         if (this.useAllFamilies) {
-            for (final String familyName : schema.getFamilySet()) {
+            // conncetion wil be null from tests
+            final Collection<String> familyList = (connection == null)
+                                                  ? this.getSchema().getFamilySet()
+                                                  : connection.getFamilyList(this.getSchema().getTableName());
+
+            for (final String familyName : familyList) {
                 this.addAFamily(familyName);
                 selectAttribList.add(new FamilyAttrib(familyName));
             }

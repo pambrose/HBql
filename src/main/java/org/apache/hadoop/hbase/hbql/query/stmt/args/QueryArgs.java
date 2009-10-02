@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.stmt.args;
 
-import org.antlr.runtime.RecognitionException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.SelectElement;
@@ -26,17 +26,18 @@ public class QueryArgs {
 
     public QueryArgs(final List<SelectElement> selectElementList,
                      final String tableName,
-                     final WhereArgs whereArgs) throws RecognitionException {
+                     final WhereArgs whereArgs) {
         this.tableName = tableName;
         this.selectElementList = selectElementList;
         this.whereArgs = whereArgs;
     }
 
-    public void validate() throws HBqlException {
+    public void validate(final HConnection connection) throws HBqlException {
+
         this.schema = HBaseSchema.findSchema(this.getTableName());
 
         for (final SelectElement selectElement : this.getSelectElementList())
-            selectElement.validate(this.getSchema(), this.getSelectAttribList());
+            selectElement.validate(connection, this.getSchema(), this.getSelectAttribList());
 
         if (this.getWhereArgs().getServerExprTree() != null)
             this.getWhereArgs().getServerExprTree().setUseHBaseResult(false);

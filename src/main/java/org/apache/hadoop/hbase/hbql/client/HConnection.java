@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
@@ -9,6 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCmd;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
+import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 import java.util.List;
@@ -94,10 +96,24 @@ public class HConnection {
         return tableList;
     }
 
+    public List<String> getFamilyList(final String tableName) throws HBqlException {
+        try {
+            final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
+            final HTableDescriptor table = admin.getTableDescriptor(Bytes.toBytes(tableName));
+            final List<String> familyList = Lists.newArrayList();
+            for (final HColumnDescriptor descriptor : table.getColumnFamilies())
+                familyList.add(Bytes.toString(descriptor.getName()));
+            return familyList;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            throw new HBqlException(e.getMessage());
+        }
+    }
+
     public HOutput execute(final String str) throws HBqlException, IOException {
 
-        final ConnectionCmd cmd =
-                HBql.parseCommand(str);
+        final ConnectionCmd cmd = HBql.parseCommand(str);
 
         if (cmd == null)
             throw new HBqlException("Error parsing: " + str);

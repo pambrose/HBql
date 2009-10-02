@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.stmt.select;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
@@ -87,7 +88,9 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     }
 
     @Override
-    public void validate(final HBaseSchema schema, final List<ColumnAttrib> selectAttribList) throws HBqlException {
+    public void validate(final HConnection connection,
+                         final HBaseSchema schema,
+                         final List<ColumnAttrib> selectAttribList) throws HBqlException {
 
         this.setSchema(schema);
 

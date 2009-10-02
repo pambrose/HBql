@@ -37,9 +37,12 @@ public abstract class ExprContext implements Serializable {
 
     protected ExprContext(final TypeSignature typeSignature, final GenericValue... vals) {
         this.typeSignature = typeSignature;
-        if (vals != null)
-            for (final GenericValue val : vals)
-                this.addExpression(val);
+        if (vals != null) {
+            for (final GenericValue val : vals) {
+                if (val != null)
+                    this.addExpression(val);
+            }
+        }
     }
 
     public abstract String asString();

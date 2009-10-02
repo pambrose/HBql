@@ -35,7 +35,7 @@ public class HQuery<T> {
         this.connection = connection;
         this.query = query;
 
-        this.queryArgs = HBql.parseQuery(this.getQuery());
+        this.queryArgs = HBql.parseQuery(this.getConnection(), this.getQuery());
 
         final WhereArgs where = this.getWhereArgs();
 
