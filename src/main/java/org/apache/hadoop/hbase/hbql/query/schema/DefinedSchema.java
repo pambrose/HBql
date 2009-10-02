@@ -144,7 +144,7 @@ public class DefinedSchema extends HBaseSchema {
 
             // Assign most recent values
             this.assignCurrentValuesFromExpr(newobj, selectElementList, result);
-            this.assignCurrentValuesFromResult(newobj, result);
+            //this.assignCurrentValuesFromResult(newobj, result);
 
             // Assign the versioned values
             if (maxVersions > 1)

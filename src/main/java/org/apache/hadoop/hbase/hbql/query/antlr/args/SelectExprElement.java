@@ -75,9 +75,12 @@ public class SelectExprElement extends ExprContext implements SelectElement {
     @Override
     public void validate(final HBaseSchema schema,
                          final List<ColumnAttrib> selectAttribList) throws HBqlException {
+
         this.setSchema(schema);
+
         selectAttribList.addAll(this.getFamilyQualifiedColumnNameList());
 
+        // Look up stuff for simple column references
         if (this.getGenericValue(0) instanceof DelegateColumn) {
             final String name = ((DelegateColumn)this.getGenericValue(0)).getVariableName();
             this.columnAttrib = this.getSchema().getAttribByVariableName(name);

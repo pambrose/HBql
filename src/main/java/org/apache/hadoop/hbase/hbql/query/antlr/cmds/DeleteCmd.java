@@ -53,9 +53,7 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
         clientFilter.setSchema(schema);
         int cnt = 0;
 
-        final HBqlFilter serverFilter = schema.getHBqlFilter(where.getServerExprTree(),
-                                                             attribList,
-                                                             where.getScanLimit());
+        final HBqlFilter serverFilter = schema.getHBqlFilter(where.getServerExprTree(), where.getScanLimit());
 
         final List<Scan> scanList = schema.getScanList(attribList,
                                                        where.getKeyRangeArgs(),

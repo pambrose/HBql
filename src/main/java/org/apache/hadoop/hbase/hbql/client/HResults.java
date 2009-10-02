@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.ResultsIterator;
 
@@ -147,7 +148,9 @@ public class HResults<T> implements Iterable<T> {
 
                                 this.recordCount++;
 
-                                final T val = (T)getHQuery().getSchema().newObject(getHQuery().getSelectAttribList(),
+                                final List<ColumnAttrib> attribs = getHQuery().getQueryArgs().getSelectAttribList();
+
+                                final T val = (T)getHQuery().getSchema().newObject(attribs,
                                                                                    getHQuery().getSelectElementList(),
                                                                                    this.maxVersions,
                                                                                    result);

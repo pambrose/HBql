@@ -15,6 +15,7 @@ import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -257,7 +258,7 @@ public abstract class HBaseSchema extends Schema {
         return null;
     }
 
-    public List<Scan> getScanList(final List<ColumnAttrib> columnAttribList,
+    public List<Scan> getScanList(final Collection<ColumnAttrib> columnAttribSet,
                                   final KeyRangeArgs keyRangeArgs,
                                   final TimeRangeArgs timeRangeArgs,
                                   final VersionArgs versionArgs,
@@ -282,7 +283,7 @@ public abstract class HBaseSchema extends Schema {
         for (final Scan scan : scanList) {
 
             // Set column names
-            for (final ColumnAttrib attrib : columnAttribList) {
+            for (final ColumnAttrib attrib : columnAttribSet) {
 
                 // Do not bother to request because it will always be delivered
                 if (attrib.isKeyAttrib())
@@ -317,16 +318,14 @@ public abstract class HBaseSchema extends Schema {
         return scanList;
     }
 
-    public HBqlFilter getHBqlFilter(final ExprTree exprTree,
-                                    final List<ColumnAttrib> attribList,
-                                    final long scanLimit) throws HBqlException {
+    public HBqlFilter getHBqlFilter(final ExprTree exprTree, final long scanLimit) throws HBqlException {
 
         if (!exprTree.isValid())
             return (scanLimit > 0) ? new HBqlFilter(ExprTree.newExprTree(null), scanLimit) : null;
 
         final DefinedSchema schema = HUtil.getDefinedSchemaForServerFilter(this);
         exprTree.setSchema(schema);
-        exprTree.validate(attribList);
+        exprTree.validate();
         return new HBqlFilter(exprTree, scanLimit);
     }
 
