@@ -47,12 +47,12 @@ public class FamilyAttrib extends ColumnAttrib {
     }
 
     @Override
-    protected void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException {
+    public void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException {
 
     }
 
     @Override
-    public Object getVersionedValueMap(final Object recordObj) throws HBqlException {
+    public Object getMapValue(final Object recordObj) throws HBqlException {
         return null;
     }
 
@@ -62,7 +62,7 @@ public class FamilyAttrib extends ColumnAttrib {
     }
 
     @Override
-    protected void setVersionedValueMap(final Object newobj, final Map<Long, Object> map) {
+    public void setMapValue(final Object newobj, final Map<Long, Object> map) {
 
     }
 }

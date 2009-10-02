@@ -102,13 +102,13 @@ public abstract class FieldAttrib extends ColumnAttrib {
     }
 
     @Override
-    public Object getVersionedValueMap(final Object recordObj) throws HBqlException {
+    public Object getMapValue(final Object recordObj) throws HBqlException {
         // Just call current value for version since we have different fields for each
         return this.getCurrentValue(recordObj);
     }
 
     @Override
-    protected void setVersionedValueMap(final Object newobj, final Map<Long, Object> map) {
+    public void setMapValue(final Object newobj, final Map<Long, Object> map) {
         // Just call current value for version since we have different fields for each
         this.setCurrentValue(newobj, 0, map);
     }

@@ -70,19 +70,19 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     @Override
-    protected void setCurrentValue(final Object newobj, final long ts, final Object val) throws HBqlException {
+    public void setCurrentValue(final Object newobj, final long ts, final Object val) throws HBqlException {
         final HRecord record = (HRecord)newobj;
         record.setCurrentValue(this.getAliasName(), ts, val);
     }
 
     @Override
-    public Object getVersionedValueMap(final Object recordObj) throws HBqlException {
+    public Object getMapValue(final Object recordObj) throws HBqlException {
         final HRecord record = (HRecord)recordObj;
         return record.getVersionedValueMap(this.getAliasName());
     }
 
     @Override
-    protected void setVersionedValueMap(final Object newobj, final Map<Long, Object> map) {
+    public void setMapValue(final Object newobj, final Map<Long, Object> map) {
         final HRecord record = (HRecord)newobj;
         record.setVersionedValueMap(this.getAliasName(), map);
     }

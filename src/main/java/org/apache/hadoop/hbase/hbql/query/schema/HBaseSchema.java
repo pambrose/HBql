@@ -8,7 +8,6 @@ import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.KeyRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectElement;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectFamilyElement;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.TimeRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.VersionArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
@@ -169,39 +168,8 @@ public abstract class HBaseSchema extends Schema {
                                                final List<SelectElement> selectElementList,
                                                final Result result) throws HBqlException {
 
-        for (final SelectElement selectElement : selectElementList) {
-
+        for (final SelectElement selectElement : selectElementList)
             selectElement.evaluate(newobj, result);
-
-            if (selectElement instanceof SelectFamilyElement) {
-
-                final SelectFamilyElement familyElement = (SelectFamilyElement)selectElement;
-
-            }
-            /*
-            if (cname.endsWith("]")) {
-                final int lbrace = cname.indexOf("[");
-                final String mapcolumn = cname.substring(0, lbrace);
-                final String mapKey = cname.substring(lbrace + 1, cname.length() - 1);
-                final ColumnAttrib attrib = this.getColumnAttribFromFamilyQualifiedNameMap(fname, mapcolumn);
-
-                Map mapval = (Map)attrib.getCurrentValue(newobj);
-
-                if (mapval == null) {
-                    mapval = Maps.newHashMap();
-                    // TODO Check this
-                    attrib.setVersionedValueMap(newobj, mapval);
-                }
-
-                final Object val = attrib.getValueFromBytes(newobj, b);
-                mapval.put(mapKey, val);
-            }
-            else {
-                final ColumnAttrib attrib = this.getColumnAttribFromFamilyQualifiedNameMap(selectColumn.getAsName());
-                attrib.setCurrentValue(newobj, timestamp, b);
-            }
-            */
-        }
     }
 
     protected void assignCurrentValuesFromResult(final Object newobj, final Result result) throws HBqlException {
@@ -228,7 +196,7 @@ public abstract class HBaseSchema extends Schema {
                 if (mapval == null) {
                     mapval = Maps.newHashMap();
                     // TODO Check this
-                    attrib.setVersionedValueMap(newobj, mapval);
+                    attrib.setMapValue(newobj, mapval);
                 }
 
                 final Object val = attrib.getValueFromBytes(newobj, b);
@@ -270,11 +238,11 @@ public abstract class HBaseSchema extends Schema {
                     if (!attribList.contains(attrib))
                         continue;
 
-                    Map<Long, Object> mapval = (Map<Long, Object>)attrib.getVersionedValueMap(newobj);
+                    Map<Long, Object> mapval = (Map<Long, Object>)attrib.getMapValue(newobj);
 
                     if (mapval == null) {
                         mapval = new TreeMap();
-                        attrib.setVersionedValueMap(newobj, mapval);
+                        attrib.setMapValue(newobj, mapval);
                     }
 
                     final Object val = attrib.getValueFromBytes(newobj, vbytes);
