@@ -11,6 +11,9 @@ import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.HUtil;
 
 import java.util.List;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,6 +26,8 @@ public class SelectExprElement extends ExprContext implements SelectElement {
     private final String asName;
 
     private ColumnAttrib columnAttrib = null;
+    private String familyName = null;
+    private String columnName = null;
     private byte[] familyNameBytes = null;
     private byte[] columnNameBytes = null;
 
@@ -47,6 +52,14 @@ public class SelectExprElement extends ExprContext implements SelectElement {
 
     public ColumnAttrib getColumnAttrib() {
         return columnAttrib;
+    }
+
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public String getColumnName() {
+        return columnName;
     }
 
     public byte[] getFamilyNameBytes() {
@@ -85,6 +98,8 @@ public class SelectExprElement extends ExprContext implements SelectElement {
             final String name = ((DelegateColumn)this.getGenericValue(0)).getVariableName();
             this.columnAttrib = this.getSchema().getAttribByVariableName(name);
             if (this.getColumnAttrib() != null) {
+                this.familyName = this.getColumnAttrib().getFamilyName();
+                this.columnName = this.getColumnAttrib().getColumnName();
                 this.familyNameBytes = HUtil.ser.getStringAsBytes(this.getColumnAttrib().getFamilyName());
                 this.columnNameBytes = HUtil.ser.getStringAsBytes(this.getColumnAttrib().getColumnName());
             }
@@ -109,16 +124,36 @@ public class SelectExprElement extends ExprContext implements SelectElement {
 
     @Override
     public void assignVersionValue(final Object newobj, final Result result) throws HBqlException {
-        if (this.isSimpleColumnReference()) {
-            final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
-            this.getColumnAttrib().setCurrentValue(newobj, 0, b);
-        }
-        else {
-            this.evaluate(result);
-            final String name = this.getAsName();
-            final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
-            if (attrib != null)
-                attrib.setCurrentValue(newobj, 0, this.getEvaluationValue());
+
+        // Bail if it is a calculation
+        if (!this.isSimpleColumnReference())
+            return;
+
+        final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
+        final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(this.getFamilyNameBytes());
+
+        final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
+
+        // Ignore data if no version map exists for the column
+        if (this.getColumnAttrib() == null)
+            return;
+
+        // Ignore if not in select list
+        if (!columnAttribs.contains(this.getColumnAttrib()))
+            continue;
+
+        for (final Long timestamp : timeStampMap.keySet()) {
+
+            Map<Long, Object> mapval = (Map<Long, Object>)this.getColumnAttrib().getMapValue(newobj);
+
+            if (mapval == null) {
+                mapval = new TreeMap();
+                this.getColumnAttrib().setMapValue(newobj, mapval);
+            }
+
+            final byte[] b = timeStampMap.get(timestamp);
+            final Object val = this.getColumnAttrib().getValueFromBytes(newobj, b);
+            mapval.put(timestamp, val);
         }
 
     }

@@ -38,7 +38,7 @@ public class QueryArgs {
             selectElement.validate(this.getSchema(), this.getSelectAttribList());
 
         if (this.getWhereArgs().getServerExprTree() != null)
-            this.getWhereArgs().getServerExprTree().setUseHBaseResult(true);
+            this.getWhereArgs().getServerExprTree().setUseHBaseResult(false);
 
         if (this.getWhereArgs().getClientExprTree() != null)
             this.getWhereArgs().getClientExprTree().setUseHBaseResult(true);

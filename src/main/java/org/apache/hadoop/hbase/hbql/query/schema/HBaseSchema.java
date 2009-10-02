@@ -264,26 +264,26 @@ public abstract class HBaseSchema extends Schema {
 
         final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
 
-        for (final byte[] fbytes : familyMap.keySet()) {
+        for (final byte[] familyNameBytes : familyMap.keySet()) {
 
-            final String familyName = HUtil.ser.getStringFromBytes(fbytes);
-            final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(fbytes);
+            final String familyName = HUtil.ser.getStringFromBytes(familyNameBytes);
+            final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(familyNameBytes);
 
             for (final byte[] cbytes : columnMap.keySet()) {
                 final String columnName = HUtil.ser.getStringFromBytes(cbytes);
                 final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(cbytes);
 
+                final ColumnAttrib attrib = this.getVersionAttribFromFamilyQualifiedNameMap(familyName, columnName);
+
+                // Ignore data if no version map exists for the column
+                if (attrib == null)
+                    continue;
+
+                // Ignore if not in select list
+                if (!columnAttribs.contains(attrib))
+                    continue;
+
                 for (final Long timestamp : timeStampMap.keySet()) {
-
-                    final ColumnAttrib attrib = this.getVersionAttribFromFamilyQualifiedNameMap(familyName, columnName);
-
-                    // Ignore data if no version map exists for the column
-                    if (attrib == null)
-                        continue;
-
-                    // Ignore if not in select list
-                    if (!columnAttribs.contains(attrib))
-                        continue;
 
                     Map<Long, Object> mapval = (Map<Long, Object>)attrib.getMapValue(newobj);
 

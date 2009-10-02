@@ -35,6 +35,7 @@ public class WhereArgs {
     }
 
     public void validateTypes() throws HBqlException {
+        // TODO  convert KeyRange to SeletArgs
         // this.getKeyRangeArgs().validateTypes();
         this.getTimeRangeArgs().validateTypes(false);
         this.getVersionArgs().validateTypes(false);
