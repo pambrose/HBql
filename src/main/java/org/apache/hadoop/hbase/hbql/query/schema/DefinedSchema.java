@@ -12,6 +12,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -133,7 +134,7 @@ public class DefinedSchema extends HBaseSchema {
     }
 
     @Override
-    public HRecord newObject(final List<ColumnAttrib> attribList,
+    public HRecord newObject(final Collection<ColumnAttrib> attribList,
                              final List<SelectElement> selectElementList,
                              final int maxVersions,
                              final Result result) throws HBqlException {

@@ -62,7 +62,7 @@ public abstract class HBaseSchema extends Schema {
         return HUtil.ser.getStringAsBytes(this.getTableName());
     }
 
-    public abstract Object newObject(final List<ColumnAttrib> attribList,
+    public abstract Object newObject(final Collection<ColumnAttrib> attribList,
                                      final List<SelectElement> selectElementList,
                                      final int maxVersions,
                                      final Result result) throws HBqlException;
@@ -212,7 +212,7 @@ public abstract class HBaseSchema extends Schema {
 
     protected void assignVersionedValues(final Object newobj,
                                          final Result result,
-                                         final List<ColumnAttrib> attribList) throws HBqlException {
+                                         final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
 
         final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
 
@@ -236,7 +236,7 @@ public abstract class HBaseSchema extends Schema {
                         continue;
 
                     // Ignore if not in select list
-                    if (!attribList.contains(attrib))
+                    if (!columnAttribs.contains(attrib))
                         continue;
 
                     Map<Long, Object> mapval = (Map<Long, Object>)attrib.getMapValue(newobj);

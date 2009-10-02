@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -327,7 +328,7 @@ public class AnnotationSchema extends HBaseSchema {
     }
 
     @Override
-    public Object newObject(final List<ColumnAttrib> attribList,
+    public Object newObject(final Collection<ColumnAttrib> attribList,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {

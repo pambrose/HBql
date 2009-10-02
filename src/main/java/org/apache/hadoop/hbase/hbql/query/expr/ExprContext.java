@@ -52,7 +52,7 @@ public abstract class ExprContext {
         this.getGenericValues().add(genericValue);
     }
 
-    public List<ColumnAttrib> getFamilyQualifiedColumnNameList() {
+    public List<ColumnAttrib> getFamilyQualifiedColumnAttribList() {
         final List<ColumnAttrib> retval = Lists.newArrayList();
         for (final GenericColumn col : this.getColumnList())
             retval.add(col.getColumnAttrib());

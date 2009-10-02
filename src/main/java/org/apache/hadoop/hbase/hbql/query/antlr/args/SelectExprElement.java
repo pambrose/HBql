@@ -78,7 +78,7 @@ public class SelectExprElement extends ExprContext implements SelectElement {
 
         this.setSchema(schema);
 
-        selectAttribList.addAll(this.getFamilyQualifiedColumnNameList());
+        selectAttribList.addAll(this.getFamilyQualifiedColumnAttribList());
 
         // Look up stuff for simple column references
         if (this.getGenericValue(0) instanceof DelegateColumn) {

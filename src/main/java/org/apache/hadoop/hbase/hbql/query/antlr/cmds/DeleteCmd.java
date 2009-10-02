@@ -16,6 +16,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,29 +26,29 @@ import java.util.List;
  */
 public class DeleteCmd extends TableCmd implements ConnectionCmd {
 
-    private final WhereArgs whereExpr;
+    private final WhereArgs whereArgs;
 
-    public DeleteCmd(final String tableName, final WhereArgs whereExpr) {
+    public DeleteCmd(final String tableName, final WhereArgs whereArgs) {
         super(tableName);
-        this.whereExpr = whereExpr;
+        this.whereArgs = whereArgs;
     }
 
-    public WhereArgs getWhereExpr() {
-        if (whereExpr == null)
+    public WhereArgs getWhereArgs() {
+        if (whereArgs == null)
             return new WhereArgs();
         else
-            return this.whereExpr;
+            return this.whereArgs;
     }
 
     @Override
     public HOutput execute(final HConnection conn) throws HBqlException, IOException {
 
-        final WhereArgs where = this.getWhereExpr();
+        final WhereArgs where = this.getWhereArgs();
 
-        // TODO Need to grab schema from DeleteArgs (like QueryArgs in Select)
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
 
-        final List<ColumnAttrib> attribList = schema.getAllAttribs();
+        final Set<ColumnAttrib> allWhereAttribs = this.getWhereArgs().getAllFamilyQualifiedColumnAttribList();
+
         final HTable table = conn.getHTable(schema.getTableName());
         final ExprTree clientFilter = where.getClientExprTree();
         clientFilter.setSchema(schema);
@@ -55,7 +56,7 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
 
         final HBqlFilter serverFilter = schema.getHBqlFilter(where.getServerExprTree(), where.getScanLimit());
 
-        final List<Scan> scanList = schema.getScanList(attribList,
+        final List<Scan> scanList = schema.getScanList(allWhereAttribs,
                                                        where.getKeyRangeArgs(),
                                                        where.getTimeRangeArgs(),
                                                        where.getVersionArgs(),
@@ -65,7 +66,7 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
             final ResultScanner resultsScanner = table.getScanner(scan);
             for (final Result result : resultsScanner) {
 
-                final Object recordObj = schema.newObject(attribList, null, scan.getMaxVersions(), result);
+                final Object recordObj = schema.newObject(allWhereAttribs, null, scan.getMaxVersions(), result);
 
                 if (clientFilter == null || clientFilter.evaluate(recordObj)) {
                     final Delete delete = new Delete(result.getRow());

@@ -66,7 +66,7 @@ public class HResults<T> implements Iterable<T> {
             return new ResultsIterator<T>() {
 
                 final HTable table = getHQuery().getConnection().getHTable(getHQuery().getSchema().getTableName());
-                final ExprTree clientExprTree = getHQuery().getClientExprTree();
+                final ExprTree clientExprTree = getHQuery().getWhereArgs().getClientExprTree();
                 final Iterator<Scan> scanIter = getHQuery().getScanList().iterator();
                 int maxVersions = 0;
                 ResultScanner currentResultScanner = null;

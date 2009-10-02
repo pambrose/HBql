@@ -2,7 +2,11 @@ package org.apache.hadoop.hbase.hbql.query.antlr.args;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.query.util.Sets;
+
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -145,5 +149,13 @@ public class WhereArgs {
             sbuf.append("CLIENT FILTER " + this.getClientExprTree().asString() + "\n");
 
         return sbuf.toString();
+    }
+
+    public Set<ColumnAttrib> getAllFamilyQualifiedColumnAttribList() {
+        final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
+        allAttribs.addAll(this.getServerExprTree().getFamilyQualifiedColumnAttribList());
+        allAttribs.addAll(this.getClientExprTree().getFamilyQualifiedColumnAttribList());
+        return allAttribs;
+
     }
 }

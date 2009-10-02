@@ -6,7 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectElement;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -38,26 +37,26 @@ public class HQuery<T> {
 
         this.queryArgs = HBql.parseQuery(this.getQuery());
 
-        this.getWhereArgs().setSchema(this.getSchema());
-        this.getWhereArgs().validateTypes();
-        this.getWhereArgs().optimize();
+        final WhereArgs where = this.getWhereArgs();
 
-        this.getClientExprTree().validate();
+        where.setSchema(this.getSchema());
+        where.validateTypes();
+        where.optimize();
+
+        where.getClientExprTree().validate();
 
         // Get list of all columns that are used in select list and expr tree
-        final List<ColumnAttrib> selectAttribs = this.getQueryArgs().getSelectAttribList();
-        final List<ColumnAttrib> whereAttribs = this.getClientExprTree().getFamilyQualifiedColumnNameList();
         final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
-        allAttribs.addAll(selectAttribs);
-        allAttribs.addAll(whereAttribs);
+        allAttribs.addAll(this.getQueryArgs().getSelectAttribList());
+        allAttribs.addAll(where.getAllFamilyQualifiedColumnAttribList());
 
-        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getWhereArgs().getServerExprTree(),
-                                                                       this.getWhereArgs().getScanLimit());
+        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(where.getServerExprTree(),
+                                                                       where.getScanLimit());
 
         this.scanList = this.getSchema().getScanList(allAttribs,
-                                                     this.getWhereArgs().getKeyRangeArgs(),
-                                                     this.getWhereArgs().getTimeRangeArgs(),
-                                                     this.getWhereArgs().getVersionArgs(),
+                                                     where.getKeyRangeArgs(),
+                                                     where.getTimeRangeArgs(),
+                                                     where.getVersionArgs(),
                                                      serverFilter);
     }
 
@@ -80,7 +79,7 @@ public class HQuery<T> {
         return this.queryArgs;
     }
 
-    private WhereArgs getWhereArgs() {
+    public WhereArgs getWhereArgs() {
         return this.getQueryArgs().getWhereArgs();
     }
 
@@ -94,10 +93,6 @@ public class HQuery<T> {
 
     HBaseSchema getSchema() {
         return this.getQueryArgs().getSchema();
-    }
-
-    ExprTree getClientExprTree() {
-        return this.getWhereArgs().getClientExprTree();
     }
 
     List<SelectElement> getSelectElementList() {
