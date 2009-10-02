@@ -113,7 +113,7 @@ public class HBqlFilter implements Filter {
             final String column = Bytes.toString(v.getQualifier());
             try {
                 final DefinedSchema schema = this.getSchema();
-                final ColumnAttrib attrib = schema.getColumnAttribFromFamilyQualifiedNameMap(family, column);
+                final ColumnAttrib attrib = schema.getAttribFromFamilyQualifiedNameMap(family, column);
                 final Object val = attrib.getValueFromBytes(null, v.getValue());
                 LOG.info("In in filterKeyValue() setting value for: " + family + ":" + column);
 

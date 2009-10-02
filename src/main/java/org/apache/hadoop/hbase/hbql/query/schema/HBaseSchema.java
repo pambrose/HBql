@@ -8,6 +8,8 @@ import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.KeyRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectElement;
+import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectExprElement;
+import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectFamilyElement;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.TimeRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.VersionArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
@@ -82,23 +84,23 @@ public abstract class HBaseSchema extends Schema {
     }
 
     // *** columnAttribByFamilyQualifiedNameMap calls
-    protected Map<String, ColumnAttrib> getColumnAttribByFamilyQualifiedNameMap() {
+    protected Map<String, ColumnAttrib> getAttribByFamilyQualifiedNameMap() {
         return this.columnAttribByFamilyQualifiedNameMap;
     }
 
-    public ColumnAttrib getColumnAttribFromFamilyQualifiedNameMap(final String familyName, final String columnName) {
-        return this.getColumnAttribFromFamilyQualifiedNameMap(familyName + ":" + columnName);
+    public ColumnAttrib getAttribFromFamilyQualifiedNameMap(final String familyName, final String columnName) {
+        return this.getAttribFromFamilyQualifiedNameMap(familyName + ":" + columnName);
     }
 
-    public ColumnAttrib getColumnAttribFromFamilyQualifiedNameMap(final String familyQualifiedName) {
-        return this.getColumnAttribByFamilyQualifiedNameMap().get(familyQualifiedName);
+    public ColumnAttrib getAttribFromFamilyQualifiedNameMap(final String familyQualifiedName) {
+        return this.getAttribByFamilyQualifiedNameMap().get(familyQualifiedName);
     }
 
-    protected void addColumnAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HBqlException {
+    protected void addAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HBqlException {
         final String name = attrib.getFamilyQualifiedName();
-        if (this.getColumnAttribByFamilyQualifiedNameMap().containsKey(name))
+        if (this.getAttribByFamilyQualifiedNameMap().containsKey(name))
             throw new HBqlException(name + " already declared");
-        this.getColumnAttribByFamilyQualifiedNameMap().put(name, attrib);
+        this.getAttribByFamilyQualifiedNameMap().put(name, attrib);
     }
 
     // *** versionAttribByFamilyQualifiedNameMap calls
@@ -165,18 +167,41 @@ public abstract class HBaseSchema extends Schema {
 
 
     protected void assignCurrentValuesFromExpr(final Object newobj,
-                                               final List<SelectElement> selectElementList) throws HBqlException {
+                                               final List<SelectElement> selectElementList,
+                                               final Result result) throws HBqlException {
 
         for (final SelectElement selectElement : selectElementList) {
 
-            final String name = selectElement.getAsName();
+            if (selectElement instanceof SelectExprElement) {
 
-            final ColumnAttrib attrib = this.getAttribByVariableName(name);
+                final SelectExprElement exprElement = (SelectExprElement)selectElement;
 
-            if (attrib != null) {
-                attrib.setCurrentValue(newobj, 0, selectElement.getEvaluationValue());
+                if (exprElement.isSimpleColumnReference()) {
+                    final byte[] b = result.getValue(exprElement.getFamilyNameBytes(),
+                                                     exprElement.getColumnNameBytes());
+                    exprElement.getColumnAttrib().setCurrentValue(newobj, 0, b);
+                }
+                else {
+                    exprElement.evaluate(result);
+                    final String name = exprElement.getAsName();
+                    final ColumnAttrib attrib = this.getAttribByVariableName(name);
+                    if (attrib != null)
+                        attrib.setCurrentValue(newobj, 0, exprElement.getEvaluationValue());
+                }
+                return;
             }
 
+            if (selectElement instanceof SelectFamilyElement) {
+
+                final SelectFamilyElement familyElement = (SelectFamilyElement)selectElement;
+
+                for (int i = 0; i < familyElement.getFamilyNameBytesList().size(); i++) {
+                    final String familyName = familyElement.getFamilyNameList().get(i);
+                    final byte[] familyNameBytes = familyElement.getFamilyNameBytesList().get(i);
+
+                }
+
+            }
             /*
             if (cname.endsWith("]")) {
                 final int lbrace = cname.indexOf("[");
@@ -210,17 +235,17 @@ public abstract class HBaseSchema extends Schema {
             final byte[] fbytes = keyValue.getFamily();
             final byte[] cbytes = keyValue.getQualifier();
 
-            final String fname = HUtil.ser.getStringFromBytes(fbytes);
-            final String cname = HUtil.ser.getStringFromBytes(cbytes);
+            final String familyName = HUtil.ser.getStringFromBytes(fbytes);
+            final String columnName = HUtil.ser.getStringFromBytes(cbytes);
 
             final long timestamp = keyValue.getTimestamp();
             final byte[] b = result.getValue(fbytes, cbytes);
 
-            if (cname.endsWith("]")) {
-                final int lbrace = cname.indexOf("[");
-                final String mapcolumn = cname.substring(0, lbrace);
-                final String mapKey = cname.substring(lbrace + 1, cname.length() - 1);
-                final ColumnAttrib attrib = this.getColumnAttribFromFamilyQualifiedNameMap(fname, mapcolumn);
+            if (columnName.endsWith("]")) {
+                final int lbrace = columnName.indexOf("[");
+                final String mapcolumn = columnName.substring(0, lbrace);
+                final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
+                final ColumnAttrib attrib = this.getAttribFromFamilyQualifiedNameMap(familyName, mapcolumn);
 
                 Map mapval = (Map)attrib.getCurrentValue(newobj);
 
@@ -234,7 +259,7 @@ public abstract class HBaseSchema extends Schema {
                 mapval.put(mapKey, val);
             }
             else {
-                final ColumnAttrib attrib = this.getColumnAttribFromFamilyQualifiedNameMap(fname, cname);
+                final ColumnAttrib attrib = this.getAttribFromFamilyQualifiedNameMap(familyName, columnName);
                 attrib.setCurrentValue(newobj, timestamp, b);
             }
         }
@@ -248,16 +273,16 @@ public abstract class HBaseSchema extends Schema {
 
         for (final byte[] fbytes : familyMap.keySet()) {
 
-            final String fname = HUtil.ser.getStringFromBytes(fbytes) + ":";
+            final String familyName = HUtil.ser.getStringFromBytes(fbytes);
             final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(fbytes);
 
             for (final byte[] cbytes : columnMap.keySet()) {
-                final String cname = HUtil.ser.getStringFromBytes(cbytes);
-                final String qualifiedName = fname + cname;
-                final NavigableMap<Long, byte[]> tsMap = columnMap.get(cbytes);
+                final String columnName = HUtil.ser.getStringFromBytes(cbytes);
+                final String qualifiedName = familyName + ":" + columnName;
+                final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(cbytes);
 
-                for (final Long timestamp : tsMap.keySet()) {
-                    final byte[] vbytes = tsMap.get(timestamp);
+                for (final Long timestamp : timeStampMap.keySet()) {
+                    final byte[] vbytes = timeStampMap.get(timestamp);
 
                     final ColumnAttrib attrib = this.getVersionAttribFromFamilyQualifiedNameMap(qualifiedName);
 

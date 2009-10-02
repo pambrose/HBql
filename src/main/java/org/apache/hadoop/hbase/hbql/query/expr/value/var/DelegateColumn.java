@@ -15,11 +15,11 @@ import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 public class DelegateColumn extends GenericColumn<GenericValue> {
 
     private GenericColumn typedColumn = null;
-    private String text;
+    private String variableName;
 
-    public DelegateColumn(final String text) {
+    public DelegateColumn(final String variableName) {
         super(null);
-        this.text = text;
+        this.variableName = variableName;
     }
 
     private GenericColumn getTypedColumn() {
@@ -32,7 +32,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
 
     @Override
     public String getVariableName() {
-        return this.text;
+        return this.variableName;
     }
 
     @Override

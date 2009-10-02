@@ -80,7 +80,7 @@ public class DefinedSchema extends HBaseSchema {
         final DefinedAttrib attrib = new DefinedAttrib(columnDescription);
 
         this.addAttribToVariableNameMap(attrib, attrib.getNamesForColumn());
-        this.addColumnAttribToFamilyQualifiedNameMap(attrib);
+        this.addAttribToFamilyQualifiedNameMap(attrib);
         this.addVersionAttribToFamilyQualifiedNameMap(attrib);
         this.addColumnAttribListToFamilyNameMap(attrib);
 
@@ -143,7 +143,7 @@ public class DefinedSchema extends HBaseSchema {
             final HRecord newobj = this.newHRecord(result);
 
             // Assign most recent values
-            this.assignCurrentValuesFromExpr(newobj, selectElementList);
+            this.assignCurrentValuesFromExpr(newobj, selectElementList, result);
             this.assignCurrentValuesFromResult(newobj, result);
 
             // Assign the versioned values

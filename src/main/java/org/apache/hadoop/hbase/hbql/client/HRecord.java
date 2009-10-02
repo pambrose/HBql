@@ -126,7 +126,7 @@ public class HRecord implements Serializable {
                                 final String column,
                                 final long timestamp,
                                 final Object val) throws HBqlException {
-        final ColumnAttrib attrib = this.getSchema().getColumnAttribFromFamilyQualifiedNameMap(family, column);
+        final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedNameMap(family, column);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + family + ":" + column);
         this.setCurrentValue(attrib.getAliasName(), timestamp, val);
@@ -136,7 +136,7 @@ public class HRecord implements Serializable {
                                   final String column,
                                   final long timestamp,
                                   final Object val) throws HBqlException {
-        final ColumnAttrib attrib = this.getSchema().getColumnAttribFromFamilyQualifiedNameMap(family, column);
+        final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedNameMap(family, column);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + family + ":" + column);
         this.setVersionedValue(attrib.getColumnName(), timestamp, val);

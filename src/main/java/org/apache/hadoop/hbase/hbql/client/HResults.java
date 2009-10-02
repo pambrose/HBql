@@ -147,8 +147,6 @@ public class HResults<T> implements Iterable<T> {
 
                                 this.recordCount++;
 
-                                getHQuery().evaluateSelectValues(result);
-
                                 final T val = (T)getHQuery().getSchema().newObject(getHQuery().getSelectAttribList(),
                                                                                    getHQuery().getSelectElementList(),
                                                                                    this.maxVersions,

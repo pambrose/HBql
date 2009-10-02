@@ -285,7 +285,7 @@ public class AnnotationSchema extends HBaseSchema {
         final CurrentValueAnnotationAttrib attrib = new CurrentValueAnnotationAttrib(field);
 
         this.addAttribToVariableNameMap(attrib, attrib.getAliasName());
-        this.addColumnAttribToFamilyQualifiedNameMap(attrib);
+        this.addAttribToFamilyQualifiedNameMap(attrib);
 
         if (attrib.isKeyAttrib()) {
             if (this.getKeyAttrib() != null)
@@ -375,7 +375,7 @@ public class AnnotationSchema extends HBaseSchema {
 
     public List<ColumnDescription> getColumnDescriptionList() {
         final List<ColumnDescription> varList = Lists.newArrayList();
-        for (final ColumnAttrib columnAttrib : this.getColumnAttribByFamilyQualifiedNameMap().values()) {
+        for (final ColumnAttrib columnAttrib : this.getAttribByFamilyQualifiedNameMap().values()) {
             final String columnType = (columnAttrib.isKeyAttrib())
                                       ? FieldType.KeyType.getFirstSynonym()
                                       : columnAttrib.getFieldType().getFirstSynonym();
