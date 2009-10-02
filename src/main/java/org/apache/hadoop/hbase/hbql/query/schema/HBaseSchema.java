@@ -178,6 +178,15 @@ public abstract class HBaseSchema extends Schema {
             selectElement.assignCurrentValue(newobj, result);
     }
 
+    protected void assignVersionedValuesFromExpr(final Object newobj,
+                                                 final List<SelectElement> selectElementList,
+                                                 final Collection<ColumnAttrib> columnAttribs,
+                                                 final Result result) throws HBqlException {
+
+        for (final SelectElement selectElement : selectElementList)
+            selectElement.assignVersionValue(newobj, columnAttribs, result);
+    }
+
     protected void assignCurrentValuesFromResult(final Object newobj, final Result result) throws HBqlException {
 
         for (final KeyValue keyValue : result.list()) {
@@ -211,50 +220,6 @@ public abstract class HBaseSchema extends Schema {
             else {
                 final ColumnAttrib attrib = this.getAttribFromFamilyQualifiedName(familyName, columnName);
                 attrib.setCurrentValue(newobj, timestamp, b);
-            }
-        }
-    }
-
-    protected void assignVersionedValuesFromExpr(final Object newobj,
-                                                 final List<SelectElement> selectElementList,
-                                                 final Collection<ColumnAttrib> columnAttribs,
-                                                 final Result result) throws HBqlException {
-
-        final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
-
-        for (final byte[] fbytes : familyMap.keySet()) {
-
-            final String familyName = HUtil.ser.getStringFromBytes(fbytes);
-            final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(fbytes);
-
-            for (final byte[] cbytes : columnMap.keySet()) {
-
-                final String columnName = HUtil.ser.getStringFromBytes(cbytes);
-                final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(cbytes);
-
-                for (final Long timestamp : timeStampMap.keySet()) {
-
-                    final ColumnAttrib attrib = this.getVersionAttribFromFamilyQualifiedNameMap(familyName, columnName);
-
-                    // Ignore data if no version map exists for the column
-                    if (attrib == null)
-                        continue;
-
-                    // Ignore if not in select list
-                    if (!columnAttribs.contains(attrib))
-                        continue;
-
-                    Map<Long, Object> mapval = (Map<Long, Object>)attrib.getMapValue(newobj);
-
-                    if (mapval == null) {
-                        mapval = new TreeMap();
-                        attrib.setMapValue(newobj, mapval);
-                    }
-
-                    final byte[] b = timeStampMap.get(timestamp);
-                    final Object val = attrib.getValueFromBytes(newobj, b);
-                    mapval.put(timestamp, val);
-                }
             }
         }
     }

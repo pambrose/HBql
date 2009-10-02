@@ -9,6 +9,7 @@ import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -133,7 +134,9 @@ public class FamilySelectElement implements SelectElement {
     }
 
     @Override
-    public void assignVersionValue(final Object newobj, final Result result) throws HBqlException {
+    public void assignVersionValue(final Object newobj,
+                                   final Collection<ColumnAttrib> columnAttribs,
+                                   final Result result) throws HBqlException {
 
         // Evaluate each of the families
         for (int i = 0; i < this.getFamilyNameBytesList().size(); i++) {
@@ -153,6 +156,10 @@ public class FamilySelectElement implements SelectElement {
                                                                                                     columnName);
                 // Ignore data if no version map exists for the column
                 if (columnAttrib == null)
+                    continue;
+
+                // Ignore if not in select list
+                if (!columnAttribs.contains(columnAttrib))
                     continue;
 
                 for (final Long timestamp : timeStampMap.keySet()) {

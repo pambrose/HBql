@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,5 +20,5 @@ public interface SelectElement {
 
     void assignCurrentValue(Object newobj, Result result) throws HBqlException;
 
-    void assignVersionValue(Object newobj, Result result) throws HBqlException;
+    void assignVersionValue(Object newobj, Collection<ColumnAttrib> columnAttribs, Result result) throws HBqlException;
 }

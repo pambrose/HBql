@@ -10,6 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -122,7 +123,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     }
 
     @Override
-    public void assignVersionValue(final Object newobj, final Result result) throws HBqlException {
+    public void assignVersionValue(final Object newobj, final Collection<ColumnAttrib> columnAttribs, final Result result) throws HBqlException {
 
         // Bail if it is a calculation
         if (!this.isSimpleColumnReference())
