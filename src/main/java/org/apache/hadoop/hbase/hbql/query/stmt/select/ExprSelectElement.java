@@ -133,14 +133,6 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
         final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
 
-        // Ignore data if no version map exists for the column
-        if (this.getColumnAttrib() == null)
-            return;
-
-        // Ignore if not in select list
-        //  if (!columnAttribs.contains(this.getColumnAttrib()))
-        //      continue;
-
         for (final Long timestamp : timeStampMap.keySet()) {
 
             Map<Long, Object> mapval = (Map<Long, Object>)this.getColumnAttrib().getMapValue(newobj);
@@ -154,7 +146,6 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             final Object val = this.getColumnAttrib().getValueFromBytes(newobj, b);
             mapval.put(timestamp, val);
         }
-
     }
 
     @Override

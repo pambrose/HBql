@@ -12,6 +12,7 @@ import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -139,40 +140,34 @@ public class FamilySelectElement implements SelectElement {
             final String familyName = this.getFamilyNameList().get(i);
             final byte[] familyNameBytes = this.getFamilyNameBytesList().get(i);
 
-            final NavigableMap<byte[], byte[]> columnMap = result.getFamilyMap(familyNameBytes);
+            final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
+            final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(familyNameBytes);
 
-            for (final byte[] columnBytes : columnMap.keySet()) {
+            for (final byte[] columnNameBytes : familyMap.keySet()) {
 
-                final String columnName = HUtil.ser.getStringFromBytes(columnBytes);
-                final byte[] b = columnMap.get(columnBytes);
+                final String columnName = HUtil.ser.getStringFromBytes(columnNameBytes);
 
-                if (columnName.endsWith("]")) {
-                    final int lbrace = columnName.indexOf("[");
-                    final String mapcolumn = columnName.substring(0, lbrace);
-                    final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
-                    final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
-                                                                                                  mapcolumn);
+                final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(columnNameBytes);
 
-                    if (attrib != null) {
-                        Map mapval = (Map)attrib.getCurrentValue(newobj);
+                final ColumnAttrib columnAttrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
+                                                                                                    columnName);
+                // Ignore data if no version map exists for the column
+                if (columnAttrib == null)
+                    continue;
 
-                        if (mapval == null) {
-                            mapval = Maps.newHashMap();
-                            // TODO Check this
-                            attrib.setMapValue(newobj, mapval);
-                        }
+                for (final Long timestamp : timeStampMap.keySet()) {
 
-                        final Object val = attrib.getValueFromBytes(newobj, b);
-                        mapval.put(mapKey, val);
+                    Map<Long, Object> mapval = (Map<Long, Object>)columnAttrib.getMapValue(newobj);
+
+                    if (mapval == null) {
+                        mapval = new TreeMap();
+                        columnAttrib.setMapValue(newobj, mapval);
                     }
-                }
-                else {
-                    final ColumnAttrib attrib = this.getSchema()
-                            .getAttribFromFamilyQualifiedName(familyName, columnName);
-                    if (attrib != null)
-                        attrib.setCurrentValue(newobj, 0, b);
-                }
 
+                    final byte[] b = timeStampMap.get(timestamp);
+                    final Object val = columnAttrib.getValueFromBytes(newobj, b);
+                    mapval.put(timestamp, val);
+                }
             }
         }
     }
