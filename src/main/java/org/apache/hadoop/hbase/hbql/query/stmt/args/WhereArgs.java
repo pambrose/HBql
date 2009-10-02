@@ -25,7 +25,7 @@ public class WhereArgs {
     private ExprTree serverExprTree = ExprTree.newExprTree(null);
 
     public void setSchema(final HBaseSchema schema) {
-        // this.getKeyRangeArgs().setSchema(null);
+        this.getKeyRangeArgs().setSchema(null);
         this.getTimeRangeArgs().setSchema(null);
         this.getVersionArgs().setSchema(null);
         this.getScanLimitArgs().setSchema(null);
@@ -35,8 +35,7 @@ public class WhereArgs {
     }
 
     public void validateTypes() throws HBqlException {
-        // TODO  convert KeyRange to SeletArgs
-        // this.getKeyRangeArgs().validateTypes();
+        this.getKeyRangeArgs().validateTypes(false);
         this.getTimeRangeArgs().validateTypes(false);
         this.getVersionArgs().validateTypes(false);
         this.getScanLimitArgs().validateTypes(false);
@@ -44,7 +43,7 @@ public class WhereArgs {
     }
 
     public void optimize() throws HBqlException {
-        // this.getKeyRangeArgs().optimize();
+        this.getKeyRangeArgs().optimize();
         this.getTimeRangeArgs().optimize();
         this.getVersionArgs().optimize();
         this.getScanLimitArgs().optimize();

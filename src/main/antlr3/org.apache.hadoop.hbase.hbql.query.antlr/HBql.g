@@ -154,8 +154,9 @@ keyRangeList returns [List<KeyRangeArgs.Range> retval]
 	:  k1=keyRange {retval.add($k1.retval);} (COMMA k2=keyRange {retval.add($k2.retval);})*;
 	
 keyRange returns [KeyRangeArgs.Range retval]
-	: q1=QUOTED keyTO keyLAST			{retval = new KeyRangeArgs.Range($q1.text, KeyRangeArgs.Type.LAST);}
-	| q1=QUOTED keyTO q2=QUOTED			{retval = new KeyRangeArgs.Range($q1.text, $q2.text);}
+options {backtrack=true;}	
+	: q1=valExpr keyTO keyLAST			{retval = new KeyRangeArgs.Range($q1.retval);}
+	| q1=valExpr keyTO q2=valExpr			{retval = new KeyRangeArgs.Range($q1.retval, $q2.retval);}
 	;
 	
 nodescWhereExpr returns [ExprTree retval]

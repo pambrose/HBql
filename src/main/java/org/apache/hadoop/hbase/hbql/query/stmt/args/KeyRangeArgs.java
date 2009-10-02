@@ -1,6 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.stmt.args;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -20,34 +22,31 @@ public class KeyRangeArgs {
         LAST, RANGE
     }
 
-    public static class Range {
-        private final String lower;
-        private final String upper;
-        private final Type type;
+    public static class Range extends SelectArgs {
+        private final KeyRangeArgs.Type type;
 
-        public Range(final String lower, final Type type) {
-            this(lower, null, type);
+        public Range(final GenericValue arg0) {
+            this(arg0, null, KeyRangeArgs.Type.LAST);
         }
 
-        public Range(final String lower, final String upper) {
-            this(lower, upper, Type.RANGE);
+        public Range(final GenericValue arg0, final GenericValue arg1) {
+            this(arg0, arg1, KeyRangeArgs.Type.RANGE);
         }
 
-        private Range(final String lower, final String upper, final Type type) {
-            this.lower = lower;
-            this.upper = upper;
+        private Range(final GenericValue arg0, final GenericValue arg1, final KeyRangeArgs.Type type) {
+            super(SelectArgs.Type.KEYRANGE, arg0, arg1);
             this.type = type;
         }
 
-        public String getLower() {
-            return this.lower;
+        public String getLower() throws HBqlException {
+            return (String)this.getGenericValue(0).getValue(null);
         }
 
-        public String getUpper() {
-            return this.upper;
+        public String getUpper() throws HBqlException {
+            return (String)this.getGenericValue(1).getValue(null);
         }
 
-        public Type getType() {
+        public KeyRangeArgs.Type getType() {
             return this.type;
         }
 
@@ -60,19 +59,23 @@ public class KeyRangeArgs {
         }
 
         public boolean isStartLastRange() {
-            return this.getType() == Type.LAST;
+            return this.getType() == KeyRangeArgs.Type.LAST;
         }
 
         public String asString() {
-            final StringBuilder sbuf = new StringBuilder();
-            sbuf.append("'" + this.lower + "' TO ");
-            if (this.isStartLastRange())
-                sbuf.append("LAST");
-            else
-                sbuf.append("'" + this.upper + "'");
-            return sbuf.toString();
+            try {
+                final StringBuilder sbuf = new StringBuilder();
+                sbuf.append("'" + this.getLower() + "' TO ");
+                if (this.isStartLastRange())
+                    sbuf.append("LAST");
+                else
+                    sbuf.append("'" + this.getUpper() + "'");
+                return sbuf.toString();
+            }
+            catch (HBqlException e) {
+                return "Error in value";
+            }
         }
-
     }
 
     public KeyRangeArgs() {
@@ -93,6 +96,22 @@ public class KeyRangeArgs {
     public List<Range> getRangeList() {
         return this.rangeList;
     }
+
+    public void setSchema(final Schema schema) {
+        for (final Range range : this.getRangeList())
+            range.setSchema(schema);
+    }
+
+    public void validateTypes(final boolean allowColumns) throws HBqlException {
+        for (final Range range : this.getRangeList())
+            range.validateTypes(allowColumns);
+    }
+
+    public void optimize() throws HBqlException {
+        for (final Range range : this.getRangeList())
+            range.optimize();
+    }
+
 
     public String asString() {
         final StringBuilder sbuf = new StringBuilder("KEYS ");
