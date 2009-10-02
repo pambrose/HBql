@@ -7,7 +7,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.KeyRangeArgs;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectColumn;
+import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectElement;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.TimeRangeArgs;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.VersionArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
@@ -62,7 +62,7 @@ public abstract class HBaseSchema extends Schema {
     }
 
     public abstract Object newObject(final List<ColumnAttrib> attribList,
-                                     final List<SelectColumn> selectColumnList,
+                                     final List<SelectElement> selectElementList,
                                      final int maxVersions,
                                      final Result result) throws HBqlException;
 
@@ -165,16 +165,16 @@ public abstract class HBaseSchema extends Schema {
 
 
     protected void assignCurrentValuesFromExpr(final Object newobj,
-                                               final List<SelectColumn> selectColumnList) throws HBqlException {
+                                               final List<SelectElement> selectElementList) throws HBqlException {
 
-        for (final SelectColumn selectColumn : selectColumnList) {
+        for (final SelectElement selectElement : selectElementList) {
 
-            final String name = selectColumn.getAsName();
+            final String name = selectElement.getAsName();
 
             final ColumnAttrib attrib = this.getAttribByVariableName(name);
 
             if (attrib != null) {
-                attrib.setCurrentValue(newobj, 0, selectColumn.getEvaluationValue());
+                attrib.setCurrentValue(newobj, 0, selectElement.getEvaluationValue());
             }
 
             /*
@@ -288,7 +288,7 @@ public abstract class HBaseSchema extends Schema {
         return null;
     }
 
-    public List<Scan> getScanList(final List<ColumnAttrib> attribList,
+    public List<Scan> getScanList(final List<ColumnAttrib> columnAttribList,
                                   final KeyRangeArgs keyRangeArgs,
                                   final TimeRangeArgs timeRangeArgs,
                                   final VersionArgs versionArgs,
@@ -313,16 +313,14 @@ public abstract class HBaseSchema extends Schema {
         for (final Scan scan : scanList) {
 
             // Set column names
-            for (final ColumnAttrib columnAttrib : attribList) {
-
-                final ColumnAttrib attrib = (ColumnAttrib)columnAttrib;
+            for (final ColumnAttrib attrib : columnAttribList) {
 
                 // Do not bother to request because it will always be delivered
                 if (attrib.isKeyAttrib())
                     continue;
 
                 // If it is a map, then request all columns for family
-                if (attrib.isMapKeysAsColumns())
+                if (attrib.isAFamilyAttrib() || attrib.isMapKeysAsColumns())
                     scan.addFamily(attrib.getFamilyNameAsBytes());
                 else
                     scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());

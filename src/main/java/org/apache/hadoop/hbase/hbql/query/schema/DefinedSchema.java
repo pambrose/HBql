@@ -7,7 +7,7 @@ import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectColumn;
+import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectElement;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
@@ -134,7 +134,7 @@ public class DefinedSchema extends HBaseSchema {
 
     @Override
     public HRecord newObject(final List<ColumnAttrib> attribList,
-                             final List<SelectColumn> selectColumnList,
+                             final List<SelectElement> selectElementList,
                              final int maxVersions,
                              final Result result) throws HBqlException {
 
@@ -143,7 +143,7 @@ public class DefinedSchema extends HBaseSchema {
             final HRecord newobj = this.newHRecord(result);
 
             // Assign most recent values
-            this.assignCurrentValuesFromExpr(newobj, selectColumnList);
+            this.assignCurrentValuesFromExpr(newobj, selectElementList);
             this.assignCurrentValuesFromResult(newobj, result);
 
             // Assign the versioned values

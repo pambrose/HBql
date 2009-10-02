@@ -115,7 +115,7 @@ public class TestSupport {
         return tree.evaluate(recordObj);
     }
 
-    public static void assertSelectColumnsMatchTrue(final String expr, String vals) throws HBqlException {
+    public static void assertSelectElementsMatchTrue(final String expr, String vals) throws HBqlException {
         assertTrue(evaluateSelectNames(expr, vals));
     }
 

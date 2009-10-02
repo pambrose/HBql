@@ -150,7 +150,7 @@ public class HResults<T> implements Iterable<T> {
                                 getHQuery().evaluateSelectValues(result);
 
                                 final T val = (T)getHQuery().getSchema().newObject(getHQuery().getSelectAttribList(),
-                                                                                   getHQuery().getSelectColumnList(),
+                                                                                   getHQuery().getSelectElementList(),
                                                                                    this.maxVersions,
                                                                                    result);
 

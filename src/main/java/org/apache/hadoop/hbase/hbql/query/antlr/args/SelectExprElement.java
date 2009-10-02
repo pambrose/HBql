@@ -4,52 +4,30 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
- * Date: Sep 28, 2009
- * Time: 5:31:29 PM
+ * Date: Oct 1, 2009
+ * Time: 8:39:47 PM
  */
-public class SelectColumn extends ExprContext {
+public class SelectExprElement extends ExprContext implements SelectElement {
 
-    public enum Type {
-        ALLTABLECOLUMNS, ALLFAMILYCOLUMNS, GENERICEXPR
-    }
-
-    private final Type type;
-    private final String familyName;
     private final String asName;
+
     private Object evaluationValue = null;
 
-    private SelectColumn(final Type type,
-                         final String familyName,
-                         final String asName,
-                         final GenericValue genericValue) {
+    public SelectExprElement(final GenericValue genericValue, final String asName) {
         super(null, genericValue);
-        this.type = type;
         this.asName = (asName != null) ? asName : genericValue.asString();
-        this.familyName = (familyName == null) ? null : familyName.replace(" ", "").replace(":*", "");
     }
 
-    public static SelectColumn newAllColumns() {
-        return new SelectColumn(Type.ALLTABLECOLUMNS, null, null, null);
-    }
-
-    public static SelectColumn newFamilyColumns(final String family) {
-        return new SelectColumn(Type.ALLFAMILYCOLUMNS, family, null, null);
-    }
-
-    public static SelectColumn newColumn(final GenericValue expr, final String as) {
-        return new SelectColumn(Type.GENERICEXPR, null, as, expr);
-    }
-
-    public Type getType() {
-        return this.type;
-    }
-
-    public String getFamilyName() {
-        return this.familyName;
+    public static SelectExprElement newExprElement(final GenericValue expr, final String as) {
+        return new SelectExprElement(expr, as);
     }
 
     public String getAsName() {
@@ -71,6 +49,12 @@ public class SelectColumn extends ExprContext {
     }
 
     @Override
+    public void processSelectElement(final HBaseSchema schema, final List<ColumnAttrib> selectAttribList) {
+        this.setSchema(schema);
+        selectAttribList.addAll(this.getFamilyQualifiedColumnNameList());
+    }
+
+    @Override
     public String asString() {
         return this.getGenericValue(0).asString();
     }
@@ -79,4 +63,5 @@ public class SelectColumn extends ExprContext {
     public boolean useHBaseResult() {
         return true;
     }
+
 }

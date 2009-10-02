@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.QueryArgs;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectColumn;
+import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectElement;
 import org.apache.hadoop.hbase.hbql.query.antlr.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
@@ -97,8 +97,8 @@ public class HQuery<T> {
         return this.getQueryArgs().getSelectAttribList();
     }
 
-    List<SelectColumn> getSelectColumnList() {
-        return this.getQueryArgs().getSelectColumnList();
+    List<SelectElement> getSelectElementList() {
+        return this.getQueryArgs().getSelectElementList();
     }
 
     public long getQueryLimit() throws HBqlException {
@@ -111,15 +111,15 @@ public class HQuery<T> {
     }
 
     public void evaluateSelectValues(final Result result) throws HBqlException {
-        for (final SelectColumn selectColumn : this.getSelectColumnList())
-            selectColumn.evaluate(result);
+        for (final SelectElement selectElement : this.getSelectElementList())
+            selectElement.evaluate(result);
     }
 
-    public SelectColumn getSelectValue(final String name) {
+    public SelectElement getSelectValue(final String name) {
         // TODO Convert to Map
-        for (final SelectColumn selectColumn : this.getSelectColumnList())
-            if (selectColumn.getAsName().equals(name))
-                return selectColumn;
+        for (final SelectElement selectElement : this.getSelectElementList())
+            if (selectElement.getAsName().equals(name))
+                return selectElement;
         return null;
     }
 

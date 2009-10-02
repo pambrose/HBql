@@ -28,18 +28,18 @@ public class SelectExpressionsTest extends TestSupport {
                             + "f3:val2 string alias val6"
                             + ")");
 
-        assertSelectColumnsMatchTrue("SELECT f1:val1 FROM table1", "f1:val1");
+        assertSelectElementsMatchTrue("SELECT f1:val1 FROM table1", "f1:val1");
 
-        assertSelectColumnsMatchTrue("SELECT * FROM table1", "f1:val1, f1:val2, f2:val1, f2:val2, f3:val1, f3:val2");
-        assertSelectColumnsMatchTrue("SELECT * FROM tab1", "f1:val1, f1:val2, f2:val1, f2:val2, f3:val1, f3:val2");
+        assertSelectElementsMatchTrue("SELECT * FROM table1", "f1:val1, f1:val2, f2:val1, f2:val2, f3:val1, f3:val2");
+        assertSelectElementsMatchTrue("SELECT * FROM tab1", "f1:val1, f1:val2, f2:val1, f2:val2, f3:val1, f3:val2");
 
-        assertSelectColumnsMatchTrue("SELECT f1:* FROM table1", "f1:val1, f1:val2");
-        assertSelectColumnsMatchTrue("SELECT f1:*, f3:* FROM table1", "f1:val1, f1:val2, f3:val1, f3:val2");
-        assertSelectColumnsMatchTrue("SELECT f1:*, f2:*, f3:* FROM tab1", "f1:val1, f1:val2, f2:val1, f2:val2, f3:val1, f3:val2");
-        assertSelectColumnsMatchTrue("SELECT f1:*, f2:val1 FROM tab1", "f1:val1, f1:val2, f2:val1");
-        assertSelectColumnsMatchTrue("SELECT f1:*, f2:val1, f3:* FROM tab1", "f1:val1, f1:val2, f2:val1, f3:val1, f3:val2");
+        assertSelectElementsMatchTrue("SELECT f1:* FROM table1", "f1:val1, f1:val2");
+        assertSelectElementsMatchTrue("SELECT f1:*, f3:* FROM table1", "f1:val1, f1:val2, f3:val1, f3:val2");
+        assertSelectElementsMatchTrue("SELECT f1:*, f2:*, f3:* FROM tab1", "f1:val1, f1:val2, f2:val1, f2:val2, f3:val1, f3:val2");
+        assertSelectElementsMatchTrue("SELECT f1:*, f2:val1 FROM tab1", "f1:val1, f1:val2, f2:val1");
+        assertSelectElementsMatchTrue("SELECT f1:*, f2:val1, f3:* FROM tab1", "f1:val1, f1:val2, f2:val1, f3:val1, f3:val2");
 
-        assertSelectColumnsMatchTrue("SELECT f1:val1, f2:val1, f3:* FROM tab1", "f1:val1, f2:val1, f3:val1, f3:val2");
+        assertSelectElementsMatchTrue("SELECT f1:val1, f2:val1, f3:* FROM tab1", "f1:val1, f2:val1, f3:val1, f3:val2");
 
     }
 

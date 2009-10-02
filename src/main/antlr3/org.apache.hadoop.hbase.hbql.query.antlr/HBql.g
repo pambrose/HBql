@@ -90,21 +90,21 @@ deleteStmt  returns [DeleteCmd retval]
 	  						{retval = new DeleteCmd($t.text, $w.retval);};
 
 selectStmt returns [QueryArgs retval]
-	: keySELECT c=selectColumns keyFROM t=ID w=whereValue?			
+	: keySELECT c=selectElems keyFROM t=ID w=whereValue?			
 							{retval = new QueryArgs($c.retval, $t.text, $w.retval);};
 
-selectColumns returns [List<SelectColumn> retval]
-	: STAR						{retval = Lists.newArrayList(); retval.add( SelectColumn.newAllColumns());}
-	| c=columnList					{retval = $c.retval;}
+selectElems returns [List<SelectElement> retval]
+	: STAR						{retval = Lists.newArrayList(); retval.add(SelectFamilyElement.newAllFamilies());}
+	| c=selectElemList				{retval = $c.retval;}
 	;
 	
-columnList returns [List<SelectColumn> retval]
+selectElemList returns [List<SelectElement> retval]
 @init {retval = Lists.newArrayList();}
-	: c1=column {retval.add($c1.retval);} (COMMA c2=column {retval.add($c2.retval);})*;
+	: c1=selectElem {retval.add($c1.retval);} (COMMA c2=selectElem {retval.add($c2.retval);})*;
 
-column returns [SelectColumn retval]
-	: c=valExpr (keyAS i=ID)?			{$column.retval = SelectColumn.newColumn($c.retval, $i.text);}
-	| f=familyRef					{$column.retval = SelectColumn.newFamilyColumns($f.text);}
+selectElem returns [SelectElement retval]
+	: c=valExpr (keyAS i=ID)?			{$selectElem.retval = SelectExprElement.newExprElement($c.retval, $i.text);}
+	| f=familyRef					{$selectElem.retval = SelectFamilyElement.newFamilyElement($f.text);}
 	;
 
 whereValue returns [WhereArgs retval]

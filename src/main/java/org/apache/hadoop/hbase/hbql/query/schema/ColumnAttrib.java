@@ -67,6 +67,10 @@ public abstract class ColumnAttrib implements Serializable {
                 && this.aliasName.length() > 0) ? this.aliasName : this.getFamilyQualifiedName();
     }
 
+    public boolean isAFamilyAttrib() {
+        return false;
+    }
+
     public abstract Object getCurrentValue(final Object recordObj) throws HBqlException;
 
     protected abstract void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException;

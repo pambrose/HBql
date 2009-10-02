@@ -7,7 +7,7 @@ import org.apache.hadoop.hbase.hbql.client.HColumn;
 import org.apache.hadoop.hbase.hbql.client.HColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HFamily;
 import org.apache.hadoop.hbase.hbql.client.HTable;
-import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectColumn;
+import org.apache.hadoop.hbase.hbql.query.antlr.args.SelectElement;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -328,7 +328,7 @@ public class AnnotationSchema extends HBaseSchema {
 
     @Override
     public Object newObject(final List<ColumnAttrib> attribList,
-                            final List<SelectColumn> selectColumnList,
+                            final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {
 
