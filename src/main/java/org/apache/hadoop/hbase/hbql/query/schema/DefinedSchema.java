@@ -67,8 +67,7 @@ public class DefinedSchema extends HBaseSchema {
     }
 
     private static boolean doesDefinedSchemaExist(final String tableName) {
-        final DefinedSchema schema = getDefinedSchemaMap().get(tableName);
-        return schema != null;
+        return null != getDefinedSchemaMap().get(tableName);
     }
 
     public synchronized static DefinedSchema newDefinedSchema(final HBaseSchema schema) throws HBqlException {

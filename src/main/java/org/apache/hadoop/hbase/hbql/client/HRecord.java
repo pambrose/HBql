@@ -96,7 +96,7 @@ public class HRecord implements Serializable {
     }
 
     public void setCurrentValue(final String name, final Object val) throws HBqlException {
-        this.setCurrentValue(name, getTimestamp(), val);
+        this.setCurrentValue(name, this.getTimestamp(), val);
     }
 
     public void setCurrentValue(final String name, final long timestamp, final Object val) throws HBqlException {

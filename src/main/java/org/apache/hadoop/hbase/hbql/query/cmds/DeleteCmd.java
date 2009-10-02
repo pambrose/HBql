@@ -43,17 +43,16 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
     @Override
     public HOutput execute(final HConnection conn) throws HBqlException, IOException {
 
-        final WhereArgs where = this.getWhereArgs();
-
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
 
-        final Set<ColumnAttrib> allWhereAttribs = this.getWhereArgs().getAllColumnsUsedInExprs();
+        final WhereArgs where = this.getWhereArgs();
+        where.setSchema(schema);
+        where.validateTypes();
+        where.optimize();
 
+        final Set<ColumnAttrib> allWhereAttribs = this.getWhereArgs().getAllColumnsUsedInExprs();
         final HTable table = conn.getHTable(schema.getTableName());
         final ExprTree clientFilter = where.getClientExprTree();
-        clientFilter.setSchema(schema);
-        int cnt = 0;
-
         final HBqlFilter serverFilter = schema.getHBqlFilter(where.getServerExprTree(), where.getScanLimit());
 
         final List<Scan> scanList = schema.getScanList(allWhereAttribs,
@@ -62,13 +61,11 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
                                                        where.getVersionArgs(),
                                                        serverFilter);
 
+        int cnt = 0;
         for (final Scan scan : scanList) {
             final ResultScanner resultsScanner = table.getScanner(scan);
             for (final Result result : resultsScanner) {
-
-                final Object recordObj = schema.newObject(allWhereAttribs, null, scan.getMaxVersions(), result);
-
-                if (clientFilter == null || clientFilter.evaluate(recordObj)) {
+                if (clientFilter == null || clientFilter.evaluate(result)) {
                     final Delete delete = new Delete(result.getRow());
                     table.delete(delete);
                     cnt++;

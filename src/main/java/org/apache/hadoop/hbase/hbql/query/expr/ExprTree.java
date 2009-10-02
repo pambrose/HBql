@@ -34,7 +34,9 @@ public class ExprTree extends ExprContext {
         // Set it once per evaluation
         DateLiteral.resetNow();
 
-        return (this.getGenericValue(0) == null) || (Boolean)this.getGenericValue(0).getValue(object);
+        return !this.isValid()
+               || this.getGenericValue(0) == null
+               || (Boolean)this.getGenericValue(0).getValue(object);
     }
 
     public void validate() throws HBqlException {

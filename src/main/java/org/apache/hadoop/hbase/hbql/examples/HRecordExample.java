@@ -23,8 +23,6 @@ public class HRecordExample {
 
     public static void main(String[] args) throws IOException, HBqlException {
 
-        HConnection conn = HConnection.newHConnection();
-
         SchemaManager.parse("define table testobjects alias testobjects2"
                             + "("
                             + "keyval key, "
@@ -32,6 +30,8 @@ public class HRecordExample {
                             + "family1:title string  alias title, "
                             + "family1:intValue int alias comp1"
                             + ")");
+
+        HConnection conn = HConnection.newHConnection();
 
         // System.out.println(conn.execute("delete from TestObject with client filter where true"));
         // System.out.println(conn.execute("disable table testobjects"));
