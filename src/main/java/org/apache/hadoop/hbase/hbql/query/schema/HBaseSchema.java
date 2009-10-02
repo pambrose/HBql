@@ -188,7 +188,7 @@ public abstract class HBaseSchema extends Schema {
                     if (attrib != null)
                         attrib.setCurrentValue(newobj, 0, exprElement.getEvaluationValue());
                 }
-                return;
+                continue;
             }
 
             if (selectElement instanceof SelectFamilyElement) {
