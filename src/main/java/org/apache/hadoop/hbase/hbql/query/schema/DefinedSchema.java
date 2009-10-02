@@ -144,12 +144,13 @@ public class DefinedSchema extends HBaseSchema {
             final HRecord newobj = this.newHRecord(result);
 
             // Assign most recent values
-            this.assignCurrentValuesFromExpr(newobj, selectElementList, result);
             //this.assignCurrentValuesFromResult(newobj, result);
+            this.assignCurrentValuesFromExpr(newobj, selectElementList, result);
 
             // Assign the versioned values
             if (maxVersions > 1)
-                this.assignVersionedValues(newobj, result, attribList);
+                //this.assignVersionedValuesFromResult(newobj, attribList, result);
+                this.assignVersionedValuesFromExpr(newobj, selectElementList, attribList, result);
 
             return newobj;
         }
@@ -157,7 +158,6 @@ public class DefinedSchema extends HBaseSchema {
             e.printStackTrace();
             throw new HBqlException("Error in newObject() " + e.getMessage());
         }
-
     }
 
     private HRecord newHRecord(final Result result) throws HBqlException {
