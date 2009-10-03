@@ -38,7 +38,10 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
         boolean useDecimal;
         if (this.getHighestRankingNumericArg().equals(NumberValue.class)) {
             rankingClass = NumericType.getHighestRankingNumericArg(obj0, obj1);
-            useDecimal = rankingClass.equals(FloatValue.class) || rankingClass.equals(DoubleValue.class);
+            useDecimal = rankingClass.equals(FloatValue.class)
+                         || rankingClass.equals(DoubleValue.class)
+                         || rankingClass.equals(Float.class)
+                         || rankingClass.equals(Double.class);
         }
         else {
             useDecimal = this.useDecimalNumericArgs();
@@ -110,7 +113,7 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
                     throw new HBqlException("Invalid operator: " + this.getOperator());
             }
 
-            if (rankingClass.equals(FloatValue.class))
+            if (rankingClass.equals(FloatValue.class) || rankingClass.equals(Float.class))
                 return (float)result;
             else
                 return result;

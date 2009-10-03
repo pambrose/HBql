@@ -16,26 +16,32 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
  */
 public enum NumericType {
 
-    ShortType(ShortValue.class),
-    IntegerType(IntegerValue.class),
-    LongType(LongValue.class),
-    FloatType(FloatValue.class),
-    DoubleType(DoubleValue.class),
-    NumberType(NumberValue.class);
+    ShortType(ShortValue.class, Short.class),
+    IntegerType(IntegerValue.class, Integer.class),
+    LongType(LongValue.class, Long.class),
+    FloatType(FloatValue.class, Float.class),
+    DoubleType(DoubleValue.class, Double.class),
+    NumberType(NumberValue.class, Number.class);
 
     final Class<? extends GenericValue> exprType;
+    final Class<? extends Number> primType;
 
-    private NumericType(final Class<? extends GenericValue> exprType) {
+    private NumericType(final Class<? extends GenericValue> exprType, final Class<? extends Number> primType) {
         this.exprType = exprType;
+        this.primType = primType;
     }
 
     private Class<? extends GenericValue> getExprType() {
         return this.exprType;
     }
 
+    private Class<? extends Number> getPrimType() {
+        return primType;
+    }
+
     public static int getTypeRanking(final Class clazz) {
         for (final NumericType type : values())
-            if (clazz.equals(type.getExprType()))
+            if (clazz.equals(type.getExprType()) || clazz.equals(type.getPrimType()))
                 return type.ordinal();
         return -1;
     }
