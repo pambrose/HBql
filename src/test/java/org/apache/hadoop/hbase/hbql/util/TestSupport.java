@@ -23,6 +23,10 @@ import java.util.List;
  */
 public class TestSupport {
 
+    public Number parseNumberValue(final String str) throws HBqlException {
+        return (Number)HBql.parseExpression(str);
+    }
+
     public void assertValidInput(final String expr, String... vals) throws HBqlException {
         assertTrue(evaluateExprColumnNames(expr, vals));
     }
@@ -44,7 +48,13 @@ public class TestSupport {
     }
 
     public static void assertEvalTrue(final Object recordObj, final String expr) throws HBqlException {
-        assertTrue(evaluateExpr(recordObj, expr));
+        assertTrue(evaluateExprTree(recordObj, expr));
+    }
+
+    public static void assertType(final String expr, final Class clazz) throws HBqlException {
+        final Object obj = HBql.parseExpression(expr);
+        System.out.println(expr + " = " + obj + " type " + obj.getClass().getSimpleName());
+        assertTrue(obj.getClass().equals(clazz));
     }
 
     public static void assertEvalFalse(final String expr) throws HBqlException {
@@ -52,7 +62,7 @@ public class TestSupport {
     }
 
     public static void assertExprEvalFalse(final Object recordObj, final String expr) throws HBqlException {
-        assertFalse(evaluateExpr(recordObj, expr));
+        assertFalse(evaluateExprTree(recordObj, expr));
     }
 
     public static void assertExprTreeEvalTrue(final ExprTree tree) throws HBqlException {
@@ -104,7 +114,7 @@ public class TestSupport {
         return parseDescWhereExpr(expr, schema);
     }
 
-    private static boolean evaluateExpr(final Object recordObj, final String expr) throws HBqlException {
+    private static boolean evaluateExprTree(final Object recordObj, final String expr) throws HBqlException {
         final Schema schema = SchemaManager.getObjectSchema(recordObj);
         final ExprTree tree = parseDescWhereExpr(expr, schema);
         return evaluateExprTree(recordObj, tree);

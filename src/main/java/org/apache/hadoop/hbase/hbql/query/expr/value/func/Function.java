@@ -2,12 +2,20 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DoubleLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.FloatLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.LongLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.ShortLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
@@ -30,7 +38,13 @@ public class Function extends GenericExpr {
 
         // Return Numbers
         LENGTH(new TypeSignature(IntegerValue.class, StringValue.class)),
-        INDEXOF(new TypeSignature(IntegerValue.class, StringValue.class, StringValue.class));
+        INDEXOF(new TypeSignature(IntegerValue.class, StringValue.class, StringValue.class)),
+
+        SHORT(new TypeSignature(ShortValue.class, StringValue.class)),
+        INTEGER(new TypeSignature(IntegerValue.class, StringValue.class)),
+        LONG(new TypeSignature(LongValue.class, StringValue.class)),
+        FLOAT(new TypeSignature(FloatValue.class, StringValue.class)),
+        DOUBLE(new TypeSignature(DoubleValue.class, StringValue.class));
 
         private final TypeSignature typeSignature;
 
@@ -56,6 +70,12 @@ public class Function extends GenericExpr {
 
     protected TypeSignature getTypeSignature() {
         return this.getFunctionType().getTypeSignature();
+    }
+
+    private void checkForNull(final String... vals) throws HBqlException {
+        for (final Object val : vals)
+            if (val == null)
+                throw new HBqlException("Null value in " + this.asString());
     }
 
     @Override
@@ -96,20 +116,31 @@ public class Function extends GenericExpr {
                 return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
             }
 
+            case SHORT: {
+                return this.isAConstant() ? new ShortLiteral((Short)this.getValue(null)) : this;
+            }
+
+            case LONG: {
+                return this.isAConstant() ? new LongLiteral((Long)this.getValue(null)) : this;
+            }
+
+            case INTEGER:
             case LENGTH:
             case INDEXOF: {
                 return this.isAConstant() ? new IntegerLiteral((Integer)this.getValue(null)) : this;
             }
 
+            case FLOAT: {
+                return this.isAConstant() ? new FloatLiteral((Float)this.getValue(null)) : this;
+            }
+
+            case DOUBLE: {
+                return this.isAConstant() ? new DoubleLiteral((Double)this.getValue(null)) : this;
+            }
+
             default:
                 throw new HBqlException("Invalid function: " + this.getFunctionType());
         }
-    }
-
-    private void checkForNull(final String... vals) throws HBqlException {
-        for (final Object val : vals)
-            if (val == null)
-                throw new HBqlException("Null string for value in " + this.asString());
     }
 
     @Override
@@ -171,6 +202,32 @@ public class Function extends GenericExpr {
                 this.checkForNull(v1, v2);
                 return v1.indexOf(v2);
             }
+
+            case SHORT: {
+                final String v1 = (String)this.getArg(0).getValue(object);
+                return Short.valueOf(v1);
+            }
+
+            case INTEGER: {
+                final String v1 = (String)this.getArg(0).getValue(object);
+                return Integer.valueOf(v1);
+            }
+
+            case LONG: {
+                final String v1 = (String)this.getArg(0).getValue(object);
+                return Long.valueOf(v1);
+            }
+
+            case FLOAT: {
+                final String v1 = (String)this.getArg(0).getValue(object);
+                return Float.valueOf(v1);
+            }
+
+            case DOUBLE: {
+                final String v1 = (String)this.getArg(0).getValue(object);
+                return Double.valueOf(v1);
+            }
+
             default:
                 throw new HBqlException("Invalid function: " + this.getFunctionType());
         }

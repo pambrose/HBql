@@ -303,6 +303,11 @@ valueFunctions returns [GenericValue retval]
 	| keyLENGTH LPAREN s=valExpr RPAREN		{retval = new Function(Function.Type.LENGTH, $s.retval);}
 	| keyINDEXOF LPAREN s1=valExpr COMMA s2=valExpr RPAREN
 							{retval = new Function(Function.Type.INDEXOF, $s1.retval, $s2.retval);}
+	| keySHORT LPAREN s=valExpr RPAREN		{retval = new Function(Function.Type.SHORT, $s.retval);}
+	| keyINTEGER LPAREN s=valExpr RPAREN		{retval = new Function(Function.Type.INTEGER, $s.retval);}
+	| keyLONG LPAREN s=valExpr RPAREN		{retval = new Function(Function.Type.LONG, $s.retval);}
+	| keyFLOAT LPAREN s=valExpr RPAREN		{retval = new Function(Function.Type.FLOAT, $s.retval);}
+	| keyDOUBLE LPAREN s=valExpr RPAREN		{retval = new Function(Function.Type.DOUBLE, $s.retval);}
 	| keyIF v1=boolExpr keyTHEN v2=valExpr keyELSE v3=valExpr keyEND	
 							{retval = new DelegateTernary($v1.retval, $v2.retval, $v3.retval);}
 	;
@@ -410,6 +415,11 @@ keyIGNORE_CASE 	: {isKeyword(input, "IGNORE_CASE")}? ID;
 keyNOW	 	: {isKeyword(input, "NOW")}? ID;
 keyMINDATE	: {isKeyword(input, "MINDATE")}? ID;
 keyMAXDATE	: {isKeyword(input, "MAXDATE")}? ID;
+keySHORT	: {isKeyword(input, "SHORT")}? ID;
+keyINTEGER	: {isKeyword(input, "INTEGER")}? ID;
+keyLONG		: {isKeyword(input, "LONG")}? ID;
+keyFLOAT	: {isKeyword(input, "FLOAT")}? ID;
+keyDOUBLE	: {isKeyword(input, "DOUBLE")}? ID;
 keyDATE		: {isKeyword(input, "DATE")}? ID;
 keyYEAR		: {isKeyword(input, "YEAR")}? ID;
 keyWEEK		: {isKeyword(input, "WEEK")}? ID;

@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
@@ -231,21 +230,21 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalTrue("(40 % 6) = 4");
         assertEvalFalse("(40 % 6) = 3");
 
-        assertTrue(HBql.parseNumberValue("1-2-3-4").intValue() == (1 - 2 - 3 - 4));
-        assertTrue(HBql.parseNumberValue("(2-2)-2").intValue() == ((2 - 2) - 2));
-        assertTrue(HBql.parseNumberValue("2-(2-2)").intValue() == (2 - (2 - 2)));
-        assertTrue(HBql.parseNumberValue("2-2-2").intValue() == (2 - 2 - 2));
-        assertTrue(HBql.parseNumberValue("2*3-4*(((20/5)))+2-(2-3-4*3)").intValue()
+        assertTrue(parseNumberValue("1-2-3-4").intValue() == (1 - 2 - 3 - 4));
+        assertTrue(parseNumberValue("(2-2)-2").intValue() == ((2 - 2) - 2));
+        assertTrue(parseNumberValue("2-(2-2)").intValue() == (2 - (2 - 2)));
+        assertTrue(parseNumberValue("2-2-2").intValue() == (2 - 2 - 2));
+        assertTrue(parseNumberValue("2*3-4*(((20/5)))+2-(2-3-4*3)").intValue()
                    == (2 * 3 - 4 * (((20 / 5))) + 2 - (2 - 3 - 4 * 3)));
-        assertTrue(HBql.parseNumberValue("2-(-4)").intValue() == (2 - (-4)));
-        assertTrue(HBql.parseNumberValue("(7-4)+2").intValue() == ((7 - 4) + 2));
-        assertTrue(HBql.parseNumberValue("7-(4+2)").intValue() == (7 - (4 + 2)));
+        assertTrue(parseNumberValue("2-(-4)").intValue() == (2 - (-4)));
+        assertTrue(parseNumberValue("(7-4)+2").intValue() == ((7 - 4) + 2));
+        assertTrue(parseNumberValue("7-(4+2)").intValue() == (7 - (4 + 2)));
 
-        assertTrue(HBql.parseNumberValue("((((4+3)*(2-1))*(3/1))-((2+5)*(1+1)))").intValue()
+        assertTrue(parseNumberValue("((((4+3)*(2-1))*(3/1))-((2+5)*(1+1)))").intValue()
                    == (((4 + 3) * (2 - 1)) * (3 / 1)) - ((2 + 5) * (1 + 1)));
 
-        assertTrue(HBql.parseNumberValue("((2+4)*(9-2))").intValue() == ((2 + 4) * (9 - 2)));
-        assertTrue(HBql.parseNumberValue("(((4+3)*(2-1))*(3/1))").intValue() == (((4 + 3) * (2 - 1)) * (3 / 1)));
+        assertTrue(parseNumberValue("((2+4)*(9-2))").intValue() == ((2 + 4) * (9 - 2)));
+        assertTrue(parseNumberValue("(((4+3)*(2-1))*(3/1))").intValue() == (((4 + 3) * (2 - 1)) * (3 / 1)));
     }
 
     @Test
@@ -489,5 +488,15 @@ public class WhereExpressionsTest extends TestSupport {
         assertExprTreeEvalTrue(tree);
     }
 
+    @Test
+    public void numericTypes() throws HBqlException {
+
+        assertType("4", Integer.class);
+        assertType("SHORT('4')", Short.class);
+        assertType("INTEGER('4')", Integer.class);
+        assertType("LONG('4')", Long.class);
+        assertType("FLOAT('4')", Float.class);
+        assertType("DOUBLE('4')", Double.class);
+    }
 }
 
