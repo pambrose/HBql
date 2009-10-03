@@ -503,7 +503,7 @@ public class WhereExpressionsTest extends TestSupport {
         assertTypeAndValue("LONG('4') + LONG('5')", Long.class, 9L);
         assertTypeAndValue("SHORT('4') + LONG('5')", Long.class, 9L);
        */
-        assertTypeAndValue("FLOAT('1.0') * IF (TRUE) THEN SHORT('4') + LONG('5') ELSE 33 END", Float.class, 9.0);
+        assertTypeAndValue("FLOAT('1.0') * IF (TRUE) THEN SHORT('4') + LONG('5') ELSE 33 END", Float.class, (float)9.0);
     }
 }
 
