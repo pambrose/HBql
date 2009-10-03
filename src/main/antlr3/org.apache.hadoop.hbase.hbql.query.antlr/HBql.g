@@ -132,7 +132,7 @@ time returns [TimeRangeArgs retval]
 		
 versions returns [VersionArgs retval]
 	: keyVERSIONS v=valExpr				{retval = new VersionArgs($v.retval);}
-	| keyVERSIONS keyMAX				{retval = new VersionArgs(new NumberLiteral(Integer.MAX_VALUE));}
+	| keyVERSIONS keyMAX				{retval = new VersionArgs(new IntegerLiteral(Integer.MAX_VALUE));}
 	;
 	
 scanLimit returns [LimitArgs retval]

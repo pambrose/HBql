@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,30 +10,27 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class NumberLiteral extends GenericLiteral implements NumberValue {
+public class DoubleLiteral extends GenericLiteral implements DoubleValue {
 
-    private final Number value;
+    private final Double value;
 
-    public NumberLiteral(final Number value) {
+    public DoubleLiteral(final Double value) {
         this.value = value;
     }
 
     @Override
-    public Number getValue(final Object object) {
+    public Double getValue(final Object object) {
         return this.value;
     }
 
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
-        return NumberValue.class;
+        return DoubleValue.class;
     }
 
     @Override
     public String asString() {
-        if (this.value.intValue() == Integer.MAX_VALUE)
-            return "MAX";
-        else
-            return "" + this.value;
+        return "" + this.value;
     }
 }

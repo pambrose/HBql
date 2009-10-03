@@ -5,12 +5,21 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.NumberLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DoubleLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.FloatLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.LongLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.ShortLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -146,8 +155,20 @@ public abstract class GenericExpr implements GenericValue {
         if (this.getTypeSignature().getReturnType().equals(DateValue.class))
             return this.isAConstant() ? new DateLiteral((Long)this.getValue(null)) : this;
 
-        if (this.getTypeSignature().getReturnType().equals(NumberValue.class))
-            return this.isAConstant() ? new NumberLiteral((Number)this.getValue(null)) : this;
+        if (this.getTypeSignature().getReturnType().equals(ShortValue.class))
+            return this.isAConstant() ? new ShortLiteral((Short)this.getValue(null)) : this;
+
+        if (this.getTypeSignature().getReturnType().equals(IntegerValue.class))
+            return this.isAConstant() ? new IntegerLiteral((Integer)this.getValue(null)) : this;
+
+        if (this.getTypeSignature().getReturnType().equals(LongValue.class))
+            return this.isAConstant() ? new LongLiteral((Long)this.getValue(null)) : this;
+
+        if (this.getTypeSignature().getReturnType().equals(FloatValue.class))
+            return this.isAConstant() ? new FloatLiteral((Float)this.getValue(null)) : this;
+
+        if (this.getTypeSignature().getReturnType().equals(DoubleValue.class))
+            return this.isAConstant() ? new DoubleLiteral((Double)this.getValue(null)) : this;
 
         throw new HBqlException("Internal error");
     }

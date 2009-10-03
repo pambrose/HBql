@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,23 +10,23 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
  * Date: Aug 25, 2009
  * Time: 6:58:31 PM
  */
-public class LongLiteral extends GenericLiteral implements LongValue {
+public class FloatLiteral extends GenericLiteral implements FloatValue {
 
-    private final Long value;
+    private final Float value;
 
-    public LongLiteral(final Long value) {
+    public FloatLiteral(final Float value) {
         this.value = value;
     }
 
     @Override
-    public Long getValue(final Object object) {
+    public Float getValue(final Object object) {
         return this.value;
     }
 
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
-        return LongValue.class;
+        return FloatValue.class;
     }
 
     @Override
