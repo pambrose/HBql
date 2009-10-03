@@ -17,7 +17,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.LongLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.ShortLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
-import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.query.schema.NumericType;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -213,22 +213,20 @@ public abstract class GenericExpr implements GenericValue {
                     classList.add(clazz);
                 }
                 else {
-                    final int parentRanking = FieldType.getTypeRanking(parentClazz);
-                    final int clazzRanking = FieldType.getTypeRanking(clazz);
+                    final int parentRanking = NumericType.getTypeRanking(parentClazz);
+                    final int clazzRanking = NumericType.getTypeRanking(clazz);
 
-                    if (parentRanking < clazzRanking) {
+                    if (parentRanking < clazzRanking)
                         classList.add(clazz);
-                    }
                 }
             }
             else {
-                if (!parentClazz.isAssignableFrom(clazz)) {
+                if (!parentClazz.isAssignableFrom(clazz))
                     classList.add(clazz);
-                }
             }
         }
 
-        if (classList != null) {
+        if (classList.size() > 0) {
             final StringBuilder sbuf = new StringBuilder("Expecting type " + parentClazz.getSimpleName()
                                                          + " but encountered type"
                                                          + ((classList.size() > 1) ? "s" : "") + ": ");

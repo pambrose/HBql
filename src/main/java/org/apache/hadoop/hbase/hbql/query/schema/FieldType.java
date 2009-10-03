@@ -96,13 +96,6 @@ public enum FieldType {
         return this.synonymList;
     }
 
-    public static int getTypeRanking(final Class clazz) {
-        for (final FieldType type : values())
-            if (clazz.equals(type.getExprType()))
-                return type.getTypeRanking();
-        return -1;
-    }
-
     public static FieldType getFieldType(final Class fieldClass) {
 
         final Class<?> clazz = fieldClass.isArray() ? fieldClass.getComponentType() : fieldClass;
