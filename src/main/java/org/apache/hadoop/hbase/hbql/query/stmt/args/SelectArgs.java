@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.stmt.args;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
@@ -19,8 +19,8 @@ public abstract class SelectArgs extends ExprContext {
 
         KEYRANGE(new TypeSignature(null, StringValue.class, StringValue.class)),
         TIMERANGE(new TypeSignature(null, DateValue.class, DateValue.class)),
-        LIMIT(new TypeSignature(null, NumberValue.class)),
-        VERSION(new TypeSignature(null, NumberValue.class));
+        LIMIT(new TypeSignature(null, LongValue.class)),
+        VERSION(new TypeSignature(null, LongValue.class));
 
         private final TypeSignature typeSignature;
 

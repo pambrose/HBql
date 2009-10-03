@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
@@ -26,11 +26,11 @@ public class Function extends GenericExpr {
         UPPER(new TypeSignature(StringValue.class, StringValue.class)),
         CONCAT(new TypeSignature(StringValue.class, StringValue.class, StringValue.class)),
         REPLACE(new TypeSignature(StringValue.class, StringValue.class, StringValue.class, StringValue.class)),
-        SUBSTRING(new TypeSignature(StringValue.class, StringValue.class, NumberValue.class, NumberValue.class)),
+        SUBSTRING(new TypeSignature(StringValue.class, StringValue.class, IntegerValue.class, IntegerValue.class)),
 
         // Return Numbers
-        LENGTH(new TypeSignature(NumberValue.class, StringValue.class)),
-        INDEXOF(new TypeSignature(NumberValue.class, StringValue.class, StringValue.class));
+        LENGTH(new TypeSignature(IntegerValue.class, StringValue.class)),
+        INDEXOF(new TypeSignature(IntegerValue.class, StringValue.class, StringValue.class));
 
         private final TypeSignature typeSignature;
 

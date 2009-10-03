@@ -3,8 +3,13 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -22,28 +27,36 @@ import java.util.List;
  */
 public enum FieldType {
 
-    BooleanType(Boolean.TYPE, BooleanValue.class, Bytes.SIZEOF_BOOLEAN, "BOOLEAN", "BOOL"),
-    ByteType(Byte.TYPE, NumberValue.class, Bytes.SIZEOF_BYTE, "BYTE"),
-    CharType(Short.TYPE, NumberValue.class, Bytes.SIZEOF_CHAR, "CHAR"),
-    ShortType(Short.TYPE, NumberValue.class, Bytes.SIZEOF_SHORT, "SHORT"),
-    IntegerType(Integer.TYPE, NumberValue.class, Bytes.SIZEOF_INT, "INTEGER", "INT"),
-    LongType(Long.TYPE, NumberValue.class, Bytes.SIZEOF_LONG, "LONG"),
-    FloatType(Float.TYPE, NumberValue.class, Bytes.SIZEOF_FLOAT, "FLOAT"),
-    DoubleType(Double.TYPE, NumberValue.class, Bytes.SIZEOF_DOUBLE, "DOUBLE"),
-    KeyType(String.class, StringValue.class, -1, "KEY"),
-    StringType(String.class, StringValue.class, -1, "STRING", "STRING", "VARCHAR"),
-    DateType(Date.class, DateValue.class, -1, "DATE", "DATETIME"),
-    ObjectType(Object.class, null, -1, "OBJECT", "OBJ");
+    BooleanType(Boolean.TYPE, BooleanValue.class, 0, Bytes.SIZEOF_BOOLEAN, "BOOLEAN", "BOOL"),
+    ByteType(Byte.TYPE, NumberValue.class, 1, Bytes.SIZEOF_BYTE, "BYTE"),
+    CharType(Short.TYPE, NumberValue.class, 1, Bytes.SIZEOF_CHAR, "CHAR"),
+
+    ShortType(Short.TYPE, ShortValue.class, 2, Bytes.SIZEOF_SHORT, "SHORT"),
+    IntegerType(Integer.TYPE, IntegerValue.class, 3, Bytes.SIZEOF_INT, "INTEGER", "INT"),
+    LongType(Long.TYPE, LongValue.class, 4, Bytes.SIZEOF_LONG, "LONG"),
+    FloatType(Float.TYPE, FloatValue.class, 5, Bytes.SIZEOF_FLOAT, "FLOAT"),
+    DoubleType(Double.TYPE, DoubleValue.class, 6, Bytes.SIZEOF_DOUBLE, "DOUBLE"),
+
+    KeyType(String.class, StringValue.class, -1, -1, "KEY"),
+    StringType(String.class, StringValue.class, -1, -1, "STRING", "STRING", "VARCHAR"),
+    DateType(Date.class, DateValue.class, -1, -1, "DATE", "DATETIME"),
+    ObjectType(Object.class, null, -1, -1, "OBJECT", "OBJ");
 
     private final Class clazz;
     private Class<? extends GenericValue> exprType;
+    private final int typeRanking;
     private final int size;
     private final List<String> synonymList;
 
 
-    FieldType(final Class clazz, final Class<? extends GenericValue> exprType, final int size, final String... synonyms) {
+    FieldType(final Class clazz,
+              final Class<? extends GenericValue> exprType,
+              final int typeRanking,
+              final int size,
+              final String... synonyms) {
         this.clazz = clazz;
         this.exprType = exprType;
+        this.typeRanking = typeRanking;
         this.size = size;
         this.synonymList = Lists.newArrayList();
         this.synonymList.addAll(Arrays.asList(synonyms));
@@ -51,6 +64,10 @@ public enum FieldType {
 
     public Class getClazz() {
         return this.clazz;
+    }
+
+    public int getTypeRanking() {
+        return this.typeRanking;
     }
 
     public int getSize() {
@@ -79,6 +96,13 @@ public enum FieldType {
         return this.synonymList;
     }
 
+    public static int getTypeRanking(final Class clazz) {
+        for (final FieldType type : values())
+            if (clazz.equals(type.getExprType()))
+                return type.getTypeRanking();
+        return -1;
+    }
+
     public static FieldType getFieldType(final Class fieldClass) {
 
         final Class<?> clazz = fieldClass.isArray() ? fieldClass.getComponentType() : fieldClass;
@@ -93,7 +117,7 @@ public enum FieldType {
         }
         else {
             for (final FieldType type : values())
-                if (clazz == type.getClazz())
+                if (clazz.equals(type.getClazz()))
                     return type;
         }
 
