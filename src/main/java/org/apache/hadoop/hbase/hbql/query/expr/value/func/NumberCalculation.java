@@ -2,11 +2,13 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
+import org.apache.hadoop.hbase.hbql.query.schema.NumericType;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,12 +31,24 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
     @Override
     public Number getValue(final Object object) throws HBqlException {
 
-        final Class<? extends GenericValue> rankingClass = this.getHighestRankingNumericArg();
+        final Object obj0 = this.getArg(0).getValue(object);
+        final Object obj1 = this.getArg(1).getValue(object);
 
-        if (!this.useDecimalNumericArgs()) {
+        final Class<? extends GenericValue> rankingClass;
+        boolean useDecimal;
+        if (this.getHighestRankingNumericArg().equals(NumberValue.class)) {
+            rankingClass = NumericType.getHighestRankingNumericArg(obj0, obj1);
+            useDecimal = rankingClass.equals(FloatValue.class) || rankingClass.equals(DoubleValue.class);
+        }
+        else {
+            useDecimal = this.useDecimalNumericArgs();
+            rankingClass = this.getHighestRankingNumericArg();
+        }
 
-            final long val1 = ((Number)this.getArg(0).getValue(object)).longValue();
-            final long val2 = (((Number)this.getArg(1).getValue(object))).longValue();
+        if (!useDecimal) {
+
+            final long val1 = ((Number)obj0).longValue();
+            final long val2 = ((Number)obj1).longValue();
             final long result;
 
             switch (this.getOperator()) {
@@ -69,8 +83,8 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
         }
         else {
 
-            final double val1 = ((Number)this.getArg(0).getValue(object)).doubleValue();
-            final double val2 = (((Number)this.getArg(1).getValue(object))).doubleValue();
+            final double val1 = ((Number)obj0).doubleValue();
+            final double val2 = ((Number)obj1).doubleValue();
             final double result;
 
             switch (this.getOperator()) {

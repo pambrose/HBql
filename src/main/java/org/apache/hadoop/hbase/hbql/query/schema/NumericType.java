@@ -39,4 +39,20 @@ public enum NumericType {
                 return type.ordinal();
         return -1;
     }
+
+    public static Class<? extends GenericValue> getHighestRankingNumericArg(final Object... vals) {
+
+        Class<? extends GenericValue> highestRankingNumericArg = NumberValue.class;
+        int highestRank = -1;
+        for (final Object obj : vals) {
+
+            final Class clazz = obj.getClass();
+            final int rank = NumericType.getTypeRanking(clazz);
+            if (rank > highestRank) {
+                highestRank = rank;
+                highestRankingNumericArg = clazz;
+            }
+        }
+        return highestRankingNumericArg;
+    }
 }

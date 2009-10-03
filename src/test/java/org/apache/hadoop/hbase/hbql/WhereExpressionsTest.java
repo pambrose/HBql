@@ -491,6 +491,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void numericTypes() throws HBqlException {
 
+        /*
         assertTypeAndValue("4", Integer.class, 4);
         assertTypeAndValue("SHORT('4')", Short.class, Short.valueOf("4"));
         assertTypeAndValue("INTEGER('4')", Integer.class, Integer.valueOf("4"));
@@ -501,6 +502,8 @@ public class WhereExpressionsTest extends TestSupport {
         assertTypeAndValue("SHORT('4') + SHORT('5')", Short.class, Short.valueOf("9"));
         assertTypeAndValue("LONG('4') + LONG('5')", Long.class, 9L);
         assertTypeAndValue("SHORT('4') + LONG('5')", Long.class, 9L);
+       */
+        assertTypeAndValue("FLOAT('1.0') * IF (TRUE) THEN SHORT('4') + LONG('5') ELSE 33 END", Float.class, 9.0);
     }
 }
 

@@ -145,7 +145,7 @@ public abstract class GenericExpr implements GenericValue {
                                                        final boolean allowsCollections) throws TypeException {
 
         if (this.getArgList().size() != this.getTypeSignature().getArgCount())
-            throw new TypeException("Incorrect number of variables in " + this.asString());
+            throw new TypeException("Incorrect number of arguments in " + this.asString());
 
         for (int i = 0; i < this.getTypeSignature().getArgCount(); i++)
             this.validateParentClass(this.getTypeSignature().getArg(i), this.getArg(i).validateTypes(this, false));
@@ -157,11 +157,12 @@ public abstract class GenericExpr implements GenericValue {
                                                               final boolean allowsCollections) throws TypeException {
 
         if (this.getArgList().size() != this.getTypeSignature().getArgCount())
-            throw new TypeException("Incorrect number of variables in " + this.asString());
+            throw new TypeException("Incorrect number of arguments in " + this.asString());
 
         // Return the type of the highest ranking numeric arg
         int highestRank = -1;
         for (int i = 0; i < this.getTypeSignature().getArgCount(); i++) {
+
             final Class<? extends GenericValue> clazz = this.getArg(i).validateTypes(this, false);
             this.validateParentClass(this.getTypeSignature().getArg(i), clazz);
 
