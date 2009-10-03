@@ -145,23 +145,20 @@ public abstract class GenericExpr implements GenericValue {
         if (this.getArgList().size() != this.getTypeSignature().getArgCount())
             throw new TypeException("Incorrect number of variables in " + this.asString());
 
-        final List<Class<? extends GenericValue>> argsReturnList = Lists.newArrayList();
+        // Return the type of the highest ranking numeric arg
+        Class<? extends GenericValue> clazzToReturn = NumberValue.class;
+        int highestRank = -1;
         for (int i = 0; i < this.getTypeSignature().getArgCount(); i++) {
             final Class<? extends GenericValue> clazz = this.getArg(i).validateTypes(this, false);
-            argsReturnList.add(clazz);
             this.validateParentClass(this.getTypeSignature().getArg(i), clazz);
-        }
 
-        // Return the type of the highest ranking numeric class
-        int highestRank = 0;
-        Class<? extends GenericValue> clazzToReturn = NumberValue.class;
-        for (final Class<? extends GenericValue> clazz : argsReturnList) {
             final int rank = NumericType.getTypeRanking(clazz);
             if (rank > highestRank) {
                 highestRank = rank;
                 clazzToReturn = clazz;
             }
         }
+
         return clazzToReturn;
     }
 
