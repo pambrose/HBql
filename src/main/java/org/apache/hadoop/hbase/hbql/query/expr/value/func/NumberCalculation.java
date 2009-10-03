@@ -2,8 +2,11 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,8 +35,8 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
 
             final long val1 = ((Number)this.getArg(0).getValue(object)).longValue();
             final long val2 = (((Number)this.getArg(1).getValue(object))).longValue();
-
             final long result;
+
             switch (this.getOperator()) {
                 case PLUS:
                     result = val1 + val2;
@@ -55,31 +58,48 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
                     break;
                 default:
                     throw new HBqlException("Invalid operator: " + this.getOperator());
-
-                    if
             }
+
+            if (rankingClass.equals(ShortValue.class))
+                return (short)result;
+            else if (rankingClass.equals(IntegerValue.class))
+                return (int)result;
+            else
+                return result;
         }
         else {
+
             final double val1 = ((Number)this.getArg(0).getValue(object)).doubleValue();
             final double val2 = (((Number)this.getArg(1).getValue(object))).doubleValue();
+            final double result;
 
             switch (this.getOperator()) {
                 case PLUS:
-                    return val1 + val2;
+                    result = val1 + val2;
+                    break;
                 case MINUS:
-                    return val1 - val2;
+                    result = val1 - val2;
+                    break;
                 case MULT:
-                    return val1 * val2;
+                    result = val1 * val2;
+                    break;
                 case DIV:
-                    return val1 / val2;
+                    result = val1 / val2;
+                    break;
                 case MOD:
-                    return val1 % val2;
+                    result = val1 % val2;
+                    break;
                 case NEGATIVE:
-                    return val1 * -1;
+                    result = val1 * -1;
+                    break;
                 default:
                     throw new HBqlException("Invalid operator: " + this.getOperator());
             }
 
+            if (rankingClass.equals(FloatValue.class))
+                return (float)result;
+            else
+                return result;
         }
     }
 }

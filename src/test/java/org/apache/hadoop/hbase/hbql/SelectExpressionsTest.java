@@ -87,7 +87,7 @@ public class SelectExpressionsTest extends TestSupport {
 
             String keyval = (String)rec.getCurrentValue("keyval");
             int val5 = (Integer)rec.getCurrentValue("val5");
-            long val6 = (Long)rec.getCurrentValue("val6");
+            long val6 = (Integer)rec.getCurrentValue("val6");
 
             testKeyVals.add(keyval);
             testVal5Vals.add(val5);
