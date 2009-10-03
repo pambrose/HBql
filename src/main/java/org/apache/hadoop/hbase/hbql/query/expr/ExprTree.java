@@ -46,7 +46,10 @@ public class ExprTree extends ExprContext {
 
     @Override
     public String asString() {
-        return this.getGenericValue(0).asString();
+        if (this.isValid())
+            return this.getGenericValue(0).asString();
+        else
+            return "";
     }
 
     public void setUseHBaseResult(final boolean useHBaseResult) {
