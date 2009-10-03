@@ -136,10 +136,10 @@ versions returns [VersionArgs retval]
 	;
 	
 scanLimit returns [LimitArgs retval]
-	: keySCAN keyLIMIT v=integerLiteral		{retval = new LimitArgs($v.retval);};
+	: keySCAN keyLIMIT v=valExpr			{retval = new LimitArgs($v.retval);};
 	
 queryLimit returns [LimitArgs retval]
-	: keyQUERY keyLIMIT v=integerLiteral		{retval = new LimitArgs($v.retval);};
+	: keyQUERY keyLIMIT v=valExpr			{retval = new LimitArgs($v.retval);};
 	
 clientFilter returns [ExprTree retval]
 	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr	
@@ -261,6 +261,7 @@ atomExpr returns [GenericValue retval]
 valueAtom returns [GenericValue retval]
 	: s=stringLiteral				{retval = $s.retval;}
 	| i=integerLiteral				{retval = $i.retval;}
+	| d=doubleLiteral				{retval = $d.retval;}
 	| b=booleanAtom					{retval = $b.retval;}
 	| keyNULL					{retval = new StringNullLiteral();}
 	;
@@ -271,6 +272,9 @@ stringLiteral returns [GenericValue retval]
 	
 integerLiteral returns [GenericValue retval]
 	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};	
+
+doubleLiteral returns [GenericValue retval]
+	: v=DOUBLE					{retval = new DoubleLiteral(Double.valueOf($v.text));};	
 
 booleanLiteral returns [BooleanValue retval]
 	: t=keyTRUE					{retval = new BooleanLiteral($t.text);}
@@ -345,6 +349,7 @@ familyRef : FAMILY;
 paramRef: PARAM;
 		
 INT	: DIGIT+;
+DOUBLE	: DIGIT+ DOT DIGIT*;
 
 ID	: CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)* 		// DOLLAR is for inner class table names
 	| CHAR (CHAR | DOT | MINUS | DIGIT)* COLON (CHAR | DOT | MINUS | DIGIT)*
