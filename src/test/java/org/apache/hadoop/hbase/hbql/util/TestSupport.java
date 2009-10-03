@@ -51,10 +51,10 @@ public class TestSupport {
         assertTrue(evaluateExprTree(recordObj, expr));
     }
 
-    public static void assertType(final String expr, final Class clazz) throws HBqlException {
+    public static void assertTypeAndValue(final String expr, final Class clazz, final Object val) throws HBqlException {
         final Object obj = HBql.parseExpression(expr);
         System.out.println(expr + " = " + obj + " type " + obj.getClass().getSimpleName());
-        assertTrue(obj.getClass().equals(clazz));
+        assertTrue(obj.getClass().equals(clazz) && obj.equals(val));
     }
 
     public static void assertEvalFalse(final String expr) throws HBqlException {
