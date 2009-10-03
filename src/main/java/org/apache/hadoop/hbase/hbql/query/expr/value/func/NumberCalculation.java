@@ -20,30 +20,66 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
-        return this.validateNumericTypes(parentExpr, allowsCollections);
+        return this.validateNumericTypes(parentExpr, false);
     }
 
     @Override
-    public Long getValue(final Object object) throws HBqlException {
+    public Number getValue(final Object object) throws HBqlException {
 
-        final long val1 = ((Number)this.getArg(0).getValue(object)).longValue();
-        final long val2 = (((Number)this.getArg(1).getValue(object))).longValue();
+        final Class<? extends GenericValue> rankingClass = this.getHighestRankingNumericArg();
 
-        switch (this.getOperator()) {
-            case PLUS:
-                return val1 + val2;
-            case MINUS:
-                return val1 - val2;
-            case MULT:
-                return val1 * val2;
-            case DIV:
-                return val1 / val2;
-            case MOD:
-                return val1 % val2;
-            case NEGATIVE:
-                return val1 * -1;
-            default:
-                throw new HBqlException("Invalid operator: " + this.getOperator());
+        if (!this.useDecimalNumericArgs()) {
+
+            final long val1 = ((Number)this.getArg(0).getValue(object)).longValue();
+            final long val2 = (((Number)this.getArg(1).getValue(object))).longValue();
+
+            final long result;
+            switch (this.getOperator()) {
+                case PLUS:
+                    result = val1 + val2;
+                    break;
+                case MINUS:
+                    result = val1 - val2;
+                    break;
+                case MULT:
+                    result = val1 * val2;
+                    break;
+                case DIV:
+                    result = val1 / val2;
+                    break;
+                case MOD:
+                    result = val1 % val2;
+                    break;
+                case NEGATIVE:
+                    result = val1 * -1;
+                    break;
+                default:
+                    throw new HBqlException("Invalid operator: " + this.getOperator());
+
+                    if
+            }
+        }
+        else {
+            final double val1 = ((Number)this.getArg(0).getValue(object)).doubleValue();
+            final double val2 = (((Number)this.getArg(1).getValue(object))).doubleValue();
+
+            switch (this.getOperator()) {
+                case PLUS:
+                    return val1 + val2;
+                case MINUS:
+                    return val1 - val2;
+                case MULT:
+                    return val1 * val2;
+                case DIV:
+                    return val1 / val2;
+                case MOD:
+                    return val1 % val2;
+                case NEGATIVE:
+                    return val1 * -1;
+                default:
+                    throw new HBqlException("Invalid operator: " + this.getOperator());
+            }
+
         }
     }
 }

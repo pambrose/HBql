@@ -5,6 +5,8 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -71,8 +73,12 @@ public abstract class GenericExpr implements GenericValue {
         }
     }
 
+    // Used to cache type of the args for exprs with numberic args
+    private Class<? extends GenericValue> highestRankingNumericArg = NumberValue.class;
+    private boolean useDecimalNumericArgs = false;
+
     private final Type type;
-    private final List<GenericValue> argList = Lists.newArrayList();
+    private final List<GenericValue> exprList = Lists.newArrayList();
 
     protected GenericExpr(final Type type, final GenericValue... exprs) {
         this(type, Arrays.asList(exprs));
@@ -80,13 +86,13 @@ public abstract class GenericExpr implements GenericValue {
 
     protected GenericExpr(final Type type, final List<GenericValue> exprList) {
         this.type = type;
-        this.argList.addAll(exprList);
+        this.exprList.addAll(exprList);
     }
 
     protected GenericExpr(final Type type, final GenericValue expr, final List<GenericValue> exprList) {
         this.type = type;
-        this.argList.add(expr);
-        this.argList.addAll(exprList);
+        this.exprList.add(expr);
+        this.exprList.addAll(exprList);
     }
 
     protected TypeSignature getTypeSignature() {
@@ -94,11 +100,19 @@ public abstract class GenericExpr implements GenericValue {
     }
 
     protected List<GenericValue> getArgList() {
-        return this.argList;
+        return this.exprList;
     }
 
     protected List<GenericValue> getSubArgs(final int i) {
         return this.getArgList().subList(i, this.getArgList().size());
+    }
+
+    protected boolean useDecimalNumericArgs() {
+        return this.useDecimalNumericArgs;
+    }
+
+    protected Class<? extends GenericValue> getHighestRankingNumericArg() {
+        return highestRankingNumericArg;
     }
 
     public boolean isAConstant() {
@@ -146,7 +160,6 @@ public abstract class GenericExpr implements GenericValue {
             throw new TypeException("Incorrect number of variables in " + this.asString());
 
         // Return the type of the highest ranking numeric arg
-        Class<? extends GenericValue> clazzToReturn = NumberValue.class;
         int highestRank = -1;
         for (int i = 0; i < this.getTypeSignature().getArgCount(); i++) {
             final Class<? extends GenericValue> clazz = this.getArg(i).validateTypes(this, false);
@@ -155,11 +168,14 @@ public abstract class GenericExpr implements GenericValue {
             final int rank = NumericType.getTypeRanking(clazz);
             if (rank > highestRank) {
                 highestRank = rank;
-                clazzToReturn = clazz;
+                this.highestRankingNumericArg = clazz;
             }
         }
 
-        return clazzToReturn;
+        this.useDecimalNumericArgs = (this.getHighestRankingNumericArg().equals(FloatValue.class))
+                                     || this.getHighestRankingNumericArg().equals(DoubleValue.class);
+
+        return this.getHighestRankingNumericArg();
     }
 
     @Override

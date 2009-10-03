@@ -42,7 +42,7 @@ public class DelegateCompare extends GenericCompare {
         else
             this.throwInvalidTypeException(type0, type1);
 
-        return this.typedExpr.validateTypes(parentExpr, allowsCollections);
+        return this.typedExpr.validateTypes(parentExpr, false);
     }
 
     @Override
