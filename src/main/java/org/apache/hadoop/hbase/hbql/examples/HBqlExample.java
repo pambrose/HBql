@@ -50,7 +50,5 @@ public class HBqlExample {
                                + Bytes.toString(result.getValue(family, author)) + " - "
                                + Bytes.toString(result.getValue(family, title)));
         }
-
     }
-
 }

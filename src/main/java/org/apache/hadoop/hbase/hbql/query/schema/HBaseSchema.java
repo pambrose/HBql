@@ -169,7 +169,6 @@ public abstract class HBaseSchema extends Schema {
         attribList.add(attrib);
     }
 
-
     protected void assignCurrentValuesFromExpr(final Object newobj,
                                                final List<SelectElement> selectElementList,
                                                final Result result) throws HBqlException {
@@ -297,7 +296,6 @@ public abstract class HBaseSchema extends Schema {
 
             // Set column names
             for (final ColumnAttrib attrib : columnAttribSet) {
-
                 // Do not bother to request because it will always be delivered
                 if (attrib.isKeyAttrib())
                     continue;
@@ -341,5 +339,4 @@ public abstract class HBaseSchema extends Schema {
         exprTree.validate();
         return new HBqlFilter(exprTree, scanLimit);
     }
-
 }

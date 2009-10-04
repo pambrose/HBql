@@ -168,6 +168,7 @@ public class HResults<T> implements Iterable<T> {
                     return val;
                 }
 
+                @SuppressWarnings("unchecked")
                 private T doFetch() throws HBqlException, IOException {
 
                     if (this.getResultIter() == null)
