@@ -39,6 +39,7 @@ public abstract class ExprContext implements Serializable {
         this.typeSignature = typeSignature;
         if (vals != null) {
             for (final GenericValue val : vals) {
+                // Null values might come in from KeyRangeArgs.Range
                 if (val != null)
                     this.addExpression(val);
             }
@@ -87,17 +88,26 @@ public abstract class ExprContext implements Serializable {
         return this.getExpressions().get(i);
     }
 
+    protected Object evaluate(final int i, final boolean allowColumns, final Object object) throws HBqlException {
+        this.validateTypes(allowColumns);
+        this.optimize();
+        return this.getGenericValue(i).getValue(object);
+    }
+
     public boolean isValid() {
+
         if (this.getExpressions().size() == 0)
             return false;
 
         for (final GenericValue val : this.getExpressions())
             if (val == null)
                 return false;
+
         return true;
     }
 
     protected void setContext() {
+
         if (this.isValid() && this.isInNeedOfSettingContext()) {
             try {
                 for (final GenericValue val : this.getExpressions())

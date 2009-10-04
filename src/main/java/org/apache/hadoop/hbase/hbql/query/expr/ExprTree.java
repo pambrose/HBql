@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,16 +26,7 @@ public class ExprTree extends ExprContext {
     }
 
     public Boolean evaluate(final Object object) throws HBqlException {
-
-        this.validateTypes(true);
-        this.optimize();
-
-        // Set it once per evaluation
-        DateLiteral.resetNow();
-
-        return !this.isValid()
-               || this.getGenericValue(0) == null
-               || (Boolean)this.getGenericValue(0).getValue(object);
+        return !this.isValid() || (Boolean)this.evaluate(0, true, object);
     }
 
     public void validate() throws HBqlException {

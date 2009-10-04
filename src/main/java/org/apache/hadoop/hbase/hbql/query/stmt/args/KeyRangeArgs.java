@@ -20,31 +20,31 @@ public class KeyRangeArgs {
     private final List<Range> rangeList;
 
     public enum Type {
-        LAST, RANGE
+        SINGLE, RANGE, LAST
     }
 
     public static class Range extends SelectArgs {
         private final KeyRangeArgs.Type type;
 
         public Range(final GenericValue arg0) {
-            this(arg0, null, KeyRangeArgs.Type.LAST);
+            this(KeyRangeArgs.Type.LAST, arg0, null);
         }
 
         public Range(final GenericValue arg0, final GenericValue arg1) {
-            this(arg0, arg1, KeyRangeArgs.Type.RANGE);
+            this((arg1 == null ? KeyRangeArgs.Type.SINGLE : KeyRangeArgs.Type.RANGE), arg0, arg1);
         }
 
-        private Range(final GenericValue arg0, final GenericValue arg1, final KeyRangeArgs.Type type) {
-            super(SelectArgs.Type.KEYRANGE, arg0, arg1);
+        private Range(final KeyRangeArgs.Type type, final GenericValue arg0, final GenericValue arg1) {
+            super((arg1 == null ? SelectArgs.Type.SINGLEKEY : SelectArgs.Type.KEYRANGE), arg0, arg1);
             this.type = type;
         }
 
         public String getLower() throws HBqlException {
-            return (String)this.getGenericValue(0).getValue(null);
+            return (String)this.evaluate(0, false, null);
         }
 
         public String getUpper() throws HBqlException {
-            return (String)this.getGenericValue(1).getValue(null);
+            return (String)this.evaluate(1, false, null);
         }
 
         public KeyRangeArgs.Type getType() {
@@ -111,17 +111,6 @@ public class KeyRangeArgs {
         for (final Range range : this.getRangeList())
             range.setSchema(schema);
     }
-
-    public void validateTypes(final boolean allowColumns) throws HBqlException {
-        for (final Range range : this.getRangeList())
-            range.validateTypes(allowColumns);
-    }
-
-    public void optimize() throws HBqlException {
-        for (final Range range : this.getRangeList())
-            range.optimize();
-    }
-
 
     public String asString() {
         final StringBuilder sbuf = new StringBuilder("KEYS ");

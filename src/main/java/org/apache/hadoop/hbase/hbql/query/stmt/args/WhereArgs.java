@@ -22,44 +22,41 @@ import java.util.Set;
  */
 public class WhereArgs {
 
-    private KeyRangeArgs keyRangeArgs = new KeyRangeArgs(null);
-    private TimeRangeArgs timeRangeArgs = new TimeRangeArgs(null, null);
-    private VersionArgs versionArgs = new VersionArgs(null);
-    private LimitArgs scanLimitArgs = new LimitArgs(null);
-    private LimitArgs queryLimitArgs = new LimitArgs(null);
-    private ExprTree clientExprTree = ExprTree.newExprTree(null);
-    private ExprTree serverExprTree = ExprTree.newExprTree(null);
+    private KeyRangeArgs keyRangeArgs = null;
+    private TimeRangeArgs timeRangeArgs = null;
+    private VersionArgs versionArgs = null;
+    private LimitArgs scanLimitArgs = null;
+    private LimitArgs queryLimitArgs = null;
+
+    private ExprTree clientExprTree = null;
+    private ExprTree serverExprTree = null;
 
     private HBaseSchema schema;
 
-    public void setSchema(final HBaseSchema schema) {
+    public void setSchema(final HBaseSchema schema) throws HBqlException {
 
         this.schema = schema;
 
-        this.getKeyRangeArgs().setSchema(null);
-        this.getTimeRangeArgs().setSchema(null);
-        this.getVersionArgs().setSchema(null);
-        this.getScanLimitArgs().setSchema(null);
-        this.getQueryLimitArgs().setSchema(null);
+        if (this.getKeyRangeArgs() != null)
+            this.getKeyRangeArgs().setSchema(null);
 
-        this.getServerExprTree().setSchema(this.getSchema());
-        this.getClientExprTree().setSchema(this.getSchema());
-    }
+        if (this.getTimeRangeArgs() != null)
+            this.getTimeRangeArgs().setSchema(null);
 
-    public void validateTypes() throws HBqlException {
-        this.getKeyRangeArgs().validateTypes(false);
-        this.getTimeRangeArgs().validateTypes(false);
-        this.getVersionArgs().validateTypes(false);
-        this.getScanLimitArgs().validateTypes(false);
-        this.getQueryLimitArgs().validateTypes(false);
-    }
+        if (this.getVersionArgs() != null)
+            this.getVersionArgs().setSchema(null);
 
-    public void optimize() throws HBqlException {
-        this.getKeyRangeArgs().optimize();
-        this.getTimeRangeArgs().optimize();
-        this.getVersionArgs().optimize();
-        this.getScanLimitArgs().optimize();
-        this.getQueryLimitArgs().optimize();
+        if (this.getScanLimitArgs() != null)
+            this.getScanLimitArgs().setSchema(null);
+
+        if (this.getQueryLimitArgs() != null)
+            this.getQueryLimitArgs().setSchema(null);
+
+        if (this.getServerExprTree() != null)
+            this.getServerExprTree().setSchema(this.getSchema());
+
+        if (this.getClientExprTree() != null)
+            this.getClientExprTree().setSchema(this.getSchema());
     }
 
     private HBaseSchema getSchema() {
@@ -143,25 +140,25 @@ public class WhereArgs {
 
         final StringBuilder sbuf = new StringBuilder("WITH ");
 
-        if (this.getKeyRangeArgs().isValid())
+        if (this.getKeyRangeArgs() != null && this.getKeyRangeArgs().isValid())
             sbuf.append(this.getKeyRangeArgs().asString() + "\n");
 
-        if (this.getTimeRangeArgs().isValid())
+        if (this.getTimeRangeArgs() != null && this.getTimeRangeArgs().isValid())
             sbuf.append(this.getTimeRangeArgs().asString() + "\n");
 
-        if (this.getVersionArgs().isValid())
+        if (this.getVersionArgs() != null && this.getVersionArgs().isValid())
             sbuf.append(this.getVersionArgs().asString() + "\n");
 
-        if (this.getScanLimitArgs().isValid())
+        if (this.getScanLimitArgs() != null && this.getScanLimitArgs().isValid())
             sbuf.append("SCAN " + this.getScanLimitArgs().asString() + "\n");
 
-        if (this.getQueryLimitArgs().isValid())
+        if (this.getQueryLimitArgs() != null && this.getQueryLimitArgs().isValid())
             sbuf.append("QUERY " + this.getQueryLimitArgs().asString() + "\n");
 
-        if (this.getServerExprTree().isValid())
+        if (this.getServerExprTree() != null && this.getServerExprTree().isValid())
             sbuf.append("SERVER FILTER " + this.getServerExprTree().asString() + "\n");
 
-        if (this.getClientExprTree().isValid())
+        if (this.getClientExprTree() != null && this.getClientExprTree().isValid())
             sbuf.append("CLIENT FILTER " + this.getClientExprTree().asString() + "\n");
 
         return sbuf.toString();
@@ -169,25 +166,27 @@ public class WhereArgs {
 
     public Set<ColumnAttrib> getAllColumnsUsedInExprs() {
         final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
-        allAttribs.addAll(this.getServerExprTree().getAttribsUsedInExpr());
-        allAttribs.addAll(this.getClientExprTree().getAttribsUsedInExpr());
+        if (this.getServerExprTree() != null)
+            allAttribs.addAll(this.getServerExprTree().getAttribsUsedInExpr());
+        if (this.getClientExprTree() != null)
+            allAttribs.addAll(this.getClientExprTree().getAttribsUsedInExpr());
         return allAttribs;
     }
 
-    public List<Scan> getScanList(final Collection<ColumnAttrib> columnAttribSet
-    ) throws IOException, HBqlException {
+    public List<Scan> getScanList(final Collection<ColumnAttrib> columnAttribSet) throws IOException, HBqlException {
 
         final List<Scan> scanList = Lists.newArrayList();
 
-        final List<KeyRangeArgs.Range> rangeList = this.getKeyRangeArgs().getRangeList();
+        final KeyRangeArgs keyRangeArgs = this.getKeyRangeArgs();
 
-        if (rangeList.size() == 0) {
-            scanList.add(new Scan());
-        }
-        else {
-            for (final KeyRangeArgs.Range range : rangeList)
+        if (keyRangeArgs != null) {
+            for (final KeyRangeArgs.Range range : keyRangeArgs.getRangeList())
                 scanList.add(range.getScan());
         }
+
+        // If nothing present, then scan all rows
+        if (scanList.size() == 0)
+            scanList.add(new Scan());
 
         for (final Scan scan : scanList) {
 

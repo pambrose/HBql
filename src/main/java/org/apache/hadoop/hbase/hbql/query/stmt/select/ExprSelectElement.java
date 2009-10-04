@@ -5,7 +5,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
@@ -71,14 +70,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     }
 
     public Object getValue(final Result result) throws HBqlException {
-
-        this.validateTypes(true);
-        this.optimize();
-
-        // Set it once per evaluation
-        DateLiteral.resetNow();
-
-        return this.getGenericValue(0).getValue(result);
+        return this.evaluate(0, true, result);
     }
 
     @Override

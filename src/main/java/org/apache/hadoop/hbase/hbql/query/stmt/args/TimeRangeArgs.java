@@ -19,11 +19,11 @@ public class TimeRangeArgs extends SelectArgs {
     }
 
     private long getLower() throws HBqlException {
-        return (Long)this.getGenericValue(0).getValue(null);
+        return (Long)this.evaluate(0, false, null);
     }
 
     private long getUpper() throws HBqlException {
-        return (Long)this.getGenericValue(1).getValue(null);
+        return (Long)this.evaluate(1, false, null);
     }
 
     public String asString() {

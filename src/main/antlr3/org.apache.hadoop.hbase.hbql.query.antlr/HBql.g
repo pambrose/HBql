@@ -156,8 +156,7 @@ keyRangeList returns [List<KeyRangeArgs.Range> retval]
 keyRange returns [KeyRangeArgs.Range retval]
 options {backtrack=true;}	
 	: q1=valExpr keyTO keyLAST			{retval = new KeyRangeArgs.Range($q1.retval);}
-	| q1=valExpr 					{retval = new KeyRangeArgs.Range($q1.retval, $q1.retval);}
-	| q1=valExpr keyTO q2=valExpr			{retval = new KeyRangeArgs.Range($q1.retval, $q2.retval);}
+	| q1=valExpr (keyTO q2=valExpr)?		{retval = new KeyRangeArgs.Range($q1.retval, $q2.retval);}
 	;
 	
 nodescWhereExpr returns [ExprTree retval]

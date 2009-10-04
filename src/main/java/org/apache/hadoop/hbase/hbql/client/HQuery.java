@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
@@ -37,10 +38,6 @@ public class HQuery<T> {
         final WhereArgs where = this.getWhereArgs();
 
         where.setSchema(this.getSchema());
-        where.validateTypes();
-        where.optimize();
-
-        where.getClientExprTree().validate();
 
         // Get list of all columns that are used in select list and expr tree
         final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
@@ -92,12 +89,16 @@ public class HQuery<T> {
 
     public HResults<T> getResults() throws HBqlException {
 
+        // Set it once per evaluation
+        DateLiteral.resetNow();
+
         if (this.getListeners() != null) {
             for (final HQueryListener<T> listener : this.getListeners())
                 listener.onQueryInit();
         }
 
-        return new HResults<T>(this, this.getConnection(),
+        return new HResults<T>(this,
+                               this.getConnection(),
                                this.getQueryArgs(),
                                this.getListeners(),
                                this.getScanList());

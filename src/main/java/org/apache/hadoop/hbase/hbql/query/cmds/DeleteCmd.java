@@ -46,8 +46,6 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
 
         final WhereArgs where = this.getWhereArgs();
         where.setSchema(schema);
-        where.validateTypes();
-        where.optimize();
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWhereArgs().getAllColumnsUsedInExprs();
         final HTable table = conn.getHTable(schema.getTableName());

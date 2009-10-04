@@ -17,6 +17,7 @@ public abstract class SelectArgs extends ExprContext {
 
     public static enum Type {
 
+        SINGLEKEY(new TypeSignature(null, StringValue.class)),
         KEYRANGE(new TypeSignature(null, StringValue.class, StringValue.class)),
         TIMERANGE(new TypeSignature(null, DateValue.class, DateValue.class)),
         LIMIT(new TypeSignature(null, LongValue.class)),
