@@ -3,11 +3,14 @@ package org.apache.hadoop.hbase.hbql.query.expr;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.query.schema.NumericType;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
+import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -154,11 +157,23 @@ public abstract class ExprContext implements Serializable {
                 for (int i = 0; i < this.getTypeSignature().getArgCount(); i++) {
 
                     final Class<? extends GenericValue> parentClazz = this.getTypeSignature().getArg(i);
+                    final Class<? extends GenericValue> clazz = clazzList.get(i);
+                    // See if they are both NumberValues.  If they are, then check ranks
+                    if (HUtil.isParentClass(NumberValue.class, parentClazz, clazz)) {
+                        final int parentRank = NumericType.getTypeRanking(parentClazz);
+                        final int clazzRank = NumericType.getTypeRanking(clazz);
+                        if (clazzRank > parentRank)
+                            throw new TypeException("Cannot assign a " + clazz.getSimpleName()
+                                                    + " value to a " + parentClazz.getSimpleName()
+                                                    + " value in " + this.asString());
 
-                    if (!parentClazz.isAssignableFrom(clazzList.get(i)))
-                        throw new TypeException("Expecting type " + parentClazz.getSimpleName()
-                                                + " but encountered type " + clazzList.get(i).getSimpleName()
-                                                + " in " + this.asString());
+                    }
+                    else {
+                        if (!parentClazz.isAssignableFrom(clazz))
+                            throw new TypeException("Expecting type " + parentClazz.getSimpleName()
+                                                    + " but encountered type " + clazz.getSimpleName()
+                                                    + " in " + this.asString());
+                    }
                 }
             }
 
