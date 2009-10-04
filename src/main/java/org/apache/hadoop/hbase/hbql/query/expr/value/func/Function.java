@@ -11,12 +11,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DoubleLiteral;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.FloatLiteral;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.LongLiteral;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.ShortLiteral;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 /**
@@ -101,43 +95,8 @@ public class Function extends GenericExpr {
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-
-        // First optimize all the args
         this.optimizeArgs();
-
-        if (!this.isAConstant())
-            return this;
-
-        switch (this.getFunctionType()) {
-
-            case TRIM:
-            case LOWER:
-            case UPPER:
-            case CONCAT:
-            case REPLACE:
-            case SUBSTRING:
-                return new StringLiteral((String)this.getValue(null));
-
-            case SHORT:
-                return new ShortLiteral((Short)this.getValue(null));
-
-            case LONG:
-                return new LongLiteral((Long)this.getValue(null));
-
-            case INTEGER:
-            case LENGTH:
-            case INDEXOF:
-                return new IntegerLiteral((Integer)this.getValue(null));
-
-            case FLOAT:
-                return new FloatLiteral((Float)this.getValue(null));
-
-            case DOUBLE:
-                return new DoubleLiteral((Double)this.getValue(null));
-
-            default:
-                throw new HBqlException("Invalid function: " + this.getFunctionType());
-        }
+        return !this.isAConstant() ? this : this.getFunctionType().getTypeSignature().newLiteral(this.getValue(null));
     }
 
     @Override

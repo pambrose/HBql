@@ -18,7 +18,7 @@ public class BooleanLiteral extends GenericLiteral implements BooleanValue {
         this.value = text.equalsIgnoreCase("true");
     }
 
-    public BooleanLiteral(final boolean value) {
+    public BooleanLiteral(final Boolean value) {
         this.value = value;
     }
 
