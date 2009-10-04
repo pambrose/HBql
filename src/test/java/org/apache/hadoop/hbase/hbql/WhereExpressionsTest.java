@@ -495,11 +495,11 @@ public class WhereExpressionsTest extends TestSupport {
         assertTypeAndValue("4L", Long.class, 4L);
         assertTypeAndValue("4.33", Double.class, 4.33);
 
-        assertTypeAndValue("SHORT('4')", Short.class, Short.valueOf("4"));
-        assertTypeAndValue("INTEGER('4')", Integer.class, Integer.valueOf("4"));
-        assertTypeAndValue("LONG('4')", Long.class, Long.valueOf("4"));
-        assertTypeAndValue("FLOAT('4.32')", Float.class, Float.valueOf("4.32"));
-        assertTypeAndValue("DOUBLE('4.32')", Double.class, Double.valueOf("4.32"));
+        assertTypeAndValue("SHORT('4')", Short.class, (short)4);
+        assertTypeAndValue("INTEGER('4')", Integer.class, 4);
+        assertTypeAndValue("LONG('4')", Long.class, 4L);
+        assertTypeAndValue("FLOAT('4.32')", Float.class, (float)4.32);
+        assertTypeAndValue("DOUBLE('4.32')", Double.class, 4.32);
 
         assertTypeAndValue("SHORT('4') + SHORT('5')", Short.class, Short.valueOf("9"));
         assertTypeAndValue("LONG('4') + LONG('5')", Long.class, 9L);
@@ -507,6 +507,8 @@ public class WhereExpressionsTest extends TestSupport {
 
         assertTypeAndValue("FLOAT('1.0') * IF (TRUE) THEN SHORT('4') + LONG('5') ELSE 10 END", Float.class, (float)9.0);
         assertTypeAndValue("FLOAT('1.0') * IF (FALSE) THEN SHORT('4') + LONG('5') ELSE Integer('10') END", Float.class, (float)10.0);
+
+        assertTypeAndValue("5.0+ FLOAT('4.0') + LONG('5')", Double.class, 14.0);
     }
 }
 
