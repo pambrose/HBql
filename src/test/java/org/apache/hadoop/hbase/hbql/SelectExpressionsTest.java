@@ -78,7 +78,7 @@ public class SelectExpressionsTest extends TestSupport {
         final String query1 = "SELECT val5, (val5 - val5 + val5) as val6 FROM table1";
 
         HQuery<HRecord> q1 = conn.newHQuery(query1);
-        HResults<HRecord> results1 = q1.execute();
+        HResults<HRecord> results1 = q1.getResults();
 
         List<String> testKeyVals = Lists.newArrayList();
         List<Integer> testVal5Vals = Lists.newArrayList();

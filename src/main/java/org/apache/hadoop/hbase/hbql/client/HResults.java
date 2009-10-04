@@ -5,7 +5,9 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.ResultsIterator;
 
@@ -21,19 +23,51 @@ import java.util.List;
  */
 public class HResults<T> implements Iterable<T> {
 
-    final List<ResultScanner> scannerList = Lists.newArrayList();
-    final HQuery hquery;
+    private final List<ResultScanner> scannerList = Lists.newArrayList();
+    private final HConnection connection;
+    private final HQuery hquery;
+    private final QueryArgs queryArgs;
+    private final List<HQueryListener<T>> listeners;
+    private final List<Scan> scanList;
 
-    public HResults(final HQuery hquery) {
+    public HResults(final HQuery hquery,
+                    final HConnection connection,
+                    final QueryArgs queryArgs,
+                    final List<HQueryListener<T>> listeners,
+                    final List<Scan> scanList) {
+        this.connection = connection;
         this.hquery = hquery;
+        this.queryArgs = queryArgs;
+        this.listeners = listeners;
+        this.scanList = scanList;
+    }
+
+    private HConnection getConnection() {
+        return connection;
     }
 
     private HQuery getHQuery() {
         return this.hquery;
     }
 
+    private QueryArgs getQueryArgs() {
+        return this.queryArgs;
+    }
+
+    private WhereArgs getWhereArgs() {
+        return this.getQueryArgs().getWhereArgs();
+    }
+
+    private List<HQueryListener<T>> getListeners() {
+        return listeners;
+    }
+
     private List<ResultScanner> getScannerList() {
         return this.scannerList;
+    }
+
+    private List<Scan> getScanList() {
+        return scanList;
     }
 
     public void close() {
@@ -65,9 +99,10 @@ public class HResults<T> implements Iterable<T> {
         try {
             return new ResultsIterator<T>() {
 
-                final HTable table = getHQuery().getConnection().getHTable(getHQuery().getSchema().getTableName());
-                final ExprTree clientExprTree = getHQuery().getWhereArgs().getClientExprTree();
-                final Iterator<Scan> scanIter = getHQuery().getScanList().iterator();
+                final HTable table = getConnection().getHTable(getQueryArgs().getSchema().getTableName());
+                final ExprTree clientExprTree = getWhereArgs().getClientExprTree();
+                final Iterator<Scan> scanIter = getScanList().iterator();
+
                 int maxVersions = 0;
                 ResultScanner currentResultScanner = null;
                 Iterator<Result> resultIter = null;
@@ -148,16 +183,14 @@ public class HResults<T> implements Iterable<T> {
 
                                 this.recordCount++;
 
-                                final List<ColumnAttrib> attribs = getHQuery().getQueryArgs().getSelectAttribList();
+                                final HBaseSchema schema = getQueryArgs().getSchema();
+                                final T val = (T)schema.newObject(getQueryArgs().getSelectAttribList(),
+                                                                  getQueryArgs().getSelectElementList(),
+                                                                  this.maxVersions,
+                                                                  result);
 
-                                final T val = (T)getHQuery().getSchema().newObject(attribs,
-                                                                                   getHQuery().getSelectElementList(),
-                                                                                   this.maxVersions,
-                                                                                   result);
-
-                                final List<HQueryListener<T>> listenerList = getHQuery().getListeners();
-                                if (listenerList != null)
-                                    for (final HQueryListener<T> listener : listenerList)
+                                if (getListeners() != null)
+                                    for (final HQueryListener<T> listener : getListeners())
                                         listener.onEachRow(val);
 
                                 return val;
@@ -174,11 +207,9 @@ public class HResults<T> implements Iterable<T> {
 
                     this.nextObject = nextObject;
 
-                    if (nextObject == null && !fromExceptionCatch) {
-                        final List<HQueryListener<T>> listenerList = getHQuery().getListeners();
-                        if (listenerList != null)
-                            for (final HQueryListener<T> listener : listenerList)
-                                listener.onQueryComplete();
+                    if (nextObject == null && !fromExceptionCatch && getListeners() != null) {
+                        for (final HQueryListener<T> listener : getListeners())
+                            listener.onQueryComplete();
 
                     }
                 }

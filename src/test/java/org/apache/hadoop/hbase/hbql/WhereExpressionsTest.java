@@ -141,6 +141,8 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalFalse("DATE('10/31/94', 'mm/dd/yy') - DAY(1) < DATE('10/30/94', 'mm/dd/yy')");
         assertEvalTrue("DATE('10/31/1994', 'mm/dd/yyyy') - DAY(1) - MILLI(1) < DATE('10/31/1994', 'mm/dd/yyyy')  - DAY(1) ");
         assertEvalTrue("DATE('10/31/1994', 'mm/dd/yyyy') - DAY(1) - MILLI(1) = DATE('10/30/1994', 'mm/dd/yyyy')  - MILLI(1) ");
+
+        assertEvalTrue("NOW()+DAY(3) = NOW()+DAY(6)-DAY(3)");
     }
 
     @Test

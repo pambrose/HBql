@@ -141,7 +141,7 @@ public class AnnotationExample {
                               + "CLIENT FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4";
 
         HQuery<TestObject> q2 = conn.newHQuery(query2);
-        HResults<TestObject> results2 = q2.execute();
+        HResults<TestObject> results2 = q2.getResults();
 
         for (TestObject val2 : results2) {
             System.out.println("Current Values: " + val2.keyval + " - " + val2.author + " - " + val2.title);

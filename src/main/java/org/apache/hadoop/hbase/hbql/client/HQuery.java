@@ -7,7 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
-import org.apache.hadoop.hbase.hbql.query.stmt.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Sets;
 
@@ -34,7 +33,6 @@ public class HQuery<T> {
 
         this.connection = connection;
         this.query = query;
-
         this.queryArgs = HBql.parseQuery(this.getConnection(), this.getQuery());
 
         final WhereArgs where = this.getWhereArgs();
@@ -67,7 +65,7 @@ public class HQuery<T> {
         this.getListeners().add(listener);
     }
 
-    HConnection getConnection() {
+    private HConnection getConnection() {
         return this.connection;
     }
 
@@ -75,32 +73,24 @@ public class HQuery<T> {
         return this.query;
     }
 
-    public QueryArgs getQueryArgs() {
+    private QueryArgs getQueryArgs() {
         return this.queryArgs;
     }
 
-    public WhereArgs getWhereArgs() {
+    private WhereArgs getWhereArgs() {
         return this.getQueryArgs().getWhereArgs();
     }
 
-    List<Scan> getScanList() {
+    private List<Scan> getScanList() {
         return this.scanList;
     }
 
-    public List<HQueryListener<T>> getListeners() {
+    private List<HQueryListener<T>> getListeners() {
         return this.listeners;
     }
 
-    HBaseSchema getSchema() {
+    private HBaseSchema getSchema() {
         return this.getQueryArgs().getSchema();
-    }
-
-    List<SelectElement> getSelectElementList() {
-        return this.getQueryArgs().getSelectElementList();
-    }
-
-    public long getQueryLimit() throws HBqlException {
-        return this.getQueryArgs().getWhereArgs().getQueryLimit();
     }
 
     public void clearListeners() {
@@ -108,13 +98,36 @@ public class HQuery<T> {
             this.getListeners().clear();
     }
 
-    public HResults<T> execute() throws HBqlException {
+    public HResults<T> getResults() throws HBqlException {
 
         if (this.getListeners() != null) {
             for (final HQueryListener<T> listener : this.getListeners())
                 listener.onQueryInit();
         }
 
-        return new HResults<T>(this);
+        return new HResults<T>(this, this.getConnection(),
+                               this.getQueryArgs(),
+                               this.getListeners(),
+                               this.getScanList());
+    }
+
+    public List<T> getResultList() throws HBqlException {
+
+        final List<T> retval = Lists.newArrayList();
+
+        HResults<T> results = null;
+
+        try {
+            results = this.getResults();
+
+            for (T val : results)
+                retval.add(val);
+        }
+        finally {
+            if (results != null)
+                results.close();
+        }
+
+        return retval;
     }
 }

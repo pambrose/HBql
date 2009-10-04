@@ -68,7 +68,7 @@ public class HRecordExample {
                               //+ "SERVER FILTER WHERE author LIKE '.*6200.*' "
                               + "CLIENT FILTER WHERE keyval = '0000000002' OR author LIKE '.*val.*'";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
-        HResults<HRecord> results1 = q1.execute();
+        HResults<HRecord> results1 = q1.getResults();
 
         for (HRecord val1 : results1) {
             System.out.println("Current Values: " + val1.getCurrentValue("keyval")
