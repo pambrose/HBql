@@ -52,7 +52,7 @@ public class TestSupport {
         assertTrue(evaluateExprTree(recordObj, expr));
     }
 
-    public ExprSelectElement parseSelectElement(final String str) throws HBqlException {
+    public static ExprSelectElement parseSelectElement(final String str) throws HBqlException {
         return HBql.parseSelectElement(str);
     }
 
@@ -65,9 +65,8 @@ public class TestSupport {
     }
 
     public static void assertTypeAndValue(final String str, final Class clazz, final Object val) throws HBqlException {
-        final Object obj = HBql.parseAndEvaluateSelectElement(str);
-        System.out.println(str + " = " + obj + " type " + obj.getClass().getSimpleName());
-        assertTrue(obj.getClass().equals(clazz) && obj.equals(val));
+        ExprSelectElement expr = parseSelectElement(str);
+        assertTypeAndValue(expr, clazz, val);
     }
 
     public static void assertEvalFalse(final String expr) throws HBqlException {

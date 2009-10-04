@@ -514,9 +514,34 @@ public class WhereExpressionsTest extends TestSupport {
         ExprSelectElement elem;
 
         elem = parseSelectElement(":a + :b");
-        elem.setParameter("a", 2);
-        elem.setParameter("b", 4);
-        assertTypeAndValue(elem, Integer.class, 6);
+
+        elem.setParameter("a", (short)2);
+        elem.setParameter("b", (short)4);
+        assertTypeAndValue(elem, Short.class, (short)6);
+
+        elem.setParameter("a", (short)2);
+        elem.setParameter("b", (int)4);
+        assertTypeAndValue(elem, Integer.class, (int)6);
+
+        elem.setParameter("a", (int)2);
+        elem.setParameter("b", (int)4);
+        assertTypeAndValue(elem, Integer.class, (int)6);
+
+        elem.setParameter("a", (long)2);
+        elem.setParameter("b", (long)4);
+        assertTypeAndValue(elem, Long.class, (long)6);
+
+        elem.setParameter("a", (long)2);
+        elem.setParameter("b", (float)4);
+        assertTypeAndValue(elem, Float.class, (float)6);
+
+        elem.setParameter("a", (float)2.0);
+        elem.setParameter("b", (float)4.0);
+        assertTypeAndValue(elem, Float.class, (float)6.0);
+
+        elem.setParameter("a", (double)2.0);
+        elem.setParameter("b", (double)4.0);
+        assertTypeAndValue(elem, Double.class, (double)6.0);
     }
 
 }
