@@ -3,19 +3,14 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.KeyRangeArgs;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.TimeRangeArgs;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.VersionArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -268,52 +263,6 @@ public abstract class HBaseSchema extends Schema {
     // This is relevant only for AnnotatedSchema
     public List<ColumnDescription> getColumnDescriptionList() {
         return null;
-    }
-
-    public List<Scan> getScanList(final Collection<ColumnAttrib> columnAttribSet,
-                                  final KeyRangeArgs keyRangeArgs,
-                                  final TimeRangeArgs timeRangeArgs,
-                                  final VersionArgs versionArgs,
-                                  final HBqlFilter serverFilter) throws IOException, HBqlException {
-
-        final List<Scan> scanList = Lists.newArrayList();
-        final List<KeyRangeArgs.Range> rangeList = keyRangeArgs.getRangeList();
-
-        if (rangeList.size() == 0) {
-            scanList.add(new Scan());
-        }
-        else {
-            for (final KeyRangeArgs.Range range : rangeList)
-                scanList.add(range.getScan());
-        }
-
-        for (final Scan scan : scanList) {
-
-            // Set column names
-            for (final ColumnAttrib attrib : columnAttribSet) {
-
-                // Do not bother to request because it will always be delivered
-                if (attrib.isKeyAttrib())
-                    continue;
-
-                // If it is a map, then request all columns for family
-                if (attrib.isAFamilyAttrib() || attrib.isMapKeysAsColumns())
-                    scan.addFamily(attrib.getFamilyNameAsBytes());
-                else
-                    scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
-            }
-
-            if (timeRangeArgs != null && timeRangeArgs.isValid())
-                timeRangeArgs.setTimeStamp(scan);
-
-            if (versionArgs != null && versionArgs.isValid())
-                versionArgs.setMaxVersions(scan);
-
-            if (serverFilter != null)
-                scan.setFilter(serverFilter);
-        }
-
-        return scanList;
     }
 
     public HBqlFilter getHBqlFilter(final ExprTree exprTree, final long scanLimit) throws HBqlException {

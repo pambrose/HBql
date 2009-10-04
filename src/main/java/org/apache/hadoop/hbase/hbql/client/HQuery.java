@@ -51,11 +51,7 @@ public class HQuery<T> {
         final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(where.getServerExprTree(),
                                                                        where.getScanLimit());
 
-        this.scanList = this.getSchema().getScanList(allAttribs,
-                                                     where.getKeyRangeArgs(),
-                                                     where.getTimeRangeArgs(),
-                                                     where.getVersionArgs(),
-                                                     serverFilter);
+        this.scanList = where.getScanList(allAttribs, serverFilter);
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {

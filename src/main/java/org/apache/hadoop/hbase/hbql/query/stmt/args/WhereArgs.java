@@ -1,11 +1,17 @@
 package org.apache.hadoop.hbase.hbql.query.stmt.args;
 
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Sets;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -157,4 +163,49 @@ public class WhereArgs {
         allAttribs.addAll(this.getClientExprTree().getAttribsUsedInExpr());
         return allAttribs;
     }
+
+    public List<Scan> getScanList(final Collection<ColumnAttrib> columnAttribSet,
+                                  final HBqlFilter serverFilter) throws IOException, HBqlException {
+
+        final List<Scan> scanList = Lists.newArrayList();
+
+        final List<KeyRangeArgs.Range> rangeList = this.getKeyRangeArgs().getRangeList();
+
+        if (rangeList.size() == 0) {
+            scanList.add(new Scan());
+        }
+        else {
+            for (final KeyRangeArgs.Range range : rangeList)
+                scanList.add(range.getScan());
+        }
+
+        for (final Scan scan : scanList) {
+
+            // Set column names
+            for (final ColumnAttrib attrib : columnAttribSet) {
+
+                // Do not bother to request because it will always be delivered
+                if (attrib.isKeyAttrib())
+                    continue;
+
+                // If it is a map, then request all columns for family
+                if (attrib.isAFamilyAttrib() || attrib.isMapKeysAsColumns())
+                    scan.addFamily(attrib.getFamilyNameAsBytes());
+                else
+                    scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
+            }
+
+            if (this.getTimeRangeArgs() != null && this.getTimeRangeArgs().isValid())
+                this.getTimeRangeArgs().setTimeStamp(scan);
+
+            if (this.getVersionArgs() != null && this.getVersionArgs().isValid())
+                this.getVersionArgs().setMaxVersions(scan);
+
+            if (serverFilter != null)
+                scan.setFilter(serverFilter);
+        }
+
+        return scanList;
+    }
+
 }

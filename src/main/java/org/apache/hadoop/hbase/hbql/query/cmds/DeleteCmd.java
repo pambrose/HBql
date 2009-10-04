@@ -55,11 +55,7 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
         final ExprTree clientFilter = where.getClientExprTree();
         final HBqlFilter serverFilter = schema.getHBqlFilter(where.getServerExprTree(), where.getScanLimit());
 
-        final List<Scan> scanList = schema.getScanList(allWhereAttribs,
-                                                       where.getKeyRangeArgs(),
-                                                       where.getTimeRangeArgs(),
-                                                       where.getVersionArgs(),
-                                                       serverFilter);
+        final List<Scan> scanList = where.getScanList(allWhereAttribs, serverFilter);
 
         int cnt = 0;
         for (final Scan scan : scanList) {
@@ -78,6 +74,5 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
         retval.out.flush();
 
         return retval;
-
     }
 }
