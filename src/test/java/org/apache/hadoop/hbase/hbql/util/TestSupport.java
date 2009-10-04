@@ -58,7 +58,8 @@ public class TestSupport {
 
     public static void assertTypeAndValue(final ExprSelectElement expr, final Class clazz, final Object val) throws HBqlException {
         final Object obj = HBql.evaluateSelectElement(expr);
-        System.out.println(expr.asString() + " = " + obj
+        System.out.println(expr.asString() + " returned value " + obj
+                           + " expecting value " + val
                            + " returned type " + obj.getClass().getSimpleName()
                            + " expecting type " + clazz.getSimpleName());
         assertTrue(obj.getClass().equals(clazz) && obj.equals(val));

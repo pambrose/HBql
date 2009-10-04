@@ -148,5 +148,4 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     public boolean useHBaseResult() {
         return true;
     }
-
 }

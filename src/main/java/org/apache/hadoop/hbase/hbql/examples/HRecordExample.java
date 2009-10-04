@@ -62,7 +62,7 @@ public class HRecordExample {
                               + "FROM testobjects2 "
                               + "WITH "
                               + "KEYS '0000000002' TO '0000000003', '0000000008' TO LAST "
-                              + "TIME RANGE NOW()-DAY(15) TO NOW()+DAY(1)"
+                              + "TIME RANGE NOW()-DAY(25) TO NOW()+DAY(1)"
                               + "VERSIONS 2 "
                               //+ "SCAN LIMIT 4"
                               //+ "SERVER FILTER WHERE author LIKE '.*6200.*' "
