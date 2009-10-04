@@ -30,7 +30,7 @@ public abstract class GenericCompare extends GenericExpr implements BooleanValue
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
         this.optimizeArgs();
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
+        return !this.isAConstant() ? this : new BooleanLiteral(this.getValue(null));
     }
 
     protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {

@@ -105,6 +105,9 @@ public class Function extends GenericExpr {
         // First optimize all the args
         this.optimizeArgs();
 
+        if (!this.isAConstant())
+            return this;
+
         switch (this.getFunctionType()) {
 
             case TRIM:
@@ -112,31 +115,25 @@ public class Function extends GenericExpr {
             case UPPER:
             case CONCAT:
             case REPLACE:
-            case SUBSTRING: {
-                return this.isAConstant() ? new StringLiteral((String)this.getValue(null)) : this;
-            }
+            case SUBSTRING:
+                return new StringLiteral((String)this.getValue(null));
 
-            case SHORT: {
-                return this.isAConstant() ? new ShortLiteral((Short)this.getValue(null)) : this;
-            }
+            case SHORT:
+                return new ShortLiteral((Short)this.getValue(null));
 
-            case LONG: {
-                return this.isAConstant() ? new LongLiteral((Long)this.getValue(null)) : this;
-            }
+            case LONG:
+                return new LongLiteral((Long)this.getValue(null));
 
             case INTEGER:
             case LENGTH:
-            case INDEXOF: {
-                return this.isAConstant() ? new IntegerLiteral((Integer)this.getValue(null)) : this;
-            }
+            case INDEXOF:
+                return new IntegerLiteral((Integer)this.getValue(null));
 
-            case FLOAT: {
-                return this.isAConstant() ? new FloatLiteral((Float)this.getValue(null)) : this;
-            }
+            case FLOAT:
+                return new FloatLiteral((Float)this.getValue(null));
 
-            case DOUBLE: {
-                return this.isAConstant() ? new DoubleLiteral((Double)this.getValue(null)) : this;
-            }
+            case DOUBLE:
+                return new DoubleLiteral((Double)this.getValue(null));
 
             default:
                 throw new HBqlException("Invalid function: " + this.getFunctionType());

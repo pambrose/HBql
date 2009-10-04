@@ -511,9 +511,7 @@ public class WhereExpressionsTest extends TestSupport {
 
         assertTypeAndValue("5.0+ FLOAT('4.0') + LONG('5')", Double.class, 14.0);
 
-        ExprSelectElement elem;
-
-        elem = parseSelectElement(":a + :b");
+        ExprSelectElement elem = parseSelectElement(":a + :b");
 
         elem.setParameter("a", (short)2);
         elem.setParameter("b", (short)4);
@@ -542,6 +540,10 @@ public class WhereExpressionsTest extends TestSupport {
         elem.setParameter("a", (double)2.0);
         elem.setParameter("b", (double)4.0);
         assertTypeAndValue(elem, Double.class, (double)6.0);
+
+        elem.setParameter("a", "aa");
+        elem.setParameter("b", "bb");
+        assertTypeAndValue(elem, String.class, "aabb");
     }
 
 }

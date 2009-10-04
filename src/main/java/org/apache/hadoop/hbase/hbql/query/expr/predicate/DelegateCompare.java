@@ -24,6 +24,10 @@ public class DelegateCompare extends GenericCompare {
         super(arg0, operator, arg1);
     }
 
+    private GenericCompare getTypedExpr() {
+        return this.typedExpr;
+    }
+
     @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
@@ -42,17 +46,18 @@ public class DelegateCompare extends GenericCompare {
         else
             this.throwInvalidTypeException(type0, type1);
 
-        return this.typedExpr.validateTypes(parentExpr, false);
+        return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        return this.typedExpr.getOptimizedValue();
+        this.optimizeArgs();
+        return !this.isAConstant() ? this : this.getTypedExpr().getOptimizedValue();
     }
 
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
-        return this.typedExpr.getValue(object);
+        return this.getTypedExpr().getValue(object);
     }
 
 }

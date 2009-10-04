@@ -24,6 +24,14 @@ import java.util.List;
  */
 public class TestSupport {
 
+    public static void assertTrue(final boolean val) throws HBqlException {
+        org.junit.Assert.assertTrue(val);
+    }
+
+    public static void assertFalse(final boolean val) throws HBqlException {
+        org.junit.Assert.assertFalse(val);
+    }
+
     public Number parseNumberValue(final String str) throws HBqlException {
         return (Number)HBql.parseExpression(str);
     }
@@ -34,14 +42,6 @@ public class TestSupport {
 
     public void assertInvalidInput(final String expr, String... vals) throws HBqlException {
         assertFalse(evaluateExprColumnNames(expr, vals));
-    }
-
-    public static void assertTrue(final boolean val) throws HBqlException {
-        org.junit.Assert.assertTrue(val);
-    }
-
-    public static void assertFalse(final boolean val) throws HBqlException {
-        org.junit.Assert.assertFalse(val);
     }
 
     public static void assertEvalTrue(final String expr) throws HBqlException {

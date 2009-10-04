@@ -31,7 +31,7 @@ public class BooleanNot extends GenericExpr implements BooleanValue {
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
         this.optimizeArgs();
-        return this.isAConstant() ? new BooleanLiteral(this.getValue(null)) : this;
+        return !this.isAConstant() ? this : new BooleanLiteral(this.getValue(null));
     }
 
     @Override

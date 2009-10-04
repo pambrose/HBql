@@ -126,10 +126,9 @@ public abstract class ExprContext implements Serializable {
 
         if (this.isValid() && this.isInNeedOfTypeValidation()) {
 
-            if (!allowColumns && this.getColumnsUsedInExpr().size() > 0) {
+            if (!allowColumns && this.getColumnsUsedInExpr().size() > 0)
                 throw new TypeException("Invalid column reference" + (this.getColumnsUsedInExpr().size() > 1 ? "s" : "")
                                         + " in " + this.asString());
-            }
 
             // Collect return types of all args
             final List<Class<? extends GenericValue>> clazzList = Lists.newArrayList();
@@ -152,13 +151,16 @@ public abstract class ExprContext implements Serializable {
                                                 + " in " + this.asString());
                 }
             }
+
+            this.setInNeedOfTypeValidation(false);
         }
-        this.setInNeedOfTypeValidation(false);
     }
 
     public void addNamedParameter(final NamedParameter param) {
+
         final String name = param.getParamName();
         final List<NamedParameter> paramList;
+
         if (!this.getNamedParamMap().containsKey(name)) {
             paramList = Lists.newArrayList();
             this.getNamedParamMap().put(name, paramList);
@@ -166,6 +168,7 @@ public abstract class ExprContext implements Serializable {
         else {
             paramList = this.getNamedParamMap().get(name);
         }
+
         paramList.add(param);
     }
 
@@ -181,6 +184,7 @@ public abstract class ExprContext implements Serializable {
         if (!this.getNamedParamMap().containsKey(name))
             throw new HBqlException("Parameter name " + str + " does not exist in " + this.asString());
 
+        // Set all occurences to param value
         final List<NamedParameter> paramList = this.getNamedParamMap().get(name);
         for (final NamedParameter param : paramList)
             param.setParameter(val);

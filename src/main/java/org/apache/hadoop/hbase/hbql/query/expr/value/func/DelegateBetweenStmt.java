@@ -55,7 +55,8 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        return this.getTypedExpr().getOptimizedValue();
+        this.optimizeArgs();
+        return !this.isAConstant() ? this : this.getTypedExpr().getOptimizedValue();
     }
 
     @Override

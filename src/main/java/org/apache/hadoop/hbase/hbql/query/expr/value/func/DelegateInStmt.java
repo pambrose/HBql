@@ -57,7 +57,8 @@ public class DelegateInStmt extends GenericInStmt {
 
     @Override
     public GenericValue getOptimizedValue() throws HBqlException {
-        return this.getTypedExpr().getOptimizedValue();
+        this.optimizeArgs();
+        return !this.isAConstant() ? this : this.getTypedExpr().getOptimizedValue();
     }
 
     @Override
