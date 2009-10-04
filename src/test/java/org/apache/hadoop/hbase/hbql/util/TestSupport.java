@@ -11,6 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.select.ExprSelectElement;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
@@ -51,9 +52,19 @@ public class TestSupport {
         assertTrue(evaluateExprTree(recordObj, expr));
     }
 
-    public static void assertTypeAndValue(final String expr, final Class clazz, final Object val) throws HBqlException {
-        final Object obj = HBql.parseExpression(expr);
+    public ExprSelectElement parseSelectElement(final String str) throws HBqlException {
+        return HBql.parseSelectElement(str);
+    }
+
+    public static void assertTypeAndValue(final ExprSelectElement expr, final Class clazz, final Object val) throws HBqlException {
+        final Object obj = HBql.evaluateSelectElement(expr);
         System.out.println(expr + " = " + obj + " type " + obj.getClass().getSimpleName());
+        assertTrue(obj.getClass().equals(clazz) && obj.equals(val));
+    }
+
+    public static void assertTypeAndValue(final String str, final Class clazz, final Object val) throws HBqlException {
+        final Object obj = HBql.parseAndEvaluateSelectElement(str);
+        System.out.println(str + " = " + obj + " type " + obj.getClass().getSimpleName());
         assertTrue(obj.getClass().equals(clazz) && obj.equals(val));
     }
 
@@ -123,10 +134,6 @@ public class TestSupport {
     private static boolean evaluateExprTree(final Object recordObj, final ExprTree tree) throws HBqlException {
         System.out.println("Evaluating: " + tree.asString());
         return tree.evaluate(recordObj);
-    }
-
-    public static void assertSelectElementsMatchTrue(final String expr, String vals) throws HBqlException {
-        assertTrue(evaluateSelectNames(expr, vals));
     }
 
     private static boolean evaluateSelectNames(final String expr, String vals) {

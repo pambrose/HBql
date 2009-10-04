@@ -33,8 +33,6 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     private byte[] familyNameBytes = null;
     private byte[] columnNameBytes = null;
 
-    private Object evaluationValue = null;
-
     public ExprSelectElement(final GenericValue genericValue, final String asName) {
         super(null, genericValue);
         this.asName = (asName != null) ? asName : genericValue.asString();
@@ -61,22 +59,18 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     }
 
     public String getColumnName() {
-        return columnName;
+        return this.columnName;
     }
 
     public byte[] getFamilyNameBytes() {
-        return familyNameBytes;
+        return this.familyNameBytes;
     }
 
     public byte[] getColumnNameBytes() {
-        return columnNameBytes;
+        return this.columnNameBytes;
     }
 
-    public Object getEvaluationValue() {
-        return evaluationValue;
-    }
-
-    public void evaluate(final Result result) throws HBqlException {
+    public Object getValue(final Result result) throws HBqlException {
 
         this.validateTypes(true);
         this.optimize();
@@ -84,7 +78,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         // Set it once per evaluation
         DateLiteral.resetNow();
 
-        this.evaluationValue = this.getGenericValue(0).getValue(result);
+        return this.getGenericValue(0).getValue(result);
     }
 
     @Override
@@ -116,11 +110,12 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             this.getColumnAttrib().setCurrentValue(newobj, 0, b);
         }
         else {
-            this.evaluate(result);
             final String name = this.getAsName();
             final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
-            if (attrib != null)
-                attrib.setCurrentValue(newobj, 0, this.getEvaluationValue());
+            if (attrib != null) {
+                final Object elementValue = this.getValue(result);
+                attrib.setCurrentValue(newobj, 0, elementValue);
+            }
         }
 
     }

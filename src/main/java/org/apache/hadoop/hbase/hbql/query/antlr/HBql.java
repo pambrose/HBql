@@ -13,6 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.select.ExprSelectElement;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,6 +55,28 @@ public class HBql {
             e.printStackTrace();
             throw new HBqlException("Error parsing: " + str);
         }
+    }
+
+    public static ExprSelectElement parseSelectElement(final String str) throws HBqlException {
+        try {
+            final HBqlParser parser = newParser(str);
+            final ExprSelectElement elem = (ExprSelectElement)parser.selectElem();
+            elem.setSchema(null);
+            return elem;
+        }
+        catch (RecognitionException e) {
+            e.printStackTrace();
+            throw new HBqlException("Error parsing: " + str);
+        }
+    }
+
+    public static Object evaluateSelectElement(final ExprSelectElement elem) throws HBqlException {
+        return elem.getValue(null);
+    }
+
+    public static Object parseAndEvaluateSelectElement(final String str) throws HBqlException {
+        final ExprSelectElement elem = parseSelectElement(str);
+        return evaluateSelectElement(elem);
     }
 
     public static WhereArgs parseWithClause(final String str) throws HBqlException {

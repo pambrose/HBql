@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.stmt.select.ExprSelectElement;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 
@@ -509,6 +510,14 @@ public class WhereExpressionsTest extends TestSupport {
         assertTypeAndValue("FLOAT('1.0') * IF (FALSE) THEN SHORT('4') + LONG('5') ELSE Integer('10') END", Float.class, (float)10.0);
 
         assertTypeAndValue("5.0+ FLOAT('4.0') + LONG('5')", Double.class, 14.0);
+
+        ExprSelectElement elem;
+
+        elem = parseSelectElement(":a + :b");
+        elem.setParameter("a", 2);
+        elem.setParameter("b", 4);
+        assertTypeAndValue(elem, Integer.class, 6);
     }
+
 }
 
