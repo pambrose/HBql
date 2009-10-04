@@ -1,7 +1,10 @@
 package org.apache.hadoop.hbase.hbql.query.stmt.args;
 
+import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,15 +18,23 @@ public class TimeRangeArgs extends SelectArgs {
         super(SelectArgs.Type.TIMERANGE, arg0, arg1);
     }
 
-    public long getLower() throws HBqlException {
+    private long getLower() throws HBqlException {
         return (Long)this.getGenericValue(0).getValue(null);
     }
 
-    public long getUpper() throws HBqlException {
+    private long getUpper() throws HBqlException {
         return (Long)this.getGenericValue(1).getValue(null);
     }
 
     public String asString() {
         return "TIME RANGE " + this.getGenericValue(0).asString() + " TO " + this.getGenericValue(1);
+    }
+
+    public void setTimeStamp(final Scan scan) throws HBqlException, IOException {
+        if (this.getLower() == this.getUpper())
+            scan.setTimeStamp(this.getLower());
+        else
+            scan.setTimeRange(this.getLower(), this.getUpper());
+
     }
 }

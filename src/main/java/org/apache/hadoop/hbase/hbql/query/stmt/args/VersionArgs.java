@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.stmt.args;
 
+import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
@@ -15,7 +16,7 @@ public class VersionArgs extends SelectArgs {
         super(SelectArgs.Type.VERSION, val);
     }
 
-    public int getValue() throws HBqlException {
+    private int getValue() throws HBqlException {
         return ((Number)this.getGenericValue(0).getValue(null)).intValue();
     }
 
@@ -23,4 +24,12 @@ public class VersionArgs extends SelectArgs {
         return "VERSIONS " + this.getGenericValue(0).asString();
     }
 
+    public void setMaxVersions(final Scan scan) throws HBqlException {
+        final int max = this.getValue();
+        if (max == Integer.MAX_VALUE)
+            scan.setMaxVersions();
+        else
+            scan.setMaxVersions(max);
+
+    }
 }

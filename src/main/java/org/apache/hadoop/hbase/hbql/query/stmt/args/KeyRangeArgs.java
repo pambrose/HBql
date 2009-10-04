@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.stmt.args;
 
+import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
@@ -75,6 +76,15 @@ public class KeyRangeArgs {
             catch (HBqlException e) {
                 return "Error in value";
             }
+        }
+
+        public Scan getScan() throws HBqlException {
+            final Scan scan = new Scan();
+            scan.setStartRow(this.getLowerAsBytes());
+            if (!this.isStartLastRange())
+                scan.setStopRow(this.getUpperAsBytes());
+            return scan;
+
         }
     }
 

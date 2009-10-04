@@ -283,19 +283,15 @@ public abstract class HBaseSchema extends Schema {
             scanList.add(new Scan());
         }
         else {
-            for (final KeyRangeArgs.Range range : rangeList) {
-                final Scan scan = new Scan();
-                scan.setStartRow(range.getLowerAsBytes());
-                if (!range.isStartLastRange())
-                    scan.setStopRow(range.getUpperAsBytes());
-                scanList.add(scan);
-            }
+            for (final KeyRangeArgs.Range range : rangeList)
+                scanList.add(range.getScan());
         }
 
         for (final Scan scan : scanList) {
 
             // Set column names
             for (final ColumnAttrib attrib : columnAttribSet) {
+
                 // Do not bother to request because it will always be delivered
                 if (attrib.isKeyAttrib())
                     continue;
@@ -307,20 +303,11 @@ public abstract class HBaseSchema extends Schema {
                     scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
             }
 
-            if (timeRangeArgs != null && timeRangeArgs.isValid()) {
-                if (timeRangeArgs.getLower() == timeRangeArgs.getUpper())
-                    scan.setTimeStamp(timeRangeArgs.getLower());
-                else
-                    scan.setTimeRange(timeRangeArgs.getLower(), timeRangeArgs.getUpper());
-            }
+            if (timeRangeArgs != null && timeRangeArgs.isValid())
+                timeRangeArgs.setTimeStamp(scan);
 
-            if (versionArgs != null && versionArgs.isValid()) {
-                final int max = versionArgs.getValue();
-                if (max == Integer.MAX_VALUE)
-                    scan.setMaxVersions();
-                else
-                    scan.setMaxVersions(max);
-            }
+            if (versionArgs != null && versionArgs.isValid())
+                versionArgs.setMaxVersions(scan);
 
             if (serverFilter != null)
                 scan.setFilter(serverFilter);
