@@ -6,7 +6,11 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DoubleLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.FloatLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.LongLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.ShortLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringNullLiteral;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
@@ -150,11 +154,23 @@ public class NamedParameter implements GenericValue {
         if (val instanceof String)
             return new StringLiteral((String)val);
 
+        if (val instanceof Date)
+            return new DateLiteral((Date)val);
+
+        if (val instanceof Short)
+            return new ShortLiteral((Short)val);
+
         if (val instanceof Integer)
             return new IntegerLiteral((Integer)val);
 
-        if (val instanceof Date)
-            return new DateLiteral((Date)val);
+        if (val instanceof Long)
+            return new LongLiteral((Long)val);
+
+        if (val instanceof Float)
+            return new FloatLiteral((Float)val);
+
+        if (val instanceof Double)
+            return new DoubleLiteral((Double)val);
 
         throw new TypeException("Parameter " + this.getParamName()
                                 + " assigned an unsupported type " + val.getClass().getSimpleName());

@@ -46,9 +46,9 @@ public enum NumericType {
         return -1;
     }
 
-    public static Class<? extends GenericValue> getHighestRankingNumericArg(final Object... vals) {
+    public static Class getHighestRankingNumericArg(final Object... vals) {
 
-        Class<? extends GenericValue> highestRankingNumericArg = NumberValue.class;
+        Class highestRankingNumericArg = NumberValue.class;
         int highestRank = -1;
         for (final Object obj : vals) {
 

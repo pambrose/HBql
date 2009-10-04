@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.query.schema.NumericType;
@@ -34,13 +35,14 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
         final Object obj0 = this.getArg(0).getValue(object);
         final Object obj1 = this.getArg(1).getValue(object);
 
-        final Class<? extends GenericValue> rankingClass;
-        boolean useDecimal;
+        // If we do not already know the specific types, then look at the class for both args
+        final Class rankingClass;
+        final boolean useDecimal;
         if (this.getHighestRankingNumericArg().equals(NumberValue.class)) {
             rankingClass = NumericType.getHighestRankingNumericArg(obj0, obj1);
             useDecimal = rankingClass.equals(FloatValue.class)
-                         || rankingClass.equals(DoubleValue.class)
                          || rankingClass.equals(Float.class)
+                         || rankingClass.equals(DoubleValue.class)
                          || rankingClass.equals(Double.class);
         }
         else {
@@ -77,12 +79,14 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
                     throw new HBqlException("Invalid operator: " + this.getOperator());
             }
 
-            if (rankingClass.equals(ShortValue.class))
+            if (rankingClass.equals(ShortValue.class) || rankingClass.equals(Short.class))
                 return (short)result;
-            else if (rankingClass.equals(IntegerValue.class))
+            else if (rankingClass.equals(IntegerValue.class) || rankingClass.equals(Integer.class))
                 return (int)result;
-            else
+            else if (rankingClass.equals(LongValue.class) || rankingClass.equals(Long.class))
                 return result;
+            else
+                throw new HBqlException("Invalid class in NumberCalculation: " + rankingClass.getName());
         }
         else {
 
@@ -115,8 +119,10 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
 
             if (rankingClass.equals(FloatValue.class) || rankingClass.equals(Float.class))
                 return (float)result;
-            else
+            else if (rankingClass.equals(DoubleValue.class) || rankingClass.equals(Double.class))
                 return result;
+            else
+                throw new HBqlException("Invalid class in NumberCalculation: " + rankingClass.getName());
         }
     }
 }
