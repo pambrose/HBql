@@ -23,7 +23,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,7 +56,7 @@ public class TypeSignature {
         else if (type.equals(StringValue.class))
             return String.class;
         else if (type.equals(DateValue.class))
-            return Date.class;
+            return Long.class;    // Note this is Long and not Date
         else if (type.equals(BooleanValue.class))
             return Boolean.class;
         else if (type.equals(ShortValue.class))

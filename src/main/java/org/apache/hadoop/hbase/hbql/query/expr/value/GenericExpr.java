@@ -11,14 +11,11 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DoubleLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.FloatLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.IntegerLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.LongLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.ShortLiteral;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.NumericType;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -189,14 +186,10 @@ public abstract class GenericExpr implements GenericValue {
 
         final Object obj = this.getValue(null);
 
-        if (this.getTypeSignature().getReturnType().equals(BooleanValue.class))
-            return new BooleanLiteral((Boolean)obj);
-
-        if (this.getTypeSignature().getReturnType().equals(StringValue.class))
-            return new StringLiteral((String)obj);
-
-        if (this.getTypeSignature().getReturnType().equals(DateValue.class))
-            return new DateLiteral((Long)obj);
+        if (this.getTypeSignature().getReturnType().equals(BooleanValue.class)
+            || this.getTypeSignature().getReturnType().equals(StringValue.class)
+            || this.getTypeSignature().getReturnType().equals(DateValue.class))
+            return this.getTypeSignature().newLiteral(obj);
 
         if (HUtil.isParentClass(NumberValue.class, this.getTypeSignature().getReturnType())) {
 
