@@ -30,14 +30,20 @@ public class WhereArgs {
     private ExprTree clientExprTree = ExprTree.newExprTree(null);
     private ExprTree serverExprTree = ExprTree.newExprTree(null);
 
+    private HBaseSchema schema;
+
     public void setSchema(final HBaseSchema schema) {
+
+        this.schema = schema;
+
         this.getKeyRangeArgs().setSchema(null);
         this.getTimeRangeArgs().setSchema(null);
         this.getVersionArgs().setSchema(null);
         this.getScanLimitArgs().setSchema(null);
         this.getQueryLimitArgs().setSchema(null);
-        this.getServerExprTree().setSchema(schema);
-        this.getClientExprTree().setSchema(schema);
+
+        this.getServerExprTree().setSchema(this.getSchema());
+        this.getClientExprTree().setSchema(this.getSchema());
     }
 
     public void validateTypes() throws HBqlException {
@@ -56,7 +62,11 @@ public class WhereArgs {
         this.getQueryLimitArgs().optimize();
     }
 
-    public KeyRangeArgs getKeyRangeArgs() {
+    private HBaseSchema getSchema() {
+        return this.schema;
+    }
+
+    private KeyRangeArgs getKeyRangeArgs() {
         return this.keyRangeArgs;
     }
 
@@ -65,7 +75,7 @@ public class WhereArgs {
             this.keyRangeArgs = keyRangeArgs;
     }
 
-    public TimeRangeArgs getTimeRangeArgs() {
+    private TimeRangeArgs getTimeRangeArgs() {
         return this.timeRangeArgs;
     }
 
@@ -74,7 +84,7 @@ public class WhereArgs {
             this.timeRangeArgs = timeRangeArgs;
     }
 
-    public VersionArgs getVersionArgs() {
+    private VersionArgs getVersionArgs() {
         return this.versionArgs;
     }
 
@@ -164,8 +174,8 @@ public class WhereArgs {
         return allAttribs;
     }
 
-    public List<Scan> getScanList(final Collection<ColumnAttrib> columnAttribSet,
-                                  final HBqlFilter serverFilter) throws IOException, HBqlException {
+    public List<Scan> getScanList(final Collection<ColumnAttrib> columnAttribSet
+    ) throws IOException, HBqlException {
 
         final List<Scan> scanList = Lists.newArrayList();
 
@@ -201,6 +211,8 @@ public class WhereArgs {
             if (this.getVersionArgs() != null && this.getVersionArgs().isValid())
                 this.getVersionArgs().setMaxVersions(scan);
 
+            final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExprTree(),
+                                                                           this.getScanLimit());
             if (serverFilter != null)
                 scan.setFilter(serverFilter);
         }

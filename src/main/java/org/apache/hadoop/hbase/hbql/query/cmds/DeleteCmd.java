@@ -5,7 +5,6 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
@@ -52,16 +51,15 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWhereArgs().getAllColumnsUsedInExprs();
         final HTable table = conn.getHTable(schema.getTableName());
-        final ExprTree clientFilter = where.getClientExprTree();
-        final HBqlFilter serverFilter = schema.getHBqlFilter(where.getServerExprTree(), where.getScanLimit());
+        final ExprTree clientExprTree = where.getClientExprTree();
 
-        final List<Scan> scanList = where.getScanList(allWhereAttribs, serverFilter);
+        final List<Scan> scanList = where.getScanList(allWhereAttribs);
 
         int cnt = 0;
         for (final Scan scan : scanList) {
             final ResultScanner resultsScanner = table.getScanner(scan);
             for (final Result result : resultsScanner) {
-                if (clientFilter == null || clientFilter.evaluate(result)) {
+                if (clientExprTree == null || clientExprTree.evaluate(result)) {
                     final Delete delete = new Delete(result.getRow());
                     table.delete(delete);
                     cnt++;

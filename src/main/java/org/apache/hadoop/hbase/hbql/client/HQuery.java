@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
@@ -48,10 +47,7 @@ public class HQuery<T> {
         allAttribs.addAll(this.getQueryArgs().getSelectAttribList());
         allAttribs.addAll(where.getAllColumnsUsedInExprs());
 
-        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(where.getServerExprTree(),
-                                                                       where.getScanLimit());
-
-        this.scanList = where.getScanList(allAttribs, serverFilter);
+        this.scanList = where.getScanList(allAttribs);
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {
