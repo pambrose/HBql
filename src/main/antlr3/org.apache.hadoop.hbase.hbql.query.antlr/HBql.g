@@ -261,6 +261,7 @@ atomExpr returns [GenericValue retval]
 valueAtom returns [GenericValue retval]
 	: s=stringLiteral				{retval = $s.retval;}
 	| i=integerLiteral				{retval = $i.retval;}
+	| l=longLiteral					{retval = $l.retval;}
 	| d=doubleLiteral				{retval = $d.retval;}
 	| b=booleanAtom					{retval = $b.retval;}
 	| keyNULL					{retval = new StringNullLiteral();}
@@ -272,6 +273,9 @@ stringLiteral returns [GenericValue retval]
 	
 integerLiteral returns [GenericValue retval]
 	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};	
+
+longLiteral returns [GenericValue retval]
+	: v=LONG					{retval = new LongLiteral(Long.valueOf($v.text.substring(0, $v.text.length()-1)));};	
 
 doubleLiteral returns [GenericValue retval]
 	: v=DOUBLE					{retval = new DoubleLiteral(Double.valueOf($v.text));};	
@@ -349,6 +353,8 @@ familyRef : FAMILY;
 paramRef: PARAM;
 		
 INT	: DIGIT+;
+LONG	: DIGIT+'L';
+
 DOUBLE	: DIGIT+ DOT DIGIT*;
 
 ID	: CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)* 		// DOLLAR is for inner class table names

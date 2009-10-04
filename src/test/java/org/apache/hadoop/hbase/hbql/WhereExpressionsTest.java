@@ -492,7 +492,9 @@ public class WhereExpressionsTest extends TestSupport {
     public void numericTypes() throws HBqlException {
 
         assertTypeAndValue("4", Integer.class, 4);
-        assertTypeAndValue("4.0", Double.class, 4.0);
+        assertTypeAndValue("4L", Long.class, 4L);
+        assertTypeAndValue("4.33", Double.class, 4.33);
+
         assertTypeAndValue("SHORT('4')", Short.class, Short.valueOf("4"));
         assertTypeAndValue("INTEGER('4')", Integer.class, Integer.valueOf("4"));
         assertTypeAndValue("LONG('4')", Long.class, Long.valueOf("4"));
