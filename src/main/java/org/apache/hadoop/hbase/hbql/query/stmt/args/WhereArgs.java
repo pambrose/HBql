@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.stmt.args;
 
+import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -182,7 +183,7 @@ public class WhereArgs {
         final KeyRangeArgs keyRangeArgs = this.getKeyRangeArgs();
         if (keyRangeArgs != null) {
             for (final KeyRangeArgs.Range range : keyRangeArgs.getRangeList()) {
-                rowRequestList.add(new RowRequest(range));
+                rowRequestList.add(new RowRequest(this, columnAttribSet, range));
 
             }
         }
@@ -190,45 +191,73 @@ public class WhereArgs {
         return rowRequestList;
     }
 
+    public void setGetArgs(final Get get,
+                           final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+
+        // Set column names
+        for (final ColumnAttrib attrib : columnAttribSet) {
+
+            // Do not bother to request because it will always be delivered
+            if (attrib.isKeyAttrib())
+                continue;
+
+            // If it is a map, then request all columns for family
+            if (attrib.isAFamilyAttrib() || attrib.isMapKeysAsColumns())
+                get.addFamily(attrib.getFamilyNameAsBytes());
+            else
+                get.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
+        }
+
+        if (this.getTimeRangeArgs() != null && this.getTimeRangeArgs().isValid())
+            this.getTimeRangeArgs().setTimeStamp(get);
+
+        if (this.getVersionArgs() != null && this.getVersionArgs().isValid())
+            this.getVersionArgs().setMaxVersions(get);
+
+        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExprTree(),
+                                                                       this.getScanLimit());
+        if (serverFilter != null)
+            get.setFilter(serverFilter);
+    }
+
+    public void setScanArgs(final Scan scan,
+                            final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+
+        // Set column names
+        for (final ColumnAttrib attrib : columnAttribSet) {
+
+            // Do not bother to request because it will always be delivered
+            if (attrib.isKeyAttrib())
+                continue;
+
+            // If it is a map, then request all columns for family
+            if (attrib.isAFamilyAttrib() || attrib.isMapKeysAsColumns())
+                scan.addFamily(attrib.getFamilyNameAsBytes());
+            else
+                scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
+        }
+
+        if (this.getTimeRangeArgs() != null && this.getTimeRangeArgs().isValid())
+            this.getTimeRangeArgs().setTimeStamp(scan);
+
+        if (this.getVersionArgs() != null && this.getVersionArgs().isValid())
+            this.getVersionArgs().setMaxVersions(scan);
+
+        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExprTree(),
+                                                                       this.getScanLimit());
+        if (serverFilter != null)
+            scan.setFilter(serverFilter);
+    }
+
     public List<Scan> getScanList(final Collection<ColumnAttrib> columnAttribSet) throws IOException, HBqlException {
 
         final List<Scan> scanList = Lists.newArrayList();
 
-        final KeyRangeArgs keyRangeArgs = this.getKeyRangeArgs();
-        for (final KeyRangeArgs.Range range : keyRangeArgs.getRangeList())
-            scanList.add(range.getScan());
+        for (final KeyRangeArgs.Range range : this.getKeyRangeArgs().getRangeList())
+            scanList.add(range.getScan(this, columnAttribSet));
 
-        // If nothing present, then scan all rows
-        // if (scanList.size() == 0)
-        //     scanList.add(new Scan());
-
-        for (final Scan scan : scanList) {
-
-            // Set column names
-            for (final ColumnAttrib attrib : columnAttribSet) {
-
-                // Do not bother to request because it will always be delivered
-                if (attrib.isKeyAttrib())
-                    continue;
-
-                // If it is a map, then request all columns for family
-                if (attrib.isAFamilyAttrib() || attrib.isMapKeysAsColumns())
-                    scan.addFamily(attrib.getFamilyNameAsBytes());
-                else
-                    scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
-            }
-
-            if (this.getTimeRangeArgs() != null && this.getTimeRangeArgs().isValid())
-                this.getTimeRangeArgs().setTimeStamp(scan);
-
-            if (this.getVersionArgs() != null && this.getVersionArgs().isValid())
-                this.getVersionArgs().setMaxVersions(scan);
-
-            final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExprTree(),
-                                                                           this.getScanLimit());
-            if (serverFilter != null)
-                scan.setFilter(serverFilter);
-        }
+        for (final Scan scan : scanList)
+            this.setScanArgs(scan, columnAttribSet);
 
         return scanList;
     }

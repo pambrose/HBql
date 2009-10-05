@@ -4,10 +4,13 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
+import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -62,7 +65,7 @@ public class KeyRangeArgs {
             return HUtil.ser.getStringAsBytes(this.getUpper());
         }
 
-        public boolean isStartLastRange() {
+        public boolean isLastRange() {
             return this.getType() == KeyRangeArgs.Type.LAST;
         }
 
@@ -70,7 +73,7 @@ public class KeyRangeArgs {
             try {
                 final StringBuilder sbuf = new StringBuilder();
                 sbuf.append("'" + this.getLower() + "' TO ");
-                if (this.isStartLastRange())
+                if (this.isLastRange())
                     sbuf.append("LAST");
                 else
                     sbuf.append("'" + this.getUpper() + "'");
@@ -89,18 +92,22 @@ public class KeyRangeArgs {
             return this.getType() == KeyRangeArgs.Type.ALL;
         }
 
-        public Get getGet() throws HBqlException {
-            return new Get(this.getLowerAsBytes());
+        public Get getGet(final WhereArgs whereArgs,
+                          final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+            final Get get = new Get(this.getLowerAsBytes());
+            whereArgs.setGetArgs(get, columnAttribSet);
+            return get;
         }
 
-        public Scan getScan() throws HBqlException {
+        public Scan getScan(final WhereArgs whereArgs,
+                            final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
             final Scan scan = new Scan();
-
             if (!this.isAllRows()) {
                 scan.setStartRow(this.getLowerAsBytes());
-                if (!this.isStartLastRange())
+                if (!this.isLastRange())
                     scan.setStopRow(this.getUpperAsBytes());
             }
+            whereArgs.setScanArgs(scan, columnAttribSet);
             return scan;
         }
     }

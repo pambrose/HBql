@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.stmt.args;
 
+import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
@@ -28,6 +29,14 @@ public class TimeRangeArgs extends SelectArgs {
 
     public String asString() {
         return "TIME RANGE " + this.getGenericValue(0).asString() + " TO " + this.getGenericValue(1);
+    }
+
+    public void setTimeStamp(final Get get) throws HBqlException, IOException {
+        if (this.getLower() == this.getUpper())
+            get.setTimeStamp(this.getLower());
+        else
+            get.setTimeRange(this.getLower(), this.getUpper());
+
     }
 
     public void setTimeStamp(final Scan scan) throws HBqlException, IOException {
