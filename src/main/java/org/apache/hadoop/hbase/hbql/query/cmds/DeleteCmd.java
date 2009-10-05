@@ -56,24 +56,8 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
         int cnt = 0;
 
         for (final RowRequest rowRequest : rowRequestList) {
-            if (rowRequest.isAScan()) {
-                final ResultScanner resultsScanner = table.getScanner(rowRequest.getScanValue());
-                for (final Result result : resultsScanner) {
-                    if (clientExprTree == null || clientExprTree.evaluate(result)) {
-                        table.delete(new Delete(result.getRow()));
-                        cnt++;
-                    }
-                }
-            }
-            else {
-                final Result result = table.get(rowRequest.getGetValue());
-                if (result != null) {
-                    if (clientExprTree == null || clientExprTree.evaluate(result)) {
-                        table.delete(new Delete(result.getRow()));
-                        cnt++;
-                    }
-                }
-            }
+            final ResultScanner resultScanner = rowRequest.getResultScanner(table);
+            cnt += delete(table, clientExprTree, resultScanner);
         }
 
         table.flushCommits();
@@ -83,5 +67,19 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
         retval.out.flush();
 
         return retval;
+    }
+
+    private int delete(final HTable table,
+                       final ExprTree clientExprTree,
+                       final ResultScanner resultsScanner) throws IOException, HBqlException {
+        int cnt = 0;
+        for (final Result result : resultsScanner) {
+            if (clientExprTree == null || clientExprTree.evaluate(result)) {
+                table.delete(new Delete(result.getRow()));
+                cnt++;
+            }
+        }
+        return cnt;
+
     }
 }
