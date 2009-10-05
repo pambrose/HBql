@@ -82,7 +82,7 @@ public class SelectExpressionsTest extends TestSupport {
     @Test
     public void selectExpressions() throws HBqlException, IOException {
 
-        final String query1 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val6 FROM table1";
+        final String query1 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM table1";
 
         HQuery<HRecord> q1 = conn.newHQuery(query1);
 

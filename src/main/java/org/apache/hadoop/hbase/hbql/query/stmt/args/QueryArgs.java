@@ -57,8 +57,9 @@ public class QueryArgs {
             final String asName = selectElement.getAsName();
             if (asName == null)
                 continue;
+
             if (asNameSet.contains(asName))
-                throw new HBqlException("Duplicate AS name " + asName + " in select list");
+                throw new HBqlException("Duplicate select name " + asName + " in select list");
 
             asNameSet.add(asName);
         }
