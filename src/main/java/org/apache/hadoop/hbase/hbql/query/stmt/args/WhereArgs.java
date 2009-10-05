@@ -256,9 +256,6 @@ public class WhereArgs {
         for (final KeyRangeArgs.Range range : this.getKeyRangeArgs().getRangeList())
             scanList.add(range.getScan(this, columnAttribSet));
 
-        for (final Scan scan : scanList)
-            this.setScanArgs(scan, columnAttribSet);
-
         return scanList;
     }
 

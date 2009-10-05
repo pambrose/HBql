@@ -29,14 +29,14 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
 
     public DeleteCmd(final String tableName, final WhereArgs whereArgs) {
         super(tableName);
-        this.whereArgs = whereArgs;
+        if (whereArgs == null)
+            this.whereArgs = new WhereArgs();
+        else
+            this.whereArgs = whereArgs;
     }
 
     public WhereArgs getWhereArgs() {
-        if (whereArgs == null)
-            return new WhereArgs();
-        else
-            return this.whereArgs;
+        return this.whereArgs;
     }
 
     @Override
