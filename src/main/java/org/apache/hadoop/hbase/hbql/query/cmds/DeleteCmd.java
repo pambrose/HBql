@@ -3,7 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.cmds;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
@@ -55,12 +54,8 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
 
         int cnt = 0;
 
-        for (final RowRequest rowRequest : rowRequestList) {
-            final ResultScanner resultScanner = rowRequest.getResultScanner(table);
-            cnt += delete(table, clientExprTree, resultScanner);
-        }
-
-        table.flushCommits();
+        for (final RowRequest rowRequest : rowRequestList)
+            cnt += delete(table, clientExprTree, rowRequest);
 
         final HOutput retval = new HOutput();
         retval.out.println("Delete count: " + cnt);
@@ -71,15 +66,16 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
 
     private int delete(final HTable table,
                        final ExprTree clientExprTree,
-                       final ResultScanner resultsScanner) throws IOException, HBqlException {
+                       final RowRequest rowRequest) throws IOException, HBqlException {
         int cnt = 0;
-        for (final Result result : resultsScanner) {
+        for (final Result result : rowRequest.getResultScanner(table)) {
             if (clientExprTree == null || clientExprTree.evaluate(result)) {
                 table.delete(new Delete(result.getRow()));
                 cnt++;
             }
         }
+        if (cnt > 0)
+            table.flushCommits();
         return cnt;
-
     }
 }

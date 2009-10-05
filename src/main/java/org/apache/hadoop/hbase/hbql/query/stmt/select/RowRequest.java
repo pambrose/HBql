@@ -42,19 +42,21 @@ public class RowRequest {
 
     }
 
-    public boolean isAScan() {
+    private boolean isAScan() {
         return this.getScanValue() != null;
     }
 
-    public Get getGetValue() {
+    private Get getGetValue() {
         return this.getValue;
     }
 
-    public Scan getScanValue() {
+    private Scan getScanValue() {
         return this.scanValue;
     }
 
     public ResultScanner getResultScanner(final HTable table) throws IOException {
+
+        // If we are dealing with a Get, then we need to fake a ResultScanner with the Get result
         if (this.isAScan()) {
             return table.getScanner(this.getScanValue());
         }
