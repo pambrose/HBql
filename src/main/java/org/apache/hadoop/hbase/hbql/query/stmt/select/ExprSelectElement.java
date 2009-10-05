@@ -113,16 +113,25 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     }
 
     @Override
-    public void assignVersionValue(final Object newobj, final Collection<ColumnAttrib> columnAttribs, final Result result) throws HBqlException {
+    public void assignVersionValue(final Object newobj,
+                                   final Collection<ColumnAttrib> columnAttribs,
+                                   final Result result) throws HBqlException {
 
         // Bail if it is a calculation
         if (!this.isSimpleColumnReference())
             return;
 
         final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
+
         final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(this.getFamilyNameBytes());
 
+        if (columnMap == null)
+            return;
+
         final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
+
+        if (timeStampMap == null)
+            return;
 
         for (final Long timestamp : timeStampMap.keySet()) {
 
