@@ -42,9 +42,7 @@ public abstract class ExprContext implements Serializable {
         this.typeSignature = typeSignature;
         if (vals != null) {
             for (final GenericValue val : vals) {
-                // Null values might come in from KeyRangeArgs.Range
-                if (val != null)
-                    this.addExpression(val);
+                this.addExpression(val);
             }
         }
     }

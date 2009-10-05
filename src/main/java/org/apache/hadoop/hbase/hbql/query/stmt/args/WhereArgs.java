@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.query.stmt.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Sets;
 
@@ -22,7 +23,7 @@ import java.util.Set;
  */
 public class WhereArgs {
 
-    private KeyRangeArgs keyRangeArgs = null;
+    private KeyRangeArgs keyRangeArgs = new KeyRangeArgs();    // Defualt to ALL records
     private TimeRangeArgs timeRangeArgs = null;
     private VersionArgs versionArgs = null;
     private LimitArgs scanLimitArgs = null;
@@ -173,20 +174,33 @@ public class WhereArgs {
         return allAttribs;
     }
 
+    public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribSet) throws IOException,
+                                                                                                     HBqlException {
+
+        final List<RowRequest> rowRequestList = Lists.newArrayList();
+
+        final KeyRangeArgs keyRangeArgs = this.getKeyRangeArgs();
+        if (keyRangeArgs != null) {
+            for (final KeyRangeArgs.Range range : keyRangeArgs.getRangeList()) {
+                rowRequestList.add(new RowRequest(range));
+
+            }
+        }
+
+        return rowRequestList;
+    }
+
     public List<Scan> getScanList(final Collection<ColumnAttrib> columnAttribSet) throws IOException, HBqlException {
 
         final List<Scan> scanList = Lists.newArrayList();
 
         final KeyRangeArgs keyRangeArgs = this.getKeyRangeArgs();
-
-        if (keyRangeArgs != null) {
-            for (final KeyRangeArgs.Range range : keyRangeArgs.getRangeList())
-                scanList.add(range.getScan());
-        }
+        for (final KeyRangeArgs.Range range : keyRangeArgs.getRangeList())
+            scanList.add(range.getScan());
 
         // If nothing present, then scan all rows
-        if (scanList.size() == 0)
-            scanList.add(new Scan());
+        // if (scanList.size() == 0)
+        //     scanList.add(new Scan());
 
         for (final Scan scan : scanList) {
 

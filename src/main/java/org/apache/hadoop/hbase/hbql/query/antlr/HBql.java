@@ -74,11 +74,6 @@ public class HBql {
         return elem.getValue(null);
     }
 
-    public static Object parseAndEvaluateSelectElement(final String str) throws HBqlException {
-        final ExprSelectElement elem = parseSelectElement(str);
-        return evaluateSelectElement(elem);
-    }
-
     public static WhereArgs parseWithClause(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);

@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.stmt.args;
 
+import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
@@ -19,24 +20,26 @@ public class KeyRangeArgs {
 
     private final List<Range> rangeList;
 
-    public enum Type {
-        SINGLE, RANGE, LAST
+    private enum Type {
+        SINGLE, RANGE, LAST, ALL
     }
 
     public static class Range extends SelectArgs {
         private final KeyRangeArgs.Type type;
 
-        public Range(final GenericValue arg0) {
-            this(KeyRangeArgs.Type.LAST, arg0, null);
+        private Range() {
+            super(SelectArgs.Type.NOARGSKEY);
+            this.type = KeyRangeArgs.Type.ALL;
         }
 
-        public Range(final GenericValue arg0, final GenericValue arg1) {
-            this((arg1 == null ? KeyRangeArgs.Type.SINGLE : KeyRangeArgs.Type.RANGE), arg0, arg1);
-        }
-
-        private Range(final KeyRangeArgs.Type type, final GenericValue arg0, final GenericValue arg1) {
-            super((arg1 == null ? SelectArgs.Type.SINGLEKEY : SelectArgs.Type.KEYRANGE), arg0, arg1);
+        private Range(final KeyRangeArgs.Type type, final GenericValue arg0) {
+            super(SelectArgs.Type.SINGLEKEY, arg0);
             this.type = type;
+        }
+
+        private Range(final GenericValue arg0, final GenericValue arg1) {
+            super(SelectArgs.Type.KEYRANGE, arg0, arg1);
+            this.type = KeyRangeArgs.Type.RANGE;
         }
 
         public String getLower() throws HBqlException {
@@ -78,25 +81,57 @@ public class KeyRangeArgs {
             }
         }
 
+        public boolean isSinlgeRow() {
+            return this.getType() == KeyRangeArgs.Type.SINGLE;
+        }
+
+        public boolean isAllRows() {
+            return this.getType() == KeyRangeArgs.Type.ALL;
+        }
+
+        public Get getGet() throws HBqlException {
+            return new Get(this.getLowerAsBytes());
+        }
+
         public Scan getScan() throws HBqlException {
             final Scan scan = new Scan();
-            scan.setStartRow(this.getLowerAsBytes());
-            if (!this.isStartLastRange())
-                scan.setStopRow(this.getUpperAsBytes());
-            return scan;
 
+            if (!this.isAllRows()) {
+                scan.setStartRow(this.getLowerAsBytes());
+                if (!this.isStartLastRange())
+                    scan.setStopRow(this.getUpperAsBytes());
+            }
+            return scan;
         }
     }
 
     public KeyRangeArgs() {
-        this.rangeList = Lists.newArrayList();
+        this(null);
     }
 
     public KeyRangeArgs(final List<Range> rangeList) {
-        if (rangeList == null)
+        if (rangeList == null) {
             this.rangeList = Lists.newArrayList();
-        else
+            this.getRangeList().add(newAllRange());
+        }
+        else {
             this.rangeList = rangeList;
+        }
+    }
+
+    public static Range newRange(final GenericValue arg0, final GenericValue arg1) {
+        if (arg1 == null)
+            return new Range(arg0, arg1);
+        else
+            return new Range(KeyRangeArgs.Type.SINGLE, arg0);
+    }
+
+    public static Range newLastRange(final GenericValue arg0) {
+        return new Range(KeyRangeArgs.Type.LAST, arg0);
+    }
+
+    public static Range newAllRange() {
+        return new Range();
     }
 
     public boolean isValid() {
