@@ -55,7 +55,7 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
         int cnt = 0;
 
         for (final RowRequest rowRequest : rowRequestList)
-            cnt += delete(table, clientExprTree, rowRequest);
+            cnt += this.delete(table, clientExprTree, rowRequest);
 
         final HOutput retval = new HOutput();
         retval.out.println("Delete count: " + cnt);
