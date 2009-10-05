@@ -70,7 +70,7 @@ public class VersionAnnotationAttrib extends FieldAttrib {
                 throw new HBqlException(annoname + " for " + getObjectQualifiedName(field)
                                         + " refers to invalid instance variable " + instance);
 
-            final ColumnAttrib attrib = (ColumnAttrib)schema.getAttribByVariableName(instance);
+            final ColumnAttrib attrib = schema.getAttribByVariableName(instance);
 
             if (attrib == null)
                 throw new HBqlException("Instance variable " + instance
@@ -80,20 +80,20 @@ public class VersionAnnotationAttrib extends FieldAttrib {
                 throw new HBqlException(getObjectQualifiedName(field)
                                         + "instance variable must have HColumn annotation");
 
-            final CurrentValueAnnotationAttrib currentAnnotationAttrib = (CurrentValueAnnotationAttrib)attrib;
+            final CurrentValueAnnotationAttrib currentAnnoAttrib = (CurrentValueAnnotationAttrib)attrib;
 
             // Make sure type of Value in map matches type of instance var
-            if (!mapValueType.equals(currentAnnotationAttrib.getField().getType()))
+            if (!mapValueType.equals(currentAnnoAttrib.getField().getType()))
                 throw new HBqlException("Type of " + getObjectQualifiedName(field) + " map value type does not " +
-                                        "match type of " + currentAnnotationAttrib.getObjectQualifiedName());
+                                        "match type of " + currentAnnoAttrib.getObjectQualifiedName());
 
-            return new VersionAnnotationAttrib(currentAnnotationAttrib.getFamilyName(),
-                                               currentAnnotationAttrib.getColumnName(),
+            return new VersionAnnotationAttrib(currentAnnoAttrib.getFamilyName(),
+                                               currentAnnoAttrib.getColumnName(),
                                                field,
-                                               currentAnnotationAttrib.getFieldType(),
-                                               currentAnnotationAttrib.isMapKeysAsColumns(),
-                                               currentAnnotationAttrib.getGetter(),
-                                               currentAnnotationAttrib.getSetter());
+                                               currentAnnoAttrib.getFieldType(),
+                                               currentAnnoAttrib.isMapKeysAsColumns(),
+                                               currentAnnoAttrib.getGetter(),
+                                               currentAnnoAttrib.getSetter());
         }
         else {
             return new VersionAnnotationAttrib(versionAnno.family(),

@@ -42,11 +42,11 @@ public abstract class FieldAttrib extends ColumnAttrib {
 
     @Override
     public String getObjectQualifiedName() {
-        return this.getEnclosingClass().getName() + "." + this.getColumnName();
+        return this.getEnclosingClassName() + "." + this.getField().getName();
     }
 
     public String getSimpleObjectQualifiedName() {
-        return this.getEnclosingClass().getSimpleName() + "." + this.getColumnName();
+        return this.getEnclosingClass().getSimpleName() + "." + this.getField().getName();
     }
 
     public static String getObjectQualifiedName(final Field field) {
@@ -102,13 +102,13 @@ public abstract class FieldAttrib extends ColumnAttrib {
     }
 
     @Override
-    public Object getMapValue(final Object recordObj) throws HBqlException {
+    public Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException {
         // Just call current value for version since we have different fields for each
-        return this.getCurrentValue(recordObj);
+        return (Map<Long, Object>)this.getCurrentValue(recordObj);
     }
 
     @Override
-    public void setMapValue(final Object newobj, final Map<Long, Object> map) {
+    public void setVersionValueMapValue(final Object newobj, final Map<Long, Object> map) {
         // Just call current value for version since we have different fields for each
         this.setCurrentValue(newobj, 0, map);
     }

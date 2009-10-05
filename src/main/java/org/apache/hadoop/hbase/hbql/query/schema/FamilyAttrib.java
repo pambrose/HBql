@@ -52,7 +52,7 @@ public class FamilyAttrib extends ColumnAttrib {
     }
 
     @Override
-    public Object getMapValue(final Object recordObj) throws HBqlException {
+    public Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException {
         return null;
     }
 
@@ -62,7 +62,7 @@ public class FamilyAttrib extends ColumnAttrib {
     }
 
     @Override
-    public void setMapValue(final Object newobj, final Map<Long, Object> map) {
+    public void setVersionValueMapValue(final Object newobj, final Map<Long, Object> map) {
 
     }
 }

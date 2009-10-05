@@ -165,7 +165,9 @@ public abstract class HBaseSchema extends Schema {
     }
 
     protected void assignCurrentValuesFromExpr(final Object newobj,
+                                               final Collection<ColumnAttrib> attribList,
                                                final List<SelectElement> selectElementList,
+                                               final int maxVersions,
                                                final Result result) throws HBqlException {
 
         for (final SelectElement selectElement : selectElementList)
@@ -205,7 +207,7 @@ public abstract class HBaseSchema extends Schema {
                 if (mapval == null) {
                     mapval = Maps.newHashMap();
                     // TODO Check this
-                    attrib.setMapValue(newobj, mapval);
+                    attrib.setVersionValueMapValue(newobj, mapval);
                 }
 
                 final Object val = attrib.getValueFromBytes(newobj, b);
@@ -245,11 +247,11 @@ public abstract class HBaseSchema extends Schema {
 
                 for (final Long timestamp : timeStampMap.keySet()) {
 
-                    Map<Long, Object> mapval = (Map<Long, Object>)attrib.getMapValue(newobj);
+                    Map<Long, Object> mapval = (Map<Long, Object>)attrib.getVersionValueMapValue(newobj);
 
                     if (mapval == null) {
                         mapval = new TreeMap();
-                        attrib.setMapValue(newobj, mapval);
+                        attrib.setVersionValueMapValue(newobj, mapval);
                     }
 
                     final byte[] b = timeStampMap.get(timestamp);

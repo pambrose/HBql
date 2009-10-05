@@ -121,7 +121,7 @@ public class FamilySelectElement implements SelectElement {
                         if (mapval == null) {
                             mapval = Maps.newHashMap();
                             // TODO Check this
-                            attrib.setMapValue(newobj, mapval);
+                            attrib.setVersionValueMapValue(newobj, mapval);
                         }
 
                         final Object val = attrib.getValueFromBytes(newobj, b);
@@ -129,8 +129,8 @@ public class FamilySelectElement implements SelectElement {
                     }
                 }
                 else {
-                    final ColumnAttrib attrib = this.getSchema()
-                            .getAttribFromFamilyQualifiedName(familyName, columnName);
+                    final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
+                                                                                                  columnName);
                     if (attrib != null)
                         attrib.setCurrentValue(newobj, 0, b);
                 }
@@ -170,11 +170,11 @@ public class FamilySelectElement implements SelectElement {
 
                 for (final Long timestamp : timeStampMap.keySet()) {
 
-                    Map<Long, Object> mapval = (Map<Long, Object>)columnAttrib.getMapValue(newobj);
+                    Map<Long, Object> mapval = (Map<Long, Object>)columnAttrib.getVersionValueMapValue(newobj);
 
                     if (mapval == null) {
                         mapval = new TreeMap();
-                        columnAttrib.setMapValue(newobj, mapval);
+                        columnAttrib.setVersionValueMapValue(newobj, mapval);
                     }
 
                     final byte[] b = timeStampMap.get(timestamp);

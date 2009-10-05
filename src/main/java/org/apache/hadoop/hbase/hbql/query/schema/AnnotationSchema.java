@@ -313,7 +313,8 @@ public class AnnotationSchema extends HBaseSchema {
 
     private void processColumnVersionAnnotation(final Field field) throws HBqlException {
         final VersionAnnotationAttrib attrib = VersionAnnotationAttrib.newVersionAttrib(this, field);
-        this.addAttribToVariableNameMap(attrib, attrib.getAliasName());
+        final String name = attrib.getAliasName();
+        this.addAttribToVariableNameMap(attrib, name);
         this.addVersionAttribToFamilyQualifiedNameMap(attrib);
     }
 
@@ -338,12 +339,12 @@ public class AnnotationSchema extends HBaseSchema {
             final Object newobj = this.createNewObject(result);
 
             // Assign most recent values
-            //this.assignCurrentValuesFromResult(newobj, result);
-            this.assignCurrentValuesFromExpr(newobj, selectElementList, result);
+            // this.assignCurrentValuesFromResult(newobj, result);
+            this.assignCurrentValuesFromExpr(newobj, attribList, selectElementList, maxVersions, result);
 
             // Assign the versioned values
             if (maxVersions > 1)
-                //this.assignVersionedValuesFromResult(newobj, attribList, result);
+                // this.assignVersionedValuesFromResult(newobj, attribList, result);
                 this.assignVersionedValuesFromExpr(newobj, selectElementList, attribList, result);
 
             return newobj;

@@ -50,11 +50,11 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     }
 
     public ColumnAttrib getColumnAttrib() {
-        return columnAttrib;
+        return this.columnAttrib;
     }
 
     public String getFamilyName() {
-        return familyName;
+        return this.familyName;
     }
 
     public String getColumnName() {
@@ -97,7 +97,12 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
     @Override
     public void assignCurrentValue(final Object newobj, final Result result) throws HBqlException {
+
         if (this.isSimpleColumnReference()) {
+
+            if (!this.getColumnAttrib().isACurrentValue())
+                return;
+
             final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
             this.getColumnAttrib().setCurrentValue(newobj, 0, b);
         }
@@ -117,8 +122,8 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                                    final Collection<ColumnAttrib> columnAttribs,
                                    final Result result) throws HBqlException {
 
-        // Bail if it is a calculation
-        if (!this.isSimpleColumnReference())
+        // Bail if it is a calculation on a current value
+        if (!this.isSimpleColumnReference() || this.getColumnAttrib().isACurrentValue())
             return;
 
         final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
@@ -135,11 +140,11 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
         for (final Long timestamp : timeStampMap.keySet()) {
 
-            Map<Long, Object> mapval = (Map<Long, Object>)this.getColumnAttrib().getMapValue(newobj);
+            Map<Long, Object> mapval = this.getColumnAttrib().getVersionValueMapValue(newobj);
 
             if (mapval == null) {
                 mapval = new TreeMap();
-                this.getColumnAttrib().setMapValue(newobj, mapval);
+                this.getColumnAttrib().setVersionValueMapValue(newobj, mapval);
             }
 
             final byte[] b = timeStampMap.get(timestamp);

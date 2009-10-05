@@ -76,13 +76,13 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     @Override
-    public Object getMapValue(final Object recordObj) throws HBqlException {
+    public Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException {
         final HRecord record = (HRecord)recordObj;
         return record.getVersionedValueMap(this.getAliasName());
     }
 
     @Override
-    public void setMapValue(final Object newobj, final Map<Long, Object> map) {
+    public void setVersionValueMapValue(final Object newobj, final Map<Long, Object> map) {
         final HRecord record = (HRecord)newobj;
         record.setVersionedValueMap(this.getAliasName(), map);
     }
