@@ -35,4 +35,16 @@ public class RowRequest {
         }
 
     }
+
+    public boolean isAScan() {
+        return this.getScanValue() != null;
+    }
+
+    public Get getGetValue() {
+        return this.getValue;
+    }
+
+    public Scan getScanValue() {
+        return this.scanValue;
+    }
 }

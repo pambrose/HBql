@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
@@ -12,6 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.select.RowRequest;
 
 import java.io.IOException;
 import java.util.List;
@@ -51,18 +51,31 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
         final HTable table = conn.getHTable(schema.getTableName());
         final ExprTree clientExprTree = where.getClientExprTree();
 
-        final List<Scan> scanList = where.getScanList(allWhereAttribs);
+        final List<RowRequest> rowRequestList = where.getRowRequestList(allWhereAttribs);
 
         int cnt = 0;
-        for (final Scan scan : scanList) {
-            final ResultScanner resultsScanner = table.getScanner(scan);
-            for (final Result result : resultsScanner) {
-                if (clientExprTree == null || clientExprTree.evaluate(result)) {
-                    table.delete(new Delete(result.getRow()));
-                    cnt++;
+
+        for (final RowRequest rowRequest : rowRequestList) {
+            if (rowRequest.isAScan()) {
+                final ResultScanner resultsScanner = table.getScanner(rowRequest.getScanValue());
+                for (final Result result : resultsScanner) {
+                    if (clientExprTree == null || clientExprTree.evaluate(result)) {
+                        table.delete(new Delete(result.getRow()));
+                        cnt++;
+                    }
+                }
+            }
+            else {
+                final Result result = table.get(rowRequest.getGetValue());
+                if (result != null) {
+                    if (clientExprTree == null || clientExprTree.evaluate(result)) {
+                        table.delete(new Delete(result.getRow()));
+                        cnt++;
+                    }
                 }
             }
         }
+
         table.flushCommits();
 
         final HOutput retval = new HOutput();
