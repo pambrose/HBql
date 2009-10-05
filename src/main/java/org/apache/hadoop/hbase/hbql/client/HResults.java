@@ -3,11 +3,11 @@ package org.apache.hadoop.hbase.hbql.client;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.ResultsIterator;
 
@@ -28,18 +28,18 @@ public class HResults<T> implements Iterable<T> {
     private final HQuery hquery;
     private final QueryArgs queryArgs;
     private final List<HQueryListener<T>> listeners;
-    private final List<Scan> scanList;
+    private final List<RowRequest> rowRequestList;
 
     public HResults(final HQuery hquery,
                     final HConnection connection,
                     final QueryArgs queryArgs,
                     final List<HQueryListener<T>> listeners,
-                    final List<Scan> scanList) {
+                    final List<RowRequest> rowRequestList) {
         this.connection = connection;
         this.hquery = hquery;
         this.queryArgs = queryArgs;
         this.listeners = listeners;
-        this.scanList = scanList;
+        this.rowRequestList = rowRequestList;
     }
 
     private HConnection getConnection() {
@@ -66,8 +66,8 @@ public class HResults<T> implements Iterable<T> {
         return this.scannerList;
     }
 
-    private List<Scan> getScanList() {
-        return scanList;
+    private List<RowRequest> getRowRequestList() {
+        return this.rowRequestList;
     }
 
     public void close() {
@@ -101,7 +101,7 @@ public class HResults<T> implements Iterable<T> {
 
                 final HTable table = getConnection().getHTable(getQueryArgs().getSchema().getTableName());
                 final ExprTree clientExprTree = getWhereArgs().getClientExprTree();
-                final Iterator<Scan> scanIter = getScanList().iterator();
+                final Iterator<RowRequest> rowRequestIter = getRowRequestList().iterator();
 
                 int maxVersions = 0;
                 ResultScanner currentResultScanner = null;
@@ -115,8 +115,8 @@ public class HResults<T> implements Iterable<T> {
                     return this.clientExprTree;
                 }
 
-                private Iterator<Scan> getScanIter() {
-                    return this.scanIter;
+                private Iterator<RowRequest> getRowRequestIter() {
+                    return this.rowRequestIter;
                 }
 
                 private ResultScanner getCurrentResultScanner() {
@@ -136,15 +136,16 @@ public class HResults<T> implements Iterable<T> {
                 }
 
                 private Iterator<Result> getNextResultScanner() throws IOException {
-                    if (this.getScanIter().hasNext()) {
+                    if (this.getRowRequestIter().hasNext()) {
 
-                        final Scan scan = this.getScanIter().next();
-                        this.maxVersions = scan.getMaxVersions();
+                        final RowRequest rowRequest = this.getRowRequestIter().next();
+                        this.maxVersions = rowRequest.getMaxVersions();
 
                         // First close previous ResultScanner before reassigning
                         closeCurrentScanner(this.getCurrentResultScanner(), true);
 
-                        currentResultScanner = this.getTable().getScanner(scan);
+                        currentResultScanner = rowRequest.getResultScanner(this.getTable());
+
                         getScannerList().add(this.getCurrentResultScanner());
 
                         return this.getCurrentResultScanner().iterator();

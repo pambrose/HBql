@@ -1,11 +1,11 @@
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Sets;
 
@@ -24,7 +24,7 @@ public class HQuery<T> {
     private final HConnection connection;
     private final String query;
     private final QueryArgs queryArgs;
-    private final List<Scan> scanList;
+    private final List<RowRequest> rowRequestList;
 
     private List<HQueryListener<T>> listeners = null;
 
@@ -43,7 +43,7 @@ public class HQuery<T> {
         allAttribs.addAll(this.getQueryArgs().getSelectAttribList());
         allAttribs.addAll(where.getAllColumnsUsedInExprs());
 
-        this.scanList = where.getScanList(allAttribs);
+        this.rowRequestList = where.getRowRequestList(allAttribs);
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {
@@ -65,8 +65,8 @@ public class HQuery<T> {
         return this.queryArgs;
     }
 
-    private List<Scan> getScanList() {
-        return this.scanList;
+    private List<RowRequest> getRowRequestList() {
+        return this.rowRequestList;
     }
 
     private List<HQueryListener<T>> getListeners() {
@@ -92,7 +92,7 @@ public class HQuery<T> {
                                this.getConnection(),
                                this.getQueryArgs(),
                                this.getListeners(),
-                               this.getScanList());
+                               this.getRowRequestList());
     }
 
     public List<T> getResultList() throws HBqlException {

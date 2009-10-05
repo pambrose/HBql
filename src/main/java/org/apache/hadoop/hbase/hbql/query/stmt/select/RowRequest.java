@@ -31,7 +31,7 @@ public class RowRequest {
                       final Collection<ColumnAttrib> columnAttribSet,
                       final KeyRangeArgs.Range range) throws HBqlException, IOException {
 
-        if (range.isSinlgeRow()) {
+        if (range.isSingleRow()) {
             this.getValue = range.getGet(whereArgs, columnAttribSet);
             this.scanValue = null;
         }
@@ -53,6 +53,14 @@ public class RowRequest {
     private Scan getScanValue() {
         return this.scanValue;
     }
+
+    public int getMaxVersions() {
+        if (this.isAScan())
+            return this.getScanValue().getMaxVersions();
+        else
+            return this.getGetValue().getMaxVersions();
+    }
+
 
     public ResultScanner getResultScanner(final HTable table) throws IOException {
 

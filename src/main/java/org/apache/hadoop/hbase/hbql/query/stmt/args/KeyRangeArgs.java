@@ -84,8 +84,12 @@ public class KeyRangeArgs {
             }
         }
 
-        public boolean isSinlgeRow() {
+        public boolean isSingleRow() {
             return this.getType() == KeyRangeArgs.Type.SINGLE;
+        }
+
+        public boolean isRowRange() {
+            return this.getType() == KeyRangeArgs.Type.RANGE;
         }
 
         public boolean isAllRows() {
@@ -104,7 +108,7 @@ public class KeyRangeArgs {
             final Scan scan = new Scan();
             if (!this.isAllRows()) {
                 scan.setStartRow(this.getLowerAsBytes());
-                if (!this.isLastRange())
+                if (this.isRowRange())
                     scan.setStopRow(this.getUpperAsBytes());
             }
             whereArgs.setScanArgs(scan, columnAttribSet);
@@ -127,7 +131,7 @@ public class KeyRangeArgs {
     }
 
     public static Range newRange(final GenericValue arg0, final GenericValue arg1) {
-        if (arg1 == null)
+        if (arg1 != null)
             return new Range(arg0, arg1);
         else
             return new Range(KeyRangeArgs.Type.SINGLE, arg0);

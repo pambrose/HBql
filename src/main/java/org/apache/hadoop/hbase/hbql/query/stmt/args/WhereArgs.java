@@ -175,19 +175,22 @@ public class WhereArgs {
         return allAttribs;
     }
 
+    public List<Scan> getScanList(final Collection<ColumnAttrib> columnAttribSet) throws IOException, HBqlException {
+
+        final List<Scan> scanList = Lists.newArrayList();
+
+        for (final KeyRangeArgs.Range range : this.getKeyRangeArgs().getRangeList())
+            scanList.add(range.getScan(this, columnAttribSet));
+
+        return scanList;
+    }
+
     public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribSet) throws IOException,
                                                                                                      HBqlException {
 
         final List<RowRequest> rowRequestList = Lists.newArrayList();
-
-        final KeyRangeArgs keyRangeArgs = this.getKeyRangeArgs();
-        if (keyRangeArgs != null) {
-            for (final KeyRangeArgs.Range range : keyRangeArgs.getRangeList()) {
-                rowRequestList.add(new RowRequest(this, columnAttribSet, range));
-
-            }
-        }
-
+        for (final KeyRangeArgs.Range range : this.getKeyRangeArgs().getRangeList())
+            rowRequestList.add(new RowRequest(this, columnAttribSet, range));
         return rowRequestList;
     }
 
@@ -247,16 +250,6 @@ public class WhereArgs {
                                                                        this.getScanLimit());
         if (serverFilter != null)
             scan.setFilter(serverFilter);
-    }
-
-    public List<Scan> getScanList(final Collection<ColumnAttrib> columnAttribSet) throws IOException, HBqlException {
-
-        final List<Scan> scanList = Lists.newArrayList();
-
-        for (final KeyRangeArgs.Range range : this.getKeyRangeArgs().getRangeList())
-            scanList.add(range.getScan(this, columnAttribSet));
-
-        return scanList;
     }
 
 }
