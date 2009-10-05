@@ -48,14 +48,13 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWhereArgs().getAllColumnsUsedInExprs();
         final HTable table = conn.getHTable(schema.getTableName());
-        final ExprTree clientExprTree = where.getClientExprTree();
 
         final List<RowRequest> rowRequestList = where.getRowRequestList(allWhereAttribs);
 
         int cnt = 0;
 
         for (final RowRequest rowRequest : rowRequestList)
-            cnt += this.delete(table, clientExprTree, rowRequest);
+            cnt += this.delete(table, where, rowRequest);
 
         final HOutput retval = new HOutput();
         retval.out.println("Delete count: " + cnt);
@@ -65,8 +64,11 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
     }
 
     private int delete(final HTable table,
-                       final ExprTree clientExprTree,
+                       final WhereArgs where,
                        final RowRequest rowRequest) throws IOException, HBqlException {
+
+        final ExprTree clientExprTree = where.getClientExprTree();
+
         int cnt = 0;
         for (final Result result : rowRequest.getResultScanner(table)) {
             if (clientExprTree == null || clientExprTree.evaluate(result)) {
