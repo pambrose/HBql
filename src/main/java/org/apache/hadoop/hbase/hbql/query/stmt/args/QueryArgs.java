@@ -6,8 +6,10 @@ import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
+import org.apache.hadoop.hbase.hbql.query.util.Sets;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,11 +41,27 @@ public class QueryArgs {
         for (final SelectElement selectElement : this.getSelectElementList())
             selectElement.validate(connection, this.getSchema(), this.getSelectAttribList());
 
+        // Make sure there are no duplicate aliases in list
+        this.checkForDuplicateAsNames();
+
         if (this.getWhereArgs().getServerExprTree() != null)
             this.getWhereArgs().getServerExprTree().setUseHBaseResult(false);
 
         if (this.getWhereArgs().getClientExprTree() != null)
             this.getWhereArgs().getClientExprTree().setUseHBaseResult(true);
+    }
+
+    private void checkForDuplicateAsNames() throws HBqlException {
+        final Set<String> asNameSet = Sets.newHashSet();
+        for (final SelectElement selectElement : this.getSelectElementList()) {
+            final String asName = selectElement.getAsName();
+            if (asName == null)
+                continue;
+            if (asNameSet.contains(asName))
+                throw new HBqlException("Duplicate AS name " + asName + " in select list");
+
+            asNameSet.add(asName);
+        }
     }
 
     public List<SelectElement> getSelectElementList() {

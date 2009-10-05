@@ -27,6 +27,7 @@ public class SelectExpressionsTest extends TestSupport {
 
     static HConnection conn = null;
     static List<String> keyList = Lists.newArrayList();
+    static List<String> val1List = Lists.newArrayList();
     static List<Integer> val5List = Lists.newArrayList();
     static List<Integer> val7List = Lists.newArrayList();
 
@@ -64,8 +65,11 @@ public class SelectExpressionsTest extends TestSupport {
             rec.setCurrentValue("keyval", keyval);
 
             int val5 = randomVal.nextInt();
+            String s_val5 = "" + val5;
+            val1List.add(s_val5);
             val5List.add(val5);
 
+            rec.setCurrentValue("val1", s_val5);
             rec.setCurrentValue("val5", val5);
             rec.setCurrentValue("val6", i * 100);
 
@@ -78,34 +82,46 @@ public class SelectExpressionsTest extends TestSupport {
     @Test
     public void selectExpressions() throws HBqlException, IOException {
 
-        final String query1 = "SELECT val5, (val5 - val5 + val5) as val6 FROM table1";
+        final String query1 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val6 FROM table1";
 
         HQuery<HRecord> q1 = conn.newHQuery(query1);
 
         HResults<HRecord> results1 = q1.getResults();
 
         List<String> testKeyVals = Lists.newArrayList();
+        List<String> testVal1Vals = Lists.newArrayList();
         List<Integer> testVal5Vals = Lists.newArrayList();
+        List<Integer> testVal6Vals = Lists.newArrayList();
 
+        int rec_cnt = 0;
         for (HRecord rec : results1) {
 
             String keyval = (String)rec.getCurrentValue("keyval");
+            String val1 = (String)rec.getCurrentValue("val1");
             int val5 = (Integer)rec.getCurrentValue("val5");
-            long val6 = (Integer)rec.getCurrentValue("val6");
-
-            assertTrue(val5 == val6);
+            int val6 = (Integer)rec.getCurrentValue("val6");
 
             testKeyVals.add(keyval);
+            testVal1Vals.add(val1);
             testVal5Vals.add(val5);
+            testVal6Vals.add(val6);
 
             System.out.println("Current Values: " + keyval
+                               + " - " + rec.getCurrentValue("val1")
                                + " - " + rec.getCurrentValue("val5")
                                + " - " + rec.getCurrentValue("val6")
             );
+            rec_cnt++;
         }
 
         assertTrue(testKeyVals.equals(keyList));
+        assertTrue(testVal1Vals.equals(val1List));
         assertTrue(testVal5Vals.equals(val5List));
+        assertTrue(testVal6Vals.equals(val5List));
+
+        HQuery<HRecord> q2 = conn.newHQuery(query1);
+        List<HRecord> recList = q1.getResultList();
+        assertTrue(recList.size() == rec_cnt);
 
     }
 

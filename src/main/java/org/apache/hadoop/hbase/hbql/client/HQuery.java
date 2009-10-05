@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -29,15 +28,15 @@ public class HQuery<T> {
 
     private List<HQueryListener<T>> listeners = null;
 
-    public HQuery(final HConnection connection, final String query) throws IOException, HBqlException {
+    HQuery(final HConnection connection, final String query) throws IOException, HBqlException {
 
         this.connection = connection;
         this.query = query;
-        this.queryArgs = HBql.parseQuery(this.getConnection(), this.getQuery());
+        this.queryArgs = HBql.parseSelectStmt(this.getConnection(), this.getQuery());
 
-        final WhereArgs where = this.getWhereArgs();
+        final WhereArgs where = this.getQueryArgs().getWhereArgs();
 
-        where.setSchema(this.getSchema());
+        where.setSchema(this.getQueryArgs().getSchema());
 
         // Get list of all columns that are used in select list and expr tree
         final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
@@ -66,20 +65,12 @@ public class HQuery<T> {
         return this.queryArgs;
     }
 
-    private WhereArgs getWhereArgs() {
-        return this.getQueryArgs().getWhereArgs();
-    }
-
     private List<Scan> getScanList() {
         return this.scanList;
     }
 
     private List<HQueryListener<T>> getListeners() {
         return this.listeners;
-    }
-
-    private HBaseSchema getSchema() {
-        return this.getQueryArgs().getSchema();
     }
 
     public void clearListeners() {

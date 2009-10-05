@@ -112,7 +112,7 @@ public class HBql {
         }
     }
 
-    public static QueryArgs parseQuery(final HConnection connection, final String str) throws HBqlException {
+    public static QueryArgs parseSelectStmt(final HConnection connection, final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
             final QueryArgs args = parser.selectStmt();

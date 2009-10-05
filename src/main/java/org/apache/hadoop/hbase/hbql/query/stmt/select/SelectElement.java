@@ -22,4 +22,8 @@ public interface SelectElement {
     void assignCurrentValue(Object newobj, Result result) throws HBqlException;
 
     void assignVersionValue(Object newobj, Collection<ColumnAttrib> columnAttribs, Result result) throws HBqlException;
+
+    String getAsName();
+
+    String asString();
 }

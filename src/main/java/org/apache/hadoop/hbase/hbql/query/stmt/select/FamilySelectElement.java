@@ -27,10 +27,14 @@ public class FamilySelectElement implements SelectElement {
     private final boolean useAllFamilies;
     private final List<String> familyNameList = Lists.newArrayList();
     private final List<byte[]> familyNameBytesList = Lists.newArrayList();
+    private final String familyName;
 
     private HBaseSchema schema;
 
     public FamilySelectElement(final String familyName) {
+
+        this.familyName = familyName;
+
         if (familyName != null && familyName.equals("*")) {
             this.useAllFamilies = true;
         }
@@ -65,12 +69,24 @@ public class FamilySelectElement implements SelectElement {
     }
 
     @Override
-    public void validate(final HConnection connection, final HBaseSchema schema, final List<ColumnAttrib> selectAttribList) throws HBqlException {
+    public String getAsName() {
+        return null;
+    }
+
+    @Override
+    public String asString() {
+        return this.familyName;
+    }
+
+    @Override
+    public void validate(final HConnection connection,
+                         final HBaseSchema schema,
+                         final List<ColumnAttrib> selectAttribList) throws HBqlException {
 
         this.schema = schema;
 
         if (this.useAllFamilies) {
-            // conncetion wil be null from tests
+            // connction will be null from tests
             final Collection<String> familyList = (connection == null)
                                                   ? this.getSchema().getFamilySet()
                                                   : connection.getFamilyList(this.getSchema().getTableName());
