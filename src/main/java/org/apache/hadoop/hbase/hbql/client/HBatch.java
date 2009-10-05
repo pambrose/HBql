@@ -29,21 +29,19 @@ public class HBatch {
         }
 
         private final Type type;
-        private final Put putValue;
-        private final Delete deleteValue;
+        private final Object actionValue;
 
-        private Action(final Type type, final Put putValue, final Delete deleteValue) {
+        private Action(final Type type, final Object actionValue) {
             this.type = type;
-            this.putValue = putValue;
-            this.deleteValue = deleteValue;
+            this.actionValue = actionValue;
         }
 
         static Action newInsert(final Put put) {
-            return new Action(Type.INSERT, put, null);
+            return new Action(Type.INSERT, put);
         }
 
         static Action newDelete(final Delete delete) {
-            return new Action(Type.DELETE, null, delete);
+            return new Action(Type.DELETE, delete);
         }
 
         private boolean isInsert() {
@@ -55,11 +53,11 @@ public class HBatch {
         }
 
         private Put getPutValue() {
-            return putValue;
+            return (Put)this.actionValue;
         }
 
         private Delete getDeleteValue() {
-            return deleteValue;
+            return (Delete)this.actionValue;
         }
 
         public void apply(final HTable table) throws IOException {
@@ -93,7 +91,8 @@ public class HBatch {
 
     public void insert(final Object newrec) throws HBqlException {
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(newrec);
-        this.insert(schema, newrec);
+        final Put put = createPut(schema, newrec);
+        this.getActionList(schema.getTableName()).add(Action.newInsert(put));
     }
 
     public void insert(final HRecord hRecord) throws HBqlException {
@@ -102,7 +101,8 @@ public class HBatch {
         if (!hRecord.isCurrentValueSet(keyAttrib))
             throw new HBqlException("HRecord key value must be assigned");
 
-        this.insert(schema, hRecord);
+        final Put put = createPut(schema, hRecord);
+        this.getActionList(schema.getTableName()).add(Action.newInsert(put));
     }
 
     public void delete(final Object newrec) throws HBqlException {
@@ -116,16 +116,6 @@ public class HBatch {
         if (!hRecord.isCurrentValueSet(keyAttrib))
             throw new HBqlException("HRecord key value must be assigned");
         this.delete(schema, hRecord);
-    }
-
-    private void insert(HBaseSchema schema, final Object newrec) throws HBqlException {
-        final Put put = createPut(schema, newrec);
-        this.getActionList(schema.getTableName()).add(Action.newInsert(put));
-    }
-
-    private void insert(HBaseSchema schema, final HRecord hRecord) throws HBqlException {
-        final Put put = createPut(schema, hRecord);
-        this.getActionList(schema.getTableName()).add(Action.newInsert(put));
     }
 
     private void delete(HBaseSchema schema, final Object newrec) throws HBqlException {

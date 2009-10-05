@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
@@ -27,8 +28,8 @@ public class RawAccess2 {
 
         HTable table = new HTable(new HBaseConfiguration(), "table1");
 
-        for (int i = 0; i < 0; i++) {
-            Put put = new Put(Bytes.toBytes("11111111" + i));
+        for (int i = 10; i < 15; i++) {
+            Put put = new Put(Bytes.toBytes(HUtil.getZeroPaddedNumber(i, 10)));
             put.add(family, col1, Bytes.toBytes(34));
             put.add(family, col2, Bytes.toBytes(68));
             table.put(put);
