@@ -99,12 +99,10 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     public void assignCurrentValue(final Object newobj, final Result result) throws HBqlException {
 
         if (this.isSimpleColumnReference()) {
-
-            if (!this.getColumnAttrib().isACurrentValue())
-                return;
-
-            final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
-            this.getColumnAttrib().setCurrentValue(newobj, 0, b);
+            if (this.getColumnAttrib().isACurrentValue()) {
+                final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
+                this.getColumnAttrib().setCurrentValue(newobj, 0, b);
+            }
         }
         else {
             final String name = this.getAsName();
@@ -114,7 +112,6 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                 attrib.setCurrentValue(newobj, 0, elementValue);
             }
         }
-
     }
 
     @Override

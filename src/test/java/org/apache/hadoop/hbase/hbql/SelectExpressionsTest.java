@@ -56,20 +56,23 @@ public class SelectExpressionsTest extends TestSupport {
 
         final HBatch batch = new HBatch();
         for (int i = 0; i < 10; i++) {
+
             final HRecord rec = new HRecord("table1");
+
             final String keyval = HUtil.getZeroPaddedNumber(i, 10);
             keyList.add(keyval);
             rec.setCurrentValue("keyval", keyval);
 
             int val5 = randomVal.nextInt();
             val5List.add(val5);
+
             rec.setCurrentValue("val5", val5);
             rec.setCurrentValue("val6", i * 100);
+
             batch.insert(rec);
         }
 
         conn.apply(batch);
-
     }
 
     @Test
@@ -78,6 +81,7 @@ public class SelectExpressionsTest extends TestSupport {
         final String query1 = "SELECT val5, (val5 - val5 + val5) as val6 FROM table1";
 
         HQuery<HRecord> q1 = conn.newHQuery(query1);
+
         HResults<HRecord> results1 = q1.getResults();
 
         List<String> testKeyVals = Lists.newArrayList();
@@ -89,16 +93,15 @@ public class SelectExpressionsTest extends TestSupport {
             int val5 = (Integer)rec.getCurrentValue("val5");
             long val6 = (Integer)rec.getCurrentValue("val6");
 
+            assertTrue(val5 == val6);
+
             testKeyVals.add(keyval);
             testVal5Vals.add(val5);
-
-            assertTrue(val5 == val6);
 
             System.out.println("Current Values: " + keyval
                                + " - " + rec.getCurrentValue("val5")
                                + " - " + rec.getCurrentValue("val6")
             );
-
         }
 
         assertTrue(testKeyVals.equals(keyList));

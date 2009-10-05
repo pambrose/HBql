@@ -58,12 +58,12 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
             final ResultScanner resultsScanner = table.getScanner(scan);
             for (final Result result : resultsScanner) {
                 if (clientExprTree == null || clientExprTree.evaluate(result)) {
-                    final Delete delete = new Delete(result.getRow());
-                    table.delete(delete);
+                    table.delete(new Delete(result.getRow()));
                     cnt++;
                 }
             }
         }
+        table.flushCommits();
 
         final HOutput retval = new HOutput();
         retval.out.println("Delete count: " + cnt);

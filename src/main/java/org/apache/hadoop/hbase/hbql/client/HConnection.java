@@ -125,12 +125,8 @@ public class HConnection {
         for (final String tableName : batch.getActionList().keySet()) {
             final HTable table = this.getHTable(tableName);
             final List<HBatch.Action> actions = batch.getActionList(tableName);
-            for (HBatch.Action action : actions) {
-                if (action.isInsert())
-                    table.put(action.getPutValue());
-                if (action.isDelete())
-                    table.delete(action.getDeleteValue());
-            }
+            for (HBatch.Action action : actions)
+                action.apply(table);
             table.flushCommits();
         }
     }

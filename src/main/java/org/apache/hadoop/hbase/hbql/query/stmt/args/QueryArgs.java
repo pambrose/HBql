@@ -29,7 +29,7 @@ public class QueryArgs {
                      final WhereArgs whereArgs) {
         this.tableName = tableName;
         this.selectElementList = selectElementList;
-        this.whereArgs = whereArgs;
+        this.whereArgs = whereArgs != null ? whereArgs : new WhereArgs();
     }
 
     public void validate(final HConnection connection) throws HBqlException {
@@ -59,10 +59,7 @@ public class QueryArgs {
     }
 
     public WhereArgs getWhereArgs() {
-        if (this.whereArgs != null)
-            return this.whereArgs;
-        else
-            return new WhereArgs();
+        return this.whereArgs;
     }
 
     public HBaseSchema getSchema() {

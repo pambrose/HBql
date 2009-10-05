@@ -17,31 +17,33 @@ import java.io.IOException;
  * Date: Sep 17, 2009
  * Time: 2:43:58 PM
  */
-public class RawAccess {
+public class RawAccess2 {
 
     public static void main(String[] args) throws IOException, HBqlException {
 
-        final byte[] family = Bytes.toBytes("family1");
-        final byte[] author = Bytes.toBytes("author");
-        final byte[] title = Bytes.toBytes("title");
+        final byte[] family = Bytes.toBytes("f3");
+        final byte[] col1 = Bytes.toBytes("val1");
+        final byte[] col2 = Bytes.toBytes("val2");
 
-        HTable table = new HTable(new HBaseConfiguration(), "testobjects");
+        HTable table = new HTable(new HBaseConfiguration(), "table1");
 
         for (int i = 0; i < 0; i++) {
-            Put put = new Put(Bytes.toBytes("00000000" + i));
-            put.add(family, author, Bytes.toBytes("A value for author"));
+            Put put = new Put(Bytes.toBytes("11111111" + i));
+            put.add(family, col1, Bytes.toBytes(34));
+            put.add(family, col2, Bytes.toBytes(68));
             table.put(put);
             table.flushCommits();
         }
 
         Scan scan = new Scan();
-        scan.addColumn(family, author);
+        scan.addColumn(family, col1);
+        scan.addColumn(family, col2);
         ResultScanner scanner = table.getScanner(scan);
 
         for (Result result : scanner) {
             System.out.println(Bytes.toString(result.getRow()) + " - "
-                               + Bytes.toString(result.getValue(family, author)) + " - "
-                               + Bytes.toString(result.getValue(family, title)));
+                               + Bytes.toInt(result.getValue(family, col1)) + " - "
+                               + Bytes.toInt(result.getValue(family, col2)));
         }
 
     }

@@ -220,7 +220,8 @@ public abstract class ColumnAttrib implements Serializable {
         }
     }
 
-    public byte[] getValueAsBytes(final Object recordObj) throws HBqlException {
+    public byte[]
+    getValueAsBytes(final Object recordObj) throws HBqlException {
 
         if (this.hasGetter())
             return this.invokeGetterMethod(recordObj);

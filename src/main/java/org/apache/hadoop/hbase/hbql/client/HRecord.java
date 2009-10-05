@@ -69,9 +69,8 @@ public class HRecord implements Serializable {
         final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
 
         if (attrib != null) {
-
             final String aliasName = attrib.getAliasName();
-            if (!aliasName.equals(name) && this.containsName(aliasName))
+            if (aliasName.equals(name) && this.containsName(aliasName))
                 return this.getValue(aliasName);
 
             final String qualifiedName = attrib.getFamilyQualifiedName();

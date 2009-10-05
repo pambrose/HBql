@@ -33,13 +33,9 @@ public class ExprTree extends ExprContext {
         // Noop for now
     }
 
-
     @Override
     public String asString() {
-        if (this.isValid())
-            return this.getGenericValue(0).asString();
-        else
-            return "";
+        return this.isValid() ? this.getGenericValue(0).asString() : "";
     }
 
     public void setUseHBaseResult(final boolean useHBaseResult) {
