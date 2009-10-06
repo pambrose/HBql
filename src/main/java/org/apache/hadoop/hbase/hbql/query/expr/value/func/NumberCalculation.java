@@ -2,13 +2,8 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.query.schema.NumericType;
 
 /**
@@ -35,20 +30,8 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
         final Object obj0 = this.getArg(0).getValue(object);
         final Object obj1 = this.getArg(1).getValue(object);
 
-        // If we do not already know the specific types, then look at the class of both args
-        final Class rankingClass;
-        final boolean useDecimal;
-        if (this.getHighestRankingNumericArg().equals(NumberValue.class)) {
-            rankingClass = NumericType.getHighestRankingNumericArg(obj0, obj1);
-            useDecimal = rankingClass.equals(FloatValue.class)
-                         || rankingClass.equals(Float.class)
-                         || rankingClass.equals(DoubleValue.class)
-                         || rankingClass.equals(Double.class);
-        }
-        else {
-            useDecimal = this.useDecimalNumericArgs();
-            rankingClass = this.getHighestRankingNumericArg();
-        }
+        final Class rankingClass = this.getHighestRankingNumericArg(obj0, obj1);
+        final boolean useDecimal = NumericType.useDecimalNumericArgs(rankingClass);
 
         if (!useDecimal) {
 
@@ -79,11 +62,11 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
                     throw new HBqlException("Invalid operator: " + this.getOperator());
             }
 
-            if (rankingClass.equals(ShortValue.class) || rankingClass.equals(Short.class))
+            if (NumericType.isAShort(rankingClass))
                 return (short)result;
-            else if (rankingClass.equals(IntegerValue.class) || rankingClass.equals(Integer.class))
+            else if (NumericType.isAnInteger(rankingClass))
                 return (int)result;
-            else if (rankingClass.equals(LongValue.class) || rankingClass.equals(Long.class))
+            else if (NumericType.isALong(rankingClass))
                 return result;
             else
                 throw new HBqlException("Invalid class in NumberCalculation: " + rankingClass.getName());
@@ -117,9 +100,9 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
                     throw new HBqlException("Invalid operator: " + this.getOperator());
             }
 
-            if (rankingClass.equals(FloatValue.class) || rankingClass.equals(Float.class))
+            if (NumericType.isAFloat(rankingClass))
                 return (float)result;
-            else if (rankingClass.equals(DoubleValue.class) || rankingClass.equals(Double.class))
+            else if (NumericType.isADouble(rankingClass))
                 return result;
             else
                 throw new HBqlException("Invalid class in NumberCalculation: " + rankingClass.getName());

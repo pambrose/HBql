@@ -5,8 +5,6 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -71,8 +69,7 @@ public abstract class GenericExpr implements GenericValue {
     }
 
     // Used to cache type of the args for exprs with numberic args
-    private Class<? extends GenericValue> highestRankingNumericArg = NumberValue.class;
-    private boolean useDecimalNumericArgs = false;
+    private Class<? extends GenericValue> highestRankingNumericArgFoundInValidate = NumberValue.class;
 
     private final Type type;
     private final List<GenericValue> exprList = Lists.newArrayList();
@@ -104,12 +101,16 @@ public abstract class GenericExpr implements GenericValue {
         return this.getArgList().subList(i, this.getArgList().size());
     }
 
-    protected boolean useDecimalNumericArgs() {
-        return this.useDecimalNumericArgs;
+    private Class<? extends GenericValue> getHighestRankingNumericArgFoundInValidate() {
+        return this.highestRankingNumericArgFoundInValidate;
     }
 
-    protected Class<? extends GenericValue> getHighestRankingNumericArg() {
-        return highestRankingNumericArg;
+    protected Class getHighestRankingNumericArg(final Object... objs) {
+        // If we do not already know the specific types, then look at the class of both args
+        if (this.getHighestRankingNumericArgFoundInValidate().equals(NumberValue.class))
+            return NumericType.getHighestRankingNumericArg(objs);
+        else
+            return this.getHighestRankingNumericArgFoundInValidate();
     }
 
     public boolean isAConstant() {
@@ -166,14 +167,11 @@ public abstract class GenericExpr implements GenericValue {
             final int rank = NumericType.getTypeRanking(clazz);
             if (rank > highestRank) {
                 highestRank = rank;
-                this.highestRankingNumericArg = clazz;
+                this.highestRankingNumericArgFoundInValidate = clazz;
             }
         }
 
-        this.useDecimalNumericArgs = (this.getHighestRankingNumericArg().equals(FloatValue.class))
-                                     || this.getHighestRankingNumericArg().equals(DoubleValue.class);
-
-        return this.getHighestRankingNumericArg();
+        return this.getHighestRankingNumericArgFoundInValidate();
     }
 
     @Override

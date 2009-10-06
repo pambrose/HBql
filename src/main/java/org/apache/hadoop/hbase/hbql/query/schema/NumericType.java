@@ -61,4 +61,28 @@ public enum NumericType {
         }
         return highestRankingNumericArg;
     }
+
+    public static boolean useDecimalNumericArgs(final Class clazz) {
+        return isAFloat(clazz) || isADouble(clazz);
+    }
+
+    public static boolean isAShort(final Class clazz) {
+        return clazz.equals(ShortValue.class) || clazz.equals(Short.class);
+    }
+
+    public static boolean isAnInteger(final Class clazz) {
+        return clazz.equals(IntegerValue.class) || clazz.equals(Integer.class);
+    }
+
+    public static boolean isALong(final Class clazz) {
+        return clazz.equals(LongValue.class) || clazz.equals(Long.class);
+    }
+
+    public static boolean isAFloat(final Class clazz) {
+        return clazz.equals(FloatValue.class) || clazz.equals(Float.class);
+    }
+
+    public static boolean isADouble(final Class clazz) {
+        return clazz.equals(DoubleValue.class) || clazz.equals(Double.class);
+    }
 }
