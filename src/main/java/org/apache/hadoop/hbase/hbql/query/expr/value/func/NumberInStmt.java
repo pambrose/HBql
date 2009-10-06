@@ -21,23 +21,51 @@ public class NumberInStmt extends GenericInStmt {
 
     protected boolean evaluateList(final Object object) throws HBqlException {
 
-        final long attribVal = ((Number)this.getArg(0).getValue(object)).longValue();
+        final Object obj0 = this.getArg(0).getValue(object);
 
-        for (final GenericValue obj : this.getInList()) {
+        this.validateNumericArgTypes(obj0);
 
-            // Check if the value returned is a collection
-            final Object objval = obj.getValue(object);
-            if (HUtil.isACollection(objval)) {
-                for (final GenericValue val : (Collection<GenericValue>)objval) {
-                    if (attribVal == ((Number)val.getValue(object)).longValue())
+        if (!this.useDecimal()) {
+
+            final long val0 = ((Number)obj0).longValue();
+
+            for (final GenericValue obj : this.getInList()) {
+
+                // Check if the value returned is a collection
+                final Object objval = obj.getValue(object);
+                if (HUtil.isACollection(objval)) {
+                    for (final GenericValue genericValue : (Collection<GenericValue>)objval) {
+                        if (val0 == ((Number)genericValue.getValue(object)).longValue())
+                            return true;
+                    }
+                }
+                else {
+                    if (val0 == ((Number)objval).longValue())
                         return true;
                 }
             }
-            else {
-                if (attribVal == ((Number)objval).longValue())
-                    return true;
-            }
+            return false;
         }
-        return false;
+        else {
+
+            final double val0 = ((Number)obj0).doubleValue();
+
+            for (final GenericValue obj : this.getInList()) {
+
+                // Check if the value returned is a collection
+                final Object objval = obj.getValue(object);
+                if (HUtil.isACollection(objval)) {
+                    for (final GenericValue genericValue : (Collection<GenericValue>)objval) {
+                        if (val0 == ((Number)genericValue.getValue(object)).doubleValue())
+                            return true;
+                    }
+                }
+                else {
+                    if (val0 == ((Number)objval).doubleValue())
+                        return true;
+                }
+            }
+            return false;
+        }
     }
 }
