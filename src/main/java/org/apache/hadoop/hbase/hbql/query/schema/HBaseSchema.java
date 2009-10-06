@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -14,9 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -181,85 +178,6 @@ public abstract class HBaseSchema extends Schema {
 
         for (final SelectElement selectElement : selectElementList)
             selectElement.assignVersionValue(newobj, columnAttribs, result);
-    }
-
-    protected void assignCurrentValuesFromResult(final Object newobj, final Result result) throws HBqlException {
-
-        for (final KeyValue keyValue : result.list()) {
-
-            final byte[] fbytes = keyValue.getFamily();
-            final byte[] cbytes = keyValue.getQualifier();
-
-            final String familyName = HUtil.ser.getStringFromBytes(fbytes);
-            final String columnName = HUtil.ser.getStringFromBytes(cbytes);
-
-            final long timestamp = keyValue.getTimestamp();
-            final byte[] b = result.getValue(fbytes, cbytes);
-
-            if (columnName.endsWith("]")) {
-                final int lbrace = columnName.indexOf("[");
-                final String mapcolumn = columnName.substring(0, lbrace);
-                final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
-                final ColumnAttrib attrib = this.getAttribFromFamilyQualifiedName(familyName, mapcolumn);
-
-                Map mapval = (Map)attrib.getCurrentValue(newobj);
-
-                if (mapval == null) {
-                    mapval = Maps.newHashMap();
-                    // TODO Check this
-                    attrib.setVersionValueMapValue(newobj, mapval);
-                }
-
-                final Object val = attrib.getValueFromBytes(newobj, b);
-                mapval.put(mapKey, val);
-            }
-            else {
-                final ColumnAttrib attrib = this.getAttribFromFamilyQualifiedName(familyName, columnName);
-                attrib.setCurrentValue(newobj, timestamp, b);
-            }
-        }
-    }
-
-    protected void assignVersionedValuesFromResult(final Object newobj,
-                                                   final Collection<ColumnAttrib> columnAttribs,
-                                                   final Result result) throws HBqlException {
-
-        final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
-
-        for (final byte[] familyNameBytes : familyMap.keySet()) {
-
-            final String familyName = HUtil.ser.getStringFromBytes(familyNameBytes);
-            final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(familyNameBytes);
-
-            for (final byte[] cbytes : columnMap.keySet()) {
-                final String columnName = HUtil.ser.getStringFromBytes(cbytes);
-                final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(cbytes);
-
-                final ColumnAttrib attrib = this.getVersionAttribFromFamilyQualifiedNameMap(familyName, columnName);
-
-                // Ignore data if no version map exists for the column
-                if (attrib == null)
-                    continue;
-
-                // Ignore if not in select list
-                if (!columnAttribs.contains(attrib))
-                    continue;
-
-                for (final Long timestamp : timeStampMap.keySet()) {
-
-                    Map<Long, Object> mapval = (Map<Long, Object>)attrib.getVersionValueMapValue(newobj);
-
-                    if (mapval == null) {
-                        mapval = new TreeMap();
-                        attrib.setVersionValueMapValue(newobj, mapval);
-                    }
-
-                    final byte[] b = timeStampMap.get(timestamp);
-                    final Object val = attrib.getValueFromBytes(newobj, b);
-                    mapval.put(timestamp, val);
-                }
-            }
-        }
     }
 
     // This is relevant only for AnnotatedSchema
