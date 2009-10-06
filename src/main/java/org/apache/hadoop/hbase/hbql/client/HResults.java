@@ -24,26 +24,14 @@ import java.util.List;
 public class HResults<T> implements Iterable<T> {
 
     private final List<ResultScanner> scannerList = Lists.newArrayList();
-    private final HConnection connection;
     private final HQuery hquery;
-    private final QueryArgs queryArgs;
-    private final List<HQueryListener<T>> listeners;
-    private final List<RowRequest> rowRequestList;
 
-    public HResults(final HQuery hquery,
-                    final HConnection connection,
-                    final QueryArgs queryArgs,
-                    final List<HQueryListener<T>> listeners,
-                    final List<RowRequest> rowRequestList) {
-        this.connection = connection;
+    public HResults(final HQuery hquery) {
         this.hquery = hquery;
-        this.queryArgs = queryArgs;
-        this.listeners = listeners;
-        this.rowRequestList = rowRequestList;
     }
 
     private HConnection getConnection() {
-        return connection;
+        return this.getHQuery().getConnection();
     }
 
     private HQuery getHQuery() {
@@ -51,7 +39,7 @@ public class HResults<T> implements Iterable<T> {
     }
 
     private QueryArgs getQueryArgs() {
-        return this.queryArgs;
+        return this.getHQuery().getQueryArgs();
     }
 
     private WhereArgs getWhereArgs() {
@@ -59,15 +47,15 @@ public class HResults<T> implements Iterable<T> {
     }
 
     private List<HQueryListener<T>> getListeners() {
-        return listeners;
+        return this.getHQuery().getListeners();
     }
 
     private List<ResultScanner> getScannerList() {
         return this.scannerList;
     }
 
-    private List<RowRequest> getRowRequestList() {
-        return this.rowRequestList;
+    private List<RowRequest> getRowRequestList() throws HBqlException, IOException {
+        return this.getHQuery().getRowRequestList();
     }
 
     public void close() {

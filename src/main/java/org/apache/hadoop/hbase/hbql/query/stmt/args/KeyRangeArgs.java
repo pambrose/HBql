@@ -72,11 +72,20 @@ public class KeyRangeArgs {
         public String asString() {
             try {
                 final StringBuilder sbuf = new StringBuilder();
-                sbuf.append("'" + this.getLower() + "' TO ");
-                if (this.isLastRange())
-                    sbuf.append("LAST");
-                else
-                    sbuf.append("'" + this.getUpper() + "'");
+
+                if (this.isAllRows()) {
+                    sbuf.append("ALL");
+                }
+                else if (this.isSingleRow()) {
+                    sbuf.append("'" + this.getLower() + "'");
+                }
+                else {
+                    sbuf.append("'" + this.getLower() + "' TO ");
+                    if (this.isLastRange())
+                        sbuf.append("LAST");
+                    else
+                        sbuf.append("'" + this.getUpper() + "'");
+                }
                 return sbuf.toString();
             }
             catch (HBqlException e) {
@@ -145,10 +154,6 @@ public class KeyRangeArgs {
         return new Range();
     }
 
-    public boolean isValid() {
-        return this.getRangeList().size() > 0;
-    }
-
     public List<Range> getRangeList() {
         return this.rangeList;
     }
@@ -170,9 +175,10 @@ public class KeyRangeArgs {
         return sbuf.toString();
     }
 
-    public void setParameter(final String name, final Object val) throws HBqlException {
+    public int setParameter(final String name, final Object val) throws HBqlException {
+        int cnt = 0;
         for (final Range range : this.getRangeList())
-            range.setParameter(name, val);
-
+            cnt += range.setParameter(name, val);
+        return cnt;
     }
 }

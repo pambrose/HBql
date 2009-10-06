@@ -28,7 +28,7 @@ public class RawAccess2 {
 
         HTable table = new HTable(new HBaseConfiguration(), "table1");
 
-        for (int i = 10; i < 15; i++) {
+        for (int i = 30; i < 35; i++) {
             Put put = new Put(Bytes.toBytes(HUtil.getZeroPaddedNumber(i, 10)));
             put.add(family, col1, Bytes.toBytes(34));
             put.add(family, col2, Bytes.toBytes(68));

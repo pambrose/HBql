@@ -56,7 +56,7 @@ public class SelectExpressionsTest extends TestSupport {
             System.out.println(conn.execute("delete from table1"));
 
         final HBatch batch = new HBatch();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 40; i < 50; i++) {
 
             final HRecord rec = new HRecord("table1");
 
@@ -133,7 +133,7 @@ public class SelectExpressionsTest extends TestSupport {
         final String query4 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM table1 " +
                               "WITH KEYS :key";
 
-        HQuery<HRecord> q4 = conn.newHQuery(query3);
+        HQuery<HRecord> q4 = conn.newHQuery(query4);
 
         q4.setParameter("key", "0000000001");
         List<HRecord> recList4 = q4.getResultList();

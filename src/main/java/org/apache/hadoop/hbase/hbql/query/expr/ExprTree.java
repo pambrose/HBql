@@ -26,7 +26,7 @@ public class ExprTree extends ExprContext {
     }
 
     public Boolean evaluate(final Object object) throws HBqlException {
-        return !this.isValid() || (Boolean)this.evaluate(0, true, object);
+        return (Boolean)this.evaluate(0, true, object);
     }
 
     public void validate() throws HBqlException {
@@ -35,7 +35,7 @@ public class ExprTree extends ExprContext {
 
     @Override
     public String asString() {
-        return this.isValid() ? this.getGenericValue(0).asString() : "";
+        return this.getGenericValue(0).asString();
     }
 
     public void setUseHBaseResult(final boolean useHBaseResult) {

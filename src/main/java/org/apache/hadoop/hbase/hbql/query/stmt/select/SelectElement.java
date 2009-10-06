@@ -23,9 +23,9 @@ public interface SelectElement {
 
     void assignVersionValue(Object newobj, Collection<ColumnAttrib> columnAttribs, Result result) throws HBqlException;
 
+    int setParameter(String name, Object val) throws HBqlException;
+
     String getAsName();
 
     String asString();
-
-    void setParameter(String name, Object val) throws HBqlException;
 }

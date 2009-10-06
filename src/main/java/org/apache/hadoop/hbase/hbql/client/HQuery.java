@@ -24,7 +24,6 @@ public class HQuery<T> {
     private final HConnection connection;
     private final String query;
     private final QueryArgs queryArgs;
-    private final List<RowRequest> rowRequestList;
 
     private List<HQueryListener<T>> listeners = null;
 
@@ -38,12 +37,6 @@ public class HQuery<T> {
 
         where.setSchema(this.getQueryArgs().getSchema());
 
-        // Get list of all columns that are used in select list and expr tree
-        final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
-        allAttribs.addAll(this.getQueryArgs().getSelectAttribList());
-        allAttribs.addAll(where.getAllColumnsUsedInExprs());
-
-        this.rowRequestList = where.getRowRequestList(allAttribs);
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {
@@ -53,7 +46,7 @@ public class HQuery<T> {
         this.getListeners().add(listener);
     }
 
-    private HConnection getConnection() {
+    public HConnection getConnection() {
         return this.connection;
     }
 
@@ -61,20 +54,32 @@ public class HQuery<T> {
         return this.query;
     }
 
-    private QueryArgs getQueryArgs() {
+    public QueryArgs getQueryArgs() {
         return this.queryArgs;
     }
 
-    private List<RowRequest> getRowRequestList() {
-        return this.rowRequestList;
+    public List<RowRequest> getRowRequestList() throws HBqlException, IOException {
+
+        final WhereArgs where = this.getQueryArgs().getWhereArgs();
+
+        // Get list of all columns that are used in select list and expr tree
+        final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
+        allAttribs.addAll(this.getQueryArgs().getSelectAttribList());
+        allAttribs.addAll(where.getAllColumnsUsedInExprs());
+
+        return where.getRowRequestList(allAttribs);
     }
 
-    private List<HQueryListener<T>> getListeners() {
+    public List<HQueryListener<T>> getListeners() {
         return this.listeners;
     }
 
     public void setParameter(final String name, final Object val) throws HBqlException {
-        this.getQueryArgs().setParameter(name, val);
+        int cnt = this.getQueryArgs().setParameter(name, val);
+
+        if (cnt == 0)
+            throw new HBqlException("Parameter name " + name + " does not exist in " + this.getQuery());
+
     }
 
     public void clearListeners() {
@@ -92,11 +97,7 @@ public class HQuery<T> {
                 listener.onQueryInit();
         }
 
-        return new HResults<T>(this,
-                               this.getConnection(),
-                               this.getQueryArgs(),
-                               this.getListeners(),
-                               this.getRowRequestList());
+        return new HResults<T>(this);
     }
 
     public List<T> getResultList() throws HBqlException {

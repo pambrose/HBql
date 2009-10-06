@@ -79,8 +79,9 @@ public class FamilySelectElement implements SelectElement {
     }
 
     @Override
-    public void setParameter(final String name, final Object val) {
+    public int setParameter(final String name, final Object val) {
         // Do nothing
+        return 0;
     }
 
     @Override

@@ -129,65 +129,64 @@ public class WhereArgs {
     }
 
     public long getQueryLimit() throws HBqlException {
-        return (this.getQueryLimitArgs() != null && this.getQueryLimitArgs().isValid())
-               ? this.getQueryLimitArgs().getValue() : 0;
+        return (this.getQueryLimitArgs() != null) ? this.getQueryLimitArgs().getValue() : 0;
     }
 
     public long getScanLimit() throws HBqlException {
-        return (this.getScanLimitArgs() != null && this.getScanLimitArgs().isValid())
-               ? this.getScanLimitArgs().getValue() : 0;
+        return (this.getScanLimitArgs() != null) ? this.getScanLimitArgs().getValue() : 0;
     }
 
     public String asString() {
 
         final StringBuilder sbuf = new StringBuilder("WITH ");
 
-        if (this.getKeyRangeArgs().isValid())
-            sbuf.append(this.getKeyRangeArgs().asString() + "\n");
+        sbuf.append(this.getKeyRangeArgs().asString() + "\n");
 
-        if (this.getTimeRangeArgs() != null && this.getTimeRangeArgs().isValid())
+        if (this.getTimeRangeArgs() != null)
             sbuf.append(this.getTimeRangeArgs().asString() + "\n");
 
-        if (this.getVersionArgs() != null && this.getVersionArgs().isValid())
+        if (this.getVersionArgs() != null)
             sbuf.append(this.getVersionArgs().asString() + "\n");
 
-        if (this.getScanLimitArgs() != null && this.getScanLimitArgs().isValid())
+        if (this.getScanLimitArgs() != null)
             sbuf.append("SCAN " + this.getScanLimitArgs().asString() + "\n");
 
-        if (this.getQueryLimitArgs() != null && this.getQueryLimitArgs().isValid())
+        if (this.getQueryLimitArgs() != null)
             sbuf.append("QUERY " + this.getQueryLimitArgs().asString() + "\n");
 
-        if (this.getServerExprTree() != null && this.getServerExprTree().isValid())
+        if (this.getServerExprTree() != null)
             sbuf.append("SERVER FILTER " + this.getServerExprTree().asString() + "\n");
 
-        if (this.getClientExprTree() != null && this.getClientExprTree().isValid())
+        if (this.getClientExprTree() != null)
             sbuf.append("CLIENT FILTER " + this.getClientExprTree().asString() + "\n");
 
         return sbuf.toString();
     }
 
-    public void setParameter(final String name, final Object val) throws HBqlException {
-        if (this.getKeyRangeArgs().isValid())
-            this.getKeyRangeArgs().setParameter(name, val);
+    public int setParameter(final String name, final Object val) throws HBqlException {
+        int cnt = 0;
 
-        if (this.getTimeRangeArgs() != null && this.getTimeRangeArgs().isValid())
-            this.getTimeRangeArgs().setParameter(name, val);
+        cnt += this.getKeyRangeArgs().setParameter(name, val);
 
-        if (this.getVersionArgs() != null && this.getVersionArgs().isValid())
-            this.getVersionArgs().setParameter(name, val);
+        if (this.getTimeRangeArgs() != null)
+            cnt += this.getTimeRangeArgs().setParameter(name, val);
 
-        if (this.getScanLimitArgs() != null && this.getScanLimitArgs().isValid())
-            this.getScanLimitArgs().setParameter(name, val);
+        if (this.getVersionArgs() != null)
+            cnt += this.getVersionArgs().setParameter(name, val);
 
-        if (this.getQueryLimitArgs() != null && this.getQueryLimitArgs().isValid())
-            this.getQueryLimitArgs().setParameter(name, val);
+        if (this.getScanLimitArgs() != null)
+            cnt += this.getScanLimitArgs().setParameter(name, val);
 
-        if (this.getServerExprTree() != null && this.getServerExprTree().isValid())
-            this.getServerExprTree().setParameter(name, val);
+        if (this.getQueryLimitArgs() != null)
+            cnt += this.getQueryLimitArgs().setParameter(name, val);
 
-        if (this.getClientExprTree() != null && this.getClientExprTree().isValid())
-            this.getClientExprTree().setParameter(name, val);
+        if (this.getServerExprTree() != null)
+            cnt += this.getServerExprTree().setParameter(name, val);
 
+        if (this.getClientExprTree() != null)
+            cnt += this.getClientExprTree().setParameter(name, val);
+
+        return cnt;
     }
 
     public Set<ColumnAttrib> getAllColumnsUsedInExprs() {
@@ -235,10 +234,10 @@ public class WhereArgs {
                 get.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
         }
 
-        if (this.getTimeRangeArgs() != null && this.getTimeRangeArgs().isValid())
+        if (this.getTimeRangeArgs() != null)
             this.getTimeRangeArgs().setTimeStamp(get);
 
-        if (this.getVersionArgs() != null && this.getVersionArgs().isValid())
+        if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(get);
 
         final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExprTree(),
@@ -264,10 +263,10 @@ public class WhereArgs {
                 scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
         }
 
-        if (this.getTimeRangeArgs() != null && this.getTimeRangeArgs().isValid())
+        if (this.getTimeRangeArgs() != null)
             this.getTimeRangeArgs().setTimeStamp(scan);
 
-        if (this.getVersionArgs() != null && this.getVersionArgs().isValid())
+        if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(scan);
 
         final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExprTree(),

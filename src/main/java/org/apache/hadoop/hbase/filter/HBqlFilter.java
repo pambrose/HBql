@@ -85,7 +85,7 @@ public class HBqlFilter implements Filter {
     }
 
     private boolean hasValidExprTree() {
-        return this.getExprTree() != null && getExprTree().isValid();
+        return this.getExprTree() != null;
     }
 
     public void reset() {

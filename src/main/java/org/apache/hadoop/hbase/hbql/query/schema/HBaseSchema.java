@@ -269,7 +269,7 @@ public abstract class HBaseSchema extends Schema {
 
     public HBqlFilter getHBqlFilter(final ExprTree exprTree, final long scanLimit) throws HBqlException {
 
-        if (exprTree == null || !exprTree.isValid())
+        if (exprTree == null)
             return (scanLimit > 0) ? new HBqlFilter(ExprTree.newExprTree(null), scanLimit) : null;
 
         final DefinedSchema schema = HUtil.getDefinedSchemaForServerFilter(this);

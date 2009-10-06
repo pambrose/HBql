@@ -81,8 +81,7 @@ public abstract class ExprContext implements Serializable {
 
     public void setSchema(final Schema schema) {
         this.schema = schema;
-        if (this.isValid())
-            this.setContext();
+        this.setContext();
     }
 
     protected GenericValue getGenericValue(final int i) {
@@ -95,21 +94,9 @@ public abstract class ExprContext implements Serializable {
         return this.getGenericValue(i).getValue(object);
     }
 
-    public boolean isValid() {
-
-        if (this.getExpressions().size() == 0)
-            return false;
-
-        for (final GenericValue val : this.getExpressions())
-            if (val == null)
-                return false;
-
-        return true;
-    }
-
     protected void setContext() {
 
-        if (this.isValid() && this.isInNeedOfSettingContext()) {
+        if (this.isInNeedOfSettingContext()) {
             try {
                 for (final GenericValue val : this.getExpressions())
                     val.setExprContext(this);
@@ -126,7 +113,7 @@ public abstract class ExprContext implements Serializable {
     }
 
     public void optimize() throws HBqlException {
-        if (this.isValid() && this.isInNeedOfOptimization()) {
+        if (this.isInNeedOfOptimization()) {
             for (int i = 0; i < this.getExpressions().size(); i++)
                 this.setGenericValue(i, this.getGenericValue(i).getOptimizedValue());
             this.setInNeedOfOptimization(false);
@@ -135,7 +122,7 @@ public abstract class ExprContext implements Serializable {
 
     public void validateTypes(final boolean allowColumns) throws TypeException {
 
-        if (this.isValid() && this.isInNeedOfTypeValidation()) {
+        if (this.isInNeedOfTypeValidation()) {
 
             if (!allowColumns && this.getColumnsUsedInExpr().size() > 0)
                 throw new TypeException("Invalid column reference" + (this.getColumnsUsedInExpr().size() > 1 ? "s" : "")
@@ -200,12 +187,12 @@ public abstract class ExprContext implements Serializable {
         this.getAttribsUsedInExpr().add(column.getColumnAttrib());
     }
 
-    public void setParameter(final String name, final Object val) throws HBqlException {
+    public int setParameter(final String name, final Object val) throws HBqlException {
 
         final String fullname = name.startsWith(":") ? name : (":" + name);
 
         if (!this.getNamedParamMap().containsKey(fullname))
-            throw new HBqlException("Parameter name " + name + " does not exist in " + this.asString());
+            return 0;
 
         // Set all occurences to param value
         final List<NamedParameter> paramList = this.getNamedParamMap().get(fullname);
@@ -213,6 +200,8 @@ public abstract class ExprContext implements Serializable {
             param.setParameter(val);
 
         this.setInNeedOfTypeValidation(true);
+
+        return paramList.size();
     }
 
     private boolean isInNeedOfTypeValidation() {

@@ -85,10 +85,13 @@ public class QueryArgs {
         return this.schema;
     }
 
-    public void setParameter(final String name, final Object val) throws HBqlException {
+    public int setParameter(final String name, final Object val) throws HBqlException {
+        int cnt = 0;
         for (final SelectElement selectElement : this.getSelectElementList())
-            selectElement.setParameter(name, val);
+            cnt += selectElement.setParameter(name, val);
 
-        this.getWhereArgs().setParameter(name, val);
+        cnt += this.getWhereArgs().setParameter(name, val);
+
+        return cnt;
     }
 }
