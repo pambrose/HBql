@@ -27,24 +27,54 @@ public class NumberCompare extends GenericCompare {
     @Override
     public Boolean getValue(final Object object) throws HBqlException {
 
-        final long val1 = ((Number)this.getArg(0).getValue(object)).longValue();
-        final long val2 = ((Number)this.getArg(1).getValue(object)).longValue();
+        final Object obj1 = this.getArg(0).getValue(object);
+        final Object obj2 = this.getArg(1).getValue(object);
 
-        switch (this.getOperator()) {
-            case EQ:
-                return val1 == val2;
-            case GT:
-                return val1 > val2;
-            case GTEQ:
-                return val1 >= val2;
-            case LT:
-                return val1 < val2;
-            case LTEQ:
-                return val1 <= val2;
-            case NOTEQ:
-                return val1 != val2;
-            default:
-                throw new HBqlException("Invalid operator: " + this.getOperator());
+        this.validateNumericArgTypes(obj1, obj2);
+
+        if (!this.useDecimal()) {
+
+            final long val1 = ((Number)obj1).longValue();
+            final long val2 = ((Number)obj2).longValue();
+
+            switch (this.getOperator()) {
+                case EQ:
+                    return val1 == val2;
+                case GT:
+                    return val1 > val2;
+                case GTEQ:
+                    return val1 >= val2;
+                case LT:
+                    return val1 < val2;
+                case LTEQ:
+                    return val1 <= val2;
+                case NOTEQ:
+                    return val1 != val2;
+                default:
+                    throw new HBqlException("Invalid operator: " + this.getOperator());
+            }
+        }
+        else {
+
+            final double val1 = ((Number)obj1).doubleValue();
+            final double val2 = ((Number)obj2).doubleValue();
+
+            switch (this.getOperator()) {
+                case EQ:
+                    return val1 == val2;
+                case GT:
+                    return val1 > val2;
+                case GTEQ:
+                    return val1 >= val2;
+                case LT:
+                    return val1 < val2;
+                case LTEQ:
+                    return val1 <= val2;
+                case NOTEQ:
+                    return val1 != val2;
+                default:
+                    throw new HBqlException("Invalid operator: " + this.getOperator());
+            }
         }
     }
 }
