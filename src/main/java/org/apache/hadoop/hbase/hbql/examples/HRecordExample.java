@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.examples;
 import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResults;
@@ -31,7 +32,7 @@ public class HRecordExample {
                             + "family1:intValue int alias comp1"
                             + ")");
 
-        HConnection conn = HConnection.newHConnection();
+        HConnection conn = HConnectionManager.newHConnection();
 
         // System.out.println(conn.execute("delete from TestObject with client filter where true"));
         // System.out.println(conn.execute("disable table testobjects"));

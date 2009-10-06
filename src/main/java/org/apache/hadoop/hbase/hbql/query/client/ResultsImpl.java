@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.impl;
+package org.apache.hadoop.hbase.hbql.query.client;
 
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;

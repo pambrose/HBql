@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HColumn;
 import org.apache.hadoop.hbase.hbql.client.HColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HFamily;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HResults;
@@ -112,7 +113,7 @@ public class AnnotationExample {
 
     public static void main(String[] args) throws IOException, HBqlException {
 
-        HConnection conn = HConnection.newHConnection();
+        HConnection conn = HConnectionManager.newHConnection();
 
         /*
         if (conn.tableExists("TestObject")) {
