@@ -144,6 +144,17 @@ public class SelectExpressionsTest extends TestSupport {
         List<HRecord> recList5 = q5.getResultList();
         assertTrue(recList5.size() == 2);
 
+        final String query6 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM table1 " +
+                              "WITH KEYS :key1";
+        HQuery<HRecord> q6 = conn.newHQuery(query6);
+        List<String> listOfKeys = Lists.newArrayList();
+        listOfKeys.add("0000000001");
+        listOfKeys.add("0000000002");
+        listOfKeys.add("0000000003");
+        q6.setParameter("key1", listOfKeys);
+        List<HRecord> recList6 = q6.getResultList();
+        assertTrue(recList6.size() == 3);
+
     }
 
 }

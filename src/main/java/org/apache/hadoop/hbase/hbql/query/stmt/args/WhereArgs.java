@@ -164,9 +164,8 @@ public class WhereArgs {
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
-        int cnt = 0;
 
-        cnt += this.getKeyRangeArgs().setParameter(name, val);
+        int cnt = this.getKeyRangeArgs().setParameter(name, val);
 
         if (this.getTimeRangeArgs() != null)
             cnt += this.getTimeRangeArgs().setParameter(name, val);
@@ -198,22 +197,12 @@ public class WhereArgs {
         return allAttribs;
     }
 
-    public List<Scan> getScanList(final Collection<ColumnAttrib> columnAttribSet) throws IOException, HBqlException {
-
-        final List<Scan> scanList = Lists.newArrayList();
-
-        for (final KeyRangeArgs.Range range : this.getKeyRangeArgs().getRangeList())
-            scanList.add(range.getScan(this, columnAttribSet));
-
-        return scanList;
-    }
-
     public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribSet) throws IOException,
                                                                                                      HBqlException {
 
         final List<RowRequest> rowRequestList = Lists.newArrayList();
         for (final KeyRangeArgs.Range range : this.getKeyRangeArgs().getRangeList())
-            rowRequestList.add(new RowRequest(this, columnAttribSet, range));
+            range.process(this, rowRequestList, columnAttribSet);
         return rowRequestList;
     }
 

@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
+import org.apache.hadoop.hbase.hbql.query.stmt.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -45,8 +46,8 @@ public class KeyRangeArgs {
             this.type = KeyRangeArgs.Type.RANGE;
         }
 
-        private String getLower(final boolean allowsCollections) throws HBqlException {
-            return (String)this.evaluate(0, false, allowsCollections, null);
+        private Object getLower(final boolean allowsCollections) throws HBqlException {
+            return this.evaluate(0, false, allowsCollections, null);
         }
 
         private String getUpper() throws HBqlException {
@@ -55,11 +56,6 @@ public class KeyRangeArgs {
 
         private KeyRangeArgs.Type getType() {
             return this.type;
-        }
-
-        private byte[] getLowerAsBytes() throws HBqlException {
-            final String lower = this.getLower(this.isSingleKey());
-            return HUtil.ser.getStringAsBytes(lower);
         }
 
         private byte[] getUpperAsBytes() throws HBqlException {
@@ -102,23 +98,58 @@ public class KeyRangeArgs {
             return sbuf.toString();
         }
 
-        public Get getGet(final WhereArgs whereArgs,
-                          final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
-            final Get get = new Get(this.getLowerAsBytes());
+        private RowRequest newGet(final WhereArgs whereArgs,
+                                  final Collection<ColumnAttrib> columnAttribSet,
+                                  final String lower) throws HBqlException, IOException {
+            final byte[] lowerBytes = HUtil.ser.getStringAsBytes(lower);
+            final Get get = new Get(lowerBytes);
             whereArgs.setGetArgs(get, columnAttribSet);
-            return get;
+            return new RowRequest(get, null);
         }
 
-        public Scan getScan(final WhereArgs whereArgs,
-                            final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+        public List<RowRequest> getGet(final WhereArgs whereArgs,
+                                       final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+
+            List<RowRequest> retval = Lists.newArrayList();
+
+            // Check if the value returned is a collection
+            final Object objval = this.getLower(true);
+            if (HUtil.isACollection(objval)) {
+                for (final GenericValue val : (Collection<GenericValue>)objval) {
+                    final String lower = (String)val.getValue(null);
+                    retval.add(this.newGet(whereArgs, columnAttribSet, lower));
+                }
+            }
+            else {
+                final String lower = (String)objval;
+                retval.add(this.newGet(whereArgs, columnAttribSet, lower));
+            }
+
+            return retval;
+        }
+
+        public RowRequest getScan(final WhereArgs whereArgs,
+                                  final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
             final Scan scan = new Scan();
             if (!this.isAllRows()) {
-                scan.setStartRow(this.getLowerAsBytes());
+                final byte[] lowerBytes = HUtil.ser.getStringAsBytes((String)this.getLower(false));
+                scan.setStartRow(lowerBytes);
                 if (this.isRowRange())
                     scan.setStopRow(this.getUpperAsBytes());
             }
             whereArgs.setScanArgs(scan, columnAttribSet);
-            return scan;
+            return new RowRequest(null, scan);
+        }
+
+        public void process(final WhereArgs whereArgs,
+                            final List<RowRequest> rowRequestList,
+                            final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+
+            if (this.isSingleKey())
+                rowRequestList.addAll(this.getGet(whereArgs, columnAttribSet));
+            else
+                rowRequestList.add(this.getScan(whereArgs, columnAttribSet));
+
         }
     }
 

@@ -76,10 +76,8 @@ public class HQuery<T> {
 
     public void setParameter(final String name, final Object val) throws HBqlException {
         int cnt = this.getQueryArgs().setParameter(name, val);
-
         if (cnt == 0)
             throw new HBqlException("Parameter name " + name + " does not exist in " + this.getQuery());
-
     }
 
     public void clearListeners() {
