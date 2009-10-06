@@ -140,11 +140,13 @@ public class KeyRangeArgs {
     }
 
     public static Range newRange(final GenericValue arg0, final GenericValue arg1) {
-        if (arg1 != null)
-            return new Range(arg0, arg1);
-        else
-            return new Range(KeyRangeArgs.Type.SINGLE, arg0);
+        return new Range(arg0, arg1);
     }
+
+    public static Range newSingleKey(final GenericValue arg0) {
+        return new Range(KeyRangeArgs.Type.SINGLE, arg0);
+    }
+
 
     public static Range newLastRange(final GenericValue arg0) {
         return new Range(KeyRangeArgs.Type.LAST, arg0);
