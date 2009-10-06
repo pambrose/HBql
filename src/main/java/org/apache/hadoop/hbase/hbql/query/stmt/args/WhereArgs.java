@@ -24,23 +24,29 @@ import java.util.Set;
  */
 public class WhereArgs {
 
-    private KeyRangeArgs keyRangeArgs = new KeyRangeArgs();    // Defualt to ALL records
+    private KeyRangeArgs keyRangeArgs = null;
     private TimeRangeArgs timeRangeArgs = null;
     private VersionArgs versionArgs = null;
     private LimitArgs scanLimitArgs = null;
     private LimitArgs queryLimitArgs = null;
-
     private ExprTree clientExprTree = null;
     private ExprTree serverExprTree = null;
 
     private HBaseSchema schema;
 
+    // Keep track of args set multiple times
+    Set<String> multipleSetValues = Sets.newHashSet();
+
     public void setSchema(final HBaseSchema schema) throws HBqlException {
 
         this.schema = schema;
 
-        if (this.getKeyRangeArgs() != null)
-            this.getKeyRangeArgs().setSchema(null);
+        this.validateWhereArgs();
+
+        if (this.getKeyRangeArgs() == null)
+            this.setKeyRangeArgs(new KeyRangeArgs());    // Defualt to ALL records
+
+        this.getKeyRangeArgs().setSchema(null);
 
         if (this.getTimeRangeArgs() != null)
             this.getTimeRangeArgs().setSchema(null);
@@ -61,8 +67,26 @@ public class WhereArgs {
             this.getClientExprTree().setSchema(this.getSchema());
     }
 
+    private void validateWhereArgs() throws HBqlException {
+        if (this.multipleSetValues.size() > 0) {
+            final StringBuilder sbuf = new StringBuilder();
+            boolean firstTime = true;
+            for (final String str : this.multipleSetValues) {
+                if (!firstTime)
+                    sbuf.append(", ");
+                sbuf.append(str);
+                firstTime = false;
+            }
+            throw new HBqlException("Select args specificed multiple times: " + sbuf);
+        }
+    }
+
     private HBaseSchema getSchema() {
         return this.schema;
+    }
+
+    private void addError(final String str) {
+        this.multipleSetValues.add(str);
     }
 
     private KeyRangeArgs getKeyRangeArgs() {
@@ -70,8 +94,9 @@ public class WhereArgs {
     }
 
     public void setKeyRangeArgs(final KeyRangeArgs keyRangeArgs) {
-        if (keyRangeArgs != null)
-            this.keyRangeArgs = keyRangeArgs;
+        if (this.getKeyRangeArgs() != null)
+            this.addError("Keys");
+        this.keyRangeArgs = keyRangeArgs;
     }
 
     private TimeRangeArgs getTimeRangeArgs() {
@@ -79,8 +104,9 @@ public class WhereArgs {
     }
 
     public void setTimeRangeArgs(final TimeRangeArgs timeRangeArgs) {
-        if (timeRangeArgs != null)
-            this.timeRangeArgs = timeRangeArgs;
+        if (this.getTimeRangeArgs() != null)
+            this.addError("Time Range");
+        this.timeRangeArgs = timeRangeArgs;
     }
 
     private VersionArgs getVersionArgs() {
@@ -88,8 +114,9 @@ public class WhereArgs {
     }
 
     public void setVersionArgs(final VersionArgs versionArgs) {
-        if (versionArgs != null)
-            this.versionArgs = versionArgs;
+        if (this.getVersionArgs() != null)
+            this.addError("Version");
+        this.versionArgs = versionArgs;
     }
 
     public LimitArgs getScanLimitArgs() {
@@ -97,8 +124,9 @@ public class WhereArgs {
     }
 
     public void setScanLimitArgs(final LimitArgs scanLimitArgs) {
-        if (scanLimitArgs != null)
-            this.scanLimitArgs = scanLimitArgs;
+        if (this.getScanLimitArgs() != null)
+            this.addError("Scan Limit");
+        this.scanLimitArgs = scanLimitArgs;
     }
 
     public LimitArgs getQueryLimitArgs() {
@@ -106,8 +134,9 @@ public class WhereArgs {
     }
 
     public void setQueryLimitArgs(final LimitArgs queryLimitArgs) {
-        if (queryLimitArgs != null)
-            this.queryLimitArgs = queryLimitArgs;
+        if (this.getQueryLimitArgs() != null)
+            this.addError("Query Limit");
+        this.queryLimitArgs = queryLimitArgs;
     }
 
     public ExprTree getClientExprTree() {
@@ -115,8 +144,9 @@ public class WhereArgs {
     }
 
     public void setClientExprTree(final ExprTree clientExprTree) {
-        if (clientExprTree != null)
-            this.clientExprTree = clientExprTree;
+        if (this.getClientExprTree() != null)
+            this.addError("Client Where");
+        this.clientExprTree = clientExprTree;
     }
 
     public ExprTree getServerExprTree() {
@@ -124,8 +154,9 @@ public class WhereArgs {
     }
 
     public void setServerExprTree(final ExprTree serverExprTree) {
-        if (serverExprTree != null)
-            this.serverExprTree = serverExprTree;
+        if (this.getServerExprTree() != null)
+            this.addError("Server Where");
+        this.serverExprTree = serverExprTree;
     }
 
     public long getQueryLimit() throws HBqlException {
@@ -140,7 +171,8 @@ public class WhereArgs {
 
         final StringBuilder sbuf = new StringBuilder("WITH ");
 
-        sbuf.append(this.getKeyRangeArgs().asString() + "\n");
+        if (this.getKeyRangeArgs() != null)
+            sbuf.append(this.getKeyRangeArgs().asString() + "\n");
 
         if (this.getTimeRangeArgs() != null)
             sbuf.append(this.getTimeRangeArgs().asString() + "\n");
@@ -197,8 +229,8 @@ public class WhereArgs {
         return allAttribs;
     }
 
-    public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribSet) throws IOException,
-                                                                                                     HBqlException {
+    public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribSet)
+            throws IOException, HBqlException {
 
         final List<RowRequest> rowRequestList = Lists.newArrayList();
         for (final KeyRangeArgs.Range range : this.getKeyRangeArgs().getRangeList())

@@ -42,19 +42,17 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
     public HOutput execute(final HConnection conn) throws HBqlException, IOException {
 
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
-
-        final WhereArgs where = this.getWhereArgs();
-        where.setSchema(schema);
+        this.getWhereArgs().setSchema(schema);
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWhereArgs().getAllColumnsUsedInExprs();
         final HTable table = conn.getHTable(schema.getTableName());
 
-        final List<RowRequest> rowRequestList = where.getRowRequestList(allWhereAttribs);
+        final List<RowRequest> rowRequestList = this.getWhereArgs().getRowRequestList(allWhereAttribs);
 
         int cnt = 0;
 
         for (final RowRequest rowRequest : rowRequestList)
-            cnt += this.delete(table, where, rowRequest);
+            cnt += this.delete(table, this.getWhereArgs(), rowRequest);
 
         final HOutput retval = new HOutput();
         retval.out.println("Delete count: " + cnt);

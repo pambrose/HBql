@@ -110,16 +110,18 @@ selectElem returns [SelectElement retval]
 
 whereValue returns [WhereArgs retval]
 @init {retval = new WhereArgs();}
-	: keyWITH
-	  k=keysRange?					{retval.setKeyRangeArgs($k.retval);}
-	  t=time?					{retval.setTimeRangeArgs($t.retval);}	
-	  v=versions?					{retval.setVersionArgs($v.retval);}
-	  l=scanLimit?					{retval.setScanLimitArgs($l.retval);}
-	  q=queryLimit?					{retval.setQueryLimitArgs($q.retval);}
-	  s=serverFilter?				{retval.setServerExprTree($s.retval);}
-	  c=clientFilter?				{retval.setClientExprTree($c.retval);}
-	;
+	: keyWITH selectDesc[retval]+;
 
+selectDesc[WhereArgs whereArgs] 
+	: k=keysRange					{whereArgs.setKeyRangeArgs($k.retval);}
+	| t=time					{whereArgs.setTimeRangeArgs($t.retval);}	
+	| v=versions					{whereArgs.setVersionArgs($v.retval);}
+	| l=scanLimit					{whereArgs.setScanLimitArgs($l.retval);}
+	| q=queryLimit					{whereArgs.setQueryLimitArgs($q.retval);}
+	| s=serverFilter				{whereArgs.setServerExprTree($s.retval);}
+	| c=clientFilter				{whereArgs.setClientExprTree($c.retval);}
+	;
+	
 keysRange returns [KeyRangeArgs retval]
 	: keyKEYS k=keyRangeList			{retval = new KeyRangeArgs($k.retval);}	
 	| keyKEYS keyALL				{retval = new KeyRangeArgs();}	
