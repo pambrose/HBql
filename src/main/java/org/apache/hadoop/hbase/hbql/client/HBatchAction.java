@@ -11,7 +11,7 @@ import java.io.IOException;
  * Date: Oct 6, 2009
  * Time: 1:00:19 PM
  */
-public class HAction {
+public class HBatchAction {
 
     private enum Type {
         INSERT, DELETE
@@ -20,17 +20,17 @@ public class HAction {
     private final Type type;
     private final Object actionValue;
 
-    HAction(final Type type, final Object actionValue) {
+    HBatchAction(final Type type, final Object actionValue) {
         this.type = type;
         this.actionValue = actionValue;
     }
 
-    static HAction newInsert(final Put put) {
-        return new HAction(Type.INSERT, put);
+    static HBatchAction newInsert(final Put put) {
+        return new HBatchAction(Type.INSERT, put);
     }
 
-    static HAction newDelete(final Delete delete) {
-        return new HAction(Type.DELETE, delete);
+    static HBatchAction newDelete(final Delete delete) {
+        return new HBatchAction(Type.DELETE, delete);
     }
 
     private boolean isInsert() {
