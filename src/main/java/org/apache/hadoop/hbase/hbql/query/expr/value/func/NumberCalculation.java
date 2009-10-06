@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.schema.NumericType;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,10 +29,9 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
         final Object obj0 = this.getArg(0).getValue(object);
         final Object obj1 = this.getArg(1).getValue(object);
 
-        final Class rankingClass = this.getHighestRankingNumericArg(obj0, obj1);
-        final boolean useDecimal = NumericType.useDecimalNumericArgs(rankingClass);
+        this.validateNumericArgTypes(obj0, obj1);
 
-        if (!useDecimal) {
+        if (!this.useDecimal()) {
 
             final long val1 = ((Number)obj0).longValue();
             final long val2 = ((Number)obj1).longValue();
@@ -62,14 +60,7 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
                     throw new HBqlException("Invalid operator: " + this.getOperator());
             }
 
-            if (NumericType.isAShort(rankingClass))
-                return (short)result;
-            else if (NumericType.isAnInteger(rankingClass))
-                return (int)result;
-            else if (NumericType.isALong(rankingClass))
-                return result;
-            else
-                throw new HBqlException("Invalid class in NumberCalculation: " + rankingClass.getName());
+            return this.getValueWithCast(result);
         }
         else {
 
@@ -100,12 +91,7 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
                     throw new HBqlException("Invalid operator: " + this.getOperator());
             }
 
-            if (NumericType.isAFloat(rankingClass))
-                return (float)result;
-            else if (NumericType.isADouble(rankingClass))
-                return result;
-            else
-                throw new HBqlException("Invalid class in NumberCalculation: " + rankingClass.getName());
+            return this.getValueWithCast(result);
         }
     }
 }

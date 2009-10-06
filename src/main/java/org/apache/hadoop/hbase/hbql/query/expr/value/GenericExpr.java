@@ -68,8 +68,15 @@ public abstract class GenericExpr implements GenericValue {
         }
     }
 
-    // Used to cache type of the args for exprs with numberic args
+    // These are used to cache type of the args for exprs with numberic args
     private Class<? extends GenericValue> highestRankingNumericArgFoundInValidate = NumberValue.class;
+    private Class rankingClass = null;
+    private boolean useDecimal = false;
+    private boolean useShort = false;
+    private boolean useInteger = false;
+    private boolean useLong = false;
+    private boolean useFloat = false;
+    private boolean useDouble = false;
 
     private final Type type;
     private final List<GenericValue> exprList = Lists.newArrayList();
@@ -105,12 +112,51 @@ public abstract class GenericExpr implements GenericValue {
         return this.highestRankingNumericArgFoundInValidate;
     }
 
-    protected Class getHighestRankingNumericArg(final Object... objs) {
-        // If we do not already know the specific types, then look at the class of both args
-        if (this.getHighestRankingNumericArgFoundInValidate().equals(NumberValue.class))
-            return NumericType.getHighestRankingNumericArg(objs);
+    // These require getHighestRankingNumericArg() be called first to set value
+    protected boolean useDecimal() {
+        return this.useDecimal;
+    }
+
+    protected Number getValueWithCast(final long result) throws HBqlException {
+        if (this.useShort)
+            return (short)result;
+        else if (this.useInteger)
+            return (int)result;
+        else if (this.useLong)
+            return result;
         else
-            return this.getHighestRankingNumericArgFoundInValidate();
+            throw new HBqlException("Invalid class: " + rankingClass.getName());
+    }
+
+    protected Number getValueWithCast(final double result) throws HBqlException {
+        if (this.useFloat)
+            return (float)result;
+        else if (this.useDouble)
+            return result;
+        else
+            throw new HBqlException("Invalid class: " + rankingClass.getName());
+    }
+
+    protected Class validateNumericArgTypes(final Object... objs) {
+
+        if (rankingClass == null) {
+
+            // If we do not already know the specific types, then look at the class of both args
+            if (this.getHighestRankingNumericArgFoundInValidate().equals(NumberValue.class))
+                this.rankingClass = NumericType.getHighestRankingNumericArg(objs);
+            else
+                this.rankingClass = this.getHighestRankingNumericArgFoundInValidate();
+
+            this.useDecimal = NumericType.useDecimalNumericArgs(rankingClass);
+
+            this.useShort = NumericType.isAShort(rankingClass);
+            this.useInteger = NumericType.isAnInteger(rankingClass);
+            this.useLong = NumericType.isALong(rankingClass);
+            this.useFloat = NumericType.isAFloat(rankingClass);
+            this.useDouble = NumericType.isADouble(rankingClass);
+        }
+
+        return this.rankingClass;
     }
 
     public boolean isAConstant() {
