@@ -33,10 +33,7 @@ public class HQuery<T> {
         this.query = query;
         this.queryArgs = HBql.parseSelectStmt(this.getConnection(), this.getQuery());
 
-        final WhereArgs where = this.getQueryArgs().getWhereArgs();
-
-        where.setSchema(this.getQueryArgs().getSchema());
-
+        this.getQueryArgs().getWhereArgs().setSchema(this.getQueryArgs().getSchema());
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {
@@ -117,5 +114,4 @@ public class HQuery<T> {
 
         return retval;
     }
-
 }
