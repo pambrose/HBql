@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.hbql.impl.QueryImpl;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCmd;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
@@ -25,10 +26,8 @@ import java.util.Map;
 public class HConnection {
 
     private static Map<String, HConnection> connectionMap = Maps.newHashMap();
-
-    final HBaseConfiguration config;
-
-    final String name;
+    private final HBaseConfiguration config;
+    private final String name;
 
     private HConnection(final String name, final HBaseConfiguration config) {
         this.name = name;
@@ -61,7 +60,7 @@ public class HConnection {
     }
 
     public <T> HQuery<T> newHQuery(final String query) throws IOException, HBqlException {
-        return new HQuery<T>(this, query);
+        return new QueryImpl<T>(this, query);
     }
 
     public String getName() {

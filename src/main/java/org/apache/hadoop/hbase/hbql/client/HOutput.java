@@ -10,7 +10,8 @@ import java.io.PrintStream;
  * Time: 1:51:09 PM
  */
 public class HOutput {
-    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+    private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     public final PrintStream out = new PrintStream(baos);
 
     public String toString() {

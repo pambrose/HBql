@@ -22,9 +22,9 @@ import java.util.Map;
  */
 public class HBatch {
 
-    public static class Action {
+    static class Action {
 
-        public enum Type {
+        private enum Type {
             INSERT, DELETE
         }
 
