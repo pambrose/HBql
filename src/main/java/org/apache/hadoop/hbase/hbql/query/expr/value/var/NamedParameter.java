@@ -133,7 +133,7 @@ public class NamedParameter implements GenericValue {
         this.typedExpr = null;
         this.typedExprList = null;
 
-        if (val != null && HUtil.isParentClass(Collection.class, val.getClass())) {
+        if (val != null && HUtil.isACollection(val)) {
             this.typedExprList = Lists.newArrayList();
             for (final Object elem : (Collection)val)
                 this.typedExprList.add(this.getValueExpr(elem));

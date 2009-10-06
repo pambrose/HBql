@@ -13,6 +13,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
+import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
@@ -56,6 +57,10 @@ public class HUtil {
         oos.close();
 
         log.info(baos.toString());
+    }
+
+    public static boolean isACollection(final Object obj) {
+        return HUtil.isParentClass(Collection.class, obj.getClass());
     }
 
     public static boolean isParentClass(final Class parentClazz, final Class... clazzes) {

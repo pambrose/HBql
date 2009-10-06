@@ -27,7 +27,7 @@ public class NumberInStmt extends GenericInStmt {
 
             // Check if the value returned is a collection
             final Object objval = obj.getValue(object);
-            if (HUtil.isParentClass(Collection.class, objval.getClass())) {
+            if (HUtil.isACollection(objval)) {
                 for (final GenericValue val : (Collection<GenericValue>)objval) {
                     if (attribVal == ((Number)val.getValue(object)).longValue())
                         return true;

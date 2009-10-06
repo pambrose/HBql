@@ -24,10 +24,9 @@ public class DateInStmt extends GenericInStmt {
         final long attribVal = (Long)this.getArg(0).getValue(object);
 
         for (final GenericValue obj : this.getInList()) {
-
             // Check if the value returned is a collection
             final Object objval = obj.getValue(object);
-            if (HUtil.isParentClass(Collection.class, objval.getClass())) {
+            if (HUtil.isACollection(objval)) {
                 for (final GenericValue val : (Collection<GenericValue>)objval) {
                     if (attribVal == (Long)val.getValue(object))
                         return true;
