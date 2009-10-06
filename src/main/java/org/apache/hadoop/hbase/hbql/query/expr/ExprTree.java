@@ -26,7 +26,7 @@ public class ExprTree extends ExprContext {
     }
 
     public Boolean evaluate(final Object object) throws HBqlException {
-        return (Boolean)this.evaluate(0, true, object);
+        return (Boolean)this.evaluate(0, true, false, object);
     }
 
     public void validate() throws HBqlException {

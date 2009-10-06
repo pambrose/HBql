@@ -88,8 +88,11 @@ public abstract class ExprContext implements Serializable {
         return this.getExpressions().get(i);
     }
 
-    protected Object evaluate(final int i, final boolean allowColumns, final Object object) throws HBqlException {
-        this.validateTypes(allowColumns);
+    protected Object evaluate(final int i,
+                              final boolean allowColumns,
+                              final boolean allowsCollections,
+                              final Object object) throws HBqlException {
+        this.validateTypes(allowColumns, allowsCollections);
         this.optimize();
         return this.getGenericValue(i).getValue(object);
     }
@@ -120,7 +123,7 @@ public abstract class ExprContext implements Serializable {
         }
     }
 
-    public void validateTypes(final boolean allowColumns) throws TypeException {
+    public void validateTypes(final boolean allowColumns, final boolean allowsCollections) throws TypeException {
 
         if (this.isInNeedOfTypeValidation()) {
 
@@ -131,7 +134,7 @@ public abstract class ExprContext implements Serializable {
             // Collect return types of all args
             final List<Class<? extends GenericValue>> clazzList = Lists.newArrayList();
             for (final GenericValue val : this.getExpressions())
-                clazzList.add(val.validateTypes(null, false));
+                clazzList.add(val.validateTypes(null, allowsCollections));
 
             // Check against signature if there is one
             if (this.getTypeSignature() != null) {

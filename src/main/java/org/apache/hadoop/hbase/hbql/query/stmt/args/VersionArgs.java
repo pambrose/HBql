@@ -20,7 +20,7 @@ public class VersionArgs extends SelectArgs {
     }
 
     private int getValue() throws HBqlException {
-        return ((Number)this.evaluate(0, false, null)).intValue();
+        return ((Number)this.evaluate(0, false, false, null)).intValue();
     }
 
     public String asString() {

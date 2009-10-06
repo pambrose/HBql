@@ -35,7 +35,7 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
         final Object obj0 = this.getArg(0).getValue(object);
         final Object obj1 = this.getArg(1).getValue(object);
 
-        // If we do not already know the specific types, then look at the class for both args
+        // If we do not already know the specific types, then look at the class of both args
         final Class rankingClass;
         final boolean useDecimal;
         if (this.getHighestRankingNumericArg().equals(NumberValue.class)) {

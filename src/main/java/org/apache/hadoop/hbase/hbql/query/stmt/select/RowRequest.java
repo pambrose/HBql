@@ -31,7 +31,7 @@ public class RowRequest {
                       final Collection<ColumnAttrib> columnAttribSet,
                       final KeyRangeArgs.Range range) throws HBqlException, IOException {
 
-        if (range.isSingleRow()) {
+        if (range.isSingleKey()) {
             this.getValue = range.getGet(whereArgs, columnAttribSet);
             this.scanValue = null;
         }

@@ -45,64 +45,61 @@ public class KeyRangeArgs {
             this.type = KeyRangeArgs.Type.RANGE;
         }
 
-        public String getLower() throws HBqlException {
-            return (String)this.evaluate(0, false, null);
+        private String getLower(final boolean allowsCollections) throws HBqlException {
+            return (String)this.evaluate(0, false, allowsCollections, null);
         }
 
-        public String getUpper() throws HBqlException {
-            return (String)this.evaluate(1, false, null);
+        private String getUpper() throws HBqlException {
+            return (String)this.evaluate(1, false, false, null);
         }
 
-        public KeyRangeArgs.Type getType() {
+        private KeyRangeArgs.Type getType() {
             return this.type;
         }
 
-        public byte[] getLowerAsBytes() throws HBqlException {
-            return HUtil.ser.getStringAsBytes(this.getLower());
+        private byte[] getLowerAsBytes() throws HBqlException {
+            final String lower = this.getLower(this.isSingleKey());
+            return HUtil.ser.getStringAsBytes(lower);
         }
 
-        public byte[] getUpperAsBytes() throws HBqlException {
-            return HUtil.ser.getStringAsBytes(this.getUpper());
+        private byte[] getUpperAsBytes() throws HBqlException {
+            final String upper = this.getUpper();
+            return HUtil.ser.getStringAsBytes(upper);
         }
 
-        public boolean isLastRange() {
+        private boolean isLastRange() {
             return this.getType() == KeyRangeArgs.Type.LAST;
         }
 
-        public String asString() {
-            try {
-                final StringBuilder sbuf = new StringBuilder();
-
-                if (this.isAllRows()) {
-                    sbuf.append("ALL");
-                }
-                else if (this.isSingleRow()) {
-                    sbuf.append("'" + this.getLower() + "'");
-                }
-                else {
-                    sbuf.append("'" + this.getLower() + "' TO ");
-                    if (this.isLastRange())
-                        sbuf.append("LAST");
-                    else
-                        sbuf.append("'" + this.getUpper() + "'");
-                }
-                return sbuf.toString();
-            }
-            catch (HBqlException e) {
-                return "Error in value";
-            }
-        }
-
-        public boolean isSingleRow() {
+        public boolean isSingleKey() {
             return this.getType() == KeyRangeArgs.Type.SINGLE;
         }
 
-        public boolean isRowRange() {
+        private boolean isRowRange() {
             return this.getType() == KeyRangeArgs.Type.RANGE;
         }
 
         public boolean isAllRows() {
             return this.getType() == KeyRangeArgs.Type.ALL;
+        }
+
+        public String asString() {
+            final StringBuilder sbuf = new StringBuilder();
+
+            if (this.isAllRows()) {
+                sbuf.append("ALL");
+            }
+            else if (this.isSingleKey()) {
+                sbuf.append("'" + this.getGenericValue(0).asString() + "'");
+            }
+            else {
+                sbuf.append("'" + this.getGenericValue(0).asString() + "' TO ");
+                if (this.isLastRange())
+                    sbuf.append("LAST");
+                else
+                    sbuf.append("'" + this.getGenericValue(1).asString() + "'");
+            }
+            return sbuf.toString();
         }
 
         public Get getGet(final WhereArgs whereArgs,
@@ -146,7 +143,6 @@ public class KeyRangeArgs {
     public static Range newSingleKey(final GenericValue arg0) {
         return new Range(KeyRangeArgs.Type.SINGLE, arg0);
     }
-
 
     public static Range newLastRange(final GenericValue arg0) {
         return new Range(KeyRangeArgs.Type.LAST, arg0);

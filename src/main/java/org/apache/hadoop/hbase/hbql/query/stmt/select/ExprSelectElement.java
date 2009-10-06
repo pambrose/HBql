@@ -70,7 +70,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     }
 
     public Object getValue(final Result result) throws HBqlException {
-        return this.evaluate(0, true, result);
+        return this.evaluate(0, true, false, result);
     }
 
     @Override

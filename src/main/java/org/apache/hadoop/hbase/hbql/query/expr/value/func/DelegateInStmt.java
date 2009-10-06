@@ -65,5 +65,4 @@ public class DelegateInStmt extends GenericInStmt {
     public Boolean getValue(final Object object) throws HBqlException {
         return this.getTypedExpr().getValue(object);
     }
-
 }
