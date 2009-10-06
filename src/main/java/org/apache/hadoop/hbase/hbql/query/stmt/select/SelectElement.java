@@ -26,4 +26,6 @@ public interface SelectElement {
     String getAsName();
 
     String asString();
+
+    void setParameter(String name, Object val) throws HBqlException;
 }

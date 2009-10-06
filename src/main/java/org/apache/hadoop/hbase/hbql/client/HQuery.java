@@ -73,6 +73,10 @@ public class HQuery<T> {
         return this.listeners;
     }
 
+    public void setParameter(final String name, final Object val) throws HBqlException {
+        this.getQueryArgs().setParameter(name, val);
+    }
+
     public void clearListeners() {
         if (this.getListeners() != null)
             this.getListeners().clear();
@@ -114,4 +118,5 @@ public class HQuery<T> {
 
         return retval;
     }
+
 }

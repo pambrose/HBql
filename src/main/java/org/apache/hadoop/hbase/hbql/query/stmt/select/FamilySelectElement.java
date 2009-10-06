@@ -79,6 +79,11 @@ public class FamilySelectElement implements SelectElement {
     }
 
     @Override
+    public void setParameter(final String name, final Object val) {
+        // Do nothing
+    }
+
+    @Override
     public void validate(final HConnection connection,
                          final HBaseSchema schema,
                          final List<ColumnAttrib> selectAttribList) throws HBqlException {

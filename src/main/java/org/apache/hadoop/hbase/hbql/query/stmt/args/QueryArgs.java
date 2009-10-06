@@ -84,4 +84,11 @@ public class QueryArgs {
     public HBaseSchema getSchema() {
         return this.schema;
     }
+
+    public void setParameter(final String name, final Object val) throws HBqlException {
+        for (final SelectElement selectElement : this.getSelectElementList())
+            selectElement.setParameter(name, val);
+
+        this.getWhereArgs().setParameter(name, val);
+    }
 }

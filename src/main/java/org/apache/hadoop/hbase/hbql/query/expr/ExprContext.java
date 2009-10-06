@@ -200,15 +200,15 @@ public abstract class ExprContext implements Serializable {
         this.getAttribsUsedInExpr().add(column.getColumnAttrib());
     }
 
-    public void setParameter(final String str, final Object val) throws HBqlException {
+    public void setParameter(final String name, final Object val) throws HBqlException {
 
-        final String name = str.startsWith(":") ? str : (":" + str);
+        final String fullname = name.startsWith(":") ? name : (":" + name);
 
-        if (!this.getNamedParamMap().containsKey(name))
-            throw new HBqlException("Parameter name " + str + " does not exist in " + this.asString());
+        if (!this.getNamedParamMap().containsKey(fullname))
+            throw new HBqlException("Parameter name " + name + " does not exist in " + this.asString());
 
         // Set all occurences to param value
-        final List<NamedParameter> paramList = this.getNamedParamMap().get(name);
+        final List<NamedParameter> paramList = this.getNamedParamMap().get(fullname);
         for (final NamedParameter param : paramList)
             param.setParameter(val);
 

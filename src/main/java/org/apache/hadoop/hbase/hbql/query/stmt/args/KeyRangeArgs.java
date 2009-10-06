@@ -170,4 +170,9 @@ public class KeyRangeArgs {
         return sbuf.toString();
     }
 
+    public void setParameter(final String name, final Object val) throws HBqlException {
+        for (final Range range : this.getRangeList())
+            range.setParameter(name, val);
+
+    }
 }

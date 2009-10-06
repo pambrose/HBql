@@ -142,7 +142,7 @@ public class WhereArgs {
 
         final StringBuilder sbuf = new StringBuilder("WITH ");
 
-        if (this.getKeyRangeArgs() != null && this.getKeyRangeArgs().isValid())
+        if (this.getKeyRangeArgs().isValid())
             sbuf.append(this.getKeyRangeArgs().asString() + "\n");
 
         if (this.getTimeRangeArgs() != null && this.getTimeRangeArgs().isValid())
@@ -164,6 +164,30 @@ public class WhereArgs {
             sbuf.append("CLIENT FILTER " + this.getClientExprTree().asString() + "\n");
 
         return sbuf.toString();
+    }
+
+    public void setParameter(final String name, final Object val) throws HBqlException {
+        if (this.getKeyRangeArgs().isValid())
+            this.getKeyRangeArgs().setParameter(name, val);
+
+        if (this.getTimeRangeArgs() != null && this.getTimeRangeArgs().isValid())
+            this.getTimeRangeArgs().setParameter(name, val);
+
+        if (this.getVersionArgs() != null && this.getVersionArgs().isValid())
+            this.getVersionArgs().setParameter(name, val);
+
+        if (this.getScanLimitArgs() != null && this.getScanLimitArgs().isValid())
+            this.getScanLimitArgs().setParameter(name, val);
+
+        if (this.getQueryLimitArgs() != null && this.getQueryLimitArgs().isValid())
+            this.getQueryLimitArgs().setParameter(name, val);
+
+        if (this.getServerExprTree() != null && this.getServerExprTree().isValid())
+            this.getServerExprTree().setParameter(name, val);
+
+        if (this.getClientExprTree() != null && this.getClientExprTree().isValid())
+            this.getClientExprTree().setParameter(name, val);
+
     }
 
     public Set<ColumnAttrib> getAllColumnsUsedInExprs() {
