@@ -43,7 +43,8 @@ public class SelectExpressionsTest extends TestSupport {
                             + "f3:val1 int alias val5, "
                             + "f3:val2 int alias val6, "
                             + "f3:val3 int alias val7, "
-                            + "f3:mapval1 string mapKeysAsColumns alias f3default"
+                            + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
+                            + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
                             + ")");
 
         conn = HConnectionManager.newHConnection();
@@ -74,11 +75,18 @@ public class SelectExpressionsTest extends TestSupport {
             rec.setCurrentValue("val5", val5);
             rec.setCurrentValue("val6", i * 100);
 
-            Map<String, String> mapval = Maps.newHashMap();
-            mapval.put("mapcol1", "mapcol1 val" + i);
-            mapval.put("mapcol2", "mapcol2 val" + i);
+            Map<String, String> mapval1 = Maps.newHashMap();
+            mapval1.put("mapcol1", "mapcol1 val" + i);
+            mapval1.put("mapcol2", "mapcol2 val" + i);
 
-            rec.setCurrentValue("f3default", mapval);
+            rec.setCurrentValue("f3mapval1", mapval1);
+
+            Map<String, String> mapval2 = Maps.newHashMap();
+            mapval2.put("mapcol1-b", "mapcol1-b val" + i);
+            mapval2.put("mapcol2-b", "mapcol2-b val" + i);
+            mapval2.put("mapcol3-b", "mapcol3-b val" + i);
+
+            rec.setCurrentValue("f3mapval2", mapval2);
 
             batch.insert(rec);
         }
@@ -166,12 +174,22 @@ public class SelectExpressionsTest extends TestSupport {
     @Test
     public void selectMapExpressions() throws HBqlException, IOException {
 
-        final String query1 = "SELECT f3default FROM table1";
-
+        final String query1 = "SELECT f3mapval1 FROM table1";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
-
         List<HRecord> recList1 = q1.getResultList();
-
         assertTrue(recList1.size() == 10);
+
+        final String query2 = "SELECT f3mapval1, f3mapval2 FROM table1";
+        HQuery<HRecord> q2 = conn.newHQuery(query2);
+        List<HRecord> recList2 = q2.getResultList();
+        assertTrue(recList2.size() == 10);
+
+        for (final HRecord rec : recList2) {
+            Map map1 = (Map)rec.getCurrentValue("f3mapval1");
+            Map map2 = (Map)rec.getCurrentValue("f3mapval2");
+
+            assertTrue(map1.size() == 2);
+            assertTrue(map2.size() == 3);
+        }
     }
 }
