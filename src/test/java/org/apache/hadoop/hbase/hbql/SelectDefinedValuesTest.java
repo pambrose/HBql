@@ -26,6 +26,7 @@ public class SelectDefinedValuesTest extends TestSupport {
     static List<String> keyList = Lists.newArrayList();
     static List<String> val1List = Lists.newArrayList();
     static List<Integer> val5List = Lists.newArrayList();
+    static int[] val8check = null;
 
     static Random randomVal = new Random();
 
@@ -63,6 +64,7 @@ public class SelectDefinedValuesTest extends TestSupport {
         keyList.clear();
         val1List.clear();
         val5List.clear();
+        val8check = null;
 
         insertRecords(conn, 10, "Batch 3");
     }
@@ -104,8 +106,11 @@ public class SelectDefinedValuesTest extends TestSupport {
             rec.setCurrentValue("f3mapval2", mapval2);
 
             int[] intv1 = new int[5];
-            for (int j = 0; j < intv1.length; j++)
+            val8check = new int[5];
+            for (int j = 0; j < intv1.length; j++) {
                 intv1[j] = j * 10;
+                val8check[j] = intv1[j];
+            }
 
             rec.setCurrentValue("val8", intv1);
 
@@ -243,6 +248,12 @@ public class SelectDefinedValuesTest extends TestSupport {
 
             Map<Long, Object> m2 = rec.getVersionedValueMap("val8");
             assertTrue(m2.size() == 3);
+
+            for (Object obj : m2.values()) {
+                int[] val8 = (int[])obj;
+                for (int i = 0; i < val8.length; i++)
+                    assertTrue(val8[i] == val8check[i]);
+            }
         }
     }
 }
