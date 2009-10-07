@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.client;
+package org.apache.hadoop.hbase.hbql.query.impl.hbase;
 
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
@@ -197,7 +197,6 @@ public class ResultsImpl<T> implements HResults<T> {
                     if (nextObject == null && !fromExceptionCatch && getListeners() != null) {
                         for (final HQueryListener<T> listener : getListeners())
                             listener.onQueryComplete();
-
                     }
                 }
             };
@@ -224,5 +223,4 @@ public class ResultsImpl<T> implements HResults<T> {
             }
         };
     }
-
 }

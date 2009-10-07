@@ -1,7 +1,8 @@
-package org.apache.hadoop.hbase.hbql.query.object;
+package org.apache.hadoop.hbase.hbql.query.object.client;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.impl.object.ObjectQueryImpl;
 import org.apache.hadoop.hbase.hbql.query.util.ResultsIterator;
 
 import java.util.Collection;
@@ -9,15 +10,15 @@ import java.util.Iterator;
 
 public class ObjectResults<T> implements Iterable<T> {
 
-    final ObjectQuery<T> objectQuery;
+    final ObjectQueryImpl<T> objectQuery;
     final Collection<T> objects;
 
-    public ObjectResults(final ObjectQuery objectQuery, final Collection<T> objects) {
+    public ObjectResults(final ObjectQueryImpl objectQuery, final Collection<T> objects) {
         this.objectQuery = objectQuery;
         this.objects = objects;
     }
 
-    private ObjectQuery<T> getObjectQuery() {
+    private ObjectQueryImpl<T> getObjectQuery() {
         return this.objectQuery;
     }
 

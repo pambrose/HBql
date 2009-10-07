@@ -1,26 +1,29 @@
-package org.apache.hadoop.hbase.hbql.query.object;
+package org.apache.hadoop.hbase.hbql.query.impl.object;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQuery;
+import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQueryListener;
+import org.apache.hadoop.hbase.hbql.query.object.client.ObjectResults;
 import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.Collection;
 import java.util.List;
 
-public class ObjectQuery<T> {
+public class ObjectQueryImpl<T> implements ObjectQuery<T> {
 
     final String query;
     List<ObjectQueryListener<T>> listeners = null;
 
-    private ObjectQuery(final String query) {
+    private ObjectQueryImpl(final String query) {
         this.query = query;
     }
 
     public void addListener(final ObjectQueryListener<T> listener) {
         if (this.getListeners() == null)
-            this.listeners = listeners = Lists.newArrayList();
+            this.listeners = Lists.newArrayList();
 
         this.getListeners().add(listener);
     }
@@ -34,15 +37,15 @@ public class ObjectQuery<T> {
             this.getListeners().clear();
     }
 
-    public static <T> ObjectQuery<T> newObjectQuery(final String query) {
-        return new ObjectQuery<T>(query);
+    public static <T> ObjectQueryImpl<T> newObjectQuery(final String query) {
+        return new ObjectQueryImpl<T>(query);
     }
 
     public String getQuery() {
         return this.query;
     }
 
-    ExprTree getExprTree(final Collection<T> objects) throws HBqlException {
+    public ExprTree getExprTree(final Collection<T> objects) throws HBqlException {
         final Object obj = objects.iterator().next();
         final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
         return HBql.parseWhereExpression(this.getQuery(), schema);

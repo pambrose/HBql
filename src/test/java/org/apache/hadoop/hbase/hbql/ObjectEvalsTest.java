@@ -3,10 +3,10 @@ package org.apache.hadoop.hbase.hbql;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.object.ObjectQuery;
-import org.apache.hadoop.hbase.hbql.query.object.ObjectQueryListenerAdapter;
-import org.apache.hadoop.hbase.hbql.query.object.ObjectQueryPredicate;
-import org.apache.hadoop.hbase.hbql.query.object.ObjectResults;
+import org.apache.hadoop.hbase.hbql.query.impl.object.ObjectQueryImpl;
+import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQueryListenerAdapter;
+import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQueryPredicate;
+import org.apache.hadoop.hbase.hbql.query.object.client.ObjectResults;
 import org.apache.hadoop.hbase.hbql.util.Counter;
 import org.apache.hadoop.hbase.hbql.util.ObjectTests;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
 
         // Using Listeners with CollectionQuery Object
         final Counter cnt1 = new Counter();
-        final ObjectQuery<SimpleObject> query = ObjectQuery.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
+        final ObjectQueryImpl<SimpleObject> query = ObjectQueryImpl.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
         query.addListener(
                 new ObjectQueryListenerAdapter<SimpleObject>() {
                     public void onEachObject(final SimpleObject val) throws HBqlException {
@@ -66,7 +66,7 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
 
         // Using Iterator
         final Counter cnt2 = new Counter();
-        ObjectQuery<SimpleObject> query2 = ObjectQuery.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
+        ObjectQueryImpl<SimpleObject> query2 = ObjectQueryImpl.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
         final ObjectResults<SimpleObject> results = query2.execute(objList);
         for (final SimpleObject obj : results)
             cnt2.increment();

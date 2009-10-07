@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.hbql.query.client.ConnectionImpl;
+import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
 
 import java.util.Map;
 
@@ -33,5 +33,4 @@ public class HConnectionManager {
     public static HConnection getHConnection(final String name) {
         return connectionMap.get(name);
     }
-
 }

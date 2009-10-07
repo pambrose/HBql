@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.object;
+package org.apache.hadoop.hbase.hbql.query.object.client;
 
 import com.google.common.base.Predicate;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
