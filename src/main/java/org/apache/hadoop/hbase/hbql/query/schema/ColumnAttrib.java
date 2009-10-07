@@ -76,7 +76,9 @@ public abstract class ColumnAttrib implements Serializable {
 
     public abstract Object getCurrentValue(final Object recordObj) throws HBqlException;
 
-    public abstract void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException;
+    public abstract void setCurrentValue(final Object newobj,
+                                         final long timestamp,
+                                         final Object val) throws HBqlException;
 
     public abstract Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException;
 
@@ -91,6 +93,7 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public byte[] getFamilyNameBytes() throws HBqlException {
+
         if (this.familyBytes != null)
             return this.familyBytes;
 
@@ -99,6 +102,7 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public byte[] getColumnNameBytes() throws HBqlException {
+
         if (this.columnBytes != null)
             return this.columnBytes;
 
@@ -107,6 +111,7 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public boolean equals(final Object o) {
+
         if (!(o instanceof ColumnAttrib))
             return false;
 

@@ -50,8 +50,11 @@ public class SelectExpressionsTest extends TestSupport {
 
         if (!conn.tableExists("table1"))
             System.out.println(conn.execute("create table using table1"));
-        else
+        else {
             System.out.println(conn.execute("delete from table1"));
+            //System.out.println(conn.execute("disable table table1"));
+            //System.out.println(conn.execute("drop table table1"));
+        }
 
         final HBatch batch = new HBatch();
         for (int i = 0; i < 10; i++) {

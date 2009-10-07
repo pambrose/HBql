@@ -111,6 +111,7 @@ public class FamilySelectElement implements SelectElement {
 
         // Evaluate each of the families
         for (int i = 0; i < this.getFamilyNameBytesList().size(); i++) {
+
             final String familyName = this.getFamilyNameList().get(i);
             final byte[] familyNameBytes = this.getFamilyNameBytesList().get(i);
 
