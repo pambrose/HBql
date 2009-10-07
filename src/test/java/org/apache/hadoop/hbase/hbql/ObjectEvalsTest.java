@@ -53,8 +53,9 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
         assertResultCount(objList, "dateval between DATE('09/09/2009', 'mm/dd/yyyy')-MINUTE(1) AND NOW()+MINUTE(1)", 10);
 
         // Using Listeners with CollectionQuery Object
+        String qstr = "strval like 'T[est]+ Value: [1-3]'";
         final Counter cnt1 = new Counter();
-        final ObjectQuery<SimpleObject> query = ObjectQueryManager.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
+        ObjectQuery<SimpleObject> query = ObjectQueryManager.newObjectQuery(qstr);
         query.addListener(
                 new ObjectQueryListenerAdapter<SimpleObject>() {
                     public void onEachObject(final SimpleObject val) throws HBqlException {
@@ -62,20 +63,41 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
                     }
                 }
         );
-        query.execute(objList);
+        query.getResults(objList);
         assertTrue(cnt1.getCount() == 3);
 
+        query = ObjectQueryManager.newObjectQuery(qstr);
+        List<SimpleObject> r1 = query.getResultList(objList);
+        assertTrue(r1.size() == 3);
+
+        final String qstr2 = "strval like :str1";
+        query = ObjectQueryManager.newObjectQuery(qstr2);
+        query.setParameter("str1", "T[est]+ Value: [1-3]");
+        r1 = query.getResultList(objList);
+        assertTrue(r1.size() == 3);
+
         // Using Iterator
-        final Counter cnt2 = new Counter();
+        int cnt2 = 0;
         ObjectQuery<SimpleObject> query2 = ObjectQueryManager.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
-        final ObjectResults<SimpleObject> results = query2.execute(objList);
+        final ObjectResults<SimpleObject> results = query2.getResults(objList);
         for (final SimpleObject obj : results)
-            cnt2.increment();
-        assertTrue(cnt2.getCount() == 3);
+            cnt2++;
+        assertTrue(cnt2 == 3);
 
         // Using Google collections
-        String qstr = "intval1 in (1, 2+1, 2+1+1, 4+3)";
+        qstr = "intval1 in (1, 2+1, 2+1+1, 4+3)";
         List<SimpleObject> list = Lists.newArrayList(Iterables.filter(objList, new ObjectQueryPredicate<SimpleObject>(qstr)));
+        assertTrue(list.size() == 4);
+
+        ObjectQueryPredicate pred = new ObjectQueryPredicate<SimpleObject>("intval1 in (:vals)");
+        List<Integer> intList = Lists.newArrayList();
+        intList.add(1);
+        intList.add(3);
+        intList.add(4);
+        intList.add(7);
+        pred.setParameter("vals", intList);
+
+        list = Lists.newArrayList(Iterables.filter(objList, pred));
         assertTrue(list.size() == 4);
     }
 }

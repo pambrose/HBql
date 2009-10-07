@@ -14,7 +14,7 @@ public class ObjectTests<T> {
         final ObjectQuery<T> query = ObjectQueryManager.newObjectQuery(expr);
 
         int cnt = 0;
-        ObjectResults<T> results = query.execute(objList);
+        ObjectResults<T> results = query.getResults(objList);
         for (final T val : results)
             cnt++;
 

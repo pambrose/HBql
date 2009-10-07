@@ -24,8 +24,7 @@ public class HBql {
         return new HBqlParser(tokens);
     }
 
-    public static ExprTree parseWhereExpression(final String str,
-                                                final Schema schema) throws HBqlException {
+    public static ExprTree parseWhereExpression(final String str, final Schema schema) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
             final ExprTree exprTree = parser.nodescWhereExpr();
@@ -113,5 +112,4 @@ public class HBql {
             throw new HBqlException("Error parsing: " + str);
         }
     }
-
 }

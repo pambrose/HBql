@@ -23,10 +23,6 @@ public class ExprTree extends ExprContext {
         return (Boolean)this.evaluate(0, true, false, object);
     }
 
-    public void validate() throws HBqlException {
-        // Noop for now
-    }
-
     public String asString() {
         return this.getGenericValue(0).asString();
     }
