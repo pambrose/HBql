@@ -20,12 +20,6 @@ import org.apache.hadoop.hbase.util.Bytes;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 12, 2009
- * Time: 3:27:28 PM
- */
 public class ConnectionImpl implements HConnection {
 
     private final HBaseConfiguration config;
@@ -106,5 +100,4 @@ public class ConnectionImpl implements HConnection {
             table.flushCommits();
         }
     }
-
 }

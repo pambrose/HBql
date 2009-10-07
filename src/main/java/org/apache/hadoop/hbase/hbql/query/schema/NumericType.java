@@ -8,12 +8,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Oct 2, 2009
- * Time: 9:56:07 PM
- */
 public enum NumericType {
 
     ShortType(ShortValue.class, Short.class),

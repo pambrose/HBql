@@ -7,12 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 import java.io.IOException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 4, 2009
- * Time: 9:53:48 AM
- */
 public class TimeRangeArgs extends SelectArgs {
 
     public TimeRangeArgs(final GenericValue arg0, final GenericValue arg1) {
@@ -36,7 +30,6 @@ public class TimeRangeArgs extends SelectArgs {
             get.setTimeStamp(this.getLower());
         else
             get.setTimeRange(this.getLower(), this.getUpper());
-
     }
 
     public void setTimeStamp(final Scan scan) throws HBqlException, IOException {
@@ -44,6 +37,5 @@ public class TimeRangeArgs extends SelectArgs {
             scan.setTimeStamp(this.getLower());
         else
             scan.setTimeRange(this.getLower(), this.getUpper());
-
     }
 }

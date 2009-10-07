@@ -16,12 +16,6 @@ import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 20, 2009
- * Time: 9:35:18 PM
- */
 public class ParserSupport extends Parser {
 
     public ParserSupport(final TokenStream input) {

@@ -7,12 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 import java.io.IOException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 4, 2009
- * Time: 10:26:18 AM
- */
 public class VersionArgs extends SelectArgs {
 
     public VersionArgs(final GenericValue val) {
@@ -33,7 +27,6 @@ public class VersionArgs extends SelectArgs {
             get.setMaxVersions();
         else
             get.setMaxVersions(max);
-
     }
 
     public void setMaxVersions(final Scan scan) throws HBqlException {
@@ -42,6 +35,5 @@ public class VersionArgs extends SelectArgs {
             scan.setMaxVersions();
         else
             scan.setMaxVersions(max);
-
     }
 }

@@ -11,12 +11,6 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 17, 2009
- * Time: 2:43:58 PM
- */
 public class RawAccess1 {
 
     public static void main(String[] args) throws IOException, HBqlException {
@@ -43,6 +37,5 @@ public class RawAccess1 {
                                + Bytes.toString(result.getValue(family, author)) + " - "
                                + Bytes.toString(result.getValue(family, title)));
         }
-
     }
 }

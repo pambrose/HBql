@@ -7,12 +7,6 @@ import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 9, 2009
- * Time: 10:19:00 AM
- */
 public class ReflectionSchema extends Schema {
 
     private final static Map<Class<?>, ReflectionSchema> ReflectionSchemaMap = Maps.newHashMap();

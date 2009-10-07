@@ -7,12 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import java.io.Serializable;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 12, 2009
- * Time: 11:06:07 PM
- */
 public class HRecord implements Serializable {
 
     private HBaseSchema schema = null;

@@ -6,12 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 31, 2009
- * Time: 2:00:25 PM
- */
 public abstract class GenericNotValue extends GenericExpr implements BooleanValue {
 
     private final boolean not;
@@ -38,5 +32,4 @@ public abstract class GenericNotValue extends GenericExpr implements BooleanValu
     protected String notAsString() {
         return (this.isNot()) ? " NOT" : "";
     }
-
 }

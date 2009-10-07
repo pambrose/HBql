@@ -9,12 +9,6 @@ import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 28, 2009
- * Time: 5:31:29 PM
- */
 public interface SelectElement {
 
     void validate(final HConnection connection, HBaseSchema schema, List<ColumnAttrib> selectAttribList) throws HBqlException;

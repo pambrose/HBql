@@ -7,12 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 6:58:31 PM
- */
 public class DateInStmt extends GenericInStmt {
 
     public DateInStmt(final GenericValue arg0, final boolean not, final List<GenericValue> argList) {
@@ -40,5 +34,4 @@ public class DateInStmt extends GenericInStmt {
 
         return false;
     }
-
 }

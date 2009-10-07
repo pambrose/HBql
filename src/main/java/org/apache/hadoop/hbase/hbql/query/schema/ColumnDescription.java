@@ -4,12 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.io.Serializable;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 3, 2009
- * Time: 11:38:01 AM
- */
 public class ColumnDescription implements Serializable {
 
     private final String aliasName;

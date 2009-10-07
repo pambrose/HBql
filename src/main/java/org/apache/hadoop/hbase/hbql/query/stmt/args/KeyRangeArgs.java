@@ -14,12 +14,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 4, 2009
- * Time: 9:53:48 AM
- */
 public class KeyRangeArgs {
 
     private final List<Range> rangeList;
@@ -149,7 +143,6 @@ public class KeyRangeArgs {
                 rowRequestList.addAll(this.getGet(whereArgs, columnAttribSet));
             else
                 rowRequestList.add(this.getScan(whereArgs, columnAttribSet));
-
         }
     }
 

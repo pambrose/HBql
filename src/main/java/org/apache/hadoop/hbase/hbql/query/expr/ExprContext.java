@@ -18,12 +18,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 28, 2009
- * Time: 9:56:12 PM
- */
 public abstract class ExprContext implements Serializable {
 
     private boolean inNeedOfTypeValidation = true;
@@ -154,7 +148,6 @@ public abstract class ExprContext implements Serializable {
                             throw new TypeException("Cannot assign a " + clazz.getSimpleName()
                                                     + " value to a " + parentClazz.getSimpleName()
                                                     + " value in " + this.asString());
-
                     }
                     else {
                         if (!parentClazz.isAssignableFrom(clazz))
@@ -230,5 +223,4 @@ public abstract class ExprContext implements Serializable {
     private void setInNeedOfSettingContext(final boolean inNeedOfSettingContext) {
         this.inNeedOfSettingContext = inNeedOfSettingContext;
     }
-
 }

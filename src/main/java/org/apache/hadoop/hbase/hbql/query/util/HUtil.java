@@ -15,12 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.Collection;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 23, 2009
- * Time: 4:49:02 PM
- */
 public class HUtil {
 
     public final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.HADOOP);

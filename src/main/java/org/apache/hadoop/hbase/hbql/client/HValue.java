@@ -3,12 +3,6 @@ package org.apache.hadoop.hbase.hbql.client;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 15, 2009
- * Time: 10:23:03 AM
- */
 public class HValue {
 
     private boolean currentValueSet = false;

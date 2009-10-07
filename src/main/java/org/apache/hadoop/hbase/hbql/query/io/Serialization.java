@@ -3,12 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.io;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 31, 2009
- * Time: 3:55:02 PM
- */
 public abstract class Serialization {
 
     public enum TYPE {

@@ -5,12 +5,6 @@ import org.apache.hadoop.hbase.client.Put;
 
 import java.io.IOException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Oct 6, 2009
- * Time: 1:00:19 PM
- */
 public class HBatchAction {
 
     private enum Type {

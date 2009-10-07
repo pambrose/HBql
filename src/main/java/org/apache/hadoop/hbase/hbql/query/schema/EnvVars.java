@@ -6,12 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 21, 2009
- * Time: 12:51:41 PM
- */
 public class EnvVars {
 
     private static List<String> packagePath = Lists.newArrayList();

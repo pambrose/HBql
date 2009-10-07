@@ -19,12 +19,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 23, 2009
- * Time: 5:01:22 PM
- */
 public enum FieldType {
 
     BooleanType(Boolean.TYPE, BooleanValue.class, 0, Bytes.SIZEOF_BOOLEAN, "BOOLEAN", "BOOL"),

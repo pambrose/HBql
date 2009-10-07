@@ -6,12 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 10:30:32 PM
- */
 public class DateCompare extends GenericCompare {
 
     public DateCompare(final GenericValue arg0, final Operator operator, final GenericValue arg1) {

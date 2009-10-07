@@ -11,12 +11,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Sets;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 20, 2009
- * Time: 11:07:28 PM
- */
 public class QueryArgs {
 
     private final List<SelectElement> selectElementList;

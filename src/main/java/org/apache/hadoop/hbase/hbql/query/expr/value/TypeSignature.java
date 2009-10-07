@@ -25,12 +25,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 27, 2009
- * Time: 9:40:01 PM
- */
 public class TypeSignature {
 
     private final Class<? extends GenericValue> returnType;
@@ -127,7 +121,6 @@ public class TypeSignature {
         catch (InvocationTargetException e) {
             throw new HBqlException("Internal error: " + e.getMessage());
         }
-
     }
 
     public Class<? extends GenericValue> getReturnType() {
@@ -153,5 +146,4 @@ public class TypeSignature {
     public int getArgCount() {
         return this.getArgs().size();
     }
-
 }

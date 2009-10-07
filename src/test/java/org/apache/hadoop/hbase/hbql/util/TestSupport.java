@@ -16,12 +16,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 23, 2009
- * Time: 4:49:02 PM
- */
 public class TestSupport {
 
     public static void assertTrue(final boolean val) throws HBqlException {

@@ -9,12 +9,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 20, 2009
- * Time: 9:26:38 PM
- */
 public class ObjectQuery<T> {
 
     final String query;

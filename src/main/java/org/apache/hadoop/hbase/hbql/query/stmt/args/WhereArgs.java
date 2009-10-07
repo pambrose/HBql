@@ -16,12 +16,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 4, 2009
- * Time: 10:29:16 AM
- */
 public class WhereArgs {
 
     private KeyRangeArgs keyRangeArgs = null;
@@ -295,5 +289,4 @@ public class WhereArgs {
         if (serverFilter != null)
             scan.setFilter(serverFilter);
     }
-
 }

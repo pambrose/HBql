@@ -10,12 +10,6 @@ import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
 import java.io.IOException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 24, 2009
- * Time: 10:31:14 PM
- */
 public class CreateCmd extends TableCmd implements ConnectionCmd {
 
     public CreateCmd(final String tableName) {
@@ -40,5 +34,4 @@ public class CreateCmd extends TableCmd implements ConnectionCmd {
         retval.out.flush();
         return retval;
     }
-
 }

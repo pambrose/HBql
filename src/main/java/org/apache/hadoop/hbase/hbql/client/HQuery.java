@@ -2,12 +2,6 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Oct 6, 2009
- * Time: 12:10:30 PM
- */
 public interface HQuery<T> {
 
     HConnection getConnection();

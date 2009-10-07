@@ -20,12 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 27, 2009
- * Time: 2:13:47 PM
- */
 public class SelectExpressionsTest extends TestSupport {
 
     static HConnection conn = null;
@@ -164,7 +158,6 @@ public class SelectExpressionsTest extends TestSupport {
         q6.setParameter("key1", listOfKeys);
         List<HRecord> recList6 = q6.getResultList();
         assertTrue(recList6.size() == 3);
-
     }
 
     @Test
@@ -177,6 +170,5 @@ public class SelectExpressionsTest extends TestSupport {
         List<HRecord> recList1 = q1.getResultList();
 
         assertTrue(recList1.size() == 10);
-
     }
 }

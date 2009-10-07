@@ -7,12 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.schema.EnvVars;
 
 import java.io.IOException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 21, 2009
- * Time: 1:08:12 PM
- */
 public class SetCmd implements ConnectionCmd {
 
     private final String variable, value;

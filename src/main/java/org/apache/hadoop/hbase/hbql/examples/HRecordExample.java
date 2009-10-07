@@ -14,12 +14,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 19, 2009
- * Time: 4:39:06 PM
- */
 public class HRecordExample {
 
     public static void main(String[] args) throws IOException, HBqlException {

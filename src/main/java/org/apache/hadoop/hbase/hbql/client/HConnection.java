@@ -5,12 +5,6 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Oct 6, 2009
- * Time: 12:51:54 PM
- */
 public interface HConnection {
     <T> HQuery<T> newHQuery(String query) throws IOException, HBqlException;
 

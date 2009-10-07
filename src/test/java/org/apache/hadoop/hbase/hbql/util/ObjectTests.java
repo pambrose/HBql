@@ -6,12 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.object.ObjectResults;
 
 import java.util.Collection;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 23, 2009
- * Time: 4:49:02 PM
- */
 public class ObjectTests<T> {
 
     protected void assertResultCount(final Collection<T> objList, final String expr, final int expected_cnt) throws HBqlException {
@@ -30,7 +24,5 @@ public class ObjectTests<T> {
 
     protected void assertTrue(final boolean cond) {
         org.junit.Assert.assertTrue(cond);
-
     }
-
 }

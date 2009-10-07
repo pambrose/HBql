@@ -6,12 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 10:30:32 PM
- */
 public class NumberCompare extends GenericCompare {
 
     public NumberCompare(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
