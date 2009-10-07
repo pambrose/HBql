@@ -163,6 +163,10 @@ public abstract class ColumnAttrib implements Serializable {
         return true;
     }
 
+    public boolean isAVersionValue() {
+        return false;
+    }
+
     protected abstract Method getMethod(final String methodName, final Class<?>... params) throws NoSuchMethodException;
 
     protected abstract Class getComponentType();

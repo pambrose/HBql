@@ -150,7 +150,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                                    final Result result) throws HBqlException {
 
         // Bail if it is a calculation on a current value
-        if (!this.isSimpleColumnReference() || this.getColumnAttrib().isACurrentValue())
+        if (!this.isSimpleColumnReference() || !this.getColumnAttrib().isAVersionValue())
             return;
 
         final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
@@ -164,15 +164,14 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         if (timeStampMap == null)
             return;
 
+        Map<Long, Object> mapval = this.getColumnAttrib().getVersionValueMapValue(newobj);
+
+        if (mapval == null) {
+            mapval = new TreeMap();
+            this.getColumnAttrib().setVersionValueMapValue(newobj, mapval);
+        }
+
         for (final Long timestamp : timeStampMap.keySet()) {
-
-            Map<Long, Object> mapval = this.getColumnAttrib().getVersionValueMapValue(newobj);
-
-            if (mapval == null) {
-                mapval = new TreeMap();
-                this.getColumnAttrib().setVersionValueMapValue(newobj, mapval);
-            }
-
             final byte[] b = timeStampMap.get(timestamp);
             final Object val = this.getColumnAttrib().getValueFromBytes(newobj, b);
             mapval.put(timestamp, val);

@@ -180,15 +180,14 @@ public class FamilySelectElement implements SelectElement {
                 if (!columnAttribs.contains(columnAttrib))
                     continue;
 
+                Map<Long, Object> mapval = columnAttrib.getVersionValueMapValue(newobj);
+
+                if (mapval == null) {
+                    mapval = new TreeMap();
+                    columnAttrib.setVersionValueMapValue(newobj, mapval);
+                }
+
                 for (final Long timestamp : timeStampMap.keySet()) {
-
-                    Map<Long, Object> mapval = (Map<Long, Object>)columnAttrib.getVersionValueMapValue(newobj);
-
-                    if (mapval == null) {
-                        mapval = new TreeMap();
-                        columnAttrib.setVersionValueMapValue(newobj, mapval);
-                    }
-
                     final byte[] b = timeStampMap.get(timestamp);
                     final Object val = columnAttrib.getValueFromBytes(newobj, b);
                     mapval.put(timestamp, val);

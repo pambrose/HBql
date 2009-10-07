@@ -103,4 +103,8 @@ public class VersionAnnotationAttrib extends FieldAttrib {
     public boolean isACurrentValue() {
         return false;
     }
+
+    public boolean isAVersionValue() {
+        return true;
+    }
 }

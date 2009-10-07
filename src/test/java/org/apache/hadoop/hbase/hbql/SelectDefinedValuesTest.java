@@ -20,13 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class SelectExpressionsTest extends TestSupport {
+public class SelectDefinedValuesTest extends TestSupport {
 
     static HConnection conn = null;
     static List<String> keyList = Lists.newArrayList();
     static List<String> val1List = Lists.newArrayList();
     static List<Integer> val5List = Lists.newArrayList();
-    static List<Integer> val7List = Lists.newArrayList();
 
     static Random randomVal = new Random();
 
@@ -58,8 +57,22 @@ public class SelectExpressionsTest extends TestSupport {
             //System.out.println(conn.execute("drop table table1"));
         }
 
+        insertRecords(conn, 10, "Batch 1");
+        insertRecords(conn, 10, "Batch 2");
+
+        keyList.clear();
+        val1List.clear();
+        val5List.clear();
+
+        insertRecords(conn, 10, "Batch 3");
+    }
+
+    private static void insertRecords(final HConnection conn,
+                                      final int cnt,
+                                      final String msg) throws HBqlException, IOException {
+
         final HBatch batch = new HBatch();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < cnt; i++) {
 
             final HRecord rec = new HRecord("table1");
 
@@ -73,19 +86,20 @@ public class SelectExpressionsTest extends TestSupport {
             val5List.add(val5);
 
             rec.setCurrentValue("val1", s_val5);
+            rec.setCurrentValue("val2", s_val5 + " " + msg);
             rec.setCurrentValue("val5", val5);
             rec.setCurrentValue("val6", i * 100);
 
             Map<String, String> mapval1 = Maps.newHashMap();
-            mapval1.put("mapcol1", "mapcol1 val" + i);
-            mapval1.put("mapcol2", "mapcol2 val" + i);
+            mapval1.put("mapcol1", "mapcol1 val" + i + " " + msg);
+            mapval1.put("mapcol2", "mapcol2 val" + i + " " + msg);
 
             rec.setCurrentValue("f3mapval1", mapval1);
 
             Map<String, String> mapval2 = Maps.newHashMap();
-            mapval2.put("mapcol1-b", "mapcol1-b val" + i);
-            mapval2.put("mapcol2-b", "mapcol2-b val" + i);
-            mapval2.put("mapcol3-b", "mapcol3-b val" + i);
+            mapval2.put("mapcol1-b", "mapcol1-b val" + i + " " + msg);
+            mapval2.put("mapcol2-b", "mapcol2-b val" + i + " " + msg);
+            mapval2.put("mapcol3-b", "mapcol3-b val" + i + " " + msg);
 
             rec.setCurrentValue("f3mapval2", mapval2);
 
@@ -100,6 +114,7 @@ public class SelectExpressionsTest extends TestSupport {
 
         conn.apply(batch);
     }
+
 
     @Test
     public void selectExpressions() throws HBqlException, IOException {
@@ -211,6 +226,19 @@ public class SelectExpressionsTest extends TestSupport {
         for (final HRecord rec : recList1) {
             int[] intv = (int[])rec.getCurrentValue("val8");
             assertTrue(intv.length == 5);
+        }
+    }
+
+    @Test
+    public void selectVectorVersionExpressions() throws HBqlException, IOException {
+
+        final String query1 = "SELECT val2 FROM table1 WITH VERSIONS 5";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 10);
+
+        for (final HRecord rec : recList1) {
+            String s = (String)rec.getCurrentValue("val2");
         }
     }
 }

@@ -84,6 +84,10 @@ public class DefinedAttrib extends ColumnAttrib {
         return null;
     }
 
+    public boolean isAVersionValue() {
+        return true;
+    }
+
     public String[] getNamesForColumn() {
         final List<String> nameList = Lists.newArrayList();
         nameList.add(this.getFamilyQualifiedName());
