@@ -19,7 +19,7 @@ public class ShowCmd implements ConnectionCmd {
     public ShowCmd() {
     }
 
-    @Override
+
     public HOutput execute(final HConnection conn) throws HBqlException, IOException {
 
         final HOutput retval = new HOutput();

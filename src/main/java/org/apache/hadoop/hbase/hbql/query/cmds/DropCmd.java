@@ -20,7 +20,7 @@ public class DropCmd extends TableCmd implements ConnectionCmd {
         super(tableName);
     }
 
-    @Override
+
     public HOutput execute(final HConnection conn) throws HBqlException, IOException {
 
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
@@ -33,5 +33,4 @@ public class DropCmd extends TableCmd implements ConnectionCmd {
         retval.out.flush();
         return retval;
     }
-
 }

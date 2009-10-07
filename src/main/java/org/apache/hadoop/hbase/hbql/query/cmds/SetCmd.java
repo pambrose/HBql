@@ -30,7 +30,7 @@ public class SetCmd implements ConnectionCmd {
         return value;
     }
 
-    @Override
+
     public HOutput execute(final HConnection conn) throws HBqlException, IOException {
         final HOutput retval = new HOutput();
         final String var = this.getVariable();
@@ -47,5 +47,4 @@ public class SetCmd implements ConnectionCmd {
 
         throw new HBqlException("Unknown variable: " + var);
     }
-
 }

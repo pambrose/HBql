@@ -12,7 +12,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
  */
 public abstract class GenericLiteral implements GenericValue {
 
-    @Override
     public GenericValue getOptimizedValue() throws HBqlException {
         return this;
     }

@@ -23,7 +23,7 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
         return this.validateType(BooleanValue.class);
     }
 
-    @Override
+
     public Boolean getValue(final Object object) throws HBqlException {
 
         final boolean v1 = (Boolean)this.getArg(0).getValue(object);
