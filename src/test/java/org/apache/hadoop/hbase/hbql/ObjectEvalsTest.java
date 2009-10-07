@@ -70,10 +70,9 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
         List<SimpleObject> r1 = query.getResultList(objList);
         assertTrue(r1.size() == 3);
 
-        final String qstr2 = "strval like :str1";
-        query = ObjectQueryManager.newObjectQuery(qstr2);
-        query.setParameter("str1", "T[est]+ Value: [1-3]");
-        r1 = query.getResultList(objList);
+        ObjectQuery<SimpleObject> query1 = ObjectQueryManager.newObjectQuery("strval like :str1");
+        query1.setParameter("str1", "T[est]+ Value: [1-3]");
+        r1 = query1.getResultList(objList);
         assertTrue(r1.size() == 3);
 
         // Using Iterator
