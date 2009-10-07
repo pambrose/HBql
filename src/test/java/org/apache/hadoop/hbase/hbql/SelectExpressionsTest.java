@@ -10,12 +10,14 @@ import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
+import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -46,8 +48,8 @@ public class SelectExpressionsTest extends TestSupport {
                             + "f2:val2 date alias val4, "
                             + "f3:val1 int alias val5, "
                             + "f3:val2 int alias val6, "
-                            + "f3:val3 int alias val7 "
-                            //  + "f3:mapval1 string mapKeysAsColumns alias f3default"
+                            + "f3:val3 int alias val7, "
+                            + "f3:mapval1 string mapKeysAsColumns alias f3default"
                             + ")");
 
         conn = HConnectionManager.newHConnection();
@@ -74,6 +76,12 @@ public class SelectExpressionsTest extends TestSupport {
             rec.setCurrentValue("val1", s_val5);
             rec.setCurrentValue("val5", val5);
             rec.setCurrentValue("val6", i * 100);
+
+            Map<String, String> mapval = Maps.newHashMap();
+            mapval.put("mapcol1", "mapcol1 val" + i);
+            mapval.put("mapcol2", "mapcol2 val" + i);
+
+            rec.setCurrentValue("f3default", mapval);
 
             batch.insert(rec);
         }
@@ -159,4 +167,16 @@ public class SelectExpressionsTest extends TestSupport {
 
     }
 
+    @Test
+    public void selectMapExpressions() throws HBqlException, IOException {
+
+        final String query1 = "SELECT f3default FROM table1";
+
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+
+        List<HRecord> recList1 = q1.getResultList();
+
+        assertTrue(recList1.size() == 10);
+
+    }
 }

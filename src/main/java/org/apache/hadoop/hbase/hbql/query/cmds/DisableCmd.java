@@ -8,19 +8,12 @@ import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
 import java.io.IOException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 24, 2009
- * Time: 10:31:14 PM
- */
 public class DisableCmd extends TableCmd implements ConnectionCmd {
 
     public DisableCmd(final String tableName) {
         super(tableName);
     }
 
-    @Override
     public HOutput execute(final HConnection conn) throws HBqlException, IOException {
 
         final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());

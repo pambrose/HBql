@@ -16,12 +16,6 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Oct 1, 2009
- * Time: 8:40:58 PM
- */
 public class FamilySelectElement implements SelectElement {
 
     private final boolean useAllFamilies;

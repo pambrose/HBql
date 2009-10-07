@@ -10,12 +10,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 10:30:32 PM
- */
 public class DelegateCompare extends GenericCompare {
 
     private GenericCompare typedExpr = null;
@@ -28,7 +22,6 @@ public class DelegateCompare extends GenericCompare {
         return this.typedExpr;
     }
 
-    @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
@@ -49,15 +42,12 @@ public class DelegateCompare extends GenericCompare {
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
-    @Override
     public GenericValue getOptimizedValue() throws HBqlException {
         this.optimizeArgs();
         return !this.isAConstant() ? this : this.getTypedExpr().getOptimizedValue();
     }
 
-    @Override
     public Boolean getValue(final Object object) throws HBqlException {
         return this.getTypedExpr().getValue(object);
     }
-
 }

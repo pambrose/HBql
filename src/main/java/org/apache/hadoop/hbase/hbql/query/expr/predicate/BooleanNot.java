@@ -7,12 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 8:28:06 PM
- */
 public class BooleanNot extends GenericExpr implements BooleanValue {
 
     private final boolean not;
@@ -28,21 +22,17 @@ public class BooleanNot extends GenericExpr implements BooleanValue {
         return BooleanValue.class;
     }
 
-    @Override
     public GenericValue getOptimizedValue() throws HBqlException {
         this.optimizeArgs();
         return !this.isAConstant() ? this : new BooleanLiteral(this.getValue(null));
     }
 
-    @Override
     public Boolean getValue(final Object object) throws HBqlException {
         final boolean retval = (Boolean)this.getArg(0).getValue(object);
         return (this.not) ? !retval : retval;
     }
 
-    @Override
     public String asString() {
         return (this.not ? "NOT " : "") + this.getArg(0).asString();
     }
-
 }

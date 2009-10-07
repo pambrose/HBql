@@ -5,12 +5,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 6:58:31 PM
- */
 public class ExprTree extends ExprContext {
 
     private static TypeSignature exprSignature = new TypeSignature(null, BooleanValue.class);
@@ -33,7 +27,6 @@ public class ExprTree extends ExprContext {
         // Noop for now
     }
 
-    @Override
     public String asString() {
         return this.getGenericValue(0).asString();
     }
@@ -42,7 +35,6 @@ public class ExprTree extends ExprContext {
         this.useHBaseResult = useHBaseResult;
     }
 
-    @Override
     public boolean useHBaseResult() {
         return this.useHBaseResult;
     }

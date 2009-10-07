@@ -8,12 +8,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 6:58:31 PM
- */
 public class DelegateBetweenStmt extends GenericBetweenStmt {
 
     private GenericBetweenStmt typedExpr = null;
@@ -33,7 +27,6 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
         this.typedExpr = typedExpr;
     }
 
-    @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
@@ -53,13 +46,11 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
-    @Override
     public GenericValue getOptimizedValue() throws HBqlException {
         this.optimizeArgs();
         return !this.isAConstant() ? this : this.getTypedExpr().getOptimizedValue();
     }
 
-    @Override
     public Boolean getValue(final Object object) throws HBqlException {
         return this.getTypedExpr().getValue(object);
     }

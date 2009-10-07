@@ -7,12 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 18, 2009
- * Time: 2:14:47 PM
- */
 public class SchemaManager {
 
     public static HOutput parse(final String str) throws HBqlException {

@@ -20,12 +20,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 6:58:31 PM
- */
 public class NamedParameter implements GenericValue {
 
     private ExprContext context = null;
@@ -54,7 +48,6 @@ public class NamedParameter implements GenericValue {
         return this.typedExprList;
     }
 
-    @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
@@ -99,7 +92,6 @@ public class NamedParameter implements GenericValue {
         }
     }
 
-    @Override
     public Object getValue(final Object object) throws HBqlException {
         if (this.isScalarValueSet())
             return this.getTypedExpr().getValue(object);
@@ -107,7 +99,6 @@ public class NamedParameter implements GenericValue {
             return this.getTypedExprList();
     }
 
-    @Override
     public void setExprContext(final ExprContext context) throws HBqlException {
         this.context = context;
         this.context.addNamedParameter(this);
@@ -117,12 +108,10 @@ public class NamedParameter implements GenericValue {
         return this.context;
     }
 
-    @Override
     public GenericValue getOptimizedValue() throws HBqlException {
         return this;
     }
 
-    @Override
     public boolean isAConstant() {
         return false;
     }
@@ -176,8 +165,6 @@ public class NamedParameter implements GenericValue {
                                 + " assigned an unsupported type " + val.getClass().getSimpleName());
     }
 
-
-    @Override
     public String asString() {
         return this.getParamName();
     }

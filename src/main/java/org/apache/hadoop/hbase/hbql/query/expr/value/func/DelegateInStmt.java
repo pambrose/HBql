@@ -10,12 +10,6 @@ import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 6:58:31 PM
- */
 public class DelegateInStmt extends GenericInStmt {
 
     private GenericInStmt typedExpr = null;
@@ -32,7 +26,6 @@ public class DelegateInStmt extends GenericInStmt {
         this.typedExpr = typedExpr;
     }
 
-    @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
@@ -50,18 +43,15 @@ public class DelegateInStmt extends GenericInStmt {
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
-    @Override
     protected boolean evaluateList(final Object object) throws HBqlException {
         throw new HBqlException("Internal error");
     }
 
-    @Override
     public GenericValue getOptimizedValue() throws HBqlException {
         this.optimizeArgs();
         return !this.isAConstant() ? this : this.getTypedExpr().getOptimizedValue();
     }
 
-    @Override
     public Boolean getValue(final Object object) throws HBqlException {
         return this.getTypedExpr().getValue(object);
     }

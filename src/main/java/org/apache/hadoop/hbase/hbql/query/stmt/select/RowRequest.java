@@ -11,12 +11,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Oct 5, 2009
- * Time: 1:14:01 PM
- */
 public class RowRequest {
 
     final Get getValue;
@@ -46,7 +40,6 @@ public class RowRequest {
             return this.getGetValue().getMaxVersions();
     }
 
-
     public ResultScanner getResultScanner(final HTable table) throws IOException {
 
         // If we are dealing with a Get, then we need to fake a ResultScanner with the Get result
@@ -60,28 +53,23 @@ public class RowRequest {
                 resultList.add(result);
 
             return new ResultScanner() {
-                @Override
+
                 public Result next() throws IOException {
                     return null;
                 }
 
-                @Override
                 public Result[] next(final int nbRows) throws IOException {
                     return null;
                 }
 
-                @Override
                 public Iterator<Result> iterator() {
                     return resultList.iterator();
                 }
 
-                @Override
                 public void close() {
 
                 }
-
             };
-
         }
     }
 }

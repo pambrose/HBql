@@ -16,12 +16,6 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Oct 1, 2009
- * Time: 8:39:47 PM
- */
 public class ExprSelectElement extends ExprContext implements SelectElement {
 
     private final String asName;
@@ -73,7 +67,6 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         return this.evaluate(0, true, false, result);
     }
 
-    @Override
     public void validate(final HConnection connection,
                          final HBaseSchema schema,
                          final List<ColumnAttrib> selectAttribList) throws HBqlException {
@@ -95,7 +88,6 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         }
     }
 
-    @Override
     public void assignCurrentValue(final Object newobj, final Result result) throws HBqlException {
 
         if (this.isSimpleColumnReference()) {
@@ -114,7 +106,6 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         }
     }
 
-    @Override
     public void assignVersionValue(final Object newobj,
                                    final Collection<ColumnAttrib> columnAttribs,
                                    final Result result) throws HBqlException {
@@ -150,12 +141,10 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         }
     }
 
-    @Override
     public String asString() {
         return this.getGenericValue(0).asString();
     }
 
-    @Override
     public boolean useHBaseResult() {
         return true;
     }

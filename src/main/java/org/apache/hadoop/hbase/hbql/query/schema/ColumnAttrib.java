@@ -10,12 +10,6 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.NavigableMap;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 19, 2009
- * Time: 6:07:31 PM
- */
 public abstract class ColumnAttrib implements Serializable {
 
     protected final String familyName;

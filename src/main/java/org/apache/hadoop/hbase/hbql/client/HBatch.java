@@ -12,12 +12,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 19, 2009
- * Time: 4:22:40 PM
- */
 public class HBatch {
 
     private final Map<String, List<HBatchAction>> actionList = Maps.newHashMap();

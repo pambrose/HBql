@@ -32,7 +32,6 @@ public class SerializationTest extends TestSupport {
             this.doubleval = doubleval;
         }
 
-        @Override
         public boolean equals(final Object o) {
             TestClass t = (TestClass)o;
             return this.strval.equals(t.strval)

@@ -15,12 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 13, 2009
- * Time: 8:26:14 AM
- */
 public abstract class HBaseSchema extends Schema {
 
     private ColumnAttrib keyAttrib = null;

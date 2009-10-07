@@ -15,12 +15,6 @@ import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.ExprSelectElement;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 20, 2009
- * Time: 9:56:22 PM
- */
 public class HBql {
 
     public static HBqlParser newParser(final String str) {

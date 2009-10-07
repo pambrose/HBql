@@ -18,12 +18,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 20, 2009
- * Time: 9:26:38 PM
- */
 public class QueryImpl<T> implements HQuery<T> {
 
     private final HConnection connection;
@@ -41,7 +35,6 @@ public class QueryImpl<T> implements HQuery<T> {
         this.getQueryArgs().getWhereArgs().setSchema(this.getQueryArgs().getSchema());
     }
 
-    @Override
     public synchronized void addListener(final HQueryListener<T> listener) {
         if (this.getListeners() == null)
             this.listeners = Lists.newArrayList();
@@ -49,12 +42,10 @@ public class QueryImpl<T> implements HQuery<T> {
         this.getListeners().add(listener);
     }
 
-    @Override
     public HConnection getConnection() {
         return this.connection;
     }
 
-    @Override
     public String getQuery() {
         return this.query;
     }
@@ -75,25 +66,21 @@ public class QueryImpl<T> implements HQuery<T> {
         return where.getRowRequestList(allAttribs);
     }
 
-    @Override
     public List<HQueryListener<T>> getListeners() {
         return this.listeners;
     }
 
-    @Override
     public void setParameter(final String name, final Object val) throws HBqlException {
         int cnt = this.getQueryArgs().setParameter(name, val);
         if (cnt == 0)
             throw new HBqlException("Parameter name " + name + " does not exist in " + this.getQuery());
     }
 
-    @Override
     public void clearListeners() {
         if (this.getListeners() != null)
             this.getListeners().clear();
     }
 
-    @Override
     public HResults<T> getResults() throws HBqlException {
 
         // Set it once per evaluation
@@ -107,7 +94,6 @@ public class QueryImpl<T> implements HQuery<T> {
         return new ResultsImpl<T>(this);
     }
 
-    @Override
     public List<T> getResultList() throws HBqlException {
 
         final List<T> retval = Lists.newArrayList();

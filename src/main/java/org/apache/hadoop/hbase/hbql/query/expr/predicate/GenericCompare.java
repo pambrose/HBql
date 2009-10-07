@@ -8,12 +8,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 6:58:31 PM
- */
 public abstract class GenericCompare extends GenericExpr implements BooleanValue {
 
     private final Operator operator;
@@ -27,7 +21,6 @@ public abstract class GenericCompare extends GenericExpr implements BooleanValue
         return this.operator;
     }
 
-    @Override
     public GenericValue getOptimizedValue() throws HBqlException {
         this.optimizeArgs();
         return !this.isAConstant() ? this : new BooleanLiteral(this.getValue(null));
@@ -41,7 +34,6 @@ public abstract class GenericCompare extends GenericExpr implements BooleanValue
         return BooleanValue.class;
     }
 
-    @Override
     public String asString() {
         final StringBuilder sbuf = new StringBuilder();
         sbuf.append(this.getArg(0).asString());

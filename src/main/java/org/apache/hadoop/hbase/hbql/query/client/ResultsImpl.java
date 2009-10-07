@@ -20,12 +20,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 12, 2009
- * Time: 2:08:38 PM
- */
 public class ResultsImpl<T> implements HResults<T> {
 
     private final List<ResultScanner> scannerList = Lists.newArrayList();
@@ -63,7 +57,6 @@ public class ResultsImpl<T> implements HResults<T> {
         return this.getHQuery().getRowRequestList();
     }
 
-    @Override
     public void close() {
         for (final ResultScanner scanner : this.getScannerList())
             closeCurrentScanner(scanner, false);
@@ -86,7 +79,6 @@ public class ResultsImpl<T> implements HResults<T> {
             getScannerList().remove(scanner);
     }
 
-    @Override
     public Iterator<T> iterator() {
 
         try {
@@ -218,17 +210,15 @@ public class ResultsImpl<T> implements HResults<T> {
         }
 
         return new Iterator<T>() {
-            @Override
+
             public boolean hasNext() {
                 return false;
             }
 
-            @Override
             public T next() {
                 return null;
             }
 
-            @Override
             public void remove() {
 
             }

@@ -13,12 +13,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 31, 2009
- * Time: 2:00:25 PM
- */
 public class Function extends GenericExpr {
 
     public static enum Type {
@@ -72,7 +66,6 @@ public class Function extends GenericExpr {
                 throw new HBqlException("Null value in " + this.asString());
     }
 
-    @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
@@ -93,13 +86,11 @@ public class Function extends GenericExpr {
         return this.getTypeSignature().getReturnType();
     }
 
-    @Override
     public GenericValue getOptimizedValue() throws HBqlException {
         this.optimizeArgs();
         return !this.isAConstant() ? this : this.getFunctionType().getTypeSignature().newLiteral(this.getValue(null));
     }
 
-    @Override
     public Object getValue(final Object object) throws HBqlException {
 
         switch (this.getFunctionType()) {
@@ -189,7 +180,6 @@ public class Function extends GenericExpr {
         }
     }
 
-    @Override
     public String asString() {
         return this.getFunctionType().name() + "(" + super.asString() + ")";
     }

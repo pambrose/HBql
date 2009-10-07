@@ -19,12 +19,6 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 17, 2009
- * Time: 8:53:41 PM
- */
 public class AnnotationExample {
 
     @HTable(name = "testobjects",
