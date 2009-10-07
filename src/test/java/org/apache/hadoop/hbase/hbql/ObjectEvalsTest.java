@@ -3,8 +3,9 @@ package org.apache.hadoop.hbase.hbql;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.impl.object.ObjectQueryImpl;
+import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQuery;
 import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQueryListenerAdapter;
+import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQueryManager;
 import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQueryPredicate;
 import org.apache.hadoop.hbase.hbql.query.object.client.ObjectResults;
 import org.apache.hadoop.hbase.hbql.util.Counter;
@@ -53,7 +54,7 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
 
         // Using Listeners with CollectionQuery Object
         final Counter cnt1 = new Counter();
-        final ObjectQueryImpl<SimpleObject> query = ObjectQueryImpl.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
+        final ObjectQuery<SimpleObject> query = ObjectQueryManager.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
         query.addListener(
                 new ObjectQueryListenerAdapter<SimpleObject>() {
                     public void onEachObject(final SimpleObject val) throws HBqlException {
@@ -66,7 +67,7 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
 
         // Using Iterator
         final Counter cnt2 = new Counter();
-        ObjectQueryImpl<SimpleObject> query2 = ObjectQueryImpl.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
+        ObjectQuery<SimpleObject> query2 = ObjectQueryManager.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
         final ObjectResults<SimpleObject> results = query2.execute(objList);
         for (final SimpleObject obj : results)
             cnt2.increment();

@@ -17,7 +17,7 @@ public class ObjectQueryImpl<T> implements ObjectQuery<T> {
     final String query;
     List<ObjectQueryListener<T>> listeners = null;
 
-    private ObjectQueryImpl(final String query) {
+    public ObjectQueryImpl(final String query) {
         this.query = query;
     }
 
@@ -35,10 +35,6 @@ public class ObjectQueryImpl<T> implements ObjectQuery<T> {
     public void clearListeners() {
         if (this.getListeners() != null)
             this.getListeners().clear();
-    }
-
-    public static <T> ObjectQueryImpl<T> newObjectQuery(final String query) {
-        return new ObjectQueryImpl<T>(query);
     }
 
     public String getQuery() {
