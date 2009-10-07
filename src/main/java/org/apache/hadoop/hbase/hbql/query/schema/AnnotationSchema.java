@@ -383,6 +383,7 @@ public class AnnotationSchema extends HBaseSchema {
                                       : columnAttrib.getFieldType().getFirstSynonym();
             varList.add(ColumnDescription.newColumnDescription(columnAttrib.getFamilyQualifiedName(),
                                                                columnAttrib.getAliasName(),
+                                                               columnAttrib.isMapKeysAsColumns(),
                                                                columnType));
         }
         return varList;

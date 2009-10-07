@@ -23,7 +23,7 @@ public class DefinedAttrib extends ColumnAttrib {
               columnDescription.getColumnName(),
               columnDescription.getAliasName(),
               columnDescription.getFieldType(),
-              false,
+              columnDescription.isMapKeysAsColumns(),
               null,
               null);
 

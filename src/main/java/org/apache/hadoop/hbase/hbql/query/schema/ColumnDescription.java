@@ -14,11 +14,17 @@ public class ColumnDescription implements Serializable {
 
     private final String aliasName;
     private final String familyName, columnName;
+    private final boolean mapKeysAsColumns;
     private final FieldType fieldType;
 
-    private ColumnDescription(final String familyQualifiedName, final String aliasName, final String typeName) {
+    private ColumnDescription(final String familyQualifiedName,
+                              final String aliasName,
+                              final boolean mapKeysAsColumns,
+                              final String typeName) {
+
         this.aliasName = aliasName;
         this.fieldType = getFieldType(typeName);
+        this.mapKeysAsColumns = mapKeysAsColumns;
 
         if (familyQualifiedName.indexOf(":") != -1) {
             final String[] names = familyQualifiedName.split(":");
@@ -33,8 +39,9 @@ public class ColumnDescription implements Serializable {
 
     public static ColumnDescription newColumnDescription(final String familyQualifiedName,
                                                          final String aliasName,
+                                                         final boolean mapKeysAsColumns,
                                                          final String typeName) {
-        return new ColumnDescription(familyQualifiedName, aliasName, typeName);
+        return new ColumnDescription(familyQualifiedName, aliasName, mapKeysAsColumns, typeName);
     }
 
     private static FieldType getFieldType(final String typeName) {
@@ -44,6 +51,10 @@ public class ColumnDescription implements Serializable {
         catch (HBqlException e) {
             return null;
         }
+    }
+
+    public boolean isMapKeysAsColumns() {
+        return this.mapKeysAsColumns;
     }
 
     public String getFamilyName() {

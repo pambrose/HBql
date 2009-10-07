@@ -83,7 +83,8 @@ attribList returns [List<ColumnDescription> retval]
 	: (a1=defineAttrib {retval.add($a1.retval);} (COMMA a2=defineAttrib {retval.add($a2.retval);})*)?;
 	
 defineAttrib returns [ColumnDescription retval]
-	: c=ID type=ID (keyALIAS a=ID)?			{retval = ColumnDescription.newColumnDescription($c.text, $a.text, $type.text);};
+	: c=ID type=ID m=keyMAP? (keyALIAS a=ID)?	{retval = ColumnDescription.newColumnDescription($c.text, $a.text, $m.text!=null, $type.text);};
+
 
 deleteStmt  returns [DeleteCmd retval]
 	: keyDELETE keyFROM t=ID w=whereValue?			
@@ -165,8 +166,7 @@ nodescWhereExpr returns [ExprTree retval]
 	 : e=boolExpr					{retval = ExprTree.newExprTree($e.retval);};
 
 descWhereExpr returns [ExprTree retval]
-	: s=schemaDesc? e=boolExpr			{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);}
-	;
+	: s=schemaDesc? e=boolExpr			{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);};
 
 // Boolean Expressions				
 boolExpr returns [BooleanValue retval]
@@ -454,3 +454,4 @@ keyLENGTH	: {isKeyword(input, "LENGTH")}? ID;
 keyCONTAINS	: {isKeyword(input, "CONTAINS")}? ID;
 keyINDEXOF	: {isKeyword(input, "INDEXOF")}? ID;
 keyREPLACE	: {isKeyword(input, "REPLACE")}? ID;
+keyMAP		: {isKeyword(input, "MAPKEYSASCOLUMNS")}? ID;

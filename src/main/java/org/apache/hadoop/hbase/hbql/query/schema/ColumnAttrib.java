@@ -37,6 +37,7 @@ public abstract class ColumnAttrib implements Serializable {
                            final boolean mapKeysAsColumns,
                            final String getter,
                            final String setter) {
+
         this.familyName = familyName;
         this.columnName = columnName;
         this.aliasName = aliasName;
@@ -220,8 +221,7 @@ public abstract class ColumnAttrib implements Serializable {
         }
     }
 
-    public byte[]
-    getValueAsBytes(final Object recordObj) throws HBqlException {
+    public byte[] getValueAsBytes(final Object recordObj) throws HBqlException {
 
         if (this.hasGetter())
             return this.invokeGetterMethod(recordObj);
@@ -266,9 +266,7 @@ public abstract class ColumnAttrib implements Serializable {
             return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
     }
 
-    public void setCurrentValue(final Object newobj,
-                                final long timestamp,
-                                final byte[] b) throws HBqlException {
+    public void setCurrentValue(final Object newobj, final long timestamp, final byte[] b) throws HBqlException {
         final Object val = this.getValueFromBytes(newobj, b);
         this.setCurrentValue(newobj, timestamp, val);
     }

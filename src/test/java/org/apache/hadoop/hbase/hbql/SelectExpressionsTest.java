@@ -47,7 +47,7 @@ public class SelectExpressionsTest extends TestSupport {
                             + "f3:val1 int alias val5, "
                             + "f3:val2 int alias val6, "
                             + "f3:val3 int alias val7, "
-                            + "f3:mapval1 string map alias f3default"
+                            + "f3:mapval1 string mapKeysAsColumns alias f3default"
                             + ")");
 
         conn = HConnectionManager.newHConnection();

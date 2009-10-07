@@ -42,13 +42,14 @@ public class DefineCmd extends TableCmd implements SchemaManagerCmd {
 
         for (final ColumnAttrib attrib : schema.getColumnAttribSet()) {
             if (attrib.getFieldType() == null)
-                throw new HBqlException(schema.getTableName() + " attribute " + attrib.getFamilyQualifiedName()
-                                        + " has unknown type.");
+                throw new HBqlException(schema.getTableName() + " attribute "
+                                        + attrib.getFamilyQualifiedName() + " has unknown type.");
         }
 
         final HOutput retval = new HOutput();
         retval.out.println("Table " + schema.getTableName() + " defined.");
         retval.out.flush();
+
         return retval;
     }
 
