@@ -4,12 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HColumn;
 import org.apache.hadoop.hbase.hbql.client.HFamily;
 import org.apache.hadoop.hbase.hbql.client.HTable;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 4, 2009
- * Time: 7:41:00 AM
- */
 @HTable(name = "alltypes",
         families = {
                 @HFamily(name = "family1", maxVersions = 10),

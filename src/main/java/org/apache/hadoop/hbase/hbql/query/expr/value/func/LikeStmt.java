@@ -6,12 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 6:58:31 PM
- */
 public class LikeStmt extends GenericStringPatternStmt {
 
     private Pattern pattern = null;
@@ -24,12 +18,10 @@ public class LikeStmt extends GenericStringPatternStmt {
         return this.pattern;
     }
 
-    @Override
     protected String getFunctionName() {
         return "LIKE";
     }
 
-    @Override
     public Boolean getValue(final Object object) throws HBqlException {
 
         final String val = (String)this.getArg(0).getValue(object);
@@ -55,5 +47,4 @@ public class LikeStmt extends GenericStringPatternStmt {
 
         return (this.isNot()) ? !retval : retval;
     }
-
 }

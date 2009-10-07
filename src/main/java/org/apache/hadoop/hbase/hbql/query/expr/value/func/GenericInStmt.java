@@ -11,12 +11,6 @@ import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 31, 2009
- * Time: 2:00:25 PM
- */
 public abstract class GenericInStmt extends GenericNotValue {
 
     protected GenericInStmt(final GenericValue arg0, final boolean not, final List<GenericValue> inList) {
@@ -29,13 +23,11 @@ public abstract class GenericInStmt extends GenericNotValue {
         return this.getSubArgs(1);
     }
 
-    @Override
     public Boolean getValue(final Object object) throws HBqlException {
         final boolean retval = this.evaluateList(object);
         return (this.isNot()) ? !retval : retval;
     }
 
-    @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
@@ -61,7 +53,6 @@ public abstract class GenericInStmt extends GenericNotValue {
         return BooleanValue.class;
     }
 
-    @Override
     public String asString() {
         final StringBuilder sbuf = new StringBuilder(this.getArg(0).asString() + notAsString() + " IN (");
 
@@ -75,5 +66,4 @@ public abstract class GenericInStmt extends GenericNotValue {
         sbuf.append(")");
         return sbuf.toString();
     }
-
 }

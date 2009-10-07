@@ -8,12 +8,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 6, 2009
- * Time: 5:17:59 PM
- */
 public class CurrentValueAnnotationAttrib extends FieldAttrib {
 
     public CurrentValueAnnotationAttrib(final Field field) throws HBqlException {
@@ -41,7 +35,6 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
         return this.getField().getAnnotation(HColumn.class);
     }
 
-    @Override
     public boolean isKeyAttrib() {
         return this.getColumnAnno().key();
     }

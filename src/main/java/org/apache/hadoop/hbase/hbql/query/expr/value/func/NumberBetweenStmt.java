@@ -3,12 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 6:58:31 PM
- */
 public class NumberBetweenStmt extends GenericBetweenStmt {
 
     public NumberBetweenStmt(final GenericValue arg0,
@@ -18,7 +12,6 @@ public class NumberBetweenStmt extends GenericBetweenStmt {
         super(Type.NUMBERBETWEEN, not, arg0, arg1, arg2);
     }
 
-    @Override
     public Boolean getValue(final Object object) throws HBqlException {
 
         final Object obj0 = this.getArg(0).getValue(object);
@@ -47,7 +40,5 @@ public class NumberBetweenStmt extends GenericBetweenStmt {
         }
 
         return (this.isNot()) ? !retval : retval;
-
     }
-
 }

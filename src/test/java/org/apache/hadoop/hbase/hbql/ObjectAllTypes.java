@@ -1,11 +1,5 @@
 package org.apache.hadoop.hbase.hbql;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 4, 2009
- * Time: 7:41:00 AM
- */
 public class ObjectAllTypes {
 
     private String keyval = null;

@@ -7,12 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 31, 2009
- * Time: 12:30:57 PM
- */
 public abstract class GenericColumn<T extends GenericValue> implements GenericValue {
 
     private final ColumnAttrib columnAttrib;
@@ -34,7 +28,6 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         return this.getColumnAttrib().getFamilyQualifiedName();
     }
 
-    @Override
     public T getOptimizedValue() throws HBqlException {
         return (T)this;
     }
@@ -43,7 +36,6 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         return false;
     }
 
-    @Override
     public void setExprContext(final ExprContext context) throws HBqlException {
         this.exprContext = context;
         this.getExprContext().addColumnToUsedList(this);
@@ -53,13 +45,11 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         return this.exprContext;
     }
 
-    @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
         return this.getFieldType().getExprType();
     }
 
-    @Override
     public String asString() {
         return this.getVariableName();
     }

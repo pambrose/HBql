@@ -16,12 +16,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 9, 2009
- * Time: 10:19:00 AM
- */
 public class DefinedSchema extends HBaseSchema {
 
     private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
@@ -104,7 +98,6 @@ public class DefinedSchema extends HBaseSchema {
         return getDefinedSchemaMap().get(tableName);
     }
 
-    @Override
     public String toString() {
         return this.getTableName();
     }
@@ -113,12 +106,10 @@ public class DefinedSchema extends HBaseSchema {
         return this.tableAliasName;
     }
 
-    @Override
     public String getTableName() {
         return this.tableName;
     }
 
-    @Override
     public List<HColumnDescriptor> getColumnDescriptors() {
         final List<HColumnDescriptor> descList = Lists.newArrayList();
         for (final String familyName : this.getFamilySet())
@@ -127,12 +118,10 @@ public class DefinedSchema extends HBaseSchema {
         return descList;
     }
 
-    @Override
     public String getSchemaName() {
         return this.getTableName();
     }
 
-    @Override
     public HRecord newObject(final Collection<ColumnAttrib> attribList,
                              final List<SelectElement> selectElementList,
                              final int maxVersions,

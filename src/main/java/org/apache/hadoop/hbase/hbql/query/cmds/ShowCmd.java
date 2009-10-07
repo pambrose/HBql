@@ -8,17 +8,10 @@ import org.apache.hadoop.hbase.hbql.client.HOutput;
 
 import java.io.IOException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 20, 2009
- * Time: 11:43:49 PM
- */
 public class ShowCmd implements ConnectionCmd {
 
     public ShowCmd() {
     }
-
 
     public HOutput execute(final HConnection conn) throws HBqlException, IOException {
 

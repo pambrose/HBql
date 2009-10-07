@@ -4,14 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 27, 2009
- * Time: 2:13:47 PM
- */
 public class WithExpressionsTest extends TestSupport {
-
 
     @Test
     public void keysExpressions() throws HBqlException {
@@ -51,5 +44,4 @@ public class WithExpressionsTest extends TestSupport {
         assertValidInput("WITH SERVER FILTER WHERE {col1 int} col1 < 4");
         assertValidInput("WITH SERVER FILTER WHERE {fam1:col1 int alias d} fam1:col1 < 4 OR d > 3");
     }
-
 }

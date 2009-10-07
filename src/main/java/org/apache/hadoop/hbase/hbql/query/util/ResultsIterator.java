@@ -5,12 +5,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import java.io.IOException;
 import java.util.Iterator;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 12, 2009
- * Time: 12:30:57 PM
- */
 public abstract class ResultsIterator<T> implements Iterator<T> {
 
     protected abstract T fetchNextObject() throws HBqlException, IOException;
@@ -19,7 +13,6 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
 
     protected abstract void setNextObject(final T nextObject, final boolean fromExceptionCatch);
 
-    @Override
     public T next() {
 
         // Save value to return;
@@ -43,12 +36,10 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
         return retval;
     }
 
-    @Override
     public boolean hasNext() {
         return this.getNextObject() != null;
     }
 
-    @Override
     public void remove() {
 
     }

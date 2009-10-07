@@ -9,12 +9,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 5, 2009
- * Time: 10:03:49 PM
- */
 public class VersionAnnotationAttrib extends FieldAttrib {
 
     private VersionAnnotationAttrib(final String familyName,
@@ -106,9 +100,7 @@ public class VersionAnnotationAttrib extends FieldAttrib {
         }
     }
 
-    @Override
     public boolean isACurrentValue() {
         return false;
     }
-
 }

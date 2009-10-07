@@ -64,23 +64,19 @@ public class FamilySelectElement implements SelectElement {
         return this.schema;
     }
 
-    @Override
     public String getAsName() {
         return null;
     }
 
-    @Override
     public String asString() {
         return this.familyName;
     }
 
-    @Override
     public int setParameter(final String name, final Object val) {
         // Do nothing
         return 0;
     }
 
-    @Override
     public void validate(final HConnection connection,
                          final HBaseSchema schema,
                          final List<ColumnAttrib> selectAttribList) throws HBqlException {
@@ -111,7 +107,6 @@ public class FamilySelectElement implements SelectElement {
             this.getFamilyNameBytesList().add(HUtil.ser.getStringAsBytes(familyName));
     }
 
-    @Override
     public void assignCurrentValue(final Object newobj, final Result result) throws HBqlException {
 
         // Evaluate each of the families
@@ -152,12 +147,10 @@ public class FamilySelectElement implements SelectElement {
                     if (attrib != null)
                         attrib.setCurrentValue(newobj, 0, b);
                 }
-
             }
         }
     }
 
-    @Override
     public void assignVersionValue(final Object newobj,
                                    final Collection<ColumnAttrib> columnAttribs,
                                    final Result result) throws HBqlException {

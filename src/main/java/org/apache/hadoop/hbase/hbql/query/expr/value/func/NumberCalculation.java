@@ -5,25 +5,17 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 6:58:31 PM
- */
 public class NumberCalculation extends GenericCalculation implements NumberValue {
 
     public NumberCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
         super(Type.NUMBERCALCULATION, arg0, operator, arg1);
     }
 
-    @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
         return this.validateNumericTypes(parentExpr, false);
     }
 
-    @Override
     public Number getValue(final Object object) throws HBqlException {
 
         final Object obj0 = this.getArg(0).getValue(object);

@@ -21,12 +21,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 10, 2009
- * Time: 11:33:09 AM
- */
 public abstract class GenericExpr implements GenericValue {
 
     public enum Type {
@@ -184,7 +178,6 @@ public abstract class GenericExpr implements GenericValue {
         this.getArgList().set(i, val);
     }
 
-    @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
@@ -220,7 +213,6 @@ public abstract class GenericExpr implements GenericValue {
         return this.getHighestRankingNumericArgFoundInValidate();
     }
 
-    @Override
     public GenericValue getOptimizedValue() throws HBqlException {
 
         this.optimizeArgs();
@@ -342,5 +334,4 @@ public abstract class GenericExpr implements GenericValue {
 
         throw new TypeException(sbuf.toString());
     }
-
 }

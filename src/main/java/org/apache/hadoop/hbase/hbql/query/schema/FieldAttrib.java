@@ -6,12 +6,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 6, 2009
- * Time: 5:27:00 PM
- */
 public abstract class FieldAttrib extends ColumnAttrib {
 
     private final transient Field field;
@@ -36,12 +30,10 @@ public abstract class FieldAttrib extends ColumnAttrib {
         setAccessible(this.getField());
     }
 
-    @Override
     public String toString() {
         return this.getSimpleObjectQualifiedName() + " " + this.getFamilyQualifiedName();
     }
 
-    @Override
     public String getObjectQualifiedName() {
         return this.getEnclosingClassName() + "." + this.getField().getName();
     }
@@ -54,7 +46,6 @@ public abstract class FieldAttrib extends ColumnAttrib {
         return field.getDeclaringClass().getName() + "." + field.getName();
     }
 
-    @Override
     public String getEnclosingClassName() {
         return this.getEnclosingClass().getName();
     }
@@ -63,12 +54,10 @@ public abstract class FieldAttrib extends ColumnAttrib {
         return this.getField().getDeclaringClass();
     }
 
-    @Override
     protected Method getMethod(final String methodName, final Class<?>... params) throws NoSuchMethodException {
         return this.getEnclosingClass().getDeclaredMethod(methodName, params);
     }
 
-    @Override
     protected Class getComponentType() {
         return this.getField().getType().getComponentType();
     }
@@ -77,7 +66,6 @@ public abstract class FieldAttrib extends ColumnAttrib {
         return this.field;
     }
 
-    @Override
     public Object getCurrentValue(final Object recordObj) throws HBqlException {
         try {
             return this.getField().get(recordObj);
@@ -87,7 +75,6 @@ public abstract class FieldAttrib extends ColumnAttrib {
         }
     }
 
-    @Override
     public void setCurrentValue(final Object newobj, final long timestamp, final Object val) {
         try {
             this.getField().set(newobj, val);
@@ -97,13 +84,11 @@ public abstract class FieldAttrib extends ColumnAttrib {
         }
     }
 
-    @Override
     public Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException {
         // Just call current value for version since we have different fields for each
         return (Map<Long, Object>)this.getCurrentValue(recordObj);
     }
 
-    @Override
     public void setVersionValueMapValue(final Object newobj, final Map<Long, Object> map) {
         // Just call current value for version since we have different fields for each
         this.setCurrentValue(newobj, 0, map);

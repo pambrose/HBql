@@ -6,12 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 import java.util.Date;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 6:58:31 PM
- */
 public class DateLiteral extends GenericLiteral implements DateValue {
 
     private static long now = System.currentTimeMillis();
@@ -63,18 +57,15 @@ public class DateLiteral extends GenericLiteral implements DateValue {
         now = System.currentTimeMillis();
     }
 
-    @Override
     public Long getValue(final Object object) {
         return this.dateval;
     }
 
-    @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
         return DateValue.class;
     }
 
-    @Override
     public String asString() {
         return "\"" + String.format("%1$ta %1$tb %1$td %1$tT %1$tZ %1$tY", new Date(this.dateval)) + "\"";
     }

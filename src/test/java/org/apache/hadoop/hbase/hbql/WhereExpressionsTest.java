@@ -10,14 +10,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Date;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 27, 2009
- * Time: 2:13:47 PM
- */
 public class WhereExpressionsTest extends TestSupport {
-
 
     @Test
     public void booleanExpressions() throws HBqlException {
@@ -316,7 +309,6 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalTrue(annoObj, "keyval+'zz' CONTAINS stringValue+'bbz'");
         assertExprEvalFalse(annoObj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
         assertEvalTrue(obj, "NOT(keyval+'zz' NOT CONTAINS stringValue+'bbz')");
-
     }
 
     @Test
@@ -547,6 +539,5 @@ public class WhereExpressionsTest extends TestSupport {
         elem.setParameter("b", "bb");
         assertTypeAndValue(elem, String.class, "aabb");
     }
-
 }
 

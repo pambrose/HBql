@@ -11,17 +11,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Array;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 31, 2009
- * Time: 2:18:29 PM
- */
 public class HadoopSerialization extends Serialization {
 
     private static final int arraysize = Bytes.SIZEOF_INT;
 
-    @Override
     public Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws HBqlException {
 
         if (b == null)
@@ -82,7 +75,6 @@ public class HadoopSerialization extends Serialization {
         }
     }
 
-    @Override
     public byte[] getScalarAsBytes(final FieldType fieldType, final Object obj) throws HBqlException {
 
         if (obj == null)
@@ -141,7 +133,6 @@ public class HadoopSerialization extends Serialization {
         }
     }
 
-    @Override
     public Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws HBqlException {
 
         if (b == null)
@@ -274,7 +265,6 @@ public class HadoopSerialization extends Serialization {
         }
     }
 
-    @Override
     public byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws HBqlException {
 
         if (obj == null)
@@ -410,5 +400,4 @@ public class HadoopSerialization extends Serialization {
     private void writeLength(final byte[] b, final int length) {
         Bytes.putInt(b, 0, length);
     }
-
 }

@@ -14,12 +14,6 @@ import org.junit.Test;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 27, 2009
- * Time: 2:13:47 PM
- */
 public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
 
     public class SimpleObject {
@@ -37,7 +31,6 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
         public String toString() {
             return "intval1: " + intval1 + " intval2: " + intval2 + " strval: " + strval;
         }
-
     }
 
     @Test

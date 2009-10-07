@@ -3,12 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 7, 2009
- * Time: 9:29:44 PM
- */
 public abstract class GenericCalculation extends GenericExpr {
 
     private final Operator operator;
@@ -25,7 +19,6 @@ public abstract class GenericCalculation extends GenericExpr {
         return this.operator;
     }
 
-    @Override
     public String asString() {
         if (this.getOperator() == Operator.NEGATIVE)
             return "-" + this.getArg(0).asString();

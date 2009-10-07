@@ -13,12 +13,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 4, 2009
- * Time: 7:39:16 AM
- */
 public class SerializationTest extends TestSupport {
 
     public static class TestClass implements Serializable {
@@ -188,5 +182,4 @@ public class SerializationTest extends TestSupport {
             assertTrue(Arrays.equals(objarr1, objarr2));
         }
     }
-
 }

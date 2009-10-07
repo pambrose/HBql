@@ -18,12 +18,10 @@ public class DateCompare extends GenericCompare {
         super(arg0, operator, arg1);
     }
 
-
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
         return this.validateType(DateValue.class);
     }
-
 
     public Boolean getValue(final Object object) throws HBqlException {
 

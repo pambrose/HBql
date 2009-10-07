@@ -7,12 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 28, 2009
- * Time: 2:38:26 PM
- */
 public abstract class SelectArgs extends ExprContext {
 
     public static enum Type {
@@ -39,7 +33,6 @@ public abstract class SelectArgs extends ExprContext {
         super(type.getTypeSignature(), exprs);
     }
 
-    @Override
     public boolean useHBaseResult() {
         return false;
     }

@@ -5,12 +5,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 7, 2009
- * Time: 10:03:28 PM
- */
 public class Interval extends GenericExpr implements DateValue {
 
     public enum Type {
@@ -44,16 +38,13 @@ public class Interval extends GenericExpr implements DateValue {
         return this.intervalType;
     }
 
-    @Override
     public Long getValue(final Object object) throws HBqlException {
         final Number num = (Number)this.getArg(0).getValue(object);
         final long val = num.longValue();
         return val * this.getIntervalType().getIntervalMillis();
     }
 
-    @Override
     public String asString() {
         return this.getIntervalType().name() + "(" + this.getArg(0).asString() + ")";
     }
-
 }

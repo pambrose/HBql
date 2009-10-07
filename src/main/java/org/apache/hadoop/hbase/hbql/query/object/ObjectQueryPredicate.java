@@ -6,12 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 9, 2009
- * Time: 10:09:38 PM
- */
 public class ObjectQueryPredicate<T> implements Predicate<T> {
 
     private final String query;
@@ -22,7 +16,6 @@ public class ObjectQueryPredicate<T> implements Predicate<T> {
         this.query = query;
     }
 
-    @Override
     public boolean apply(final T obj) {
 
         try {

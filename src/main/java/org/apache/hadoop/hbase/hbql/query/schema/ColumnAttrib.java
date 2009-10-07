@@ -106,7 +106,6 @@ public abstract class ColumnAttrib implements Serializable {
         return this.columnBytes;
     }
 
-    @Override
     public boolean equals(final Object o) {
         if (!(o instanceof ColumnAttrib))
             return false;

@@ -18,13 +18,11 @@ public class NumberCompare extends GenericCompare {
         super(arg0, operator, arg1);
     }
 
-    @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
         return this.validateType(NumberValue.class);
     }
 
-    @Override
     public Boolean getValue(final Object object) throws HBqlException {
 
         final Object obj0 = this.getArg(0).getValue(object);

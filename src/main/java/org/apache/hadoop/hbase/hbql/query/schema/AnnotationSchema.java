@@ -22,12 +22,6 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 9, 2009
- * Time: 9:47:01 AM
- */
 public class AnnotationSchema extends HBaseSchema {
 
     private final static Map<Class<?>, AnnotationSchema> annotationSchemaMap = Maps.newHashMap();
@@ -252,12 +246,10 @@ public class AnnotationSchema extends HBaseSchema {
         return classCacheMap;
     }
 
-    @Override
     public String toString() {
         return this.getSchemaName();
     }
 
-    @Override
     public String getSchemaName() {
         return this.getClazz().getName();
     }
@@ -308,7 +300,6 @@ public class AnnotationSchema extends HBaseSchema {
 
             this.getColumnAttribListByFamilyName(family).add(attrib);
         }
-
     }
 
     private void processColumnVersionAnnotation(final Field field) throws HBqlException {
@@ -323,12 +314,10 @@ public class AnnotationSchema extends HBaseSchema {
         return (tableName.length() > 0) ? tableName : clazz.getSimpleName();
     }
 
-    @Override
     public Object newInstance() throws IllegalAccessException, InstantiationException {
         return this.getClazz().newInstance();
     }
 
-    @Override
     public Object newObject(final Collection<ColumnAttrib> attribList,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
@@ -389,5 +378,4 @@ public class AnnotationSchema extends HBaseSchema {
         }
         return varList;
     }
-
 }

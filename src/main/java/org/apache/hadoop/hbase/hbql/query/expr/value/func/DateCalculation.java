@@ -4,19 +4,12 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 7, 2009
- * Time: 9:51:01 PM
- */
 public class DateCalculation extends GenericCalculation implements DateValue {
 
     public DateCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
         super(Type.DATECALCULATION, arg0, operator, arg1);
     }
 
-    @Override
     public Long getValue(final Object object) throws HBqlException {
 
         final long val1 = (Long)this.getArg(0).getValue(object);
@@ -31,5 +24,4 @@ public class DateCalculation extends GenericCalculation implements DateValue {
 
         throw new HBqlException("Invalid operator:" + this.getOperator());
     }
-
 }

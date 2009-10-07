@@ -7,12 +7,6 @@ import org.apache.hadoop.hbase.hbql.query.util.ResultsIterator;
 import java.util.Collection;
 import java.util.Iterator;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Sep 12, 2009
- * Time: 2:23:26 PM
- */
 public class ObjectResults<T> implements Iterable<T> {
 
     final ObjectQuery<T> objectQuery;
@@ -31,7 +25,6 @@ public class ObjectResults<T> implements Iterable<T> {
         return objects;
     }
 
-    @Override
     public Iterator<T> iterator() {
 
         try {
@@ -75,17 +68,15 @@ public class ObjectResults<T> implements Iterable<T> {
         }
 
         return new Iterator<T>() {
-            @Override
+
             public boolean hasNext() {
                 return false;
             }
 
-            @Override
             public T next() {
                 return null;
             }
 
-            @Override
             public void remove() {
 
             }

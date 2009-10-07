@@ -8,19 +8,12 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 29, 2009
- * Time: 2:35:57 PM
- */
 public class DateString extends GenericExpr implements DateValue {
 
     public DateString(final GenericValue arg0, final GenericValue arg1) {
         super(Type.DATESTRING, arg0, arg1);
     }
 
-    @Override
     public Long getValue(final Object object) throws HBqlException {
 
         final String datestr = (String)this.getArg(0).getValue(object);
@@ -35,7 +28,6 @@ public class DateString extends GenericExpr implements DateValue {
         }
     }
 
-    @Override
     public String asString() {
         return "DATE" + super.asString();
     }

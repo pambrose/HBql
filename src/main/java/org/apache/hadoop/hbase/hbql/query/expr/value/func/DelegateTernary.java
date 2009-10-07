@@ -9,12 +9,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 29, 2009
- * Time: 2:35:57 PM
- */
 public class DelegateTernary extends GenericTernary {
 
     private GenericTernary typedExpr = null;
@@ -31,7 +25,6 @@ public class DelegateTernary extends GenericTernary {
         this.typedExpr = typedExpr;
     }
 
-    @Override
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
@@ -54,15 +47,12 @@ public class DelegateTernary extends GenericTernary {
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
-    @Override
     public GenericValue getOptimizedValue() throws HBqlException {
         this.optimizeArgs();
         return !this.isAConstant() ? this : this.getTypedExpr().getOptimizedValue();
     }
 
-    @Override
     public Object getValue(final Object object) throws HBqlException {
         return this.getTypedExpr().getValue(object);
     }
-
 }

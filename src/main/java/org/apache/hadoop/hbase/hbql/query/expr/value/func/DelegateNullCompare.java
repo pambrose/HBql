@@ -5,12 +5,6 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 10:30:32 PM
- */
 public class DelegateNullCompare extends GenericNullCompare {
 
     private GenericNullCompare typedExpr = null;
@@ -37,13 +31,11 @@ public class DelegateNullCompare extends GenericNullCompare {
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
-    @Override
     public GenericValue getOptimizedValue() throws HBqlException {
         this.optimizeArgs();
         return !this.isAConstant() ? this : this.getTypedExpr().getOptimizedValue();
     }
 
-    @Override
     public Boolean getValue(final Object object) throws HBqlException {
         return this.getTypedExpr().getValue(object);
     }

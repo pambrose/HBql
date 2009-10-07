@@ -6,12 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Aug 25, 2009
- * Time: 6:58:31 PM
- */
 public class BooleanCompare extends GenericCompare implements BooleanValue {
 
     public BooleanCompare(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
@@ -22,7 +16,6 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
                                                        final boolean allowsCollections) throws TypeException {
         return this.validateType(BooleanValue.class);
     }
-
 
     public Boolean getValue(final Object object) throws HBqlException {
 
