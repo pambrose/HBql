@@ -22,8 +22,9 @@ public class DefinedAttrib extends ColumnAttrib {
         super(columnDescription.getFamilyName(),
               columnDescription.getColumnName(),
               columnDescription.getAliasName(),
-              columnDescription.getFieldType(),
               columnDescription.isMapKeysAsColumns(),
+              columnDescription.getFieldType(),
+              columnDescription.isArray(),
               null,
               null);
 
@@ -50,12 +51,6 @@ public class DefinedAttrib extends ColumnAttrib {
     @Override
     public String toString() {
         return this.getAliasName() + " - " + this.getFamilyQualifiedName();
-    }
-
-    @Override
-    public boolean isArray() {
-        // TODO This needs to be implemented
-        return false;
     }
 
     @Override

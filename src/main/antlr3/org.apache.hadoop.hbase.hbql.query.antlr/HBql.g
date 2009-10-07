@@ -83,7 +83,8 @@ attribList returns [List<ColumnDescription> retval]
 	: (a1=defineAttrib {retval.add($a1.retval);} (COMMA a2=defineAttrib {retval.add($a2.retval);})*)?;
 	
 defineAttrib returns [ColumnDescription retval]
-	: c=ID type=ID m=keyMAP? (keyALIAS a=ID)?	{retval = ColumnDescription.newColumnDescription($c.text, $a.text, $m.text!=null, $type.text);};
+	: c=ID type=ID (b=LBRACE RBRACE)? m=keyMAP? (keyALIAS a=ID)?	
+							{retval = ColumnDescription.newColumnDescription($c.text, $a.text, $m.text!=null, $type.text, $b.text!=null);};
 
 
 deleteStmt  returns [DeleteCmd retval]

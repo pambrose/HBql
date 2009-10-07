@@ -27,27 +27,34 @@ public abstract class ColumnAttrib implements Serializable {
     protected final String getter;
     protected final String setter;
     protected final boolean mapKeysAsColumns;
+    protected final boolean isArray;
     protected transient Method getterMethod = null;
     protected transient Method setterMethod = null;
 
     protected ColumnAttrib(final String familyName,
                            final String columnName,
                            final String aliasName,
-                           final FieldType fieldType,
                            final boolean mapKeysAsColumns,
+                           final FieldType fieldType,
+                           final boolean isArray,
                            final String getter,
                            final String setter) {
 
         this.familyName = familyName;
         this.columnName = columnName;
         this.aliasName = aliasName;
-        this.fieldType = fieldType;
         this.mapKeysAsColumns = mapKeysAsColumns;
+        this.fieldType = fieldType;
+        this.isArray = isArray;
         this.getter = getter;
         this.setter = setter;
     }
 
-    public abstract boolean isArray();
+    public boolean isArray() {
+        return this.isArray;
+    }
+
+    ;
 
     public String getFamilyName() {
         return this.familyName;
@@ -251,19 +258,20 @@ public abstract class ColumnAttrib implements Serializable {
             final byte[] b = result.getRow();
             return HUtil.ser.getStringFromBytes(b);
         }
+        else {
+            final NavigableMap<byte[], NavigableMap<byte[], byte[]>> familyMap = result.getNoVersionMap();
 
-        final NavigableMap<byte[], NavigableMap<byte[], byte[]>> familyMap = result.getNoVersionMap();
+            final NavigableMap<byte[], byte[]> columnMap = familyMap.get(this.getFamilyNameBytes());
+            if (columnMap == null)
+                throw new HBqlException("Invalid family name: " + this.getFamilyName());
 
-        final NavigableMap<byte[], byte[]> columnMap = familyMap.get(this.getFamilyNameBytes());
-        if (columnMap == null)
-            throw new HBqlException("Invalid family name: " + this.getFamilyName());
+            final byte[] b = columnMap.get(this.getColumnNameBytes());
 
-        final byte[] b = columnMap.get(this.getColumnNameBytes());
-
-        if (this.isArray())
-            return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
-        else
-            return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
+            if (this.isArray())
+                return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
+            else
+                return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
+        }
     }
 
     public void setCurrentValue(final Object newobj, final long timestamp, final byte[] b) throws HBqlException {

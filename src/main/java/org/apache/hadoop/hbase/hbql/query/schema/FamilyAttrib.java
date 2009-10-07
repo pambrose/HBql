@@ -14,16 +14,11 @@ import java.util.Map;
 public class FamilyAttrib extends ColumnAttrib {
 
     public FamilyAttrib(final String familyName) {
-        super(familyName, "", "", null, true, null, null);
+        super(familyName, "", "", false, null, false, null, null);
     }
 
     public boolean isAFamilyAttrib() {
         return true;
-    }
-
-    @Override
-    public boolean isArray() {
-        return false;
     }
 
     @Override

@@ -46,8 +46,8 @@ public class SelectExpressionsTest extends TestSupport {
                             + "f2:val2 date alias val4, "
                             + "f3:val1 int alias val5, "
                             + "f3:val2 int alias val6, "
-                            + "f3:val3 int alias val7, "
-                            + "f3:mapval1 string mapKeysAsColumns alias f3default"
+                            + "f3:val3 int alias val7 "
+                            //  + "f3:mapval1 string mapKeysAsColumns alias f3default"
                             + ")");
 
         conn = HConnectionManager.newHConnection();
@@ -58,7 +58,7 @@ public class SelectExpressionsTest extends TestSupport {
             System.out.println(conn.execute("delete from table1"));
 
         final HBatch batch = new HBatch();
-        for (int i = 40; i < 50; i++) {
+        for (int i = 0; i < 10; i++) {
 
             final HRecord rec = new HRecord("table1");
 

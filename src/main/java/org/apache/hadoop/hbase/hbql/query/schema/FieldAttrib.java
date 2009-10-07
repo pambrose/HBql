@@ -26,8 +26,9 @@ public abstract class FieldAttrib extends ColumnAttrib {
         super(familyName,
               (columnName != null && columnName.length() > 0) ? columnName : field.getName(),
               field.getName(),
-              fieldType,
               mapKeysAsColumns,
+              fieldType,
+              field.getType().isArray(),
               getter,
               setter
         );
@@ -74,11 +75,6 @@ public abstract class FieldAttrib extends ColumnAttrib {
 
     protected Field getField() {
         return this.field;
-    }
-
-    @Override
-    public boolean isArray() {
-        return this.getField().getType().isArray();
     }
 
     @Override

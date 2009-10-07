@@ -54,9 +54,9 @@ public class RowRequest {
             return table.getScanner(this.getScanValue());
         }
         else {
-            final List<Result> resultList = Lists.newArrayList();
             final Result result = table.get(this.getGetValue());
-            if (result != null)
+            final List<Result> resultList = Lists.newArrayList();
+            if (result != null && !result.isEmpty())
                 resultList.add(result);
 
             return new ResultScanner() {
