@@ -43,6 +43,7 @@ public class SelectExpressionsTest extends TestSupport {
                             + "f3:val1 int alias val5, "
                             + "f3:val2 int alias val6, "
                             + "f3:val3 int alias val7, "
+                            + "f3:val4 int[] alias val8, "
                             + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
                             + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
                             + ")");
@@ -87,6 +88,12 @@ public class SelectExpressionsTest extends TestSupport {
             mapval2.put("mapcol3-b", "mapcol3-b val" + i);
 
             rec.setCurrentValue("f3mapval2", mapval2);
+
+            int[] intv1 = new int[5];
+            for (int j = 0; j < intv1.length; j++)
+                intv1[j] = j * 10;
+
+            rec.setCurrentValue("val8", intv1);
 
             batch.insert(rec);
         }
@@ -190,6 +197,20 @@ public class SelectExpressionsTest extends TestSupport {
 
             assertTrue(map1.size() == 2);
             assertTrue(map2.size() == 3);
+        }
+    }
+
+    @Test
+    public void selectVectorExpressions() throws HBqlException, IOException {
+
+        final String query1 = "SELECT val8 FROM table1";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 10);
+
+        for (final HRecord rec : recList1) {
+            int[] intv = (int[])rec.getCurrentValue("val8");
+            assertTrue(intv.length == 5);
         }
     }
 }

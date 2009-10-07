@@ -48,8 +48,6 @@ public abstract class ColumnAttrib implements Serializable {
         return this.isArray;
     }
 
-    ;
-
     public String getFamilyName() {
         return this.familyName;
     }

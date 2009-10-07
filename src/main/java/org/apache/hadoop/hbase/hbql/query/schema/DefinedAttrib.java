@@ -73,7 +73,7 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     protected Class getComponentType() {
-        return null;
+        return this.getFieldType().getComponentType();
     }
 
     public String getObjectQualifiedName() {

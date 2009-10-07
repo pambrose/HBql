@@ -36,19 +36,19 @@ public enum FieldType {
     DateType(Date.class, DateValue.class, -1, -1, "DATE", "DATETIME"),
     ObjectType(Object.class, null, -1, -1, "OBJECT", "OBJ");
 
-    private final Class clazz;
+    private final Class componentType;
     private Class<? extends GenericValue> exprType;
     private final int typeRanking;
     private final int size;
     private final List<String> synonymList;
 
 
-    FieldType(final Class clazz,
+    FieldType(final Class componentType,
               final Class<? extends GenericValue> exprType,
               final int typeRanking,
               final int size,
               final String... synonyms) {
-        this.clazz = clazz;
+        this.componentType = componentType;
         this.exprType = exprType;
         this.typeRanking = typeRanking;
         this.size = size;
@@ -56,8 +56,8 @@ public enum FieldType {
         this.synonymList.addAll(Arrays.asList(synonyms));
     }
 
-    public Class getClazz() {
-        return this.clazz;
+    public Class getComponentType() {
+        return this.componentType;
     }
 
     public int getTypeRanking() {
@@ -104,7 +104,7 @@ public enum FieldType {
         }
         else {
             for (final FieldType type : values())
-                if (clazz.equals(type.getClazz()))
+                if (clazz.equals(type.getComponentType()))
                     return type;
         }
 
