@@ -48,8 +48,10 @@ public class FamilySelectElement implements SelectElement {
         this.familyNameList.add(familyName);
     }
 
-    public static SelectElement newAllFamilies() {
-        return new FamilySelectElement("*");
+    public static List<SelectElement> newAllFamilies() {
+        final List<SelectElement> retval = Lists.newArrayList();
+        retval.add(new FamilySelectElement("*"));
+        return retval;
     }
 
     public static FamilySelectElement newFamilyElement(final String family) {

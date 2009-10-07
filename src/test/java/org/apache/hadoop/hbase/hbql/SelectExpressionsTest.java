@@ -35,7 +35,7 @@ public class SelectExpressionsTest extends TestSupport {
     static Random randomVal = new Random();
 
     @BeforeClass
-    public static void ontimeSetup() throws HBqlException, IOException {
+    public static void onetimeSetup() throws HBqlException, IOException {
 
         SchemaManager.parse("define table table1 alias tab1"
                             + "("
@@ -46,7 +46,8 @@ public class SelectExpressionsTest extends TestSupport {
                             + "f2:val2 date alias val4, "
                             + "f3:val1 int alias val5, "
                             + "f3:val2 int alias val6, "
-                            + "f3:val3 int alias val7"
+                            + "f3:val3 int alias val7, "
+                            + "f3:mapval1 string map alias f3default"
                             + ")");
 
         conn = HConnectionManager.newHConnection();
