@@ -149,7 +149,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                                    final Collection<ColumnAttrib> columnAttribs,
                                    final Result result) throws HBqlException {
 
-        // Bail if it is a calculation on a current value
+        // Bail if it is a calculation or doesn't support version values
         if (!this.isSimpleColumnReference() || !this.getColumnAttrib().isAVersionValue())
             return;
 
