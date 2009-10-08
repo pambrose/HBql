@@ -116,18 +116,18 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         // See if it is a column reference or a calculation
         if (this.isSimpleColumnReference()) {
 
-            // Bail if it is an annotation history value
-            if (!this.getColumnAttrib().isACurrentValue())
-                return;
+            // Do not process if it is an annotation history value
+            if (this.getColumnAttrib().isACurrentValue()) {
 
-            // If this is a mapKesAsColumns, then we need to build the map from all the applicable columns in the family
-            if (this.getColumnAttrib().isMapKeysAsColumns()) {
-                final Map mapval = this.getMapKeysAsColumnsValue(result);
-                this.getColumnAttrib().setCurrentValue(newobj, 0, mapval);
-            }
-            else {
-                final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
-                this.getColumnAttrib().setCurrentValue(newobj, 0, b);
+                // If this is a mapKesAsColumns, then we need to build the map from all the related columns in the family
+                if (this.getColumnAttrib().isMapKeysAsColumns()) {
+                    final Map mapval = this.getMapKeysAsColumnsValue(result);
+                    this.getColumnAttrib().setCurrentValue(newobj, 0, mapval);
+                }
+                else {
+                    final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
+                    this.getColumnAttrib().setCurrentValue(newobj, 0, b);
+                }
             }
         }
         else {
@@ -141,41 +141,41 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         }
     }
 
-    public Object getValue(final Result result) throws HBqlException {
-        return this.evaluate(0, true, false, result);
-    }
-
     public void assignVersionValue(final Object newobj,
                                    final Collection<ColumnAttrib> columnAttribs,
                                    final Result result) throws HBqlException {
 
-        // Bail if it is a calculation or doesn't support version values
-        if (!this.isSimpleColumnReference() || !this.getColumnAttrib().isAVersionValue())
-            return;
+        // Do not process if it is a calculation or doesn't support version values
+        if (this.isSimpleColumnReference() && this.getColumnAttrib().isAVersionValue()) {
 
-        final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
-        final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(this.getFamilyNameBytes());
+            final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
+            final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(this.getFamilyNameBytes());
 
-        if (columnMap == null)
-            return;
+            if (columnMap == null)
+                return;
 
-        final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
+            final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
 
-        if (timeStampMap == null)
-            return;
+            if (timeStampMap == null)
+                return;
 
-        Map<Long, Object> mapval = this.getColumnAttrib().getVersionValueMapValue(newobj);
+            Map<Long, Object> mapval = this.getColumnAttrib().getVersionValueMapValue(newobj);
 
-        if (mapval == null) {
-            mapval = new TreeMap();
-            this.getColumnAttrib().setVersionValueMapValue(newobj, mapval);
+            if (mapval == null) {
+                mapval = new TreeMap();
+                this.getColumnAttrib().setVersionValueMapValue(newobj, mapval);
+            }
+
+            for (final Long timestamp : timeStampMap.keySet()) {
+                final byte[] b = timeStampMap.get(timestamp);
+                final Object val = this.getColumnAttrib().getValueFromBytes(newobj, b);
+                mapval.put(timestamp, val);
+            }
         }
+    }
 
-        for (final Long timestamp : timeStampMap.keySet()) {
-            final byte[] b = timeStampMap.get(timestamp);
-            final Object val = this.getColumnAttrib().getValueFromBytes(newobj, b);
-            mapval.put(timestamp, val);
-        }
+    public Object getValue(final Result result) throws HBqlException {
+        return this.evaluate(0, true, false, result);
     }
 
     public String asString() {

@@ -127,23 +127,17 @@ public class DefinedSchema extends HBaseSchema {
                              final int maxVersions,
                              final Result result) throws HBqlException {
 
-        try {
-            // Create object and assign key value
-            final HRecord newobj = this.newHRecord(result);
+        // Create object and assign key value
+        final HRecord newobj = this.newHRecord(result);
 
-            // Assign most recent values
-            this.assignCurrentValuesFromExpr(newobj, attribList, selectElementList, maxVersions, result);
+        // Assign most recent values
+        this.assignCurrentValuesFromExpr(newobj, attribList, selectElementList, maxVersions, result);
 
-            // Assign the versioned values
-            if (maxVersions > 1)
-                this.assignVersionedValuesFromExpr(newobj, selectElementList, attribList, result);
+        // Assign the versioned values
+        if (maxVersions > 1)
+            this.assignVersionedValuesFromExpr(newobj, selectElementList, attribList, result);
 
-            return newobj;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            throw new HBqlException("Error in newObject() " + e.getMessage());
-        }
+        return newobj;
     }
 
     private HRecord newHRecord(final Result result) throws HBqlException {

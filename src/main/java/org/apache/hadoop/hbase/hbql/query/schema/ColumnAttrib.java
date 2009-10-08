@@ -171,7 +171,7 @@ public abstract class ColumnAttrib implements Serializable {
 
     protected abstract Class getComponentType();
 
-    public abstract String getObjectQualifiedName();
+    public abstract String getNameToUseInExceptions();
 
     public abstract String getEnclosingClassName();
 
@@ -208,10 +208,10 @@ public abstract class ColumnAttrib implements Serializable {
             return (byte[])this.getGetterMethod().invoke(recordObj);
         }
         catch (IllegalAccessException e) {
-            throw new HBqlException("Error getting value of " + this.getObjectQualifiedName());
+            throw new HBqlException("Error getting value of " + this.getNameToUseInExceptions());
         }
         catch (InvocationTargetException e) {
-            throw new HBqlException("Error getting value of " + this.getObjectQualifiedName());
+            throw new HBqlException("Error getting value of " + this.getNameToUseInExceptions());
         }
     }
 
@@ -221,10 +221,10 @@ public abstract class ColumnAttrib implements Serializable {
             return this.getSetterMethod().invoke(recordObj, b);
         }
         catch (IllegalAccessException e) {
-            throw new HBqlException("Error setting value of " + this.getObjectQualifiedName());
+            throw new HBqlException("Error setting value of " + this.getNameToUseInExceptions());
         }
         catch (InvocationTargetException e) {
-            throw new HBqlException("Error setting value of " + this.getObjectQualifiedName());
+            throw new HBqlException("Error setting value of " + this.getNameToUseInExceptions());
         }
     }
 

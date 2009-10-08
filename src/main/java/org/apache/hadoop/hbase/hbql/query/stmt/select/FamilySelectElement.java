@@ -131,7 +131,6 @@ public class FamilySelectElement implements SelectElement {
 
                     if (attrib != null) {
                         Map mapval = (Map)attrib.getCurrentValue(newobj);
-
                         if (mapval == null) {
                             mapval = Maps.newHashMap();
                             // TODO Check this

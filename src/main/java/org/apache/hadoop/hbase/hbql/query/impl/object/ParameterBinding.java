@@ -6,12 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Oct 7, 2009
- * Time: 10:32:02 AM
- */
 public abstract class ParameterBinding {
 
     final Map<String, Object> parameterMap = Maps.newHashMap();

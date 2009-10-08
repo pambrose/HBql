@@ -27,8 +27,8 @@ public class FamilyAttrib extends ColumnAttrib {
         return null;
     }
 
-    public String getObjectQualifiedName() {
-        return null;
+    public String getNameToUseInExceptions() {
+        return this.getFamilyQualifiedName();
     }
 
     public void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException {

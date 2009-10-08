@@ -25,7 +25,7 @@ public class DefinedAttrib extends ColumnAttrib {
         this.columnDescription = columnDescription;
 
         if (this.isKeyAttrib() && this.getFamilyName().length() > 0)
-            throw new HBqlException("Key value " + this.getObjectQualifiedName() + " cannot have a family name");
+            throw new HBqlException("Key value " + this.getNameToUseInExceptions() + " cannot have a family name");
     }
 
     private ColumnDescription getColumnDescription() {
@@ -76,12 +76,13 @@ public class DefinedAttrib extends ColumnAttrib {
         return this.getFieldType().getComponentType();
     }
 
-    public String getObjectQualifiedName() {
-        return null;
+    public String getNameToUseInExceptions() {
+        return this.getFamilyQualifiedName();
     }
 
     public String getEnclosingClassName() {
-        return null;
+        // TODO This will get resolved when getter/setter is added to DefinedSchema
+        return "";
     }
 
     public boolean isAVersionValue() {

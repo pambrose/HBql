@@ -34,6 +34,10 @@ public abstract class FieldAttrib extends ColumnAttrib {
         return this.getSimpleObjectQualifiedName() + " " + this.getFamilyQualifiedName();
     }
 
+    public String getNameToUseInExceptions() {
+        return this.getObjectQualifiedName();
+    }
+
     public String getObjectQualifiedName() {
         return this.getEnclosingClassName() + "." + this.getField().getName();
     }

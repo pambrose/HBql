@@ -68,7 +68,7 @@ public class AnnotationSchema extends HBaseSchema {
                                     + "annotated with @HColumn(key=true)");
 
         if (this.getKeyAttrib().getFamilyName().length() > 0)
-            throw new HBqlException(this.getKeyAttrib().getObjectQualifiedName() + " @HColumn annotation " +
+            throw new HBqlException(this.getKeyAttrib().getNameToUseInExceptions() + " @HColumn annotation " +
                                     "cannot have a family name.");
 
         for (final Field field : this.getClazz().getDeclaredFields())
