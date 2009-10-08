@@ -155,24 +155,16 @@ public abstract class HBaseSchema extends Schema {
         attribList.add(attrib);
     }
 
-    protected void assignCurrentValuesFromExpr(final Object newobj,
-                                               final Collection<ColumnAttrib> attribList,
-                                               final List<SelectElement> selectElementList,
-                                               final int maxVersions,
-                                               final Result result) throws HBqlException {
+    protected void assignValues(final Object newobj,
+                                final Collection<ColumnAttrib> attribList,
+                                final List<SelectElement> selectElementList,
+                                final int maxVersions,
+                                final Result result) throws HBqlException {
 
         for (final SelectElement selectElement : selectElementList)
-            selectElement.assignCurrentValue(newobj, result);
+            selectElement.assignValues(newobj, attribList, maxVersions, result);
     }
 
-    protected void assignVersionedValuesFromExpr(final Object newobj,
-                                                 final List<SelectElement> selectElementList,
-                                                 final Collection<ColumnAttrib> columnAttribs,
-                                                 final Result result) throws HBqlException {
-
-        for (final SelectElement selectElement : selectElementList)
-            selectElement.assignVersionValue(newobj, columnAttribs, result);
-    }
 
     // This is relevant only for AnnotatedSchema
     public List<ColumnDescription> getColumnDescriptionList() {

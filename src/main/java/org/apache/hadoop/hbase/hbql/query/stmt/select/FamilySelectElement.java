@@ -107,9 +107,12 @@ public class FamilySelectElement implements SelectElement {
             this.getFamilyNameBytesList().add(HUtil.ser.getStringAsBytes(familyName));
     }
 
-    public void assignCurrentValue(final Object newobj, final Result result) throws HBqlException {
+    public void assignValues(final Object newobj,
+                             final Collection<ColumnAttrib> columnAttribs,
+                             final int maxVerions,
+                             final Result result) throws HBqlException {
 
-        // Evaluate each of the families
+        // Evaluate each of the families (select * will yield all families)
         for (int i = 0; i < this.getFamilyNameBytesList().size(); i++) {
 
             final String familyName = this.getFamilyNameList().get(i);
@@ -123,6 +126,7 @@ public class FamilySelectElement implements SelectElement {
                 final byte[] b = columnMap.get(columnBytes);
 
                 if (columnName.endsWith("]")) {
+
                     final int lbrace = columnName.indexOf("[");
                     final String mapcolumn = columnName.substring(0, lbrace);
                     final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
@@ -140,35 +144,32 @@ public class FamilySelectElement implements SelectElement {
                         final Object val = attrib.getValueFromBytes(newobj, b);
                         mapval.put(mapKey, val);
                     }
+                    else {
+                        // Set unknown attrib value to byte[] value
+                    }
                 }
                 else {
                     final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
                                                                                                   columnName);
+                    // If attrib is found, then assign the deserialized value to the known atribb
                     if (attrib != null)
                         attrib.setCurrentValue(newobj, 0, b);
+                    else {
+                        // Set unknown attrib value to byte[] value
+                    }
                 }
             }
-        }
-    }
 
-    public void assignVersionValue(final Object newobj,
-                                   final Collection<ColumnAttrib> columnAttribs,
-                                   final Result result) throws HBqlException {
-
-        // Evaluate each of the families
-        for (int i = 0; i < this.getFamilyNameBytesList().size(); i++) {
-            final String familyName = this.getFamilyNameList().get(i);
-            final byte[] familyNameBytes = this.getFamilyNameBytesList().get(i);
+            // Bail if no versions were requested
+            if (maxVerions <= 1)
+                continue;
 
             final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
-            final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(familyNameBytes);
+            final NavigableMap<byte[], NavigableMap<Long, byte[]>> vcolumnMap = familyMap.get(familyNameBytes);
 
             for (final byte[] columnNameBytes : familyMap.keySet()) {
 
                 final String columnName = HUtil.ser.getStringFromBytes(columnNameBytes);
-
-                final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(columnNameBytes);
-
                 final ColumnAttrib columnAttrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
                                                                                                     columnName);
                 // Ignore data if no version map exists for the column
@@ -186,6 +187,7 @@ public class FamilySelectElement implements SelectElement {
                     columnAttrib.setVersionValueMapValue(newobj, mapval);
                 }
 
+                final NavigableMap<Long, byte[]> timeStampMap = vcolumnMap.get(columnNameBytes);
                 for (final Long timestamp : timeStampMap.keySet()) {
                     final byte[] b = timeStampMap.get(timestamp);
                     final Object val = columnAttrib.getValueFromBytes(newobj, b);

@@ -256,4 +256,29 @@ public class SelectDefinedValuesTest extends TestSupport {
             }
         }
     }
+
+    @Test
+    public void selectFamiliesExpressions() throws HBqlException, IOException {
+
+        final String query1 = "SELECT f1:* FROM table1";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 10);
+
+        /*
+        for (final HRecord rec : recList1) {
+            Map<Long, Object> m1 = rec.getVersionedValueMap("val2");
+            assertTrue(m1.size() == 3);
+
+            Map<Long, Object> m2 = rec.getVersionedValueMap("val8");
+            assertTrue(m2.size() == 3);
+
+            for (Object obj : m2.values()) {
+                int[] val8 = (int[])obj;
+                for (int i = 0; i < val8.length; i++)
+                    assertTrue(val8[i] == val8check[i]);
+            }
+        }
+        */
+    }
 }

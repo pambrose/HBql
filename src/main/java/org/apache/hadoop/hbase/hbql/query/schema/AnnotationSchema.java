@@ -327,12 +327,8 @@ public class AnnotationSchema extends HBaseSchema {
             // Create object and assign key value
             final Object newobj = this.createNewObject(result);
 
-            // Assign most recent values
-            this.assignCurrentValuesFromExpr(newobj, attribList, selectElementList, maxVersions, result);
-
-            // Assign the versioned values
-            if (maxVersions > 1)
-                this.assignVersionedValuesFromExpr(newobj, selectElementList, attribList, result);
+            // Assign values
+            this.assignValues(newobj, attribList, selectElementList, maxVersions, result);
 
             return newobj;
         }

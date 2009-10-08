@@ -111,26 +111,14 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         return mapval;
     }
 
-    public void assignCurrentValue(final Object newobj, final Result result) throws HBqlException {
+    public void assignValues(final Object newobj,
+                             final Collection<ColumnAttrib> columnAttribs,
+                             final int maxVerions,
+                             final Result result) throws HBqlException {
 
-        // See if it is a column reference or a calculation
-        if (this.isSimpleColumnReference()) {
+        // See if it is a calculation, which has not history
+        if (!this.isSimpleColumnReference()) {
 
-            // Do not process if it is an annotation history value
-            if (this.getColumnAttrib().isACurrentValue()) {
-
-                // If this is a mapKesAsColumns, then we need to build the map from all the related columns in the family
-                if (this.getColumnAttrib().isMapKeysAsColumns()) {
-                    final Map mapval = this.getMapKeysAsColumnsValue(result);
-                    this.getColumnAttrib().setCurrentValue(newobj, 0, mapval);
-                }
-                else {
-                    final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
-                    this.getColumnAttrib().setCurrentValue(newobj, 0, b);
-                }
-            }
-        }
-        else {
             // If it is a calculation, then assign according to the AS name
             final String name = this.getAsName();
             final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
@@ -138,39 +126,50 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                 final Object elementValue = this.getValue(result);
                 attrib.setCurrentValue(newobj, 0, elementValue);
             }
+
+            return;
         }
-    }
 
-    public void assignVersionValue(final Object newobj,
-                                   final Collection<ColumnAttrib> columnAttribs,
-                                   final Result result) throws HBqlException {
-
-        // Do not process if it is a calculation or doesn't support version values
-        if (this.isSimpleColumnReference() && this.getColumnAttrib().isAVersionValue()) {
-
-            final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
-            final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(this.getFamilyNameBytes());
-
-            if (columnMap == null)
-                return;
-
-            final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
-
-            if (timeStampMap == null)
-                return;
-
-            Map<Long, Object> mapval = this.getColumnAttrib().getVersionValueMapValue(newobj);
-
-            if (mapval == null) {
-                mapval = new TreeMap();
-                this.getColumnAttrib().setVersionValueMapValue(newobj, mapval);
+        // Do not process if it is an annotation history value
+        if (this.getColumnAttrib().isACurrentValue()) {
+            // If this is a mapKesAsColumns, then we need to build the map from all the related columns in the family
+            if (this.getColumnAttrib().isMapKeysAsColumns()) {
+                final Map mapval = this.getMapKeysAsColumnsValue(result);
+                this.getColumnAttrib().setCurrentValue(newobj, 0, mapval);
             }
-
-            for (final Long timestamp : timeStampMap.keySet()) {
-                final byte[] b = timeStampMap.get(timestamp);
-                final Object val = this.getColumnAttrib().getValueFromBytes(newobj, b);
-                mapval.put(timestamp, val);
+            else {
+                final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
+                this.getColumnAttrib().setCurrentValue(newobj, 0, b);
             }
+        }
+
+        // Now assign versions
+        // Do not process if it doesn't support version values
+        if (maxVerions <= 1 || !this.getColumnAttrib().isAVersionValue())
+            return;
+
+        final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
+        final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(this.getFamilyNameBytes());
+
+        if (columnMap == null)
+            return;
+
+        final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
+
+        if (timeStampMap == null)
+            return;
+
+        Map<Long, Object> mapval = this.getColumnAttrib().getVersionValueMapValue(newobj);
+
+        if (mapval == null) {
+            mapval = new TreeMap();
+            this.getColumnAttrib().setVersionValueMapValue(newobj, mapval);
+        }
+
+        for (final Long timestamp : timeStampMap.keySet()) {
+            final byte[] b = timeStampMap.get(timestamp);
+            final Object val = this.getColumnAttrib().getValueFromBytes(newobj, b);
+            mapval.put(timestamp, val);
         }
     }
 
