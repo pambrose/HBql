@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
@@ -30,9 +29,9 @@ public class DefinedSchema extends HBaseSchema {
             this.processColumn(var, false);
     }
 
-    private DefinedSchema(final String tableName,
-                          final String tableAliasName,
-                          final List<ColumnDescription> columnDescriptionList) throws HBqlException {
+    public DefinedSchema(final String tableName,
+                         final String tableAliasName,
+                         final List<ColumnDescription> columnDescriptionList) throws HBqlException {
         this.tableName = tableName;
         this.tableAliasName = tableAliasName;
         for (final ColumnDescription columnDescription : columnDescriptionList)
@@ -62,10 +61,6 @@ public class DefinedSchema extends HBaseSchema {
 
     private static boolean doesDefinedSchemaExist(final String tableName) {
         return null != getDefinedSchemaMap().get(tableName);
-    }
-
-    public synchronized static DefinedSchema newDefinedSchema(final HBaseSchema schema) throws HBqlException {
-        return new DefinedSchema(schema.getTableName(), null, schema.getColumnDescriptionList());
     }
 
     private void processColumn(final ColumnDescription columnDescription,
@@ -128,17 +123,6 @@ public class DefinedSchema extends HBaseSchema {
                              final Result result) throws HBqlException {
 
         // Create object and assign key value
-        final HRecord newobj = this.newHRecord(result);
-
-        // Assign most recent values
-        this.assignValues(newobj, attribList, selectElementList, maxVersions, result);
-
-        return newobj;
-    }
-
-    private HRecord newHRecord(final Result result) throws HBqlException {
-
-        // Create new instance
         final HRecord newrec = new HRecord(this);
 
         // Set key value
@@ -147,25 +131,19 @@ public class DefinedSchema extends HBaseSchema {
             final byte[] keybytes = result.getRow();
             keyattrib.setCurrentValue(newrec, 0, keybytes);
         }
+
+        // Assign most recent values
+        this.assignSelectValues(newrec, attribList, selectElementList, maxVersions, result);
+
         return newrec;
-    }
-
-    public Scan getScanForFields(final String... fields) throws HBqlException {
-
-        final Scan scan = new Scan();
-
-        for (final String field : fields) {
-            final DefinedAttrib attrib = (DefinedAttrib)this.getAttribByVariableName(field);
-            if (attrib.isKeyAttrib())
-                continue;
-            scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
-        }
-
-        return scan;
     }
 
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
         final ExprTree exprTree = HBql.parseWhereExpression(query, this);
         return new HBqlFilter(exprTree, -1);
+    }
+
+    protected DefinedSchema getDefinedSchemaEquivalent() {
+        return this;
     }
 }

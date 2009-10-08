@@ -3,7 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.impl.object;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQuery;
 import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQueryListener;
 import org.apache.hadoop.hbase.hbql.query.object.client.ObjectResults;
@@ -44,8 +43,11 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
 
     public ExprTree getExprTree(final Collection<T> objects) throws HBqlException {
 
-        if (objects == null || objects.size() == 0)
-            return ExprTree.newExprTree(new BooleanLiteral(true));
+        if (objects == null || objects.size() == 0) {
+            ExprTree exprTree = ExprTree.newExprTree(true);
+            exprTree.setSchema(null);
+            return exprTree;
+        }
 
         // Grab the first object to derive the schema
         final Object obj = objects.iterator().next();

@@ -30,6 +30,7 @@ public class AnnotationSchema extends HBaseSchema {
     private final Class<?> clazz;
     private final HTable table;
     private final HFamily[] families;
+    private DefinedSchema defineSchemaEquiv = null;
 
     private AnnotationSchema(final Class clazz) throws HBqlException {
 
@@ -238,6 +239,12 @@ public class AnnotationSchema extends HBaseSchema {
         return schema;
     }
 
+    public synchronized DefinedSchema getDefinedSchemaEquivalent() throws HBqlException {
+        if (this.defineSchemaEquiv == null)
+            this.defineSchemaEquiv = new DefinedSchema(this.getTableName(), null, this.getColumnDescriptionList());
+        return this.defineSchemaEquiv;
+    }
+
     private static Map<Class<?>, AnnotationSchema> getAnnotationSchemaMap() {
         return annotationSchemaMap;
     }
@@ -328,7 +335,7 @@ public class AnnotationSchema extends HBaseSchema {
             final Object newobj = this.createNewObject(result);
 
             // Assign values
-            this.assignValues(newobj, attribList, selectElementList, maxVersions, result);
+            this.assignSelectValues(newobj, attribList, selectElementList, maxVersions, result);
 
             return newobj;
         }
@@ -360,10 +367,10 @@ public class AnnotationSchema extends HBaseSchema {
         return newobj;
     }
 
-    public List<ColumnDescription> getColumnDescriptionList() {
+    private List<ColumnDescription> getColumnDescriptionList() {
         final List<ColumnDescription> varList = Lists.newArrayList();
         for (final ColumnAttrib columnAttrib : this.getAttribByFamilyQualifiedNameMap().values()) {
-            final String columnType = (columnAttrib.isKeyAttrib())
+            final String columnType = columnAttrib.isKeyAttrib()
                                       ? FieldType.KeyType.getFirstSynonym()
                                       : columnAttrib.getFieldType().getFirstSynonym();
             varList.add(ColumnDescription.newColumnDescription(columnAttrib.getFamilyQualifiedName(),

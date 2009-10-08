@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 
 public class ExprTree extends ExprContext {
 
@@ -15,8 +16,15 @@ public class ExprTree extends ExprContext {
         super(exprSignature, rootValue);
     }
 
+    public static ExprTree newExprTree(final boolean booleanValue) {
+        return newExprTree(new BooleanLiteral(booleanValue));
+    }
+
     public static ExprTree newExprTree(final BooleanValue booleanValue) {
-        return new ExprTree(booleanValue);
+        if (booleanValue == null)
+            return new ExprTree(new BooleanLiteral(true));
+        else
+            return new ExprTree(booleanValue);
     }
 
     public Boolean evaluate(final Object object) throws HBqlException {

@@ -155,29 +155,34 @@ public abstract class HBaseSchema extends Schema {
         attribList.add(attrib);
     }
 
-    protected void assignValues(final Object newobj,
-                                final Collection<ColumnAttrib> attribList,
-                                final List<SelectElement> selectElementList,
-                                final int maxVersions,
-                                final Result result) throws HBqlException {
+    protected void assignSelectValues(final Object newobj,
+                                      final Collection<ColumnAttrib> attribList,
+                                      final List<SelectElement> selectElementList,
+                                      final int maxVersions,
+                                      final Result result) throws HBqlException {
 
         for (final SelectElement selectElement : selectElementList)
             selectElement.assignValues(newobj, attribList, maxVersions, result);
     }
 
 
-    // This is relevant only for AnnotatedSchema
-    public List<ColumnDescription> getColumnDescriptionList() {
-        return null;
-    }
-
     public HBqlFilter getHBqlFilter(final ExprTree exprTree, final long scanLimit) throws HBqlException {
 
-        if (exprTree == null)
-            return (scanLimit > 0) ? new HBqlFilter(ExprTree.newExprTree(null), scanLimit) : null;
+        if (exprTree == null) {
+            if (scanLimit > 0) {
+                final ExprTree exprTree2 = ExprTree.newExprTree(true);
+                exprTree2.setSchema(null);
+                return new HBqlFilter(exprTree2, scanLimit);
+            }
+            else {
+                return null;
+            }
+        }
 
-        final DefinedSchema schema = HUtil.getDefinedSchemaForServerFilter(this);
-        exprTree.setSchema(schema);
+        final DefinedSchema definedSchema = this.getDefinedSchemaEquivalent();
+        exprTree.setSchema(definedSchema);
         return new HBqlFilter(exprTree, scanLimit);
     }
+
+    protected abstract DefinedSchema getDefinedSchemaEquivalent() throws HBqlException;
 }

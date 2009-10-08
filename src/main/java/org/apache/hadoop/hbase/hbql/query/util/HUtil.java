@@ -8,8 +8,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
-import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -18,13 +16,6 @@ import java.util.Collection;
 public class HUtil {
 
     public final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.HADOOP);
-
-    public static DefinedSchema getDefinedSchemaForServerFilter(final HBaseSchema schema) throws HBqlException {
-        if (schema instanceof DefinedSchema)
-            return (DefinedSchema)schema;
-        else
-            return DefinedSchema.newDefinedSchema(schema);
-    }
 
     public static String getZeroPaddedNumber(final int val, final int width) throws HBqlException {
 
