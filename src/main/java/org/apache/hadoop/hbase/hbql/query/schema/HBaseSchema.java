@@ -166,18 +166,12 @@ public abstract class HBaseSchema extends Schema {
     }
 
 
-    public HBqlFilter getHBqlFilter(final ExprTree exprTree, final long scanLimit) throws HBqlException {
+    public HBqlFilter getHBqlFilter(final ExprTree origExprTree, final long scanLimit) throws HBqlException {
 
-        if (exprTree == null) {
-            if (scanLimit > 0) {
-                final ExprTree exprTree2 = ExprTree.newExprTree(true);
-                exprTree2.setSchema(null);
-                return new HBqlFilter(exprTree2, scanLimit);
-            }
-            else {
-                return null;
-            }
-        }
+        if (origExprTree == null && scanLimit == 0)
+            return null;
+
+        final ExprTree exprTree = (origExprTree == null) ? ExprTree.newExprTree(true) : origExprTree;
 
         final DefinedSchema definedSchema = this.getDefinedSchemaEquivalent();
         exprTree.setSchema(definedSchema);
