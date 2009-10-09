@@ -331,12 +331,9 @@ public class AnnotationSchema extends HBaseSchema {
                             final Result result) throws HBqlException {
 
         try {
-            // Create object and assign key value
+            // Create object and assign values
             final Object newobj = this.createNewObject(result);
-
-            // Assign values
             this.assignSelectValues(newobj, attribList, selectElementList, maxVersions, result);
-
             return newobj;
         }
         catch (Exception e) {
@@ -348,12 +345,10 @@ public class AnnotationSchema extends HBaseSchema {
     private Object createNewObject(final Result result) throws HBqlException {
 
         // Create new instance and set key value
-        final ColumnAttrib keyattrib = this.getKeyAttrib();
         final Object newobj;
         try {
             newobj = this.newInstance();
-            final byte[] keybytes = result.getRow();
-            keyattrib.setCurrentValue(newobj, 0, keybytes);
+            this.getKeyAttrib().setCurrentValue(newobj, 0, result.getRow());
         }
         catch (InstantiationException e) {
             e.printStackTrace();
@@ -362,7 +357,7 @@ public class AnnotationSchema extends HBaseSchema {
         catch (IllegalAccessException e) {
             e.printStackTrace();
             throw new HBqlException("Cannot set value for key  " + this.getSchemaName()
-                                    + "." + keyattrib.getFamilyQualifiedName());
+                                    + "." + this.getKeyAttrib().getFamilyQualifiedName());
         }
         return newobj;
     }

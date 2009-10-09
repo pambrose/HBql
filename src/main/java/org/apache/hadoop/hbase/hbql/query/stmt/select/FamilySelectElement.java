@@ -34,7 +34,7 @@ public class FamilySelectElement implements SelectElement {
         }
         else {
             this.useAllFamilies = false;
-            this.addAFamily(familyName.replace(" ", "").replace(":*", ""));
+            this.addAFamily(familyName.replaceAll(" ", "").replace(":*", ""));
         }
     }
 
@@ -60,7 +60,7 @@ public class FamilySelectElement implements SelectElement {
         return this.familyNameBytesList;
     }
 
-    private HBaseSchema getSchema() {
+    protected HBaseSchema getSchema() {
         return this.schema;
     }
 
@@ -85,10 +85,7 @@ public class FamilySelectElement implements SelectElement {
 
         if (this.useAllFamilies) {
             // connction will be null from tests
-            final Collection<String> familyList = (connection == null)
-                                                  ? this.getSchema().getFamilySet()
-                                                  : connection.getFamilyList(this.getSchema().getTableName());
-
+            final Collection<String> familyList = this.getSchema().getAllSchemaFamilyNames(connection);
             for (final String familyName : familyList) {
                 this.addAFamily(familyName);
                 selectAttribList.add(new FamilyAttrib(familyName));

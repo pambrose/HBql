@@ -122,17 +122,13 @@ public class DefinedSchema extends HBaseSchema {
                              final int maxVersions,
                              final Result result) throws HBqlException {
 
-        // Create object and assign key value
+        // Create object and assign values
         final HRecord newrec = new HRecord(this);
 
         // Set key value
-        final ColumnAttrib keyattrib = this.getKeyAttrib();
-        if (keyattrib != null) {
-            final byte[] keybytes = result.getRow();
-            keyattrib.setCurrentValue(newrec, 0, keybytes);
-        }
+        this.getKeyAttrib().setCurrentValue(newrec, 0, result.getRow());
 
-        // Assign most recent values
+        // Assign values
         this.assignSelectValues(newrec, attribList, selectElementList, maxVersions, result);
 
         return newrec;

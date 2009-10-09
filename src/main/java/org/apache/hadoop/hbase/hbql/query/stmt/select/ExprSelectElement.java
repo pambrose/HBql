@@ -41,7 +41,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     }
 
     public boolean isSimpleColumnReference() {
-        return this.getColumnAttrib() != null;
+        return this.getGenericValue(0) instanceof DelegateColumn;
     }
 
     public ColumnAttrib getColumnAttrib() {
@@ -74,14 +74,26 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
         // Look up stuff for simple column references
         if (this.getGenericValue(0) instanceof DelegateColumn) {
+
             final String name = ((DelegateColumn)this.getGenericValue(0)).getVariableName();
             this.columnAttrib = this.getSchema().getAttribByVariableName(name);
+
             if (this.getColumnAttrib() != null) {
                 this.familyName = this.getColumnAttrib().getFamilyName();
                 this.columnName = this.getColumnAttrib().getColumnName();
-                this.familyNameBytes = HUtil.ser.getStringAsBytes(this.getColumnAttrib().getFamilyName());
-                this.columnNameBytes = HUtil.ser.getStringAsBytes(this.getColumnAttrib().getColumnName());
             }
+            else {
+                if (!name.contains(":"))
+                    throw new HBqlException("Invalid select value: " + name);
+                final String[] strs = name.split(":");
+                this.familyName = strs[0];
+                this.columnName = strs[1];
+                final Collection<String> families = ((HBaseSchema)this.getSchema()).getAllSchemaFamilyNames(connection);
+                if (!families.contains(this.getFamilyName()))
+                    throw new HBqlException("Unknown famioy name: " + this.getFamilyName());
+            }
+            this.familyNameBytes = HUtil.ser.getStringAsBytes(this.getFamilyName());
+            this.columnNameBytes = HUtil.ser.getStringAsBytes(this.getColumnName());
         }
     }
 
@@ -130,8 +142,14 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             return;
         }
 
+        // Column reference is not known to schema, so just assign byte[] value
+        if (this.getColumnAttrib() == null) {
+
+        }
+
         // Do not process if it is an annotation history value
         if (this.getColumnAttrib().isACurrentValue()) {
+
             // If this is a mapKesAsColumns, then we need to build the map from all the related columns in the family
             if (this.getColumnAttrib().isMapKeysAsColumns()) {
                 final Map mapval = this.getMapKeysAsColumnsValue(result);

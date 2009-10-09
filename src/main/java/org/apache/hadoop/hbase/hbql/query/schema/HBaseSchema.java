@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
@@ -38,6 +39,8 @@ public abstract class HBaseSchema extends Schema {
     public abstract String getSchemaName();
 
     public abstract String getTableName();
+
+    protected abstract DefinedSchema getDefinedSchemaEquivalent() throws HBqlException;
 
     public String getTableAliasName() {
         return this.getTableName();
@@ -178,5 +181,10 @@ public abstract class HBaseSchema extends Schema {
         return new HBqlFilter(exprTree, scanLimit);
     }
 
-    protected abstract DefinedSchema getDefinedSchemaEquivalent() throws HBqlException;
+    public Collection<String> getAllSchemaFamilyNames(final HConnection connection) throws HBqlException {
+        // Connction will be null from tests
+        return (connection == null)
+               ? this.getFamilySet()
+               : connection.getFamilyList(this.getTableName());
+    }
 }
