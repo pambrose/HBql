@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.NavigableMap;
 
 public abstract class ColumnAttrib implements Serializable {
 
@@ -259,13 +258,7 @@ public abstract class ColumnAttrib implements Serializable {
             return HUtil.ser.getStringFromBytes(b);
         }
         else {
-            final NavigableMap<byte[], NavigableMap<byte[], byte[]>> familyMap = result.getNoVersionMap();
-
-            final NavigableMap<byte[], byte[]> columnMap = familyMap.get(this.getFamilyNameBytes());
-            if (columnMap == null)
-                throw new HBqlException("Invalid family name: " + this.getFamilyName());
-
-            final byte[] b = columnMap.get(this.getColumnNameBytes());
+            final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
 
             if (this.isArray())
                 return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);

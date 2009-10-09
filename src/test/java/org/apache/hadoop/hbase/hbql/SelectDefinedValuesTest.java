@@ -36,7 +36,7 @@ public class SelectDefinedValuesTest extends TestSupport {
         SchemaManager.parse("define table table1 alias tab1"
                             + "("
                             + "keyval key, "
-                            + "f1:val1 string alias val1, "
+                            // + "f1:val1 string alias val1, "
                             + "f1:val2 string alias val2, "
                             + "f2:val1 date alias val3, "
                             + "f2:val2 date alias val4, "
@@ -50,6 +50,7 @@ public class SelectDefinedValuesTest extends TestSupport {
 
         conn = HConnectionManager.newHConnection();
 
+        /*
         if (!conn.tableExists("table1"))
             System.out.println(conn.execute("create table using table1"));
         else {
@@ -67,6 +68,7 @@ public class SelectDefinedValuesTest extends TestSupport {
         val8check = null;
 
         insertRecords(conn, 10, "Batch 3");
+        */
     }
 
     private static void insertRecords(final HConnection conn,
@@ -280,5 +282,14 @@ public class SelectDefinedValuesTest extends TestSupport {
             }
         }
         */
+    }
+
+    @Test
+    public void selectUndefinedExpressions() throws HBqlException, IOException {
+
+        final String query1 = "SELECT f1:val1 FROM table1";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 10);
     }
 }

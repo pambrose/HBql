@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.stmt.select;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
@@ -88,7 +89,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                 final String[] strs = name.split(":");
                 this.familyName = strs[0];
                 this.columnName = strs[1];
-                final Collection<String> families = ((HBaseSchema)this.getSchema()).getAllSchemaFamilyNames(connection);
+                final Collection<String> families = this.getSchema().getAllSchemaFamilyNames(connection);
                 if (!families.contains(this.getFamilyName()))
                     throw new HBqlException("Unknown famioy name: " + this.getFamilyName());
             }
@@ -106,7 +107,6 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         for (final byte[] columnBytes : columnMap.keySet()) {
 
             final String columnName = HUtil.ser.getStringFromBytes(columnBytes);
-            final byte[] b = columnMap.get(columnBytes);
 
             if (columnName.endsWith("]")) {
                 final int lbrace = columnName.indexOf("[");
@@ -114,13 +114,33 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
                 if (mapcolumn.equals(this.getColumnName())) {
                     final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
+
+                    final byte[] b = columnMap.get(columnBytes);
                     final Object val = this.getColumnAttrib().getValueFromBytes(null, b);
+
                     mapval.put(mapKey, val);
                 }
             }
         }
-
         return mapval;
+    }
+
+    private String getSelectName() {
+        if (this.getAsName() == null || this.getAsName().length() == 0)
+            return this.getFamilyName() + ":" + this.getColumnName();
+        else
+            return this.getAsName();
+    }
+
+    private byte[] getResultCurrentValue(final Result result) {
+
+        final NavigableMap<byte[], byte[]> columnMap = result.getFamilyMap(this.getFamilyNameBytes());
+
+        // ColumnMap should not be null at this point, but check just in case
+        if (columnMap == null)
+            return null;
+        else
+            return columnMap.get(this.getColumnNameBytes());
     }
 
     public void assignValues(final Object newobj,
@@ -144,50 +164,57 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
         // Column reference is not known to schema, so just assign byte[] value
         if (this.getColumnAttrib() == null) {
+            // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
+            if (!(newobj instanceof HRecord))
+                return;
 
+            final HRecord hrecord = (HRecord)newobj;
+            hrecord.setCurrentValue(this.getSelectName(),
+                                    result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes()));
         }
+        else {
+            // Do not process if it is an annotation history value
+            if (this.getColumnAttrib().isACurrentValue()) {
 
-        // Do not process if it is an annotation history value
-        if (this.getColumnAttrib().isACurrentValue()) {
-
-            // If this is a mapKesAsColumns, then we need to build the map from all the related columns in the family
-            if (this.getColumnAttrib().isMapKeysAsColumns()) {
-                final Map mapval = this.getMapKeysAsColumnsValue(result);
-                this.getColumnAttrib().setCurrentValue(newobj, 0, mapval);
+                // If this is a mapKesAsColumns, then we need to build the map from all the related columns in the family
+                if (this.getColumnAttrib().isMapKeysAsColumns()) {
+                    final Map mapval = this.getMapKeysAsColumnsValue(result);
+                    this.getColumnAttrib().setCurrentValue(newobj, 0, mapval);
+                }
+                else {
+                    final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
+                    this.getColumnAttrib().setCurrentValue(newobj, 0, b);
+                }
             }
-            else {
-                final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
-                this.getColumnAttrib().setCurrentValue(newobj, 0, b);
+
+            // Now assign versions
+            // Do not process if it doesn't support version values
+            if (maxVerions <= 1 || !this.getColumnAttrib().isAVersionValue())
+                return;
+
+            final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
+            final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(this.getFamilyNameBytes());
+
+            if (columnMap == null)
+                return;
+
+            final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
+
+            if (timeStampMap == null)
+                return;
+
+            Map<Long, Object> mapval = this.getColumnAttrib().getVersionValueMapValue(newobj);
+
+            if (mapval == null) {
+                mapval = new TreeMap();
+                this.getColumnAttrib().setVersionValueMapValue(newobj, mapval);
             }
-        }
 
-        // Now assign versions
-        // Do not process if it doesn't support version values
-        if (maxVerions <= 1 || !this.getColumnAttrib().isAVersionValue())
-            return;
-
-        final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
-        final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(this.getFamilyNameBytes());
-
-        if (columnMap == null)
-            return;
-
-        final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
-
-        if (timeStampMap == null)
-            return;
-
-        Map<Long, Object> mapval = this.getColumnAttrib().getVersionValueMapValue(newobj);
-
-        if (mapval == null) {
-            mapval = new TreeMap();
-            this.getColumnAttrib().setVersionValueMapValue(newobj, mapval);
-        }
-
-        for (final Long timestamp : timeStampMap.keySet()) {
-            final byte[] b = timeStampMap.get(timestamp);
-            final Object val = this.getColumnAttrib().getValueFromBytes(newobj, b);
-            mapval.put(timestamp, val);
+            for (final Long timestamp : timeStampMap.keySet()) {
+                final byte[] b = timeStampMap.get(timestamp);
+                final Object val = this.getColumnAttrib().getValueFromBytes(newobj, b);
+                mapval.put(timestamp, val);
+            }
         }
     }
 
