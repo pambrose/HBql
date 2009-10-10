@@ -144,7 +144,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     }
 
     public void assignValues(final Object newobj,
-                             final Collection<ColumnAttrib> columnAttribs,
+                             final List<ColumnAttrib> selectAttribList,
                              final int maxVerions,
                              final Result result) throws HBqlException {
 
@@ -170,7 +170,8 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
             final HRecord hrecord = (HRecord)newobj;
             hrecord.setCurrentValue(this.getSelectName(),
-                                    result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes()));
+                                    result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes()),
+                                    false);
         }
         else {
             // Do not process if it is an annotation history value

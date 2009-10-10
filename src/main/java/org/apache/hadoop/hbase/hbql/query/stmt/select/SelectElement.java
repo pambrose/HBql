@@ -6,14 +6,16 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface SelectElement {
 
     void validate(HConnection connection, HBaseSchema schema, List<ColumnAttrib> selectAttribList) throws HBqlException;
 
-    void assignValues(Object newobj, Collection<ColumnAttrib> attribList, int maxVerions, Result result) throws HBqlException;
+    void assignValues(Object newobj,
+                      List<ColumnAttrib> selectAttribList,
+                      int maxVerions,
+                      Result result) throws HBqlException;
 
     int setParameter(String name, Object val) throws HBqlException;
 

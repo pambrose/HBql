@@ -11,7 +11,6 @@ import org.apache.hadoop.hbase.hbql.query.stmt.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -117,7 +116,7 @@ public class DefinedSchema extends HBaseSchema {
         return this.getTableName();
     }
 
-    public HRecord newObject(final Collection<ColumnAttrib> attribList,
+    public HRecord newObject(final List<ColumnAttrib> selectAttribList,
                              final List<SelectElement> selectElementList,
                              final int maxVersions,
                              final Result result) throws HBqlException {
@@ -129,7 +128,7 @@ public class DefinedSchema extends HBaseSchema {
         this.getKeyAttrib().setCurrentValue(newrec, 0, result.getRow());
 
         // Assign values
-        this.assignSelectValues(newrec, attribList, selectElementList, maxVersions, result);
+        this.assignSelectValues(newrec, selectAttribList, selectElementList, maxVersions, result);
 
         return newrec;
     }

@@ -55,7 +55,7 @@ public class DefinedAttrib extends ColumnAttrib {
 
     public void setCurrentValue(final Object newobj, final long ts, final Object val) throws HBqlException {
         final HRecord record = (HRecord)newobj;
-        record.setCurrentValue(this.getAliasName(), ts, val);
+        record.setCurrentValue(this.getAliasName(), ts, val, true);
     }
 
     public Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException {

@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.stmt.select;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.FamilyAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
@@ -105,8 +106,8 @@ public class FamilySelectElement implements SelectElement {
     }
 
     public void assignValues(final Object newobj,
-                             final Collection<ColumnAttrib> columnAttribs,
-                             final int maxVerions,
+                             final List<ColumnAttrib> selectAttribList,
+                             final int maxVersions,
                              final Result result) throws HBqlException {
 
         // Evaluate each of the families (select * will yield all families)
@@ -143,6 +144,12 @@ public class FamilySelectElement implements SelectElement {
                     }
                     else {
                         // Set unknown attrib value to byte[] value
+                        // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
+                        if (!(newobj instanceof HRecord))
+                            return;
+
+                        final HRecord hrecord = (HRecord)newobj;
+                        hrecord.setCurrentValue(familyName + ":" + columnName, b, false);
                     }
                 }
                 else {
@@ -153,12 +160,18 @@ public class FamilySelectElement implements SelectElement {
                         attrib.setCurrentValue(newobj, 0, b);
                     else {
                         // Set unknown attrib value to byte[] value
+                        // Assign value for an HRecord, but not for Annotated object
+                        if (!(newobj instanceof HRecord))
+                            return;
+
+                        final HRecord hrecord = (HRecord)newobj;
+                        hrecord.setCurrentValue(familyName + ":" + columnName, b, false);
                     }
                 }
             }
 
             // Bail if no versions were requested
-            if (maxVerions <= 1)
+            if (maxVersions <= 1)
                 continue;
 
             final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
@@ -170,18 +183,21 @@ public class FamilySelectElement implements SelectElement {
                 final ColumnAttrib columnAttrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
                                                                                                     columnName);
                 // Ignore data if no version map exists for the column
-                if (columnAttrib == null)
-                    continue;
-
-                // Ignore if not in select list
-                if (!columnAttribs.contains(columnAttrib))
-                    continue;
-
-                Map<Long, Object> mapval = columnAttrib.getVersionValueMapValue(newobj);
-
-                if (mapval == null) {
+                Map<Long, Object> mapval = null;
+                if (columnAttrib == null) {
                     mapval = new TreeMap();
-                    columnAttrib.setVersionValueMapValue(newobj, mapval);
+                }
+                else {
+                    // Ignore if not in select list
+                    if (!selectAttribList.contains(columnAttrib))
+                        continue;
+
+                    mapval = columnAttrib.getVersionValueMapValue(newobj);
+
+                    if (mapval == null) {
+                        mapval = new TreeMap();
+                        columnAttrib.setVersionValueMapValue(newobj, mapval);
+                    }
                 }
 
                 final NavigableMap<Long, byte[]> timeStampMap = vcolumnMap.get(columnNameBytes);

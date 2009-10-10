@@ -9,6 +9,15 @@ public class HValue {
     private Object currentValue = null;
     private long currentValueTimestamp = -1;
     private Map<Long, Object> versionMap = null;
+    private final boolean inSchema;
+
+    public HValue(final boolean inSchema) {
+        this.inSchema = inSchema;
+    }
+
+    public boolean isInSchema() {
+        return inSchema;
+    }
 
     public Object getCurrentValue() {
         return this.currentValue;

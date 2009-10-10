@@ -34,12 +34,12 @@ public class HRecord implements Serializable {
         this.schema = schema;
     }
 
-    private HValue addValue(final String name) throws HBqlException {
+    private HValue addValue(final String name, final boolean inSchema) throws HBqlException {
 
-        if (!this.getSchema().constainsVariableName(name))
+        if (inSchema && !this.getSchema().constainsVariableName(name))
             throw new HBqlException("Invalid variable name " + this.getSchema().getTableName() + "." + name);
 
-        final HValue val = new HValue();
+        final HValue val = new HValue(inSchema);
         this.getValues().put(name, val);
         return val;
     }
@@ -89,15 +89,22 @@ public class HRecord implements Serializable {
     }
 
     public void setCurrentValue(final String name, final Object val) throws HBqlException {
-        this.setCurrentValue(name, this.getTimestamp(), val);
+        this.setCurrentValue(name, val, true);
     }
 
-    public void setCurrentValue(final String name, final long timestamp, final Object val) throws HBqlException {
+    public void setCurrentValue(final String name, final Object val, final boolean inSchema) throws HBqlException {
+        this.setCurrentValue(name, this.getTimestamp(), val, inSchema);
+    }
+
+    public void setCurrentValue(final String name,
+                                final long timestamp,
+                                final Object val,
+                                final boolean inSchema) throws HBqlException {
 
         HValue hvalue = this.getHValue(name);
 
         if (hvalue == null)
-            hvalue = this.addValue(name);
+            hvalue = this.addValue(name, inSchema);
 
         hvalue.setCurrentValue(timestamp, val);
     }
@@ -122,7 +129,7 @@ public class HRecord implements Serializable {
         final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(family, column);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + family + ":" + column);
-        this.setCurrentValue(attrib.getAliasName(), timestamp, val);
+        this.setCurrentValue(attrib.getAliasName(), timestamp, val, true);
     }
 
     public void setVersionedValue(final String family,
