@@ -3,11 +3,18 @@ package org.apache.hadoop.hbase.hbql.client;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.cmds.SchemaManagerCmd;
 import org.apache.hadoop.hbase.hbql.query.schema.AnnotationSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
+import org.apache.hadoop.hbase.hbql.query.util.Maps;
+
+import java.util.List;
+import java.util.Map;
 
 public class SchemaManager {
+
+    private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
     public static HOutput parse(final String str) throws HBqlException {
 
@@ -35,7 +42,49 @@ public class SchemaManager {
         return ReflectionSchema.getReflectionSchema(recordObj);
     }
 
-    public static DefinedSchema getDefinedSchema(final String tablename) throws HBqlException {
-        return DefinedSchema.getDefinedSchema(tablename);
+    private static Map<String, DefinedSchema> getDefinedSchemaMap() {
+        return definedSchemaMap;
+    }
+
+    public static DefinedSchema getDefinedSchema(final String tableName) {
+        return getDefinedSchemaMap().get(tableName);
+    }
+
+    public static boolean doesDefinedSchemaExist(final String tableName) {
+        return null != getDefinedSchemaMap().get(tableName);
+    }
+
+    public static void removeSchema(final String name) {
+
+        final DefinedSchema schema = getDefinedSchema(name);
+        if (schema != null) {
+
+            if (getDefinedSchemaMap().containsKey(schema.getTableName()))
+                getDefinedSchemaMap().remove(schema.getTableName());
+
+            if (getDefinedSchemaMap().containsKey(schema.getTableAliasName()))
+                getDefinedSchemaMap().remove(schema.getTableAliasName());
+        }
+    }
+
+    public synchronized static DefinedSchema newDefinedSchema(final String tableName,
+                                                              final String aliasName,
+                                                              final List<ColumnDescription> varList) throws HBqlException {
+
+        if (SchemaManager.doesDefinedSchemaExist(tableName))
+            throw new HBqlException("Table " + tableName + " already defined");
+
+        if (aliasName != null && SchemaManager.doesDefinedSchemaExist(aliasName))
+            throw new HBqlException("Alias " + aliasName + " already defined");
+
+        final DefinedSchema schema = new DefinedSchema(tableName, aliasName, varList);
+
+        getDefinedSchemaMap().put(tableName, schema);
+
+        // Add in the same schema if there is an alias
+        if (aliasName != null && !tableName.equals(aliasName))
+            getDefinedSchemaMap().put(aliasName, schema);
+
+        return schema;
     }
 }

@@ -35,6 +35,13 @@ public class FamilyAttrib extends ColumnAttrib {
 
     }
 
+    public void setKeysAsColumnsValue(final Object newobj,
+                                      final long timestamp,
+                                      final String mapKey,
+                                      final Object val) throws HBqlException {
+
+    }
+
     public Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException {
         return null;
     }

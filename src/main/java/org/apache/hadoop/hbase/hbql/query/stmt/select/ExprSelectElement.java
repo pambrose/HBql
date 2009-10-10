@@ -164,6 +164,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
         // Column reference is not known to schema, so just assign byte[] value
         if (this.getColumnAttrib() == null) {
+
             // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
             if (!(newobj instanceof HRecord))
                 return;

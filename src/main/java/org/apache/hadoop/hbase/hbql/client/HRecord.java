@@ -52,6 +52,13 @@ public class HRecord implements Serializable {
         return this.getValues().containsKey(name);
     }
 
+    private HValue getHValue(final String name, final boolean inSchema) throws HBqlException {
+        HValue hvalue = this.getValue(name);
+        if (hvalue == null)
+            hvalue = this.addValue(name, inSchema);
+        return hvalue;
+    }
+
     private HValue getHValue(final String name) {
 
         // First try the name given.
@@ -101,12 +108,32 @@ public class HRecord implements Serializable {
                                 final Object val,
                                 final boolean inSchema) throws HBqlException {
 
+        final HValue hvalue = this.getHValue(name, inSchema);
+        hvalue.setCurrentValue(timestamp, val);
+    }
+
+    public void setKeysAsColumnsValue(final String name,
+                                      final long timestamp,
+                                      final String mapKey,
+                                      final Object val,
+                                      final boolean inSchema) throws HBqlException {
+
         HValue hvalue = this.getHValue(name);
 
-        if (hvalue == null)
-            hvalue = this.addValue(name, inSchema);
+        Map<String, HValue> mapval;
 
-        hvalue.setCurrentValue(timestamp, val);
+        if (hvalue == null) {
+            hvalue = this.addValue(name, inSchema);
+            mapval = Maps.newHashMap();
+            hvalue.setCurrentValue(timestamp, mapval);
+        }
+        else {
+            mapval = (Map<String, HValue>)hvalue.getCurrentValue();
+        }
+
+        final HValue newval = new HValue(inSchema);
+        newval.setCurrentValue(timestamp, val);
+        mapval.put(mapKey, newval);
     }
 
     public Map<Long, Object> getVersionedValueMap(final String name) {
@@ -114,12 +141,20 @@ public class HRecord implements Serializable {
         return (hvalue != null) ? hvalue.getVersionMap() : null;
     }
 
-    public void setVersionedValueMap(final String name, final Map<Long, Object> val) {
-        this.getValue(name).setVersionMap(val);
+    public void setVersionedValueMap(final String name,
+                                     final Map<Long, Object> val,
+                                     final boolean inSchema) throws HBqlException {
+        final HValue hvalue = this.getHValue(name, inSchema);
+        hvalue.setVersionMap(val);
     }
 
-    public void setVersionedValue(final String name, final long timestamp, final Object val) {
-        this.getValue(name).getVersionMap().put(timestamp, val);
+    public void setVersionedValue(final String name,
+                                  final long timestamp,
+                                  final Object val,
+                                  final boolean inSchema) throws HBqlException {
+
+        final HValue hvalue = this.getHValue(name, inSchema);
+        hvalue.getVersionMap().put(timestamp, val);
     }
 
     public void setCurrentValue(final String family,
@@ -135,11 +170,12 @@ public class HRecord implements Serializable {
     public void setVersionedValue(final String family,
                                   final String column,
                                   final long timestamp,
-                                  final Object val) throws HBqlException {
+                                  final Object val,
+                                  final boolean inSchema) throws HBqlException {
         final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(family, column);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + family + ":" + column);
-        this.setVersionedValue(attrib.getColumnName(), timestamp, val);
+        this.setVersionedValue(attrib.getColumnName(), timestamp, val, inSchema);
     }
 
     public boolean isCurrentValueSet(final ColumnAttrib attrib) {

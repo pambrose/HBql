@@ -23,12 +23,12 @@ public class HValue {
         return this.currentValue;
     }
 
-    public void setCurrentValue(final long timestamp, final Object currentValue) {
+    public void setCurrentValue(final long timestamp, final Object val) {
 
-        if (timestamp > this.currentValueTimestamp) {
+        if (timestamp >= this.currentValueTimestamp) {
             this.currentValueSet = true;
             this.currentValueTimestamp = timestamp;
-            this.currentValue = currentValue;
+            this.currentValue = val;
         }
     }
 

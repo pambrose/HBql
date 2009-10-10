@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.cmds;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
+import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
@@ -29,7 +30,7 @@ public class DefineCmd extends TableCmd implements SchemaManagerCmd {
 
     public HOutput execute() throws HBqlException {
 
-        final DefinedSchema schema = DefinedSchema.newDefinedSchema(this.getTableName(),
+        final DefinedSchema schema = SchemaManager.newDefinedSchema(this.getTableName(),
                                                                     this.getAlias(),
                                                                     this.getColumnDescriptionList());
 
@@ -45,5 +46,4 @@ public class DefineCmd extends TableCmd implements SchemaManagerCmd {
 
         return retval;
     }
-
 }

@@ -88,6 +88,16 @@ public abstract class FieldAttrib extends ColumnAttrib {
         }
     }
 
+    public void setKeysAsColumnsValue(final Object newobj,
+                                      final long timestamp,
+                                      final String mapKey,
+                                      final Object val) throws HBqlException {
+        // TODO finish this
+
+        if (!this.isMapKeysAsColumns())
+            throw new HBqlException(this.getFamilyQualifiedName() + " not marked as mapKeysAsColumns");
+    }
+
     public Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException {
         // Just call current value for version since we have different fields for each
         return (Map<Long, Object>)this.getCurrentValue(recordObj);

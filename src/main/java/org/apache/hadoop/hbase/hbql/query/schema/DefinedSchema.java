@@ -9,14 +9,10 @@ import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
-import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.util.List;
-import java.util.Map;
 
 public class DefinedSchema extends HBaseSchema {
-
-    private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
     final String tableName;
     final String tableAliasName;
@@ -35,31 +31,6 @@ public class DefinedSchema extends HBaseSchema {
         this.tableAliasName = tableAliasName;
         for (final ColumnDescription columnDescription : columnDescriptionList)
             processColumn(columnDescription, true);
-    }
-
-    public synchronized static DefinedSchema newDefinedSchema(final String tableName,
-                                                              final String aliasName,
-                                                              final List<ColumnDescription> varList) throws HBqlException {
-
-        if (doesDefinedSchemaExist(tableName))
-            throw new HBqlException("Table " + tableName + " already defined");
-
-        if (aliasName != null && doesDefinedSchemaExist(aliasName))
-            throw new HBqlException("Alias " + aliasName + " already defined");
-
-        final DefinedSchema schema = new DefinedSchema(tableName, aliasName, varList);
-
-        getDefinedSchemaMap().put(tableName, schema);
-
-        // Add in the same schema if there is an alias
-        if (aliasName != null && !tableName.equals(aliasName))
-            getDefinedSchemaMap().put(aliasName, schema);
-
-        return schema;
-    }
-
-    private static boolean doesDefinedSchemaExist(final String tableName) {
-        return null != getDefinedSchemaMap().get(tableName);
     }
 
     private void processColumn(final ColumnDescription columnDescription,
@@ -82,14 +53,6 @@ public class DefinedSchema extends HBaseSchema {
             if (requireFamilyName && family.length() == 0)
                 throw new HBqlException(attrib.getColumnName() + " is missing family name");
         }
-    }
-
-    private static Map<String, DefinedSchema> getDefinedSchemaMap() {
-        return definedSchemaMap;
-    }
-
-    public static DefinedSchema getDefinedSchema(final String tableName) {
-        return getDefinedSchemaMap().get(tableName);
     }
 
     public String toString() {

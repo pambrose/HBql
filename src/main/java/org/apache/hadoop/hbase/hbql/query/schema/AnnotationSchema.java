@@ -29,6 +29,7 @@ public class AnnotationSchema extends HBaseSchema {
     private final Class<?> clazz;
     private final HTable table;
     private final HFamily[] families;
+
     private DefinedSchema defineSchemaEquiv = null;
 
     private AnnotationSchema(final Class clazz) throws HBqlException {

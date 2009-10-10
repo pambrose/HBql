@@ -53,9 +53,21 @@ public class DefinedAttrib extends ColumnAttrib {
         return record.getCurrentValue(this.getAliasName());
     }
 
-    public void setCurrentValue(final Object newobj, final long ts, final Object val) throws HBqlException {
+    public void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException {
         final HRecord record = (HRecord)newobj;
-        record.setCurrentValue(this.getAliasName(), ts, val, true);
+        record.setCurrentValue(this.getAliasName(), timestamp, val, true);
+    }
+
+    public void setKeysAsColumnsValue(final Object newobj,
+                                      final long timestamp,
+                                      final String mapKey,
+                                      final Object val) throws HBqlException {
+
+        if (!this.isMapKeysAsColumns())
+            throw new HBqlException(this.getFamilyQualifiedName() + " not marked as mapKeysAsColumns");
+
+        final HRecord record = (HRecord)newobj;
+        record.setKeysAsColumnsValue(this.getAliasName(), timestamp, mapKey, val, true);
     }
 
     public Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException {
@@ -63,9 +75,9 @@ public class DefinedAttrib extends ColumnAttrib {
         return record.getVersionedValueMap(this.getAliasName());
     }
 
-    public void setVersionValueMapValue(final Object newobj, final Map<Long, Object> map) {
+    public void setVersionValueMapValue(final Object newobj, final Map<Long, Object> map) throws HBqlException {
         final HRecord record = (HRecord)newobj;
-        record.setVersionedValueMap(this.getAliasName(), map);
+        record.setVersionedValueMap(this.getAliasName(), map, true);
     }
 
     protected Method getMethod(final String methodName, final Class<?>... params) throws NoSuchMethodException {

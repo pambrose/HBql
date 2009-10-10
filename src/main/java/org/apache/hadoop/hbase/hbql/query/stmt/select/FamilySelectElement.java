@@ -9,7 +9,6 @@ import org.apache.hadoop.hbase.hbql.query.schema.FamilyAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
-import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.util.Collection;
 import java.util.List;
@@ -120,27 +119,20 @@ public class FamilySelectElement implements SelectElement {
 
             for (final byte[] columnBytes : columnMap.keySet()) {
 
+                final byte[] currentValueBytes = columnMap.get(columnBytes);
                 final String columnName = HUtil.ser.getStringFromBytes(columnBytes);
-                final byte[] b = columnMap.get(columnBytes);
 
                 if (columnName.endsWith("]")) {
 
                     final int lbrace = columnName.indexOf("[");
-                    final String mapcolumn = columnName.substring(0, lbrace);
+                    final String mapColumn = columnName.substring(0, lbrace);
                     final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
                     final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
-                                                                                                  mapcolumn);
+                                                                                                  mapColumn);
 
                     if (attrib != null) {
-                        Map mapval = (Map)attrib.getCurrentValue(newobj);
-                        if (mapval == null) {
-                            mapval = Maps.newHashMap();
-                            // TODO Check this
-                            attrib.setVersionValueMapValue(newobj, mapval);
-                        }
-
-                        final Object val = attrib.getValueFromBytes(newobj, b);
-                        mapval.put(mapKey, val);
+                        final Object val = attrib.getValueFromBytes(newobj, currentValueBytes);
+                        attrib.setKeysAsColumnsValue(newobj, 0, mapKey, val);
                     }
                     else {
                         // Set unknown attrib value to byte[] value
@@ -149,7 +141,7 @@ public class FamilySelectElement implements SelectElement {
                             return;
 
                         final HRecord hrecord = (HRecord)newobj;
-                        hrecord.setCurrentValue(familyName + ":" + columnName, b, false);
+                        hrecord.setKeysAsColumnsValue(familyName + ":" + columnName, 0, mapKey, currentValueBytes, false);
                     }
                 }
                 else {
@@ -157,7 +149,7 @@ public class FamilySelectElement implements SelectElement {
                                                                                                   columnName);
                     // If attrib is found, then assign the deserialized value to the known atribb
                     if (attrib != null)
-                        attrib.setCurrentValue(newobj, 0, b);
+                        attrib.setCurrentValue(newobj, 0, currentValueBytes);
                     else {
                         // Set unknown attrib value to byte[] value
                         // Assign value for an HRecord, but not for Annotated object
@@ -165,7 +157,7 @@ public class FamilySelectElement implements SelectElement {
                             return;
 
                         final HRecord hrecord = (HRecord)newobj;
-                        hrecord.setCurrentValue(familyName + ":" + columnName, b, false);
+                        hrecord.setCurrentValue(familyName + ":" + columnName, currentValueBytes, false);
                     }
                 }
             }
@@ -175,36 +167,76 @@ public class FamilySelectElement implements SelectElement {
                 continue;
 
             final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
-            final NavigableMap<byte[], NavigableMap<Long, byte[]>> vcolumnMap = familyMap.get(familyNameBytes);
+            final NavigableMap<byte[], NavigableMap<Long, byte[]>> versionColumnMap = familyMap.get(familyNameBytes);
 
-            for (final byte[] columnNameBytes : familyMap.keySet()) {
+            if (versionColumnMap == null)
+                continue;
 
-                final String columnName = HUtil.ser.getStringFromBytes(columnNameBytes);
-                final ColumnAttrib columnAttrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
-                                                                                                    columnName);
-                // Ignore data if no version map exists for the column
-                Map<Long, Object> mapval = null;
-                if (columnAttrib == null) {
-                    mapval = new TreeMap();
-                }
-                else {
-                    // Ignore if not in select list
-                    if (!selectAttribList.contains(columnAttrib))
-                        continue;
+            for (final byte[] columnBytes : versionColumnMap.keySet()) {
 
-                    mapval = columnAttrib.getVersionValueMapValue(newobj);
+                final NavigableMap<Long, byte[]> timeStampMap = versionColumnMap.get(columnBytes);
+                final String columnName = HUtil.ser.getStringFromBytes(columnBytes);
 
-                    if (mapval == null) {
-                        mapval = new TreeMap();
-                        columnAttrib.setVersionValueMapValue(newobj, mapval);
+                if (columnName.endsWith("]")) {
+
+                    final int lbrace = columnName.indexOf("[");
+                    final String mapColumn = columnName.substring(0, lbrace);
+                    final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
+
+                    final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
+                                                                                                  mapColumn);
+
+                    if (attrib != null) {
+                        final Object val = attrib.getValueFromBytes(newobj, currentValueBytes);
+                        attrib.setKeysAsColumnsValue(newobj, 0, mapKey, val);
+                    }
+                    else {
+                        // Set unknown attrib value to byte[] value
+                        // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
+                        if (!(newobj instanceof HRecord))
+                            return;
+
+                        final HRecord hrecord = (HRecord)newobj;
+                        hrecord.setKeysAsColumnsValue(familyName + ":" + columnName, 0, mapKey, currentValueBytes, false);
                     }
                 }
+                else {
+                    final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
+                                                                                                  columnName);
 
-                final NavigableMap<Long, byte[]> timeStampMap = vcolumnMap.get(columnNameBytes);
-                for (final Long timestamp : timeStampMap.keySet()) {
-                    final byte[] b = timeStampMap.get(timestamp);
-                    final Object val = columnAttrib.getValueFromBytes(newobj, b);
-                    mapval.put(timestamp, val);
+                    // Ignore data if no version map exists for the column
+
+                    if (attrib == null) {
+
+                        if (!(newobj instanceof HRecord))
+                            return;
+
+                        final Map<Long, Object> mapval = new TreeMap();
+                        for (final Long timestamp : timeStampMap.keySet()) {
+                            final byte[] b = timeStampMap.get(timestamp);
+                            mapval.put(timestamp, b);
+                        }
+
+                        final HRecord hrecord = (HRecord)newobj;
+                        hrecord.setVersionedValueMap(familyName + ":" + columnName, mapval, false);
+                    }
+                    else {
+                        // Ignore if not in select list
+                        if (!selectAttribList.contains(attrib))
+                            continue;
+
+                        Map<Long, Object> mapval = attrib.getVersionValueMapValue(newobj);
+
+                        if (mapval == null) {
+                            mapval = new TreeMap();
+                            attrib.setVersionValueMapValue(newobj, mapval);
+                        }
+                        for (final Long timestamp : timeStampMap.keySet()) {
+                            final byte[] b = timeStampMap.get(timestamp);
+                            final Object val = attrib.getValueFromBytes(newobj, b);
+                            mapval.put(timestamp, val);
+                        }
+                    }
                 }
             }
         }

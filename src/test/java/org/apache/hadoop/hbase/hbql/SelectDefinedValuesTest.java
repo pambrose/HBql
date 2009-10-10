@@ -260,10 +260,37 @@ public class SelectDefinedValuesTest extends TestSupport {
     @Test
     public void selectFamiliesExpressions() throws HBqlException, IOException {
 
-        final String query1 = "SELECT f1:* FROM table1";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        SchemaManager.removeSchema("table1");
+        SchemaManager.parse("define table table1 alias tab1"
+                            + "("
+                            + "keyval key, "
+                            //  + "f1:val1 string alias val1, "
+                            + "f1:val2 string alias val2, "
+                            + "f2:val1 date alias val3, "
+                            + "f2:val2 date alias val4, "
+                            + "f3:val1 int alias val5, "
+                            + "f3:val2 int alias val6, "
+                            + "f3:val3 int alias val7, "
+                            + "f3:val4 int[] alias val8, "
+                            + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
+                            + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
+                            + ")");
+
+        HQuery<HRecord> q1 = conn.newHQuery("SELECT f1:* FROM table1");
         List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
+
+        HQuery<HRecord> q2 = conn.newHQuery("SELECT f1:* FROM table1 WITH VERSIONS 5");
+        List<HRecord> recList2 = q2.getResultList();
+        assertTrue(recList2.size() == 10);
+
+        HQuery<HRecord> q3 = conn.newHQuery("SELECT * FROM table1");
+        List<HRecord> recList3 = q3.getResultList();
+        assertTrue(recList3.size() == 10);
+
+        HQuery<HRecord> q4 = conn.newHQuery("SELECT * FROM table1 WITH VERSIONS 5");
+        List<HRecord> recList4 = q4.getResultList();
+        assertTrue(recList4.size() == 10);
 
         /*
         for (final HRecord rec : recList1) {
