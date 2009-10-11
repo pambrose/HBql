@@ -99,7 +99,7 @@ public class HRecord implements Serializable {
 
     private KeysAsColumnsHValue getKeysAsColumnsHValue(final String name, final boolean inSchema) throws HBqlException {
 
-        final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsValue(name);
+        final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsHValue(name);
 
         if (hvalue != null)
             return hvalue;
@@ -126,7 +126,7 @@ public class HRecord implements Serializable {
             throw new HBqlException("Not a ObjectHValue value");
     }
 
-    private KeysAsColumnsHValue getKeysAsColumnsValue(final String name) throws HBqlException {
+    private KeysAsColumnsHValue getKeysAsColumnsHValue(final String name) throws HBqlException {
         final HValue hvalue = this.getHValue(name);
         if (hvalue instanceof KeysAsColumnsHValue)
             return (KeysAsColumnsHValue)hvalue;
@@ -179,12 +179,23 @@ public class HRecord implements Serializable {
         hvalue.setCurrentValue(timestamp, val);
     }
 
-    // Verion Object values
+    // Access to version maps
     public Map<Long, Object> getVersionObjectValueMap(final String name) throws HBqlException {
         final ObjectHValue hvalue = this.getObjectHValue(name);
         return (hvalue != null) ? hvalue.getVersionMap() : null;
     }
 
+    public Map<Long, Object> getVersionKeysAsColumnsValueMap(final String name, final String mapKey) throws HBqlException {
+        final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsHValue(name);
+        return (hvalue != null) ? hvalue.getVersionMap(mapKey) : null;
+    }
+
+    public Map<Long, byte[]> getVersionFamilyDefaultValueMap(final String familyName, final String name) throws HBqlException {
+        final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue(familyName);
+        return (hvalue != null) ? hvalue.getVersionMap(name) : null;
+    }
+
+    // Version Object values
     public void setCurrentFamilyDefaultValue(final String familyName,
                                              final String name,
                                              final long timestamp,
@@ -237,7 +248,6 @@ public class HRecord implements Serializable {
     public void setVersionFamilyDefaultMap(final String familyName,
                                            final String name,
                                            final NavigableMap<Long, byte[]> val) throws HBqlException {
-
         final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue(familyName);
         hvalue.setVersionMap(name, val);
     }
