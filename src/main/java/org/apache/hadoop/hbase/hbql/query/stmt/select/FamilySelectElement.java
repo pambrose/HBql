@@ -187,8 +187,10 @@ public class FamilySelectElement implements SelectElement {
                                                                                                   mapColumn);
 
                     if (attrib != null) {
-                        final Object val = attrib.getValueFromBytes(newobj, currentValueBytes);
-                        attrib.setKeysAsColumnsValue(newobj, 0, mapKey, val);
+                        for (final Long timestamp : timeStampMap.keySet()) {
+                            final Object val = attrib.getValueFromBytes(newobj, timeStampMap.get(timestamp));
+                            attrib.setKeysAsColumnsVersionValue(newobj, timestamp, mapKey, val);
+                        }
                     }
                     else {
                         // Set unknown attrib value to byte[] value
@@ -197,7 +199,12 @@ public class FamilySelectElement implements SelectElement {
                             return;
 
                         final HRecord hrecord = (HRecord)newobj;
-                        hrecord.setKeysAsColumnsValue(familyName + ":" + columnName, 0, mapKey, currentValueBytes, false);
+                        for (final Long timestamp : timeStampMap.keySet())
+                            hrecord.setKeysAsColumnsVersionValue(familyName + ":" + columnName,
+                                                                 mapKey,
+                                                                 timestamp,
+                                                                 timeStampMap.get(timestamp),
+                                                                 false);
                     }
                 }
                 else {
