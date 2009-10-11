@@ -169,9 +169,10 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                 return;
 
             final HRecord hrecord = (HRecord)newobj;
-            hrecord.setCurrentObjectValue(this.getSelectName(),
-                                          result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes()),
-                                          false);
+            hrecord.setCurrentFamilyDefaultValue(this.getFamilyName(),
+                                                 this.getSelectName(),
+                                                 0,
+                                                 result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes()));
         }
         else {
             // Do not process if it is an annotation history value
@@ -204,12 +205,22 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             if (timeStampMap == null)
                 return;
 
-            final Map<Long, Object> mapval = this.getColumnAttrib().getVersionObjectValueMap(newobj);
+            if (this.getColumnAttrib() == null) {
+                // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
+                if (!(newobj instanceof HRecord))
+                    return;
 
-            for (final Long timestamp : timeStampMap.keySet()) {
-                final byte[] b = timeStampMap.get(timestamp);
-                final Object val = this.getColumnAttrib().getValueFromBytes(newobj, b);
-                mapval.put(timestamp, val);
+                final HRecord hrecord = (HRecord)newobj;
+                hrecord.setVersionFamilyDefaultMap(this.getFamilyName(), this.getSelectName(), timeStampMap);
+            }
+            else {
+                final Map<Long, Object> mapval = this.getColumnAttrib().getVersionObjectValueMap(newobj);
+
+                for (final Long timestamp : timeStampMap.keySet()) {
+                    final byte[] b = timeStampMap.get(timestamp);
+                    final Object val = this.getColumnAttrib().getValueFromBytes(newobj, b);
+                    mapval.put(timestamp, val);
+                }
             }
         }
     }

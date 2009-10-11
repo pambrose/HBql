@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.client;
 import java.util.Map;
 import java.util.TreeMap;
 
-public abstract class PrimitiveHValue<T> implements HValue {
+public class PrimitiveHValue<T> implements HValue {
 
     private boolean currentValueSet = false;
     private T currentValue = null;
