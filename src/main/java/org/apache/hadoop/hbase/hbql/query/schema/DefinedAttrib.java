@@ -66,7 +66,7 @@ public class DefinedAttrib extends ColumnAttrib {
             throw new HBqlException(this.getFamilyQualifiedName() + " not marked as mapKeysAsColumns");
 
         final HRecord record = (HRecord)newobj;
-        record.setKeysAsColumnsValue(this.getAliasName(), mapKey, 0, val, true);
+        record.setCurrentKeysAsColumnsValue(this.getAliasName(), mapKey, 0, val, true);
     }
 
     public Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException {

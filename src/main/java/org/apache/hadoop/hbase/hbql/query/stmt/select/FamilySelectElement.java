@@ -141,7 +141,7 @@ public class FamilySelectElement implements SelectElement {
                             return;
 
                         final HRecord hrecord = (HRecord)newobj;
-                        hrecord.setKeysAsColumnsValue(familyName + ":" + columnName, mapKey, 0, currentValueBytes, false);
+                        hrecord.setCurrentKeysAsColumnsValue(familyName + ":" + columnName, mapKey, 0, currentValueBytes, false);
                     }
                 }
                 else {
@@ -201,7 +201,7 @@ public class FamilySelectElement implements SelectElement {
 
                         final HRecord hrecord = (HRecord)newobj;
                         for (final Long timestamp : timeStampMap.keySet())
-                            hrecord.setKeysAsColumnsVersionValue(familyName + ":" + columnName,
+                            hrecord.setVersionKeysAsColumnsValue(familyName + ":" + columnName,
                                                                  mapKey,
                                                                  timestamp,
                                                                  timeStampMap.get(timestamp),
@@ -226,7 +226,7 @@ public class FamilySelectElement implements SelectElement {
                         }
 
                         final HRecord hrecord = (HRecord)newobj;
-                        hrecord.setVersionedObjectValueMap(familyName + ":" + columnName, mapval, false);
+                        hrecord.setVersionObjectValueMap(familyName + ":" + columnName, mapval, false);
                     }
                     else {
                         final Map<Long, Object> mapVal = attrib.getVersionValueMapValue(newobj);
