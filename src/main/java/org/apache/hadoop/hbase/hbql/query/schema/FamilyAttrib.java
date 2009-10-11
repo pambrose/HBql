@@ -41,7 +41,7 @@ public class FamilyAttrib extends ColumnAttrib {
 
     }
 
-    public Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException {
+    public Map<Long, Object> getVersionObjectValueMap(final Object recordObj) throws HBqlException {
         throw new HBqlException("Internal error");
     }
 

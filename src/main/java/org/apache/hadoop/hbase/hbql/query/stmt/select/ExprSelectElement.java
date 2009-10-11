@@ -204,7 +204,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             if (timeStampMap == null)
                 return;
 
-            final Map<Long, Object> mapval = this.getColumnAttrib().getVersionValueMapValue(newobj);
+            final Map<Long, Object> mapval = this.getColumnAttrib().getVersionObjectValueMap(newobj);
 
             for (final Long timestamp : timeStampMap.keySet()) {
                 final byte[] b = timeStampMap.get(timestamp);

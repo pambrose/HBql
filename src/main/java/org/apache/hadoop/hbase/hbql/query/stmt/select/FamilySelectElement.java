@@ -129,27 +129,28 @@ public class FamilySelectElement implements SelectElement {
                     final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
                                                                                                   mapColumn);
 
-                    if (attrib != null) {
-                        final Object val = attrib.getValueFromBytes(newobj, currentValueBytes);
-                        attrib.setKeysAsColumnsValue(newobj, mapKey, val);
-                    }
-                    else {
+                    if (attrib == null) {
                         // Set unknown attrib value to byte[] value
                         // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
                         if (!(newobj instanceof HRecord))
                             return;
 
                         final HRecord hrecord = (HRecord)newobj;
-                        hrecord.setCurrentKeysAsColumnsValue(familyName + ":" + columnName, mapKey, 0, currentValueBytes, false);
+                        hrecord.setCurrentKeysAsColumnsValue(familyName + ":" + columnName,
+                                                             mapKey,
+                                                             0,
+                                                             currentValueBytes,
+                                                             false);
+                    }
+                    else {
+                        final Object val = attrib.getValueFromBytes(newobj, currentValueBytes);
+                        attrib.setKeysAsColumnsValue(newobj, mapKey, val);
                     }
                 }
                 else {
                     final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
                                                                                                   columnName);
-                    // If attrib is found, then assign the deserialized value to the known atribb
-                    if (attrib != null)
-                        attrib.setCurrentValue(newobj, 0, currentValueBytes);
-                    else {
+                    if (attrib == null) {
                         // Set unknown attrib value to byte[] value
                         // Assign value for an HRecord, but not for Annotated object
                         if (!(newobj instanceof HRecord))
@@ -157,6 +158,10 @@ public class FamilySelectElement implements SelectElement {
 
                         final HRecord hrecord = (HRecord)newobj;
                         hrecord.setCurrentFamilyDefaultValue(familyName, columnName, 0, currentValueBytes);
+                    }
+                    else {
+                        // If attrib is found, then assign the deserialized value to the known atribb                        
+                        attrib.setCurrentValue(newobj, 0, currentValueBytes);
                     }
                 }
             }
@@ -185,15 +190,7 @@ public class FamilySelectElement implements SelectElement {
                     final ColumnAttrib attrib = this.getSchema().getVersionAttribFromFamilyQualifiedNameMap(familyName,
                                                                                                             mapColumn);
 
-                    if (attrib != null) {
-                        final Map<Long, Object> kacVersionMap = attrib.getKeysAsColumnsVersionMap(newobj, mapKey);
-                        for (final Long timestamp : timeStampMap.keySet()) {
-                            final Object val = attrib.getValueFromBytes(newobj, timeStampMap.get(timestamp));
-                            kacVersionMap.put(timestamp, val);
-                        }
-                    }
-                    else {
-                        // Set unknown attrib value to byte[] value
+                    if (attrib == null) {
                         // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
                         if (!(newobj instanceof HRecord))
                             return;
@@ -206,15 +203,21 @@ public class FamilySelectElement implements SelectElement {
                                                                  timeStampMap.get(timestamp),
                                                                  false);
                     }
+                    else {
+                        // Set unknown attrib value to byte[] value
+                        final Map<Long, Object> kacVersionMap = attrib.getKeysAsColumnsVersionMap(newobj, mapKey);
+                        for (final Long timestamp : timeStampMap.keySet()) {
+                            final Object val = attrib.getValueFromBytes(newobj, timeStampMap.get(timestamp));
+                            kacVersionMap.put(timestamp, val);
+                        }
+                    }
                 }
                 else {
                     final ColumnAttrib attrib = this.getSchema().getVersionAttribFromFamilyQualifiedNameMap(familyName,
                                                                                                             columnName);
 
-                    // Ignore data if no version map exists for the column
-
                     if (attrib == null) {
-
+                        // Bail if dealing with annotated value without version attrib
                         if (!(newobj instanceof HRecord))
                             return;
 
@@ -222,7 +225,7 @@ public class FamilySelectElement implements SelectElement {
                         hrecord.setVersionFamilyDefaultMap(familyName, columnName, timeStampMap);
                     }
                     else {
-                        final Map<Long, Object> mapVal = attrib.getVersionValueMapValue(newobj);
+                        final Map<Long, Object> mapVal = attrib.getVersionObjectValueMap(newobj);
 
                         for (final Long timestamp : timeStampMap.keySet()) {
                             final byte[] b = timeStampMap.get(timestamp);

@@ -77,7 +77,7 @@ public abstract class ColumnAttrib implements Serializable {
                                          final long timestamp,
                                          final Object val) throws HBqlException;
 
-    public abstract Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException;
+    public abstract Map<Long, Object> getVersionObjectValueMap(final Object recordObj) throws HBqlException;
 
     public abstract void setKeysAsColumnsValue(final Object newobj,
                                                final String mapKey,
