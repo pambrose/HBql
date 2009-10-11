@@ -3,18 +3,18 @@ package org.apache.hadoop.hbase.hbql.client;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ObjectHValue implements HValue {
+public class ObjectHValue<T> implements HValue {
 
     private boolean currentValueSet = false;
-    private Object currentValue = null;
+    private T currentValue = null;
     private long currentValueTimestamp = -1;
-    private Map<Long, Object> versionMap = null;
+    private Map<Long, T> versionMap = null;
 
-    public Object getCurrentValue() {
+    public T getCurrentValue() {
         return this.currentValue;
     }
 
-    public void setCurrentValue(final long timestamp, final Object val) {
+    public void setCurrentValue(final long timestamp, final T val) {
         if (timestamp >= this.currentValueTimestamp) {
             this.currentValueSet = true;
             this.currentValueTimestamp = timestamp;
@@ -22,24 +22,24 @@ public class ObjectHValue implements HValue {
         }
     }
 
-    public Map<Long, Object> getVersionMap() {
+    public Map<Long, T> getVersionMap() {
 
         if (this.versionMap != null)
             return this.versionMap;
 
         synchronized (this) {
             if (this.versionMap == null)
-                this.versionMap = new TreeMap<Long, Object>();
+                this.versionMap = new TreeMap<Long, T>();
 
             return this.versionMap;
         }
     }
 
-    public void setVersionValue(final Long ts, final Object val) {
+    public void setVersionValue(final Long ts, final T val) {
         this.getVersionMap().put(ts, val);
     }
 
-    public void setVersionMap(final Map<Long, Object> versionMap) {
+    public void setVersionMap(final Map<Long, T> versionMap) {
         this.versionMap = versionMap;
     }
 

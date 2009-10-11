@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.NavigableMap;
 
 public class HRecord implements Serializable {
 
@@ -141,6 +142,28 @@ public class HRecord implements Serializable {
             throw new HBqlException("Not a FamilyDefaultHValue value");
     }
 
+    // Set Version maps
+    public void setVersionObjectValueMap(final String name,
+                                         final Map<Long, Object> val,
+                                         final boolean inSchema) throws HBqlException {
+        final ObjectHValue hvalue = this.getObjectHValue(name, inSchema);
+        hvalue.setVersionMap(val);
+    }
+
+    public void setVersionKeysAsColumnsMap(final String columnName,
+                                           final String mapKey,
+                                           final NavigableMap<Long, byte[]> val) throws HBqlException {
+
+    }
+
+    public void setVersionFamilyDefaultMap(final String familyName,
+                                           final String columnName,
+                                           final NavigableMap<Long, byte[]> val) throws HBqlException {
+
+        final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue(familyName);
+        hvalue.setVersionMap(val);
+    }
+
 
     // Current Object values
     public void setCurrentObjectValue(final String family,
@@ -185,11 +208,12 @@ public class HRecord implements Serializable {
         return (hvalue != null) ? hvalue.getVersionMap() : null;
     }
 
-    public void setVersionObjectValueMap(final String name,
-                                         final Map<Long, Object> val,
-                                         final boolean inSchema) throws HBqlException {
-        final ObjectHValue hvalue = this.getObjectHValue(name, inSchema);
-        hvalue.setVersionMap(val);
+    public void setVersionFamilyDefaultValue(final String familyName,
+                                             final String columnName,
+                                             final long timestamp,
+                                             final Object val) throws HBqlException {
+        final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue(familyName);
+        hvalue.setVersionValue(columnName, timestamp, val);
     }
 
     public void setVersionObjectValue(final String name,
@@ -214,39 +238,32 @@ public class HRecord implements Serializable {
 
 
     // Current KeysAsColumns values
-    public void setCurrentKeysAsColumnsValue(final String name,
+    public void setCurrentKeysAsColumnsValue(final String columnName,
                                              final String mapKey,
                                              final long timestamp,
                                              final Object val,
                                              final boolean inSchema) throws HBqlException {
-        final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsHValue(name, inSchema);
+        final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsHValue(columnName, inSchema);
         hvalue.setCurrentValue(timestamp, mapKey, val);
     }
 
-    public void setVersionKeysAsColumnsValue(final String name,
+    public void setVersionKeysAsColumnsValue(final String columnName,
                                              final String mapKey,
                                              final long timestamp,
                                              final Object val,
                                              final boolean inSchema) throws HBqlException {
-        final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsHValue(name, inSchema);
+        final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsHValue(columnName, inSchema);
         hvalue.setVersionValue(mapKey, timestamp, val);
     }
 
-    public void setCurrentFamilyDefaultValue(final String name,
-                                             final String mapKey,
+    public void setCurrentFamilyDefaultValue(final String familyName,
+                                             final String columnName,
                                              final long timestamp,
                                              final Object val) throws HBqlException {
-        final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue(name);
-        hvalue.setCurrentValue(timestamp, mapKey, val);
+        final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue(familyName);
+        hvalue.setCurrentValue(timestamp, columnName, val);
     }
 
-    public void setVersionDefaultFamilyValue(final String name,
-                                             final String mapKey,
-                                             final long timestamp,
-                                             final Object val) throws HBqlException {
-        final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue(name);
-        hvalue.setVersionValue(mapKey, timestamp, val);
-    }
 
     private HValue getHValue(final String name) {
 
