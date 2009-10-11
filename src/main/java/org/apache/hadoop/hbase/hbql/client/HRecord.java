@@ -80,7 +80,7 @@ public class HRecord implements Serializable {
         return this.getKeysAsColumnsHValue(name, true).getVersionMap(mapKey);
     }
 
-    public Map<Long, Object> getOrAddFamilyDefaultVersionValueMap(final String name,
+    public Map<Long, byte[]> getOrAddFamilyDefaultVersionValueMap(final String name,
                                                                   final String mapKey) throws HBqlException {
         return this.getFamilyDefaultHValue(name).getVersionMap(mapKey);
     }
@@ -152,8 +152,11 @@ public class HRecord implements Serializable {
 
     public void setVersionKeysAsColumnsMap(final String columnName,
                                            final String mapKey,
-                                           final NavigableMap<Long, byte[]> val) throws HBqlException {
+                                           final NavigableMap<Long, Object> val,
+                                           final boolean inSchema) throws HBqlException {
 
+        final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsHValue(columnName, inSchema);
+        hvalue.setVersionMap(mapKey, val);
     }
 
     public void setVersionFamilyDefaultMap(final String familyName,
@@ -161,7 +164,7 @@ public class HRecord implements Serializable {
                                            final NavigableMap<Long, byte[]> val) throws HBqlException {
 
         final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue(familyName);
-        hvalue.setVersionMap(val);
+        hvalue.setVersionMap(columnName, val);
     }
 
 
@@ -211,7 +214,7 @@ public class HRecord implements Serializable {
     public void setVersionFamilyDefaultValue(final String familyName,
                                              final String columnName,
                                              final long timestamp,
-                                             final Object val) throws HBqlException {
+                                             final byte[] val) throws HBqlException {
         final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue(familyName);
         hvalue.setVersionValue(columnName, timestamp, val);
     }
@@ -259,7 +262,7 @@ public class HRecord implements Serializable {
     public void setCurrentFamilyDefaultValue(final String familyName,
                                              final String columnName,
                                              final long timestamp,
-                                             final Object val) throws HBqlException {
+                                             final byte[] val) throws HBqlException {
         final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue(familyName);
         hvalue.setCurrentValue(timestamp, columnName, val);
     }

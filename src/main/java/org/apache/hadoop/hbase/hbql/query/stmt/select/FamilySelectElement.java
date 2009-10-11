@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.TreeMap;
 
 public class FamilySelectElement implements SelectElement {
 
@@ -218,12 +217,6 @@ public class FamilySelectElement implements SelectElement {
 
                         if (!(newobj instanceof HRecord))
                             return;
-
-                        final Map<Long, Object> mapval = new TreeMap<Long, Object>();
-                        for (final Long timestamp : timeStampMap.keySet()) {
-                            final byte[] b = timeStampMap.get(timestamp);
-                            mapval.put(timestamp, b);
-                        }
 
                         final HRecord hrecord = (HRecord)newobj;
                         hrecord.setVersionFamilyDefaultMap(familyName, columnName, timeStampMap);

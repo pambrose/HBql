@@ -6,20 +6,20 @@ import java.util.Map;
 
 public abstract class MappedHValue<T> implements HValue {
 
-    private Map<String, ObjectHValue<T>> keysAsColumnMap = Maps.newHashMap();
+    private Map<String, PrimitiveHValue<T>> keysAsColumnMap = Maps.newHashMap();
 
     public Object getCurrentValue(final String name) {
         return this.getHValue(name).getCurrentValue();
     }
 
-    private Map<String, ObjectHValue<T>> getKeysAsColumnMap() {
+    private Map<String, PrimitiveHValue<T>> getKeysAsColumnMap() {
         return this.keysAsColumnMap;
     }
 
-    private ObjectHValue<T> getHValue(final String mapKey) {
-        ObjectHValue<T> hvalue = this.getKeysAsColumnMap().get(mapKey);
+    private PrimitiveHValue<T> getHValue(final String mapKey) {
+        PrimitiveHValue<T> hvalue = this.getKeysAsColumnMap().get(mapKey);
         if (hvalue == null) {
-            hvalue = new ObjectHValue<T>();
+            hvalue = new PrimitiveHValue<T>();
             this.getKeysAsColumnMap().put(mapKey, hvalue);
         }
         return hvalue;
