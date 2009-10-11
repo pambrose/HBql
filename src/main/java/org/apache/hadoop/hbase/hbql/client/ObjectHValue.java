@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.client;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ObjectHValue extends HValue {
+public class ObjectHValue implements HValue {
 
     private boolean currentValueSet = false;
     private Object currentValue = null;

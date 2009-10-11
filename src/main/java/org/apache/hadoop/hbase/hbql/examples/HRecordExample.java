@@ -24,6 +24,8 @@ public class HRecordExample {
                             + "family1:author string alias author, "
                             + "family1:title string  alias title, "
                             + "family1:intValue int alias comp1"
+                            + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
+                            + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
                             + ")");
 
         HConnection conn = HConnectionManager.newHConnection();
@@ -41,9 +43,9 @@ public class HRecordExample {
             final HBatch batch = new HBatch();
             for (int i = 0; i < 10; i++) {
                 HRecord hrecord = new HRecord("testobjects");
-                hrecord.setCurrentValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
-                hrecord.setCurrentValue("author", "A new author value: " + i);
-                hrecord.setCurrentValue("title", "A very new title value: " + i);
+                hrecord.setCurrentObjectValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
+                hrecord.setCurrentObjectValue("author", "A new author value: " + i);
+                hrecord.setCurrentObjectValue("title", "A very new title value: " + i);
                 batch.insert(hrecord);
             }
 
@@ -66,22 +68,22 @@ public class HRecordExample {
         HResults<HRecord> results1 = q1.getResults();
 
         for (HRecord val1 : results1) {
-            System.out.println("Current Values: " + val1.getCurrentValue("keyval")
-                               + " - " + val1.getCurrentValue("family1:author")
-                               + " - " + val1.getCurrentValue("title")
-                               + " - " + val1.getCurrentValue("comp1")
+            System.out.println("Current Values: " + val1.getCurrentObjectValue("keyval")
+                               + " - " + val1.getCurrentObjectValue("family1:author")
+                               + " - " + val1.getCurrentObjectValue("title")
+                               + " - " + val1.getCurrentObjectValue("comp1")
             );
 
             System.out.println("Historicals");
 
-            if (val1.getVersionValueMap("author") != null) {
-                Map<Long, Object> versioned = val1.getVersionValueMap("family1:author");
+            if (val1.getVersionObjectValueMap("author") != null) {
+                Map<Long, Object> versioned = val1.getVersionObjectValueMap("family1:author");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }
 
-            if (val1.getVersionValueMap("family1:title") != null) {
-                Map<Long, Object> versioned = val1.getVersionValueMap("title");
+            if (val1.getVersionObjectValueMap("family1:title") != null) {
+                Map<Long, Object> versioned = val1.getVersionObjectValueMap("title");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }

@@ -120,8 +120,8 @@ public class HBqlFilter implements Filter {
                 try {
                     LOG.info("In in filterKeyValue() setting value for: " + familyName + ":" + columnName);
                     final Object val = attrib.getValueFromBytes(null, v.getValue());
-                    this.getRecord().setCurrentValue(familyName, columnName, v.getTimestamp(), val);
-                    this.getRecord().setVersionedValue(familyName, columnName, v.getTimestamp(), val, true);
+                    this.getRecord().setCurrentObjectValue(familyName, columnName, v.getTimestamp(), val);
+                    this.getRecord().setVersionedObjectValue(familyName, columnName, v.getTimestamp(), val, true);
                 }
                 catch (Exception e) {
                     HUtil.logException(LOG, e);
@@ -213,8 +213,8 @@ public class HBqlFilter implements Filter {
         };
 
         for (String val : vals) {
-            filter.getRecord().setCurrentValue(family, column, 100, val);
-            filter.getRecord().setVersionedValue(family, column, 100, val, true);
+            filter.getRecord().setCurrentObjectValue(family, column, 100, val);
+            filter.getRecord().setVersionedObjectValue(family, column, 100, val, true);
         }
 
         boolean v = filter.filterRow();

@@ -57,6 +57,12 @@ public class AnnotationExample {
         @HColumnVersionMap(instance = "author")
         public NavigableMap<Long, String> authorVersions;
 
+        @HColumn(family = "family3", familyDefault = true)
+        public Map<String, byte[]> family1Default = Maps.newHashMap();
+
+        @HColumnVersionMap(instance = "family1Default")
+        public Map<String, NavigableMap<Long, byte[]>> family1DefaultVersions;
+
         @HColumn(family = "family2", getter = "getHeaderBytes", setter = "setHeaderBytes")
         public String header = "A header value";
 

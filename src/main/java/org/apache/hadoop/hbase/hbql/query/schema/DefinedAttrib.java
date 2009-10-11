@@ -50,12 +50,12 @@ public class DefinedAttrib extends ColumnAttrib {
 
     public Object getCurrentValue(final Object recordObj) throws HBqlException {
         final HRecord record = (HRecord)recordObj;
-        return record.getCurrentValue(this.getAliasName());
+        return record.getCurrentObjectValue(this.getAliasName());
     }
 
     public void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException {
         final HRecord record = (HRecord)newobj;
-        record.setCurrentValue(this.getAliasName(), timestamp, val, true);
+        record.setCurrentObjectValue(this.getAliasName(), timestamp, val, true);
     }
 
     public void setKeysAsColumnsValue(final Object newobj,

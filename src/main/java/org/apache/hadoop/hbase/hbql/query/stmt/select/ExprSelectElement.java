@@ -169,9 +169,9 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                 return;
 
             final HRecord hrecord = (HRecord)newobj;
-            hrecord.setCurrentValue(this.getSelectName(),
-                                    result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes()),
-                                    false);
+            hrecord.setCurrentObjectValue(this.getSelectName(),
+                                          result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes()),
+                                          false);
         }
         else {
             // Do not process if it is an annotation history value
