@@ -59,29 +59,30 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     public void setKeysAsColumnsValue(final Object newobj,
-                                      final long timestamp,
                                       final String mapKey,
                                       final Object val) throws HBqlException {
 
-        if (!this.isMapKeysAsColumns())
+        if (!this.isMapKeysAsColumnsColumn())
             throw new HBqlException(this.getFamilyQualifiedName() + " not marked as mapKeysAsColumns");
 
         final HRecord record = (HRecord)newobj;
-        record.setKeysAsColumnsValue(this.getAliasName(), timestamp, mapKey, val, true);
+        record.setKeysAsColumnsValue(this.getAliasName(), mapKey, 0, val, true);
     }
 
     public Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException {
         final HRecord record = (HRecord)recordObj;
-        return record.getVersionedValueMap(this.getAliasName());
+        return record.getOrAddVersionValueMap(this.getAliasName());
     }
 
-    public void setVersionValueMapValue(final Object newobj, final Map<Long, Object> map) throws HBqlException {
-        final HRecord record = (HRecord)newobj;
-        record.setVersionedValueMap(this.getAliasName(), map, true);
+    public Map<Long, Object> getKeysAsColumnsVersionMap(final Object recordObj,
+                                                        final String mapKey) throws HBqlException {
+        final HRecord record = (HRecord)recordObj;
+        return record.getOrAddKeysAsColumnsVersionValueMap(this.getAliasName(), mapKey);
     }
 
-    protected Method getMethod(final String methodName, final Class<?>... params) throws NoSuchMethodException {
-        return null;
+    protected Method getMethod(final String methodName,
+                               final Class<?>... params) throws NoSuchMethodException, HBqlException {
+        throw new HBqlException("Internal error");
     }
 
     protected Class getComponentType() {

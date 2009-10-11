@@ -77,14 +77,14 @@ public abstract class ColumnAttrib implements Serializable {
                                          final long timestamp,
                                          final Object val) throws HBqlException;
 
+    public abstract Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException;
+
     public abstract void setKeysAsColumnsValue(final Object newobj,
-                                               final long timestamp,
                                                final String mapKey,
                                                final Object val) throws HBqlException;
 
-    public abstract Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException;
-
-    public abstract void setVersionValueMapValue(final Object newobj, final Map<Long, Object> map) throws HBqlException;
+    public abstract Map<Long, Object> getKeysAsColumnsVersionMap(final Object newobj,
+                                                                 final String mapKey) throws HBqlException;
 
     public FieldType getFieldType() {
         return this.fieldType;
@@ -171,9 +171,9 @@ public abstract class ColumnAttrib implements Serializable {
         return false;
     }
 
-    protected abstract Method getMethod(final String methodName, final Class<?>... params) throws NoSuchMethodException;
+    protected abstract Method getMethod(final String methodName, final Class<?>... params) throws NoSuchMethodException, HBqlException;
 
-    protected abstract Class getComponentType();
+    protected abstract Class getComponentType() throws HBqlException;
 
     public abstract String getNameToUseInExceptions();
 
@@ -195,7 +195,7 @@ public abstract class ColumnAttrib implements Serializable {
         return this.setterMethod;
     }
 
-    public boolean isMapKeysAsColumns() {
+    public boolean isMapKeysAsColumnsColumn() {
         return this.mapKeysAsColumns;
     }
 

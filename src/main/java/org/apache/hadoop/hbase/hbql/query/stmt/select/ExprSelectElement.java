@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.TreeMap;
 
 public class ExprSelectElement extends ExprContext implements SelectElement {
 
@@ -179,7 +178,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             if (this.getColumnAttrib().isACurrentValue()) {
 
                 // If this is a mapKesAsColumns, then we need to build the map from all the related columns in the family
-                if (this.getColumnAttrib().isMapKeysAsColumns()) {
+                if (this.getColumnAttrib().isMapKeysAsColumnsColumn()) {
                     final Map mapval = this.getMapKeysAsColumnsValue(result);
                     this.getColumnAttrib().setCurrentValue(newobj, 0, mapval);
                 }
@@ -205,12 +204,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             if (timeStampMap == null)
                 return;
 
-            Map<Long, Object> mapval = this.getColumnAttrib().getVersionValueMapValue(newobj);
-
-            if (mapval == null) {
-                mapval = new TreeMap();
-                this.getColumnAttrib().setVersionValueMapValue(newobj, mapval);
-            }
+            final Map<Long, Object> mapval = this.getColumnAttrib().getVersionValueMapValue(newobj);
 
             for (final Long timestamp : timeStampMap.keySet()) {
                 final byte[] b = timeStampMap.get(timestamp);

@@ -74,14 +74,14 @@ public class HRecordExample {
 
             System.out.println("Historicals");
 
-            if (val1.getVersionedValueMap("author") != null) {
-                Map<Long, Object> versioned = val1.getVersionedValueMap("family1:author");
+            if (val1.getVersionValueMap("author") != null) {
+                Map<Long, Object> versioned = val1.getVersionValueMap("family1:author");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }
 
-            if (val1.getVersionedValueMap("family1:title") != null) {
-                Map<Long, Object> versioned = val1.getVersionedValueMap("title");
+            if (val1.getVersionValueMap("family1:title") != null) {
+                Map<Long, Object> versioned = val1.getVersionValueMap("title");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }

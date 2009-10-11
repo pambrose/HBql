@@ -72,6 +72,9 @@ public class AnnotationExample {
         @HColumn(family = "family3", mapKeysAsColumns = true)
         public Map<String, String> mapval1 = Maps.newHashMap();
 
+        @HColumnVersionMap(instance = "mapval1")
+        public Map<String, NavigableMap<Long, String>> mapval1Versions;
+
         @HColumn(family = "family3", mapKeysAsColumns = false)
         public Map<String, String> mapval2 = Maps.newHashMap();
 
@@ -153,5 +156,4 @@ public class AnnotationExample {
 
         results2.close();
     }
-
 }

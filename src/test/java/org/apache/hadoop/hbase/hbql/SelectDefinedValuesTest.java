@@ -243,10 +243,10 @@ public class SelectDefinedValuesTest extends TestSupport {
         assertTrue(recList1.size() == 10);
 
         for (final HRecord rec : recList1) {
-            Map<Long, Object> m1 = rec.getVersionedValueMap("val2");
+            Map<Long, Object> m1 = rec.getVersionValueMap("val2");
             assertTrue(m1.size() == 3);
 
-            Map<Long, Object> m2 = rec.getVersionedValueMap("val8");
+            Map<Long, Object> m2 = rec.getVersionValueMap("val8");
             assertTrue(m2.size() == 3);
 
             for (Object obj : m2.values()) {

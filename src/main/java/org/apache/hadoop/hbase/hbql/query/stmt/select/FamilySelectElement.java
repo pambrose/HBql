@@ -132,7 +132,7 @@ public class FamilySelectElement implements SelectElement {
 
                     if (attrib != null) {
                         final Object val = attrib.getValueFromBytes(newobj, currentValueBytes);
-                        attrib.setKeysAsColumnsValue(newobj, 0, mapKey, val);
+                        attrib.setKeysAsColumnsValue(newobj, mapKey, val);
                     }
                     else {
                         // Set unknown attrib value to byte[] value
@@ -141,7 +141,7 @@ public class FamilySelectElement implements SelectElement {
                             return;
 
                         final HRecord hrecord = (HRecord)newobj;
-                        hrecord.setKeysAsColumnsValue(familyName + ":" + columnName, 0, mapKey, currentValueBytes, false);
+                        hrecord.setKeysAsColumnsValue(familyName + ":" + columnName, mapKey, 0, currentValueBytes, false);
                     }
                 }
                 else {
@@ -183,13 +183,14 @@ public class FamilySelectElement implements SelectElement {
                     final String mapColumn = columnName.substring(0, lbrace);
                     final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
 
-                    final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
-                                                                                                  mapColumn);
+                    final ColumnAttrib attrib = this.getSchema().getVersionAttribFromFamilyQualifiedNameMap(familyName,
+                                                                                                            mapColumn);
 
                     if (attrib != null) {
+                        final Map<Long, Object> kacVersionMap = attrib.getKeysAsColumnsVersionMap(newobj, mapKey);
                         for (final Long timestamp : timeStampMap.keySet()) {
                             final Object val = attrib.getValueFromBytes(newobj, timeStampMap.get(timestamp));
-                            attrib.setKeysAsColumnsVersionValue(newobj, timestamp, mapKey, val);
+                            kacVersionMap.put(timestamp, val);
                         }
                     }
                     else {
@@ -208,8 +209,8 @@ public class FamilySelectElement implements SelectElement {
                     }
                 }
                 else {
-                    final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName,
-                                                                                                  columnName);
+                    final ColumnAttrib attrib = this.getSchema().getVersionAttribFromFamilyQualifiedNameMap(familyName,
+                                                                                                            columnName);
 
                     // Ignore data if no version map exists for the column
 
@@ -218,7 +219,7 @@ public class FamilySelectElement implements SelectElement {
                         if (!(newobj instanceof HRecord))
                             return;
 
-                        final Map<Long, Object> mapval = new TreeMap();
+                        final Map<Long, Object> mapval = new TreeMap<Long, Object>();
                         for (final Long timestamp : timeStampMap.keySet()) {
                             final byte[] b = timeStampMap.get(timestamp);
                             mapval.put(timestamp, b);
@@ -228,20 +229,12 @@ public class FamilySelectElement implements SelectElement {
                         hrecord.setVersionedValueMap(familyName + ":" + columnName, mapval, false);
                     }
                     else {
-                        // Ignore if not in select list
-                        if (!selectAttribList.contains(attrib))
-                            continue;
+                        final Map<Long, Object> mapVal = attrib.getVersionValueMapValue(newobj);
 
-                        Map<Long, Object> mapval = attrib.getVersionValueMapValue(newobj);
-
-                        if (mapval == null) {
-                            mapval = new TreeMap();
-                            attrib.setVersionValueMapValue(newobj, mapval);
-                        }
                         for (final Long timestamp : timeStampMap.keySet()) {
                             final byte[] b = timeStampMap.get(timestamp);
                             final Object val = attrib.getValueFromBytes(newobj, b);
-                            mapval.put(timestamp, val);
+                            mapVal.put(timestamp, val);
                         }
                     }
                 }

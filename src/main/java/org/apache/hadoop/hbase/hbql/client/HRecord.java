@@ -72,8 +72,7 @@ public class HRecord implements Serializable {
             return this.addObjectHValue(name, inSchema);
     }
 
-    private KeysAsColumnsHValue getKeysAsColumnsHValue(final String name,
-                                                       final boolean inSchema) throws HBqlException {
+    private KeysAsColumnsHValue getKeysAsColumnsHValue(final String name, final boolean inSchema) throws HBqlException {
 
         final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsValue(name);
 
@@ -147,17 +146,15 @@ public class HRecord implements Serializable {
                                 final long timestamp,
                                 final Object val,
                                 final boolean inSchema) throws HBqlException {
-
         final ObjectHValue hvalue = this.getObjectHValue(name, inSchema);
         hvalue.setCurrentValue(timestamp, val);
     }
 
     public void setKeysAsColumnsValue(final String name,
-                                      final long timestamp,
                                       final String mapKey,
+                                      final long timestamp,
                                       final Object val,
                                       final boolean inSchema) throws HBqlException {
-
         final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsHValue(name, inSchema);
         hvalue.setCurrentValue(timestamp, mapKey, val);
     }
@@ -167,14 +164,22 @@ public class HRecord implements Serializable {
                                              final long timestamp,
                                              final Object val,
                                              final boolean inSchema) throws HBqlException {
-
         final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsHValue(name, inSchema);
         hvalue.setVersionValue(mapKey, timestamp, val);
     }
 
-    public Map<Long, Object> getVersionedValueMap(final String name) throws HBqlException {
+    public Map<Long, Object> getVersionValueMap(final String name) throws HBqlException {
         final ObjectHValue hvalue = this.getObjectHValue(name);
         return (hvalue != null) ? hvalue.getVersionMap() : null;
+    }
+
+    public Map<Long, Object> getOrAddVersionValueMap(final String name) throws HBqlException {
+        return this.getObjectHValue(name, true).getVersionMap();
+    }
+
+    public Map<Long, Object> getOrAddKeysAsColumnsVersionValueMap(final String name,
+                                                                  final String mapKey) throws HBqlException {
+        return this.getKeysAsColumnsHValue(name, true).getVersionMap(mapKey);
     }
 
     public void setVersionedValueMap(final String name,

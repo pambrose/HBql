@@ -1,10 +1,13 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public abstract class FieldAttrib extends ColumnAttrib {
 
@@ -89,23 +92,56 @@ public abstract class FieldAttrib extends ColumnAttrib {
     }
 
     public void setKeysAsColumnsValue(final Object newobj,
-                                      final long timestamp,
                                       final String mapKey,
                                       final Object val) throws HBqlException {
-        // TODO finish this
 
-        if (!this.isMapKeysAsColumns())
+        if (!this.isMapKeysAsColumnsColumn())
             throw new HBqlException(this.getFamilyQualifiedName() + " not marked as mapKeysAsColumns");
+
+        Map<String, Object> mapVal = (Map<String, Object>)this.getCurrentValue(newobj);
+
+        if (mapVal == null) {
+            mapVal = Maps.newHashMap();
+            this.setCurrentValue(newobj, 0, mapVal);
+        }
+
+        mapVal.put(mapKey, val);
     }
 
-    public Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException {
-        // Just call current value for version since we have different fields for each
-        return (Map<Long, Object>)this.getCurrentValue(recordObj);
+    public Map<Long, Object> getVersionValueMapValue(final Object newobj) throws HBqlException {
+
+        if (!this.isAVersionValue())
+            throw new HBqlException(this.getFamilyQualifiedName() + " not marked with @HColumnVersionMap");
+
+        // Just call current value for version since we have different fields for current value and versions
+        Map<Long, Object> mapVal = (Map<Long, Object>)this.getCurrentValue(newobj);
+        if (mapVal == null) {
+            mapVal = new TreeMap<Long, Object>();
+            this.setCurrentValue(newobj, 0, mapVal);
+        }
+        return mapVal;
     }
 
-    public void setVersionValueMapValue(final Object newobj, final Map<Long, Object> map) {
-        // Just call current value for version since we have different fields for each
-        this.setCurrentValue(newobj, 0, map);
+    public Map<Long, Object> getKeysAsColumnsVersionMap(final Object newobj, final String mapKey) throws HBqlException {
+
+        if (!this.isAVersionValue())
+            throw new HBqlException(this.getFamilyQualifiedName() + " not marked with @HColumnVersionMap");
+
+        // TODO Should make sure that this refers to column marked as mapKeysAsColumns as well
+
+        // Just call current value for version since we have different fields for current value and versions
+        Map<String, Map<Long, Object>> mapVal = (Map<String, Map<Long, Object>>)this.getCurrentValue(newobj);
+        if (mapVal == null) {
+            mapVal = new HashMap<String, Map<Long, Object>>();
+            this.setCurrentValue(newobj, 0, mapVal);
+        }
+
+        Map<Long, Object> mapForKey = mapVal.get(mapKey);
+        if (mapForKey == null) {
+            mapForKey = new TreeMap<Long, Object>();
+            mapVal.put(mapKey, mapForKey);
+        }
+        return mapForKey;
     }
 
     protected static void setAccessible(final Field field) {

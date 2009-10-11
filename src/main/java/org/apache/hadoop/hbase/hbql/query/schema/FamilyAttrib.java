@@ -36,21 +36,20 @@ public class FamilyAttrib extends ColumnAttrib {
     }
 
     public void setKeysAsColumnsValue(final Object newobj,
-                                      final long timestamp,
                                       final String mapKey,
                                       final Object val) throws HBqlException {
 
     }
 
     public Map<Long, Object> getVersionValueMapValue(final Object recordObj) throws HBqlException {
-        return null;
+        throw new HBqlException("Internal error");
     }
 
-    protected Class getComponentType() {
-        return null;
+    protected Class getComponentType() throws HBqlException {
+        throw new HBqlException("Internal error");
     }
 
-    public void setVersionValueMapValue(final Object newobj, final Map<Long, Object> map) {
-
+    public Map<Long, Object> getKeysAsColumnsVersionMap(final Object newobj, final String mapKey) throws HBqlException {
+        throw new HBqlException("Internal error");
     }
 }

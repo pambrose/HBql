@@ -74,7 +74,7 @@ public class HBatch {
         for (final String family : schema.getFamilySet()) {
             for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {
 
-                if (attrib.isMapKeysAsColumns()) {
+                if (attrib.isMapKeysAsColumnsColumn()) {
                     final Map mapval = (Map)attrib.getCurrentValue(newrec);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
@@ -104,7 +104,7 @@ public class HBatch {
         for (final String family : schema.getFamilySet()) {
             for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {
 
-                if (attrib.isMapKeysAsColumns()) {
+                if (attrib.isMapKeysAsColumnsColumn()) {
                     final Map mapval = (Map)attrib.getCurrentValue(hRecord);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
