@@ -37,18 +37,22 @@ public class ColumnDescription implements Serializable {
         this.isArray = isArray;
     }
 
-    public static ColumnDescription newColumnDescription(final String familyQualifiedName,
-                                                         final String aliasName,
-                                                         final boolean mapKeysAsColumns,
-                                                         final boolean familyDefault,
-                                                         final String typeName,
-                                                         final boolean isArray) {
+    public static ColumnDescription newColumn(final String familyQualifiedName,
+                                              final String aliasName,
+                                              final boolean mapKeysAsColumns,
+                                              final boolean familyDefault,
+                                              final String typeName,
+                                              final boolean isArray) {
         return new ColumnDescription(familyQualifiedName,
                                      aliasName,
                                      mapKeysAsColumns,
-                                     familyDefault,
+                                     false,
                                      typeName,
                                      isArray);
+    }
+
+    public static ColumnDescription newFamilyDefault(final String familyQualifiedName, final String aliasName) {
+        return new ColumnDescription(familyQualifiedName, aliasName, false, false, null, false);
     }
 
     private static FieldType getFieldType(final String typeName) {
@@ -74,6 +78,10 @@ public class ColumnDescription implements Serializable {
 
     public boolean isMapKeysAsColumns() {
         return this.mapKeysAsColumns;
+    }
+
+    public boolean isFamilyDefault() {
+        return this.familyDefault;
     }
 
     public FieldType getFieldType() {

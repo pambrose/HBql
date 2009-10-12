@@ -36,7 +36,8 @@ public class HBatch {
         this.getActionList(schema.getTableName()).add(HBatchAction.newInsert(put));
     }
 
-    public void insert(final HRecordImpl hrecord) throws HBqlException {
+    public void insert(final HRecord rec) throws HBqlException {
+        final HRecordImpl hrecord = (HRecordImpl)rec;
         final HBaseSchema schema = hrecord.getSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         if (!hrecord.isCurrentValueSet(keyAttrib))

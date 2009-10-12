@@ -16,6 +16,7 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
               field,
               FieldType.getFieldType(field),
               field.getAnnotation(HColumn.class).mapKeysAsColumns(),
+              field.getAnnotation(HColumn.class).familyDefault(),
               field.getAnnotation(HColumn.class).getter(),
               field.getAnnotation(HColumn.class).setter());
 

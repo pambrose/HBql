@@ -113,6 +113,9 @@ public enum FieldType {
 
     public static FieldType getFieldType(final String desc) throws HBqlException {
 
+        if (desc == null)
+            return null;
+
         for (final FieldType type : values()) {
             if (type.matchesSynonym(desc))
                 return type;

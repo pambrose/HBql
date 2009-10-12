@@ -8,7 +8,7 @@ import java.util.Map;
 public class FamilyAttrib extends ColumnAttrib {
 
     public FamilyAttrib(final String familyName) {
-        super(familyName, "", "", false, null, false, null, null);
+        super(familyName, "", "", false, false, null, false, null, null);
     }
 
     public boolean isAFamilyAttrib() {

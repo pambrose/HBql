@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -18,6 +17,7 @@ public class DefinedAttrib extends ColumnAttrib {
               columnDescription.getColumnName(),
               columnDescription.getAliasName(),
               columnDescription.isMapKeysAsColumns(),
+              columnDescription.isFamilyDefault(),
               columnDescription.getFieldType(),
               columnDescription.isArray(),
               null,
@@ -64,7 +64,7 @@ public class DefinedAttrib extends ColumnAttrib {
         if (!this.isMapKeysAsColumnsAttrib())
             throw new HBqlException(this.getFamilyQualifiedName() + " not marked as mapKeysAsColumns");
 
-        ((HRecord)hrecord).setKeysAsColumnsCurrentValue(this.getAliasName(), mapKey, 0, val, true);
+        ((HRecordImpl)hrecord).setKeysAsColumnsCurrentValue(this.getAliasName(), mapKey, 0, val, true);
     }
 
     public Map<Long, Object> getVersionObjectValueMap(final Object hrecord) throws HBqlException {

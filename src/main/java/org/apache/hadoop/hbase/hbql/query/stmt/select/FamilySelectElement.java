@@ -136,11 +136,11 @@ public class FamilySelectElement implements SelectElement {
                         if (!(newobj instanceof HRecord))
                             return;
 
-                        ((HRecord)newobj).setKeysAsColumnsCurrentValue(familyName + ":" + columnName,
-                                                                       mapKey,
-                                                                       0,
-                                                                       currentValueBytes,
-                                                                       false);
+                        ((HRecordImpl)newobj).setKeysAsColumnsCurrentValue(familyName + ":" + columnName,
+                                                                           mapKey,
+                                                                           0,
+                                                                           currentValueBytes,
+                                                                           false);
                     }
                     else {
                         final Object val = attrib.getValueFromBytes(newobj, currentValueBytes);
@@ -156,7 +156,10 @@ public class FamilySelectElement implements SelectElement {
                         if (!(newobj instanceof HRecord))
                             return;
 
-                        ((HRecord)newobj).setFamilyDefaultCurrentValue(familyName, columnName, 0, currentValueBytes);
+                        ((HRecordImpl)newobj).setFamilyDefaultCurrentValue(familyName,
+                                                                           columnName,
+                                                                           0,
+                                                                           currentValueBytes);
                     }
                     else {
                         // If attrib is found, then assign the deserialized value to the known attrib                        

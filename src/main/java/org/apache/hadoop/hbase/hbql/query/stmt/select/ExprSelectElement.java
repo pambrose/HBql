@@ -153,10 +153,11 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             if (!(newobj instanceof HRecord))
                 return;
 
-            ((HRecord)newobj).setFamilyDefaultCurrentValue(this.getFamilyName(),
-                                                           this.getSelectName(),
-                                                           0,
-                                                           result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes()));
+            ((HRecordImpl)newobj).setFamilyDefaultCurrentValue(this.getFamilyName(),
+                                                               this.getSelectName(),
+                                                               0,
+                                                               result.getValue(this.getFamilyNameBytes(),
+                                                                               this.getColumnNameBytes()));
         }
         else {
             final Object elementValue = this.getValue(result);
@@ -182,11 +183,11 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             if (!(newobj instanceof HRecord))
                 return;
 
-            ((HRecord)newobj).setFamilyDefaultCurrentValue(this.getFamilyName(),
-                                                           this.getSelectName(),
-                                                           0,
-                                                           result.getValue(this.getFamilyNameBytes(),
-                                                                           this.getColumnNameBytes()));
+            ((HRecordImpl)newobj).setFamilyDefaultCurrentValue(this.getFamilyName(),
+                                                               this.getSelectName(),
+                                                               0,
+                                                               result.getValue(this.getFamilyNameBytes(),
+                                                                               this.getColumnNameBytes()));
         }
         else {
             // Do not process if it is an annotation history value

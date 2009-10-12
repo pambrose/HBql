@@ -84,8 +84,8 @@ attribList returns [List<ColumnDescription> retval]
 	
 defineAttrib returns [ColumnDescription retval]
 	: c=ID type=ID (b=LBRACE RBRACE)? m=keyMAP? (keyALIAS a=ID)?	
-							{retval = ColumnDescription.newColumnDescription($c.text, $a.text, $m.text!=null, false, $type.text, $b.text!=null);}
-	| familyRef f=keyFAMILYDEFAULT (keyALIAS a=ID)?
+							{retval = ColumnDescription.newColumn($c.text, $a.text, $m.text!=null, false, $type.text, $b.text!=null);}
+	| f=familyRef (keyALIAS a=ID)?			{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
 	;
 
 

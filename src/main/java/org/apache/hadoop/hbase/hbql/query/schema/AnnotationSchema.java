@@ -332,8 +332,9 @@ public class AnnotationSchema extends HBaseSchema {
 
     private void processColumnVersionAnnotation(final Field field) throws HBqlException {
         final VersionAnnotationAttrib attrib = VersionAnnotationAttrib.newVersionAttrib(this, field);
-        final String name = attrib.getAliasName();
-        this.addAttribToVariableNameMap(attrib, name);
+        final String aliasName = attrib.getAliasName();
+
+        this.addAttribToVariableNameMap(attrib, aliasName);
         this.addVersionAttribToFamilyQualifiedNameMap(attrib);
     }
 
@@ -389,12 +390,12 @@ public class AnnotationSchema extends HBaseSchema {
             final String columnType = columnAttrib.isKeyAttrib()
                                       ? FieldType.KeyType.getFirstSynonym()
                                       : columnAttrib.getFieldType().getFirstSynonym();
-            varList.add(ColumnDescription.newColumnDescription(columnAttrib.getFamilyQualifiedName(),
-                                                               columnAttrib.getAliasName(),
-                                                               columnAttrib.isMapKeysAsColumnsAttrib(),
-                                                               columnAttrib.isFamilyDefaultAttrib(),
-                                                               columnType,
-                                                               columnAttrib.isArray()));
+            varList.add(ColumnDescription.newColumn(columnAttrib.getFamilyQualifiedName(),
+                                                    columnAttrib.getAliasName(),
+                                                    columnAttrib.isMapKeysAsColumnsAttrib(),
+                                                    columnAttrib.isFamilyDefaultAttrib(),
+                                                    columnType,
+                                                    columnAttrib.isArray()));
         }
         return varList;
     }
