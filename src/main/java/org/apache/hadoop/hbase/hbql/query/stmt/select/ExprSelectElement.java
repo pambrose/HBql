@@ -142,40 +142,12 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             return columnMap.get(this.getColumnNameBytes());
     }
 
-    public void assignValues(final Object newobj,
-                             final List<ColumnAttrib> selectAttribList,
-                             final int maxVerions,
-                             final Result result) throws HBqlException {
+    private void assignCalculation(final Object newobj, final Result result) throws HBqlException {
+        // If it is a calculation, then assign according to the AS name
+        final String name = this.getAsName();
+        final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
 
-        // See if it is a calculation, which has not history
-        if (!this.isSimpleColumnReference()) {
-
-            // If it is a calculation, then assign according to the AS name
-            final String name = this.getAsName();
-            final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
-
-            if (attrib == null) {
-                // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
-                if (!(newobj instanceof HRecord))
-                    return;
-
-                final HRecord hrecord = (HRecord)newobj;
-                hrecord.setCurrentFamilyDefaultValue(this.getFamilyName(),
-                                                     this.getSelectName(),
-                                                     0,
-                                                     result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes()));
-            }
-            else {
-                final Object elementValue = this.getValue(result);
-                attrib.setCurrentValue(newobj, 0, elementValue);
-            }
-
-            return;
-        }
-
-        // Column reference is not known to schema, so just assign byte[] value
-        if (this.getColumnAttrib() == null) {
-
+        if (attrib == null) {
             // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
             if (!(newobj instanceof HRecord))
                 return;
@@ -187,10 +159,40 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                                                  result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes()));
         }
         else {
+            final Object elementValue = this.getValue(result);
+            attrib.setCurrentValue(newobj, 0, elementValue);
+        }
+    }
+
+    public void assignValues(final Object newobj,
+                             final List<ColumnAttrib> selectAttribList,
+                             final int maxVerions,
+                             final Result result) throws HBqlException {
+
+        // If it is a calculation, take care of it and then bail since calculations have no history
+        if (!this.isSimpleColumnReference()) {
+            this.assignCalculation(newobj, result);
+            return;
+        }
+
+        // Column reference is not known to schema, so just assign byte[] value
+        if (this.getColumnAttrib() == null) {
+
+            // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
+            if (!(newobj instanceof HRecord))
+                return;
+
+            ((HRecord)newobj).setCurrentFamilyDefaultValue(this.getFamilyName(),
+                                                           this.getSelectName(),
+                                                           0,
+                                                           result.getValue(this.getFamilyNameBytes(),
+                                                                           this.getColumnNameBytes()));
+        }
+        else {
             // Do not process if it is an annotation history value
             if (this.getColumnAttrib().isACurrentValue()) {
 
-                // If this is a mapKesAsColumns, then we need to build the map from all the related columns in the family
+                // If this is a mapKeysAsColumns, then we need to build the map from all the related columns in the family
                 if (this.getColumnAttrib().isMapKeysAsColumnsColumn()) {
                     final Map mapval = this.getMapKeysAsColumnsValue(result);
                     this.getColumnAttrib().setCurrentValue(newobj, 0, mapval);
@@ -214,17 +216,13 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
             final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
 
-            if (timeStampMap == null)
-                return;
-
             if (this.getColumnAttrib() == null) {
 
                 // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
                 if (!(newobj instanceof HRecord))
                     return;
 
-                final HRecord hrecord = (HRecord)newobj;
-                hrecord.setVersionFamilyDefaultMap(this.getFamilyName(), this.getSelectName(), timeStampMap);
+                ((HRecord)newobj).setVersionFamilyDefaultMap(this.getFamilyName(), this.getSelectName(), timeStampMap);
             }
             else {
                 final Map<Long, Object> mapval = this.getColumnAttrib().getVersionObjectValueMap(newobj);
