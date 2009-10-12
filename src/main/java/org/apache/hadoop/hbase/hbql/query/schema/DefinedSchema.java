@@ -18,11 +18,11 @@ public class DefinedSchema extends HBaseSchema {
     final String tableName;
     final String tableAliasName;
 
-    public DefinedSchema(final List<ColumnDescription> varList) throws HBqlException {
+    public DefinedSchema(final List<ColumnDescription> columnDescriptionList) throws HBqlException {
         this.tableName = "embedded";
         this.tableAliasName = "embedded";
-        for (final ColumnDescription var : varList)
-            this.processColumn(var, false);
+        for (final ColumnDescription columnDescription : columnDescriptionList)
+            this.processColumn(columnDescription, false);
     }
 
     public DefinedSchema(final String tableName,
@@ -42,7 +42,11 @@ public class DefinedSchema extends HBaseSchema {
         this.addAttribToVariableNameMap(attrib, attrib.getNamesForColumn());
         this.addAttribToFamilyQualifiedNameMap(attrib);
         this.addVersionAttribToFamilyQualifiedNameMap(attrib);
-        this.addColumnAttribListToFamilyNameMap(attrib);
+        this.addAttribToFamilyNameColumnListMap(attrib);
+
+        if (attrib.isFamilyDefaultAttrib()) {
+
+        }
 
         if (attrib.isKeyAttrib()) {
             if (this.getKeyAttrib() != null)
@@ -72,7 +76,6 @@ public class DefinedSchema extends HBaseSchema {
         final List<HColumnDescriptor> descList = Lists.newArrayList();
         for (final String familyName : this.getFamilySet())
             descList.add(new HColumnDescriptor(familyName));
-
         return descList;
     }
 
