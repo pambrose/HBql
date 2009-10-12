@@ -8,7 +8,6 @@ import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 import java.io.IOException;
@@ -43,7 +42,7 @@ public class HRecordExample {
 
             final HBatch batch = new HBatch();
             for (int i = 0; i < 10; i++) {
-                HRecord hrecord = new HRecordImpl("testobjects");
+                HRecord hrecord = SchemaManager.newHRecord("testobjects");
                 hrecord.setObjectCurrentValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
                 hrecord.setObjectCurrentValue("author", "A new author value: " + i);
                 hrecord.setObjectCurrentValue("title", "A very new title value: " + i);

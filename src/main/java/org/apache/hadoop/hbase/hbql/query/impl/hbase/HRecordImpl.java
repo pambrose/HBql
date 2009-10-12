@@ -25,10 +25,6 @@ public class HRecordImpl implements Serializable, HRecord {
         this.setSchema(schema);
     }
 
-    public HRecordImpl(final String tablename) throws HBqlException {
-        this(HBaseSchema.findSchema(tablename));
-    }
-
     public HBaseSchema getSchema() {
         return this.schema;
     }

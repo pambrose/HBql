@@ -2,9 +2,11 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.cmds.SchemaManagerCmd;
+import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
@@ -86,5 +88,10 @@ public class SchemaManager {
             getDefinedSchemaMap().put(aliasName, schema);
 
         return schema;
+    }
+
+    public static HRecord newHRecord(final String tableName) throws HBqlException {
+        final HBaseSchema schema = HBaseSchema.findSchema(tableName);
+        return new HRecordImpl(schema);
     }
 }
