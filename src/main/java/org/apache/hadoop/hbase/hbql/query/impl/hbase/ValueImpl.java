@@ -1,9 +1,11 @@
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.hadoop.hbase.hbql.query.impl.hbase;
+
+import org.apache.hadoop.hbase.hbql.client.HValue;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-public class PrimitiveHValue<T> implements HValue {
+public class ValueImpl<T> implements HValue {
 
     private boolean currentValueSet = false;
     private T currentValue = null;

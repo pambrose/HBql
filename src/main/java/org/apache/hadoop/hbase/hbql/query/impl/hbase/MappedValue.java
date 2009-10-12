@@ -1,25 +1,26 @@
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.hadoop.hbase.hbql.query.impl.hbase;
 
+import org.apache.hadoop.hbase.hbql.client.HValue;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.util.Map;
 
-public abstract class MappedHValue<T> implements HValue {
+public abstract class MappedValue<T> implements HValue {
 
-    private Map<String, PrimitiveHValue<T>> keysAsColumnMap = Maps.newHashMap();
+    private Map<String, ValueImpl<T>> keysAsColumnMap = Maps.newHashMap();
 
     public Object getCurrentValue(final String name) {
         return this.getHValue(name).getCurrentValue();
     }
 
-    private Map<String, PrimitiveHValue<T>> getKeysAsColumnMap() {
+    private Map<String, ValueImpl<T>> getKeysAsColumnMap() {
         return this.keysAsColumnMap;
     }
 
-    private PrimitiveHValue<T> getHValue(final String mapKey) {
-        PrimitiveHValue<T> hvalue = this.getKeysAsColumnMap().get(mapKey);
+    private ValueImpl<T> getHValue(final String mapKey) {
+        ValueImpl<T> hvalue = this.getKeysAsColumnMap().get(mapKey);
         if (hvalue == null) {
-            hvalue = new PrimitiveHValue<T>();
+            hvalue = new ValueImpl<T>();
             this.getKeysAsColumnMap().put(mapKey, hvalue);
         }
         return hvalue;

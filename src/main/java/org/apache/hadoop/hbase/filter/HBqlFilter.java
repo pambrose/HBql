@@ -90,7 +90,7 @@ public class HBqlFilter implements Filter {
 
     public void reset() {
         LOG.info("In reset()");
-        this.getHRecord().clear();
+        this.getHRecord().clearValues();
     }
 
     public boolean filterRowKey(byte[] buffer, int offset, int length) {

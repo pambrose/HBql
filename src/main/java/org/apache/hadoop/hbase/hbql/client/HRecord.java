@@ -10,15 +10,13 @@ import java.util.Map;
  */
 public interface HRecord {
 
-    void clear();
-
     Object getObjectCurrentValue(String name) throws HBqlException;
 
     void setObjectCurrentValue(String name, Object val) throws HBqlException;
 
-    Map<Long, Object> getObjectVersionValueMap(final String name) throws HBqlException;
+    Map<Long, Object> getObjectVersionMap(final String name) throws HBqlException;
 
-    Map<Long, Object> getKeysAsColumnsVersionValueMap(String name, String mapKey) throws HBqlException;
+    Map<Long, Object> getKeysAsColumnsVersionMap(String name, String mapKey) throws HBqlException;
 
     Map<Long, byte[]> getFamilyDefaultVersionMap(String familyName, String name) throws HBqlException;
 
