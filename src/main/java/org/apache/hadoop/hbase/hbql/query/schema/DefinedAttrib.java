@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.lang.reflect.Method;
@@ -49,13 +50,11 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     public Object getCurrentValue(final Object recordObj) throws HBqlException {
-        final HRecord record = (HRecord)recordObj;
-        return record.getObjectCurrentValue(this.getAliasName());
+        return ((HRecordImpl)recordObj).getObjectCurrentValue(this.getAliasName());
     }
 
-    public void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException {
-        final HRecord record = (HRecord)newobj;
-        record.setObjectCurrentValue(this.getAliasName(), timestamp, val, true);
+    public void setCurrentValue(final Object recordObj, final long timestamp, final Object val) throws HBqlException {
+        ((HRecordImpl)recordObj).setObjectCurrentValue(this.getAliasName(), timestamp, val, true);
     }
 
     public void setKeysAsColumnsValue(final Object recordObj,
@@ -69,17 +68,17 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     public Map<Long, Object> getVersionObjectValueMap(final Object recordObj) throws HBqlException {
-        return ((HRecord)recordObj).getObjectHValue(this.getAliasName(), true).getVersionMap();
+        return ((HRecordImpl)recordObj).getObjectHValue(this.getAliasName(), true).getVersionMap();
     }
 
     public Map<Long, Object> getKeysAsColumnsVersionMap(final Object recordObj,
                                                         final String mapKey) throws HBqlException {
-        return ((HRecord)recordObj).getKeysAsColumnsHValue(this.getAliasName(), true).getVersionMap(mapKey);
+        return ((HRecordImpl)recordObj).getKeysAsColumnsHValue(this.getAliasName(), true).getVersionMap(mapKey);
     }
 
     public Map<Long, byte[]> getFamilyDefaultVersionMap(final Object recordObj,
                                                         final String familyName) throws HBqlException {
-        return ((HRecord)recordObj).getFamilyDefaultHValue(this.getAliasName()).getVersionMap(familyName);
+        return ((HRecordImpl)recordObj).getFamilyDefaultHValue(this.getAliasName()).getVersionMap(familyName);
     }
 
     protected Method getMethod(final String methodName,

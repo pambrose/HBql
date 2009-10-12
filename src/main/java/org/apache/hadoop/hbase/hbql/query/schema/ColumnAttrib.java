@@ -95,7 +95,6 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public byte[] getFamilyNameBytes() throws HBqlException {
-
         if (this.familyBytes != null)
             return this.familyBytes;
 

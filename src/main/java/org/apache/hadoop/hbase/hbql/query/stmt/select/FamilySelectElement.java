@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.FamilyAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
@@ -193,7 +194,7 @@ public class FamilySelectElement implements SelectElement {
                         if (!(newobj instanceof HRecord))
                             return;
 
-                        ((HRecord)newobj).setKeysAsColumnsVersionMap(familyName, columnName, timeStampMap);
+                        ((HRecordImpl)newobj).setKeysAsColumnsVersionMap(familyName, columnName, timeStampMap);
                     }
                     else {
                         // Set unknown attrib value to byte[] value
@@ -214,7 +215,7 @@ public class FamilySelectElement implements SelectElement {
                         if (!(newobj instanceof HRecord))
                             return;
 
-                        ((HRecord)newobj).setFamilyDefaultVersionMap(familyName, columnName, timeStampMap);
+                        ((HRecordImpl)newobj).setFamilyDefaultVersionMap(familyName, columnName, timeStampMap);
                     }
                     else {
                         final Map<Long, Object> mapVal = attrib.getVersionObjectValueMap(newobj);

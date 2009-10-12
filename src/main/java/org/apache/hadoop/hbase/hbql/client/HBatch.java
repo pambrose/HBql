@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
@@ -35,13 +36,13 @@ public class HBatch {
         this.getActionList(schema.getTableName()).add(HBatchAction.newInsert(put));
     }
 
-    public void insert(final HRecord hRecord) throws HBqlException {
-        final HBaseSchema schema = hRecord.getSchema();
+    public void insert(final HRecordImpl hrecord) throws HBqlException {
+        final HBaseSchema schema = hrecord.getSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
-        if (!hRecord.isObjectCurrentValueSet(keyAttrib))
+        if (!hrecord.isObjectCurrentValueSet(keyAttrib))
             throw new HBqlException("HRecord key value must be assigned");
 
-        final Put put = createPut(schema, hRecord);
+        final Put put = createPut(schema, hrecord);
         this.getActionList(schema.getTableName()).add(HBatchAction.newInsert(put));
     }
 
@@ -50,12 +51,12 @@ public class HBatch {
         this.delete(schema, newrec);
     }
 
-    public void delete(final HRecord hRecord) throws HBqlException {
-        final HBaseSchema schema = hRecord.getSchema();
+    public void delete(final HRecordImpl hrecord) throws HBqlException {
+        final HBaseSchema schema = hrecord.getSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
-        if (!hRecord.isObjectCurrentValueSet(keyAttrib))
+        if (!hrecord.isObjectCurrentValueSet(keyAttrib))
             throw new HBqlException("HRecord key value must be assigned");
-        this.delete(schema, hRecord);
+        this.delete(schema, hrecord);
     }
 
     private void delete(HBaseSchema schema, final Object newrec) throws HBqlException {
@@ -94,10 +95,10 @@ public class HBatch {
         return put;
     }
 
-    private Put createPut(final HBaseSchema schema, final HRecord hRecord) throws HBqlException {
+    private Put createPut(final HBaseSchema schema, final HRecordImpl hrecord) throws HBqlException {
 
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
-        final byte[] keyval = keyAttrib.getValueAsBytes(hRecord);
+        final byte[] keyval = keyAttrib.getValueAsBytes(hrecord);
 
         final Put put = new Put(keyval);
 
@@ -105,7 +106,7 @@ public class HBatch {
             for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {
 
                 if (attrib.isMapKeysAsColumnsColumn()) {
-                    final Map mapval = (Map)attrib.getCurrentValue(hRecord);
+                    final Map mapval = (Map)attrib.getCurrentValue(hrecord);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
                         final byte[] b = HUtil.ser.getScalarAsBytes(mapval.get(keyobj));
@@ -116,8 +117,8 @@ public class HBatch {
                     }
                 }
                 else {
-                    if (hRecord.isObjectCurrentValueSet(attrib)) {
-                        final byte[] b = attrib.getValueAsBytes(hRecord);
+                    if (hrecord.isObjectCurrentValueSet(attrib)) {
+                        final byte[] b = attrib.getValueAsBytes(hrecord);
                         put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), b);
                     }
                 }

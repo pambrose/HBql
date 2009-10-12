@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
@@ -76,7 +77,7 @@ public class SelectDefinedValuesTest extends TestSupport {
         final HBatch batch = new HBatch();
         for (int i = 0; i < cnt; i++) {
 
-            final HRecord rec = new HRecord("table1");
+            final HRecord rec = new HRecordImpl("table1");
 
             final String keyval = HUtil.getZeroPaddedNumber(i, 10);
             keyList.add(keyval);

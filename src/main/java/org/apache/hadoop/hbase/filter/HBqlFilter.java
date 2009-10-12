@@ -24,8 +24,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
@@ -48,20 +48,20 @@ public class HBqlFilter implements Filter {
     private ExprTree exprTree;
     private long scanLimit = -1;
     private long recordCount = 0;
-    public transient HRecord record = new HRecord((HBaseSchema)null);
+    public transient HRecordImpl hrecord = new HRecordImpl((HBaseSchema)null);
 
     public HBqlFilter(final ExprTree exprTree, final long scanLimit) {
         this.exprTree = exprTree;
         this.scanLimit = scanLimit;
         this.recordCount = 0;
-        this.getRecord().setSchema(this.getSchema());
+        this.getHRecord().setSchema(this.getSchema());
     }
 
     public HBqlFilter() {
     }
 
-    private HRecord getRecord() {
-        return this.record;
+    private HRecordImpl getHRecord() {
+        return this.hrecord;
     }
 
     private DefinedSchema getSchema() {
@@ -90,7 +90,7 @@ public class HBqlFilter implements Filter {
 
     public void reset() {
         LOG.info("In reset()");
-        this.getRecord().clear();
+        this.getHRecord().clear();
     }
 
     public boolean filterRowKey(byte[] buffer, int offset, int length) {
@@ -120,8 +120,8 @@ public class HBqlFilter implements Filter {
                 try {
                     LOG.info("In in filterKeyValue() setting value for: " + familyName + ":" + columnName);
                     final Object val = attrib.getValueFromBytes(null, v.getValue());
-                    this.getRecord().setObjectCurrentValue(familyName, columnName, v.getTimestamp(), val);
-                    this.getRecord().setObjectVersionValue(familyName, columnName, v.getTimestamp(), val, true);
+                    this.getHRecord().setObjectCurrentValue(familyName, columnName, v.getTimestamp(), val);
+                    this.getHRecord().setObjectVersionValue(familyName, columnName, v.getTimestamp(), val, true);
                 }
                 catch (Exception e) {
                     HUtil.logException(LOG, e);
@@ -143,7 +143,7 @@ public class HBqlFilter implements Filter {
         }
         else {
             try {
-                final boolean filterRecord = !this.getExprTree().evaluate(this.getRecord());
+                final boolean filterRecord = !this.getExprTree().evaluate(this.getHRecord());
                 if (!filterRecord)
                     this.incrementRecordCount();
                 return filterRecord;
@@ -176,7 +176,7 @@ public class HBqlFilter implements Filter {
         try {
             this.exprTree = (ExprTree)HUtil.ser.getScalarFromBytes(FieldType.ObjectType, Bytes.readByteArray(in));
             this.scanLimit = (Long)HUtil.ser.getScalarFromBytes(FieldType.LongType, Bytes.readByteArray(in));
-            this.getRecord().setSchema(this.getSchema());
+            this.getHRecord().setSchema(this.getSchema());
             this.recordCount = 0;
         }
         catch (HBqlException e) {
@@ -213,8 +213,8 @@ public class HBqlFilter implements Filter {
         };
 
         for (String val : vals) {
-            filter.getRecord().setObjectCurrentValue(family, column, 100, val);
-            filter.getRecord().setObjectVersionValue(family, column, 100, val, true);
+            filter.getHRecord().setObjectCurrentValue(family, column, 100, val);
+            filter.getHRecord().setObjectVersionValue(family, column, 100, val, true);
         }
 
         boolean v = filter.filterRow();

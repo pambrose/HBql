@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
+import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
@@ -152,11 +153,10 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             if (!(newobj instanceof HRecord))
                 return;
 
-            final HRecord hrecord = (HRecord)newobj;
-            hrecord.setFamilyDefaultCurrentValue(this.getFamilyName(),
-                                                 this.getSelectName(),
-                                                 0,
-                                                 result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes()));
+            ((HRecord)newobj).setFamilyDefaultCurrentValue(this.getFamilyName(),
+                                                           this.getSelectName(),
+                                                           0,
+                                                           result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes()));
         }
         else {
             final Object elementValue = this.getValue(result);
@@ -222,7 +222,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                 if (!(newobj instanceof HRecord))
                     return;
 
-                ((HRecord)newobj).setFamilyDefaultVersionMap(this.getFamilyName(), this.getSelectName(), timeStampMap);
+                ((HRecordImpl)newobj).setFamilyDefaultVersionMap(this.getFamilyName(), this.getSelectName(), timeStampMap);
             }
             else {
                 final Map<Long, Object> mapval = this.getColumnAttrib().getVersionObjectValueMap(newobj);

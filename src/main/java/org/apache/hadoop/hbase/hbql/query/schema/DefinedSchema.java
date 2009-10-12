@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -85,7 +86,7 @@ public class DefinedSchema extends HBaseSchema {
                              final Result result) throws HBqlException {
 
         // Create object and assign values
-        final HRecord newrec = new HRecord(this);
+        final HRecordImpl newrec = new HRecordImpl(this);
 
         // Set key value
         this.getKeyAttrib().setCurrentValue(newrec, 0, result.getRow());
