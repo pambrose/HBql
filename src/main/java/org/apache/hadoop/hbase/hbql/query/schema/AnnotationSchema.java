@@ -295,17 +295,38 @@ public class AnnotationSchema extends HBaseSchema {
             this.setKeyAttrib(attrib);
         }
         else {
-            final String family = attrib.getFamilyName();
+            final String familyName = attrib.getFamilyName();
 
-            if (family.length() == 0)
-                throw new HBqlException(attrib.getObjectQualifiedName()
-                                        + " is missing family name in annotation");
+            if (familyName.length() == 0)
+                throw new HBqlException(attrib.getObjectQualifiedName() + " is missing family name in annotation");
 
-            if (!this.containsFamilyNameInFamilyNameMap(family))
-                throw new HBqlException(attrib.getObjectQualifiedName()
-                                        + " references unknown family: " + family);
+            if (!this.containsFamilyNameInFamilyNameMap(familyName))
+                throw new HBqlException(attrib.getObjectQualifiedName() + " references unknown family: " + familyName);
 
-            this.getColumnAttribListByFamilyName(family).add(attrib);
+            if (attrib.isFamilyDefaultAttrib()) {
+
+                if (attrib.isMapKeysAsColumnsAttrib())
+                    throw new HBqlException(attrib.getObjectQualifiedName()
+                                            + " cannot have both mapKeysAsColumns and familyDefault marked as true");
+
+                if (attrib.getColumnName() != null || attrib.getColumnName().length() > 0)
+                    throw new HBqlException(attrib.getObjectQualifiedName()
+                                            + " cannot have both a columnName and familyDefault marked as true");
+
+                if (attrib.getGetter() != null || attrib.getGetter().length() > 0)
+                    throw new HBqlException(attrib.getObjectQualifiedName()
+                                            + " cannot have both a getter and familyDefault marked as true");
+
+                if (attrib.getGetter() != null || attrib.getGetter().length() > 0)
+                    throw new HBqlException(attrib.getObjectQualifiedName()
+                                            + " cannot have both a getter and familyDefault marked as true");
+
+                if (attrib.getSetter() != null || attrib.getSetter().length() > 0)
+                    throw new HBqlException(attrib.getObjectQualifiedName()
+                                            + " cannot have both a setter and familyDefault marked as true");
+            }
+
+            this.getColumnAttribListByFamilyName(familyName).add(attrib);
         }
     }
 
@@ -370,7 +391,8 @@ public class AnnotationSchema extends HBaseSchema {
                                       : columnAttrib.getFieldType().getFirstSynonym();
             varList.add(ColumnDescription.newColumnDescription(columnAttrib.getFamilyQualifiedName(),
                                                                columnAttrib.getAliasName(),
-                                                               columnAttrib.isMapKeysAsColumnsColumn(),
+                                                               columnAttrib.isMapKeysAsColumnsAttrib(),
+                                                               columnAttrib.isFamilyDefaultAttrib(),
                                                                columnType,
                                                                columnAttrib.isArray()));
         }

@@ -9,12 +9,14 @@ public class ColumnDescription implements Serializable {
     private final String aliasName;
     private final String familyName, columnName;
     private final boolean mapKeysAsColumns;
+    private final boolean familyDefault;
     private final boolean isArray;
     private final FieldType fieldType;
 
     private ColumnDescription(final String familyQualifiedName,
                               final String aliasName,
                               final boolean mapKeysAsColumns,
+                              final boolean familyDefault,
                               final String typeName,
                               final boolean isArray) {
 
@@ -30,6 +32,7 @@ public class ColumnDescription implements Serializable {
 
         this.aliasName = aliasName;
         this.mapKeysAsColumns = mapKeysAsColumns;
+        this.familyDefault = familyDefault;
         this.fieldType = getFieldType(typeName);
         this.isArray = isArray;
     }
@@ -37,9 +40,15 @@ public class ColumnDescription implements Serializable {
     public static ColumnDescription newColumnDescription(final String familyQualifiedName,
                                                          final String aliasName,
                                                          final boolean mapKeysAsColumns,
+                                                         final boolean familyDefault,
                                                          final String typeName,
                                                          final boolean isArray) {
-        return new ColumnDescription(familyQualifiedName, aliasName, mapKeysAsColumns, typeName, isArray);
+        return new ColumnDescription(familyQualifiedName,
+                                     aliasName,
+                                     mapKeysAsColumns,
+                                     familyDefault,
+                                     typeName,
+                                     isArray);
     }
 
     private static FieldType getFieldType(final String typeName) {

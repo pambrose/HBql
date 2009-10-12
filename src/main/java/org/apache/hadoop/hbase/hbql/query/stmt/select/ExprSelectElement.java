@@ -193,7 +193,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             if (this.getColumnAttrib().isACurrentValue()) {
 
                 // If this is a mapKeysAsColumns, then we need to build the map from all the related columns in the family
-                if (this.getColumnAttrib().isMapKeysAsColumnsColumn()) {
+                if (this.getColumnAttrib().isMapKeysAsColumnsAttrib()) {
                     final Map mapval = this.getMapKeysAsColumnsValue(result);
                     this.getColumnAttrib().setCurrentValue(newobj, 0, mapval);
                 }

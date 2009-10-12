@@ -85,7 +85,7 @@ public class VersionAnnotationAttrib extends FieldAttrib {
                                                currentAnnoAttrib.getColumnName(),
                                                field,
                                                currentAnnoAttrib.getFieldType(),
-                                               currentAnnoAttrib.isMapKeysAsColumnsColumn(),
+                                               currentAnnoAttrib.isMapKeysAsColumnsAttrib(),
                                                currentAnnoAttrib.getGetter(),
                                                currentAnnoAttrib.getSetter());
         }

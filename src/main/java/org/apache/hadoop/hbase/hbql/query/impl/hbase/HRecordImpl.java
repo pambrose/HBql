@@ -200,9 +200,9 @@ public class HRecordImpl implements Serializable, HRecord {
         return (hvalue != null) ? hvalue.getVersionMap(mapKey) : null;
     }
 
-    public Map<Long, byte[]> getFamilyDefaultVersionMap(final String familyName, final String name) throws HBqlException {
-        final FamilyDefaultValue hvalue = this.getFamilyDefaultHValue(familyName);
-        return (hvalue != null) ? hvalue.getVersionMap(name) : null;
+    public Map<Long, byte[]> getFamilyDefaultVersionMap(final String name, final String columnName) throws HBqlException {
+        final FamilyDefaultValue hvalue = this.getFamilyDefaultHValue(name);
+        return (hvalue != null) ? hvalue.getVersionMap(columnName) : null;
     }
 
     // Version Object values

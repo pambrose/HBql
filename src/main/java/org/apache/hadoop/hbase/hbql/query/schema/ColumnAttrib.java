@@ -20,6 +20,7 @@ public abstract class ColumnAttrib implements Serializable {
     protected final String getter;
     protected final String setter;
     protected final boolean mapKeysAsColumns;
+    protected final boolean familyDefault;
     protected final boolean isArray;
     protected transient Method getterMethod = null;
     protected transient Method setterMethod = null;
@@ -28,6 +29,7 @@ public abstract class ColumnAttrib implements Serializable {
                            final String columnName,
                            final String aliasName,
                            final boolean mapKeysAsColumns,
+                           final boolean familyDefault,
                            final FieldType fieldType,
                            final boolean isArray,
                            final String getter,
@@ -37,6 +39,7 @@ public abstract class ColumnAttrib implements Serializable {
         this.columnName = columnName;
         this.aliasName = aliasName;
         this.mapKeysAsColumns = mapKeysAsColumns;
+        this.familyDefault = familyDefault;
         this.fieldType = fieldType;
         this.isArray = isArray;
         this.getter = getter;
@@ -194,8 +197,12 @@ public abstract class ColumnAttrib implements Serializable {
         return this.setterMethod;
     }
 
-    public boolean isMapKeysAsColumnsColumn() {
+    public boolean isMapKeysAsColumnsAttrib() {
         return this.mapKeysAsColumns;
+    }
+
+    public boolean isFamilyDefaultAttrib() {
+        return this.familyDefault;
     }
 
     protected boolean hasGetter() {

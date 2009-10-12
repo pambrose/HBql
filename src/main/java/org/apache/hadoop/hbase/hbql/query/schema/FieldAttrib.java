@@ -95,7 +95,7 @@ public abstract class FieldAttrib extends ColumnAttrib {
                                       final String mapKey,
                                       final Object val) throws HBqlException {
 
-        if (!this.isMapKeysAsColumnsColumn())
+        if (!this.isMapKeysAsColumnsAttrib())
             throw new HBqlException(this.getFamilyQualifiedName() + " not marked as mapKeysAsColumns");
 
         Map<String, Object> mapVal = (Map<String, Object>)this.getCurrentValue(newobj);
