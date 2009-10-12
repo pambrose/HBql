@@ -43,9 +43,9 @@ public class HRecordExample {
             final HBatch batch = new HBatch();
             for (int i = 0; i < 10; i++) {
                 HRecord hrecord = new HRecord("testobjects");
-                hrecord.setCurrentObjectValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
-                hrecord.setCurrentObjectValue("author", "A new author value: " + i);
-                hrecord.setCurrentObjectValue("title", "A very new title value: " + i);
+                hrecord.setObjectCurrentValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
+                hrecord.setObjectCurrentValue("author", "A new author value: " + i);
+                hrecord.setObjectCurrentValue("title", "A very new title value: " + i);
                 batch.insert(hrecord);
             }
 
@@ -68,22 +68,22 @@ public class HRecordExample {
         HResults<HRecord> results1 = q1.getResults();
 
         for (HRecord val1 : results1) {
-            System.out.println("Current Values: " + val1.getCurrentObjectValue("keyval")
-                               + " - " + val1.getCurrentObjectValue("family1:author")
-                               + " - " + val1.getCurrentObjectValue("title")
-                               + " - " + val1.getCurrentObjectValue("comp1")
+            System.out.println("Current Values: " + val1.getObjectCurrentValue("keyval")
+                               + " - " + val1.getObjectCurrentValue("family1:author")
+                               + " - " + val1.getObjectCurrentValue("title")
+                               + " - " + val1.getObjectCurrentValue("comp1")
             );
 
             System.out.println("Historicals");
 
-            if (val1.getVersionObjectValueMap("author") != null) {
-                Map<Long, Object> versioned = val1.getVersionObjectValueMap("family1:author");
+            if (val1.getObjectVersionValueMap("author") != null) {
+                Map<Long, Object> versioned = val1.getObjectVersionValueMap("family1:author");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }
 
-            if (val1.getVersionObjectValueMap("family1:title") != null) {
-                Map<Long, Object> versioned = val1.getVersionObjectValueMap("title");
+            if (val1.getObjectVersionValueMap("family1:title") != null) {
+                Map<Long, Object> versioned = val1.getObjectVersionValueMap("title");
                 for (final Long key : versioned.keySet())
                     System.out.println(new Date(key) + " - " + versioned.get(key));
             }

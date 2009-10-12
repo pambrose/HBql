@@ -80,30 +80,30 @@ public class SelectDefinedValuesTest extends TestSupport {
 
             final String keyval = HUtil.getZeroPaddedNumber(i, 10);
             keyList.add(keyval);
-            rec.setCurrentObjectValue("keyval", keyval);
+            rec.setObjectCurrentValue("keyval", keyval);
 
             int val5 = randomVal.nextInt();
             String s_val5 = "" + val5;
             val1List.add(s_val5);
             val5List.add(val5);
 
-            rec.setCurrentObjectValue("val1", s_val5);
-            rec.setCurrentObjectValue("val2", s_val5 + " " + msg);
-            rec.setCurrentObjectValue("val5", val5);
-            rec.setCurrentObjectValue("val6", i * 100);
+            rec.setObjectCurrentValue("val1", s_val5);
+            rec.setObjectCurrentValue("val2", s_val5 + " " + msg);
+            rec.setObjectCurrentValue("val5", val5);
+            rec.setObjectCurrentValue("val6", i * 100);
 
             Map<String, String> mapval1 = Maps.newHashMap();
             mapval1.put("mapcol1", "mapcol1 val" + i + " " + msg);
             mapval1.put("mapcol2", "mapcol2 val" + i + " " + msg);
 
-            rec.setCurrentObjectValue("f3mapval1", mapval1);
+            rec.setObjectCurrentValue("f3mapval1", mapval1);
 
             Map<String, String> mapval2 = Maps.newHashMap();
             mapval2.put("mapcol1-b", "mapcol1-b val" + i + " " + msg);
             mapval2.put("mapcol2-b", "mapcol2-b val" + i + " " + msg);
             mapval2.put("mapcol3-b", "mapcol3-b val" + i + " " + msg);
 
-            rec.setCurrentObjectValue("f3mapval2", mapval2);
+            rec.setObjectCurrentValue("f3mapval2", mapval2);
 
             int[] intv1 = new int[5];
             val8check = new int[5];
@@ -112,7 +112,7 @@ public class SelectDefinedValuesTest extends TestSupport {
                 val8check[j] = intv1[j];
             }
 
-            rec.setCurrentObjectValue("val8", intv1);
+            rec.setObjectCurrentValue("val8", intv1);
 
             batch.insert(rec);
         }
@@ -138,10 +138,10 @@ public class SelectDefinedValuesTest extends TestSupport {
         int rec_cnt = 0;
         for (HRecord rec : results1) {
 
-            String keyval = (String)rec.getCurrentObjectValue("keyval");
-            String val1 = (String)rec.getCurrentObjectValue("val1");
-            int val5 = (Integer)rec.getCurrentObjectValue("val5");
-            int val6 = (Integer)rec.getCurrentObjectValue("val6");
+            String keyval = (String)rec.getObjectCurrentValue("keyval");
+            String val1 = (String)rec.getObjectCurrentValue("val1");
+            int val5 = (Integer)rec.getObjectCurrentValue("val5");
+            int val6 = (Integer)rec.getObjectCurrentValue("val6");
 
             testKeyVals.add(keyval);
             testVal1Vals.add(val1);
@@ -149,9 +149,9 @@ public class SelectDefinedValuesTest extends TestSupport {
             testVal6Vals.add(val6);
 
             System.out.println("Current Values: " + keyval
-                               + " - " + rec.getCurrentObjectValue("val1")
-                               + " - " + rec.getCurrentObjectValue("val5")
-                               + " - " + rec.getCurrentObjectValue("val6")
+                               + " - " + rec.getObjectCurrentValue("val1")
+                               + " - " + rec.getObjectCurrentValue("val5")
+                               + " - " + rec.getObjectCurrentValue("val6")
             );
             rec_cnt++;
         }
@@ -212,8 +212,8 @@ public class SelectDefinedValuesTest extends TestSupport {
         assertTrue(recList2.size() == 10);
 
         for (final HRecord rec : recList2) {
-            Map map1 = (Map)rec.getCurrentObjectValue("f3mapval1");
-            Map map2 = (Map)rec.getCurrentObjectValue("f3mapval2");
+            Map map1 = (Map)rec.getObjectCurrentValue("f3mapval1");
+            Map map2 = (Map)rec.getObjectCurrentValue("f3mapval2");
 
             assertTrue(map1.size() == 2);
             assertTrue(map2.size() == 3);
@@ -229,7 +229,7 @@ public class SelectDefinedValuesTest extends TestSupport {
         assertTrue(recList1.size() == 10);
 
         for (final HRecord rec : recList1) {
-            int[] intv = (int[])rec.getCurrentObjectValue("val8");
+            int[] intv = (int[])rec.getObjectCurrentValue("val8");
             assertTrue(intv.length == 5);
         }
     }
@@ -243,10 +243,10 @@ public class SelectDefinedValuesTest extends TestSupport {
         assertTrue(recList1.size() == 10);
 
         for (final HRecord rec : recList1) {
-            Map<Long, Object> m1 = rec.getVersionObjectValueMap("val2");
+            Map<Long, Object> m1 = rec.getObjectVersionValueMap("val2");
             assertTrue(m1.size() == 3);
 
-            Map<Long, Object> m2 = rec.getVersionObjectValueMap("val8");
+            Map<Long, Object> m2 = rec.getObjectVersionValueMap("val8");
             assertTrue(m2.size() == 3);
 
             for (Object obj : m2.values()) {

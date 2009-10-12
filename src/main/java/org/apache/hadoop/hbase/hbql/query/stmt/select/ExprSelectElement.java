@@ -153,7 +153,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                 return;
 
             final HRecord hrecord = (HRecord)newobj;
-            hrecord.setCurrentFamilyDefaultValue(this.getFamilyName(),
+            hrecord.setFamilyDefaultCurrentValue(this.getFamilyName(),
                                                  this.getSelectName(),
                                                  0,
                                                  result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes()));
@@ -182,7 +182,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             if (!(newobj instanceof HRecord))
                 return;
 
-            ((HRecord)newobj).setCurrentFamilyDefaultValue(this.getFamilyName(),
+            ((HRecord)newobj).setFamilyDefaultCurrentValue(this.getFamilyName(),
                                                            this.getSelectName(),
                                                            0,
                                                            result.getValue(this.getFamilyNameBytes(),
@@ -222,7 +222,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                 if (!(newobj instanceof HRecord))
                     return;
 
-                ((HRecord)newobj).setVersionFamilyDefaultMap(this.getFamilyName(), this.getSelectName(), timeStampMap);
+                ((HRecord)newobj).setFamilyDefaultVersionMap(this.getFamilyName(), this.getSelectName(), timeStampMap);
             }
             else {
                 final Map<Long, Object> mapval = this.getColumnAttrib().getVersionObjectValueMap(newobj);

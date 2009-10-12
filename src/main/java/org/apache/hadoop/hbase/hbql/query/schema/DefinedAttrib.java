@@ -50,12 +50,12 @@ public class DefinedAttrib extends ColumnAttrib {
 
     public Object getCurrentValue(final Object recordObj) throws HBqlException {
         final HRecord record = (HRecord)recordObj;
-        return record.getCurrentObjectValue(this.getAliasName());
+        return record.getObjectCurrentValue(this.getAliasName());
     }
 
     public void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException {
         final HRecord record = (HRecord)newobj;
-        record.setCurrentObjectValue(this.getAliasName(), timestamp, val, true);
+        record.setObjectCurrentValue(this.getAliasName(), timestamp, val, true);
     }
 
     public void setKeysAsColumnsValue(final Object newobj,
@@ -66,7 +66,7 @@ public class DefinedAttrib extends ColumnAttrib {
             throw new HBqlException(this.getFamilyQualifiedName() + " not marked as mapKeysAsColumns");
 
         final HRecord record = (HRecord)newobj;
-        record.setCurrentKeysAsColumnsValue(this.getAliasName(), mapKey, 0, val, true);
+        record.setKeysAsColumnsCurrentValue(this.getAliasName(), mapKey, 0, val, true);
     }
 
     public Map<Long, Object> getVersionObjectValueMap(final Object recordObj) throws HBqlException {

@@ -43,6 +43,41 @@ public class HRecord implements Serializable {
         return this.getValues().containsKey(name);
     }
 
+    private HValue getHValue(final String name) {
+
+        // First try the name given.
+        // If that doesn't work, then try alias and qualified (one hasn't been tried yet)
+        if (this.containsName(name))
+            return this.getValue(name);
+
+        // Look up by both variable name and qualified name
+        final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
+
+        if (attrib != null) {
+            final String aliasName = attrib.getAliasName();
+            if (aliasName.equals(name) && this.containsName(aliasName))
+                return this.getValue(aliasName);
+
+            final String qualifiedName = attrib.getFamilyQualifiedName();
+            if (!qualifiedName.equals(name) && this.containsName(qualifiedName))
+                return this.getValue(qualifiedName);
+        }
+
+        return null;
+    }
+
+    public long getTimestamp() {
+        return this.timestamp;
+    }
+
+    public void setTimestamp(final long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void clear() {
+        this.getValues().clear();
+    }
+
     // Add element routines
     private ObjectHValue addObjectHValue(final String name, final boolean inSchema) throws HBqlException {
 
@@ -69,22 +104,6 @@ public class HRecord implements Serializable {
         this.getValues().put(name, val);
         return val;
     }
-
-    // Get version map routines
-    public Map<Long, Object> getOrAddVersionValueMap(final String name) throws HBqlException {
-        return this.getObjectHValue(name, true).getVersionMap();
-    }
-
-    public Map<Long, Object> getOrAddKeysAsColumnsVersionValueMap(final String name,
-                                                                  final String mapKey) throws HBqlException {
-        return this.getKeysAsColumnsHValue(name, true).getVersionMap(mapKey);
-    }
-
-    public Map<Long, byte[]> getOrAddFamilyDefaultVersionValueMap(final String name,
-                                                                  final String mapKey) throws HBqlException {
-        return this.getFamilyDefaultHValue(name).getVersionMap(mapKey);
-    }
-
 
     // Simple get routines
     private ObjectHValue getObjectHValue(final String name, final boolean inSchema) throws HBqlException {
@@ -143,35 +162,35 @@ public class HRecord implements Serializable {
     }
 
     // Current Object values
-    public void setCurrentObjectValue(final String family,
+    public void setObjectCurrentValue(final String family,
                                       final String column,
                                       final long timestamp,
                                       final Object val) throws HBqlException {
         final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(family, column);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + family + ":" + column);
-        this.setCurrentObjectValue(attrib.getAliasName(), timestamp, val, true);
+        this.setObjectCurrentValue(attrib.getAliasName(), timestamp, val, true);
     }
 
-    public boolean isCurrentObjectValueSet(final ColumnAttrib attrib) throws HBqlException {
+    public boolean isObjectCurrentValueSet(final ColumnAttrib attrib) throws HBqlException {
         final ObjectHValue hvalue = this.getObjectHValue(attrib.getAliasName());
         return hvalue != null && hvalue.isCurrentValueSet();
     }
 
-    public Object getCurrentObjectValue(final String name) throws HBqlException {
+    public Object getObjectCurrentValue(final String name) throws HBqlException {
         final ObjectHValue hvalue = this.getObjectHValue(name);
         return (hvalue != null) ? hvalue.getCurrentValue() : null;
     }
 
-    public void setCurrentObjectValue(final String name, final Object val) throws HBqlException {
-        this.setCurrentObjectValue(name, val, true);
+    public void setObjectCurrentValue(final String name, final Object val) throws HBqlException {
+        this.setObjectCurrentValue(name, val, true);
     }
 
-    public void setCurrentObjectValue(final String name, final Object val, final boolean inSchema) throws HBqlException {
-        this.setCurrentObjectValue(name, this.getTimestamp(), val, inSchema);
+    public void setObjectCurrentValue(final String name, final Object val, final boolean inSchema) throws HBqlException {
+        this.setObjectCurrentValue(name, this.getTimestamp(), val, inSchema);
     }
 
-    public void setCurrentObjectValue(final String name,
+    public void setObjectCurrentValue(final String name,
                                       final long timestamp,
                                       final Object val,
                                       final boolean inSchema) throws HBqlException {
@@ -180,23 +199,23 @@ public class HRecord implements Serializable {
     }
 
     // Access to version maps
-    public Map<Long, Object> getVersionObjectValueMap(final String name) throws HBqlException {
+    public Map<Long, Object> getObjectVersionValueMap(final String name) throws HBqlException {
         final ObjectHValue hvalue = this.getObjectHValue(name);
         return (hvalue != null) ? hvalue.getVersionMap() : null;
     }
 
-    public Map<Long, Object> getVersionKeysAsColumnsValueMap(final String name, final String mapKey) throws HBqlException {
+    public Map<Long, Object> getKeysAsColumnsVersionValueMap(final String name, final String mapKey) throws HBqlException {
         final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsHValue(name);
         return (hvalue != null) ? hvalue.getVersionMap(mapKey) : null;
     }
 
-    public Map<Long, byte[]> getVersionFamilyDefaultValueMap(final String familyName, final String name) throws HBqlException {
+    public Map<Long, byte[]> getFamilyDefaultVersionValueMap(final String familyName, final String name) throws HBqlException {
         final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue(familyName);
         return (hvalue != null) ? hvalue.getVersionMap(name) : null;
     }
 
     // Version Object values
-    public void setCurrentFamilyDefaultValue(final String familyName,
+    public void setFamilyDefaultCurrentValue(final String familyName,
                                              final String name,
                                              final long timestamp,
                                              final byte[] val) throws HBqlException {
@@ -204,7 +223,7 @@ public class HRecord implements Serializable {
         hvalue.setCurrentValue(timestamp, name, val);
     }
 
-    public void setVersionObjectValue(final String name,
+    public void setObjectVersionValue(final String name,
                                       final long timestamp,
                                       final Object val,
                                       final boolean inSchema) throws HBqlException {
@@ -213,7 +232,7 @@ public class HRecord implements Serializable {
         hvalue.getVersionMap().put(timestamp, val);
     }
 
-    public void setVersionObjectValue(final String family,
+    public void setObjectVersionValue(final String family,
                                       final String column,
                                       final long timestamp,
                                       final Object val,
@@ -221,12 +240,12 @@ public class HRecord implements Serializable {
         final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(family, column);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + family + ":" + column);
-        this.setVersionObjectValue(attrib.getColumnName(), timestamp, val, inSchema);
+        this.setObjectVersionValue(attrib.getColumnName(), timestamp, val, inSchema);
     }
 
 
     // Current KeysAsColumns values
-    public void setCurrentKeysAsColumnsValue(final String name,
+    public void setKeysAsColumnsCurrentValue(final String name,
                                              final String mapKey,
                                              final long timestamp,
                                              final Object val,
@@ -235,56 +254,33 @@ public class HRecord implements Serializable {
         hvalue.setCurrentValue(timestamp, mapKey, val);
     }
 
-    public void setVersionKeysAsColumnsValue(final String familyQualifiedName,
-                                             final String mapKey,
-                                             final long timestamp,
-                                             final Object val,
-                                             final boolean inSchema) throws HBqlException {
-        final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsHValue(familyQualifiedName, inSchema);
-        hvalue.setVersionValue(mapKey, timestamp, val);
+    public void setKeysAsColumnsVersionMap(final String familyName,
+                                           final String name,
+                                           final NavigableMap<Long, byte[]> val) throws HBqlException {
+        final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsHValue(familyName);
+        hvalue.setVersionMap(name, (Map)val);
     }
 
     // FamilyDefault values
-    public void setVersionFamilyDefaultMap(final String familyName,
+    public void setFamilyDefaultVersionMap(final String familyName,
                                            final String name,
                                            final NavigableMap<Long, byte[]> val) throws HBqlException {
         final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue(familyName);
         hvalue.setVersionMap(name, val);
     }
 
-
-    private HValue getHValue(final String name) {
-
-        // First try the name given.
-        // If that doesn't work, then try alias and qualified (one hasn't been tried yet)
-        if (this.containsName(name))
-            return this.getValue(name);
-
-        // Look up by both variable name and qualified name
-        final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
-
-        if (attrib != null) {
-            final String aliasName = attrib.getAliasName();
-            if (aliasName.equals(name) && this.containsName(aliasName))
-                return this.getValue(aliasName);
-
-            final String qualifiedName = attrib.getFamilyQualifiedName();
-            if (!qualifiedName.equals(name) && this.containsName(qualifiedName))
-                return this.getValue(qualifiedName);
-        }
-
-        return null;
+    // Get version map routines
+    public Map<Long, Object> getOrAddVersionValueMap(final String name) throws HBqlException {
+        return this.getObjectHValue(name, true).getVersionMap();
     }
 
-    public long getTimestamp() {
-        return this.timestamp;
+    public Map<Long, Object> getOrAddKeysAsColumnsVersionValueMap(final String name,
+                                                                  final String mapKey) throws HBqlException {
+        return this.getKeysAsColumnsHValue(name, true).getVersionMap(mapKey);
     }
 
-    public void setTimestamp(final long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public void clear() {
-        this.getValues().clear();
+    public Map<Long, byte[]> getOrAddFamilyDefaultVersionValueMap(final String name,
+                                                                  final String mapKey) throws HBqlException {
+        return this.getFamilyDefaultHValue(name).getVersionMap(mapKey);
     }
 }

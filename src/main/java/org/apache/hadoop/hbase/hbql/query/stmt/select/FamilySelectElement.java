@@ -135,7 +135,7 @@ public class FamilySelectElement implements SelectElement {
                         if (!(newobj instanceof HRecord))
                             return;
 
-                        ((HRecord)newobj).setCurrentKeysAsColumnsValue(familyName + ":" + columnName,
+                        ((HRecord)newobj).setKeysAsColumnsCurrentValue(familyName + ":" + columnName,
                                                                        mapKey,
                                                                        0,
                                                                        currentValueBytes,
@@ -155,7 +155,7 @@ public class FamilySelectElement implements SelectElement {
                         if (!(newobj instanceof HRecord))
                             return;
 
-                        ((HRecord)newobj).setCurrentFamilyDefaultValue(familyName, columnName, 0, currentValueBytes);
+                        ((HRecord)newobj).setFamilyDefaultCurrentValue(familyName, columnName, 0, currentValueBytes);
                     }
                     else {
                         // If attrib is found, then assign the deserialized value to the known attrib                        
@@ -193,13 +193,7 @@ public class FamilySelectElement implements SelectElement {
                         if (!(newobj instanceof HRecord))
                             return;
 
-                        final HRecord hrecord = (HRecord)newobj;
-                        for (final Long timestamp : timeStampMap.keySet())
-                            hrecord.setVersionKeysAsColumnsValue(familyName + ":" + columnName,
-                                                                 mapKey,
-                                                                 timestamp,
-                                                                 timeStampMap.get(timestamp),
-                                                                 false);
+                        ((HRecord)newobj).setKeysAsColumnsVersionMap(familyName, columnName, timeStampMap);
                     }
                     else {
                         // Set unknown attrib value to byte[] value
@@ -220,7 +214,7 @@ public class FamilySelectElement implements SelectElement {
                         if (!(newobj instanceof HRecord))
                             return;
 
-                        ((HRecord)newobj).setVersionFamilyDefaultMap(familyName, columnName, timeStampMap);
+                        ((HRecord)newobj).setFamilyDefaultVersionMap(familyName, columnName, timeStampMap);
                     }
                     else {
                         final Map<Long, Object> mapVal = attrib.getVersionObjectValueMap(newobj);
