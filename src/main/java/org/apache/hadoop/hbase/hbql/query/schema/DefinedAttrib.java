@@ -58,32 +58,28 @@ public class DefinedAttrib extends ColumnAttrib {
         record.setObjectCurrentValue(this.getAliasName(), timestamp, val, true);
     }
 
-    public void setKeysAsColumnsValue(final Object newobj,
+    public void setKeysAsColumnsValue(final Object recordObj,
                                       final String mapKey,
                                       final Object val) throws HBqlException {
 
         if (!this.isMapKeysAsColumnsColumn())
             throw new HBqlException(this.getFamilyQualifiedName() + " not marked as mapKeysAsColumns");
 
-        final HRecord record = (HRecord)newobj;
-        record.setKeysAsColumnsCurrentValue(this.getAliasName(), mapKey, 0, val, true);
+        ((HRecord)recordObj).setKeysAsColumnsCurrentValue(this.getAliasName(), mapKey, 0, val, true);
     }
 
     public Map<Long, Object> getVersionObjectValueMap(final Object recordObj) throws HBqlException {
-        final HRecord record = (HRecord)recordObj;
-        return record.getOrAddVersionValueMap(this.getAliasName());
+        return ((HRecord)recordObj).getObjectHValue(this.getAliasName(), true).getVersionMap();
     }
 
     public Map<Long, Object> getKeysAsColumnsVersionMap(final Object recordObj,
                                                         final String mapKey) throws HBqlException {
-        final HRecord record = (HRecord)recordObj;
-        return record.getOrAddKeysAsColumnsVersionValueMap(this.getAliasName(), mapKey);
+        return ((HRecord)recordObj).getKeysAsColumnsHValue(this.getAliasName(), true).getVersionMap(mapKey);
     }
 
     public Map<Long, byte[]> getFamilyDefaultVersionMap(final Object recordObj,
                                                         final String familyName) throws HBqlException {
-        final HRecord record = (HRecord)recordObj;
-        return record.getOrAddFamilyDefaultVersionValueMap(this.getAliasName(), familyName);
+        return ((HRecord)recordObj).getFamilyDefaultHValue(this.getAliasName()).getVersionMap(familyName);
     }
 
     protected Method getMethod(final String methodName,

@@ -106,7 +106,7 @@ public class HRecord implements Serializable {
     }
 
     // Simple get routines
-    private ObjectHValue getObjectHValue(final String name, final boolean inSchema) throws HBqlException {
+    public ObjectHValue getObjectHValue(final String name, final boolean inSchema) throws HBqlException {
 
         final ObjectHValue hvalue = this.getObjectHValue(name);
 
@@ -116,7 +116,7 @@ public class HRecord implements Serializable {
             return this.addObjectHValue(name, inSchema);
     }
 
-    private KeysAsColumnsHValue getKeysAsColumnsHValue(final String name, final boolean inSchema) throws HBqlException {
+    public KeysAsColumnsHValue getKeysAsColumnsHValue(final String name, final boolean inSchema) throws HBqlException {
 
         final KeysAsColumnsHValue hvalue = this.getKeysAsColumnsHValue(name);
 
@@ -126,7 +126,7 @@ public class HRecord implements Serializable {
             return this.addKeysAsColumnsHValue(name, inSchema);
     }
 
-    private FamilyDefaultHValue getFamilyDefaultHValue(final String name) throws HBqlException {
+    public FamilyDefaultHValue getFamilyDefaultHValue(final String name) throws HBqlException {
 
         final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue2(name);
 
@@ -267,20 +267,5 @@ public class HRecord implements Serializable {
                                            final NavigableMap<Long, byte[]> val) throws HBqlException {
         final FamilyDefaultHValue hvalue = this.getFamilyDefaultHValue(familyName);
         hvalue.setVersionMap(name, val);
-    }
-
-    // Get version map routines
-    public Map<Long, Object> getOrAddVersionValueMap(final String name) throws HBqlException {
-        return this.getObjectHValue(name, true).getVersionMap();
-    }
-
-    public Map<Long, Object> getOrAddKeysAsColumnsVersionValueMap(final String name,
-                                                                  final String mapKey) throws HBqlException {
-        return this.getKeysAsColumnsHValue(name, true).getVersionMap(mapKey);
-    }
-
-    public Map<Long, byte[]> getOrAddFamilyDefaultVersionValueMap(final String name,
-                                                                  final String mapKey) throws HBqlException {
-        return this.getFamilyDefaultHValue(name).getVersionMap(mapKey);
     }
 }
