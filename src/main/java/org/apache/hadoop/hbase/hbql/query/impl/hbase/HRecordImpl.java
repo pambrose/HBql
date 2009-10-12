@@ -153,44 +153,44 @@ public class HRecordImpl implements Serializable, HRecord {
     }
 
     // Current Object values
-    public void setObjectCurrentValue(final String family,
-                                      final String column,
-                                      final long timestamp,
-                                      final Object val) throws HBqlException {
+    public void setCurrentValue(final String family,
+                                final String column,
+                                final long timestamp,
+                                final Object val) throws HBqlException {
         final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(family, column);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + family + ":" + column);
-        this.setObjectCurrentValue(attrib.getAliasName(), timestamp, val, true);
+        this.setCurrentValue(attrib.getAliasName(), timestamp, val, true);
     }
 
-    public boolean isObjectCurrentValueSet(final ColumnAttrib attrib) throws HBqlException {
+    public boolean isCurrentValueSet(final ColumnAttrib attrib) throws HBqlException {
         final ObjectValue hvalue = this.fetchObjectHValue(attrib.getAliasName());
         return hvalue != null && hvalue.isCurrentValueSet();
     }
 
-    public Object getObjectCurrentValue(final String name) throws HBqlException {
+    public Object getCurrentValue(final String name) throws HBqlException {
         final ObjectValue hvalue = this.fetchObjectHValue(name);
         return (hvalue != null) ? hvalue.getCurrentValue() : null;
     }
 
-    public void setObjectCurrentValue(final String name, final Object val) throws HBqlException {
-        this.setObjectCurrentValue(name, val, true);
+    public void setCurrentValue(final String name, final Object val) throws HBqlException {
+        this.setCurrentValue(name, val, true);
     }
 
-    public void setObjectCurrentValue(final String name, final Object val, final boolean inSchema) throws HBqlException {
-        this.setObjectCurrentValue(name, this.getTimestamp(), val, inSchema);
+    public void setCurrentValue(final String name, final Object val, final boolean inSchema) throws HBqlException {
+        this.setCurrentValue(name, this.getTimestamp(), val, inSchema);
     }
 
-    public void setObjectCurrentValue(final String name,
-                                      final long timestamp,
-                                      final Object val,
-                                      final boolean inSchema) throws HBqlException {
+    public void setCurrentValue(final String name,
+                                final long timestamp,
+                                final Object val,
+                                final boolean inSchema) throws HBqlException {
         final ObjectValue hvalue = this.getObjectHValue(name, inSchema);
         hvalue.setCurrentValue(timestamp, val);
     }
 
     // Access to version maps
-    public Map<Long, Object> getObjectVersionMap(final String name) throws HBqlException {
+    public Map<Long, Object> getVersionMap(final String name) throws HBqlException {
         final ObjectValue hvalue = this.fetchObjectHValue(name);
         return (hvalue != null) ? hvalue.getVersionMap() : null;
     }
@@ -214,23 +214,23 @@ public class HRecordImpl implements Serializable, HRecord {
         hvalue.setCurrentValue(timestamp, name, val);
     }
 
-    public void setObjectVersionValue(final String name,
-                                      final long timestamp,
-                                      final Object val,
-                                      final boolean inSchema) throws HBqlException {
+    public void setVersionValue(final String name,
+                                final long timestamp,
+                                final Object val,
+                                final boolean inSchema) throws HBqlException {
         final ObjectValue hvalue = this.getObjectHValue(name, inSchema);
         hvalue.getVersionMap().put(timestamp, val);
     }
 
-    public void setObjectVersionValue(final String family,
-                                      final String column,
-                                      final long timestamp,
-                                      final Object val,
-                                      final boolean inSchema) throws HBqlException {
+    public void setVersionValue(final String family,
+                                final String column,
+                                final long timestamp,
+                                final Object val,
+                                final boolean inSchema) throws HBqlException {
         final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(family, column);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + family + ":" + column);
-        this.setObjectVersionValue(attrib.getColumnName(), timestamp, val, inSchema);
+        this.setVersionValue(attrib.getColumnName(), timestamp, val, inSchema);
     }
 
 

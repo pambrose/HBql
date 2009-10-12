@@ -39,7 +39,7 @@ public class HBatch {
     public void insert(final HRecordImpl hrecord) throws HBqlException {
         final HBaseSchema schema = hrecord.getSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
-        if (!hrecord.isObjectCurrentValueSet(keyAttrib))
+        if (!hrecord.isCurrentValueSet(keyAttrib))
             throw new HBqlException("HRecord key value must be assigned");
 
         final Put put = createPut(schema, hrecord);
@@ -54,7 +54,7 @@ public class HBatch {
     public void delete(final HRecordImpl hrecord) throws HBqlException {
         final HBaseSchema schema = hrecord.getSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
-        if (!hrecord.isObjectCurrentValueSet(keyAttrib))
+        if (!hrecord.isCurrentValueSet(keyAttrib))
             throw new HBqlException("HRecord key value must be assigned");
         this.delete(schema, hrecord);
     }
@@ -117,7 +117,7 @@ public class HBatch {
                     }
                 }
                 else {
-                    if (hrecord.isObjectCurrentValueSet(attrib)) {
+                    if (hrecord.isCurrentValueSet(attrib)) {
                         final byte[] b = attrib.getValueAsBytes(hrecord);
                         put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), b);
                     }

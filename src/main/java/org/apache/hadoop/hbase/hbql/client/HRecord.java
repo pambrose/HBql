@@ -10,11 +10,11 @@ import java.util.Map;
  */
 public interface HRecord {
 
-    Object getObjectCurrentValue(String name) throws HBqlException;
+    Object getCurrentValue(String name) throws HBqlException;
 
-    void setObjectCurrentValue(String name, Object val) throws HBqlException;
+    void setCurrentValue(String name, Object val) throws HBqlException;
 
-    Map<Long, Object> getObjectVersionMap(final String name) throws HBqlException;
+    Map<Long, Object> getVersionMap(final String name) throws HBqlException;
 
     Map<Long, Object> getKeysAsColumnsVersionMap(String name, String mapKey) throws HBqlException;
 
