@@ -107,40 +107,46 @@ public class HRecordImpl implements Serializable, HRecord {
 
     // Simple get routines
     public ObjectValue getObjectHValue(final String name, final boolean inSchema) throws HBqlException {
-        final ObjectValue hvalue = this.getObjectHValue(name);
+        final ObjectValue hvalue = this.fetchObjectHValue(name);
         return (hvalue != null) ? hvalue : this.addObjectHValue(name, inSchema);
     }
 
     public KeysAsColumnsValue getKeysAsColumnsHValue(final String name, final boolean inSchema) throws HBqlException {
-        final KeysAsColumnsValue hvalue = this.getKeysAsColumnsHValue(name);
+        final KeysAsColumnsValue hvalue = this.fetchKeysAsColumnsHValue(name);
         return (hvalue != null) ? hvalue : this.addKeysAsColumnsHValue(name, inSchema);
     }
 
     public FamilyDefaultValue getFamilyDefaultHValue(final String name) throws HBqlException {
-        final FamilyDefaultValue hvalue = this.getFamilyDefaultHValue2(name);
+        final FamilyDefaultValue hvalue = this.fetchFamilyDefaultHValue(name);
         return (hvalue != null) ? hvalue : this.addFamilyDefaultHValue(name);
     }
 
     // Primitive get routines
-    private ObjectValue getObjectHValue(final String name) throws HBqlException {
+    private ObjectValue fetchObjectHValue(final String name) throws HBqlException {
         final HValue hvalue = this.getHValue(name);
-        if (hvalue instanceof ObjectValue)
+        if (hvalue == null)
+            return null;
+        else if (hvalue instanceof ObjectValue)
             return (ObjectValue)hvalue;
         else
-            throw new HBqlException("Not a ObjectHValue value");
+            throw new HBqlException("Not an ObjectHValue value");
     }
 
-    private KeysAsColumnsValue getKeysAsColumnsHValue(final String name) throws HBqlException {
+    private KeysAsColumnsValue fetchKeysAsColumnsHValue(final String name) throws HBqlException {
         final HValue hvalue = this.getHValue(name);
-        if (hvalue instanceof KeysAsColumnsValue)
+        if (hvalue == null)
+            return null;
+        else if (hvalue instanceof KeysAsColumnsValue)
             return (KeysAsColumnsValue)hvalue;
         else
             throw new HBqlException("Not a KeysAsColumnsHValue value");
     }
 
-    private FamilyDefaultValue getFamilyDefaultHValue2(final String name) throws HBqlException {
+    private FamilyDefaultValue fetchFamilyDefaultHValue(final String name) throws HBqlException {
         final HValue hvalue = this.getHValue(name);
-        if (hvalue instanceof FamilyDefaultValue)
+        if (hvalue == null)
+            return null;
+        else if (hvalue instanceof FamilyDefaultValue)
             return (FamilyDefaultValue)hvalue;
         else
             throw new HBqlException("Not a FamilyDefaultHValue value");
@@ -158,12 +164,12 @@ public class HRecordImpl implements Serializable, HRecord {
     }
 
     public boolean isObjectCurrentValueSet(final ColumnAttrib attrib) throws HBqlException {
-        final ObjectValue hvalue = this.getObjectHValue(attrib.getAliasName());
+        final ObjectValue hvalue = this.fetchObjectHValue(attrib.getAliasName());
         return hvalue != null && hvalue.isCurrentValueSet();
     }
 
     public Object getObjectCurrentValue(final String name) throws HBqlException {
-        final ObjectValue hvalue = this.getObjectHValue(name);
+        final ObjectValue hvalue = this.fetchObjectHValue(name);
         return (hvalue != null) ? hvalue.getCurrentValue() : null;
     }
 
@@ -185,12 +191,12 @@ public class HRecordImpl implements Serializable, HRecord {
 
     // Access to version maps
     public Map<Long, Object> getObjectVersionMap(final String name) throws HBqlException {
-        final ObjectValue hvalue = this.getObjectHValue(name);
+        final ObjectValue hvalue = this.fetchObjectHValue(name);
         return (hvalue != null) ? hvalue.getVersionMap() : null;
     }
 
     public Map<Long, Object> getKeysAsColumnsVersionMap(final String name, final String mapKey) throws HBqlException {
-        final KeysAsColumnsValue hvalue = this.getKeysAsColumnsHValue(name);
+        final KeysAsColumnsValue hvalue = this.fetchKeysAsColumnsHValue(name);
         return (hvalue != null) ? hvalue.getVersionMap(mapKey) : null;
     }
 
@@ -241,7 +247,7 @@ public class HRecordImpl implements Serializable, HRecord {
     public void setKeysAsColumnsVersionMap(final String familyName,
                                            final String name,
                                            final NavigableMap<Long, byte[]> val) throws HBqlException {
-        final KeysAsColumnsValue hvalue = this.getKeysAsColumnsHValue(familyName);
+        final KeysAsColumnsValue hvalue = this.fetchKeysAsColumnsHValue(familyName);
         hvalue.setVersionMap(name, (Map)val);
     }
 
