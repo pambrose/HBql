@@ -98,11 +98,11 @@ public class DefinedAttrib extends ColumnAttrib {
                                                    final String columnName,
                                                    final String mapKey,
                                                    final byte[] valueBytes) throws HBqlException {
-        ((HRecordImpl)hrecord).setKeysAsColumnsValue(columnName,
-                                                     mapKey,
-                                                     0,
-                                                     valueBytes,
-                                                     false);
+        ((HRecordImpl)hrecord).setFamilyDefaultKeysAsColumnsValue(columnName,
+                                                                  mapKey,
+                                                                  0,
+                                                                  valueBytes,
+                                                                  false);
     }
 
     protected Method getMethod(final String methodName,
