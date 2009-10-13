@@ -214,11 +214,9 @@ public class FamilySelectElement implements SelectElement {
                     final ColumnAttrib attrib = schema.getVersionAttribMap(familyName, columnName);
 
                     if (attrib == null) {
-                        // Bail if dealing with annotated value without version attrib
-                        if (!(obj instanceof HRecord))
-                            return;
-
-                        ((HRecordImpl)obj).setFamilyDefaultVersionMap(familyName, columnName, timeStampMap);
+                        final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
+                        if (familyDefaultAttrib != null)
+                            familyDefaultAttrib.setFamilyDefaultVersionMap(obj, columnName, timeStampMap);
                     }
                     else {
                         final Map<Long, Object> mapVal = attrib.getVersionMap(obj);
