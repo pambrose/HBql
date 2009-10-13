@@ -180,19 +180,14 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
         // Column reference is not known to schema, so just assign byte[] value
         if (this.getColumnAttrib() == null) {
-
             final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(this.getFamilyName());
-
-            if (familyDefaultAttrib != null)
-                familyDefaultAttrib.setFamilyDefaultCurrentValue(obj,
-                                                                 this.getSelectName(),
-                                                                 result.getValue(this.getFamilyNameBytes(),
-                                                                                 this.getColumnNameBytes()));
+            if (familyDefaultAttrib != null) {
+                final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
+                familyDefaultAttrib.setFamilyDefaultCurrentValue(obj, this.getSelectName(), b);
+            }
         }
         else {
-            // Do not process if it is an annotation history value
             if (this.getColumnAttrib().isACurrentValue()) {
-
                 // If this is a mapKeysAsColumns, then we need to build the map from all the related columns in the family
                 if (this.getColumnAttrib().isMapKeysAsColumnsAttrib()) {
                     final Map mapval = this.getMapKeysAsColumnsValue(result);
@@ -205,8 +200,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             }
         }
 
-        // Now assign versions
-        // Do not process if it doesn't support version values
+        // Now assign versions if they were requested. Do not process if it doesn't support version values
         if (maxVerions > 1 && this.getColumnAttrib().isAVersionValue()) {
 
             final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
@@ -218,19 +212,16 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
 
             if (this.getColumnAttrib() == null) {
-
                 final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(this.getFamilyName());
-
                 if (familyDefaultAttrib != null)
-                    familyDefaultAttrib.setFamilyDefaultVersionMap(this.getSelectName(), timeStampMap);
+                    familyDefaultAttrib.setFamilyDefaultVersionMap(obj, this.getSelectName(), timeStampMap);
             }
             else {
-                final Map<Long, Object> mapval = this.getColumnAttrib().getVersionMap(obj);
-
+                final Map<Long, Object> mapVal = this.getColumnAttrib().getVersionMap(obj);
                 for (final Long timestamp : timeStampMap.keySet()) {
                     final byte[] b = timeStampMap.get(timestamp);
                     final Object val = this.getColumnAttrib().getValueFromBytes(obj, b);
-                    mapval.put(timestamp, val);
+                    mapVal.put(timestamp, val);
                 }
             }
         }
