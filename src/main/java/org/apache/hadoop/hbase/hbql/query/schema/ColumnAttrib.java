@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.NavigableMap;
 
 public abstract class ColumnAttrib implements Serializable {
 
@@ -64,6 +65,10 @@ public abstract class ColumnAttrib implements Serializable {
     public abstract void setFamilyDefaultCurrentValue(final Object obj,
                                                       final String name,
                                                       final byte[] value) throws HBqlException;
+
+    public abstract void setFamilyDefaultVersionMap(final Object obj,
+                                                    final String name,
+                                                    final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException;
 
     public boolean isArray() {
         return this.isArray;

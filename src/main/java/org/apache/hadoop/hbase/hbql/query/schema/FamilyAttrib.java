@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.NavigableMap;
 
 public class FamilyAttrib extends ColumnAttrib {
 
@@ -56,6 +57,12 @@ public class FamilyAttrib extends ColumnAttrib {
     public void setFamilyDefaultCurrentValue(final Object obj,
                                              final String name,
                                              final byte[] value) throws HBqlException {
+        throw new HBqlException("Internal error");
+    }
+
+    public void setFamilyDefaultVersionMap(final Object obj,
+                                           final String name,
+                                           final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
         throw new HBqlException("Internal error");
     }
 }

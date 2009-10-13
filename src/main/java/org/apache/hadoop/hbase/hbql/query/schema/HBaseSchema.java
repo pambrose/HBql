@@ -23,7 +23,7 @@ public abstract class HBaseSchema extends Schema {
     private Set<String> familyNameSet = null;
 
     private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
-    private final Map<String, ColumnAttrib> versionAttribByFamilyQualifiedNameMap = Maps.newHashMap();
+    private final Map<String, ColumnAttrib> versionAttribMap = Maps.newHashMap();
     private final Map<String, ColumnAttrib> familyDefaultMap = Maps.newHashMap();
     private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
 
@@ -130,28 +130,28 @@ public abstract class HBaseSchema extends Schema {
     }
 
     // *** versionAttribByFamilyQualifiedNameMap calls
-    private Map<String, ColumnAttrib> getVersionAttribByFamilyQualifiedNameMap() {
-        return this.versionAttribByFamilyQualifiedNameMap;
+    private Map<String, ColumnAttrib> getVersionAttribMap() {
+        return this.versionAttribMap;
     }
 
-    public ColumnAttrib getVersionAttribFromFamilyQualifiedNameMap(final String name) {
-        return this.getVersionAttribByFamilyQualifiedNameMap().get(name);
+    public ColumnAttrib getVersionAttrib(final String name) {
+        return this.getVersionAttribMap().get(name);
     }
 
-    public ColumnAttrib getVersionAttribFromFamilyQualifiedNameMap(final String familyName, final String columnName) {
-        return this.getVersionAttribFromFamilyQualifiedNameMap(familyName + ":" + columnName);
+    public ColumnAttrib getVersionAttribMap(final String familyName, final String columnName) {
+        return this.getVersionAttrib(familyName + ":" + columnName);
     }
 
-    protected void addVersionAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HBqlException {
+    protected void addVersionAttrib(final ColumnAttrib attrib) throws HBqlException {
 
         if (!attrib.isAVersionValue())
             return;
 
         final String familyQualifiedName = attrib.getFamilyQualifiedName();
-        if (this.getVersionAttribByFamilyQualifiedNameMap().containsKey(familyQualifiedName))
+        if (this.getVersionAttribMap().containsKey(familyQualifiedName))
             throw new HBqlException(familyQualifiedName + " already declared");
 
-        this.getVersionAttribByFamilyQualifiedNameMap().put(familyQualifiedName, attrib);
+        this.getVersionAttribMap().put(familyQualifiedName, attrib);
     }
 
     // *** columnAttribListByFamilyNameMap

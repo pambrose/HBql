@@ -337,7 +337,7 @@ public class AnnotationSchema extends HBaseSchema {
         final String aliasName = attrib.getAliasName();
 
         this.addAttribToVariableNameMap(attrib, aliasName);
-        this.addVersionAttribToFamilyQualifiedNameMap(attrib);
+        this.addVersionAttrib(attrib);
         this.addFamilyDefaultAttrib(attrib);
     }
 

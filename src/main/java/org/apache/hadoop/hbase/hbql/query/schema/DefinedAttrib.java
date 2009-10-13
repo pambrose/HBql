@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
 
 public class DefinedAttrib extends ColumnAttrib {
 
@@ -85,6 +86,12 @@ public class DefinedAttrib extends ColumnAttrib {
                                              final String name,
                                              final byte[] value) throws HBqlException {
         ((HRecordImpl)hrecord).setFamilyDefaultCurrentValue(this.getFamilyName(), name, 0, value);
+    }
+
+    public void setFamilyDefaultVersionMap(final Object hrecord,
+                                           final String name,
+                                           final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
+        ((HRecordImpl)hrecord).setFamilyDefaultVersionMap(this.getFamilyName(), name, timeStampMap);
     }
 
     protected Method getMethod(final String methodName,

@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public abstract class FieldAttrib extends ColumnAttrib {
@@ -125,6 +126,23 @@ public abstract class FieldAttrib extends ColumnAttrib {
         }
 
         mapVal.put(name, val);
+    }
+
+    public void setFamilyDefaultVersionMap(final Object obj,
+                                           final String name,
+                                           final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
+
+        if (!this.isFamilyDefaultAttrib())
+            throw new HBqlException(this.getFamilyQualifiedName() + " not marked as familyDefault");
+
+        Map<String, NavigableMap<Long, byte[]>> mapVal = (Map<String, NavigableMap<Long, byte[]>>)this.getCurrentValue(obj);
+
+        if (mapVal == null) {
+            mapVal = Maps.newHashMap();
+            this.setCurrentValue(obj, 0, mapVal);
+        }
+
+        mapVal.put(name, timeStampMap);
     }
 
     public Map<Long, Object> getVersionMap(final Object obj) throws HBqlException {

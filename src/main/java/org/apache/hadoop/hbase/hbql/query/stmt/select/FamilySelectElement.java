@@ -191,8 +191,7 @@ public class FamilySelectElement implements SelectElement {
                     final String mapColumn = columnName.substring(0, lbrace);
                     final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
 
-                    final ColumnAttrib attrib = this.getSchema().getVersionAttribFromFamilyQualifiedNameMap(familyName,
-                                                                                                            mapColumn);
+                    final ColumnAttrib attrib = schema.getVersionAttribMap(familyName, mapColumn);
 
                     if (attrib == null) {
                         // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
@@ -212,8 +211,7 @@ public class FamilySelectElement implements SelectElement {
                     }
                 }
                 else {
-                    final ColumnAttrib attrib = this.getSchema().getVersionAttribFromFamilyQualifiedNameMap(familyName,
-                                                                                                            columnName);
+                    final ColumnAttrib attrib = schema.getVersionAttribMap(familyName, columnName);
 
                     if (attrib == null) {
                         // Bail if dealing with annotated value without version attrib

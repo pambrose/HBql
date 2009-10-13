@@ -223,16 +223,6 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
                 if (familyDefaultAttrib != null)
                     familyDefaultAttrib.setFamilyDefaultVersionMap(this.getSelectName(), timeStampMap);
-
-                // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
-                // if (!(newobj instanceof HRecord))
-                //     return;
-
-                /*
-                    ((HRecordImpl)newobj).setFamilyDefaultVersionMap(this.getFamilyName(),
-                                                                     this.getSelectName(),
-                                                                     timeStampMap);
-                                                                     */
             }
             else {
                 final Map<Long, Object> mapval = this.getColumnAttrib().getVersionMap(obj);
