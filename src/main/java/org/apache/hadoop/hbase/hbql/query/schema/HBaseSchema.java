@@ -98,6 +98,36 @@ public abstract class HBaseSchema extends Schema {
         this.getAttribByFamilyQualifiedNameMap().put(name, attrib);
     }
 
+    // *** familyDefaultMap calls
+    private Map<String, ColumnAttrib> getFamilyDefaultMap() {
+        return this.familyDefaultMap;
+    }
+
+    public ColumnAttrib getFamilyDefault(final String name) {
+        return this.getFamilyDefaultMap().get(name);
+    }
+
+    protected void addFamilyDefaultAttrib(final ColumnAttrib attrib) throws HBqlException {
+
+        if (!attrib.isFamilyDefaultAttrib())
+            return;
+
+        final String familyName = attrib.getFamilyName();
+        if (this.getFamilyDefaultMap().containsKey(familyName))
+            throw new HBqlException(familyName + " already declared");
+
+        this.getFamilyDefaultMap().put(familyName, attrib);
+
+        final String aliasName = attrib.getAliasName();
+        if (aliasName == null || aliasName.length() == 0 || aliasName.equals(familyName))
+            return;
+
+        if (this.getFamilyDefaultMap().containsKey(aliasName))
+            throw new HBqlException(aliasName + " already declared");
+
+        this.getFamilyDefaultMap().put(aliasName, attrib);
+    }
+
     // *** versionAttribByFamilyQualifiedNameMap calls
     private Map<String, ColumnAttrib> getVersionAttribByFamilyQualifiedNameMap() {
         return this.versionAttribByFamilyQualifiedNameMap;
@@ -140,8 +170,8 @@ public abstract class HBaseSchema extends Schema {
         return this.getColumnAttribListByFamilyNameMap().containsKey(familyName);
     }
 
-    public void addColumnAttribListFamilyNameMap(final String familyName,
-                                                 final List<ColumnAttrib> attribList) throws HBqlException {
+    public void addAttribToFamilyNameColumnListMap(final String familyName,
+                                                   final List<ColumnAttrib> attribList) throws HBqlException {
         if (this.containsFamilyNameInFamilyNameMap(familyName))
             throw new HBqlException(familyName + " already declared");
         this.getColumnAttribListByFamilyNameMap().put(familyName, attribList);
@@ -160,7 +190,7 @@ public abstract class HBaseSchema extends Schema {
         final List<ColumnAttrib> attribList;
         if (!this.containsFamilyNameInFamilyNameMap(familyName)) {
             attribList = Lists.newArrayList();
-            this.getColumnAttribListByFamilyNameMap().put(familyName, attribList);
+            this.addAttribToFamilyNameColumnListMap(familyName, attribList);
         }
         else {
             attribList = this.getColumnAttribListByFamilyName(familyName);

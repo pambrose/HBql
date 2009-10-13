@@ -42,11 +42,9 @@ public class DefinedSchema extends HBaseSchema {
         this.addAttribToVariableNameMap(attrib, attrib.getNamesForColumn());
         this.addAttribToFamilyQualifiedNameMap(attrib);
         this.addVersionAttribToFamilyQualifiedNameMap(attrib);
+        this.addFamilyDefaultAttrib(attrib);
+
         this.addAttribToFamilyNameColumnListMap(attrib);
-
-        if (attrib.isFamilyDefaultAttrib()) {
-
-        }
 
         if (attrib.isKeyAttrib()) {
             if (this.getKeyAttrib() != null)

@@ -56,7 +56,7 @@ public class AnnotationSchema extends HBaseSchema {
 
         for (final HFamily family : families) {
             final List<ColumnAttrib> attribs = Lists.newArrayList();
-            this.addColumnAttribListFamilyNameMap(family.name(), attribs);
+            this.addAttribToFamilyNameColumnListMap(family.name(), attribs);
         }
 
         // First process all HColumn fields so we can do lookup from HColumnVersionMaps
@@ -286,6 +286,7 @@ public class AnnotationSchema extends HBaseSchema {
 
         this.addAttribToVariableNameMap(attrib, attrib.getAliasName());
         this.addAttribToFamilyQualifiedNameMap(attrib);
+        this.addFamilyDefaultAttrib(attrib);
 
         if (attrib.isKeyAttrib()) {
             if (this.getKeyAttrib() != null)
@@ -331,11 +332,13 @@ public class AnnotationSchema extends HBaseSchema {
     }
 
     private void processColumnVersionAnnotation(final Field field) throws HBqlException {
+
         final VersionAnnotationAttrib attrib = VersionAnnotationAttrib.newVersionAttrib(this, field);
         final String aliasName = attrib.getAliasName();
 
         this.addAttribToVariableNameMap(attrib, aliasName);
         this.addVersionAttribToFamilyQualifiedNameMap(attrib);
+        this.addFamilyDefaultAttrib(attrib);
     }
 
     public String getTableName() {
