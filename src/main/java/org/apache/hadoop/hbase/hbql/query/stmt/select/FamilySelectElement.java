@@ -3,8 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.stmt.select;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.FamilyAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
@@ -135,9 +133,7 @@ public class FamilySelectElement implements SelectElement {
                         final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
 
                         if (familyDefaultAttrib != null)
-                            familyDefaultAttrib.setFamilyDefaultKeysAsColumnsCurrentValue(columnName,
-                                                                                          0,
-                                                                                          valueBytes);
+                            familyDefaultAttrib.setFamilyDefaultKeysAsColumnsValue(obj, columnName, mapKey, valueBytes);
 
                         /*
                         // Set unknown attrib value to byte[] value
@@ -145,7 +141,7 @@ public class FamilySelectElement implements SelectElement {
                         if (!(newobj instanceof HRecord))
                             return;
 
-                        ((HRecordImpl)newobj).setKeysAsColumnsCurrentValue(familyName + ":" + columnName,
+                        ((HRecordImpl)newobj).setKeysAsColumnsValue(familyName + ":" + columnName,
                                                                            mapKey,
                                                                            0,
                                                                            currentValueBytes,
@@ -162,7 +158,7 @@ public class FamilySelectElement implements SelectElement {
                     if (attrib == null) {
                         final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
                         if (familyDefaultAttrib != null)
-                            familyDefaultAttrib.setFamilyDefaultCurrentValue(familyName, columnName, valueBytes);
+                            familyDefaultAttrib.setFamilyDefaultCurrentValue(obj, columnName, valueBytes);
                     }
                     else {
                         attrib.setCurrentValue(obj, 0, valueBytes);
@@ -194,11 +190,18 @@ public class FamilySelectElement implements SelectElement {
                     final ColumnAttrib attrib = schema.getVersionAttribMap(familyName, mapColumn);
 
                     if (attrib == null) {
-                        // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
+
+                        final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
+
+                        if (familyDefaultAttrib != null)
+                            familyDefaultAttrib.setFamilyDefaultKeysAsColumnsVersionMap(obj, columnName, timeStampMap);
+
+                        /*
                         if (!(obj instanceof HRecord))
                             return;
 
                         ((HRecordImpl)obj).setKeysAsColumnsVersionMap(familyName, columnName, timeStampMap);
+                        */
                     }
                     else {
                         // Set unknown attrib value to byte[] value
