@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 public interface HConnection {
     <T> HQuery<T> newHQuery(String query) throws IOException, HBqlException;
@@ -20,7 +21,7 @@ public interface HConnection {
 
     List<String> getTableList() throws IOException, HBqlException;
 
-    List<String> getFamilyList(String tableName) throws HBqlException;
+    Set<String> getFamilyList(String tableName) throws HBqlException;
 
     HOutput execute(String str) throws HBqlException, IOException;
 

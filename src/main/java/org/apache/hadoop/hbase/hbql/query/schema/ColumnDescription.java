@@ -46,7 +46,7 @@ public class ColumnDescription implements Serializable {
         return new ColumnDescription(familyQualifiedName,
                                      aliasName,
                                      mapKeysAsColumns,
-                                     false,
+                                     familyDefault,
                                      typeName,
                                      isArray);
     }

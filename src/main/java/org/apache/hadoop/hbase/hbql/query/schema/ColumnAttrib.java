@@ -46,6 +46,26 @@ public abstract class ColumnAttrib implements Serializable {
         this.setter = setter;
     }
 
+    public abstract Object getCurrentValue(final Object obj) throws HBqlException;
+
+    public abstract void setCurrentValue(final Object obj,
+                                         final long timestamp,
+                                         final Object val) throws HBqlException;
+
+    public abstract Map<Long, Object> getVersionMap(final Object obj) throws HBqlException;
+
+    public abstract void setKeysAsColumnsValue(final Object obj,
+                                               final String mapKey,
+                                               final Object val) throws HBqlException;
+
+    public abstract Map<Long, Object> getKeysAsColumnsVersionMap(final Object obj,
+                                                                 final String mapKey) throws HBqlException;
+
+    public abstract void setFamilyDefaultCurrentValue(final Object obj,
+                                                      final String name,
+                                                      final long timestamp,
+                                                      final byte[] value) throws HBqlException;
+
     public boolean isArray() {
         return this.isArray;
     }
@@ -73,21 +93,6 @@ public abstract class ColumnAttrib implements Serializable {
     public boolean isAFamilyAttrib() {
         return false;
     }
-
-    public abstract Object getCurrentValue(final Object recordObj) throws HBqlException;
-
-    public abstract void setCurrentValue(final Object newobj,
-                                         final long timestamp,
-                                         final Object val) throws HBqlException;
-
-    public abstract Map<Long, Object> getVersionObjectValueMap(final Object recordObj) throws HBqlException;
-
-    public abstract void setKeysAsColumnsValue(final Object newobj,
-                                               final String mapKey,
-                                               final Object val) throws HBqlException;
-
-    public abstract Map<Long, Object> getKeysAsColumnsVersionMap(final Object newobj,
-                                                                 final String mapKey) throws HBqlException;
 
     public FieldType getFieldType() {
         return this.fieldType;

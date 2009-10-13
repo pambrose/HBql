@@ -110,7 +110,7 @@ public abstract class FieldAttrib extends ColumnAttrib {
         mapVal.put(mapKey, val);
     }
 
-    public Map<Long, Object> getVersionObjectValueMap(final Object newobj) throws HBqlException {
+    public Map<Long, Object> getVersionMap(final Object newobj) throws HBqlException {
 
         if (!this.isAVersionValue())
             throw new HBqlException(this.getFamilyQualifiedName() + " not marked with @HColumnVersionMap");

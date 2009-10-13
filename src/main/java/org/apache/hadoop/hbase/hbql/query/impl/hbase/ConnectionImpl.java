@@ -15,10 +15,12 @@ import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCmd;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
+import org.apache.hadoop.hbase.hbql.query.util.Sets;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 public class ConnectionImpl implements HConnection {
 
@@ -66,14 +68,14 @@ public class ConnectionImpl implements HConnection {
         return tableList;
     }
 
-    public List<String> getFamilyList(final String tableName) throws HBqlException {
+    public Set<String> getFamilyList(final String tableName) throws HBqlException {
         try {
             final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
             final HTableDescriptor table = admin.getTableDescriptor(Bytes.toBytes(tableName));
-            final List<String> familyList = Lists.newArrayList();
+            final Set<String> familySet = Sets.newHashSet();
             for (final HColumnDescriptor descriptor : table.getColumnFamilies())
-                familyList.add(Bytes.toString(descriptor.getName()));
-            return familyList;
+                familySet.add(Bytes.toString(descriptor.getName()));
+            return familySet;
         }
         catch (IOException e) {
             e.printStackTrace();

@@ -89,9 +89,9 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                 final String[] strs = name.split(":");
                 this.familyName = strs[0];
                 this.columnName = strs[1];
-                final Collection<String> families = this.getSchema().getAllSchemaFamilyNames(connection);
+                final Collection<String> families = this.getSchema().getSchemaFamilyNames(connection);
                 if (!families.contains(this.getFamilyName()))
-                    throw new HBqlException("Unknown famioy name: " + this.getFamilyName());
+                    throw new HBqlException("Unknown family name: " + this.getFamilyName());
             }
             this.familyNameBytes = HUtil.ser.getStringAsBytes(this.getFamilyName());
             this.columnNameBytes = HUtil.ser.getStringAsBytes(this.getColumnName());
@@ -176,18 +176,19 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             return;
         }
 
+        final HBaseSchema schema = (HBaseSchema)this.getSchema();
+
         // Column reference is not known to schema, so just assign byte[] value
         if (this.getColumnAttrib() == null) {
 
-            // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
-            if (!(newobj instanceof HRecord))
-                return;
+            final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(this.getFamilyName());
 
-            ((HRecordImpl)newobj).setFamilyDefaultCurrentValue(this.getFamilyName(),
-                                                               this.getSelectName(),
-                                                               0,
-                                                               result.getValue(this.getFamilyNameBytes(),
-                                                                               this.getColumnNameBytes()));
+            if (familyDefaultAttrib != null)
+                familyDefaultAttrib.setFamilyDefaultCurrentValue(newobj,
+                                                                 this.getSelectName(),
+                                                                 0,
+                                                                 result.getValue(this.getFamilyNameBytes(),
+                                                                                 this.getColumnNameBytes()));
         }
         else {
             // Do not process if it is an annotation history value
@@ -219,14 +220,23 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
             if (this.getColumnAttrib() == null) {
 
-                // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
-                if (!(newobj instanceof HRecord))
-                    return;
+                final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(this.getFamilyName());
 
-                ((HRecordImpl)newobj).setFamilyDefaultVersionMap(this.getFamilyName(), this.getSelectName(), timeStampMap);
+                if (familyDefaultAttrib != null)
+                    familyDefaultAttrib.setFamilyDefaultVersionMap(this.getSelectName(), timeStampMap);
+
+                // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
+                // if (!(newobj instanceof HRecord))
+                //     return;
+
+                /*
+                    ((HRecordImpl)newobj).setFamilyDefaultVersionMap(this.getFamilyName(),
+                                                                     this.getSelectName(),
+                                                                     timeStampMap);
+                                                                     */
             }
             else {
-                final Map<Long, Object> mapval = this.getColumnAttrib().getVersionObjectValueMap(newobj);
+                final Map<Long, Object> mapval = this.getColumnAttrib().getVersionMap(newobj);
 
                 for (final Long timestamp : timeStampMap.keySet()) {
                     final byte[] b = timeStampMap.get(timestamp);

@@ -67,7 +67,7 @@ public class DefinedAttrib extends ColumnAttrib {
         ((HRecordImpl)hrecord).setKeysAsColumnsCurrentValue(this.getAliasName(), mapKey, 0, val, true);
     }
 
-    public Map<Long, Object> getVersionObjectValueMap(final Object hrecord) throws HBqlException {
+    public Map<Long, Object> getVersionMap(final Object hrecord) throws HBqlException {
         return ((HRecordImpl)hrecord).getObjectHValue(this.getAliasName(), true).getVersionMap();
     }
 
@@ -79,6 +79,13 @@ public class DefinedAttrib extends ColumnAttrib {
     public Map<Long, byte[]> getFamilyDefaultVersionMap(final Object hrecord,
                                                         final String familyName) throws HBqlException {
         return ((HRecordImpl)hrecord).getFamilyDefaultHValue(this.getAliasName()).getVersionMap(familyName);
+    }
+
+    public void setFamilyDefaultCurrentValue(final Object hrecord,
+                                             final String name,
+                                             final long timestamp,
+                                             final byte[] value) throws HBqlException {
+        ((HRecordImpl)hrecord).setFamilyDefaultCurrentValue(this.getFamilyName(), name, 0, value);
     }
 
     protected Method getMethod(final String methodName,

@@ -17,7 +17,7 @@ public abstract class Schema implements Serializable {
     private final Map<String, ColumnAttrib> columnAttribByVariableNameMap = Maps.newHashMap();
     private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
 
-    public abstract Collection<String> getAllSchemaFamilyNames(final HConnection connection) throws HBqlException;
+    public abstract Collection<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException;
 
     public List<ColumnAttrib> getAllAttribs() {
         final List<ColumnAttrib> retval = Lists.newArrayList();

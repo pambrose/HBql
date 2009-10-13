@@ -12,7 +12,6 @@ import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +19,8 @@ import java.util.Set;
 public abstract class HBaseSchema extends Schema {
 
     private ColumnAttrib keyAttrib = null;
+
+    private Set<String> familyNameSet = null;
 
     private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
     private final Map<String, ColumnAttrib> versionAttribByFamilyQualifiedNameMap = Maps.newHashMap();
@@ -221,10 +222,15 @@ public abstract class HBaseSchema extends Schema {
         return new HBqlFilter(exprTree, scanLimit);
     }
 
-    public Collection<String> getAllSchemaFamilyNames(final HConnection connection) throws HBqlException {
-        // Connction will be null from tests
-        return (connection == null)
-               ? this.getFamilySet()
-               : connection.getFamilyList(this.getTableName());
+    public synchronized Set<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException {
+
+        if (this.familyNameSet == null) {
+            // Connction will be null from tests
+            this.familyNameSet = (connection == null)
+                                 ? this.getFamilySet()
+                                 : connection.getFamilyList(this.getTableName());
+        }
+
+        return this.familyNameSet;
     }
 }

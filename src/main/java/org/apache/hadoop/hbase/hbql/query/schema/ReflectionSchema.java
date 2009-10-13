@@ -49,7 +49,7 @@ public class ReflectionSchema extends Schema {
         return reflectionSchemaMap;
     }
 
-    public Collection<String> getAllSchemaFamilyNames(final HConnection connection) throws HBqlException {
+    public Collection<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException {
         return Lists.newArrayList();
     }
 }
