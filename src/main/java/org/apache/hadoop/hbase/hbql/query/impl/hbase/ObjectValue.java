@@ -7,4 +7,8 @@ package org.apache.hadoop.hbase.hbql.query.impl.hbase;
  * Time: 3:17:34 PM
  */
 public class ObjectValue extends ValueImpl<Object> {
+
+    public ObjectValue(final HRecordImpl hrecord, final String name) {
+        super(hrecord, name);
+    }
 }

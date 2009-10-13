@@ -27,7 +27,7 @@ public class HRecordImpl implements Serializable, HRecord {
         return this.schema;
     }
 
-    private Map<String, HValue> getValues() {
+    public Map<String, HValue> getValuesMap() {
         return this.values;
     }
 
@@ -36,11 +36,11 @@ public class HRecordImpl implements Serializable, HRecord {
     }
 
     private HValue getValue(final String name) {
-        return this.getValues().get(name);
+        return this.getValuesMap().get(name);
     }
 
     private boolean containsName(final String name) {
-        return this.getValues().containsKey(name);
+        return this.getValuesMap().containsKey(name);
     }
 
     private HValue getHValue(final String name) {
@@ -75,50 +75,42 @@ public class HRecordImpl implements Serializable, HRecord {
     }
 
     public void clearValues() {
-        this.getValues().clear();
-    }
-
-    // Add element routines
-    private ObjectValue addObjectValue(final String name, final boolean inSchema) throws HBqlException {
-
-        if (inSchema && !this.getSchema().constainsVariableName(name))
-            throw new HBqlException("Invalid variable name " + this.getSchema().getTableName() + "." + name);
-
-        final ObjectValue val = new ObjectValue();
-        this.getValues().put(name, val);
-        return val;
-    }
-
-    private KeysAsColumnsValue addKeysAsColumnsValue(final String name, final boolean inSchema) throws HBqlException {
-
-        if (inSchema && !this.getSchema().constainsVariableName(name))
-            throw new HBqlException("Invalid variable name " + this.getSchema().getTableName() + "." + name);
-
-        final KeysAsColumnsValue val = new KeysAsColumnsValue();
-        this.getValues().put(name, val);
-        return val;
-    }
-
-    private FamilyDefaultValue addFamilyDefaultValue(final String name) throws HBqlException {
-        final FamilyDefaultValue val = new FamilyDefaultValue();
-        this.getValues().put(name, val);
-        return val;
+        this.getValuesMap().clear();
     }
 
     // Simple get routines
     public ObjectValue getObjectValue(final String name, final boolean inSchema) throws HBqlException {
-        final ObjectValue objectValue = this.fetchObjectValue(name);
-        return (objectValue != null) ? objectValue : this.addObjectValue(name, inSchema);
+        final ObjectValue value = this.fetchObjectValue(name);
+        if (value != null) {
+            return value;
+        }
+        else {
+            if (inSchema && !this.getSchema().constainsVariableName(name))
+                throw new HBqlException("Invalid variable name " + this.getSchema().getTableName() + "." + name);
+            return new ObjectValue(this, name);
+        }
     }
 
     public KeysAsColumnsValue getKeysAsColumnsValue(final String name, final boolean inSchema) throws HBqlException {
-        final KeysAsColumnsValue keysAsColumnsValue = this.fetchKeysAsColumnsValue(name);
-        return (keysAsColumnsValue != null) ? keysAsColumnsValue : this.addKeysAsColumnsValue(name, inSchema);
+        final KeysAsColumnsValue value = this.fetchKeysAsColumnsValue(name);
+        if (value != null) {
+            return value;
+        }
+        else {
+            if (inSchema && !this.getSchema().constainsVariableName(name))
+                throw new HBqlException("Invalid variable name " + this.getSchema().getTableName() + "." + name);
+            return new KeysAsColumnsValue(this, name);
+        }
     }
 
     public FamilyDefaultValue getFamilyDefaultValue(final String name) throws HBqlException {
-        final FamilyDefaultValue familyDefaultValue = this.fetchFamilyDefaultValue(name);
-        return (familyDefaultValue != null) ? familyDefaultValue : this.addFamilyDefaultValue(name);
+        final FamilyDefaultValue value = this.fetchFamilyDefaultValue(name);
+        return (value != null) ? value : new FamilyDefaultValue(this, name);
+    }
+
+    public FamilyDefaultKeysAsColumnsValue getFamilyDefaultKeysAsColumnsValue(final String name) throws HBqlException {
+        final FamilyDefaultKeysAsColumnsValue value = this.fetchFamilyDefaultKeysAsColumnsValue(name);
+        return (value != null) ? value : new FamilyDefaultKeysAsColumnsValue(this, name);
     }
 
     // Primitive get routines
@@ -150,6 +142,16 @@ public class HRecordImpl implements Serializable, HRecord {
             return (FamilyDefaultValue)hvalue;
         else
             throw new HBqlException("Not a FamilyDefaultHValue value");
+    }
+
+    private FamilyDefaultKeysAsColumnsValue fetchFamilyDefaultKeysAsColumnsValue(final String name) throws HBqlException {
+        final HValue hvalue = this.getHValue(name);
+        if (hvalue == null)
+            return null;
+        else if (hvalue instanceof FamilyDefaultKeysAsColumnsValue)
+            return (FamilyDefaultKeysAsColumnsValue)hvalue;
+        else
+            throw new HBqlException("Not a FamilyDefaultKeysAsColumnsHValue value");
     }
 
     // Current Object values

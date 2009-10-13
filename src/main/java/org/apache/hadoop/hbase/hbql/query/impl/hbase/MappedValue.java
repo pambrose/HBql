@@ -5,9 +5,13 @@ import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.util.Map;
 
-public abstract class MappedValue<T> implements HValue {
+public abstract class MappedValue<T> extends HValue {
 
     private Map<String, ValueImpl<T>> keysAsColumnMap = Maps.newHashMap();
+
+    protected MappedValue(final HRecordImpl hrecord, final String name) {
+        super(hrecord, name);
+    }
 
     public Object getCurrentValue(final String name) {
         return this.getHValue(name).getCurrentValue();
@@ -20,7 +24,7 @@ public abstract class MappedValue<T> implements HValue {
     private ValueImpl<T> getHValue(final String mapKey) {
         ValueImpl<T> hvalue = this.getKeysAsColumnMap().get(mapKey);
         if (hvalue == null) {
-            hvalue = new ValueImpl<T>();
+            hvalue = new ValueImpl<T>(null, null);
             this.getKeysAsColumnMap().put(mapKey, hvalue);
         }
         return hvalue;

@@ -5,12 +5,16 @@ import org.apache.hadoop.hbase.hbql.client.HValue;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ValueImpl<T> implements HValue {
+public class ValueImpl<T> extends HValue {
 
     private boolean currentValueSet = false;
     private T currentValue = null;
     private long currentValueTimestamp = -1;
     private Map<Long, T> versionMap = null;
+
+    public ValueImpl(final HRecordImpl hrecord, final String name) {
+        super(hrecord, name);
+    }
 
     public T getCurrentValue() {
         return this.currentValue;
