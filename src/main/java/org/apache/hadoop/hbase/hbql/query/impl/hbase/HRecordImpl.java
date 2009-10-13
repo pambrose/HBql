@@ -268,4 +268,23 @@ public class HRecordImpl implements Serializable, HRecord {
         final FamilyDefaultValue value = this.getFamilyDefaultValue(familyName);
         value.setVersionMap(name, val);
     }
+
+    public void setFamilyDefaultKeysAsColumnsValue(final String familyName,
+                                                   final String mapKey,
+                                                   final long timestamp,
+                                                   final Object val) throws HBqlException {
+        final FamilyDefaultKeysAsColumnsValue value = this.getFamilyDefaultKeysAsColumnsValue(familyName);
+        value.getCurrentValue(mapKey).setCurrentValue(timestamp, mapKey, val);
+    }
+
+
+    public void setFamilyDefaultKeysAsColumnsVersionMap(final String familyName,
+                                                        final String columnName,
+                                                        final String mapKey,
+                                                        final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
+        final FamilyDefaultKeysAsColumnsValue value = this.getFamilyDefaultKeysAsColumnsValue(familyName);
+        final KeysAsColumnsValue kacValue = new KeysAsColumnsValue(null, null);
+        kacValue.setVersionMap(columnName, (Map)timeStampMap);
+        value.setCurrentValue(0, mapKey, kacValue);
+    }
 }

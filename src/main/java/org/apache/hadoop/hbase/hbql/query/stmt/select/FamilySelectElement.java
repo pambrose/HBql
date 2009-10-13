@@ -190,23 +190,16 @@ public class FamilySelectElement implements SelectElement {
                     final ColumnAttrib attrib = schema.getVersionAttribMap(familyName, mapColumn);
 
                     if (attrib == null) {
-
                         final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
-
                         if (familyDefaultAttrib != null)
-                            familyDefaultAttrib.setFamilyDefaultKeysAsColumnsVersionMap(obj, columnName, timeStampMap);
-
-                        /*
-                        if (!(obj instanceof HRecord))
-                            return;
-
-                        ((HRecordImpl)obj).setKeysAsColumnsVersionMap(familyName, columnName, timeStampMap);
-                        */
+                            familyDefaultAttrib.setFamilyDefaultKeysAsColumnsVersionMap(obj,
+                                                                                        columnName,
+                                                                                        mapKey,
+                                                                                        timeStampMap);
                     }
                     else {
                         // Set unknown attrib value to byte[] value
-                        final Map<Long, Object> keysAsColumnsVersionMap = attrib.getKeysAsColumnsVersionMap(obj,
-                                                                                                            mapKey);
+                        final Map<Long, Object> keysAsColumnsVersionMap = attrib.getKeysAsColumnsVersionMap(obj, mapKey);
                         for (final Long timestamp : timeStampMap.keySet()) {
                             final Object val = attrib.getValueFromBytes(obj, timeStampMap.get(timestamp));
                             keysAsColumnsVersionMap.put(timestamp, val);

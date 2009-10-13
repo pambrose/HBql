@@ -76,6 +76,11 @@ public abstract class ColumnAttrib implements Serializable {
                                                             final String mapKey,
                                                             final byte[] valueBytes) throws HBqlException;
 
+    public abstract void setFamilyDefaultKeysAsColumnsVersionMap(final Object obj,
+                                                                 final String columnName,
+                                                                 final String mapKey, final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException;
+
+
     public boolean isArray() {
         return this.isArray;
     }

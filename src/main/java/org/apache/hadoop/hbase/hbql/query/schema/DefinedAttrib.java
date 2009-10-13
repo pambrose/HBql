@@ -60,12 +60,12 @@ public class DefinedAttrib extends ColumnAttrib {
 
     public void setKeysAsColumnsValue(final Object hrecord,
                                       final String mapKey,
-                                      final Object val) throws HBqlException {
+                                      final Object objval) throws HBqlException {
 
         if (!this.isMapKeysAsColumnsAttrib())
             throw new HBqlException(this.getFamilyQualifiedName() + " not marked as mapKeysAsColumns");
 
-        ((HRecordImpl)hrecord).setKeysAsColumnsValue(this.getAliasName(), mapKey, 0, val, true);
+        ((HRecordImpl)hrecord).setKeysAsColumnsValue(this.getAliasName(), mapKey, 0, objval, true);
     }
 
     public Map<Long, Object> getVersionMap(final Object hrecord) throws HBqlException {
@@ -101,8 +101,18 @@ public class DefinedAttrib extends ColumnAttrib {
         ((HRecordImpl)hrecord).setFamilyDefaultKeysAsColumnsValue(columnName,
                                                                   mapKey,
                                                                   0,
-                                                                  valueBytes,
-                                                                  false);
+                                                                  valueBytes);
+    }
+
+    public void setFamilyDefaultKeysAsColumnsVersionMap(final Object obj,
+                                                        final String columnName,
+                                                        final String mapKey,
+                                                        final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
+
+        ((HRecordImpl)obj).setFamilyDefaultKeysAsColumnsVersionMap(this.getFamilyName(),
+                                                                   columnName,
+                                                                   mapKey,
+                                                                   timeStampMap);
     }
 
     protected Method getMethod(final String methodName,

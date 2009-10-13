@@ -13,7 +13,7 @@ public abstract class MappedValue<T> extends HValue {
         super(hrecord, name);
     }
 
-    public Object getCurrentValue(final String name) {
+    public T getCurrentValue(final String name) {
         return this.getHValue(name).getCurrentValue();
     }
 
@@ -21,7 +21,7 @@ public abstract class MappedValue<T> extends HValue {
         return this.keysAsColumnMap;
     }
 
-    private ValueImpl<T> getHValue(final String mapKey) {
+    public ValueImpl<T> getHValue(final String mapKey) {
         ValueImpl<T> hvalue = this.getKeysAsColumnMap().get(mapKey);
         if (hvalue == null) {
             hvalue = new ValueImpl<T>(null, null);

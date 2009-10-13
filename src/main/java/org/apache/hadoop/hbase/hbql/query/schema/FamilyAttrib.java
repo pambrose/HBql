@@ -71,4 +71,10 @@ public class FamilyAttrib extends ColumnAttrib {
                                                    final byte[] valueBytes) throws HBqlException {
         throw new HBqlException("Internal error");
     }
+
+    public void setFamilyDefaultKeysAsColumnsVersionMap(final Object obj,
+                                                        final String columnName,
+                                                        final String mapKey, final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
+        throw new HBqlException("Internal error");
+    }
 }

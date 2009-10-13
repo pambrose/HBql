@@ -181,6 +181,19 @@ public abstract class FieldAttrib extends ColumnAttrib {
         return mapForKey;
     }
 
+    public void setFamilyDefaultKeysAsColumnsValue(final Object obj,
+                                                   final String columnName,
+                                                   final String mapKey, final byte[] valueBytes) throws HBqlException {
+        // TODO finish
+    }
+
+    public void setFamilyDefaultKeysAsColumnsVersionMap(final Object obj,
+                                                        final String columnName,
+                                                        final String mapKey,
+                                                        final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
+        // TODO finish
+    }
+
     protected static void setAccessible(final Field field) {
         // Unlock private vars
         if (!field.isAccessible())
