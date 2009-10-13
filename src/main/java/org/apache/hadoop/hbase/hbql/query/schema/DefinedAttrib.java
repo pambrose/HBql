@@ -83,7 +83,6 @@ public class DefinedAttrib extends ColumnAttrib {
 
     public void setFamilyDefaultCurrentValue(final Object hrecord,
                                              final String name,
-                                             final long timestamp,
                                              final byte[] value) throws HBqlException {
         ((HRecordImpl)hrecord).setFamilyDefaultCurrentValue(this.getFamilyName(), name, 0, value);
     }

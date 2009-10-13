@@ -27,11 +27,11 @@ public class FamilyAttrib extends ColumnAttrib {
         throw new HBqlException("Internal error");
     }
 
-    public Map<Long, Object> getKeysAsColumnsVersionMap(final Object newobj, final String mapKey) throws HBqlException {
+    public Map<Long, Object> getKeysAsColumnsVersionMap(final Object obj, final String mapKey) throws HBqlException {
         throw new HBqlException("Internal error");
     }
 
-    public Object getCurrentValue(final Object recordObj) throws HBqlException {
+    public Object getCurrentValue(final Object obj) throws HBqlException {
         throw new HBqlException("Internal error");
     }
 
@@ -43,11 +43,11 @@ public class FamilyAttrib extends ColumnAttrib {
         return null;
     }
 
-    public void setCurrentValue(final Object newobj, final long timestamp, final Object val) throws HBqlException {
+    public void setCurrentValue(final Object obj, final long timestamp, final Object val) throws HBqlException {
         throw new HBqlException("Internal error");
     }
 
-    public void setKeysAsColumnsValue(final Object newobj,
+    public void setKeysAsColumnsValue(final Object obj,
                                       final String mapKey,
                                       final Object val) throws HBqlException {
         throw new HBqlException("Internal error");
@@ -55,7 +55,6 @@ public class FamilyAttrib extends ColumnAttrib {
 
     public void setFamilyDefaultCurrentValue(final Object obj,
                                              final String name,
-                                             final long timestamp,
                                              final byte[] value) throws HBqlException {
         throw new HBqlException("Internal error");
     }

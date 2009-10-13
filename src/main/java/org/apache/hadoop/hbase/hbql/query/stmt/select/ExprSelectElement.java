@@ -143,36 +143,36 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             return columnMap.get(this.getColumnNameBytes());
     }
 
-    private void assignCalculation(final Object newobj, final Result result) throws HBqlException {
+    private void assignCalculation(final Object obj, final Result result) throws HBqlException {
         // If it is a calculation, then assign according to the AS name
         final String name = this.getAsName();
         final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
 
         if (attrib == null) {
             // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
-            if (!(newobj instanceof HRecord))
+            if (!(obj instanceof HRecord))
                 return;
 
-            ((HRecordImpl)newobj).setFamilyDefaultCurrentValue(this.getFamilyName(),
-                                                               this.getSelectName(),
-                                                               0,
-                                                               result.getValue(this.getFamilyNameBytes(),
-                                                                               this.getColumnNameBytes()));
+            ((HRecordImpl)obj).setFamilyDefaultCurrentValue(this.getFamilyName(),
+                                                            this.getSelectName(),
+                                                            0,
+                                                            result.getValue(this.getFamilyNameBytes(),
+                                                                            this.getColumnNameBytes()));
         }
         else {
             final Object elementValue = this.getValue(result);
-            attrib.setCurrentValue(newobj, 0, elementValue);
+            attrib.setCurrentValue(obj, 0, elementValue);
         }
     }
 
-    public void assignValues(final Object newobj,
+    public void assignValues(final Object obj,
                              final List<ColumnAttrib> selectAttribList,
                              final int maxVerions,
                              final Result result) throws HBqlException {
 
         // If it is a calculation, take care of it and then bail since calculations have no history
         if (!this.isSimpleColumnReference()) {
-            this.assignCalculation(newobj, result);
+            this.assignCalculation(obj, result);
             return;
         }
 
@@ -184,9 +184,8 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(this.getFamilyName());
 
             if (familyDefaultAttrib != null)
-                familyDefaultAttrib.setFamilyDefaultCurrentValue(newobj,
+                familyDefaultAttrib.setFamilyDefaultCurrentValue(obj,
                                                                  this.getSelectName(),
-                                                                 0,
                                                                  result.getValue(this.getFamilyNameBytes(),
                                                                                  this.getColumnNameBytes()));
         }
@@ -197,11 +196,11 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                 // If this is a mapKeysAsColumns, then we need to build the map from all the related columns in the family
                 if (this.getColumnAttrib().isMapKeysAsColumnsAttrib()) {
                     final Map mapval = this.getMapKeysAsColumnsValue(result);
-                    this.getColumnAttrib().setCurrentValue(newobj, 0, mapval);
+                    this.getColumnAttrib().setCurrentValue(obj, 0, mapval);
                 }
                 else {
                     final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
-                    this.getColumnAttrib().setCurrentValue(newobj, 0, b);
+                    this.getColumnAttrib().setCurrentValue(obj, 0, b);
                 }
             }
         }
@@ -236,11 +235,11 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                                                                      */
             }
             else {
-                final Map<Long, Object> mapval = this.getColumnAttrib().getVersionMap(newobj);
+                final Map<Long, Object> mapval = this.getColumnAttrib().getVersionMap(obj);
 
                 for (final Long timestamp : timeStampMap.keySet()) {
                     final byte[] b = timeStampMap.get(timestamp);
-                    final Object val = this.getColumnAttrib().getValueFromBytes(newobj, b);
+                    final Object val = this.getColumnAttrib().getValueFromBytes(obj, b);
                     mapval.put(timestamp, val);
                 }
             }

@@ -75,56 +75,73 @@ public abstract class FieldAttrib extends ColumnAttrib {
         return this.field;
     }
 
-    public Object getCurrentValue(final Object recordObj) throws HBqlException {
+    public Object getCurrentValue(final Object obj) throws HBqlException {
         try {
-            return this.getField().get(recordObj);
+            return this.getField().get(obj);
         }
         catch (IllegalAccessException e) {
             throw new HBqlException("Error getting value of " + this.getObjectQualifiedName());
         }
     }
 
-    public void setCurrentValue(final Object newobj, final long timestamp, final Object val) {
+    public void setCurrentValue(final Object obj, final long timestamp, final Object val) {
         try {
-            this.getField().set(newobj, val);
+            this.getField().set(obj, val);
         }
         catch (IllegalAccessException e) {
             throw new RuntimeException("Error setting value of " + this.getObjectQualifiedName());
         }
     }
 
-    public void setKeysAsColumnsValue(final Object newobj,
+    public void setKeysAsColumnsValue(final Object obj,
                                       final String mapKey,
                                       final Object val) throws HBqlException {
 
         if (!this.isMapKeysAsColumnsAttrib())
             throw new HBqlException(this.getFamilyQualifiedName() + " not marked as mapKeysAsColumns");
 
-        Map<String, Object> mapVal = (Map<String, Object>)this.getCurrentValue(newobj);
+        Map<String, Object> mapVal = (Map<String, Object>)this.getCurrentValue(obj);
 
         if (mapVal == null) {
             mapVal = Maps.newHashMap();
-            this.setCurrentValue(newobj, 0, mapVal);
+            this.setCurrentValue(obj, 0, mapVal);
         }
 
         mapVal.put(mapKey, val);
     }
 
-    public Map<Long, Object> getVersionMap(final Object newobj) throws HBqlException {
+    public void setFamilyDefaultCurrentValue(final Object obj,
+                                             final String name,
+                                             final byte[] val) throws HBqlException {
+
+        if (!this.isFamilyDefaultAttrib())
+            throw new HBqlException(this.getFamilyQualifiedName() + " not marked as familyDefault");
+
+        Map<String, byte[]> mapVal = (Map<String, byte[]>)this.getCurrentValue(obj);
+
+        if (mapVal == null) {
+            mapVal = Maps.newHashMap();
+            this.setCurrentValue(obj, 0, mapVal);
+        }
+
+        mapVal.put(name, val);
+    }
+
+    public Map<Long, Object> getVersionMap(final Object obj) throws HBqlException {
 
         if (!this.isAVersionValue())
             throw new HBqlException(this.getFamilyQualifiedName() + " not marked with @HColumnVersionMap");
 
         // Just call current value for version since we have different fields for current value and versions
-        Map<Long, Object> mapVal = (Map<Long, Object>)this.getCurrentValue(newobj);
+        Map<Long, Object> mapVal = (Map<Long, Object>)this.getCurrentValue(obj);
         if (mapVal == null) {
             mapVal = new TreeMap<Long, Object>();
-            this.setCurrentValue(newobj, 0, mapVal);
+            this.setCurrentValue(obj, 0, mapVal);
         }
         return mapVal;
     }
 
-    public Map<Long, Object> getKeysAsColumnsVersionMap(final Object newobj, final String mapKey) throws HBqlException {
+    public Map<Long, Object> getKeysAsColumnsVersionMap(final Object obj, final String mapKey) throws HBqlException {
 
         if (!this.isAVersionValue())
             throw new HBqlException(this.getFamilyQualifiedName() + " not marked with @HColumnVersionMap");
@@ -132,10 +149,10 @@ public abstract class FieldAttrib extends ColumnAttrib {
         // TODO Should make sure that this refers to column marked as mapKeysAsColumns as well
 
         // Just call current value for version since we have different fields for current value and versions
-        Map<String, Map<Long, Object>> mapVal = (Map<String, Map<Long, Object>>)this.getCurrentValue(newobj);
+        Map<String, Map<Long, Object>> mapVal = (Map<String, Map<Long, Object>>)this.getCurrentValue(obj);
         if (mapVal == null) {
             mapVal = new HashMap<String, Map<Long, Object>>();
-            this.setCurrentValue(newobj, 0, mapVal);
+            this.setCurrentValue(obj, 0, mapVal);
         }
 
         Map<Long, Object> mapForKey = mapVal.get(mapKey);

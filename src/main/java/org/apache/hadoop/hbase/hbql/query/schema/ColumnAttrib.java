@@ -63,7 +63,6 @@ public abstract class ColumnAttrib implements Serializable {
 
     public abstract void setFamilyDefaultCurrentValue(final Object obj,
                                                       final String name,
-                                                      final long timestamp,
                                                       final byte[] value) throws HBqlException;
 
     public boolean isArray() {
