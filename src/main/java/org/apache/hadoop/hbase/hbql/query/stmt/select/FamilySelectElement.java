@@ -4,8 +4,8 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.schema.FamilyAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.query.schema.SelectFamilyAttrib;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -86,7 +86,7 @@ public class FamilySelectElement implements SelectElement {
             final Collection<String> familyList = this.getSchema().getSchemaFamilyNames(connection);
             for (final String familyName : familyList) {
                 this.addAFamily(familyName);
-                selectAttribList.add(new FamilyAttrib(familyName));
+                selectAttribList.add(new SelectFamilyAttrib(familyName));
             }
         }
         else {
@@ -95,7 +95,7 @@ public class FamilySelectElement implements SelectElement {
             if (!schema.containsFamilyNameInFamilyNameMap(familyName))
                 throw new HBqlException("Invalid family name: " + familyName);
 
-            selectAttribList.add(new FamilyAttrib(familyName));
+            selectAttribList.add(new SelectFamilyAttrib(familyName));
         }
 
         for (final String familyName : this.getFamilyNameList())

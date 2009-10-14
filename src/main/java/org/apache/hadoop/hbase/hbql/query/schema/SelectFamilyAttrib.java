@@ -6,13 +6,13 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.NavigableMap;
 
-public class FamilyAttrib extends ColumnAttrib {
+public class SelectFamilyAttrib extends ColumnAttrib {
 
-    public FamilyAttrib(final String familyName) {
+    public SelectFamilyAttrib(final String familyName) {
         super(familyName, "", "", false, false, null, false, null, null);
     }
 
-    public boolean isAFamilyAttrib() {
+    public boolean isASelectFamilyAttrib() {
         return true;
     }
 

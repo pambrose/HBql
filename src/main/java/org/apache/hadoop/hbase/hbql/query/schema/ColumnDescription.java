@@ -52,7 +52,7 @@ public class ColumnDescription implements Serializable {
     }
 
     public static ColumnDescription newFamilyDefault(final String familyQualifiedName, final String aliasName) {
-        return new ColumnDescription(familyQualifiedName, aliasName, false, false, null, false);
+        return new ColumnDescription(familyQualifiedName, aliasName, false, true, null, false);
     }
 
     private static FieldType getFieldType(final String typeName) {

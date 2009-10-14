@@ -243,7 +243,7 @@ public class WhereArgs {
                 continue;
 
             // If it is a map, then request all columns for family
-            if (attrib.isAFamilyAttrib() || attrib.isMapKeysAsColumnsAttrib())
+            if (attrib.isASelectFamilyAttrib() || attrib.isMapKeysAsColumnsAttrib())
                 get.addFamily(attrib.getFamilyNameAsBytes());
             else
                 get.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
@@ -272,7 +272,7 @@ public class WhereArgs {
                 continue;
 
             // If it is a map, then request all columns for family
-            if (attrib.isAFamilyAttrib() || attrib.isMapKeysAsColumnsAttrib())
+            if (attrib.isASelectFamilyAttrib() || attrib.isMapKeysAsColumnsAttrib())
                 scan.addFamily(attrib.getFamilyNameAsBytes());
             else
                 scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());

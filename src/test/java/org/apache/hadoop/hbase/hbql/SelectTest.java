@@ -266,7 +266,7 @@ public class SelectTest extends TestSupport {
                             + "keyval key, "
                             //  + "f1:val1 string alias val1, "
                             + "f1:val2 string alias val2, "
-                            + "f1.* alias f1default, "
+                            + "f1:* alias f1default, "
                             + "f2:val1 date alias val3, "
                             + "f2:val2 date alias val4, "
                             + "f3:val1 int alias val5, "

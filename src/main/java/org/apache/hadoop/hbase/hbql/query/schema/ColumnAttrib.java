@@ -105,7 +105,7 @@ public abstract class ColumnAttrib implements Serializable {
                 && this.aliasName.length() > 0) ? this.aliasName : this.getFamilyQualifiedName();
     }
 
-    public boolean isAFamilyAttrib() {
+    public boolean isASelectFamilyAttrib() {
         return false;
     }
 

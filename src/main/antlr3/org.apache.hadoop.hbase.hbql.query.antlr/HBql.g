@@ -83,7 +83,7 @@ attribList returns [List<ColumnDescription> retval]
 	: (a1=defineAttrib {retval.add($a1.retval);} (COMMA a2=defineAttrib {retval.add($a2.retval);})*)?;
 	
 defineAttrib returns [ColumnDescription retval]
-	: c=ID type=ID (b=LBRACE RBRACE)? m=keyMAP? (keyALIAS a=ID)?	
+	: c=varRef type=ID (b=LBRACE RBRACE)? m=keyMAP? (keyALIAS a=ID)?	
 							{retval = ColumnDescription.newColumn($c.text, $a.text, $m.text!=null, false, $type.text, $b.text!=null);}
 	| f=familyRef (keyALIAS a=ID)?			{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
 	;
@@ -353,22 +353,15 @@ multDiv returns [Operator retval]
 	| MOD						{retval = Operator.MOD;}
 	;
 
-varRef 	: ID;
-familyRef : FAMILY;	
-paramRef: PARAM;
+varRef 	: ID (COLON ID)?;
+familyRef : ID COLON STAR;	
+paramRef: COLON ID;
 		
 INT	: DIGIT+;
 LONG	: DIGIT+'L';
-
 DOUBLE	: DIGIT+ DOT DIGIT*;
 
-ID	: CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)* 		// DOLLAR is for inner class table names
-	| CHAR (CHAR | DOT | MINUS | DIGIT)* COLON (CHAR | DOT | MINUS | DIGIT)*
-	;
-
-FAMILY	: CHAR (CHAR | DOT | MINUS | DIGIT)* COLON STAR;
-	
-PARAM	: COLON CHAR (CHAR | DOT | MINUS | DIGIT)*;	
+ID : CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)*; // DOLLAR is for inner class table names
 	 
 QUOTED		
 @init {final StringBuilder sbuf = new StringBuilder();}	
