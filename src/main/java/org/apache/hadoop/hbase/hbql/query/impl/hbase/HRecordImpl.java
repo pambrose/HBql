@@ -32,7 +32,14 @@ public class HRecordImpl implements Serializable, HRecord {
     }
 
     public void addValue(final String name, final HValue value) {
-        this.getValuesMap().put(name, value);
+        final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
+        final String nameForMap;
+        if (attrib == null)
+            nameForMap = name;
+        else
+            nameForMap = attrib.getFamilyQualifiedName();
+
+        this.getValuesMap().put(nameForMap, value);
     }
 
     public void setSchema(final HBaseSchema schema) {
@@ -50,18 +57,14 @@ public class HRecordImpl implements Serializable, HRecord {
     private HValue getHValue(final String name) {
 
         // First try the name given.
-        // If that doesn't work, then try alias and qualified (one hasn't been tried yet)
+        // If that doesn't work, then try qualified name
         if (this.containsName(name))
             return this.getValue(name);
 
-        // Look up by both variable name and qualified name
+        // Look up by  alias name
         final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
 
         if (attrib != null) {
-            final String aliasName = attrib.getAliasName();
-            if (aliasName.equals(name) && this.containsName(aliasName))
-                return this.getValue(aliasName);
-
             final String qualifiedName = attrib.getFamilyQualifiedName();
             if (!qualifiedName.equals(name) && this.containsName(qualifiedName))
                 return this.getValue(qualifiedName);
@@ -239,15 +242,6 @@ public class HRecordImpl implements Serializable, HRecord {
         return (value != null) ? value.getVersionMap(columnName) : null;
     }
 
-    // Version Object values
-    public void setFamilyDefaultCurrentValue(final String familyName,
-                                             final String name,
-                                             final long timestamp,
-                                             final byte[] val) throws HBqlException {
-        final FamilyDefaultValue value = this.getFamilyDefaultValue(familyName, true);
-        value.setCurrentValue(timestamp, name, val);
-    }
-
     public void setVersionValue(final String name,
                                 final long timestamp,
                                 final Object val,
@@ -286,6 +280,14 @@ public class HRecordImpl implements Serializable, HRecord {
     }
 
     // FamilyDefault values
+    public void setFamilyDefaultCurrentValue(final String familyName,
+                                             final String name,
+                                             final long timestamp,
+                                             final byte[] val) throws HBqlException {
+        final FamilyDefaultValue value = this.getFamilyDefaultValue(familyName, true);
+        value.setCurrentValue(timestamp, name, val);
+    }
+
     public void setFamilyDefaultVersionMap(final String familyName,
                                            final String name,
                                            final NavigableMap<Long, byte[]> val) throws HBqlException {

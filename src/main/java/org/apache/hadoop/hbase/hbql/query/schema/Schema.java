@@ -64,9 +64,6 @@ public abstract class Schema implements Serializable {
     protected void addAttribToVariableNameMap(final ColumnAttrib attrib,
                                               final String... attribNames) throws HBqlException {
 
-        //if (attrib.isFamilyDefaultAttrib())
-        //    return;
-
         this.getColumnAttribSet().add(attrib);
 
         for (final String attribName : attribNames) {
