@@ -58,29 +58,6 @@ public class DefinedSchema extends HBaseSchema {
         }
     }
 
-    public String toString() {
-        return this.getTableName();
-    }
-
-    public String getTableAliasName() {
-        return this.tableAliasName;
-    }
-
-    public String getTableName() {
-        return this.tableName;
-    }
-
-    public List<HColumnDescriptor> getColumnDescriptors() {
-        final List<HColumnDescriptor> descList = Lists.newArrayList();
-        for (final String familyName : this.getFamilySet())
-            descList.add(new HColumnDescriptor(familyName));
-        return descList;
-    }
-
-    public String getSchemaName() {
-        return this.getTableName();
-    }
-
     public HRecord newObject(final List<ColumnAttrib> selectAttribList,
                              final List<SelectElement> selectElementList,
                              final int maxVersions,
@@ -98,9 +75,32 @@ public class DefinedSchema extends HBaseSchema {
         return newrec;
     }
 
+    public List<HColumnDescriptor> getColumnDescriptors() {
+        final List<HColumnDescriptor> descList = Lists.newArrayList();
+        for (final String familyName : this.getFamilySet())
+            descList.add(new HColumnDescriptor(familyName));
+        return descList;
+    }
+
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
         final ExprTree exprTree = HBql.parseWhereExpression(query, this);
         return new HBqlFilter(exprTree, -1);
+    }
+
+    public String getSchemaName() {
+        return this.getTableName();
+    }
+
+    public String toString() {
+        return this.getTableName();
+    }
+
+    public String getTableAliasName() {
+        return this.tableAliasName;
+    }
+
+    public String getTableName() {
+        return this.tableName;
     }
 
     protected DefinedSchema getDefinedSchemaEquivalent() {

@@ -71,7 +71,7 @@ public class SchemaManager {
 
     public synchronized static DefinedSchema newDefinedSchema(final String tableName,
                                                               final String aliasName,
-                                                              final List<ColumnDescription> varList) throws HBqlException {
+                                                              final List<ColumnDescription> colList) throws HBqlException {
 
         if (SchemaManager.doesDefinedSchemaExist(tableName))
             throw new HBqlException("Table " + tableName + " already defined");
@@ -79,7 +79,7 @@ public class SchemaManager {
         if (aliasName != null && SchemaManager.doesDefinedSchemaExist(aliasName))
             throw new HBqlException("Alias " + aliasName + " already defined");
 
-        final DefinedSchema schema = new DefinedSchema(tableName, aliasName, varList);
+        final DefinedSchema schema = new DefinedSchema(tableName, aliasName, colList);
 
         getDefinedSchemaMap().put(tableName, schema);
 
