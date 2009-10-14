@@ -237,13 +237,14 @@ public class HRecordImpl implements Serializable, HRecord {
     }
 
     public Map<String, NavigableMap<Long, byte[]>> getFamilyDefaultVersionMap(final String name) throws HBqlException {
+
         final FamilyDefaultValue value = this.getFamilyDefaultValue(name, false);
         if (value == null)
             return null;
 
         final Map<String, NavigableMap<Long, byte[]>> retval = Maps.newHashMap();
         for (final String key : value.getValueMap().keySet())
-            retval.put(key, this.getFamilyDefaultVersionMap(name).get(key));
+            retval.put(key, (NavigableMap)value.getValueMap().get(key).getVersionMap());
         return retval;
     }
 
