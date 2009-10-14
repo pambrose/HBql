@@ -19,4 +19,6 @@ public interface HRecord {
     Map<Long, Object> getKeysAsColumnsVersionMap(String name, String mapKey) throws HBqlException;
 
     Map<Long, byte[]> getFamilyDefaultVersionMap(String name, String columnName) throws HBqlException;
+
+    Map<String, byte[]> getFamilyDefaultValueMap(String name) throws HBqlException;
 }

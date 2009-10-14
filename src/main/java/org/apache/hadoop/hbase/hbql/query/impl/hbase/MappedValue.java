@@ -7,7 +7,7 @@ import java.util.Map;
 
 public abstract class MappedValue<T> extends HValue {
 
-    private Map<String, ValueImpl<T>> keysAsColumnMap = Maps.newHashMap();
+    private Map<String, ValueImpl<T>> valueMap = Maps.newHashMap();
 
     protected MappedValue(final HRecordImpl hrecord, final String name) {
         super(hrecord, name);
@@ -17,15 +17,15 @@ public abstract class MappedValue<T> extends HValue {
         return this.getHValue(name).getCurrentValue();
     }
 
-    private Map<String, ValueImpl<T>> getKeysAsColumnMap() {
-        return this.keysAsColumnMap;
+    public Map<String, ValueImpl<T>> getValueMap() {
+        return this.valueMap;
     }
 
     public ValueImpl<T> getHValue(final String mapKey) {
-        ValueImpl<T> hvalue = this.getKeysAsColumnMap().get(mapKey);
+        ValueImpl<T> hvalue = this.getValueMap().get(mapKey);
         if (hvalue == null) {
             hvalue = new ValueImpl<T>(null, null);
-            this.getKeysAsColumnMap().put(mapKey, hvalue);
+            this.getValueMap().put(mapKey, hvalue);
         }
         return hvalue;
     }

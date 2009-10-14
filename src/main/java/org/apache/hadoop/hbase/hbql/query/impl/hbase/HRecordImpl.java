@@ -203,6 +203,17 @@ public class HRecordImpl implements Serializable, HRecord {
         return (value != null) ? value.getVersionMap(mapKey) : null;
     }
 
+    public Map<String, byte[]> getFamilyDefaultValueMap(final String name) throws HBqlException {
+        final FamilyDefaultValue value = this.getFamilyDefaultValue(name);
+        if (value == null)
+            return null;
+
+        Map<String, byte[]> retval = Maps.newHashMap();
+        for (final String key : value.getValueMap().keySet())
+            retval.put(key, value.getValueMap().get(key).getCurrentValue());
+        return retval;
+    }
+
     public Map<Long, byte[]> getFamilyDefaultVersionMap(final String name,
                                                         final String columnName) throws HBqlException {
         final FamilyDefaultValue value = this.getFamilyDefaultValue(name);

@@ -8,4 +8,8 @@ public class FamilyDefaultValue extends MappedValue<byte[]> {
     public FamilyDefaultValue(final HRecordImpl hrecord, final String name) {
         super(hrecord, name);
     }
+
+    public String toString() {
+        return "Family default for family: " + this.getName();
+    }
 }

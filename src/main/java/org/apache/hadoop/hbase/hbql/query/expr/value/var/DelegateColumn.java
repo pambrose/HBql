@@ -41,8 +41,11 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
 
         final ColumnAttrib attrib = context.getSchema().getAttribByVariableName(this.getVariableName());
 
+        // See if referenced var is in schema
+        // TODO Make sure this is what we want to do
         if (attrib == null)
-            throw new HBqlException("Invalid variable: " + this.getVariableName());
+            return;
+        //throw new HBqlException("Invalid variable: " + this.getVariableName());
 
         switch (attrib.getFieldType()) {
 
