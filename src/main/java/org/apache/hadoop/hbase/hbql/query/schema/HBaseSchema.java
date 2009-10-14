@@ -205,6 +205,9 @@ public abstract class HBaseSchema extends Schema {
                                       final int maxVersions,
                                       final Result result) throws HBqlException {
 
+        // Set key value
+        this.getKeyAttrib().setCurrentValue(newobj, 0, result.getRow());
+
         for (final SelectElement selectElement : selectElementList)
             selectElement.assignValues(newobj, selectAttribList, maxVersions, result);
     }

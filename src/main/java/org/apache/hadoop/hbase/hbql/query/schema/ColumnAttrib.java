@@ -81,40 +81,20 @@ public abstract class ColumnAttrib implements Serializable {
                                                                  final String mapKey, final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException;
 
 
-    public boolean isArray() {
-        return this.isArray;
-    }
+    protected abstract Method getMethod(final String methodName,
+                                        final Class<?>... params) throws NoSuchMethodException, HBqlException;
 
-    public String getFamilyName() {
-        return this.familyName;
-    }
+    protected abstract Class getComponentType() throws HBqlException;
 
-    public String getColumnName() {
-        return this.columnName;
-    }
+    public abstract String getNameToUseInExceptions();
+
+    public abstract String getEnclosingClassName();
 
     public String getFamilyQualifiedName() {
         if (this.getFamilyName() != null && this.getFamilyName().length() > 0)
             return this.getFamilyName() + ":" + this.getColumnName();
         else
             return this.getColumnName();
-    }
-
-    public String getAliasName() {
-        return (this.aliasName != null
-                && this.aliasName.length() > 0) ? this.aliasName : this.getFamilyQualifiedName();
-    }
-
-    public boolean isASelectFamilyAttrib() {
-        return false;
-    }
-
-    public FieldType getFieldType() {
-        return this.fieldType;
-    }
-
-    public boolean isKeyAttrib() {
-        return false;
     }
 
     public byte[] getFamilyNameBytes() throws HBqlException {
@@ -185,21 +165,83 @@ public abstract class ColumnAttrib implements Serializable {
         }
     }
 
-    public boolean isACurrentValue() {
-        return true;
+    public byte[] invokeGetterMethod(final Object obj) throws HBqlException {
+        try {
+            return (byte[])this.getGetterMethod().invoke(obj);
+        }
+        catch (IllegalAccessException e) {
+            throw new HBqlException("Error getting value of " + this.getNameToUseInExceptions());
+        }
+        catch (InvocationTargetException e) {
+            throw new HBqlException("Error getting value of " + this.getNameToUseInExceptions());
+        }
     }
 
-    public boolean isAVersionValue() {
-        return false;
+    public Object invokeSetterMethod(final Object obj, final byte[] b) throws HBqlException {
+        try {
+            // TODO Resolve passing primitive to Object varargs
+            return this.getSetterMethod().invoke(obj, b);
+        }
+        catch (IllegalAccessException e) {
+            throw new HBqlException("Error setting value of " + this.getNameToUseInExceptions());
+        }
+        catch (InvocationTargetException e) {
+            throw new HBqlException("Error setting value of " + this.getNameToUseInExceptions());
+        }
     }
 
-    protected abstract Method getMethod(final String methodName, final Class<?>... params) throws NoSuchMethodException, HBqlException;
+    public byte[] getValueAsBytes(final Object obj) throws HBqlException {
 
-    protected abstract Class getComponentType() throws HBqlException;
+        if (this.hasGetter())
+            return this.invokeGetterMethod(obj);
 
-    public abstract String getNameToUseInExceptions();
+        final Object value = this.getCurrentValue(obj);
 
-    public abstract String getEnclosingClassName();
+        if (this.isArray())
+            return HUtil.ser.getArrayasBytes(this.getFieldType(), value);
+        else
+            return HUtil.ser.getScalarAsBytes(this.getFieldType(), value);
+    }
+
+    public Object getValueFromBytes(final Object obj, final byte[] b) throws HBqlException {
+
+        if (this.hasSetter())
+            return this.invokeSetterMethod(obj, b);
+
+        if (this.isArray())
+            return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
+        else
+            return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
+    }
+
+    public Object getValueFromBytes(final Result result) throws HBqlException {
+
+        if (this.isKeyAttrib()) {
+            final byte[] b = result.getRow();
+            return HUtil.ser.getStringFromBytes(b);
+        }
+        else {
+            final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
+
+            if (this.isArray())
+                return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
+            else
+                return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
+        }
+    }
+
+    public void setCurrentValue(final Object obj, final long timestamp, final byte[] b) throws HBqlException {
+        final Object val = this.getValueFromBytes(obj, b);
+        this.setCurrentValue(obj, timestamp, val);
+    }
+
+    public byte[] getFamilyNameAsBytes() throws HBqlException {
+        return HUtil.ser.getStringAsBytes(this.getFamilyName());
+    }
+
+    public byte[] getColumnNameAsBytes() throws HBqlException {
+        return HUtil.ser.getStringAsBytes(this.getColumnName());
+    }
 
     protected String getGetter() {
         return this.getter;
@@ -233,81 +275,40 @@ public abstract class ColumnAttrib implements Serializable {
         return this.getSetterMethod() != null;
     }
 
-    public byte[] invokeGetterMethod(final Object recordObj) throws HBqlException {
-        try {
-            return (byte[])this.getGetterMethod().invoke(recordObj);
-        }
-        catch (IllegalAccessException e) {
-            throw new HBqlException("Error getting value of " + this.getNameToUseInExceptions());
-        }
-        catch (InvocationTargetException e) {
-            throw new HBqlException("Error getting value of " + this.getNameToUseInExceptions());
-        }
+    public boolean isACurrentValue() {
+        return true;
     }
 
-    public Object invokeSetterMethod(final Object recordObj, final byte[] b) throws HBqlException {
-        try {
-            // TODO Resolve passing primitive to Object varargs
-            return this.getSetterMethod().invoke(recordObj, b);
-        }
-        catch (IllegalAccessException e) {
-            throw new HBqlException("Error setting value of " + this.getNameToUseInExceptions());
-        }
-        catch (InvocationTargetException e) {
-            throw new HBqlException("Error setting value of " + this.getNameToUseInExceptions());
-        }
+    public boolean isAVersionValue() {
+        return false;
     }
 
-    public byte[] getValueAsBytes(final Object recordObj) throws HBqlException {
-
-        if (this.hasGetter())
-            return this.invokeGetterMethod(recordObj);
-
-        final Object obj = this.getCurrentValue(recordObj);
-
-        if (this.isArray())
-            return HUtil.ser.getArrayasBytes(this.getFieldType(), obj);
-        else
-            return HUtil.ser.getScalarAsBytes(this.getFieldType(), obj);
+    public String getAliasName() {
+        return (this.aliasName != null
+                && this.aliasName.length() > 0) ? this.aliasName : this.getFamilyQualifiedName();
     }
 
-    public Object getValueFromBytes(final Object recordObj, final byte[] b) throws HBqlException {
-
-        if (this.hasSetter())
-            return this.invokeSetterMethod(recordObj, b);
-
-        if (this.isArray())
-            return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
-        else
-            return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
+    public boolean isASelectFamilyAttrib() {
+        return false;
     }
 
-    public Object getValueFromBytes(final Result result) throws HBqlException {
-
-        if (this.isKeyAttrib()) {
-            final byte[] b = result.getRow();
-            return HUtil.ser.getStringFromBytes(b);
-        }
-        else {
-            final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
-
-            if (this.isArray())
-                return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
-            else
-                return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
-        }
+    public boolean isArray() {
+        return this.isArray;
     }
 
-    public void setCurrentValue(final Object newobj, final long timestamp, final byte[] b) throws HBqlException {
-        final Object val = this.getValueFromBytes(newobj, b);
-        this.setCurrentValue(newobj, timestamp, val);
+    public String getFamilyName() {
+        return this.familyName;
     }
 
-    public byte[] getFamilyNameAsBytes() throws HBqlException {
-        return HUtil.ser.getStringAsBytes(this.getFamilyName());
+    public String getColumnName() {
+        return this.columnName;
     }
 
-    public byte[] getColumnNameAsBytes() throws HBqlException {
-        return HUtil.ser.getStringAsBytes(this.getColumnName());
+    public FieldType getFieldType() {
+        return this.fieldType;
+    }
+
+    public boolean isKeyAttrib() {
+        return false;
     }
 }

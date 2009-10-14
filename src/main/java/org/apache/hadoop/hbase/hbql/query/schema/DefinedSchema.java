@@ -66,9 +66,6 @@ public class DefinedSchema extends HBaseSchema {
         // Create object and assign values
         final HRecordImpl newrec = new HRecordImpl(this);
 
-        // Set key value
-        this.getKeyAttrib().setCurrentValue(newrec, 0, result.getRow());
-
         // Assign values
         this.assignSelectValues(newrec, selectAttribList, selectElementList, maxVersions, result);
 

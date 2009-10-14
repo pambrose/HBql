@@ -369,11 +369,10 @@ public class AnnotationSchema extends HBaseSchema {
 
     private Object createNewObject(final Result result) throws HBqlException {
 
-        // Create new instance and set key value
+        // Create new instance
         final Object newobj;
         try {
             newobj = this.newInstance();
-            this.getKeyAttrib().setCurrentValue(newobj, 0, result.getRow());
         }
         catch (InstantiationException e) {
             e.printStackTrace();
