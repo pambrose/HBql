@@ -18,6 +18,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Random;
 
 public class SelectTest extends TestSupport {
@@ -327,10 +328,37 @@ public class SelectTest extends TestSupport {
 
         int i = 0;
         for (final HRecord rec : recList1) {
-            Map<String, byte[]> defs = rec.getFamilyDefaultValueMap("f1default");
-            assertTrue(defs.size() == 2);
-            String val1 = HUtil.ser.getStringFromBytes(defs.get("f1:val1"));
+            Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
+            assertTrue(vals.size() == 2);
+            String val1 = HUtil.ser.getStringFromBytes(vals.get("f1:val1"));
             assertTrue(val1List.get(i).equals(val1));
+            i++;
+        }
+    }
+
+    @Test
+    public void selectUndefinedVersionExpressions() throws HBqlException, IOException {
+
+        SchemaManager.removeSchema("table1");
+        SchemaManager.parse("define table table1 alias tab1"
+                            + "("
+                            + "keyval key, "
+                            + "f1:* alias f1default "
+                            + ")");
+
+        final String query1 = "SELECT f1:val1, f1:val2 FROM table1 WITH VERSIONS 5";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 10);
+
+        int i = 0;
+        for (final HRecord rec : recList1) {
+            Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
+            assertTrue(vals.size() == 2);
+            String val1 = HUtil.ser.getStringFromBytes(vals.get("f1:val1"));
+            assertTrue(val1List.get(i).equals(val1));
+
+            Map<String, NavigableMap<Long, byte[]>> vers = rec.getFamilyDefaultVersionMap("f1default");
             i++;
         }
     }
@@ -352,9 +380,9 @@ public class SelectTest extends TestSupport {
 
         int i = 0;
         for (final HRecord rec : recList1) {
-            Map<String, byte[]> defs = rec.getFamilyDefaultValueMap("f1default");
-            assertTrue(defs.size() == 1);
-            String val1 = HUtil.ser.getStringFromBytes(defs.get("f1:valunknown"));
+            Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
+            assertTrue(vals.size() == 1);
+            String val1 = HUtil.ser.getStringFromBytes(vals.get("f1:valunknown"));
             assertTrue(val1 == null);
             i++;
         }

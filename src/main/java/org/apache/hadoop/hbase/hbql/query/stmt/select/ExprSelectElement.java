@@ -202,7 +202,11 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         }
 
         // Now assign versions if they were requested. Do not process if it doesn't support version values
-        if (maxVerions > 1 && this.getColumnAttrib().isAVersionValue()) {
+        if (maxVerions > 1) {
+
+            // Bail if a known column is not a version attrib
+            if (this.getColumnAttrib() != null && this.getColumnAttrib().isAVersionValue())
+                return;
 
             final NavigableMap<byte[], NavigableMap<byte[], NavigableMap<Long, byte[]>>> familyMap = result.getMap();
             final NavigableMap<byte[], NavigableMap<Long, byte[]>> columnMap = familyMap.get(this.getFamilyNameBytes());
