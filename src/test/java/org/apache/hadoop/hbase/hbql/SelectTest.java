@@ -328,7 +328,7 @@ public class SelectTest extends TestSupport {
         int i = 0;
         for (final HRecord rec : recList1) {
             Map<String, byte[]> defs = rec.getFamilyDefaultValueMap("f1default");
-            assertTrue(defs.size() == 2);
+            assertTrue(defs.size() == 3);
             String val1 = HUtil.ser.getStringFromBytes(defs.get("f1:val1"));
             assertTrue(val1List.get(i).equals(val1));
             i++;
