@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.impl.hbase;
 
 import org.apache.hadoop.hbase.hbql.client.HValue;
 
-import java.util.Map;
+import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public class ValueImpl<T> extends HValue {
@@ -10,7 +10,7 @@ public class ValueImpl<T> extends HValue {
     private boolean currentValueSet = false;
     private T currentValue = null;
     private long currentValueTimestamp = -1;
-    private Map<Long, T> versionMap = null;
+    private NavigableMap<Long, T> versionMap = null;
 
     public ValueImpl(final HRecordImpl hrecord, final String name) {
         super(hrecord, name);
@@ -28,7 +28,7 @@ public class ValueImpl<T> extends HValue {
         }
     }
 
-    public Map<Long, T> getVersionMap() {
+    public NavigableMap<Long, T> getVersionMap() {
 
         if (this.versionMap != null)
             return this.versionMap;
@@ -45,7 +45,7 @@ public class ValueImpl<T> extends HValue {
         this.getVersionMap().put(ts, val);
     }
 
-    public void setVersionMap(final Map<Long, T> versionMap) {
+    public void setVersionMap(final NavigableMap<Long, T> versionMap) {
         this.versionMap = versionMap;
     }
 

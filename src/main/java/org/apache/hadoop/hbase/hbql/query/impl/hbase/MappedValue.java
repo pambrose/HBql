@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HValue;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.util.Map;
+import java.util.NavigableMap;
 
 public abstract class MappedValue<T> extends HValue {
 
@@ -38,7 +39,7 @@ public abstract class MappedValue<T> extends HValue {
         return this.getHValue(name).getVersionMap();
     }
 
-    public void setVersionMap(final String name, final Map<Long, T> val) {
+    public void setVersionMap(final String name, final NavigableMap<Long, T> val) {
         this.getHValue(name).setVersionMap(val);
     }
 
