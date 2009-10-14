@@ -53,7 +53,7 @@ public abstract class Schema implements Serializable {
         return this.columnAttribByVariableNameMap;
     }
 
-    public boolean constainsVariableName(final String varname) {
+    public boolean containsVariableName(final String varname) {
         return this.getColumnAttribByVariableNameMap().containsKey(varname);
     }
 
@@ -64,8 +64,8 @@ public abstract class Schema implements Serializable {
     protected void addAttribToVariableNameMap(final ColumnAttrib attrib,
                                               final String... attribNames) throws HBqlException {
 
-        if (attrib.isFamilyDefaultAttrib())
-            return;
+        //if (attrib.isFamilyDefaultAttrib())
+        //    return;
 
         this.getColumnAttribSet().add(attrib);
 

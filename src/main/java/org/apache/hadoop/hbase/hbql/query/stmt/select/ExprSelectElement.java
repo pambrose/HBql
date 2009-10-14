@@ -153,7 +153,8 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             if (!(obj instanceof HRecord))
                 return;
 
-            ((HRecordImpl)obj).setFamilyDefaultCurrentValue(this.getFamilyName(),
+            // TODO Deal with this
+            ((HRecordImpl)obj).setFamilyDefaultCurrentValue("none",
                                                             this.getSelectName(),
                                                             0,
                                                             result.getValue(this.getFamilyNameBytes(),

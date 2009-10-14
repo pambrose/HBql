@@ -65,7 +65,7 @@ public class VersionAnnotationAttrib extends FieldAttrib {
                                         + " cannot have both an instance and familyDefault value in " + annoname);
 
             // Check if instance variable exists
-            if (!schema.constainsVariableName(instance))
+            if (!schema.containsVariableName(instance))
                 throw new HBqlException(annoname + " for " + getObjectQualifiedName(field)
                                         + " refers to invalid instance variable " + instance);
 

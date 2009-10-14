@@ -27,8 +27,12 @@ public class HRecordImpl implements Serializable, HRecord {
         return this.schema;
     }
 
-    public Map<String, HValue> getValuesMap() {
+    private Map<String, HValue> getValuesMap() {
         return this.values;
+    }
+
+    public void addValue(final String name, final HValue value) {
+        this.getValuesMap().put(name, value);
     }
 
     public void setSchema(final HBaseSchema schema) {
@@ -85,7 +89,7 @@ public class HRecordImpl implements Serializable, HRecord {
             return value;
         }
         else {
-            if (inSchema && !this.getSchema().constainsVariableName(name))
+            if (inSchema && !this.getSchema().containsVariableName(name))
                 throw new HBqlException("Invalid variable name " + this.getSchema().getTableName() + "." + name);
             return new ObjectValue(this, name);
         }
@@ -97,15 +101,24 @@ public class HRecordImpl implements Serializable, HRecord {
             return value;
         }
         else {
-            if (inSchema && !this.getSchema().constainsVariableName(name))
+            if (inSchema && !this.getSchema().containsVariableName(name))
                 throw new HBqlException("Invalid variable name " + this.getSchema().getTableName() + "." + name);
             return new KeysAsColumnsValue(this, name);
         }
     }
 
-    public FamilyDefaultValue getFamilyDefaultValue(final String name) throws HBqlException {
+    public FamilyDefaultValue getFamilyDefaultValue(final String name,
+                                                    final boolean createNewIfMissing) throws HBqlException {
         final FamilyDefaultValue value = this.fetchFamilyDefaultValue(name);
-        return (value != null) ? value : new FamilyDefaultValue(this, name);
+        if (value != null) {
+            return value;
+        }
+        else {
+            if (createNewIfMissing)
+                return new FamilyDefaultValue(this, name);
+            else
+                return null;
+        }
     }
 
     public FamilyDefaultKeysAsColumnsValue getFamilyDefaultKeysAsColumnsValue(final String name) throws HBqlException {
@@ -204,7 +217,7 @@ public class HRecordImpl implements Serializable, HRecord {
     }
 
     public Map<String, byte[]> getFamilyDefaultValueMap(final String name) throws HBqlException {
-        final FamilyDefaultValue value = this.getFamilyDefaultValue(name);
+        final FamilyDefaultValue value = this.getFamilyDefaultValue(name, false);
         if (value == null)
             return null;
 
@@ -216,7 +229,7 @@ public class HRecordImpl implements Serializable, HRecord {
 
     public Map<Long, byte[]> getFamilyDefaultVersionMap(final String name,
                                                         final String columnName) throws HBqlException {
-        final FamilyDefaultValue value = this.getFamilyDefaultValue(name);
+        final FamilyDefaultValue value = this.getFamilyDefaultValue(name, false);
         return (value != null) ? value.getVersionMap(columnName) : null;
     }
 
@@ -231,7 +244,7 @@ public class HRecordImpl implements Serializable, HRecord {
                                              final String name,
                                              final long timestamp,
                                              final byte[] val) throws HBqlException {
-        final FamilyDefaultValue value = this.getFamilyDefaultValue(familyName);
+        final FamilyDefaultValue value = this.getFamilyDefaultValue(familyName, true);
         value.setCurrentValue(timestamp, name, val);
     }
 
@@ -276,7 +289,7 @@ public class HRecordImpl implements Serializable, HRecord {
     public void setFamilyDefaultVersionMap(final String familyName,
                                            final String name,
                                            final NavigableMap<Long, byte[]> val) throws HBqlException {
-        final FamilyDefaultValue value = this.getFamilyDefaultValue(familyName);
+        final FamilyDefaultValue value = this.getFamilyDefaultValue(familyName, true);
         value.setVersionMap(name, val);
     }
 

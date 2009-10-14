@@ -9,11 +9,10 @@ public abstract class HValue {
     public HValue(final HRecordImpl hrecord, final String name) {
         this.name = name;
         if (hrecord != null)
-            hrecord.getValuesMap().put(name, this);
+            hrecord.addValue(name, this);
     }
 
     public String getName() {
-
         return name;
     }
 }
