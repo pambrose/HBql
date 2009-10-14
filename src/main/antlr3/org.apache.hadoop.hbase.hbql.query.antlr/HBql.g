@@ -56,12 +56,12 @@ import org.apache.hadoop.hbase.hbql.query.util.*;
 
 commandStmt returns [ConnectionCmd retval]
 options {backtrack=true;}	
-	: keyDROP keyTABLE t=ID 		 	{retval = new DropCmd($t.text);}
-	| keyDISABLE keyTABLE t=ID 		 	{retval = new DisableCmd($t.text);}
-	| keyENABLE keyTABLE t=ID 		 	{retval = new EnableCmd($t.text);}
-	| keyDESCRIBE keyTABLE t=ID 			{retval = new DescribeCmd($t.text);}
+	: keyDROP keyTABLE t=simpleName 		{retval = new DropCmd($t.text);}
+	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableCmd($t.text);}
+	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableCmd($t.text);}
+	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeCmd($t.text);}
 	| keySHOW keyTABLES 		 		{retval = new ShowCmd();}
-	| keySET i=ID EQ? v=QUOTED	 		{retval = new SetCmd($i.text, $v.text);}
+	| keySET i=simpleName EQ? v=QUOTED	 	{retval = new SetCmd($i.text, $v.text);}
 	| cr=createStmt					{retval = $cr.retval;}
 	| del=deleteStmt		 		{retval = $del.retval;}
 	;
@@ -71,11 +71,11 @@ schemaStmt returns [SchemaManagerCmd retval]
 	;
 
 createStmt returns [CreateCmd retval]
-	: keyCREATE keyTABLE keyUSING t=ID 		{retval = new CreateCmd($t.text);}
+	: keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateCmd($t.text);}
 	;
 	
 defineStmt returns [DefineCmd retval]
-	: keyDEFINE keyTABLE t=ID (keyALIAS a=ID)? LPAREN l=attribList RPAREN
+	: keyDEFINE keyTABLE t=simpleName (keyALIAS a=simpleName)? LPAREN l=attribList RPAREN
 							{retval = new DefineCmd($t.text, $a.text, $l.retval);};
 
 attribList returns [List<ColumnDescription> retval] 
@@ -83,18 +83,18 @@ attribList returns [List<ColumnDescription> retval]
 	: (a1=defineAttrib {retval.add($a1.retval);} (COMMA a2=defineAttrib {retval.add($a2.retval);})*)?;
 	
 defineAttrib returns [ColumnDescription retval]
-	: c=varRef type=ID (b=LBRACE RBRACE)? m=keyMAP? (keyALIAS a=ID)?	
+	: c=varRef type=simpleName (b=LBRACE RBRACE)? m=keyMAP? (keyALIAS a=simpleName)?	
 							{retval = ColumnDescription.newColumn($c.text, $a.text, $m.text!=null, false, $type.text, $b.text!=null);}
-	| f=familyRef (keyALIAS a=ID)?			{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
+	| f=familyRef (keyALIAS a=simpleName)?		{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
 	;
 
 
 deleteStmt  returns [DeleteCmd retval]
-	: keyDELETE keyFROM t=ID w=whereValue?			
+	: keyDELETE keyFROM t=simpleName w=whereValue?			
 	  						{retval = new DeleteCmd($t.text, $w.retval);};
 
 selectStmt returns [QueryArgs retval]
-	: keySELECT c=selectElems keyFROM t=ID w=whereValue?			
+	: keySELECT c=selectElems keyFROM t=simpleName w=whereValue?			
 							{retval = new QueryArgs($c.retval, $t.text, $w.retval);};
 
 selectElems returns [List<SelectElement> retval]
@@ -107,7 +107,7 @@ selectElemList returns [List<SelectElement> retval]
 	: c1=selectElem {retval.add($c1.retval);} (COMMA c2=selectElem {retval.add($c2.retval);})*;
 
 selectElem returns [SelectElement retval]
-	: c=valExpr (keyAS i=ID)?			{$selectElem.retval = ExprSelectElement.newExprElement($c.retval, $i.text);}
+	: c=valExpr (keyAS i=simpleName)?		{$selectElem.retval = ExprSelectElement.newExprElement($c.retval, $i.text);}
 	| f=familyRef					{$selectElem.retval = FamilySelectElement.newFamilyElement($f.text);}
 	;
 
@@ -223,7 +223,7 @@ options {backtrack=true; memoize=true;}
 							{retval = new DelegateBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
 	| s1=valExpr n=keyNOT? keyIN LPAREN l=valueItemList RPAREN			
 							{retval = new DelegateInStmt($s1.retval, ($n.text != null), $l.retval);} 
-	| s1=valExpr keyIS (n=keyNOT)? keyNULL	{retval = new DelegateNullCompare(($n.text != null), $s1.retval);}	
+	| s1=valExpr keyIS (n=keyNOT)? keyNULL		{retval = new DelegateNullCompare(($n.text != null), $s1.retval);}	
 	;
 
 valueItemList returns [List<GenericValue> retval]
@@ -353,6 +353,7 @@ multDiv returns [Operator retval]
 	| MOD						{retval = Operator.MOD;}
 	;
 
+simpleName : ID;
 varRef 	: ID (COLON ID)?;
 familyRef : ID COLON STAR;	
 paramRef: COLON ID;
