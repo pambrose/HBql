@@ -320,7 +320,7 @@ public class SelectTest extends TestSupport {
                             + "f1:* alias f1default "
                             + ")");
 
-        final String query1 = "SELECT f1:val1, f1:val2, f1:valunknown FROM table1";
+        final String query1 = "SELECT f1:val1, f1:val2 FROM table1";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
         List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
@@ -328,9 +328,34 @@ public class SelectTest extends TestSupport {
         int i = 0;
         for (final HRecord rec : recList1) {
             Map<String, byte[]> defs = rec.getFamilyDefaultValueMap("f1default");
-            assertTrue(defs.size() == 3);
+            assertTrue(defs.size() == 2);
             String val1 = HUtil.ser.getStringFromBytes(defs.get("f1:val1"));
             assertTrue(val1List.get(i).equals(val1));
+            i++;
+        }
+    }
+
+    @Test
+    public void selectUnknownExpressions() throws HBqlException, IOException {
+
+        SchemaManager.removeSchema("table1");
+        SchemaManager.parse("define table table1 alias tab1"
+                            + "("
+                            + "keyval key, "
+                            + "f1:* alias f1default "
+                            + ")");
+
+        final String query1 = "SELECT f1:valunknown FROM table1";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 10);
+
+        int i = 0;
+        for (final HRecord rec : recList1) {
+            Map<String, byte[]> defs = rec.getFamilyDefaultValueMap("f1default");
+            assertTrue(defs.size() == 1);
+            String val1 = HUtil.ser.getStringFromBytes(defs.get("f1:valunknown"));
+            assertTrue(val1 == null);
             i++;
         }
     }
