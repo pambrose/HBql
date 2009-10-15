@@ -312,7 +312,8 @@ public class HRecordImpl implements Serializable, HRecord {
                                                    final long timestamp,
                                                    final Object val) throws HBqlException {
         final FamilyDefaultKeysAsColumnsValue value = this.getFamilyDefaultKeysAsColumnsValue(familyName);
-        value.getCurrentValue(mapKey).setCurrentValue(timestamp, mapKey, val);
+        final KeysAsColumnsValue kacValue = value.getCurrentValue(mapKey);
+        kacValue.setCurrentValue(timestamp, mapKey, val);
     }
 
 

@@ -81,9 +81,10 @@ public class FamilySelectElement implements SelectElement {
 
         this.schema = schema;
 
+        final Collection<String> familyList = this.getSchema().getSchemaFamilyNames(connection);
+
         if (this.useAllFamilies) {
             // connction will be null from tests
-            final Collection<String> familyList = this.getSchema().getSchemaFamilyNames(connection);
             for (final String familyName : familyList) {
                 this.addAFamily(familyName);
                 selectAttribList.add(new SelectFamilyAttrib(familyName));
@@ -92,7 +93,7 @@ public class FamilySelectElement implements SelectElement {
         else {
             // Only has one family
             final String familyName = this.getFamilyNameList().get(0);
-            if (!schema.containsFamilyNameInFamilyNameMap(familyName))
+            if (!familyList.contains(familyName))
                 throw new HBqlException("Invalid family name: " + familyName);
 
             selectAttribList.add(new SelectFamilyAttrib(familyName));
@@ -129,24 +130,9 @@ public class FamilySelectElement implements SelectElement {
                     final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
                     final ColumnAttrib attrib = schema.getAttribFromFamilyQualifiedName(familyName, mapColumn);
                     if (attrib == null) {
-
                         final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
-
                         if (familyDefaultAttrib != null)
-                            familyDefaultAttrib.setFamilyDefaultKeysAsColumnsValue(obj, columnName, mapKey, valueBytes);
-
-                        /*
-                        // Set unknown attrib value to byte[] value
-                        // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
-                        if (!(newobj instanceof HRecord))
-                            return;
-
-                        ((HRecordImpl)newobj).setKeysAsColumnsValue(familyName + ":" + columnName,
-                                                                           mapKey,
-                                                                           0,
-                                                                           currentValueBytes,
-                                                                           false);
-                                                                           */
+                            familyDefaultAttrib.setFamilyDefaultKeysAsColumnsValue(obj, mapColumn, mapKey, valueBytes);
                     }
                     else {
                         final Object val = attrib.getValueFromBytes(obj, valueBytes);

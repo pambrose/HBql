@@ -227,6 +227,7 @@ public abstract class HBaseSchema extends Schema {
 
     public synchronized Set<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException {
 
+        // TODO May not want to cache this
         if (this.familyNameSet == null) {
             // Connction will be null from tests
             this.familyNameSet = (connection == null)
