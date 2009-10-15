@@ -148,20 +148,16 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         final String name = this.getAsName();
         final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
 
+        final Object elementValue = this.getValue(result);
+
         if (attrib == null) {
             // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
             if (!(obj instanceof HRecord))
                 return;
 
-            // TODO Deal with this
-            ((HRecordImpl)obj).setFamilyDefaultCurrentValue("none",
-                                                            this.getSelectName(),
-                                                            0,
-                                                            result.getValue(this.getFamilyNameBytes(),
-                                                                            this.getColumnNameBytes()));
+            ((HRecordImpl)obj).setCurrentValue(name, 0, elementValue, false);
         }
         else {
-            final Object elementValue = this.getValue(result);
             attrib.setCurrentValue(obj, 0, elementValue);
         }
     }

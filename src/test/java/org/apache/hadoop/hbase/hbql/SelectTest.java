@@ -388,4 +388,27 @@ public class SelectTest extends TestSupport {
             i++;
         }
     }
+
+    @Test
+    public void selectUnknownCalcExpressions() throws HBqlException, IOException {
+
+        SchemaManager.removeSchema("table1");
+        SchemaManager.parse("define table table1 alias tab1"
+                            + "("
+                            + "keyval key, "
+                            + "f1:* alias f1default "
+                            + ")");
+
+        final String query1 = "SELECT ('dd'+'ff') as val1 FROM table1";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 10);
+
+        int i = 0;
+        for (final HRecord rec : recList1) {
+            String val = (String)rec.getCurrentValue("val1");
+            assertTrue(val.equals("ddff"));
+            i++;
+        }
+    }
 }
