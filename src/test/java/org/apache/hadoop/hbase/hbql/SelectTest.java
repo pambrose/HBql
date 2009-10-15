@@ -238,13 +238,13 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectVectorVersionExpressions() throws HBqlException, IOException {
 
-        final String query1 = "SELECT val2, val8 FROM table1 WITH VERSIONS 5";
+        final String query1 = "SELECT f1:val2, val8 FROM table1 WITH VERSIONS 5";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
         List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
 
         for (final HRecord rec : recList1) {
-            Map<Long, Object> m1 = rec.getVersionMap("val2");
+            Map<Long, Object> m1 = rec.getVersionMap("f1:val2");
             assertTrue(m1.size() == 3);
 
             Map<Long, Object> m2 = rec.getVersionMap("val8");
@@ -359,6 +359,9 @@ public class SelectTest extends TestSupport {
             assertTrue(val1List.get(i).equals(val1));
 
             Map<String, NavigableMap<Long, byte[]>> vers = rec.getFamilyDefaultVersionMap("f1default");
+            assertTrue(vers.size() == 2);
+            NavigableMap<Long, byte[]> v2 = vers.get("f1:val1");
+            assertTrue(v2.size() == 3);
             i++;
         }
     }
