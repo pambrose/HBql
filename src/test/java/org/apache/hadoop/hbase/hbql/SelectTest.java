@@ -294,12 +294,11 @@ public class SelectTest extends TestSupport {
         List<HRecord> recList4 = q4.getResultList();
         assertTrue(recList4.size() == 10);
 
-        /*
-        for (final HRecord rec : recList1) {
-            Map<Long, Object> m1 = rec.getVersionedValueMap("val2");
+        for (final HRecord rec : recList4) {
+            Map<Long, Object> m1 = rec.getVersionMap("val2");
             assertTrue(m1.size() == 3);
 
-            Map<Long, Object> m2 = rec.getVersionedValueMap("val8");
+            Map<Long, Object> m2 = rec.getVersionMap("val8");
             assertTrue(m2.size() == 3);
 
             for (Object obj : m2.values()) {
@@ -308,7 +307,6 @@ public class SelectTest extends TestSupport {
                     assertTrue(val8[i] == val8check[i]);
             }
         }
-        */
     }
 
     @Test

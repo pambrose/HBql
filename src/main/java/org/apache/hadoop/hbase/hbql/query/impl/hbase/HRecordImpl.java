@@ -244,7 +244,7 @@ public class HRecordImpl implements Serializable, HRecord {
 
         final Map<String, NavigableMap<Long, byte[]>> retval = Maps.newHashMap();
         for (final String key : value.getValueMap().keySet())
-            retval.put(key, (NavigableMap)value.getValueMap().get(key).getVersionMap());
+            retval.put(key, value.getValueMap().get(key).getVersionMap());
         return retval;
     }
 
