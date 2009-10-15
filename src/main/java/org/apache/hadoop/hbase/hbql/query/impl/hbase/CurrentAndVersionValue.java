@@ -5,18 +5,18 @@ import org.apache.hadoop.hbase.hbql.client.HValue;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-public class ValueImpl<T> extends HValue {
+public class CurrentAndVersionValue<T> extends HValue {
 
     private boolean currentValueSet = false;
     private T currentValue = null;
     private long currentValueTimestamp = -1;
     private NavigableMap<Long, T> versionMap = null;
 
-    public ValueImpl(final HRecordImpl hrecord, final String name) {
+    public CurrentAndVersionValue(final HRecordImpl hrecord, final String name) {
         super(hrecord, name);
     }
 
-    public T getCurrentValue() {
+    public T getValue() {
         return this.currentValue;
     }
 
@@ -49,7 +49,7 @@ public class ValueImpl<T> extends HValue {
         this.versionMap = versionMap;
     }
 
-    public boolean isCurrentValueSet() {
+    public boolean isValueSet() {
         return currentValueSet;
     }
 }

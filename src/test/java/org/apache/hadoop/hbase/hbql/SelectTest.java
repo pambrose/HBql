@@ -213,8 +213,8 @@ public class SelectTest extends TestSupport {
         assertTrue(recList2.size() == 10);
 
         for (final HRecord rec : recList2) {
-            Map map1 = (Map)rec.getCurrentValue("f3mapval1");
-            Map map2 = (Map)rec.getCurrentValue("f3mapval2");
+            Map<String, Object> map1 = rec.getKeysAsColumnsMap("f3mapval1");
+            Map<String, Object> map2 = rec.getKeysAsColumnsMap("f3mapval2");
 
             assertTrue(map1.size() == 2);
             assertTrue(map2.size() == 3);
@@ -235,15 +235,19 @@ public class SelectTest extends TestSupport {
         HQuery<HRecord> q1 = conn.newHQuery(query1);
         List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
+        for (final HRecord rec : recList1) {
+            Map<String, Map<String, byte[]>> val = rec.getFamilyDefaultKeysAsColumnsMap("f3:*");
+            int i = val.size();
+        }
 
-        final String query2 = "SELECT f3mapval1, f3mapval2 FROM table1";
+        final String query2 = "SELECT * FROM table1";
         HQuery<HRecord> q2 = conn.newHQuery(query2);
         List<HRecord> recList2 = q2.getResultList();
         assertTrue(recList2.size() == 10);
 
         for (final HRecord rec : recList2) {
-            Map map1 = (Map)rec.getCurrentValue("f3mapval1");
-            Map map2 = (Map)rec.getCurrentValue("f3mapval2");
+            Map map1 = rec.getKeysAsColumnsMap("f3mapval1");
+            Map map2 = rec.getKeysAsColumnsMap("f3mapval2");
 
             assertTrue(map1.size() == 2);
             assertTrue(map2.size() == 3);

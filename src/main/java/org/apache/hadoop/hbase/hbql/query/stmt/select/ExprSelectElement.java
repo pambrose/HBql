@@ -98,11 +98,11 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         }
     }
 
-    private Map getMapKeysAsColumnsValue(final Result result) throws HBqlException {
+    private Map<String, Object> getMapKeysAsColumnsValue(final Result result) throws HBqlException {
 
         final NavigableMap<byte[], byte[]> columnMap = result.getFamilyMap(this.getFamilyNameBytes());
 
-        Map mapval = Maps.newHashMap();
+        final Map<String, Object> mapval = Maps.newHashMap();
 
         for (final byte[] columnBytes : columnMap.keySet()) {
 
@@ -187,8 +187,9 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             if (this.getColumnAttrib().isACurrentValue()) {
                 // If this is a mapKeysAsColumns, then we need to build the map from all the related columns in the family
                 if (this.getColumnAttrib().isMapKeysAsColumnsAttrib()) {
-                    final Map mapval = this.getMapKeysAsColumnsValue(result);
-                    this.getColumnAttrib().setCurrentValue(obj, 0, mapval);
+                    final Map<String, Object> kacMap = this.getMapKeysAsColumnsValue(result);
+                    for (final String mapKey : kacMap.keySet())
+                        this.getColumnAttrib().setKeysAsColumnsValue(obj, mapKey, kacMap.get(mapKey));
                 }
                 else {
                     final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
