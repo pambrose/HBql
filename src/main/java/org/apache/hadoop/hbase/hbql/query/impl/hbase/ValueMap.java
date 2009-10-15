@@ -6,20 +6,20 @@ import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import java.util.Map;
 import java.util.NavigableMap;
 
-public abstract class MappedValue<T> extends HValue {
+public abstract class ValueMap<T> extends HValue {
 
     private Map<String, ValueImpl<T>> valueMap = Maps.newHashMap();
 
-    protected MappedValue(final HRecordImpl hrecord, final String name) {
+    protected ValueMap(final HRecordImpl hrecord, final String name) {
         super(hrecord, name);
-    }
-
-    public T getCurrentValue(final String name) {
-        return this.getHValue(name).getCurrentValue();
     }
 
     public Map<String, ValueImpl<T>> getValueMap() {
         return this.valueMap;
+    }
+
+    public T getCurrentValue(final String name) {
+        return this.getHValue(name).getCurrentValue();
     }
 
     public ValueImpl<T> getHValue(final String mapKey) {

@@ -1,11 +1,11 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
-import org.apache.hadoop.hbase.hbql.query.impl.hbase.MappedValue;
+import org.apache.hadoop.hbase.hbql.query.impl.hbase.ValueMap;
 
-public class FamilyDefaultValue extends MappedValue<byte[]> {
+public class FamilyDefaultValueMap extends ValueMap<byte[]> {
 
-    public FamilyDefaultValue(final HRecordImpl hrecord, final String name) {
+    public FamilyDefaultValueMap(final HRecordImpl hrecord, final String name) {
         super(hrecord, name);
     }
 
