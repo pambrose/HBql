@@ -218,6 +218,12 @@ public class SelectTest extends TestSupport {
 
             assertTrue(map1.size() == 2);
             assertTrue(map2.size() == 3);
+
+            Map<String, NavigableMap<Long, Object>> vmap1 = rec.getKeysAsColumnsVersionMap("f3mapval1");
+            Map<String, NavigableMap<Long, Object>> vmap2 = rec.getKeysAsColumnsVersionMap("f3mapval2");
+
+            assertTrue(vmap1.size() == 2);
+            assertTrue(vmap2.size() == 3);
         }
     }
 

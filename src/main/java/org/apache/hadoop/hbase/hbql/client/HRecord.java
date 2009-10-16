@@ -15,15 +15,17 @@ public interface HRecord {
 
     void setCurrentValue(String name, Object val) throws HBqlException;
 
-    Map<String, Object> getKeysAsColumnsMap(String name) throws HBqlException;
-
-    Map<Long, Object> getKeysAsColumnsVersionMap(String name, String mapKey) throws HBqlException;
-
-    Map<String, Map<String, byte[]>> getFamilyDefaultKeysAsColumnsMap(String familyName) throws HBqlException;
-
     Map<Long, Object> getVersionMap(final String name) throws HBqlException;
+
 
     Map<String, NavigableMap<Long, byte[]>> getFamilyDefaultVersionMap(String name) throws HBqlException;
 
     Map<String, byte[]> getFamilyDefaultValueMap(String name) throws HBqlException;
+
+
+    Map<String, Object> getKeysAsColumnsMap(String name) throws HBqlException;
+
+    Map<String, NavigableMap<Long, Object>> getKeysAsColumnsVersionMap(String name) throws HBqlException;
+
+    Map<String, Map<String, byte[]>> getFamilyDefaultKeysAsColumnsMap(String name) throws HBqlException;
 }

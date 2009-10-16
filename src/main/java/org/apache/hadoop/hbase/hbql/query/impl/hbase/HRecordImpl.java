@@ -204,18 +204,25 @@ public class HRecordImpl implements Serializable, HRecord {
         return (value != null) ? value.getVersionMap(true) : null;
     }
 
-    public Map<Long, Object> getKeysAsColumnsVersionMap(final String columnName,
-                                                        final String mapKey) throws HBqlException {
+    public Map<String, NavigableMap<Long, Object>> getKeysAsColumnsVersionMap(final String columnName) throws HBqlException {
         final TypedKeysAsColumnsValueMap value = this.getKeysAsColumnsElements().findElement(columnName);
-        return (value != null) ? value.getVersionMap(mapKey, true) : null;
+
+        if (value == null)
+            return null;
+
+        final Map<String, NavigableMap<Long, Object>> retval = Maps.newHashMap();
+        for (final String key : value.getValueMap().keySet())
+            retval.put(key, value.getValueMap().get(key).getVersionMap(true));
+        return retval;
     }
 
     public Map<String, byte[]> getFamilyDefaultValueMap(final String name) throws HBqlException {
+
         final FamilyDefaultValueMap value = this.getFamilyDefaultValueMap(name, false);
         if (value == null)
             return null;
 
-        Map<String, byte[]> retval = Maps.newHashMap();
+        final Map<String, byte[]> retval = Maps.newHashMap();
         for (final String key : value.getValueMap().keySet())
             retval.put(key, value.getValueMap().get(key).getValue());
         return retval;
@@ -239,9 +246,9 @@ public class HRecordImpl implements Serializable, HRecord {
         return retval;
     }
 
-    public Map<Long, UntypedKeysAsColumnsValueMap> getFamilyDefaultKeysAsColumnsVersionMap(final String name,
+    public Map<Long, UntypedKeysAsColumnsValueMap> getFamilyDefaultKeysAsColumnsVersionMap(final String familyName,
                                                                                            final String columnName) throws HBqlException {
-        final FamilyDefaultKeysAsColumnsValueMap value = this.getFamilyDefaultKeysAsColumnsValueMap(name, false);
+        final FamilyDefaultKeysAsColumnsValueMap value = this.getFamilyDefaultKeysAsColumnsValueMap(familyName, false);
         return (value != null) ? value.getVersionMap(columnName, true) : null;
     }
 
