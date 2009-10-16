@@ -237,7 +237,7 @@ public class SelectTest extends TestSupport {
         assertTrue(recList1.size() == 10);
         for (final HRecord rec : recList1) {
             Map<String, Map<String, byte[]>> val = rec.getFamilyDefaultKeysAsColumnsMap("f3:*");
-            int i = val.size();
+            assertTrue(val.size() == 2);
         }
 
         final String query2 = "SELECT * FROM table1";
@@ -246,11 +246,11 @@ public class SelectTest extends TestSupport {
         assertTrue(recList2.size() == 10);
 
         for (final HRecord rec : recList2) {
-            Map map1 = rec.getKeysAsColumnsMap("f3mapval1");
-            Map map2 = rec.getKeysAsColumnsMap("f3mapval2");
+            Map map1 = rec.getFamilyDefaultValueMap("f3:*");
+            Map map2 = rec.getFamilyDefaultKeysAsColumnsMap("f3:*");
 
-            assertTrue(map1.size() == 2);
-            assertTrue(map2.size() == 3);
+            assertTrue(map1.size() == 3);
+            assertTrue(map2.size() == 2);
         }
     }
 
