@@ -10,17 +10,43 @@ import java.util.NavigableMap;
 public abstract class ValueMap<T> extends HValue {
 
     private Map<String, CurrentAndVersionValue<T>> currentAndVersionMap = Maps.newHashMap();
+    private final Class elementClazz;
 
-    protected ValueMap(final HRecordImpl hrecord, final String name) throws HBqlException {
+    protected ValueMap(final HRecordImpl hrecord, final String name, final Class elementClazz) throws HBqlException {
         super(hrecord, name);
+        this.elementClazz = elementClazz;
     }
 
     public Map<String, CurrentAndVersionValue<T>> getCurrentAndVersionMap() {
         return this.currentAndVersionMap;
     }
 
-    public T getCurrentMapValue(final String name) throws HBqlException {
-        return this.getValueFromMapWithDefault(name).getValue();
+    private Class getElementClazz() {
+        return this.elementClazz;
+    }
+
+    public T getCurrentMapValue(final String name, final boolean createIfNull) throws HBqlException {
+        T retval = this.getValueFromMapWithDefault(name).getValue();
+
+        if (retval != null || !createIfNull)
+            return retval;
+
+        if (this.getElementClazz() == null)
+            throw new HBqlException("Internal error");
+
+        T newVal = null;
+        try {
+            newVal = (T)this.getElementClazz().newInstance();
+            this.setCurrentValueMap(0, name, newVal);
+        }
+        catch (InstantiationException e) {
+            throw new HBqlException(e.getMessage());
+        }
+        catch (IllegalAccessException e) {
+            throw new HBqlException(e.getMessage());
+        }
+
+        return newVal;
     }
 
     public CurrentAndVersionValue<T> getValueFromMapWithDefault(final String mapKey) throws HBqlException {

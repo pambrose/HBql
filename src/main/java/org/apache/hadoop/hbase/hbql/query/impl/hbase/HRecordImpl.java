@@ -260,14 +260,14 @@ public class HRecordImpl implements Serializable, HRecord {
         value.getVersionMap(true).put(timestamp, val);
     }
 
-    public void setVersionValue(final String family,
-                                final String column,
+    public void setVersionValue(final String familyName,
+                                final String columnName,
                                 final long timestamp,
                                 final Object val,
                                 final boolean inSchema) throws HBqlException {
-        final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(family, column);
+        final ColumnAttrib attrib = this.getSchema().getAttribFromFamilyQualifiedName(familyName, columnName);
         if (attrib == null)
-            throw new HBqlException("Invalid column name " + family + ":" + column);
+            throw new HBqlException("Invalid column name " + familyName + ":" + columnName);
         this.setVersionValue(attrib.getColumnName(), timestamp, val, inSchema);
     }
 
@@ -320,15 +320,8 @@ public class HRecordImpl implements Serializable, HRecord {
                                                    final String mapKey,
                                                    final long timestamp,
                                                    final byte[] val) throws HBqlException {
-
         final FamilyDefaultKeysAsColumnsValueMap value = this.getFamilyDefaultKeysAsColumnsValueMap(familyName, true);
-
-        UntypedKeysAsColumnsValueMap kacMap = value.getCurrentMapValue(columnName);
-        if (kacMap == null) {
-            kacMap = new UntypedKeysAsColumnsValueMap(null, null);
-            value.setCurrentValueMap(0, columnName, kacMap);
-        }
-
+        final UntypedKeysAsColumnsValueMap kacMap = value.getCurrentMapValue(columnName, true);
         kacMap.setCurrentValueMap(timestamp, mapKey, val);
     }
 
@@ -338,13 +331,7 @@ public class HRecordImpl implements Serializable, HRecord {
                                                         final String mapKey,
                                                         final NavigableMap<Long, byte[]> map) throws HBqlException {
         final FamilyDefaultKeysAsColumnsValueMap value = this.getFamilyDefaultKeysAsColumnsValueMap(familyName, true);
-
-        UntypedKeysAsColumnsValueMap kacMap = value.getCurrentMapValue(columnName);
-        if (kacMap == null) {
-            kacMap = new UntypedKeysAsColumnsValueMap(null, null);
-            value.setCurrentValueMap(0, columnName, kacMap);
-        }
-
+        final UntypedKeysAsColumnsValueMap kacMap = value.getCurrentMapValue(columnName, true);
         kacMap.setVersionMap(columnName, map);
     }
 

@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 public class FamilyDefaultKeysAsColumnsValueMap extends ValueMap<UntypedKeysAsColumnsValueMap> {
 
     public FamilyDefaultKeysAsColumnsValueMap(final HRecordImpl hrecord, final String name) throws HBqlException {
-        super(hrecord, name);
+        super(hrecord, name, UntypedKeysAsColumnsValueMap.class);
     }
 
     public String toString() {
