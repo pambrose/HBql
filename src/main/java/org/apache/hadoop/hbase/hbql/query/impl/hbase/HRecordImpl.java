@@ -325,6 +325,8 @@ public class HRecordImpl implements Serializable, HRecord {
         kacMap.setCurrentValueMap(timestamp, mapKey, val);
     }
 
+    zzz use
+    mapKey
 
     public void setFamilyDefaultKeysAsColumnsVersionMap(final String familyName,
                                                         final String columnName,
