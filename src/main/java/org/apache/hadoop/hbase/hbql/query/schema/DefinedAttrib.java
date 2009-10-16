@@ -69,12 +69,12 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     public Map<Long, Object> getVersionMap(final Object hrecord) throws HBqlException {
-        return ((HRecordImpl)hrecord).getObjectValue(this.getAliasName(), true).getVersionMap();
+        return ((HRecordImpl)hrecord).getObjectValue(this.getAliasName(), true).getVersionMap(true);
     }
 
     public Map<Long, Object> getKeysAsColumnsVersionMap(final Object hrecord,
                                                         final String mapKey) throws HBqlException {
-        return ((HRecordImpl)hrecord).getKeysAsColumnsValueMap(this.getAliasName(), true).getVersionMap(mapKey);
+        return ((HRecordImpl)hrecord).getKeysAsColumnsValueMap(this.getAliasName(), true).getVersionMap(mapKey, true);
     }
 
     public Map<Long, byte[]> getFamilyDefaultVersionMap(final Object hrecord) throws HBqlException {

@@ -29,10 +29,13 @@ public class CurrentAndVersionValue<T> extends HValue {
         }
     }
 
-    public NavigableMap<Long, T> getVersionMap() {
+    public NavigableMap<Long, T> getVersionMap(final boolean createIfNull) {
 
         if (this.versionMap != null)
             return this.versionMap;
+
+        if (!createIfNull)
+            return null;
 
         synchronized (this) {
             if (this.versionMap == null)
@@ -43,7 +46,7 @@ public class CurrentAndVersionValue<T> extends HValue {
     }
 
     public void setVersionValue(final Long ts, final T val) {
-        this.getVersionMap().put(ts, val);
+        this.getVersionMap(true).put(ts, val);
     }
 
     public void setVersionMap(final NavigableMap<Long, T> versionMap) {

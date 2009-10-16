@@ -36,8 +36,8 @@ public abstract class ValueMap<T> extends HValue {
         this.getValueFromMapWithDefault(mapKey).setCurrentValue(timestamp, val);
     }
 
-    public Map<Long, T> getVersionMap(final String name) throws HBqlException {
-        return this.getValueFromMapWithDefault(name).getVersionMap();
+    public Map<Long, T> getVersionMap(final String name, final boolean createIfNull) throws HBqlException {
+        return this.getValueFromMapWithDefault(name).getVersionMap(createIfNull);
     }
 
     public void setVersionMap(final String name, final NavigableMap<Long, T> val) throws HBqlException {

@@ -441,6 +441,10 @@ public class SelectTest extends TestSupport {
         for (final HRecord rec : recList1) {
             String val = (String)rec.getCurrentValue("val1");
             assertTrue(val.equals("ddff"));
+
+            Map<Long, Object> versions = rec.getVersionMap("val1");
+            assertTrue(versions == null || versions.size() == 0);
+
             i++;
         }
     }
