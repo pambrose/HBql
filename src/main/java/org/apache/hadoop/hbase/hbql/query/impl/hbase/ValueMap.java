@@ -32,7 +32,7 @@ public abstract class ValueMap<T> extends HValue {
         return hvalue;
     }
 
-    public void setMapValue(final long timestamp, final String mapKey, final T val) throws HBqlException {
+    public void setCurrentValueMap(final long timestamp, final String mapKey, final T val) throws HBqlException {
         this.getValueFromMapWithDefault(mapKey).setCurrentValue(timestamp, val);
     }
 

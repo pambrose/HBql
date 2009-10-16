@@ -74,7 +74,7 @@ public class DefinedAttrib extends ColumnAttrib {
 
     public Map<Long, Object> getKeysAsColumnsVersionMap(final Object hrecord,
                                                         final String mapKey) throws HBqlException {
-        return ((HRecordImpl)hrecord).getKeysAsColumnsValue(this.getAliasName(), true).getVersionMap(mapKey);
+        return ((HRecordImpl)hrecord).getKeysAsColumnsValueMap(this.getAliasName(), true).getVersionMap(mapKey);
     }
 
     public Map<Long, byte[]> getFamilyDefaultVersionMap(final Object hrecord) throws HBqlException {
