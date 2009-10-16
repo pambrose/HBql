@@ -17,10 +17,10 @@ public class HRecordImpl implements Serializable, HRecord {
     private HBaseSchema schema = null;
     private long timestamp = System.currentTimeMillis();
 
-    private final ElementMap<ObjectValue> objectElements = new ElementMap<ObjectValue>(this);
-    private final ElementMap<TypedKeysAsColumnsValueMap> keysAsColumnsElements = new ElementMap<TypedKeysAsColumnsValueMap>(this);
-    private final ElementMap<FamilyDefaultValueMap> familyDefaultElements = new ElementMap<FamilyDefaultValueMap>(this);
-    private final ElementMap<FamilyDefaultKeysAsColumnsValueMap> familyDefaultKeysAsColumnsElements = new ElementMap<FamilyDefaultKeysAsColumnsValueMap>(this);
+    private ElementMap<ObjectValue> objectElements = null;
+    private ElementMap<TypedKeysAsColumnsValueMap> keysAsColumnsElements = null;
+    private ElementMap<FamilyDefaultValueMap> familyDefaultElements = null;
+    private ElementMap<FamilyDefaultKeysAsColumnsValueMap> familyDefaultKeysAsColumnsElements = null;
 
     public HRecordImpl(final HBaseSchema schema) {
         this.setSchema(schema);
@@ -35,19 +35,47 @@ public class HRecordImpl implements Serializable, HRecord {
     }
 
     public ElementMap<ObjectValue> getObjectElements() {
-        return this.objectElements;
+        if (this.objectElements != null)
+            return this.objectElements;
+
+        synchronized (this) {
+            if (this.objectElements == null)
+                this.objectElements = new ElementMap<ObjectValue>(this);
+            return this.objectElements;
+        }
     }
 
     public ElementMap<TypedKeysAsColumnsValueMap> getKeysAsColumnsElements() {
-        return this.keysAsColumnsElements;
+        if (this.keysAsColumnsElements != null)
+            return this.keysAsColumnsElements;
+
+        synchronized (this) {
+            if (this.keysAsColumnsElements == null)
+                this.keysAsColumnsElements = new ElementMap<TypedKeysAsColumnsValueMap>(this);
+            return this.keysAsColumnsElements;
+        }
     }
 
     public ElementMap<FamilyDefaultValueMap> getFamilyDefaultElements() {
-        return this.familyDefaultElements;
+        if (this.familyDefaultElements != null)
+            return this.familyDefaultElements;
+
+        synchronized (this) {
+            if (this.familyDefaultElements == null)
+                this.familyDefaultElements = new ElementMap<FamilyDefaultValueMap>(this);
+            return this.familyDefaultElements;
+        }
     }
 
     public ElementMap<FamilyDefaultKeysAsColumnsValueMap> getFamilyDefaultKeysAsColumnsElements() {
-        return this.familyDefaultKeysAsColumnsElements;
+        if (this.familyDefaultKeysAsColumnsElements != null)
+            return this.familyDefaultKeysAsColumnsElements;
+
+        synchronized (this) {
+            if (this.familyDefaultKeysAsColumnsElements == null)
+                this.familyDefaultKeysAsColumnsElements = new ElementMap<FamilyDefaultKeysAsColumnsValueMap>(this);
+            return this.familyDefaultKeysAsColumnsElements;
+        }
     }
 
 
