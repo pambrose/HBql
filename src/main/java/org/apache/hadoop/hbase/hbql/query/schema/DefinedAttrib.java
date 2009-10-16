@@ -97,7 +97,7 @@ public class DefinedAttrib extends ColumnAttrib {
                                                    final String columnName,
                                                    final String mapKey,
                                                    final byte[] valueBytes) throws HBqlException {
-        ((HRecordImpl)hrecord).setFamilyDefaultKeysAsColumnsValue(this.getFamilyName(),
+        ((HRecordImpl)hrecord).setFamilyDefaultKeysAsColumnsValue(this.getFamilyName() + ":*",
                                                                   columnName,
                                                                   mapKey,
                                                                   0,

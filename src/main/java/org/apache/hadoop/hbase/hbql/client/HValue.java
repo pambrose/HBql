@@ -6,10 +6,10 @@ public abstract class HValue {
 
     private final String name;
 
-    public HValue(final HRecordImpl hrecord, final String name) {
+    public HValue(final HRecordImpl hrecord, final String name) throws HBqlException {
         this.name = name;
         if (hrecord != null)
-            hrecord.addValue(name, this);
+            hrecord.addElement(name, this);
     }
 
     public String getName() {

@@ -5,11 +5,11 @@ import org.apache.hadoop.hbase.hbql.query.impl.hbase.ValueMap;
 
 public class FamilyDefaultValueMap extends ValueMap<byte[]> {
 
-    public FamilyDefaultValueMap(final HRecordImpl hrecord, final String name) {
+    public FamilyDefaultValueMap(final HRecordImpl hrecord, final String name) throws HBqlException {
         super(hrecord, name);
     }
 
     public String toString() {
-        return "Family default for family: " + this.getName();
+        return "Family default for: " + this.getName();
     }
 }

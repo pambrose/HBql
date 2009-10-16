@@ -1,5 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.impl.hbase;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+
 /**
  * Created by IntelliJ IDEA.
  * User: pambrose
@@ -8,7 +10,7 @@ package org.apache.hadoop.hbase.hbql.query.impl.hbase;
  */
 public class ObjectValue extends CurrentAndVersionValue<Object> {
 
-    public ObjectValue(final HRecordImpl hrecord, final String name) {
+    public ObjectValue(final HRecordImpl hrecord, final String name) throws HBqlException {
         super(hrecord, name);
     }
 }

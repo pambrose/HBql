@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.impl.hbase;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HValue;
 
 import java.util.NavigableMap;
@@ -12,7 +13,7 @@ public class CurrentAndVersionValue<T> extends HValue {
     private long currentValueTimestamp = -1;
     private NavigableMap<Long, T> versionMap = null;
 
-    public CurrentAndVersionValue(final HRecordImpl hrecord, final String name) {
+    public CurrentAndVersionValue(final HRecordImpl hrecord, final String name) throws HBqlException {
         super(hrecord, name);
     }
 
