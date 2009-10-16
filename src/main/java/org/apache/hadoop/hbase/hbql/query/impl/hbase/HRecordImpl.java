@@ -309,6 +309,7 @@ public class HRecordImpl implements Serializable, HRecord {
     }
 
     public Map<String, Object> getKeysAsColumnsMap(final String name) throws HBqlException {
+
         final TypedKeysAsColumnsValueMap value = this.getKeysAsColumnsElements().findElement(name);
         if (value == null)
             return null;
@@ -320,13 +321,13 @@ public class HRecordImpl implements Serializable, HRecord {
     }
 
     public Map<String, Map<String, byte[]>> getFamilyDefaultKeysAsColumnsMap(final String familyName) throws HBqlException {
+
         final FamilyDefaultKeysAsColumnsValueMap value =
                 this.getFamilyDefaultKeysAsColumnsValueMap(familyName, false);
-
         if (value == null)
             return null;
 
-        Map<String, CurrentAndVersionValue<UntypedKeysAsColumnsValueMap>> map = value.getCurrentAndVersionMap();
+        final Map<String, CurrentAndVersionValue<UntypedKeysAsColumnsValueMap>> map = value.getCurrentAndVersionMap();
 
         final Map<String, Map<String, byte[]>> retval = Maps.newHashMap();
         for (final String columnName : map.keySet()) {
@@ -336,6 +337,28 @@ public class HRecordImpl implements Serializable, HRecord {
             final Map<String, CurrentAndVersionValue<byte[]>> kacMap = val.getValue().getCurrentAndVersionMap();
             for (final String mapKey : kacMap.keySet())
                 newMap.put(mapKey, kacMap.get(mapKey).getValue());
+        }
+        return retval;
+    }
+
+    public Map<String, Map<String, NavigableMap<Long, byte[]>>> getFamilyDefaultKeysAsColumnsVersionMap(final String familyName) throws HBqlException {
+
+        final FamilyDefaultKeysAsColumnsValueMap value =
+                this.getFamilyDefaultKeysAsColumnsValueMap(familyName, false);
+
+        if (value == null)
+            return null;
+
+        final Map<String, CurrentAndVersionValue<UntypedKeysAsColumnsValueMap>> map = value.getCurrentAndVersionMap();
+
+        final Map<String, Map<String, NavigableMap<Long, byte[]>>> retval = Maps.newHashMap();
+        for (final String columnName : map.keySet()) {
+            final CurrentAndVersionValue<UntypedKeysAsColumnsValueMap> val = map.get(columnName);
+            final Map<String, NavigableMap<Long, byte[]>> newMap = Maps.newHashMap();
+            retval.put(columnName, newMap);
+            final Map<String, CurrentAndVersionValue<byte[]>> kacMap = val.getValue().getCurrentAndVersionMap();
+            for (final String mapKey : kacMap.keySet())
+                newMap.put(mapKey, kacMap.get(mapKey).getVersionMap(true));
         }
         return retval;
     }
