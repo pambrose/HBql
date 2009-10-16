@@ -222,39 +222,6 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectUnknownMapExpressions() throws HBqlException, IOException {
-
-        SchemaManager.removeSchema("table1");
-        SchemaManager.parse("define table table1 alias tab1"
-                            + "("
-                            + "keyval key, "
-                            + "f3:* alias f1default "
-                            + ")");
-
-        final String query1 = "SELECT f3:* FROM table1";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
-        assertTrue(recList1.size() == 10);
-        for (final HRecord rec : recList1) {
-            Map<String, Map<String, byte[]>> val = rec.getFamilyDefaultKeysAsColumnsMap("f3:*");
-            assertTrue(val.size() == 2);
-        }
-
-        final String query2 = "SELECT * FROM table1";
-        HQuery<HRecord> q2 = conn.newHQuery(query2);
-        List<HRecord> recList2 = q2.getResultList();
-        assertTrue(recList2.size() == 10);
-
-        for (final HRecord rec : recList2) {
-            Map map1 = rec.getFamilyDefaultValueMap("f3:*");
-            Map map2 = rec.getFamilyDefaultKeysAsColumnsMap("f3:*");
-
-            assertTrue(map1.size() == 3);
-            assertTrue(map2.size() == 2);
-        }
-    }
-
-    @Test
     public void selectVectorExpressions() throws HBqlException, IOException {
 
         final String query1 = "SELECT val8 FROM table1";
@@ -339,6 +306,39 @@ public class SelectTest extends TestSupport {
                 for (int i = 0; i < val8.length; i++)
                     assertTrue(val8[i] == val8check[i]);
             }
+        }
+    }
+
+    @Test
+    public void selectUnknownMapExpressions() throws HBqlException, IOException {
+
+        SchemaManager.removeSchema("table1");
+        SchemaManager.parse("define table table1 alias tab1"
+                            + "("
+                            + "keyval key, "
+                            + "f3:* alias f1default "
+                            + ")");
+
+        final String query1 = "SELECT f3:* FROM table1";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 10);
+        for (final HRecord rec : recList1) {
+            Map<String, Map<String, byte[]>> val = rec.getFamilyDefaultKeysAsColumnsMap("f3:*");
+            assertTrue(val.size() == 2);
+        }
+
+        final String query2 = "SELECT * FROM table1";
+        HQuery<HRecord> q2 = conn.newHQuery(query2);
+        List<HRecord> recList2 = q2.getResultList();
+        assertTrue(recList2.size() == 10);
+
+        for (final HRecord rec : recList2) {
+            Map map1 = rec.getFamilyDefaultValueMap("f3:*");
+            Map map2 = rec.getFamilyDefaultKeysAsColumnsMap("f3:*");
+
+            assertTrue(map1.size() == 3);
+            assertTrue(map2.size() == 2);
         }
     }
 
