@@ -9,14 +9,14 @@ import java.util.NavigableMap;
 
 public abstract class ValueMap<T> extends HValue {
 
-    private Map<String, CurrentAndVersionValue<T>> valueMap = Maps.newHashMap();
+    private Map<String, CurrentAndVersionValue<T>> currentAndVersionMap = Maps.newHashMap();
 
     protected ValueMap(final HRecordImpl hrecord, final String name) throws HBqlException {
         super(hrecord, name);
     }
 
-    public Map<String, CurrentAndVersionValue<T>> getValueMap() {
-        return this.valueMap;
+    public Map<String, CurrentAndVersionValue<T>> getCurrentAndVersionMap() {
+        return this.currentAndVersionMap;
     }
 
     public T getCurrentMapValue(final String name) throws HBqlException {
@@ -24,10 +24,10 @@ public abstract class ValueMap<T> extends HValue {
     }
 
     public CurrentAndVersionValue<T> getValueFromMapWithDefault(final String mapKey) throws HBqlException {
-        CurrentAndVersionValue<T> hvalue = this.getValueMap().get(mapKey);
+        CurrentAndVersionValue<T> hvalue = this.getCurrentAndVersionMap().get(mapKey);
         if (hvalue == null) {
             hvalue = new CurrentAndVersionValue<T>(null, null);
-            this.getValueMap().put(mapKey, hvalue);
+            this.getCurrentAndVersionMap().put(mapKey, hvalue);
         }
         return hvalue;
     }

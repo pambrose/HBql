@@ -211,8 +211,8 @@ public class HRecordImpl implements Serializable, HRecord {
             return null;
 
         final Map<String, NavigableMap<Long, Object>> retval = Maps.newHashMap();
-        for (final String key : value.getValueMap().keySet())
-            retval.put(key, value.getValueMap().get(key).getVersionMap(true));
+        for (final String key : value.getCurrentAndVersionMap().keySet())
+            retval.put(key, value.getCurrentAndVersionMap().get(key).getVersionMap(true));
         return retval;
     }
 
@@ -223,8 +223,8 @@ public class HRecordImpl implements Serializable, HRecord {
             return null;
 
         final Map<String, byte[]> retval = Maps.newHashMap();
-        for (final String key : value.getValueMap().keySet())
-            retval.put(key, value.getValueMap().get(key).getValue());
+        for (final String key : value.getCurrentAndVersionMap().keySet())
+            retval.put(key, value.getCurrentAndVersionMap().get(key).getValue());
         return retval;
     }
 
@@ -241,8 +241,8 @@ public class HRecordImpl implements Serializable, HRecord {
             return null;
 
         final Map<String, NavigableMap<Long, byte[]>> retval = Maps.newHashMap();
-        for (final String key : value.getValueMap().keySet())
-            retval.put(key, value.getValueMap().get(key).getVersionMap(true));
+        for (final String key : value.getCurrentAndVersionMap().keySet())
+            retval.put(key, value.getCurrentAndVersionMap().get(key).getVersionMap(true));
         return retval;
     }
 
@@ -278,8 +278,8 @@ public class HRecordImpl implements Serializable, HRecord {
             return null;
 
         final Map<String, Object> retval = Maps.newHashMap();
-        for (final String key : value.getValueMap().keySet())
-            retval.put(key, value.getValueMap().get(key));
+        for (final String key : value.getCurrentAndVersionMap().keySet())
+            retval.put(key, value.getCurrentAndVersionMap().get(key));
         return retval;
     }
 
@@ -355,14 +355,14 @@ public class HRecordImpl implements Serializable, HRecord {
         if (value == null)
             return null;
 
-        Map<String, CurrentAndVersionValue<UntypedKeysAsColumnsValueMap>> map = value.getValueMap();
+        Map<String, CurrentAndVersionValue<UntypedKeysAsColumnsValueMap>> map = value.getCurrentAndVersionMap();
 
         final Map<String, Map<String, byte[]>> retval = Maps.newHashMap();
         for (final String columnName : map.keySet()) {
             final CurrentAndVersionValue<UntypedKeysAsColumnsValueMap> val = map.get(columnName);
             final Map<String, byte[]> newMap = Maps.newHashMap();
             retval.put(columnName, newMap);
-            final Map<String, CurrentAndVersionValue<byte[]>> kacMap = val.getValue().getValueMap();
+            final Map<String, CurrentAndVersionValue<byte[]>> kacMap = val.getValue().getCurrentAndVersionMap();
             for (final String mapKey : kacMap.keySet())
                 newMap.put(mapKey, kacMap.get(mapKey).getValue());
         }
