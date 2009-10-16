@@ -54,7 +54,7 @@ public class KeyRangeArgs {
 
         private byte[] getUpperAsBytes() throws HBqlException {
             final String upper = this.getUpper();
-            return HUtil.ser.getStringAsBytes(upper);
+            return HUtil.getSerialization().getStringAsBytes(upper);
         }
 
         private boolean isLastRange() {
@@ -95,7 +95,7 @@ public class KeyRangeArgs {
         private RowRequest newGet(final WhereArgs whereArgs,
                                   final Collection<ColumnAttrib> columnAttribSet,
                                   final String lower) throws HBqlException, IOException {
-            final byte[] lowerBytes = HUtil.ser.getStringAsBytes(lower);
+            final byte[] lowerBytes = HUtil.getSerialization().getStringAsBytes(lower);
             final Get get = new Get(lowerBytes);
             whereArgs.setGetArgs(get, columnAttribSet);
             return new RowRequest(get, null);
@@ -126,7 +126,7 @@ public class KeyRangeArgs {
                                   final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
             final Scan scan = new Scan();
             if (!this.isAllRows()) {
-                final byte[] lowerBytes = HUtil.ser.getStringAsBytes((String)this.getLower(false));
+                final byte[] lowerBytes = HUtil.getSerialization().getStringAsBytes((String)this.getLower(false));
                 scan.setStartRow(lowerBytes);
                 if (this.isRowRange())
                     scan.setStopRow(this.getUpperAsBytes());

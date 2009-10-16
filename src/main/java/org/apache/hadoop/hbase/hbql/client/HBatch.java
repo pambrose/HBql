@@ -80,11 +80,11 @@ public class HBatch {
                     final Map mapval = (Map)attrib.getCurrentValue(newrec);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
-                        final byte[] b = HUtil.ser.getScalarAsBytes(mapval.get(keyobj));
+                        final byte[] b = HUtil.getSerialization().getScalarAsBytes(mapval.get(keyobj));
 
                         // Use family:column[key] scheme to avoid column namespace collision
                         put.add(attrib.getFamilyNameAsBytes(),
-                                HUtil.ser.getStringAsBytes(attrib.getColumnName() + "[" + colname + "]"), b);
+                                HUtil.getSerialization().getStringAsBytes(attrib.getColumnName() + "[" + colname + "]"), b);
                     }
                 }
                 else {
@@ -110,11 +110,11 @@ public class HBatch {
                     final Map mapval = (Map)attrib.getCurrentValue(hrecord);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
-                        final byte[] b = HUtil.ser.getScalarAsBytes(mapval.get(keyobj));
+                        final byte[] b = HUtil.getSerialization().getScalarAsBytes(mapval.get(keyobj));
 
                         // Use family:column[key] scheme to avoid column namespace collision
                         put.add(attrib.getFamilyNameAsBytes(),
-                                HUtil.ser.getStringAsBytes(attrib.getColumnName() + "[" + colname + "]"), b);
+                                HUtil.getSerialization().getStringAsBytes(attrib.getColumnName() + "[" + colname + "]"), b);
                     }
                 }
                 else {

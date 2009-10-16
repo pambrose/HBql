@@ -361,7 +361,7 @@ public class SelectTest extends TestSupport {
         for (final HRecord rec : recList1) {
             Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
             assertTrue(vals.size() == 2);
-            String val1 = HUtil.ser.getStringFromBytes(vals.get("f1:val1"));
+            String val1 = HUtil.getSerialization().getStringFromBytes(vals.get("f1:val1"));
             assertTrue(val1List.get(i).equals(val1));
             i++;
         }
@@ -386,7 +386,7 @@ public class SelectTest extends TestSupport {
         for (final HRecord rec : recList1) {
             Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
             assertTrue(vals.size() == 2);
-            String val1 = HUtil.ser.getStringFromBytes(vals.get("f1:val1"));
+            String val1 = HUtil.getSerialization().getStringFromBytes(vals.get("f1:val1"));
             assertTrue(val1List.get(i).equals(val1));
 
             Map<String, NavigableMap<Long, byte[]>> vers = rec.getFamilyDefaultVersionMap("f1default");
@@ -416,7 +416,7 @@ public class SelectTest extends TestSupport {
         for (final HRecord rec : recList1) {
             Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
             assertTrue(vals.size() == 1);
-            String val1 = HUtil.ser.getStringFromBytes(vals.get("f1:valunknown"));
+            String val1 = HUtil.getSerialization().getStringFromBytes(vals.get("f1:valunknown"));
             assertTrue(val1 == null);
             i++;
         }

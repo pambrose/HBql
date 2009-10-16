@@ -266,13 +266,13 @@ public class HRecordImpl implements Serializable, HRecord {
 
     // KeysAsColumns values
     public Map<String, Object> getKeysAsColumnsMap(final String name) throws HBqlException {
-        final TypedKeysAsColumnsValueMap map = this.getKeysAsColumnsElements().findElement(name);
-        if (map == null)
+        final TypedKeysAsColumnsValueMap value = this.getKeysAsColumnsElements().findElement(name);
+        if (value == null)
             return null;
 
         final Map<String, Object> retval = Maps.newHashMap();
-        for (final String key : map.getValueMap().keySet())
-            retval.put(key, map.getValueMap().get(key));
+        for (final String key : value.getValueMap().keySet())
+            retval.put(key, value.getValueMap().get(key));
         return retval;
     }
 
@@ -343,7 +343,7 @@ public class HRecordImpl implements Serializable, HRecord {
 
     public Map<String, Map<String, byte[]>> getFamilyDefaultKeysAsColumnsMap(final String familyName) throws HBqlException {
         final FamilyDefaultKeysAsColumnsValueMap value =
-                this.getFamilyDefaultKeysAsColumnsElements().findElement(familyName);
+                this.getFamilyDefaultKeysAsColumnsValueMap(familyName, false);
 
         if (value == null)
             return null;

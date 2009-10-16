@@ -52,7 +52,7 @@ public abstract class HBaseSchema extends Schema {
     public abstract List<HColumnDescriptor> getColumnDescriptors();
 
     public byte[] getTableNameAsBytes() throws HBqlException {
-        return HUtil.ser.getStringAsBytes(this.getTableName());
+        return HUtil.getSerialization().getStringAsBytes(this.getTableName());
     }
 
     public abstract Object newObject(final List<ColumnAttrib> selectAttribList,

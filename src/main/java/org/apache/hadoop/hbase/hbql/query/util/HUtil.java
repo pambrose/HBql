@@ -15,7 +15,11 @@ import java.util.Collection;
 
 public class HUtil {
 
-    public final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.HADOOP);
+    private final static Serialization ser = Serialization.getSerializationStrategy(Serialization.TYPE.HADOOP);
+
+    public static Serialization getSerialization() {
+        return ser;
+    }
 
     public static String getZeroPaddedNumber(final int val, final int width) throws HBqlException {
 

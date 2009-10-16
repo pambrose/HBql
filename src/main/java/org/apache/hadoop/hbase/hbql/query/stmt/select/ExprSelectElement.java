@@ -93,8 +93,8 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
                 if (!families.contains(this.getFamilyName()))
                     throw new HBqlException("Unknown family name: " + this.getFamilyName());
             }
-            this.familyNameBytes = HUtil.ser.getStringAsBytes(this.getFamilyName());
-            this.columnNameBytes = HUtil.ser.getStringAsBytes(this.getColumnName());
+            this.familyNameBytes = HUtil.getSerialization().getStringAsBytes(this.getFamilyName());
+            this.columnNameBytes = HUtil.getSerialization().getStringAsBytes(this.getColumnName());
         }
     }
 
@@ -106,7 +106,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
         for (final byte[] columnBytes : columnMap.keySet()) {
 
-            final String columnName = HUtil.ser.getStringFromBytes(columnBytes);
+            final String columnName = HUtil.getSerialization().getStringFromBytes(columnBytes);
 
             if (columnName.endsWith("]")) {
                 final int lbrace = columnName.indexOf("[");

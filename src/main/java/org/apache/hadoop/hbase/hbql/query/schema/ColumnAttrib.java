@@ -101,7 +101,7 @@ public abstract class ColumnAttrib implements Serializable {
         if (this.familyBytes != null)
             return this.familyBytes;
 
-        this.familyBytes = HUtil.ser.getStringAsBytes(this.getFamilyName());
+        this.familyBytes = HUtil.getSerialization().getStringAsBytes(this.getFamilyName());
         return this.familyBytes;
     }
 
@@ -110,7 +110,7 @@ public abstract class ColumnAttrib implements Serializable {
         if (this.columnBytes != null)
             return this.columnBytes;
 
-        this.columnBytes = HUtil.ser.getStringAsBytes(this.getColumnName());
+        this.columnBytes = HUtil.getSerialization().getStringAsBytes(this.getColumnName());
         return this.columnBytes;
     }
 
@@ -198,9 +198,9 @@ public abstract class ColumnAttrib implements Serializable {
         final Object value = this.getCurrentValue(obj);
 
         if (this.isArray())
-            return HUtil.ser.getArrayasBytes(this.getFieldType(), value);
+            return HUtil.getSerialization().getArrayasBytes(this.getFieldType(), value);
         else
-            return HUtil.ser.getScalarAsBytes(this.getFieldType(), value);
+            return HUtil.getSerialization().getScalarAsBytes(this.getFieldType(), value);
     }
 
     public Object getValueFromBytes(final Object obj, final byte[] b) throws HBqlException {
@@ -209,24 +209,24 @@ public abstract class ColumnAttrib implements Serializable {
             return this.invokeSetterMethod(obj, b);
 
         if (this.isArray())
-            return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
+            return HUtil.getSerialization().getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
         else
-            return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
+            return HUtil.getSerialization().getScalarFromBytes(this.getFieldType(), b);
     }
 
     public Object getValueFromBytes(final Result result) throws HBqlException {
 
         if (this.isKeyAttrib()) {
             final byte[] b = result.getRow();
-            return HUtil.ser.getStringFromBytes(b);
+            return HUtil.getSerialization().getStringFromBytes(b);
         }
         else {
             final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
 
             if (this.isArray())
-                return HUtil.ser.getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
+                return HUtil.getSerialization().getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
             else
-                return HUtil.ser.getScalarFromBytes(this.getFieldType(), b);
+                return HUtil.getSerialization().getScalarFromBytes(this.getFieldType(), b);
         }
     }
 
@@ -236,11 +236,11 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public byte[] getFamilyNameAsBytes() throws HBqlException {
-        return HUtil.ser.getStringAsBytes(this.getFamilyName());
+        return HUtil.getSerialization().getStringAsBytes(this.getFamilyName());
     }
 
     public byte[] getColumnNameAsBytes() throws HBqlException {
-        return HUtil.ser.getStringAsBytes(this.getColumnName());
+        return HUtil.getSerialization().getStringAsBytes(this.getColumnName());
     }
 
     protected String getGetter() {

@@ -100,7 +100,7 @@ public class FamilySelectElement implements SelectElement {
         }
 
         for (final String familyName : this.getFamilyNameList())
-            this.getFamilyNameBytesList().add(HUtil.ser.getStringAsBytes(familyName));
+            this.getFamilyNameBytesList().add(HUtil.getSerialization().getStringAsBytes(familyName));
     }
 
     public void assignValues(final Object obj,
@@ -121,7 +121,7 @@ public class FamilySelectElement implements SelectElement {
             for (final byte[] columnBytes : columnMap.keySet()) {
 
                 final byte[] valueBytes = columnMap.get(columnBytes);
-                final String columnName = HUtil.ser.getStringFromBytes(columnBytes);
+                final String columnName = HUtil.getSerialization().getStringFromBytes(columnBytes);
 
                 if (columnName.endsWith("]")) {
 
@@ -165,7 +165,7 @@ public class FamilySelectElement implements SelectElement {
             for (final byte[] columnBytes : versionColumnMap.keySet()) {
 
                 final NavigableMap<Long, byte[]> timeStampMap = versionColumnMap.get(columnBytes);
-                final String columnName = HUtil.ser.getStringFromBytes(columnBytes);
+                final String columnName = HUtil.getSerialization().getStringFromBytes(columnBytes);
 
                 if (columnName.endsWith("]")) {
 
