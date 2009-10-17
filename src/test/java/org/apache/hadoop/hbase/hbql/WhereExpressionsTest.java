@@ -241,6 +241,9 @@ public class WhereExpressionsTest extends TestSupport {
 
         assertTrue(parseNumberValue("((2+4)*(9-2))").intValue() == ((2 + 4) * (9 - 2)));
         assertTrue(parseNumberValue("(((4+3)*(2-1))*(3/1))").intValue() == (((4 + 3) * (2 - 1)) * (3 / 1)));
+
+        assertEvalTrue("DOUBLE('23.0') > 12.3");
+        assertEvalTrue("VALID(12)");
     }
 
     @Test

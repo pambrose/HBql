@@ -70,7 +70,7 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
                 }
             }
             catch (ResultMissingColumnException e) {
-                // Just ski and do nothing
+                // Just skip and do nothing
             }
         }
         if (cnt > 0)

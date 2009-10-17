@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
@@ -34,7 +35,9 @@ public class Function extends GenericExpr {
         INTEGER(new TypeSignature(IntegerValue.class, StringValue.class)),
         LONG(new TypeSignature(LongValue.class, StringValue.class)),
         FLOAT(new TypeSignature(FloatValue.class, StringValue.class)),
-        DOUBLE(new TypeSignature(DoubleValue.class, StringValue.class));
+        DOUBLE(new TypeSignature(DoubleValue.class, StringValue.class)),
+
+        VALID(new TypeSignature(BooleanValue.class, GenericValue.class));
 
         private final TypeSignature typeSignature;
 
@@ -54,7 +57,7 @@ public class Function extends GenericExpr {
         this.functionType = functionType;
     }
 
-    private Type getFunctionType() {
+    protected Type getFunctionType() {
         return this.functionType;
     }
 
@@ -63,9 +66,10 @@ public class Function extends GenericExpr {
     }
 
     private void checkForNull(final String... vals) throws HBqlException {
-        for (final Object val : vals)
+        for (final Object val : vals) {
             if (val == null)
                 throw new HBqlException("Null value in " + this.asString());
+        }
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,

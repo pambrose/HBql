@@ -245,10 +245,20 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectInvalidColumnReferences() throws HBqlException, IOException {
 
-        final String query1 = "SELECT val8 FROM table1 with  client FILTER where notdefinedval = 0";
+        final String query1 = "SELECT val8 FROM table1 with client FILTER where notdefinedval = 0";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
         List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 0);
+
+        final String query2 = "SELECT val8 FROM table1 with client FILTER where VALID(notdefinedval)";
+        HQuery<HRecord> q2 = conn.newHQuery(query2);
+        List<HRecord> recList2 = q2.getResultList();
+        assertTrue(recList2.size() == 0);
+
+        final String query3 = "SELECT val8 FROM table1 with client FILTER where NOT VALID(notdefinedval)";
+        HQuery<HRecord> q3 = conn.newHQuery(query3);
+        List<HRecord> recList3 = q3.getResultList();
+        assertTrue(recList3.size() == 10);
     }
 
     @Test
