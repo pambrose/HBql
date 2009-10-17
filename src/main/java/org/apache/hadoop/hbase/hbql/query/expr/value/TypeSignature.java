@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
@@ -113,13 +114,13 @@ public class TypeSignature {
             return (GenericValue)this.getLiteralConstructor().newInstance(this.getLiteralCastClass().cast(val));
         }
         catch (InstantiationException e) {
-            throw new HBqlException("Internal error: " + e.getMessage());
+            throw new InternalErrorException(e.getMessage());
         }
         catch (IllegalAccessException e) {
-            throw new HBqlException("Internal error: " + e.getMessage());
+            throw new InternalErrorException(e.getMessage());
         }
         catch (InvocationTargetException e) {
-            throw new HBqlException("Internal error: " + e.getMessage());
+            throw new InternalErrorException(e.getMessage());
         }
     }
 

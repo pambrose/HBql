@@ -1,6 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
@@ -220,32 +222,37 @@ public abstract class GenericExpr implements GenericValue {
         if (!this.isAConstant())
             return this;
 
-        final Object obj = this.getValue(null);
+        try {
+            final Object obj = this.getValue(null);
 
-        if (this.getTypeSignature().getReturnType().equals(BooleanValue.class)
-            || this.getTypeSignature().getReturnType().equals(StringValue.class)
-            || this.getTypeSignature().getReturnType().equals(DateValue.class))
-            return this.getTypeSignature().newLiteral(obj);
+            if (this.getTypeSignature().getReturnType().equals(BooleanValue.class)
+                || this.getTypeSignature().getReturnType().equals(StringValue.class)
+                || this.getTypeSignature().getReturnType().equals(DateValue.class))
+                return this.getTypeSignature().newLiteral(obj);
 
-        if (HUtil.isParentClass(NumberValue.class, this.getTypeSignature().getReturnType())) {
+            if (HUtil.isParentClass(NumberValue.class, this.getTypeSignature().getReturnType())) {
 
-            if (obj instanceof Short)
-                return new ShortLiteral((Short)obj);
+                if (obj instanceof Short)
+                    return new ShortLiteral((Short)obj);
 
-            if (obj instanceof Integer)
-                return new IntegerLiteral((Integer)obj);
+                if (obj instanceof Integer)
+                    return new IntegerLiteral((Integer)obj);
 
-            if (obj instanceof Long)
-                return new LongLiteral((Long)obj);
+                if (obj instanceof Long)
+                    return new LongLiteral((Long)obj);
 
-            if (obj instanceof Float)
-                return new FloatLiteral((Float)obj);
+                if (obj instanceof Float)
+                    return new FloatLiteral((Float)obj);
 
-            if (obj instanceof Double)
-                return new DoubleLiteral((Double)obj);
+                if (obj instanceof Double)
+                    return new DoubleLiteral((Double)obj);
+            }
+            throw new InternalErrorException(this.getTypeSignature().getReturnType().getSimpleName());
         }
-
-        throw new HBqlException("Internal error " + this.getTypeSignature().getReturnType().getSimpleName());
+        catch (ResultMissingColumnException e) {
+            // This will never be hit because the exception is for constants only
+            throw new InternalErrorException();
+        }
     }
 
 

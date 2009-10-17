@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 import java.util.regex.Matcher;
@@ -22,7 +23,7 @@ public class LikeStmt extends GenericStringPatternStmt {
         return "LIKE";
     }
 
-    public Boolean getValue(final Object object) throws HBqlException {
+    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 
         final String val = (String)this.getArg(0).getValue(object);
 

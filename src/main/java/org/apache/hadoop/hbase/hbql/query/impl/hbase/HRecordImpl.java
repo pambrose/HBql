@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.FamilyDefaultValueMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HValue;
+import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
@@ -89,7 +90,7 @@ public class HRecordImpl implements Serializable, HRecord {
         else if (value instanceof FamilyDefaultKeysAsColumnsValueMap)
             this.getFamilyDefaultKeysAsColumnsElements().addElement(name, (FamilyDefaultKeysAsColumnsValueMap)value);
         else
-            throw new HBqlException("Internal error: " + value.getClass().getName());
+            throw new InternalErrorException(value.getClass().getName());
     }
 
     public long getTimestamp() {

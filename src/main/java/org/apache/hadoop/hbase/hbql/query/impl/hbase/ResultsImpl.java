@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HQueryListener;
 import org.apache.hadoop.hbase.hbql.client.HResults;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
@@ -166,21 +167,26 @@ public class ResultsImpl<T> implements HResults<T> {
 
                             final Result result = this.getResultIter().next();
 
-                            if (getClientExprTree() == null || getClientExprTree().evaluate(result)) {
+                            try {
+                                if (getClientExprTree() == null || getClientExprTree().evaluate(result)) {
 
-                                this.recordCount++;
+                                    this.recordCount++;
 
-                                final HBaseSchema schema = getQueryArgs().getSchema();
-                                final T val = (T)schema.newObject(getQueryArgs().getSelectAttribList(),
-                                                                  getQueryArgs().getSelectElementList(),
-                                                                  this.maxVersions,
-                                                                  result);
+                                    final HBaseSchema schema = getQueryArgs().getSchema();
+                                    final T val = (T)schema.newObject(getQueryArgs().getSelectAttribList(),
+                                                                      getQueryArgs().getSelectElementList(),
+                                                                      this.maxVersions,
+                                                                      result);
 
-                                if (getListeners() != null)
-                                    for (final HQueryListener<T> listener : getListeners())
-                                        listener.onEachRow(val);
+                                    if (getListeners() != null)
+                                        for (final HQueryListener<T> listener : getListeners())
+                                            listener.onEachRow(val);
 
-                                return val;
+                                    return val;
+                                }
+                            }
+                            catch (ResultMissingColumnException e) {
+                                // Just skip adn do nothing
                             }
                         }
                     }

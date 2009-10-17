@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
@@ -62,9 +63,14 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
 
         int cnt = 0;
         for (final Result result : rowRequest.getResultScanner(table)) {
-            if (clientExprTree == null || clientExprTree.evaluate(result)) {
-                table.delete(new Delete(result.getRow()));
-                cnt++;
+            try {
+                if (clientExprTree == null || clientExprTree.evaluate(result)) {
+                    table.delete(new Delete(result.getRow()));
+                    cnt++;
+                }
+            }
+            catch (ResultMissingColumnException e) {
+                // Just ski and do nothing
             }
         }
         if (cnt > 0)

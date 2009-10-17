@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.impl.hbase;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HValue;
+import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
 import java.util.Map;
@@ -33,7 +34,7 @@ public abstract class ValueMap<T> extends HValue {
             return retval;
 
         if (this.getElementClazz() == null)
-            throw new HBqlException("Internal error");
+            throw new InternalErrorException();
 
         final T newVal;
         try {

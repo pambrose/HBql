@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
@@ -17,13 +18,13 @@ public abstract class GenericInStmt extends GenericNotValue {
         super(Type.GENERICINSTMT, not, arg0, inList);
     }
 
-    protected abstract boolean evaluateList(final Object object) throws HBqlException;
+    protected abstract boolean evaluateList(final Object object) throws HBqlException, ResultMissingColumnException;
 
     protected List<GenericValue> getInList() {
         return this.getSubArgs(1);
     }
 
-    public Boolean getValue(final Object object) throws HBqlException {
+    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
         final boolean retval = this.evaluateList(object);
         return (this.isNot()) ? !retval : retval;
     }

@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.object.client;
 
 import com.google.common.base.Predicate;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.impl.object.ParameterBinding;
@@ -36,6 +37,10 @@ public class ObjectQueryPredicate<T> extends ParameterBinding implements Predica
             }
 
             return exprTree.evaluate(obj);
+        }
+        catch (ResultMissingColumnException e) {
+            // Not possible
+            return false;
         }
         catch (HBqlException e) {
             e.printStackTrace();

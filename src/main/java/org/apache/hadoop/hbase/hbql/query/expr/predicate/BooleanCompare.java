@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
@@ -17,7 +18,7 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
         return this.validateType(BooleanValue.class);
     }
 
-    public Boolean getValue(final Object object) throws HBqlException {
+    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 
         final boolean v1 = (Boolean)this.getArg(0).getValue(object);
         final boolean v2 = (Boolean)this.getArg(1).getValue(object);

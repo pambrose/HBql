@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
@@ -17,7 +18,7 @@ public class StringCompare extends GenericCompare {
         return this.validateType(StringValue.class);
     }
 
-    public Boolean getValue(final Object object) throws HBqlException {
+    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 
         final String val1 = (String)this.getArg(0).getValue(object);
         final String val2 = (String)this.getArg(1).getValue(object);

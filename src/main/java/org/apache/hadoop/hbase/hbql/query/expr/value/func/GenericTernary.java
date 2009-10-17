@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 
@@ -13,7 +14,7 @@ public abstract class GenericTernary extends GenericExpr {
         super(type, arg0, arg1, arg2);
     }
 
-    public Object getValue(final Object object) throws HBqlException {
+    public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
         if ((Boolean)this.getArg(0).getValue(object))
             return this.getArg(1).getValue(object);
         else

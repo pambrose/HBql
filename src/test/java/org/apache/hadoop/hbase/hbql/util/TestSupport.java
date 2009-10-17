@@ -2,14 +2,14 @@ package org.apache.hadoop.hbase.hbql.util;
 
 import org.antlr.runtime.RecognitionException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.GenericColumn;
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.ExprSelectElement;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -129,53 +129,11 @@ public class TestSupport {
 
     private static boolean evaluateExprTree(final Object recordObj, final ExprTree tree) throws HBqlException {
         System.out.println("Evaluating: " + tree.asString());
-        return tree.evaluate(recordObj);
-    }
-
-    private static boolean evaluateSelectNames(final String expr, String vals) {
-
         try {
-            final QueryArgs args = HBql.parseSelectStmt(null, expr);
-            final List<String> valList = Lists.newArrayList(vals.replace(" ", "").split(","));
-
-            final Schema schema = args.getSchema();
-
-            final List<ColumnAttrib> attribList = args.getSelectAttribList();
-
-            final List<ColumnAttrib> specifiedAttribList = Lists.newArrayList();
-
-            boolean retval = true;
-
-            for (final String val : valList) {
-
-                final ColumnAttrib attrib = schema.getAttribByVariableName(val);
-
-                if (attrib == null) {
-                    System.out.println("Invalid column name: " + val);
-                    retval = false;
-                    continue;
-                }
-
-                if (!attribList.contains(attrib)) {
-                    System.out.println("Missing column name in attrib list: " + val);
-                    retval = false;
-                    continue;
-                }
-
-                specifiedAttribList.add(attrib);
-            }
-
-            for (final ColumnAttrib attrib : attribList) {
-                if (!specifiedAttribList.contains(attrib)) {
-                    System.out.println("Missing column name in specified list: " + attrib.getFamilyQualifiedName());
-                    retval = false;
-                }
-            }
-            return retval;
+            return tree.evaluate(recordObj);
         }
-        catch (HBqlException e) {
-            e.printStackTrace();
-            return false;
+        catch (ResultMissingColumnException e) {
+            throw new InternalErrorException();
         }
     }
 

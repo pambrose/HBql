@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.object.client;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.impl.object.ObjectQueryImpl;
 import org.apache.hadoop.hbase.hbql.query.util.ResultsIterator;
@@ -47,8 +48,12 @@ public class ObjectResults<T> implements Iterable<T> {
 
                     while (this.objectIter.hasNext()) {
                         final T val = this.objectIter.next();
-                        if (this.exprTree.evaluate(val)) {
-                            return val;
+                        try {
+                            if (this.exprTree.evaluate(val))
+                                return val;
+                        }
+                        catch (ResultMissingColumnException e) {
+                            // Just skip and do nothing
                         }
                     }
 

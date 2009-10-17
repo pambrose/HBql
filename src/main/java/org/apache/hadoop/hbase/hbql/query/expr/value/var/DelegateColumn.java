@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
@@ -28,7 +29,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
         return this.variableName;
     }
 
-    public Object getValue(final Object object) throws HBqlException {
+    public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
         return this.getTypedColumn().getValue(object);
     }
 
@@ -39,13 +40,11 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
 
     public void setExprContext(final ExprContext context) throws HBqlException {
 
+        // See if referenced var is in schema
         final ColumnAttrib attrib = context.getSchema().getAttribByVariableName(this.getVariableName());
 
-        // See if referenced var is in schema
-        // TODO Make sure this is what we want to do
         if (attrib == null)
-            return;
-        //throw new HBqlException("Invalid variable: " + this.getVariableName());
+            throw new HBqlException("Invalid variable: " + this.getVariableName());
 
         switch (attrib.getFieldType()) {
 

@@ -1,6 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -85,10 +87,22 @@ public abstract class ExprContext implements Serializable {
     protected Object evaluate(final int i,
                               final boolean allowColumns,
                               final boolean allowsCollections,
-                              final Object object) throws HBqlException {
+                              final Object object) throws HBqlException, ResultMissingColumnException {
         this.validateTypes(allowColumns, allowsCollections);
         this.optimize();
         return this.getGenericValue(i).getValue(object);
+    }
+
+    protected Object noColumnEvaluate(final int i,
+                                      final boolean allowColumns,
+                                      final boolean allowsCollections,
+                                      final Object object) throws HBqlException {
+        try {
+            return this.evaluate(i, allowColumns, allowsCollections, object);
+        }
+        catch (ResultMissingColumnException e) {
+            throw new InternalErrorException();
+        }
     }
 
     protected void setContext() {

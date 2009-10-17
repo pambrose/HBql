@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -16,7 +17,7 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
         return this.validateNumericTypes(parentExpr, false);
     }
 
-    public Number getValue(final Object object) throws HBqlException {
+    public Number getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 
         final Object obj0 = this.getArg(0).getValue(object);
         final Object obj1 = this.getArg(1).getValue(object);

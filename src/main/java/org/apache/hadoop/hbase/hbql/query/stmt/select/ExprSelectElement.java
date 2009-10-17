@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
@@ -230,7 +231,12 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     }
 
     public Object getValue(final Result result) throws HBqlException {
-        return this.evaluate(0, true, false, result);
+        try {
+            return this.evaluate(0, true, false, result);
+        }
+        catch (ResultMissingColumnException e) {
+            return null;
+        }
     }
 
     public String asString() {

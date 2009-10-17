@@ -1,6 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
@@ -44,7 +46,7 @@ public class DelegateInStmt extends GenericInStmt {
     }
 
     protected boolean evaluateList(final Object object) throws HBqlException {
-        throw new HBqlException("Internal error");
+        throw new InternalErrorException();
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {
@@ -52,7 +54,7 @@ public class DelegateInStmt extends GenericInStmt {
         return !this.isAConstant() ? this : this.getTypedExpr().getOptimizedValue();
     }
 
-    public Boolean getValue(final Object object) throws HBqlException {
+    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
         return this.getTypedExpr().getValue(object);
     }
 }

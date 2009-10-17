@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
@@ -13,7 +14,7 @@ public class DateInStmt extends GenericInStmt {
         super(arg0, not, argList);
     }
 
-    protected boolean evaluateList(final Object object) throws HBqlException {
+    protected boolean evaluateList(final Object object) throws HBqlException, ResultMissingColumnException {
 
         final long attribVal = (Long)this.getArg(0).getValue(object);
 

@@ -1,6 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
@@ -88,10 +90,18 @@ public class Function extends GenericExpr {
 
     public GenericValue getOptimizedValue() throws HBqlException {
         this.optimizeArgs();
-        return !this.isAConstant() ? this : this.getFunctionType().getTypeSignature().newLiteral(this.getValue(null));
+        if (!this.isAConstant())
+            return this;
+        else
+            try {
+                return this.getFunctionType().getTypeSignature().newLiteral(this.getValue(null));
+            }
+            catch (ResultMissingColumnException e) {
+                throw new InternalErrorException();
+            }
     }
 
-    public Object getValue(final Object object) throws HBqlException {
+    public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 
         switch (this.getFunctionType()) {
 

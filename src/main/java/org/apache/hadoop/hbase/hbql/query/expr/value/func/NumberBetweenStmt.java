@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 public class NumberBetweenStmt extends GenericBetweenStmt {
@@ -12,7 +13,7 @@ public class NumberBetweenStmt extends GenericBetweenStmt {
         super(Type.NUMBERBETWEEN, not, arg0, arg1, arg2);
     }
 
-    public Boolean getValue(final Object object) throws HBqlException {
+    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 
         final Object obj0 = this.getArg(0).getValue(object);
         final Object obj1 = this.getArg(1).getValue(object);

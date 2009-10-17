@@ -6,6 +6,8 @@ import org.antlr.runtime.Lexer;
 import org.antlr.runtime.RecognitionException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCmd;
 import org.apache.hadoop.hbase.hbql.query.cmds.SchemaManagerCmd;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
@@ -43,6 +45,9 @@ public class HBql {
             final GenericValue valueExpr = parser.valExpr();
             valueExpr.validateTypes(null, false);
             return valueExpr.getValue(null);
+        }
+        catch (ResultMissingColumnException e) {
+            throw new InternalErrorException();
         }
         catch (RecognitionException e) {
             e.printStackTrace();

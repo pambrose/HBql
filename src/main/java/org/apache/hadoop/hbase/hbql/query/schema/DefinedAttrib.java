@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -113,7 +114,7 @@ public class DefinedAttrib extends ColumnAttrib {
 
     protected Method getMethod(final String methodName,
                                final Class<?>... params) throws NoSuchMethodException, HBqlException {
-        throw new HBqlException("Internal error");
+        throw new InternalErrorException();
     }
 
     protected Class getComponentType() {

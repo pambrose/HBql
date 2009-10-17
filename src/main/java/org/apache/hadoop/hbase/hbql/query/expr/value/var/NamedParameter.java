@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
@@ -92,7 +93,7 @@ public class NamedParameter implements GenericValue {
         }
     }
 
-    public Object getValue(final Object object) throws HBqlException {
+    public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
         if (this.isScalarValueSet())
             return this.getTypedExpr().getValue(object);
         else

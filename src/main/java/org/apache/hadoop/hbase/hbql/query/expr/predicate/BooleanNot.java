@@ -1,6 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
@@ -24,10 +26,18 @@ public class BooleanNot extends GenericExpr implements BooleanValue {
 
     public GenericValue getOptimizedValue() throws HBqlException {
         this.optimizeArgs();
-        return !this.isAConstant() ? this : new BooleanLiteral(this.getValue(null));
+        if (!this.isAConstant())
+            return this;
+        else
+            try {
+                return new BooleanLiteral(this.getValue(null));
+            }
+            catch (ResultMissingColumnException e) {
+                throw new InternalErrorException();
+            }
     }
 
-    public Boolean getValue(final Object object) throws HBqlException {
+    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
         final boolean retval = (Boolean)this.getArg(0).getValue(object);
         return (this.not) ? !retval : retval;
     }

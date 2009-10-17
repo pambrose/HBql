@@ -3,6 +3,8 @@ package org.apache.hadoop.hbase.hbql.query.stmt.args;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
@@ -41,11 +43,11 @@ public class KeyRangeArgs {
         }
 
         private Object getLower(final boolean allowsCollections) throws HBqlException {
-            return this.evaluate(0, false, allowsCollections, null);
+            return this.noColumnEvaluate(0, false, allowsCollections, null);
         }
 
         private String getUpper() throws HBqlException {
-            return (String)this.evaluate(1, false, false, null);
+            return (String)this.noColumnEvaluate(1, false, false, null);
         }
 
         private KeyRangeArgs.Type getType() {
@@ -110,8 +112,13 @@ public class KeyRangeArgs {
             final Object objval = this.getLower(true);
             if (HUtil.isACollection(objval)) {
                 for (final GenericValue val : (Collection<GenericValue>)objval) {
-                    final String lower = (String)val.getValue(null);
-                    retval.add(this.newGet(whereArgs, columnAttribSet, lower));
+                    try {
+                        final String lower = (String)val.getValue(null);
+                        retval.add(this.newGet(whereArgs, columnAttribSet, lower));
+                    }
+                    catch (ResultMissingColumnException e) {
+                        throw new InternalErrorException(val.asString());
+                    }
                 }
             }
             else {

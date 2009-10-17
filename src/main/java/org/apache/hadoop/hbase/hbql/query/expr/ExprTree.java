@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
@@ -27,7 +28,7 @@ public class ExprTree extends ExprContext {
             return new ExprTree(booleanValue);
     }
 
-    public Boolean evaluate(final Object object) throws HBqlException {
+    public Boolean evaluate(final Object object) throws HBqlException, ResultMissingColumnException {
         return (Boolean)this.evaluate(0, true, false, object);
     }
 

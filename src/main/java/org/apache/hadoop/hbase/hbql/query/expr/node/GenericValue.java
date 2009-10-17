@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.node;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 
@@ -10,7 +11,7 @@ public interface GenericValue extends Serializable {
 
     void setExprContext(final ExprContext context) throws HBqlException;
 
-    Object getValue(final Object object) throws HBqlException;
+    Object getValue(final Object object) throws HBqlException, ResultMissingColumnException;
 
     GenericValue getOptimizedValue() throws HBqlException;
 

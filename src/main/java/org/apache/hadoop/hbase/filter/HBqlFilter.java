@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
@@ -147,6 +148,9 @@ public class HBqlFilter implements Filter {
                 if (!filterRecord)
                     this.incrementRecordCount();
                 return filterRecord;
+            }
+            catch (ResultMissingColumnException e) {
+                return true;
             }
             catch (HBqlException e) {
                 e.printStackTrace();

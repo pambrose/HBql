@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 import java.io.Serializable;
@@ -236,13 +237,17 @@ public abstract class ColumnAttrib implements Serializable {
             return HUtil.getSerialization().getScalarFromBytes(this.getFieldType(), b);
     }
 
-    public Object getValueFromBytes(final Result result) throws HBqlException {
+    public Object getValueFromBytes(final Result result) throws HBqlException, ResultMissingColumnException {
 
         if (this.isKeyAttrib()) {
             final byte[] b = result.getRow();
             return HUtil.getSerialization().getStringFromBytes(b);
         }
         else {
+
+            if (!result.containsColumn(this.getFamilyNameBytes(), this.getColumnNameBytes()))
+                throw new ResultMissingColumnException(this.getFamilyQualifiedName());
+
             final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
 
             if (this.isArray())

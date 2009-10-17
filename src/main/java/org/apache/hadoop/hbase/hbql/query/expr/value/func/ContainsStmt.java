@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.func;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 public class ContainsStmt extends GenericStringPatternStmt {
@@ -13,7 +14,7 @@ public class ContainsStmt extends GenericStringPatternStmt {
         return "CONTAINS";
     }
 
-    public Boolean getValue(final Object object) throws HBqlException {
+    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 
         final String val1 = (String)this.getArg(0).getValue(object);
         final String val2 = (String)this.getArg(1).getValue(object);
