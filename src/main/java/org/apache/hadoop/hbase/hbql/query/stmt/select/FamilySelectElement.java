@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.SelectFamilyAttrib;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
@@ -65,6 +66,10 @@ public class FamilySelectElement implements SelectElement {
         return null;
     }
 
+    public boolean hasAsName() {
+        return false;
+    }
+
     public String asString() {
         return this.familyName;
     }
@@ -74,11 +79,11 @@ public class FamilySelectElement implements SelectElement {
         return 0;
     }
 
-    public void validate(final HConnection connection,
-                         final HBaseSchema schema,
+    public void validate(final QueryArgs queryArgs,
+                         final HConnection connection,
                          final List<ColumnAttrib> selectAttribList) throws HBqlException {
 
-        this.schema = schema;
+        this.schema = queryArgs.getSchema();
 
         final Collection<String> familyList = this.getSchema().getSchemaFamilyNames(connection);
 

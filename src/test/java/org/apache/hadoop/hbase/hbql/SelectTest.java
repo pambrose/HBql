@@ -487,4 +487,28 @@ public class SelectTest extends TestSupport {
             assertTrue(map2.size() == 2);
         }
     }
+
+    @Test
+    public void selectUnnamedExpressions() throws HBqlException, IOException {
+
+        SchemaManager.removeSchema("table1");
+        SchemaManager.parse("define table table1 alias tab1"
+                            + "("
+                            + "keyval key, "
+                            + "f1:* alias f1default "
+                            + ")");
+
+        final String query1 = "SELECT 2+4, 5+9, 5+3 as expr1 FROM table1";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 10);
+        for (final HRecord rec : recList1) {
+            int val1 = (Integer)rec.getValue(":expr-0");
+            assertTrue(val1 == 6);
+            int val2 = (Integer)rec.getValue(":expr-1");
+            assertTrue(val2 == 14);
+            int val3 = (Integer)rec.getValue("expr1");
+            assertTrue(val3 == 8);
+        }
+    }
 }

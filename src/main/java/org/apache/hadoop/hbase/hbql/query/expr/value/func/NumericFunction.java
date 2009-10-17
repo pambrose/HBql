@@ -7,11 +7,9 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 
 public class NumericFunction extends Function implements NumberValue {
 
-
     public NumericFunction(final Type functionType, final GenericValue... exprs) {
         super(functionType, exprs);
     }
-
 
     public Number getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 

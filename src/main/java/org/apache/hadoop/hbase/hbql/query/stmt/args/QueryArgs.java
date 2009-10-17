@@ -18,6 +18,8 @@ public class QueryArgs {
     private final String tableName;
     private final WhereArgs whereArgs;
 
+    private int expressionCounter = 0;
+
     private HBaseSchema schema = null;
 
     public QueryArgs(final List<SelectElement> selectElementList,
@@ -28,12 +30,16 @@ public class QueryArgs {
         this.whereArgs = whereArgs != null ? whereArgs : new WhereArgs();
     }
 
+    public String getNextExpressionName() {
+        return ":expr-" + this.expressionCounter++;
+    }
+
     public void validate(final HConnection connection) throws HBqlException {
 
         this.schema = HBaseSchema.findSchema(this.getTableName());
 
         for (final SelectElement selectElement : this.getSelectElementList())
-            selectElement.validate(connection, this.getSchema(), this.getSelectAttribList());
+            selectElement.validate(this, connection, this.getSelectAttribList());
 
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();
@@ -46,17 +52,28 @@ public class QueryArgs {
     }
 
     private void checkForDuplicateAsNames() throws HBqlException {
+
         final Set<String> asNameSet = Sets.newHashSet();
         for (final SelectElement selectElement : this.getSelectElementList()) {
-            final String asName = selectElement.getAsName();
-            if (asName == null)
-                continue;
 
-            if (asNameSet.contains(asName))
-                throw new HBqlException("Duplicate select name " + asName + " in select list");
+            if (selectElement.hasAsName()) {
+                final String asName = selectElement.getAsName();
 
-            asNameSet.add(asName);
+                if (asNameSet.contains(asName))
+                    throw new HBqlException("Duplicate select name " + asName + " in select list");
+
+                asNameSet.add(asName);
+            }
         }
+    }
+
+    public boolean hasAsName(final String name) throws HBqlException {
+
+        for (final SelectElement selectElement : this.getSelectElementList())
+            if (selectElement.hasAsName() && selectElement.getAsName().equals(name))
+                return true;
+
+        return false;
     }
 
     public List<SelectElement> getSelectElementList() {

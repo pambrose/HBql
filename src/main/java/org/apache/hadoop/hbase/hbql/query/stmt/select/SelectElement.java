@@ -4,13 +4,15 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
 
 import java.util.List;
 
 public interface SelectElement {
 
-    void validate(HConnection connection, HBaseSchema schema, List<ColumnAttrib> selectAttribList) throws HBqlException;
+    void validate(final QueryArgs queryArgs,
+                  HConnection connection,
+                  List<ColumnAttrib> selectAttribList) throws HBqlException;
 
     void assignValues(Object newobj,
                       List<ColumnAttrib> selectAttribList,
@@ -20,6 +22,8 @@ public interface SelectElement {
     int setParameter(String name, Object val) throws HBqlException;
 
     String getAsName();
+
+    boolean hasAsName();
 
     String asString();
 }

@@ -11,6 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -21,7 +22,7 @@ import java.util.NavigableMap;
 
 public class ExprSelectElement extends ExprContext implements SelectElement {
 
-    private final String asName;
+    private String asName;
 
     private ColumnAttrib columnAttrib = null;
     private String familyName = null;
@@ -31,7 +32,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
 
     public ExprSelectElement(final GenericValue genericValue, final String asName) {
         super(null, genericValue);
-        this.asName = (asName != null) ? asName : genericValue.asString();
+        this.asName = asName;
     }
 
     public static ExprSelectElement newExprElement(final GenericValue expr, final String as) {
@@ -41,6 +42,11 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     public String getAsName() {
         return this.asName;
     }
+
+    public boolean hasAsName() {
+        return this.getAsName() != null && this.getAsName().length() > 0;
+    }
+
 
     public boolean isSimpleColumnReference() {
         return this.getGenericValue(0) instanceof DelegateColumn;
@@ -66,11 +72,11 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         return this.columnNameBytes;
     }
 
-    public void validate(final HConnection connection,
-                         final HBaseSchema schema,
+    public void validate(final QueryArgs queryArgs,
+                         final HConnection connection,
                          final List<ColumnAttrib> selectAttribList) throws HBqlException {
 
-        this.setSchema(schema);
+        this.setSchema(queryArgs.getSchema());
 
         selectAttribList.addAll(this.getAttribsUsedInExpr());
 
@@ -96,6 +102,19 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             }
             this.familyNameBytes = HUtil.getSerialization().getStringAsBytes(this.getFamilyName());
             this.columnNameBytes = HUtil.getSerialization().getStringAsBytes(this.getColumnName());
+        }
+        else {
+            // Assign as name to expression if one is not provided
+            if (!this.hasAsName()) {
+                while (true) {
+                    // Assign a name that is not in use
+                    final String newAsName = queryArgs.getNextExpressionName();
+                    if (!queryArgs.hasAsName(newAsName)) {
+                        this.asName = newAsName;
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -127,10 +146,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     }
 
     private String getSelectName() {
-        if (this.getAsName() == null || this.getAsName().length() == 0)
-            return this.getFamilyName() + ":" + this.getColumnName();
-        else
-            return this.getAsName();
+        return this.hasAsName() ? this.getAsName() : this.getFamilyName() + ":" + this.getColumnName();
     }
 
     private byte[] getResultCurrentValue(final Result result) {
