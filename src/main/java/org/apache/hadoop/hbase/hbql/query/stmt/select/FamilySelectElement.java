@@ -134,8 +134,7 @@ public class FamilySelectElement implements SelectElement {
                             familyDefaultAttrib.setFamilyDefaultKeysAsColumnsValue(obj, mapColumn, mapKey, valueBytes);
                     }
                     else {
-                        final Object val = attrib.getValueFromBytes(obj, valueBytes);
-                        attrib.setKeysAsColumnsValue(obj, mapKey, val);
+                        attrib.setKeysAsColumnsValue(obj, mapKey, attrib.getValueFromBytes(obj, valueBytes));
                     }
                 }
                 else {

@@ -11,6 +11,8 @@ import java.util.NavigableMap;
  */
 public interface HRecord {
 
+    void setTimestamp(final long timestamp);
+
     Object getValue(String name) throws HBqlException;
 
     void setValue(String name, Object val) throws HBqlException;
