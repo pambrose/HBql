@@ -8,7 +8,7 @@ public class UntypedKeysAsColumnsValueMap extends ValueMap<byte[]> {
         super(null, null, null);
     }
 
-    public UntypedKeysAsColumnsValueMap(final HRecordImpl hrecord, final String name) throws HBqlException {
-        super(hrecord, name, null);
+    public String toString() {
+        return "Untyped Keys as Columns Map for: " + this.getName();
     }
 }
