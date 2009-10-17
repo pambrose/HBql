@@ -45,10 +45,6 @@ public class CurrentAndVersionValue<T> extends HValue {
         }
     }
 
-    public void setVersionValue(final Long ts, final T val) {
-        this.getVersionMap(true).put(ts, val);
-    }
-
     public void setVersionMap(final NavigableMap<Long, T> versionMap) {
         this.versionMap = versionMap;
     }

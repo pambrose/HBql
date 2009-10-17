@@ -26,7 +26,8 @@ public abstract class ValueMap<T> extends HValue {
     }
 
     public T getCurrentMapValue(final String name, final boolean createIfNull) throws HBqlException {
-        T retval = this.getValueFromMapWithDefault(name).getValue();
+
+        final T retval = this.getMapValue(name).getValue();
 
         if (retval != null || !createIfNull)
             return retval;
@@ -34,7 +35,7 @@ public abstract class ValueMap<T> extends HValue {
         if (this.getElementClazz() == null)
             throw new HBqlException("Internal error");
 
-        T newVal = null;
+        final T newVal;
         try {
             newVal = (T)this.getElementClazz().newInstance();
             this.setCurrentValueMap(0, name, newVal);
@@ -49,7 +50,7 @@ public abstract class ValueMap<T> extends HValue {
         return newVal;
     }
 
-    public CurrentAndVersionValue<T> getValueFromMapWithDefault(final String mapKey) throws HBqlException {
+    public CurrentAndVersionValue<T> getMapValue(final String mapKey) throws HBqlException {
         CurrentAndVersionValue<T> hvalue = this.getCurrentAndVersionMap().get(mapKey);
         if (hvalue == null) {
             hvalue = new CurrentAndVersionValue<T>(null, null);
@@ -59,22 +60,14 @@ public abstract class ValueMap<T> extends HValue {
     }
 
     public void setCurrentValueMap(final long timestamp, final String mapKey, final T val) throws HBqlException {
-        this.getValueFromMapWithDefault(mapKey).setCurrentValue(timestamp, val);
+        this.getMapValue(mapKey).setCurrentValue(timestamp, val);
     }
 
     public Map<Long, T> getVersionMap(final String name, final boolean createIfNull) throws HBqlException {
-        return this.getValueFromMapWithDefault(name).getVersionMap(createIfNull);
+        return this.getMapValue(name).getVersionMap(createIfNull);
     }
 
     public void setVersionMap(final String name, final NavigableMap<Long, T> val) throws HBqlException {
-        this.getValueFromMapWithDefault(name).setVersionMap(val);
-    }
-
-    public void setVersionValue(final String mapKey, final Long ts, final T val) throws HBqlException {
-        this.getValueFromMapWithDefault(mapKey).setVersionValue(ts, val);
-    }
-
-    public boolean isCurrentValueSet(final String mapKey) throws HBqlException {
-        return this.getValueFromMapWithDefault(mapKey).isValueSet();
+        this.getMapValue(name).setVersionMap(val);
     }
 }
