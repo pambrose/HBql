@@ -240,8 +240,7 @@ public abstract class ColumnAttrib implements Serializable {
     public Object getValueFromBytes(final Result result) throws HBqlException, ResultMissingColumnException {
 
         if (this.isKeyAttrib()) {
-            final byte[] b = result.getRow();
-            return HUtil.getSerialization().getStringFromBytes(b);
+            return HUtil.getSerialization().getStringFromBytes(result.getRow());
         }
         else {
 
