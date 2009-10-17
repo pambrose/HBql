@@ -305,15 +305,17 @@ valueFunctions returns [GenericValue retval]
 	| keyMINUTE LPAREN n=valExpr RPAREN		{retval = new Interval(Interval.Type.MINUTE, $n.retval);}
 	| keySECOND LPAREN n=valExpr RPAREN		{retval = new Interval(Interval.Type.SECOND, $n.retval);}
 	| keyMILLI LPAREN n=valExpr RPAREN		{retval = new Interval(Interval.Type.MILLI, $n.retval);}
+
 	| keyCONCAT LPAREN s1=valExpr COMMA s2=valExpr RPAREN
-							{retval = new Function(Function.Type.CONCAT, $s1.retval, $s2.retval);}
+							{retval = new StringFunction(Function.Type.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=valExpr COMMA n1=valExpr COMMA n2=valExpr RPAREN
-							{retval = new Function(Function.Type.SUBSTRING, $s.retval, $n1.retval, $n2.retval);}
-	| keyTRIM LPAREN s=valExpr RPAREN		{retval = new Function(Function.Type.TRIM, $s.retval);}
-	| keyLOWER LPAREN s=valExpr RPAREN		{retval = new Function(Function.Type.LOWER, $s.retval);} 
-	| keyUPPER LPAREN s=valExpr RPAREN		{retval = new Function(Function.Type.UPPER, $s.retval);} 
+							{retval = new StringFunction(Function.Type.SUBSTRING, $s.retval, $n1.retval, $n2.retval);}
+	| keyTRIM LPAREN s=valExpr RPAREN		{retval = new StringFunction(Function.Type.TRIM, $s.retval);}
+	| keyLOWER LPAREN s=valExpr RPAREN		{retval = new StringFunction(Function.Type.LOWER, $s.retval);} 
+	| keyUPPER LPAREN s=valExpr RPAREN		{retval = new StringFunction(Function.Type.UPPER, $s.retval);} 
 	| keyREPLACE LPAREN s1=valExpr COMMA s2=valExpr COMMA s3=valExpr RPAREN		
-							{retval = new Function(Function.Type.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
+							{retval = new StringFunction(Function.Type.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
+
 	| keyLENGTH LPAREN s=valExpr RPAREN		{retval = new Function(Function.Type.LENGTH, $s.retval);}
 	| keyINDEXOF LPAREN s1=valExpr COMMA s2=valExpr RPAREN
 							{retval = new Function(Function.Type.INDEXOF, $s1.retval, $s2.retval);}

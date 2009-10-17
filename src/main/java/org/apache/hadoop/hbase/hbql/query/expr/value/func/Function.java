@@ -65,7 +65,7 @@ public class Function extends GenericExpr {
         return this.getFunctionType().getTypeSignature();
     }
 
-    private void checkForNull(final String... vals) throws HBqlException {
+    protected void checkForNull(final String... vals) throws HBqlException {
         for (final Object val : vals) {
             if (val == null)
                 throw new HBqlException("Null value in " + this.asString());
@@ -108,48 +108,6 @@ public class Function extends GenericExpr {
     public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 
         switch (this.getFunctionType()) {
-
-            // Returns a string
-            case TRIM: {
-                final String val = (String)this.getArg(0).getValue(object);
-                this.checkForNull(val);
-                return val.trim();
-            }
-
-            case LOWER: {
-                final String val = (String)this.getArg(0).getValue(object);
-                this.checkForNull(val);
-                return val.toLowerCase();
-            }
-
-            case UPPER: {
-                final String val = (String)this.getArg(0).getValue(object);
-                this.checkForNull(val);
-                return val.toUpperCase();
-            }
-
-            case CONCAT: {
-                final String v1 = (String)this.getArg(0).getValue(object);
-                final String v2 = (String)this.getArg(1).getValue(object);
-                this.checkForNull(v1, v2);
-                return v1 + v2;
-            }
-
-            case REPLACE: {
-                final String v1 = (String)this.getArg(0).getValue(object);
-                final String v2 = (String)this.getArg(1).getValue(object);
-                final String v3 = (String)this.getArg(2).getValue(object);
-                this.checkForNull(v1, v2, v3);
-                return v1.replace(v2, v3);
-            }
-
-            case SUBSTRING: {
-                final String val = (String)this.getArg(0).getValue(object);
-                final int begin = ((Number)this.getArg(1).getValue(object)).intValue();
-                final int end = ((Number)this.getArg(2).getValue(object)).intValue();
-                this.checkForNull(val);
-                return val.substring(begin, end);
-            }
 
             case LENGTH: {
                 final String val = (String)this.getArg(0).getValue(object);

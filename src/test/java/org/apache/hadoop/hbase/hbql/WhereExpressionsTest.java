@@ -311,9 +311,6 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalTrue(annoObj, "keyval+'zz' CONTAINS stringValue+'bbz'");
         assertExprEvalFalse(annoObj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
         assertEvalTrue(obj, "NOT(keyval+'zz' NOT CONTAINS stringValue+'bbz')");
-
-        assertEvalTrue(obj, "DEFINEDINROW(12)");
-        assertEvalTrue(obj, "DEFINEDINROW(a)");
     }
 
     @Test
