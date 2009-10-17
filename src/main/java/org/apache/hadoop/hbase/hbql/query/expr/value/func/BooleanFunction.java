@@ -21,8 +21,7 @@ public class BooleanFunction extends Function implements BooleanValue {
 
             case DEFINEDINROW: {
                 if (!(this.getArg(0) instanceof DelegateColumn))
-                    throw new TypeException("DEFINEDINROW() argument should be a column reference in: DEFINEDINROW("
-                                            + this.getArg(0).asString() + ")");
+                    throw new TypeException("Argument should be a column reference in: " + this.asString());
             }
         }
         return super.validateTypes(parentExpr, allowsCollections);

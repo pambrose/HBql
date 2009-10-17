@@ -195,6 +195,6 @@ public class Function extends GenericExpr {
     }
 
     public String asString() {
-        return this.getFunctionType().name() + "(" + super.asString() + ")";
+        return this.getFunctionType().name() + super.asString();
     }
 }
