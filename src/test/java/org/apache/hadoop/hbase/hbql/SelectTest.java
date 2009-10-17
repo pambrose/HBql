@@ -39,6 +39,7 @@ public class SelectTest extends TestSupport {
                             + "keyval key, "
                             + "f1:val1 string alias val1, "
                             + "f1:val2 string alias val2, "
+                            + "f1:val3 string alias notdefinedval, "
                             + "f2:val1 date alias val3, "
                             + "f2:val2 date alias val4, "
                             + "f3:val1 int alias val5, "
@@ -239,6 +240,15 @@ public class SelectTest extends TestSupport {
             int[] intv = (int[])rec.getValue("val8");
             assertTrue(intv.length == 5);
         }
+    }
+
+    @Test
+    public void selectInvalidColumnReferences() throws HBqlException, IOException {
+
+        final String query1 = "SELECT val8 FROM table1 with  client FILTER where notdefinedval = 0";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 0);
     }
 
     @Test
