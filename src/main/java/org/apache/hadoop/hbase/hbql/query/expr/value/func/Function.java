@@ -37,7 +37,7 @@ public class Function extends GenericExpr {
         FLOAT(new TypeSignature(FloatValue.class, StringValue.class)),
         DOUBLE(new TypeSignature(DoubleValue.class, StringValue.class)),
 
-        VALID(new TypeSignature(BooleanValue.class, GenericValue.class));
+        DEFINEDINROW(new TypeSignature(BooleanValue.class, GenericValue.class));
 
         private final TypeSignature typeSignature;
 

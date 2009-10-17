@@ -213,7 +213,7 @@ booleanAtom returns [GenericValue retval]
 	| v=varRef					{retval = new DelegateColumn($v.text);}
 	| p=paramRef					{retval = new NamedParameter($p.text);}
 	;
-									
+
 booleanFuncs returns [BooleanValue retval]
 options {backtrack=true; memoize=true;}	
 	: s1=valExpr n=keyNOT? keyCONTAINS s2=valExpr		
@@ -224,7 +224,7 @@ options {backtrack=true; memoize=true;}
 	| s1=valExpr n=keyNOT? keyIN LPAREN l=valueItemList RPAREN			
 							{retval = new DelegateInStmt($s1.retval, ($n.text != null), $l.retval);} 
 	| s1=valExpr keyIS (n=keyNOT)? keyNULL		{retval = new DelegateNullCompare(($n.text != null), $s1.retval);}	
-	| keyVALID LPAREN s=valExpr RPAREN		{retval = new BooleanFunction(Function.Type.VALID, $s.retval);}
+	| keyDEFINEDINROW LPAREN s=valExpr RPAREN	{retval = new BooleanFunction(Function.Type.DEFINEDINROW, $s.retval);}
 	;
 
 valueItemList returns [List<GenericValue> retval]
@@ -416,7 +416,7 @@ keyNOT 		: {isKeyword(input, "NOT")}? ID;
 keyTRUE 	: {isKeyword(input, "TRUE")}? ID;
 keyFALSE 	: {isKeyword(input, "FALSE")}? ID;
 keyBETWEEN 	: {isKeyword(input, "BETWEEN")}? ID;
-keyVALID 	: {isKeyword(input, "VALID")}? ID;
+keyDEFINEDINROW : {isKeyword(input, "DEFINEDINROW")}? ID;
 keyNULL 	: {isKeyword(input, "NULL")}? ID;
 keyLOWER 	: {isKeyword(input, "LOWER")}? ID;
 keyUPPER 	: {isKeyword(input, "UPPER")}? ID;

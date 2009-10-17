@@ -243,7 +243,6 @@ public class WhereExpressionsTest extends TestSupport {
         assertTrue(parseNumberValue("(((4+3)*(2-1))*(3/1))").intValue() == (((4 + 3) * (2 - 1)) * (3 / 1)));
 
         assertEvalTrue("DOUBLE('23.0') > 12.3");
-        assertEvalTrue("VALID(12)");
     }
 
     @Test
@@ -312,6 +311,9 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalTrue(annoObj, "keyval+'zz' CONTAINS stringValue+'bbz'");
         assertExprEvalFalse(annoObj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
         assertEvalTrue(obj, "NOT(keyval+'zz' NOT CONTAINS stringValue+'bbz')");
+
+        assertEvalTrue(obj, "DEFINEDINROW(12)");
+        assertEvalTrue(obj, "DEFINEDINROW(a)");
     }
 
     @Test
