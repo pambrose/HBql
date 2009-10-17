@@ -16,7 +16,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
-public class Function extends GenericExpr {
+public abstract class Function extends GenericExpr {
 
     public static enum Type {
         // Return Strings
@@ -103,53 +103,6 @@ public class Function extends GenericExpr {
             catch (ResultMissingColumnException e) {
                 throw new InternalErrorException();
             }
-    }
-
-    public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-
-        switch (this.getFunctionType()) {
-
-            case LENGTH: {
-                final String val = (String)this.getArg(0).getValue(object);
-                this.checkForNull(val);
-                return val.length();
-            }
-
-            case INDEXOF: {
-                final String v1 = (String)this.getArg(0).getValue(object);
-                final String v2 = (String)this.getArg(1).getValue(object);
-                this.checkForNull(v1, v2);
-                return v1.indexOf(v2);
-            }
-
-            case SHORT: {
-                final String v1 = (String)this.getArg(0).getValue(object);
-                return Short.valueOf(v1);
-            }
-
-            case INTEGER: {
-                final String v1 = (String)this.getArg(0).getValue(object);
-                return Integer.valueOf(v1);
-            }
-
-            case LONG: {
-                final String v1 = (String)this.getArg(0).getValue(object);
-                return Long.valueOf(v1);
-            }
-
-            case FLOAT: {
-                final String v1 = (String)this.getArg(0).getValue(object);
-                return Float.valueOf(v1);
-            }
-
-            case DOUBLE: {
-                final String v1 = (String)this.getArg(0).getValue(object);
-                return Double.valueOf(v1);
-            }
-
-            default:
-                throw new HBqlException("Invalid function: " + this.getFunctionType());
-        }
     }
 
     public String asString() {
