@@ -81,6 +81,28 @@ public abstract class ColumnAttrib implements Serializable {
                                                                  final String mapKey, final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException;
 
 
+    public void setKeysAsColumnsVersionMap(final Object obj,
+                                           final String mapKey,
+                                           final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
+
+        final Map<Long, Object> mapVal = this.getKeysAsColumnsVersionMap(obj, mapKey);
+
+        for (final Long timestamp : timeStampMap.keySet()) {
+            final Object val = this.getValueFromBytes(obj, timeStampMap.get(timestamp));
+            mapVal.put(timestamp, val);
+        }
+    }
+
+    public void setVersionMap(final Object obj, final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
+
+        final Map<Long, Object> mapVal = this.getVersionMap(obj);
+
+        for (final Long timestamp : timeStampMap.keySet()) {
+            final Object val = this.getValueFromBytes(obj, timeStampMap.get(timestamp));
+            mapVal.put(timestamp, val);
+        }
+    }
+
     protected abstract Method getMethod(final String methodName,
                                         final Class<?>... params) throws NoSuchMethodException, HBqlException;
 

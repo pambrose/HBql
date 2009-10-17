@@ -43,9 +43,9 @@ public class HRecordExample {
             final HBatch batch = new HBatch();
             for (int i = 0; i < 10; i++) {
                 HRecord hrecord = SchemaManager.newHRecord("testobjects");
-                hrecord.setCurrentValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
-                hrecord.setCurrentValue("author", "A new author value: " + i);
-                hrecord.setCurrentValue("title", "A very new title value: " + i);
+                hrecord.setValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
+                hrecord.setValue("author", "A new author value: " + i);
+                hrecord.setValue("title", "A very new title value: " + i);
                 batch.insert(hrecord);
             }
 
@@ -68,10 +68,10 @@ public class HRecordExample {
         HResults<HRecord> results1 = q1.getResults();
 
         for (HRecord val1 : results1) {
-            System.out.println("Current Values: " + val1.getCurrentValue("keyval")
-                               + " - " + val1.getCurrentValue("family1:author")
-                               + " - " + val1.getCurrentValue("title")
-                               + " - " + val1.getCurrentValue("comp1")
+            System.out.println("Current Values: " + val1.getValue("keyval")
+                               + " - " + val1.getValue("family1:author")
+                               + " - " + val1.getValue("title")
+                               + " - " + val1.getValue("comp1")
             );
 
             System.out.println("Historicals");

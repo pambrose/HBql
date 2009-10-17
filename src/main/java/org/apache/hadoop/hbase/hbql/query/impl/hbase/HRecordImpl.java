@@ -229,15 +229,13 @@ public class HRecordImpl implements Serializable, HRecord {
                                              final String name,
                                              final long timestamp,
                                              final byte[] val) throws HBqlException {
-        final FamilyDefaultValueMap value = this.getFamilyDefaultValueMap(familyName + ":*", true);
-        value.setCurrentValueMap(timestamp, name, val);
+        this.getFamilyDefaultValueMap(familyName + ":*", true).setCurrentValueMap(timestamp, name, val);
     }
 
     public void setFamilyDefaultVersionMap(final String familyName,
                                            final String name,
                                            final NavigableMap<Long, byte[]> val) throws HBqlException {
-        final FamilyDefaultValueMap value = this.getFamilyDefaultValueMap(familyName + ":*", true);
-        value.setVersionMap(name, val);
+        this.getFamilyDefaultValueMap(familyName + ":*", true).setVersionMap(name, val);
     }
 
     public void setFamilyDefaultKeysAsColumnsValue(final String familyName,
@@ -257,12 +255,12 @@ public class HRecordImpl implements Serializable, HRecord {
         value.getCurrentMapValue(columnName, true).setVersionMap(mapKey, map);
     }
 
-    public Object getCurrentValue(final String name) throws HBqlException {
+    public Object getValue(final String name) throws HBqlException {
         final ObjectValue objectValue = this.getObjectElements().findElement(name);
         return (objectValue != null) ? objectValue.getValue() : null;
     }
 
-    public void setCurrentValue(final String name, final Object val) throws HBqlException {
+    public void setValue(final String name, final Object val) throws HBqlException {
         this.setCurrentValue(name, this.getTimestamp(), val, true);
     }
 
@@ -327,13 +325,14 @@ public class HRecordImpl implements Serializable, HRecord {
         if (value == null)
             return null;
 
-        final Map<String, CurrentAndVersionValue<UntypedKeysAsColumnsValueMap>> map = value.getCurrentAndVersionMap();
-
         final Map<String, Map<String, byte[]>> retval = Maps.newHashMap();
+        final Map<String, CurrentAndVersionValue<UntypedKeysAsColumnsValueMap>> map = value.getCurrentAndVersionMap();
         for (final String columnName : map.keySet()) {
-            final CurrentAndVersionValue<UntypedKeysAsColumnsValueMap> val = map.get(columnName);
+
             final Map<String, byte[]> newMap = Maps.newHashMap();
             retval.put(columnName, newMap);
+
+            final CurrentAndVersionValue<UntypedKeysAsColumnsValueMap> val = map.get(columnName);
             final Map<String, CurrentAndVersionValue<byte[]>> kacMap = val.getValue().getCurrentAndVersionMap();
             for (final String mapKey : kacMap.keySet())
                 newMap.put(mapKey, kacMap.get(mapKey).getValue());
@@ -349,13 +348,14 @@ public class HRecordImpl implements Serializable, HRecord {
         if (value == null)
             return null;
 
-        final Map<String, CurrentAndVersionValue<UntypedKeysAsColumnsValueMap>> map = value.getCurrentAndVersionMap();
-
         final Map<String, Map<String, NavigableMap<Long, byte[]>>> retval = Maps.newHashMap();
+        final Map<String, CurrentAndVersionValue<UntypedKeysAsColumnsValueMap>> map = value.getCurrentAndVersionMap();
         for (final String columnName : map.keySet()) {
-            final CurrentAndVersionValue<UntypedKeysAsColumnsValueMap> val = map.get(columnName);
+
             final Map<String, NavigableMap<Long, byte[]>> newMap = Maps.newHashMap();
             retval.put(columnName, newMap);
+
+            final CurrentAndVersionValue<UntypedKeysAsColumnsValueMap> val = map.get(columnName);
             final Map<String, CurrentAndVersionValue<byte[]>> kacMap = val.getValue().getCurrentAndVersionMap();
             for (final String mapKey : kacMap.keySet())
                 newMap.put(mapKey, kacMap.get(mapKey).getVersionMap(true));

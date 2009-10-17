@@ -11,21 +11,19 @@ import java.util.NavigableMap;
  */
 public interface HRecord {
 
-    Object getCurrentValue(String name) throws HBqlException;
+    Object getValue(String name) throws HBqlException;
 
-    void setCurrentValue(String name, Object val) throws HBqlException;
+    void setValue(String name, Object val) throws HBqlException;
 
     Map<Long, Object> getVersionMap(final String name) throws HBqlException;
-
-
-    Map<String, byte[]> getFamilyDefaultValueMap(String name) throws HBqlException;
-
-    Map<String, NavigableMap<Long, byte[]>> getFamilyDefaultVersionMap(String name) throws HBqlException;
-
 
     Map<String, Object> getKeysAsColumnsMap(String name) throws HBqlException;
 
     Map<String, NavigableMap<Long, Object>> getKeysAsColumnsVersionMap(String name) throws HBqlException;
+
+    Map<String, byte[]> getFamilyDefaultValueMap(String name) throws HBqlException;
+
+    Map<String, NavigableMap<Long, byte[]>> getFamilyDefaultVersionMap(String name) throws HBqlException;
 
     Map<String, Map<String, byte[]>> getFamilyDefaultKeysAsColumnsMap(String name) throws HBqlException;
 

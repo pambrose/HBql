@@ -51,7 +51,7 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     public Object getCurrentValue(final Object hrecord) throws HBqlException {
-        return ((HRecordImpl)hrecord).getCurrentValue(this.getAliasName());
+        return ((HRecordImpl)hrecord).getValue(this.getAliasName());
     }
 
     public void setCurrentValue(final Object hrecord, final long timestamp, final Object val) throws HBqlException {

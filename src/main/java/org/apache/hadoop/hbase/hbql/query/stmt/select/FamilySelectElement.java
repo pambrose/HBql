@@ -11,7 +11,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.NavigableMap;
 
 public class FamilySelectElement implements SelectElement {
@@ -184,12 +183,7 @@ public class FamilySelectElement implements SelectElement {
                                                                                         timeStampMap);
                     }
                     else {
-                        // Set unknown attrib value to byte[] value
-                        final Map<Long, Object> keysAsColumnsVersionMap = attrib.getKeysAsColumnsVersionMap(obj, mapKey);
-                        for (final Long timestamp : timeStampMap.keySet()) {
-                            final Object val = attrib.getValueFromBytes(obj, timeStampMap.get(timestamp));
-                            keysAsColumnsVersionMap.put(timestamp, val);
-                        }
+                        attrib.setKeysAsColumnsVersionMap(obj, mapKey, timeStampMap);
                     }
                 }
                 else {
@@ -201,13 +195,7 @@ public class FamilySelectElement implements SelectElement {
                             familyDefaultAttrib.setFamilyDefaultVersionMap(obj, columnName, timeStampMap);
                     }
                     else {
-                        final Map<Long, Object> mapVal = attrib.getVersionMap(obj);
-
-                        for (final Long timestamp : timeStampMap.keySet()) {
-                            final byte[] b = timeStampMap.get(timestamp);
-                            final Object val = attrib.getValueFromBytes(obj, b);
-                            mapVal.put(timestamp, val);
-                        }
+                        attrib.setVersionMap(obj, timeStampMap);
                     }
                 }
             }
