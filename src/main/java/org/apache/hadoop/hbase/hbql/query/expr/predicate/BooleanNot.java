@@ -13,7 +13,7 @@ public class BooleanNot extends GenericExpr implements BooleanValue {
 
     private final boolean not;
 
-    public BooleanNot(final boolean not, final BooleanValue arg0) {
+    public BooleanNot(final boolean not, final GenericValue arg0) {
         super(null, arg0);
         this.not = not;
     }

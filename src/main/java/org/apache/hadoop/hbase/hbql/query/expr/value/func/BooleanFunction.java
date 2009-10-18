@@ -9,7 +9,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
 
 public class BooleanFunction extends Function implements BooleanValue {
 
-
     public BooleanFunction(final Type functionType, final GenericValue... exprs) {
         super(functionType, exprs);
     }

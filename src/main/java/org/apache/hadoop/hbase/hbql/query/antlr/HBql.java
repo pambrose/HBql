@@ -42,7 +42,7 @@ public class HBql {
     public static Object parseExpression(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
-            final GenericValue valueExpr = parser.valExpr();
+            final GenericValue valueExpr = parser.topExpr();
             valueExpr.validateTypes(null, false);
             return valueExpr.getValue(null);
         }

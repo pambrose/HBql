@@ -21,7 +21,7 @@ public class ExprTree extends ExprContext {
         return newExprTree(new BooleanLiteral(booleanValue));
     }
 
-    public static ExprTree newExprTree(final BooleanValue booleanValue) {
+    public static ExprTree newExprTree(final GenericValue booleanValue) {
         if (booleanValue == null)
             return new ExprTree(new BooleanLiteral(true));
         else
