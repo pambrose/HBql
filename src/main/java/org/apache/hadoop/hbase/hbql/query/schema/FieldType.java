@@ -21,6 +21,8 @@ import java.util.List;
 
 public enum FieldType {
 
+    KeyType(String.class, StringValue.class, -1, -1, "KEY"),
+
     BooleanType(Boolean.TYPE, BooleanValue.class, 0, Bytes.SIZEOF_BOOLEAN, "BOOLEAN", "BOOL"),
     ByteType(Byte.TYPE, NumberValue.class, 1, Bytes.SIZEOF_BYTE, "BYTE"),
     CharType(Short.TYPE, NumberValue.class, 1, Bytes.SIZEOF_CHAR, "CHAR"),
@@ -31,7 +33,6 @@ public enum FieldType {
     FloatType(Float.TYPE, FloatValue.class, 5, Bytes.SIZEOF_FLOAT, "FLOAT"),
     DoubleType(Double.TYPE, DoubleValue.class, 6, Bytes.SIZEOF_DOUBLE, "DOUBLE"),
 
-    KeyType(String.class, StringValue.class, -1, -1, "KEY"),
     StringType(String.class, StringValue.class, -1, -1, "STRING", "STRING", "VARCHAR"),
     DateType(Date.class, DateValue.class, -1, -1, "DATE", "DATETIME"),
     ObjectType(Object.class, null, -1, -1, "OBJECT", "OBJ");

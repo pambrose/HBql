@@ -495,10 +495,12 @@ public class SelectTest extends TestSupport {
         SchemaManager.parse("define table table1 alias tab1"
                             + "("
                             + "keyval key, "
+                            + "f1:val1 string alias val1, "
+                            + "f1:val10 string alias val10, "
                             + "f1:* alias f1default "
                             + ")");
 
-        final String query1 = "SELECT 2+4, 5+9, 5+3 as expr1 FROM table1";
+        final String query1 = "SELECT 2+4, 5+9, 5+3 as expr1, (DEFINEDINROW(val1)), (DEFINEDINROW(val10)) FROM table1";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
         List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
@@ -509,6 +511,10 @@ public class SelectTest extends TestSupport {
             assertTrue(val2 == 14);
             int val3 = (Integer)rec.getValue("expr1");
             assertTrue(val3 == 8);
+            boolean val4 = (Boolean)rec.getValue(":expr-2");
+            assertTrue(val4);
+            boolean val5 = (Boolean)rec.getValue(":expr-3");
+            assertTrue(!val5);
         }
     }
 }

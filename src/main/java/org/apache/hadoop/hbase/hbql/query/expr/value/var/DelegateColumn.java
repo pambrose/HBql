@@ -53,20 +53,44 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
                 this.setTypedColumn(new StringColumn(attrib));
                 break;
 
-            case LongType:
-                this.setTypedColumn(new LongColumn(attrib));
+            case BooleanType:
+                this.setTypedColumn(new BooleanColumn(attrib));
+                break;
+
+            case ByteType:
+                this.setTypedColumn(new ByteColumn(attrib));
+                break;
+
+            case CharType:
+                this.setTypedColumn(new CharColumn(attrib));
+                break;
+
+            case ShortType:
+                this.setTypedColumn(new ShortColumn(attrib));
                 break;
 
             case IntegerType:
                 this.setTypedColumn(new IntegerColumn(attrib));
                 break;
 
+            case LongType:
+                this.setTypedColumn(new LongColumn(attrib));
+                break;
+
+            case FloatType:
+                this.setTypedColumn(new FloatColumn(attrib));
+                break;
+
+            case DoubleType:
+                this.setTypedColumn(new DoubleColumn(attrib));
+                break;
+
             case DateType:
                 this.setTypedColumn(new DateColumn(attrib));
                 break;
 
-            case BooleanType:
-                this.setTypedColumn(new BooleanColumn(attrib));
+            case ObjectType:
+                this.setTypedColumn(new ObjectColumn(attrib));
                 break;
 
             default:
