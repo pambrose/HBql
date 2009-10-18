@@ -97,6 +97,10 @@ public class ColumnDescription implements Serializable {
     public boolean isArray() {
         return this.isArray;
     }
+
+    public GenericValue getDefaultValue() {
+        return this.defaultValue;
+    }
 }
 
 

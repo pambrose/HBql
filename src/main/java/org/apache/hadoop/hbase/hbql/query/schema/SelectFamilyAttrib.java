@@ -9,8 +9,8 @@ import java.util.NavigableMap;
 
 public class SelectFamilyAttrib extends ColumnAttrib {
 
-    public SelectFamilyAttrib(final String familyName) {
-        super(familyName, "", "", false, false, null, false, null, null);
+    public SelectFamilyAttrib(final String familyName) throws HBqlException {
+        super(familyName, "", "", false, false, null, false, null, null, null);
     }
 
     public boolean isASelectFamilyAttrib() {

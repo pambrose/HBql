@@ -3,6 +3,8 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.DefaultArg;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 import java.io.Serializable;
@@ -26,6 +28,7 @@ public abstract class ColumnAttrib implements Serializable {
     protected final boolean isArray;
     protected transient Method getterMethod = null;
     protected transient Method setterMethod = null;
+    protected final Object defaultValue;
 
     protected ColumnAttrib(final String familyName,
                            final String columnName,
@@ -35,7 +38,8 @@ public abstract class ColumnAttrib implements Serializable {
                            final FieldType fieldType,
                            final boolean isArray,
                            final String getter,
-                           final String setter) {
+                           final String setter,
+                           final GenericValue defaultValueExpr) throws HBqlException {
 
         this.familyName = familyName;
         this.columnName = columnName;
@@ -46,6 +50,17 @@ public abstract class ColumnAttrib implements Serializable {
         this.isArray = isArray;
         this.getter = getter;
         this.setter = setter;
+        this.defaultValue = this.evaluateDefaultValue(defaultValueExpr);
+    }
+
+    private Object evaluateDefaultValue(final GenericValue defaultValueExpr) throws HBqlException {
+
+        if (defaultValueExpr == null)
+            return null;
+
+        final DefaultArg defaultArg = new DefaultArg(this.getFieldType().getExprType(), defaultValueExpr);
+
+        return defaultArg.getValue();
     }
 
     public abstract Object getCurrentValue(final Object obj) throws HBqlException;

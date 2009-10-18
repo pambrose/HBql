@@ -2,13 +2,13 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ByteValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -24,8 +24,8 @@ public enum FieldType {
     KeyType(String.class, StringValue.class, -1, -1, "KEY"),
 
     BooleanType(Boolean.TYPE, BooleanValue.class, 0, Bytes.SIZEOF_BOOLEAN, "BOOLEAN", "BOOL"),
-    ByteType(Byte.TYPE, NumberValue.class, 1, Bytes.SIZEOF_BYTE, "BYTE"),
-    CharType(Short.TYPE, NumberValue.class, 1, Bytes.SIZEOF_CHAR, "CHAR"),
+    ByteType(Byte.TYPE, ByteValue.class, 1, Bytes.SIZEOF_BYTE, "BYTE"),
+    CharType(Short.TYPE, ShortValue.class, 1, Bytes.SIZEOF_CHAR, "CHAR"),
 
     ShortType(Short.TYPE, ShortValue.class, 2, Bytes.SIZEOF_SHORT, "SHORT"),
     IntegerType(Integer.TYPE, IntegerValue.class, 3, Bytes.SIZEOF_INT, "INTEGER", "INT"),

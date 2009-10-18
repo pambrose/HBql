@@ -14,7 +14,7 @@ public class VersionArgs extends SelectArgs {
     }
 
     private int getValue() throws HBqlException {
-        return ((Number)this.noColumnEvaluate(0, false, false, null)).intValue();
+        return ((Number)this.evaluateWithoutColumns(0, false, null)).intValue();
     }
 
     public String asString() {

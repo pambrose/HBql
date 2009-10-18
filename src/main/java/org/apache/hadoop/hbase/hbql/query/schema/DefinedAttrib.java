@@ -23,7 +23,8 @@ public class DefinedAttrib extends ColumnAttrib {
               columnDescription.getFieldType(),
               columnDescription.isArray(),
               null,
-              null);
+              null,
+              columnDescription.getDefaultValue());
 
         this.columnDescription = columnDescription;
 

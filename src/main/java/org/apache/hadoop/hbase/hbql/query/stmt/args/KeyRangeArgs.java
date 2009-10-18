@@ -43,11 +43,11 @@ public class KeyRangeArgs {
         }
 
         private Object getLower(final boolean allowsCollections) throws HBqlException {
-            return this.noColumnEvaluate(0, false, allowsCollections, null);
+            return this.evaluateWithoutColumns(0, allowsCollections, null);
         }
 
         private String getUpper() throws HBqlException {
-            return (String)this.noColumnEvaluate(1, false, false, null);
+            return (String)this.evaluateWithoutColumns(1, false, null);
         }
 
         private KeyRangeArgs.Type getType() {

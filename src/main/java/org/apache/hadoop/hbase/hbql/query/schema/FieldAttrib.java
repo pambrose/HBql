@@ -30,8 +30,8 @@ public abstract class FieldAttrib extends ColumnAttrib {
               fieldType,
               field.getType().isArray(),
               getter,
-              setter
-        );
+              setter,
+              null);
         this.field = field;
         setAccessible(this.getField());
     }
