@@ -397,7 +397,8 @@ public class AnnotationSchema extends HBaseSchema {
                                                     columnAttrib.isMapKeysAsColumnsAttrib(),
                                                     columnAttrib.isFamilyDefaultAttrib(),
                                                     columnType,
-                                                    columnAttrib.isArray()));
+                                                    columnAttrib.isArray(),
+                                                    null));
         }
         return varList;
     }

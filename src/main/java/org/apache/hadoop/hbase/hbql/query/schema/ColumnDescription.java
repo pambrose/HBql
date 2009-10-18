@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 import java.io.Serializable;
 
@@ -12,13 +13,15 @@ public class ColumnDescription implements Serializable {
     private final boolean familyDefault;
     private final boolean isArray;
     private final FieldType fieldType;
+    private final GenericValue defaultValue;
 
     private ColumnDescription(final String familyQualifiedName,
                               final String aliasName,
                               final boolean mapKeysAsColumns,
                               final boolean familyDefault,
                               final String typeName,
-                              final boolean isArray) {
+                              final boolean isArray,
+                              final GenericValue defaultValue) {
 
         if (familyQualifiedName.indexOf(":") != -1) {
             final String[] names = familyQualifiedName.split(":");
@@ -35,6 +38,7 @@ public class ColumnDescription implements Serializable {
         this.familyDefault = familyDefault;
         this.fieldType = getFieldType(typeName);
         this.isArray = isArray;
+        this.defaultValue = defaultValue;
     }
 
     public static ColumnDescription newColumn(final String familyQualifiedName,
@@ -42,17 +46,19 @@ public class ColumnDescription implements Serializable {
                                               final boolean mapKeysAsColumns,
                                               final boolean familyDefault,
                                               final String typeName,
-                                              final boolean isArray) {
+                                              final boolean isArray,
+                                              final GenericValue defaultValue) {
         return new ColumnDescription(familyQualifiedName,
                                      aliasName,
                                      mapKeysAsColumns,
                                      familyDefault,
                                      typeName,
-                                     isArray);
+                                     isArray,
+                                     defaultValue);
     }
 
     public static ColumnDescription newFamilyDefault(final String familyQualifiedName, final String aliasName) {
-        return new ColumnDescription(familyQualifiedName, aliasName, false, true, null, false);
+        return new ColumnDescription(familyQualifiedName, aliasName, false, true, null, false, null);
     }
 
     private static FieldType getFieldType(final String typeName) {
