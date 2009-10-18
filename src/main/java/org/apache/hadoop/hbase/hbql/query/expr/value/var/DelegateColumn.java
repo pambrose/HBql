@@ -40,9 +40,6 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
 
     public void setExprContext(final ExprContext context) throws HBqlException {
 
-        if (context.getSchema() == null)
-            return;
-
         // See if referenced var is in schema
         final ColumnAttrib attrib = context.getSchema().getAttribByVariableName(this.getVariableName());
 

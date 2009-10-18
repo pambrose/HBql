@@ -28,9 +28,15 @@ public class HBql {
 
     public static ExprTree parseWhereExpression(final String str, final Schema schema) throws HBqlException {
         try {
-            final HBqlParser parser = newParser(str);
-            final ExprTree exprTree = parser.nodescWhereExpr();
-            exprTree.setSchema(schema);
+
+            // Fist see if schema already has tree cached
+            ExprTree exprTree = schema.getExprTree(str);
+            if (exprTree == null) {
+                final HBqlParser parser = newParser(str);
+                exprTree = parser.nodescWhereExpr();
+                exprTree.setExprText(str);
+                exprTree.setSchema(schema);
+            }
             return exprTree;
         }
         catch (RecognitionException e) {
@@ -47,7 +53,8 @@ public class HBql {
             return valueExpr.getValue(null);
         }
         catch (ResultMissingColumnException e) {
-            throw new InternalErrorException();
+            // No column refes to be missing
+            throw new InternalErrorException(e.getMessage());
         }
         catch (RecognitionException e) {
             e.printStackTrace();

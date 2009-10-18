@@ -518,4 +518,41 @@ public class SelectTest extends TestSupport {
             assertTrue(!val5);
         }
     }
+
+    @Test
+    public void selectEvalExpressions() throws HBqlException, IOException {
+
+        SchemaManager.removeSchema("table1");
+        SchemaManager.parse("define table table1 alias tab1"
+                            + "("
+                            + "keyval key, "
+                            + "f1:val1 string alias val1, "
+                            + "f1:val10 string alias val10, "
+                            + "f1:* alias f1default "
+                            + ")");
+
+        final String query1 = "SELECT EVAL('TRUE'), EVAL('FALSE') FROM table1";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 10);
+        for (final HRecord rec : recList1) {
+            boolean val1 = (Boolean)rec.getValue(":expr-0");
+            assertTrue(val1);
+            boolean val2 = (Boolean)rec.getValue(":expr-1");
+            assertTrue(!val2);
+        }
+
+        final String query2 = "SELECT EVAL(:val1), EVAL(:val2) FROM table1";
+        HQuery<HRecord> q2 = conn.newHQuery(query2);
+        q2.setParameter("val1", "TRUE OR FALSE");
+        q2.setParameter("val2", "TRUE AND FALSE");
+        List<HRecord> recList2 = q2.getResultList();
+        assertTrue(recList2.size() == 10);
+        for (final HRecord rec : recList2) {
+            boolean val1 = (Boolean)rec.getValue(":expr-0");
+            assertTrue(val1);
+            boolean val2 = (Boolean)rec.getValue(":expr-1");
+            assertTrue(!val2);
+        }
+    }
 }

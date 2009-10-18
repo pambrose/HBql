@@ -186,7 +186,7 @@ public class ResultsImpl<T> implements HResults<T> {
                                 }
                             }
                             catch (ResultMissingColumnException e) {
-                                // Just skip adn do nothing
+                                // Just skip and do nothing
                             }
                         }
                     }

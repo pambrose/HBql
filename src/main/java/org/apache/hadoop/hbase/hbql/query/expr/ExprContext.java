@@ -31,6 +31,7 @@ public abstract class ExprContext implements Serializable {
     private final Map<String, List<NamedParameter>> namedParamMap = Maps.newHashMap();
 
     private Schema schema = null;
+    private String exprText = null;
     private final TypeSignature typeSignature;
     private List<GenericValue> expressions = Lists.newArrayList();
 
@@ -49,6 +50,23 @@ public abstract class ExprContext implements Serializable {
 
     public List<GenericColumn> getColumnsUsedInExpr() {
         return this.columnsUsedInExpr;
+    }
+
+    public String getExprText() {
+        return this.exprText;
+    }
+
+    public void setExprText(final String exprText) {
+        this.exprText = exprText;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == null || (!(o instanceof ExprContext)))
+            return false;
+
+        final String name1 = ((ExprContext)o).getExprText();
+        final String name2 = this.getExprText();
+        return name1 != null && name2 != null && name1.equals(name2);
     }
 
     public List<ColumnAttrib> getAttribsUsedInExpr() {
@@ -78,6 +96,7 @@ public abstract class ExprContext implements Serializable {
     public void setSchema(final Schema schema) {
         this.schema = schema;
         this.setContext();
+        schema.addExprTree(this);
     }
 
     protected GenericValue getGenericValue(final int i) {
@@ -106,7 +125,6 @@ public abstract class ExprContext implements Serializable {
     }
 
     protected void setContext() {
-
         if (this.isInNeedOfSettingContext()) {
             try {
                 for (final GenericValue val : this.getExpressions())

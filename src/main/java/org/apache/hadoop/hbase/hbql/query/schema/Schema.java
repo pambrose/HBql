@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import org.apache.hadoop.hbase.hbql.query.util.Sets;
@@ -13,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class Schema implements Serializable {
+
+    List<ExprContext> evalList = null;
 
     private final Map<String, ColumnAttrib> columnAttribByVariableNameMap = Maps.newHashMap();
     private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
@@ -72,5 +75,34 @@ public abstract class Schema implements Serializable {
 
             this.getColumnAttribByVariableNameMap().put(attribName, attrib);
         }
+    }
+
+    private List<ExprContext> getEvalList() {
+
+        if (this.evalList == null) {
+            synchronized (this) {
+                if (this.evalList == null)
+                    this.evalList = Lists.newArrayList();
+            }
+        }
+
+        return this.evalList;
+    }
+
+    public ExprContext getExprTree(final String exprStr) {
+
+        final List<ExprContext> list = this.getEvalList();
+        final int pos = list.indexOf(exprStr);
+        if (pos >= 0)
+            return list.get(pos);
+        else
+            return null;
+    }
+
+    public synchronized void addExprTree(final ExprContext exprTree) {
+        final List<ExprContext> list = this.getEvalList();
+        list.add(exprTree);
+        if (list.size() > 25)
+            list.remove(0);
     }
 }

@@ -296,6 +296,7 @@ options {backtrack=true; memoize=true;}
 							{retval = new NumericFunction(Function.Type.INDEXOF, $s1.retval, $s2.retval);}
 
 	| keyDEFINEDINROW LPAREN s4=topExpr RPAREN	{retval = new BooleanFunction(Function.Type.DEFINEDINROW, $s4.retval);}
+	| keyEVAL LPAREN s4=topExpr RPAREN		{retval = new BooleanFunction(Function.Type.EVAL, $s4.retval);}
 
 	| keySHORT LPAREN s=topExpr RPAREN		{retval = new NumericFunction(Function.Type.SHORT, $s.retval);}
 	| keyINTEGER LPAREN s=topExpr RPAREN		{retval = new NumericFunction(Function.Type.INTEGER, $s.retval);}
@@ -401,6 +402,7 @@ keyTRUE 	: {isKeyword(input, "TRUE")}? ID;
 keyFALSE 	: {isKeyword(input, "FALSE")}? ID;
 keyBETWEEN 	: {isKeyword(input, "BETWEEN")}? ID;
 keyDEFINEDINROW : {isKeyword(input, "DEFINEDINROW")}? ID;
+keyEVAL		: {isKeyword(input, "EVAL")}? ID;
 keyNULL 	: {isKeyword(input, "NULL")}? ID;
 keyLOWER 	: {isKeyword(input, "LOWER")}? ID;
 keyUPPER 	: {isKeyword(input, "UPPER")}? ID;

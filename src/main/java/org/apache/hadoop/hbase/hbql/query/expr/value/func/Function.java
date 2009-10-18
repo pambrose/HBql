@@ -37,7 +37,8 @@ public abstract class Function extends GenericExpr {
         FLOAT(new TypeSignature(FloatValue.class, StringValue.class)),
         DOUBLE(new TypeSignature(DoubleValue.class, StringValue.class)),
 
-        DEFINEDINROW(new TypeSignature(BooleanValue.class, GenericValue.class));
+        DEFINEDINROW(new TypeSignature(BooleanValue.class, GenericValue.class)),
+        EVAL(new TypeSignature(BooleanValue.class, StringValue.class));
 
         private final TypeSignature typeSignature;
 
