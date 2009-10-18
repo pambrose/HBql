@@ -138,7 +138,7 @@ public abstract class GenericExpr implements GenericValue {
         if (rankingClass == null) {
 
             // If we do not already know the specific types, then look at the class of both args
-            if (this.getHighestRankingNumericArgFoundInValidate().equals(NumberValue.class))
+            if (this.getHighestRankingNumericArgFoundInValidate() == NumberValue.class)
                 this.rankingClass = NumericType.getHighestRankingNumericArg(objs);
             else
                 this.rankingClass = this.getHighestRankingNumericArgFoundInValidate();
@@ -225,9 +225,9 @@ public abstract class GenericExpr implements GenericValue {
         try {
             final Object obj = this.getValue(null);
 
-            if (this.getTypeSignature().getReturnType().equals(BooleanValue.class)
-                || this.getTypeSignature().getReturnType().equals(StringValue.class)
-                || this.getTypeSignature().getReturnType().equals(DateValue.class))
+            if (this.getTypeSignature().getReturnType() == BooleanValue.class
+                || this.getTypeSignature().getReturnType() == StringValue.class
+                || this.getTypeSignature().getReturnType() == DateValue.class)
                 return this.getTypeSignature().newLiteral(obj);
 
             if (HUtil.isParentClass(NumberValue.class, this.getTypeSignature().getReturnType())) {
