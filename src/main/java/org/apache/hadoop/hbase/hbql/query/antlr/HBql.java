@@ -30,12 +30,12 @@ public class HBql {
         try {
 
             // Fist see if schema already has tree cached
-            ExprTree exprTree = schema.getExprTree(str);
+            ExprTree exprTree = schema.getExprTreeFromCache(str);
             if (exprTree == null) {
                 final HBqlParser parser = newParser(str);
                 exprTree = parser.nodescWhereExpr();
-                exprTree.setExprText(str);
                 exprTree.setSchema(schema);
+                schema.addToExprTreeCache(str, exprTree);
             }
             return exprTree;
         }

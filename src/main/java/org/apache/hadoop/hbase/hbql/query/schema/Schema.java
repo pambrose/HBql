@@ -15,37 +15,14 @@ import java.util.Set;
 
 public abstract class Schema implements Serializable {
 
-    List<ExprTree> evalList = null;
+    private final static int ExprTreeCacheSize = 25;
+    List<String> evalList = null;
+    Map<String, ExprTree> evalMap = null;
 
     private final Map<String, ColumnAttrib> columnAttribByVariableNameMap = Maps.newHashMap();
     private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
 
     public abstract Collection<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException;
-
-    public List<ColumnAttrib> getAllAttribs() {
-        final List<ColumnAttrib> retval = Lists.newArrayList();
-        for (final ColumnAttrib attrib : this.getColumnAttribSet()) {
-
-            if (attrib.isKeyAttrib())
-                continue;
-
-            retval.add(attrib);
-        }
-        return retval;
-    }
-
-    public List<ColumnAttrib> getAttribForFamily(final String familyName) {
-        final List<ColumnAttrib> retval = Lists.newArrayList();
-        for (final ColumnAttrib attrib : this.getColumnAttribSet()) {
-
-            if (attrib.isKeyAttrib())
-                continue;
-
-            if (attrib.getFamilyName().length() > 0 && attrib.getFamilyName().equals(familyName))
-                retval.add(attrib);
-        }
-        return retval;
-    }
 
     public Set<ColumnAttrib> getColumnAttribSet() {
         return this.columnAttribSet;
@@ -67,7 +44,8 @@ public abstract class Schema implements Serializable {
     protected void addAttribToVariableNameMap(final ColumnAttrib attrib,
                                               final String... attribNames) throws HBqlException {
 
-        this.getColumnAttribSet().add(attrib);
+        if (!attrib.isFamilyDefaultAttrib())
+            this.getColumnAttribSet().add(attrib);
 
         for (final String attribName : attribNames) {
             if (this.getColumnAttribByVariableNameMap().containsKey(attribName))
@@ -77,32 +55,44 @@ public abstract class Schema implements Serializable {
         }
     }
 
-    private List<ExprTree> getEvalList() {
+    private Map<String, ExprTree> getEvalMap() {
 
-        if (this.evalList == null) {
+        if (this.evalMap == null) {
             synchronized (this) {
-                if (this.evalList == null)
+                if (this.evalMap == null) {
+                    this.evalMap = Maps.newHashMap();
                     this.evalList = Lists.newArrayList();
+                }
             }
         }
+        return this.evalMap;
+    }
 
+    private List<String> getEvalList() {
         return this.evalList;
     }
 
-    public ExprTree getExprTree(final String exprStr) {
-
-        final List<ExprTree> list = this.getEvalList();
-        final int pos = list.indexOf(exprStr);
-        if (pos >= 0)
-            return list.get(pos);
-        else
-            return null;
+    public ExprTree getExprTreeFromCache(final String exprStr) {
+        final Map<String, ExprTree> map = this.getEvalMap();
+        return map.get(exprStr);
     }
 
-    public synchronized void addExprTree(final ExprTree exprTree) {
-        final List<ExprTree> list = this.getEvalList();
-        list.add(exprTree);
-        if (list.size() > 25)
-            list.remove(0);
+    public synchronized void addToExprTreeCache(final String exprStr, final ExprTree exprTree) {
+
+        final Map<String, ExprTree> map = this.getEvalMap();
+
+        if (!map.containsKey(exprStr)) {
+
+            final List<String> list = this.getEvalList();
+
+            list.add(exprStr);
+            map.put(exprStr, exprTree);
+
+            if (list.size() > ExprTreeCacheSize) {
+                final String firstOne = list.get(0);
+                map.remove(firstOne);
+                list.remove(0);
+            }
+        }
     }
 }
