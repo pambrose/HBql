@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
@@ -19,7 +20,11 @@ import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 public abstract class Function extends GenericExpr {
 
     public static enum Type {
-        // Return Strings
+
+        // Return Date
+        DATE(new TypeSignature(DateValue.class, StringValue.class, StringValue.class)),
+
+        // Return String
         TRIM(new TypeSignature(StringValue.class, StringValue.class)),
         LOWER(new TypeSignature(StringValue.class, StringValue.class)),
         UPPER(new TypeSignature(StringValue.class, StringValue.class)),
@@ -28,7 +33,7 @@ public abstract class Function extends GenericExpr {
         SUBSTRING(new TypeSignature(StringValue.class, StringValue.class, IntegerValue.class, IntegerValue.class)),
         ZEROPAD(new TypeSignature(StringValue.class, LongValue.class, IntegerValue.class)),
 
-        // Return Numbers
+        // Return Number
         LENGTH(new TypeSignature(IntegerValue.class, StringValue.class)),
         INDEXOF(new TypeSignature(IntegerValue.class, StringValue.class, StringValue.class)),
 

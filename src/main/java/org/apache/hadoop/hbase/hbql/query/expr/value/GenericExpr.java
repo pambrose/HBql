@@ -44,8 +44,6 @@ public abstract class GenericExpr implements GenericValue {
 
         STRINGPATTERN(new TypeSignature(BooleanValue.class, StringValue.class, StringValue.class)),
 
-        DATESTRING(new TypeSignature(DateValue.class, StringValue.class, StringValue.class)),
-
         INTERVAL(new TypeSignature(DateValue.class, LongValue.class)),
 
         BOOLEANEXPR(new TypeSignature(BooleanValue.class, BooleanValue.class)),
