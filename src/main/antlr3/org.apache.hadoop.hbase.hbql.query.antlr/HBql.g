@@ -300,7 +300,7 @@ options {backtrack=true; memoize=true;}
 							{retval = new NumberFunction(Function.Type.INDEXOF, $s1.retval, $s2.retval);}
 	| keyDATETOLONG LPAREN s1=topExpr RPAREN	{retval = new NumberFunction(Function.Type.DATETOLONG, $s1.retval);}
 
-	| keyDEFINEDINROW LPAREN s4=topExpr RPAREN	{retval = new BooleanFunction(Function.Type.DEFINEDINROW, $s4.retval);}
+	| keyDEFINEDINROW LPAREN s=topExpr RPAREN	{retval = new BooleanFunction(Function.Type.DEFINEDINROW, $s.retval);}
 	| keyEVAL LPAREN s4=topExpr RPAREN		{retval = new BooleanFunction(Function.Type.EVAL, $s4.retval);}
 
 	| keySHORT LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.SHORT, $s.retval);}
@@ -309,10 +309,19 @@ options {backtrack=true; memoize=true;}
 	| keyFLOAT LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.FLOAT, $s.retval);}
 	| keyDOUBLE LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.DOUBLE, $s.retval);}
 
-	| keyIF v1=topExpr keyTHEN v2=topExpr keyELSE v3=topExpr keyEND	
-							{retval = new DelegateIfThen($v1.retval, $v2.retval, $v3.retval);}
+	| keyIF t1=topExpr keyTHEN t2=topExpr keyELSE t3=topExpr keyEND	
+							{retval = new DelegateIfThen($t1.retval, $t2.retval, $t3.retval);}
+							
+	| keyCASE 					{retval = new DelegateCase();}
+	   whenItem[(DelegateCase)retval]+
+	   (keyELSE t=topExpr)? 			{((DelegateCase)retval).addElse($t.retval);}
+	  keyEND	
 	;
 
+whenItem [DelegateCase stmt] 
+	: keyWHEN t1=topExpr keyTHEN t2=topExpr		{stmt.addWhen($t1.retval, $t2.retval);}
+	;
+	
 valueItemList returns [List<GenericValue> retval]
 @init {retval = Lists.newArrayList();}
 	: i1=topExpr {retval.add($i1.retval);} (COMMA i2=topExpr {retval.add($i2.retval);})*;
@@ -457,3 +466,5 @@ keyKACMAP	: {isKeyword(input, "MAPKEYSASCOLUMNS")}? ID;
 keyDEFAULT	: {isKeyword(input, "DEFAULT")}? ID;
 keyDATETOLONG	: {isKeyword(input, "DATETOLONG")}? ID;
 keyLONGTODATE	: {isKeyword(input, "LONGTODATE")}? ID;
+keyCASE		: {isKeyword(input, "CASE")}? ID;
+keyWHEN		: {isKeyword(input, "WHEN")}? ID;

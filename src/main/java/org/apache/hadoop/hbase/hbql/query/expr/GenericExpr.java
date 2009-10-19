@@ -25,6 +25,21 @@ public abstract class GenericExpr implements GenericValue {
 
     public enum Type {
 
+        BOOLEANCASE(new TypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class)),
+        STRINGCASE(new TypeSignature(StringValue.class)),
+        DATECASE(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class)),
+        NUMBERCASE(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class)),
+
+        BOOLEANWHEN(new TypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class)),
+        STRINGWHEN(new TypeSignature(StringValue.class, BooleanValue.class, StringValue.class)),
+        DATEWHEN(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class)),
+        NUMBERWHEN(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class)),
+
+        BOOLEANELSE(new TypeSignature(BooleanValue.class, BooleanValue.class)),
+        STRINGELSE(new TypeSignature(StringValue.class, StringValue.class)),
+        DATEELSE(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class)),
+        NUMBERELSE(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class)),
+
         BOOLEANIFTHEN(new TypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class, BooleanValue.class)),
         STRINGIFTHEN(new TypeSignature(StringValue.class, BooleanValue.class, StringValue.class, StringValue.class)),
         DATEIFTHEN(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class, DateValue.class)),
@@ -75,13 +90,13 @@ public abstract class GenericExpr implements GenericValue {
 
     protected GenericExpr(final Type type, final List<GenericValue> exprList) {
         this.type = type;
-        this.exprList.addAll(exprList);
+        this.getArgList().addAll(exprList);
     }
 
     protected GenericExpr(final Type type, final GenericValue expr, final List<GenericValue> exprList) {
         this.type = type;
-        this.exprList.add(expr);
-        this.exprList.addAll(exprList);
+        this.getArgList().add(expr);
+        this.getArgList().addAll(exprList);
     }
 
     protected TypeSignature getTypeSignature() {
@@ -160,6 +175,7 @@ public abstract class GenericExpr implements GenericValue {
     }
 
     public void optimizeArgs() throws HBqlException {
+        // TODO May want to keep track if this has already been called
         for (int i = 0; i < this.getArgList().size(); i++)
             this.setArg(i, this.getArg(i).getOptimizedValue());
     }

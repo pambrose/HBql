@@ -5,10 +5,10 @@ import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 
-public class StringIfThen extends GenericIfThen implements StringValue {
+public class StringCaseElse extends GenericCaseElse implements StringValue {
 
-    public StringIfThen(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
-        super(Type.STRINGIFTHEN, arg0, arg1, arg2);
+    public StringCaseElse(final GenericValue arg0) {
+        super(Type.STRINGELSE, arg0);
     }
 
     public String getValue(final Object object) throws HBqlException, ResultMissingColumnException {
