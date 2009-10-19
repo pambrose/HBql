@@ -68,12 +68,10 @@ options {backtrack=true;}
 	;
 
 schemaStmt returns [SchemaManagerCmd retval]
-	: d=defineStmt 					{retval = $d.retval;}
-	;
+	: d=defineStmt 					{retval = $d.retval;};
 
 createStmt returns [CreateCmd retval]
-	: keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateCmd($t.text);}
-	;
+	: keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateCmd($t.text);};
 	
 defineStmt returns [DefineCmd retval]
 	: keyDEFINE keyTABLE t=simpleName (keyALIAS a=simpleName)? LPAREN l=attribList RPAREN
@@ -206,8 +204,7 @@ options {backtrack=true; memoize=true;}
 valPrimary returns [GenericValue retval] 
 @init {List<GenericValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
 	: m=multExpr {exprList.add($m.retval);} (op=plusMinus n=multExpr {opList.add($op.retval); exprList.add($n.retval);})*	
-							{retval = getLeftAssociativeGenericValues(exprList, opList);}
-	;
+							{retval = getLeftAssociativeGenericValues(exprList, opList);};
 	
 multExpr returns [GenericValue retval]
 @init {List<GenericValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
@@ -283,6 +280,7 @@ options {backtrack=true; memoize=true;}
 
 	| keyDATE LPAREN s1=topExpr COMMA s2=topExpr RPAREN
 							{retval = new DateFunction(Function.Type.DATE, $s1.retval, $s2.retval);}
+	| keyLONGTODATE LPAREN s1=topExpr RPAREN	{retval = new DateFunction(Function.Type.LONGTODATE, $s1.retval);}
 							
 	| keyCONCAT LPAREN s1=topExpr COMMA s2=topExpr RPAREN
 							{retval = new StringFunction(Function.Type.CONCAT, $s1.retval, $s2.retval);}
@@ -299,6 +297,7 @@ options {backtrack=true; memoize=true;}
 	| keyLENGTH LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.LENGTH, $s.retval);}
 	| keyINDEXOF LPAREN s1=topExpr COMMA s2=topExpr RPAREN
 							{retval = new NumberFunction(Function.Type.INDEXOF, $s1.retval, $s2.retval);}
+	| keyDATETOLONG LPAREN s1=topExpr RPAREN	{retval = new NumberFunction(Function.Type.DATETOLONG, $s1.retval);}
 
 	| keyDEFINEDINROW LPAREN s4=topExpr RPAREN	{retval = new BooleanFunction(Function.Type.DEFINEDINROW, $s4.retval);}
 	| keyEVAL LPAREN s4=topExpr RPAREN		{retval = new BooleanFunction(Function.Type.EVAL, $s4.retval);}
@@ -454,3 +453,5 @@ keyINDEXOF	: {isKeyword(input, "INDEXOF")}? ID;
 keyREPLACE	: {isKeyword(input, "REPLACE")}? ID;
 keyKACMAP	: {isKeyword(input, "MAPKEYSASCOLUMNS")}? ID;
 keyDEFAULT	: {isKeyword(input, "DEFAULT")}? ID;
+keyDATETOLONG	: {isKeyword(input, "DATETOLONG")}? ID;
+keyLONGTODATE	: {isKeyword(input, "LONGTODATE")}? ID;

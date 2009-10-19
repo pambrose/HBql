@@ -492,6 +492,15 @@ public class WhereExpressionsTest extends TestSupport {
     }
 
     @Test
+    public void dateTypes() throws HBqlException {
+
+        assertEvalTrue("DATETOLONG(NOW()) + DATETOLONG(DAY(1)) = DATETOLONG(NOW()+DAY(1))");
+        assertEvalTrue("LONGTODATE(DATETOLONG(NOW()) + DATETOLONG(DAY(1))) = LONGTODATE(DATETOLONG(NOW()+DAY(1)))");
+        assertEvalTrue("NOW() < LONGTODATE(DATETOLONG(NOW()) + DATETOLONG(MINUTE(1)))");
+        assertEvalTrue("NOW() < NOW()+ MINUTE(1)");
+    }
+
+    @Test
     public void numericTypes() throws HBqlException {
 
         assertTypeAndValue("4", Integer.class, 4);

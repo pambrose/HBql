@@ -28,6 +28,10 @@ public class NumberFunction extends Function implements NumberValue {
                 return v1.indexOf(v2);
             }
 
+            case DATETOLONG: {
+                return (Long)this.getArg(0).getValue(object);
+            }
+
             case SHORT: {
                 final String v1 = (String)this.getArg(0).getValue(object);
                 return Short.valueOf(v1);

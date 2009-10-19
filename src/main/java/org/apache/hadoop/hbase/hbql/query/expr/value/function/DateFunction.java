@@ -53,6 +53,7 @@ public class DateFunction extends Function implements DateValue {
         }
     }
 
+    private ConstantType constantType;
     private IntervalType intervalType;
     private DateLiteral dateValue;
 
@@ -60,9 +61,10 @@ public class DateFunction extends Function implements DateValue {
         super(functionType, exprs);
     }
 
-    public DateFunction(final ConstantType type) {
+    public DateFunction(final ConstantType constantType) {
         super(Type.DATELITERAL);
-        switch (type) {
+        this.constantType = constantType;
+        switch (this.getConstantType()) {
             case NOW:
                 this.dateValue = new DateLiteral(DateLiteral.getNow());
                 break;
@@ -78,6 +80,10 @@ public class DateFunction extends Function implements DateValue {
     public DateFunction(final IntervalType intervalType, final GenericValue arg0) {
         super(Type.INTERVAL, arg0);
         this.intervalType = intervalType;
+    }
+
+    private ConstantType getConstantType() {
+        return this.constantType;
     }
 
     private IntervalType getIntervalType() {
@@ -111,6 +117,13 @@ public class DateFunction extends Function implements DateValue {
                 return this.dateValue.getValue(object);
             }
 
+            case LONGTODATE: {
+                final Number num = (Number)this.getArg(0).getValue(object);
+                final long val = num.longValue();
+                this.dateValue = new DateLiteral(val);
+                return this.dateValue.getValue(object);
+            }
+
             default:
                 throw new HBqlException("Invalid function: " + this.getFunctionType());
         }
@@ -119,6 +132,8 @@ public class DateFunction extends Function implements DateValue {
     protected String getFunctionName() {
         if (this.getFunctionType() == Type.INTERVAL)
             return this.getIntervalType().name();
+        else if (this.getFunctionType() == Type.DATELITERAL)
+            return this.getConstantType().name();
         else
             return super.getFunctionName();
     }
@@ -127,6 +142,8 @@ public class DateFunction extends Function implements DateValue {
     public String asString() {
         if (this.getFunctionType() == Type.INTERVAL)
             return this.getIntervalType().name() + "(" + this.getArg(0).asString() + ")";
+        else if (this.getFunctionType() == Type.DATELITERAL)
+            return this.getConstantType().name() + "()";
         else
             return super.asString();
     }

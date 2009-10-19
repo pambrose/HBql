@@ -20,12 +20,13 @@ public abstract class Function extends GenericExpr {
 
     public static enum Type {
 
-        // Return Date
+        // Date functions
         DATE(new TypeSignature(DateValue.class, StringValue.class, StringValue.class)),
         INTERVAL(new TypeSignature(DateValue.class, LongValue.class)),
         DATELITERAL(new TypeSignature(DateValue.class)),
+        LONGTODATE(new TypeSignature(DateValue.class, LongValue.class)),
 
-        // Return String
+        // String functions
         TRIM(new TypeSignature(StringValue.class, StringValue.class)),
         LOWER(new TypeSignature(StringValue.class, StringValue.class)),
         UPPER(new TypeSignature(StringValue.class, StringValue.class)),
@@ -34,9 +35,10 @@ public abstract class Function extends GenericExpr {
         SUBSTRING(new TypeSignature(StringValue.class, StringValue.class, IntegerValue.class, IntegerValue.class)),
         ZEROPAD(new TypeSignature(StringValue.class, LongValue.class, IntegerValue.class)),
 
-        // Return Number
+        // Number functions
         LENGTH(new TypeSignature(IntegerValue.class, StringValue.class)),
         INDEXOF(new TypeSignature(IntegerValue.class, StringValue.class, StringValue.class)),
+        DATETOLONG(new TypeSignature(LongValue.class, DateValue.class)),
 
         SHORT(new TypeSignature(ShortValue.class, StringValue.class)),
         INTEGER(new TypeSignature(IntegerValue.class, StringValue.class)),
@@ -44,6 +46,7 @@ public abstract class Function extends GenericExpr {
         FLOAT(new TypeSignature(FloatValue.class, StringValue.class)),
         DOUBLE(new TypeSignature(DoubleValue.class, StringValue.class)),
 
+        // Boolean functions
         DEFINEDINROW(new TypeSignature(BooleanValue.class, GenericValue.class)),
         EVAL(new TypeSignature(BooleanValue.class, StringValue.class));
 
