@@ -55,14 +55,14 @@ public class HUtil {
 
     public static boolean isParentClass(final Class parentClazz, final Class... clazzes) {
 
-        final boolean parentIsNumeric = NumericType.isANumber(parentClazz);
+        final boolean parentIsANumber = NumericType.isANumber(parentClazz);
 
         for (final Class clazz : clazzes) {
 
             if (clazz == null)
                 continue;
 
-            if (parentIsNumeric && NumericType.isANumber(clazz)) {
+            if (parentIsANumber && NumericType.isANumber(clazz)) {
                 if (!NumericType.isAssignable(parentClazz, clazz))
                     return false;
             }

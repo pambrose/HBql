@@ -15,12 +15,11 @@ import java.util.Set;
 
 public abstract class Schema implements Serializable {
 
-    private final static int ExprTreeCacheSize = 25;
-    List<String> evalList = null;
-    Map<String, ExprTree> evalMap = null;
-
     private final Map<String, ColumnAttrib> columnAttribByVariableNameMap = Maps.newHashMap();
     private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
+    private List<String> evalList = null;
+    private Map<String, ExprTree> evalMap = null;
+    private int exprTreeCacheSize = 25;
 
     public abstract Collection<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException;
 
@@ -72,6 +71,23 @@ public abstract class Schema implements Serializable {
         return this.evalList;
     }
 
+    public int getEvalCacheSize() {
+        return this.exprTreeCacheSize;
+    }
+
+    public void setEvalCacheSize(final int size) {
+
+        if (size > 0) {
+            this.exprTreeCacheSize = size;
+
+            // Reset existing cache
+            final Map<String, ExprTree> map = this.getEvalMap();
+            final List<String> list = this.getEvalList();
+            map.clear();
+            list.clear();
+        }
+    }
+
     public ExprTree getExprTreeFromCache(final String exprStr) {
         final Map<String, ExprTree> map = this.getEvalMap();
         return map.get(exprStr);
@@ -88,7 +104,7 @@ public abstract class Schema implements Serializable {
             list.add(exprStr);
             map.put(exprStr, exprTree);
 
-            if (list.size() > ExprTreeCacheSize) {
+            if (list.size() > exprTreeCacheSize) {
                 final String firstOne = list.get(0);
                 map.remove(firstOne);
                 list.remove(0);
