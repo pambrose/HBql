@@ -14,7 +14,7 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
-        return this.validateNumericTypes(parentExpr, false);
+        return this.validateNumericTypes();
     }
 
     public Number getValue(final Object object) throws HBqlException, ResultMissingColumnException {

@@ -14,27 +14,19 @@ public abstract class GenericInStmt extends GenericNotValue {
         super(Type.INSTMT, not, arg0, inList);
     }
 
-    protected abstract boolean evaluateList(final Object object) throws HBqlException, ResultMissingColumnException;
+    protected abstract boolean evaluateInList(final Object object) throws HBqlException, ResultMissingColumnException;
 
     protected List<GenericValue> getInList() {
         return this.getSubArgs(1);
     }
 
     public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        final boolean retval = this.evaluateList(object);
+        final boolean retval = this.evaluateInList(object);
         return (this.isNot()) ? !retval : retval;
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
-
-        final Class<? extends GenericValue> type = this.getArg(0).validateTypes(this, false);
-        final Class<? extends GenericValue> inClazz = this.determineGenericValueClass(type);
-
-        // Make sure all the types are matched
-        for (final GenericValue inVal : this.getInList())
-            this.validateParentClass(inClazz, inVal.validateTypes(this, true));
-
         return BooleanValue.class;
     }
 

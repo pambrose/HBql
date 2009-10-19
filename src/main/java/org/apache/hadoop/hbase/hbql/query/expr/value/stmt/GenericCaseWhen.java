@@ -22,6 +22,6 @@ public abstract class GenericCaseWhen extends GenericExpr {
     }
 
     public String asString() {
-        return "WHEN " + this.getArg(0).asString() + " THEN " + this.getArg(1).asString();
+        return "WHEN " + this.getArg(0).asString() + " THEN " + this.getArg(1).asString() + " ";
     }
 }

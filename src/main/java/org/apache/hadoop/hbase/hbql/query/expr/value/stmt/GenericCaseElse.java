@@ -16,6 +16,6 @@ public abstract class GenericCaseElse extends GenericExpr {
     }
 
     public String asString() {
-        return "ELSE " + this.getArg(0).asString();
+        return "ELSE " + this.getArg(0).asString() + " ";
     }
 }

@@ -200,8 +200,7 @@ public abstract class GenericExpr implements GenericValue {
         return this.getTypeSignature().getReturnType();
     }
 
-    public Class<? extends GenericValue> validateNumericTypes(final GenericValue parentExpr,
-                                                              final boolean allowsCollections) throws TypeException {
+    protected Class<? extends GenericValue> validateNumericTypes() throws TypeException {
 
         if (this.getArgList().size() != this.getTypeSignature().getArgCount())
             throw new TypeException("Incorrect number of arguments in " + this.asString());

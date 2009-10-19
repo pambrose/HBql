@@ -31,21 +31,25 @@ public class DelegateCase extends GenericCase {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
-        this.validateParentClass(BooleanValue.class, this.getArg(0).validateTypes(this, false));
+        final Class<? extends GenericValue> type = this.getWhenExprList().get(0).validateTypes(this, false);
+        final Class<? extends GenericValue> argType = this.determineGenericValueClass(type);
 
-        final Class<? extends GenericValue> type1 = this.getArg(1).validateTypes(this, false);
-        final Class<? extends GenericValue> type2 = this.getArg(2).validateTypes(this, false);
+        for (final GenericCaseWhen val : this.getWhenExprList())
+            this.validateParentClass(argType, val.validateTypes(this, false));
 
-        if (HUtil.isParentClass(StringValue.class, type1, type2))
+        if (this.getElseExpr() != null)
+            this.validateParentClass(argType, this.getElseExpr().validateTypes(parentExpr, false));
+
+        if (HUtil.isParentClass(StringValue.class, argType))
             this.setTypedExpr(new StringCase(this.getWhenExprList(), this.getElseExpr()));
-        else if (HUtil.isParentClass(NumberValue.class, type1, type2))
+        else if (HUtil.isParentClass(NumberValue.class, argType))
             this.setTypedExpr(new NumberCase(this.getWhenExprList(), this.getElseExpr()));
-        else if (HUtil.isParentClass(DateValue.class, type1, type2))
+        else if (HUtil.isParentClass(DateValue.class, argType))
             this.setTypedExpr(new DateCase(this.getWhenExprList(), this.getElseExpr()));
-        else if (HUtil.isParentClass(BooleanValue.class, type1, type2))
+        else if (HUtil.isParentClass(BooleanValue.class, argType))
             this.setTypedExpr(new BooleanCase(this.getWhenExprList(), this.getElseExpr()));
         else
-            this.throwInvalidTypeException(type1, type2);
+            this.throwInvalidTypeException(argType);
 
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }

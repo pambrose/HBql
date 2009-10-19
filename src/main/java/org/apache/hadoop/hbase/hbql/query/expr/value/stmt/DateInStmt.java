@@ -14,7 +14,7 @@ public class DateInStmt extends GenericInStmt {
         super(arg0, not, argList);
     }
 
-    protected boolean evaluateList(final Object object) throws HBqlException, ResultMissingColumnException {
+    protected boolean evaluateInList(final Object object) throws HBqlException, ResultMissingColumnException {
 
         final long attribVal = (Long)this.getArg(0).getValue(object);
 

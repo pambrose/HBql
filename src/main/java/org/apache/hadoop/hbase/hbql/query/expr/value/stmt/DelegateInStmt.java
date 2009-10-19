@@ -34,6 +34,12 @@ public class DelegateInStmt extends GenericInStmt {
 
         final Class<? extends GenericValue> type = this.getArg(0).validateTypes(this, false);
 
+        final Class<? extends GenericValue> inType = this.determineGenericValueClass(type);
+
+        // Make sure all the types are matched
+        for (final GenericValue val : this.getInList())
+            this.validateParentClass(inType, val.validateTypes(this, true));
+
         if (HUtil.isParentClass(StringValue.class, type))
             this.setTypedExpr(new StringInStmt(this.getArg(0), this.isNot(), this.getInList()));
         else if (HUtil.isParentClass(NumberValue.class, type))
@@ -48,7 +54,7 @@ public class DelegateInStmt extends GenericInStmt {
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
-    protected boolean evaluateList(final Object object) throws HBqlException {
+    protected boolean evaluateInList(final Object object) throws HBqlException {
         throw new InternalErrorException();
     }
 

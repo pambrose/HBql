@@ -14,7 +14,7 @@ public class NumberInStmt extends GenericInStmt {
         super(arg0, not, inList);
     }
 
-    protected boolean evaluateList(final Object object) throws HBqlException, ResultMissingColumnException {
+    protected boolean evaluateInList(final Object object) throws HBqlException, ResultMissingColumnException {
 
         final Object obj0 = this.getArg(0).getValue(object);
 
