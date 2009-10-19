@@ -581,6 +581,16 @@ public class SelectTest extends TestSupport {
             String val2 = (String)rec.getValue("val11");
             assertTrue(val2 == null);
         }
+
+        final String query2 = "SELECT * FROM table1 with client filter where val10 = 'test default'";
+        HQuery<HRecord> q2 = conn.newHQuery(query2);
+        List<HRecord> recList2 = q2.getResultList();
+        assertTrue(recList2.size() == 10);
+
+        final String query3 = "SELECT * FROM table1 with client filter where val11 = 'test default'";
+        HQuery<HRecord> q3 = conn.newHQuery(query3);
+        List<HRecord> recList3 = q3.getResultList();
+        assertTrue(recList3.size() == 0);
     }
 
     @Test

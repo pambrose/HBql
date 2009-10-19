@@ -266,8 +266,14 @@ public abstract class ColumnAttrib implements Serializable {
         }
         else {
 
-            if (!result.containsColumn(this.getFamilyNameBytes(), this.getColumnNameBytes()))
-                throw new ResultMissingColumnException(this.getFamilyQualifiedName());
+            if (!result.containsColumn(this.getFamilyNameBytes(), this.getColumnNameBytes())) {
+                // See if a default value is present
+                final Object defaultValue = this.getDefaultValue();
+                if (defaultValue != null)
+                    return defaultValue;
+                else
+                    throw new ResultMissingColumnException(this.getFamilyQualifiedName());
+            }
 
             final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
 
