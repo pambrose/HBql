@@ -36,20 +36,16 @@ public class DefinedAttrib extends ColumnAttrib {
         return this.columnDescription;
     }
 
-    public String getColumnName() {
-        return this.getColumnDescription().getColumnName();
-    }
-
-    public String getFamilyName() {
-        return this.getColumnDescription().getFamilyName();
-    }
-
     public String toString() {
         return this.getAliasName() + " - " + this.getFamilyQualifiedName();
     }
 
     public boolean isKeyAttrib() {
         return this.getFieldType() == FieldType.KeyType;
+    }
+
+    protected void defineAccessors() {
+        // No-op for Defined schema
     }
 
     public Object getCurrentValue(final Object hrecord) throws HBqlException {

@@ -164,7 +164,7 @@ public abstract class ExprContext implements Serializable {
                     else {
                         if (!parentClazz.isAssignableFrom(clazz))
                             throw new TypeException("Expecting type " + parentClazz.getSimpleName()
-                                                    + " but encountered type " + clazz.getSimpleName()
+                                                    + " but found type " + clazz.getSimpleName()
                                                     + " in " + this.asString());
                     }
                 }

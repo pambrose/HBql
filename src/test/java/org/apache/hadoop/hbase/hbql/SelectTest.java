@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
@@ -566,6 +567,7 @@ public class SelectTest extends TestSupport {
                             + "keyval key, "
                             + "f1:val1 string alias val1, "
                             + "f1:val10 string alias val10 default 'test default', "
+                            + "f1:val11 string alias val11 , "
                             + "f1:* alias f1default "
                             + ")");
 
@@ -576,6 +578,48 @@ public class SelectTest extends TestSupport {
         for (final HRecord rec : recList1) {
             String val1 = (String)rec.getValue("val10");
             assertTrue(val1.equals("test default"));
+            String val2 = (String)rec.getValue("val11");
+            assertTrue(val2 == null);
         }
+    }
+
+    @Test
+    public void selectMismatchedDefaults() throws HBqlException, IOException {
+
+        SchemaManager.removeSchema("table1");
+        Exception caughtException = null;
+        try {
+            SchemaManager.parse("define table table1 alias tab1"
+                                + "("
+                                + "keyval key, "
+                                + "f1:val10 string alias val10 default 4"
+                                + ")");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            caughtException = e;
+        }
+
+        assertTrue(caughtException instanceof TypeException);
+    }
+
+    @Test
+    public void selectInvalidDefaults() throws HBqlException, IOException {
+
+        SchemaManager.removeSchema("table1");
+        Exception caughtException = null;
+        try {
+            SchemaManager.parse("define table table1 alias tab1"
+                                + "("
+                                + "keyval key, "
+                                + "f1:val10 object alias val10 default 4 "
+                                + ")");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            caughtException = e;
+        }
+
+        assertTrue(caughtException instanceof HBqlException);
     }
 }

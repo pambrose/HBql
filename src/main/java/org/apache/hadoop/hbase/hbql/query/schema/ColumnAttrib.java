@@ -62,7 +62,11 @@ public abstract class ColumnAttrib implements Serializable {
         if (defaultValueExpr == null)
             return null;
 
-        final DefaultArg defaultArg = new DefaultArg(this.getFieldType().getExprType(), defaultValueExpr);
+        final Class<? extends GenericValue> type = this.getFieldType().getExprType();
+        if (type == null)
+            throw new HBqlException("Default values are not valid for: " + this.getNameToUseInExceptions());
+
+        final DefaultArg defaultArg = new DefaultArg(type, defaultValueExpr);
         return defaultArg.getValue();
     }
 
