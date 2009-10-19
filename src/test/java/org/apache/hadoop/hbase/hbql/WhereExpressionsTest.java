@@ -371,6 +371,11 @@ public class WhereExpressionsTest extends TestSupport {
                        "ELSE TRUE END");
 
         assertHasException("CASE WHEN 3 THEN TRUE END", TypeException.class);
+
+        assertEvalTrue("4 = CASE WHEN TRUE THEN 4 END");
+        assertEvalTrue("'4' = CASE WHEN TRUE THEN '4' END");
+        assertEvalTrue("TRUE = CASE WHEN TRUE THEN TRUE END");
+        assertEvalTrue("NOW() = CASE WHEN TRUE THEN NOW() END");
     }
 
     @Test
