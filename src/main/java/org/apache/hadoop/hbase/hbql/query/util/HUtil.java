@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
+import org.apache.hadoop.hbase.hbql.query.schema.NumericType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -21,12 +22,12 @@ public class HUtil {
         return ser;
     }
 
-    public static String getZeroPaddedNumber(final int val, final int width) throws HBqlException {
+    public static String getZeroPaddedNumber(final long val, final int width) throws HBqlException {
 
         final String strval = "" + val;
         final int padsize = width - strval.length();
         if (padsize < 0)
-            throw new HBqlException("Value " + val + " exceeded width " + width);
+            throw new HBqlException("Value " + val + " exceeds width " + width);
 
         StringBuilder sbuf = new StringBuilder();
         for (int i = 0; i < padsize; i++)
@@ -54,13 +55,21 @@ public class HUtil {
 
     public static boolean isParentClass(final Class parentClazz, final Class... clazzes) {
 
+        final boolean parentIsNumeric = NumericType.isANumber(parentClazz);
+
         for (final Class clazz : clazzes) {
 
             if (clazz == null)
                 continue;
 
-            if (!parentClazz.isAssignableFrom(clazz))
-                return false;
+            if (parentIsNumeric && NumericType.isANumber(clazz)) {
+                if (!NumericType.isAssignable(parentClazz, clazz))
+                    return false;
+            }
+            else {
+                if (!parentClazz.isAssignableFrom(clazz))
+                    return false;
+            }
         }
         return true;
     }

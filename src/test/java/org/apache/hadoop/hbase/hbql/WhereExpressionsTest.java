@@ -390,6 +390,8 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalTrue("'bbb' = SUBSTRING('BBBbbbAAA', 3, 6)");
         assertEvalTrue("'AAA' = 'A' + 'A' + 'A'");
         assertEvalTrue("'aaa' = LOWER('A' + 'A' + 'A')");
+
+        assertEvalTrue("'000004' = zeropad(4, 6)");
     }
 
     @Test

@@ -26,6 +26,7 @@ public abstract class Function extends GenericExpr {
         CONCAT(new TypeSignature(StringValue.class, StringValue.class, StringValue.class)),
         REPLACE(new TypeSignature(StringValue.class, StringValue.class, StringValue.class, StringValue.class)),
         SUBSTRING(new TypeSignature(StringValue.class, StringValue.class, IntegerValue.class, IntegerValue.class)),
+        ZEROPAD(new TypeSignature(StringValue.class, LongValue.class, IntegerValue.class)),
 
         // Return Numbers
         LENGTH(new TypeSignature(IntegerValue.class, StringValue.class)),

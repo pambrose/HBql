@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 public class StringFunction extends Function implements StringValue {
 
@@ -56,6 +57,12 @@ public class StringFunction extends Function implements StringValue {
                 final int end = ((Number)this.getArg(2).getValue(object)).intValue();
                 this.checkForNull(val);
                 return val.substring(begin, end);
+            }
+
+            case ZEROPAD: {
+                final int num = ((Number)this.getArg(0).getValue(object)).intValue();
+                final int width = ((Number)this.getArg(1).getValue(object)).intValue();
+                return HUtil.getZeroPaddedNumber(num, width);
             }
 
             default:

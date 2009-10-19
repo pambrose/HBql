@@ -68,7 +68,8 @@ public abstract class ColumnAttrib implements Serializable {
         if (this.isArray())
             throw new HBqlException("Default values are not valid for array values: " + this.getNameToUseInExceptions());
 
-        if (this.isAVersionValue())
+        // This will apply only to Annotations
+        if (this.isAVersionValue() && !this.isACurrentValue())
             throw new HBqlException("Default values are not valid for version values: " + this.getNameToUseInExceptions());
 
         if (this.isMapKeysAsColumnsAttrib())

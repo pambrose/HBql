@@ -285,6 +285,8 @@ options {backtrack=true; memoize=true;}
 							{retval = new StringFunction(Function.Type.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=topExpr COMMA n1=topExpr COMMA n2=topExpr RPAREN
 							{retval = new StringFunction(Function.Type.SUBSTRING, $s.retval, $n1.retval, $n2.retval);}
+	| keyZEROPAD LPAREN v=topExpr COMMA w=topExpr RPAREN
+							{retval = new StringFunction(Function.Type.ZEROPAD, $v.retval, $w.retval);}
 	| keyTRIM LPAREN s=topExpr RPAREN		{retval = new StringFunction(Function.Type.TRIM, $s.retval);}
 	| keyLOWER LPAREN s=topExpr RPAREN		{retval = new StringFunction(Function.Type.LOWER, $s.retval);} 
 	| keyUPPER LPAREN s=topExpr RPAREN		{retval = new StringFunction(Function.Type.UPPER, $s.retval);} 
@@ -409,6 +411,7 @@ keyUPPER 	: {isKeyword(input, "UPPER")}? ID;
 keyTRIM 	: {isKeyword(input, "TRIM")}? ID;
 keyCONCAT 	: {isKeyword(input, "CONCAT")}? ID;
 keySUBSTRING 	: {isKeyword(input, "SUBSTRING")}? ID;
+keyZEROPAD 	: {isKeyword(input, "ZEROPAD")}? ID;
 keyIGNORE_CASE 	: {isKeyword(input, "IGNORE_CASE")}? ID;
 keyNOW	 	: {isKeyword(input, "NOW")}? ID;
 keyMINDATE	: {isKeyword(input, "MINDATE")}? ID;

@@ -40,6 +40,10 @@ public enum NumericType {
         return -1;
     }
 
+    public static boolean isAssignable(final Class parentClazz, final Class lowerClazz) {
+        return getTypeRanking(lowerClazz) <= getTypeRanking(parentClazz);
+    }
+
     public static Class getHighestRankingNumericArg(final Object... vals) {
 
         Class highestRankingNumericArg = NumberValue.class;
@@ -58,6 +62,10 @@ public enum NumericType {
 
     public static boolean useDecimalNumericArgs(final Class clazz) {
         return isAFloat(clazz) || isADouble(clazz);
+    }
+
+    public static boolean isANumber(final Class clazz) {
+        return getTypeRanking(clazz) != -1;
     }
 
     public static boolean isAShort(final Class clazz) {
