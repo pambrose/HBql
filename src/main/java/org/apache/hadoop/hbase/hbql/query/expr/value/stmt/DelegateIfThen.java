@@ -10,19 +10,19 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
-public class DelegateTernary extends GenericTernary {
+public class DelegateIfThen extends GenericIfThen {
 
-    private GenericTernary typedExpr = null;
+    private GenericIfThen typedExpr = null;
 
-    public DelegateTernary(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
+    public DelegateIfThen(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
         super(null, arg0, arg1, arg2);
     }
 
-    private GenericTernary getTypedExpr() {
+    private GenericIfThen getTypedExpr() {
         return typedExpr;
     }
 
-    private void setTypedExpr(final GenericTernary typedExpr) {
+    private void setTypedExpr(final GenericIfThen typedExpr) {
         this.typedExpr = typedExpr;
     }
 
@@ -35,13 +35,13 @@ public class DelegateTernary extends GenericTernary {
         final Class<? extends GenericValue> type2 = this.getArg(2).validateTypes(this, false);
 
         if (HUtil.isParentClass(StringValue.class, type1, type2))
-            this.setTypedExpr(new StringTernary(this.getArg(0), this.getArg(1), this.getArg(2)));
+            this.setTypedExpr(new StringIfThen(this.getArg(0), this.getArg(1), this.getArg(2)));
         else if (HUtil.isParentClass(NumberValue.class, type1, type2))
-            this.setTypedExpr(new NumberTernary(this.getArg(0), this.getArg(1), this.getArg(2)));
+            this.setTypedExpr(new NumberIfThen(this.getArg(0), this.getArg(1), this.getArg(2)));
         else if (HUtil.isParentClass(DateValue.class, type1, type2))
-            this.setTypedExpr(new DateTernary(this.getArg(0), this.getArg(1), this.getArg(2)));
+            this.setTypedExpr(new DateIfThen(this.getArg(0), this.getArg(1), this.getArg(2)));
         else if (HUtil.isParentClass(BooleanValue.class, type1, type2))
-            this.setTypedExpr(new BooleanTernary(this.getArg(0), this.getArg(1), this.getArg(2)));
+            this.setTypedExpr(new BooleanIfThen(this.getArg(0), this.getArg(1), this.getArg(2)));
         else
             this.throwInvalidTypeException(type1, type2);
 

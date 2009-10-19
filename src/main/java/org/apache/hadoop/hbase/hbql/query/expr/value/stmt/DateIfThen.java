@@ -5,10 +5,10 @@ import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
-public class DateTernary extends GenericTernary implements DateValue {
+public class DateIfThen extends GenericIfThen implements DateValue {
 
-    public DateTernary(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
-        super(Type.DATETERNARY, arg0, arg1, arg2);
+    public DateIfThen(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
+        super(Type.DATEIFTHEN, arg0, arg1, arg2);
     }
 
     public Long getValue(final Object object) throws HBqlException, ResultMissingColumnException {

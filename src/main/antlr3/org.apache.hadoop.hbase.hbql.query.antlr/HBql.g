@@ -131,12 +131,13 @@ keysRange returns [KeyRangeArgs retval]
 	;
 	
 time returns [TimeRangeArgs retval]
-	: keyTIME keyRANGE d1=valPrimary keyTO d2=valPrimary	{retval = new TimeRangeArgs($d1.retval, $d2.retval);}
-	| keyTIME keySTAMP d1=valPrimary			{retval = new TimeRangeArgs($d1.retval, $d1.retval);}
+	: keyTIME keyRANGE d1=valPrimary keyTO d2=valPrimary	
+							{retval = new TimeRangeArgs($d1.retval, $d2.retval);}
+	| keyTIME keySTAMP d1=valPrimary		{retval = new TimeRangeArgs($d1.retval, $d1.retval);}
 	;
 		
 versions returns [VersionArgs retval]
-	: keyVERSIONS v=valPrimary				{retval = new VersionArgs($v.retval);}
+	: keyVERSIONS v=valPrimary			{retval = new VersionArgs($v.retval);}
 	| keyVERSIONS keyMAX				{retval = new VersionArgs(new IntegerLiteral(Integer.MAX_VALUE));}
 	;
 	
@@ -144,7 +145,7 @@ scanLimit returns [LimitArgs retval]
 	: keySCAN keyLIMIT v=valPrimary			{retval = new LimitArgs($v.retval);};
 	
 queryLimit returns [LimitArgs retval]
-	: keyQUERY keyLIMIT v=valPrimary			{retval = new LimitArgs($v.retval);};
+	: keyQUERY keyLIMIT v=valPrimary		{retval = new LimitArgs($v.retval);};
 	
 clientFilter returns [ExprTree retval]
 	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr	
@@ -161,8 +162,8 @@ keyRangeList returns [List<KeyRangeArgs.Range> retval]
 keyRange returns [KeyRangeArgs.Range retval]
 options {backtrack=true;}	
 	: q1=valPrimary keyTO keyLAST			{retval = KeyRangeArgs.newLastRange($q1.retval);}
-	| q1=valPrimary keyTO q2=valPrimary			{retval = KeyRangeArgs.newRange($q1.retval, $q2.retval);}
-	| q1=valPrimary 					{retval = KeyRangeArgs.newSingleKey($q1.retval);}
+	| q1=valPrimary keyTO q2=valPrimary		{retval = KeyRangeArgs.newRange($q1.retval, $q2.retval);}
+	| q1=valPrimary 				{retval = KeyRangeArgs.newSingleKey($q1.retval);}
 	;
 	
 nodescWhereExpr returns [ExprTree retval]
@@ -307,8 +308,9 @@ options {backtrack=true; memoize=true;}
 	| keyLONG LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.LONG, $s.retval);}
 	| keyFLOAT LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.FLOAT, $s.retval);}
 	| keyDOUBLE LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.DOUBLE, $s.retval);}
+
 	| keyIF v1=topExpr keyTHEN v2=topExpr keyELSE v3=topExpr keyEND	
-							{retval = new DelegateTernary($v1.retval, $v2.retval, $v3.retval);}
+							{retval = new DelegateIfThen($v1.retval, $v2.retval, $v3.retval);}
 	;
 
 valueItemList returns [List<GenericValue> retval]

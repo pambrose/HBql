@@ -5,12 +5,12 @@ import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
-public abstract class GenericTernary extends GenericExpr {
+public abstract class GenericIfThen extends GenericExpr {
 
-    protected GenericTernary(final Type type,
-                             final GenericValue arg0,
-                             final GenericValue arg1,
-                             final GenericValue arg2) {
+    protected GenericIfThen(final Type type,
+                            final GenericValue arg0,
+                            final GenericValue arg1,
+                            final GenericValue arg2) {
         super(type, arg0, arg1, arg2);
     }
 

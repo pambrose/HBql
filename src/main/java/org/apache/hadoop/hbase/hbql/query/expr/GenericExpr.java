@@ -25,10 +25,10 @@ public abstract class GenericExpr implements GenericValue {
 
     public enum Type {
 
-        BOOLEANTERNARY(new TypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class, BooleanValue.class)),
-        STRINGTERNARY(new TypeSignature(StringValue.class, BooleanValue.class, StringValue.class, StringValue.class)),
-        DATETERNARY(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class, DateValue.class)),
-        NUMBERTERNARY(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class, NumberValue.class)),
+        BOOLEANIFTHEN(new TypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class, BooleanValue.class)),
+        STRINGIFTHEN(new TypeSignature(StringValue.class, BooleanValue.class, StringValue.class, StringValue.class)),
+        DATEIFTHEN(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class, DateValue.class)),
+        NUMBERIFTHEN(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class, NumberValue.class)),
 
         STRINGCALCULATION(new TypeSignature(StringValue.class, StringValue.class, StringValue.class)),
         DATECALCULATION(new TypeSignature(DateValue.class, DateValue.class, DateValue.class)),
