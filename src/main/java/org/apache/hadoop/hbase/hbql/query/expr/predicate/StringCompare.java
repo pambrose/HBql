@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.expr.Operator;
+import org.apache.hadoop.hbase.hbql.query.expr.value.stmt.Operator;
 
 public class StringCompare extends GenericCompare {
 

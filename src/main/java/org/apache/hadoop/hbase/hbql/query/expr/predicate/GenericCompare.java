@@ -7,8 +7,8 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.expr.Operator;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
+import org.apache.hadoop.hbase.hbql.query.expr.value.stmt.Operator;
 
 public abstract class GenericCompare extends GenericExpr implements BooleanValue {
 

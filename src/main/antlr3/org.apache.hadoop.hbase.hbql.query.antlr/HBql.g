@@ -38,7 +38,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.*;
 import org.apache.hadoop.hbase.hbql.query.expr.node.*;
 import org.apache.hadoop.hbase.hbql.query.expr.predicate.*;
 import org.apache.hadoop.hbase.hbql.query.expr.value.function.*;
-import org.apache.hadoop.hbase.hbql.query.expr.value.expr.*;
+import org.apache.hadoop.hbase.hbql.query.expr.value.stmt.*;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.*;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.*;
 import org.apache.hadoop.hbase.hbql.query.cmds.*;

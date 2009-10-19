@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.expr.value.expr;
+package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 
 public enum Operator {
     PLUS("+"),

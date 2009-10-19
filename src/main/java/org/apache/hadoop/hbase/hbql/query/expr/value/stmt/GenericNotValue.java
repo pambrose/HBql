@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.expr.value.expr;
+package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 
 import org.apache.hadoop.hbase.hbql.query.expr.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
