@@ -1,10 +1,21 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
-public abstract class GenericLiteral implements GenericValue {
+public abstract class GenericLiteral<T> implements GenericValue {
+
+    private final T value;
+
+    public GenericLiteral(final T value) {
+        this.value = value;
+    }
+
+    public T getValue(final Object object) {
+        return this.value;
+    }
 
     public GenericValue getOptimizedValue() throws HBqlException {
         return this;
@@ -15,5 +26,16 @@ public abstract class GenericLiteral implements GenericValue {
     }
 
     public void setExprContext(final ExprContext context) throws HBqlException {
+    }
+
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowsCollections) throws TypeException {
+        return this.getReturnType();
+    }
+
+    protected abstract Class<? extends GenericValue> getReturnType();
+
+    public String asString() {
+        return "" + this.getValue(null);
     }
 }

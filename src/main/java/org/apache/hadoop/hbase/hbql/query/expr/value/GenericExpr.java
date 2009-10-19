@@ -43,8 +43,6 @@ public abstract class GenericExpr implements GenericValue {
 
         STRINGPATTERN(new TypeSignature(BooleanValue.class, StringValue.class, StringValue.class)),
 
-        BOOLEANEXPR(new TypeSignature(BooleanValue.class, BooleanValue.class)),
-
         // Args are left unspecified for IN Stmt
         GENERICINSTMT(new TypeSignature(BooleanValue.class));
 

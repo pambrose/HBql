@@ -1,23 +1,20 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 import java.util.Date;
 
-public class DateLiteral extends GenericLiteral implements DateValue {
+public class DateLiteral extends GenericLiteral<Long> implements DateValue {
 
     private static long now = System.currentTimeMillis();
 
-    private final Long dateval;
-
     public DateLiteral(final Date dateval) {
-        this.dateval = dateval.getTime();
+        super(dateval.getTime());
     }
 
-    public DateLiteral(final Long val) {
-        this.dateval = val;
+    public DateLiteral(final Long value) {
+        super(value);
     }
 
     public static long getNow() {
@@ -28,16 +25,11 @@ public class DateLiteral extends GenericLiteral implements DateValue {
         now = System.currentTimeMillis();
     }
 
-    public Long getValue(final Object object) {
-        return this.dateval;
-    }
-
-    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
+    protected Class<? extends GenericValue> getReturnType() {
         return DateValue.class;
     }
 
     public String asString() {
-        return "\"" + String.format("%1$ta %1$tb %1$td %1$tT %1$tZ %1$tY", new Date(this.dateval)) + "\"";
+        return "\"" + String.format("%1$ta %1$tb %1$td %1$tT %1$tZ %1$tY", new Date(this.getValue(null))) + "\"";
     }
 }
