@@ -62,6 +62,18 @@ public abstract class ColumnAttrib implements Serializable {
         if (defaultValueExpr == null)
             return null;
 
+        if (this.isKeyAttrib())
+            throw new HBqlException("Default values are not valid for key values: " + this.getNameToUseInExceptions());
+
+        if (this.isArray())
+            throw new HBqlException("Default values are not valid for array values: " + this.getNameToUseInExceptions());
+
+        if (this.isAVersionValue())
+            throw new HBqlException("Default values are not valid for version values: " + this.getNameToUseInExceptions());
+
+        if (this.isMapKeysAsColumnsAttrib())
+            throw new HBqlException("Default values are not valid for MapKeysAsColumns values: " + this.getNameToUseInExceptions());
+
         final Class<? extends GenericValue> type = this.getFieldType().getExprType();
         if (type == null)
             throw new HBqlException("Default values are not valid for: " + this.getNameToUseInExceptions());
