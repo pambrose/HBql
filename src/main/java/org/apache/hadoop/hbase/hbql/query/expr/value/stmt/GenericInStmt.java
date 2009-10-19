@@ -4,18 +4,14 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 import java.util.List;
 
 public abstract class GenericInStmt extends GenericNotValue {
 
     protected GenericInStmt(final GenericValue arg0, final boolean not, final List<GenericValue> inList) {
-        super(Type.GENERICINSTMT, not, arg0, inList);
+        super(Type.INSTMT, not, arg0, inList);
     }
 
     protected abstract boolean evaluateList(final Object object) throws HBqlException, ResultMissingColumnException;
@@ -33,19 +29,7 @@ public abstract class GenericInStmt extends GenericNotValue {
                                                        final boolean allowsCollections) throws TypeException {
 
         final Class<? extends GenericValue> type = this.getArg(0).validateTypes(this, false);
-
-        final Class<? extends GenericValue> inClazz;
-
-        if (HUtil.isParentClass(StringValue.class, type))
-            inClazz = StringValue.class;
-        else if (HUtil.isParentClass(NumberValue.class, type))
-            inClazz = NumberValue.class;
-        else if (HUtil.isParentClass(DateValue.class, type))
-            inClazz = DateValue.class;
-        else {
-            inClazz = null;
-            this.throwInvalidTypeException(type);
-        }
+        final Class<? extends GenericValue> inClazz = this.determineGenericValueClass(type);
 
         // Make sure all the types are matched
         for (final GenericValue inVal : this.getInList())

@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 public class DateCaseElse extends GenericCaseElse implements DateValue {
 
     public DateCaseElse(final GenericValue arg0) {
-        super(Type.DATEELSE, arg0);
+        super(Type.DATECASEELSE, arg0);
     }
 
     public Long getValue(final Object object) throws HBqlException, ResultMissingColumnException {

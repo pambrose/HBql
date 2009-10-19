@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -39,6 +40,8 @@ public class DelegateInStmt extends GenericInStmt {
             this.setTypedExpr(new NumberInStmt(this.getArg(0), this.isNot(), this.getInList()));
         else if (HUtil.isParentClass(DateValue.class, type))
             this.setTypedExpr(new DateInStmt(this.getArg(0), this.isNot(), this.getInList()));
+        else if (HUtil.isParentClass(BooleanValue.class, type))
+            this.setTypedExpr(new BooleanInStmt(this.getArg(0), this.isNot(), this.getInList()));
         else
             this.throwInvalidTypeException(type);
 

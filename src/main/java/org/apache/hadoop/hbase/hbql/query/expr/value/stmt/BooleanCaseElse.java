@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 public class BooleanCaseElse extends GenericCaseElse implements BooleanValue {
 
     public BooleanCaseElse(final GenericValue arg0) {
-        super(Type.BOOLEANELSE, arg0);
+        super(Type.BOOLEANCASEELSE, arg0);
     }
 
     public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {

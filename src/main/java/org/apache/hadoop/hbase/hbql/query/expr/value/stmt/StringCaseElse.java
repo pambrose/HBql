@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 public class StringCaseElse extends GenericCaseElse implements StringValue {
 
     public StringCaseElse(final GenericValue arg0) {
-        super(Type.STRINGELSE, arg0);
+        super(Type.STRINGCASEELSE, arg0);
     }
 
     public String getValue(final Object object) throws HBqlException, ResultMissingColumnException {

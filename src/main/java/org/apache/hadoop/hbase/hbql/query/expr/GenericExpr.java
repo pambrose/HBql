@@ -25,20 +25,20 @@ public abstract class GenericExpr implements GenericValue {
 
     public enum Type {
 
-        BOOLEANCASE(new TypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class)),
+        BOOLEANCASE(new TypeSignature(BooleanValue.class)),
         STRINGCASE(new TypeSignature(StringValue.class)),
-        DATECASE(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class)),
-        NUMBERCASE(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class)),
+        DATECASE(new TypeSignature(DateValue.class)),
+        NUMBERCASE(new TypeSignature(NumberValue.class)),
 
-        BOOLEANWHEN(new TypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class)),
-        STRINGWHEN(new TypeSignature(StringValue.class, BooleanValue.class, StringValue.class)),
-        DATEWHEN(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class)),
-        NUMBERWHEN(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class)),
+        BOOLEANCASEWHEN(new TypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class)),
+        STRINGCASEWHEN(new TypeSignature(StringValue.class, BooleanValue.class, StringValue.class)),
+        DATECASEWHEN(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class)),
+        NUMBERCASEWHEN(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class)),
 
-        BOOLEANELSE(new TypeSignature(BooleanValue.class, BooleanValue.class)),
-        STRINGELSE(new TypeSignature(StringValue.class, StringValue.class)),
-        DATEELSE(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class)),
-        NUMBERELSE(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class)),
+        BOOLEANCASEELSE(new TypeSignature(BooleanValue.class, BooleanValue.class)),
+        STRINGCASEELSE(new TypeSignature(StringValue.class, StringValue.class)),
+        DATECASEELSE(new TypeSignature(DateValue.class, BooleanValue.class, DateValue.class)),
+        NUMBERCASEELSE(new TypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class)),
 
         BOOLEANIFTHEN(new TypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class, BooleanValue.class)),
         STRINGIFTHEN(new TypeSignature(StringValue.class, BooleanValue.class, StringValue.class, StringValue.class)),
@@ -58,7 +58,7 @@ public abstract class GenericExpr implements GenericValue {
         STRINGPATTERN(new TypeSignature(BooleanValue.class, StringValue.class, StringValue.class)),
 
         // Args are left unspecified for IN Stmt
-        GENERICINSTMT(new TypeSignature(BooleanValue.class));
+        INSTMT(new TypeSignature(BooleanValue.class));
 
         private final TypeSignature typeSignature;
 
@@ -345,5 +345,21 @@ public abstract class GenericExpr implements GenericValue {
         sbuf.append(" in expression " + this.asString());
 
         throw new TypeException(sbuf.toString());
+    }
+
+    protected Class<? extends GenericValue> determineGenericValueClass(final Class<? extends GenericValue> type) throws TypeException {
+
+        if (HUtil.isParentClass(StringValue.class, type))
+            return StringValue.class;
+        else if (HUtil.isParentClass(NumberValue.class, type))
+            return NumberValue.class;
+        else if (HUtil.isParentClass(DateValue.class, type))
+            return DateValue.class;
+        else if (HUtil.isParentClass(BooleanValue.class, type))
+            return BooleanValue.class;
+        else {
+            this.throwInvalidTypeException(type);
+            return null;
+        }
     }
 }
