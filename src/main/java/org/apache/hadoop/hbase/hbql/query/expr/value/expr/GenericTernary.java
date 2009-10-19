@@ -2,8 +2,8 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.expr;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
+import org.apache.hadoop.hbase.hbql.query.expr.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 
 public abstract class GenericTernary extends GenericExpr {
 

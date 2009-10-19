@@ -4,6 +4,8 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.GenericExpr;
+import org.apache.hadoop.hbase.hbql.query.expr.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
@@ -13,8 +15,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 public abstract class Function extends GenericExpr {
 

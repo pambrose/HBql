@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.expr.value;
+package org.apache.hadoop.hbase.hbql.query.expr;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;

@@ -1,11 +1,11 @@
 package org.apache.hadoop.hbase.hbql.query.stmt.args;
 
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
+import org.apache.hadoop.hbase.hbql.query.expr.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
 
 public abstract class SelectArgs extends ExprContext {
 

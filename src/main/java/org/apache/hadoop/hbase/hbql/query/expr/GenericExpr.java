@@ -1,10 +1,9 @@
-package org.apache.hadoop.hbase.hbql.query.expr.value;
+package org.apache.hadoop.hbase.hbql.query.expr;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
