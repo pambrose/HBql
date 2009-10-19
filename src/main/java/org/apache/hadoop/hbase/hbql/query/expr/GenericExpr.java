@@ -347,19 +347,18 @@ public abstract class GenericExpr implements GenericValue {
         throw new TypeException(sbuf.toString());
     }
 
-    protected Class<? extends GenericValue> determineGenericValueClass(final Class<? extends GenericValue> type) throws TypeException {
+    protected Class<? extends GenericValue> determineGenericValueClass(final Class<? extends GenericValue> clazz) throws TypeException {
 
-        if (HUtil.isParentClass(StringValue.class, type))
-            return StringValue.class;
-        else if (HUtil.isParentClass(NumberValue.class, type))
-            return NumberValue.class;
-        else if (HUtil.isParentClass(DateValue.class, type))
-            return DateValue.class;
-        else if (HUtil.isParentClass(BooleanValue.class, type))
-            return BooleanValue.class;
-        else {
-            this.throwInvalidTypeException(type);
-            return null;
-        }
+        final List<Class<? extends GenericValue>> types = Arrays.asList(StringValue.class,
+                                                                        NumberValue.class,
+                                                                        DateValue.class,
+                                                                        BooleanValue.class);
+
+        for (final Class<? extends GenericValue> type : types)
+            if (HUtil.isParentClass(type, clazz))
+                return type;
+
+        this.throwInvalidTypeException(clazz);
+        return null;
     }
 }
