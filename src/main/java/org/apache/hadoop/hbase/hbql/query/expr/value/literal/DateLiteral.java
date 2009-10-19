@@ -15,16 +15,16 @@ public class DateLiteral extends GenericLiteral implements DateValue {
         MINDATE(false, 0),
         MAXDATE(false, Long.MAX_VALUE);
 
-        final boolean adjusted;
+        final boolean relative;
         final long value;
 
-        Type(final boolean adjusted, final long value) {
-            this.adjusted = adjusted;
+        Type(final boolean relative, final long value) {
+            this.relative = relative;
             this.value = value;
         }
 
-        public boolean isAdjustment() {
-            return this.adjusted;
+        public boolean isRelative() {
+            return this.relative;
         }
 
         public long getValue() {
@@ -43,7 +43,7 @@ public class DateLiteral extends GenericLiteral implements DateValue {
     }
 
     public DateLiteral(final Type type) {
-        if (type.isAdjustment())
+        if (type.isRelative())
             this.dateval = getNow() + type.getValue();
         else
             this.dateval = type.getValue();
