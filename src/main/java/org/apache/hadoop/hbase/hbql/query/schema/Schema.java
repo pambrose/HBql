@@ -1,7 +1,10 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
+import org.antlr.runtime.RecognitionException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
+import org.apache.hadoop.hbase.hbql.query.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
@@ -88,12 +91,19 @@ public abstract class Schema implements Serializable {
         }
     }
 
-    public ExprTree getExprTreeFromCache(final String exprStr) {
+    public ExprTree getExprTree(final String str) throws RecognitionException {
         final Map<String, ExprTree> map = this.getEvalMap();
-        return map.get(exprStr);
+        ExprTree exprTree = map.get(str);
+        if (exprTree == null) {
+            final HBqlParser parser = HBql.newParser(str);
+            exprTree = parser.nodescWhereExpr();
+            exprTree.setSchema(this);
+            this.addToExprTreeCache(str, exprTree);
+        }
+        return exprTree;
     }
 
-    public synchronized void addToExprTreeCache(final String exprStr, final ExprTree exprTree) {
+    private synchronized void addToExprTreeCache(final String exprStr, final ExprTree exprTree) {
 
         final Map<String, ExprTree> map = this.getEvalMap();
 

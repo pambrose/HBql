@@ -28,16 +28,7 @@ public class HBql {
 
     public static ExprTree parseWhereExpression(final String str, final Schema schema) throws HBqlException {
         try {
-
-            // Fist see if schema already has tree cached
-            ExprTree exprTree = schema.getExprTreeFromCache(str);
-            if (exprTree == null) {
-                final HBqlParser parser = newParser(str);
-                exprTree = parser.nodescWhereExpr();
-                exprTree.setSchema(schema);
-                schema.addToExprTreeCache(str, exprTree);
-            }
-            return exprTree;
+            return schema.getExprTree(str);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
