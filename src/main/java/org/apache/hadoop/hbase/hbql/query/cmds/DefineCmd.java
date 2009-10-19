@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DefineCmd extends TableCmd implements SchemaManagerCmd {
 
-    private String alias;
+    private final String alias;
     private final List<ColumnDescription> columnDescriptionList;
 
     public DefineCmd(final String tableName, final String alias, final List<ColumnDescription> columnDescriptionList) {

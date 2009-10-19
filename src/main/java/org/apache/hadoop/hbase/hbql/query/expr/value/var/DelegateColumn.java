@@ -10,7 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 public class DelegateColumn extends GenericColumn<GenericValue> {
 
     private GenericColumn typedColumn = null;
-    private String variableName;
+    private final String variableName;
 
     public DelegateColumn(final String variableName) {
         super(null);

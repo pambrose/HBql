@@ -15,20 +15,20 @@ import java.util.NavigableMap;
 
 public abstract class ColumnAttrib implements Serializable {
 
-    protected final String familyName;
-    protected final String columnName;
-    protected final String aliasName;
+    private final String familyName;
+    private final String columnName;
+    private final String aliasName;
     private final FieldType fieldType;
     private byte[] familyBytes = null;
     private byte[] columnBytes = null;
-    protected final String getter;
-    protected final String setter;
-    protected final boolean mapKeysAsColumns;
-    protected final boolean familyDefault;
-    protected final boolean isArray;
-    protected transient Method getterMethod = null;
-    protected transient Method setterMethod = null;
-    protected final Object defaultValue;
+    private final String getter;
+    private final String setter;
+    private final boolean mapKeysAsColumns;
+    private final boolean familyDefault;
+    private final boolean isArray;
+    private transient Method getterMethod = null;
+    private transient Method setterMethod = null;
+    private final Object defaultValue;
 
     protected ColumnAttrib(final String familyName,
                            final String columnName,

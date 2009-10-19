@@ -68,7 +68,7 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
 
             for (final T val : retval) {
                 for (final ObjectQueryListener<T> listener : this.getListeners())
-                    listener.onEachObject((T)val);
+                    listener.onEachObject(val);
             }
 
             for (final ObjectQueryListener<T> listener : this.getListeners())

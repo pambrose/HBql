@@ -13,9 +13,9 @@ import java.util.Map;
  */
 public class ElementMap<T> {
 
-    final Map<String, T> map = Maps.newHashMap();
+    private final Map<String, T> map = Maps.newHashMap();
 
-    final HRecordImpl hrecord;
+    private final HRecordImpl hrecord;
 
     public ElementMap(final HRecordImpl hrecord) {
         this.hrecord = hrecord;

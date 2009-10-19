@@ -39,7 +39,7 @@ public enum FieldType {
     ObjectType(Object.class, null, -1, -1, "OBJECT", "OBJ");
 
     private final Class componentType;
-    private Class<? extends GenericValue> exprType;
+    private final Class<? extends GenericValue> exprType;
     private final int typeRanking;
     private final int size;
     private final List<String> synonymList;

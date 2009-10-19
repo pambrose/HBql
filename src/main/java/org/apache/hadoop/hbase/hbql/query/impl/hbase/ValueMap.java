@@ -10,7 +10,7 @@ import java.util.NavigableMap;
 
 public abstract class ValueMap<T> extends HValue {
 
-    private Map<String, CurrentAndVersionValue<T>> currentAndVersionMap = Maps.newHashMap();
+    private final Map<String, CurrentAndVersionValue<T>> currentAndVersionMap = Maps.newHashMap();
     private final Class elementClazz;
 
     protected ValueMap(final HRecordImpl hrecord, final String name, final Class elementClazz) throws HBqlException {

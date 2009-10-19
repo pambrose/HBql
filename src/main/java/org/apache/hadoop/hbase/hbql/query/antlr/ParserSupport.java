@@ -63,7 +63,7 @@ public class ParserSupport extends Parser {
         throw e;
     }
 
-    public static boolean attemptRecovery = false;
+    public final static boolean attemptRecovery = false;
 
     protected void handleRecognitionException(final RecognitionException re) throws RecognitionException {
 

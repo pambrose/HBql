@@ -31,7 +31,7 @@ public abstract class ExprContext implements Serializable {
 
     private Schema schema = null;
     private final TypeSignature typeSignature;
-    private List<GenericValue> expressions = Lists.newArrayList();
+    private final List<GenericValue> expressions = Lists.newArrayList();
 
     protected ExprContext(final TypeSignature typeSignature, final GenericValue... vals) {
         this.typeSignature = typeSignature;

@@ -29,7 +29,7 @@ public class WhereArgs {
     private HBaseSchema schema;
 
     // Keep track of args set multiple times
-    Set<String> multipleSetValues = Sets.newHashSet();
+    private final Set<String> multipleSetValues = Sets.newHashSet();
 
     public void setSchema(final HBaseSchema schema) throws HBqlException {
 

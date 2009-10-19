@@ -228,7 +228,7 @@ public class AnnotationSchema extends HBaseSchema {
         return getAnnotationSchema(obj.getClass());
     }
 
-    public synchronized static AnnotationSchema getAnnotationSchema(final Class<?> clazz) throws HBqlException {
+    private synchronized static AnnotationSchema getAnnotationSchema(final Class<?> clazz) throws HBqlException {
 
         AnnotationSchema schema = getAnnotationSchemaMap().get(clazz);
         if (schema != null)

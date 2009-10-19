@@ -30,7 +30,7 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     private byte[] familyNameBytes = null;
     private byte[] columnNameBytes = null;
 
-    public ExprSelectElement(final GenericValue genericValue, final String asName) {
+    private ExprSelectElement(final GenericValue genericValue, final String asName) {
         super(null, genericValue);
         this.asName = asName;
     }
@@ -46,7 +46,6 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
     public boolean hasAsName() {
         return this.getAsName() != null && this.getAsName().length() > 0;
     }
-
 
     public boolean isSimpleColumnReference() {
         return this.getGenericValue(0) instanceof DelegateColumn;
