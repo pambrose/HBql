@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
@@ -102,6 +103,11 @@ public class TestSupport {
             eclazz = e.getClass();
         }
         org.junit.Assert.assertTrue(eclazz != null && eclazz.equals(clazz));
+    }
+
+    public void assertHasException(final String str, final Class<TypeException> clazz) throws HBqlException {
+        final ExprTree tree = parseDescWhereExpr(str, null);
+        assertExprTreeHasException(null, tree, clazz);
     }
 
     public static void assertExprColumnsMatchTrue(final String expr, String... vals) throws HBqlException {

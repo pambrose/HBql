@@ -308,7 +308,7 @@ public abstract class GenericExpr implements GenericValue {
         if (classList.size() > 0) {
             final StringBuilder sbuf = new StringBuilder("Expecting type " + parentClazz.getSimpleName()
                                                          + " but encountered type"
-                                                         + ((classList.size() > 1) ? "s" : "") + ": ");
+                                                         + ((classList.size() > 1) ? "s" : "") + " ");
             boolean first = true;
             for (final Class clazz : classList) {
                 if (!first)
@@ -317,7 +317,7 @@ public abstract class GenericExpr implements GenericValue {
                 first = false;
             }
 
-            sbuf.append(" in expression " + this.asString());
+            sbuf.append(" in expression: " + this.asString());
 
             throw new TypeException(sbuf.toString());
         }

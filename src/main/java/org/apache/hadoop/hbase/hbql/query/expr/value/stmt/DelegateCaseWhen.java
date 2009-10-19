@@ -30,7 +30,6 @@ public class DelegateCaseWhen extends GenericCaseWhen {
                                                        final boolean allowsCollections) throws TypeException {
 
         this.validateParentClass(BooleanValue.class, this.getArg(0).validateTypes(this, false));
-
         final Class<? extends GenericValue> valueType = this.getArg(1).validateTypes(this, false);
 
         if (HUtil.isParentClass(StringValue.class, valueType))

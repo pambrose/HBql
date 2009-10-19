@@ -355,6 +355,25 @@ public class WhereExpressionsTest extends TestSupport {
     }
 
     @Test
+    public void caseTests() throws HBqlException {
+
+        assertEvalTrue("CASE WHEN TRUE THEN TRUE END");
+        assertEvalTrue("CASE WHEN 1=3 THEN FALSE ELSE TRUE END");
+        assertEvalTrue("CASE " +
+                       "WHEN 1=3 THEN FALSE " +
+                       "WHEN 1=3 THEN FALSE " +
+                       "WHEN 3=3 THEN TRUE " +
+                       "END");
+        assertEvalTrue("CASE " +
+                       "WHEN 1=3 THEN FALSE " +
+                       "WHEN 1=3 THEN FALSE " +
+                       "WHEN 3=3 THEN TRUE " +
+                       "ELSE TRUE END");
+
+        assertHasException("CASE WHEN 3 THEN TRUE END", TypeException.class);
+    }
+
+    @Test
     public void numericFunctions() throws HBqlException {
 
         assertEvalTrue("3 between 2 AND 5");

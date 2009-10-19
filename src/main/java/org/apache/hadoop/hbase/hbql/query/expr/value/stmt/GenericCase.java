@@ -20,12 +20,13 @@ public abstract class GenericCase extends GenericExpr {
     public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 
         for (final GenericCaseWhen when : this.getWhenExprList()) {
-            if (when.getPredicateValue(object))
+            final boolean predicate = when.getPredicateValue(object);
+            if (predicate)
                 return when.getValue(object);
         }
 
         if (this.getElseExpr() != null)
-            this.getElseExpr().getValue(object);
+            return this.getElseExpr().getValue(object);
 
         return null;
     }
@@ -42,7 +43,7 @@ public abstract class GenericCase extends GenericExpr {
         if (this.getElseExpr() != null)
             sbuf.append(this.getElseExpr().asString());
 
-        sbuf.append(" END");
+        sbuf.append("END");
 
         return sbuf.toString();
     }

@@ -68,6 +68,7 @@ public class DelegateCase extends GenericCase {
     }
 
     public void addElse(final GenericValue value) {
-        this.setElseExpr(new DelegateCaseElse(value));
+        if (value != null)
+            this.setElseExpr(new DelegateCaseElse(value));
     }
 }
