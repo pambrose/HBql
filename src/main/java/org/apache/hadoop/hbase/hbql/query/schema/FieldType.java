@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ByteValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.CharValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
@@ -25,7 +26,7 @@ public enum FieldType {
 
     BooleanType(Boolean.TYPE, BooleanValue.class, 0, Bytes.SIZEOF_BOOLEAN, "BOOLEAN", "BOOL"),
     ByteType(Byte.TYPE, ByteValue.class, 1, Bytes.SIZEOF_BYTE, "BYTE"),
-    CharType(Short.TYPE, ShortValue.class, 1, Bytes.SIZEOF_CHAR, "CHAR"),
+    CharType(Short.TYPE, CharValue.class, 1, Bytes.SIZEOF_CHAR, "CHAR"),
 
     ShortType(Short.TYPE, ShortValue.class, 2, Bytes.SIZEOF_SHORT, "SHORT"),
     IntegerType(Integer.TYPE, IntegerValue.class, 3, Bytes.SIZEOF_INT, "INTEGER", "INT"),
