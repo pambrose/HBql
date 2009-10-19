@@ -8,7 +8,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DoubleLiteral;
@@ -43,8 +42,6 @@ public abstract class GenericExpr implements GenericValue {
         STRINGNULL(new TypeSignature(BooleanValue.class, StringValue.class)),
 
         STRINGPATTERN(new TypeSignature(BooleanValue.class, StringValue.class, StringValue.class)),
-
-        INTERVAL(new TypeSignature(DateValue.class, LongValue.class)),
 
         BOOLEANEXPR(new TypeSignature(BooleanValue.class, BooleanValue.class)),
 
@@ -286,10 +283,7 @@ public abstract class GenericExpr implements GenericValue {
                     classList.add(clazz);
                 }
                 else {
-                    final int parentRanking = NumericType.getTypeRanking(parentClazz);
-                    final int clazzRanking = NumericType.getTypeRanking(clazz);
-
-                    if (parentRanking < clazzRanking)
+                    if (!NumericType.isAssignable(parentClazz, clazz))
                         classList.add(clazz);
                 }
             }

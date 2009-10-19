@@ -15,7 +15,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.value.TypeSignature;
-import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 public abstract class Function extends GenericExpr {
 
@@ -23,6 +22,7 @@ public abstract class Function extends GenericExpr {
 
         // Return Date
         DATE(new TypeSignature(DateValue.class, StringValue.class, StringValue.class)),
+        INTERVAL(new TypeSignature(DateValue.class, LongValue.class)),
 
         // Return String
         TRIM(new TypeSignature(StringValue.class, StringValue.class)),
@@ -89,14 +89,23 @@ public abstract class Function extends GenericExpr {
 
         for (final Class<? extends GenericValue> clazz : this.getTypeSignature().getArgs()) {
             final Class<? extends GenericValue> type = this.getArg(i).validateTypes(this, false);
-            if (!HUtil.isParentClass(clazz, type))
+            try {
+                this.validateParentClass(clazz, type);
+            }
+            catch (TypeException e) {
+                // Catch the exception and improve message
                 throw new TypeException("Invalid type " + type.getSimpleName() + " for arg " + i + " in function "
-                                        + this.getFunctionType().name() + " in "
-                                        + this.asString() + ".  Expecting type " + clazz.getSimpleName());
+                                        + this.getFunctionName() + " in "
+                                        + this.asString() + ".  Expecting type " + clazz.getSimpleName() + ".");
+            }
             i++;
         }
 
         return this.getTypeSignature().getReturnType();
+    }
+
+    protected String getFunctionName() {
+        return this.getFunctionType().name();
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {

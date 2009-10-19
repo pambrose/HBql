@@ -41,7 +41,10 @@ public enum NumericType {
     }
 
     public static boolean isAssignable(final Class parentClazz, final Class lowerClazz) {
-        return getTypeRanking(lowerClazz) <= getTypeRanking(parentClazz);
+        final int parentRanking = getTypeRanking(parentClazz);
+        final int clazzRanking = getTypeRanking(lowerClazz);
+
+        return clazzRanking <= parentRanking;
     }
 
     public static Class getHighestRankingNumericArg(final Object... vals) {

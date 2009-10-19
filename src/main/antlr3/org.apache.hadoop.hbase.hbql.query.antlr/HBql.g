@@ -272,13 +272,13 @@ options {backtrack=true; memoize=true;}
 	| keyMINDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
 	| keyMAXDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
 	
-	| keyYEAR LPAREN n=topExpr RPAREN		{retval = new Interval(Interval.Type.YEAR, $n.retval);}
-	| keyWEEK LPAREN n=topExpr RPAREN		{retval = new Interval(Interval.Type.WEEK, $n.retval);}
-	| keyDAY LPAREN n=topExpr RPAREN		{retval = new Interval(Interval.Type.DAY, $n.retval);}
-	| keyHOUR LPAREN n=topExpr RPAREN		{retval = new Interval(Interval.Type.HOUR, $n.retval);}
-	| keyMINUTE LPAREN n=topExpr RPAREN		{retval = new Interval(Interval.Type.MINUTE, $n.retval);}
-	| keySECOND LPAREN n=topExpr RPAREN		{retval = new Interval(Interval.Type.SECOND, $n.retval);}
-	| keyMILLI LPAREN n=topExpr RPAREN		{retval = new Interval(Interval.Type.MILLI, $n.retval);}
+	| keyYEAR LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.YEAR, $n.retval);}
+	| keyWEEK LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.WEEK, $n.retval);}
+	| keyDAY LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.DAY, $n.retval);}
+	| keyHOUR LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.HOUR, $n.retval);}
+	| keyMINUTE LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.MINUTE, $n.retval);}
+	| keySECOND LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.SECOND, $n.retval);}
+	| keyMILLI LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.MILLI, $n.retval);}
 
 	| keyDATE LPAREN s1=topExpr COMMA s2=topExpr RPAREN
 							{retval = new DateFunction(Function.Type.DATE, $s1.retval, $s2.retval);}
