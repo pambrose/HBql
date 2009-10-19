@@ -4,11 +4,34 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class DateFunction extends Function implements DateValue {
+
+    public enum ConstantType {
+        NOW(true, 0),
+        MINDATE(false, 0),
+        MAXDATE(false, Long.MAX_VALUE);
+
+        final boolean relative;
+        final long value;
+
+        ConstantType(final boolean relative, final long value) {
+            this.relative = relative;
+            this.value = value;
+        }
+
+        public boolean isRelative() {
+            return this.relative;
+        }
+
+        public long getValue() {
+            return this.value;
+        }
+    }
 
     public enum IntervalType {
         MILLI(1),
@@ -31,14 +54,30 @@ public class DateFunction extends Function implements DateValue {
     }
 
     private IntervalType intervalType;
+    private DateLiteral dateValue;
+
+    public DateFunction(final Type functionType, final GenericValue... exprs) {
+        super(functionType, exprs);
+    }
+
+    public DateFunction(final ConstantType type) {
+        super(Type.DATELITERAL);
+        switch (type) {
+            case NOW:
+                this.dateValue = new DateLiteral(DateLiteral.getNow());
+                break;
+            case MINDATE:
+                this.dateValue = new DateLiteral(0L);
+                break;
+            case MAXDATE:
+                this.dateValue = new DateLiteral(Long.MAX_VALUE);
+                break;
+        }
+    }
 
     public DateFunction(final IntervalType intervalType, final GenericValue arg0) {
         super(Type.INTERVAL, arg0);
         this.intervalType = intervalType;
-    }
-
-    public DateFunction(final Type functionType, final GenericValue... exprs) {
-        super(functionType, exprs);
     }
 
     private IntervalType getIntervalType() {
@@ -66,6 +105,10 @@ public class DateFunction extends Function implements DateValue {
                 final Number num = (Number)this.getArg(0).getValue(object);
                 final long val = num.longValue();
                 return val * this.getIntervalType().getIntervalMillis();
+            }
+
+            case DATELITERAL: {
+                return this.dateValue.getValue(object);
             }
 
             default:

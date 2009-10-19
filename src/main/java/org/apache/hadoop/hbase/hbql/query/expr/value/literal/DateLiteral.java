@@ -10,28 +10,6 @@ public class DateLiteral extends GenericLiteral implements DateValue {
 
     private static long now = System.currentTimeMillis();
 
-    public enum Type {
-        NOW(true, 0),
-        MINDATE(false, 0),
-        MAXDATE(false, Long.MAX_VALUE);
-
-        final boolean relative;
-        final long value;
-
-        Type(final boolean relative, final long value) {
-            this.relative = relative;
-            this.value = value;
-        }
-
-        public boolean isRelative() {
-            return this.relative;
-        }
-
-        public long getValue() {
-            return this.value;
-        }
-    }
-
     private final Long dateval;
 
     public DateLiteral(final Date dateval) {
@@ -42,14 +20,7 @@ public class DateLiteral extends GenericLiteral implements DateValue {
         this.dateval = val;
     }
 
-    public DateLiteral(final Type type) {
-        if (type.isRelative())
-            this.dateval = getNow() + type.getValue();
-        else
-            this.dateval = type.getValue();
-    }
-
-    private static long getNow() {
+    public static long getNow() {
         return now;
     }
 

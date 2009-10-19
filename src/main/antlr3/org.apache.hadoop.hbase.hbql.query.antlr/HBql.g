@@ -268,9 +268,9 @@ options {backtrack=true; memoize=true;}
 
 valueFunctions returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
-	: keyNOW LPAREN	RPAREN				{retval = new DateLiteral(DateLiteral.Type.NOW);}
-	| keyMINDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MINDATE);}
-	| keyMAXDATE LPAREN RPAREN			{retval = new DateLiteral(DateLiteral.Type.MAXDATE);}
+	: keyNOW LPAREN	RPAREN				{retval = new DateFunction(DateFunction.ConstantType.NOW);}
+	| keyMINDATE LPAREN RPAREN			{retval = new DateFunction(DateFunction.ConstantType.MINDATE);}
+	| keyMAXDATE LPAREN RPAREN			{retval = new DateFunction(DateFunction.ConstantType.MAXDATE);}
 	
 	| keyYEAR LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.YEAR, $n.retval);}
 	| keyWEEK LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.WEEK, $n.retval);}
@@ -282,6 +282,7 @@ options {backtrack=true; memoize=true;}
 
 	| keyDATE LPAREN s1=topExpr COMMA s2=topExpr RPAREN
 							{retval = new DateFunction(Function.Type.DATE, $s1.retval, $s2.retval);}
+							
 	| keyCONCAT LPAREN s1=topExpr COMMA s2=topExpr RPAREN
 							{retval = new StringFunction(Function.Type.CONCAT, $s1.retval, $s2.retval);}
 	| keySUBSTRING LPAREN s=topExpr COMMA n1=topExpr COMMA n2=topExpr RPAREN

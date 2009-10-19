@@ -23,6 +23,7 @@ public abstract class Function extends GenericExpr {
         // Return Date
         DATE(new TypeSignature(DateValue.class, StringValue.class, StringValue.class)),
         INTERVAL(new TypeSignature(DateValue.class, LongValue.class)),
+        DATELITERAL(new TypeSignature(DateValue.class)),
 
         // Return String
         TRIM(new TypeSignature(StringValue.class, StringValue.class)),

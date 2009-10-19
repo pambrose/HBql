@@ -136,6 +136,10 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalTrue("DATE('10/31/1994', 'mm/dd/yyyy') - DAY(1) - MILLI(1) = DATE('10/30/1994', 'mm/dd/yyyy')  - MILLI(1) ");
 
         assertEvalTrue("NOW()+DAY(3) = NOW()+DAY(6)-DAY(3)");
+
+        assertEvalTrue("NOW() < MAXDATE()");
+        assertEvalTrue("NOW() > MINDATE()");
+        assertEvalTrue("NOW() BETWEEN MINDATE() AND MAXDATE()");
     }
 
     @Test
