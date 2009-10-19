@@ -344,9 +344,16 @@ multDiv returns [Operator retval]
 	| MOD						{retval = Operator.MOD;}
 	;
 
-simpleName : ID;
-varRef 	: ID (COLON ID)?;
-familyRef : ID COLON STAR;	
+simpleName
+options {backtrack=true; memoize=true;}	
+ 	: ID;
+ 	
+varRef 
+options {backtrack=true; memoize=true;}	
+	: ID (COLON ID)?;
+	
+familyRef : ID COLON STAR;
+	
 paramRef: COLON ID;
 		
 INT	: DIGIT+;
