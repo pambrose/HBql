@@ -12,8 +12,6 @@ import java.util.NavigableMap;
 
 public class DefinedAttrib extends ColumnAttrib {
 
-    private final ColumnDescription columnDescription;
-
     public DefinedAttrib(final ColumnDescription columnDescription) throws HBqlException {
         super(columnDescription.getFamilyName(),
               columnDescription.getColumnName(),
@@ -26,14 +24,8 @@ public class DefinedAttrib extends ColumnAttrib {
               null,
               columnDescription.getDefaultValue());
 
-        this.columnDescription = columnDescription;
-
         if (this.isKeyAttrib() && this.getFamilyName().length() > 0)
             throw new HBqlException("Key value " + this.getNameToUseInExceptions() + " cannot have a family name");
-    }
-
-    private ColumnDescription getColumnDescription() {
-        return this.columnDescription;
     }
 
     public String toString() {
