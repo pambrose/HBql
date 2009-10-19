@@ -1,0 +1,14 @@
+package org.apache.hadoop.hbase.hbql.query.expr.value.expr;
+
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+
+public abstract class GenericNullCompare extends GenericNotValue {
+
+    protected GenericNullCompare(final Type type, final boolean not, final GenericValue arg0) {
+        super(type, not, arg0);
+    }
+
+    public String asString() {
+        return this.getArg(0).asString() + " IS" + notAsString() + " NULL";
+    }
+}

@@ -37,7 +37,8 @@ package org.apache.hadoop.hbase.hbql.query.antlr;
 import org.apache.hadoop.hbase.hbql.query.expr.*;
 import org.apache.hadoop.hbase.hbql.query.expr.node.*;
 import org.apache.hadoop.hbase.hbql.query.expr.predicate.*;
-import org.apache.hadoop.hbase.hbql.query.expr.value.func.*;
+import org.apache.hadoop.hbase.hbql.query.expr.value.function.*;
+import org.apache.hadoop.hbase.hbql.query.expr.value.expr.*;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.*;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.*;
 import org.apache.hadoop.hbase.hbql.query.cmds.*;
@@ -295,18 +296,18 @@ options {backtrack=true; memoize=true;}
 	| keyREPLACE LPAREN s1=topExpr COMMA s2=topExpr COMMA s3=topExpr RPAREN		
 							{retval = new StringFunction(Function.Type.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
 
-	| keyLENGTH LPAREN s=topExpr RPAREN		{retval = new NumericFunction(Function.Type.LENGTH, $s.retval);}
+	| keyLENGTH LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.LENGTH, $s.retval);}
 	| keyINDEXOF LPAREN s1=topExpr COMMA s2=topExpr RPAREN
-							{retval = new NumericFunction(Function.Type.INDEXOF, $s1.retval, $s2.retval);}
+							{retval = new NumberFunction(Function.Type.INDEXOF, $s1.retval, $s2.retval);}
 
 	| keyDEFINEDINROW LPAREN s4=topExpr RPAREN	{retval = new BooleanFunction(Function.Type.DEFINEDINROW, $s4.retval);}
 	| keyEVAL LPAREN s4=topExpr RPAREN		{retval = new BooleanFunction(Function.Type.EVAL, $s4.retval);}
 
-	| keySHORT LPAREN s=topExpr RPAREN		{retval = new NumericFunction(Function.Type.SHORT, $s.retval);}
-	| keyINTEGER LPAREN s=topExpr RPAREN		{retval = new NumericFunction(Function.Type.INTEGER, $s.retval);}
-	| keyLONG LPAREN s=topExpr RPAREN		{retval = new NumericFunction(Function.Type.LONG, $s.retval);}
-	| keyFLOAT LPAREN s=topExpr RPAREN		{retval = new NumericFunction(Function.Type.FLOAT, $s.retval);}
-	| keyDOUBLE LPAREN s=topExpr RPAREN		{retval = new NumericFunction(Function.Type.DOUBLE, $s.retval);}
+	| keySHORT LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.SHORT, $s.retval);}
+	| keyINTEGER LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.INTEGER, $s.retval);}
+	| keyLONG LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.LONG, $s.retval);}
+	| keyFLOAT LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.FLOAT, $s.retval);}
+	| keyDOUBLE LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.DOUBLE, $s.retval);}
 	| keyIF v1=topExpr keyTHEN v2=topExpr keyELSE v3=topExpr keyEND	
 							{retval = new DelegateTernary($v1.retval, $v2.retval, $v3.retval);}
 	;

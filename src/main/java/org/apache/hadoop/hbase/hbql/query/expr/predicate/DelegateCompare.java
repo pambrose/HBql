@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
+import org.apache.hadoop.hbase.hbql.query.expr.value.expr.Operator;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 public class DelegateCompare extends GenericCompare {

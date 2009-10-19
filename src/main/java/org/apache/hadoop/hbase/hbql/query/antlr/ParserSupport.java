@@ -9,8 +9,8 @@ import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.func.DelegateCalculation;
-import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
+import org.apache.hadoop.hbase.hbql.query.expr.value.expr.DelegateCalculation;
+import org.apache.hadoop.hbase.hbql.query.expr.value.expr.Operator;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 

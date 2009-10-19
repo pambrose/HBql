@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.value.func.Operator;
+import org.apache.hadoop.hbase.hbql.query.expr.value.expr.Operator;
 
 public class BooleanCompare extends GenericCompare implements BooleanValue {
 
