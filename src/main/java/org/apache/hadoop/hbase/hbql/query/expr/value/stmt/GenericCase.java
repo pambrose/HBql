@@ -31,6 +31,14 @@ public abstract class GenericCase extends GenericExpr {
         return null;
     }
 
+    public void reset() {
+        for (final GenericCaseWhen when : this.getWhenExprList())
+            when.reset();
+
+        if (this.getElseExpr() != null)
+            this.getElseExpr().reset();
+    }
+
     public String asString() {
 
         final StringBuilder sbuf = new StringBuilder();
@@ -47,6 +55,7 @@ public abstract class GenericCase extends GenericExpr {
 
         return sbuf.toString();
     }
+
 
     protected List<GenericCaseWhen> getWhenExprList() {
         return this.whenExprList;
