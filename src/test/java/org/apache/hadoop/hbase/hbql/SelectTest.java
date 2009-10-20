@@ -83,30 +83,30 @@ public class SelectTest extends TestSupport {
 
             final String keyval = HUtil.getZeroPaddedNumber(i, 10);
             keyList.add(keyval);
-            rec.setValue("keyval", keyval);
+            rec.setCurrentValue("keyval", keyval);
 
             int val5 = randomVal.nextInt();
             String s_val5 = "" + val5;
             val1List.add(s_val5);
             val5List.add(val5);
 
-            rec.setValue("val1", s_val5);
-            rec.setValue("val2", s_val5 + " " + msg);
-            rec.setValue("val5", val5);
-            rec.setValue("val6", i * 100);
+            rec.setCurrentValue("val1", s_val5);
+            rec.setCurrentValue("val2", s_val5 + " " + msg);
+            rec.setCurrentValue("val5", val5);
+            rec.setCurrentValue("val6", i * 100);
 
             Map<String, String> mapval1 = Maps.newHashMap();
             mapval1.put("mapcol1", "mapcol1 val" + i + " " + msg);
             mapval1.put("mapcol2", "mapcol2 val" + i + " " + msg);
 
-            rec.setValue("f3mapval1", mapval1);
+            rec.setCurrentValue("f3mapval1", mapval1);
 
             Map<String, String> mapval2 = Maps.newHashMap();
             mapval2.put("mapcol1-b", "mapcol1-b val" + i + " " + msg);
             mapval2.put("mapcol2-b", "mapcol2-b val" + i + " " + msg);
             mapval2.put("mapcol3-b", "mapcol3-b val" + i + " " + msg);
 
-            rec.setValue("f3mapval2", mapval2);
+            rec.setCurrentValue("f3mapval2", mapval2);
 
             int[] intv1 = new int[5];
             val8check = new int[5];
@@ -115,7 +115,7 @@ public class SelectTest extends TestSupport {
                 val8check[j] = intv1[j];
             }
 
-            rec.setValue("val8", intv1);
+            rec.setCurrentValue("val8", intv1);
 
             batch.insert(rec);
         }
@@ -141,10 +141,10 @@ public class SelectTest extends TestSupport {
         int rec_cnt = 0;
         for (HRecord rec : results1) {
 
-            String keyval = (String)rec.getValue("keyval");
-            String val1 = (String)rec.getValue("val1");
-            int val5 = (Integer)rec.getValue("val5");
-            int val6 = (Integer)rec.getValue("val6");
+            String keyval = (String)rec.getCurrentValue("keyval");
+            String val1 = (String)rec.getCurrentValue("val1");
+            int val5 = (Integer)rec.getCurrentValue("val5");
+            int val6 = (Integer)rec.getCurrentValue("val6");
 
             testKeyVals.add(keyval);
             testVal1Vals.add(val1);
@@ -152,9 +152,9 @@ public class SelectTest extends TestSupport {
             testVal6Vals.add(val6);
 
             System.out.println("Current Values: " + keyval
-                               + " - " + rec.getValue("val1")
-                               + " - " + rec.getValue("val5")
-                               + " - " + rec.getValue("val6")
+                               + " - " + rec.getCurrentValue("val1")
+                               + " - " + rec.getCurrentValue("val5")
+                               + " - " + rec.getCurrentValue("val6")
             );
             rec_cnt++;
         }
@@ -238,7 +238,7 @@ public class SelectTest extends TestSupport {
         assertTrue(recList1.size() == 10);
 
         for (final HRecord rec : recList1) {
-            int[] intv = (int[])rec.getValue("val8");
+            int[] intv = (int[])rec.getCurrentValue("val8");
             assertTrue(intv.length == 5);
         }
     }
@@ -443,7 +443,7 @@ public class SelectTest extends TestSupport {
 
         int i = 0;
         for (final HRecord rec : recList1) {
-            String val = (String)rec.getValue("val1");
+            String val = (String)rec.getCurrentValue("val1");
             assertTrue(val.equals("ddff"));
 
             Map<Long, Object> versions = rec.getVersionMap("val1");
@@ -506,16 +506,16 @@ public class SelectTest extends TestSupport {
         List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
         for (final HRecord rec : recList1) {
-            int val1 = (Integer)rec.getValue(":expr-0");
+            int val1 = (Integer)rec.getCurrentValue(":expr-0");
             assertTrue(val1 == 6);
-            int val2 = (Integer)rec.getValue(":expr-1");
+            int val2 = (Integer)rec.getCurrentValue(":expr-1");
             assertTrue(val2 == 14);
-            int val3 = (Integer)rec.getValue("expr1");
+            int val3 = (Integer)rec.getCurrentValue("expr1");
             assertTrue(val3 == 8);
 
-            boolean val4 = (Boolean)rec.getValue(":expr-2");
+            boolean val4 = (Boolean)rec.getCurrentValue(":expr-2");
             assertTrue(val4);
-            boolean val5 = (Boolean)rec.getValue(":expr-3");
+            boolean val5 = (Boolean)rec.getCurrentValue(":expr-3");
             assertTrue(!val5);
         }
     }
@@ -537,9 +537,9 @@ public class SelectTest extends TestSupport {
         List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
         for (final HRecord rec : recList1) {
-            boolean val1 = (Boolean)rec.getValue(":expr-0");
+            boolean val1 = (Boolean)rec.getCurrentValue(":expr-0");
             assertTrue(val1);
-            boolean val2 = (Boolean)rec.getValue(":expr-1");
+            boolean val2 = (Boolean)rec.getCurrentValue(":expr-1");
             assertTrue(!val2);
         }
 
@@ -550,9 +550,9 @@ public class SelectTest extends TestSupport {
         List<HRecord> recList2 = q2.getResultList();
         assertTrue(recList2.size() == 10);
         for (final HRecord rec : recList2) {
-            boolean val1 = (Boolean)rec.getValue(":expr-0");
+            boolean val1 = (Boolean)rec.getCurrentValue(":expr-0");
             assertTrue(val1);
-            boolean val2 = (Boolean)rec.getValue(":expr-1");
+            boolean val2 = (Boolean)rec.getCurrentValue(":expr-1");
             assertTrue(!val2);
         }
     }
@@ -576,9 +576,9 @@ public class SelectTest extends TestSupport {
         List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
         for (final HRecord rec : recList1) {
-            String val1 = (String)rec.getValue("val10");
+            String val1 = (String)rec.getCurrentValue("val10");
             assertTrue(val1.equals("test default"));
-            String val2 = (String)rec.getValue("val11");
+            String val2 = (String)rec.getCurrentValue("val11");
             assertTrue(val2 == null);
         }
 

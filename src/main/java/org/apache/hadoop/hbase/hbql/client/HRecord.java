@@ -13,9 +13,9 @@ public interface HRecord {
 
     void setTimestamp(final long timestamp);
 
-    Object getValue(String name) throws HBqlException;
+    Object getCurrentValue(String name) throws HBqlException;
 
-    void setValue(String name, Object val) throws HBqlException;
+    void setCurrentValue(String name, Object val) throws HBqlException;
 
     Map<Long, Object> getVersionMap(final String name) throws HBqlException;
 
