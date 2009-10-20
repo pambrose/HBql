@@ -13,15 +13,15 @@ public interface HRecord {
 
     void setTimestamp(final long timestamp);
 
-    Object getCurrentValue(String name) throws HBqlException;
+    Object getCurrentValue(String name);
 
     void setCurrentValue(String name, Object val) throws HBqlException;
 
-    Map<Long, Object> getVersionMap(final String name) throws HBqlException;
+    Map<Long, Object> getVersionMap(final String name);
 
-    Map<String, Object> getKeysAsColumnsMap(String name) throws HBqlException;
+    Map<String, Object> getKeysAsColumnsMap(String name);
 
-    Map<String, NavigableMap<Long, Object>> getKeysAsColumnsVersionMap(String name) throws HBqlException;
+    Map<String, NavigableMap<Long, Object>> getKeysAsColumnsVersionMap(String name);
 
     Map<String, byte[]> getFamilyDefaultValueMap(String name) throws HBqlException;
 

@@ -67,7 +67,7 @@ public class QueryArgs {
         }
     }
 
-    public boolean hasAsName(final String name) throws HBqlException {
+    public boolean hasAsName(final String name) {
 
         for (final SelectElement selectElement : this.getSelectElementList())
             if (selectElement.hasAsName() && selectElement.getAsName().equals(name))

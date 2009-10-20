@@ -19,7 +19,7 @@ public interface HConnection {
 
     boolean tableEnabled(String tableName) throws IOException, HBqlException;
 
-    List<String> getTableList() throws IOException, HBqlException;
+    List<String> getTableList() throws IOException;
 
     Set<String> getFamilyList(String tableName) throws HBqlException;
 

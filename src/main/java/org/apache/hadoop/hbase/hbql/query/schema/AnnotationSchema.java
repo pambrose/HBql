@@ -357,7 +357,7 @@ public class AnnotationSchema extends HBaseSchema {
 
         try {
             // Create object and assign values
-            final Object newobj = this.createNewObject(result);
+            final Object newobj = this.createNewObject();
             this.assignSelectValues(newobj, selectAttribList, selectElementList, maxVersions, result);
             return newobj;
         }
@@ -367,7 +367,7 @@ public class AnnotationSchema extends HBaseSchema {
         }
     }
 
-    private Object createNewObject(final Result result) throws HBqlException {
+    private Object createNewObject() throws HBqlException {
 
         // Create new instance
         final Object newobj;

@@ -60,7 +60,7 @@ public class ConnectionImpl implements HConnection {
         return admin.isTableEnabled(schema.getTableName());
     }
 
-    public List<String> getTableList() throws IOException, HBqlException {
+    public List<String> getTableList() throws IOException {
         final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
         final List<String> tableList = Lists.newArrayList();
         for (final HTableDescriptor table : admin.listTables())

@@ -16,7 +16,7 @@ public interface HQuery<T> {
 
     void clearListeners();
 
-    HResults<T> getResults() throws HBqlException;
+    HResults<T> getResults();
 
     List<T> getResultList() throws HBqlException;
 }

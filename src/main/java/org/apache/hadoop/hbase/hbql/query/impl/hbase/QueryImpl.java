@@ -26,7 +26,7 @@ public class QueryImpl<T> implements HQuery<T> {
 
     private List<HQueryListener<T>> listeners = null;
 
-    public QueryImpl(final HConnection connection, final String query) throws IOException, HBqlException {
+    public QueryImpl(final HConnection connection, final String query) throws HBqlException {
 
         this.connection = connection;
         this.query = query;
@@ -81,7 +81,7 @@ public class QueryImpl<T> implements HQuery<T> {
             this.getListeners().clear();
     }
 
-    public HResults<T> getResults() throws HBqlException {
+    public HResults<T> getResults() {
 
         // Set it once per evaluation
         DateLiteral.resetNow();

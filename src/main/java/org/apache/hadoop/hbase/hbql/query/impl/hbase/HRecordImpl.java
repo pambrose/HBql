@@ -79,7 +79,6 @@ public class HRecordImpl implements Serializable, HRecord {
         }
     }
 
-
     public void addElement(final String name, final HValue value) throws HBqlException {
         if (value instanceof ObjectValue)
             this.getObjectElements().addElement(name, (ObjectValue)value);
@@ -168,7 +167,7 @@ public class HRecordImpl implements Serializable, HRecord {
         this.setCurrentValue(attrib.getAliasName(), timestamp, val, true);
     }
 
-    public boolean isCurrentValueSet(final ColumnAttrib attrib) throws HBqlException {
+    public boolean isCurrentValueSet(final ColumnAttrib attrib) {
         final ObjectValue objectValue = this.getObjectElements().findElement(attrib.getAliasName());
         return objectValue != null && objectValue.isValueSet();
     }
@@ -236,7 +235,7 @@ public class HRecordImpl implements Serializable, HRecord {
         this.timestamp = timestamp;
     }
 
-    public Object getCurrentValue(final String name) throws HBqlException {
+    public Object getCurrentValue(final String name) {
         final ObjectValue objectValue = this.getObjectElements().findElement(name);
         if (objectValue != null) {
             final Object retval = objectValue.getValue();
@@ -253,12 +252,12 @@ public class HRecordImpl implements Serializable, HRecord {
         this.setCurrentValue(name, this.getTimestamp(), val, true);
     }
 
-    public Map<Long, Object> getVersionMap(final String name) throws HBqlException {
+    public Map<Long, Object> getVersionMap(final String name) {
         final ObjectValue value = this.getObjectElements().findElement(name);
         return (value != null) ? value.getVersionMap(true) : null;
     }
 
-    public Map<String, NavigableMap<Long, Object>> getKeysAsColumnsVersionMap(final String columnName) throws HBqlException {
+    public Map<String, NavigableMap<Long, Object>> getKeysAsColumnsVersionMap(final String columnName) {
 
         final TypedKeysAsColumnsValueMap value = this.getKeysAsColumnsElements().findElement(columnName);
 
@@ -295,7 +294,7 @@ public class HRecordImpl implements Serializable, HRecord {
         return retval;
     }
 
-    public Map<String, Object> getKeysAsColumnsMap(final String name) throws HBqlException {
+    public Map<String, Object> getKeysAsColumnsMap(final String name) {
 
         final TypedKeysAsColumnsValueMap value = this.getKeysAsColumnsElements().findElement(name);
         if (value == null)
