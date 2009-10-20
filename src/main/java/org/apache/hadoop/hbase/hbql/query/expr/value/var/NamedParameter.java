@@ -49,6 +49,11 @@ public class NamedParameter implements GenericValue {
         return this.typedExprList;
     }
 
+    public void reset() {
+        this.typedExpr = null;
+        this.typedExprList = null;
+    }
+
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
 
@@ -102,10 +107,10 @@ public class NamedParameter implements GenericValue {
 
     public void setExprContext(final ExprContext context) throws HBqlException {
         this.context = context;
-        this.context.addNamedParameter(this);
+        this.getContext().addNamedParameter(this);
     }
 
-    public ExprContext getContext() {
+    private ExprContext getContext() {
         return this.context;
     }
 
@@ -120,13 +125,12 @@ public class NamedParameter implements GenericValue {
     public void setParameter(final Object val) throws HBqlException {
 
         // Reset both values
-        this.typedExpr = null;
-        this.typedExprList = null;
+        this.reset();
 
         if (val != null && HUtil.isACollection(val)) {
             this.typedExprList = Lists.newArrayList();
             for (final Object elem : (Collection)val)
-                this.typedExprList.add(this.getValueExpr(elem));
+                this.getTypedExprList().add(this.getValueExpr(elem));
         }
         else {
             this.typedExpr = this.getValueExpr(val);

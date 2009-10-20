@@ -55,14 +55,14 @@ public abstract class ExprContext implements Serializable {
     }
 
     public void addExpression(final GenericValue genericValue) {
-        this.getExpressions().add(genericValue);
+        this.getExpressionList().add(genericValue);
     }
 
     public Map<String, List<NamedParameter>> getNamedParamMap() {
         return this.namedParamMap;
     }
 
-    protected List<GenericValue> getExpressions() {
+    protected List<GenericValue> getExpressionList() {
         return this.expressions;
     }
 
@@ -80,7 +80,7 @@ public abstract class ExprContext implements Serializable {
     }
 
     protected GenericValue getGenericValue(final int i) {
-        return this.getExpressions().get(i);
+        return this.getExpressionList().get(i);
     }
 
     protected Object evaluate(final int i,
@@ -106,7 +106,7 @@ public abstract class ExprContext implements Serializable {
     protected void setContext() {
         if (this.isInNeedOfSettingContext()) {
             try {
-                for (final GenericValue val : this.getExpressions())
+                for (final GenericValue val : this.getExpressionList())
                     val.setExprContext(this);
             }
             catch (HBqlException e) {
@@ -116,13 +116,22 @@ public abstract class ExprContext implements Serializable {
         }
     }
 
+    public void reset() {
+
+        this.setInNeedOfTypeValidation(true);
+        this.setInNeedOfOptimization(true);
+
+        for (final GenericValue val : this.getExpressionList())
+            val.reset();
+    }
+
     protected void setGenericValue(final int i, final GenericValue treeRoot) {
-        this.getExpressions().set(i, treeRoot);
+        this.getExpressionList().set(i, treeRoot);
     }
 
     public void optimize() throws HBqlException {
         if (this.isInNeedOfOptimization()) {
-            for (int i = 0; i < this.getExpressions().size(); i++)
+            for (int i = 0; i < this.getExpressionList().size(); i++)
                 this.setGenericValue(i, this.getGenericValue(i).getOptimizedValue());
             this.setInNeedOfOptimization(false);
         }
@@ -138,13 +147,13 @@ public abstract class ExprContext implements Serializable {
 
             // Collect return types of all args
             final List<Class<? extends GenericValue>> clazzList = Lists.newArrayList();
-            for (final GenericValue val : this.getExpressions())
+            for (final GenericValue val : this.getExpressionList())
                 clazzList.add(val.validateTypes(null, allowsCollections));
 
             // Check against signature if there is one
             if (this.getTypeSignature() != null) {
 
-                if (this.getExpressions().size() != this.getTypeSignature().getArgCount())
+                if (this.getExpressionList().size() != this.getTypeSignature().getArgCount())
                     throw new TypeException("Incorrect number of variables in " + this.asString());
 
                 for (int i = 0; i < this.getTypeSignature().getArgCount(); i++) {

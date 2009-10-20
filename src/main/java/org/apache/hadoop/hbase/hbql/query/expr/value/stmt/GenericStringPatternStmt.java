@@ -11,7 +11,7 @@ public abstract class GenericStringPatternStmt extends GenericNotValue {
     protected abstract String getFunctionName();
 
     public String asString() {
-        return this.getArg(0).asString() + notAsString()
-               + " " + this.getFunctionName() + " " + this.getArg(1).asString();
+        return this.getArg(0).asString() + notAsString() + " "
+               + this.getFunctionName() + " " + this.getArg(1).asString();
     }
 }

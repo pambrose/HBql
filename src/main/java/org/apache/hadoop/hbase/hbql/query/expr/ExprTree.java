@@ -9,7 +9,6 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.BooleanLiteral;
 public class ExprTree extends ExprContext {
 
     private static TypeSignature exprSignature = new TypeSignature(null, BooleanValue.class);
-
     private boolean useHBaseResult = false;
 
     private ExprTree(final GenericValue rootValue) {

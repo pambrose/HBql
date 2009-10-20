@@ -22,8 +22,7 @@ public abstract class GenericIfThen extends GenericExpr {
     }
 
     public String asString() {
-        return "IF " + this.getArg(0).asString() + " THEN "
-               + this.getArg(1).asString()
+        return "IF " + this.getArg(0).asString() + " THEN " + this.getArg(1).asString()
                + " ELSE " + this.getArg(2).asString() + " END";
     }
 }

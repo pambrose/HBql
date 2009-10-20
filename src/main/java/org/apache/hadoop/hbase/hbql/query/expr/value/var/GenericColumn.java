@@ -36,6 +36,11 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         return false;
     }
 
+    public void reset() {
+        if (this.getExprContext() != null)
+            this.getExprContext().reset();
+    }
+
     public void setExprContext(final ExprContext context) throws HBqlException {
         this.exprContext = context;
         this.getExprContext().addColumnToUsedList(this);

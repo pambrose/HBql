@@ -100,6 +100,9 @@ public abstract class Schema implements Serializable {
             exprTree.setSchema(this);
             this.addToExprTreeCache(str, exprTree);
         }
+        else {
+            exprTree.reset();
+        }
         return exprTree;
     }
 

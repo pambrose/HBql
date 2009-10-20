@@ -21,4 +21,6 @@ public interface GenericValue extends Serializable {
     boolean isAConstant();
 
     String asString();
+
+    void reset();
 }

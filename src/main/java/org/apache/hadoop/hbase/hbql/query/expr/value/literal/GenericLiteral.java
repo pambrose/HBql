@@ -25,6 +25,10 @@ public abstract class GenericLiteral<T> implements GenericValue {
         return true;
     }
 
+    public void reset() {
+
+    }
+
     public void setExprContext(final ExprContext context) throws HBqlException {
     }
 

@@ -26,9 +26,7 @@ public class DelegateNullCompare extends GenericNullCompare {
                                                        final boolean allowsCollections) throws TypeException {
 
         this.validateParentClass(StringValue.class, this.getArg(0).validateTypes(this, false));
-
         this.setTypedExpr(new StringNullCompare(this.isNot(), this.getArg(0)));
-
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
