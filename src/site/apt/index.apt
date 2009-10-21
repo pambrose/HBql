@@ -1,47 +1,53 @@
- -----
- HBql
- -----
- -----
+    -----
+    HBql
+    -----
+    -----
 
 Introduction
 
 
- One of the nicer features of Maven is the ability to create an internal technical web site
- at very little cost. Maven 2 extends this functionality, and gives you powerful new ways
- to generate site content...
+    HBql has both DDL and DML commands.  Commands are available in both the shell
+and in the API.
 
 
-* Sub-section title
+Getting Started
+
+    * {{{download.html}Download}
+
+    * {{{installation.html}Installation}
 
 
- Team communication is an essential part of any project. And wasting time looking for technical
- project information can be costly and frustrating. Clearly, any IT project will benifit from
- having its own dedicated technical web site...
+Documentation
 
- * Item 1
+    * {{{commands.html}Commands}}
 
- * Item 2
+    * {{{functions.html}Functions}}
 
-   * Item 2.1
+    * {{{javadocs.html}Javadocs}}
 
- * Item 2.2
+    * {{{faq.html}FAQ}}
 
-----------------------------------------
-Verbatim
-         text,
-                preformatted,
-                                escaped.
-----------------------------------------
+Support
+
+    HBql is still very much a work in progress.  If you have problems (or success), please send a note
+to me @ pambrose@gmail.com
 
 
+Supported Platforms
 
-*----------*--------------+----------------:
-| Centered | Left-aligned | Right-aligned  |
-| cell 1,1 | cell 1,2     | cell 1,3       |
-*----------*--------------+----------------:
-| cell 2,1 | cell 2,2     | cell 2,3       |
-*----------*--------------+----------------:
-This is a table catopn
+    The shell is limited to those platforms supported by {{{http://jline.sourceforge.net/}JLine}}.  The
+API is pure java.
+
+
+Road Map
+
+    Items in the hopper for future enhancements include:
+
+       * Queries on version values
+       
+       * JSON results from selects
+
+    If you have any other ideas on what you would like to see supported, I am all ears.
 
 
 This is a test of the snippet macro:
@@ -55,4 +61,10 @@ This is a test of the snippet macro:
    * {{{features.html}Features}}
 
    * {{{faq.html}FAQ}}
+
+   * {{{commands.html}Commands}}
+
+   {{{commands.html}Commands}}
+
+
 

@@ -12,24 +12,24 @@
 
     <body>
         <links>
-            <item name="Test Apache" href="http://www.apache.org/"/>
-            <item name="Maven 1.x" href="http://maven.apache.org/maven-1.x/"/>
-            <item name="Maven 2" href="http://maven.apache.org/"/>
+            <item name="Hadoop" href="http://hadoop.hadoop.org"/>
+            <item name="HBase" href="http://hadoop.apache.org/hbase/"/>
         </links>
 
-        <menu name="HBql 2.0">
-            <item name="Test Introduction" href="index.html"/>
+        <menu name="HBql">
+            <item name="HBqlIntroduction" href="index.html"/>
             <item name="Download" href="download.html"/>
             <item name="Release Notes" href="release-notes.html"/>
             <item name="General Information" href="about.html"/>
             <item name="For Maven 1.x Users" href="maven1.html"/>
             <item name="Road Map" href="roadmap.html"/>
         </menu>
-
+        <!--
         <breadcrumbs>
             <item name="Hadoop" href="http://hadoop.hadoop.org"/>
             <item name="HBase" href="http://hadoop.apache.org/hbase/"/>
         </breadcrumbs>
+        -->
 
     </body>
 </project>

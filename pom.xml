@@ -180,6 +180,7 @@
             </plugin>
             -->
 
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
@@ -191,7 +192,6 @@
                 </configuration>
             </plugin>
 
-            <!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>taglist-maven-plugin</artifactId>
@@ -218,6 +218,7 @@
                 <artifactId>dashboard-maven-plugin</artifactId>
             </plugin>
 
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -229,7 +230,6 @@
                             <report>mailing-list</report>
                             <report>cim</report>
                             <report>issue-tracking</report>
-                            <!-- <report>license</report> -->
                             <report>scm</report>
                         </reports>
                     </reportSet>
@@ -251,6 +251,8 @@
                     </links>
                 </configuration>
             </plugin>
+              -->
+
             <!-- 
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
