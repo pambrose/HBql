@@ -3,14 +3,13 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
-public class DelegateBetweenStmt extends NotValue<GenericBetweenStmt> implements BooleanValue {
+public class DelegateBetweenStmt extends GenericBetweenStmt {
 
     public DelegateBetweenStmt(final GenericValue arg0,
                                final boolean not,
@@ -45,10 +44,5 @@ public class DelegateBetweenStmt extends NotValue<GenericBetweenStmt> implements
 
     public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
         return this.getTypedExpr().getValue(object);
-    }
-
-    public String asString() {
-        return this.getArg(0).asString() + notAsString() + " BETWEEN "
-               + this.getArg(1).asString() + " AND " + this.getArg(2).asString();
     }
 }
