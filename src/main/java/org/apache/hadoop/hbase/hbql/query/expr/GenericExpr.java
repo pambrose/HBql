@@ -53,7 +53,10 @@ public abstract class GenericExpr implements GenericValue {
         DATEBETWEEN(new TypeSignature(BooleanValue.class, DateValue.class, DateValue.class, DateValue.class)),
         NUMBERBETWEEN(new TypeSignature(BooleanValue.class, NumberValue.class, NumberValue.class, NumberValue.class)),
 
+        BOOLEANNULL(new TypeSignature(BooleanValue.class, BooleanValue.class)),
         STRINGNULL(new TypeSignature(BooleanValue.class, StringValue.class)),
+        DATENULL(new TypeSignature(BooleanValue.class, DateValue.class)),
+        NUMBERNULL(new TypeSignature(BooleanValue.class, NumberValue.class)),
 
         STRINGPATTERN(new TypeSignature(BooleanValue.class, StringValue.class, StringValue.class)),
 

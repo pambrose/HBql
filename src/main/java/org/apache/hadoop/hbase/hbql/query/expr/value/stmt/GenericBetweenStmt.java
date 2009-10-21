@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
-public abstract class GenericBetweenStmt extends GenericNotValue {
+public abstract class GenericBetweenStmt extends NotValue {
 
     protected GenericBetweenStmt(final Type type,
                                  final boolean not,

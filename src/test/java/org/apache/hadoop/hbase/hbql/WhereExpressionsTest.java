@@ -206,11 +206,16 @@ public class WhereExpressionsTest extends TestSupport {
         tree = parseExpr(":a IS NOT NULL");
         tree.setParameter("a", "vall");
         assertExprTreeEvalTrue(tree);
+        tree.setParameter("a", 3);
+        assertExprTreeEvalTrue(tree);
+        tree.setParameter("a", new Date());
+        assertExprTreeEvalTrue(tree);
+        tree.setParameter("a", Boolean.TRUE);
+        assertExprTreeEvalTrue(tree);
+        tree.setParameter("a", (Boolean)null);
+        assertExprTreeEvalFalse(tree);
         tree.setParameter("a", null);
         assertExprTreeEvalFalse(tree);
-
-        tree.setParameter("a", 1);
-        assertHasException(tree, TypeException.class);
     }
 
     @Test

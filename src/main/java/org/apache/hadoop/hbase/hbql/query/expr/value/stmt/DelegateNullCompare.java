@@ -3,8 +3,12 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 public class DelegateNullCompare extends GenericNullCompare {
 
@@ -24,8 +28,21 @@ public class DelegateNullCompare extends GenericNullCompare {
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws TypeException {
-        this.validateParentClass(StringValue.class, this.getArg(0).validateTypes(this, false));
-        this.setTypedExpr(new StringNullCompare(this.isNot(), this.getArg(0)));
+
+        final Class<? extends GenericValue> type = this.determineGenericValueClass(this.getArg(0).validateTypes(this,
+                                                                                                                false));
+
+        if (HUtil.isParentClass(StringValue.class, type))
+            this.setTypedExpr(new StringNullCompare(this.isNot(), this.getArg(0)));
+        else if (HUtil.isParentClass(NumberValue.class, type))
+            this.setTypedExpr(new NumberNullCompare(this.isNot(), this.getArg(0)));
+        else if (HUtil.isParentClass(DateValue.class, type))
+            this.setTypedExpr(new DateNullCompare(this.isNot(), this.getArg(0)));
+        else if (HUtil.isParentClass(BooleanValue.class, type))
+            this.setTypedExpr(new BooleanNullCompare(this.isNot(), this.getArg(0)));
+        else
+            this.throwInvalidTypeException(type);
+
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
