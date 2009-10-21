@@ -14,18 +14,8 @@ import java.util.ArrayList;
 
 public class DelegateCase extends GenericCase {
 
-    private GenericCase typedExpr = null;
-
     public DelegateCase() {
         super(null, new ArrayList<GenericCaseWhen>(), null);
-    }
-
-    private GenericCase getTypedExpr() {
-        return typedExpr;
-    }
-
-    private void setTypedExpr(final GenericCase typedExpr) {
-        this.typedExpr = typedExpr;
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,

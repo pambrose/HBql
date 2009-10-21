@@ -1,9 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 
-import org.apache.hadoop.hbase.hbql.query.expr.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
-public abstract class GenericCalculation extends GenericExpr {
+public abstract class GenericCalculation extends DelegateStmt<GenericCalculation> {
 
     private final Operator operator;
 

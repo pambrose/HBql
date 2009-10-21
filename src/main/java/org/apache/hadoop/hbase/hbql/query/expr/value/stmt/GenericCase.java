@@ -2,11 +2,10 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.query.expr.GenericExpr;
 
 import java.util.List;
 
-public abstract class GenericCase extends GenericExpr {
+public abstract class GenericCase extends DelegateStmt<GenericCase> {
 
     private final List<GenericCaseWhen> whenExprList;
     private GenericCaseElse elseExpr;

@@ -12,18 +12,8 @@ import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 public class DelegateNullCompare extends GenericNullCompare {
 
-    private GenericNullCompare typedExpr = null;
-
     public DelegateNullCompare(final boolean not, final GenericValue expr) {
         super(null, not, expr);
-    }
-
-    private GenericNullCompare getTypedExpr() {
-        return typedExpr;
-    }
-
-    private void setTypedExpr(final GenericNullCompare typedExpr) {
-        this.typedExpr = typedExpr;
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,

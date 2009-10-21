@@ -1,8 +1,9 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 
+import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
-public abstract class GenericNullCompare extends NotValue {
+public abstract class GenericNullCompare extends NotValue<GenericNullCompare> implements BooleanValue {
 
     protected GenericNullCompare(final Type type, final boolean not, final GenericValue arg0) {
         super(type, not, arg0);

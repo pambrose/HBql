@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 import java.util.List;
 
-public abstract class GenericInStmt extends NotValue {
+public abstract class GenericInStmt extends NotValue<GenericInStmt> implements BooleanValue {
 
     protected GenericInStmt(final GenericValue arg0, final boolean not, final List<GenericValue> inList) {
         super(Type.INSTMT, not, arg0, inList);

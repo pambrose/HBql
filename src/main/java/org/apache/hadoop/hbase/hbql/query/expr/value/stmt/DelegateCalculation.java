@@ -11,18 +11,8 @@ import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 public class DelegateCalculation extends GenericCalculation {
 
-    private GenericCalculation typedExpr = null;
-
     public DelegateCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
         super(null, arg0, operator, arg1);
-    }
-
-    private GenericCalculation getTypedExpr() {
-        return typedExpr;
-    }
-
-    private void setTypedExpr(final GenericCalculation typedExpr) {
-        this.typedExpr = typedExpr;
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,

@@ -1,0 +1,58 @@
+ -----
+ HBql
+ -----
+ -----
+
+Introduction
+
+
+ One of the nicer features of Maven is the ability to create an internal technical web site
+ at very little cost. Maven 2 extends this functionality, and gives you powerful new ways
+ to generate site content...
+
+
+* Sub-section title
+
+
+ Team communication is an essential part of any project. And wasting time looking for technical
+ project information can be costly and frustrating. Clearly, any IT project will benifit from
+ having its own dedicated technical web site...
+
+ * Item 1
+
+ * Item 2
+
+   * Item 2.1
+
+ * Item 2.2
+
+----------------------------------------
+Verbatim
+         text,
+                preformatted,
+                                escaped.
+----------------------------------------
+
+
+
+*----------*--------------+----------------:
+| Centered | Left-aligned | Right-aligned  |
+| cell 1,1 | cell 1,2     | cell 1,3       |
+*----------*--------------+----------------:
+| cell 2,1 | cell 2,2     | cell 2,3       |
+*----------*--------------+----------------:
+This is a table catopn
+
+
+This is a test of the snippet macro:
+
+%{snippet|id=id1|file=src/main/java/org/apache/hadoop/hbase/filter/HBqlFilter.java}
+
+  Here are some useful links to get you started:
+
+   * {{{news.html}News}}
+
+   * {{{features.html}Features}}
+
+   * {{{faq.html}FAQ}}
+

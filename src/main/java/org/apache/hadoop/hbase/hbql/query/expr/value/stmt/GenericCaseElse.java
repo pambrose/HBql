@@ -2,10 +2,9 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.query.expr.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
-public abstract class GenericCaseElse extends GenericExpr {
+public abstract class GenericCaseElse extends DelegateStmt<GenericCaseElse> {
 
     protected GenericCaseElse(final Type type, final GenericValue arg0) {
         super(type, arg0);

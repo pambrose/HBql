@@ -1,12 +1,10 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 
-import org.apache.hadoop.hbase.hbql.query.expr.GenericExpr;
-import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 import java.util.List;
 
-public abstract class NotValue extends GenericExpr implements BooleanValue {
+public abstract class NotValue<T> extends DelegateStmt<T> {
 
     private final boolean not;
 

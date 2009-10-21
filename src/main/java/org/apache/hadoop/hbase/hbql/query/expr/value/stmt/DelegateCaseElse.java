@@ -12,18 +12,8 @@ import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 public class DelegateCaseElse extends GenericCaseElse {
 
-    private GenericCaseElse typedExpr = null;
-
     public DelegateCaseElse(final GenericValue arg0) {
         super(null, arg0);
-    }
-
-    private GenericCaseElse getTypedExpr() {
-        return typedExpr;
-    }
-
-    private void setTypedExpr(final GenericCaseElse typedExpr) {
-        this.typedExpr = typedExpr;
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,

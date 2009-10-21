@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="Maven">
+<project name="HBql">
     <bannerLeft>
         <name>Maven</name>
         <src>http://maven.apache.org/images/apache-maven-project.png</src>
         <href>http://maven.apache.org/</href>
     </bannerLeft>
+
     <bannerRight>
         <src>http://maven.apache.org/images/maven-small.gif</src>
     </bannerRight>
+
     <body>
         <links>
-            <item name="Apache" href="http://www.apache.org/"/>
+            <item name="Test Apache" href="http://www.apache.org/"/>
             <item name="Maven 1.x" href="http://maven.apache.org/maven-1.x/"/>
             <item name="Maven 2" href="http://maven.apache.org/"/>
         </links>
 
-        <menu name="Maven 2.0">
-            <item name="Introduction" href="index.html"/>
+        <menu name="HBql 2.0">
+            <item name="Test Introduction" href="index.html"/>
             <item name="Download" href="download.html"/>
             <item name="Release Notes" href="release-notes.html"/>
             <item name="General Information" href="about.html"/>
@@ -24,8 +26,10 @@
             <item name="Road Map" href="roadmap.html"/>
         </menu>
 
-        <menu ref="reports"/>
+        <breadcrumbs>
+            <item name="Hadoop" href="http://hadoop.hadoop.org"/>
+            <item name="HBase" href="http://hadoop.apache.org/hbase/"/>
+        </breadcrumbs>
 
-        ...
     </body>
 </project>

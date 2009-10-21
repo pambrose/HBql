@@ -15,18 +15,8 @@ import java.util.List;
 
 public class DelegateInStmt extends GenericInStmt {
 
-    private GenericInStmt typedExpr = null;
-
     public DelegateInStmt(final GenericValue arg0, final boolean not, final List<GenericValue> inList) {
         super(arg0, not, inList);
-    }
-
-    private GenericInStmt getTypedExpr() {
-        return typedExpr;
-    }
-
-    private void setTypedExpr(final GenericInStmt typedExpr) {
-        this.typedExpr = typedExpr;
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,

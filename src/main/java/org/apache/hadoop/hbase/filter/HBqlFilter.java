@@ -51,12 +51,14 @@ public class HBqlFilter implements Filter {
     private long recordCount = 0;
     public transient HRecordImpl hrecord = new HRecordImpl((HBaseSchema)null);
 
+    // START SNIPPET: id1
     public HBqlFilter(final ExprTree exprTree, final long scanLimit) {
         this.exprTree = exprTree;
         this.scanLimit = scanLimit;
         this.recordCount = 0;
         this.getHRecord().setSchema(this.getSchema());
     }
+    // END SNIPPET: id1
 
     public HBqlFilter() {
     }

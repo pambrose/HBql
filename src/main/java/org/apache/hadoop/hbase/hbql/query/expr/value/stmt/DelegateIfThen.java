@@ -12,18 +12,8 @@ import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
 public class DelegateIfThen extends GenericIfThen {
 
-    private GenericIfThen typedExpr = null;
-
     public DelegateIfThen(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
         super(null, arg0, arg1, arg2);
-    }
-
-    private GenericIfThen getTypedExpr() {
-        return typedExpr;
-    }
-
-    private void setTypedExpr(final GenericIfThen typedExpr) {
-        this.typedExpr = typedExpr;
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
