@@ -10,6 +10,7 @@ import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCmd;
 import org.apache.hadoop.hbase.hbql.query.cmds.SchemaManagerCmd;
+import org.apache.hadoop.hbase.hbql.query.cmds.ShellCommand;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
@@ -84,7 +85,11 @@ public class HBql {
     public static SchemaManagerCmd parseSchemaCommand(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
-            return parser.schemaStmt();
+            final ShellCommand command = parser.commandStmt();
+            if (command instanceof SchemaManagerCmd)
+                return (SchemaManagerCmd)command;
+            else
+                throw new HBqlException("Expecting a schema manager command");
         }
         catch (RecognitionException e) {
             e.printStackTrace();
@@ -95,7 +100,11 @@ public class HBql {
     public static ConnectionCmd parseCommand(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
-            return parser.commandStmt();
+            final ShellCommand command = parser.commandStmt();
+            if (command instanceof ConnectionCmd)
+                return (ConnectionCmd)command;
+            else
+                throw new HBqlException("Expecting a connection command");
         }
         catch (RecognitionException e) {
             e.printStackTrace();

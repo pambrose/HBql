@@ -10,7 +10,9 @@ HBql Commands
     * The command keywords are case insensitive.
     
 
-DDL Commands
+*{{{commands/define-schema.html}DEFINE SCHEMA}}  Create a schema.
+
+*{{{commands/drop-schema.html}DROP SCHEMA}}  Drop a schema.
 
 *{{{commands/show-tables.html}SHOW TABLES}}  Displays all enabled table names.
 
@@ -21,10 +23,6 @@ DDL Commands
 *{{{commands/disable-table.html}DISABLE TABLE}}  Disables named table (required before dropping a table).
 
 *{{{commands/drop-table.html}DROP TABLE}}  Drops named table.
-
-
-
-DML Commands
 
 *{{{commands/show-tables.html}SELECT}}  Displays all enabled table names.
 

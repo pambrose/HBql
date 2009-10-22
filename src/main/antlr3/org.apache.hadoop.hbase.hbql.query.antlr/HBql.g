@@ -62,23 +62,19 @@ package org.apache.hadoop.hbase.hbql.query.antlr;
 import org.apache.hadoop.hbase.hbql.query.util.*;
 }
 
-commandStmt returns [ConnectionCmd retval]
+commandStmt returns [ShellCommand retval]
 options {backtrack=true;}	
-	: keyDROP keyTABLE t=simpleName 		{retval = new DropCmd($t.text);}
-	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableCmd($t.text);}
-	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableCmd($t.text);}
-	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeCmd($t.text);}
-	| keySHOW keyTABLES 		 		{retval = new ShowCmd();}
-	| keySET i=simpleName EQ? v=QUOTED	 	{retval = new SetCmd($i.text, $v.text);}
+	: keySHOW keyTABLES 		 		{retval = new ShowTablesCmd();}
+	| keyDROP keyTABLE t=simpleName 		{retval = new DropTableCmd($t.text);}
+	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableCmd($t.text);}
+	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableCmd($t.text);}
+	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableCmd($t.text);}
 	| keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateTableCmd($t.text);}
-	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteTableCmd($t.text, $w.retval);}
-	;
-
-schemaStmt returns [SchemaManagerCmd retval]
-	: keyDEFINE keySCHEMA t=simpleName (keyALIAS a=simpleName)? LPAREN l=attribList RPAREN
+	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteCmd($t.text, $w.retval);}
+	| keyDEFINE keySCHEMA t=simpleName (keyALIAS a=simpleName)? LPAREN l=attribList RPAREN
 							{retval = new DefineSchemaCmd($t.text, $a.text, $l.retval);}
-	| keyDROP keySCHEMA t=simpleName 
-							{retval = new DropSchemaCmd($t.text);}
+	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaCmd($t.text);}
+	| keySET i=simpleName EQ? v=QUOTED	 	{retval = new SetCmd($i.text, $v.text);}
 	;						
 	
 attribList returns [List<ColumnDescription> retval] 

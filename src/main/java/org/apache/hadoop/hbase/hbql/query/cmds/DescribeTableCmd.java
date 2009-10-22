@@ -10,9 +10,9 @@ import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
 import java.io.IOException;
 
-public class DescribeCmd extends TableCmd implements ConnectionCmd {
+public class DescribeTableCmd extends TableCmd implements ConnectionCmd {
 
-    public DescribeCmd(final String tableName) {
+    public DescribeTableCmd(final String tableName) {
         super(tableName);
     }
 

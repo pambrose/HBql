@@ -3,12 +3,6 @@ package org.apache.hadoop.hbase.hbql.client;
 import java.util.Map;
 import java.util.NavigableMap;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Oct 12, 2009
- * Time: 12:15:54 AM
- */
 public interface HRecord {
 
     void setTimestamp(final long timestamp);

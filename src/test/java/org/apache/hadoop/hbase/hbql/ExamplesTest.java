@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 
 import java.io.IOException;
@@ -41,6 +42,14 @@ public class ExamplesTest extends TestSupport {
         HConnection conn = HConnectionManager.newHConnection();
         System.out.println(conn.execute("DISABLE TABLE foo"));
         // END SNIPPET: disable-table
+
+    }
+
+    public void dropSchema() throws HBqlException, IOException {
+
+        // START SNIPPET: drop_schema
+        System.out.println(SchemaManager.execute("DROP SCHEMA foo_schema"));
+        // END SNIPPET: drop_schema
 
     }
 }

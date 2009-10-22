@@ -8,9 +8,9 @@ import org.apache.hadoop.hbase.hbql.client.HOutput;
 
 import java.io.IOException;
 
-public class ShowCmd implements ConnectionCmd {
+public class ShowTablesCmd implements ConnectionCmd {
 
-    public ShowCmd() {
+    public ShowTablesCmd() {
     }
 
     public HOutput execute(final HConnection conn) throws HBqlException, IOException {

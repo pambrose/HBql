@@ -6,12 +6,6 @@ import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import java.io.Serializable;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Oct 15, 2009
- * Time: 8:58:43 PM
- */
 public class ElementMap<T> implements Serializable {
 
     private final Map<String, T> map = Maps.newHashMap();

@@ -8,9 +8,9 @@ import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
 import java.io.IOException;
 
-public class DisableCmd extends TableCmd implements ConnectionCmd {
+public class DisableTableCmd extends TableCmd implements ConnectionCmd {
 
-    public DisableCmd(final String tableName) {
+    public DisableTableCmd(final String tableName) {
         super(tableName);
     }
 
@@ -26,5 +26,4 @@ public class DisableCmd extends TableCmd implements ConnectionCmd {
         retval.out.flush();
         return retval;
     }
-
 }

@@ -6,7 +6,7 @@ import org.apache.hadoop.hbase.hbql.client.HOutput;
 
 import java.io.IOException;
 
-public interface ConnectionCmd {
+public interface ConnectionCmd extends ShellCommand {
 
     public HOutput execute(final HConnection conn) throws HBqlException, IOException;
 }
