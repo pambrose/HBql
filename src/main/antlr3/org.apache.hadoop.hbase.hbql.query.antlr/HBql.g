@@ -36,11 +36,18 @@ tokens {
 package org.apache.hadoop.hbase.hbql.query.antlr;
 import org.apache.hadoop.hbase.hbql.query.expr.*;
 import org.apache.hadoop.hbase.hbql.query.expr.node.*;
-import org.apache.hadoop.hbase.hbql.query.expr.predicate.*;
-import org.apache.hadoop.hbase.hbql.query.expr.value.function.*;
-import org.apache.hadoop.hbase.hbql.query.expr.value.stmt.*;
-import org.apache.hadoop.hbase.hbql.query.expr.value.literal.*;
-import org.apache.hadoop.hbase.hbql.query.expr.value.var.*;
+import org.apache.hadoop.hbase.hbql.query.expr.betweenstmt.*;
+import org.apache.hadoop.hbase.hbql.query.expr.calculation.*;
+import org.apache.hadoop.hbase.hbql.query.expr.casestmt.*;
+import org.apache.hadoop.hbase.hbql.query.expr.compare.*;
+import org.apache.hadoop.hbase.hbql.query.expr.function.*;
+import org.apache.hadoop.hbase.hbql.query.expr.ifthenstmt.*;
+import org.apache.hadoop.hbase.hbql.query.expr.instmt.*;
+import org.apache.hadoop.hbase.hbql.query.expr.literal.*;
+import org.apache.hadoop.hbase.hbql.query.expr.node.*;
+import org.apache.hadoop.hbase.hbql.query.expr.nullcomp.*;
+import org.apache.hadoop.hbase.hbql.query.expr.stringpattern.*;
+import org.apache.hadoop.hbase.hbql.query.expr.var.*;
 import org.apache.hadoop.hbase.hbql.query.cmds.*;
 import org.apache.hadoop.hbase.hbql.query.antlr.*;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.*;
@@ -262,7 +269,7 @@ options {backtrack=true; memoize=true;}
 							{retval = new DelegateBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
 	| s1=valPrimary n=keyNOT? keyIN LPAREN l=exprList RPAREN			
 							{retval = new DelegateInStmt($s1.retval, ($n.text != null), $l.retval);} 
-	| s1=valPrimary keyIS (n=keyNOT)? keyNULL	{retval = new DelegateNullCompare(($n.text != null), $s1.retval);}	
+	| s1=valPrimary keyIS n=keyNOT? keyNULL		{retval = new DelegateNullCompare(($n.text != null), $s1.retval);}	
 	;
 
 valueFunctions returns [GenericValue retval]
@@ -319,11 +326,9 @@ multDiv returns [Operator retval]
 	;
 
 simpleName
-//options {backtrack=true; memoize=true;}	
  	: ID;
  	
 varRef 
-//options {backtrack=true; memoize=true;}	
 	: ID (COLON ID)?;
 	
 familyRef : ID COLON STAR;
