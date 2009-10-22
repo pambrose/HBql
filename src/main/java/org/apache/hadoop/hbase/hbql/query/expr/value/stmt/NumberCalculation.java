@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 
@@ -13,7 +12,7 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
+                                                       final boolean allowsCollections) throws HBqlException {
         return this.validateNumericTypes();
     }
 

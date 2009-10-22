@@ -121,7 +121,7 @@ public abstract class Function extends GenericExpr {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
+                                                       final boolean allowsCollections) throws HBqlException {
 
         int i = 0;
         if (this.getArgList().size() != this.getTypeSignature().getArgCount())

@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.literal;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
@@ -33,7 +32,7 @@ public abstract class GenericLiteral<T> implements GenericValue {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
+                                                       final boolean allowsCollections) throws HBqlException {
         return this.getReturnType();
     }
 

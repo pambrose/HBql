@@ -84,6 +84,7 @@ public abstract class GenericExpr implements GenericValue {
     private boolean useFloat = false;
     private boolean useDouble = false;
 
+    private ExprContext exprContext = null;
     private final Type type;
     private final List<GenericValue> exprList = Lists.newArrayList();
 
@@ -180,8 +181,14 @@ public abstract class GenericExpr implements GenericValue {
     }
 
     public void setExprContext(final ExprContext context) throws HBqlException {
+        this.exprContext = context;
+
         for (final GenericValue val : this.getArgList())
             val.setExprContext(context);
+    }
+
+    protected ExprContext getExprContext() {
+        return this.exprContext;
     }
 
     public void optimizeArgs() throws HBqlException {
@@ -199,7 +206,7 @@ public abstract class GenericExpr implements GenericValue {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
+                                                       final boolean allowsCollections) throws HBqlException {
 
         if (this.getArgList().size() != this.getTypeSignature().getArgCount())
             throw new TypeException("Incorrect number of arguments in " + this.asString());
@@ -210,7 +217,7 @@ public abstract class GenericExpr implements GenericValue {
         return this.getTypeSignature().getReturnType();
     }
 
-    protected Class<? extends GenericValue> validateNumericTypes() throws TypeException {
+    protected Class<? extends GenericValue> validateNumericTypes() throws HBqlException {
 
         if (this.getArgList().size() != this.getTypeSignature().getArgCount())
             throw new TypeException("Incorrect number of arguments in " + this.asString());

@@ -1,11 +1,12 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.expr.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
 import java.util.List;
 
-public abstract class DelegateStmt<T> extends GenericExpr {
+public abstract class DelegateStmt<T extends GenericExpr> extends GenericExpr {
 
     private T typedExpr = null;
 
@@ -25,7 +26,9 @@ public abstract class DelegateStmt<T> extends GenericExpr {
         return typedExpr;
     }
 
-    protected void setTypedExpr(final T typedExpr) {
+    protected void setTypedExpr(final T typedExpr) throws HBqlException {
         this.typedExpr = typedExpr;
+
+        this.getTypedExpr().setExprContext(this.getExprContext());
     }
 }

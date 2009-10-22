@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.hbql.query.expr.value.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
@@ -51,7 +50,7 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
+                                                       final boolean allowsCollections) throws HBqlException {
         return this.getFieldType().getExprType();
     }
 

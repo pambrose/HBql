@@ -138,7 +138,7 @@ public abstract class ExprContext implements Serializable {
         }
     }
 
-    public void validateTypes(final boolean allowColumns, final boolean allowsCollections) throws TypeException {
+    public void validateTypes(final boolean allowColumns, final boolean allowsCollections) throws HBqlException {
 
         if (this.isInNeedOfTypeValidation()) {
 

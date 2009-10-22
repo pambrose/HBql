@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
@@ -17,7 +16,7 @@ public class DelegateCaseWhen extends GenericCaseWhen {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
+                                                       final boolean allowsCollections) throws HBqlException {
 
         this.validateParentClass(BooleanValue.class, this.getArg(0).validateTypes(this, false));
         final Class<? extends GenericValue> valueType = this.getArg(1).validateTypes(this, false);

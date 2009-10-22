@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.value.stmt;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
@@ -19,7 +18,7 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
+                                                       final boolean allowsCollections) throws HBqlException {
 
         final Class<? extends GenericValue> type1 = this.getArg(0).validateTypes(this, false);
         final Class<? extends GenericValue> type2 = this.getArg(1).validateTypes(this, false);

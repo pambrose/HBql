@@ -3,7 +3,6 @@ package org.apache.hadoop.hbase.hbql.query.expr.predicate;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.GenericExpr;
 import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
@@ -19,7 +18,7 @@ public class BooleanNot extends GenericExpr implements BooleanValue {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
+                                                       final boolean allowsCollections) throws HBqlException {
         this.validateParentClass(BooleanValue.class, this.getArg(0).validateTypes(this, false));
         return BooleanValue.class;
     }

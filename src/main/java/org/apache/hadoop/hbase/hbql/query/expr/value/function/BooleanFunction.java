@@ -26,7 +26,7 @@ public class BooleanFunction extends Function implements BooleanValue {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws TypeException {
+                                                       final boolean allowsCollections) throws HBqlException {
 
         switch (this.getFunctionType()) {
 

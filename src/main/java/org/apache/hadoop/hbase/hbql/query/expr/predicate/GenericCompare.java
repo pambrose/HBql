@@ -37,9 +37,14 @@ public abstract class GenericCompare extends GenericExpr implements BooleanValue
     }
 
     protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {
-        this.validateParentClass(clazz,
-                                 this.getArg(0).validateTypes(this, false),
-                                 this.getArg(1).validateTypes(this, false));
+        try {
+            this.validateParentClass(clazz,
+                                     this.getArg(0).validateTypes(this, false),
+                                     this.getArg(1).validateTypes(this, false));
+        }
+        catch (HBqlException e) {
+            e.printStackTrace();
+        }
 
         return BooleanValue.class;
     }
