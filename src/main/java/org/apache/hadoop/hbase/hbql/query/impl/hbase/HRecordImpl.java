@@ -111,7 +111,7 @@ public class HRecordImpl implements Serializable, HRecord {
         }
         else {
             if (inSchema && !this.getSchema().containsVariableName(name))
-                throw new HBqlException("Invalid variable name " + this.getSchema().getTableName() + "." + name);
+                throw new HBqlException("Invalid variable name " + this.getSchema().getSchemaName() + "." + name);
             return new ObjectValue(this, name);
         }
     }
@@ -123,7 +123,7 @@ public class HRecordImpl implements Serializable, HRecord {
         }
         else {
             if (inSchema && !this.getSchema().containsVariableName(name))
-                throw new HBqlException("Invalid variable name " + this.getSchema().getTableName() + "." + name);
+                throw new HBqlException("Invalid variable name " + this.getSchema().getSchemaName() + "." + name);
             return new TypedKeysAsColumnsValueMap(this, name);
         }
     }

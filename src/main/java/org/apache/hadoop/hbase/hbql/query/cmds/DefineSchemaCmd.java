@@ -9,19 +9,19 @@ import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 
 import java.util.List;
 
-public class DefineSchemaCmd extends TableCmd implements SchemaManagerCmd {
+public class DefineSchemaCmd extends SchemaCmd implements SchemaManagerCmd {
 
-    private final String alias;
+    private final String tableName;
     private final List<ColumnDescription> columnDescriptionList;
 
-    public DefineSchemaCmd(final String tableName, final String alias, final List<ColumnDescription> columnDescriptionList) {
-        super(tableName);
-        this.alias = alias;
+    public DefineSchemaCmd(final String schemaName, final String tableName, final List<ColumnDescription> columnDescriptionList) {
+        super(schemaName);
+        this.tableName = (tableName == null || tableName.length() == 0) ? schemaName : tableName;
         this.columnDescriptionList = columnDescriptionList;
     }
 
-    private String getAlias() {
-        return alias;
+    private String getTableName() {
+        return tableName;
     }
 
     private List<ColumnDescription> getColumnDescriptionList() {
@@ -30,18 +30,18 @@ public class DefineSchemaCmd extends TableCmd implements SchemaManagerCmd {
 
     public HOutput execute() throws HBqlException {
 
-        final DefinedSchema schema = SchemaManager.newDefinedSchema(this.getTableName(),
-                                                                    this.getAlias(),
+        final DefinedSchema schema = SchemaManager.newDefinedSchema(this.getSchemaName(),
+                                                                    this.getTableName(),
                                                                     this.getColumnDescriptionList());
 
         for (final ColumnAttrib attrib : schema.getColumnAttribSet()) {
             if (attrib.getFieldType() == null && !attrib.isFamilyDefaultAttrib())
-                throw new HBqlException(schema.getTableName() + " attribute "
+                throw new HBqlException(schema.getSchemaName() + " attribute "
                                         + attrib.getFamilyQualifiedName() + " has unknown type.");
         }
 
         final HOutput retval = new HOutput();
-        retval.out.println("Schema " + schema.getTableName() + " defined.");
+        retval.out.println("Schema " + schema.getSchemaName() + " defined.");
         retval.out.flush();
 
         return retval;

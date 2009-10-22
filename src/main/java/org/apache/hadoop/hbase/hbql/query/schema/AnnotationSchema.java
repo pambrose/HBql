@@ -33,6 +33,7 @@ public class AnnotationSchema extends HBaseSchema {
     private DefinedSchema defineSchemaEquiv = null;
 
     private AnnotationSchema(final Class clazz) throws HBqlException {
+        super(clazz.getName());
 
         this.clazz = clazz;
 
@@ -241,7 +242,7 @@ public class AnnotationSchema extends HBaseSchema {
 
     public synchronized DefinedSchema getDefinedSchemaEquivalent() throws HBqlException {
         if (this.defineSchemaEquiv == null)
-            this.defineSchemaEquiv = new DefinedSchema(this.getTableName(), null, this.getColumnDescriptionList());
+            this.defineSchemaEquiv = new DefinedSchema(this.getTableName(), this.getTableName(), this.getColumnDescriptionList());
         return this.defineSchemaEquiv;
     }
 
@@ -251,14 +252,6 @@ public class AnnotationSchema extends HBaseSchema {
 
     private static Map<String, Class<?>> getClassCacheMap() {
         return classCacheMap;
-    }
-
-    public String toString() {
-        return this.getSchemaName();
-    }
-
-    public String getSchemaName() {
-        return this.getClazz().getName();
     }
 
     public Class<?> getClazz() {

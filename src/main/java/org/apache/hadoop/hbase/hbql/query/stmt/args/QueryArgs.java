@@ -15,7 +15,7 @@ public class QueryArgs {
 
     private final List<SelectElement> selectElementList;
     private final List<ColumnAttrib> selectColumnAttribList = Lists.newArrayList();
-    private final String tableName;
+    private final String schemaName;
     private final WhereArgs whereArgs;
 
     private int expressionCounter = 0;
@@ -23,9 +23,9 @@ public class QueryArgs {
     private HBaseSchema schema = null;
 
     public QueryArgs(final List<SelectElement> selectElementList,
-                     final String tableName,
+                     final String schemaName,
                      final WhereArgs whereArgs) {
-        this.tableName = tableName;
+        this.schemaName = schemaName;
         this.selectElementList = selectElementList;
         this.whereArgs = whereArgs != null ? whereArgs : new WhereArgs();
     }
@@ -36,7 +36,7 @@ public class QueryArgs {
 
     public void validate(final HConnection connection) throws HBqlException {
 
-        this.schema = HBaseSchema.findSchema(this.getTableName());
+        this.schema = HBaseSchema.findSchema(this.getSchemaName());
 
         for (final SelectElement selectElement : this.getSelectElementList())
             selectElement.validate(this, connection, this.getSelectAttribList());
@@ -84,8 +84,8 @@ public class QueryArgs {
         return this.selectColumnAttribList;
     }
 
-    public String getTableName() {
-        return this.tableName;
+    public String getSchemaName() {
+        return this.schemaName;
     }
 
     public WhereArgs getWhereArgs() {

@@ -16,20 +16,19 @@ import java.util.List;
 public class DefinedSchema extends HBaseSchema {
 
     final String tableName;
-    final String tableAliasName;
 
     public DefinedSchema(final List<ColumnDescription> columnDescriptionList) throws HBqlException {
+        super("embedded");
         this.tableName = "embedded";
-        this.tableAliasName = "embedded";
         for (final ColumnDescription columnDescription : columnDescriptionList)
             this.processColumn(columnDescription, false);
     }
 
-    public DefinedSchema(final String tableName,
-                         final String tableAliasName,
+    public DefinedSchema(final String schemaName,
+                         final String tableName,
                          final List<ColumnDescription> columnDescriptionList) throws HBqlException {
+        super(schemaName);
         this.tableName = tableName;
-        this.tableAliasName = tableAliasName;
         for (final ColumnDescription columnDescription : columnDescriptionList)
             processColumn(columnDescription, true);
     }
@@ -48,7 +47,7 @@ public class DefinedSchema extends HBaseSchema {
 
         if (attrib.isKeyAttrib()) {
             if (this.getKeyAttrib() != null)
-                throw new HBqlException("Table " + this + " has multiple instance variables marked as keys");
+                throw new HBqlException("Schema " + this + " has multiple instance variables marked as keys");
             this.setKeyAttrib(attrib);
         }
         else {
@@ -82,18 +81,6 @@ public class DefinedSchema extends HBaseSchema {
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
         final ExprTree exprTree = HBql.parseWhereExpression(query, this);
         return new HBqlFilter(exprTree, -1);
-    }
-
-    public String getSchemaName() {
-        return this.getTableName();
-    }
-
-    public String toString() {
-        return this.getTableName();
-    }
-
-    public String getTableAliasName() {
-        return this.tableAliasName;
     }
 
     public String getTableName() {

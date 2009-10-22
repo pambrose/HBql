@@ -4,10 +4,10 @@ import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
@@ -17,12 +17,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class DeleteCmd extends TableCmd implements ConnectionCmd {
+public class DeleteCmd extends SchemaCmd implements ConnectionCmd {
 
     private final WhereArgs whereArgs;
 
-    public DeleteCmd(final String tableName, final WhereArgs whereArgs) {
-        super(tableName);
+    public DeleteCmd(final String schemaName, final WhereArgs whereArgs) {
+        super(schemaName);
         if (whereArgs == null)
             this.whereArgs = new WhereArgs();
         else
@@ -33,9 +33,9 @@ public class DeleteCmd extends TableCmd implements ConnectionCmd {
         return this.whereArgs;
     }
 
-    public HOutput execute(final HConnection conn) throws HBqlException, IOException {
+    public HOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
-        final HBaseSchema schema = HBaseSchema.findSchema(this.getTableName());
+        final HBaseSchema schema = HBaseSchema.findSchema(this.getSchemaName());
         this.getWhereArgs().setSchema(schema);
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWhereArgs().getAllColumnsUsedInExprs();

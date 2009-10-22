@@ -71,7 +71,7 @@ options {backtrack=true;}
 	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableCmd($t.text);}
 	| keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateTableCmd($t.text);}
 	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteCmd($t.text, $w.retval);}
-	| keyDEFINE keySCHEMA t=simpleName (keyALIAS a=simpleName)? LPAREN l=attribList RPAREN
+	| keyDEFINE keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
 							{retval = new DefineSchemaCmd($t.text, $a.text, $l.retval);}
 	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaCmd($t.text);}
 	| keySET i=simpleName EQ? v=QUOTED	 	{retval = new SetCmd($i.text, $v.text);}
@@ -383,6 +383,7 @@ keyTRUE 	: {isKeyword(input, "TRUE")}? ID;
 keyFALSE 	: {isKeyword(input, "FALSE")}? ID;
 keyBETWEEN 	: {isKeyword(input, "BETWEEN")}? ID;
 keyNULL 	: {isKeyword(input, "NULL")}? ID;
+keyFOR	 	: {isKeyword(input, "FOR")}? ID;
 keyCLIENT	: {isKeyword(input, "CLIENT")}? ID;
 keySERVER	: {isKeyword(input, "SERVER")}? ID;
 keyVERSIONS	: {isKeyword(input, "VERSIONS")}? ID;

@@ -23,6 +23,11 @@ public abstract class Schema implements Serializable {
     private List<String> evalList = null;
     private Map<String, ExprTree> evalMap = null;
     private int exprTreeCacheSize = 25;
+    private final String schemaName;
+
+    protected Schema(final String schemaName) {
+        this.schemaName = schemaName;
+    }
 
     public abstract Collection<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException;
 
@@ -70,12 +75,21 @@ public abstract class Schema implements Serializable {
         return this.evalMap;
     }
 
+    public String getSchemaName() {
+        return this.schemaName;
+    }
+
+
     private List<String> getEvalList() {
         return this.evalList;
     }
 
     public int getEvalCacheSize() {
         return this.exprTreeCacheSize;
+    }
+
+    public String toString() {
+        return this.getSchemaName();
     }
 
     public void setEvalCacheSize(final int size) {

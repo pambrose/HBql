@@ -27,6 +27,10 @@ public abstract class HBaseSchema extends Schema {
     private final Map<String, ColumnAttrib> familyDefaultMap = Maps.newHashMap();
     private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
 
+    protected HBaseSchema(final String schemaName) {
+        super(schemaName);
+    }
+
     public Object newInstance() throws IllegalAccessException, InstantiationException {
         return null;
     }
@@ -39,15 +43,9 @@ public abstract class HBaseSchema extends Schema {
         this.keyAttrib = keyAttrib;
     }
 
-    public abstract String getSchemaName();
-
     public abstract String getTableName();
 
     protected abstract DefinedSchema getDefinedSchemaEquivalent() throws HBqlException;
-
-    public String getTableAliasName() {
-        return this.getTableName();
-    }
 
     public abstract List<HColumnDescriptor> getColumnDescriptors();
 

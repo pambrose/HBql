@@ -56,42 +56,27 @@ public class SchemaManager {
         return null != getDefinedSchemaMap().get(tableName);
     }
 
-    public static void dropSchema(final String name) {
-
-        final DefinedSchema schema = getDefinedSchema(name);
-        if (schema != null) {
-
-            if (getDefinedSchemaMap().containsKey(schema.getTableName()))
-                getDefinedSchemaMap().remove(schema.getTableName());
-
-            if (getDefinedSchemaMap().containsKey(schema.getTableAliasName()))
-                getDefinedSchemaMap().remove(schema.getTableAliasName());
-        }
+    public static void dropSchema(final String schemaName) {
+        if (getDefinedSchemaMap().containsKey(schemaName))
+            getDefinedSchemaMap().remove(schemaName);
     }
 
-    public synchronized static DefinedSchema newDefinedSchema(final String tableName,
-                                                              final String aliasName,
+    public synchronized static DefinedSchema newDefinedSchema(final String schemaName,
+                                                              final String tableName,
                                                               final List<ColumnDescription> colList) throws HBqlException {
 
-        if (SchemaManager.doesDefinedSchemaExist(tableName))
-            throw new HBqlException("Schema " + tableName + " already defined");
+        if (SchemaManager.doesDefinedSchemaExist(schemaName))
+            throw new HBqlException("Schema " + schemaName + " already defined");
 
-        if (aliasName != null && SchemaManager.doesDefinedSchemaExist(aliasName))
-            throw new HBqlException("Alias " + aliasName + " already defined");
+        final DefinedSchema schema = new DefinedSchema(schemaName, tableName, colList);
 
-        final DefinedSchema schema = new DefinedSchema(tableName, aliasName, colList);
-
-        getDefinedSchemaMap().put(tableName, schema);
-
-        // Add in the same schema if there is an alias
-        if (aliasName != null && !tableName.equals(aliasName))
-            getDefinedSchemaMap().put(aliasName, schema);
+        getDefinedSchemaMap().put(schemaName, schema);
 
         return schema;
     }
 
-    public static HRecord newHRecord(final String tableName) throws HBqlException {
-        final HBaseSchema schema = HBaseSchema.findSchema(tableName);
+    public static HRecord newHRecord(final String schemaName) throws HBqlException {
+        final HBaseSchema schema = HBaseSchema.findSchema(schemaName);
         return new HRecordImpl(schema);
     }
 }

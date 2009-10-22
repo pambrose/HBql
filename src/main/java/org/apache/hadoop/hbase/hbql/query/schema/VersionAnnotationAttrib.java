@@ -72,7 +72,7 @@ public class VersionAnnotationAttrib extends FieldAttrib {
             final ColumnAttrib attrib = schema.getAttribByVariableName(instance);
 
             if (attrib == null)
-                throw new HBqlException("Instance variable " + schema.getTableName() + "." + instance + " does not exist");
+                throw new HBqlException("Instance variable " + schema.getSchemaName() + "." + instance + " does not exist");
 
             if (!attrib.isACurrentValue())
                 throw new HBqlException(getObjectQualifiedName(field)

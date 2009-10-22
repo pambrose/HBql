@@ -15,6 +15,7 @@ public class ReflectionSchema extends Schema {
     private final static Map<Class<?>, ReflectionSchema> reflectionSchemaMap = Maps.newHashMap();
 
     private ReflectionSchema(final Class clazz) throws HBqlException {
+        super(clazz.getName());
 
         for (final Field field : clazz.getDeclaredFields()) {
 

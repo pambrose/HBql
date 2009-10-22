@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.impl.hbase;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.hbql.client.HBatch;
@@ -13,7 +14,6 @@ import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCmd;
-import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Sets;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -44,24 +44,24 @@ public class ConnectionImpl implements HConnection {
         return this.config;
     }
 
+    public HBaseAdmin getAdmin() throws MasterNotRunningException {
+        return new HBaseAdmin(this.getConfig());
+    }
+
     public HTable getHTable(final String tableName) throws IOException {
         return new HTable(this.getConfig(), tableName);
     }
 
     public boolean tableExists(final String tableName) throws IOException, HBqlException {
-        final HBaseSchema schema = HBaseSchema.findSchema(tableName);
-        final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
-        return admin.tableExists(schema.getTableName());
+        return this.getAdmin().tableExists(tableName);
     }
 
     public boolean tableEnabled(final String tableName) throws IOException, HBqlException {
-        final HBaseSchema schema = HBaseSchema.findSchema(tableName);
-        final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
-        return admin.isTableEnabled(schema.getTableName());
+        return this.getAdmin().isTableEnabled(tableName);
     }
 
     public List<String> getTableList() throws IOException {
-        final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
+        final HBaseAdmin admin = this.getAdmin();
         final List<String> tableList = Lists.newArrayList();
         for (final HTableDescriptor table : admin.listTables())
             tableList.add(table.getNameAsString());
@@ -70,8 +70,7 @@ public class ConnectionImpl implements HConnection {
 
     public Set<String> getFamilyList(final String tableName) throws HBqlException {
         try {
-            final HBaseAdmin admin = new HBaseAdmin(this.getConfig());
-            final HTableDescriptor table = admin.getTableDescriptor(Bytes.toBytes(tableName));
+            final HTableDescriptor table = this.getAdmin().getTableDescriptor(Bytes.toBytes(tableName));
             final Set<String> familySet = Sets.newHashSet();
             for (final HColumnDescriptor descriptor : table.getColumnFamilies())
                 familySet.add(Bytes.toString(descriptor.getName()));

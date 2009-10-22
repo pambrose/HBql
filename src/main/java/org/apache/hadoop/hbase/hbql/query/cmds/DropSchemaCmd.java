@@ -4,18 +4,18 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 
-public class DropSchemaCmd extends TableCmd implements SchemaManagerCmd {
+public class DropSchemaCmd extends SchemaCmd implements SchemaManagerCmd {
 
-    public DropSchemaCmd(final String tableName) {
-        super(tableName);
+    public DropSchemaCmd(final String schemaName) {
+        super(schemaName);
     }
 
     public HOutput execute() throws HBqlException {
 
-        SchemaManager.dropSchema(this.getTableName());
+        SchemaManager.dropSchema(this.getSchemaName());
 
         final HOutput retval = new HOutput();
-        retval.out.println("Schmema " + this.getTableName() + " dropped.");
+        retval.out.println("Schmema " + this.getSchemaName() + " dropped.");
         retval.out.flush();
 
         return retval;
