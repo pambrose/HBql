@@ -75,18 +75,9 @@ options {backtrack=true;}
 							{retval = new DefineSchemaCmd($t.text, $a.text, $l.retval);}
 	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaCmd($t.text);}
 	| keySET i=simpleName EQ? v=QUOTED	 	{retval = new SetCmd($i.text, $v.text);}
+	| s=selectStmt				 	{retval = new SelectCmd($s.retval);}
 	;						
 	
-attribList returns [List<ColumnDescription> retval] 
-@init {retval = Lists.newArrayList();}
-	: (a1=defineAttrib {retval.add($a1.retval);} (COMMA a2=defineAttrib {retval.add($a2.retval);})*)?;
-	
-defineAttrib returns [ColumnDescription retval]
-	: c=varRef type=simpleName (b=LBRACE RBRACE)? m=keyKACMAP? (keyALIAS a=simpleName)? (keyDEFAULT t=topExpr)?	
-							{retval = ColumnDescription.newColumn($c.text, $a.text, $m.text!=null, false, $type.text, $b.text!=null, $t.retval);}
-	| f=familyRef (keyALIAS a=simpleName)?		{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
-	;
-
 selectStmt returns [QueryArgs retval]
 	: keySELECT c=selectElems keyFROM t=simpleName w=whereValue?			
 							{retval = new QueryArgs($c.retval, $t.text, $w.retval);};
@@ -281,6 +272,16 @@ whenItem [DelegateCase stmt]
 	: keyWHEN t1=topExpr keyTHEN t2=topExpr		{stmt.addWhen($t1.retval, $t2.retval);}
 	;
 	
+attribList returns [List<ColumnDescription> retval] 
+@init {retval = Lists.newArrayList();}
+	: (a1=defineAttrib {retval.add($a1.retval);} (COMMA a2=defineAttrib {retval.add($a2.retval);})*)?;
+	
+defineAttrib returns [ColumnDescription retval]
+	: c=varRef type=simpleName (b=LBRACE RBRACE)? m=keyKACMAP? (keyALIAS a=simpleName)? (keyDEFAULT t=topExpr)?	
+							{retval = ColumnDescription.newColumn($c.text, $a.text, $m.text!=null, false, $type.text, $b.text!=null, $t.retval);}
+	| f=familyRef (keyALIAS a=simpleName)?		{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
+	;
+
 exprList returns [List<GenericValue> retval]
 @init {retval = Lists.newArrayList();}
 	: i1=topExpr {retval.add($i1.retval);} (COMMA i2=topExpr {retval.add($i2.retval);})*;
