@@ -461,15 +461,14 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUnknownMapExpressions() throws HBqlException, IOException {
 
-        SchemaManager.execute("drop schema tab1");
-
-        SchemaManager.execute("define schema tab1 FOR TABLE table1"
+        SchemaManager.execute("drop schema table1");
+        SchemaManager.execute("define schema table1"
                               + "("
                               + "keyval key, "
                               + "f3:* alias f1default "
                               + ")");
 
-        final String query1 = "SELECT f3:* FROM tab1";
+        final String query1 = "SELECT f3:* FROM table1";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
         List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
@@ -481,7 +480,7 @@ public class SelectTest extends TestSupport {
             assertTrue(val2.size() == 2);
         }
 
-        final String query2 = "SELECT * FROM tab1";
+        final String query2 = "SELECT * FROM table1";
         HQuery<HRecord> q2 = conn.newHQuery(query2);
         List<HRecord> recList2 = q2.getResultList();
         assertTrue(recList2.size() == 10);
@@ -499,7 +498,6 @@ public class SelectTest extends TestSupport {
     public void selectUnnamedExpressions() throws HBqlException, IOException {
 
         SchemaManager.execute("drop schema tab1");
-
         SchemaManager.execute("define schema tab1 FOR TABLE table1"
                               + "("
                               + "keyval key, "
