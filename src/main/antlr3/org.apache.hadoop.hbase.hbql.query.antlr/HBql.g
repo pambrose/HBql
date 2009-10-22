@@ -173,7 +173,6 @@ descWhereExpr returns [ExprTree retval]
 	: s=schemaDesc? e=topExpr			{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);};
 
 // Expressions
-
 topExpr returns [GenericValue retval]
 	: o=orExpr					{retval = $o.retval;};
 				
@@ -218,16 +217,13 @@ signedExpr returns [GenericValue retval]
 
 // The order here is important.  atomExpr has to come after valueFunctions to avoid simpleName conflict
 parenExpr returns [GenericValue retval]
-//options {memoize=true;}	
-//options {backtrack=true; memoize=true;}	
-options {backtrack=true;}	
+options {backtrack=true; memoize=true;}	
 	: f=valueFunctions				{retval = $f.retval;}
 	| n=atomExpr					{retval = $n.retval;}
 	| LPAREN s=topExpr RPAREN			{retval = $s.retval;}
 	;
 	   						 
 atomExpr returns [GenericValue retval]
-options {backtrack=true; memoize=true;}	
 	: s=stringLiteral				{retval = $s.retval;}
 	| i=integerLiteral				{retval = $i.retval;}
 	| l=longLiteral					{retval = $l.retval;}

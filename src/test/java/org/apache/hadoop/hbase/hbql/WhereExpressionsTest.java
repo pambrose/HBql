@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InvalidFunctionException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.ExprSelectElement;
@@ -357,6 +358,11 @@ public class WhereExpressionsTest extends TestSupport {
         // Test for list where scalar is required
         tree.setParameter("a", Arrays.asList("a", "b", "c"));
         assertHasException(tree, TypeException.class);
+    }
+
+    @Test
+    public void invalidFunction() throws HBqlException {
+        assertHasException("zzz('dd') == 'dd'", InvalidFunctionException.class);
     }
 
     @Test

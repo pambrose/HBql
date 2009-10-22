@@ -29,7 +29,7 @@ public class DelegateFunction extends DelegateStmt<Function> {
             function = DateFunction.ConstantType.getFunction(this.getFunctionName());
 
         if (function == null)
-            throw new InvalidFunctionException(this.getFunctionName());
+            throw new InvalidFunctionException(this.getFunctionName() + " in " + parentExpr.asString());
 
         this.setTypedExpr(function);
 
@@ -47,5 +47,9 @@ public class DelegateFunction extends DelegateStmt<Function> {
 
     public String getFunctionName() {
         return this.functionName;
+    }
+
+    public String asString() {
+        return this.getFunctionName() + super.asString();
     }
 }
