@@ -70,8 +70,8 @@ options {backtrack=true;}
 	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeCmd($t.text);}
 	| keySHOW keyTABLES 		 		{retval = new ShowCmd();}
 	| keySET i=simpleName EQ? v=QUOTED	 	{retval = new SetCmd($i.text, $v.text);}
-	| cr=createStmt					{retval = $cr.retval;}
-	| del=deleteStmt		 		{retval = $del.retval;}
+	| keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateCmd($t.text);}
+	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteCmd($t.text, $w.retval);}
 	;
 
 schemaStmt returns [SchemaManagerCmd retval]
@@ -80,9 +80,6 @@ schemaStmt returns [SchemaManagerCmd retval]
 	| keyDROP keySCHEMA t=simpleName 
 							{retval = new DropSchemaCmd($t.text);}
 	;						
-
-createStmt returns [CreateCmd retval]
-	: keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateCmd($t.text);};
 	
 attribList returns [List<ColumnDescription> retval] 
 @init {retval = Lists.newArrayList();}
@@ -93,10 +90,6 @@ defineAttrib returns [ColumnDescription retval]
 							{retval = ColumnDescription.newColumn($c.text, $a.text, $m.text!=null, false, $type.text, $b.text!=null, $t.retval);}
 	| f=familyRef (keyALIAS a=simpleName)?		{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
 	;
-
-deleteStmt  returns [DeleteCmd retval]
-	: keyDELETE keyFROM t=simpleName w=whereValue?			
-	  						{retval = new DeleteCmd($t.text, $w.retval);};
 
 selectStmt returns [QueryArgs retval]
 	: keySELECT c=selectElems keyFROM t=simpleName w=whereValue?			
