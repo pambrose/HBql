@@ -1,0 +1,19 @@
+    -----
+    DESCRIBE TABLE
+    -----
+    -----
+
+
+Syntax
+
+---------------------------
+DESCRIBE TABLE <table_name>
+---------------------------
+
+Description
+
+    Describes named table.
+
+Example
+
+%{snippet|id=describe-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

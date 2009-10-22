@@ -4,3 +4,16 @@
     -----
 
 
+Syntax
+
+---------------------------
+SHOW TABLES
+---------------------------
+
+Description
+
+    Displays all enabled table names. 
+
+Example
+
+%{snippet|id=show-tables|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

@@ -1,0 +1,15 @@
+    ------
+    Schemas
+    ------
+    ------
+
+Schemas
+
+    HBase treats all values as byte arrays.  In order to do typed operations
+on column values, some schema information is required.  HBql provides two mechanisms
+for defining schemas: java class annotations and a declaration.
+
+Annotations
+
+
+Define Command

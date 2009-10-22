@@ -5,23 +5,24 @@
 
 Introduction
 
-
-    HBql has both DDL and DML commands.  Commands are available in both the shell
-and in the API.
-
+    The goal of HBql is to simply the usage of {{{http://hadoop.apache.org/hbase}HBase}}.
 
 Getting Started
 
-    * {{{download.html}Download}
+    * {{{download.html}Download}}
 
-    * {{{installation.html}Installation}
+    * {{{installation.html}Installation}}
 
 
 Documentation
 
+    * {{{schemas.html}Schemas}}
+
     * {{{commands.html}Commands}}
 
     * {{{functions.html}Functions}}
+
+    * {{{shell.html}Shell usage}}
 
     * {{{javadocs.html}Javadocs}}
 
@@ -30,13 +31,13 @@ Documentation
 Support
 
     HBql is still very much a work in progress.  If you have problems (or success), please send a note
-to me @ pambrose@gmail.com
+to {{{mail:pambrose@gmail.com}me}}.
 
 
 Supported Platforms
 
     The shell is limited to those platforms supported by {{{http://jline.sourceforge.net/}JLine}}.  The
-API is pure java.
+HBql .jar is is compatible with any 1.6 JVM.
 
 
 Road Map
@@ -47,7 +48,7 @@ Road Map
        
        * JSON results from selects
 
-    If you have any other ideas on what you would like to see supported, I am all ears.
+    If you have any other ideas on what you would like to see supported, I am all {{{mail:pambrose@gmail.com}ears}}.
 
 
 This is a test of the snippet macro:

@@ -1,0 +1,19 @@
+    -----
+    ENABLE TABLE
+    -----
+    -----
+
+
+Syntax
+
+---------------------------
+ENABLE TABLE <table_name>
+---------------------------
+
+Description
+
+    Enables named table.
+
+Example
+
+%{snippet|id=enable-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

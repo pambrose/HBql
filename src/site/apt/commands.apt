@@ -3,13 +3,25 @@ HBql Commands
     -----
     -----
 
+HBql Commands
+
+    * The commands are available in both the shell and the API.
+    
+    * The command keywords are case insensitive.
+    
+
 DDL Commands
 
 *{{{commands/show-tables.html}SHOW TABLES}}  Displays all enabled table names.
 
-*{{{commands/disable-tables.html}DISABLE TABLE}}  Disables named table (required before dropping a table).
+*{{{commands/describe-table.html}DESCRIBE TABLE}}  Describes named table.
 
-*{{{commands/drop-tables.html}DROP TABLE}}  Drops named table.
+*{{{commands/enable-table.html}ENABLE TABLE}}  Enables named table.
+
+*{{{commands/disable-table.html}DISABLE TABLE}}  Disables named table (required before dropping a table).
+
+*{{{commands/drop-table.html}DROP TABLE}}  Drops named table.
+
 
 
 DML Commands

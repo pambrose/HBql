@@ -1,0 +1,19 @@
+    -----
+    DISABLE TABLE
+    -----
+    -----
+
+
+Syntax
+
+---------------------------
+DISABLE TABLE <table_name>
+---------------------------
+
+Description
+
+    Disables named table (required before dropping a table).
+
+Example
+
+%{snippet|id=disable-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
