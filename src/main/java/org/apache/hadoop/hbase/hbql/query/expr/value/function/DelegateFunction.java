@@ -20,7 +20,7 @@ public class DelegateFunction extends DelegateStmt<Function> {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws HBqlException {
 
-        Function function = Function.Type.getFunction(this.getFunctionName(), this.getArgList());
+        Function function = Function.FunctionType.getFunction(this.getFunctionName(), this.getArgList());
 
         if (function == null)
             function = DateFunction.IntervalType.getFunction(this.getFunctionName(), this.getArgList());

@@ -13,20 +13,14 @@ import java.util.List;
 public class DateFunction extends Function implements DateValue {
 
     public enum ConstantType {
-        NOW(true, 0),
-        MINDATE(false, 0),
-        MAXDATE(false, Long.MAX_VALUE);
+        NOW(0),
+        MINDATE(0),
+        MAXDATE(Long.MAX_VALUE);
 
-        final boolean relative;
         final long value;
 
-        ConstantType(final boolean relative, final long value) {
-            this.relative = relative;
+        ConstantType(final long value) {
             this.value = value;
-        }
-
-        public boolean isRelative() {
-            return this.relative;
         }
 
         public long getValue() {
@@ -35,16 +29,13 @@ public class DateFunction extends Function implements DateValue {
 
         public static Function getFunction(final String functionName) {
 
-            final ConstantType type;
-
             try {
-                type = ConstantType.valueOf(functionName.toUpperCase());
+                final ConstantType type = ConstantType.valueOf(functionName.toUpperCase());
+                return new DateFunction(type);
             }
             catch (IllegalArgumentException e) {
                 return null;
             }
-
-            return (type != null) ? new DateFunction(type) : null;
         }
     }
 
@@ -69,16 +60,13 @@ public class DateFunction extends Function implements DateValue {
 
         public static Function getFunction(final String functionName, final List<GenericValue> exprList) {
 
-            final IntervalType type;
-
             try {
-                type = IntervalType.valueOf(functionName.toUpperCase());
+                final IntervalType type = IntervalType.valueOf(functionName.toUpperCase());
+                return new DateFunction(type, exprList);
             }
             catch (IllegalArgumentException e) {
                 return null;
             }
-
-            return (type != null) ? new DateFunction(type, exprList) : null;
         }
     }
 
@@ -86,32 +74,30 @@ public class DateFunction extends Function implements DateValue {
     private IntervalType intervalType;
     private DateLiteral dateValue;
 
-    public DateFunction(final Type functionType, final GenericValue... exprs) {
+    public DateFunction(final FunctionType functionType, final GenericValue... exprs) {
         super(functionType, exprs);
     }
 
-    public DateFunction(final Type functionType, final List<GenericValue> exprs) {
+    public DateFunction(final FunctionType functionType, final List<GenericValue> exprs) {
         super(functionType, exprs);
     }
 
     public DateFunction(final ConstantType constantType) {
-        super(Type.DATELITERAL);
+        super(FunctionType.DATECONSTANT);
         this.constantType = constantType;
         switch (this.getConstantType()) {
             case NOW:
                 this.dateValue = new DateLiteral(DateLiteral.getNow());
                 break;
             case MINDATE:
-                this.dateValue = new DateLiteral(0L);
-                break;
             case MAXDATE:
-                this.dateValue = new DateLiteral(Long.MAX_VALUE);
+                this.dateValue = new DateLiteral(constantType.getValue());
                 break;
         }
     }
 
     public DateFunction(final IntervalType intervalType, final List<GenericValue> exprs) {
-        super(Type.INTERVAL, exprs);
+        super(FunctionType.DATEINTERVAL, exprs);
         this.intervalType = intervalType;
     }
 
@@ -140,13 +126,13 @@ public class DateFunction extends Function implements DateValue {
                 }
             }
 
-            case INTERVAL: {
+            case DATEINTERVAL: {
                 final Number num = (Number)this.getArg(0).getValue(object);
                 final long val = num.longValue();
                 return val * this.getIntervalType().getIntervalMillis();
             }
 
-            case DATELITERAL: {
+            case DATECONSTANT: {
                 return this.dateValue.getValue(object);
             }
 
@@ -163,9 +149,9 @@ public class DateFunction extends Function implements DateValue {
     }
 
     protected String getFunctionName() {
-        if (this.getFunctionType() == Type.INTERVAL)
+        if (this.isIntervalDate())
             return this.getIntervalType().name();
-        else if (this.getFunctionType() == Type.DATELITERAL)
+        else if (this.isConstantDate())
             return this.getConstantType().name();
         else
             return super.getFunctionName();
@@ -173,9 +159,9 @@ public class DateFunction extends Function implements DateValue {
 
 
     public String asString() {
-        if (this.getFunctionType() == Type.INTERVAL)
+        if (this.isIntervalDate())
             return this.getIntervalType().name() + "(" + this.getArg(0).asString() + ")";
-        else if (this.getFunctionType() == Type.DATELITERAL)
+        else if (this.isConstantDate())
             return this.getConstantType().name() + "()";
         else
             return super.asString();

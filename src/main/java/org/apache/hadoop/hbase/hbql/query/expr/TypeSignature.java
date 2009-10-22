@@ -22,11 +22,12 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.ShortLiteral;
 import org.apache.hadoop.hbase.hbql.query.expr.value.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public class TypeSignature {
+public class TypeSignature implements Serializable {
 
     private final Class<? extends GenericValue> returnType;
     private final List<Class<? extends GenericValue>> typeSig;

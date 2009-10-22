@@ -22,12 +22,14 @@ import java.util.List;
 
 public abstract class Function extends GenericExpr {
 
-    public static enum Type {
+    public static enum FunctionType {
+
+        // Dealt with in DateFunction
+        DATEINTERVAL(new TypeSignature(DateValue.class, LongValue.class)),
+        DATECONSTANT(new TypeSignature(DateValue.class)),
 
         // Date functions
         DATE(new TypeSignature(DateValue.class, StringValue.class, StringValue.class)),
-        INTERVAL(new TypeSignature(DateValue.class, LongValue.class)),
-        DATELITERAL(new TypeSignature(DateValue.class)),
         LONGTODATE(new TypeSignature(DateValue.class, LongValue.class)),
 
         // String functions
@@ -56,7 +58,7 @@ public abstract class Function extends GenericExpr {
 
         private final TypeSignature typeSignature;
 
-        Type(final TypeSignature typeSignature) {
+        FunctionType(final TypeSignature typeSignature) {
             this.typeSignature = typeSignature;
         }
 
@@ -66,51 +68,56 @@ public abstract class Function extends GenericExpr {
 
         public static Function getFunction(final String functionName, final List<GenericValue> exprList) {
 
-            final Type type;
+            final FunctionType type;
 
             try {
-                type = Type.valueOf(functionName.toUpperCase());
+                type = FunctionType.valueOf(functionName.toUpperCase());
             }
             catch (IllegalArgumentException e) {
                 return null;
             }
 
-            if (type != null) {
+            final Class<? extends GenericValue> returnType = type.getTypeSignature().getReturnType();
 
-                final Class<? extends GenericValue> returnType = type.getTypeSignature().getReturnType();
-
-                if (HUtil.isParentClass(BooleanValue.class, returnType))
-                    return new BooleanFunction(type, exprList);
-                else if (HUtil.isParentClass(StringValue.class, returnType))
-                    return new StringFunction(type, exprList);
-                else if (HUtil.isParentClass(NumberValue.class, returnType))
-                    return new NumberFunction(type, exprList);
-                else if (HUtil.isParentClass(DateValue.class, returnType))
-                    return new DateFunction(type, exprList);
-            }
+            if (HUtil.isParentClass(BooleanValue.class, returnType))
+                return new BooleanFunction(type, exprList);
+            else if (HUtil.isParentClass(StringValue.class, returnType))
+                return new StringFunction(type, exprList);
+            else if (HUtil.isParentClass(NumberValue.class, returnType))
+                return new NumberFunction(type, exprList);
+            else if (HUtil.isParentClass(DateValue.class, returnType))
+                return new DateFunction(type, exprList);
 
             return null;
         }
     }
 
-    private final Type functionType;
+    private final FunctionType functionType;
 
-    public Function(final Type functionType, final GenericValue... exprs) {
+    public Function(final FunctionType functionType, final GenericValue... exprs) {
         super(null, exprs);
         this.functionType = functionType;
     }
 
-    public Function(final Type functionType, final List<GenericValue> exprs) {
+    public Function(final FunctionType functionType, final List<GenericValue> exprs) {
         super(null, exprs);
         this.functionType = functionType;
     }
 
-    protected Type getFunctionType() {
+    protected FunctionType getFunctionType() {
         return this.functionType;
     }
 
     protected TypeSignature getTypeSignature() {
         return this.getFunctionType().getTypeSignature();
+    }
+
+    protected boolean isIntervalDate() {
+        return this.getFunctionType() == FunctionType.DATEINTERVAL;
+    }
+
+    protected boolean isConstantDate() {
+        return this.getFunctionType() == FunctionType.DATECONSTANT;
     }
 
     protected void checkForNull(final String... vals) throws HBqlException {
