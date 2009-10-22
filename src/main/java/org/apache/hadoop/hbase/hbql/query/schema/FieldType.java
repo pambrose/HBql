@@ -34,7 +34,7 @@ public enum FieldType {
     FloatType(Float.TYPE, FloatValue.class, 5, Bytes.SIZEOF_FLOAT, "FLOAT"),
     DoubleType(Double.TYPE, DoubleValue.class, 6, Bytes.SIZEOF_DOUBLE, "DOUBLE"),
 
-    StringType(String.class, StringValue.class, -1, -1, "STRING", "STRING", "VARCHAR"),
+    StringType(String.class, StringValue.class, -1, -1, "STRING", "VARCHAR"),
     DateType(Date.class, DateValue.class, -1, -1, "DATE", "DATETIME"),
     ObjectType(Object.class, null, -1, -1, "OBJECT", "OBJ");
 

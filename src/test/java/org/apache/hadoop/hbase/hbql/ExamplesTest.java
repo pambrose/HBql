@@ -52,4 +52,17 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: drop_schema
 
     }
+
+
+    public void defineSchema() throws HBqlException, IOException {
+
+        // START SNIPPET: define-schema1
+        SchemaManager.execute("DEFINE SCHEMA foo (keyval key, family1:val1 STRING)");
+        // END SNIPPET: define-schema1
+
+        // START SNIPPET: define-schema2
+        SchemaManager.execute("define schema schema1 FOR TABLE foo (keyval key, family1:val1 string alias val2)");
+        // END SNIPPET: define-schema2
+
+    }
 }

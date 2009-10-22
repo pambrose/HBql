@@ -7,7 +7,7 @@
 Syntax
 
 ---------------------------
-DEFINE SCHEMA schema_name ALIAS alias_name '(' attrib, ... ')'
+DEFINE SCHEMA schema_name [FOR TABLE table_name] '(' attrib, ... ')'
 
 attrib:
     key_name KEY
@@ -22,22 +22,42 @@ family_definition:
 
 type:
     BYTE
-    | BOOLEAN
-    | STRING
-    | DATE
+    | BOOLEAN (BOOL)
+    | STRING  (VARCHAR)
+    | DATE    (DATETIME)
     | SHORT
-    | INTEGER
+    | INTEGER (INT)
     | LONG
     | FLOAT
     | DOUBLE
-    | OBJECT
-    
+    | OBJECT  (OBJ)
+
+Abbreviations and synonyms are shown in ().
 ---------------------------
 
 Description
 
-    Describes named table.
+    Describes a schema.
 
-Example
+    * If the table name clause is omitted, then the table name defaults
+to the schema name.
 
-%{snippet|id=describe-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+    * HBase tables can have mutiple schemas.
+
+    * The SchemaManager object manages schemas and is indepedent of a particular
+    HConnection.
+
+    * A single key attribute is required for a schema.
+
+    * Each attribute requires a type value.
+
+Examples
+
+%{snippet|id=define-schema1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+
+    Schema named foo that describes table foo.
+
+%{snippet|id=define-schema2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+
+    Schema named schema1 that describes table foo.
+

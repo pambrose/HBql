@@ -31,7 +31,7 @@ public class TypeSignature implements Serializable {
 
     private final Class<? extends GenericValue> returnType;
     private final List<Class<? extends GenericValue>> typeSig;
-    private final Constructor literalConstructor;
+    private final transient Constructor literalConstructor;
     private final Class literalCastClass;
 
     public TypeSignature(final Class<? extends GenericValue> returnType, Class<? extends GenericValue>... typeSig) {
