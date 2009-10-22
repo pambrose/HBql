@@ -70,8 +70,8 @@ options {backtrack=true;}
 	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeCmd($t.text);}
 	| keySHOW keyTABLES 		 		{retval = new ShowCmd();}
 	| keySET i=simpleName EQ? v=QUOTED	 	{retval = new SetCmd($i.text, $v.text);}
-	| keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateCmd($t.text);}
-	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteCmd($t.text, $w.retval);}
+	| keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateTableCmd($t.text);}
+	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteTableCmd($t.text, $w.retval);}
 	;
 
 schemaStmt returns [SchemaManagerCmd retval]
