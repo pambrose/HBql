@@ -9,12 +9,12 @@ import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 
 import java.util.List;
 
-public class DefineCmd extends TableCmd implements SchemaManagerCmd {
+public class DefineSchemaCmd extends TableCmd implements SchemaManagerCmd {
 
     private final String alias;
     private final List<ColumnDescription> columnDescriptionList;
 
-    public DefineCmd(final String tableName, final String alias, final List<ColumnDescription> columnDescriptionList) {
+    public DefineSchemaCmd(final String tableName, final String alias, final List<ColumnDescription> columnDescriptionList) {
         super(tableName);
         this.alias = alias;
         this.columnDescriptionList = columnDescriptionList;
@@ -41,7 +41,7 @@ public class DefineCmd extends TableCmd implements SchemaManagerCmd {
         }
 
         final HOutput retval = new HOutput();
-        retval.out.println("Table " + schema.getTableName() + " defined.");
+        retval.out.println("Schema " + schema.getTableName() + " defined.");
         retval.out.flush();
 
         return retval;

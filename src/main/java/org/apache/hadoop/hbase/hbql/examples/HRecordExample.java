@@ -18,15 +18,15 @@ public class HRecordExample {
 
     public static void main(String[] args) throws IOException, HBqlException {
 
-        SchemaManager.parse("define table testobjects alias testobjects2"
-                            + "("
-                            + "keyval key, "
-                            + "family1:author string alias author, "
-                            + "family1:title string  alias title, "
-                            + "family1:intValue int alias comp1"
-                            + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
-                            + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
-                            + ")");
+        SchemaManager.execute("define schema testobjects alias testobjects2"
+                              + "("
+                              + "keyval key, "
+                              + "family1:author string alias author, "
+                              + "family1:title string  alias title, "
+                              + "family1:intValue int alias comp1"
+                              + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
+                              + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
+                              + ")");
 
         HConnection conn = HConnectionManager.newHConnection();
 

@@ -18,9 +18,9 @@ public class SchemaManager {
 
     private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
-    public static HOutput parse(final String str) throws HBqlException {
+    public static HOutput execute(final String str) throws HBqlException {
 
-        final SchemaManagerCmd cmd = HBql.parseSchema(str);
+        final SchemaManagerCmd cmd = HBql.parseSchemaCommand(str);
 
         if (cmd == null)
             throw new HBqlException("Error parsing: " + str);
@@ -56,7 +56,7 @@ public class SchemaManager {
         return null != getDefinedSchemaMap().get(tableName);
     }
 
-    public static void removeSchema(final String name) {
+    public static void dropSchema(final String name) {
 
         final DefinedSchema schema = getDefinedSchema(name);
         if (schema != null) {
@@ -74,7 +74,7 @@ public class SchemaManager {
                                                               final List<ColumnDescription> colList) throws HBqlException {
 
         if (SchemaManager.doesDefinedSchemaExist(tableName))
-            throw new HBqlException("Table " + tableName + " already defined");
+            throw new HBqlException("Schema " + tableName + " already defined");
 
         if (aliasName != null && SchemaManager.doesDefinedSchemaExist(aliasName))
             throw new HBqlException("Alias " + aliasName + " already defined");

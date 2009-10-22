@@ -1,0 +1,44 @@
+    -----
+    DEFINE SCHEMA
+    -----
+    -----
+
+
+Syntax
+
+---------------------------
+DEFINE SCHEMA table_name ALIAS alias_name '(' attrib, ... ')'
+
+attrib:
+    key_name KEY
+    | column_definition
+    | family_default
+
+column_definition:
+    family_name ':' column_name type ['['']'] [ALIAS alias_name]
+
+family_definition:
+    family_name ':' '*' [ALIAS alias_name]
+
+
+type:
+    BYTE
+    | BOOLEAN
+    | STRING
+    | DATE
+    | SHORT
+    | INTEGER
+    | LONG
+    | FLOAT
+    | DOUBLE
+    | OBJECT
+    
+---------------------------
+
+Description
+
+    Describes named table.
+
+Example
+
+%{snippet|id=describe-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

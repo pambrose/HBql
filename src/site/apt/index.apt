@@ -51,21 +51,4 @@ Road Map
     If you have any other ideas on what you would like to see supported, I am all {{{mail:pambrose@gmail.com}ears}}.
 
 
-This is a test of the snippet macro:
-
-%{snippet|id=id1|file=src/main/java/org/apache/hadoop/hbase/filter/HBqlFilter.java}
-
-  Here are some useful links to get you started:
-
-   * {{{news.html}News}}
-
-   * {{{features.html}Features}}
-
-   * {{{faq.html}FAQ}}
-
-   * {{{commands.html}Commands}}
-
-   {{{commands.html}Commands}}
-
-
 

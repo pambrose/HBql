@@ -7,7 +7,7 @@
 Syntax
 
 ---------------------------
-DISABLE TABLE <table_name>
+DISABLE TABLE table_name
 ---------------------------
 
 Description

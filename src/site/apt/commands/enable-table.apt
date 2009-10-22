@@ -7,7 +7,7 @@
 Syntax
 
 ---------------------------
-ENABLE TABLE <table_name>
+ENABLE TABLE table_name
 ---------------------------
 
 Description

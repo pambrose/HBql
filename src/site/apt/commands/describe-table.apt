@@ -7,7 +7,7 @@
 Syntax
 
 ---------------------------
-DESCRIBE TABLE <table_name>
+DESCRIBE TABLE table_name
 ---------------------------
 
 Description

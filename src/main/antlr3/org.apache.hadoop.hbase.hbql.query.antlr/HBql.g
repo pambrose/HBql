@@ -75,15 +75,15 @@ options {backtrack=true;}
 	;
 
 schemaStmt returns [SchemaManagerCmd retval]
-	: d=defineStmt 					{retval = $d.retval;};
+	: keyDEFINE keySCHEMA t=simpleName (keyALIAS a=simpleName)? LPAREN l=attribList RPAREN
+							{retval = new DefineSchemaCmd($t.text, $a.text, $l.retval);}
+	| keyDROP keySCHEMA t=simpleName 
+							{retval = new DropSchemaCmd($t.text);}
+	;						
 
 createStmt returns [CreateCmd retval]
 	: keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateCmd($t.text);};
 	
-defineStmt returns [DefineCmd retval]
-	: keyDEFINE keyTABLE t=simpleName (keyALIAS a=simpleName)? LPAREN l=attribList RPAREN
-							{retval = new DefineCmd($t.text, $a.text, $l.retval);};
-
 attribList returns [List<ColumnDescription> retval] 
 @init {retval = Lists.newArrayList();}
 	: (a1=defineAttrib {retval.add($a1.retval);} (COMMA a2=defineAttrib {retval.add($a2.retval);})*)?;
@@ -93,7 +93,6 @@ defineAttrib returns [ColumnDescription retval]
 							{retval = ColumnDescription.newColumn($c.text, $a.text, $m.text!=null, false, $type.text, $b.text!=null, $t.retval);}
 	| f=familyRef (keyALIAS a=simpleName)?		{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
 	;
-
 
 deleteStmt  returns [DeleteCmd retval]
 	: keyDELETE keyFROM t=simpleName w=whereValue?			
@@ -366,6 +365,7 @@ keyENABLE 	: {isKeyword(input, "ENABLE")}? ID;
 keyDISABLE 	: {isKeyword(input, "DISABLE")}? ID;
 keyDROP 	: {isKeyword(input, "DROP")}? ID;
 keyTABLE 	: {isKeyword(input, "TABLE")}? ID;
+keySCHEMA 	: {isKeyword(input, "SCHEMA")}? ID;
 keyTABLES 	: {isKeyword(input, "TABLES")}? ID;
 keyWHERE	: {isKeyword(input, "WHERE")}? ID;
 keyWITH		: {isKeyword(input, "WITH")}? ID;

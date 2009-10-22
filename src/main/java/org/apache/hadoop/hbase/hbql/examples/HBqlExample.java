@@ -21,12 +21,12 @@ public class HBqlExample {
         final byte[] author = Bytes.toBytes("author");
         final byte[] title = Bytes.toBytes("title");
 
-        SchemaManager.parse("define table testobjects alias testobjects2"
-                            + "("
-                            + "keyval key, "
-                            + "family1:author string alias author, "
-                            + "family1:title string  alias title"
-                            + ")");
+        SchemaManager.execute("define schema testobjects alias testobjects2"
+                              + "("
+                              + "keyval key, "
+                              + "family1:author string alias author, "
+                              + "family1:title string  alias title"
+                              + ")");
 
         DefinedSchema schema = SchemaManager.getDefinedSchema("testobjects");
         final HBqlFilter filter = schema.newHBqlFilter("title LIKE '.*3.*' OR family1:author LIKE '.*4.*'");

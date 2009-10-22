@@ -81,7 +81,7 @@ public class HBql {
         }
     }
 
-    public static SchemaManagerCmd parseSchema(final String str) throws HBqlException {
+    public static SchemaManagerCmd parseSchemaCommand(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
             return parser.schemaStmt();
