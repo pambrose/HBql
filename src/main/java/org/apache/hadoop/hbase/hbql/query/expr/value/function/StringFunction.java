@@ -6,6 +6,8 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 
+import java.util.List;
+
 public class StringFunction extends Function implements StringValue {
 
 
@@ -13,6 +15,9 @@ public class StringFunction extends Function implements StringValue {
         super(functionType, exprs);
     }
 
+    public StringFunction(final Type functionType, final List<GenericValue> exprs) {
+        super(functionType, exprs);
+    }
 
     public String getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 

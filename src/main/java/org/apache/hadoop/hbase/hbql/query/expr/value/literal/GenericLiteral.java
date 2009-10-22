@@ -29,7 +29,7 @@ public abstract class GenericLiteral<T> implements GenericValue {
 
     }
 
-    public void setExprContext(final ExprContext context) throws HBqlException {
+    public void setExprContext(final ExprContext context) {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,

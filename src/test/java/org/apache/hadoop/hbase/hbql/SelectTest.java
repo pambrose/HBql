@@ -246,7 +246,7 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectInvalidColumnReferences() throws HBqlException, IOException {
 
-        final String query1 = "SELECT * FROM table1 with client FILTER where notdefinedval = 0";
+        final String query1 = "SELECT * FROM table1 with client FILTER where notdefinedval = 'dd'";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
         List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 0);

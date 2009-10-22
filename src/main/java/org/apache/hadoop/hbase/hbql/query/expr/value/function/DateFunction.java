@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.value.literal.DateLiteral;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class DateFunction extends Function implements DateValue {
 
@@ -31,6 +32,20 @@ public class DateFunction extends Function implements DateValue {
         public long getValue() {
             return this.value;
         }
+
+        public static Function getFunction(final String functionName) {
+
+            final ConstantType type;
+
+            try {
+                type = ConstantType.valueOf(functionName.toUpperCase());
+            }
+            catch (IllegalArgumentException e) {
+                return null;
+            }
+
+            return (type != null) ? new DateFunction(type) : null;
+        }
     }
 
     public enum IntervalType {
@@ -51,6 +66,20 @@ public class DateFunction extends Function implements DateValue {
         public long getIntervalMillis() {
             return intervalMillis;
         }
+
+        public static Function getFunction(final String functionName, final List<GenericValue> exprList) {
+
+            final IntervalType type;
+
+            try {
+                type = IntervalType.valueOf(functionName.toUpperCase());
+            }
+            catch (IllegalArgumentException e) {
+                return null;
+            }
+
+            return (type != null) ? new DateFunction(type, exprList) : null;
+        }
     }
 
     private ConstantType constantType;
@@ -58,6 +87,10 @@ public class DateFunction extends Function implements DateValue {
     private DateLiteral dateValue;
 
     public DateFunction(final Type functionType, final GenericValue... exprs) {
+        super(functionType, exprs);
+    }
+
+    public DateFunction(final Type functionType, final List<GenericValue> exprs) {
         super(functionType, exprs);
     }
 
@@ -77,8 +110,8 @@ public class DateFunction extends Function implements DateValue {
         }
     }
 
-    public DateFunction(final IntervalType intervalType, final GenericValue arg0) {
-        super(Type.INTERVAL, arg0);
+    public DateFunction(final IntervalType intervalType, final List<GenericValue> exprs) {
+        super(Type.INTERVAL, exprs);
         this.intervalType = intervalType;
     }
 

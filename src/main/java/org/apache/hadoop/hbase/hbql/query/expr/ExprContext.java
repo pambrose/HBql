@@ -110,6 +110,7 @@ public abstract class ExprContext implements Serializable {
                     val.setExprContext(this);
             }
             catch (HBqlException e) {
+                //  TODO This needs addressing
                 e.printStackTrace();
             }
             this.setInNeedOfSettingContext(false);

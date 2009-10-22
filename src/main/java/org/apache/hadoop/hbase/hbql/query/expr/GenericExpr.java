@@ -93,13 +93,15 @@ public abstract class GenericExpr implements GenericValue {
 
     protected GenericExpr(final Type type, final List<GenericValue> exprList) {
         this.type = type;
-        this.getArgList().addAll(exprList);
+        if (exprList != null)
+            this.getArgList().addAll(exprList);
     }
 
     protected GenericExpr(final Type type, final GenericValue expr, final List<GenericValue> exprList) {
         this.type = type;
         this.getArgList().add(expr);
-        this.getArgList().addAll(exprList);
+        if (exprList != null)
+            this.getArgList().addAll(exprList);
     }
 
     protected TypeSignature getTypeSignature() {
@@ -269,7 +271,6 @@ public abstract class GenericExpr implements GenericValue {
             throw new InternalErrorException();
         }
     }
-
 
     public String asString() {
 

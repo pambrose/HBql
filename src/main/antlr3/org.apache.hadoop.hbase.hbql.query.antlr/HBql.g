@@ -172,9 +172,13 @@ nodescWhereExpr returns [ExprTree retval]
 descWhereExpr returns [ExprTree retval]
 	: s=schemaDesc? e=topExpr			{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);};
 
-// Boolean Expressions	
+// Expressions
+
+expression returns [GenericValue retval]
+	: topExpr					{retval = $topExpr.retval;};
+		
 topExpr returns [GenericValue retval]
-	: o=orExpr					{retval = $o.retval;};
+	: o=orExpr					{$topExpr.retval = $o.retval;};
 				
 orExpr returns [GenericValue retval]
 	: e1=andExpr (keyOR e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanCompare($e1.retval, Operator.OR, $e2.retval);};
@@ -197,7 +201,7 @@ options {backtrack=true; memoize=true;}
 ltgtCompare returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
 	: v1=valPrimary o=ltgtOp v2=valPrimary		{retval = new DelegateCompare($v1.retval, $o.retval, $v2.retval);}
-	| b=booleanFuncs				{retval = $b.retval;}
+	| b=booleanFunctions				{retval = $b.retval;}
 	| p=valPrimary					{retval = $p.retval;}
 	;
 
@@ -215,10 +219,13 @@ multExpr returns [GenericValue retval]
 signedExpr returns [GenericValue retval]
 	: (s=plusMinus)? n=parenExpr 			{$signedExpr.retval = ($s.retval == Operator.MINUS) ? new DelegateCalculation($n.retval, Operator.NEGATIVE, new IntegerLiteral(0)) : $n.retval;};
 
+// The order here is important.  atomExpr has to come after valueFunctions to avoid simpleName conflict
 parenExpr returns [GenericValue retval]
-options {memoize=true;}	
-	: n=atomExpr					{retval = $n.retval;}
-	| f=valueFunctions				{retval = $f.retval;}
+//options {memoize=true;}	
+//options {backtrack=true; memoize=true;}	
+options {backtrack=true;}	
+	: f=valueFunctions				{retval = $f.retval;}
+	| n=atomExpr					{retval = $n.retval;}
 	| LPAREN s=topExpr RPAREN			{retval = $s.retval;}
 	;
 	   						 
@@ -253,76 +260,40 @@ booleanLiteral returns [BooleanValue retval]
 	;
 
 // Functions
-booleanFuncs returns [BooleanValue retval]
+booleanFunctions returns [BooleanValue retval]
 options {backtrack=true; memoize=true;}	
 	: s1=valPrimary n=keyNOT? keyCONTAINS s2=valPrimary		
 							{retval = new ContainsStmt($s1.retval, ($n.text != null), $s2.retval);}
 	| s1=valPrimary n=keyNOT? keyLIKE s2=valPrimary {retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);}
 	| s1=valPrimary n=keyNOT? keyBETWEEN s2=valPrimary keyAND s3=valPrimary		
 							{retval = new DelegateBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
-	| s1=valPrimary n=keyNOT? keyIN LPAREN l=valueItemList RPAREN			
+	| s1=valPrimary n=keyNOT? keyIN LPAREN l=exprList RPAREN			
 							{retval = new DelegateInStmt($s1.retval, ($n.text != null), $l.retval);} 
 	| s1=valPrimary keyIS (n=keyNOT)? keyNULL	{retval = new DelegateNullCompare(($n.text != null), $s1.retval);}	
 	;
 
 valueFunctions returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
-	: keyNOW LPAREN	RPAREN				{retval = new DateFunction(DateFunction.ConstantType.NOW);}
-	| keyMINDATE LPAREN RPAREN			{retval = new DateFunction(DateFunction.ConstantType.MINDATE);}
-	| keyMAXDATE LPAREN RPAREN			{retval = new DateFunction(DateFunction.ConstantType.MAXDATE);}
-	
-	| keyYEAR LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.YEAR, $n.retval);}
-	| keyWEEK LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.WEEK, $n.retval);}
-	| keyDAY LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.DAY, $n.retval);}
-	| keyHOUR LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.HOUR, $n.retval);}
-	| keyMINUTE LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.MINUTE, $n.retval);}
-	| keySECOND LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.SECOND, $n.retval);}
-	| keyMILLI LPAREN n=topExpr RPAREN		{retval = new DateFunction(DateFunction.IntervalType.MILLI, $n.retval);}
-
-	| keyDATE LPAREN s1=topExpr COMMA s2=topExpr RPAREN
-							{retval = new DateFunction(Function.Type.DATE, $s1.retval, $s2.retval);}
-	| keyLONGTODATE LPAREN s1=topExpr RPAREN	{retval = new DateFunction(Function.Type.LONGTODATE, $s1.retval);}
-							
-	| keyCONCAT LPAREN s1=topExpr COMMA s2=topExpr RPAREN
-							{retval = new StringFunction(Function.Type.CONCAT, $s1.retval, $s2.retval);}
-	| keySUBSTRING LPAREN s=topExpr COMMA n1=topExpr COMMA n2=topExpr RPAREN
-							{retval = new StringFunction(Function.Type.SUBSTRING, $s.retval, $n1.retval, $n2.retval);}
-	| keyZEROPAD LPAREN v=topExpr COMMA w=topExpr RPAREN
-							{retval = new StringFunction(Function.Type.ZEROPAD, $v.retval, $w.retval);}
-	| keyTRIM LPAREN s=topExpr RPAREN		{retval = new StringFunction(Function.Type.TRIM, $s.retval);}
-	| keyLOWER LPAREN s=topExpr RPAREN		{retval = new StringFunction(Function.Type.LOWER, $s.retval);} 
-	| keyUPPER LPAREN s=topExpr RPAREN		{retval = new StringFunction(Function.Type.UPPER, $s.retval);} 
-	| keyREPLACE LPAREN s1=topExpr COMMA s2=topExpr COMMA s3=topExpr RPAREN		
-							{retval = new StringFunction(Function.Type.REPLACE, $s1.retval, $s2.retval, $s3.retval);} 
-
-	| keyLENGTH LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.LENGTH, $s.retval);}
-	| keyINDEXOF LPAREN s1=topExpr COMMA s2=topExpr RPAREN
-							{retval = new NumberFunction(Function.Type.INDEXOF, $s1.retval, $s2.retval);}
-	| keyDATETOLONG LPAREN s1=topExpr RPAREN	{retval = new NumberFunction(Function.Type.DATETOLONG, $s1.retval);}
-
-	| keyDEFINEDINROW LPAREN s=topExpr RPAREN	{retval = new BooleanFunction(Function.Type.DEFINEDINROW, $s.retval);}
-	| keyEVAL LPAREN s4=topExpr RPAREN		{retval = new BooleanFunction(Function.Type.EVAL, $s4.retval);}
-
-	| keySHORT LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.SHORT, $s.retval);}
-	| keyINTEGER LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.INTEGER, $s.retval);}
-	| keyLONG LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.LONG, $s.retval);}
-	| keyFLOAT LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.FLOAT, $s.retval);}
-	| keyDOUBLE LPAREN s=topExpr RPAREN		{retval = new NumberFunction(Function.Type.DOUBLE, $s.retval);}
-
-	| keyIF t1=topExpr keyTHEN t2=topExpr keyELSE t3=topExpr keyEND	
+	: keyIF t1=topExpr keyTHEN t2=topExpr keyELSE t3=topExpr keyEND	
 							{retval = new DelegateIfThen($t1.retval, $t2.retval, $t3.retval);}
-							
-	| keyCASE 					{retval = new DelegateCase();}
-	   whenItem[(DelegateCase)retval]+
-	   (keyELSE t=topExpr)? 			{((DelegateCase)retval).addElse($t.retval);}
-	  keyEND	
+	
+	| c=caseStmt					{retval = $c.retval;} 						
+
+	| t=simpleName LPAREN a=exprList? RPAREN	{retval = new DelegateFunction($t.text, $a.retval);}
 	;
 
+caseStmt returns [DelegateCase retval]
+	: keyCASE 					{retval = new DelegateCase();}
+	   whenItem[retval]+
+	   (keyELSE t=topExpr)? 			{retval.addElse($t.retval);}
+	  keyEND
+	;
+	
 whenItem [DelegateCase stmt] 
 	: keyWHEN t1=topExpr keyTHEN t2=topExpr		{stmt.addWhen($t1.retval, $t2.retval);}
 	;
 	
-valueItemList returns [List<GenericValue> retval]
+exprList returns [List<GenericValue> retval]
 @init {retval = Lists.newArrayList();}
 	: i1=topExpr {retval.add($i1.retval);} (COMMA i2=topExpr {retval.add($i2.retval);})*;
 				
@@ -355,11 +326,11 @@ multDiv returns [Operator retval]
 	;
 
 simpleName
-options {backtrack=true; memoize=true;}	
+//options {backtrack=true; memoize=true;}	
  	: ID;
  	
 varRef 
-options {backtrack=true; memoize=true;}	
+//options {backtrack=true; memoize=true;}	
 	: ID (COLON ID)?;
 	
 familyRef : ID COLON STAR;
@@ -423,32 +394,7 @@ keyNOT 		: {isKeyword(input, "NOT")}? ID;
 keyTRUE 	: {isKeyword(input, "TRUE")}? ID;
 keyFALSE 	: {isKeyword(input, "FALSE")}? ID;
 keyBETWEEN 	: {isKeyword(input, "BETWEEN")}? ID;
-keyDEFINEDINROW : {isKeyword(input, "DEFINEDINROW")}? ID;
-keyEVAL		: {isKeyword(input, "EVAL")}? ID;
 keyNULL 	: {isKeyword(input, "NULL")}? ID;
-keyLOWER 	: {isKeyword(input, "LOWER")}? ID;
-keyUPPER 	: {isKeyword(input, "UPPER")}? ID;
-keyTRIM 	: {isKeyword(input, "TRIM")}? ID;
-keyCONCAT 	: {isKeyword(input, "CONCAT")}? ID;
-keySUBSTRING 	: {isKeyword(input, "SUBSTRING")}? ID;
-keyZEROPAD 	: {isKeyword(input, "ZEROPAD")}? ID;
-keyIGNORE_CASE 	: {isKeyword(input, "IGNORE_CASE")}? ID;
-keyNOW	 	: {isKeyword(input, "NOW")}? ID;
-keyMINDATE	: {isKeyword(input, "MINDATE")}? ID;
-keyMAXDATE	: {isKeyword(input, "MAXDATE")}? ID;
-keySHORT	: {isKeyword(input, "SHORT")}? ID;
-keyINTEGER	: {isKeyword(input, "INTEGER")}? ID;
-keyLONG		: {isKeyword(input, "LONG")}? ID;
-keyFLOAT	: {isKeyword(input, "FLOAT")}? ID;
-keyDOUBLE	: {isKeyword(input, "DOUBLE")}? ID;
-keyDATE		: {isKeyword(input, "DATE")}? ID;
-keyYEAR		: {isKeyword(input, "YEAR")}? ID;
-keyWEEK		: {isKeyword(input, "WEEK")}? ID;
-keyDAY		: {isKeyword(input, "DAY")}? ID;
-keyHOUR		: {isKeyword(input, "HOUR")}? ID;
-keyMINUTE	: {isKeyword(input, "MINUTE")}? ID;
-keySECOND	: {isKeyword(input, "SECOND")}? ID;
-keyMILLI	: {isKeyword(input, "MILLI")}? ID;
 keyCLIENT	: {isKeyword(input, "CLIENT")}? ID;
 keySERVER	: {isKeyword(input, "SERVER")}? ID;
 keyVERSIONS	: {isKeyword(input, "VERSIONS")}? ID;
@@ -458,13 +404,8 @@ keySTAMP	: {isKeyword(input, "STAMP")}? ID;
 keyMAX		: {isKeyword(input, "MAX")}? ID;
 keyKEYS		: {isKeyword(input, "KEYS")}? ID;
 keyALL		: {isKeyword(input, "ALL")}? ID;
-keyLENGTH	: {isKeyword(input, "LENGTH")}? ID;
 keyCONTAINS	: {isKeyword(input, "CONTAINS")}? ID;
-keyINDEXOF	: {isKeyword(input, "INDEXOF")}? ID;
-keyREPLACE	: {isKeyword(input, "REPLACE")}? ID;
 keyKACMAP	: {isKeyword(input, "MAPKEYSASCOLUMNS")}? ID;
 keyDEFAULT	: {isKeyword(input, "DEFAULT")}? ID;
-keyDATETOLONG	: {isKeyword(input, "DATETOLONG")}? ID;
-keyLONGTODATE	: {isKeyword(input, "LONGTODATE")}? ID;
 keyCASE		: {isKeyword(input, "CASE")}? ID;
 keyWHEN		: {isKeyword(input, "WHEN")}? ID;

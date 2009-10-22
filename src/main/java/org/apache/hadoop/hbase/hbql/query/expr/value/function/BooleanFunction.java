@@ -11,11 +11,17 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.value.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 
+import java.util.List;
+
 public class BooleanFunction extends Function implements BooleanValue {
 
     private Schema schema = null;
 
     public BooleanFunction(final Type functionType, final GenericValue... exprs) {
+        super(functionType, exprs);
+    }
+
+    public BooleanFunction(final Type functionType, final List<GenericValue> exprs) {
         super(functionType, exprs);
     }
 
@@ -29,7 +35,8 @@ public class BooleanFunction extends Function implements BooleanValue {
                     throw new TypeException("Argument should be a column reference in: " + this.asString());
             }
         }
-        return super.validateTypes(parentExpr, allowsCollections);
+        return BooleanValue.class;
+        //return super.validateTypes(parentExpr, allowsCollections);
     }
 
     public void setExprContext(final ExprContext context) throws HBqlException {

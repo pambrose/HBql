@@ -105,7 +105,7 @@ public class NamedParameter implements GenericValue {
             return this.getTypedExprList();
     }
 
-    public void setExprContext(final ExprContext context) throws HBqlException {
+    public void setExprContext(final ExprContext context) {
         this.context = context;
         this.getContext().addNamedParameter(this);
     }

@@ -4,13 +4,11 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
-import org.junit.Test;
 
 import java.io.IOException;
 
 public class ExamplesTest extends TestSupport {
 
-    @Test
     public void showTable() throws HBqlException, IOException {
 
         // START SNIPPET: show-tables
@@ -19,7 +17,6 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: show-tables
     }
 
-    @Test
     public void describeTable() throws HBqlException, IOException {
 
         // START SNIPPET: describe-table
@@ -29,7 +26,6 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    @Test
     public void enableTable() throws HBqlException, IOException {
 
         // START SNIPPET: enable-table
@@ -39,7 +35,6 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    @Test
     public void disableTable() throws HBqlException, IOException {
 
         // START SNIPPET: disable-table

@@ -5,9 +5,15 @@ import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 
+import java.util.List;
+
 public class NumberFunction extends Function implements NumberValue {
 
     public NumberFunction(final Type functionType, final GenericValue... exprs) {
+        super(functionType, exprs);
+    }
+
+    public NumberFunction(final Type functionType, final List<GenericValue> exprs) {
         super(functionType, exprs);
     }
 

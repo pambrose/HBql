@@ -13,8 +13,12 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.query.util.HUtil;
+
+import java.util.List;
 
 public abstract class Function extends GenericExpr {
 
@@ -59,11 +63,44 @@ public abstract class Function extends GenericExpr {
         private TypeSignature getTypeSignature() {
             return typeSignature;
         }
+
+        public static Function getFunction(final String functionName, final List<GenericValue> exprList) {
+
+            final Type type;
+
+            try {
+                type = Type.valueOf(functionName.toUpperCase());
+            }
+            catch (IllegalArgumentException e) {
+                return null;
+            }
+
+            if (type != null) {
+
+                final Class<? extends GenericValue> returnType = type.getTypeSignature().getReturnType();
+
+                if (HUtil.isParentClass(BooleanValue.class, returnType))
+                    return new BooleanFunction(type, exprList);
+                else if (HUtil.isParentClass(StringValue.class, returnType))
+                    return new StringFunction(type, exprList);
+                else if (HUtil.isParentClass(NumberValue.class, returnType))
+                    return new NumberFunction(type, exprList);
+                else if (HUtil.isParentClass(DateValue.class, returnType))
+                    return new DateFunction(type, exprList);
+            }
+
+            return null;
+        }
     }
 
     private final Type functionType;
 
     public Function(final Type functionType, final GenericValue... exprs) {
+        super(null, exprs);
+        this.functionType = functionType;
+    }
+
+    public Function(final Type functionType, final List<GenericValue> exprs) {
         super(null, exprs);
         this.functionType = functionType;
     }
@@ -126,6 +163,6 @@ public abstract class Function extends GenericExpr {
     }
 
     public String asString() {
-        return this.getFunctionType().name() + super.asString();
+        return this.getFunctionName() + super.asString();
     }
 }
