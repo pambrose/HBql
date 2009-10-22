@@ -1,8 +1,9 @@
-package org.apache.hadoop.hbase.hbql.query.cmds;
+package org.apache.hadoop.hbase.hbql.query.cmds.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.query.cmds.SchemaCmd;
 
 public class DropSchemaCmd extends SchemaCmd implements SchemaManagerCmd {
 

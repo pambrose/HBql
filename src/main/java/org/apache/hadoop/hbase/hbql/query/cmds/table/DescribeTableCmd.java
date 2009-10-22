@@ -1,9 +1,10 @@
-package org.apache.hadoop.hbase.hbql.query.cmds;
+package org.apache.hadoop.hbase.hbql.query.cmds.table;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
+import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCmd;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
 
 import java.io.IOException;

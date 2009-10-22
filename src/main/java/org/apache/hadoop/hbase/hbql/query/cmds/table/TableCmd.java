@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.cmds;
+package org.apache.hadoop.hbase.hbql.query.cmds.table;
 
 public abstract class TableCmd {
 

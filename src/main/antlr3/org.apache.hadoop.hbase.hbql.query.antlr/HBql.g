@@ -49,6 +49,9 @@ import org.apache.hadoop.hbase.hbql.query.expr.nullcomp.*;
 import org.apache.hadoop.hbase.hbql.query.expr.stringpattern.*;
 import org.apache.hadoop.hbase.hbql.query.expr.var.*;
 import org.apache.hadoop.hbase.hbql.query.cmds.*;
+import org.apache.hadoop.hbase.hbql.query.cmds.record.*;
+import org.apache.hadoop.hbase.hbql.query.cmds.schema.*;
+import org.apache.hadoop.hbase.hbql.query.cmds.table.*;
 import org.apache.hadoop.hbase.hbql.query.antlr.*;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.*;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.*;
@@ -70,12 +73,12 @@ options {backtrack=true;}
 	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableCmd($t.text);}
 	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableCmd($t.text);}
 	| keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateTableCmd($t.text);}
-	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteCmd($t.text, $w.retval);}
 	| keyDEFINE keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
 							{retval = new DefineSchemaCmd($t.text, $a.text, $l.retval);}
 	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaCmd($t.text);}
+	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteRecordsCmd($t.text, $w.retval);}
+	| s=selectStmt				 	{retval = new SelectRecordsCmd($s.retval);}
 	| keySET i=simpleName EQ? v=QUOTED	 	{retval = new SetCmd($i.text, $v.text);}
-	| s=selectStmt				 	{retval = new SelectCmd($s.retval);}
 	;						
 	
 selectStmt returns [QueryArgs retval]
