@@ -8,9 +8,9 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCmd;
+import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCommand;
+import org.apache.hadoop.hbase.hbql.query.cmds.SchemaManagerCommand;
 import org.apache.hadoop.hbase.hbql.query.cmds.ShellCommand;
-import org.apache.hadoop.hbase.hbql.query.cmds.schema.SchemaManagerCmd;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
@@ -82,12 +82,12 @@ public class HBql {
         }
     }
 
-    public static SchemaManagerCmd parseSchemaCommand(final String str) throws HBqlException {
+    public static SchemaManagerCommand parseSchemaCommand(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
             final ShellCommand command = parser.commandStmt();
-            if (command instanceof SchemaManagerCmd)
-                return (SchemaManagerCmd)command;
+            if (command instanceof SchemaManagerCommand)
+                return (SchemaManagerCommand)command;
             else
                 throw new HBqlException("Expecting a schema manager command");
         }
@@ -97,12 +97,12 @@ public class HBql {
         }
     }
 
-    public static ConnectionCmd parseCommand(final String str) throws HBqlException {
+    public static ConnectionCommand parseCommand(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
             final ShellCommand command = parser.commandStmt();
-            if (command instanceof ConnectionCmd)
-                return (ConnectionCmd)command;
+            if (command instanceof ConnectionCommand)
+                return (ConnectionCommand)command;
             else
                 throw new HBqlException("Expecting a connection command");
         }

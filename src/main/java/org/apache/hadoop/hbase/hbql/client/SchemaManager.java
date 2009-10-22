@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
-import org.apache.hadoop.hbase.hbql.query.cmds.schema.SchemaManagerCmd;
+import org.apache.hadoop.hbase.hbql.query.cmds.SchemaManagerCommand;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnDescription;
@@ -20,7 +20,7 @@ public class SchemaManager {
 
     public static HOutput execute(final String str) throws HBqlException {
 
-        final SchemaManagerCmd cmd = HBql.parseSchemaCommand(str);
+        final SchemaManagerCommand cmd = HBql.parseSchemaCommand(str);
 
         if (cmd == null)
             throw new HBqlException("Error parsing: " + str);
@@ -65,7 +65,7 @@ public class SchemaManager {
                                                               final String tableName,
                                                               final List<ColumnDescription> colList) throws HBqlException {
 
-        if (SchemaManager.doesDefinedSchemaExist(schemaName))
+        if (org.apache.hadoop.hbase.hbql.client.SchemaManager.doesDefinedSchemaExist(schemaName))
             throw new HBqlException("Schema " + schemaName + " already defined");
 
         final DefinedSchema schema = new DefinedSchema(schemaName, tableName, colList);

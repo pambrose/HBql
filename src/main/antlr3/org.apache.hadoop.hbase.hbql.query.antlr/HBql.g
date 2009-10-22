@@ -49,9 +49,9 @@ import org.apache.hadoop.hbase.hbql.query.expr.nullcomp.*;
 import org.apache.hadoop.hbase.hbql.query.expr.stringpattern.*;
 import org.apache.hadoop.hbase.hbql.query.expr.var.*;
 import org.apache.hadoop.hbase.hbql.query.cmds.*;
-import org.apache.hadoop.hbase.hbql.query.cmds.record.*;
 import org.apache.hadoop.hbase.hbql.query.cmds.schema.*;
 import org.apache.hadoop.hbase.hbql.query.cmds.table.*;
+import org.apache.hadoop.hbase.hbql.query.cmds.misc.*;
 import org.apache.hadoop.hbase.hbql.query.antlr.*;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.*;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.*;
@@ -67,18 +67,18 @@ import org.apache.hadoop.hbase.hbql.query.util.*;
 
 commandStmt returns [ShellCommand retval]
 options {backtrack=true;}	
-	: keySHOW keyTABLES 		 		{retval = new ShowTablesCmd();}
-	| keyDROP keyTABLE t=simpleName 		{retval = new DropTableCmd($t.text);}
-	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableCmd($t.text);}
-	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableCmd($t.text);}
-	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableCmd($t.text);}
-	| keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateTableCmd($t.text);}
+	: keySHOW keyTABLES 		 		{retval = new ShowTables();}
+	| keyDROP keyTABLE t=simpleName 		{retval = new DropTable($t.text);}
+	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTable($t.text);}
+	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTable($t.text);}
+	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTable($t.text);}
+	| keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateTable($t.text);}
 	| keyDEFINE keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
-							{retval = new DefineSchemaCmd($t.text, $a.text, $l.retval);}
-	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaCmd($t.text);}
-	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteRecordsCmd($t.text, $w.retval);}
-	| s=selectStmt				 	{retval = new SelectRecordsCmd($s.retval);}
-	| keySET i=simpleName EQ? v=QUOTED	 	{retval = new SetCmd($i.text, $v.text);}
+							{retval = new DefineSchema($t.text, $a.text, $l.retval);}
+	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchema($t.text);}
+	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteRecords($t.text, $w.retval);}
+	| s=selectStmt				 	{retval = new SelectRecords($s.retval);}
+	| keySET i=simpleName EQ? v=QUOTED	 	{retval = new Set($i.text, $v.text);}
 	;						
 	
 selectStmt returns [QueryArgs retval]

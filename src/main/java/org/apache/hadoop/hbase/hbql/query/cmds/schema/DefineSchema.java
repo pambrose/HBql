@@ -2,20 +2,19 @@ package org.apache.hadoop.hbase.hbql.query.cmds.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.query.cmds.SchemaCmd;
+import org.apache.hadoop.hbase.hbql.query.cmds.SchemaManagerCommand;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 
 import java.util.List;
 
-public class DefineSchemaCmd extends SchemaCmd implements SchemaManagerCmd {
+public class DefineSchema extends SchemaCommand implements SchemaManagerCommand {
 
     private final String tableName;
     private final List<ColumnDescription> columnDescriptionList;
 
-    public DefineSchemaCmd(final String schemaName, final String tableName, final List<ColumnDescription> columnDescriptionList) {
+    public DefineSchema(final String schemaName, final String tableName, final List<ColumnDescription> columnDescriptionList) {
         super(schemaName);
         this.tableName = (tableName == null || tableName.length() == 0) ? schemaName : tableName;
         this.columnDescriptionList = columnDescriptionList;
@@ -31,9 +30,15 @@ public class DefineSchemaCmd extends SchemaCmd implements SchemaManagerCmd {
 
     public HOutput execute() throws HBqlException {
 
-        final DefinedSchema schema = SchemaManager.newDefinedSchema(this.getSchemaName(),
-                                                                    this.getTableName(),
-                                                                    this.getColumnDescriptionList());
+        final DefinedSchema schema = org.apache
+                .hadoop
+                .hbase
+                .hbql
+                .client
+                .SchemaManager
+                .newDefinedSchema(this.getSchemaName(),
+                                  this.getTableName(),
+                                  this.getColumnDescriptionList());
 
         for (final ColumnAttrib attrib : schema.getColumnAttribSet()) {
             if (attrib.getFieldType() == null && !attrib.isFamilyDefaultAttrib())

@@ -1,10 +1,10 @@
 package org.apache.hadoop.hbase.hbql.query.cmds.table;
 
-public abstract class TableCmd {
+public abstract class TableCommand {
 
     private final String tableName;
 
-    protected TableCmd(final String tableName) {
+    protected TableCommand(final String tableName) {
         this.tableName = tableName;
     }
 

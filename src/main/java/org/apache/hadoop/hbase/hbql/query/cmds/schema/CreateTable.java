@@ -1,19 +1,18 @@
-package org.apache.hadoop.hbase.hbql.query.cmds.table;
+package org.apache.hadoop.hbase.hbql.query.cmds.schema;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
-import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCmd;
-import org.apache.hadoop.hbase.hbql.query.cmds.SchemaCmd;
+import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCommand;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 
 import java.io.IOException;
 
-public class CreateTableCmd extends SchemaCmd implements ConnectionCmd {
+public class CreateTable extends SchemaCommand implements ConnectionCommand {
 
-    public CreateTableCmd(final String schemaName) {
+    public CreateTable(final String schemaName) {
         super(schemaName);
     }
 

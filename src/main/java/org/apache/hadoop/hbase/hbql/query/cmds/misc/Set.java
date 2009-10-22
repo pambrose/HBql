@@ -1,17 +1,18 @@
-package org.apache.hadoop.hbase.hbql.query.cmds;
+package org.apache.hadoop.hbase.hbql.query.cmds.misc;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
+import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCommand;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.EnvVars;
 
 import java.io.IOException;
 
-public class SetCmd implements ConnectionCmd {
+public class Set implements ConnectionCommand {
 
     private final String variable, value;
 
-    public SetCmd(final String variable, final String value) {
+    public Set(final String variable, final String value) {
         this.variable = variable;
         this.value = value;
     }

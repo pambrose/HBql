@@ -2,14 +2,14 @@ package org.apache.hadoop.hbase.hbql.query.cmds.table;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
-import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCmd;
+import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCommand;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
 
 import java.io.IOException;
 
-public class DropTableCmd extends TableCmd implements ConnectionCmd {
+public class DropTable extends TableCommand implements ConnectionCommand {
 
-    public DropTableCmd(final String tableName) {
+    public DropTable(final String tableName) {
         super(tableName);
     }
 

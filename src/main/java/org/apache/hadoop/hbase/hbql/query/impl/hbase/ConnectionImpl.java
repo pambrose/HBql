@@ -13,7 +13,7 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
-import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCmd;
+import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCommand;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Sets;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -84,12 +84,12 @@ public class ConnectionImpl implements HConnection {
 
     public HOutput execute(final String str) throws HBqlException, IOException {
 
-        final ConnectionCmd cmd = HBql.parseCommand(str);
+        final ConnectionCommand command = HBql.parseCommand(str);
 
-        if (cmd == null)
+        if (command == null)
             throw new HBqlException("Error parsing: " + str);
 
-        return cmd.execute(this);
+        return command.execute(this);
     }
 
     public void apply(final HBatch batch) throws IOException {
