@@ -174,11 +174,8 @@ descWhereExpr returns [ExprTree retval]
 
 // Expressions
 
-expression returns [GenericValue retval]
-	: topExpr					{retval = $topExpr.retval;};
-		
 topExpr returns [GenericValue retval]
-	: o=orExpr					{$topExpr.retval = $o.retval;};
+	: o=orExpr					{retval = $o.retval;};
 				
 orExpr returns [GenericValue retval]
 	: e1=andExpr (keyOR e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanCompare($e1.retval, Operator.OR, $e2.retval);};
