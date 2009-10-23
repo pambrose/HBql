@@ -647,25 +647,4 @@ public class SelectTest extends TestSupport {
             assertTrue(val1.equals("test default"));
         }
     }
-
-    @Test
-    public void selectInvalidDefaults() throws HBqlException, IOException {
-
-        SchemaManager.execute("drop schema tab1");
-
-        Exception caughtException = null;
-        try {
-            SchemaManager.execute("define schema tab1 FOR TABLE table1"
-                                  + "("
-                                  + "keyval key, "
-                                  + "f1:val10 object alias val10 default 4 "
-                                  + ")");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            caughtException = e;
-        }
-
-        assertTrue(caughtException instanceof HBqlException);
-    }
 }
