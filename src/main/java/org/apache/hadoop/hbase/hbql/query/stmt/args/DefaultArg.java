@@ -19,14 +19,12 @@ public class DefaultArg extends ExprContext implements Serializable {
     }
 
     public Object getValue() throws HBqlException {
-
         if (!computed) {
             synchronized (this) {
-                if (computed)
-                    return this.value;
-
-                this.value = this.evaluateConstant(0, false, null);
-                this.computed = true;
+                if (!computed) {
+                    this.value = this.evaluateConstant(0, false, null);
+                    this.computed = true;
+                }
             }
         }
 

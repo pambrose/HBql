@@ -15,7 +15,6 @@ import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
-import org.apache.hadoop.hbase.hbql.query.util.ResultsIterator;
 
 import java.io.IOException;
 import java.util.Iterator;

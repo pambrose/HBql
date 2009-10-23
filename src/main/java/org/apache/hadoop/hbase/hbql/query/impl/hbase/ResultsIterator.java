@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.util;
+package org.apache.hadoop.hbase.hbql.query.impl.hbase;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 

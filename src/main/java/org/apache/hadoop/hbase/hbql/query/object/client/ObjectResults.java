@@ -3,8 +3,8 @@ package org.apache.hadoop.hbase.hbql.query.object.client;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.impl.hbase.ResultsIterator;
 import org.apache.hadoop.hbase.hbql.query.impl.object.ObjectQueryImpl;
-import org.apache.hadoop.hbase.hbql.query.util.ResultsIterator;
 
 import java.util.Collection;
 import java.util.Iterator;
