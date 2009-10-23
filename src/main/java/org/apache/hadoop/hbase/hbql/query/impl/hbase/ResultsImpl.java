@@ -23,17 +23,17 @@ import java.util.List;
 public class ResultsImpl<T> implements HResults<T> {
 
     private final List<ResultScanner> scannerList = Lists.newArrayList();
-    private final QueryImpl hquery;
+    private final QueryImpl<T> hquery;
 
-    ResultsImpl(final HQuery hquery) {
-        this.hquery = (QueryImpl)hquery;
+    ResultsImpl(final HQuery<T> hquery) {
+        this.hquery = (QueryImpl<T>)hquery;
     }
 
     private HConnection getConnection() {
         return this.getHQuery().getConnection();
     }
 
-    private QueryImpl getHQuery() {
+    private QueryImpl<T> getHQuery() {
         return this.hquery;
     }
 
@@ -65,18 +65,18 @@ public class ResultsImpl<T> implements HResults<T> {
     }
 
     private void closeCurrentScanner(final ResultScanner scanner, final boolean removeFromList) {
-        if (scanner == null)
-            return;
 
-        try {
-            scanner.close();
-        }
-        catch (Exception e) {
-            // Do nothing
-        }
+        if (scanner != null) {
+            try {
+                scanner.close();
+            }
+            catch (Exception e) {
+                // Do nothing
+            }
 
-        if (removeFromList)
-            getScannerList().remove(scanner);
+            if (removeFromList)
+                getScannerList().remove(scanner);
+        }
     }
 
     public Iterator<T> iterator() {
