@@ -9,8 +9,8 @@ import java.io.Serializable;
 
 public class DefaultArg extends ExprContext implements Serializable {
 
-    // We have to delay computation of value because the resulting Object
-    // is not serializable for filter
+    // We have to make vlaue transient because Object is not serializable for hbqlfilter
+    // We will compute it again on the server after reset is called
     private transient Object value = null;
     private boolean computed = false;
 
