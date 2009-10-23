@@ -5,14 +5,36 @@ import org.apache.hadoop.hbase.hbql.query.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.query.expr.TypeSignature;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 
-public class DefaultArg extends ExprContext {
+import java.io.Serializable;
+
+public class DefaultArg extends ExprContext implements Serializable {
+
+    // We have to delay computation of value because the resulting Object
+    // is not serializable for filter
+    private transient Object value = null;
+    private boolean computed = false;
 
     public DefaultArg(final Class<? extends GenericValue> exprType, final GenericValue expr) {
         super(new TypeSignature(null, exprType), expr);
     }
 
     public Object getValue() throws HBqlException {
-        return (this.evaluateWithoutColumns(0, false, null));
+
+        if (!computed) {
+            synchronized (this) {
+                if (computed)
+                    return this.value;
+
+                this.value = this.evaluateConstant(0, false, null);
+                this.computed = true;
+            }
+        }
+
+        return this.value;
+    }
+
+    public void reset() {
+        this.computed = false;
     }
 
     public String asString() {

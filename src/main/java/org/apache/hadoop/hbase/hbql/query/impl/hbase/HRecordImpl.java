@@ -235,7 +235,7 @@ public class HRecordImpl implements Serializable, HRecord {
         this.timestamp = timestamp;
     }
 
-    public Object getCurrentValue(final String name) {
+    public Object getCurrentValue(final String name) throws HBqlException {
         final ObjectValue objectValue = this.getObjectElements().findElement(name);
         if (objectValue != null) {
             final Object retval = objectValue.getValue();
@@ -245,7 +245,7 @@ public class HRecordImpl implements Serializable, HRecord {
 
         // Return default value if it exists
         final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
-        return (attrib != null) ? attrib.getDefaultValue() : null;
+        return (attrib != null) ? attrib.getDefaultValue().getValue() : null;
     }
 
     public void setCurrentValue(final String name, final Object val) throws HBqlException {

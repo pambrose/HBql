@@ -51,14 +51,12 @@ public class HBqlFilter implements Filter {
     private long recordCount = 0;
     public transient HRecordImpl hrecord = new HRecordImpl((HBaseSchema)null);
 
-    // START SNIPPET: id1
     public HBqlFilter(final ExprTree exprTree, final long scanLimit) {
         this.exprTree = exprTree;
         this.scanLimit = scanLimit;
         this.recordCount = 0;
         this.getHRecord().setSchema(this.getSchema());
     }
-    // END SNIPPET: id1
 
     public HBqlFilter() {
     }
@@ -180,11 +178,14 @@ public class HBqlFilter implements Filter {
         LOG.info("In readFields()");
 
         try {
-            this.exprTree = (ExprTree)HUtil.getSerialization()
-                    .getScalarFromBytes(FieldType.ObjectType, Bytes.readByteArray(in));
-            this.scanLimit = (Long)HUtil.getSerialization()
-                    .getScalarFromBytes(FieldType.LongType, Bytes.readByteArray(in));
+            this.exprTree = (ExprTree)HUtil.getSerialization().getScalarFromBytes(FieldType.ObjectType,
+                                                                                  Bytes.readByteArray(in));
+            this.scanLimit = (Long)HUtil.getSerialization().getScalarFromBytes(FieldType.LongType,
+                                                                               Bytes.readByteArray(in));
             this.getHRecord().setSchema(this.getSchema());
+
+            this.getSchema().resetDefaultValues();
+
             this.recordCount = 0;
         }
         catch (HBqlException e) {
@@ -226,6 +227,5 @@ public class HBqlFilter implements Filter {
         }
 
         boolean v = filter.filterRow();
-        return;
     }
 }

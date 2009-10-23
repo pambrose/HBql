@@ -15,9 +15,9 @@ attrib:
     | family_default
 
 column_definition:
-    family_name ':' column_name type ['['']'] [ALIAS alias_name]
+    family_name ':' column_name type ['['']'] [ALIAS alias_name] [DEFAULT constant_expression]
 
-family_definition:
+family_default:
     family_name ':' '*' [ALIAS alias_name]
 
 type:
@@ -32,7 +32,6 @@ type:
     | DOUBLE
     | OBJECT  (OBJ)
 
-Abbreviations and synonyms are shown in ().
 ---------------------------
 
 Description
@@ -42,14 +41,23 @@ Description
     * If the table name clause is omitted, then the table name defaults
 to the schema name.
 
-    * HBase tables can have mutiple schemas.
+    * HBase tables can be referenced by mutiple schemas.
 
     * The SchemaManager object manages schemas and is indepedent of a particular
     HConnection.
 
     * A single key attribute is required for a schema.
 
-    * Each attribute requires a type value.
+    * [] indicates an array type.
+
+    * Column_definitions require a family qualified column name and a type.
+
+    * Types can be abbreviations and synonyms are shown in () above.
+
+    * Named parameters and column references are not allowed in constant_expression.
+
+    * The default value is used whenever a value is missing for that attribute in a given record.
+    
 
 Examples
 

@@ -7,7 +7,7 @@ public interface HRecord {
 
     void setTimestamp(final long timestamp);
 
-    Object getCurrentValue(String name);
+    Object getCurrentValue(String name) throws HBqlException;
 
     void setCurrentValue(String name, Object val) throws HBqlException;
 

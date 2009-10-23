@@ -48,6 +48,11 @@ public abstract class Schema implements Serializable {
         return this.getColumnAttribByVariableNameMap().get(name);
     }
 
+    public void resetDefaultValues() {
+        for (final ColumnAttrib attrib : this.getColumnAttribSet())
+            attrib.resetDefaultValue();
+    }
+
     protected void addAttribToVariableNameMap(final ColumnAttrib attrib,
                                               final String... attribNames) throws HBqlException {
 
@@ -84,12 +89,12 @@ public abstract class Schema implements Serializable {
         return this.evalList;
     }
 
-    public int getEvalCacheSize() {
-        return this.exprTreeCacheSize;
-    }
-
     public String toString() {
         return this.getSchemaName();
+    }
+
+    public int getEvalCacheSize() {
+        return this.exprTreeCacheSize;
     }
 
     public void setEvalCacheSize(final int size) {

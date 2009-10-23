@@ -10,7 +10,7 @@ public class LimitArgs extends SelectArgs {
     }
 
     public long getValue() throws HBqlException {
-        return ((Number)this.evaluateWithoutColumns(0, false, null)).longValue();
+        return ((Number)this.evaluateConstant(0, false, null)).longValue();
     }
 
     public String asString() {

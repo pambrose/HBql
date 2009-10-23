@@ -92,9 +92,9 @@ public abstract class ExprContext implements Serializable {
         return this.getGenericValue(i).getValue(object);
     }
 
-    protected Object evaluateWithoutColumns(final int i,
-                                            final boolean allowsCollections,
-                                            final Object object) throws HBqlException {
+    protected Object evaluateConstant(final int i,
+                                      final boolean allowsCollections,
+                                      final Object object) throws HBqlException {
         try {
             return this.evaluate(i, false, allowsCollections, object);
         }

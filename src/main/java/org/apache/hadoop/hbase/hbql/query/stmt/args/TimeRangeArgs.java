@@ -14,11 +14,11 @@ public class TimeRangeArgs extends SelectArgs {
     }
 
     private long getLower() throws HBqlException {
-        return (Long)this.evaluateWithoutColumns(0, false, null);
+        return (Long)this.evaluateConstant(0, false, null);
     }
 
     private long getUpper() throws HBqlException {
-        return (Long)this.evaluateWithoutColumns(1, false, null);
+        return (Long)this.evaluateConstant(1, false, null);
     }
 
     public String asString() {

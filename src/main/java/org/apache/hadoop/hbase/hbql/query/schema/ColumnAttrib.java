@@ -28,7 +28,8 @@ public abstract class ColumnAttrib implements Serializable {
     private final boolean isArray;
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
-    private final Object defaultValue;
+    // TODO This is a problem for HBqlFilter
+    private final DefaultArg defaultValue;
 
     protected ColumnAttrib(final String familyName,
                            final String columnName,
@@ -53,17 +54,20 @@ public abstract class ColumnAttrib implements Serializable {
         this.defaultValue = this.evaluateDefaultValue(defaultValueExpr);
     }
 
-    public Object getDefaultValue() {
+    public DefaultArg getDefaultValue() {
         return this.defaultValue;
     }
 
-    private Object evaluateDefaultValue(final GenericValue defaultValueExpr) throws HBqlException {
+    private DefaultArg evaluateDefaultValue(final GenericValue defaultValueExpr) throws HBqlException {
 
         if (defaultValueExpr == null)
             return null;
 
         if (this.isKeyAttrib())
             throw new HBqlException("Default values are not valid for key values: " + this.getNameToUseInExceptions());
+
+        if (!defaultValueExpr.isAConstant())
+            throw new HBqlException("Default values must be constants: " + this.getNameToUseInExceptions());
 
         if (this.isArray())
             throw new HBqlException("Default values are not valid for array values: " + this.getNameToUseInExceptions());
@@ -80,8 +84,7 @@ public abstract class ColumnAttrib implements Serializable {
         if (type == null)
             throw new HBqlException("Default values are not valid for: " + this.getNameToUseInExceptions());
 
-        final DefaultArg defaultArg = new DefaultArg(type, defaultValueExpr);
-        return defaultArg.getValue();
+        return new DefaultArg(type, defaultValueExpr);
     }
 
     public abstract Object getCurrentValue(final Object obj) throws HBqlException;
@@ -154,6 +157,12 @@ public abstract class ColumnAttrib implements Serializable {
             return this.getFamilyName() + ":" + this.getColumnName();
         else
             return this.getColumnName();
+    }
+
+    // This is necessary before sending off with filter
+    public void resetDefaultValue() {
+        if (this.getDefaultValue() != null)
+            this.getDefaultValue().reset();
     }
 
     public byte[] getFamilyNameBytes() throws HBqlException {
@@ -282,7 +291,7 @@ public abstract class ColumnAttrib implements Serializable {
 
             if (!result.containsColumn(this.getFamilyNameBytes(), this.getColumnNameBytes())) {
                 // See if a default value is present
-                final Object defaultValue = this.getDefaultValue();
+                final Object defaultValue = this.getDefaultValue().getValue();
                 if (defaultValue != null)
                     return defaultValue;
                 else
@@ -352,8 +361,7 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public String getAliasName() {
-        return (this.aliasName != null
-                && this.aliasName.length() > 0) ? this.aliasName : this.getFamilyQualifiedName();
+        return (this.aliasName != null && this.aliasName.length() > 0) ? this.aliasName : this.getFamilyQualifiedName();
     }
 
     public boolean isASelectFamilyAttrib() {
