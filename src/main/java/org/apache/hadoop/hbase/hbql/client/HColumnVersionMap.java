@@ -2,6 +2,8 @@ package org.apache.hadoop.hbase.hbql.client;
 
 @java.lang.annotation.Target({java.lang.annotation.ElementType.FIELD})
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+
+// START SNIPPET: doc
 public @interface HColumnVersionMap {
 
     String instance() default "";
@@ -18,3 +20,4 @@ public @interface HColumnVersionMap {
 
     boolean familyDefault() default false;
 }
+// END SNIPPET: doc

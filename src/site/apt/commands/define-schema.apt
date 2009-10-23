@@ -4,7 +4,9 @@
     -----
 
 
-Syntax
+DEFINE SCHEMA
+
+*Syntax
 
 ---------------------------
 DEFINE SCHEMA schema_name [FOR TABLE table_name] '(' attrib, ... ')'
@@ -38,9 +40,9 @@ type:
 
 ---------------------------
 
-Description
+*Description
 
-    Describes a schema. A schema is required to create tables and select, insert and delete records.
+    Defines a schema.
 
     * If the table name clause is omitted, then the table name defaults
     to the schema name.
@@ -80,7 +82,7 @@ Description
 
 
 
-Examples
+*Examples
 
 %{snippet|id=define-schema1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
 

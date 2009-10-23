@@ -4,16 +4,18 @@
     -----
 
 
-Syntax
+DESCRIBE TABLE
+
+*Syntax
 
 ---------------------------
 DESCRIBE TABLE table_name
 ---------------------------
 
-Description
+*Description
 
     Describes named table.
 
-Example
+*Example
 
 %{snippet|id=describe-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

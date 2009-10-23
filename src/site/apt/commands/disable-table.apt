@@ -4,16 +4,18 @@
     -----
 
 
-Syntax
+DISABLE TABLE
+
+*Syntax
 
 ---------------------------
 DISABLE TABLE table_name
 ---------------------------
 
-Description
+*Description
 
     Disables named table (required before dropping a table).
 
-Example
+*Example
 
 %{snippet|id=disable-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

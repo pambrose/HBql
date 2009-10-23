@@ -3,17 +3,18 @@
     -----
     -----
 
+ENABLE TABLE
 
-Syntax
+*Syntax
 
 ---------------------------
 ENABLE TABLE table_name
 ---------------------------
 
-Description
+*Description
 
     Enables named table.
 
-Example
+*Example
 
 %{snippet|id=enable-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

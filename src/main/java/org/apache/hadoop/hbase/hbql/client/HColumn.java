@@ -2,6 +2,8 @@ package org.apache.hadoop.hbase.hbql.client;
 
 @java.lang.annotation.Target({java.lang.annotation.ElementType.FIELD})
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+
+// START SNIPPET: doc
 public @interface HColumn {
 
     boolean key() default false;
@@ -18,3 +20,4 @@ public @interface HColumn {
 
     boolean familyDefault() default false;
 }
+// END SNIPPET: doc

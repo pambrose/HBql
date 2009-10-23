@@ -5,11 +5,23 @@
 
 Schemas
 
-    HBase treats values as byte arrays.  In order to do typed operations
-on column values, some schema information is required.  HBql provides two mechanisms
-for defining schemas: java class annotations and a declaration.
-
-Annotations
+    A schema is required to create tables or select, insert and delete records.
+HBql provides two mechanisms for defining schemas: java annotations and
+the {{{commands/define-schema.html}DEFINE SCHEMA}} command.
 
 
-Define Command
+*Annotations
+
+    HBql provides the following annotations for associating schema information with a java class:
+
+%{snippet|id=doc|file=src/main/java/org/apache/hadoop/hbase/hbql/client/HTable.java}
+
+%{snippet|id=doc|file=src/main/java/org/apache/hadoop/hbase/hbql/client/HFamily.java}
+
+%{snippet|id=doc|file=src/main/java/org/apache/hadoop/hbase/hbql/client/HColumn.java}
+
+%{snippet|id=doc|file=src/main/java/org/apache/hadoop/hbase/hbql/client/HColumnVersionMap.java}
+
+*Example
+
+

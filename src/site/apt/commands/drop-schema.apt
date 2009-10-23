@@ -4,17 +4,19 @@
     -----
 
 
-Syntax
+DROP SCHEMA
+
+*Syntax
 
 ---------------------------
 DROP SCHEMA schema_name 
     
 ---------------------------
 
-Description
+*Description
 
     Drops named table.
 
-Example
+*Example
 
 %{snippet|id=drop-schema|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
