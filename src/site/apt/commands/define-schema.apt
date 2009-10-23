@@ -10,11 +10,14 @@ Syntax
 DEFINE SCHEMA schema_name [FOR TABLE table_name] '(' attrib, ... ')'
 
 attrib:
-    key_name KEY
-    | column_definition
+    key_description
+    | column_description
     | family_default
 
-column_definition:
+key_description:
+    key_name KEY
+
+column_description:
     family_name ':' column_name type ['['']'] [MAPKEYSASCOLUMNS] [ALIAS alias_name] [DEFAULT constant_expression]
 
 family_default:
@@ -58,8 +61,8 @@ Description
     * The default value is used whenever a value is missing for that attribute in a given record.  The
     constant_expression cannot contain any named parameters or column references.
 
-    * If an alias_name is present, it can be used interchangeably with the family qualified column name.  If
-      it missing, the the attribute is referenced with the fully qualified name.
+    * If an alias_name is present, it can be used interchangeably with the family qualified column name.
+    Without an ALIAS clause, the the attribute is referenced with the family qualified name.
 
     * The MAPSKEYSASCOLUMN clause indicates that the attribute value is a map with string keys and each
     key will be distinct column.  In the case of the column f1:val1, each key would be mapped
@@ -67,6 +70,11 @@ Description
     be found {{{src/site/examples/kacexample.html}here}}.
 
     * The DEFAULT clause cannot be used with arrays or MAPKEYSASCOLUMNS values.
+
+    * Each table family can have one family_default attribute.  A family_default atttribute is used when
+    a column value is found in the query results, and no corresponding attribute is present in the schema.
+    Effectively it is a map with strings for keys (corresponding to the family qualified name) and byte[] values.
+    An example can be found {{{src/site/examples/family_default.html}here}}.
     
 
 Examples
