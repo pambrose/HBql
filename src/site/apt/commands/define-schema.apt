@@ -21,15 +21,16 @@ family_default:
     family_name ':' '*' [ALIAS alias_name]
 
 type:
-    BYTE
-    | BOOLEAN (BOOL)
-    | STRING  (VARCHAR)
-    | DATE    (DATETIME)
+    BOOLEAN   (BOOL)
+    | BYTE
+    | CHAR
     | SHORT
     | INTEGER (INT)
     | LONG
     | FLOAT
     | DOUBLE
+    | STRING  (VARCHAR)
+    | DATE    (DATETIME)
     | OBJECT  (OBJ)
 
 ---------------------------
@@ -56,7 +57,13 @@ to the schema name.
 
     * Named parameters and column references are not allowed in constant_expression.
 
-    * The default value is used whenever a value is missing for that attribute in a given record.
+    * The default value is used whenever a value is missing for that attribute in a given record.  It is
+      any expression composed of constants.
+
+    * If an alias_name is present, it can be used interchangeably with the family qualified column name.  If
+      it missing, the the attribute is referenced with the fully qualified name.
+
+    * The DEFAULT clause cannot be used with arrays.
     
 
 Examples

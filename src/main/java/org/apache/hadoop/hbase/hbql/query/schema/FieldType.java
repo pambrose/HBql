@@ -10,6 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ObjectValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -36,7 +37,7 @@ public enum FieldType {
 
     StringType(String.class, StringValue.class, -1, -1, "STRING", "VARCHAR"),
     DateType(Date.class, DateValue.class, -1, -1, "DATE", "DATETIME"),
-    ObjectType(Object.class, null, -1, -1, "OBJECT", "OBJ");
+    ObjectType(Object.class, ObjectValue.class, -1, -1, "OBJECT", "OBJ");
 
     private final Class componentType;
     private final Class<? extends GenericValue> exprType;

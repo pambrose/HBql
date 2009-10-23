@@ -603,7 +603,6 @@ public class SelectTest extends TestSupport {
     public void selectMismatchedDefaults() throws HBqlException, IOException {
 
         SchemaManager.execute("drop schema tab1");
-
         Exception caughtException = null;
         try {
             SchemaManager.execute("define schema tab1 FOR TABLE table1"
@@ -618,6 +617,35 @@ public class SelectTest extends TestSupport {
         }
 
         assertTrue(caughtException instanceof TypeException);
+    }
+
+    @Test
+    public void selectObjectDefaults() throws HBqlException, IOException {
+
+        SchemaManager.execute("drop schema tab1");
+        Exception caughtException = null;
+        try {
+            SchemaManager.execute("define schema tab1 FOR TABLE table1"
+                                  + "("
+                                  + "keyval key, "
+                                  + "f1:val10 object alias val10 default 'test default'"
+                                  + ")");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            caughtException = e;
+        }
+
+        assertTrue(caughtException == null);
+
+        final String query1 = "SELECT * FROM tab1";
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 10);
+        for (final HRecord rec : recList1) {
+            String val1 = (String)rec.getCurrentValue("val10");
+            assertTrue(val1.equals("test default"));
+        }
     }
 
     @Test

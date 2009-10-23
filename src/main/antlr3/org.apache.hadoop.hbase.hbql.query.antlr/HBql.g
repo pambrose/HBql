@@ -323,9 +323,11 @@ simpleName
 varRef 
 	: ID (COLON ID)?;
 	
-familyRef : ID COLON STAR;
+familyRef 
+	: ID COLON STAR;
 	
-paramRef: COLON ID;
+paramRef
+	: COLON ID;
 		
 INT	: DIGIT+;
 LONG	: DIGIT+'L';

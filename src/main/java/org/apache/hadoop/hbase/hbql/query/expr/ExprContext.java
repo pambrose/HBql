@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.query.expr.node.ObjectValue;
 import org.apache.hadoop.hbase.hbql.query.expr.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.query.expr.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
@@ -87,7 +88,7 @@ public abstract class ExprContext implements Serializable {
                               final boolean allowColumns,
                               final boolean allowsCollections,
                               final Object object) throws HBqlException, ResultMissingColumnException {
-        this.validateTypes(allowColumns, allowsCollections);
+        this.validateExprTypes(allowColumns, allowsCollections);
         this.optimize();
         return this.getGenericValue(i).getValue(object);
     }
@@ -138,7 +139,7 @@ public abstract class ExprContext implements Serializable {
         }
     }
 
-    public void validateTypes(final boolean allowColumns, final boolean allowsCollections) throws HBqlException {
+    public void validateExprTypes(final boolean allowColumns, final boolean allowsCollections) throws HBqlException {
 
         if (this.isInNeedOfTypeValidation()) {
 
@@ -169,6 +170,9 @@ public abstract class ExprContext implements Serializable {
                             throw new TypeException("Cannot assign a " + clazz.getSimpleName()
                                                     + " value to a " + parentClazz.getSimpleName()
                                                     + " value in " + this.asString());
+                    }
+                    else if (parentClazz == ObjectValue.class) {
+                        // Do nothing
                     }
                     else {
                         if (!parentClazz.isAssignableFrom(clazz))
