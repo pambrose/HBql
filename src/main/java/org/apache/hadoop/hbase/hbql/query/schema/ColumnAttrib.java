@@ -29,7 +29,7 @@ public abstract class ColumnAttrib implements Serializable {
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
     // TODO This is a problem for HBqlFilter
-    private final DefaultArg defaultValue;
+    private final DefaultArg defaultArg;
 
     protected ColumnAttrib(final String familyName,
                            final String columnName,
@@ -51,12 +51,22 @@ public abstract class ColumnAttrib implements Serializable {
         this.isArray = isArray;
         this.getter = getter;
         this.setter = setter;
-        this.defaultValue = this.evaluateDefaultValue(defaultValueExpr);
+        this.defaultArg = this.evaluateDefaultValue(defaultValueExpr);
     }
 
-    public DefaultArg getDefaultValue() {
-        return this.defaultValue;
+    public Object getDefaultValue() throws HBqlException {
+        if (this.defaultArg != null)
+            return this.defaultArg.getValue();
+        else
+            return null;
     }
+
+    // This is necessary before sending off with filter
+    public void resetDefaultValue() {
+        if (this.defaultArg != null)
+            this.defaultArg.reset();
+    }
+
 
     private DefaultArg evaluateDefaultValue(final GenericValue defaultValueExpr) throws HBqlException {
 
@@ -157,12 +167,6 @@ public abstract class ColumnAttrib implements Serializable {
             return this.getFamilyName() + ":" + this.getColumnName();
         else
             return this.getColumnName();
-    }
-
-    // This is necessary before sending off with filter
-    public void resetDefaultValue() {
-        if (this.getDefaultValue() != null)
-            this.getDefaultValue().reset();
     }
 
     public byte[] getFamilyNameBytes() throws HBqlException {
@@ -291,7 +295,8 @@ public abstract class ColumnAttrib implements Serializable {
 
             if (!result.containsColumn(this.getFamilyNameBytes(), this.getColumnNameBytes())) {
                 // See if a default value is present
-                final Object defaultValue = this.getDefaultValue().getValue();
+
+                final Object defaultValue = this.getDefaultValue();
                 if (defaultValue != null)
                     return defaultValue;
                 else

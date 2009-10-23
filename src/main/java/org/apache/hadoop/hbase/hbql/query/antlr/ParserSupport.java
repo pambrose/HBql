@@ -76,14 +76,16 @@ public class ParserSupport extends Parser {
         }
     }
 
-    public GenericValue getLeftAssociativeGenericValues(final List<GenericValue> exprList, final List<Operator> opList) {
-
+    public GenericValue getLeftAssociativeGenericValues(final List<GenericValue> exprList,
+                                                        final List<Operator> opList) {
         if (exprList.size() == 1)
             return exprList.get(0);
 
         GenericValue root = new DelegateCalculation(exprList.get(0), opList.get(0), exprList.get(1));
+
         for (int i = 1; i < opList.size(); i++)
             root = new DelegateCalculation(root, opList.get(i), exprList.get(i + 1));
+
         return root;
     }
 
@@ -94,7 +96,7 @@ public class ParserSupport extends Parser {
             return new DefinedSchema(columList);
         }
         catch (HBqlException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             throw new RecognitionException(input);
         }
     }

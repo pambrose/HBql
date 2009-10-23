@@ -14,14 +14,23 @@ public class DefaultArg extends ExprContext implements Serializable {
     private transient Object value = null;
     private boolean computed = false;
 
-    public DefaultArg(final Class<? extends GenericValue> exprType, final GenericValue expr) {
+    public DefaultArg(final Class<? extends GenericValue> exprType, final GenericValue expr) throws HBqlException {
         super(new TypeSignature(null, exprType), expr);
+
+        // This will force the type checking to happen
+        this.getValue();
+    }
+
+    public void reset() {
+        this.computed = false;
     }
 
     public Object getValue() throws HBqlException {
+
         if (!computed) {
             synchronized (this) {
                 if (!computed) {
+                    // Type checking happens in this call, so we force it above in the constructor
                     this.value = this.evaluateConstant(0, false, null);
                     this.computed = true;
                 }
@@ -29,10 +38,6 @@ public class DefaultArg extends ExprContext implements Serializable {
         }
 
         return this.value;
-    }
-
-    public void reset() {
-        this.computed = false;
     }
 
     public String asString() {

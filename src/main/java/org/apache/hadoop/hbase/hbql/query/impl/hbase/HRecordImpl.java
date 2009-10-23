@@ -245,7 +245,7 @@ public class HRecordImpl implements Serializable, HRecord {
 
         // Return default value if it exists
         final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
-        return (attrib != null) ? attrib.getDefaultValue().getValue() : null;
+        return (attrib != null) ? attrib.getDefaultValue() : null;
     }
 
     public void setCurrentValue(final String name, final Object val) throws HBqlException {
