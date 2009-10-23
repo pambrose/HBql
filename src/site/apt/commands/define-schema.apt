@@ -40,12 +40,12 @@ type:
 
 Description
 
-    Describes a schema.
+    Describes a schema. A schema is required to create tables and select, insert and delete records.
 
     * If the table name clause is omitted, then the table name defaults
     to the schema name.
 
-    * HBase tables can be referenced by mutiple schemas.
+    * Mutiple schemas can reference the same HBase table.
 
     * The SchemaManager object manages schemas and is indepedent of a particular
     HConnection.
@@ -61,9 +61,6 @@ Description
     * The default value is used whenever a value is missing for that attribute in a given record.  The
     constant_expression cannot contain any named parameters or column references.
 
-    * If an alias_name is present, it can be used interchangeably with the family qualified column name.
-    Without an ALIAS clause, the the attribute is referenced with the family qualified name.
-
     * The MAPSKEYSASCOLUMN clause indicates that the attribute value is a map with string keys and each
     key will be distinct column.  In the case of the column f1:val1, each key would be mapped
     to the column: f1:val1['key'].  A map with 5 values will map to 5 distonct columns.  An example can
@@ -75,15 +72,22 @@ Description
     a column value is found in the query results, and no corresponding attribute is present in the schema.
     Effectively it is a map with strings for keys (corresponding to the family qualified name) and byte[] values.
     An example can be found {{{src/site/examples/family_default.html}here}}.
-    
+
+    * Both column descriptions and family defaults can have an alias name.
+    If present, it can be used interchangeably with the fully qualified column name.
+    Without an alias, column descriptions are referenced as "family:column" and family
+     defaults are referenced as "family:*" in the API.
+
+
 
 Examples
 
 %{snippet|id=define-schema1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
 
-    Schema named foo that describes table foo.
-
 %{snippet|id=define-schema2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
 
-    Schema named schema1 that describes table foo.
+%{snippet|id=define-schema3|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+
+%{snippet|id=define-schema4|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+
 
