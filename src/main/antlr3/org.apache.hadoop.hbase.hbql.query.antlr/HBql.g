@@ -77,14 +77,11 @@ options {backtrack=true;}
 							{retval = new DefineSchema($t.text, $a.text, $l.retval);}
 	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchema($t.text);}
 	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteRecords($t.text, $w.retval);}
-	| s=selectStmt				 	{retval = new SelectRecords($s.retval);}
+	| keySELECT c=selectElems keyFROM t=simpleName w=whereValue?			
+							{retval = new SelectRecords(new QueryArgs($c.retval, $t.text, $w.retval));}
 	| keySET i=simpleName EQ? v=QUOTED	 	{retval = new Set($i.text, $v.text);}
 	;						
 	
-selectStmt returns [QueryArgs retval]
-	: keySELECT c=selectElems keyFROM t=simpleName w=whereValue?			
-							{retval = new QueryArgs($c.retval, $t.text, $w.retval);};
-
 selectElems returns [List<SelectElement> retval]
 	: STAR						{retval = FamilySelectElement.newAllFamilies();}
 	| c=selectElemList				{retval = $c.retval;}
@@ -293,15 +290,15 @@ schemaDesc returns [Schema retval]
 	: LCURLY a=attribList RCURLY			{retval = newDefinedSchema(input, $a.retval);};
 	
 ltgtOp returns [Operator retval]
-	: GT 						{$ltgtOp.retval = Operator.GT;}
-	| GTEQ 						{$ltgtOp.retval = Operator.GTEQ;}
-	| LT 						{$ltgtOp.retval = Operator.LT;}
-	| LTEQ 						{$ltgtOp.retval = Operator.LTEQ;}
+	: GT 						{retval = Operator.GT;}
+	| GTEQ 						{retval = Operator.GTEQ;}
+	| LT 						{retval = Operator.LT;}
+	| LTEQ 						{retval = Operator.LTEQ;}
 	;
 			
 eqneOp returns [Operator retval]
-	: EQ EQ?					{$eqneOp.retval = Operator.EQ;}
-	| (LTGT | BANGEQ)				{$eqneOp.retval = Operator.NOTEQ;}
+	: EQ EQ?					{retval = Operator.EQ;}
+	| (LTGT | BANGEQ)				{retval = Operator.NOTEQ;}
 	;
 				
 qstring	: QUOTED ;					

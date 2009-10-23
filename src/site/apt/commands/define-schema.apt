@@ -15,7 +15,7 @@ attrib:
     | family_default
 
 column_definition:
-    family_name ':' column_name type ['['']'] [ALIAS alias_name] [DEFAULT constant_expression]
+    family_name ':' column_name type ['['']'] [MAPKEYSASCOLUMNS] [ALIAS alias_name] [DEFAULT constant_expression]
 
 family_default:
     family_name ':' '*' [ALIAS alias_name]
@@ -40,7 +40,7 @@ Description
     Describes a schema.
 
     * If the table name clause is omitted, then the table name defaults
-to the schema name.
+    to the schema name.
 
     * HBase tables can be referenced by mutiple schemas.
 
@@ -55,15 +55,18 @@ to the schema name.
 
     * Types can be abbreviations and synonyms are shown in () above.
 
-    * Named parameters and column references are not allowed in constant_expression.
-
-    * The default value is used whenever a value is missing for that attribute in a given record.  It is
-      any expression composed of constants.
+    * The default value is used whenever a value is missing for that attribute in a given record.  The
+    constant_expression cannot contain any named parameters or column references.
 
     * If an alias_name is present, it can be used interchangeably with the family qualified column name.  If
       it missing, the the attribute is referenced with the fully qualified name.
 
-    * The DEFAULT clause cannot be used with arrays.
+    * The MAPSKEYSASCOLUMN clause indicates that the attribute value is a map with string keys and each
+    key will be distinct column.  In the case of the column f1:val1, each key would be mapped
+    to the column: f1:val1['key'].  A map with 5 values will map to 5 distonct columns.  An example can
+    be found {{{src/site/examples/kacexample.html}here}}.
+
+    * The DEFAULT clause cannot be used with arrays or MAPKEYSASCOLUMNS values.
     
 
 Examples

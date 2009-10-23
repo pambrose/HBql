@@ -11,6 +11,7 @@ import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.cmds.ConnectionCommand;
 import org.apache.hadoop.hbase.hbql.query.cmds.SchemaManagerCommand;
 import org.apache.hadoop.hbase.hbql.query.cmds.ShellCommand;
+import org.apache.hadoop.hbase.hbql.query.cmds.schema.SelectRecords;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
@@ -82,46 +83,42 @@ public class HBql {
         }
     }
 
-    public static SchemaManagerCommand parseSchemaCommand(final String str) throws HBqlException {
+    private static ShellCommand parse(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
-            final ShellCommand command = parser.commandStmt();
-            if (command instanceof SchemaManagerCommand)
-                return (SchemaManagerCommand)command;
-            else
-                throw new HBqlException("Expecting a schema manager command");
+            return parser.commandStmt();
         }
         catch (RecognitionException e) {
             e.printStackTrace();
             throw new HBqlException("Error parsing: " + str);
         }
+    }
+
+    public static SchemaManagerCommand parseSchemaCommand(final String str) throws HBqlException {
+        final ShellCommand command = parse(str);
+        if (command instanceof SchemaManagerCommand)
+            return (SchemaManagerCommand)command;
+        else
+            throw new HBqlException("Expecting a schema manager command");
     }
 
     public static ConnectionCommand parseCommand(final String str) throws HBqlException {
-        try {
-            final HBqlParser parser = newParser(str);
-            final ShellCommand command = parser.commandStmt();
-            if (command instanceof ConnectionCommand)
-                return (ConnectionCommand)command;
-            else
-                throw new HBqlException("Expecting a connection command");
-        }
-        catch (RecognitionException e) {
-            e.printStackTrace();
-            throw new HBqlException("Error parsing: " + str);
-        }
+        final ShellCommand command = parse(str);
+        if (command instanceof ConnectionCommand)
+            return (ConnectionCommand)command;
+        else
+            throw new HBqlException("Expecting a connection command");
     }
 
     public static QueryArgs parseSelectStmt(final HConnection connection, final String str) throws HBqlException {
-        try {
-            final HBqlParser parser = newParser(str);
-            final QueryArgs args = parser.selectStmt();
+        final ShellCommand command = parse(str);
+        if (command instanceof SelectRecords) {
+            final QueryArgs args = ((SelectRecords)command).getQueryArgs();
             args.validate(connection);
             return args;
         }
-        catch (RecognitionException e) {
-            e.printStackTrace();
-            throw new HBqlException("Error parsing: " + str);
+        else {
+            throw new HBqlException("Expecting a select stmt");
         }
     }
 }

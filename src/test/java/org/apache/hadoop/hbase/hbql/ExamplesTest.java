@@ -61,7 +61,7 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: define-schema1
 
         // START SNIPPET: define-schema2
-        SchemaManager.execute("define schema schema1 FOR TABLE foo (keyval key, family1:val1 string alias val2)");
+        SchemaManager.execute("DEFINE SCHEMA schema1 FOR TABLE foo (keyval key, family1:val1 STRING ALIAS val2)");
         // END SNIPPET: define-schema2
 
     }

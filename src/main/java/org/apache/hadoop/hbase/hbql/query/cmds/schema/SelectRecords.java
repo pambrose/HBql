@@ -10,4 +10,8 @@ public class SelectRecords implements ShellCommand {
     public SelectRecords(final QueryArgs queryArgs) {
         this.queryArgs = queryArgs;
     }
+
+    public QueryArgs getQueryArgs() {
+        return this.queryArgs;
+    }
 }
