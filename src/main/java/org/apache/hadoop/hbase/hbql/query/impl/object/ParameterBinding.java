@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.hbql.query.impl.object;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
 
 import java.util.Map;
 

@@ -1,19 +1,19 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ByteValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.CharValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ObjectValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.ByteValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.CharValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.DoubleValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.FloatValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.IntegerValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.LongValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.ObjectValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.ShortValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.StringValue;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.lang.reflect.Field;

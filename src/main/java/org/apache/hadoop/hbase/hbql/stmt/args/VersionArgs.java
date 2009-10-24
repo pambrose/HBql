@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.stmt.args;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
 import java.io.IOException;
 

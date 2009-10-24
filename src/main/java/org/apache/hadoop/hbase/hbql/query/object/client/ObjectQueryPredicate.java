@@ -3,10 +3,10 @@ package org.apache.hadoop.hbase.hbql.query.object.client;
 import com.google.common.base.Predicate;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.impl.object.ParameterBinding;
 import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
 
 public class ObjectQueryPredicate<T> extends ParameterBinding implements Predicate<T> {
 

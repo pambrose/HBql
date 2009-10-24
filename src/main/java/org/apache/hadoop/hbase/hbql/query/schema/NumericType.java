@@ -1,12 +1,12 @@
 package org.apache.hadoop.hbase.hbql.query.schema;
 
-import org.apache.hadoop.hbase.hbql.query.expr.node.DoubleValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.FloatValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.IntegerValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.LongValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.ShortValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.DoubleValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.FloatValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.IntegerValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.LongValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.ShortValue;
 
 public enum NumericType {
 

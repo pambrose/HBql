@@ -8,13 +8,13 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.stmt.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.stmt.SchemaManagerStatement;
 import org.apache.hadoop.hbase.hbql.stmt.ShellStatement;
 import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
 import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
 

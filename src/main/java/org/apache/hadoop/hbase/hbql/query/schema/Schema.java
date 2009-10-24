@@ -3,12 +3,12 @@ package org.apache.hadoop.hbase.hbql.query.schema;
 import org.antlr.runtime.RecognitionException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import org.apache.hadoop.hbase.hbql.query.util.Sets;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBqlParser;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
 
 import java.io.Serializable;
 import java.util.Collection;

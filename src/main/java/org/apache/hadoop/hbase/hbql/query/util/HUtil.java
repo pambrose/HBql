@@ -2,13 +2,13 @@ package org.apache.hadoop.hbase.hbql.query.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.BooleanValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.DateValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.NumberValue;
-import org.apache.hadoop.hbase.hbql.query.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 import org.apache.hadoop.hbase.hbql.query.schema.NumericType;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.DateValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.StringValue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;

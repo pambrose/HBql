@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.stmt.args;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
 public class LimitArgs extends SelectArgs {
 
