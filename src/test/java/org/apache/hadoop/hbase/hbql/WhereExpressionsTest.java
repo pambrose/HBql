@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidFunctionException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.query.stmt.select.ExprSelectElement;
+import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 
@@ -557,7 +557,7 @@ public class WhereExpressionsTest extends TestSupport {
 
         assertTypeAndValue("5.0+ FLOAT('4.0') + LONG('5')", Double.class, 14.0);
 
-        ExprSelectElement elem = parseSelectElement(":a + :b");
+        ExprElement elem = parseSelectElement(":a + :b");
 
         elem.setParameter("a", (short)2);
         elem.setParameter("b", (short)4);

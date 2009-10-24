@@ -1,7 +1,5 @@
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
-import org.apache.hadoop.hbase.hbql.query.cmds.SchemaManagerCommand;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnDescription;
@@ -10,6 +8,8 @@ import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
+import org.apache.hadoop.hbase.hbql.stmt.SchemaManagerStatement;
+import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class SchemaManager {
 
     public static HOutput execute(final String str) throws HBqlException {
 
-        final SchemaManagerCommand cmd = HBql.parseSchemaCommand(str);
+        final SchemaManagerStatement cmd = HBql.parseSchemaCommand(str);
 
         if (cmd == null)
             throw new HBqlException("Error parsing: " + str);

@@ -5,14 +5,14 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
-import org.apache.hadoop.hbase.hbql.query.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
-import org.apache.hadoop.hbase.hbql.query.stmt.select.ExprSelectElement;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
+import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
+import org.apache.hadoop.hbase.hbql.stmt.antlr.HBqlParser;
+import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
+import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
 
 import java.util.List;
 
@@ -46,11 +46,11 @@ public class TestSupport {
         assertTrue(evaluateExprTree(recordObj, expr));
     }
 
-    public static ExprSelectElement parseSelectElement(final String str) throws HBqlException {
+    public static ExprElement parseSelectElement(final String str) throws HBqlException {
         return HBql.parseSelectElement(str);
     }
 
-    public static void assertTypeAndValue(final ExprSelectElement expr, final Class clazz, final Object val) throws HBqlException {
+    public static void assertTypeAndValue(final ExprElement expr, final Class clazz, final Object val) throws HBqlException {
         final Object obj = HBql.evaluateSelectElement(expr);
         System.out.println(expr.asString() + " returned value " + obj
                            + " expecting value " + val
@@ -60,7 +60,7 @@ public class TestSupport {
     }
 
     public static void assertTypeAndValue(final String str, final Class clazz, final Object val) throws HBqlException {
-        ExprSelectElement expr = parseSelectElement(str);
+        ExprElement expr = parseSelectElement(str);
         assertTypeAndValue(expr, clazz, val);
     }
 

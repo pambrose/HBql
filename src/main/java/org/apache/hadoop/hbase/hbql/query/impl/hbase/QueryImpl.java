@@ -5,14 +5,14 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HQueryListener;
 import org.apache.hadoop.hbase.hbql.client.HResults;
-import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.SelectStmt;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
-import org.apache.hadoop.hbase.hbql.query.stmt.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.query.util.Sets;
+import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
+import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
+import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
+import org.apache.hadoop.hbase.hbql.stmt.select.RowRequest;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,7 +22,7 @@ public class QueryImpl<T> implements HQuery<T> {
 
     private final HConnection connection;
     private final String query;
-    private final SelectStmt selectStmt;
+    private final SelectStatement selectStatement;
 
     private List<HQueryListener<T>> listeners = null;
 
@@ -30,9 +30,9 @@ public class QueryImpl<T> implements HQuery<T> {
 
         this.connection = connection;
         this.query = query;
-        this.selectStmt = HBql.parseSelectStmt(this.getConnection(), this.getQuery());
+        this.selectStatement = HBql.parseSelectStatement(this.getConnection(), this.getQuery());
 
-        this.getQueryArgs().getWhereArgs().setSchema(this.getQueryArgs().getSchema());
+        this.getSelectStatement().getWhereArgs().setSchema(this.getSelectStatement().getSchema());
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {
@@ -50,17 +50,17 @@ public class QueryImpl<T> implements HQuery<T> {
         return this.query;
     }
 
-    public SelectStmt getQueryArgs() {
-        return this.selectStmt;
+    public SelectStatement getSelectStatement() {
+        return this.selectStatement;
     }
 
     public List<RowRequest> getRowRequestList() throws HBqlException, IOException {
 
-        final WhereArgs where = this.getQueryArgs().getWhereArgs();
+        final WhereArgs where = this.getSelectStatement().getWhereArgs();
 
         // Get list of all columns that are used in select list and expr tree
         final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
-        allAttribs.addAll(this.getQueryArgs().getSelectAttribList());
+        allAttribs.addAll(this.getSelectStatement().getSelectAttribList());
         allAttribs.addAll(where.getAllColumnsUsedInExprs());
 
         return where.getRowRequestList(allAttribs);
@@ -71,7 +71,7 @@ public class QueryImpl<T> implements HQuery<T> {
     }
 
     public void setParameter(final String name, final Object val) throws HBqlException {
-        int cnt = this.getQueryArgs().setParameter(name, val);
+        int cnt = this.getSelectStatement().setParameter(name, val);
         if (cnt == 0)
             throw new HBqlException("Parameter name " + name + " does not exist in " + this.getQuery());
     }

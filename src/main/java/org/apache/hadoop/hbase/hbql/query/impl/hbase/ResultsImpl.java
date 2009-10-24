@@ -11,10 +11,10 @@ import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.SelectStmt;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
-import org.apache.hadoop.hbase.hbql.query.stmt.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
+import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
+import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
+import org.apache.hadoop.hbase.hbql.stmt.select.RowRequest;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -41,12 +41,12 @@ public class ResultsImpl<T> implements HResults<T> {
         return this.scannerList;
     }
 
-    private SelectStmt getQueryArgs() {
-        return this.getHQuery().getQueryArgs();
+    private SelectStatement getSelectStatement() {
+        return this.getHQuery().getSelectStatement();
     }
 
     private WhereArgs getWhereArgs() {
-        return this.getQueryArgs().getWhereArgs();
+        return this.getSelectStatement().getWhereArgs();
     }
 
     private List<HQueryListener<T>> getListeners() {
@@ -84,7 +84,7 @@ public class ResultsImpl<T> implements HResults<T> {
         try {
             return new ResultsIterator<T>() {
 
-                final HTable table = getConnection().getHTable(getQueryArgs().getSchema().getTableName());
+                final HTable table = getConnection().getHTable(getSelectStatement().getSchema().getTableName());
                 final ExprTree clientExprTree = getWhereArgs().getClientExprTree();
                 final Iterator<RowRequest> rowRequestIter = getRowRequestList().iterator();
 
@@ -171,9 +171,9 @@ public class ResultsImpl<T> implements HResults<T> {
 
                                     this.recordCount++;
 
-                                    final HBaseSchema schema = getQueryArgs().getSchema();
-                                    final T val = (T)schema.newObject(getQueryArgs().getSelectAttribList(),
-                                                                      getQueryArgs().getSelectElementList(),
+                                    final HBaseSchema schema = getSelectStatement().getSchema();
+                                    final T val = (T)schema.newObject(getSelectStatement().getSelectAttribList(),
+                                                                      getSelectStatement().getSelectElementList(),
                                                                       this.maxVersions,
                                                                       result);
 

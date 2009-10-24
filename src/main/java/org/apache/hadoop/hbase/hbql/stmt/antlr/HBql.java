@@ -1,0 +1,123 @@
+package org.apache.hadoop.hbase.hbql.stmt.antlr;
+
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.Lexer;
+import org.antlr.runtime.RecognitionException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
+import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
+import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.query.schema.Schema;
+import org.apache.hadoop.hbase.hbql.stmt.ConnectionStatement;
+import org.apache.hadoop.hbase.hbql.stmt.SchemaManagerStatement;
+import org.apache.hadoop.hbase.hbql.stmt.ShellStatement;
+import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
+import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
+import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
+
+public class HBql {
+
+    public static HBqlParser newParser(final String str) {
+        System.out.println("Parsing: " + str);
+        final Lexer lex = new HBqlLexer(new ANTLRStringStream(str));
+        final CommonTokenStream tokens = new CommonTokenStream(lex);
+        return new HBqlParser(tokens);
+    }
+
+    public static ExprTree parseWhereExpression(final String str, final Schema schema) throws HBqlException {
+        try {
+            return schema.getExprTree(str);
+        }
+        catch (RecognitionException e) {
+            e.printStackTrace();
+            throw new HBqlException("Error parsing: " + str);
+        }
+    }
+
+    public static Object parseExpression(final String str) throws HBqlException {
+        try {
+            final HBqlParser parser = newParser(str);
+            final GenericValue valueExpr = parser.topExpr();
+            valueExpr.validateTypes(null, false);
+            return valueExpr.getValue(null);
+        }
+        catch (ResultMissingColumnException e) {
+            // No column refes to be missing
+            throw new InternalErrorException(e.getMessage());
+        }
+        catch (RecognitionException e) {
+            e.printStackTrace();
+            throw new HBqlException("Error parsing: " + str);
+        }
+    }
+
+    public static ExprElement parseSelectElement(final String str) throws HBqlException {
+        try {
+            final HBqlParser parser = newParser(str);
+            final ExprElement elem = (ExprElement)parser.selectElem();
+            elem.setSchema(null);
+            return elem;
+        }
+        catch (RecognitionException e) {
+            e.printStackTrace();
+            throw new HBqlException("Error parsing: " + str);
+        }
+    }
+
+    public static Object evaluateSelectElement(final ExprElement elem) throws HBqlException {
+        return elem.getValue(null);
+    }
+
+    public static WhereArgs parseWithClause(final String str) throws HBqlException {
+        try {
+            final HBqlParser parser = newParser(str);
+            return parser.whereValue();
+        }
+        catch (RecognitionException e) {
+            e.printStackTrace();
+            throw new HBqlException("Error parsing: " + str);
+        }
+    }
+
+    private static ShellStatement parse(final String str) throws HBqlException {
+        try {
+            final HBqlParser parser = newParser(str);
+            return parser.commandStmt();
+        }
+        catch (RecognitionException e) {
+            e.printStackTrace();
+            throw new HBqlException("Error parsing: " + str);
+        }
+    }
+
+    public static SchemaManagerStatement parseSchemaCommand(final String str) throws HBqlException {
+        final ShellStatement statement = parse(str);
+        if (statement instanceof SchemaManagerStatement)
+            return (SchemaManagerStatement)statement;
+        else
+            throw new HBqlException("Expecting a schema manager command");
+    }
+
+    public static ConnectionStatement parseCommand(final String str) throws HBqlException {
+        final ShellStatement statement = parse(str);
+        if (statement instanceof ConnectionStatement)
+            return (ConnectionStatement)statement;
+        else
+            throw new HBqlException("Expecting a connection command");
+    }
+
+    public static SelectStatement parseSelectStatement(final HConnection connection, final String str) throws HBqlException {
+        final ShellStatement statement = parse(str);
+        if (statement instanceof SelectStatement) {
+            final SelectStatement args = (SelectStatement)statement;
+            args.validate(connection);
+            return args;
+        }
+        else {
+            throw new HBqlException("Expecting a select stmt");
+        }
+    }
+}

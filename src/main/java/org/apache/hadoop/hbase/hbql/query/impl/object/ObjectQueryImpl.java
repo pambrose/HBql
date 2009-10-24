@@ -1,13 +1,13 @@
 package org.apache.hadoop.hbase.hbql.query.impl.object;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQuery;
 import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQueryListener;
 import org.apache.hadoop.hbase.hbql.query.object.client.ObjectResults;
 import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
+import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
 
 import java.util.Collection;
 import java.util.List;
