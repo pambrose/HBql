@@ -1,15 +1,15 @@
     -----
-    DEFINE SCHEMA
+    CREATE SCHEMA
     -----
     -----
 
 
-DEFINE SCHEMA
+CREATE SCHEMA
 
 *Syntax
 
 ---------------------------
-DEFINE SCHEMA schema_name [FOR TABLE table_name] '(' attrib, ... ')'
+CREATE SCHEMA schema_name [FOR TABLE table_name] '(' attrib, ... ')'
 
 attrib:
     key_description
@@ -84,12 +84,12 @@ type:
 
 *Examples
 
-%{snippet|id=define-schema1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-schema1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
 
-%{snippet|id=define-schema2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-schema2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
 
-%{snippet|id=define-schema3|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-schema3|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
 
-%{snippet|id=define-schema4|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-schema4|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
 
 

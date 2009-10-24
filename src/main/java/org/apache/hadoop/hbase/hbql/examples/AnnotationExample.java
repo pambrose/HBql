@@ -126,7 +126,7 @@ public class AnnotationExample {
         */
 
         if (!conn.tableExists("TestObject")) {
-            System.out.println(conn.execute("create table using TestObject"));
+            System.out.println(conn.execute("create table with schema TestObject"));
 
             final HBatch batch = new HBatch();
             for (int i = 0; i < 10; i++)

@@ -1,14 +1,14 @@
     -----
-    SHOW TABLES
+    LIST TABLES
     -----
     -----
 
-SHOW TABLES
+LIST TABLES
 
 *Syntax
 
 ---------------------------
-SHOW TABLES
+LIST TABLES
 ---------------------------
 
 *Description
@@ -17,4 +17,4 @@ SHOW TABLES
 
 *Example
 
-%{snippet|id=show-tables|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=list-tables|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

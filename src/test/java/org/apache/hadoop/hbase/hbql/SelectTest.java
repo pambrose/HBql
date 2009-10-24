@@ -35,7 +35,7 @@ public class SelectTest extends TestSupport {
     @BeforeClass
     public static void onetimeSetup() throws HBqlException, IOException {
 
-        SchemaManager.execute("define schema tab1 FOR TABLE table1"
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                               + "("
                               + "keyval key, "
                               + "f1:val1 string alias val1, "
@@ -54,7 +54,7 @@ public class SelectTest extends TestSupport {
         conn = HConnectionManager.newHConnection();
 
         if (!conn.tableExists("table1"))
-            System.out.println(conn.execute("create table using tab1"));
+            System.out.println(conn.execute("create table with schema tab1"));
         else {
             System.out.println(conn.execute("delete from tab1"));
             //System.out.println(conn.execute("disable table table1"));
@@ -300,7 +300,7 @@ public class SelectTest extends TestSupport {
 
         SchemaManager.execute("drop schema tab1");
 
-        SchemaManager.execute("define schema tab1 FOR TABLE table1"
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                               + "("
                               + "keyval key, "
                               //  + "f1:val1 string alias val1, "
@@ -352,7 +352,7 @@ public class SelectTest extends TestSupport {
 
         SchemaManager.execute("drop schema tab1");
 
-        SchemaManager.execute("define schema tab1 FOR TABLE table1"
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                               + "("
                               + "keyval key, "
                               + "f1:* alias f1default "
@@ -378,7 +378,7 @@ public class SelectTest extends TestSupport {
 
         SchemaManager.execute("drop schema tab1");
 
-        SchemaManager.execute("define schema tab1 FOR TABLE table1"
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                               + "("
                               + "keyval key, "
                               + "f1:* alias f1default "
@@ -409,7 +409,7 @@ public class SelectTest extends TestSupport {
 
         SchemaManager.execute("drop schema tab1");
 
-        SchemaManager.execute("define schema tab1 FOR TABLE table1"
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                               + "("
                               + "keyval key, "
                               + "f1:* alias f1default "
@@ -435,7 +435,7 @@ public class SelectTest extends TestSupport {
 
         SchemaManager.execute("drop schema tab1");
 
-        SchemaManager.execute("define schema tab1 FOR TABLE table1"
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                               + "("
                               + "keyval key, "
                               + "f1:* alias f1default "
@@ -462,7 +462,7 @@ public class SelectTest extends TestSupport {
     public void selectUnknownMapExpressions() throws HBqlException, IOException {
 
         SchemaManager.execute("drop schema table1");
-        SchemaManager.execute("define schema table1"
+        SchemaManager.execute("CREATE SCHEMA table1"
                               + "("
                               + "keyval key, "
                               + "f3:* alias f1default "
@@ -498,7 +498,7 @@ public class SelectTest extends TestSupport {
     public void selectUnnamedExpressions() throws HBqlException, IOException {
 
         SchemaManager.execute("drop schema tab1");
-        SchemaManager.execute("define schema tab1 FOR TABLE table1"
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                               + "("
                               + "keyval key, "
                               + "f1:val1 string alias val1, "
@@ -530,7 +530,7 @@ public class SelectTest extends TestSupport {
 
         SchemaManager.execute("drop schema tab1");
 
-        SchemaManager.execute("define schema tab1 FOR TABLE table1"
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                               + "("
                               + "keyval key, "
                               + "f1:val1 string alias val1, "
@@ -568,7 +568,7 @@ public class SelectTest extends TestSupport {
     public void selectDefaults() throws HBqlException, IOException {
 
         SchemaManager.execute("drop schema tab1");
-        SchemaManager.execute("define schema tab1 FOR TABLE table1"
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                               + "("
                               + "keyval key, "
                               + "f1:val1 string alias val1, "
@@ -605,7 +605,7 @@ public class SelectTest extends TestSupport {
         SchemaManager.execute("drop schema tab1");
         Exception caughtException = null;
         try {
-            SchemaManager.execute("define schema tab1 FOR TABLE table1"
+            SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                                   + "("
                                   + "keyval key, "
                                   + "f1:val10 string alias val10 default 4"
@@ -625,7 +625,7 @@ public class SelectTest extends TestSupport {
         SchemaManager.execute("drop schema tab1");
         Exception caughtException = null;
         try {
-            SchemaManager.execute("define schema tab1 FOR TABLE table1"
+            SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                                   + "("
                                   + "keyval key, "
                                   + "f1:val10 object alias val10 default 'test default'"

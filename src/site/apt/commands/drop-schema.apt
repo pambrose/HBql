@@ -15,7 +15,7 @@ DROP SCHEMA schema_name
 
 *Description
 
-    Drops named table.
+    Drops named schema.
 
 *Example
 

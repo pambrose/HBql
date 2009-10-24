@@ -1,0 +1,20 @@
+    -----
+    DELETE
+    -----
+    -----
+
+DELETE
+
+*Syntax
+
+---------------------------
+DELETE
+---------------------------
+
+*Description
+
+    Delete records for the given WITH clause.
+
+*Example
+
+%{snippet|id=delete1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

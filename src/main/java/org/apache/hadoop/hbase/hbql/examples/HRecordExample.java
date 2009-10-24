@@ -18,7 +18,7 @@ public class HRecordExample {
 
     public static void main(String[] args) throws IOException, HBqlException {
 
-        SchemaManager.execute("define schema testobjects alias testobjects2"
+        SchemaManager.execute("CREATE SCHEMA testobjects alias testobjects2"
                               + "("
                               + "keyval key, "
                               + "family1:author string alias author, "
@@ -35,10 +35,10 @@ public class HRecordExample {
         // System.out.println(conn.execute("enable table testobjects"));
         // System.out.println(conn.execute("drop table testobjects"));
 
-        System.out.println(conn.execute("show tables"));
+        System.out.println(conn.execute("LIST TABLES"));
 
         if (!conn.tableExists("testobjects")) {
-            System.out.println(conn.execute("create table using testobjects"));
+            System.out.println(conn.execute("create table with schema testobjects"));
 
             final HBatch batch = new HBatch();
             for (int i = 0; i < 10; i++) {

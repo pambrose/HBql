@@ -1,0 +1,21 @@
+    -----
+    CREATE TABLE
+    -----
+    -----
+
+
+CREATE TABLE
+
+*Syntax
+
+---------------------------
+CREATE TABLE USING SCHEMA schema_name
+---------------------------
+
+*Description
+
+    Creates table with the name and families indicated in named schema.
+
+*Example
+
+%{snippet|id=create-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

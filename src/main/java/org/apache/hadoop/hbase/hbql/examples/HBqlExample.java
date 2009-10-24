@@ -21,7 +21,7 @@ public class HBqlExample {
         final byte[] author = Bytes.toBytes("author");
         final byte[] title = Bytes.toBytes("title");
 
-        SchemaManager.execute("define schema testobjects alias testobjects2"
+        SchemaManager.execute("CREATE SCHEMA testobjects alias testobjects2"
                               + "("
                               + "keyval key, "
                               + "family1:author string alias author, "

@@ -1,0 +1,20 @@
+    -----
+    SELECT
+    -----
+    -----
+
+SELECT
+
+*Syntax
+
+---------------------------
+SELECT
+---------------------------
+
+*Description
+
+    Returns the requested values for the given WITH clause.
+
+*Example
+
+%{snippet|id=select1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

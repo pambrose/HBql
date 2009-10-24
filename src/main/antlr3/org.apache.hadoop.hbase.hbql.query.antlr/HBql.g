@@ -67,13 +67,14 @@ import org.apache.hadoop.hbase.hbql.query.util.*;
 
 commandStmt returns [ShellCommand retval]
 options {backtrack=true;}	
-	: keySHOW keyTABLES 		 		{retval = new ShowTables();}
-	| keyDROP keyTABLE t=simpleName 		{retval = new DropTable($t.text);}
-	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTable($t.text);}
-	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTable($t.text);}
+	: keyLIST keyTABLES 		 		{retval = new ShowTables();}
 	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTable($t.text);}
-	| keyCREATE keyTABLE keyUSING t=simpleName 	{retval = new CreateTable($t.text);}
-	| keyDEFINE keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
+	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTable($t.text);}
+	| keyDROP keyTABLE t=simpleName 		{retval = new DropTable($t.text);}
+	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTable($t.text);}
+	| keyCREATE keyTABLE keyUSING keySCHEMA t=simpleName 	
+							{retval = new CreateTable($t.text);}
+	| keyCREATE keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
 							{retval = new DefineSchema($t.text, $a.text, $l.retval);}
 	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchema($t.text);}
 	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteRecords($t.text, $w.retval);}
@@ -349,10 +350,8 @@ WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();} ;
 keySELECT 	: {isKeyword(input, "SELECT")}? ID;
 keyDELETE 	: {isKeyword(input, "DELETE")}? ID;
 keyCREATE 	: {isKeyword(input, "CREATE")}? ID;
-keyDEFINE 	: {isKeyword(input, "DEFINE")}? ID;
-keyUSING 	: {isKeyword(input, "USING")}? ID;
 keyDESCRIBE 	: {isKeyword(input, "DESCRIBE")}? ID;
-keySHOW 	: {isKeyword(input, "SHOW")}? ID;
+keyLIST 	: {isKeyword(input, "LIST")}? ID;
 keyENABLE 	: {isKeyword(input, "ENABLE")}? ID;
 keyDISABLE 	: {isKeyword(input, "DISABLE")}? ID;
 keyDROP 	: {isKeyword(input, "DROP")}? ID;
@@ -360,6 +359,7 @@ keyTABLE 	: {isKeyword(input, "TABLE")}? ID;
 keySCHEMA 	: {isKeyword(input, "SCHEMA")}? ID;
 keyTABLES 	: {isKeyword(input, "TABLES")}? ID;
 keyWHERE	: {isKeyword(input, "WHERE")}? ID;
+keyUSING	: {isKeyword(input, "USING")}? ID;
 keyWITH		: {isKeyword(input, "WITH")}? ID;
 keyFILTER	: {isKeyword(input, "FILTER")}? ID;
 keyFROM 	: {isKeyword(input, "FROM")}? ID;

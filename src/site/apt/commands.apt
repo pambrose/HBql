@@ -10,20 +10,25 @@ HBql Commands
     * The command keywords are case insensitive.
     
 
-*{{{commands/define-schema.html}DEFINE SCHEMA}}  Create a schema.
+*{{{commands/create-schema.html}CREATE SCHEMA}}
 
-*{{{commands/drop-schema.html}DROP SCHEMA}}  Drop a schema.
+*{{{commands/create-table.html}CREATE TABLE}}
 
-*{{{commands/show-tables.html}SHOW TABLES}}  Displays all enabled table names.
+*{{{commands/disable-table.html}DISABLE TABLE}}
 
-*{{{commands/describe-table.html}DESCRIBE TABLE}}  Describes named table.
+*{{{commands/delete.html}DELETE}}
 
-*{{{commands/enable-table.html}ENABLE TABLE}}  Enables named table.
+*{{{commands/describe-table.html}DESCRIBE TABLE}}
 
-*{{{commands/disable-table.html}DISABLE TABLE}}  Disables named table (required before dropping a table).
+*{{{commands/drop-schema.html}DROP SCHEMA}}
 
-*{{{commands/drop-table.html}DROP TABLE}}  Drops named table.
+*{{{commands/drop-table.html}DROP TABLE}}
 
-*{{{commands/show-tables.html}SELECT}}  Displays all enabled table names.
+*{{{commands/enable-table.html}ENABLE TABLE}}
+
+*{{{commands/list-tables.html}LIST TABLES}}
+
+*{{{commands/select.html}SELECT}}
+
 
 

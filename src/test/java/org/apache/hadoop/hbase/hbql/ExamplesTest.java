@@ -12,10 +12,10 @@ public class ExamplesTest extends TestSupport {
 
     public void showTable() throws HBqlException, IOException {
 
-        // START SNIPPET: show-tables
+        // START SNIPPET: list-tables
         HConnection conn = HConnectionManager.newHConnection();
-        System.out.println(conn.execute("SHOW TABLES"));
-        // END SNIPPET: show-tables
+        System.out.println(conn.execute("LIST TABLES"));
+        // END SNIPPET: list-tables
     }
 
     public void describeTable() throws HBqlException, IOException {
@@ -47,43 +47,61 @@ public class ExamplesTest extends TestSupport {
 
     public void dropSchema() throws HBqlException, IOException {
 
-        // START SNIPPET: drop_schema
+        // START SNIPPET: drop-schema
         System.out.println(SchemaManager.execute("DROP SCHEMA foo_schema"));
-        // END SNIPPET: drop_schema
+        // END SNIPPET: drop-schema
+
+    }
+
+    public void createTable() throws HBqlException, IOException {
+
+        // START SNIPPET: create-table
+        HConnection conn = HConnectionManager.newHConnection();
+        System.out.println(conn.execute("CREATE TABLE USING SCHEMA foo_schema"));
+        // END SNIPPET: create-table
+
+    }
+
+    public void dropTable() throws HBqlException, IOException {
+
+        // START SNIPPET: drop-table
+        HConnection conn = HConnectionManager.newHConnection();
+        System.out.println(conn.execute("DROP TABLE foo"));
+        // END SNIPPET: drop-table
 
     }
 
 
-    public void defineSchema() throws HBqlException, IOException {
+    public void createSchema() throws HBqlException, IOException {
 
-        // START SNIPPET: define-schema1
+        // START SNIPPET: create-schema1
         // Schema named foo that corresponds to table foo.
-        SchemaManager.execute("DEFINE SCHEMA foo (keyval key, family1:val1 STRING)");
-        // END SNIPPET: define-schema1
+        SchemaManager.execute("CREATE SCHEMA foo (keyval key, family1:val1 STRING)");
+        // END SNIPPET: create-schema1
 
-        // START SNIPPET: define-schema2
+        // START SNIPPET: create-schema2
         // Schema named schema1 that corresponds to table foo.
-        SchemaManager.execute("DEFINE SCHEMA schema1 FOR TABLE foo (keyval key, family1:val1 STRING ALIAS val2)");
-        // END SNIPPET: define-schema2
+        SchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo (keyval key, family1:val1 STRING ALIAS val2)");
+        // END SNIPPET: create-schema2
 
-        // START SNIPPET: define-schema3
+        // START SNIPPET: create-schema3
         // A column with a default value.
-        SchemaManager.execute("DEFINE SCHEMA schema1 FOR TABLE foo "
+        SchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo "
                               + "("
                               + "keyval key, "
                               + "family1:val1 STRING ALIAS val2 DEFAULT 'this is a default value'"
                               + ")");
-        // END SNIPPET: define-schema3
+        // END SNIPPET: create-schema3
 
-        // START SNIPPET: define-schema4
+        // START SNIPPET: create-schema4
         // A schema with a family default attribute.
-        SchemaManager.execute("DEFINE SCHEMA schema1 FOR TABLE foo "
+        SchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo "
                               + "("
                               + "keyval key, "
                               + "family1:val1 STRING ALIAS val2, "
                               + "family1:* ALIAS family1_default"
                               + ")");
-        // END SNIPPET: define-schema4
+        // END SNIPPET: create-schema4
 
     }
 }

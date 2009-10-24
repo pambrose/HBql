@@ -1,0 +1,21 @@
+    -----
+    DROP TABLE
+    -----
+    -----
+
+
+DROP TABLE
+
+*Syntax
+
+---------------------------
+DROP TABLE table_name   
+---------------------------
+
+*Description
+
+    Drops named table (requires {{{disable-table.html}disabling}} the table first).
+
+*Example
+
+%{snippet|id=drop-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

@@ -14,7 +14,7 @@ DISABLE TABLE table_name
 
 *Description
 
-    Disables named table (required before dropping a table).
+    Disables named table (required before {{{drop-table.html}dropping}} a table).
 
 *Example
 
