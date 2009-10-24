@@ -5,14 +5,14 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.query.schema.Schema;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.stmt.expr.var.GenericColumn;
+import org.apache.hadoop.hbase.hbql.stmt.schema.Schema;
 import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
 import java.util.List;
 

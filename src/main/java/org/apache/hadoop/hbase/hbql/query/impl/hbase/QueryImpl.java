@@ -5,14 +5,14 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HQueryListener;
 import org.apache.hadoop.hbase.hbql.client.HResults;
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
-import org.apache.hadoop.hbase.hbql.query.util.Sets;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.DateLiteral;
+import org.apache.hadoop.hbase.hbql.stmt.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
 import org.apache.hadoop.hbase.hbql.stmt.select.RowRequest;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
+import org.apache.hadoop.hbase.hbql.stmt.util.Sets;
 
 import java.io.IOException;
 import java.util.List;

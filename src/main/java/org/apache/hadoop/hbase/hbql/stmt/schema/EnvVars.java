@@ -1,7 +1,7 @@
-package org.apache.hadoop.hbase.hbql.query.schema;
+package org.apache.hadoop.hbase.hbql.stmt.schema;
 
 
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
 import java.util.Arrays;
 import java.util.List;

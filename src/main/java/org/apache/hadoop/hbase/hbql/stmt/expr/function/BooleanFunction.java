@@ -3,13 +3,13 @@ package org.apache.hadoop.hbase.hbql.stmt.expr.function;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.stmt.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.var.DelegateColumn;
+import org.apache.hadoop.hbase.hbql.stmt.schema.Schema;
 
 import java.util.List;
 

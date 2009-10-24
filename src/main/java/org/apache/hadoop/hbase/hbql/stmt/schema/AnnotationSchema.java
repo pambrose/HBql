@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.schema;
+package org.apache.hadoop.hbase.hbql.stmt.schema;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
@@ -7,9 +7,9 @@ import org.apache.hadoop.hbase.hbql.client.HColumn;
 import org.apache.hadoop.hbase.hbql.client.HColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HFamily;
 import org.apache.hadoop.hbase.hbql.client.HTable;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
-import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import org.apache.hadoop.hbase.hbql.stmt.select.SelectElement;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
+import org.apache.hadoop.hbase.hbql.stmt.util.Maps;
 
 import java.io.File;
 import java.io.IOException;

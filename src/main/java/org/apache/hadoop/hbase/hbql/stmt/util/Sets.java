@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.util;
+package org.apache.hadoop.hbase.hbql.stmt.util;
 
 import java.util.Arrays;
 import java.util.HashSet;

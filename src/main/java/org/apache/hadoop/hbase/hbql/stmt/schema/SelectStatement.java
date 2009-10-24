@@ -2,12 +2,11 @@ package org.apache.hadoop.hbase.hbql.stmt.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
-import org.apache.hadoop.hbase.hbql.query.util.Sets;
 import org.apache.hadoop.hbase.hbql.stmt.SchemaStatement;
 import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.stmt.select.SelectElement;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
+import org.apache.hadoop.hbase.hbql.stmt.util.Sets;
 
 import java.util.List;
 import java.util.Set;

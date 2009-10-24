@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.stmt.select;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.stmt.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
 
 import java.util.List;

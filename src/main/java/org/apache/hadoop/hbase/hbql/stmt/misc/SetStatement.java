@@ -3,8 +3,8 @@ package org.apache.hadoop.hbase.hbql.stmt.misc;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
-import org.apache.hadoop.hbase.hbql.query.schema.EnvVars;
 import org.apache.hadoop.hbase.hbql.stmt.ConnectionStatement;
+import org.apache.hadoop.hbase.hbql.stmt.schema.EnvVars;
 
 import java.io.IOException;
 

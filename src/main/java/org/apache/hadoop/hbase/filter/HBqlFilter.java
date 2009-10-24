@@ -26,12 +26,12 @@ import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
-import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.stmt.schema.DefinedSchema;
+import org.apache.hadoop.hbase.hbql.stmt.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.stmt.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.ByteArrayInputStream;

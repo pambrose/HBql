@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.stmt;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.stmt.schema.HBaseSchema;
 
 public abstract class SchemaStatement implements ShellStatement {
 

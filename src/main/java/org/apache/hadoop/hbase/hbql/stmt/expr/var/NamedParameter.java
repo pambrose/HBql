@@ -3,8 +3,6 @@ package org.apache.hadoop.hbase.hbql.stmt.expr.var;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.util.HUtil;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.stmt.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.DateLiteral;
@@ -16,6 +14,8 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.literal.ShortLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.StringNullLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
 import java.util.Collection;
 import java.util.Date;

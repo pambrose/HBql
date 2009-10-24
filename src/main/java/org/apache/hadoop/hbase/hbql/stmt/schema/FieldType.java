@@ -1,7 +1,6 @@
-package org.apache.hadoop.hbase.hbql.query.schema;
+package org.apache.hadoop.hbase.hbql.stmt.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.ByteValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.CharValue;
@@ -14,6 +13,7 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.ObjectValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.lang.reflect.Field;

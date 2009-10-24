@@ -2,8 +2,8 @@ package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
-import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
+import org.apache.hadoop.hbase.hbql.stmt.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 

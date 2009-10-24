@@ -10,8 +10,8 @@ import org.apache.hadoop.hbase.hbql.client.HFamily;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.HTable;
-import org.apache.hadoop.hbase.hbql.query.util.HUtil;
-import org.apache.hadoop.hbase.hbql.query.util.Maps;
+import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
+import org.apache.hadoop.hbase.hbql.stmt.util.Maps;
 
 import java.io.IOException;
 import java.util.Date;

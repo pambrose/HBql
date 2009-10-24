@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
+import org.apache.hadoop.hbase.hbql.stmt.schema.DefinedSchema;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;

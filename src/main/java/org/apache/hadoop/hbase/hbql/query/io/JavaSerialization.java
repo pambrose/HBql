@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.io;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.stmt.schema.FieldType;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -60,7 +60,6 @@ public class JavaSerialization extends Serialization {
 
                 default:
                     throw new HBqlException("Unknown type in getScalarfromBytes() " + fieldType);
-
             }
         }
         catch (IOException e) {
@@ -81,7 +80,6 @@ public class JavaSerialization extends Serialization {
                 }
             }
         }
-
     }
 
     public byte[] getScalarAsBytes(final FieldType fieldType, final Object obj) throws HBqlException {
@@ -329,5 +327,4 @@ public class JavaSerialization extends Serialization {
             throw new HBqlException("Error in getArrayasBytes() " + e.getMessage());
         }
     }
-
 }

@@ -5,9 +5,9 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HValue;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.util.Maps;
+import org.apache.hadoop.hbase.hbql.stmt.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.stmt.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.stmt.util.Maps;
 
 import java.io.Serializable;
 import java.util.Map;

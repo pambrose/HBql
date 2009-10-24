@@ -1,9 +1,9 @@
-package org.apache.hadoop.hbase.hbql.query.schema;
+package org.apache.hadoop.hbase.hbql.stmt.schema;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
 import java.lang.reflect.Method;
 import java.util.List;

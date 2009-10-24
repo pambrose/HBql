@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.impl.hbase;
 
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.util.Maps;
+import org.apache.hadoop.hbase.hbql.stmt.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.stmt.util.Maps;
 
 import java.io.Serializable;
 import java.util.Map;

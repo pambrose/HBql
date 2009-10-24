@@ -2,13 +2,13 @@ package org.apache.hadoop.hbase.hbql.stmt.expr.compare;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.stmt.expr.Operator;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
 
 public class DelegateCompare extends GenericCompare {
 

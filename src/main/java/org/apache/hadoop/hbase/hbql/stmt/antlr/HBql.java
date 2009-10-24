@@ -8,13 +8,13 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.query.schema.Schema;
 import org.apache.hadoop.hbase.hbql.stmt.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.stmt.SchemaManagerStatement;
 import org.apache.hadoop.hbase.hbql.stmt.ShellStatement;
 import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.stmt.schema.Schema;
 import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
 import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
 
@@ -93,7 +93,7 @@ public class HBql {
         }
     }
 
-    public static SchemaManagerStatement parseSchemaCommand(final String str) throws HBqlException {
+    public static SchemaManagerStatement parseSchemaManagerCommand(final String str) throws HBqlException {
         final ShellStatement statement = parse(str);
         if (statement instanceof SchemaManagerStatement)
             return (SchemaManagerStatement)statement;
@@ -101,7 +101,7 @@ public class HBql {
             throw new HBqlException("Expecting a schema manager command");
     }
 
-    public static ConnectionStatement parseCommand(final String str) throws HBqlException {
+    public static ConnectionStatement parseConnectionStatement(final String str) throws HBqlException {
         final ShellStatement statement = parse(str);
         if (statement instanceof ConnectionStatement)
             return (ConnectionStatement)statement;

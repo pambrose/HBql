@@ -1,15 +1,15 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
-import org.apache.hadoop.hbase.hbql.query.schema.AnnotationSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnDescription;
-import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.ReflectionSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.Schema;
-import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import org.apache.hadoop.hbase.hbql.stmt.SchemaManagerStatement;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
+import org.apache.hadoop.hbase.hbql.stmt.schema.AnnotationSchema;
+import org.apache.hadoop.hbase.hbql.stmt.schema.ColumnDescription;
+import org.apache.hadoop.hbase.hbql.stmt.schema.DefinedSchema;
+import org.apache.hadoop.hbase.hbql.stmt.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.stmt.schema.ReflectionSchema;
+import org.apache.hadoop.hbase.hbql.stmt.schema.Schema;
+import org.apache.hadoop.hbase.hbql.stmt.util.Maps;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class SchemaManager {
 
     public static HOutput execute(final String str) throws HBqlException {
 
-        final SchemaManagerStatement cmd = HBql.parseSchemaCommand(str);
+        final SchemaManagerStatement cmd = HBql.parseSchemaManagerCommand(str);
 
         if (cmd == null)
             throw new HBqlException("Error parsing: " + str);

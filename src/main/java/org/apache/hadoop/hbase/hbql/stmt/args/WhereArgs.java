@@ -4,12 +4,12 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
-import org.apache.hadoop.hbase.hbql.query.util.Sets;
 import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.stmt.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.stmt.select.RowRequest;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
+import org.apache.hadoop.hbase.hbql.stmt.util.Sets;
 
 import java.io.IOException;
 import java.util.Collection;

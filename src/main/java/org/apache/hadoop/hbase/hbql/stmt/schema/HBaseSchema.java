@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.schema;
+package org.apache.hadoop.hbase.hbql.stmt.schema;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
@@ -6,11 +6,11 @@ import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.query.util.HUtil;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
-import org.apache.hadoop.hbase.hbql.query.util.Maps;
 import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.stmt.select.SelectElement;
+import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
+import org.apache.hadoop.hbase.hbql.stmt.util.Maps;
 
 import java.util.List;
 import java.util.Map;

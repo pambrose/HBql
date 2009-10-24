@@ -3,12 +3,12 @@ package org.apache.hadoop.hbase.hbql.stmt.select;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.schema.SelectFamilyAttrib;
-import org.apache.hadoop.hbase.hbql.query.util.HUtil;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
+import org.apache.hadoop.hbase.hbql.stmt.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.stmt.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.stmt.schema.SelectFamilyAttrib;
 import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
+import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
 import java.util.Collection;
 import java.util.List;

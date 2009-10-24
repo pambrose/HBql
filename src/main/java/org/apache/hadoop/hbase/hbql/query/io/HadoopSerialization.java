@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.query.io;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.stmt.schema.FieldType;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.ByteArrayInputStream;

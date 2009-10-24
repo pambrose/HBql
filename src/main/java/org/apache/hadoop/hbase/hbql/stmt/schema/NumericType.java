@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.query.schema;
+package org.apache.hadoop.hbase.hbql.stmt.schema;
 
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.DoubleValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.FloatValue;

@@ -9,12 +9,12 @@ import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HQueryListener;
 import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
 import org.apache.hadoop.hbase.hbql.stmt.select.RowRequest;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
 import java.io.IOException;
 import java.util.Iterator;

@@ -3,9 +3,6 @@ package org.apache.hadoop.hbase.hbql.stmt.schema;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnDescription;
-import org.apache.hadoop.hbase.hbql.query.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.stmt.SchemaManagerStatement;
 import org.apache.hadoop.hbase.hbql.stmt.SchemaStatement;
 

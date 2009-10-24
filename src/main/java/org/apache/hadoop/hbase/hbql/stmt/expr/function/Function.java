@@ -4,7 +4,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.stmt.expr.GenericExpr;
 import org.apache.hadoop.hbase.hbql.stmt.expr.TypeSignature;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
@@ -17,6 +16,7 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
 
 import java.util.List;
 

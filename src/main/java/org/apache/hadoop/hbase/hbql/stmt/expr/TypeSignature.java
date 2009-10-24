@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.hbql.stmt.expr;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
-import org.apache.hadoop.hbase.hbql.query.util.Lists;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.DoubleLiteral;
@@ -21,6 +20,7 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.ShortValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;

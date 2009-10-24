@@ -1,10 +1,10 @@
 package org.apache.hadoop.hbase.hbql.stmt.expr.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.stmt.expr.ExprContext;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.stmt.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.stmt.schema.FieldType;
 
 public abstract class GenericColumn<T extends GenericValue> implements GenericValue {
 

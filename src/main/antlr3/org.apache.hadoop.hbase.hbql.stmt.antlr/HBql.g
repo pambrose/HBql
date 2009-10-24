@@ -55,14 +55,14 @@ import org.apache.hadoop.hbase.hbql.stmt.select.*;
 import org.apache.hadoop.hbase.hbql.stmt.schema.*;
 import org.apache.hadoop.hbase.hbql.stmt.table.*;
 import org.apache.hadoop.hbase.hbql.stmt.misc.*;
-import org.apache.hadoop.hbase.hbql.query.util.*;
-import org.apache.hadoop.hbase.hbql.query.schema.*;
+import org.apache.hadoop.hbase.hbql.stmt.util.*;
+import org.apache.hadoop.hbase.hbql.stmt.schema.*;
 import java.util.Date;
 }
 
 @lexer::header {
 package org.apache.hadoop.hbase.hbql.stmt.antlr;
-import org.apache.hadoop.hbase.hbql.query.util.*;
+import org.apache.hadoop.hbase.hbql.stmt.util.*;
 }
 
 commandStmt returns [ShellStatement retval]

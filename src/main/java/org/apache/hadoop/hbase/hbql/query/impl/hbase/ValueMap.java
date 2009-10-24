@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.query.impl.hbase;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HValue;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
-import org.apache.hadoop.hbase.hbql.query.util.Maps;
+import org.apache.hadoop.hbase.hbql.stmt.util.Maps;
 
 import java.util.Map;
 import java.util.NavigableMap;
