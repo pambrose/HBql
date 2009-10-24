@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.query.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.query.expr.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.SelectStmt;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -22,7 +22,7 @@ public class QueryImpl<T> implements HQuery<T> {
 
     private final HConnection connection;
     private final String query;
-    private final QueryArgs queryArgs;
+    private final SelectStmt selectStmt;
 
     private List<HQueryListener<T>> listeners = null;
 
@@ -30,7 +30,7 @@ public class QueryImpl<T> implements HQuery<T> {
 
         this.connection = connection;
         this.query = query;
-        this.queryArgs = HBql.parseSelectStmt(this.getConnection(), this.getQuery());
+        this.selectStmt = HBql.parseSelectStmt(this.getConnection(), this.getQuery());
 
         this.getQueryArgs().getWhereArgs().setSchema(this.getQueryArgs().getSchema());
     }
@@ -50,8 +50,8 @@ public class QueryImpl<T> implements HQuery<T> {
         return this.query;
     }
 
-    public QueryArgs getQueryArgs() {
-        return this.queryArgs;
+    public SelectStmt getQueryArgs() {
+        return this.selectStmt;
     }
 
     public List<RowRequest> getRowRequestList() throws HBqlException, IOException {

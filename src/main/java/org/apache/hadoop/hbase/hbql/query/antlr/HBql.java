@@ -15,7 +15,7 @@ import org.apache.hadoop.hbase.hbql.query.cmds.schema.SelectRecords;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.query.schema.Schema;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.SelectStmt;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.ExprSelectElement;
 
@@ -110,10 +110,10 @@ public class HBql {
             throw new HBqlException("Expecting a connection command");
     }
 
-    public static QueryArgs parseSelectStmt(final HConnection connection, final String str) throws HBqlException {
+    public static SelectStmt parseSelectStmt(final HConnection connection, final String str) throws HBqlException {
         final ShellCommand command = parse(str);
         if (command instanceof SelectRecords) {
-            final QueryArgs args = ((SelectRecords)command).getQueryArgs();
+            final SelectStmt args = ((SelectRecords)command).getQueryArgs();
             args.validate(connection);
             return args;
         }

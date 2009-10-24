@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.expr.ExprTree;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.SelectStmt;
 import org.apache.hadoop.hbase.hbql.query.stmt.args.WhereArgs;
 import org.apache.hadoop.hbase.hbql.query.stmt.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.query.util.Lists;
@@ -41,7 +41,7 @@ public class ResultsImpl<T> implements HResults<T> {
         return this.scannerList;
     }
 
-    private QueryArgs getQueryArgs() {
+    private SelectStmt getQueryArgs() {
         return this.getHQuery().getQueryArgs();
     }
 

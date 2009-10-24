@@ -79,29 +79,12 @@ options {backtrack=true;}
 	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchema($t.text);}
 	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteRecords($t.text, $w.retval);}
 	| keySELECT c=selectElems keyFROM t=simpleName w=whereValue?			
-							{retval = new SelectRecords(new QueryArgs($c.retval, $t.text, $w.retval));}
+							{retval = new SelectRecords(new SelectStmt($c.retval, $t.text, $w.retval));}
+	| keyINSERT keyINTO t=simpleName LPAREN e1=exprList RPAREN keyVALUES LPAREN e2=exprList RPAREN
+							{retval = new InsertRecords(new InsertStmt( $t.text,, $c.retval, $w.retval));}
 	| keySET i=simpleName EQ? v=QUOTED	 	{retval = new Set($i.text, $v.text);}
 	;						
 	
-selectElems returns [List<SelectElement> retval]
-	: STAR						{retval = FamilySelectElement.newAllFamilies();}
-	| c=selectElemList				{retval = $c.retval;}
-	;
-	
-selectElemList returns [List<SelectElement> retval]
-@init {retval = Lists.newArrayList();}
-	: c1=selectElem {retval.add($c1.retval);} (COMMA c2=selectElem {retval.add($c2.retval);})*;
-
-selectElem returns [SelectElement retval]
-options {backtrack=true; memoize=true;}	
-	: b=topExpr (keyAS i2=simpleName)?		{$selectElem.retval = ExprSelectElement.newExprElement($b.retval, $i2.text);}
-	| f=familyRef					{$selectElem.retval = FamilySelectElement.newFamilyElement($f.text);}
-	;
-
-whereValue returns [WhereArgs retval]
-@init {retval = new WhereArgs();}
-	: keyWITH selectDesc[retval]+;
-
 selectDesc[WhereArgs whereArgs] 
 	: k=keysRange					{whereArgs.setKeyRangeArgs($k.retval);}
 	| t=time					{whereArgs.setTimeRangeArgs($t.retval);}	
@@ -283,6 +266,25 @@ defineAttrib returns [ColumnDescription retval]
 	| f=familyRef (keyALIAS a=simpleName)?		{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
 	;
 
+selectElems returns [List<SelectElement> retval]
+	: STAR						{retval = FamilySelectElement.newAllFamilies();}
+	| c=selectElemList				{retval = $c.retval;}
+	;
+	
+selectElemList returns [List<SelectElement> retval]
+@init {retval = Lists.newArrayList();}
+	: c1=selectElem {retval.add($c1.retval);} (COMMA c2=selectElem {retval.add($c2.retval);})*;
+
+selectElem returns [SelectElement retval]
+options {backtrack=true; memoize=true;}	
+	: b=topExpr (keyAS i2=simpleName)?		{$selectElem.retval = ExprSelectElement.newExprElement($b.retval, $i2.text);}
+	| f=familyRef					{$selectElem.retval = FamilySelectElement.newFamilyElement($f.text);}
+	;
+
+whereValue returns [WhereArgs retval]
+@init {retval = new WhereArgs();}
+	: keyWITH selectDesc[retval]+;
+
 exprList returns [List<GenericValue> retval]
 @init {retval = Lists.newArrayList();}
 	: i1=topExpr {retval.add($i1.retval);} (COMMA i2=topExpr {retval.add($i2.retval);})*;
@@ -400,3 +402,6 @@ keyKACMAP	: {isKeyword(input, "MAPKEYSASCOLUMNS")}? ID;
 keyDEFAULT	: {isKeyword(input, "DEFAULT")}? ID;
 keyCASE		: {isKeyword(input, "CASE")}? ID;
 keyWHEN		: {isKeyword(input, "WHEN")}? ID;
+keyINSERT	: {isKeyword(input, "INSERT")}? ID;
+keyINTO		: {isKeyword(input, "INTO")}? ID;
+keyVALUES	: {isKeyword(input, "VALUES")}? ID;

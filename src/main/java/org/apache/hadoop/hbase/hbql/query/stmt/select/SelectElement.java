@@ -4,13 +4,13 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.SelectStmt;
 
 import java.util.List;
 
 public interface SelectElement {
 
-    void validate(final QueryArgs queryArgs,
+    void validate(final SelectStmt selectStmt,
                   HConnection connection,
                   List<ColumnAttrib> selectAttribList) throws HBqlException;
 

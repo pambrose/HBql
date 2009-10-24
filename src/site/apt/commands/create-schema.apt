@@ -9,7 +9,7 @@ CREATE SCHEMA
 *Syntax
 
 ---------------------------
-CREATE SCHEMA schema_name [FOR TABLE table_name] '(' attrib, ... ')'
+CREATE SCHEMA schema_name [FOR TABLE table_name] '(' attrib [, ...] ')'
 
 attrib:
     key_description
@@ -79,6 +79,9 @@ type:
     If present, it can be used interchangeably with the fully qualified column name.
     Without an alias, column descriptions are referenced as "family:column" and family
      defaults are referenced as "family:*" in the API.
+
+    * At present, schema declarations are not persistent.  Hopefully, this will change, thus
+    the CREATE/DROP verbs.
 
 
 

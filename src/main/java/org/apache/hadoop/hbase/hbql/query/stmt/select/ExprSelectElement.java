@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.expr.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.query.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.query.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.query.stmt.args.QueryArgs;
+import org.apache.hadoop.hbase.hbql.query.stmt.args.SelectStmt;
 import org.apache.hadoop.hbase.hbql.query.util.HUtil;
 import org.apache.hadoop.hbase.hbql.query.util.Maps;
 
@@ -71,11 +71,11 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
         return this.columnNameBytes;
     }
 
-    public void validate(final QueryArgs queryArgs,
+    public void validate(final SelectStmt selectStmt,
                          final HConnection connection,
                          final List<ColumnAttrib> selectAttribList) throws HBqlException {
 
-        this.setSchema(queryArgs.getSchema());
+        this.setSchema(selectStmt.getSchema());
 
         selectAttribList.addAll(this.getAttribsUsedInExpr());
 
@@ -107,8 +107,8 @@ public class ExprSelectElement extends ExprContext implements SelectElement {
             if (!this.hasAsName()) {
                 while (true) {
                     // Assign a name that is not in use
-                    final String newAsName = queryArgs.getNextExpressionName();
-                    if (!queryArgs.hasAsName(newAsName)) {
+                    final String newAsName = selectStmt.getNextExpressionName();
+                    if (!selectStmt.hasAsName(newAsName)) {
                         this.asName = newAsName;
                         break;
                     }

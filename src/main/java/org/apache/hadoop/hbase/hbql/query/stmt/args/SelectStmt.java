@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.query.util.Sets;
 import java.util.List;
 import java.util.Set;
 
-public class QueryArgs {
+public class SelectStmt {
 
     private final List<SelectElement> selectElementList;
     private final List<ColumnAttrib> selectColumnAttribList = Lists.newArrayList();
@@ -22,9 +22,9 @@ public class QueryArgs {
 
     private HBaseSchema schema = null;
 
-    public QueryArgs(final List<SelectElement> selectElementList,
-                     final String schemaName,
-                     final WhereArgs whereArgs) {
+    public SelectStmt(final List<SelectElement> selectElementList,
+                      final String schemaName,
+                      final WhereArgs whereArgs) {
         this.schemaName = schemaName;
         this.selectElementList = selectElementList;
         this.whereArgs = whereArgs != null ? whereArgs : new WhereArgs();
