@@ -12,6 +12,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
+import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.stmt.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
@@ -86,10 +87,15 @@ public class ConnectionImpl implements HConnection {
 
         final ConnectionStatement statement = HBql.parseConnectionStatement(str);
 
-        if (statement == null)
-            throw new HBqlException("Error parsing: " + str);
-
         return statement.execute(this);
+    }
+
+    public PreparedStatement prepare(final String str) throws HBqlException {
+
+        final PreparedStatement stmt = HBql.parsePreparedStatement(str);
+        stmt.setConnection(this);
+        stmt.validate();
+        return stmt;
     }
 
     public void apply(final HBatch batch) throws IOException {

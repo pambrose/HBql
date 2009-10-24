@@ -33,8 +33,13 @@ public class SelectStatement extends SchemaStatement {
 
     public void validate(final HConnection connection) throws HBqlException {
 
-        for (final SelectElement selectElement : this.getSelectElementList())
-            selectElement.validate(this, connection, this.getSelectAttribList());
+        for (final SelectElement elem : this.getSelectElementList()) {
+            elem.validate(this.getSchema(), connection);
+            elem.assignAsNamesForExpressions(this);
+
+            this.getSelectAttribList().clear();
+            this.getSelectAttribList().addAll(elem.getAttribsUsedInExpr());
+        }
 
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();
@@ -84,7 +89,9 @@ public class SelectStatement extends SchemaStatement {
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
+
         int cnt = 0;
+
         for (final SelectElement selectElement : this.getSelectElementList())
             cnt += selectElement.setParameter(name, val);
 

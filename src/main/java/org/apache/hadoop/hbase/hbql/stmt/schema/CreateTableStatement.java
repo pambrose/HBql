@@ -25,9 +25,6 @@ public class CreateTableStatement extends SchemaStatement implements ConnectionS
 
         conn.getAdmin().createTable(tableDesc);
 
-        final HOutput retval = new HOutput();
-        retval.out.println("Table " + tableDesc.getNameAsString() + " created.");
-        retval.out.flush();
-        return retval;
+        return new HOutput("Table " + tableDesc.getNameAsString() + " created.");
     }
 }

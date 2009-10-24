@@ -71,17 +71,14 @@ public class ExprElement extends ExprContext implements SelectElement {
         return this.columnNameBytes;
     }
 
-    public void validate(final SelectStatement selectStatement,
-                         final HConnection connection,
-                         final List<ColumnAttrib> selectAttribList) throws HBqlException {
+    public void validate(final HBaseSchema schema,
+                         final HConnection connection
+    ) throws HBqlException {
 
-        this.setSchema(selectStatement.getSchema());
-
-        selectAttribList.addAll(this.getAttribsUsedInExpr());
+        this.setSchema(schema);
 
         // Look up stuff for simple column references
-        if (this.getGenericValue(0) instanceof DelegateColumn) {
-
+        if (this.isSimpleColumnReference()) {
             final String name = ((DelegateColumn)this.getGenericValue(0)).getVariableName();
             this.columnAttrib = this.getSchema().getAttribByVariableName(name);
 
@@ -102,16 +99,17 @@ public class ExprElement extends ExprContext implements SelectElement {
             this.familyNameBytes = HUtil.getSerialization().getStringAsBytes(this.getFamilyName());
             this.columnNameBytes = HUtil.getSerialization().getStringAsBytes(this.getColumnName());
         }
-        else {
-            // Assign as name to expression if one is not provided
-            if (!this.hasAsName()) {
-                while (true) {
-                    // Assign a name that is not in use
-                    final String newAsName = selectStatement.getNextExpressionName();
-                    if (!selectStatement.hasAsName(newAsName)) {
-                        this.asName = newAsName;
-                        break;
-                    }
+    }
+
+    public void assignAsNamesForExpressions(final SelectStatement selectStatement) {
+
+        if (!this.isSimpleColumnReference() && !this.hasAsName()) {
+            while (true) {
+                // Assign a name that is not in use
+                final String newAsName = selectStatement.getNextExpressionName();
+                if (!selectStatement.hasAsName(newAsName)) {
+                    this.asName = newAsName;
+                    break;
                 }
             }
         }

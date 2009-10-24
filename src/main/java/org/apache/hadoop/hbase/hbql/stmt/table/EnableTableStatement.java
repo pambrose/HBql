@@ -15,12 +15,7 @@ public class EnableTableStatement extends TableStatement implements ConnectionSt
     }
 
     public HOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
-
         conn.getAdmin().enableTable(this.getTableName());
-
-        final HOutput retval = new HOutput();
-        retval.out.println("Table " + this.getTableName() + " enabled.");
-        retval.out.flush();
-        return retval;
+        return new HOutput("Table " + this.getTableName() + " enabled.");
     }
 }

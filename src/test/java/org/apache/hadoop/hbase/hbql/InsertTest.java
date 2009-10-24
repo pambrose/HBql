@@ -1,12 +1,12 @@
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResults;
+import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
@@ -76,37 +76,39 @@ public class InsertTest extends TestSupport {
                                       final int cnt,
                                       final String msg) throws HBqlException, IOException {
 
-        final HBatch batch = new HBatch();
         for (int i = 0; i < cnt; i++) {
 
-            final HRecord rec = SchemaManager.newHRecord("tab2");
+            PreparedStatement stmt = conn.prepare("insert into tab2 " +
+                                                  "(keyval, val1, val2, val5, val6, f3mapval1, f3mapval2, val8) values " +
+                                                  "(:key, :val1, :val2, :val5, :val6, :f3mapval1, :f3mapval2, :val8)");
 
             final String keyval = HUtil.getZeroPaddedNumber(i, 10);
             keyList.add(keyval);
-            rec.setCurrentValue("keyval", keyval);
+
+            stmt.setParameter("key", keyval);
 
             int val5 = randomVal.nextInt();
             String s_val5 = "" + val5;
             val1List.add(s_val5);
             val5List.add(val5);
 
-            rec.setCurrentValue("val1", s_val5);
-            rec.setCurrentValue("val2", s_val5 + " " + msg);
-            rec.setCurrentValue("val5", val5);
-            rec.setCurrentValue("val6", i * 100);
+            stmt.setParameter("val1", s_val5);
+            stmt.setParameter("val2", s_val5 + " " + msg);
+            stmt.setParameter("val5", val5);
+            stmt.setParameter("val6", i * 100);
 
             Map<String, String> mapval1 = Maps.newHashMap();
             mapval1.put("mapcol1", "mapcol1 val" + i + " " + msg);
             mapval1.put("mapcol2", "mapcol2 val" + i + " " + msg);
 
-            rec.setCurrentValue("f3mapval1", mapval1);
+            stmt.setParameter("f3mapval1", mapval1);
 
             Map<String, String> mapval2 = Maps.newHashMap();
             mapval2.put("mapcol1-b", "mapcol1-b val" + i + " " + msg);
             mapval2.put("mapcol2-b", "mapcol2-b val" + i + " " + msg);
             mapval2.put("mapcol3-b", "mapcol3-b val" + i + " " + msg);
 
-            rec.setCurrentValue("f3mapval2", mapval2);
+            stmt.setParameter("f3mapval2", mapval2);
 
             int[] intv1 = new int[5];
             val8check = new int[5];
@@ -115,12 +117,10 @@ public class InsertTest extends TestSupport {
                 val8check[j] = intv1[j];
             }
 
-            rec.setCurrentValue("val8", intv1);
+            stmt.setParameter("val8", intv1);
 
-            batch.insert(rec);
+            stmt.execute();
         }
-
-        conn.apply(batch);
     }
 
 

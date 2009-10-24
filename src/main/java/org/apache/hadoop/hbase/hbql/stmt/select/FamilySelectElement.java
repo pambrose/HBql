@@ -19,6 +19,7 @@ public class FamilySelectElement implements SelectElement {
     private final boolean useAllFamilies;
     private final List<String> familyNameList = Lists.newArrayList();
     private final List<byte[]> familyNameBytesList = Lists.newArrayList();
+    private final List<ColumnAttrib> attribsUsedInExpr = Lists.newArrayList();
     private final String familyName;
 
     private HBaseSchema schema;
@@ -79,19 +80,17 @@ public class FamilySelectElement implements SelectElement {
         return 0;
     }
 
-    public void validate(final SelectStatement selectStatement,
-                         final HConnection connection,
-                         final List<ColumnAttrib> selectAttribList) throws HBqlException {
+    public void validate(final HBaseSchema schema, final HConnection connection) throws HBqlException {
 
-        this.schema = selectStatement.getSchema();
-
+        this.schema = schema;
+        this.getAttribsUsedInExpr().clear();
         final Collection<String> familyList = this.getSchema().getSchemaFamilyNames(connection);
 
         if (this.useAllFamilies) {
             // connction will be null from tests
             for (final String familyName : familyList) {
                 this.addAFamily(familyName);
-                selectAttribList.add(new SelectFamilyAttrib(familyName));
+                this.attribsUsedInExpr.add(new SelectFamilyAttrib(familyName));
             }
         }
         else {
@@ -100,11 +99,20 @@ public class FamilySelectElement implements SelectElement {
             if (!familyList.contains(familyName))
                 throw new HBqlException("Invalid family name: " + familyName);
 
-            selectAttribList.add(new SelectFamilyAttrib(familyName));
+            this.getAttribsUsedInExpr().add(new SelectFamilyAttrib(familyName));
         }
 
         for (final String familyName : this.getFamilyNameList())
             this.getFamilyNameBytesList().add(HUtil.getSerialization().getStringAsBytes(familyName));
+    }
+
+
+    public List<ColumnAttrib> getAttribsUsedInExpr() {
+        return this.attribsUsedInExpr;
+    }
+
+    public void assignAsNamesForExpressions(final SelectStatement selectStatement) {
+
     }
 
     public void assignValues(final Object obj,

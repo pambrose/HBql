@@ -19,12 +19,7 @@ public class SchemaManager {
     private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
     public static HOutput execute(final String str) throws HBqlException {
-
         final SchemaManagerStatement cmd = HBql.parseSchemaManagerCommand(str);
-
-        if (cmd == null)
-            throw new HBqlException("Error parsing: " + str);
-
         return cmd.execute();
     }
 
@@ -65,7 +60,7 @@ public class SchemaManager {
                                                               final String tableName,
                                                               final List<ColumnDescription> colList) throws HBqlException {
 
-        if (org.apache.hadoop.hbase.hbql.client.SchemaManager.doesDefinedSchemaExist(schemaName))
+        if (SchemaManager.doesDefinedSchemaExist(schemaName))
             throw new HBqlException("Schema " + schemaName + " already defined");
 
         final DefinedSchema schema = new DefinedSchema(schemaName, tableName, colList);

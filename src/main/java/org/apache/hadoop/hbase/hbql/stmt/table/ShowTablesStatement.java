@@ -16,10 +16,9 @@ public class ShowTablesStatement implements ConnectionStatement {
 
     public HOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
-        final HOutput retval = new HOutput();
-
         final HBaseAdmin admin = conn.getAdmin();
 
+        final HOutput retval = new HOutput();
         retval.out.println("Table names: ");
         for (final HTableDescriptor tableDesc : admin.listTables())
             retval.out.println("\t" + tableDesc.getNameAsString());

@@ -41,10 +41,6 @@ public class CreateSchemaStatement extends SchemaStatement implements SchemaMana
                                         + attrib.getFamilyQualifiedName() + " has unknown type.");
         }
 
-        final HOutput retval = new HOutput();
-        retval.out.println("Schema " + schema.getSchemaName() + " defined.");
-        retval.out.flush();
-
-        return retval;
+        return new HOutput("Schema " + schema.getSchemaName() + " defined.");
     }
 }

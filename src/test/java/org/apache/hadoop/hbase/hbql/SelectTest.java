@@ -77,6 +77,7 @@ public class SelectTest extends TestSupport {
                                       final String msg) throws HBqlException, IOException {
 
         final HBatch batch = new HBatch();
+
         for (int i = 0; i < cnt; i++) {
 
             final HRecord rec = SchemaManager.newHRecord("tab1");

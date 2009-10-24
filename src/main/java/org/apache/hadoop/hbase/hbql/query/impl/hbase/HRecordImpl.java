@@ -231,6 +231,13 @@ public class HRecordImpl implements Serializable, HRecord {
         value.getCurrentMapValue(columnName, true).setVersionMap(mapKey, map);
     }
 
+    public void reset() {
+        this.objectElements = null;
+        this.keysAsColumnsElements = null;
+        this.familyDefaultElements = null;
+        this.familyDefaultKeysAsColumnsElements = null;
+    }
+
     public void setTimestamp(final long timestamp) {
         this.timestamp = timestamp;
     }

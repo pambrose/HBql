@@ -15,12 +15,7 @@ public class DisableTableStatement extends TableStatement implements ConnectionS
     }
 
     public HOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
-
         conn.getAdmin().disableTable(this.getTableName());
-
-        final HOutput retval = new HOutput();
-        retval.out.println("Table " + this.getTableName() + " disabled.");
-        retval.out.flush();
-        return retval;
+        return new HOutput("Table " + this.getTableName() + " disabled.");
     }
 }

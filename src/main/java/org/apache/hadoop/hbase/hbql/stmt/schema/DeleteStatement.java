@@ -47,11 +47,7 @@ public class DeleteStatement extends SchemaStatement implements ConnectionStatem
         for (final RowRequest rowRequest : rowRequestList)
             cnt += this.delete(table, this.getWhereArgs(), rowRequest);
 
-        final HOutput retval = new HOutput();
-        retval.out.println("Delete count: " + cnt);
-        retval.out.flush();
-
-        return retval;
+        return new HOutput("Delete count: " + cnt);
     }
 
     private int delete(final HTable table,

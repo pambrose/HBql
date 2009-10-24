@@ -7,6 +7,7 @@ import org.antlr.runtime.RecognitionException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
+import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.stmt.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.stmt.SchemaManagerStatement;
@@ -85,7 +86,10 @@ public class HBql {
     private static ShellStatement parse(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
-            return parser.commandStmt();
+            final ShellStatement stmt = parser.commandStmt();
+            if (stmt == null)
+                throw new HBqlException("Error parsing: " + str);
+            return stmt;
         }
         catch (RecognitionException e) {
             e.printStackTrace();
@@ -95,29 +99,42 @@ public class HBql {
 
     public static SchemaManagerStatement parseSchemaManagerCommand(final String str) throws HBqlException {
         final ShellStatement statement = parse(str);
-        if (statement instanceof SchemaManagerStatement)
-            return (SchemaManagerStatement)statement;
-        else
-            throw new HBqlException("Expecting a schema manager command");
+
+        if (!(statement instanceof SchemaManagerStatement))
+            throw new HBqlException("Expecting a schema manager statement");
+
+        return (SchemaManagerStatement)statement;
     }
 
     public static ConnectionStatement parseConnectionStatement(final String str) throws HBqlException {
+
         final ShellStatement statement = parse(str);
-        if (statement instanceof ConnectionStatement)
-            return (ConnectionStatement)statement;
-        else
-            throw new HBqlException("Expecting a connection command");
+
+        if (!(statement instanceof ConnectionStatement))
+            throw new HBqlException("Expecting a connection statement");
+
+        return (ConnectionStatement)statement;
+    }
+
+    public static PreparedStatement parsePreparedStatement(final String str) throws HBqlException {
+
+        final ShellStatement statement = parse(str);
+
+        if (!(statement instanceof PreparedStatement))
+            throw new HBqlException("Expecting an prepared statement");
+
+        return (PreparedStatement)statement;
     }
 
     public static SelectStatement parseSelectStatement(final HConnection connection, final String str) throws HBqlException {
+
         final ShellStatement statement = parse(str);
-        if (statement instanceof SelectStatement) {
-            final SelectStatement args = (SelectStatement)statement;
-            args.validate(connection);
-            return args;
-        }
-        else {
-            throw new HBqlException("Expecting a select stmt");
-        }
+
+        if (!(statement instanceof SelectStatement))
+            throw new HBqlException("Expecting a select statement");
+
+        final SelectStatement args = (SelectStatement)statement;
+        args.validate(connection);
+        return args;
     }
 }

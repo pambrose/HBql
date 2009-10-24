@@ -14,14 +14,8 @@ public class DropTableStatement extends TableStatement implements ConnectionStat
         super(tableName);
     }
 
-
     public HOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
-
         conn.getAdmin().deleteTable(this.getTableName());
-
-        final HOutput retval = new HOutput();
-        retval.out.println("Table " + this.getTableName() + " dropped.");
-        retval.out.flush();
-        return retval;
+        return new HOutput("Table " + this.getTableName() + " dropped.");
     }
 }

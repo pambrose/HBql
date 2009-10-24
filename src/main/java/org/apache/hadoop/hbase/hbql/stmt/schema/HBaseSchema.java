@@ -59,18 +59,18 @@ public abstract class HBaseSchema extends Schema {
                                      final Result result) throws HBqlException;
 
 
-    public static HBaseSchema findSchema(final String tablename) throws HBqlException {
+    public static HBaseSchema findSchema(final String schemaName) throws HBqlException {
 
         // First look in defined schema, then try annotation schema
-        HBaseSchema schema = SchemaManager.getDefinedSchema(tablename);
+        HBaseSchema schema = SchemaManager.getDefinedSchema(schemaName);
         if (schema != null)
             return schema;
 
-        schema = AnnotationSchema.getAnnotationSchema(tablename);
+        schema = AnnotationSchema.getAnnotationSchema(schemaName);
         if (schema != null)
             return schema;
 
-        throw new HBqlException("Unknown table: " + tablename);
+        throw new HBqlException("Unknown schema: " + schemaName);
     }
 
     // *** columnAttribByFamilyQualifiedNameMap calls

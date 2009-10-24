@@ -5,6 +5,8 @@ import java.util.NavigableMap;
 
 public interface HRecord {
 
+    void reset();
+
     void setTimestamp(final long timestamp);
 
     Object getCurrentValue(String name) throws HBqlException;

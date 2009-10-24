@@ -27,7 +27,7 @@ public class SetStatement implements ConnectionStatement {
 
 
     public HOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
-        final HOutput retval = new HOutput();
+
         final String var = this.getVariable();
 
         if (var == null)
@@ -35,9 +35,7 @@ public class SetStatement implements ConnectionStatement {
 
         if (var.equalsIgnoreCase("packagepath")) {
             EnvVars.setPackagePath(this.getValue());
-            retval.out.println("PackagePath set to " + this.getValue());
-            retval.out.flush();
-            return retval;
+            return new HOutput("PackagePath set to " + this.getValue());
         }
 
         throw new HBqlException("Unknown variable: " + var);
