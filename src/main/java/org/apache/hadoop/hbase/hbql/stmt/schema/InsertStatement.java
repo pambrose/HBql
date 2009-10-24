@@ -42,18 +42,30 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
     public void validate() throws HBqlException {
 
-        for (final ExprElement val : this.columnList)
+        for (final ExprElement val : this.getColumnList()) {
             val.validate(this.getSchema(), this.getConnection());
+            if (!val.isSimpleColumnReference())
+                throw new HBqlException(val.asString() + " is not a column reference in " + this.asString());
+        }
 
-        for (final ExprElement val : this.valueList)
+        for (final ExprElement val : this.getValueList()) {
             val.validate(this.getSchema(), this.getConnection());
+            if (!val.isAConstant())
+                throw new HBqlException(val.asString() + " is not a constant in " + this.asString());
+        }
+
+        if (this.getColumnList().size() != this.getValueList().size())
+            throw new HBqlException("Number of columns not equal to number of values in " + this.asString());
+
+        // Make sure values do not have column references
+
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
 
         int cnt = 0;
 
-        for (final ExprElement expr : this.valueList)
+        for (final ExprElement expr : this.getValueList())
             cnt += expr.setParameter(name, val);
 
         return cnt;
@@ -67,9 +79,23 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         return this.connection;
     }
 
+    private List<ExprElement> getColumnList() {
+        return columnList;
+    }
+
+    private List<ExprElement> getValueList() {
+        return valueList;
+    }
+
     public HOutput execute() throws HBqlException, IOException {
 
         HBatch batch = new HBatch();
+
+        for (int i = 0; i < this.getColumnList().size(); i++) {
+            this.getRecord().setCurrentValue(this.getColumnList().get(i).asString(),
+                                             this.getValueList().get(i).evaluateConstant(0, false, true));
+        }
+
         batch.insert(this.getRecord());
 
         this.getConnection().apply(batch);
@@ -77,5 +103,35 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         this.getRecord().reset();
 
         return null;
+    }
+
+    public String asString() {
+        final StringBuilder sbuf = new StringBuilder();
+
+        sbuf.append("INSERT INTO " + this.getSchemaName() + " (");
+
+        boolean firstTime = true;
+        for (final ExprElement val : this.getColumnList()) {
+            if (!firstTime)
+                sbuf.append(", ");
+            firstTime = false;
+
+            sbuf.append(val.asString());
+        }
+
+        sbuf.append(") VALUES (");
+
+        firstTime = true;
+        for (final ExprElement val : this.getValueList()) {
+            if (!firstTime)
+                sbuf.append(", ");
+            firstTime = false;
+
+            sbuf.append(val.asString());
+        }
+
+        sbuf.append(")");
+
+        return sbuf.toString();
     }
 }

@@ -51,6 +51,10 @@ public class ExprElement extends ExprContext implements SelectElement {
         return this.getGenericValue(0) instanceof DelegateColumn;
     }
 
+    public boolean isAConstant() {
+        return this.getGenericValue(0).isAConstant();
+    }
+
     public ColumnAttrib getColumnAttrib() {
         return this.columnAttrib;
     }
@@ -71,13 +75,12 @@ public class ExprElement extends ExprContext implements SelectElement {
         return this.columnNameBytes;
     }
 
-    public void validate(final HBaseSchema schema,
-                         final HConnection connection
-    ) throws HBqlException {
+    public void validate(final HBaseSchema schema, final HConnection connection) throws HBqlException {
 
         this.setSchema(schema);
 
         // Look up stuff for simple column references
+        // TODO this needs to be down for expressions with col refs
         if (this.isSimpleColumnReference()) {
             final String name = ((DelegateColumn)this.getGenericValue(0)).getVariableName();
             this.columnAttrib = this.getSchema().getAttribByVariableName(name);
@@ -96,6 +99,7 @@ public class ExprElement extends ExprContext implements SelectElement {
                 if (!families.contains(this.getFamilyName()))
                     throw new HBqlException("Unknown family name: " + this.getFamilyName());
             }
+
             this.familyNameBytes = HUtil.getSerialization().getStringAsBytes(this.getFamilyName());
             this.columnNameBytes = HUtil.getSerialization().getStringAsBytes(this.getColumnName());
         }

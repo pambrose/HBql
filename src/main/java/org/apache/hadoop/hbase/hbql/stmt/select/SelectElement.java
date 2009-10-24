@@ -11,9 +11,7 @@ import java.util.List;
 
 public interface SelectElement {
 
-    void validate(HBaseSchema schema,
-                  HConnection connection
-    ) throws HBqlException;
+    void validate(HBaseSchema schema, HConnection connection) throws HBqlException;
 
     List<ColumnAttrib> getAttribsUsedInExpr();
 

@@ -84,18 +84,18 @@ public abstract class ExprContext implements Serializable {
         return this.getExpressionList().get(i);
     }
 
-    protected Object evaluate(final int i,
-                              final boolean allowColumns,
-                              final boolean allowsCollections,
-                              final Object object) throws HBqlException, ResultMissingColumnException {
+    public Object evaluate(final int i,
+                           final boolean allowColumns,
+                           final boolean allowsCollections,
+                           final Object object) throws HBqlException, ResultMissingColumnException {
         this.validateExprTypes(allowColumns, allowsCollections);
         this.optimize();
         return this.getGenericValue(i).getValue(object);
     }
 
-    protected Object evaluateConstant(final int i,
-                                      final boolean allowsCollections,
-                                      final Object object) throws HBqlException {
+    public Object evaluateConstant(final int i,
+                                   final boolean allowsCollections,
+                                   final Object object) throws HBqlException {
         try {
             return this.evaluate(i, false, allowsCollections, object);
         }
