@@ -480,7 +480,7 @@ public class InsertTest extends TestSupport {
             assertTrue(val2.size() == 2);
         }
 
-        final String query2 = "SELECT * FROM table1";
+        final String query2 = "SELECT * FROM table2";
         HQuery<HRecord> q2 = conn.newHQuery(query2);
         List<HRecord> recList2 = q2.getResultList();
         assertTrue(recList2.size() == 10);

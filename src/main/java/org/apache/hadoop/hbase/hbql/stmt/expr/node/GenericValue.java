@@ -19,6 +19,8 @@ public interface GenericValue extends Serializable {
 
     boolean isAConstant();
 
+    boolean hasAColumnReference();
+
     String asString();
 
     void reset();

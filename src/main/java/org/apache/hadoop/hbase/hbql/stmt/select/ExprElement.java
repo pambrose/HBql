@@ -55,6 +55,10 @@ public class ExprElement extends ExprContext implements SelectElement {
         return this.getGenericValue(0).isAConstant();
     }
 
+    public boolean hasAColumnReference() {
+        return this.getGenericValue(0).hasAColumnReference();
+    }
+
     public ColumnAttrib getColumnAttrib() {
         return this.columnAttrib;
     }

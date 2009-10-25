@@ -10,6 +10,7 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.literal.DoubleLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.FloatLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.IntegerLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.LongLiteral;
+import org.apache.hadoop.hbase.hbql.stmt.expr.literal.ObjectLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.ShortLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.StringLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.StringNullLiteral;
@@ -122,6 +123,10 @@ public class NamedParameter implements GenericValue {
         return false;
     }
 
+    public boolean hasAColumnReference() {
+        return false;
+    }
+
     public void setParameter(final Object val) throws HBqlException {
 
         // Reset both values
@@ -145,11 +150,8 @@ public class NamedParameter implements GenericValue {
         if (val instanceof Boolean)
             return new BooleanLiteral((Boolean)val);
 
-        if (val instanceof String)
-            return new StringLiteral((String)val);
-
-        if (val instanceof Date)
-            return new DateLiteral((Date)val);
+        if (val instanceof Character)
+            return new ShortLiteral((short)((Character)val).charValue());
 
         if (val instanceof Short)
             return new ShortLiteral((Short)val);
@@ -165,6 +167,15 @@ public class NamedParameter implements GenericValue {
 
         if (val instanceof Double)
             return new DoubleLiteral((Double)val);
+
+        if (val instanceof String)
+            return new StringLiteral((String)val);
+
+        if (val instanceof Date)
+            return new DateLiteral((Date)val);
+
+        if (val instanceof Object)
+            return new ObjectLiteral(val);
 
         throw new TypeException("Parameter " + this.getParamName()
                                 + " assigned an unsupported type " + val.getClass().getSimpleName());

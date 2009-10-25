@@ -175,6 +175,13 @@ public abstract class GenericExpr implements GenericValue {
         return true;
     }
 
+    public boolean hasAColumnReference() {
+        for (final GenericValue val : this.getArgList())
+            if (val.hasAColumnReference())
+                return true;
+        return false;
+    }
+
     public void reset() {
         for (final GenericValue val : this.getArgList())
             val.reset();

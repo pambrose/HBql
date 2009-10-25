@@ -35,6 +35,10 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         return false;
     }
 
+    public boolean hasAColumnReference() {
+        return true;
+    }
+
     public void reset() {
         if (this.getExprContext() != null)
             this.getExprContext().reset();

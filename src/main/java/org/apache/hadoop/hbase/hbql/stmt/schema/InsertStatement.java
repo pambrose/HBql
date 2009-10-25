@@ -50,8 +50,8 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
         for (final ExprElement val : this.getValueList()) {
             val.validate(this.getSchema(), this.getConnection());
-            if (!val.isAConstant())
-                throw new HBqlException(val.asString() + " is not a constant in " + this.asString());
+            if (val.hasAColumnReference())
+                throw new HBqlException("Column reference " + val.asString() + " now valid in " + this.asString());
         }
 
         if (this.getColumnList().size() != this.getValueList().size())
