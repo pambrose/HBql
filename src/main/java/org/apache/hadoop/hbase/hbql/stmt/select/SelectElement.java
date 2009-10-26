@@ -25,6 +25,8 @@ public interface SelectElement {
 
     String getAsName();
 
+    String getElementName();
+
     boolean hasAsName();
 
     boolean isAFamilySelect();

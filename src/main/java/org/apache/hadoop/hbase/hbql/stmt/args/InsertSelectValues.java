@@ -78,7 +78,7 @@ public class InsertSelectValues extends InsertValueSource {
 
     public Object getValue(final int i) throws HBqlException {
         final SelectElement element = this.getSelectStatement().getSelectElementList().get(i);
-        String name = element.asString();
+        final String name = element.getElementName();
         return this.getCurrentRecord().getCurrentValue(name);
     }
 

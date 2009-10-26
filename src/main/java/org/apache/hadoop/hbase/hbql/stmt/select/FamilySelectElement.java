@@ -67,6 +67,10 @@ public class FamilySelectElement implements SelectElement {
         return null;
     }
 
+    public String getElementName() {
+        return null;
+    }
+
     public boolean hasAsName() {
         return false;
     }
@@ -116,7 +120,7 @@ public class FamilySelectElement implements SelectElement {
     }
 
     public void assignAsNamesForExpressions(final SelectStatement selectStatement) {
-
+        // No op
     }
 
     public void assignValues(final Object obj,

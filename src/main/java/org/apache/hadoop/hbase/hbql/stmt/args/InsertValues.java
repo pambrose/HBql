@@ -33,10 +33,12 @@ public class InsertValues extends InsertValueSource {
     }
 
     public void validate(final InsertStatement insertStatement) throws HBqlException {
+
         super.validate(insertStatement);
 
         for (final ExprElement element : this.getValueList()) {
             element.validate(this.getInsertStatement().getSchema(), this.getInsertStatement().getConnection());
+
             // Make sure values do not have column references
             if (element.hasAColumnReference())
                 throw new HBqlException("Column reference " + element.asString() + " not valid in " + this.asString());

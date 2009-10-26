@@ -34,7 +34,6 @@ public class InsertWithSelectTest extends TestSupport {
 
         conn = HConnectionManager.newHConnection();
 
-        /*
         if (!conn.tableExists("table3"))
             System.out.println(conn.execute("create table using schema tab3"));
         else {
@@ -43,8 +42,7 @@ public class InsertWithSelectTest extends TestSupport {
             //System.out.println(conn.execute("drop table table3"));
         }
 
-        insertRecords(conn, 10);
-        */
+        insertRecords(conn, 3);
     }
 
     private static void insertRecords(final HConnection conn,
@@ -56,7 +54,7 @@ public class InsertWithSelectTest extends TestSupport {
 
         for (int i = 0; i < cnt; i++) {
 
-            int val = randomVal.nextInt();
+            int val = 10 + i;//randomVal.nextInt();
 
             final String keyval = HUtil.getZeroPaddedNumber(i, 10);
 
@@ -67,36 +65,40 @@ public class InsertWithSelectTest extends TestSupport {
         }
     }
 
+    private static void showValues() throws HBqlException, IOException {
+
+        final String query1 = "SELECT keyval, val1, val2 FROM tab3";
+
+        HQuery<HRecord> q1 = conn.newHQuery(query1);
+
+        HResults<HRecord> results = q1.getResults();
+
+        int rec_cnt = 0;
+        for (HRecord rec : results) {
+
+            String keyval = (String)rec.getCurrentValue("keyval");
+            String val1 = (String)rec.getCurrentValue("val1");
+            int val2 = (Integer)rec.getCurrentValue("val2");
+
+            System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2);
+            rec_cnt++;
+        }
+    }
 
     @Test
     public void selectExpressions() throws HBqlException, IOException {
 
         onetimeSetup();
 
+        showValues();
+
         PreparedStatement stmt = conn.prepare("insert into tab3 " +
-                                              "(keyval, val1, val2) select keyval, val1+1, val2+val2 FROM tab3 ");
+                                              "(keyval, val1, val2) select keyval, val1+val1, val2+1 FROM tab3 ");
 
         HOutput output = stmt.execute();
+
         System.out.println(output);
 
-        final String query1 = "SELECT keyval, val1, val2 FROM tab3";
-
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-
-        HResults<HRecord> results1 = q1.getResults();
-
-        int rec_cnt = 0;
-        for (HRecord rec : results1) {
-
-            String keyval = (String)rec.getCurrentValue("keyval");
-            String val1 = (String)rec.getCurrentValue("val1");
-            int val2 = (Integer)rec.getCurrentValue("val2");
-
-            System.out.println("Current Values: " + keyval
-                               + " - " + rec.getCurrentValue("val1")
-                               + " - " + rec.getCurrentValue("val2")
-            );
-            rec_cnt++;
-        }
+        showValues();
     }
 }

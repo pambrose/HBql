@@ -43,7 +43,9 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
     public void validate() throws HBqlException {
 
         for (final ExprElement element : this.getColumnList()) {
+
             element.validate(this.getSchema(), this.getConnection());
+
             if (!element.isASimpleColumnReference())
                 throw new HBqlException(element.asString() + " is not a column reference in " + this.asString());
         }
@@ -98,8 +100,9 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
             final HBatch batch = new HBatch();
 
             for (int i = 0; i < this.getColumnList().size(); i++) {
-                this.getRecord().setCurrentValue(this.getColumnList().get(i).asString(),
-                                                 this.getValueSource().getValue(i));
+                final String name = this.getColumnList().get(i).asString();
+                final Object val = this.getValueSource().getValue(i);
+                this.getRecord().setCurrentValue(name, val);
             }
 
             batch.insert(this.getRecord());

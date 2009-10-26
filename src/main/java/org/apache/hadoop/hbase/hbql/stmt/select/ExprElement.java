@@ -42,6 +42,12 @@ public class ExprElement extends ExprContext implements SelectElement {
         return this.asName;
     }
 
+    public String getElementName() {
+        if (this.hasAsName())
+            return this.getAsName();
+        return this.getColumnAttrib().getFamilyQualifiedName();
+    }
+
     public boolean isAFamilySelect() {
         return false;
     }
@@ -197,6 +203,9 @@ public class ExprElement extends ExprContext implements SelectElement {
     public void assignValues(final Object obj,
                              final int maxVerions,
                              final Result result) throws HBqlException {
+
+        if (this.isAKeyValue())
+            return;
 
         // If it is a calculation, take care of it and then bail since calculations have no history
         if (!this.isASimpleColumnReference()) {

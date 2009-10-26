@@ -36,8 +36,10 @@ public class SelectStatement extends SchemaStatement {
         this.getSelectAttribList().clear();
 
         for (final SelectElement element : this.getSelectElementList()) {
+
             element.validate(this.getSchema(), connection);
             element.assignAsNamesForExpressions(this);
+
             this.getSelectAttribList().addAll(element.getAttribsUsedInExpr());
         }
 
