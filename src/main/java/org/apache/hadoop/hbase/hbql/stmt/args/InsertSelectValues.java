@@ -1,13 +1,21 @@
 package org.apache.hadoop.hbase.hbql.stmt.args;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HQuery;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.stmt.schema.InsertStatement;
 import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
+
+import java.io.IOException;
+import java.util.Iterator;
 
 public class InsertSelectValues extends InsertValueSource {
 
     private final SelectStatement selectStatement;
-    private boolean calledForValues = false;
+    private Iterator<HRecord> resultsIterator = null;
+    private HRecord currentRecord = null;
+
 
     public InsertSelectValues(final SelectStatement selectStatement) {
         this.selectStatement = selectStatement;
@@ -27,9 +35,30 @@ public class InsertSelectValues extends InsertValueSource {
         this.getSelectStatement().validate(this.getInsertStatement().getConnection());
     }
 
+    private Iterator<HRecord> getResultsIterator() {
+        return this.resultsIterator;
+    }
+
+    private void setResultsIterator(final Iterator<HRecord> resultsIterator) {
+        this.resultsIterator = resultsIterator;
+    }
+
+    private HRecord getCurrentRecord() {
+        return this.currentRecord;
+    }
+
+    private void setCurrentRecord(final HRecord currentRecord) {
+        this.currentRecord = currentRecord;
+    }
+
+    public void execute() throws HBqlException, IOException {
+        HQuery<HRecord> query = this.getInsertStatement().getConnection().newHQuery(this.getSelectStatement());
+        HResults<HRecord> results = query.getResults();
+        this.setResultsIterator(results.iterator());
+    }
+
     public void reset() {
-        this.calledForValues = false;
-        this.getSelectStatement().reset();
+
     }
 
     public String asString() {
@@ -37,16 +66,21 @@ public class InsertSelectValues extends InsertValueSource {
     }
 
     public int getValueCount() {
-        return this.getValueList().size();
+        return this.getSelectStatement().getSelectElementList().size();
     }
 
     public Object getValue(final int i) throws HBqlException {
-        return this.getValueList().get(i).evaluateConstant(0, false, true);
+        return this.getCurrentRecord().get(i);
     }
 
     public boolean hasValues() {
-        this.calledForValues = !this.calledForValues;
-
-        return this.calledForValues;
+        if (this.getResultsIterator().hasNext()) {
+            this.setCurrentRecord(this.getResultsIterator().next());
+            return true;
+        }
+        else {
+            return false;
+        }
     }
+}
 }

@@ -6,8 +6,6 @@ public interface HQuery<T> {
 
     HConnection getConnection();
 
-    String getQuery();
-
     List<HQueryListener<T>> getListeners();
 
     void setParameter(String name, Object val) throws HBqlException;

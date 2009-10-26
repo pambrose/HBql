@@ -43,6 +43,10 @@ public class InsertValues extends InsertValueSource {
         }
     }
 
+    public void execute() {
+        // No op
+    }
+
     public void reset() {
         this.calledForValues = false;
         for (final ExprElement expr : this.getValueList())

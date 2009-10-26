@@ -21,16 +21,17 @@ import java.util.Set;
 public class QueryImpl<T> implements HQuery<T> {
 
     private final HConnection connection;
-    private final String query;
     private final SelectStatement selectStatement;
 
     private List<HQueryListener<T>> listeners = null;
 
-    public QueryImpl(final HConnection connection, final String query) throws HBqlException {
-
+    public QueryImpl(final HConnection connection, final SelectStatement selectStatement) throws HBqlException {
         this.connection = connection;
-        this.query = query;
-        this.selectStatement = HBql.parseSelectStatement(this.getConnection(), this.getQuery());
+        this.selectStatement = selectStatement;
+    }
+
+    public QueryImpl(final HConnection connection, final String query) throws HBqlException {
+        this(connection, HBql.parseSelectStatement(connection, query));
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {
@@ -42,10 +43,6 @@ public class QueryImpl<T> implements HQuery<T> {
 
     public HConnection getConnection() {
         return this.connection;
-    }
-
-    public String getQuery() {
-        return this.query;
     }
 
     public SelectStatement getSelectStatement() {
@@ -71,7 +68,8 @@ public class QueryImpl<T> implements HQuery<T> {
     public void setParameter(final String name, final Object val) throws HBqlException {
         int cnt = this.getSelectStatement().setParameter(name, val);
         if (cnt == 0)
-            throw new HBqlException("Parameter name " + name + " does not exist in " + this.getQuery());
+            throw new HBqlException("Parameter name " + name + " does not exist in "
+                                    + this.getSelectStatement().asString());
     }
 
     public void clearListeners() {

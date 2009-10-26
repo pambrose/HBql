@@ -99,4 +99,25 @@ public class SelectStatement extends SchemaStatement {
 
         return cnt;
     }
+
+    public String asString() {
+
+        final StringBuilder sbuf = new StringBuilder();
+
+        sbuf.append("SELECT  ");
+        boolean firstTime = true;
+        for (final SelectElement element : this.getSelectElementList()) {
+            if (!firstTime)
+                sbuf.append(", ");
+            firstTime = false;
+
+            sbuf.append(element.asString());
+        }
+
+        sbuf.append(" FROM ");
+        sbuf.append(this.getSchemaName());
+        sbuf.append(this.getWhereArgs().asString());
+
+        return sbuf.toString();
+    }
 }

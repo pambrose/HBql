@@ -3,6 +3,8 @@ package org.apache.hadoop.hbase.hbql.stmt.args;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.stmt.schema.InsertStatement;
 
+import java.io.IOException;
+
 public abstract class InsertValueSource {
 
     private InsertStatement insertStatement = null;
@@ -26,4 +28,6 @@ public abstract class InsertValueSource {
     protected InsertStatement getInsertStatement() {
         return this.insertStatement;
     }
+
+    public abstract void execute() throws HBqlException, IOException;
 }

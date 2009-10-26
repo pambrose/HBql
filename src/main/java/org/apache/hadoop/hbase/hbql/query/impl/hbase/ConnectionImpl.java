@@ -15,6 +15,7 @@ import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.stmt.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
+import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 import org.apache.hadoop.hbase.hbql.stmt.util.Sets;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -35,6 +36,10 @@ public class ConnectionImpl implements HConnection {
 
     public <T> HQuery<T> newHQuery(final String query) throws IOException, HBqlException {
         return new QueryImpl<T>(this, query);
+    }
+
+    public <T> HQuery<T> newHQuery(final SelectStatement selectStatement) throws IOException, HBqlException {
+        return new QueryImpl<T>(this, selectStatement);
     }
 
     public String getName() {

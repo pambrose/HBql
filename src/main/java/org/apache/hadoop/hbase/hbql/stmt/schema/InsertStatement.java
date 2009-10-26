@@ -89,6 +89,8 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
         int cnt = 0;
 
+        this.getValueSource().execute();
+
         while (this.getValueSource().hasValues()) {
             final HBatch batch = new HBatch();
 
@@ -129,9 +131,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         }
 
         sbuf.append(") ");
-
         sbuf.append(this.getValueSource().asString());
-
         return sbuf.toString();
     }
 }
