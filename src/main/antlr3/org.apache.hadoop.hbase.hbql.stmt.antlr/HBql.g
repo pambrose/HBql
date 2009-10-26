@@ -88,9 +88,9 @@ selectStatement returns [SelectStatement retval]
 	: keySELECT c=selectElems keyFROM t=simpleName w=whereValue?
 							{retval = new SelectStatement($c.retval, $t.text, $w.retval);};
 							
-insertValues returns [InsertValues retval]
+insertValues returns [InsertValueSource retval]
 	: keyVALUES LPAREN e=exprList RPAREN		{retval = new InsertValues($e.retval);}
-	| sel=selectStatement				{retval = new InsertValues($sel.retval);}			
+	| sel=selectStatement				{retval = new InsertSelectValues($sel.retval);}			
 	;
 	
 selectDesc[WhereArgs whereArgs] 

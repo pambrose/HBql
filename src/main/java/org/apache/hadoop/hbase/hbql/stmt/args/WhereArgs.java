@@ -239,7 +239,7 @@ public class WhereArgs {
         for (final ColumnAttrib attrib : columnAttribSet) {
 
             // Do not bother to request because it will always be delivered
-            if (attrib.isKeyAttrib())
+            if (attrib.isAKeyAttrib())
                 continue;
 
             // If it is a map, then request all columns for family
@@ -268,7 +268,7 @@ public class WhereArgs {
         for (final ColumnAttrib attrib : columnAttribSet) {
 
             // Do not bother to request because it will always be delivered
-            if (attrib.isKeyAttrib())
+            if (attrib.isAKeyAttrib())
                 continue;
 
             // If it is a map, then request all columns for family

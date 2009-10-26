@@ -281,7 +281,7 @@ public class AnnotationSchema extends HBaseSchema {
         this.addAttribToFamilyQualifiedNameMap(attrib);
         this.addFamilyDefaultAttrib(attrib);
 
-        if (attrib.isKeyAttrib()) {
+        if (attrib.isAKeyAttrib()) {
             if (this.getKeyAttrib() != null)
                 throw new HBqlException("Class " + this + " has multiple instance variables "
                                         + "annotated with @HColumn(key=true)");
@@ -381,7 +381,7 @@ public class AnnotationSchema extends HBaseSchema {
     private List<ColumnDescription> getColumnDescriptionList() {
         final List<ColumnDescription> varList = Lists.newArrayList();
         for (final ColumnAttrib columnAttrib : this.getAttribByFamilyQualifiedNameMap().values()) {
-            final String columnType = columnAttrib.isKeyAttrib()
+            final String columnType = columnAttrib.isAKeyAttrib()
                                       ? FieldType.KeyType.getFirstSynonym()
                                       : columnAttrib.getFieldType().getFirstSynonym();
             varList.add(ColumnDescription.newColumn(columnAttrib.getFamilyQualifiedName(),
@@ -389,7 +389,7 @@ public class AnnotationSchema extends HBaseSchema {
                                                     columnAttrib.isMapKeysAsColumnsAttrib(),
                                                     columnAttrib.isFamilyDefaultAttrib(),
                                                     columnType,
-                                                    columnAttrib.isArray(),
+                                                    columnAttrib.isAnArray(),
                                                     null));
         }
         return varList;

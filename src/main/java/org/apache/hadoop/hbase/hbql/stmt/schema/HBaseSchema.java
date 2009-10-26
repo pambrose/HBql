@@ -177,7 +177,7 @@ public abstract class HBaseSchema extends Schema {
 
     public void addAttribToFamilyNameColumnListMap(ColumnAttrib attrib) throws HBqlException {
 
-        if (attrib.isKeyAttrib() || attrib.isFamilyDefaultAttrib())
+        if (attrib.isAKeyAttrib() || attrib.isFamilyDefaultAttrib())
             return;
 
         final String familyName = attrib.getFamilyName();

@@ -25,7 +25,7 @@ public abstract class ColumnAttrib implements Serializable {
     private final String setter;
     private final boolean mapKeysAsColumns;
     private final boolean familyDefault;
-    private final boolean isArray;
+    private final boolean isAnArray;
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
     private final DefaultArg defaultArg;
@@ -47,7 +47,7 @@ public abstract class ColumnAttrib implements Serializable {
         this.mapKeysAsColumns = mapKeysAsColumns;
         this.familyDefault = familyDefault;
         this.fieldType = fieldType;
-        this.isArray = isArray;
+        this.isAnArray = isArray;
         this.getter = getter;
         this.setter = setter;
         this.defaultArg = this.evaluateDefaultValue(defaultValueExpr);
@@ -72,13 +72,13 @@ public abstract class ColumnAttrib implements Serializable {
         if (defaultValueExpr == null)
             return null;
 
-        if (this.isKeyAttrib())
+        if (this.isAKeyAttrib())
             throw new HBqlException("Default values are not valid for key values: " + this.getNameToUseInExceptions());
 
         if (!defaultValueExpr.isAConstant())
             throw new HBqlException("Default values must be constants: " + this.getNameToUseInExceptions());
 
-        if (this.isArray())
+        if (this.isAnArray())
             throw new HBqlException("Default values are not valid for array values: " + this.getNameToUseInExceptions());
 
         // This will apply only to Annotations
@@ -268,7 +268,7 @@ public abstract class ColumnAttrib implements Serializable {
 
         final Object value = this.getCurrentValue(obj);
 
-        if (this.isArray())
+        if (this.isAnArray())
             return HUtil.getSerialization().getArrayasBytes(this.getFieldType(), value);
         else
             return HUtil.getSerialization().getScalarAsBytes(this.getFieldType(), value);
@@ -279,7 +279,7 @@ public abstract class ColumnAttrib implements Serializable {
         if (this.hasSetter())
             return this.invokeSetterMethod(obj, b);
 
-        if (this.isArray())
+        if (this.isAnArray())
             return HUtil.getSerialization().getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
         else
             return HUtil.getSerialization().getScalarFromBytes(this.getFieldType(), b);
@@ -287,7 +287,7 @@ public abstract class ColumnAttrib implements Serializable {
 
     public Object getValueFromBytes(final Result result) throws HBqlException, ResultMissingColumnException {
 
-        if (this.isKeyAttrib()) {
+        if (this.isAKeyAttrib()) {
             return HUtil.getSerialization().getStringFromBytes(result.getRow());
         }
         else {
@@ -304,7 +304,7 @@ public abstract class ColumnAttrib implements Serializable {
 
             final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
 
-            if (this.isArray())
+            if (this.isAnArray())
                 return HUtil.getSerialization().getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
             else
                 return HUtil.getSerialization().getScalarFromBytes(this.getFieldType(), b);
@@ -372,8 +372,8 @@ public abstract class ColumnAttrib implements Serializable {
         return false;
     }
 
-    public boolean isArray() {
-        return this.isArray;
+    public boolean isAnArray() {
+        return this.isAnArray;
     }
 
     public String getFamilyName() {
@@ -388,7 +388,7 @@ public abstract class ColumnAttrib implements Serializable {
         return this.fieldType;
     }
 
-    public boolean isKeyAttrib() {
+    public boolean isAKeyAttrib() {
         return false;
     }
 }

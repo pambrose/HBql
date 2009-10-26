@@ -45,7 +45,7 @@ public class DefinedSchema extends HBaseSchema {
 
         this.addAttribToFamilyNameColumnListMap(attrib);
 
-        if (attrib.isKeyAttrib()) {
+        if (attrib.isAKeyAttrib()) {
             if (this.getKeyAttrib() != null)
                 throw new HBqlException("Schema " + this + " has multiple instance variables marked as keys");
             this.setKeyAttrib(attrib);

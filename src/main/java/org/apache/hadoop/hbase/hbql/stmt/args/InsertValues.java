@@ -3,25 +3,19 @@ package org.apache.hadoop.hbase.hbql.stmt.args;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.schema.InsertStatement;
-import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
 import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
 import java.util.List;
 
-public class InsertValues {
+public class InsertValues extends InsertValueSource {
 
     private final List<ExprElement> valueList = Lists.newArrayList();
-    private InsertStatement insertStatement = null;
     private boolean calledForValues = false;
 
     public InsertValues(final List<GenericValue> valueList) {
         for (final GenericValue val : valueList)
             this.valueList.add(ExprElement.newExprElement(val, null));
-    }
-
-    public InsertValues(final SelectStatement selectStatement) {
-
     }
 
     private List<ExprElement> getValueList() {
@@ -38,13 +32,8 @@ public class InsertValues {
         return cnt;
     }
 
-    private InsertStatement getInsertStatement() {
-        return this.insertStatement;
-    }
-
     public void validate(final InsertStatement insertStatement) throws HBqlException {
-
-        this.insertStatement = insertStatement;
+        super.validate(insertStatement);
 
         for (final ExprElement element : this.getValueList()) {
             element.validate(this.getInsertStatement().getSchema(), this.getInsertStatement().getConnection());

@@ -46,16 +46,24 @@ public class ExprElement extends ExprContext implements SelectElement {
         return this.getAsName() != null && this.getAsName().length() > 0;
     }
 
-    public boolean isSimpleColumnReference() {
-        return this.getGenericValue(0) instanceof DelegateColumn;
+    public boolean isASimpleColumnReference() {
+        return this.isNotEmpty() && this.getGenericValue(0) instanceof DelegateColumn;
     }
 
     public boolean isAConstant() {
-        return this.getGenericValue(0).isAConstant();
+        return this.isNotEmpty() && this.getGenericValue(0).isAConstant();
     }
 
     public boolean hasAColumnReference() {
-        return this.getGenericValue(0).hasAColumnReference();
+        return this.isNotEmpty() && this.getGenericValue(0).hasAColumnReference();
+    }
+
+    public boolean isAKeyValue() {
+        if (!this.isASimpleColumnReference())
+            return false;
+
+        final DelegateColumn column = (DelegateColumn)this.getGenericValue(0);
+        return column.getColumnAttrib().isAKeyAttrib();
     }
 
     public ColumnAttrib getColumnAttrib() {
@@ -84,7 +92,7 @@ public class ExprElement extends ExprContext implements SelectElement {
 
         // Look up stuff for simple column references
         // TODO this needs to be down for expressions with col refs
-        if (this.isSimpleColumnReference()) {
+        if (this.isASimpleColumnReference()) {
             final String name = ((DelegateColumn)this.getGenericValue(0)).getVariableName();
             this.columnAttrib = this.getSchema().getAttribByVariableName(name);
 
@@ -110,7 +118,7 @@ public class ExprElement extends ExprContext implements SelectElement {
 
     public void assignAsNamesForExpressions(final SelectStatement selectStatement) {
 
-        if (!this.isSimpleColumnReference() && !this.hasAsName()) {
+        if (!this.isASimpleColumnReference() && !this.hasAsName()) {
             while (true) {
                 // Assign a name that is not in use
                 final String newAsName = selectStatement.getNextExpressionName();
@@ -188,7 +196,7 @@ public class ExprElement extends ExprContext implements SelectElement {
                              final Result result) throws HBqlException {
 
         // If it is a calculation, take care of it and then bail since calculations have no history
-        if (!this.isSimpleColumnReference()) {
+        if (!this.isASimpleColumnReference()) {
             this.assignCalculation(obj, result);
             return;
         }

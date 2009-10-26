@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
 import org.apache.hadoop.hbase.hbql.stmt.SchemaStatement;
-import org.apache.hadoop.hbase.hbql.stmt.args.InsertValues;
+import org.apache.hadoop.hbase.hbql.stmt.args.InsertValueSource;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
@@ -19,20 +19,20 @@ import java.util.List;
 public class InsertStatement extends SchemaStatement implements PreparedStatement {
 
     private final List<ExprElement> columnList = Lists.newArrayList();
-    private final InsertValues insertValues;
+    private final InsertValueSource valueSource;
 
     private ConnectionImpl connection = null;
     private HRecord record = null;
 
     public InsertStatement(final String schemaName,
                            final List<GenericValue> columnList,
-                           final InsertValues insertValues) {
+                           final InsertValueSource valueSource) {
         super(schemaName);
 
         for (final GenericValue val : columnList)
             this.columnList.add(ExprElement.newExprElement(val, null));
 
-        this.insertValues = insertValues;
+        this.valueSource = valueSource;
     }
 
     public void setConnection(final ConnectionImpl connection) throws HBqlException {
@@ -44,18 +44,29 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
         for (final ExprElement element : this.getColumnList()) {
             element.validate(this.getSchema(), this.getConnection());
-            if (!element.isSimpleColumnReference())
+            if (!element.isASimpleColumnReference())
                 throw new HBqlException(element.asString() + " is not a column reference in " + this.asString());
         }
 
-        this.getInsertValues().validate(this);
+        if (!this.hasAKeyValue())
+            throw new HBqlException("Missing a key value in attribute list in " + this.asString());
 
-        if (this.getColumnList().size() != this.getInsertValues().getValueCount())
+        this.getValueSource().validate(this);
+
+        if (this.getColumnList().size() != this.getValueSource().getValueCount())
             throw new HBqlException("Number of columns not equal to number of values in " + this.asString());
     }
 
+    private boolean hasAKeyValue() {
+        for (final ExprElement element : this.getColumnList()) {
+            if (!element.isAKeyValue())
+                return true;
+        }
+        return false;
+    }
+
     public int setParameter(final String name, final Object val) throws HBqlException {
-        return this.getInsertValues().setParameter(name, val);
+        return this.getValueSource().setParameter(name, val);
     }
 
     private HRecord getRecord() {
@@ -70,20 +81,20 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         return columnList;
     }
 
-    private InsertValues getInsertValues() {
-        return this.insertValues;
+    private InsertValueSource getValueSource() {
+        return this.valueSource;
     }
 
     public HOutput execute() throws HBqlException, IOException {
 
         int cnt = 0;
 
-        while (this.getInsertValues().hasValues()) {
+        while (this.getValueSource().hasValues()) {
             final HBatch batch = new HBatch();
 
             for (int i = 0; i < this.getColumnList().size(); i++) {
                 this.getRecord().setCurrentValue(this.getColumnList().get(i).asString(),
-                                                 this.getInsertValues().getValue(i));
+                                                 this.getValueSource().getValue(i));
             }
 
             batch.insert(this.getRecord());
@@ -96,7 +107,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
     }
 
     public void reset() {
-        this.getInsertValues().reset();
+        this.getValueSource().reset();
         this.getRecord().reset();
     }
 
@@ -119,7 +130,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
         sbuf.append(") ");
 
-        sbuf.append(this.getInsertValues().asString());
+        sbuf.append(this.getValueSource().asString());
 
         return sbuf.toString();
     }

@@ -24,7 +24,7 @@ public class DefinedAttrib extends ColumnAttrib {
               null,
               columnDescription.getDefaultValue());
 
-        if (this.isKeyAttrib() && this.getFamilyName().length() > 0)
+        if (this.isAKeyAttrib() && this.getFamilyName().length() > 0)
             throw new HBqlException("Key value " + this.getNameToUseInExceptions() + " cannot have a family name");
     }
 
@@ -32,7 +32,7 @@ public class DefinedAttrib extends ColumnAttrib {
         return this.getAliasName() + " - " + this.getFamilyQualifiedName();
     }
 
-    public boolean isKeyAttrib() {
+    public boolean isAKeyAttrib() {
         return this.getFieldType() == FieldType.KeyType;
     }
 

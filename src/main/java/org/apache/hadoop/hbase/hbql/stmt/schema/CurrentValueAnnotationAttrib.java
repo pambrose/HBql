@@ -36,7 +36,7 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
         return this.getField().getAnnotation(HColumn.class);
     }
 
-    public boolean isKeyAttrib() {
+    public boolean isAKeyAttrib() {
         return this.getColumnAnno().key();
     }
 
