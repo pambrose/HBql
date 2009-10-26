@@ -19,7 +19,7 @@ public class SchemaManager {
     private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
     public static HOutput execute(final String str) throws HBqlException {
-        final SchemaManagerStatement cmd = HBql.parseSchemaManagerCommand(str);
+        final SchemaManagerStatement cmd = HBql.parseSchemaManagerStatement(str);
         return cmd.execute();
     }
 

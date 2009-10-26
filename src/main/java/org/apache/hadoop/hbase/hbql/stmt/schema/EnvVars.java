@@ -12,7 +12,7 @@ public class EnvVars {
 
     public static void setPackagePath(final String str) {
         packagePath.clear();
-        packagePath.add("");      // Add an entry for the object as defined in command
+        packagePath.add("");      // Add an entry for the object as defined in statement
         packagePath.addAll(Arrays.asList(str.split(":")));
     }
 

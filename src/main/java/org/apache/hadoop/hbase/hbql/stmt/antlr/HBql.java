@@ -97,7 +97,7 @@ public class HBql {
         }
     }
 
-    public static SchemaManagerStatement parseSchemaManagerCommand(final String str) throws HBqlException {
+    public static SchemaManagerStatement parseSchemaManagerStatement(final String str) throws HBqlException {
         final ShellStatement statement = parse(str);
 
         if (!(statement instanceof SchemaManagerStatement))
