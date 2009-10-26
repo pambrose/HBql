@@ -41,6 +41,8 @@ public class SelectStatement extends SchemaStatement {
             this.getSelectAttribList().addAll(element.getAttribsUsedInExpr());
         }
 
+        this.getWhereArgs().setSchema(this.getSchema());
+
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();
 

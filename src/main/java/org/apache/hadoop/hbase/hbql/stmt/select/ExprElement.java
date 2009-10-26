@@ -66,8 +66,7 @@ public class ExprElement extends ExprContext implements SelectElement {
         if (!this.isASimpleColumnReference())
             return false;
 
-        final DelegateColumn column = (DelegateColumn)this.getGenericValue(0);
-        return column.getColumnAttrib().isAKeyAttrib();
+        return this.getColumnAttrib().isAKeyAttrib();
     }
 
     public ColumnAttrib getColumnAttrib() {

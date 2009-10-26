@@ -59,8 +59,8 @@ public class InsertSelectValues extends InsertValueSource {
     }
 
     public void execute() throws HBqlException, IOException {
-        HQuery<HRecord> query = this.getInsertStatement().getConnection().newHQuery(this.getSelectStatement());
-        HResults<HRecord> results = query.getResults();
+        final HQuery<HRecord> query = this.getInsertStatement().getConnection().newHQuery(this.getSelectStatement());
+        final HResults<HRecord> results = query.getResults();
         this.setResultsIterator(results.iterator());
     }
 

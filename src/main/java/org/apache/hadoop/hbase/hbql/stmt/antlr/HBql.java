@@ -135,7 +135,6 @@ public class HBql {
 
         final SelectStatement selectStatement = (SelectStatement)statement;
         selectStatement.validate(connection);
-        selectStatement.getWhereArgs().setSchema(selectStatement.getSchema());
         return selectStatement;
     }
 }

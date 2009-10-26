@@ -16,7 +16,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
         this.variableName = variableName;
     }
 
-    private GenericColumn getTypedColumn() {
+    public GenericColumn getTypedColumn() {
         return this.typedColumn;
     }
 
@@ -48,6 +48,9 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
         switch (attrib.getFieldType()) {
 
             case KeyType:
+                this.setTypedColumn(new KeyColumn(attrib));
+                break;
+
             case StringType:
                 this.setTypedColumn(new StringColumn(attrib));
                 break;
