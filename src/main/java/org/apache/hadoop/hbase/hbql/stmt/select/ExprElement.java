@@ -72,7 +72,10 @@ public class ExprElement extends ExprContext implements SelectElement {
         if (!this.isASimpleColumnReference())
             return false;
 
-        return this.getColumnAttrib().isAKeyAttrib();
+        if (this.getColumnAttrib() != null)
+            return this.getColumnAttrib().isAKeyAttrib();
+
+        return false;
     }
 
     public ColumnAttrib getColumnAttrib() {

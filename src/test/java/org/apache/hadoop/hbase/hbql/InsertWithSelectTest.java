@@ -42,7 +42,7 @@ public class InsertWithSelectTest extends TestSupport {
             //System.out.println(conn.execute("drop table table3"));
         }
 
-        insertRecords(conn, 3);
+        insertRecords(conn, 10);
     }
 
     private static void insertRecords(final HConnection conn,
@@ -54,7 +54,7 @@ public class InsertWithSelectTest extends TestSupport {
 
         for (int i = 0; i < cnt; i++) {
 
-            int val = 10 + i;//randomVal.nextInt();
+            int val = 10 + i;
 
             final String keyval = HUtil.getZeroPaddedNumber(i, 10);
 

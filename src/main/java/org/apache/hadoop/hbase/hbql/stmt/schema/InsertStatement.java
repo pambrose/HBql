@@ -63,7 +63,9 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
             throw new HBqlException("Number of columns not equal to number of values in " + this.asString());
 
         // TODO do type matching on attribs and values
-
+        for (final ExprElement element : this.getColumnList()) {
+            final ColumnAttrib attrib = element.getColumnAttrib();
+        }
     }
 
     private boolean hasAKeyValue() {
