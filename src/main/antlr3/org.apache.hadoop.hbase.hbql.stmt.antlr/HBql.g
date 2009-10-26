@@ -78,12 +78,20 @@ options {backtrack=true;}
 							{retval = new CreateSchemaStatement($t.text, $a.text, $l.retval);}
 	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaStatement($t.text);}
 	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteStatement($t.text, $w.retval);}
-	| keySELECT c=selectElems keyFROM t=simpleName w=whereValue?			
-							{retval = new SelectStatement($c.retval, $t.text, $w.retval);}
-	| keyINSERT keyINTO t=simpleName LPAREN e1=exprList RPAREN keyVALUES LPAREN e2=exprList RPAREN
-							{retval = new InsertStatement($t.text, $e1.retval, $e2.retval);}
-	| keySET i=simpleName EQ? v=QUOTED	 	{retval = new SetStatement($i.text, $v.text);}
+	| sel=selectStatement				{retval = $sel.retval;}			
+	| keyINSERT keyINTO t=simpleName LPAREN e=exprList RPAREN ins=insertValues
+							{retval = new InsertStatement($t.text, $e.retval, $ins.retval);}
+	| keySET t=simpleName EQ? val=QUOTED	 	{retval = new SetStatement($t.text, $val.text);}
 	;						
+	
+selectStatement returns [SelectStatement retval]
+	: keySELECT c=selectElems keyFROM t=simpleName w=whereValue?
+							{retval = new SelectStatement($c.retval, $t.text, $w.retval);};
+							
+insertValues returns [InsertValues retval]
+	: keyVALUES LPAREN e=exprList RPAREN		{retval = new InsertValues($e.retval);}
+	| sel=selectStatement				{retval = new InsertValues($sel.retval);}			
+	;
 	
 selectDesc[WhereArgs whereArgs] 
 	: k=keysRange					{whereArgs.setKeyRangeArgs($k.retval);}

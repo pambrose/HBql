@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
 import org.apache.hadoop.hbase.hbql.stmt.SchemaStatement;
+import org.apache.hadoop.hbase.hbql.stmt.args.InsertValues;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
@@ -18,21 +19,20 @@ import java.util.List;
 public class InsertStatement extends SchemaStatement implements PreparedStatement {
 
     private final List<ExprElement> columnList = Lists.newArrayList();
-    private final List<ExprElement> valueList = Lists.newArrayList();
+    private final InsertValues insertValues;
 
     private ConnectionImpl connection = null;
     private HRecord record = null;
 
     public InsertStatement(final String schemaName,
                            final List<GenericValue> columnList,
-                           final List<GenericValue> valueList) {
+                           final InsertValues insertValues) {
         super(schemaName);
 
         for (final GenericValue val : columnList)
             this.columnList.add(ExprElement.newExprElement(val, null));
 
-        for (final GenericValue val : valueList)
-            this.valueList.add(ExprElement.newExprElement(val, null));
+        this.insertValues = insertValues;
     }
 
     public void setConnection(final ConnectionImpl connection) throws HBqlException {
@@ -42,40 +42,27 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
     public void validate() throws HBqlException {
 
-        for (final ExprElement val : this.getColumnList()) {
-            val.validate(this.getSchema(), this.getConnection());
-            if (!val.isSimpleColumnReference())
-                throw new HBqlException(val.asString() + " is not a column reference in " + this.asString());
+        for (final ExprElement element : this.getColumnList()) {
+            element.validate(this.getSchema(), this.getConnection());
+            if (!element.isSimpleColumnReference())
+                throw new HBqlException(element.asString() + " is not a column reference in " + this.asString());
         }
 
-        for (final ExprElement val : this.getValueList()) {
-            val.validate(this.getSchema(), this.getConnection());
-            if (val.hasAColumnReference())
-                throw new HBqlException("Column reference " + val.asString() + " now valid in " + this.asString());
-        }
+        this.getInsertValues().validate(this);
 
-        if (this.getColumnList().size() != this.getValueList().size())
+        if (this.getColumnList().size() != this.getInsertValues().getValueCount())
             throw new HBqlException("Number of columns not equal to number of values in " + this.asString());
-
-        // Make sure values do not have column references
-
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
-
-        int cnt = 0;
-
-        for (final ExprElement expr : this.getValueList())
-            cnt += expr.setParameter(name, val);
-
-        return cnt;
+        return this.getInsertValues().setParameter(name, val);
     }
 
     private HRecord getRecord() {
         return this.record;
     }
 
-    private ConnectionImpl getConnection() {
+    public ConnectionImpl getConnection() {
         return this.connection;
     }
 
@@ -83,38 +70,43 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         return columnList;
     }
 
-    private List<ExprElement> getValueList() {
-        return valueList;
+    private InsertValues getInsertValues() {
+        return this.insertValues;
     }
 
     public HOutput execute() throws HBqlException, IOException {
 
-        final HBatch batch = new HBatch();
+        int cnt = 0;
 
-        for (int i = 0; i < this.getColumnList().size(); i++) {
-            this.getRecord().setCurrentValue(this.getColumnList().get(i).asString(),
-                                             this.getValueList().get(i).evaluateConstant(0, false, true));
+        while (this.getInsertValues().hasValues()) {
+            final HBatch batch = new HBatch();
+
+            for (int i = 0; i < this.getColumnList().size(); i++) {
+                this.getRecord().setCurrentValue(this.getColumnList().get(i).asString(),
+                                                 this.getInsertValues().getValue(i));
+            }
+
+            batch.insert(this.getRecord());
+
+            this.getConnection().apply(batch);
+            cnt++;
         }
 
-        batch.insert(this.getRecord());
-
-        this.getConnection().apply(batch);
-
-        return new HOutput("Record inserted");
+        return new HOutput(cnt + " record" + ((cnt > 1) ? "s" : "") + " inserted");
     }
 
     public void reset() {
-
-        for (final ExprElement expr : this.getValueList())
-            expr.reset();
-
+        this.getInsertValues().reset();
         this.getRecord().reset();
     }
 
     public String asString() {
+
         final StringBuilder sbuf = new StringBuilder();
 
-        sbuf.append("INSERT INTO " + this.getSchemaName() + " (");
+        sbuf.append("INSERT INTO ");
+        sbuf.append(this.getSchemaName());
+        sbuf.append(" (");
 
         boolean firstTime = true;
         for (final ExprElement val : this.getColumnList()) {
@@ -125,18 +117,9 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
             sbuf.append(val.asString());
         }
 
-        sbuf.append(") VALUES (");
+        sbuf.append(") ");
 
-        firstTime = true;
-        for (final ExprElement val : this.getValueList()) {
-            if (!firstTime)
-                sbuf.append(", ");
-            firstTime = false;
-
-            sbuf.append(val.asString());
-        }
-
-        sbuf.append(")");
+        sbuf.append(this.getInsertValues().asString());
 
         return sbuf.toString();
     }

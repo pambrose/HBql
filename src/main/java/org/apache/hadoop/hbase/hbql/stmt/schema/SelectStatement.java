@@ -35,10 +35,10 @@ public class SelectStatement extends SchemaStatement {
 
         this.getSelectAttribList().clear();
 
-        for (final SelectElement elem : this.getSelectElementList()) {
-            elem.validate(this.getSchema(), connection);
-            elem.assignAsNamesForExpressions(this);
-            this.getSelectAttribList().addAll(elem.getAttribsUsedInExpr());
+        for (final SelectElement element : this.getSelectElementList()) {
+            element.validate(this.getSchema(), connection);
+            element.assignAsNamesForExpressions(this);
+            this.getSelectAttribList().addAll(element.getAttribsUsedInExpr());
         }
 
         // Make sure there are no duplicate aliases in list
