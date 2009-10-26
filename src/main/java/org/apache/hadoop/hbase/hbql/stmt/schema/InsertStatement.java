@@ -23,6 +23,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
     private ConnectionImpl connection = null;
     private HRecord record = null;
+    private boolean validated = false;
 
     public InsertStatement(final String schemaName,
                            final List<GenericValue> columnList,
@@ -35,12 +36,15 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         this.valueSource = valueSource;
     }
 
-    public void setConnection(final ConnectionImpl connection) throws HBqlException {
-        this.connection = connection;
-        this.record = SchemaManager.newHRecord(this.getSchemaName());
-    }
+    public void validate(final ConnectionImpl conn) throws HBqlException {
 
-    public void validate() throws HBqlException {
+        if (validated)
+            return;
+
+        this.connection = conn;
+        this.record = SchemaManager.newHRecord(this.getSchemaName());
+
+        this.validated = true;
 
         for (final ExprElement element : this.getColumnList()) {
 
@@ -90,7 +94,9 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         return this.valueSource;
     }
 
-    public HOutput execute() throws HBqlException, IOException {
+    public HOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
+
+        this.validate(conn);
 
         int cnt = 0;
 
@@ -107,11 +113,15 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
             batch.insert(this.getRecord());
 
-            this.getConnection().apply(batch);
+            conn.apply(batch);
             cnt++;
         }
 
         return new HOutput(cnt + " record" + ((cnt > 1) ? "s" : "") + " inserted");
+    }
+
+    public HOutput execute() throws HBqlException, IOException {
+        return this.execute(this.getConnection());
     }
 
     public void reset() {

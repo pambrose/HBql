@@ -89,17 +89,13 @@ public class ConnectionImpl implements HConnection {
     }
 
     public HOutput execute(final String str) throws HBqlException, IOException {
-
         final ConnectionStatement statement = HBql.parseConnectionStatement(str);
-
         return statement.execute(this);
     }
 
     public PreparedStatement prepare(final String str) throws HBqlException {
-
         final PreparedStatement stmt = HBql.parsePreparedStatement(str);
-        stmt.setConnection(this);
-        stmt.validate();
+        stmt.validate(this);
         return stmt;
     }
 

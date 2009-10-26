@@ -100,5 +100,12 @@ public class InsertWithSelectTest extends TestSupport {
         System.out.println(output);
 
         showValues();
+
+        output = conn.execute("insert into tab3 " +
+                              "(keyval, val1, val2) select keyval, val1+val1, val2+1 FROM tab3 ");
+
+        System.out.println(output);
+
+        showValues();
     }
 }

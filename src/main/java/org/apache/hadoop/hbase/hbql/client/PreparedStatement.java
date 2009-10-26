@@ -1,10 +1,11 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
+import org.apache.hadoop.hbase.hbql.stmt.ConnectionStatement;
 
 import java.io.IOException;
 
-public interface PreparedStatement {
+public interface PreparedStatement extends ConnectionStatement {
 
     int setParameter(final String name, final Object val) throws HBqlException;
 
@@ -12,7 +13,5 @@ public interface PreparedStatement {
 
     void reset();
 
-    void setConnection(ConnectionImpl connection) throws HBqlException;
-
-    void validate() throws HBqlException;
+    void validate(final ConnectionImpl connection) throws HBqlException;
 }
