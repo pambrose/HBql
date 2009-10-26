@@ -55,6 +55,9 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
         if (this.getColumnList().size() != this.getValueSource().getValueCount())
             throw new HBqlException("Number of columns not equal to number of values in " + this.asString());
+
+        // TODO do type matching on attribs and values
+
     }
 
     private boolean hasAKeyValue() {

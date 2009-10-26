@@ -27,5 +27,7 @@ public interface SelectElement {
 
     boolean hasAsName();
 
+    boolean isAFamilySelect();
+
     String asString();
 }

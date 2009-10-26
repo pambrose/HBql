@@ -42,6 +42,10 @@ public class ExprElement extends ExprContext implements SelectElement {
         return this.asName;
     }
 
+    public boolean isAFamilySelect() {
+        return false;
+    }
+
     public boolean hasAsName() {
         return this.getAsName() != null && this.getAsName().length() > 0;
     }
@@ -220,8 +224,6 @@ public class ExprElement extends ExprContext implements SelectElement {
                         this.getColumnAttrib().setKeysAsColumnsValue(obj, mapKey, kacMap.get(mapKey));
                 }
                 else {
-                    boolean hasvalue = result.containsColumn(this.getFamilyNameBytes(),
-                                                             this.getColumnNameBytes());
                     final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
                     this.getColumnAttrib().setCurrentValue(obj, 0, b);
                 }

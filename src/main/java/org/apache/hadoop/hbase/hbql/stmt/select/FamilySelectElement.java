@@ -71,6 +71,10 @@ public class FamilySelectElement implements SelectElement {
         return false;
     }
 
+    public boolean isAFamilySelect() {
+        return true;
+    }
+
     public String asString() {
         return this.familyName;
     }

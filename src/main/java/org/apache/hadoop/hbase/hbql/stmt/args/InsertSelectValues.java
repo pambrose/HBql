@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.stmt.schema.InsertStatement;
 import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
+import org.apache.hadoop.hbase.hbql.stmt.select.SelectElement;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -30,7 +31,13 @@ public class InsertSelectValues extends InsertValueSource {
     }
 
     public void validate(final InsertStatement insertStatement) throws HBqlException {
+
         super.validate(insertStatement);
+
+        for (final SelectElement element : this.getSelectStatement().getSelectElementList()) {
+            if (element.isAFamilySelect())
+                throw new HBqlException("Family select items are not valid in INSERT statement");
+        }
 
         this.getSelectStatement().validate(this.getInsertStatement().getConnection());
     }
@@ -70,7 +77,9 @@ public class InsertSelectValues extends InsertValueSource {
     }
 
     public Object getValue(final int i) throws HBqlException {
-        return this.getCurrentRecord().get(i);
+        final SelectElement element = this.getSelectStatement().getSelectElementList().get(i);
+        String name = element.asString();
+        return this.getCurrentRecord().getCurrentValue(name);
     }
 
     public boolean hasValues() {
@@ -82,5 +91,4 @@ public class InsertSelectValues extends InsertValueSource {
             return false;
         }
     }
-}
 }
