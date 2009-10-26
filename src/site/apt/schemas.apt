@@ -7,7 +7,7 @@ Schemas
 
     A schema is required to create tables or select, insert and delete records.
 HBql provides two mechanisms for defining schemas: java annotations and
-the {{{commands/create-schema.html}CREATE SCHEMA}} command.
+the {{{statements/create-schema.html}CREATE SCHEMA}} command.
 
 
 *Annotations

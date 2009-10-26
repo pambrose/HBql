@@ -28,7 +28,6 @@ public abstract class ColumnAttrib implements Serializable {
     private final boolean isArray;
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
-    // TODO This is a problem for HBqlFilter
     private final DefaultArg defaultArg;
 
     protected ColumnAttrib(final String familyName,
@@ -55,18 +54,18 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public Object getDefaultValue() throws HBqlException {
-        if (this.defaultArg != null)
-            return this.defaultArg.getValue();
-        else
-            return null;
+        return (this.getDefaultArg() != null) ? this.getDefaultArg().getValue() : null;
     }
 
     // This is necessary before sending off with filter
     public void resetDefaultValue() {
         if (this.defaultArg != null)
-            this.defaultArg.reset();
+            this.getDefaultArg().reset();
     }
 
+    private DefaultArg getDefaultArg() {
+        return this.defaultArg;
+    }
 
     private DefaultArg evaluateDefaultValue(final GenericValue defaultValueExpr) throws HBqlException {
 

@@ -57,8 +57,7 @@ public class DefinedSchema extends HBaseSchema {
         }
     }
 
-    public HRecord newObject(final List<ColumnAttrib> selectAttribList,
-                             final List<SelectElement> selectElementList,
+    public HRecord newObject(final List<SelectElement> selectElementList,
                              final int maxVersions,
                              final Result result) throws HBqlException {
 
@@ -66,7 +65,7 @@ public class DefinedSchema extends HBaseSchema {
         final HRecordImpl newrec = new HRecordImpl(this);
 
         // Assign values
-        this.assignSelectValues(newrec, selectAttribList, selectElementList, maxVersions, result);
+        this.assignSelectValues(newrec, selectElementList, maxVersions, result);
 
         return newrec;
     }

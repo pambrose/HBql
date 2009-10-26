@@ -1,0 +1,34 @@
+    -----
+HBql Commands
+    -----
+    -----
+
+HBql Commands
+
+    * The commands are available in both the shell and the API.
+    
+    * The command keywords are case insensitive.
+    
+
+*{{{statements/create-schema.html}CREATE SCHEMA}}
+
+*{{{statements/create-table.html}CREATE TABLE}}
+
+*{{{statements/disable-table.html}DISABLE TABLE}}
+
+*{{{statements/delete.html}DELETE}}
+
+*{{{statements/describe-table.html}DESCRIBE TABLE}}
+
+*{{{statements/drop-schema.html}DROP SCHEMA}}
+
+*{{{statements/drop-table.html}DROP TABLE}}
+
+*{{{statements/enable-table.html}ENABLE TABLE}}
+
+*{{{statements/list-tables.html}LIST TABLES}}
+
+*{{{statements/select.html}SELECT}}
+
+
+

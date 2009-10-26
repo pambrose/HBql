@@ -18,7 +18,6 @@ public interface SelectElement {
     void assignAsNamesForExpressions(SelectStatement selectStatement);
 
     void assignValues(Object newobj,
-                      List<ColumnAttrib> selectAttribList,
                       int maxVerions,
                       Result result) throws HBqlException;
 

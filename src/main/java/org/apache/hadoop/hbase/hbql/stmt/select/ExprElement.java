@@ -16,7 +16,6 @@ import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
 import org.apache.hadoop.hbase.hbql.stmt.util.Maps;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 
@@ -185,7 +184,6 @@ public class ExprElement extends ExprContext implements SelectElement {
     }
 
     public void assignValues(final Object obj,
-                             final List<ColumnAttrib> selectAttribList,
                              final int maxVerions,
                              final Result result) throws HBqlException {
 

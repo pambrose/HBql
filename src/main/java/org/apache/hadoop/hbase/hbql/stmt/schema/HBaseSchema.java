@@ -53,8 +53,7 @@ public abstract class HBaseSchema extends Schema {
         return HUtil.getSerialization().getStringAsBytes(this.getTableName());
     }
 
-    public abstract Object newObject(final List<ColumnAttrib> selectAttribList,
-                                     final List<SelectElement> selectElementList,
+    public abstract Object newObject(final List<SelectElement> selectElementList,
                                      final int maxVersions,
                                      final Result result) throws HBqlException;
 
@@ -198,7 +197,6 @@ public abstract class HBaseSchema extends Schema {
     }
 
     protected void assignSelectValues(final Object newobj,
-                                      final List<ColumnAttrib> selectAttribList,
                                       final List<SelectElement> selectElementList,
                                       final int maxVersions,
                                       final Result result) throws HBqlException {
@@ -207,7 +205,7 @@ public abstract class HBaseSchema extends Schema {
         this.getKeyAttrib().setCurrentValue(newobj, 0, result.getRow());
 
         for (final SelectElement selectElement : selectElementList)
-            selectElement.assignValues(newobj, selectAttribList, maxVersions, result);
+            selectElement.assignValues(newobj, maxVersions, result);
     }
 
 

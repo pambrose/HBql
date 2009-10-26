@@ -172,8 +172,7 @@ public class ResultsImpl<T> implements HResults<T> {
                                     this.recordCount++;
 
                                     final HBaseSchema schema = getSelectStatement().getSchema();
-                                    final T val = (T)schema.newObject(getSelectStatement().getSelectAttribList(),
-                                                                      getSelectStatement().getSelectElementList(),
+                                    final T val = (T)schema.newObject(getSelectStatement().getSelectElementList(),
                                                                       this.maxVersions,
                                                                       result);
 

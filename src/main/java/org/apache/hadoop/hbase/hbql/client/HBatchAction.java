@@ -47,8 +47,7 @@ public class HBatchAction {
 
         if (this.isInsert())
             table.put(this.getPutValue());
-
-        if (this.isDelete())
+        else if (this.isDelete())
             table.delete(this.getDeleteValue());
     }
 

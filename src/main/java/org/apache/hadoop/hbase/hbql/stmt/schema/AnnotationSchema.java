@@ -343,15 +343,14 @@ public class AnnotationSchema extends HBaseSchema {
         return this.getClazz().newInstance();
     }
 
-    public Object newObject(final List<ColumnAttrib> selectAttribList,
-                            final List<SelectElement> selectElementList,
+    public Object newObject(final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {
 
         try {
             // Create object and assign values
             final Object newobj = this.createNewObject();
-            this.assignSelectValues(newobj, selectAttribList, selectElementList, maxVersions, result);
+            this.assignSelectValues(newobj, selectElementList, maxVersions, result);
             return newobj;
         }
         catch (Exception e) {

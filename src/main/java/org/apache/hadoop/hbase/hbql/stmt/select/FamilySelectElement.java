@@ -116,7 +116,6 @@ public class FamilySelectElement implements SelectElement {
     }
 
     public void assignValues(final Object obj,
-                             final List<ColumnAttrib> selectAttribList,
                              final int maxVersions,
                              final Result result) throws HBqlException {
 
