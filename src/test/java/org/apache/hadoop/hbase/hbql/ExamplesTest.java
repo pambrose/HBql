@@ -3,12 +3,17 @@ package org.apache.hadoop.hbase.hbql;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.HQuery;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 
 import java.io.IOException;
+import java.util.List;
 
 public class ExamplesTest extends TestSupport {
+
+    static HConnection conn = null;
 
     public void showTable() throws HBqlException, IOException {
 
@@ -103,5 +108,28 @@ public class ExamplesTest extends TestSupport {
                               + ")");
         // END SNIPPET: create-schema4
 
+    }
+
+    public void selectAll() throws HBqlException, IOException {
+
+        conn = HConnectionManager.newHConnection();
+
+        SchemaManager.execute("drop schema tab1");
+
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                              + "("
+                              + "keyval key, "
+                              + "f1:val1 string alias val1, "
+                              + "f3:val1 int alias val5, "
+                              + "f3:val2 int alias val6, "
+                              + "f3:val3 int alias val7, "
+                              + "f1:* alias f1default, "
+                              + "f2:* alias f2default, "
+                              + "f3:* alias f3default "
+                              + ")");
+
+        HQuery<HRecord> q1 = conn.newHQuery("SELECT val1, val5 FROM tab1");
+        List<HRecord> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 10);
     }
 }

@@ -33,11 +33,11 @@ public class SelectStatement extends SchemaStatement {
 
     public void validate(final HConnection connection) throws HBqlException {
 
+        this.getSelectAttribList().clear();
+
         for (final SelectElement elem : this.getSelectElementList()) {
             elem.validate(this.getSchema(), connection);
             elem.assignAsNamesForExpressions(this);
-
-            this.getSelectAttribList().clear();
             this.getSelectAttribList().addAll(elem.getAttribsUsedInExpr());
         }
 

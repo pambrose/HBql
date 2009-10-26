@@ -162,6 +162,8 @@ public class ResultsImpl<T> implements HResults<T> {
 
                     if (this.getResultIter() != null) {
 
+                        final HBaseSchema schema = getSelectStatement().getSchema();
+
                         while (this.getResultIter().hasNext()) {
 
                             final Result result = this.getResultIter().next();
@@ -171,7 +173,6 @@ public class ResultsImpl<T> implements HResults<T> {
 
                                     this.recordCount++;
 
-                                    final HBaseSchema schema = getSelectStatement().getSchema();
                                     final T val = (T)schema.newObject(getSelectStatement().getSelectElementList(),
                                                                       this.maxVersions,
                                                                       result);

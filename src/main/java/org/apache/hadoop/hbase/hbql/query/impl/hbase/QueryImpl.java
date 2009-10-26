@@ -31,8 +31,6 @@ public class QueryImpl<T> implements HQuery<T> {
         this.connection = connection;
         this.query = query;
         this.selectStatement = HBql.parseSelectStatement(this.getConnection(), this.getQuery());
-
-        this.getSelectStatement().getWhereArgs().setSchema(this.getSelectStatement().getSchema());
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {

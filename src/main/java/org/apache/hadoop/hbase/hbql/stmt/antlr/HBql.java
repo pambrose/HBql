@@ -133,8 +133,9 @@ public class HBql {
         if (!(statement instanceof SelectStatement))
             throw new HBqlException("Expecting a select statement");
 
-        final SelectStatement args = (SelectStatement)statement;
-        args.validate(connection);
-        return args;
+        final SelectStatement selectStatement = (SelectStatement)statement;
+        selectStatement.validate(connection);
+        selectStatement.getWhereArgs().setSchema(selectStatement.getSchema());
+        return selectStatement;
     }
 }

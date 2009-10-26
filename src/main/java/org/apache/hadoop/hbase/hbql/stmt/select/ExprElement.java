@@ -212,6 +212,8 @@ public class ExprElement extends ExprContext implements SelectElement {
                         this.getColumnAttrib().setKeysAsColumnsValue(obj, mapKey, kacMap.get(mapKey));
                 }
                 else {
+                    boolean hasvalue = result.containsColumn(this.getFamilyNameBytes(),
+                                                             this.getColumnNameBytes());
                     final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
                     this.getColumnAttrib().setCurrentValue(obj, 0, b);
                 }
