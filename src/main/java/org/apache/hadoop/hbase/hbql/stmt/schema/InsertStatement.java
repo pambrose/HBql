@@ -89,7 +89,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
     public HOutput execute() throws HBqlException, IOException {
 
-        HBatch batch = new HBatch();
+        final HBatch batch = new HBatch();
 
         for (int i = 0; i < this.getColumnList().size(); i++) {
             this.getRecord().setCurrentValue(this.getColumnList().get(i).asString(),
@@ -100,9 +100,15 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
         this.getConnection().apply(batch);
 
-        this.getRecord().reset();
+        return new HOutput("Record inserted");
+    }
 
-        return null;
+    public void reset() {
+
+        for (final ExprElement expr : this.getValueList())
+            expr.reset();
+
+        this.getRecord().reset();
     }
 
     public String asString() {

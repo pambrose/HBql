@@ -80,34 +80,22 @@ public class SelectTest extends TestSupport {
 
         for (int i = 0; i < cnt; i++) {
 
-            final HRecord rec = SchemaManager.newHRecord("tab1");
-
             final String keyval = HUtil.getZeroPaddedNumber(i, 10);
             keyList.add(keyval);
-            rec.setCurrentValue("keyval", keyval);
 
             int val5 = randomVal.nextInt();
             String s_val5 = "" + val5;
             val1List.add(s_val5);
             val5List.add(val5);
 
-            rec.setCurrentValue("val1", s_val5);
-            rec.setCurrentValue("val2", s_val5 + " " + msg);
-            rec.setCurrentValue("val5", val5);
-            rec.setCurrentValue("val6", i * 100);
-
             Map<String, String> mapval1 = Maps.newHashMap();
             mapval1.put("mapcol1", "mapcol1 val" + i + " " + msg);
             mapval1.put("mapcol2", "mapcol2 val" + i + " " + msg);
-
-            rec.setCurrentValue("f3mapval1", mapval1);
 
             Map<String, String> mapval2 = Maps.newHashMap();
             mapval2.put("mapcol1-b", "mapcol1-b val" + i + " " + msg);
             mapval2.put("mapcol2-b", "mapcol2-b val" + i + " " + msg);
             mapval2.put("mapcol3-b", "mapcol3-b val" + i + " " + msg);
-
-            rec.setCurrentValue("f3mapval2", mapval2);
 
             int[] intv1 = new int[5];
             val8check = new int[5];
@@ -116,6 +104,14 @@ public class SelectTest extends TestSupport {
                 val8check[j] = intv1[j];
             }
 
+            final HRecord rec = SchemaManager.newHRecord("tab1");
+            rec.setCurrentValue("keyval", keyval);
+            rec.setCurrentValue("val1", s_val5);
+            rec.setCurrentValue("val2", s_val5 + " " + msg);
+            rec.setCurrentValue("val5", val5);
+            rec.setCurrentValue("val6", i * 100);
+            rec.setCurrentValue("f3mapval1", mapval1);
+            rec.setCurrentValue("f3mapval2", mapval2);
             rec.setCurrentValue("val8", intv1);
 
             batch.insert(rec);

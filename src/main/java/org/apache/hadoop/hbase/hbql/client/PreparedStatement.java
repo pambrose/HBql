@@ -10,6 +10,8 @@ public interface PreparedStatement {
 
     HOutput execute() throws HBqlException, IOException;
 
+    void reset();
+
     void setConnection(ConnectionImpl connection) throws HBqlException;
 
     void validate() throws HBqlException;
