@@ -26,7 +26,7 @@ public class DefaultKeyword implements GenericValue {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr, final boolean allowsCollections) throws HBqlException {
-        return null;
+        return DefaultKeyword.class;
     }
 
     public boolean isAConstant() {

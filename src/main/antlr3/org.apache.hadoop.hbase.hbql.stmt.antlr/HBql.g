@@ -44,21 +44,20 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.function.*;
 import org.apache.hadoop.hbase.hbql.stmt.expr.ifthenstmt.*;
 import org.apache.hadoop.hbase.hbql.stmt.expr.instmt.*;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.*;
-import org.apache.hadoop.hbase.hbql.stmt.expr.node.*;
+//import org.apache.hadoop.hbase.hbql.stmt.expr.node.*;
 import org.apache.hadoop.hbase.hbql.stmt.expr.nullcomp.*;
 import org.apache.hadoop.hbase.hbql.stmt.expr.stringpattern.*;
-import org.apache.hadoop.hbase.hbql.stmt.expr.constant.*;
 import org.apache.hadoop.hbase.hbql.stmt.expr.var.*;
 import org.apache.hadoop.hbase.hbql.stmt.*;
-import org.apache.hadoop.hbase.hbql.stmt.antlr.*;
+//import org.apache.hadoop.hbase.hbql.stmt.antlr.*;
 import org.apache.hadoop.hbase.hbql.stmt.args.*;
 import org.apache.hadoop.hbase.hbql.stmt.select.*;
 import org.apache.hadoop.hbase.hbql.stmt.schema.*;
 import org.apache.hadoop.hbase.hbql.stmt.table.*;
 import org.apache.hadoop.hbase.hbql.stmt.misc.*;
 import org.apache.hadoop.hbase.hbql.stmt.util.*;
-import org.apache.hadoop.hbase.hbql.stmt.schema.*;
-import java.util.Date;
+//import org.apache.hadoop.hbase.hbql.stmt.schema.*;
+//import java.util.Date;
 }
 
 @lexer::header {
@@ -304,7 +303,7 @@ insertExprList returns [List<GenericValue> retval]
 
 insertExpr returns [GenericValue retval]
 	: t=topExpr					{retval = $t.retval;} 
-	| keyDEFAULT					{retval = new DefaultConstant();}
+	| keyDEFAULT					{retval = new DefaultKeyword();}
 	;
 					
 schemaDesc returns [Schema retval]

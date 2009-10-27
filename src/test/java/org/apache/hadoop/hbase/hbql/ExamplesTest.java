@@ -80,8 +80,8 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: insert1
         HConnection conn = HConnectionManager.newHConnection();
-        System.out
-                .println(conn.execute("INSERT INTO foo_schema (keyval, val1, val2) VALUES (ZEROPAD(2, 10), 123, 'test val')"));
+        System.out.println(conn.execute("INSERT INTO foo_schema (keyval, val1, val2) "
+                                        + "VALUES (ZEROPAD(2, 10), 123, 'test val')"));
         // END SNIPPET: insert1
 
     }
@@ -91,7 +91,8 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: insert2
         HConnection conn = HConnectionManager.newHConnection();
         System.out
-                .println(conn.execute("INSERT INTO foo_schema (keyval, val1, val2) SELECT keyval, val3, val4 FROM foo2_schema"));
+                .println(conn.execute("INSERT INTO foo_schema (keyval, val1, val2) "
+                                      + "SELECT keyval, val3, val4 FROM foo2_schema"));
         // END SNIPPET: insert2
 
     }

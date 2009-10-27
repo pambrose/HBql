@@ -10,6 +10,7 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
 import org.apache.hadoop.hbase.hbql.stmt.SchemaStatement;
 import org.apache.hadoop.hbase.hbql.stmt.args.InsertValueSource;
+import org.apache.hadoop.hbase.hbql.stmt.expr.literal.DefaultKeyword;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
 import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
@@ -74,14 +75,16 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         for (int i = 0; i < columnsTypeList.size(); i++) {
             final Class<? extends GenericValue> type1 = columnsTypeList.get(i);
             final Class<? extends GenericValue> type2 = valuesTypeList.get(i);
+
+            if (type2 == DefaultKeyword.class)
+                continue;
+
             if (!HUtil.isParentClass(type1, type2))
                 throw new TypeException("Type mismatch in argument " + i
                                         + " expecting " + type1.getSimpleName()
                                         + " but found " + type2.getSimpleName()
                                         + " in " + this.asString());
         }
-
-        return;
     }
 
     private List<Class<? extends GenericValue>> getColumnsTypeList() throws HBqlException {

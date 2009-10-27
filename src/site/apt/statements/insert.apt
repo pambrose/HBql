@@ -8,7 +8,7 @@ INSERT
 *Syntax
 
 ---------------------------
-INSERT INTO schema_name ( column_name [, ...] ) { VALUES ( expression [, ...] ) | query }
+INSERT INTO schema_name ( column_name [, ...] ) { VALUES ( { expression | DEFAULT } [, ...] ) | query }
 ---------------------------
 
 *Description
