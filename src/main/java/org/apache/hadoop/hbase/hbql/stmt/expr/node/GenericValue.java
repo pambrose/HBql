@@ -19,6 +19,8 @@ public interface GenericValue extends Serializable {
 
     boolean isAConstant();
 
+    boolean isDefaultKeyword();
+
     boolean hasAColumnReference();
 
     String asString();

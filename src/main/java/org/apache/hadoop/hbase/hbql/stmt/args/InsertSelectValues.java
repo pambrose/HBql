@@ -70,7 +70,7 @@ public class InsertSelectValues extends InsertValueSource {
         for (final SelectElement element : this.getSelectStatement().getSelectElementList()) {
             if (element instanceof ExprElement) {
                 final ExprElement expr = (ExprElement)element;
-                final Class<? extends GenericValue> type = expr.getExprType();
+                final Class<? extends GenericValue> type = expr.getExpressionType();
                 typeList.add(type);
             }
         }
@@ -89,6 +89,10 @@ public class InsertSelectValues extends InsertValueSource {
         final SelectElement element = this.getSelectStatement().getSelectElementList().get(i);
         final String name = element.getElementName();
         return this.getCurrentRecord().getCurrentValue(name);
+    }
+
+    public boolean isDefaultValue(final int i) throws HBqlException {
+        return false;
     }
 
     public boolean hasValues() {

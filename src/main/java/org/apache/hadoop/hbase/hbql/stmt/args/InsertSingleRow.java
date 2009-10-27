@@ -16,7 +16,7 @@ public class InsertSingleRow extends InsertValueSource {
 
     public InsertSingleRow(final List<GenericValue> valueList) {
         for (final GenericValue val : valueList)
-            this.valueList.add(ExprElement.newExprElement(val, null));
+            this.getValueList().add(ExprElement.newExprElement(val, null));
     }
 
     private List<ExprElement> getValueList() {
@@ -77,14 +77,18 @@ public class InsertSingleRow extends InsertValueSource {
         return sbuf.toString();
     }
 
+    public boolean isDefaultValue(final int i) throws HBqlException {
+        return this.getValueList().get(i).isDefaultKeyword();
+    }
+
     public Object getValue(final int i) throws HBqlException {
-        return this.getValueList().get(i).evaluateConstant(0, false, true);
+        return this.getValueList().get(i).evaluateConstant(0, false, null);
     }
 
     public List<Class<? extends GenericValue>> getValuesTypeList() throws HBqlException {
         final List<Class<? extends GenericValue>> typeList = Lists.newArrayList();
         for (final ExprElement element : this.getValueList()) {
-            final Class<? extends GenericValue> type = element.getExprType();
+            final Class<? extends GenericValue> type = element.getExpressionType();
             typeList.add(type);
         }
         return typeList;

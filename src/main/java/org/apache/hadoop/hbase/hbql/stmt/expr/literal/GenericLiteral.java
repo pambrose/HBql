@@ -24,6 +24,10 @@ public abstract class GenericLiteral<T> implements GenericValue {
         return true;
     }
 
+    public boolean isDefaultKeyword() {
+        return false;
+    }
+
     public boolean hasAColumnReference() {
         return false;
     }

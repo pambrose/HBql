@@ -37,6 +37,10 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         return false;
     }
 
+    public boolean isDefaultKeyword() {
+        return false;
+    }
+
     public boolean hasAColumnReference() {
         return true;
     }

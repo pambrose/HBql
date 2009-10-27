@@ -87,7 +87,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
     private List<Class<? extends GenericValue>> getColumnsTypeList() throws HBqlException {
         final List<Class<? extends GenericValue>> typeList = Lists.newArrayList();
         for (final ExprElement element : this.getColumnList()) {
-            final Class<? extends GenericValue> type = element.getExprType();
+            final Class<? extends GenericValue> type = element.getExpressionType();
             typeList.add(type);
         }
         return typeList;
@@ -140,7 +140,18 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
             for (int i = 0; i < this.getColumnList().size(); i++) {
                 final String name = this.getColumnList().get(i).asString();
-                final Object val = this.getValueSource().getValue(i);
+                final Object val;
+                if (this.getValueSource().isDefaultValue(i)) {
+                    final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
+                    if (!attrib.hasDefaultArg())
+                        throw new HBqlException("No DEFAULT value specified for "
+                                                + attrib.getNameToUseInExceptions()
+                                                + " in " + this.asString());
+                    val = attrib.getDefaultValue();
+                }
+                else {
+                    val = this.getValueSource().getValue(i);
+                }
                 this.getRecord().setCurrentValue(name, val);
             }
 

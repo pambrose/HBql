@@ -71,6 +71,10 @@ public class ExprElement extends ExprContext implements SelectElement {
         return this.getGenericValue().isAConstant();
     }
 
+    public boolean isDefaultKeyword() {
+        return this.getGenericValue().isDefaultKeyword();
+    }
+
     public boolean hasAColumnReference() {
         return this.getGenericValue().hasAColumnReference();
     }
@@ -85,7 +89,7 @@ public class ExprElement extends ExprContext implements SelectElement {
         return false;
     }
 
-    public Class<? extends GenericValue> getExprType() throws HBqlException {
+    public Class<? extends GenericValue> getExpressionType() throws HBqlException {
         return this.getGenericValue().validateTypes(null, false);
     }
 

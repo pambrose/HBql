@@ -129,6 +129,10 @@ public class NamedParameter implements GenericValue {
         return false;
     }
 
+    public boolean isDefaultKeyword() {
+        return false;
+    }
+
     public void setParameter(final Object val) throws HBqlException {
 
         // Reset both values

@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.stmt.expr.constant;
+package org.apache.hadoop.hbase.hbql.stmt.expr.literal;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
  * Date: Oct 26, 2009
  * Time: 11:15:05 PM
  */
-public class DefaultConstant implements GenericValue {
+public class DefaultKeyword implements GenericValue {
 
     public void setExprContext(final ExprContext context) throws HBqlException {
 
@@ -33,12 +33,16 @@ public class DefaultConstant implements GenericValue {
         return true;
     }
 
+    public boolean isDefaultKeyword() {
+        return true;
+    }
+
     public boolean hasAColumnReference() {
         return false;
     }
 
     public String asString() {
-        return "DEFAULT ";
+        return "DEFAULT";
     }
 
     public void reset() {

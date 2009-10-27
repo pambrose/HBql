@@ -25,6 +25,8 @@ public abstract class InsertValueSource {
 
     public abstract Object getValue(int i) throws HBqlException;
 
+    public abstract boolean isDefaultValue(int i) throws HBqlException;
+
     public abstract boolean hasValues();
 
     protected InsertStatement getInsertStatement() {
