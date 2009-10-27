@@ -11,6 +11,7 @@ import org.apache.hadoop.hbase.hbql.stmt.SchemaStatement;
 import org.apache.hadoop.hbase.hbql.stmt.args.InsertValueSource;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
+import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
 import java.io.IOException;
@@ -59,15 +60,21 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
             throw new HBqlException("Missing a key value in attribute list in " + this.asString());
 
         this.getValueSource().validate();
-
-        if (this.getColumnList().size() != this.getValueSource().getValueCount())
-            throw new HBqlException("Number of columns not equal to number of values in " + this.asString());
     }
 
     public void validateTypes() throws HBqlException {
+
         final List<Class<? extends GenericValue>> columnsTypeList = this.getColumnsTypeList();
         final List<Class<? extends GenericValue>> valuesTypeList = this.getValueSource().getValuesTypeList();
-        int k = 0;
+
+        if (columnsTypeList.size() != valuesTypeList.size())
+            throw new HBqlException("Number of columns not equal to number of values in " + this.asString());
+
+        for (int i = 0; i < columnsTypeList.size(); i++)
+            if (!HUtil.isParentClass(columnsTypeList.get(i), valuesTypeList.get(i)))
+                throw new HBqlException("Type mismatch for arg " + i + " in " + this.asString());
+
+        return;
     }
 
     private List<Class<? extends GenericValue>> getColumnsTypeList() throws HBqlException {
