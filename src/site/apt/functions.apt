@@ -1,0 +1,24 @@
+    ------
+    Functions
+    ------
+    ------
+
+Functions
+
+*-------------------+--------------+--------------------------+----------------------------------+--------------------------+
+|| Function         || Return Type || Description             ||Example                          ||Result                   |
+*-------------------+--------------+--------------------------+--------------------------------+--------------------------+
+| trim(string)      | string       | Returns string with leading and trailing whitespace omitted | trim(' val ') |  'val'   |
+*--+--+--+--+
+| upper(string)     | string       | Returns the upper case version of string | upper('val') |  'VAL'   |
+*--+--+--+--+
+| lower(string)     | string       | Returns the lower case version of string | lower('VAL') |  'val'   |
+*--+--+--+--+
+| concat(string1, string2) | string  | Returns the concatenation of string 1 and string2 | concat('VAL', 'val') |  'VALval'   |
+*--+--+--+--+
+| replace(string1, string2, string3) | string  | Returns all occurences of string2 with string3 in string1 | replace('val', 'v', 'l') |  'lal'   |
+*--+--+--+--+
+| substring(string, int1, int2) | string  | Returns the string from 0-based index int1 to int2 in string | sbstring('val', '0', '2') |  'va'   |
+*--+--+--+--+
+
+
