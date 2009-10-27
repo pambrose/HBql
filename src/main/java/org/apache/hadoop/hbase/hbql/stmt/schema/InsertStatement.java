@@ -70,9 +70,12 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         if (columnsTypeList.size() != valuesTypeList.size())
             throw new HBqlException("Number of columns not equal to number of values in " + this.asString());
 
-        for (int i = 0; i < columnsTypeList.size(); i++)
-            if (!HUtil.isParentClass(columnsTypeList.get(i), valuesTypeList.get(i)))
+        for (int i = 0; i < columnsTypeList.size(); i++) {
+            final Class<? extends GenericValue> type1 = columnsTypeList.get(i);
+            final Class<? extends GenericValue> type2 = valuesTypeList.get(i);
+            if (!HUtil.isParentClass(type1, type2))
                 throw new HBqlException("Type mismatch for arg " + i + " in " + this.asString());
+        }
 
         return;
     }

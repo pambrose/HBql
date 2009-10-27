@@ -4,9 +4,13 @@ import org.apache.commons.logging.Log;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.query.io.Serialization;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.ByteValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.CharValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.MapValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.NumberValue;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.ObjectValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.stmt.schema.NumericType;
 
@@ -78,6 +82,15 @@ public class HUtil {
 
         final Class clazz = val.getClass();
 
+        if (HUtil.isParentClass(BooleanValue.class, clazz))
+            return BooleanValue.class;
+
+        if (HUtil.isParentClass(ByteValue.class, clazz))
+            return ByteValue.class;
+
+        if (HUtil.isParentClass(CharValue.class, clazz))
+            return CharValue.class;
+
         if (HUtil.isParentClass(NumberValue.class, clazz))
             return NumberValue.class;
 
@@ -87,8 +100,11 @@ public class HUtil {
         if (HUtil.isParentClass(DateValue.class, clazz))
             return DateValue.class;
 
-        if (HUtil.isParentClass(BooleanValue.class, clazz))
-            return BooleanValue.class;
+        if (HUtil.isParentClass(MapValue.class, clazz))
+            return MapValue.class;
+
+        if (HUtil.isParentClass(ObjectValue.class, clazz))
+            return ObjectValue.class;
 
         return null;
     }

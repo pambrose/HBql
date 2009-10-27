@@ -86,27 +86,26 @@ public class ExprElement extends ExprContext implements SelectElement {
     }
 
     public Class<? extends GenericValue> getExprType() throws HBqlException {
-        this.exprType = this.getGenericValue().validateTypes(null, false);
-        return exprType;
+        return this.getGenericValue().validateTypes(null, false);
     }
 
-    public ColumnAttrib getColumnAttrib() {
+    private ColumnAttrib getColumnAttrib() {
         return this.columnAttrib;
     }
 
-    public String getFamilyName() {
+    private String getFamilyName() {
         return this.familyName;
     }
 
-    public String getColumnName() {
+    private String getColumnName() {
         return this.columnName;
     }
 
-    public byte[] getFamilyNameBytes() {
+    private byte[] getFamilyNameBytes() {
         return this.familyNameBytes;
     }
 
-    public byte[] getColumnNameBytes() {
+    private byte[] getColumnNameBytes() {
         return this.columnNameBytes;
     }
 
