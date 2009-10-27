@@ -45,21 +45,21 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         if (validated)
             return;
 
+        this.validated = true;
+
         this.connection = conn;
         this.record = SchemaManager.newHRecord(this.getSchemaName());
-
-        this.validated = true;
 
         for (final ExprElement element : this.getColumnList()) {
 
             element.validate(this.getSchema(), this.getConnection());
 
             if (!element.isASimpleColumnReference())
-                throw new HBqlException(element.asString() + " is not a column reference in " + this.asString());
+                throw new TypeException(element.asString() + " is not a column reference in " + this.asString());
         }
 
         if (!this.hasAKeyValue())
-            throw new HBqlException("Missing a key value in attribute list in " + this.asString());
+            throw new TypeException("Missing a key value in attribute list in " + this.asString());
 
         this.getValueSource().validate();
     }
@@ -98,7 +98,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
     private boolean hasAKeyValue() {
         for (final ExprElement element : this.getColumnList()) {
-            if (!element.isAKeyValue())
+            if (element.isAKeyValue())
                 return true;
         }
         return false;

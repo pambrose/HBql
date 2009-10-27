@@ -156,5 +156,15 @@ public class InsertWithSelectTest extends TestSupport {
                               "(keyval, val1, val2) " +
                               "values (4, 'aaa', 5) ");
         assertTrue(caught != null && caught == TypeException.class);
+
+        caught = this.execute("insert into tab3 " +
+                              "(val1, val2) " +
+                              "values ('aaa', 5) ");
+        assertTrue(caught != null && caught == TypeException.class);
+
+        caught = this.execute("insert into tab3 " +
+                              "(keyval, 'd', val2) " +
+                              "values (4, 'aaa', 5) ");
+        assertTrue(caught != null && caught == TypeException.class);
     }
 }

@@ -11,13 +11,17 @@ public abstract class InsertValueSource {
 
     private InsertStatement insertStatement = null;
 
-    public abstract int setParameter(String name, Object val) throws HBqlException;
-
-    public abstract void validate() throws HBqlException;
-
     public void setInsertStatement(InsertStatement insertStatement) {
         this.insertStatement = insertStatement;
     }
+
+    protected InsertStatement getInsertStatement() {
+        return this.insertStatement;
+    }
+
+    public abstract int setParameter(String name, Object val) throws HBqlException;
+
+    public abstract void validate() throws HBqlException;
 
     public abstract void reset();
 
@@ -28,10 +32,6 @@ public abstract class InsertValueSource {
     public abstract boolean isDefaultValue(int i) throws HBqlException;
 
     public abstract boolean hasValues();
-
-    protected InsertStatement getInsertStatement() {
-        return this.insertStatement;
-    }
 
     public abstract void execute() throws HBqlException, IOException;
 
