@@ -166,5 +166,10 @@ public class InsertWithSelectTest extends TestSupport {
                               "(keyval, 'd', val2) " +
                               "values (4, 'aaa', 5) ");
         assertTrue(caught != null && caught == TypeException.class);
+
+        caught = this.execute("insert into tab3 " +
+                              "(keyval, val1, val2) " +
+                              "values (ZEROPAD(12, 5), 'aaa', DEFAULT) ");
+        assertTrue(caught != null && caught == HBqlException.class);
     }
 }

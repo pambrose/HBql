@@ -73,11 +73,19 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
             throw new HBqlException("Number of columns not equal to number of values in " + this.asString());
 
         for (int i = 0; i < columnsTypeList.size(); i++) {
+
             final Class<? extends GenericValue> type1 = columnsTypeList.get(i);
             final Class<? extends GenericValue> type2 = valuesTypeList.get(i);
 
-            if (type2 == DefaultKeyword.class)
+            // Skip Default values
+            if (type2 == DefaultKeyword.class) {
+                final String name = this.getColumnList().get(i).asString();
+                final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
+                if (!attrib.hasDefaultArg())
+                    throw new HBqlException("No DEFAULT value specified for " + attrib.getNameToUseInExceptions()
+                                            + " in " + this.asString());
                 continue;
+            }
 
             if (!HUtil.isParentClass(type1, type2))
                 throw new TypeException("Type mismatch in argument " + i
@@ -146,10 +154,6 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
                 final Object val;
                 if (this.getValueSource().isDefaultValue(i)) {
                     final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
-                    if (!attrib.hasDefaultArg())
-                        throw new HBqlException("No DEFAULT value specified for "
-                                                + attrib.getNameToUseInExceptions()
-                                                + " in " + this.asString());
                     val = attrib.getDefaultValue();
                 }
                 else {
