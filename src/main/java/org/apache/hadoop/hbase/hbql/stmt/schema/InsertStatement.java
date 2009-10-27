@@ -65,16 +65,16 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
     }
 
     public void validateTypes() throws HBqlException {
-        final List<FieldType> columnsTypeList = this.getColumnsTypeList();
+        final List<Class<? extends GenericValue>> columnsTypeList = this.getColumnsTypeList();
         final List<Class<? extends GenericValue>> valuesTypeList = this.getValueSource().getValuesTypeList();
         int k = 0;
     }
 
-    private List<FieldType> getColumnsTypeList() {
-        final List<FieldType> typeList = Lists.newArrayList();
+    private List<Class<? extends GenericValue>> getColumnsTypeList() throws HBqlException {
+        final List<Class<? extends GenericValue>> typeList = Lists.newArrayList();
         for (final ExprElement element : this.getColumnList()) {
-            final ColumnAttrib attrib = element.getColumnAttrib();
-            typeList.add(attrib.getFieldType());
+            final Class<? extends GenericValue> type = element.getExprType();
+            typeList.add(type);
         }
         return typeList;
     }
