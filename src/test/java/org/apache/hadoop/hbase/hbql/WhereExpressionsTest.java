@@ -92,6 +92,16 @@ public class WhereExpressionsTest extends TestSupport {
     }
 
     @Test
+    public void randomFunctions() throws HBqlException {
+
+        assertEvalTrue("RANDOMDATE() != NOW()");
+        assertEvalTrue("RANDOMINTEGER() != 23");
+        assertEvalTrue("RANDOMLONG() != 23L");
+        assertEvalTrue("RANDOMFLOAT() != 23.9");
+        assertEvalTrue("RANDOMDOUBLE() != 23.9");
+    }
+
+    @Test
     public void numericCompares() throws HBqlException {
 
         assertEvalTrue("4 < 5");

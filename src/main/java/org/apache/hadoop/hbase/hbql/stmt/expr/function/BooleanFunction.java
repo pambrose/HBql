@@ -35,6 +35,7 @@ public class BooleanFunction extends Function implements BooleanValue {
                     throw new TypeException("Argument should be a column reference in: " + this.asString());
             }
         }
+
         return BooleanValue.class;
         //return super.validateTypes(parentExpr, allowsCollections);
     }
@@ -51,6 +52,10 @@ public class BooleanFunction extends Function implements BooleanValue {
     public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 
         switch (this.getFunctionType()) {
+
+            case RANDOMBOOLEAN: {
+                return Function.randomVal.nextBoolean();
+            }
 
             case DEFINEDINROW: {
                 try {

@@ -136,6 +136,10 @@ public class DateFunction extends Function implements DateValue {
                 return this.dateValue.getValue(object);
             }
 
+            case RANDOMDATE: {
+                return Math.abs(Function.randomVal.nextLong());
+            }
+
             case LONGTODATE: {
                 final Number num = (Number)this.getArg(0).getValue(object);
                 final long val = num.longValue();

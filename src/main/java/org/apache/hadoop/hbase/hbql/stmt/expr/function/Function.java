@@ -19,8 +19,11 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
 
 import java.util.List;
+import java.util.Random;
 
 public abstract class Function extends GenericExpr {
+
+    static Random randomVal = new Random();
 
     public static enum FunctionType {
 
@@ -31,6 +34,7 @@ public abstract class Function extends GenericExpr {
         // Date functions
         DATE(new TypeSignature(DateValue.class, StringValue.class, StringValue.class)),
         LONGTODATE(new TypeSignature(DateValue.class, LongValue.class)),
+        RANDOMDATE(new TypeSignature(DateValue.class)),
 
         // String functions
         TRIM(new TypeSignature(StringValue.class, StringValue.class)),
@@ -52,7 +56,13 @@ public abstract class Function extends GenericExpr {
         FLOAT(new TypeSignature(FloatValue.class, StringValue.class)),
         DOUBLE(new TypeSignature(DoubleValue.class, StringValue.class)),
 
+        RANDOMINTEGER(new TypeSignature(IntegerValue.class)),
+        RANDOMLONG(new TypeSignature(LongValue.class)),
+        RANDOMFLOAT(new TypeSignature(FloatValue.class)),
+        RANDOMDOUBLE(new TypeSignature(DoubleValue.class)),
+
         // Boolean functions
+        RANDOMBOOLEAN(new TypeSignature(BooleanValue.class)),
         DEFINEDINROW(new TypeSignature(BooleanValue.class, GenericValue.class)),
         EVAL(new TypeSignature(BooleanValue.class, StringValue.class));
 

@@ -63,6 +63,22 @@ public class NumberFunction extends Function implements NumberValue {
                 return Double.valueOf(v1);
             }
 
+            case RANDOMINTEGER: {
+                return Function.randomVal.nextInt();
+            }
+
+            case RANDOMLONG: {
+                return Function.randomVal.nextLong();
+            }
+
+            case RANDOMFLOAT: {
+                return Function.randomVal.nextFloat();
+            }
+
+            case RANDOMDOUBLE: {
+                return Function.randomVal.nextDouble();
+            }
+
             default:
                 throw new HBqlException("Invalid function: " + this.getFunctionType());
         }
