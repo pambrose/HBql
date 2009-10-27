@@ -31,7 +31,8 @@ public class InsertWithSelectTest extends TestSupport {
                               + "("
                               + "keyval key, "
                               + "f1:val1 string alias val1, "
-                              + "f1:val2 int alias val2 "
+                              + "f1:val2 int alias val2, "
+                              + "f1:val3 int alias val3 DEFAULT 12 "
                               + ")");
 
         conn = HConnectionManager.newHConnection();
@@ -52,8 +53,8 @@ public class InsertWithSelectTest extends TestSupport {
                                       final int cnt) throws HBqlException, IOException {
 
         PreparedStatement stmt = conn.prepare("insert into tab3 " +
-                                              "(keyval, val1, val2) values " +
-                                              "(:key, :val1, :val2)");
+                                              "(keyval, val1, val2, val3) values " +
+                                              "(:key, :val1, :val2, DEFAULT)");
 
         for (int i = 0; i < cnt; i++) {
 
@@ -70,7 +71,7 @@ public class InsertWithSelectTest extends TestSupport {
 
     private static void showValues() throws HBqlException, IOException {
 
-        final String query1 = "SELECT keyval, val1, val2 FROM tab3";
+        final String query1 = "SELECT keyval, val1, val2, val3 FROM tab3";
 
         HQuery<HRecord> q1 = conn.newHQuery(query1);
 
@@ -82,8 +83,9 @@ public class InsertWithSelectTest extends TestSupport {
             String keyval = (String)rec.getCurrentValue("keyval");
             String val1 = (String)rec.getCurrentValue("val1");
             int val2 = (Integer)rec.getCurrentValue("val2");
+            int val3 = (Integer)rec.getCurrentValue("val3");
 
-            System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2);
+            System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
             rec_cnt++;
         }
 

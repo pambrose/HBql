@@ -34,7 +34,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         super(schemaName);
 
         for (final GenericValue val : columnList)
-            this.columnList.add(ExprElement.newExprElement(val, null));
+            this.getColumnList().add(ExprElement.newExprElement(val, null));
 
         this.valueSource = valueSource;
         this.getValueSource().setInsertStatement(this);
