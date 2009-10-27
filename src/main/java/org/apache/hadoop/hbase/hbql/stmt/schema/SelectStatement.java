@@ -120,6 +120,7 @@ public class SelectStatement extends SchemaStatement {
 
         sbuf.append(" FROM ");
         sbuf.append(this.getSchemaName());
+        sbuf.append(" ");
         sbuf.append(this.getWhereArgs().asString());
 
         return sbuf.toString();

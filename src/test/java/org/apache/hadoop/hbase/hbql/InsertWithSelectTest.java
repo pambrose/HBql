@@ -9,8 +9,10 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -22,7 +24,7 @@ public class InsertWithSelectTest extends TestSupport {
 
     static Random randomVal = new Random();
 
-    // @BeforeClass
+    @BeforeClass
     public static void onetimeSetup() throws HBqlException, IOException {
 
         SchemaManager.execute("CREATE SCHEMA tab3 FOR TABLE table3"
@@ -40,6 +42,7 @@ public class InsertWithSelectTest extends TestSupport {
             System.out.println(conn.execute("delete from tab3"));
             //System.out.println(conn.execute("disable table table3"));
             //System.out.println(conn.execute("drop table table3"));
+            //System.out.println(conn.execute("create table using schema tab3"));
         }
 
         insertRecords(conn, 10);
@@ -83,12 +86,12 @@ public class InsertWithSelectTest extends TestSupport {
             System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2);
             rec_cnt++;
         }
+
+        assertTrue(rec_cnt == 10);
     }
 
     @Test
-    public void selectExpressions() throws HBqlException, IOException {
-
-        onetimeSetup();
+    public void insertWithSelect() throws HBqlException, IOException {
 
         final String q1 = "insert into tab3 " +
                           "(keyval, val1, val2) " +
@@ -108,5 +111,48 @@ public class InsertWithSelectTest extends TestSupport {
         System.out.println(output);
 
         showValues();
+    }
+
+    private Class<? extends Exception> execute(final String str) {
+        Class<? extends Exception> caught = null;
+        try {
+            conn.execute(str);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return e.getClass();
+        }
+        return null;
+    }
+
+    @Test
+    public void insertTypeExceptions() throws HBqlException, IOException {
+
+        Class<? extends Exception> caught;
+
+        caught = this.execute("insert into tab3 " +
+                              "(keyval, val1, val2) " +
+                              "select keyval, DOUBLE(val1+val1), val2+1 FROM tab3 ");
+        assertTrue(caught != null && caught == TypeException.class);
+
+        caught = this.execute("insert into tab3 " +
+                              "(keyval, val1, val2) " +
+                              "select keyval, val2, val1 FROM tab3 ");
+        assertTrue(caught != null && caught == TypeException.class);
+
+        caught = this.execute("insert into tab3 " +
+                              "(keyval, val1, val2) " +
+                              "select keyval, val2 FROM tab3 ");
+        assertTrue(caught != null && caught == HBqlException.class);
+
+        caught = this.execute("insert into tab3 " +
+                              "(keyval, val1, val2) " +
+                              "values ('123', 'aaa', 'ss') ");
+        assertTrue(caught != null && caught == TypeException.class);
+
+        caught = this.execute("insert into tab3 " +
+                              "(keyval, val1, val2) " +
+                              "values (4, 'aaa', 5) ");
+        assertTrue(caught != null && caught == TypeException.class);
     }
 }

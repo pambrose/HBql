@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.hbql.client.HOutput;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
 import org.apache.hadoop.hbase.hbql.stmt.SchemaStatement;
 import org.apache.hadoop.hbase.hbql.stmt.args.InsertValueSource;
@@ -74,7 +75,10 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
             final Class<? extends GenericValue> type1 = columnsTypeList.get(i);
             final Class<? extends GenericValue> type2 = valuesTypeList.get(i);
             if (!HUtil.isParentClass(type1, type2))
-                throw new HBqlException("Type mismatch for arg " + i + " in " + this.asString());
+                throw new TypeException("Type mismatch in argument " + i
+                                        + " expecting " + type1.getSimpleName()
+                                        + " but found " + type2.getSimpleName()
+                                        + " in " + this.asString());
         }
 
         return;
