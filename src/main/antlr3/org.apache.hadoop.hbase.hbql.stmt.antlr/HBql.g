@@ -58,7 +58,6 @@ import org.apache.hadoop.hbase.hbql.stmt.util.*;
 
 @lexer::header {
 package org.apache.hadoop.hbase.hbql.stmt.antlr;
-import org.apache.hadoop.hbase.hbql.stmt.util.*;
 }
 
 commandStmt returns [ShellStatement retval]
@@ -131,7 +130,7 @@ serverFilter returns [ExprTree retval]
 	
 keyRangeList returns [List<KeyRangeArgs.Range> retval]
 @init {retval = Lists.newArrayList();}
-	:  k1=keyRange {retval.add($k1.retval);} (COMMA k2=keyRange {retval.add($k2.retval);})*;
+	: k1=keyRange {retval.add($k1.retval);} (COMMA k2=keyRange {retval.add($k2.retval);})*;
 	
 keyRange returns [KeyRangeArgs.Range retval]
 options {backtrack=true;}	

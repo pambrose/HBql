@@ -48,6 +48,7 @@ public abstract class Function extends GenericExpr {
         // Number functions
         LENGTH(new TypeSignature(IntegerValue.class, StringValue.class)),
         INDEXOF(new TypeSignature(IntegerValue.class, StringValue.class, StringValue.class)),
+
         DATETOLONG(new TypeSignature(LongValue.class, DateValue.class)),
 
         SHORT(new TypeSignature(ShortValue.class, StringValue.class)),

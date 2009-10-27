@@ -3,11 +3,11 @@
     ------
     ------
 
-Functions
+String Functions
 
-*-------------------+--------------+--------------------------+----------------------------------+--------------------------+
-|| Function         || Return Type || Description             ||Example                          ||Result                   |
-*-------------------+--------------+--------------------------+--------------------------------+--------------------------+
+*-------------------+--------------+--------------------------+----------------------------------+---------------------+
+|| Function         || Return Type || Description             ||Example                          ||Result              |
+*--+--+--+--+
 | trim(string)      | string       | Returns string with leading and trailing whitespace omitted | trim(' val ') |  'val'   |
 *--+--+--+--+
 | upper(string)     | string       | Returns the upper case version of string | upper('val') |  'VAL'   |
@@ -18,7 +18,37 @@ Functions
 *--+--+--+--+
 | replace(string1, string2, string3) | string  | Returns all occurences of string2 with string3 in string1 | replace('val', 'v', 'l') |  'lal'   |
 *--+--+--+--+
-| substring(string, int1, int2) | string  | Returns the string from 0-based index int1 to int2 in string | sbstring('val', '0', '2') |  'va'   |
+| substring(string, int1, int2) | string  | Returns the string from 0-based index int1 to int2 in string | substring('val', '0', '2') |  'va'   |
+*--+--+--+--+
+| zeropad(int1, int2) | string | Returns the zero-padded string of int1 with int2 width | zeropad(4, 5) |  '00004'   |
+*--+--+--+--+
+| length(string) | int | Returns the length of string | length('val') |  3   |
+*--+--+--+--+
+| indexof(string1, string2) | int | Returns the 0-based index of string2 in string1 (-1 if not found)| indexof('val', 'v') |  0   |
 *--+--+--+--+
 
+
+Numeric Functions
+
+*-------------------+--------------+--------------------------+----------------------------------+---------------------+
+|| Function         || Return Type || Description             ||Example                          ||Result              |
+*--+--+--+--+
+| short(string)     | short     | Returns short value of string   | short('34')    |  34      |
+*--+--+--+--+
+| integer(string)   | int       | Returns integer value of string | integer('34')  |  34      |
+*--+--+--+--+
+| long(string)      | long      | Returns long value of string    | long('34')     |  34L     |
+*--+--+--+--+
+| float(string)     | float     | Returns float value of string   | float('34.0')  |  34.0F   |
+*--+--+--+--+
+| double(string)    | double    | Returns double value of string  | double('34.0') |  34.0D   |
+*--+--+--+--+
+| randominteger()   | int       | Returns random int value        | randominteger() |  random int value     |
+*--+--+--+--+
+| randomlong()      | long      | Returns random long value       | randomlong()    |  random long value    |
+*--+--+--+--+
+| randomfloat()     | float     | Returns random float value      | randomfloat()   |  random float value   |
+*--+--+--+--+
+| randomdouble()    | double    | Returns random double value     | randomdouble()  |  random double value  |
+*--+--+--+--+
 
