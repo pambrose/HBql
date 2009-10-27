@@ -95,6 +95,7 @@ public class ConnectionImpl implements HConnection {
 
     public PreparedStatement prepare(final String str) throws HBqlException {
         final PreparedStatement stmt = HBql.parsePreparedStatement(str);
+        // Need to call this here to enable setParameters
         stmt.validate(this);
         return stmt;
     }

@@ -4,12 +4,15 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HQuery;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResults;
-import org.apache.hadoop.hbase.hbql.stmt.schema.InsertStatement;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
+import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
 import org.apache.hadoop.hbase.hbql.stmt.select.SelectElement;
+import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 public class InsertSelectValues extends InsertValueSource {
 
@@ -30,9 +33,7 @@ public class InsertSelectValues extends InsertValueSource {
         return this.getSelectStatement().setParameter(name, val);
     }
 
-    public void validate(final InsertStatement insertStatement) throws HBqlException {
-
-        super.validate(insertStatement);
+    public void validate() throws HBqlException {
 
         for (final SelectElement element : this.getSelectStatement().getSelectElementList()) {
             if (element.isAFamilySelect())
@@ -62,6 +63,18 @@ public class InsertSelectValues extends InsertValueSource {
         final HQuery<HRecord> query = this.getInsertStatement().getConnection().newHQuery(this.getSelectStatement());
         final HResults<HRecord> results = query.getResults();
         this.setResultsIterator(results.iterator());
+    }
+
+    public List<Class<? extends GenericValue>> getValuesTypeList() throws HBqlException {
+        final List<Class<? extends GenericValue>> typeList = Lists.newArrayList();
+        for (final SelectElement element : this.getSelectStatement().getSelectElementList()) {
+            if (element instanceof ExprElement) {
+                final ExprElement expr = (ExprElement)element;
+                final Class<? extends GenericValue> type = expr.getExprType();
+                typeList.add(type);
+            }
+        }
+        return typeList;
     }
 
     public void reset() {

@@ -19,9 +19,12 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.NavigableMap;
 
+// ExprElement never has more than a single expr
 public class ExprElement extends ExprContext implements SelectElement {
 
     private String asName;
+
+    private Class<? extends GenericValue> exprType = null;
 
     private ColumnAttrib columnAttrib = null;
     private String familyName = null;
@@ -42,6 +45,10 @@ public class ExprElement extends ExprContext implements SelectElement {
         return this.asName;
     }
 
+    private GenericValue getGenericValue() {
+        return this.getGenericValue(0);
+    }
+
     public String getElementName() {
         if (this.hasAsName())
             return this.getAsName();
@@ -57,15 +64,15 @@ public class ExprElement extends ExprContext implements SelectElement {
     }
 
     public boolean isASimpleColumnReference() {
-        return this.isNotEmpty() && this.getGenericValue(0) instanceof DelegateColumn;
+        return this.getGenericValue() instanceof DelegateColumn;
     }
 
     public boolean isAConstant() {
-        return this.isNotEmpty() && this.getGenericValue(0).isAConstant();
+        return this.getGenericValue().isAConstant();
     }
 
     public boolean hasAColumnReference() {
-        return this.isNotEmpty() && this.getGenericValue(0).hasAColumnReference();
+        return this.getGenericValue().hasAColumnReference();
     }
 
     public boolean isAKeyValue() {
@@ -76,6 +83,11 @@ public class ExprElement extends ExprContext implements SelectElement {
             return this.getColumnAttrib().isAKeyAttrib();
 
         return false;
+    }
+
+    public Class<? extends GenericValue> getExprType() throws HBqlException {
+        this.exprType = this.getGenericValue().validateTypes(null, false);
+        return exprType;
     }
 
     public ColumnAttrib getColumnAttrib() {
@@ -102,10 +114,11 @@ public class ExprElement extends ExprContext implements SelectElement {
 
         this.setSchema(schema);
 
+        // TODO this needs to be done for expressions with col refs
+
         // Look up stuff for simple column references
-        // TODO this needs to be down for expressions with col refs
         if (this.isASimpleColumnReference()) {
-            final String name = ((DelegateColumn)this.getGenericValue(0)).getVariableName();
+            final String name = ((DelegateColumn)this.getGenericValue()).getVariableName();
             this.columnAttrib = this.getSchema().getAttribByVariableName(name);
 
             if (this.getColumnAttrib() != null) {
@@ -282,7 +295,7 @@ public class ExprElement extends ExprContext implements SelectElement {
     }
 
     public String asString() {
-        return this.getGenericValue(0).asString();
+        return this.getGenericValue().asString();
     }
 
     public boolean useHBaseResult() {

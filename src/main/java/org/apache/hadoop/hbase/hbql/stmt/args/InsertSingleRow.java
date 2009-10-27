@@ -1,19 +1,20 @@
 package org.apache.hadoop.hbase.hbql.stmt.args;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.stmt.schema.InsertStatement;
+import org.apache.hadoop.hbase.hbql.stmt.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
 import java.util.List;
 
-public class InsertValues extends InsertValueSource {
+public class InsertSingleRow extends InsertValueSource {
 
     private final List<ExprElement> valueList = Lists.newArrayList();
     private boolean calledForValues = false;
 
-    public InsertValues(final List<GenericValue> valueList) {
+    public InsertSingleRow(final List<GenericValue> valueList) {
         for (final GenericValue val : valueList)
             this.valueList.add(ExprElement.newExprElement(val, null));
     }
@@ -32,12 +33,13 @@ public class InsertValues extends InsertValueSource {
         return cnt;
     }
 
-    public void validate(final InsertStatement insertStatement) throws HBqlException {
+    public void validate() throws HBqlException {
 
-        super.validate(insertStatement);
+        final HBaseSchema schema = this.getInsertStatement().getSchema();
+        final ConnectionImpl conn = this.getInsertStatement().getConnection();
 
         for (final ExprElement element : this.getValueList()) {
-            element.validate(this.getInsertStatement().getSchema(), this.getInsertStatement().getConnection());
+            element.validate(schema, conn);
 
             // Make sure values do not have column references
             if (element.hasAColumnReference())
@@ -83,9 +85,17 @@ public class InsertValues extends InsertValueSource {
         return this.getValueList().get(i).evaluateConstant(0, false, true);
     }
 
+    public List<Class<? extends GenericValue>> getValuesTypeList() throws HBqlException {
+        final List<Class<? extends GenericValue>> typeList = Lists.newArrayList();
+        for (final ExprElement element : this.getValueList()) {
+            final Class<? extends GenericValue> type = element.getExprType();
+            typeList.add(type);
+        }
+        return typeList;
+    }
+
     public boolean hasValues() {
         this.calledForValues = !this.calledForValues;
-
         return this.calledForValues;
     }
 }

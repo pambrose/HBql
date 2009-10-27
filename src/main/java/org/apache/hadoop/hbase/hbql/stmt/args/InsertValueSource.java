@@ -1,9 +1,11 @@
 package org.apache.hadoop.hbase.hbql.stmt.args;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.schema.InsertStatement;
 
 import java.io.IOException;
+import java.util.List;
 
 public abstract class InsertValueSource {
 
@@ -11,7 +13,9 @@ public abstract class InsertValueSource {
 
     public abstract int setParameter(String name, Object val) throws HBqlException;
 
-    public void validate(InsertStatement insertStatement) throws HBqlException {
+    public abstract void validate() throws HBqlException;
+
+    public void setInsertStatement(InsertStatement insertStatement) {
         this.insertStatement = insertStatement;
     }
 
@@ -30,4 +34,6 @@ public abstract class InsertValueSource {
     }
 
     public abstract void execute() throws HBqlException, IOException;
+
+    public abstract List<Class<? extends GenericValue>> getValuesTypeList() throws HBqlException;
 }

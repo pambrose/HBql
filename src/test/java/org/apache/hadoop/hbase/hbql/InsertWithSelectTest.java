@@ -22,7 +22,7 @@ public class InsertWithSelectTest extends TestSupport {
 
     static Random randomVal = new Random();
 
-    //@BeforeClass
+    // @BeforeClass
     public static void onetimeSetup() throws HBqlException, IOException {
 
         SchemaManager.execute("CREATE SCHEMA tab3 FOR TABLE table3"
@@ -90,10 +90,12 @@ public class InsertWithSelectTest extends TestSupport {
 
         onetimeSetup();
 
+        final String q1 = "insert into tab3 " +
+                          "(keyval, val1, val2) " +
+                          "select keyval, val1+val1, val2+1 FROM tab3 ";
         showValues();
 
-        PreparedStatement stmt = conn.prepare("insert into tab3 " +
-                                              "(keyval, val1, val2) select keyval, val1+val1, val2+1 FROM tab3 ");
+        PreparedStatement stmt = conn.prepare(q1);
 
         HOutput output = stmt.execute();
 
@@ -101,8 +103,7 @@ public class InsertWithSelectTest extends TestSupport {
 
         showValues();
 
-        output = conn.execute("insert into tab3 " +
-                              "(keyval, val1, val2) select keyval, val1+val1, val2+1 FROM tab3 ");
+        output = conn.execute(q1);
 
         System.out.println(output);
 

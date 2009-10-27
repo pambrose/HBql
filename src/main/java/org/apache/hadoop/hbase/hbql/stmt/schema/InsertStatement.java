@@ -34,6 +34,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
             this.columnList.add(ExprElement.newExprElement(val, null));
 
         this.valueSource = valueSource;
+        this.getValueSource().setInsertStatement(this);
     }
 
     public void validate(final ConnectionImpl conn) throws HBqlException {
@@ -57,15 +58,25 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         if (!this.hasAKeyValue())
             throw new HBqlException("Missing a key value in attribute list in " + this.asString());
 
-        this.getValueSource().validate(this);
+        this.getValueSource().validate();
 
         if (this.getColumnList().size() != this.getValueSource().getValueCount())
             throw new HBqlException("Number of columns not equal to number of values in " + this.asString());
+    }
 
-        // TODO do type matching on attribs and values
+    public void validateTypes() throws HBqlException {
+        final List<FieldType> columnsTypeList = this.getColumnsTypeList();
+        final List<Class<? extends GenericValue>> valuesTypeList = this.getValueSource().getValuesTypeList();
+        int k = 0;
+    }
+
+    private List<FieldType> getColumnsTypeList() {
+        final List<FieldType> typeList = Lists.newArrayList();
         for (final ExprElement element : this.getColumnList()) {
             final ColumnAttrib attrib = element.getColumnAttrib();
+            typeList.add(attrib.getFieldType());
         }
+        return typeList;
     }
 
     private boolean hasAKeyValue() {
@@ -77,7 +88,10 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
-        return this.getValueSource().setParameter(name, val);
+        final int cnt = this.getValueSource().setParameter(name, val);
+        if (cnt == 0)
+            throw new HBqlException("Parameter name " + name + " does not exist in " + this.asString());
+        return cnt;
     }
 
     private HRecord getRecord() {
@@ -100,11 +114,14 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
         this.validate(conn);
 
+        this.validateTypes();
+
         int cnt = 0;
 
         this.getValueSource().execute();
 
         while (this.getValueSource().hasValues()) {
+
             final HBatch batch = new HBatch();
 
             for (int i = 0; i < this.getColumnList().size(); i++) {

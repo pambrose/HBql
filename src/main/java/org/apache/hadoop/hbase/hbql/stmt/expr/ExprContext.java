@@ -84,10 +84,6 @@ public abstract class ExprContext implements Serializable {
         return this.getExpressionList().get(i);
     }
 
-    protected boolean isNotEmpty() {
-        return this.getExpressionList().size() > 0;
-    }
-
     public Object evaluate(final int i,
                            final boolean allowColumns,
                            final boolean allowsCollections,
