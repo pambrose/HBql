@@ -1,0 +1,22 @@
+    -----
+    INSERT
+    -----
+    -----
+
+INSERT
+
+*Syntax
+
+---------------------------
+INSERT INTO schema_name ( column_name [, ...] ) { VALUES ( expression [, ...] ) | query }
+---------------------------
+
+*Description
+
+    Inserts values into a table.
+
+*Example
+
+%{snippet|id=insert1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+
+%{snippet|id=insert2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

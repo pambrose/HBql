@@ -47,6 +47,7 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.literal.*;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.*;
 import org.apache.hadoop.hbase.hbql.stmt.expr.nullcomp.*;
 import org.apache.hadoop.hbase.hbql.stmt.expr.stringpattern.*;
+import org.apache.hadoop.hbase.hbql.stmt.expr.constant.*;
 import org.apache.hadoop.hbase.hbql.stmt.expr.var.*;
 import org.apache.hadoop.hbase.hbql.stmt.*;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.*;
@@ -89,7 +90,7 @@ selectStatement returns [SelectStatement retval]
 							{retval = new SelectStatement($c.retval, $t.text, $w.retval);};
 							
 insertValues returns [InsertValueSource retval]
-	: keyVALUES LPAREN e=exprList RPAREN		{retval = new InsertValues($e.retval);}
+	: keyVALUES LPAREN e=insertExprList RPAREN	{retval = new InsertSingleRow($e.retval);}
 	| sel=selectStatement				{retval = new InsertSelectValues($sel.retval);}			
 	;
 	
@@ -297,6 +298,15 @@ exprList returns [List<GenericValue> retval]
 @init {retval = Lists.newArrayList();}
 	: i1=topExpr {retval.add($i1.retval);} (COMMA i2=topExpr {retval.add($i2.retval);})*;
 				
+insertExprList returns [List<GenericValue> retval]
+@init {retval = Lists.newArrayList();}
+	: i1=insertExpr {retval.add($i1.retval);} (COMMA i2=insertExpr {retval.add($i2.retval);})*;
+
+insertExpr returns [GenericValue retval]
+	: t=topExpr					{retval = $t.retval;} 
+	| keyDEFAULT					{retval = new DefaultConstant();}
+	;
+					
 schemaDesc returns [Schema retval]
 	: LCURLY a=attribList RCURLY			{retval = newDefinedSchema(input, $a.retval);};
 	

@@ -77,10 +77,6 @@ public class InsertSingleRow extends InsertValueSource {
         return sbuf.toString();
     }
 
-    public int getValueCount() {
-        return this.getValueList().size();
-    }
-
     public Object getValue(final int i) throws HBqlException {
         return this.getValueList().get(i).evaluateConstant(0, false, true);
     }

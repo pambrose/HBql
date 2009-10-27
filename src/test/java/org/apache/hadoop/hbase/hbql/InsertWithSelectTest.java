@@ -114,7 +114,7 @@ public class InsertWithSelectTest extends TestSupport {
     }
 
     private Class<? extends Exception> execute(final String str) {
-        Class<? extends Exception> caught = null;
+
         try {
             conn.execute(str);
         }

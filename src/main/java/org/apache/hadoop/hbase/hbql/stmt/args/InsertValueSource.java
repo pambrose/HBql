@@ -23,8 +23,6 @@ public abstract class InsertValueSource {
 
     public abstract String asString();
 
-    public abstract int getValueCount();
-
     public abstract Object getValue(int i) throws HBqlException;
 
     public abstract boolean hasValues();

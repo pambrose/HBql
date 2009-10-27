@@ -1,13 +1,13 @@
     -----
-HBql Commands
+HBql Statements
     -----
     -----
 
-HBql Commands
+HBql Statements
 
-    * The commands are available in both the shell and the API.
+    * Statements are available in both the shell and the API.
     
-    * The command keywords are case insensitive.
+    * Statement keywords are case insensitive.
     
 
 *{{{statements/create-schema.html}CREATE SCHEMA}}
@@ -25,6 +25,8 @@ HBql Commands
 *{{{statements/drop-table.html}DROP TABLE}}
 
 *{{{statements/enable-table.html}ENABLE TABLE}}
+
+*{{{statements/insert.html}INSERT}}
 
 *{{{statements/list-tables.html}LIST TABLES}}
 
