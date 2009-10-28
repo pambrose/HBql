@@ -57,6 +57,8 @@ public abstract class Function extends GenericExpr {
         FLOAT(new TypeSignature(FloatValue.class, StringValue.class)),
         DOUBLE(new TypeSignature(DoubleValue.class, StringValue.class)),
 
+        ABS(new TypeSignature(NumberValue.class, NumberValue.class)),
+
         RANDOMINTEGER(new TypeSignature(IntegerValue.class)),
         RANDOMLONG(new TypeSignature(LongValue.class)),
         RANDOMFLOAT(new TypeSignature(FloatValue.class)),

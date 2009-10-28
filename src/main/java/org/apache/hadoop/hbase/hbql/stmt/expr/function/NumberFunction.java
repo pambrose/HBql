@@ -59,6 +59,21 @@ public class NumberFunction extends Function implements NumberValue {
                 return Double.valueOf(v1);
             }
 
+            case ABS: {
+                final Number v1 = (Number)this.getArg(0).getValue(object);
+
+                if (v1 instanceof Short)
+                    return Math.abs(v1.shortValue());
+                else if (v1 instanceof Integer)
+                    return Math.abs(v1.intValue());
+                else if (v1 instanceof Long)
+                    return Math.abs(v1.longValue());
+                else if (v1 instanceof Float)
+                    return Math.abs(v1.floatValue());
+                else if (v1 instanceof Double)
+                    return Math.abs(v1.doubleValue());
+            }
+
             case RANDOMINTEGER: {
                 return Function.randomVal.nextInt();
             }

@@ -101,6 +101,8 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalTrue("RANDOMDOUBLE() != 23.9");
 
         assertEvalTrue("substring('val', 0, 2) == 'va'");
+
+        assertEvalTrue("abs(-2) == 2");
     }
 
     @Test
