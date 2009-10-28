@@ -97,11 +97,19 @@ Interval Functions
 *-------------------+--------------+--------------------------+----------------------------------+---------------------+
 || Function         || Return Type || Description             ||Example                          ||Result              |
 *--+--+--+--+
-| definedinrow(column)| boolean | Returns true if column is defined in current row| definedinrow(f1:val1) |  true if f1:val1 is defined in current row |
+| milli(long)| interval | Returns interval equal to long milliseconds| milli(3) |  3 millisecond interval |
 *--+--+--+--+
-| randomboolean()| boolean | Returns random boolean value| randomboolean() |  random boolean value |
+| second(long)| interval | Returns interval equal to long seconds | second(3) |  3 second interval |
 *--+--+--+--+
-| eval(string) | boolean  | Returns the evaluation of string | eval('34 = 34') | true  |
+| hour(long)| interval | Returns interval equal to long hours | hour(3) |  3 hour interval |
 *--+--+--+--+
+| day(long)| interval | Returns interval equal to long days | day(3) |  3 day interval |
+*--+--+--+--+
+| week(long)| interval | Returns interval equal to long weeks | week(3) |  3 week interval |
+*--+--+--+--+
+| year(long)| interval | Returns interval equal to long years | year(3) |  3 year interval |
+*--+--+--+--+
+
+
 
 
