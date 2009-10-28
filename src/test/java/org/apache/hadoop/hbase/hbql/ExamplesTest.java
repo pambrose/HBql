@@ -1,11 +1,11 @@
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
-import org.apache.hadoop.hbase.hbql.client.HQuery;
-import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
+import org.apache.hadoop.hbase.contrib.hbql.client.HConnectionManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
+import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
+import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 
 import java.io.IOException;

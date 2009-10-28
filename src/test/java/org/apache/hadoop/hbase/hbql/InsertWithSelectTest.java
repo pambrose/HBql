@@ -1,16 +1,16 @@
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
-import org.apache.hadoop.hbase.hbql.client.HOutput;
-import org.apache.hadoop.hbase.hbql.client.HQuery;
-import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.HResults;
-import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
+import org.apache.expreval.util.HUtil;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
+import org.apache.hadoop.hbase.contrib.hbql.client.HConnectionManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
+import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
+import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
+import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
+import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
+import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;

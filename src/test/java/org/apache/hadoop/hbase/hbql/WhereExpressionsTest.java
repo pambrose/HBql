@@ -1,10 +1,10 @@
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.InvalidFunctionException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
-import org.apache.hadoop.hbase.hbql.stmt.select.SingleExpression;
+import org.apache.expreval.expr.ExpressionTree;
+import org.apache.expreval.select.SingleExpression;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.client.InvalidFunctionException;
+import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 

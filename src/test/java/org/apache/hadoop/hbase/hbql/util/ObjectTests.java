@@ -1,9 +1,9 @@
 package org.apache.hadoop.hbase.hbql.util;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQuery;
-import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQueryManager;
-import org.apache.hadoop.hbase.hbql.query.object.client.ObjectResults;
+import org.apache.expreval.object.client.ObjectQuery;
+import org.apache.expreval.object.client.ObjectQueryManager;
+import org.apache.expreval.object.client.ObjectResults;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 
 import java.util.Collection;
 

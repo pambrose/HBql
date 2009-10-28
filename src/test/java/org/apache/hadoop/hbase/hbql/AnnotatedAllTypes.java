@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.HColumn;
-import org.apache.hadoop.hbase.hbql.client.HFamily;
-import org.apache.hadoop.hbase.hbql.client.HTable;
+import org.apache.hadoop.hbase.contrib.hbql.client.HColumn;
+import org.apache.hadoop.hbase.contrib.hbql.client.HFamily;
+import org.apache.hadoop.hbase.contrib.hbql.client.HTable;
 
 @HTable(name = "alltypes",
         families = {

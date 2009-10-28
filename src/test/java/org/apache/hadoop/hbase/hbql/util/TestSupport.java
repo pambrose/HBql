@@ -1,18 +1,18 @@
 package org.apache.hadoop.hbase.hbql.util;
 
 import org.antlr.runtime.RecognitionException;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
-import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
-import org.apache.hadoop.hbase.hbql.stmt.antlr.HBqlParser;
-import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
-import org.apache.hadoop.hbase.hbql.stmt.expr.var.GenericColumn;
-import org.apache.hadoop.hbase.hbql.stmt.schema.Schema;
-import org.apache.hadoop.hbase.hbql.stmt.select.SingleExpression;
-import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
+import org.apache.expreval.antlr.HBql;
+import org.apache.expreval.antlr.HBqlParser;
+import org.apache.expreval.expr.ExpressionTree;
+import org.apache.expreval.expr.var.GenericColumn;
+import org.apache.expreval.schema.Schema;
+import org.apache.expreval.select.SingleExpression;
+import org.apache.expreval.statement.args.WhereArgs;
+import org.apache.expreval.util.Lists;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.client.InternalErrorException;
+import org.apache.hadoop.hbase.contrib.hbql.client.ResultMissingColumnException;
+import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 
 import java.util.Date;
 import java.util.List;
