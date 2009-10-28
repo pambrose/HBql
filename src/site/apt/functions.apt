@@ -10,9 +10,9 @@ String Functions
 *--+--+--+--+
 | trim(string)      | string       | Returns string with leading and trailing whitespace omitted | trim(' val ') |  'val'   |
 *--+--+--+--+
-| upper(string)     | string       | Returns the upper case version of string | upper('val') |  'VAL'   |
+| upper(string)     | string       | Returns the uppercase version of string | upper('val') |  'VAL'   |
 *--+--+--+--+
-| lower(string)     | string       | Returns the lower case version of string | lower('VAL') |  'val'   |
+| lower(string)     | string       | Returns the lowercase version of string | lower('VAL') |  'val'   |
 *--+--+--+--+
 | concat(string1, string2) | string  | Returns the concatenation of string 1 and string2 | concat('VAL', 'val') |  'VALval'   |
 *--+--+--+--+
@@ -25,6 +25,8 @@ String Functions
 | length(string) | int | Returns the length of string | length('val') |  3   |
 *--+--+--+--+
 | indexof(string1, string2) | int | Returns the 0-based index of string2 in string1 (-1 if not found)| indexof('val', 'v') |  0   |
+*--+--+--+--+
+| repeat(string, int) | string | Returns the string repeated int times | repeat('abc', 3) |  'abcabcabc'   |
 *--+--+--+--+
 
 

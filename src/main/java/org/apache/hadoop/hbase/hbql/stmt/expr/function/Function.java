@@ -44,6 +44,7 @@ public abstract class Function extends GenericExpr {
         REPLACE(new TypeSignature(StringValue.class, StringValue.class, StringValue.class, StringValue.class)),
         SUBSTRING(new TypeSignature(StringValue.class, StringValue.class, IntegerValue.class, IntegerValue.class)),
         ZEROPAD(new TypeSignature(StringValue.class, LongValue.class, IntegerValue.class)),
+        REPEAT(new TypeSignature(StringValue.class, StringValue.class, IntegerValue.class)),
 
         // Number functions
         LENGTH(new TypeSignature(IntegerValue.class, StringValue.class)),

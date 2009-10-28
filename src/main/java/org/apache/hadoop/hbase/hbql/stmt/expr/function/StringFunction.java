@@ -65,6 +65,15 @@ public class StringFunction extends Function implements StringValue {
                 return HUtil.getZeroPaddedNumber(num, width);
             }
 
+            case REPEAT: {
+                final String val = (String)this.getArg(0).getValue(object);
+                final int cnt = ((Number)this.getArg(1).getValue(object)).intValue();
+                final StringBuilder sbuf = new StringBuilder();
+                for (int i = 0; i < cnt; i++)
+                    sbuf.append(val);
+                return sbuf.toString();
+            }
+
             default:
                 throw new HBqlException("Invalid function: " + this.getFunctionType());
         }
