@@ -2,13 +2,13 @@ package org.apache.hadoop.hbase.hbql.stmt.expr.node;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprContext;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionContext;
 
 import java.io.Serializable;
 
 public interface GenericValue extends Serializable {
 
-    void setExprContext(final ExprContext context) throws HBqlException;
+    void setExprContext(final ExpressionContext context) throws HBqlException;
 
     Object getValue(final Object object) throws HBqlException, ResultMissingColumnException;
 

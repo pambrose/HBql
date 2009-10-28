@@ -10,7 +10,7 @@ import org.apache.hadoop.hbase.hbql.client.HQueryListener;
 import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.stmt.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
 import org.apache.hadoop.hbase.hbql.stmt.select.RowRequest;
@@ -85,7 +85,7 @@ public class ResultsImpl<T> implements HResults<T> {
             return new ResultsIterator<T>() {
 
                 final HTable table = getConnection().getHTable(getSelectStatement().getSchema().getTableName());
-                final ExprTree clientExprTree = getWhereArgs().getClientExprTree();
+                final ExpressionTree clientExprTree = getWhereArgs().getClientExprTree();
                 final Iterator<RowRequest> rowRequestIter = getRowRequestList().iterator();
 
                 int maxVersions = 0;
@@ -96,7 +96,7 @@ public class ResultsImpl<T> implements HResults<T> {
                 // Prime the iterator with the first value
                 T nextObject = fetchNextObject();
 
-                private ExprTree getClientExprTree() {
+                private ExpressionTree getClientExprTree() {
                     return this.clientExprTree;
                 }
 

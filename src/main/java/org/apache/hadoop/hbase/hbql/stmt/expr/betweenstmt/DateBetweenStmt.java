@@ -2,13 +2,13 @@ package org.apache.hadoop.hbase.hbql.stmt.expr.betweenstmt;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.stmt.expr.GenericExpr;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionType;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
 public class DateBetweenStmt extends GenericBetweenStmt {
 
     public DateBetweenStmt(final GenericValue expr, final boolean not, final GenericValue lower, final GenericValue upper) {
-        super(GenericExpr.Type.DATEBETWEEN, not, expr, lower, upper);
+        super(ExpressionType.DATEBETWEEN, not, expr, lower, upper);
     }
 
     public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {

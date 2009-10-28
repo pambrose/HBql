@@ -6,24 +6,21 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
-public class ExprTree extends ExprContext {
+public class ExpressionTree extends ExpressionContext {
 
     private static TypeSignature exprSignature = new TypeSignature(null, BooleanValue.class);
     private boolean useHBaseResult = false;
 
-    private ExprTree(final GenericValue rootValue) {
+    private ExpressionTree(final GenericValue rootValue) {
         super(exprSignature, rootValue);
     }
 
-    public static ExprTree newExprTree(final boolean booleanValue) {
-        return newExprTree(new BooleanLiteral(booleanValue));
+    public static ExpressionTree newExpressionTree(final boolean booleanValue) {
+        return newExpressionTree(new BooleanLiteral(booleanValue));
     }
 
-    public static ExprTree newExprTree(final GenericValue booleanValue) {
-        if (booleanValue == null)
-            return new ExprTree(new BooleanLiteral(true));
-        else
-            return new ExprTree(booleanValue);
+    public static ExpressionTree newExpressionTree(final GenericValue booleanValue) {
+        return new ExpressionTree(booleanValue == null ? new BooleanLiteral(true) : booleanValue);
     }
 
     public Boolean evaluate(final Object object) throws HBqlException, ResultMissingColumnException {

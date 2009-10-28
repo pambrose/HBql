@@ -3,11 +3,12 @@ package org.apache.hadoop.hbase.hbql.stmt.expr.casestmt;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.stmt.expr.DelegateStmt;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionType;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
 public abstract class GenericCaseWhen extends DelegateStmt<GenericCaseWhen> {
 
-    protected GenericCaseWhen(final Type type,
+    protected GenericCaseWhen(final ExpressionType type,
                               final GenericValue arg0,
                               final GenericValue arg1) {
         super(type, arg0, arg1);

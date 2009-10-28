@@ -3,6 +3,7 @@ package org.apache.hadoop.hbase.hbql.stmt.expr.casestmt;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.stmt.expr.DelegateStmt;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionType;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public abstract class GenericCase extends DelegateStmt<GenericCase> {
     private final List<GenericCaseWhen> whenExprList;
     private GenericCaseElse elseExpr;
 
-    protected GenericCase(final Type type, final List<GenericCaseWhen> whenExprList, final GenericCaseElse elseExpr) {
+    protected GenericCase(final ExpressionType type, final List<GenericCaseWhen> whenExprList, final GenericCaseElse elseExpr) {
         super(type);
         this.whenExprList = whenExprList;
         this.elseExpr = elseExpr;

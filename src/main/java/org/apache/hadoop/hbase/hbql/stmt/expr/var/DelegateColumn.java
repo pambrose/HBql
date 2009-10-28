@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.hbql.stmt.expr.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprContext;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionContext;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.schema.ColumnAttrib;
 
@@ -37,7 +37,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
         return this.getTypedColumn().validateTypes(parentExpr, allowsCollections);
     }
 
-    public void setExprContext(final ExprContext context) throws HBqlException {
+    public void setExprContext(final ExpressionContext context) throws HBqlException {
 
         if (context.getSchema() == null)
             throw new HBqlException("Internal error: null schema");

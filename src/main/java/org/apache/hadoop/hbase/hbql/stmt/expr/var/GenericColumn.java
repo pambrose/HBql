@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.stmt.expr.var;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprContext;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionContext;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.MapValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.ObjectValue;
@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.hbql.stmt.schema.FieldType;
 public abstract class GenericColumn<T extends GenericValue> implements GenericValue {
 
     private final ColumnAttrib columnAttrib;
-    private ExprContext exprContext = null;
+    private ExpressionContext expressionContext = null;
 
     protected GenericColumn(final ColumnAttrib attrib) {
         this.columnAttrib = attrib;
@@ -50,13 +50,13 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
             this.getExprContext().reset();
     }
 
-    public void setExprContext(final ExprContext context) throws HBqlException {
-        this.exprContext = context;
+    public void setExprContext(final ExpressionContext context) throws HBqlException {
+        this.expressionContext = context;
         this.getExprContext().addColumnToUsedList(this);
     }
 
-    protected ExprContext getExprContext() {
-        return this.exprContext;
+    protected ExpressionContext getExprContext() {
+        return this.expressionContext;
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,

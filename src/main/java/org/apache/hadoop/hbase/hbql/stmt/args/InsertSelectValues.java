@@ -7,8 +7,8 @@ import org.apache.hadoop.hbase.hbql.client.HResults;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
-import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
 import org.apache.hadoop.hbase.hbql.stmt.select.SelectElement;
+import org.apache.hadoop.hbase.hbql.stmt.select.SingleExpression;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
 import java.io.IOException;
@@ -69,8 +69,8 @@ public class InsertSelectValues extends InsertValueSource {
     public List<Class<? extends GenericValue>> getValuesTypeList() throws HBqlException {
         final List<Class<? extends GenericValue>> typeList = Lists.newArrayList();
         for (final SelectElement element : this.getSelectStatement().getSelectElementList()) {
-            if (element instanceof ExprElement) {
-                final ExprElement expr = (ExprElement)element;
+            if (element instanceof SingleExpression) {
+                final SingleExpression expr = (SingleExpression)element;
                 final Class<? extends GenericValue> type = expr.getExpressionType();
                 typeList.add(type);
             }

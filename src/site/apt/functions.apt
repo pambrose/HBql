@@ -18,7 +18,7 @@ String Functions
 *--+--+--+--+
 | replace(string1, string2, string3) | string  | Returns all occurences of string2 with string3 in string1 | replace('val', 'v', 'l') |  'lal'   |
 *--+--+--+--+
-| substring(string, int1, int2) | string  | Returns the string from 0-based index int1 to int2 in string | substring('val', '0', '2') |  'va'   |
+| substring(string, int1, int2) | string  | Returns the string from 0-based index int1 with length int2 | substring('val', '0', '2') |  'va'   |
 *--+--+--+--+
 | zeropad(int1, int2) | string | Returns the zero-padded string of int1 with int2 width | zeropad(4, 5) |  '00004'   |
 *--+--+--+--+

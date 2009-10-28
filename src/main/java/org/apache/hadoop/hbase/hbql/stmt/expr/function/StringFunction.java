@@ -54,9 +54,9 @@ public class StringFunction extends Function implements StringValue {
             case SUBSTRING: {
                 final String val = (String)this.getArg(0).getValue(object);
                 final int begin = ((Number)this.getArg(1).getValue(object)).intValue();
-                final int end = ((Number)this.getArg(2).getValue(object)).intValue();
+                final int length = ((Number)this.getArg(2).getValue(object)).intValue();
                 this.checkForNull(val);
-                return val.substring(begin, end);
+                return val.substring(begin, begin + length);
             }
 
             case ZEROPAD: {

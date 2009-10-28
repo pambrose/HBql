@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.stmt.expr.calculation;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionType;
 import org.apache.hadoop.hbase.hbql.stmt.expr.Operator;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.NumberValue;
@@ -9,7 +10,7 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.node.NumberValue;
 public class NumberCalculation extends GenericCalculation implements NumberValue {
 
     public NumberCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
-        super(Type.NUMBERCALCULATION, arg0, operator, arg1);
+        super(ExpressionType.NUMBERCALCULATION, arg0, operator, arg1);
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,

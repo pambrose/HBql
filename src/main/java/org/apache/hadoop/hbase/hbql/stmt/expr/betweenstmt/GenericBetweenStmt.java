@@ -1,12 +1,13 @@
 package org.apache.hadoop.hbase.hbql.stmt.expr.betweenstmt;
 
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionType;
 import org.apache.hadoop.hbase.hbql.stmt.expr.NotValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
 public abstract class GenericBetweenStmt extends NotValue<GenericBetweenStmt> implements BooleanValue {
 
-    protected GenericBetweenStmt(final Type type,
+    protected GenericBetweenStmt(final ExpressionType type,
                                  final boolean not,
                                  final GenericValue arg0,
                                  final GenericValue arg1,

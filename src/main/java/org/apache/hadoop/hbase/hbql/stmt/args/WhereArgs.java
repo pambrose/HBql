@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.stmt.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.stmt.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.stmt.select.RowRequest;
@@ -23,8 +23,8 @@ public class WhereArgs {
     private VersionArgs versionArgs = null;
     private LimitArgs scanLimitArgs = null;
     private LimitArgs queryLimitArgs = null;
-    private ExprTree clientExprTree = null;
-    private ExprTree serverExprTree = null;
+    private ExpressionTree clientExprTree = null;
+    private ExpressionTree serverExprTree = null;
 
     private HBaseSchema schema;
 
@@ -133,21 +133,21 @@ public class WhereArgs {
         this.queryLimitArgs = queryLimitArgs;
     }
 
-    public ExprTree getClientExprTree() {
+    public ExpressionTree getClientExprTree() {
         return this.clientExprTree;
     }
 
-    public void setClientExprTree(final ExprTree clientExprTree) {
+    public void setClientExprTree(final ExpressionTree clientExprTree) {
         if (this.getClientExprTree() != null)
             this.addError("Client Where");
         this.clientExprTree = clientExprTree;
     }
 
-    public ExprTree getServerExprTree() {
+    public ExpressionTree getServerExprTree() {
         return serverExprTree;
     }
 
-    public void setServerExprTree(final ExprTree serverExprTree) {
+    public void setServerExprTree(final ExpressionTree serverExprTree) {
         if (this.getServerExprTree() != null)
             this.addError("Server Where");
         this.serverExprTree = serverExprTree;

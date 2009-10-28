@@ -120,11 +120,11 @@ scanLimit returns [LimitArgs retval]
 queryLimit returns [LimitArgs retval]
 	: keyQUERY keyLIMIT v=valPrimary		{retval = new LimitArgs($v.retval);};
 	
-clientFilter returns [ExprTree retval]
+clientFilter returns [ExpressionTree retval]
 	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr	
 							{retval = $w.retval;};
 	
-serverFilter returns [ExprTree retval]
+serverFilter returns [ExpressionTree retval]
 	: keySERVER keyFILTER keyWHERE w=descWhereExpr	
 							{retval = $w.retval;};
 	
@@ -139,11 +139,11 @@ options {backtrack=true;}
 	| q1=valPrimary 				{retval = KeyRangeArgs.newSingleKey($q1.retval);}
 	;
 	
-nodescWhereExpr returns [ExprTree retval]
-	 : e=topExpr					{retval = ExprTree.newExprTree($e.retval);};
+nodescWhereExpr returns [ExpressionTree retval]
+	 : e=topExpr					{retval = ExpressionTree.newExpressionTree($e.retval);};
 
-descWhereExpr returns [ExprTree retval]
-	: s=schemaDesc? e=topExpr			{retval = ExprTree.newExprTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);};
+descWhereExpr returns [ExpressionTree retval]
+	: s=schemaDesc? e=topExpr			{retval = ExpressionTree.newExpressionTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);};
 
 // Expressions
 topExpr returns [GenericValue retval]
@@ -283,7 +283,7 @@ selectElemList returns [List<SelectElement> retval]
 
 selectElem returns [SelectElement retval]
 options {backtrack=true; memoize=true;}	
-	: b=topExpr (keyAS i2=simpleName)?		{$selectElem.retval = ExprElement.newExprElement($b.retval, $i2.text);}
+	: b=topExpr (keyAS i2=simpleName)?		{$selectElem.retval = SingleExpression.newSingleExpression($b.retval, $i2.text);}
 	| f=familyRef					{$selectElem.retval = FamilySelectElement.newFamilyElement($f.text);}
 	;
 

@@ -6,7 +6,7 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprContext;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionContext;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.stmt.schema.ColumnAttrib;
@@ -19,12 +19,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.NavigableMap;
 
-// ExprElement never has more than a single expr
-public class ExprElement extends ExprContext implements SelectElement {
+public class SingleExpression extends ExpressionContext implements SelectElement {
 
     private String asName;
-
-    private Class<? extends GenericValue> exprType = null;
 
     private ColumnAttrib columnAttrib = null;
     private String familyName = null;
@@ -32,13 +29,13 @@ public class ExprElement extends ExprContext implements SelectElement {
     private byte[] familyNameBytes = null;
     private byte[] columnNameBytes = null;
 
-    private ExprElement(final GenericValue genericValue, final String asName) {
+    private SingleExpression(final GenericValue genericValue, final String asName) {
         super(null, genericValue);
         this.asName = asName;
     }
 
-    public static ExprElement newExprElement(final GenericValue expr, final String as) {
-        return new ExprElement(expr, as);
+    public static SingleExpression newSingleExpression(final GenericValue expr, final String as) {
+        return new SingleExpression(expr, as);
     }
 
     public String getAsName() {

@@ -3,11 +3,12 @@ package org.apache.hadoop.hbase.hbql.stmt.expr.ifthenstmt;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.stmt.expr.DelegateStmt;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionType;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
 public abstract class GenericIfThen extends DelegateStmt<GenericIfThen> {
 
-    protected GenericIfThen(final Type type,
+    protected GenericIfThen(final ExpressionType type,
                             final GenericValue arg0,
                             final GenericValue arg1,
                             final GenericValue arg2) {

@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.hbql.stmt.expr.literal;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprContext;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionContext;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
 public abstract class GenericLiteral<T> implements GenericValue {
@@ -36,7 +36,7 @@ public abstract class GenericLiteral<T> implements GenericValue {
 
     }
 
-    public void setExprContext(final ExprContext context) {
+    public void setExprContext(final ExpressionContext context) {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,

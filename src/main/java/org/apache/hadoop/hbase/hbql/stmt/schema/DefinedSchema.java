@@ -7,7 +7,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.stmt.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
@@ -78,7 +78,7 @@ public class DefinedSchema extends HBaseSchema {
     }
 
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
-        final ExprTree exprTree = HBql.parseWhereExpression(query, this);
+        final ExpressionTree exprTree = HBql.parseWhereExpression(query, this);
         return new HBqlFilter(exprTree, -1);
     }
 

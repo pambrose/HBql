@@ -5,19 +5,19 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
 import java.util.List;
 
-public abstract class DelegateStmt<T extends GenericExpr> extends GenericExpr {
+public abstract class DelegateStmt<T extends GenericExpression> extends GenericExpression {
 
     private T typedExpr = null;
 
-    protected DelegateStmt(final GenericExpr.Type type, GenericValue... args) {
+    protected DelegateStmt(final ExpressionType type, GenericValue... args) {
         super(type, args);
     }
 
-    protected DelegateStmt(final Type type, final List<GenericValue> args) {
+    protected DelegateStmt(final ExpressionType type, final List<GenericValue> args) {
         super(type, args);
     }
 
-    protected DelegateStmt(final Type type, final GenericValue arg, final List<GenericValue> argList) {
+    protected DelegateStmt(final ExpressionType type, final GenericValue arg, final List<GenericValue> argList) {
         super(type, arg, argList);
     }
 

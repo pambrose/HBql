@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.hbql.stmt.expr.instmt;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionType;
 import org.apache.hadoop.hbase.hbql.stmt.expr.NotValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
@@ -11,7 +12,7 @@ import java.util.List;
 public abstract class GenericInStmt extends NotValue<GenericInStmt> implements BooleanValue {
 
     protected GenericInStmt(final GenericValue arg0, final boolean not, final List<GenericValue> inList) {
-        super(Type.INSTMT, not, arg0, inList);
+        super(ExpressionType.INSTMT, not, arg0, inList);
     }
 
     protected abstract boolean evaluateInList(final Object object) throws HBqlException, ResultMissingColumnException;

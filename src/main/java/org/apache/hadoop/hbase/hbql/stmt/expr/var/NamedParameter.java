@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.hbql.stmt.expr.var;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprContext;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionContext;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.DoubleLiteral;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class NamedParameter implements GenericValue {
 
-    private ExprContext context = null;
+    private ExpressionContext context = null;
     private GenericValue typedExpr = null;
     private List<GenericValue> typedExprList = null;
 
@@ -108,12 +108,12 @@ public class NamedParameter implements GenericValue {
             return this.getTypedExprList();
     }
 
-    public void setExprContext(final ExprContext context) {
+    public void setExprContext(final ExpressionContext context) {
         this.context = context;
         this.getContext().addNamedParameter(this);
     }
 
-    private ExprContext getContext() {
+    private ExpressionContext getContext() {
         return this.context;
     }
 

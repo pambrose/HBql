@@ -10,7 +10,7 @@ import org.apache.hadoop.hbase.hbql.query.impl.hbase.ConnectionImpl;
 import org.apache.hadoop.hbase.hbql.stmt.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.stmt.SchemaStatement;
 import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.stmt.select.RowRequest;
 
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class DeleteStatement extends SchemaStatement implements ConnectionStatem
                        final WhereArgs where,
                        final RowRequest rowRequest) throws IOException, HBqlException {
 
-        final ExprTree clientExprTree = where.getClientExprTree();
+        final ExpressionTree clientExprTree = where.getClientExprTree();
 
         int cnt = 0;
         for (final Result result : rowRequest.getResultScanner(table)) {

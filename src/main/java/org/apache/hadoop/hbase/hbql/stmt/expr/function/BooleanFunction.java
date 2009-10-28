@@ -4,8 +4,8 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprContext;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionContext;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.var.DelegateColumn;
@@ -36,7 +36,7 @@ public class BooleanFunction extends Function implements BooleanValue {
         //return super.validateTypes(parentExpr, allowsCollections);
     }
 
-    public void setExprContext(final ExprContext context) throws HBqlException {
+    public void setExprContext(final ExpressionContext context) throws HBqlException {
         super.setExprContext(context);
         this.schema = context.getSchema();
     }
@@ -65,7 +65,7 @@ public class BooleanFunction extends Function implements BooleanValue {
 
             case EVAL: {
                 final String exprStr = (String)this.getArg(0).getValue(object);
-                final ExprTree exprTree = HBql.parseWhereExpression(exprStr, this.getSchema());
+                final ExpressionTree exprTree = HBql.parseWhereExpression(exprStr, this.getSchema());
                 return exprTree.evaluate(object);
             }
 

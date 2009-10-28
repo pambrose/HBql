@@ -1,13 +1,13 @@
 package org.apache.hadoop.hbase.hbql.stmt.args;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprContext;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionContext;
 import org.apache.hadoop.hbase.hbql.stmt.expr.TypeSignature;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
 import java.io.Serializable;
 
-public class DefaultArg extends ExprContext implements Serializable {
+public class DefaultArg extends ExpressionContext implements Serializable {
 
     // We have to make vlaue transient because Object is not serializable for hbqlfilter
     // We will compute it again on the server after reset is called

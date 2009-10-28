@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQuery;
 import org.apache.hadoop.hbase.hbql.query.object.client.ObjectQueryListener;
 import org.apache.hadoop.hbase.hbql.query.object.client.ObjectResults;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.stmt.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
@@ -41,10 +41,10 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
         return this.query;
     }
 
-    public ExprTree getExprTree(final Collection<T> objects) throws HBqlException {
+    public ExpressionTree getExprTree(final Collection<T> objects) throws HBqlException {
 
         if (objects == null || objects.size() == 0) {
-            ExprTree exprTree = ExprTree.newExprTree(true);
+            ExpressionTree exprTree = ExpressionTree.newExpressionTree(true);
             exprTree.setSchema(null);
             return exprTree;
         }
@@ -52,7 +52,7 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
         // Grab the first object to derive the schema
         final Object obj = objects.iterator().next();
         final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
-        final ExprTree exprTree = HBql.parseWhereExpression(this.getQuery(), schema);
+        final ExpressionTree exprTree = HBql.parseWhereExpression(this.getQuery(), schema);
         this.applyParameters(exprTree);
         return exprTree;
     }

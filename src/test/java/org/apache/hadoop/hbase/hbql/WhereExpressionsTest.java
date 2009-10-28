@@ -3,8 +3,8 @@ package org.apache.hadoop.hbase.hbql;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidFunctionException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
-import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
+import org.apache.hadoop.hbase.hbql.stmt.select.SingleExpression;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 
@@ -43,7 +43,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void booleanParamExpressions() throws HBqlException {
 
-        ExprTree tree;
+        ExpressionTree tree;
 
         tree = parseExpr(":test");
         tree.setParameter(":test", Boolean.TRUE);
@@ -145,7 +145,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void numericParamExpressions() throws HBqlException {
 
-        ExprTree tree;
+        ExpressionTree tree;
 
         tree = parseExpr(":val1 < :val2");
         tree.setParameter("val1", 4);
@@ -183,7 +183,7 @@ public class WhereExpressionsTest extends TestSupport {
 
     @Test
     public void dateParamCompares() throws HBqlException {
-        ExprTree tree;
+        ExpressionTree tree;
 
         tree = parseExpr("NOW() - DAY(1) = :d1");
         tree.setParameter("d1", new Date());
@@ -213,7 +213,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void stringParamCompares() throws HBqlException {
 
-        ExprTree tree;
+        ExpressionTree tree;
 
         tree = parseExpr("'aaa' = 'a'+:s1");
         tree.setParameter("s1", "aa");
@@ -234,7 +234,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void nullParamCompares() throws HBqlException {
 
-        ExprTree tree;
+        ExpressionTree tree;
 
         tree = parseExpr(":a IS NULL");
         tree.setParameter("a", null);
@@ -296,7 +296,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void numericParamCalculations() throws HBqlException {
 
-        ExprTree tree;
+        ExpressionTree tree;
 
         tree = parseExpr(":a = :b");
         tree.setParameter("a", 8);
@@ -364,7 +364,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void booleanParamFunctions() throws HBqlException {
 
-        ExprTree tree;
+        ExpressionTree tree;
 
         tree = parseExpr(":a CONTAINS :b");
         tree.setParameter("a", "abc");
@@ -464,7 +464,7 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalFalse("('bbb' not between 'bbb' AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
         assertEvalTrue("'bbb' = LOWER('BBB')");
         assertEvalTrue("'ABABAB' = UPPER(CONCAT('aba', 'bab'))");
-        assertEvalTrue("'bbb' = SUBSTRING('BBBbbbAAA', 3, 6)");
+        assertEvalTrue("'bbb' = SUBSTRING('BBBbbbAAA', 3, 3)");
         assertEvalTrue("'AAA' = 'A' + 'A' + 'A'");
         assertEvalTrue("'aaa' = LOWER('A' + 'A' + 'A')");
 
@@ -474,7 +474,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void stringParamFunctions() throws HBqlException {
 
-        ExprTree tree;
+        ExpressionTree tree;
 
         tree = parseExpr(":a between :b AND :c");
         tree.setParameter("a", "bbb");
@@ -551,7 +551,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void intervalParamExpressions() throws HBqlException {
 
-        ExprTree tree;
+        ExpressionTree tree;
 
         tree = parseExpr("NOW() < NOW()+MINUTE(:a)");
         tree.setParameter("a", 1);
@@ -595,7 +595,7 @@ public class WhereExpressionsTest extends TestSupport {
 
         assertTypeAndValue("5.0+ FLOAT('4.0') + LONG('5')", Double.class, 14.0);
 
-        ExprElement elem = parseSelectElement(":a + :b");
+        SingleExpression elem = parseSelectElement(":a + :b");
 
         elem.setParameter("a", (short)2);
         elem.setParameter("b", (short)4);

@@ -8,10 +8,10 @@ import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.stmt.expr.var.GenericColumn;
 import org.apache.hadoop.hbase.hbql.stmt.schema.Schema;
-import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
+import org.apache.hadoop.hbase.hbql.stmt.select.SingleExpression;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
 import java.util.Date;
@@ -55,11 +55,11 @@ public class TestSupport {
         assertTrue(evaluateExprTree(recordObj, expr));
     }
 
-    public static ExprElement parseSelectElement(final String str) throws HBqlException {
+    public static SingleExpression parseSelectElement(final String str) throws HBqlException {
         return HBql.parseSelectElement(str);
     }
 
-    public static void assertTypeAndValue(final ExprElement expr, final Class clazz, final Object val) throws HBqlException {
+    public static void assertTypeAndValue(final SingleExpression expr, final Class clazz, final Object val) throws HBqlException {
         final Object obj = HBql.evaluateSelectElement(expr);
         System.out.println(expr.asString() + " returned value " + obj
                            + " expecting value " + val
@@ -69,7 +69,7 @@ public class TestSupport {
     }
 
     public static void assertTypeAndValue(final String str, final Class clazz, final Object val) throws HBqlException {
-        ExprElement expr = parseSelectElement(str);
+        SingleExpression expr = parseSelectElement(str);
         assertTypeAndValue(expr, clazz, val);
     }
 
@@ -81,27 +81,27 @@ public class TestSupport {
         assertFalse(evaluateExprTree(recordObj, expr));
     }
 
-    public static void assertExprTreeEvalTrue(final ExprTree tree) throws HBqlException {
+    public static void assertExprTreeEvalTrue(final ExpressionTree tree) throws HBqlException {
         assertExprTreeEvalTrue(null, tree);
     }
 
-    public static void assertExprTreeEvalTrue(final Object recordObj, final ExprTree tree) throws HBqlException {
+    public static void assertExprTreeEvalTrue(final Object recordObj, final ExpressionTree tree) throws HBqlException {
         assertTrue(evaluateExprTree(recordObj, tree));
     }
 
-    public static void assertExprTreeEvalFalse(final ExprTree tree) throws HBqlException {
+    public static void assertExprTreeEvalFalse(final ExpressionTree tree) throws HBqlException {
         assertEvalFalse(null, tree);
     }
 
-    public static void assertEvalFalse(final Object recordObj, final ExprTree tree) throws HBqlException {
+    public static void assertEvalFalse(final Object recordObj, final ExpressionTree tree) throws HBqlException {
         assertFalse(evaluateExprTree(recordObj, tree));
     }
 
-    public void assertHasException(final ExprTree tree, final Class clazz) {
+    public void assertHasException(final ExpressionTree tree, final Class clazz) {
         this.assertExprTreeHasException(null, tree, clazz);
     }
 
-    public void assertExprTreeHasException(final Object recordObj, final ExprTree tree, final Class clazz) {
+    public void assertExprTreeHasException(final Object recordObj, final ExpressionTree tree, final Class clazz) {
         Class eclazz = null;
         try {
             evaluateExprTree(recordObj, tree);
@@ -114,7 +114,7 @@ public class TestSupport {
     }
 
     public void assertHasException(final String str, final Class<? extends Exception> clazz) throws HBqlException {
-        final ExprTree tree = parseDescWhereExpr(str, null);
+        final ExpressionTree tree = parseDescWhereExpr(str, null);
         assertExprTreeHasException(null, tree, clazz);
     }
 
@@ -130,22 +130,22 @@ public class TestSupport {
         return HBql.parseExpression(expr);
     }
 
-    public ExprTree parseExpr(final String expr) throws HBqlException {
+    public ExpressionTree parseExpr(final String expr) throws HBqlException {
         return this.parseExpr(null, expr);
     }
 
-    public ExprTree parseExpr(final Object recordObj, final String expr) throws HBqlException {
+    public ExpressionTree parseExpr(final Object recordObj, final String expr) throws HBqlException {
         final Schema schema = SchemaManager.getObjectSchema(recordObj);
         return parseDescWhereExpr(expr, schema);
     }
 
     private static boolean evaluateExprTree(final Object recordObj, final String expr) throws HBqlException {
         final Schema schema = SchemaManager.getObjectSchema(recordObj);
-        final ExprTree tree = parseDescWhereExpr(expr, schema);
+        final ExpressionTree tree = parseDescWhereExpr(expr, schema);
         return evaluateExprTree(recordObj, tree);
     }
 
-    private static boolean evaluateExprTree(final Object recordObj, final ExprTree tree) throws HBqlException {
+    private static boolean evaluateExprTree(final Object recordObj, final ExpressionTree tree) throws HBqlException {
         System.out.println("Evaluating: " + tree.asString());
         try {
             return tree.evaluate(recordObj);
@@ -158,7 +158,7 @@ public class TestSupport {
     private static boolean evaluateExprColumnNames(final String expr, String... vals) {
 
         try {
-            final ExprTree tree = parseDescWhereExpr(expr, null);
+            final ExpressionTree tree = parseDescWhereExpr(expr, null);
             final List<String> valList = Lists.newArrayList(vals);
 
             final List<String> attribList = Lists.newArrayList();
@@ -188,10 +188,10 @@ public class TestSupport {
         }
     }
 
-    public static ExprTree parseDescWhereExpr(final String str, final Schema schema) throws HBqlException {
+    public static ExpressionTree parseDescWhereExpr(final String str, final Schema schema) throws HBqlException {
         try {
             final HBqlParser parser = HBql.newParser(str);
-            final ExprTree exprTree = parser.descWhereExpr();
+            final ExpressionTree exprTree = parser.descWhereExpr();
             exprTree.setSchema(schema);
             return exprTree;
         }

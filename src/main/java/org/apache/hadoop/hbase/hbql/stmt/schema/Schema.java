@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBqlParser;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 import org.apache.hadoop.hbase.hbql.stmt.util.Maps;
 import org.apache.hadoop.hbase.hbql.stmt.util.Sets;
@@ -21,7 +21,7 @@ public abstract class Schema implements Serializable {
     private final Map<String, ColumnAttrib> columnAttribByVariableNameMap = Maps.newHashMap();
     private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
     private List<String> evalList = null;
-    private Map<String, ExprTree> evalMap = null;
+    private Map<String, ExpressionTree> evalMap = null;
     private int exprTreeCacheSize = 25;
     private final String schemaName;
 
@@ -67,7 +67,7 @@ public abstract class Schema implements Serializable {
         }
     }
 
-    private Map<String, ExprTree> getEvalMap() {
+    private Map<String, ExpressionTree> getEvalMap() {
 
         if (this.evalMap == null) {
             synchronized (this) {
@@ -103,16 +103,16 @@ public abstract class Schema implements Serializable {
             this.exprTreeCacheSize = size;
 
             // Reset existing cache
-            final Map<String, ExprTree> map = this.getEvalMap();
+            final Map<String, ExpressionTree> map = this.getEvalMap();
             final List<String> list = this.getEvalList();
             map.clear();
             list.clear();
         }
     }
 
-    public ExprTree getExprTree(final String str) throws RecognitionException {
-        final Map<String, ExprTree> map = this.getEvalMap();
-        ExprTree exprTree = map.get(str);
+    public ExpressionTree getExprTree(final String str) throws RecognitionException {
+        final Map<String, ExpressionTree> map = this.getEvalMap();
+        ExpressionTree exprTree = map.get(str);
         if (exprTree == null) {
             final HBqlParser parser = HBql.newParser(str);
             exprTree = parser.nodescWhereExpr();
@@ -125,9 +125,9 @@ public abstract class Schema implements Serializable {
         return exprTree;
     }
 
-    private synchronized void addToExprTreeCache(final String exprStr, final ExprTree exprTree) {
+    private synchronized void addToExprTreeCache(final String exprStr, final ExpressionTree exprTree) {
 
-        final Map<String, ExprTree> map = this.getEvalMap();
+        final Map<String, ExpressionTree> map = this.getEvalMap();
 
         if (!map.containsKey(exprStr)) {
 

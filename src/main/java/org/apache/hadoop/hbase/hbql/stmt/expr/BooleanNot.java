@@ -7,7 +7,7 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
-public class BooleanNot extends GenericExpr implements BooleanValue {
+public class BooleanNot extends GenericExpression implements BooleanValue {
 
     private final boolean not;
 

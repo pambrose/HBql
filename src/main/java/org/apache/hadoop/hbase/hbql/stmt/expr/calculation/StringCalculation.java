@@ -2,13 +2,14 @@ package org.apache.hadoop.hbase.hbql.stmt.expr.calculation;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionType;
 import org.apache.hadoop.hbase.hbql.stmt.expr.Operator;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
 public class StringCalculation extends GenericCalculation {
 
     public StringCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
-        super(Type.STRINGCALCULATION, arg0, operator, arg1);
+        super(ExpressionType.STRINGCALCULATION, arg0, operator, arg1);
     }
 
     public String getValue(final Object object) throws HBqlException, ResultMissingColumnException {

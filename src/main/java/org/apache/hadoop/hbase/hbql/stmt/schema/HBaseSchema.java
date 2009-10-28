@@ -6,7 +6,7 @@ import org.apache.hadoop.hbase.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.stmt.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
@@ -209,12 +209,12 @@ public abstract class HBaseSchema extends Schema {
     }
 
 
-    public HBqlFilter getHBqlFilter(final ExprTree origExprTree, final long scanLimit) throws HBqlException {
+    public HBqlFilter getHBqlFilter(final ExpressionTree origExprTree, final long scanLimit) throws HBqlException {
 
         if (origExprTree == null && scanLimit == 0)
             return null;
 
-        final ExprTree exprTree = (origExprTree == null) ? ExprTree.newExprTree(true) : origExprTree;
+        final ExpressionTree exprTree = (origExprTree == null) ? ExpressionTree.newExpressionTree(true) : origExprTree;
 
         final DefinedSchema definedSchema = this.getDefinedSchemaEquivalent();
         exprTree.setSchema(definedSchema);

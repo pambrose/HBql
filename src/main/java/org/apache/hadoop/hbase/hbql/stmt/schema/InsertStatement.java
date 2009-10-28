@@ -12,7 +12,7 @@ import org.apache.hadoop.hbase.hbql.stmt.SchemaStatement;
 import org.apache.hadoop.hbase.hbql.stmt.args.InsertValueSource;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.DefaultKeyword;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
+import org.apache.hadoop.hbase.hbql.stmt.select.SingleExpression;
 import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class InsertStatement extends SchemaStatement implements PreparedStatement {
 
-    private final List<ExprElement> columnList = Lists.newArrayList();
+    private final List<SingleExpression> columnList = Lists.newArrayList();
     private final InsertValueSource valueSource;
 
     private ConnectionImpl connection = null;
@@ -34,7 +34,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         super(schemaName);
 
         for (final GenericValue val : columnList)
-            this.getColumnList().add(ExprElement.newExprElement(val, null));
+            this.getColumnList().add(SingleExpression.newSingleExpression(val, null));
 
         this.valueSource = valueSource;
         this.getValueSource().setInsertStatement(this);
@@ -50,7 +50,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         this.connection = conn;
         this.record = SchemaManager.newHRecord(this.getSchemaName());
 
-        for (final ExprElement element : this.getColumnList()) {
+        for (final SingleExpression element : this.getColumnList()) {
 
             element.validate(this.getSchema(), this.getConnection());
 
@@ -97,7 +97,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
     private List<Class<? extends GenericValue>> getColumnsTypeList() throws HBqlException {
         final List<Class<? extends GenericValue>> typeList = Lists.newArrayList();
-        for (final ExprElement element : this.getColumnList()) {
+        for (final SingleExpression element : this.getColumnList()) {
             final Class<? extends GenericValue> type = element.getExpressionType();
             typeList.add(type);
         }
@@ -105,7 +105,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
     }
 
     private boolean hasAKeyValue() {
-        for (final ExprElement element : this.getColumnList()) {
+        for (final SingleExpression element : this.getColumnList()) {
             if (element.isAKeyValue())
                 return true;
         }
@@ -127,7 +127,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         return this.connection;
     }
 
-    private List<ExprElement> getColumnList() {
+    private List<SingleExpression> getColumnList() {
         return columnList;
     }
 
@@ -189,7 +189,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         sbuf.append(" (");
 
         boolean firstTime = true;
-        for (final ExprElement val : this.getColumnList()) {
+        for (final SingleExpression val : this.getColumnList()) {
             if (!firstTime)
                 sbuf.append(", ");
             firstTime = false;

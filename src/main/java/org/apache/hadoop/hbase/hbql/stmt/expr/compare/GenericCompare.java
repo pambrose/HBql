@@ -4,13 +4,13 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.stmt.expr.GenericExpr;
+import org.apache.hadoop.hbase.hbql.stmt.expr.GenericExpression;
 import org.apache.hadoop.hbase.hbql.stmt.expr.Operator;
 import org.apache.hadoop.hbase.hbql.stmt.expr.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
-public abstract class GenericCompare extends GenericExpr implements BooleanValue {
+public abstract class GenericCompare extends GenericExpression implements BooleanValue {
 
     private final Operator operator;
 

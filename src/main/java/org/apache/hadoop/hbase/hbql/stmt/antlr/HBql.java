@@ -13,11 +13,11 @@ import org.apache.hadoop.hbase.hbql.stmt.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.stmt.SchemaManagerStatement;
 import org.apache.hadoop.hbase.hbql.stmt.ShellStatement;
 import org.apache.hadoop.hbase.hbql.stmt.args.WhereArgs;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.schema.Schema;
 import org.apache.hadoop.hbase.hbql.stmt.schema.SelectStatement;
-import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
+import org.apache.hadoop.hbase.hbql.stmt.select.SingleExpression;
 
 public class HBql {
 
@@ -28,7 +28,7 @@ public class HBql {
         return new HBqlParser(tokens);
     }
 
-    public static ExprTree parseWhereExpression(final String str, final Schema schema) throws HBqlException {
+    public static ExpressionTree parseWhereExpression(final String str, final Schema schema) throws HBqlException {
         try {
             return schema.getExprTree(str);
         }
@@ -55,10 +55,10 @@ public class HBql {
         }
     }
 
-    public static ExprElement parseSelectElement(final String str) throws HBqlException {
+    public static SingleExpression parseSelectElement(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newParser(str);
-            final ExprElement elem = (ExprElement)parser.selectElem();
+            final SingleExpression elem = (SingleExpression)parser.selectElem();
             elem.setSchema(null);
             return elem;
         }
@@ -68,7 +68,7 @@ public class HBql {
         }
     }
 
-    public static Object evaluateSelectElement(final ExprElement elem) throws HBqlException {
+    public static Object evaluateSelectElement(final SingleExpression elem) throws HBqlException {
         return elem.getValue(null);
     }
 

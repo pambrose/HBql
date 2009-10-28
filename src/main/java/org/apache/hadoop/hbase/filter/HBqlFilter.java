@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.HRecordImpl;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.stmt.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.stmt.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.stmt.schema.FieldType;
@@ -46,12 +46,12 @@ public class HBqlFilter implements Filter {
 
     private static final Log LOG = LogFactory.getLog(HBqlFilter.class.getName());
 
-    private ExprTree exprTree;
+    private ExpressionTree exprTree;
     private long scanLimit = -1;
     private long recordCount = 0;
     public transient HRecordImpl hrecord = new HRecordImpl((HBaseSchema)null);
 
-    public HBqlFilter(final ExprTree exprTree, final long scanLimit) {
+    public HBqlFilter(final ExpressionTree exprTree, final long scanLimit) {
         this.exprTree = exprTree;
         this.scanLimit = scanLimit;
         this.recordCount = 0;
@@ -69,7 +69,7 @@ public class HBqlFilter implements Filter {
         return (DefinedSchema)this.getExprTree().getSchema();
     }
 
-    private ExprTree getExprTree() {
+    private ExpressionTree getExprTree() {
         return this.exprTree;
     }
 
@@ -178,8 +178,8 @@ public class HBqlFilter implements Filter {
         LOG.info("In readFields()");
 
         try {
-            this.exprTree = (ExprTree)HUtil.getSerialization().getScalarFromBytes(FieldType.ObjectType,
-                                                                                  Bytes.readByteArray(in));
+            this.exprTree = (ExpressionTree)HUtil.getSerialization().getScalarFromBytes(FieldType.ObjectType,
+                                                                                        Bytes.readByteArray(in));
             this.scanLimit = (Long)HUtil.getSerialization().getScalarFromBytes(FieldType.LongType,
                                                                                Bytes.readByteArray(in));
             this.getHRecord().setSchema(this.getSchema());

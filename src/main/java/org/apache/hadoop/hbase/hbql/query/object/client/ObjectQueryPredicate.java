@@ -5,13 +5,13 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.impl.object.ParameterBinding;
 import org.apache.hadoop.hbase.hbql.stmt.antlr.HBql;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.stmt.schema.ReflectionSchema;
 
 public class ObjectQueryPredicate<T> extends ParameterBinding implements Predicate<T> {
 
     private final String query;
-    private ExprTree exprTree;
+    private ExpressionTree exprTree;
     private boolean initialized = false;
 
     public ObjectQueryPredicate(final String query) {

@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.query.impl.hbase.ResultsIterator;
 import org.apache.hadoop.hbase.hbql.query.impl.object.ObjectQueryImpl;
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprTree;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionTree;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -34,7 +34,7 @@ public class ObjectResults<T> implements Iterable<T> {
 
                 // In theory, this should be done only once and in ObjectQuery, but
                 // since it requires the objects to get the schema, I do it here
-                final ExprTree exprTree = getObjectQuery().getExprTree(getObjects());
+                final ExpressionTree exprTree = getObjectQuery().getExprTree(getObjects());
 
                 Iterator<T> objectIter = null;
 

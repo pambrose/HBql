@@ -1,12 +1,13 @@
 package org.apache.hadoop.hbase.hbql.stmt.expr.nullcomp;
 
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionType;
 import org.apache.hadoop.hbase.hbql.stmt.expr.NotValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 
 public abstract class GenericNullCompare extends NotValue<GenericNullCompare> implements BooleanValue {
 
-    protected GenericNullCompare(final Type type, final boolean not, final GenericValue arg0) {
+    protected GenericNullCompare(final ExpressionType type, final boolean not, final GenericValue arg0) {
         super(type, not, arg0);
     }
 

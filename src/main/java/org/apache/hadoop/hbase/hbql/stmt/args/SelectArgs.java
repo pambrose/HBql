@@ -1,13 +1,13 @@
 package org.apache.hadoop.hbase.hbql.stmt.args;
 
-import org.apache.hadoop.hbase.hbql.stmt.expr.ExprContext;
+import org.apache.hadoop.hbase.hbql.stmt.expr.ExpressionContext;
 import org.apache.hadoop.hbase.hbql.stmt.expr.TypeSignature;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.LongValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.StringValue;
 
-public abstract class SelectArgs extends ExprContext {
+public abstract class SelectArgs extends ExpressionContext {
 
     public static enum Type {
 

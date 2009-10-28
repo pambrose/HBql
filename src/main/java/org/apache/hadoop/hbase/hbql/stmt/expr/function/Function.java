@@ -4,7 +4,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.stmt.expr.GenericExpr;
+import org.apache.hadoop.hbase.hbql.stmt.expr.GenericExpression;
 import org.apache.hadoop.hbase.hbql.stmt.expr.TypeSignature;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.stmt.expr.node.DateValue;
@@ -21,7 +21,7 @@ import org.apache.hadoop.hbase.hbql.stmt.util.HUtil;
 import java.util.List;
 import java.util.Random;
 
-public abstract class Function extends GenericExpr {
+public abstract class Function extends GenericExpression {
 
     static Random randomVal = new Random();
 

@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public abstract class ExprContext implements Serializable {
+public abstract class ExpressionContext implements Serializable {
 
     private boolean inNeedOfTypeValidation = true;
     private boolean inNeedOfOptimization = true;
@@ -34,7 +34,7 @@ public abstract class ExprContext implements Serializable {
     private final TypeSignature typeSignature;
     private final List<GenericValue> expressions = Lists.newArrayList();
 
-    protected ExprContext(final TypeSignature typeSignature, final GenericValue... vals) {
+    protected ExpressionContext(final TypeSignature typeSignature, final GenericValue... vals) {
         this.typeSignature = typeSignature;
         if (vals != null) {
             for (final GenericValue val : vals) {
