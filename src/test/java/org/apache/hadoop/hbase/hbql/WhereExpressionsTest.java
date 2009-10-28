@@ -107,10 +107,13 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalTrue("abs(2) == 2");
         assertEvalTrue("-abs(2) == -2");
 
-        Number val = parseNumberExpr("2L");
-        val = parseNumberExpr("2.0");
-        val = parseNumberExpr("2.0D");
-        val = parseNumberExpr("2.0F");
+        assertTrue(parseNumberExpr("2L").longValue() == 2L);
+        assertTrue(parseNumberExpr("2l").longValue() == 2l);
+        assertTrue(parseNumberExpr("2.0").doubleValue() == 2.0);
+        assertTrue(parseNumberExpr("2.0D").doubleValue() == 2.0D);
+        assertTrue(parseNumberExpr("2.0F").floatValue() == 2.0F);
+        assertTrue(parseNumberExpr("2.0d").doubleValue() == 2.0d);
+        assertTrue(parseNumberExpr("2.0f").floatValue() == 2.0f);
 
         assertEvalTrue("abs(-2L) == 2L");
         assertEvalTrue("abs(-2.0) == 2.0");

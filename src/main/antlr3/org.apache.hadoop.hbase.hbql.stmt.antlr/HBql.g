@@ -212,17 +212,15 @@ stringLiteral returns [StringLiteral retval]
 	: v=QUOTED 					{retval = new StringLiteral($v.text);};
 	
 integerLiteral returns [IntegerLiteral retval]
-	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};	
+	: v=INT						{retval = new IntegerLiteral($v.text);};	
 
 longLiteral returns [LongLiteral retval]
-	: v=LONG					{retval = new LongLiteral(Long.valueOf($v.text.substring(0, $v.text.length()-1)));};	
+	: v=LONG					{retval = new LongLiteral($v.text);};	
 
-floatLiteral returns [FloatLiteral retval] 
-	: v=FLOAT					{retval = new FloatLiteral(Float.valueOf($v.text.substring(0, $v.text.length()-1)));};	
 
-doubleLiteral returns [DoubleLiteral retval]
-	: v=DOUBLE1					{retval = new DoubleLiteral(Double.valueOf($v.text.substring(0, $v.text.length()-1)));}
-	| v=DOUBLE2					{retval = new DoubleLiteral(Double.valueOf($v.text));}
+doubleLiteral returns [GenericValue retval]
+	: v=DOUBLE1					{retval = DoubleLiteral.valueOf($v.text);}
+	| v=DOUBLE2					{retval = DoubleLiteral.valueOf($v.text);}
 	;	
 
 booleanLiteral returns [BooleanLiteral retval]
@@ -347,9 +345,8 @@ paramRef
 	: COLON ID;
 		
 INT	: DIGIT+;
-LONG	: DIGIT+ 'L';
-FLOAT	: DIGIT+ (DOT DIGIT*)? 'F';
-DOUBLE1	: DIGIT+ (DOT DIGIT*)? 'D';
+LONG	: DIGIT+ ('L' | 'l');
+DOUBLE1	: DIGIT+ (DOT DIGIT*)? ('D' | 'd' | 'F' | 'f');
 DOUBLE2	: DIGIT+ DOT DIGIT*;
 
 ID : CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)*; // DOLLAR is for inner class table names

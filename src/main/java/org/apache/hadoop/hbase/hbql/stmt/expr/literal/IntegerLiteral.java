@@ -5,6 +5,10 @@ import org.apache.hadoop.hbase.hbql.stmt.expr.node.IntegerValue;
 
 public class IntegerLiteral extends GenericLiteral<Integer> implements IntegerValue {
 
+    public IntegerLiteral(final String value) {
+        super(Integer.valueOf(value));
+    }
+
     public IntegerLiteral(final Integer value) {
         super(value);
     }
