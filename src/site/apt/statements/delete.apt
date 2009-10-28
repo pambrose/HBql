@@ -8,12 +8,12 @@ DELETE
 *Syntax
 
 ---------------------------
-DELETE from schema_name with_clause
+DELETE FROM schema_name with_clause
 ---------------------------
 
 *Description
 
-    Delete records for the given WITH clause.
+    Delete records for the given {{{with-clause.html}WITH}} clause.
 
 *Example
 
