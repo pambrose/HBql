@@ -2,14 +2,14 @@ package org.apache.hadoop.hbase.hbql;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import org.apache.expreval.object.client.ObjectQuery;
-import org.apache.expreval.object.client.ObjectQueryListenerAdapter;
-import org.apache.expreval.object.client.ObjectQueryManager;
-import org.apache.expreval.object.client.ObjectQueryPredicate;
-import org.apache.expreval.object.client.ObjectResults;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.util.Counter;
 import org.apache.hadoop.hbase.hbql.util.ObjectTests;
+import org.apache.yaoql.client.ObjectQuery;
+import org.apache.yaoql.client.ObjectQueryListenerAdapter;
+import org.apache.yaoql.client.ObjectQueryManager;
+import org.apache.yaoql.client.ObjectQueryPredicate;
+import org.apache.yaoql.client.ObjectResults;
 import org.junit.Test;
 
 import java.util.Date;

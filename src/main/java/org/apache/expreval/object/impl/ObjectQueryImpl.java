@@ -2,12 +2,12 @@ package org.apache.expreval.object.impl;
 
 import org.apache.expreval.antlr.HBql;
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.expreval.object.client.ObjectQuery;
-import org.apache.expreval.object.client.ObjectQueryListener;
-import org.apache.expreval.object.client.ObjectResults;
 import org.apache.expreval.schema.ReflectionSchema;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.yaoql.client.ObjectQuery;
+import org.apache.yaoql.client.ObjectQueryListener;
+import org.apache.yaoql.client.ObjectResults;
 
 import java.util.Collection;
 import java.util.List;

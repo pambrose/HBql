@@ -1,4 +1,4 @@
-package org.apache.expreval.object.client;
+package org.apache.yaoql.client;
 
 import org.apache.expreval.object.impl.ObjectQueryImpl;
 
