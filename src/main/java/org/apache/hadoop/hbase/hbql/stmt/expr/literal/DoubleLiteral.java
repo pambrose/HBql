@@ -7,10 +7,7 @@ public class DoubleLiteral extends GenericLiteral<Double> implements DoubleValue
 
     public static GenericValue valueOf(final String value) {
         final String upper = value.toUpperCase();
-        if (upper.endsWith("F"))
-            return new FloatLiteral(upper);
-        else
-            return new DoubleLiteral(upper);
+        return upper.endsWith("F") ? new FloatLiteral(upper) : new DoubleLiteral(upper);
     }
 
     public DoubleLiteral(final String value) {

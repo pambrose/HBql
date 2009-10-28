@@ -14,6 +14,7 @@ import org.apache.hadoop.hbase.hbql.stmt.schema.Schema;
 import org.apache.hadoop.hbase.hbql.stmt.select.ExprElement;
 import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 
+import java.util.Date;
 import java.util.List;
 
 public class TestSupport {
@@ -28,6 +29,14 @@ public class TestSupport {
 
     public Number parseNumberExpr(final String str) throws HBqlException {
         return (Number)HBql.parseExpression(str);
+    }
+
+    public String parseStringExpr(final String str) throws HBqlException {
+        return (String)HBql.parseExpression(str);
+    }
+
+    public Date parseDateExpr(final String str) throws HBqlException {
+        return (Date)HBql.parseExpression(str);
     }
 
     public void assertValidInput(final String expr, String... vals) throws HBqlException {

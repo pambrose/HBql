@@ -120,6 +120,8 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalTrue("abs(-2D) == 2D");
         assertEvalTrue("abs(-2D) == 2.0D");
         assertEvalTrue("abs(-2D) == double('2')");
+
+        assertTrue(parseNumberExpr("datetolong(DATE('12/10/94', 'mm/dd/yy'))").longValue() == 758189520000L);
     }
 
     @Test
