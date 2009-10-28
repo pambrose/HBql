@@ -124,6 +124,9 @@ public class WhereExpressionsTest extends TestSupport {
         assertTrue(parseNumberExpr("datetolong(DATE('12/10/94', 'mm/dd/yy'))").longValue() == 758189520000L);
 
         assertTrue(parseStringExpr("repeat('abc', 3)").equals("abcabcabc"));
+
+        assertTrue(parseNumberExpr("min(4, 3)").intValue() == 3);
+        assertTrue(parseNumberExpr("min(4.0, 3.0)").doubleValue() == 3.0);
     }
 
     @Test

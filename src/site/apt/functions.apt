@@ -37,6 +37,10 @@ Numeric Functions
 *--+--+--+--+
 | abs(number)     | number     | Returns absolute value of number   | abs(-34)    |  34      |
 *--+--+--+--+
+| min(number1, number2) | number | Returns the smaller of number1 and number2   | min(2, 3)    |  2      |
+*--+--+--+--+
+| max(number1, number2) | number | Returns the greater of number1 and number2   | abs(2, 3)    |  3      |
+*--+--+--+--+
 | short(string)     | short     | Returns short value of string   | short('34')    |  34      |
 *--+--+--+--+
 | integer(string)   | int       | Returns integer value of string | integer('34')  |  34      |
@@ -65,11 +69,39 @@ Date Functions
 *--+--+--+--+
 | date(string1, string2)| date | Returns date value of string1 using string2 format| date('12/10/94', 'mm/dd/yy') |  date value '12/10/94' |
 *--+--+--+--+
-| longtodate(long)     | date  | Returns date value of long ms since 1/1/70 | longtodate(758189520000L)    |  date value '12/10/94'    |
+| longtodate(long) | date  | Returns date value of long ms since 1/1/70 | longtodate(758189520000L) |  date value '12/10/94' |
 *--+--+--+--+
-| datetolong(long)     | long  | Returns date value of long ms since 1/1/70 | datetolong(date('12/10/94', 'mm/dd/yy'))    |  758189520000L    |
+| datetolong(date) | long  | Returns date value of long ms since 1/1/70 | datetolong(date('12/10/94', 'mm/dd/yy')) |  758189520000L |
 *--+--+--+--+
 | randomdate()     | date  | Returns random date value | randomdate()    |  random date value  |
+*--+--+--+--+
+| mindate()| date | Returns minimum date value| mindate() |  longtodate(0) |
+*--+--+--+--+
+| maxdate()| date | Returns maximum date value| maxdate() |  longtodate(Long.MAX_VALUE) |
+*--+--+--+--+
+
+Boolean Functions
+
+*-------------------+--------------+--------------------------+----------------------------------+---------------------+
+|| Function         || Return Type || Description             ||Example                          ||Result              |
+*--+--+--+--+
+| definedinrow(column)| boolean | Returns true if column is defined in current row| definedinrow(f1:val1) |  true if f1:val1 is defined in current row |
+*--+--+--+--+
+| randomboolean()| boolean | Returns random boolean value| randomboolean() |  random boolean value |
+*--+--+--+--+
+| eval(string) | boolean  | Returns the evaluation of string | eval('34 = 34') | true  |
+*--+--+--+--+
+
+Interval Functions
+
+*-------------------+--------------+--------------------------+----------------------------------+---------------------+
+|| Function         || Return Type || Description             ||Example                          ||Result              |
+*--+--+--+--+
+| definedinrow(column)| boolean | Returns true if column is defined in current row| definedinrow(f1:val1) |  true if f1:val1 is defined in current row |
+*--+--+--+--+
+| randomboolean()| boolean | Returns random boolean value| randomboolean() |  random boolean value |
+*--+--+--+--+
+| eval(string) | boolean  | Returns the evaluation of string | eval('34 = 34') | true  |
 *--+--+--+--+
 
 

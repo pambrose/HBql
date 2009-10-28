@@ -59,6 +59,8 @@ public abstract class Function extends GenericExpr {
         DOUBLE(new TypeSignature(DoubleValue.class, StringValue.class)),
 
         ABS(new TypeSignature(NumberValue.class, NumberValue.class)),
+        MIN(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
+        MAX(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
 
         RANDOMINTEGER(new TypeSignature(IntegerValue.class)),
         RANDOMLONG(new TypeSignature(LongValue.class)),

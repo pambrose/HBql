@@ -74,6 +74,38 @@ public class NumberFunction extends Function implements NumberValue {
                     return Math.abs(v1.doubleValue());
             }
 
+            case MIN: {
+                final Number v1 = (Number)this.getArg(0).getValue(object);
+                final Number v2 = (Number)this.getArg(1).getValue(object);
+
+                if (v1 instanceof Short)
+                    return Math.min(v1.shortValue(), v2.shortValue());
+                else if (v1 instanceof Integer)
+                    return Math.min(v1.intValue(), v2.intValue());
+                else if (v1 instanceof Long)
+                    return Math.min(v1.longValue(), v2.longValue());
+                else if (v1 instanceof Float)
+                    return Math.min(v1.floatValue(), v2.floatValue());
+                else if (v1 instanceof Double)
+                    return Math.min(v1.doubleValue(), v2.doubleValue());
+            }
+
+            case MAX: {
+                final Number v1 = (Number)this.getArg(0).getValue(object);
+                final Number v2 = (Number)this.getArg(1).getValue(object);
+
+                if (v1 instanceof Short)
+                    return Math.max(v1.shortValue(), v2.shortValue());
+                else if (v1 instanceof Integer)
+                    return Math.max(v1.intValue(), v2.intValue());
+                else if (v1 instanceof Long)
+                    return Math.max(v1.longValue(), v2.longValue());
+                else if (v1 instanceof Float)
+                    return Math.max(v1.floatValue(), v2.floatValue());
+                else if (v1 instanceof Double)
+                    return Math.max(v1.doubleValue(), v2.doubleValue());
+            }
+
             case RANDOMINTEGER: {
                 return Function.randomVal.nextInt();
             }
