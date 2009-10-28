@@ -8,7 +8,7 @@ DELETE
 *Syntax
 
 ---------------------------
-DELETE from schema_name 
+DELETE from schema_name with_clause
 ---------------------------
 
 *Description
