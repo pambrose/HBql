@@ -74,16 +74,12 @@ public class DateFunction extends Function implements DateValue {
     private IntervalType intervalType;
     private DateLiteral dateValue;
 
-    public DateFunction(final FunctionType functionType, final GenericValue... exprs) {
-        super(functionType, exprs);
-    }
-
     public DateFunction(final FunctionType functionType, final List<GenericValue> exprs) {
         super(functionType, exprs);
     }
 
     public DateFunction(final ConstantType constantType) {
-        super(FunctionType.DATECONSTANT);
+        super(FunctionType.DATECONSTANT, null);
         this.constantType = constantType;
         switch (this.getConstantType()) {
             case NOW:

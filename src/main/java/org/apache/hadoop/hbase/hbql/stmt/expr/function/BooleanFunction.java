@@ -17,10 +17,6 @@ public class BooleanFunction extends Function implements BooleanValue {
 
     private Schema schema = null;
 
-    public BooleanFunction(final FunctionType functionType, final GenericValue... exprs) {
-        super(functionType, exprs);
-    }
-
     public BooleanFunction(final FunctionType functionType, final List<GenericValue> exprs) {
         super(functionType, exprs);
     }

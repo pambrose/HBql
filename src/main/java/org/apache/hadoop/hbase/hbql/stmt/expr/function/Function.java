@@ -105,11 +105,6 @@ public abstract class Function extends GenericExpr {
 
     private final FunctionType functionType;
 
-    public Function(final FunctionType functionType, final GenericValue... exprs) {
-        super(null, exprs);
-        this.functionType = functionType;
-    }
-
     public Function(final FunctionType functionType, final List<GenericValue> exprs) {
         super(null, exprs);
         this.functionType = functionType;

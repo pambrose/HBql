@@ -10,11 +10,6 @@ import java.util.List;
 
 public class StringFunction extends Function implements StringValue {
 
-
-    public StringFunction(final FunctionType functionType, final GenericValue... exprs) {
-        super(functionType, exprs);
-    }
-
     public StringFunction(final FunctionType functionType, final List<GenericValue> exprs) {
         super(functionType, exprs);
     }

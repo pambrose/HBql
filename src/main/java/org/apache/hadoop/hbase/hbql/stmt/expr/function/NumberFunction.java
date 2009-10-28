@@ -9,10 +9,6 @@ import java.util.List;
 
 public class NumberFunction extends Function implements NumberValue {
 
-    public NumberFunction(final FunctionType functionType, final GenericValue... exprs) {
-        super(functionType, exprs);
-    }
-
     public NumberFunction(final FunctionType functionType, final List<GenericValue> exprs) {
         super(functionType, exprs);
     }
