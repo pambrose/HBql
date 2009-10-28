@@ -92,7 +92,7 @@ public class WhereExpressionsTest extends TestSupport {
     }
 
     @Test
-    public void randomFunctions() throws HBqlException {
+    public void miscFunctions() throws HBqlException {
 
         assertEvalTrue("RANDOMDATE() != NOW()");
         assertEvalTrue("RANDOMINTEGER() != 23");
@@ -103,6 +103,20 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalTrue("substring('val', 0, 2) == 'va'");
 
         assertEvalTrue("abs(-2) == 2");
+        assertEvalTrue("-abs(-2) == -2");
+        assertEvalTrue("abs(2) == 2");
+        assertEvalTrue("-abs(2) == -2");
+
+        Number val = parseNumberExpr("2L");
+        val = parseNumberExpr("2.0");
+        val = parseNumberExpr("2.0D");
+        val = parseNumberExpr("2.0F");
+
+        assertEvalTrue("abs(-2L) == 2L");
+        assertEvalTrue("abs(-2.0) == 2.0");
+        assertEvalTrue("abs(-2D) == 2D");
+        assertEvalTrue("abs(-2D) == 2.0D");
+        assertEvalTrue("abs(-2D) == double('2')");
     }
 
     @Test
@@ -250,21 +264,21 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalTrue("(40 % 6) = 4");
         assertEvalFalse("(40 % 6) = 3");
 
-        assertTrue(parseNumberValue("1-2-3-4").intValue() == (1 - 2 - 3 - 4));
-        assertTrue(parseNumberValue("(2-2)-2").intValue() == ((2 - 2) - 2));
-        assertTrue(parseNumberValue("2-(2-2)").intValue() == (2 - (2 - 2)));
-        assertTrue(parseNumberValue("2-2-2").intValue() == (2 - 2 - 2));
-        assertTrue(parseNumberValue("2*3-4*(((20/5)))+2-(2-3-4*3)").intValue()
+        assertTrue(parseNumberExpr("1-2-3-4").intValue() == (1 - 2 - 3 - 4));
+        assertTrue(parseNumberExpr("(2-2)-2").intValue() == ((2 - 2) - 2));
+        assertTrue(parseNumberExpr("2-(2-2)").intValue() == (2 - (2 - 2)));
+        assertTrue(parseNumberExpr("2-2-2").intValue() == (2 - 2 - 2));
+        assertTrue(parseNumberExpr("2*3-4*(((20/5)))+2-(2-3-4*3)").intValue()
                    == (2 * 3 - 4 * (((20 / 5))) + 2 - (2 - 3 - 4 * 3)));
-        assertTrue(parseNumberValue("2-(-4)").intValue() == (2 - (-4)));
-        assertTrue(parseNumberValue("(7-4)+2").intValue() == ((7 - 4) + 2));
-        assertTrue(parseNumberValue("7-(4+2)").intValue() == (7 - (4 + 2)));
+        assertTrue(parseNumberExpr("2-(-4)").intValue() == (2 - (-4)));
+        assertTrue(parseNumberExpr("(7-4)+2").intValue() == ((7 - 4) + 2));
+        assertTrue(parseNumberExpr("7-(4+2)").intValue() == (7 - (4 + 2)));
 
-        assertTrue(parseNumberValue("((((4+3)*(2-1))*(3/1))-((2+5)*(1+1)))").intValue()
+        assertTrue(parseNumberExpr("((((4+3)*(2-1))*(3/1))-((2+5)*(1+1)))").intValue()
                    == (((4 + 3) * (2 - 1)) * (3 / 1)) - ((2 + 5) * (1 + 1)));
 
-        assertTrue(parseNumberValue("((2+4)*(9-2))").intValue() == ((2 + 4) * (9 - 2)));
-        assertTrue(parseNumberValue("(((4+3)*(2-1))*(3/1))").intValue() == (((4 + 3) * (2 - 1)) * (3 / 1)));
+        assertTrue(parseNumberExpr("((2+4)*(9-2))").intValue() == ((2 + 4) * (9 - 2)));
+        assertTrue(parseNumberExpr("(((4+3)*(2-1))*(3/1))").intValue() == (((4 + 3) * (2 - 1)) * (3 / 1)));
 
         assertEvalTrue("DOUBLE('23.0') > 12.3");
     }

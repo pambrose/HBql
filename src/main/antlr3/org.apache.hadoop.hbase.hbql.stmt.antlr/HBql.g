@@ -208,19 +208,24 @@ atomExpr returns [GenericValue retval]
 	;
 
 // Literals		
-stringLiteral returns [GenericValue retval]
+stringLiteral returns [StringLiteral retval]
 	: v=QUOTED 					{retval = new StringLiteral($v.text);};
 	
-integerLiteral returns [GenericValue retval]
+integerLiteral returns [IntegerLiteral retval]
 	: v=INT						{retval = new IntegerLiteral(Integer.valueOf($v.text));};	
 
-longLiteral returns [GenericValue retval]
+longLiteral returns [LongLiteral retval]
 	: v=LONG					{retval = new LongLiteral(Long.valueOf($v.text.substring(0, $v.text.length()-1)));};	
 
-doubleLiteral returns [GenericValue retval]
-	: v=DOUBLE					{retval = new DoubleLiteral(Double.valueOf($v.text));};	
+floatLiteral returns [FloatLiteral retval] 
+	: v=FLOAT					{retval = new FloatLiteral(Float.valueOf($v.text.substring(0, $v.text.length()-1)));};	
 
-booleanLiteral returns [BooleanValue retval]
+doubleLiteral returns [DoubleLiteral retval]
+	: v=DOUBLE1					{retval = new DoubleLiteral(Double.valueOf($v.text.substring(0, $v.text.length()-1)));}
+	| v=DOUBLE2					{retval = new DoubleLiteral(Double.valueOf($v.text));}
+	;	
+
+booleanLiteral returns [BooleanLiteral retval]
 	: t=keyTRUE					{retval = new BooleanLiteral($t.text);}
 	| f=keyFALSE					{retval = new BooleanLiteral($f.text);}
 	;
@@ -342,8 +347,10 @@ paramRef
 	: COLON ID;
 		
 INT	: DIGIT+;
-LONG	: DIGIT+'L';
-DOUBLE	: DIGIT+ DOT DIGIT*;
+LONG	: DIGIT+ 'L';
+FLOAT	: DIGIT+ (DOT DIGIT*)? 'F';
+DOUBLE1	: DIGIT+ (DOT DIGIT*)? 'D';
+DOUBLE2	: DIGIT+ DOT DIGIT*;
 
 ID : CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)*; // DOLLAR is for inner class table names
 	 
@@ -359,7 +366,7 @@ DIGIT	: '0'..'9';
 fragment
 CHAR 	: 'a'..'z' | 'A'..'Z'; 
 
-WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();} ;
+WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();};
 
 keySELECT 	: {isKeyword(input, "SELECT")}? ID;
 keyDELETE 	: {isKeyword(input, "DELETE")}? ID;

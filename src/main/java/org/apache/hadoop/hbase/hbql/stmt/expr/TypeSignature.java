@@ -25,94 +25,101 @@ import org.apache.hadoop.hbase.hbql.stmt.util.Lists;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class TypeSignature implements Serializable {
 
     private final Class<? extends GenericValue> returnType;
-    private final List<Class<? extends GenericValue>> typeSig;
+    private final List<Class<? extends GenericValue>> typeSig = Lists.newArrayList();
     private final transient Constructor literalConstructor;
     private final Class literalCastClass;
 
     public TypeSignature(final Class<? extends GenericValue> returnType, Class<? extends GenericValue>... typeSig) {
         this.returnType = returnType;
-
-        this.literalCastClass = getLiteralCastClass(this.getReturnType());
-        this.literalConstructor = getLiteralConstructor(this.getReturnType());
-
-        this.typeSig = Lists.newArrayList();
-        for (final Class<? extends GenericValue> sig : typeSig)
-            this.typeSig.add(sig);
+        this.literalCastClass = this.getLiteralCastClass(this.getReturnType());
+        this.literalConstructor = this.getLiteralConstructor(this.getReturnType(), this.getLiteralCastClass());
+        this.typeSig.addAll(Arrays.asList(typeSig));
     }
 
     private Class getLiteralCastClass(Class<? extends GenericValue> type) {
 
         if (type == null)
             return null;
-        else if (type.equals(StringValue.class))
-            return String.class;
-        else if (type.equals(DateValue.class))
-            return Long.class;    // Note this is Long and not Date
-        else if (type.equals(BooleanValue.class))
+        else if (type == BooleanValue.class)
             return Boolean.class;
-        else if (type.equals(ShortValue.class))
+        else if (type == StringValue.class)
+            return String.class;
+        else if (type == DateValue.class)
+            return Long.class;    // Note this is Long and not Date
+        else if (type == ShortValue.class)
             return Short.class;
-        else if (type.equals(IntegerValue.class))
+        else if (type == IntegerValue.class)
             return Integer.class;
-        else if (type.equals(LongValue.class))
+        else if (type == LongValue.class)
             return Long.class;
-        else if (type.equals(FloatValue.class))
+        else if (type == FloatValue.class)
             return Float.class;
-        else if (type.equals(DoubleValue.class))
+        else if (type == DoubleValue.class)
             return Double.class;
-        else if (type.equals(NumberValue.class))
+        else if (type == NumberValue.class)
             return Number.class;
         else
             throw new RuntimeException("Invalid return type in signature: " + type.getName());
     }
 
-    private Constructor getLiteralConstructor(Class<? extends GenericValue> type) {
+    private Constructor getLiteralConstructor(Class type, final Class literalCastClass) {
+
+        final Class clazz;
 
         try {
             if (type == null)
                 return null;
-            else if (type.equals(StringValue.class))
-                return StringLiteral.class.getConstructor(this.getLiteralCastClass());
-            else if (type.equals(DateValue.class))
-                return DateLiteral.class.getConstructor(this.getLiteralCastClass());
-            else if (type.equals(BooleanValue.class))
-                return BooleanLiteral.class.getConstructor(this.getLiteralCastClass());
-            else if (type.equals(ShortValue.class))
-                return ShortLiteral.class.getConstructor(this.getLiteralCastClass());
-            else if (type.equals(IntegerValue.class))
-                return IntegerLiteral.class.getConstructor(this.getLiteralCastClass());
-            else if (type.equals(LongValue.class))
-                return LongLiteral.class.getConstructor(this.getLiteralCastClass());
-            else if (type.equals(FloatValue.class))
-                return FloatLiteral.class.getConstructor(this.getLiteralCastClass());
-            else if (type.equals(DoubleValue.class))
-                return DoubleLiteral.class.getConstructor(this.getLiteralCastClass());
-            else if (type.equals(NumberValue.class))
+            else if (type == BooleanValue.class || type == Boolean.class)
+                clazz = BooleanLiteral.class;
+            else if (type == StringValue.class || type == String.class)
+                clazz = StringLiteral.class;
+            else if (type == DateValue.class || type == Date.class)
+                clazz = DateLiteral.class;
+            else if (type == ShortValue.class || type == Short.class)
+                clazz = ShortLiteral.class;
+            else if (type == IntegerValue.class || type == Integer.class)
+                clazz = IntegerLiteral.class;
+            else if (type == LongValue.class || type == Long.class)
+                clazz = LongLiteral.class;
+            else if (type == FloatValue.class || type == Float.class)
+                clazz = FloatLiteral.class;
+            else if (type == DoubleValue.class || type == Double.class)
+                clazz = DoubleLiteral.class;
+            else if (type == NumberValue.class || type == Number.class)
                 return null;
             else
                 throw new RuntimeException("Invalid return type in signature: " + type.getName());
+
+            return clazz.getConstructor(literalCastClass);
         }
         catch (NoSuchMethodException e) {
             throw new RuntimeException("Invalid literal constructor in signature: " + type.getName());
         }
     }
 
-    public TypeSignature(final Class<? extends GenericValue> returnType,
-                         final List<Class<? extends GenericValue>> typeSig) {
-        this.returnType = returnType;
-        this.literalCastClass = getLiteralCastClass(this.getReturnType());
-        this.literalConstructor = getLiteralConstructor(this.getReturnType());
-        this.typeSig = typeSig;
-    }
-
     public GenericValue newLiteral(final Object val) throws HBqlException {
         try {
-            return (GenericValue)this.getLiteralConstructor().newInstance(this.getLiteralCastClass().cast(val));
+
+            final Constructor constructor;
+            final Object castedObject;
+
+            if (this.getReturnType() == NumberValue.class) {
+                constructor = this.getLiteralConstructor(val.getClass(), val.getClass());
+                castedObject = val;
+            }
+            else {
+                constructor = this.getLiteralConstructor();
+                castedObject = this.getLiteralCastClass().cast(val);
+            }
+
+            return (GenericValue)constructor.newInstance(castedObject);
         }
         catch (InstantiationException e) {
             throw new InternalErrorException(e.getMessage());

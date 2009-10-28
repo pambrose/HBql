@@ -26,7 +26,7 @@ public class TestSupport {
         org.junit.Assert.assertFalse(val);
     }
 
-    public Number parseNumberValue(final String str) throws HBqlException {
+    public Number parseNumberExpr(final String str) throws HBqlException {
         return (Number)HBql.parseExpression(str);
     }
 
@@ -115,6 +115,10 @@ public class TestSupport {
 
     public static void assertExprColumnsMatchFalse(final String expr, String... vals) throws HBqlException {
         assertFalse(evaluateExprColumnNames(expr, vals));
+    }
+
+    public Object evaluateExpr(final String expr) throws HBqlException {
+        return HBql.parseExpression(expr);
     }
 
     public ExprTree parseExpr(final String expr) throws HBqlException {
