@@ -33,6 +33,8 @@ Numeric Functions
 *-------------------+--------------+--------------------------+----------------------------------+---------------------+
 || Function         || Return Type || Description             ||Example                          ||Result              |
 *--+--+--+--+
+| abs(number)     | number     | Returns absolute value of number   | abs(-34)    |  34      |
+*--+--+--+--+
 | short(string)     | short     | Returns short value of string   | short('34')    |  34      |
 *--+--+--+--+
 | integer(string)   | int       | Returns integer value of string | integer('34')  |  34      |
