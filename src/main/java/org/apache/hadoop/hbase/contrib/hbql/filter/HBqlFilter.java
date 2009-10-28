@@ -47,13 +47,13 @@ public class HBqlFilter implements Filter {
 
     private static final Log LOG = LogFactory.getLog(HBqlFilter.class.getName());
 
-    private ExpressionTree exprTree;
+    private ExpressionTree expressionTree;
     private long scanLimit = -1;
     private long recordCount = 0;
     public transient HRecordImpl hrecord = new HRecordImpl((HBaseSchema)null);
 
-    public HBqlFilter(final ExpressionTree exprTree, final long scanLimit) {
-        this.exprTree = exprTree;
+    public HBqlFilter(final ExpressionTree expressionTree, final long scanLimit) {
+        this.expressionTree = expressionTree;
         this.scanLimit = scanLimit;
         this.recordCount = 0;
         this.getHRecord().setSchema(this.getSchema());
@@ -67,11 +67,11 @@ public class HBqlFilter implements Filter {
     }
 
     private DefinedSchema getSchema() {
-        return (DefinedSchema)this.getExprTree().getSchema();
+        return (DefinedSchema)this.getExpressionTree().getSchema();
     }
 
-    private ExpressionTree getExprTree() {
-        return this.exprTree;
+    private ExpressionTree getExpressionTree() {
+        return this.expressionTree;
     }
 
     private long getScanLimit() {
@@ -87,7 +87,7 @@ public class HBqlFilter implements Filter {
     }
 
     private boolean hasValidExprTree() {
-        return this.getExprTree() != null;
+        return this.getExpressionTree() != null;
     }
 
     public void reset() {
@@ -118,7 +118,7 @@ public class HBqlFilter implements Filter {
             final ColumnAttrib attrib = schema.getAttribFromFamilyQualifiedName(familyName, columnName);
 
             // Do not bother setting value if it is not used in expression
-            if (this.getExprTree().getAttribsUsedInExpr().contains(attrib)) {
+            if (this.getExpressionTree().getAttribsUsedInExpr().contains(attrib)) {
                 try {
                     LOG.info("In in filterKeyValue() setting value for: " + familyName + ":" + columnName);
                     final Object val = attrib.getValueFromBytes(null, v.getValue());
@@ -145,7 +145,7 @@ public class HBqlFilter implements Filter {
         }
         else {
             try {
-                final boolean filterRecord = !this.getExprTree().evaluate(this.getHRecord());
+                final boolean filterRecord = !this.getExpressionTree().evaluate(this.getHRecord());
                 if (!filterRecord)
                     this.incrementRecordCount();
                 return filterRecord;
@@ -164,7 +164,7 @@ public class HBqlFilter implements Filter {
 
     public void write(DataOutput out) throws IOException {
         try {
-            Bytes.writeByteArray(out, HUtil.getSerialization().getScalarAsBytes(this.getExprTree()));
+            Bytes.writeByteArray(out, HUtil.getSerialization().getScalarAsBytes(this.getExpressionTree()));
             Bytes.writeByteArray(out, HUtil.getSerialization().getScalarAsBytes(FieldType.LongType, this.getScanLimit()));
         }
         catch (HBqlException e) {
@@ -179,8 +179,8 @@ public class HBqlFilter implements Filter {
         LOG.info("In readFields()");
 
         try {
-            this.exprTree = (ExpressionTree)HUtil.getSerialization().getScalarFromBytes(FieldType.ObjectType,
-                                                                                        Bytes.readByteArray(in));
+            this.expressionTree = (ExpressionTree)HUtil.getSerialization().getScalarFromBytes(FieldType.ObjectType,
+                                                                                              Bytes.readByteArray(in));
             this.scanLimit = (Long)HUtil.getSerialization().getScalarFromBytes(FieldType.LongType,
                                                                                Bytes.readByteArray(in));
             this.getHRecord().setSchema(this.getSchema());
