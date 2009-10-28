@@ -1,7 +1,7 @@
 package org.apache.expreval.expr.node;
 
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.ResultMissingColumnException;
+import org.apache.expreval.client.HBqlException;
+import org.apache.expreval.client.ResultMissingColumnException;
 
 public interface ObjectValue extends GenericValue {
 

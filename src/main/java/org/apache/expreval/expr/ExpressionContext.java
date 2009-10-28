@@ -1,20 +1,19 @@
 package org.apache.expreval.expr;
 
+import org.apache.expreval.client.HBqlException;
+import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.ResultMissingColumnException;
+import org.apache.expreval.client.TypeException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.expreval.expr.var.GenericColumn;
 import org.apache.expreval.expr.var.NamedParameter;
-import org.apache.expreval.schema.ColumnAttrib;
-import org.apache.expreval.schema.NumericType;
-import org.apache.expreval.schema.Schema;
 import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.InternalErrorException;
-import org.apache.hadoop.hbase.contrib.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
+import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
 
 import java.io.Serializable;
 import java.util.List;

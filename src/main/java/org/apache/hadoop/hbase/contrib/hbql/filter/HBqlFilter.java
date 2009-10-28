@@ -22,16 +22,16 @@ package org.apache.hadoop.hbase.contrib.hbql.filter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.expreval.client.HBqlException;
+import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.expreval.hbql.impl.HRecordImpl;
-import org.apache.expreval.schema.ColumnAttrib;
-import org.apache.expreval.schema.DefinedSchema;
-import org.apache.expreval.schema.FieldType;
-import org.apache.expreval.schema.HBaseSchema;
 import org.apache.expreval.util.HUtil;
 import org.apache.hadoop.hbase.KeyValue;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.ResultMissingColumnException;
+import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.contrib.hbql.schema.DefinedSchema;
+import org.apache.hadoop.hbase.contrib.hbql.schema.FieldType;
+import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.util.Bytes;
 

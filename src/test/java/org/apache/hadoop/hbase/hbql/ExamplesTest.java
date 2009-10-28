@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.expreval.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;

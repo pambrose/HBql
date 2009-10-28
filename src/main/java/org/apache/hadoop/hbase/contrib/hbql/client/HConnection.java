@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.contrib.hbql.client;
 
+import org.apache.expreval.client.HBqlException;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 
 import java.io.IOException;

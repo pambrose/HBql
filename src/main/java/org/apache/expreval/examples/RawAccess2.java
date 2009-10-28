@@ -1,5 +1,6 @@
 package org.apache.expreval.examples;
 
+import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.util.HUtil;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
@@ -7,7 +8,6 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;

@@ -1,10 +1,10 @@
 package org.apache.expreval.expr.var;
 
+import org.apache.expreval.client.HBqlException;
+import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.ResultMissingColumnException;
+import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 
 public class DelegateColumn extends GenericColumn<GenericValue> {
 

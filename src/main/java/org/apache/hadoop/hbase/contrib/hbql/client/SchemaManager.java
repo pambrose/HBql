@@ -1,15 +1,16 @@
 package org.apache.hadoop.hbase.contrib.hbql.client;
 
-import org.apache.expreval.antlr.HBql;
-import org.apache.expreval.hbql.impl.HRecordImpl;
-import org.apache.expreval.schema.AnnotationSchema;
-import org.apache.expreval.schema.ColumnDescription;
-import org.apache.expreval.schema.DefinedSchema;
-import org.apache.expreval.schema.HBaseSchema;
-import org.apache.expreval.schema.ReflectionSchema;
-import org.apache.expreval.schema.Schema;
-import org.apache.expreval.statement.SchemaManagerStatement;
+import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.util.Maps;
+import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.contrib.hbql.parser.Parser;
+import org.apache.hadoop.hbase.contrib.hbql.schema.AnnotationSchema;
+import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnDescription;
+import org.apache.hadoop.hbase.contrib.hbql.schema.DefinedSchema;
+import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.contrib.hbql.schema.ReflectionSchema;
+import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
+import org.apache.hadoop.hbase.contrib.hbql.statement.SchemaManagerStatement;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class SchemaManager {
     private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
     public static HOutput execute(final String str) throws HBqlException {
-        final SchemaManagerStatement cmd = HBql.parseSchemaManagerStatement(str);
+        final SchemaManagerStatement cmd = Parser.parseSchemaManagerStatement(str);
         return cmd.execute();
     }
 

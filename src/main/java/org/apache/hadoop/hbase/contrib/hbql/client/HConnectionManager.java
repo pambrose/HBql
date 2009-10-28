@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.contrib.hbql.client;
 
-import org.apache.expreval.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 
 import java.util.Map;
 

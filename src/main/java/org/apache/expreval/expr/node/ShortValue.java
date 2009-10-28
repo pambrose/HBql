@@ -1,6 +1,6 @@
 package org.apache.expreval.expr.node;
 
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.expreval.client.HBqlException;
 
 public interface ShortValue extends NumberValue {
 

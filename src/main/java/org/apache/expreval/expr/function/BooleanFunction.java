@@ -1,15 +1,15 @@
 package org.apache.expreval.expr.function;
 
-import org.apache.expreval.antlr.HBql;
+import org.apache.expreval.client.HBqlException;
+import org.apache.expreval.client.ResultMissingColumnException;
+import org.apache.expreval.client.TypeException;
 import org.apache.expreval.expr.ExpressionContext;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
-import org.apache.expreval.schema.Schema;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
+import org.apache.hadoop.hbase.contrib.hbql.parser.Parser;
+import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class BooleanFunction extends Function implements BooleanValue {
 
             case EVAL: {
                 final String exprStr = (String)this.getArg(0).getValue(object);
-                final ExpressionTree exprTree = HBql.parseWhereExpression(exprStr, this.getSchema());
+                final ExpressionTree exprTree = Parser.parseWhereExpression(exprStr, this.getSchema());
                 return exprTree.evaluate(object);
             }
 

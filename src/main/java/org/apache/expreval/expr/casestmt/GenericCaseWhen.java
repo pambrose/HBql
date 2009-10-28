@@ -1,10 +1,10 @@
 package org.apache.expreval.expr.casestmt;
 
+import org.apache.expreval.client.HBqlException;
+import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.DelegateStmt;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.ResultMissingColumnException;
 
 public abstract class GenericCaseWhen extends DelegateStmt<GenericCaseWhen> {
 

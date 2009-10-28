@@ -1,5 +1,8 @@
 package org.apache.expreval.expr.var;
 
+import org.apache.expreval.client.HBqlException;
+import org.apache.expreval.client.ResultMissingColumnException;
+import org.apache.expreval.client.TypeException;
 import org.apache.expreval.expr.ExpressionContext;
 import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.literal.DateLiteral;
@@ -15,9 +18,6 @@ import org.apache.expreval.expr.literal.StringNullLiteral;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Lists;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
 
 import java.util.Collection;
 import java.util.Date;

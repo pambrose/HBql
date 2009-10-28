@@ -1,6 +1,8 @@
 package org.apache.expreval.util;
 
 import org.apache.commons.logging.Log;
+import org.apache.expreval.client.HBqlException;
+import org.apache.expreval.expr.NumericType;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.ByteValue;
 import org.apache.expreval.expr.node.CharValue;
@@ -10,9 +12,7 @@ import org.apache.expreval.expr.node.MapValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.expreval.expr.node.StringValue;
-import org.apache.expreval.io.Serialization;
-import org.apache.expreval.schema.NumericType;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.io.Serialization;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;

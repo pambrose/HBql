@@ -1,12 +1,12 @@
 package org.apache.yaoql.client;
 
 import com.google.common.base.Predicate;
-import org.apache.expreval.antlr.HBql;
+import org.apache.expreval.client.HBqlException;
+import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.expreval.object.impl.ParameterBinding;
-import org.apache.expreval.schema.ReflectionSchema;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.ResultMissingColumnException;
+import org.apache.hadoop.hbase.contrib.hbql.parser.Parser;
+import org.apache.hadoop.hbase.contrib.hbql.schema.ReflectionSchema;
+import org.apache.yaoql.impl.ParameterBinding;
 
 public class ObjectQueryPredicate<T> extends ParameterBinding implements Predicate<T> {
 
@@ -31,7 +31,7 @@ public class ObjectQueryPredicate<T> extends ParameterBinding implements Predica
         try {
             if (!initialized) {
                 final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
-                this.exprTree = HBql.parseWhereExpression(this.query, schema);
+                this.exprTree = Parser.parseWhereExpression(this.query, schema);
                 this.applyParameters(this.exprTree);
                 initialized = true;
             }

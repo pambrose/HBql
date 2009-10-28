@@ -1,10 +1,10 @@
 package org.apache.yaoql.client;
 
+import org.apache.expreval.client.HBqlException;
+import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.expreval.hbql.impl.ResultsIterator;
-import org.apache.expreval.object.impl.ObjectQueryImpl;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.ResultMissingColumnException;
+import org.apache.hadoop.hbase.contrib.hbql.impl.ResultsIterator;
+import org.apache.yaoql.impl.ObjectQueryImpl;
 
 import java.util.Collection;
 import java.util.Iterator;

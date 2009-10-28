@@ -1,6 +1,6 @@
 package org.apache.yaoql.client;
 
-import org.apache.expreval.object.impl.ObjectQueryImpl;
+import org.apache.yaoql.impl.ObjectQueryImpl;
 
 public class ObjectQueryManager {
 

@@ -1,5 +1,7 @@
 package org.apache.expreval.expr;
 
+import org.apache.expreval.client.HBqlException;
+import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.expr.literal.DoubleLiteral;
@@ -19,8 +21,6 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.ShortValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.expreval.util.Lists;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.InternalErrorException;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;

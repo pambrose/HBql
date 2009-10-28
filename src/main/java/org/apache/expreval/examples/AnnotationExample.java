@@ -1,9 +1,9 @@
 package org.apache.expreval.examples;
 
+import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBatch;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.HColumn;
 import org.apache.hadoop.hbase.contrib.hbql.client.HColumnVersionMap;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
