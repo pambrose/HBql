@@ -2,9 +2,9 @@ package org.apache.hadoop.hbase.contrib.hbql.statement;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.TypeException;
+import org.apache.expreval.expr.Util;
 import org.apache.expreval.expr.literal.DefaultKeyword;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBatch;
 import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
@@ -87,7 +87,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
                 continue;
             }
 
-            if (!HUtil.isParentClass(type1, type2))
+            if (!Util.isParentClass(type1, type2))
                 throw new TypeException("Type mismatch in argument " + i
                                         + " expecting " + type1.getSimpleName()
                                         + " but found " + type2.getSimpleName()

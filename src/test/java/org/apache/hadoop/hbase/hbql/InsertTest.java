@@ -12,6 +12,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
 import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
 import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -362,7 +363,7 @@ public class InsertTest extends TestSupport {
         for (final HRecord rec : recList1) {
             Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
             assertTrue(vals.size() == 2);
-            String val1 = HUtil.getSerialization().getStringFromBytes(vals.get("f1:val1"));
+            String val1 = IO.getSerialization().getStringFromBytes(vals.get("f1:val1"));
             assertTrue(val1List.get(i).equals(val1));
             i++;
         }
@@ -388,7 +389,7 @@ public class InsertTest extends TestSupport {
         for (final HRecord rec : recList1) {
             Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
             assertTrue(vals.size() == 2);
-            String val1 = HUtil.getSerialization().getStringFromBytes(vals.get("f1:val1"));
+            String val1 = IO.getSerialization().getStringFromBytes(vals.get("f1:val1"));
             assertTrue(val1List.get(i).equals(val1));
 
             Map<String, NavigableMap<Long, byte[]>> vers = rec.getFamilyDefaultVersionMap("f1default");
@@ -419,7 +420,7 @@ public class InsertTest extends TestSupport {
         for (final HRecord rec : recList1) {
             Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
             assertTrue(vals.size() == 1);
-            String val1 = HUtil.getSerialization().getStringFromBytes(vals.get("f1:valunknown"));
+            String val1 = IO.getSerialization().getStringFromBytes(vals.get("f1:valunknown"));
             assertTrue(val1 == null);
             i++;
         }

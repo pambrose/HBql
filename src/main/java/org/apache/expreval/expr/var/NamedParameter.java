@@ -4,6 +4,7 @@ import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.client.TypeException;
 import org.apache.expreval.expr.ExpressionContext;
+import org.apache.expreval.expr.Util;
 import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.expr.literal.DoubleLiteral;
@@ -16,7 +17,6 @@ import org.apache.expreval.expr.literal.ShortLiteral;
 import org.apache.expreval.expr.literal.StringLiteral;
 import org.apache.expreval.expr.literal.StringNullLiteral;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Lists;
 
 import java.util.Collection;
@@ -79,11 +79,11 @@ public class NamedParameter implements GenericValue {
 
             // Look at the type of the first item and then make sure the rest match that one
             final GenericValue firstval = this.getTypedExprList().get(0);
-            final Class<? extends GenericValue> clazzToMatch = HUtil.getGenericExprType(firstval);
+            final Class<? extends GenericValue> clazzToMatch = Util.getGenericExprType(firstval);
 
             for (final GenericValue val : this.getTypedExprList()) {
 
-                final Class<? extends GenericValue> clazz = HUtil.getGenericExprType(val);
+                final Class<? extends GenericValue> clazz = Util.getGenericExprType(val);
 
                 if (clazz == null)
                     throw new TypeException("Parameter " + this.getParamName()
@@ -138,7 +138,7 @@ public class NamedParameter implements GenericValue {
         // Reset both values
         this.reset();
 
-        if (val != null && HUtil.isACollection(val)) {
+        if (val != null && Util.isACollection(val)) {
             this.typedExprList = Lists.newArrayList();
             for (final Object elem : (Collection)val)
                 this.getTypedExprList().add(this.getValueExpr(elem));

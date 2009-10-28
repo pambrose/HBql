@@ -14,7 +14,6 @@ import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
-import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Lists;
 
 import java.util.Arrays;
@@ -214,7 +213,7 @@ public abstract class GenericExpression implements GenericValue {
                 || this.getTypeSignature().getReturnType() == DateValue.class)
                 return this.getTypeSignature().newLiteral(obj);
 
-            if (HUtil.isParentClass(NumberValue.class, this.getTypeSignature().getReturnType())) {
+            if (Util.isParentClass(NumberValue.class, this.getTypeSignature().getReturnType())) {
 
                 if (obj instanceof Short)
                     return new ShortLiteral((Short)obj);
@@ -266,8 +265,8 @@ public abstract class GenericExpression implements GenericValue {
             if (clazz == null)
                 continue;
 
-            if (HUtil.isParentClass(NumberValue.class, parentClazz)) {
-                if (!HUtil.isParentClass(NumberValue.class, clazz)) {
+            if (Util.isParentClass(NumberValue.class, parentClazz)) {
+                if (!Util.isParentClass(NumberValue.class, clazz)) {
                     classList.add(clazz);
                 }
                 else {
@@ -330,7 +329,7 @@ public abstract class GenericExpression implements GenericValue {
                                                                         BooleanValue.class);
 
         for (final Class<? extends GenericValue> type : types)
-            if (HUtil.isParentClass(type, clazz))
+            if (Util.isParentClass(type, clazz))
                 return type;
 
         this.throwInvalidTypeException(clazz);

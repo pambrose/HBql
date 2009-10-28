@@ -3,8 +3,8 @@ package org.apache.hadoop.hbase.contrib.hbql.schema;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.util.HUtil;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.DefaultArg;
 
 import java.io.Serializable;
@@ -176,7 +176,7 @@ public abstract class ColumnAttrib implements Serializable {
         if (this.familyBytes != null)
             return this.familyBytes;
 
-        this.familyBytes = HUtil.getSerialization().getStringAsBytes(this.getFamilyName());
+        this.familyBytes = IO.getSerialization().getStringAsBytes(this.getFamilyName());
         return this.familyBytes;
     }
 
@@ -185,7 +185,7 @@ public abstract class ColumnAttrib implements Serializable {
         if (this.columnBytes != null)
             return this.columnBytes;
 
-        this.columnBytes = HUtil.getSerialization().getStringAsBytes(this.getColumnName());
+        this.columnBytes = IO.getSerialization().getStringAsBytes(this.getColumnName());
         return this.columnBytes;
     }
 
@@ -273,9 +273,9 @@ public abstract class ColumnAttrib implements Serializable {
         final Object value = this.getCurrentValue(obj);
 
         if (this.isAnArray())
-            return HUtil.getSerialization().getArrayasBytes(this.getFieldType(), value);
+            return IO.getSerialization().getArrayasBytes(this.getFieldType(), value);
         else
-            return HUtil.getSerialization().getScalarAsBytes(this.getFieldType(), value);
+            return IO.getSerialization().getScalarAsBytes(this.getFieldType(), value);
     }
 
     public Object getValueFromBytes(final Object obj, final byte[] b) throws HBqlException {
@@ -284,15 +284,15 @@ public abstract class ColumnAttrib implements Serializable {
             return this.invokeSetterMethod(obj, b);
 
         if (this.isAnArray())
-            return HUtil.getSerialization().getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
+            return IO.getSerialization().getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
         else
-            return HUtil.getSerialization().getScalarFromBytes(this.getFieldType(), b);
+            return IO.getSerialization().getScalarFromBytes(this.getFieldType(), b);
     }
 
     public Object getValueFromBytes(final Result result) throws HBqlException, ResultMissingColumnException {
 
         if (this.isAKeyAttrib()) {
-            return HUtil.getSerialization().getStringFromBytes(result.getRow());
+            return IO.getSerialization().getStringFromBytes(result.getRow());
         }
         else {
 
@@ -308,9 +308,9 @@ public abstract class ColumnAttrib implements Serializable {
             final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
 
             if (this.isAnArray())
-                return HUtil.getSerialization().getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
+                return IO.getSerialization().getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
             else
-                return HUtil.getSerialization().getScalarFromBytes(this.getFieldType(), b);
+                return IO.getSerialization().getScalarFromBytes(this.getFieldType(), b);
         }
     }
 
@@ -320,11 +320,11 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public byte[] getFamilyNameAsBytes() throws HBqlException {
-        return HUtil.getSerialization().getStringAsBytes(this.getFamilyName());
+        return IO.getSerialization().getStringAsBytes(this.getFamilyName());
     }
 
     public byte[] getColumnNameAsBytes() throws HBqlException {
-        return HUtil.getSerialization().getStringAsBytes(this.getColumnName());
+        return IO.getSerialization().getStringAsBytes(this.getColumnName());
     }
 
     protected String getGetter() {

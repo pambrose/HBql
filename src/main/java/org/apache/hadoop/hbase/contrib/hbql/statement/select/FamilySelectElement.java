@@ -1,10 +1,10 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement.select;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
+import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.contrib.hbql.schema.SelectFamilyAttrib;
@@ -111,7 +111,7 @@ public class FamilySelectElement implements SelectElement {
         }
 
         for (final String familyName : this.getFamilyNameList())
-            this.getFamilyNameBytesList().add(HUtil.getSerialization().getStringAsBytes(familyName));
+            this.getFamilyNameBytesList().add(IO.getSerialization().getStringAsBytes(familyName));
     }
 
 
@@ -140,7 +140,7 @@ public class FamilySelectElement implements SelectElement {
             for (final byte[] columnBytes : columnMap.keySet()) {
 
                 final byte[] valueBytes = columnMap.get(columnBytes);
-                final String columnName = HUtil.getSerialization().getStringFromBytes(columnBytes);
+                final String columnName = IO.getSerialization().getStringFromBytes(columnBytes);
 
                 if (columnName.endsWith("]")) {
 
@@ -183,7 +183,7 @@ public class FamilySelectElement implements SelectElement {
             for (final byte[] columnBytes : versionColumnMap.keySet()) {
 
                 final NavigableMap<Long, byte[]> timeStampMap = versionColumnMap.get(columnBytes);
-                final String columnName = HUtil.getSerialization().getStringFromBytes(columnBytes);
+                final String columnName = IO.getSerialization().getStringFromBytes(columnBytes);
 
                 if (columnName.endsWith("]")) {
 

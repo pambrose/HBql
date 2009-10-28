@@ -3,11 +3,12 @@ package org.apache.hadoop.hbase.contrib.hbql.statement.args;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
+import org.apache.expreval.expr.Util;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.RowRequest;
@@ -56,7 +57,7 @@ public class KeyRangeArgs {
 
         private byte[] getUpperAsBytes() throws HBqlException {
             final String upper = this.getUpper();
-            return HUtil.getSerialization().getStringAsBytes(upper);
+            return IO.getSerialization().getStringAsBytes(upper);
         }
 
         private boolean isLastRange() {
@@ -97,7 +98,7 @@ public class KeyRangeArgs {
         private RowRequest newGet(final WhereArgs whereArgs,
                                   final Collection<ColumnAttrib> columnAttribSet,
                                   final String lower) throws HBqlException, IOException {
-            final byte[] lowerBytes = HUtil.getSerialization().getStringAsBytes(lower);
+            final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(lower);
             final Get get = new Get(lowerBytes);
             whereArgs.setGetArgs(get, columnAttribSet);
             return new RowRequest(get, null);
@@ -110,7 +111,7 @@ public class KeyRangeArgs {
 
             // Check if the value returned is a collection
             final Object objval = this.getLower(true);
-            if (HUtil.isACollection(objval)) {
+            if (Util.isACollection(objval)) {
                 for (final GenericValue val : (Collection<GenericValue>)objval) {
                     try {
                         final String lower = (String)val.getValue(null);
@@ -133,7 +134,7 @@ public class KeyRangeArgs {
                                   final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
             final Scan scan = new Scan();
             if (!this.isAllRows()) {
-                final byte[] lowerBytes = HUtil.getSerialization().getStringAsBytes((String)this.getLower(false));
+                final byte[] lowerBytes = IO.getSerialization().getStringAsBytes((String)this.getLower(false));
                 scan.setStartRow(lowerBytes);
                 if (this.isRowRange())
                     scan.setStopRow(this.getUpperAsBytes());

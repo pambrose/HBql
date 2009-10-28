@@ -5,12 +5,12 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
-import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
 import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
 import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
@@ -136,8 +136,8 @@ public class SingleExpression extends ExpressionContext implements SelectElement
                     throw new HBqlException("Unknown family name: " + this.getFamilyName());
             }
 
-            this.familyNameBytes = HUtil.getSerialization().getStringAsBytes(this.getFamilyName());
-            this.columnNameBytes = HUtil.getSerialization().getStringAsBytes(this.getColumnName());
+            this.familyNameBytes = IO.getSerialization().getStringAsBytes(this.getFamilyName());
+            this.columnNameBytes = IO.getSerialization().getStringAsBytes(this.getColumnName());
         }
     }
 
@@ -163,7 +163,7 @@ public class SingleExpression extends ExpressionContext implements SelectElement
 
         for (final byte[] columnBytes : columnMap.keySet()) {
 
-            final String columnName = HUtil.getSerialization().getStringFromBytes(columnBytes);
+            final String columnName = IO.getSerialization().getStringFromBytes(columnBytes);
 
             if (columnName.endsWith("]")) {
                 final int lbrace = columnName.indexOf("[");

@@ -25,9 +25,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.expreval.util.HUtil;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.schema.DefinedSchema;
 import org.apache.hadoop.hbase.contrib.hbql.schema.FieldType;
@@ -42,6 +42,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 
 public class HBqlFilter implements Filter {
 
@@ -126,7 +127,7 @@ public class HBqlFilter implements Filter {
                     this.getHRecord().setVersionValue(familyName, columnName, v.getTimestamp(), val, true);
                 }
                 catch (Exception e) {
-                    HUtil.logException(LOG, e);
+                    logException(LOG, e);
                     LOG.info("Had exception in filterKeyValue(): " + e.getClass().getName() + " - " + e.getMessage());
                 }
             }
@@ -155,7 +156,7 @@ public class HBqlFilter implements Filter {
             }
             catch (HBqlException e) {
                 e.printStackTrace();
-                HUtil.logException(LOG, e);
+                logException(LOG, e);
                 LOG.info("In filterRow() had exception: " + e.getMessage());
                 return true;
             }
@@ -164,12 +165,12 @@ public class HBqlFilter implements Filter {
 
     public void write(DataOutput out) throws IOException {
         try {
-            Bytes.writeByteArray(out, HUtil.getSerialization().getScalarAsBytes(this.getExpressionTree()));
-            Bytes.writeByteArray(out, HUtil.getSerialization().getScalarAsBytes(FieldType.LongType, this.getScanLimit()));
+            Bytes.writeByteArray(out, IO.getSerialization().getScalarAsBytes(this.getExpressionTree()));
+            Bytes.writeByteArray(out, IO.getSerialization().getScalarAsBytes(FieldType.LongType, this.getScanLimit()));
         }
         catch (HBqlException e) {
             e.printStackTrace();
-            HUtil.logException(LOG, e);
+            logException(LOG, e);
             throw new IOException("HPersistException: " + e.getCause());
         }
     }
@@ -179,10 +180,10 @@ public class HBqlFilter implements Filter {
         LOG.info("In readFields()");
 
         try {
-            this.expressionTree = (ExpressionTree)HUtil.getSerialization().getScalarFromBytes(FieldType.ObjectType,
-                                                                                              Bytes.readByteArray(in));
-            this.scanLimit = (Long)HUtil.getSerialization().getScalarFromBytes(FieldType.LongType,
-                                                                               Bytes.readByteArray(in));
+            this.expressionTree = (ExpressionTree)IO.getSerialization().getScalarFromBytes(FieldType.ObjectType,
+                                                                                           Bytes.readByteArray(in));
+            this.scanLimit = (Long)IO.getSerialization().getScalarFromBytes(FieldType.LongType,
+                                                                            Bytes.readByteArray(in));
             this.getHRecord().setSchema(this.getSchema());
 
             this.getSchema().resetDefaultValues();
@@ -228,5 +229,17 @@ public class HBqlFilter implements Filter {
         }
 
         boolean v = filter.filterRow();
+    }
+
+    public static void logException(final Log log, final Exception e) {
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final PrintWriter oos = new PrintWriter(baos);
+
+        e.printStackTrace(oos);
+        oos.flush();
+        oos.close();
+
+        log.info(baos.toString());
     }
 }

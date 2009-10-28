@@ -1,12 +1,12 @@
 package org.apache.hadoop.hbase.contrib.hbql.client;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
@@ -81,11 +81,11 @@ public class HBatch {
                     final Map mapval = (Map)attrib.getCurrentValue(newrec);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
-                        final byte[] b = HUtil.getSerialization().getScalarAsBytes(mapval.get(keyobj));
+                        final byte[] b = IO.getSerialization().getScalarAsBytes(mapval.get(keyobj));
 
                         // Use family:column[key] scheme to avoid column namespace collision
                         put.add(attrib.getFamilyNameAsBytes(),
-                                HUtil.getSerialization().getStringAsBytes(attrib.getColumnName() + "[" + colname + "]"), b);
+                                IO.getSerialization().getStringAsBytes(attrib.getColumnName() + "[" + colname + "]"), b);
                     }
                 }
                 else {
@@ -111,11 +111,11 @@ public class HBatch {
                     final Map mapval = (Map)attrib.getCurrentValue(hrecord);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
-                        final byte[] b = HUtil.getSerialization().getScalarAsBytes(mapval.get(keyobj));
+                        final byte[] b = IO.getSerialization().getScalarAsBytes(mapval.get(keyobj));
 
                         // Use family:column[key] scheme to avoid column namespace collision
                         put.add(attrib.getFamilyNameAsBytes(),
-                                HUtil.getSerialization().getStringAsBytes(attrib.getColumnName() + "[" + colname + "]"), b);
+                                IO.getSerialization().getStringAsBytes(attrib.getColumnName() + "[" + colname + "]"), b);
                     }
                 }
                 else {

@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.contrib.hbql.schema;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.util.HUtil;
+import org.apache.expreval.expr.Util;
 import org.apache.hadoop.hbase.contrib.hbql.client.HColumn;
 
 import java.lang.reflect.Field;
@@ -27,7 +27,7 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
                                     + "annotation and be marked final");
 
         // Make sure type implements Map if this is true
-        if (this.isMapKeysAsColumnsAttrib() && !HUtil.isParentClass(Map.class, this.getField().getType()))
+        if (this.isMapKeysAsColumnsAttrib() && !Util.isParentClass(Map.class, this.getField().getType()))
             throw new HBqlException(this.getObjectQualifiedName() + " has @HColumn(mapKeysAsColumns=true) " +
                                     "annotation but doesn't implement the Map interface");
     }

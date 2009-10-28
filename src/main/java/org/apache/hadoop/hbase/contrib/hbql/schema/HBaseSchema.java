@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.contrib.hbql.schema;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -10,6 +9,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
 import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.filter.HBqlFilter;
+import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SelectElement;
 
 import java.util.List;
@@ -50,7 +50,7 @@ public abstract class HBaseSchema extends Schema {
     public abstract List<HColumnDescriptor> getColumnDescriptors();
 
     public byte[] getTableNameAsBytes() throws HBqlException {
-        return HUtil.getSerialization().getStringAsBytes(this.getTableName());
+        return IO.getSerialization().getStringAsBytes(this.getTableName());
     }
 
     public abstract Object newObject(final List<SelectElement> selectElementList,

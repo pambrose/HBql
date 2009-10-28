@@ -9,7 +9,6 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.expreval.expr.var.GenericColumn;
 import org.apache.expreval.expr.var.NamedParameter;
-import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
@@ -162,7 +161,7 @@ public abstract class ExpressionContext implements Serializable {
                     final Class<? extends GenericValue> parentClazz = this.getTypeSignature().getArg(i);
                     final Class<? extends GenericValue> clazz = clazzList.get(i);
                     // See if they are both NumberValues.  If they are, then check ranks
-                    if (HUtil.isParentClass(NumberValue.class, parentClazz, clazz)) {
+                    if (Util.isParentClass(NumberValue.class, parentClazz, clazz)) {
                         final int parentRank = NumericType.getTypeRanking(parentClazz);
                         final int clazzRank = NumericType.getTypeRanking(clazz);
                         if (clazzRank > parentRank)

@@ -2,12 +2,12 @@ package org.apache.expreval.expr.casestmt;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
+import org.apache.expreval.expr.Util;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
-import org.apache.expreval.util.HUtil;
 
 import java.util.ArrayList;
 
@@ -29,13 +29,13 @@ public class DelegateCase extends GenericCase {
         if (this.getElseExpr() != null)
             this.validateParentClass(argType, this.getElseExpr().validateTypes(parentExpr, false));
 
-        if (HUtil.isParentClass(StringValue.class, argType))
+        if (Util.isParentClass(StringValue.class, argType))
             this.setTypedExpr(new StringCase(this.getWhenExprList(), this.getElseExpr()));
-        else if (HUtil.isParentClass(NumberValue.class, argType))
+        else if (Util.isParentClass(NumberValue.class, argType))
             this.setTypedExpr(new NumberCase(this.getWhenExprList(), this.getElseExpr()));
-        else if (HUtil.isParentClass(DateValue.class, argType))
+        else if (Util.isParentClass(DateValue.class, argType))
             this.setTypedExpr(new DateCase(this.getWhenExprList(), this.getElseExpr()));
-        else if (HUtil.isParentClass(BooleanValue.class, argType))
+        else if (Util.isParentClass(BooleanValue.class, argType))
             this.setTypedExpr(new BooleanCase(this.getWhenExprList(), this.getElseExpr()));
         else
             this.throwInvalidTypeException(argType);

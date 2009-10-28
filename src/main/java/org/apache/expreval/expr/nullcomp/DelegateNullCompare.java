@@ -2,12 +2,12 @@ package org.apache.expreval.expr.nullcomp;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
+import org.apache.expreval.expr.Util;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
-import org.apache.expreval.util.HUtil;
 
 public class DelegateNullCompare extends GenericNullCompare {
 
@@ -21,13 +21,13 @@ public class DelegateNullCompare extends GenericNullCompare {
         final Class<? extends GenericValue> type = this.determineGenericValueClass(this.getArg(0).validateTypes(this,
                                                                                                                 false));
 
-        if (HUtil.isParentClass(StringValue.class, type))
+        if (Util.isParentClass(StringValue.class, type))
             this.setTypedExpr(new StringNullCompare(this.isNot(), this.getArg(0)));
-        else if (HUtil.isParentClass(NumberValue.class, type))
+        else if (Util.isParentClass(NumberValue.class, type))
             this.setTypedExpr(new NumberNullCompare(this.isNot(), this.getArg(0)));
-        else if (HUtil.isParentClass(DateValue.class, type))
+        else if (Util.isParentClass(DateValue.class, type))
             this.setTypedExpr(new DateNullCompare(this.isNot(), this.getArg(0)));
-        else if (HUtil.isParentClass(BooleanValue.class, type))
+        else if (Util.isParentClass(BooleanValue.class, type))
             this.setTypedExpr(new BooleanNullCompare(this.isNot(), this.getArg(0)));
         else
             this.throwInvalidTypeException(type);

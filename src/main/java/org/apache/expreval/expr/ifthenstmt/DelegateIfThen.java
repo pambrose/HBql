@@ -2,12 +2,12 @@ package org.apache.expreval.expr.ifthenstmt;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
+import org.apache.expreval.expr.Util;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
-import org.apache.expreval.util.HUtil;
 
 public class DelegateIfThen extends GenericIfThen {
 
@@ -23,13 +23,13 @@ public class DelegateIfThen extends GenericIfThen {
         final Class<? extends GenericValue> type1 = this.getArg(1).validateTypes(this, false);
         final Class<? extends GenericValue> type2 = this.getArg(2).validateTypes(this, false);
 
-        if (HUtil.isParentClass(StringValue.class, type1, type2))
+        if (Util.isParentClass(StringValue.class, type1, type2))
             this.setTypedExpr(new StringIfThen(this.getArg(0), this.getArg(1), this.getArg(2)));
-        else if (HUtil.isParentClass(NumberValue.class, type1, type2))
+        else if (Util.isParentClass(NumberValue.class, type1, type2))
             this.setTypedExpr(new NumberIfThen(this.getArg(0), this.getArg(1), this.getArg(2)));
-        else if (HUtil.isParentClass(DateValue.class, type1, type2))
+        else if (Util.isParentClass(DateValue.class, type1, type2))
             this.setTypedExpr(new DateIfThen(this.getArg(0), this.getArg(1), this.getArg(2)));
-        else if (HUtil.isParentClass(BooleanValue.class, type1, type2))
+        else if (Util.isParentClass(BooleanValue.class, type1, type2))
             this.setTypedExpr(new BooleanIfThen(this.getArg(0), this.getArg(1), this.getArg(2)));
         else
             this.throwInvalidTypeException(type1, type2);
