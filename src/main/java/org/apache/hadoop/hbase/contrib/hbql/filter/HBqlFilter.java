@@ -87,7 +87,7 @@ public class HBqlFilter implements Filter {
         this.recordCount++;
     }
 
-    private boolean hasValidExprTree() {
+    private boolean hasValidExpressionTree() {
         return this.getExpressionTree() != null;
     }
 
@@ -111,7 +111,7 @@ public class HBqlFilter implements Filter {
 
         LOG.info("In filterKeyValue()");
 
-        if (this.hasValidExprTree()) {
+        if (this.hasValidExpressionTree()) {
 
             final String familyName = Bytes.toString(v.getFamily());
             final String columnName = Bytes.toString(v.getQualifier());
@@ -140,7 +140,7 @@ public class HBqlFilter implements Filter {
 
         LOG.info("In filterRow()");
 
-        if (!this.hasValidExprTree()) {
+        if (!this.hasValidExpressionTree()) {
             this.incrementRecordCount();
             return false;
         }

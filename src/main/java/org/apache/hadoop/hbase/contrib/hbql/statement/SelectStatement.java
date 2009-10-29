@@ -46,11 +46,11 @@ public class SelectStatement extends SchemaStatement {
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();
 
-        if (this.getWhereArgs().getServerExprTree() != null)
-            this.getWhereArgs().getServerExprTree().setUseResultData(false);
+        if (this.getWhereArgs().getServerExpressionTree() != null)
+            this.getWhereArgs().getServerExpressionTree().setUseResultData(false);
 
-        if (this.getWhereArgs().getClientExprTree() != null)
-            this.getWhereArgs().getClientExprTree().setUseResultData(true);
+        if (this.getWhereArgs().getClientExpressionTree() != null)
+            this.getWhereArgs().getClientExpressionTree().setUseResultData(true);
     }
 
     private void checkForDuplicateAsNames() throws HBqlException {

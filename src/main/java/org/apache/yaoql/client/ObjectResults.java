@@ -34,7 +34,7 @@ public class ObjectResults<T> implements Iterable<T> {
 
                 // In theory, this should be done only once and in ObjectQuery, but
                 // since it requires the objects to get the schema, I do it here
-                final ExpressionTree exprTree = getObjectQuery().getExprTree(getObjects());
+                final ExpressionTree expressionTree = getObjectQuery().getExpressionTree(getObjects());
 
                 Iterator<T> objectIter = null;
 
@@ -49,7 +49,7 @@ public class ObjectResults<T> implements Iterable<T> {
                     while (this.objectIter.hasNext()) {
                         final T val = this.objectIter.next();
                         try {
-                            if (this.exprTree.evaluate(val))
+                            if (this.expressionTree.evaluate(val))
                                 return val;
                         }
                         catch (ResultMissingColumnException e) {

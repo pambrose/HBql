@@ -41,20 +41,20 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
         return this.query;
     }
 
-    public ExpressionTree getExprTree(final Collection<T> objects) throws HBqlException {
+    public ExpressionTree getExpressionTree(final Collection<T> objects) throws HBqlException {
 
         if (objects == null || objects.size() == 0) {
-            ExpressionTree exprTree = ExpressionTree.newExpressionTree(true);
-            exprTree.setSchema(null);
-            return exprTree;
+            final ExpressionTree expressionTree = ExpressionTree.newExpressionTree(true);
+            expressionTree.setSchema(null);
+            return expressionTree;
         }
 
         // Grab the first object to derive the schema
         final Object obj = objects.iterator().next();
         final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
-        final ExpressionTree exprTree = Parser.parseWhereExpression(this.getQuery(), schema);
-        this.applyParameters(exprTree);
-        return exprTree;
+        final ExpressionTree expressionTree = Parser.parseWhereExpression(this.getQuery(), schema);
+        this.applyParameters(expressionTree);
+        return expressionTree;
     }
 
     public ObjectResults<T> getResults(final Collection<T> objs) throws HBqlException {

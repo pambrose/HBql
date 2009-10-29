@@ -85,7 +85,7 @@ public class ResultsImpl<T> implements HResults<T> {
             return new ResultsIterator<T>() {
 
                 final HTable table = getConnection().getHTable(getSelectStatement().getSchema().getTableName());
-                final ExpressionTree clientExprTree = getWhereArgs().getClientExprTree();
+                final ExpressionTree clientExpressionTree = getWhereArgs().getClientExpressionTree();
                 final Iterator<RowRequest> rowRequestIter = getRowRequestList().iterator();
 
                 int maxVersions = 0;
@@ -96,8 +96,8 @@ public class ResultsImpl<T> implements HResults<T> {
                 // Prime the iterator with the first value
                 T nextObject = fetchNextObject();
 
-                private ExpressionTree getClientExprTree() {
-                    return this.clientExprTree;
+                private ExpressionTree getClientExpressionTree() {
+                    return this.clientExpressionTree;
                 }
 
                 private Iterator<RowRequest> getRowRequestIter() {
@@ -169,7 +169,7 @@ public class ResultsImpl<T> implements HResults<T> {
                             final Result result = this.getResultIter().next();
 
                             try {
-                                if (getClientExprTree() == null || getClientExprTree().evaluate(result)) {
+                                if (getClientExpressionTree() == null || getClientExpressionTree().evaluate(result)) {
 
                                     this.recordCount++;
 

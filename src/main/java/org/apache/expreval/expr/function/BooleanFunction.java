@@ -65,8 +65,8 @@ public class BooleanFunction extends Function implements BooleanValue {
 
             case EVAL: {
                 final String exprStr = (String)this.getArg(0).getValue(object);
-                final ExpressionTree exprTree = Parser.parseWhereExpression(exprStr, this.getSchema());
-                return exprTree.evaluate(object);
+                final ExpressionTree expressionTree = Parser.parseWhereExpression(exprStr, this.getSchema());
+                return expressionTree.evaluate(object);
             }
 
             default:

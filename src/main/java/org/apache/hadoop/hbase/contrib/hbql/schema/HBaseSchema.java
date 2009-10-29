@@ -209,16 +209,18 @@ public abstract class HBaseSchema extends Schema {
     }
 
 
-    public HBqlFilter getHBqlFilter(final ExpressionTree origExprTree, final long scanLimit) throws HBqlException {
+    public HBqlFilter getHBqlFilter(final ExpressionTree origExpressionTree,
+                                    final long scanLimit) throws HBqlException {
 
-        if (origExprTree == null && scanLimit == 0)
+        if (origExpressionTree == null && scanLimit == 0)
             return null;
 
-        final ExpressionTree exprTree = (origExprTree == null) ? ExpressionTree.newExpressionTree(true) : origExprTree;
+        final ExpressionTree expressionTree = (origExpressionTree == null)
+                                              ? ExpressionTree.newExpressionTree(true) : origExpressionTree;
 
         final DefinedSchema definedSchema = this.getDefinedSchemaEquivalent();
-        exprTree.setSchema(definedSchema);
-        return new HBqlFilter(exprTree, scanLimit);
+        expressionTree.setSchema(definedSchema);
+        return new HBqlFilter(expressionTree, scanLimit);
     }
 
     public synchronized Set<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException {

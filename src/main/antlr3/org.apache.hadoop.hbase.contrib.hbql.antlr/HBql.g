@@ -95,8 +95,8 @@ selectDesc[WhereArgs whereArgs]
 	| v=versions					{whereArgs.setVersionArgs($v.retval);}
 	| l=scanLimit					{whereArgs.setScanLimitArgs($l.retval);}
 	| q=queryLimit					{whereArgs.setQueryLimitArgs($q.retval);}
-	| s=serverFilter				{whereArgs.setServerExprTree($s.retval);}
-	| c=clientFilter				{whereArgs.setClientExprTree($c.retval);}
+	| s=serverFilter				{whereArgs.setServerExpressionTree($s.retval);}
+	| c=clientFilter				{whereArgs.setClientExpressionTree($c.retval);}
 	;
 	
 keysRange returns [KeyRangeArgs retval]

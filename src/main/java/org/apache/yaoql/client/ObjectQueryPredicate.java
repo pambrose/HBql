@@ -11,7 +11,7 @@ import org.apache.yaoql.impl.ParameterBinding;
 public class ObjectQueryPredicate<T> extends ParameterBinding implements Predicate<T> {
 
     private final String query;
-    private ExpressionTree exprTree;
+    private ExpressionTree expressionTree;
     private boolean initialized = false;
 
     public ObjectQueryPredicate(final String query) {
@@ -31,12 +31,12 @@ public class ObjectQueryPredicate<T> extends ParameterBinding implements Predica
         try {
             if (!initialized) {
                 final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
-                this.exprTree = Parser.parseWhereExpression(this.query, schema);
-                this.applyParameters(this.exprTree);
+                this.expressionTree = Parser.parseWhereExpression(this.query, schema);
+                this.applyParameters(this.expressionTree);
                 initialized = true;
             }
 
-            return exprTree.evaluate(obj);
+            return expressionTree.evaluate(obj);
         }
         catch (ResultMissingColumnException e) {
             // Not possible

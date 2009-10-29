@@ -32,7 +32,7 @@ public class Parser {
 
     public static ExpressionTree parseWhereExpression(final String str, final Schema schema) throws HBqlException {
         try {
-            return schema.getExprTree(str);
+            return schema.getExpressionTree(str);
         }
         catch (RecognitionException e) {
             e.printStackTrace();

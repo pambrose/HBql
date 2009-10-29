@@ -16,9 +16,9 @@ public abstract class ParameterBinding {
         this.getParameterMap().put(name, val);
     }
 
-    protected void applyParameters(final ExpressionTree exprTree) throws HBqlException {
+    protected void applyParameters(final ExpressionTree expressionTree) throws HBqlException {
         for (final String key : this.getParameterMap().keySet()) {
-            int cnt = exprTree.setParameter(key, this.getParameterMap().get(key));
+            int cnt = expressionTree.setParameter(key, this.getParameterMap().get(key));
             if (cnt == 0)
                 throw new HBqlException("Parameter name " + key + " does not exist in " + this.getQuery());
         }

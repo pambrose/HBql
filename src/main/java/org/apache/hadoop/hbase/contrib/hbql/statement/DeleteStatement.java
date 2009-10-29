@@ -53,12 +53,12 @@ public class DeleteStatement extends SchemaStatement implements ConnectionStatem
                        final WhereArgs where,
                        final RowRequest rowRequest) throws IOException, HBqlException {
 
-        final ExpressionTree clientExprTree = where.getClientExprTree();
+        final ExpressionTree clientExpressionTree = where.getClientExpressionTree();
 
         int cnt = 0;
         for (final Result result : rowRequest.getResultScanner(table)) {
             try {
-                if (clientExprTree == null || clientExprTree.evaluate(result)) {
+                if (clientExpressionTree == null || clientExpressionTree.evaluate(result)) {
                     table.delete(new Delete(result.getRow()));
                     cnt++;
                 }

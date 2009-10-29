@@ -23,8 +23,8 @@ public class WhereArgs {
     private VersionArgs versionArgs = null;
     private LimitArgs scanLimitArgs = null;
     private LimitArgs queryLimitArgs = null;
-    private ExpressionTree clientExprTree = null;
-    private ExpressionTree serverExprTree = null;
+    private ExpressionTree clientExpressionTree = null;
+    private ExpressionTree serverExpressionTree = null;
 
     private HBaseSchema schema;
 
@@ -54,11 +54,11 @@ public class WhereArgs {
         if (this.getQueryLimitArgs() != null)
             this.getQueryLimitArgs().setSchema(null);
 
-        if (this.getServerExprTree() != null)
-            this.getServerExprTree().setSchema(this.getSchema());
+        if (this.getServerExpressionTree() != null)
+            this.getServerExpressionTree().setSchema(this.getSchema());
 
-        if (this.getClientExprTree() != null)
-            this.getClientExprTree().setSchema(this.getSchema());
+        if (this.getClientExpressionTree() != null)
+            this.getClientExpressionTree().setSchema(this.getSchema());
     }
 
     private void validateWhereArgs() throws HBqlException {
@@ -133,24 +133,24 @@ public class WhereArgs {
         this.queryLimitArgs = queryLimitArgs;
     }
 
-    public ExpressionTree getClientExprTree() {
-        return this.clientExprTree;
+    public ExpressionTree getClientExpressionTree() {
+        return this.clientExpressionTree;
     }
 
-    public void setClientExprTree(final ExpressionTree clientExprTree) {
-        if (this.getClientExprTree() != null)
+    public void setClientExpressionTree(final ExpressionTree clientExpressionTree) {
+        if (this.getClientExpressionTree() != null)
             this.addError("Client Where");
-        this.clientExprTree = clientExprTree;
+        this.clientExpressionTree = clientExpressionTree;
     }
 
-    public ExpressionTree getServerExprTree() {
-        return serverExprTree;
+    public ExpressionTree getServerExpressionTree() {
+        return serverExpressionTree;
     }
 
-    public void setServerExprTree(final ExpressionTree serverExprTree) {
-        if (this.getServerExprTree() != null)
+    public void setServerExpressionTree(final ExpressionTree serverExpressionTree) {
+        if (this.getServerExpressionTree() != null)
             this.addError("Server Where");
-        this.serverExprTree = serverExprTree;
+        this.serverExpressionTree = serverExpressionTree;
     }
 
     public long getQueryLimit() throws HBqlException {
@@ -180,11 +180,11 @@ public class WhereArgs {
         if (this.getQueryLimitArgs() != null)
             sbuf.append("QUERY " + this.getQueryLimitArgs().asString() + "\n");
 
-        if (this.getServerExprTree() != null)
-            sbuf.append("SERVER FILTER " + this.getServerExprTree().asString() + "\n");
+        if (this.getServerExpressionTree() != null)
+            sbuf.append("SERVER FILTER " + this.getServerExpressionTree().asString() + "\n");
 
-        if (this.getClientExprTree() != null)
-            sbuf.append("CLIENT FILTER " + this.getClientExprTree().asString() + "\n");
+        if (this.getClientExpressionTree() != null)
+            sbuf.append("CLIENT FILTER " + this.getClientExpressionTree().asString() + "\n");
 
         return sbuf.toString();
     }
@@ -205,21 +205,21 @@ public class WhereArgs {
         if (this.getQueryLimitArgs() != null)
             cnt += this.getQueryLimitArgs().setParameter(name, val);
 
-        if (this.getServerExprTree() != null)
-            cnt += this.getServerExprTree().setParameter(name, val);
+        if (this.getServerExpressionTree() != null)
+            cnt += this.getServerExpressionTree().setParameter(name, val);
 
-        if (this.getClientExprTree() != null)
-            cnt += this.getClientExprTree().setParameter(name, val);
+        if (this.getClientExpressionTree() != null)
+            cnt += this.getClientExpressionTree().setParameter(name, val);
 
         return cnt;
     }
 
     public Set<ColumnAttrib> getAllColumnsUsedInExprs() {
         final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
-        if (this.getServerExprTree() != null)
-            allAttribs.addAll(this.getServerExprTree().getAttribsUsedInExpr());
-        if (this.getClientExprTree() != null)
-            allAttribs.addAll(this.getClientExprTree().getAttribsUsedInExpr());
+        if (this.getServerExpressionTree() != null)
+            allAttribs.addAll(this.getServerExpressionTree().getAttribsUsedInExpr());
+        if (this.getClientExpressionTree() != null)
+            allAttribs.addAll(this.getClientExpressionTree().getAttribsUsedInExpr());
         return allAttribs;
     }
 
@@ -255,7 +255,7 @@ public class WhereArgs {
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(get);
 
-        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExprTree(),
+        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExpressionTree(),
                                                                        this.getScanLimit());
         if (serverFilter != null)
             get.setFilter(serverFilter);
@@ -284,7 +284,7 @@ public class WhereArgs {
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(scan);
 
-        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExprTree(),
+        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExpressionTree(),
                                                                        this.getScanLimit());
         if (serverFilter != null)
             scan.setFilter(serverFilter);

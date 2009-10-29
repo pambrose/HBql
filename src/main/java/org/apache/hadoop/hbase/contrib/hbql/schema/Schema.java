@@ -22,7 +22,7 @@ public abstract class Schema implements Serializable {
     private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
     private List<String> evalList = null;
     private Map<String, ExpressionTree> evalMap = null;
-    private int exprTreeCacheSize = 25;
+    private int expressionTreeCacheSize = 25;
     private final String schemaName;
 
     protected Schema(final String schemaName) {
@@ -94,13 +94,13 @@ public abstract class Schema implements Serializable {
     }
 
     public int getEvalCacheSize() {
-        return this.exprTreeCacheSize;
+        return this.expressionTreeCacheSize;
     }
 
     public void setEvalCacheSize(final int size) {
 
         if (size > 0) {
-            this.exprTreeCacheSize = size;
+            this.expressionTreeCacheSize = size;
 
             // Reset existing cache
             final Map<String, ExpressionTree> map = this.getEvalMap();
@@ -110,22 +110,22 @@ public abstract class Schema implements Serializable {
         }
     }
 
-    public ExpressionTree getExprTree(final String str) throws RecognitionException {
+    public ExpressionTree getExpressionTree(final String str) throws RecognitionException {
         final Map<String, ExpressionTree> map = this.getEvalMap();
-        ExpressionTree exprTree = map.get(str);
-        if (exprTree == null) {
+        ExpressionTree expressionTree = map.get(str);
+        if (expressionTree == null) {
             final HBqlParser parser = Parser.newHBqlParser(str);
-            exprTree = parser.nodescWhereExpr();
-            exprTree.setSchema(this);
-            this.addToExprTreeCache(str, exprTree);
+            expressionTree = parser.nodescWhereExpr();
+            expressionTree.setSchema(this);
+            this.addToExpressionTreeCache(str, expressionTree);
         }
         else {
-            exprTree.reset();
+            expressionTree.reset();
         }
-        return exprTree;
+        return expressionTree;
     }
 
-    private synchronized void addToExprTreeCache(final String exprStr, final ExpressionTree exprTree) {
+    private synchronized void addToExpressionTreeCache(final String exprStr, final ExpressionTree expressionTree) {
 
         final Map<String, ExpressionTree> map = this.getEvalMap();
 
@@ -134,9 +134,9 @@ public abstract class Schema implements Serializable {
             final List<String> list = this.getEvalList();
 
             list.add(exprStr);
-            map.put(exprStr, exprTree);
+            map.put(exprStr, expressionTree);
 
-            if (list.size() > exprTreeCacheSize) {
+            if (list.size() > expressionTreeCacheSize) {
                 final String firstOne = list.get(0);
                 map.remove(firstOne);
                 list.remove(0);
