@@ -20,11 +20,14 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ShellStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.WhereArgs;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpression;
+import org.apache.log4j.Logger;
 
 public class Parser {
 
+    final static Logger log = Logger.getLogger(Parser.class.getSimpleName());
+
     public static HBqlParser newHBqlParser(final String str) {
-        System.out.println("Parsing: " + str);
+        log.info("Parsing: " + str);
         final Lexer lex = new HBqlLexer(new ANTLRStringStream(str));
         final CommonTokenStream tokens = new CommonTokenStream(lex);
         return new HBqlParser(tokens);

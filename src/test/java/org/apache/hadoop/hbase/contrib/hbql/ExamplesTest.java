@@ -13,7 +13,6 @@ import java.util.List;
 
 public class ExamplesTest extends TestSupport {
 
-    static HConnection conn = null;
 
     public void showTable() throws HBqlException, IOException {
 
@@ -132,7 +131,7 @@ public class ExamplesTest extends TestSupport {
 
     public void selectAll() throws HBqlException, IOException {
 
-        conn = HConnectionManager.newHConnection();
+        HConnection conn = HConnectionManager.newHConnection();
 
         SchemaManager.execute("drop schema tab1");
 
