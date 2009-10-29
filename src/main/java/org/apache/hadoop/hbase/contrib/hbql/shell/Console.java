@@ -17,7 +17,7 @@ public class Console {
     public static void main(String[] args) throws IOException {
 
         final List<SimpleCompletor> completors = Lists.newArrayList();
-        completors.add(new SimpleCompletor(new String[]{"select", "insert"}));
+        completors.add(new SimpleCompletor(new String[]{"select", "insert", "create", "table", "schema", "describe"}));
 
         final ConsoleReader reader = new ConsoleReader();
         reader.setBellEnabled(false);
@@ -32,18 +32,17 @@ public class Console {
 
         while ((line = reader.readLine("HBql> ")) != null) {
 
+            if (line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit"))
+                break;
+
             try {
                 out.println(conn.execute(line));
             }
             catch (HBqlException e) {
-                e.printStackTrace();
+                out.println("Error in input: " + line);
             }
 
             out.flush();
-
-            if (line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit")) {
-                break;
-            }
         }
     }
 }

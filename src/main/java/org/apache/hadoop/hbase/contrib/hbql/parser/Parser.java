@@ -97,7 +97,7 @@ public class Parser {
             return stmt;
         }
         catch (RecognitionException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             throw new HBqlException("Error parsing: " + str);
         }
     }
