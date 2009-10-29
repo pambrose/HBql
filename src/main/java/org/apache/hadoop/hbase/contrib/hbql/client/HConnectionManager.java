@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.contrib.hbql.client;
 
+import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 
@@ -7,7 +8,7 @@ import java.util.Map;
 
 public class HConnectionManager {
 
-    private static Map<String, HConnection> connectionMap;
+    private static Map<String, HConnection> connectionMap = Maps.newHashMap();
 
     public static HConnection newHConnection() {
         return newHConnection(null, null);
@@ -25,12 +26,16 @@ public class HConnectionManager {
         final ConnectionImpl conn = new ConnectionImpl(name, config);
 
         if (conn.getName() != null)
-            HConnectionManager.connectionMap.put(conn.getName(), conn);
+            HConnectionManager.getConnectionMap().put(conn.getName(), conn);
 
         return conn;
     }
 
     public static HConnection getHConnection(final String name) {
-        return connectionMap.get(name);
+        return HConnectionManager.getConnectionMap().get(name);
+    }
+
+    private static Map<String, HConnection> getConnectionMap() {
+        return connectionMap;
     }
 }
