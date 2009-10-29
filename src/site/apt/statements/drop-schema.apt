@@ -9,8 +9,7 @@ DROP SCHEMA
 *Syntax
 
 ---------------------------
-DROP SCHEMA schema_name 
-    
+DROP SCHEMA schema_name    
 ---------------------------
 
 *Description

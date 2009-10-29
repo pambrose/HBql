@@ -16,15 +16,15 @@ Getting Started
 
 Documentation
 
-    * {{{schemas.html}Schemas}}
-
     * {{{statements.html}Statements}}
 
     * {{{functions.html}Functions}}
 
+    * {{{schemas.html}Schemas}}
+
     * {{{shell.html}Shell usage}}
 
-    * {{{javadocs.html}Javadocs}}
+    * {{{apidocs/index.html}Javadocs}}
 
     * {{{faq.html}FAQ}}
 
