@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.contrib.hbql.shell;
+package org.apache.hadoop.hbase.contrib.hbql;
 
 import jline.ArgumentCompletor;
 import jline.ConsoleReader;

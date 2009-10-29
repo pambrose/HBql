@@ -72,6 +72,7 @@ options {backtrack=true;}
 	| s2=schemaManagerStmt				{retval = $s2.retval;}
 	| s3=tableStatement				{retval = $s3.retval;}
 	| keyLIST keyTABLES 		 		{retval = new ShowTablesStatement();}
+	| keyVERSION					{retval = new VersionStatement();}
 	;						
 
 tableStatement returns [TableStatement retval]
@@ -424,6 +425,7 @@ keyFOR	 	: {isKeyword(input, "FOR")}? ID;
 keyCLIENT	: {isKeyword(input, "CLIENT")}? ID;
 keySERVER	: {isKeyword(input, "SERVER")}? ID;
 keyVERSIONS	: {isKeyword(input, "VERSIONS")}? ID;
+keyVERSION	: {isKeyword(input, "VERSION")}? ID;
 keyTIME		: {isKeyword(input, "TIME")}? ID;
 keyRANGE	: {isKeyword(input, "RANGE")}? ID;
 keySTAMP	: {isKeyword(input, "STAMP")}? ID;

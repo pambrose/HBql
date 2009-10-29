@@ -92,7 +92,7 @@ public class Parser {
     private static ShellStatement parse(final String str) throws ParseException {
         try {
             final HBqlParser parser = newHBqlParser(str);
-            final ShellStatement stmt = parser.commandStmt();
+            final ShellStatement stmt = parser.shellCommand();
             if (stmt == null)
                 throw new ParseException("Error parsing: " + str);
             return stmt;
@@ -127,7 +127,7 @@ public class Parser {
         final ShellStatement statement = parse(str);
 
         if (!(statement instanceof HPreparedStatement))
-            throw new HBqlException("Expecting an prepared statement");
+            throw new HBqlException("Expecting a prepared statement");
 
         return (HPreparedStatement)statement;
     }
