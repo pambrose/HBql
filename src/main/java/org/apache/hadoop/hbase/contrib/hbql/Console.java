@@ -4,9 +4,15 @@ import jline.ArgumentCompletor;
 import jline.ConsoleReader;
 import jline.SimpleCompletor;
 import org.apache.expreval.client.HBqlException;
+import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.ParseException;
 import org.apache.expreval.util.Lists;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnectionManager;
+import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
+import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlParser;
+import org.apache.hadoop.hbase.contrib.hbql.statement.ConnectionStatement;
+import org.apache.hadoop.hbase.contrib.hbql.statement.SchemaManagerStatement;
+import org.apache.hadoop.hbase.contrib.hbql.statement.ShellStatement;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,7 +33,7 @@ public class Console {
 
         final PrintWriter out = new PrintWriter(System.out);
 
-        final HConnection conn = HConnectionManager.newHConnection();
+        final ConnectionImpl conn = (ConnectionImpl)HConnectionManager.newHConnection();
 
         while (true) {
 
@@ -37,10 +43,30 @@ public class Console {
                 break;
 
             try {
-                out.println(conn.execute(line));
+                final List<ShellStatement> stmtList = HBqlParser.parseCommands(line);
+                for (final ShellStatement stmt : stmtList) {
+                    if (stmt instanceof ConnectionStatement)
+                        out.println(((ConnectionStatement)stmt).execute(conn));
+                    else if (stmt instanceof SchemaManagerStatement)
+                        out.println(((SchemaManagerStatement)stmt).execute());
+                    else
+                        throw new InternalErrorException("Unknown statement type");
+                }
+            }
+            catch (ParseException e) {
+                out.println("Error in input: ");
+                out.println(e.getMessage());
+                if (e.getRecognitionException() != null) {
+                    final StringBuilder sbuf = new StringBuilder();
+                    for (int i = 0; i < e.getRecognitionException().charPositionInLine; i++)
+                        sbuf.append("-");
+                    sbuf.append("^");
+                    out.println(sbuf.toString());
+                }
             }
             catch (HBqlException e) {
                 out.println("Error in input: " + line);
+                out.println(e.getMessage());
             }
 
             out.flush();

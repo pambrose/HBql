@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.contrib.hbql.client;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
-import org.apache.hadoop.hbase.contrib.hbql.parser.Parser;
+import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlParser;
 import org.apache.hadoop.hbase.contrib.hbql.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnDescription;
 import org.apache.hadoop.hbase.contrib.hbql.schema.DefinedSchema;
@@ -20,7 +20,7 @@ public class HSchemaManager {
     private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
     public static HOutput execute(final String str) throws HBqlException {
-        final SchemaManagerStatement cmd = Parser.parseSchemaManagerStatement(str);
+        final SchemaManagerStatement cmd = HBqlParser.parseSchemaManagerStatement(str);
         return cmd.execute();
     }
 

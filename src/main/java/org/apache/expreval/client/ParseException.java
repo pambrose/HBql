@@ -1,8 +1,16 @@
 package org.apache.expreval.client;
 
-public class ParseException extends HBqlException {
+import org.antlr.runtime.RecognitionException;
 
-    public ParseException(final String s) {
+public class ParseException extends HBqlException {
+    final RecognitionException recognitionException;
+
+    public ParseException(final RecognitionException recognitionException, final String s) {
         super(s);
+        this.recognitionException = recognitionException;
+    }
+
+    public RecognitionException getRecognitionException() {
+        return recognitionException;
     }
 }

@@ -14,7 +14,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
 import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
 import org.apache.hadoop.hbase.contrib.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
-import org.apache.hadoop.hbase.contrib.hbql.parser.Parser;
+import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlParser;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -96,12 +96,12 @@ public class ConnectionImpl implements HConnection {
     }
 
     public HOutput execute(final String str) throws HBqlException, IOException {
-        final ConnectionStatement statement = Parser.parseConnectionStatement(str);
+        final ConnectionStatement statement = HBqlParser.parseConnectionStatement(str);
         return statement.execute(this);
     }
 
     public HPreparedStatement prepare(final String str) throws HBqlException {
-        final HPreparedStatement stmt = Parser.parsePreparedStatement(str);
+        final HPreparedStatement stmt = HBqlParser.parsePreparedStatement(str);
         // Need to call this here to enable setParameters
         stmt.validate(this);
         return stmt;

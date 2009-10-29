@@ -11,7 +11,6 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlLexer;
-import org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
 import org.apache.hadoop.hbase.contrib.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
@@ -23,15 +22,17 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.args.WhereArgs;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpression;
 import org.apache.log4j.Logger;
 
-public class Parser {
+import java.util.List;
 
-    final static Logger log = Logger.getLogger(Parser.class.getSimpleName());
+public class HBqlParser {
 
-    public static HBqlParser newHBqlParser(final String str) {
+    final static Logger log = Logger.getLogger(HBqlParser.class.getSimpleName());
+
+    public static org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser newHBqlParser(final String str) {
         log.info("Parsing: " + str);
         final Lexer lex = new HBqlLexer(new ANTLRStringStream(str));
         final CommonTokenStream tokens = new CommonTokenStream(lex);
-        return new HBqlParser(tokens);
+        return new org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser(tokens);
     }
 
     public static ExpressionTree parseWhereExpression(final String str, final Schema schema) throws HBqlException {
@@ -46,7 +47,7 @@ public class Parser {
 
     public static Object parseExpression(final String str) throws HBqlException {
         try {
-            final HBqlParser parser = newHBqlParser(str);
+            final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = newHBqlParser(str);
             final GenericValue valueExpr = parser.topExpr();
             valueExpr.validateTypes(null, false);
             return valueExpr.getValue(null);
@@ -57,20 +58,20 @@ public class Parser {
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new ParseException("Error parsing: " + str);
+            throw new ParseException(e, str);
         }
     }
 
     public static SingleExpression parseSelectElement(final String str) throws HBqlException {
         try {
-            final HBqlParser parser = newHBqlParser(str);
+            final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = newHBqlParser(str);
             final SingleExpression elem = (SingleExpression)parser.selectElem();
             elem.setSchema(null);
             return elem;
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new ParseException("Error parsing: " + str);
+            throw new ParseException(e, str);
         }
     }
 
@@ -80,26 +81,34 @@ public class Parser {
 
     public static WhereArgs parseWithClause(final String str) throws HBqlException {
         try {
-            final HBqlParser parser = newHBqlParser(str);
+            final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = newHBqlParser(str);
             return parser.whereValue();
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new ParseException("Error parsing: " + str);
+            throw new ParseException(e, str);
+        }
+    }
+
+    public static List<ShellStatement> parseCommands(final String str) throws ParseException {
+        try {
+            final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = newHBqlParser(str);
+            return parser.shellCommand();
+        }
+        catch (RecognitionException e) {
+            //e.printStackTrace();
+            throw new ParseException(e, str);
         }
     }
 
     private static ShellStatement parse(final String str) throws ParseException {
         try {
-            final HBqlParser parser = newHBqlParser(str);
-            final ShellStatement stmt = parser.shellCommand();
-            if (stmt == null)
-                throw new ParseException("Error parsing: " + str);
-            return stmt;
+            final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = newHBqlParser(str);
+            return parser.commandStmt();
         }
         catch (RecognitionException e) {
             //e.printStackTrace();
-            throw new ParseException("Error parsing: " + str);
+            throw new ParseException(e, str);
         }
     }
 

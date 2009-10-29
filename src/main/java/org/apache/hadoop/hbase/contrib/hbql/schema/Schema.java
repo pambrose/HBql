@@ -6,9 +6,8 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.expreval.util.Sets;
-import org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
-import org.apache.hadoop.hbase.contrib.hbql.parser.Parser;
+import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlParser;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -114,7 +113,7 @@ public abstract class Schema implements Serializable {
         final Map<String, ExpressionTree> map = this.getEvalMap();
         ExpressionTree expressionTree = map.get(str);
         if (expressionTree == null) {
-            final HBqlParser parser = Parser.newHBqlParser(str);
+            final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = HBqlParser.newHBqlParser(str);
             expressionTree = parser.nodescWhereExpr();
             expressionTree.setSchema(this);
             this.addToExpressionTreeCache(str, expressionTree);

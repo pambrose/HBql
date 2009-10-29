@@ -3,6 +3,7 @@ grammar HBql;
 options {superClass=ParserSupport;}
 
 tokens {
+	SEMI = ';';
 	DOT = '.';
 	DOLLAR = '$';
 	COLON = ':';
@@ -61,10 +62,9 @@ import org.apache.expreval.util.*;
 package org.apache.hadoop.hbase.contrib.hbql.antlr;
 }
 
-shellCommand returns [ShellStatement retval]
-	: c=commandStmt					{retval = $c.retval;}
-	| keySET t=simpleName EQ? val=QUOTED	 	{retval = new SetStatement($t.text, $val.text);}
-	;
+shellCommand returns [List<ShellStatement> retval]
+@init {retval = Lists.newArrayList();}
+	: c1=commandStmt {retval.add($c1.retval);} (SEMI (c2=commandStmt {retval.add($c2.retval);})?)*;
 	
 commandStmt returns [ShellStatement retval]
 options {backtrack=true;}	
@@ -73,6 +73,7 @@ options {backtrack=true;}
 	| s3=tableStatement				{retval = $s3.retval;}
 	| keyLIST keyTABLES 		 		{retval = new ShowTablesStatement();}
 	| keyVERSION					{retval = new VersionStatement();}
+	| keySET t=simpleName EQ? val=QUOTED	 	{retval = new SetStatement($t.text, $val.text);}
 	;						
 
 tableStatement returns [TableStatement retval]
