@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement;
 
-public abstract class TableStatement {
+public abstract class TableStatement implements ConnectionStatement {
 
     private final String tableName;
 

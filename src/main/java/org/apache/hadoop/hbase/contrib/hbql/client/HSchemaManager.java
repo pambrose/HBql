@@ -15,7 +15,7 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.SchemaManagerStatement;
 import java.util.List;
 import java.util.Map;
 
-public class SchemaManager {
+public class HSchemaManager {
 
     private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
@@ -61,7 +61,7 @@ public class SchemaManager {
                                                               final String tableName,
                                                               final List<ColumnDescription> colList) throws HBqlException {
 
-        if (SchemaManager.doesDefinedSchemaExist(schemaName))
+        if (HSchemaManager.doesDefinedSchemaExist(schemaName))
             throw new HBqlException("Schema " + schemaName + " already defined");
 
         final DefinedSchema schema = new DefinedSchema(schemaName, tableName, colList);

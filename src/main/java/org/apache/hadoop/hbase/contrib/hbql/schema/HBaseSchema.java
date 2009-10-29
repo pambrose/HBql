@@ -7,7 +7,7 @@ import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
-import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SelectElement;
@@ -61,7 +61,7 @@ public abstract class HBaseSchema extends Schema {
     public static HBaseSchema findSchema(final String schemaName) throws HBqlException {
 
         // First look in defined schema, then try annotation schema
-        HBaseSchema schema = SchemaManager.getDefinedSchema(schemaName);
+        HBaseSchema schema = HSchemaManager.getDefinedSchema(schemaName);
         if (schema != null)
             return schema;
 

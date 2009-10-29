@@ -8,9 +8,9 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBatch;
 import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
+import org.apache.hadoop.hbase.contrib.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
-import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
-import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.InsertValueSource;
@@ -19,7 +19,7 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpression;
 import java.io.IOException;
 import java.util.List;
 
-public class InsertStatement extends SchemaStatement implements PreparedStatement {
+public class InsertStatement extends SchemaStatement implements HPreparedStatement {
 
     private final List<SingleExpression> columnList = Lists.newArrayList();
     private final InsertValueSource valueSource;
@@ -48,7 +48,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         this.validated = true;
 
         this.connection = conn;
-        this.record = SchemaManager.newHRecord(this.getSchemaName());
+        this.record = HSchemaManager.newHRecord(this.getSchemaName());
 
         for (final SingleExpression element : this.getColumnList()) {
 

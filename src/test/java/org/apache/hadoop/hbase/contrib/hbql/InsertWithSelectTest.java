@@ -6,11 +6,12 @@ import org.apache.expreval.util.HUtil;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
+import org.apache.hadoop.hbase.contrib.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
 import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
 import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
-import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
-import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.util.Global;
 import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,13 +28,13 @@ public class InsertWithSelectTest extends TestSupport {
     @BeforeClass
     public static void onetimeSetup() throws HBqlException, IOException {
 
-        SchemaManager.execute("CREATE SCHEMA tab3 FOR TABLE table3"
-                              + "("
-                              + "keyval key, "
-                              + "f1:val1 string alias val1, "
-                              + "f1:val2 int alias val2, "
-                              + "f1:val3 int alias val3 DEFAULT 12 "
-                              + ")");
+        HSchemaManager.execute("CREATE SCHEMA tab3 FOR TABLE table3"
+                               + "("
+                               + "keyval key, "
+                               + "f1:val1 string alias val1, "
+                               + "f1:val2 int alias val2, "
+                               + "f1:val3 int alias val3 DEFAULT 12 "
+                               + ")");
 
         conn = HConnectionManager.newHConnection();
 
@@ -52,15 +53,15 @@ public class InsertWithSelectTest extends TestSupport {
     private static void insertRecords(final HConnection conn,
                                       final int cnt) throws HBqlException, IOException {
 
-        PreparedStatement stmt = conn.prepare("insert into tab3 " +
-                                              "(keyval, val1, val2, val3) values " +
-                                              "(:key, :val1, :val2, DEFAULT)");
+        HPreparedStatement stmt = conn.prepare("insert into tab3 " +
+                                               "(keyval, val1, val2, val3) values " +
+                                               "(:key, :val1, :val2, DEFAULT)");
 
         for (int i = 0; i < cnt; i++) {
 
             int val = 10 + i;
 
-            final String keyval = HUtil.getZeroPaddedNumber(i, 10);
+            final String keyval = HUtil.getZeroPaddedNumber(i, Global.keywidth);
 
             stmt.setParameter("key", keyval);
             stmt.setParameter("val1", "" + val);
@@ -100,7 +101,7 @@ public class InsertWithSelectTest extends TestSupport {
                           "select keyval, val1+val1, val2+1 FROM tab3 ";
         showValues();
 
-        PreparedStatement stmt = conn.prepare(q1);
+        HPreparedStatement stmt = conn.prepare(q1);
 
         HOutput output = stmt.execute();
 

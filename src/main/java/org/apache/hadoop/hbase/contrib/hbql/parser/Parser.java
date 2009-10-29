@@ -6,13 +6,14 @@ import org.antlr.runtime.Lexer;
 import org.antlr.runtime.RecognitionException;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.ParseException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlLexer;
 import org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
-import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
+import org.apache.hadoop.hbase.contrib.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SchemaManagerStatement;
@@ -56,7 +57,7 @@ public class Parser {
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new HBqlException("Error parsing: " + str);
+            throw new ParseException("Error parsing: " + str);
         }
     }
 
@@ -69,7 +70,7 @@ public class Parser {
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new HBqlException("Error parsing: " + str);
+            throw new ParseException("Error parsing: " + str);
         }
     }
 
@@ -84,21 +85,21 @@ public class Parser {
         }
         catch (RecognitionException e) {
             e.printStackTrace();
-            throw new HBqlException("Error parsing: " + str);
+            throw new ParseException("Error parsing: " + str);
         }
     }
 
-    private static ShellStatement parse(final String str) throws HBqlException {
+    private static ShellStatement parse(final String str) throws ParseException {
         try {
             final HBqlParser parser = newHBqlParser(str);
             final ShellStatement stmt = parser.commandStmt();
             if (stmt == null)
-                throw new HBqlException("Error parsing: " + str);
+                throw new ParseException("Error parsing: " + str);
             return stmt;
         }
         catch (RecognitionException e) {
             //e.printStackTrace();
-            throw new HBqlException("Error parsing: " + str);
+            throw new ParseException("Error parsing: " + str);
         }
     }
 
@@ -121,14 +122,14 @@ public class Parser {
         return (ConnectionStatement)statement;
     }
 
-    public static PreparedStatement parsePreparedStatement(final String str) throws HBqlException {
+    public static HPreparedStatement parsePreparedStatement(final String str) throws HBqlException {
 
         final ShellStatement statement = parse(str);
 
-        if (!(statement instanceof PreparedStatement))
+        if (!(statement instanceof HPreparedStatement))
             throw new HBqlException("Expecting an prepared statement");
 
-        return (PreparedStatement)statement;
+        return (HPreparedStatement)statement;
     }
 
     public static SelectStatement parseSelectStatement(final HConnection connection, final String str) throws HBqlException {

@@ -5,7 +5,10 @@ import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.contrib.hbql.impl.BatchAction;
+import org.apache.hadoop.hbase.contrib.hbql.impl.DeleteAction;
 import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.contrib.hbql.impl.InsertAction;
 import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
@@ -16,14 +19,14 @@ import java.util.Map;
 
 public class HBatch {
 
-    private final Map<String, List<HBatchAction>> actionList = Maps.newHashMap();
+    private final Map<String, List<BatchAction>> actionList = Maps.newHashMap();
 
-    public Map<String, List<HBatchAction>> getActionList() {
+    public Map<String, List<BatchAction>> getActionList() {
         return this.actionList;
     }
 
-    public synchronized List<HBatchAction> getActionList(final String tableName) {
-        List<HBatchAction> retval = this.getActionList().get(tableName);
+    public synchronized List<BatchAction> getActionList(final String tableName) {
+        List<BatchAction> retval = this.getActionList().get(tableName);
         if (retval == null) {
             retval = Lists.newArrayList();
             this.getActionList().put(tableName, retval);
@@ -33,8 +36,8 @@ public class HBatch {
 
     public void insert(final Object newrec) throws HBqlException {
         final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(newrec);
-        final Put put = createPut(schema, newrec);
-        this.getActionList(schema.getTableName()).add(HBatchAction.newInsert(put));
+        final Put put = this.createPut(schema, newrec);
+        this.getActionList(schema.getTableName()).add(new InsertAction(put));
     }
 
     public void insert(final HRecord rec) throws HBqlException {
@@ -44,8 +47,8 @@ public class HBatch {
         if (!hrecord.isCurrentValueSet(keyAttrib))
             throw new HBqlException("HRecord key value must be assigned");
 
-        final Put put = createPut(schema, hrecord);
-        this.getActionList(schema.getTableName()).add(HBatchAction.newInsert(put));
+        final Put put = this.createPut(schema, hrecord);
+        this.getActionList(schema.getTableName()).add(new InsertAction(put));
     }
 
     public void delete(final Object newrec) throws HBqlException {
@@ -64,14 +67,13 @@ public class HBatch {
     private void delete(HBaseSchema schema, final Object newrec) throws HBqlException {
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         final byte[] keyval = keyAttrib.getValueAsBytes(newrec);
-        this.getActionList(schema.getTableName()).add(HBatchAction.newDelete(new Delete(keyval)));
+        this.getActionList(schema.getTableName()).add(new DeleteAction(new Delete(keyval)));
     }
 
     private Put createPut(final HBaseSchema schema, final Object newrec) throws HBqlException {
 
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         final byte[] keyval = keyAttrib.getValueAsBytes(newrec);
-
         final Put put = new Put(keyval);
 
         for (final String family : schema.getFamilySet()) {
@@ -101,7 +103,6 @@ public class HBatch {
 
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         final byte[] keyval = keyAttrib.getValueAsBytes(hrecord);
-
         final Put put = new Put(keyval);
 
         for (final String family : schema.getFamilySet()) {

@@ -10,11 +10,10 @@ import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBatch;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBatchAction;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
 import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
+import org.apache.hadoop.hbase.contrib.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
-import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.parser.Parser;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
@@ -58,12 +57,20 @@ public class ConnectionImpl implements HConnection {
         return new HTable(this.getConfig(), tableName);
     }
 
-    public boolean tableExists(final String tableName) throws IOException, HBqlException {
+    public boolean tableExists(final String tableName) throws MasterNotRunningException {
         return this.getAdmin().tableExists(tableName);
     }
 
-    public boolean tableEnabled(final String tableName) throws IOException, HBqlException {
+    public boolean tableEnabled(final String tableName) throws IOException {
         return this.getAdmin().isTableEnabled(tableName);
+    }
+
+    public void dropTable(final String tableName) throws IOException {
+        this.getAdmin().deleteTable(tableName);
+    }
+
+    public void disableTable(final String tableName) throws IOException {
+        this.getAdmin().disableTable(tableName);
     }
 
     public List<String> getTableList() throws IOException {
@@ -93,8 +100,8 @@ public class ConnectionImpl implements HConnection {
         return statement.execute(this);
     }
 
-    public PreparedStatement prepare(final String str) throws HBqlException {
-        final PreparedStatement stmt = Parser.parsePreparedStatement(str);
+    public HPreparedStatement prepare(final String str) throws HBqlException {
+        final HPreparedStatement stmt = Parser.parsePreparedStatement(str);
         // Need to call this here to enable setParameters
         stmt.validate(this);
         return stmt;
@@ -103,8 +110,7 @@ public class ConnectionImpl implements HConnection {
     public void apply(final HBatch batch) throws IOException {
         for (final String tableName : batch.getActionList().keySet()) {
             final HTable table = this.getHTable(tableName);
-            final List<HBatchAction> batchActions = batch.getActionList(tableName);
-            for (HBatchAction batchAction : batchActions)
+            for (final BatchAction batchAction : batch.getActionList(tableName))
                 batchAction.apply(table);
             table.flushCommits();
         }

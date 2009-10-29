@@ -11,8 +11,9 @@ import org.apache.hadoop.hbase.contrib.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
 import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
 import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
-import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.io.IO;
+import org.apache.hadoop.hbase.contrib.hbql.util.Global;
 import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,21 +37,21 @@ public class SelectTest extends TestSupport {
     @BeforeClass
     public static void onetimeSetup() throws HBqlException, IOException {
 
-        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                              + "("
-                              + "keyval key, "
-                              + "f1:val1 string alias val1, "
-                              + "f1:val2 string alias val2, "
-                              + "f1:val3 string alias notdefinedval, "
-                              + "f2:val1 date alias val3, "
-                              + "f2:val2 date alias val4, "
-                              + "f3:val1 int alias val5, "
-                              + "f3:val2 int alias val6, "
-                              + "f3:val3 int alias val7, "
-                              + "f3:val4 int[] alias val8, "
-                              + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
-                              + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
-                              + ")");
+        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                               + "("
+                               + "keyval key, "
+                               + "f1:val1 string alias val1, "
+                               + "f1:val2 string alias val2, "
+                               + "f1:val3 string alias notdefinedval, "
+                               + "f2:val1 date alias val3, "
+                               + "f2:val2 date alias val4, "
+                               + "f3:val1 int alias val5, "
+                               + "f3:val2 int alias val6, "
+                               + "f3:val3 int alias val7, "
+                               + "f3:val4 int[] alias val8, "
+                               + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
+                               + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
+                               + ")");
 
         conn = HConnectionManager.newHConnection();
 
@@ -58,8 +59,8 @@ public class SelectTest extends TestSupport {
             System.out.println(conn.execute("create table using schema tab1"));
         else {
             System.out.println(conn.execute("delete from tab1"));
-            //System.out.println(conn.execute("disable table table1"));
-            //System.out.println(conn.execute("drop table table1"));
+            //conn.disableTable("table1");
+            //conn.dropTable("table1");
         }
 
         insertRecords(conn, 10, "Batch 1");
@@ -81,7 +82,7 @@ public class SelectTest extends TestSupport {
 
         for (int i = 0; i < cnt; i++) {
 
-            final String keyval = HUtil.getZeroPaddedNumber(i, 10);
+            final String keyval = HUtil.getZeroPaddedNumber(i, Global.keywidth);
             keyList.add(keyval);
 
             int val5 = randomVal.nextInt();
@@ -105,7 +106,7 @@ public class SelectTest extends TestSupport {
                 val8check[j] = intv1[j];
             }
 
-            final HRecord rec = SchemaManager.newHRecord("tab1");
+            final HRecord rec = HSchemaManager.newHRecord("tab1");
             rec.setCurrentValue("keyval", keyval);
             rec.setCurrentValue("val1", s_val5);
             rec.setCurrentValue("val2", s_val5 + " " + msg);
@@ -141,8 +142,8 @@ public class SelectTest extends TestSupport {
 
             String keyval = (String)rec.getCurrentValue("keyval");
             String val1 = (String)rec.getCurrentValue("val1");
-            int val5 = (Integer)rec.getCurrentValue("val5");
-            int val6 = (Integer)rec.getCurrentValue("val6");
+            Integer val5 = (Integer)rec.getCurrentValue("val5");
+            Integer val6 = (Integer)rec.getCurrentValue("val6");
 
             testKeyVals.add(keyval);
             testVal1Vals.add(val1);
@@ -296,23 +297,23 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectFamiliesExpressions() throws HBqlException, IOException {
 
-        SchemaManager.execute("drop schema tab1");
+        HSchemaManager.execute("drop schema tab1");
 
-        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                              + "("
-                              + "keyval key, "
-                              //  + "f1:val1 string alias val1, "
-                              + "f1:val2 string alias val2, "
-                              + "f1:* alias f1default, "
-                              + "f2:val1 date alias val3, "
-                              + "f2:val2 date alias val4, "
-                              + "f3:val1 int alias val5, "
-                              + "f3:val2 int alias val6, "
-                              + "f3:val3 int alias val7, "
-                              + "f3:val4 int[] alias val8, "
-                              + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
-                              + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
-                              + ")");
+        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                               + "("
+                               + "keyval key, "
+                               //  + "f1:val1 string alias val1, "
+                               + "f1:val2 string alias val2, "
+                               + "f1:* alias f1default, "
+                               + "f2:val1 date alias val3, "
+                               + "f2:val2 date alias val4, "
+                               + "f3:val1 int alias val5, "
+                               + "f3:val2 int alias val6, "
+                               + "f3:val3 int alias val7, "
+                               + "f3:val4 int[] alias val8, "
+                               + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
+                               + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
+                               + ")");
 
         HQuery<HRecord> q1 = conn.newHQuery("SELECT f1:* FROM tab1");
         List<HRecord> recList1 = q1.getResultList();
@@ -348,13 +349,13 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUndefinedExpressions() throws HBqlException, IOException {
 
-        SchemaManager.execute("drop schema tab1");
+        HSchemaManager.execute("drop schema tab1");
 
-        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                              + "("
-                              + "keyval key, "
-                              + "f1:* alias f1default "
-                              + ")");
+        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                               + "("
+                               + "keyval key, "
+                               + "f1:* alias f1default "
+                               + ")");
 
         final String query1 = "SELECT f1:val1, f1:val2 FROM tab1";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
@@ -374,13 +375,13 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUndefinedVersionExpressions() throws HBqlException, IOException {
 
-        SchemaManager.execute("drop schema tab1");
+        HSchemaManager.execute("drop schema tab1");
 
-        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                              + "("
-                              + "keyval key, "
-                              + "f1:* alias f1default "
-                              + ")");
+        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                               + "("
+                               + "keyval key, "
+                               + "f1:* alias f1default "
+                               + ")");
 
         final String query1 = "SELECT f1:val1, f1:val2 FROM tab1 WITH VERSIONS 5";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
@@ -405,13 +406,13 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUnknownExpressions() throws HBqlException, IOException {
 
-        SchemaManager.execute("drop schema tab1");
+        HSchemaManager.execute("drop schema tab1");
 
-        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                              + "("
-                              + "keyval key, "
-                              + "f1:* alias f1default "
-                              + ")");
+        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                               + "("
+                               + "keyval key, "
+                               + "f1:* alias f1default "
+                               + ")");
 
         final String query1 = "SELECT f1:valunknown FROM tab1";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
@@ -431,13 +432,13 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUnknownCalcExpressions() throws HBqlException, IOException {
 
-        SchemaManager.execute("drop schema tab1");
+        HSchemaManager.execute("drop schema tab1");
 
-        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                              + "("
-                              + "keyval key, "
-                              + "f1:* alias f1default "
-                              + ")");
+        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                               + "("
+                               + "keyval key, "
+                               + "f1:* alias f1default "
+                               + ")");
 
         final String query1 = "SELECT ('dd'+'ff') as val1 FROM tab1";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
@@ -459,12 +460,12 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUnknownMapExpressions() throws HBqlException, IOException {
 
-        SchemaManager.execute("drop schema table1");
-        SchemaManager.execute("CREATE SCHEMA table1"
-                              + "("
-                              + "keyval key, "
-                              + "f3:* alias f1default "
-                              + ")");
+        HSchemaManager.execute("drop schema table1");
+        HSchemaManager.execute("CREATE SCHEMA table1"
+                               + "("
+                               + "keyval key, "
+                               + "f3:* alias f1default "
+                               + ")");
 
         final String query1 = "SELECT f3:* FROM table1";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
@@ -495,14 +496,14 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUnnamedExpressions() throws HBqlException, IOException {
 
-        SchemaManager.execute("drop schema tab1");
-        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                              + "("
-                              + "keyval key, "
-                              + "f1:val1 string alias val1, "
-                              + "f1:val10 string alias val10, "
-                              + "f1:* alias f1default "
-                              + ")");
+        HSchemaManager.execute("drop schema tab1");
+        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                               + "("
+                               + "keyval key, "
+                               + "f1:val1 string alias val1, "
+                               + "f1:val10 string alias val10, "
+                               + "f1:* alias f1default "
+                               + ")");
 
         final String query1 = "SELECT 2+4, 5+9, 5+3 as expr1, DEFINEDINROW(val1), DEFINEDINROW(val10) FROM tab1";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
@@ -526,15 +527,15 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectEvalExpressions() throws HBqlException, IOException {
 
-        SchemaManager.execute("drop schema tab1");
+        HSchemaManager.execute("drop schema tab1");
 
-        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                              + "("
-                              + "keyval key, "
-                              + "f1:val1 string alias val1, "
-                              + "f1:val10 string alias val10, "
-                              + "f1:* alias f1default "
-                              + ")");
+        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                               + "("
+                               + "keyval key, "
+                               + "f1:val1 string alias val1, "
+                               + "f1:val10 string alias val10, "
+                               + "f1:* alias f1default "
+                               + ")");
 
         final String query1 = "SELECT EVAL('TRUE'), EVAL('FALSE') FROM tab1";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
@@ -565,15 +566,15 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectDefaults() throws HBqlException, IOException {
 
-        SchemaManager.execute("drop schema tab1");
-        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                              + "("
-                              + "keyval key, "
-                              + "f1:val1 string alias val1, "
-                              + "f1:val10 string alias val10 default 'test default', "
-                              + "f1:val11 string alias val11 , "
-                              + "f1:* alias f1default "
-                              + ")");
+        HSchemaManager.execute("drop schema tab1");
+        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                               + "("
+                               + "keyval key, "
+                               + "f1:val1 string alias val1, "
+                               + "f1:val10 string alias val10 default 'test default', "
+                               + "f1:val11 string alias val11 , "
+                               + "f1:* alias f1default "
+                               + ")");
 
         final String query1 = "SELECT * FROM tab1";
         HQuery<HRecord> q1 = conn.newHQuery(query1);
@@ -600,14 +601,14 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectMismatchedDefaults() throws HBqlException, IOException {
 
-        SchemaManager.execute("drop schema tab1");
+        HSchemaManager.execute("drop schema tab1");
         Exception caughtException = null;
         try {
-            SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                                  + "("
-                                  + "keyval key, "
-                                  + "f1:val10 string alias val10 default 4"
-                                  + ")");
+            HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                                   + "("
+                                   + "keyval key, "
+                                   + "f1:val10 string alias val10 default 4"
+                                   + ")");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -620,14 +621,14 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectObjectDefaults() throws HBqlException, IOException {
 
-        SchemaManager.execute("drop schema tab1");
+        HSchemaManager.execute("drop schema tab1");
         Exception caughtException = null;
         try {
-            SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                                  + "("
-                                  + "keyval key, "
-                                  + "f1:val10 object alias val10 default 'test default'"
-                                  + ")");
+            HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                                   + "("
+                                   + "keyval key, "
+                                   + "f1:val10 object alias val10 default 'test default'"
+                                   + ")");
         }
         catch (Exception e) {
             e.printStackTrace();

@@ -6,7 +6,7 @@ import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 
 import java.io.IOException;
 
-public class DisableTableStatement extends TableStatement implements ConnectionStatement {
+public class DisableTableStatement extends TableStatement {
 
     public DisableTableStatement(final String tableName) {
         super(tableName);

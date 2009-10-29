@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
 import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
 import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
-import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
 
 import java.io.IOException;
 import java.util.Date;
@@ -18,15 +18,15 @@ public class HRecordExample {
 
     public static void main(String[] args) throws IOException, HBqlException {
 
-        SchemaManager.execute("CREATE SCHEMA testobjects alias testobjects2"
-                              + "("
-                              + "keyval key, "
-                              + "family1:author string alias author, "
-                              + "family1:title string  alias title, "
-                              + "family1:intValue int alias comp1"
-                              + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
-                              + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
-                              + ")");
+        HSchemaManager.execute("CREATE SCHEMA testobjects alias testobjects2"
+                               + "("
+                               + "keyval key, "
+                               + "family1:author string alias author, "
+                               + "family1:title string  alias title, "
+                               + "family1:intValue int alias comp1"
+                               + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
+                               + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
+                               + ")");
 
         HConnection conn = HConnectionManager.newHConnection();
 
@@ -42,7 +42,7 @@ public class HRecordExample {
 
             final HBatch batch = new HBatch();
             for (int i = 0; i < 10; i++) {
-                HRecord hrecord = SchemaManager.newHRecord("testobjects");
+                HRecord hrecord = HSchemaManager.newHRecord("testobjects");
                 hrecord.setCurrentValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
                 hrecord.setCurrentValue("author", "A new author value: " + i);
                 hrecord.setCurrentValue("title", "A very new title value: " + i);

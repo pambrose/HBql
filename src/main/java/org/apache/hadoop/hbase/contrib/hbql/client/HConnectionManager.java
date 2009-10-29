@@ -8,6 +8,8 @@ import java.util.Map;
 
 public class HConnectionManager {
 
+    public static String version = "0.9.0";
+
     private static Map<String, HConnection> connectionMap = Maps.newHashMap();
 
     public static HConnection newHConnection() {

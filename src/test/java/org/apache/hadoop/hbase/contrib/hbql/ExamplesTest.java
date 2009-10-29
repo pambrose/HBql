@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
 import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
-import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
 
 import java.io.IOException;
@@ -52,7 +52,7 @@ public class ExamplesTest extends TestSupport {
     public void dropSchema() throws HBqlException, IOException {
 
         // START SNIPPET: drop-schema
-        System.out.println(SchemaManager.execute("DROP SCHEMA foo_schema"));
+        System.out.println(HSchemaManager.execute("DROP SCHEMA foo_schema"));
         // END SNIPPET: drop-schema
 
     }
@@ -100,31 +100,31 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: create-schema1
         // Schema named foo that corresponds to table foo.
-        SchemaManager.execute("CREATE SCHEMA foo (keyval key, family1:val1 STRING)");
+        HSchemaManager.execute("CREATE SCHEMA foo (keyval key, family1:val1 STRING)");
         // END SNIPPET: create-schema1
 
         // START SNIPPET: create-schema2
         // Schema named schema1 that corresponds to table foo.
-        SchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo (keyval key, family1:val1 STRING ALIAS val2)");
+        HSchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo (keyval key, family1:val1 STRING ALIAS val2)");
         // END SNIPPET: create-schema2
 
         // START SNIPPET: create-schema3
         // A column with a default value.
-        SchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo "
-                              + "("
-                              + "keyval key, "
-                              + "family1:val1 STRING ALIAS val2 DEFAULT 'this is a default value'"
-                              + ")");
+        HSchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo "
+                               + "("
+                               + "keyval key, "
+                               + "family1:val1 STRING ALIAS val2 DEFAULT 'this is a default value'"
+                               + ")");
         // END SNIPPET: create-schema3
 
         // START SNIPPET: create-schema4
         // A schema with a family default attribute.
-        SchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo "
-                              + "("
-                              + "keyval key, "
-                              + "family1:val1 STRING ALIAS val2, "
-                              + "family1:* ALIAS family1_default"
-                              + ")");
+        HSchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo "
+                               + "("
+                               + "keyval key, "
+                               + "family1:val1 STRING ALIAS val2, "
+                               + "family1:* ALIAS family1_default"
+                               + ")");
         // END SNIPPET: create-schema4
 
     }
@@ -133,19 +133,19 @@ public class ExamplesTest extends TestSupport {
 
         HConnection conn = HConnectionManager.newHConnection();
 
-        SchemaManager.execute("drop schema tab1");
+        HSchemaManager.execute("drop schema tab1");
 
-        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                              + "("
-                              + "keyval key, "
-                              + "f1:val1 string alias val1, "
-                              + "f3:val1 int alias val5, "
-                              + "f3:val2 int alias val6, "
-                              + "f3:val3 int alias val7, "
-                              + "f1:* alias f1default, "
-                              + "f2:* alias f2default, "
-                              + "f3:* alias f3default "
-                              + ")");
+        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                               + "("
+                               + "keyval key, "
+                               + "f1:val1 string alias val1, "
+                               + "f3:val1 int alias val5, "
+                               + "f3:val2 int alias val6, "
+                               + "f3:val3 int alias val7, "
+                               + "f1:* alias f1default, "
+                               + "f2:* alias f2default, "
+                               + "f3:* alias f3default "
+                               + ")");
 
         HQuery<HRecord> q1 = conn.newHQuery("SELECT val1, val5 FROM tab1");
         List<HRecord> recList1 = q1.getResultList();

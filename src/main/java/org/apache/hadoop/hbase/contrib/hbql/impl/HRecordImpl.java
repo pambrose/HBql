@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.contrib.hbql.impl;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.contrib.hbql.client.FamilyDefaultValueMap;
+import org.apache.hadoop.hbase.contrib.hbql.client.HFamilyDefaultValueMap;
 import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
 import org.apache.hadoop.hbase.contrib.hbql.client.HValue;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
@@ -20,7 +20,7 @@ public class HRecordImpl implements Serializable, HRecord {
 
     private ElementMap<ObjectValue> objectElements = null;
     private ElementMap<TypedKeysAsColumnsValueMap> keysAsColumnsElements = null;
-    private ElementMap<FamilyDefaultValueMap> familyDefaultElements = null;
+    private ElementMap<HFamilyDefaultValueMap> familyDefaultElements = null;
     private ElementMap<FamilyDefaultKeysAsColumnsValueMap> familyDefaultKeysAsColumnsElements = null;
 
     public HRecordImpl(final HBaseSchema schema) {
@@ -57,13 +57,13 @@ public class HRecordImpl implements Serializable, HRecord {
         }
     }
 
-    private ElementMap<FamilyDefaultValueMap> getFamilyDefaultElements() {
+    private ElementMap<HFamilyDefaultValueMap> getFamilyDefaultElements() {
         if (this.familyDefaultElements != null)
             return this.familyDefaultElements;
 
         synchronized (this) {
             if (this.familyDefaultElements == null)
-                this.familyDefaultElements = new ElementMap<FamilyDefaultValueMap>(this);
+                this.familyDefaultElements = new ElementMap<HFamilyDefaultValueMap>(this);
             return this.familyDefaultElements;
         }
     }
@@ -84,8 +84,8 @@ public class HRecordImpl implements Serializable, HRecord {
             this.getObjectElements().addElement(name, (ObjectValue)value);
         else if (value instanceof TypedKeysAsColumnsValueMap)
             this.getKeysAsColumnsElements().addElement(name, (TypedKeysAsColumnsValueMap)value);
-        else if (value instanceof FamilyDefaultValueMap)
-            this.getFamilyDefaultElements().addElement(name, (FamilyDefaultValueMap)value);
+        else if (value instanceof HFamilyDefaultValueMap)
+            this.getFamilyDefaultElements().addElement(name, (HFamilyDefaultValueMap)value);
         else if (value instanceof FamilyDefaultKeysAsColumnsValueMap)
             this.getFamilyDefaultKeysAsColumnsElements().addElement(name, (FamilyDefaultKeysAsColumnsValueMap)value);
         else
@@ -128,15 +128,15 @@ public class HRecordImpl implements Serializable, HRecord {
         }
     }
 
-    private FamilyDefaultValueMap getFamilyDefaultValueMap(final String name,
-                                                           final boolean createNewIfMissing) throws HBqlException {
-        final FamilyDefaultValueMap value = this.getFamilyDefaultElements().findElement(name);
+    private HFamilyDefaultValueMap getFamilyDefaultValueMap(final String name,
+                                                            final boolean createNewIfMissing) throws HBqlException {
+        final HFamilyDefaultValueMap value = this.getFamilyDefaultElements().findElement(name);
         if (value != null) {
             return value;
         }
         else {
             if (createNewIfMissing)
-                return new FamilyDefaultValueMap(this, name);
+                return new HFamilyDefaultValueMap(this, name);
             else
                 return null;
         }
@@ -279,7 +279,7 @@ public class HRecordImpl implements Serializable, HRecord {
 
     public Map<String, byte[]> getFamilyDefaultValueMap(final String name) throws HBqlException {
 
-        final FamilyDefaultValueMap value = this.getFamilyDefaultValueMap(name, false);
+        final HFamilyDefaultValueMap value = this.getFamilyDefaultValueMap(name, false);
         if (value == null)
             return null;
 
@@ -291,7 +291,7 @@ public class HRecordImpl implements Serializable, HRecord {
 
     public Map<String, NavigableMap<Long, byte[]>> getFamilyDefaultVersionMap(final String name) throws HBqlException {
 
-        final FamilyDefaultValueMap value = this.getFamilyDefaultValueMap(name, false);
+        final HFamilyDefaultValueMap value = this.getFamilyDefaultValueMap(name, false);
         if (value == null)
             return null;
 

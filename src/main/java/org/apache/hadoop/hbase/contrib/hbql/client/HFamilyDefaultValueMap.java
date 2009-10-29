@@ -4,9 +4,9 @@ import org.apache.expreval.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ValueMap;
 
-public class FamilyDefaultValueMap extends ValueMap<byte[]> {
+public class HFamilyDefaultValueMap extends ValueMap<byte[]> {
 
-    public FamilyDefaultValueMap(final HRecordImpl hrecord, final String name) throws HBqlException {
+    public HFamilyDefaultValueMap(final HRecordImpl hrecord, final String name) throws HBqlException {
         super(hrecord, name, null);
     }
 

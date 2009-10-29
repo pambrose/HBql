@@ -6,14 +6,14 @@ import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 
 import java.io.IOException;
 
-public class DropTableStatement extends TableStatement implements ConnectionStatement {
+public class DropTableStatement extends TableStatement {
 
     public DropTableStatement(final String tableName) {
         super(tableName);
     }
 
     public HOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
-        conn.getAdmin().deleteTable(this.getTableName());
+        conn.dropTable(this.getTableName());
         return new HOutput("Table " + this.getTableName() + " dropped.");
     }
 }

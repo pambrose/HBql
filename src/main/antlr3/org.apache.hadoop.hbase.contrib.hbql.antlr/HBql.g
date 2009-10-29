@@ -61,25 +61,41 @@ import org.apache.expreval.util.*;
 package org.apache.hadoop.hbase.contrib.hbql.antlr;
 }
 
+shellCommand returns [ShellStatement retval]
+	: c=commandStmt					{retval = $c.retval;}
+	| keySET t=simpleName EQ? val=QUOTED	 	{retval = new SetStatement($t.text, $val.text);}
+	;
+	
 commandStmt returns [ShellStatement retval]
 options {backtrack=true;}	
-	: keyLIST keyTABLES 		 		{retval = new ShowTablesStatement();}
-	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
+	: s1=schemaStmt					{retval = $s1.retval;}
+	| s2=schemaManagerStmt				{retval = $s2.retval;}
+	| s3=tableStatement				{retval = $s3.retval;}
+	| keyLIST keyTABLES 		 		{retval = new ShowTablesStatement();}
+	;						
+
+tableStatement returns [TableStatement retval]
+	: keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
 	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableStatement($t.text);}
 	| keyDROP keyTABLE t=simpleName 		{retval = new DropTableStatement($t.text);}
 	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableStatement($t.text);}
-	| keyCREATE keyTABLE keyUSING keySCHEMA t=simpleName 	
-							{retval = new CreateTableStatement($t.text);}
-	| keyCREATE keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
+	;
+	 
+schemaManagerStmt returns [SchemaStatement retval]
+	: keyCREATE keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
 							{retval = new CreateSchemaStatement($t.text, $a.text, $l.retval);}
 	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaStatement($t.text);}
+	;
+
+schemaStmt returns [SchemaStatement retval]
+	: keyCREATE keyTABLE keyUSING keySCHEMA t=simpleName 	
+							{retval = new CreateTableStatement($t.text);}
 	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteStatement($t.text, $w.retval);}
-	| sel=selectStatement				{retval = $sel.retval;}			
 	| keyINSERT keyINTO t=simpleName LPAREN e=exprList RPAREN ins=insertValues
 							{retval = new InsertStatement($t.text, $e.retval, $ins.retval);}
-	| keySET t=simpleName EQ? val=QUOTED	 	{retval = new SetStatement($t.text, $val.text);}
-	;						
-	
+	| sel=selectStatement				{retval = $sel.retval;}			
+	;
+		
 selectStatement returns [SelectStatement retval]
 	: keySELECT c=selectElems keyFROM t=simpleName w=whereValue?
 							{retval = new SelectStatement($c.retval, $t.text, $w.retval);};
