@@ -44,7 +44,7 @@ public class DefaultArg extends ExpressionContext implements Serializable {
         return this.getGenericValue(0).asString();
     }
 
-    public boolean useHBaseResult() {
+    public boolean useResultData() {
         return false;
     }
 }

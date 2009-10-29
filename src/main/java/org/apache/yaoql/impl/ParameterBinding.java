@@ -13,14 +13,18 @@ public abstract class ParameterBinding {
     public abstract String getQuery();
 
     public void setParameter(final String name, final Object val) {
-        this.parameterMap.put(name, val);
+        this.getParameterMap().put(name, val);
     }
 
     protected void applyParameters(final ExpressionTree exprTree) throws HBqlException {
-        for (final String key : this.parameterMap.keySet()) {
-            int cnt = exprTree.setParameter(key, this.parameterMap.get(key));
+        for (final String key : this.getParameterMap().keySet()) {
+            int cnt = exprTree.setParameter(key, this.getParameterMap().get(key));
             if (cnt == 0)
                 throw new HBqlException("Parameter name " + key + " does not exist in " + this.getQuery());
         }
+    }
+
+    private Map<String, Object> getParameterMap() {
+        return parameterMap;
     }
 }

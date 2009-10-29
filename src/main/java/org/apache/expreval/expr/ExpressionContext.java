@@ -43,7 +43,7 @@ public abstract class ExpressionContext implements Serializable {
 
     public abstract String asString();
 
-    public abstract boolean useHBaseResult();
+    public abstract boolean useResultData();
 
     public List<GenericColumn> getColumnsUsedInExpr() {
         return this.columnsUsedInExpr;

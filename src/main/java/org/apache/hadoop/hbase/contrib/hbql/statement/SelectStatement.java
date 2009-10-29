@@ -47,10 +47,10 @@ public class SelectStatement extends SchemaStatement {
         this.checkForDuplicateAsNames();
 
         if (this.getWhereArgs().getServerExprTree() != null)
-            this.getWhereArgs().getServerExprTree().setUseHBaseResult(false);
+            this.getWhereArgs().getServerExprTree().setUseResultData(false);
 
         if (this.getWhereArgs().getClientExprTree() != null)
-            this.getWhereArgs().getClientExprTree().setUseHBaseResult(true);
+            this.getWhereArgs().getClientExprTree().setUseResultData(true);
     }
 
     private void checkForDuplicateAsNames() throws HBqlException {

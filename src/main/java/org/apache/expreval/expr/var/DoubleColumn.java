@@ -13,7 +13,7 @@ public class DoubleColumn extends GenericColumn<NumberValue> implements NumberVa
     }
 
     public Double getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        if (this.getExprContext().useHBaseResult())
+        if (this.getExprContext().useResultData())
             return (Double)this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             return (Double)this.getColumnAttrib().getCurrentValue(object);

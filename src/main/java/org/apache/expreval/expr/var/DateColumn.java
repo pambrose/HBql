@@ -18,7 +18,7 @@ public class DateColumn extends GenericColumn<DateValue> implements DateValue {
 
         final Date val;
 
-        if (this.getExprContext().useHBaseResult())
+        if (this.getExprContext().useResultData())
             val = (Date)this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             val = (Date)this.getColumnAttrib().getCurrentValue(object);

@@ -13,7 +13,7 @@ public class FloatColumn extends GenericColumn<NumberValue> implements NumberVal
     }
 
     public Float getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        if (this.getExprContext().useHBaseResult())
+        if (this.getExprContext().useResultData())
             return (Float)this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             return (Float)this.getColumnAttrib().getCurrentValue(object);

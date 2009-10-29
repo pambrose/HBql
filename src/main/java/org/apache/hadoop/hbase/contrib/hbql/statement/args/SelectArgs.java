@@ -33,7 +33,7 @@ public abstract class SelectArgs extends ExpressionContext {
         super(type.getTypeSignature(), exprs);
     }
 
-    public boolean useHBaseResult() {
+    public boolean useResultData() {
         return false;
     }
 }

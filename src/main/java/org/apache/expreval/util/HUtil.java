@@ -11,7 +11,7 @@ public class HUtil {
         if (padsize < 0)
             throw new HBqlException("Value " + val + " exceeds width " + width);
 
-        StringBuilder sbuf = new StringBuilder();
+        final StringBuilder sbuf = new StringBuilder();
         for (int i = 0; i < padsize; i++)
             sbuf.append("0");
 

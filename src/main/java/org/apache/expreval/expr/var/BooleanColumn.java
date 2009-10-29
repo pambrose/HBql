@@ -14,7 +14,7 @@ public class BooleanColumn extends GenericColumn<NumberValue> implements Boolean
     }
 
     public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        if (this.getExprContext().useHBaseResult())
+        if (this.getExprContext().useResultData())
             return (Boolean)this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             return (Boolean)this.getColumnAttrib().getCurrentValue(object);

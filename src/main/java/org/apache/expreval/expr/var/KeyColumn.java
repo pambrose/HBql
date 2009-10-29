@@ -13,7 +13,7 @@ public class KeyColumn extends GenericColumn<StringValue> {
     }
 
     public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        if (this.getExprContext().useHBaseResult())
+        if (this.getExprContext().useResultData())
             return this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             return this.getColumnAttrib().getCurrentValue(object);

@@ -298,7 +298,7 @@ public class SingleExpression extends ExpressionContext implements SelectElement
         return this.getGenericValue().asString();
     }
 
-    public boolean useHBaseResult() {
+    public boolean useResultData() {
         return true;
     }
 }

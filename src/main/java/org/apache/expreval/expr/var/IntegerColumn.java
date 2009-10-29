@@ -13,7 +13,7 @@ public class IntegerColumn extends GenericColumn<NumberValue> implements NumberV
     }
 
     public Integer getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        if (this.getExprContext().useHBaseResult())
+        if (this.getExprContext().useResultData())
             return (Integer)this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             return (Integer)this.getColumnAttrib().getCurrentValue(object);

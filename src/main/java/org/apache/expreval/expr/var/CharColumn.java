@@ -13,7 +13,7 @@ public class CharColumn extends GenericColumn<NumberValue> implements NumberValu
     }
 
     public Short getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        if (this.getExprContext().useHBaseResult())
+        if (this.getExprContext().useResultData())
             return (Short)this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             return (Short)this.getColumnAttrib().getCurrentValue(object);

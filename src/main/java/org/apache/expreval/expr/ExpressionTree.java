@@ -9,7 +9,7 @@ import org.apache.expreval.expr.node.GenericValue;
 public class ExpressionTree extends ExpressionContext {
 
     private static TypeSignature exprSignature = new TypeSignature(null, BooleanValue.class);
-    private boolean useHBaseResult = false;
+    private boolean useResultData = false;
 
     private ExpressionTree(final GenericValue rootValue) {
         super(exprSignature, rootValue);
@@ -31,11 +31,11 @@ public class ExpressionTree extends ExpressionContext {
         return this.getGenericValue(0).asString();
     }
 
-    public void setUseHBaseResult(final boolean useHBaseResult) {
-        this.useHBaseResult = useHBaseResult;
+    public void setUseResultData(final boolean useResultData) {
+        this.useResultData = useResultData;
     }
 
-    public boolean useHBaseResult() {
-        return this.useHBaseResult;
+    public boolean useResultData() {
+        return this.useResultData;
     }
 }

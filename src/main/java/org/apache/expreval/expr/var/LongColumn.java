@@ -13,7 +13,7 @@ public class LongColumn extends GenericColumn<NumberValue> implements NumberValu
     }
 
     public Long getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        if (this.getExprContext().useHBaseResult())
+        if (this.getExprContext().useResultData())
             return (Long)this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             return (Long)this.getColumnAttrib().getCurrentValue(object);
