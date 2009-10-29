@@ -14,13 +14,13 @@ the {{{statements/create-schema.html}CREATE SCHEMA}} statement.
 
     HBql provides the following annotations for associating schema information with a java class:
 
-%{snippet|id=doc|file=src/main/java/org/apache/hadoop/hbase/hbql/client/HTable.java}
+%{snippet|id=doc|file=src/main/java/org/apache/hadoop/hbase/contrib/hbql/client/HTable.java}
 
-%{snippet|id=doc|file=src/main/java/org/apache/hadoop/hbase/hbql/client/HFamily.java}
+%{snippet|id=doc|file=src/main/java/org/apache/hadoop/hbase/contrib/hbql/client/HFamily.java}
 
-%{snippet|id=doc|file=src/main/java/org/apache/hadoop/hbase/hbql/client/HColumn.java}
+%{snippet|id=doc|file=src/main/java/org/apache/hadoop/hbase/contrib/hbql/client/HColumn.java}
 
-%{snippet|id=doc|file=src/main/java/org/apache/hadoop/hbase/hbql/client/HColumnVersionMap.java}
+%{snippet|id=doc|file=src/main/java/org/apache/hadoop/hbase/contrib/hbql/client/HColumnVersionMap.java}
 
 *Example
 

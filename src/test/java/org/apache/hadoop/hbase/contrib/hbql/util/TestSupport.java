@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.util;
+package org.apache.hadoop.hbase.contrib.hbql.util;
 
 import org.antlr.runtime.RecognitionException;
 import org.apache.expreval.client.HBqlException;

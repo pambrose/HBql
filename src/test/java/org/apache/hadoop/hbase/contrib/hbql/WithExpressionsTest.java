@@ -1,7 +1,7 @@
-package org.apache.hadoop.hbase.hbql;
+package org.apache.hadoop.hbase.contrib.hbql;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.util.TestSupport;
+import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
 import org.junit.Test;
 
 public class WithExpressionsTest extends TestSupport {

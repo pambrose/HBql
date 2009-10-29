@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql;
+package org.apache.hadoop.hbase.contrib.hbql;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.TypeException;
@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
 import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
 import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.util.TestSupport;
+import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

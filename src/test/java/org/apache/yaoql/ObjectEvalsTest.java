@@ -1,10 +1,10 @@
-package org.apache.hadoop.hbase.hbql;
+package org.apache.yaoql;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.apache.expreval.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.util.Counter;
-import org.apache.hadoop.hbase.hbql.util.ObjectTests;
+import org.apache.hadoop.hbase.contrib.hbql.util.Counter;
+import org.apache.hadoop.hbase.contrib.hbql.util.ObjectTests;
 import org.apache.yaoql.client.ObjectQuery;
 import org.apache.yaoql.client.ObjectQueryListenerAdapter;
 import org.apache.yaoql.client.ObjectQueryManager;
@@ -88,7 +88,7 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
         List<SimpleObject> list = Lists.newArrayList(Iterables.filter(objList, new ObjectQueryPredicate<SimpleObject>(qstr)));
         assertTrue(list.size() == 4);
 
-        ObjectQueryPredicate pred = new ObjectQueryPredicate<SimpleObject>("intval1 in (:vals)");
+        ObjectQueryPredicate<SimpleObject> pred = new ObjectQueryPredicate<SimpleObject>("intval1 in (:vals)");
         List<Integer> intList = Lists.newArrayList();
         intList.add(1);
         intList.add(3);

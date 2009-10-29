@@ -17,6 +17,6 @@ INSERT INTO schema_name ( column_name [, ...] ) { VALUES ( { expression | DEFAUL
 
 *Example
 
-%{snippet|id=insert1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=insert1|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
 
-%{snippet|id=insert2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=insert2|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}

@@ -17,4 +17,4 @@ LIST TABLES
 
 *Example
 
-%{snippet|id=list-tables|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=list-tables|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}

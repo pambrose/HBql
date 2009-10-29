@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql.util;
+package org.apache.hadoop.hbase.contrib.hbql.util;
 
 public class Counter {
     int count = 0;

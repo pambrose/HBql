@@ -18,4 +18,4 @@ DISABLE TABLE table_name
 
 *Example
 
-%{snippet|id=disable-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=disable-table|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}

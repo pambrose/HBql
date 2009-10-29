@@ -87,12 +87,12 @@ type:
 
 *Examples
 
-%{snippet|id=create-schema1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-schema1|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
 
-%{snippet|id=create-schema2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-schema2|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
 
-%{snippet|id=create-schema3|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-schema3|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
 
-%{snippet|id=create-schema4|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-schema4|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
 
 

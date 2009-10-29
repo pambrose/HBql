@@ -212,7 +212,6 @@
                 <artifactId>dashboard-maven-plugin</artifactId>
             </plugin>
 
-            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -230,6 +229,7 @@
                 </reportSets>
             </plugin>
 
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>

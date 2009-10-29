@@ -18,4 +18,4 @@ CREATE TABLE USING SCHEMA schema_name
 
 *Example
 
-%{snippet|id=create-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-table|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}

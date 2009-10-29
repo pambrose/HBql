@@ -19,4 +19,4 @@ DROP SCHEMA schema_name
 
 *Example
 
-%{snippet|id=drop-schema|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=drop-schema|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}

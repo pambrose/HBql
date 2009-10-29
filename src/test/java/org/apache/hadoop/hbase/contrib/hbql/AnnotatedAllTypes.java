@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql;
+package org.apache.hadoop.hbase.contrib.hbql;
 
 import org.apache.hadoop.hbase.contrib.hbql.client.HColumn;
 import org.apache.hadoop.hbase.contrib.hbql.client.HFamily;

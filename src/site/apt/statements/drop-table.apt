@@ -18,4 +18,4 @@ DROP TABLE table_name
 
 *Example
 
-%{snippet|id=drop-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=drop-table|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}

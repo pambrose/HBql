@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.hbql;
+package org.apache.yaoql;
 
 public class ObjectAllTypes {
 

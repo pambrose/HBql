@@ -17,4 +17,4 @@ SELECT {'*' | select_element [, ...] }
 
 *Example
 
-%{snippet|id=select1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=select1|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
