@@ -25,14 +25,15 @@ public class Console {
         //reader.setDebug(new PrintWriter(new FileWriter("writer.debug", true)));
         reader.addCompletor(new ArgumentCompletor(completors));
 
-        String line;
         final PrintWriter out = new PrintWriter(System.out);
 
         final HConnection conn = HConnectionManager.newHConnection();
 
-        while ((line = reader.readLine("HBql> ")) != null) {
+        while (true) {
 
-            if (line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit"))
+            final String line = reader.readLine("HBql> ");
+
+            if (line == null || line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit"))
                 break;
 
             try {
