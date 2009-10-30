@@ -9,6 +9,7 @@ import org.antlr.runtime.TokenStream;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.calculation.DelegateCalculation;
+import org.apache.expreval.expr.compare.BooleanCompare;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnDescription;
 import org.apache.hadoop.hbase.contrib.hbql.schema.DefinedSchema;
@@ -75,8 +76,8 @@ public class ParserSupport extends Parser {
         }
     }
 
-    public GenericValue getLeftAssociativeGenericValues(final List<GenericValue> exprList,
-                                                        final List<Operator> opList) {
+    public GenericValue getLeftAssociativeCalculation(final List<GenericValue> exprList,
+                                                      final List<Operator> opList) {
         if (exprList.size() == 1)
             return exprList.get(0);
 
@@ -84,6 +85,19 @@ public class ParserSupport extends Parser {
 
         for (int i = 1; i < opList.size(); i++)
             root = new DelegateCalculation(root, opList.get(i), exprList.get(i + 1));
+
+        return root;
+    }
+
+    public GenericValue getLeftAssociativeBooleanCompare(final List<GenericValue> exprList,
+                                                         final List<Operator> opList) {
+        if (exprList.size() == 1)
+            return exprList.get(0);
+
+        GenericValue root = new BooleanCompare(exprList.get(0), opList.get(0), exprList.get(1));
+
+        for (int i = 1; i < opList.size(); i++)
+            root = new BooleanCompare(root, opList.get(i), exprList.get(i + 1));
 
         return root;
     }

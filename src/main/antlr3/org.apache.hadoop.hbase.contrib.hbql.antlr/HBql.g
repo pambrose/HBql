@@ -177,20 +177,21 @@ topExpr returns [GenericValue retval]
 	: o=orExpr					{retval = $o.retval;};
 				
 orExpr returns [GenericValue retval]
-	: e1=andExpr (keyOR e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanCompare($e1.retval, Operator.OR, $e2.retval);};
+@init {List<GenericValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
+	: e1=andExpr {exprList.add($e1.retval);} (keyOR e2=andExpr {opList.add(Operator.OR); exprList.add($e2.retval);})* 
+							{retval = getLeftAssociativeBooleanCompare(exprList, opList);};
 
 andExpr returns [GenericValue retval]
-	: e1=notExpr (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanCompare($e1.retval, Operator.AND, $e2.retval);};
+@init {List<GenericValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
+	: e1=notExpr {exprList.add($e1.retval);} (keyAND e2=notExpr {opList.add(Operator.AND); exprList.add($e2.retval);})* 
+							{retval = getLeftAssociativeBooleanCompare(exprList, opList);};
 
 notExpr returns [GenericValue retval]			 
 	: (n=keyNOT)? p=eqneExpr			{retval = ($n.text != null) ? new BooleanNot(true, $p.retval) :  $p.retval;};
 
-//booleanPrimary returns [GenericValue retval]
-//	: b=eqneExpr					{retval = $b.retval;};
-
 eqneExpr returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
-	: v1=ltgtExpr o=eqneOp v2=ltgtExpr 	{retval = new DelegateCompare($v1.retval, $o.retval, $v2.retval);}	
+	: v1=ltgtExpr o=eqneOp v2=ltgtExpr 		{retval = new DelegateCompare($v1.retval, $o.retval, $v2.retval);}	
 	| c=ltgtExpr					{retval = $c.retval;}
 	;
 
@@ -204,13 +205,13 @@ options {backtrack=true; memoize=true;}
 // Value Expressions
 valPrimary returns [GenericValue retval] 
 @init {List<GenericValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
-	: m=multExpr {exprList.add($m.retval);} (op=plusMinus n=multExpr {opList.add($op.retval); exprList.add($n.retval);})*	
-							{retval = getLeftAssociativeGenericValues(exprList, opList);};
+	: e1=multExpr {exprList.add($e1.retval);} (op=plusMinus e2=multExpr {opList.add($op.retval); exprList.add($e2.retval);})*	
+							{retval = getLeftAssociativeCalculation(exprList, opList);};
 	
 multExpr returns [GenericValue retval]
 @init {List<GenericValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
-	: m=signedExpr {exprList.add($m.retval);} (op=multDiv n=signedExpr {opList.add($op.retval); exprList.add($n.retval);})*	
-							{retval = getLeftAssociativeGenericValues(exprList, opList);};
+	: e1=signedExpr {exprList.add($e1.retval);} (op=multDiv e2=signedExpr {opList.add($op.retval); exprList.add($e2.retval);})*	
+							{retval = getLeftAssociativeCalculation(exprList, opList);};
 	
 signedExpr returns [GenericValue retval]
 	: (s=plusMinus)? n=parenExpr 			{$signedExpr.retval = ($s.retval == Operator.MINUS) ? new DelegateCalculation($n.retval, Operator.NEGATIVE, new IntegerLiteral(0)) : $n.retval;};
