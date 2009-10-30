@@ -22,7 +22,7 @@ Documentation
 
     * {{{schemas.html}Schemas}}
 
-    * {{{shell.html}Shell usage}}
+    * {{{console.html}Console usage}}
 
     * {{{apidocs/index.html}Javadocs}}
 
@@ -36,15 +36,15 @@ Support
 
 Supported Platforms
 
-    The shell is limited to those platforms supported by {{{http://jline.sourceforge.net/}JLine}}.  The
+    The console is limited to those platforms supported by {{{http://jline.sourceforge.net/}JLine}}.  The
 HBql .jar is is compatible with any 1.6 JVM.
 
 
 Road Map
 
-    Items in the hopper for future enhancements include:
+    Items in the hopper for the future include:
 
-       * Queries on version values
+       * Support for queries on version values
        
        * JSON results from selects
 

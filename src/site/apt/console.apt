@@ -1,0 +1,27 @@
+    ------
+    Console
+    ------
+    ------
+
+Console
+
+    The console provides a simple command line interface for executing HBql statements.
+
+
+*Syntax
+
+---------------------------
+$HBQL_HOME/bin/console.sh
+---------------------------
+
+*Details
+
+    * The console requires the hbql, jline, haddop, hbase, log4j jar files. You can see the specific jars
+    in bin/console.sh.
+
+    * The bin/console.sh script requires two shell vars to be defined: HBQL_HOME and HBASE_HOME.
+
+    * Windows-specific installation details for jline installation are on the
+    {{{http://jline.sourceforge.net/}JLine}} website.
+
+

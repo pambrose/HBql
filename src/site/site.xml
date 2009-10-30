@@ -17,11 +17,10 @@
         </links>
 
         <menu name="HBql">
-            <item name="Introduction" href="index.html"/>
+            <item name="Home" href="index.html"/>
             <item name="Download" href="download.html"/>
-            <item name="Release Notes" href="release-notes.html"/>
+            <item name="Javadocs" href="apidocs/index.html"/>
             <item name="FAQ" href="faq.html"/>
-            <item name="Road Map" href="roadmap.html"/>
         </menu>
         <!--
         <breadcrumbs>
