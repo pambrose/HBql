@@ -5,7 +5,7 @@
 
 Installation
 
-    * Define the env var $HBQL_HOME and unzip the distribution to $HBQL_HOME.
+    * Define the environment variables $HBQL_HOME and unzip the distribution to $HBQL_HOME.
 
     * Add the hbql.jar and the jars in $HBQL_HOME/lib directory to your classpath.
 
