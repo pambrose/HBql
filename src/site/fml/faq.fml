@@ -8,7 +8,7 @@
                     No. HBql attempts to support overlapping concepts with common SQL functionality,
                     but where HBase functionality is unique, the SQL syntax is distinct. The goal is
                     not to make HBase look or feel like a relational store. The goal is to just
-                    make things a little easier by providing a well known, high-level syntax.
+                    make using HBase a little easier by providing a well known, high-level syntax.
                 </p>
             </answer>
         </faq>

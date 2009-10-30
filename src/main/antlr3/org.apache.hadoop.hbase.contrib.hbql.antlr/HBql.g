@@ -180,21 +180,21 @@ orExpr returns [GenericValue retval]
 	: e1=andExpr (keyOR e2=orExpr)?			{$orExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanCompare($e1.retval, Operator.OR, $e2.retval);};
 
 andExpr returns [GenericValue retval]
-	: e1=booleanNot (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanCompare($e1.retval, Operator.AND, $e2.retval);};
+	: e1=notExpr (keyAND e2=andExpr)?		{$andExpr.retval = ($e2.text == null) ? $e1.retval : new BooleanCompare($e1.retval, Operator.AND, $e2.retval);};
 
-booleanNot returns [GenericValue retval]			 
-	: (n=keyNOT)? p=booleanPrimary			{retval = ($n.text != null) ? new BooleanNot(true, $p.retval) :  $p.retval;};
+notExpr returns [GenericValue retval]			 
+	: (n=keyNOT)? p=eqneExpr			{retval = ($n.text != null) ? new BooleanNot(true, $p.retval) :  $p.retval;};
 
-booleanPrimary returns [GenericValue retval]
-	: b=eqneCompare					{retval = $b.retval;};
+//booleanPrimary returns [GenericValue retval]
+//	: b=eqneExpr					{retval = $b.retval;};
 
-eqneCompare returns [GenericValue retval]
+eqneExpr returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
-	: v1=ltgtCompare o=eqneOp v2=ltgtCompare 	{retval = new DelegateCompare($v1.retval, $o.retval, $v2.retval);}	
-	| c=ltgtCompare					{retval = $c.retval;}
+	: v1=ltgtExpr o=eqneOp v2=ltgtExpr 	{retval = new DelegateCompare($v1.retval, $o.retval, $v2.retval);}	
+	| c=ltgtExpr					{retval = $c.retval;}
 	;
 
-ltgtCompare returns [GenericValue retval]
+ltgtExpr returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
 	: v1=valPrimary o=ltgtOp v2=valPrimary		{retval = new DelegateCompare($v1.retval, $o.retval, $v2.retval);}
 	| b=booleanFunctions				{retval = $b.retval;}
