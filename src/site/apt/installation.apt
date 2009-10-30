@@ -5,7 +5,9 @@
 
 Installation
 
-    * Unzip the distribution and add hbql.jar and the jars in the lib directory to your classpath.
+    * Define the env var $HBQL_HOME and unzip the distribution to $HBQL_HOME.
+
+    * Add the hbql.jar and the jars in $HBQL_HOME/lib directory to your classpath.
 
     * To verify your installation, run the {{{console.html}console}} and enter the {{{statements/version.html}version}}
      command.

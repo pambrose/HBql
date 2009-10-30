@@ -28,6 +28,8 @@ Documentation
 
     * {{{faq.html}FAQ}}
 
+    * {{{dependencies.html}Project Dependencies}}
+
 Support
 
     HBql is still very much a work in progress.  If you have problems (or success), please send
@@ -36,8 +38,8 @@ Support
 
 Supported Platforms
 
-    The console is limited to those platforms supported by {{{http://jline.sourceforge.net/}JLine}}.  The
-HBql .jar is is compatible with any 1.6 JVM.
+    The HBql.jar is is compatible with any 1.6 JVM.  The console is limited to those platforms supported
+    by {{{http://jline.sourceforge.net/}JLine}}.  
 
 
 Road Map
