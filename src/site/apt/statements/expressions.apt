@@ -20,11 +20,28 @@ column_references:
 
 *Description
 
-*Operator precedence:
+*Operator precedence
+
+    ** OR
 
     ** AND
-    
-    ** OR
+
+    ** NOT
+
+    ** = !+
+
+    ** &GT <= &LT >=
+
+    ** boolean_functions
+
+    ** + -
+
+    ** * /
+
+    ** -
+
+    ** literal, column_reference, named_parameter
+
 
 
 
