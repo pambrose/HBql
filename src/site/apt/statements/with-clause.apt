@@ -8,10 +8,12 @@ WITH
 *Syntax
 
 ---------------------------
-WITH
+WITH keys_range timestamp_option versions scan_limit query_limit server_filer client_filter
 ---------------------------
 
 *Description
+
+    The WITH clause is used in the {{{insert.html}insert}}, {{{select.html}select}} and {{{delete.html}delete}} statements.
 
 
 

@@ -82,7 +82,7 @@ public class HBqlParser {
     public static WhereArgs parseWithClause(final String str) throws HBqlException {
         try {
             final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = newHBqlParser(str);
-            return parser.whereValue();
+            return parser.withClause();
         }
         catch (RecognitionException e) {
             e.printStackTrace();

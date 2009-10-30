@@ -92,14 +92,14 @@ schemaManagerStmt returns [SchemaStatement retval]
 schemaStmt returns [SchemaStatement retval]
 	: keyCREATE keyTABLE keyUSING keySCHEMA t=simpleName 	
 							{retval = new CreateTableStatement($t.text);}
-	| keyDELETE keyFROM t=simpleName w=whereValue?	{retval = new DeleteStatement($t.text, $w.retval);}
+	| keyDELETE keyFROM t=simpleName w=withClause?	{retval = new DeleteStatement($t.text, $w.retval);}
 	| keyINSERT keyINTO t=simpleName LPAREN e=exprList RPAREN ins=insertValues
 							{retval = new InsertStatement($t.text, $e.retval, $ins.retval);}
 	| sel=selectStatement				{retval = $sel.retval;}			
 	;
 		
 selectStatement returns [SelectStatement retval]
-	: keySELECT c=selectElems keyFROM t=simpleName w=whereValue?
+	: keySELECT c=selectElems keyFROM t=simpleName w=withClause?
 							{retval = new SelectStatement($c.retval, $t.text, $w.retval);};
 							
 insertValues returns [InsertValueSource retval]
@@ -107,9 +107,13 @@ insertValues returns [InsertValueSource retval]
 	| sel=selectStatement				{retval = new InsertSelectValues($sel.retval);}			
 	;
 	
-selectDesc[WhereArgs whereArgs] 
+withClause returns [WhereArgs retval]
+@init {retval = new WhereArgs();}
+	: keyWITH withElements[retval]+;
+
+withElements[WhereArgs whereArgs] 
 	: k=keysRange					{whereArgs.setKeyRangeArgs($k.retval);}
-	| t=time					{whereArgs.setTimeRangeArgs($t.retval);}	
+	| t=timeOption					{whereArgs.setTimeRangeArgs($t.retval);}	
 	| v=versions					{whereArgs.setVersionArgs($v.retval);}
 	| l=scanLimit					{whereArgs.setScanLimitArgs($l.retval);}
 	| q=queryLimit					{whereArgs.setQueryLimitArgs($q.retval);}
@@ -122,7 +126,7 @@ keysRange returns [KeyRangeArgs retval]
 	| keyKEYS keyALL				{retval = new KeyRangeArgs();}	
 	;
 	
-time returns [TimeRangeArgs retval]
+timeOption returns [TimeRangeArgs retval]
 	: keyTIME keyRANGE d1=valPrimary keyTO d2=valPrimary	
 							{retval = new TimeRangeArgs($d1.retval, $d2.retval);}
 	| keyTIME keySTAMP d1=valPrimary		{retval = new TimeRangeArgs($d1.retval, $d1.retval);}
@@ -305,10 +309,6 @@ options {backtrack=true; memoize=true;}
 	: b=topExpr (keyAS i2=simpleName)?		{$selectElem.retval = SingleExpression.newSingleExpression($b.retval, $i2.text);}
 	| f=familyRef					{$selectElem.retval = FamilySelectElement.newFamilyElement($f.text);}
 	;
-
-whereValue returns [WhereArgs retval]
-@init {retval = new WhereArgs();}
-	: keyWITH selectDesc[retval]+;
 
 exprList returns [List<GenericValue> retval]
 @init {retval = Lists.newArrayList();}

@@ -8,13 +8,19 @@ INSERT
 *Syntax
 
 ---------------------------
-INSERT INTO schema_name ( column_name [, ...] ) { VALUES ( { expression | DEFAULT } [, ...] ) | query }
+INSERT INTO schema_name ( column_reference [, ...] ) { VALUES ( { expression | DEFAULT } [, ...] ) | query }
+
+column_reference:
+    family_name ':' column_name
+    | alias_name
 ---------------------------
 
 *Description
 
     Inserts values into a table.
 
+    * The key value must be included in the column_reference list.
+    
 *Example
 
 %{snippet|id=insert1|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
