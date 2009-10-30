@@ -8,9 +8,9 @@ import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 
 import java.io.IOException;
 
-public class ShowTablesStatement implements ConnectionStatement {
+public class ListTablesStatement implements ConnectionStatement {
 
-    public ShowTablesStatement() {
+    public ListTablesStatement() {
     }
 
     public HOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {

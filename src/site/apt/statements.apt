@@ -10,33 +10,45 @@ HBql Statements
     * Statement keywords are case insensitive.
     
 
-*{{{statements/version.html}VERSION}}
+* Data Definition
 
-*{{{statements/list-tables.html}LIST TABLES}}
+    **{{{statements/create-schema.html}CREATE SCHEMA}}
 
-*{{{statements/create-schema.html}CREATE SCHEMA}}
+    **{{{statements/drop-schema.html}DROP SCHEMA}}
 
-*{{{statements/drop-schema.html}DROP SCHEMA}}
+    **{{{statements/create-table.html}CREATE TABLE}}
 
-*{{{statements/create-table.html}CREATE TABLE}}
+    **{{{statements/enable-table.html}ENABLE TABLE}}
 
-*{{{statements/enable-table.html}ENABLE TABLE}}
+    **{{{statements/disable-table.html}DISABLE TABLE}}
 
-*{{{statements/disable-table.html}DISABLE TABLE}}
+    **{{{statements/drop-table.html}DROP TABLE}}
 
-*{{{statements/drop-table.html}DROP TABLE}}
+    **{{{statements/describe-table.html}DESCRIBE TABLE}}
 
-*{{{statements/describe-table.html}DESCRIBE TABLE}}
+    **{{{statements/list-tables.html}LIST TABLES}}
 
-*{{{statements/insert.html}INSERT}}
+    **{{{statements/list-schemas.html}LIST SCHEMAS}}
 
-*{{{statements/select.html}SELECT}}
+* Data Manipulation
 
-*{{{statements/delete.html}DELETE}}
+    **{{{statements/insert.html}INSERT}}
 
-*{{{statements/with-clause.html}WITH Clause}}
+    **{{{statements/delete.html}DELETE}}
 
-*{{{statements/expressions.html}Expressions}}
+* Queries
+
+    **{{{statements/select.html}SELECT}}
+
+    **{{{statements/with-clause.html}WITH Clause}}
+
+    **{{{statements/expressions.html}Expressions}}
+
+* Misc
+
+    **{{{statements/version.html}VERSION}}
+
+
 
 
 

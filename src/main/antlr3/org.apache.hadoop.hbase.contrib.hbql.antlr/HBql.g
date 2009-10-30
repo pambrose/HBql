@@ -72,7 +72,8 @@ options {backtrack=true;}
 	: s1=schemaStmt					{retval = $s1.retval;}
 	| s2=schemaManagerStmt				{retval = $s2.retval;}
 	| s3=tableStatement				{retval = $s3.retval;}
-	| keyLIST keyTABLES 		 		{retval = new ShowTablesStatement();}
+	| keyLIST keyTABLES 		 		{retval = new ListTablesStatement();}
+	| keyLIST keySCHEMAS 		 		{retval = new ListSchemasStatement();}
 	| keyVERSION					{retval = new VersionStatement();}
 	| keyHELP					{retval = new HelpStatement();}
 	| keyPARSE c=commandStmt			{retval = new ParseStatement($c.retval);}
@@ -399,6 +400,7 @@ keyDISABLE 	: {isKeyword(input, "DISABLE")}? ID;
 keyDROP 	: {isKeyword(input, "DROP")}? ID;
 keyTABLE 	: {isKeyword(input, "TABLE")}? ID;
 keySCHEMA 	: {isKeyword(input, "SCHEMA")}? ID;
+keySCHEMAS 	: {isKeyword(input, "SCHEMAS")}? ID;
 keyTABLES 	: {isKeyword(input, "TABLES")}? ID;
 keyWHERE	: {isKeyword(input, "WHERE")}? ID;
 keyUSING	: {isKeyword(input, "USING")}? ID;

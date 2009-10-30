@@ -14,6 +14,7 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.SchemaManagerStatement;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class HSchemaManager {
 
@@ -42,6 +43,10 @@ public class HSchemaManager {
 
     private static Map<String, DefinedSchema> getDefinedSchemaMap() {
         return definedSchemaMap;
+    }
+
+    public static Set<String> getDefinedSchemaList() {
+        return definedSchemaMap.keySet();
     }
 
     public static DefinedSchema getDefinedSchema(final String tableName) {
