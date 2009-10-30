@@ -8,7 +8,23 @@ WITH
 *Syntax
 
 ---------------------------
-WITH keys_range timestamp_option versions scan_limit query_limit server_filer client_filter
+WITH keys_range timestamp versions scan_limit query_limit server_filer client_filter
+
+keys_range:
+    KEYS key_range [, ...]
+    | KEYS ALL
+
+key_range:
+    key_value TO LAST
+    | key_value TO key_value
+    | key_value
+
+key_value:
+    any string expression (not referencing a column)
+
+timestamp:
+    TIME RANGE timestamp_value TO timestamp_value
+    | TIME STAMP timestamp_value
 ---------------------------
 
 *Description

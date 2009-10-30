@@ -5,7 +5,7 @@ import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.contrib.hbql.statement.args.WhereArgs;
+import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SelectElement;
 
 import java.util.List;
@@ -15,16 +15,16 @@ public class SelectStatement extends SchemaStatement {
 
     private final List<SelectElement> selectElementList;
     private final List<ColumnAttrib> selectColumnAttribList = Lists.newArrayList();
-    private final WhereArgs whereArgs;
+    private final WithArgs withArgs;
 
     private int expressionCounter = 0;
 
     public SelectStatement(final List<SelectElement> selectElementList,
                            final String schemaName,
-                           final WhereArgs whereArgs) {
+                           final WithArgs withArgs) {
         super(schemaName);
         this.selectElementList = selectElementList;
-        this.whereArgs = whereArgs != null ? whereArgs : new WhereArgs();
+        this.withArgs = withArgs != null ? withArgs : new WithArgs();
     }
 
     public String getNextExpressionName() {
@@ -41,16 +41,16 @@ public class SelectStatement extends SchemaStatement {
             this.getSelectAttribList().addAll(element.getAttribsUsedInExpr());
         }
 
-        this.getWhereArgs().setSchema(this.getSchema());
+        this.getWithArgs().setSchema(this.getSchema());
 
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();
 
-        if (this.getWhereArgs().getServerExpressionTree() != null)
-            this.getWhereArgs().getServerExpressionTree().setUseResultData(false);
+        if (this.getWithArgs().getServerExpressionTree() != null)
+            this.getWithArgs().getServerExpressionTree().setUseResultData(false);
 
-        if (this.getWhereArgs().getClientExpressionTree() != null)
-            this.getWhereArgs().getClientExpressionTree().setUseResultData(true);
+        if (this.getWithArgs().getClientExpressionTree() != null)
+            this.getWithArgs().getClientExpressionTree().setUseResultData(true);
     }
 
     private void checkForDuplicateAsNames() throws HBqlException {
@@ -86,8 +86,8 @@ public class SelectStatement extends SchemaStatement {
         return this.selectColumnAttribList;
     }
 
-    public WhereArgs getWhereArgs() {
-        return this.whereArgs;
+    public WithArgs getWithArgs() {
+        return this.withArgs;
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
@@ -97,7 +97,7 @@ public class SelectStatement extends SchemaStatement {
         for (final SelectElement selectElement : this.getSelectElementList())
             cnt += selectElement.setParameter(name, val);
 
-        cnt += this.getWhereArgs().setParameter(name, val);
+        cnt += this.getWithArgs().setParameter(name, val);
 
         return cnt;
     }
@@ -119,7 +119,7 @@ public class SelectStatement extends SchemaStatement {
         sbuf.append(" FROM ");
         sbuf.append(this.getSchemaName());
         sbuf.append(" ");
-        sbuf.append(this.getWhereArgs().asString());
+        sbuf.append(this.getWithArgs().asString());
 
         return sbuf.toString();
     }

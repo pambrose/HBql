@@ -16,10 +16,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-public class WhereArgs {
+public class WithArgs {
 
     private KeyRangeArgs keyRangeArgs = null;
-    private TimeRangeArgs timeRangeArgs = null;
+    private TimestampRangeArgs timestampRangeArgs = null;
     private VersionArgs versionArgs = null;
     private LimitArgs scanLimitArgs = null;
     private LimitArgs queryLimitArgs = null;
@@ -35,15 +35,15 @@ public class WhereArgs {
 
         this.schema = schema;
 
-        this.validateWhereArgs();
+        this.validateWithArgs();
 
         if (this.getKeyRangeArgs() == null)
             this.setKeyRangeArgs(new KeyRangeArgs());    // Defualt to ALL records
 
         this.getKeyRangeArgs().setSchema(null);
 
-        if (this.getTimeRangeArgs() != null)
-            this.getTimeRangeArgs().setSchema(null);
+        if (this.getTimestampRangeArgs() != null)
+            this.getTimestampRangeArgs().setSchema(null);
 
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setSchema(null);
@@ -61,7 +61,7 @@ public class WhereArgs {
             this.getClientExpressionTree().setSchema(this.getSchema());
     }
 
-    private void validateWhereArgs() throws HBqlException {
+    private void validateWithArgs() throws HBqlException {
         if (this.multipleSetValues.size() > 0) {
             final StringBuilder sbuf = new StringBuilder();
             boolean firstTime = true;
@@ -93,14 +93,14 @@ public class WhereArgs {
         this.keyRangeArgs = keyRangeArgs;
     }
 
-    private TimeRangeArgs getTimeRangeArgs() {
-        return this.timeRangeArgs;
+    private TimestampRangeArgs getTimestampRangeArgs() {
+        return this.timestampRangeArgs;
     }
 
-    public void setTimeRangeArgs(final TimeRangeArgs timeRangeArgs) {
-        if (this.getTimeRangeArgs() != null)
+    public void setTimestampRangeArgs(final TimestampRangeArgs timestampRangeArgs) {
+        if (this.getTimestampRangeArgs() != null)
             this.addError("Time Range");
-        this.timeRangeArgs = timeRangeArgs;
+        this.timestampRangeArgs = timestampRangeArgs;
     }
 
     private VersionArgs getVersionArgs() {
@@ -168,8 +168,8 @@ public class WhereArgs {
         if (this.getKeyRangeArgs() != null)
             sbuf.append(this.getKeyRangeArgs().asString() + "\n");
 
-        if (this.getTimeRangeArgs() != null)
-            sbuf.append(this.getTimeRangeArgs().asString() + "\n");
+        if (this.getTimestampRangeArgs() != null)
+            sbuf.append(this.getTimestampRangeArgs().asString() + "\n");
 
         if (this.getVersionArgs() != null)
             sbuf.append(this.getVersionArgs().asString() + "\n");
@@ -193,8 +193,8 @@ public class WhereArgs {
 
         int cnt = this.getKeyRangeArgs().setParameter(name, val);
 
-        if (this.getTimeRangeArgs() != null)
-            cnt += this.getTimeRangeArgs().setParameter(name, val);
+        if (this.getTimestampRangeArgs() != null)
+            cnt += this.getTimestampRangeArgs().setParameter(name, val);
 
         if (this.getVersionArgs() != null)
             cnt += this.getVersionArgs().setParameter(name, val);
@@ -249,8 +249,8 @@ public class WhereArgs {
                 get.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
         }
 
-        if (this.getTimeRangeArgs() != null)
-            this.getTimeRangeArgs().setTimeStamp(get);
+        if (this.getTimestampRangeArgs() != null)
+            this.getTimestampRangeArgs().setTimeStamp(get);
 
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(get);
@@ -278,8 +278,8 @@ public class WhereArgs {
                 scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
         }
 
-        if (this.getTimeRangeArgs() != null)
-            this.getTimeRangeArgs().setTimeStamp(scan);
+        if (this.getTimestampRangeArgs() != null)
+            this.getTimestampRangeArgs().setTimeStamp(scan);
 
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(scan);

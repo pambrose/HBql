@@ -15,8 +15,8 @@ public class WithExpressionsTest extends TestSupport {
 
     @Test
     public void timeExpressions() throws HBqlException {
-        assertValidInput("WITH TIME RANGE NOW() TO NOW()");
-        assertValidInput("WITH TIME RANGE NOW() TO NOW()+DAY(1)");
+        assertValidInput("WITH TIMESTAMP RANGE NOW() TO NOW()");
+        assertValidInput("WITH TIMESTAMP RANGE NOW() TO NOW()+DAY(1)");
     }
 
     @Test
@@ -26,9 +26,9 @@ public class WithExpressionsTest extends TestSupport {
 
     @Test
     public void timerangeExpressions() throws HBqlException {
-        assertValidInput("WITH TIME RANGE NOW() TO NOW()+DAY(1)");
-        assertValidInput("WITH TIME RANGE NOW() - DAY(1) TO NOW() + DAY(1) + DAY(2)");
-        assertValidInput("WITH TIME RANGE DATE('10/31/94', 'mm/dd/yy') - DAY(1) TO NOW()+DAY(1) + DAY(2)");
+        assertValidInput("WITH TIMESTAMP RANGE NOW() TO NOW()+DAY(1)");
+        assertValidInput("WITH TIMESTAMP RANGE NOW() - DAY(1) TO NOW() + DAY(1) + DAY(2)");
+        assertValidInput("WITH TIMESTAMP RANGE DATE('10/31/94', 'mm/dd/yy') - DAY(1) TO NOW()+DAY(1) + DAY(2)");
     }
 
     @Test

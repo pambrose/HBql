@@ -107,29 +107,40 @@ insertValues returns [InsertValueSource retval]
 	| sel=selectStatement				{retval = new InsertSelectValues($sel.retval);}			
 	;
 	
-withClause returns [WhereArgs retval]
-@init {retval = new WhereArgs();}
+withClause returns [WithArgs retval]
+@init {retval = new WithArgs();}
 	: keyWITH withElements[retval]+;
 
-withElements[WhereArgs whereArgs] 
-	: k=keysRange					{whereArgs.setKeyRangeArgs($k.retval);}
-	| t=timeOption					{whereArgs.setTimeRangeArgs($t.retval);}	
-	| v=versions					{whereArgs.setVersionArgs($v.retval);}
-	| l=scanLimit					{whereArgs.setScanLimitArgs($l.retval);}
-	| q=queryLimit					{whereArgs.setQueryLimitArgs($q.retval);}
-	| s=serverFilter				{whereArgs.setServerExpressionTree($s.retval);}
-	| c=clientFilter				{whereArgs.setClientExpressionTree($c.retval);}
+withElements[WithArgs withArgs] 
+	: k=keysRange					{withArgs.setKeyRangeArgs($k.retval);}
+	| t=timestampOption				{withArgs.setTimestampRangeArgs($t.retval);}	
+	| v=versions					{withArgs.setVersionArgs($v.retval);}
+	| l=scanLimit					{withArgs.setScanLimitArgs($l.retval);}
+	| q=queryLimit					{withArgs.setQueryLimitArgs($q.retval);}
+	| s=serverFilter				{withArgs.setServerExpressionTree($s.retval);}
+	| c=clientFilter				{withArgs.setClientExpressionTree($c.retval);}
 	;
 	
 keysRange returns [KeyRangeArgs retval]
-	: keyKEYS k=keyRangeList			{retval = new KeyRangeArgs($k.retval);}	
+	: keyKEYS k=rangeList				{retval = new KeyRangeArgs($k.retval);}	
 	| keyKEYS keyALL				{retval = new KeyRangeArgs();}	
 	;
+
+rangeList returns [List<KeyRangeArgs.Range> retval]
+@init {retval = Lists.newArrayList();}
+	: k1=keyRange {retval.add($k1.retval);} (COMMA k2=keyRange {retval.add($k2.retval);})*;
 	
-timeOption returns [TimeRangeArgs retval]
-	: keyTIME keyRANGE d1=valPrimary keyTO d2=valPrimary	
-							{retval = new TimeRangeArgs($d1.retval, $d2.retval);}
-	| keyTIME keySTAMP d1=valPrimary		{retval = new TimeRangeArgs($d1.retval, $d1.retval);}
+keyRange returns [KeyRangeArgs.Range retval]
+options {backtrack=true;}	
+	: q1=valPrimary keyTO keyLAST			{retval = KeyRangeArgs.newLastRange($q1.retval);}
+	| q1=valPrimary keyTO q2=valPrimary		{retval = KeyRangeArgs.newRange($q1.retval, $q2.retval);}
+	| q1=valPrimary 				{retval = KeyRangeArgs.newSingleKey($q1.retval);}
+	;
+		
+timestampOption returns [TimestampRangeArgs retval]
+	: keyTIMESTAMP keyRANGE d1=valPrimary keyTO d2=valPrimary	
+							{retval = new TimestampRangeArgs($d1.retval, $d2.retval);}
+	| keyTIMESTAMP d1=valPrimary			{retval = new TimestampRangeArgs($d1.retval, $d1.retval);}
 	;
 		
 versions returns [VersionArgs retval]
@@ -150,17 +161,6 @@ clientFilter returns [ExpressionTree retval]
 serverFilter returns [ExpressionTree retval]
 	: keySERVER keyFILTER keyWHERE w=descWhereExpr	
 							{retval = $w.retval;};
-	
-keyRangeList returns [List<KeyRangeArgs.Range> retval]
-@init {retval = Lists.newArrayList();}
-	: k1=keyRange {retval.add($k1.retval);} (COMMA k2=keyRange {retval.add($k2.retval);})*;
-	
-keyRange returns [KeyRangeArgs.Range retval]
-options {backtrack=true;}	
-	: q1=valPrimary keyTO keyLAST			{retval = KeyRangeArgs.newLastRange($q1.retval);}
-	| q1=valPrimary keyTO q2=valPrimary		{retval = KeyRangeArgs.newRange($q1.retval, $q2.retval);}
-	| q1=valPrimary 				{retval = KeyRangeArgs.newSingleKey($q1.retval);}
-	;
 	
 nodescWhereExpr returns [ExpressionTree retval]
 	 : e=topExpr					{retval = ExpressionTree.newExpressionTree($e.retval);};
@@ -427,9 +427,8 @@ keyCLIENT	: {isKeyword(input, "CLIENT")}? ID;
 keySERVER	: {isKeyword(input, "SERVER")}? ID;
 keyVERSIONS	: {isKeyword(input, "VERSIONS")}? ID;
 keyVERSION	: {isKeyword(input, "VERSION")}? ID;
-keyTIME		: {isKeyword(input, "TIME")}? ID;
+keyTIMESTAMP	: {isKeyword(input, "TIMESTAMP")}? ID;
 keyRANGE	: {isKeyword(input, "RANGE")}? ID;
-keySTAMP	: {isKeyword(input, "STAMP")}? ID;
 keyMAX		: {isKeyword(input, "MAX")}? ID;
 keyKEYS		: {isKeyword(input, "KEYS")}? ID;
 keyALL		: {isKeyword(input, "ALL")}? ID;

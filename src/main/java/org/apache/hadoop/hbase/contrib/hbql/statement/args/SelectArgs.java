@@ -14,7 +14,7 @@ public abstract class SelectArgs extends ExpressionContext {
         NOARGSKEY(new TypeSignature(null)),
         SINGLEKEY(new TypeSignature(null, StringValue.class)),
         KEYRANGE(new TypeSignature(null, StringValue.class, StringValue.class)),
-        TIMERANGE(new TypeSignature(null, DateValue.class, DateValue.class)),
+        TIMESTAMPRANGE(new TypeSignature(null, DateValue.class, DateValue.class)),
         LIMIT(new TypeSignature(null, LongValue.class)),
         VERSION(new TypeSignature(null, LongValue.class));
 

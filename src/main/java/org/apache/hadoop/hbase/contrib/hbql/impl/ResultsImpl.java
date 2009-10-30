@@ -13,7 +13,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.HQueryListener;
 import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
-import org.apache.hadoop.hbase.contrib.hbql.statement.args.WhereArgs;
+import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.RowRequest;
 
 import java.io.IOException;
@@ -46,8 +46,8 @@ public class ResultsImpl<T> implements HResults<T> {
         return this.getHQuery().getSelectStatement();
     }
 
-    private WhereArgs getWhereArgs() {
-        return this.getSelectStatement().getWhereArgs();
+    private WithArgs getWithArgs() {
+        return this.getSelectStatement().getWithArgs();
     }
 
     private List<HQueryListener<T>> getListeners() {
@@ -86,7 +86,7 @@ public class ResultsImpl<T> implements HResults<T> {
             return new ResultsIterator<T>() {
 
                 final HTable table = getConnection().getHTable(getSelectStatement().getSchema().getTableName());
-                final ExpressionTree clientExpressionTree = getWhereArgs().getClientExpressionTree();
+                final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
                 final Iterator<RowRequest> rowRequestIter = getRowRequestList().iterator();
 
                 int maxVersions = 0;

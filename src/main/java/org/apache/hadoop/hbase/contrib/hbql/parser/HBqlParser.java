@@ -18,7 +18,7 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SchemaManagerStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ShellStatement;
-import org.apache.hadoop.hbase.contrib.hbql.statement.args.WhereArgs;
+import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpression;
 import org.apache.log4j.Logger;
 
@@ -79,7 +79,7 @@ public class HBqlParser {
         return elem.getValue(null);
     }
 
-    public static WhereArgs parseWithClause(final String str) throws HBqlException {
+    public static WithArgs parseWithClause(final String str) throws HBqlException {
         try {
             final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = newHBqlParser(str);
             return parser.withClause();

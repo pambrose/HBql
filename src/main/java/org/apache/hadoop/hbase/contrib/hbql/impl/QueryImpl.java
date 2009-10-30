@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlParser;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
-import org.apache.hadoop.hbase.contrib.hbql.statement.args.WhereArgs;
+import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.RowRequest;
 
 import java.io.IOException;
@@ -51,14 +51,14 @@ public class QueryImpl<T> implements HQuery<T> {
 
     public List<RowRequest> getRowRequestList() throws HBqlException, IOException {
 
-        final WhereArgs where = this.getSelectStatement().getWhereArgs();
+        final WithArgs with = this.getSelectStatement().getWithArgs();
 
         // Get list of all columns that are used in select list and expr tree
         final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
         allAttribs.addAll(this.getSelectStatement().getSelectAttribList());
-        allAttribs.addAll(where.getAllColumnsUsedInExprs());
+        allAttribs.addAll(with.getAllColumnsUsedInExprs());
 
-        return where.getRowRequestList(allAttribs);
+        return with.getRowRequestList(allAttribs);
     }
 
     public List<HQueryListener<T>> getListeners() {

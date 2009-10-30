@@ -7,10 +7,13 @@ import org.apache.hadoop.hbase.client.Scan;
 
 import java.io.IOException;
 
-public class TimeRangeArgs extends SelectArgs {
+public class TimestampRangeArgs extends SelectArgs {
 
-    public TimeRangeArgs(final GenericValue arg0, final GenericValue arg1) {
-        super(SelectArgs.Type.TIMERANGE, arg0, arg1);
+    final boolean singleValue;
+
+    public TimestampRangeArgs(final GenericValue arg0, final GenericValue arg1) {
+        super(SelectArgs.Type.TIMESTAMPRANGE, arg0, arg1);
+        this.singleValue = arg0 == arg1;
     }
 
     private long getLower() throws HBqlException {
@@ -21,19 +24,27 @@ public class TimeRangeArgs extends SelectArgs {
         return (Long)this.evaluateConstant(1, false, null);
     }
 
+    private boolean isSingleValue() {
+        return this.singleValue;
+    }
+
     public String asString() {
-        return "TIME RANGE " + this.getGenericValue(0).asString() + " TO " + this.getGenericValue(1);
+        if (this.isSingleValue())
+            return "TIMESTAMP " + this.getGenericValue(0).asString();
+        else
+            return "TIMESTAMP RANGE " + this.getGenericValue(0).asString() + " TO "
+                   + this.getGenericValue(1).asString();
     }
 
     public void setTimeStamp(final Get get) throws HBqlException, IOException {
-        if (this.getLower() == this.getUpper())
+        if (this.isSingleValue())
             get.setTimeStamp(this.getLower());
         else
             get.setTimeRange(this.getLower(), this.getUpper());
     }
 
     public void setTimeStamp(final Scan scan) throws HBqlException, IOException {
-        if (this.getLower() == this.getUpper())
+        if (this.isSingleValue())
             scan.setTimeStamp(this.getLower());
         else
             scan.setTimeRange(this.getLower(), this.getUpper());

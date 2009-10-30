@@ -10,7 +10,7 @@ import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlParser;
 import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
-import org.apache.hadoop.hbase.contrib.hbql.statement.args.WhereArgs;
+import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpression;
 
 import java.util.Date;
@@ -210,7 +210,7 @@ public class TestSupport {
 
     private static boolean evaluateWhereValue(final String expr) {
         try {
-            final WhereArgs args = HBqlParser.parseWithClause(expr);
+            final WithArgs args = HBqlParser.parseWithClause(expr);
             System.out.println("Evaluating: " + args.asString());
             return true;
         }

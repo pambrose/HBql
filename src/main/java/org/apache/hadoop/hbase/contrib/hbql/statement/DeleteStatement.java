@@ -9,7 +9,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.contrib.hbql.statement.args.WhereArgs;
+import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.RowRequest;
 
 import java.io.IOException;
@@ -18,42 +18,42 @@ import java.util.Set;
 
 public class DeleteStatement extends SchemaStatement implements ConnectionStatement {
 
-    private final WhereArgs whereArgs;
+    private final WithArgs withArgs;
 
-    public DeleteStatement(final String schemaName, final WhereArgs whereArgs) {
+    public DeleteStatement(final String schemaName, final WithArgs withArgs) {
         super(schemaName);
-        if (whereArgs == null)
-            this.whereArgs = new WhereArgs();
+        if (withArgs == null)
+            this.withArgs = new WithArgs();
         else
-            this.whereArgs = whereArgs;
+            this.withArgs = withArgs;
     }
 
-    public WhereArgs getWhereArgs() {
-        return this.whereArgs;
+    public WithArgs getWithArgs() {
+        return this.withArgs;
     }
 
     public HOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
-        this.getWhereArgs().setSchema(this.getSchema());
+        this.getWithArgs().setSchema(this.getSchema());
 
-        final Set<ColumnAttrib> allWhereAttribs = this.getWhereArgs().getAllColumnsUsedInExprs();
+        final Set<ColumnAttrib> allWhereAttribs = this.getWithArgs().getAllColumnsUsedInExprs();
         final HTable table = conn.getHTable(this.getSchema().getTableName());
 
-        final List<RowRequest> rowRequestList = this.getWhereArgs().getRowRequestList(allWhereAttribs);
+        final List<RowRequest> rowRequestList = this.getWithArgs().getRowRequestList(allWhereAttribs);
 
         int cnt = 0;
 
         for (final RowRequest rowRequest : rowRequestList)
-            cnt += this.delete(table, this.getWhereArgs(), rowRequest);
+            cnt += this.delete(table, this.getWithArgs(), rowRequest);
 
         return new HOutput("Delete count: " + cnt);
     }
 
     private int delete(final HTable table,
-                       final WhereArgs where,
+                       final WithArgs with,
                        final RowRequest rowRequest) throws IOException, HBqlException {
 
-        final ExpressionTree clientExpressionTree = where.getClientExpressionTree();
+        final ExpressionTree clientExpressionTree = with.getClientExpressionTree();
 
         int cnt = 0;
         for (final Result result : rowRequest.getResultScanner(table)) {

@@ -95,16 +95,16 @@ public class KeyRangeArgs {
             return sbuf.toString();
         }
 
-        private RowRequest newGet(final WhereArgs whereArgs,
+        private RowRequest newGet(final WithArgs withArgs,
                                   final Collection<ColumnAttrib> columnAttribSet,
                                   final String lower) throws HBqlException, IOException {
             final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(lower);
             final Get get = new Get(lowerBytes);
-            whereArgs.setGetArgs(get, columnAttribSet);
+            withArgs.setGetArgs(get, columnAttribSet);
             return new RowRequest(get, null);
         }
 
-        public List<RowRequest> getGet(final WhereArgs whereArgs,
+        public List<RowRequest> getGet(final WithArgs withArgs,
                                        final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
 
             List<RowRequest> retval = Lists.newArrayList();
@@ -115,7 +115,7 @@ public class KeyRangeArgs {
                 for (final GenericValue val : (Collection<GenericValue>)objval) {
                     try {
                         final String lower = (String)val.getValue(null);
-                        retval.add(this.newGet(whereArgs, columnAttribSet, lower));
+                        retval.add(this.newGet(withArgs, columnAttribSet, lower));
                     }
                     catch (ResultMissingColumnException e) {
                         throw new InternalErrorException(val.asString());
@@ -124,13 +124,13 @@ public class KeyRangeArgs {
             }
             else {
                 final String lower = (String)objval;
-                retval.add(this.newGet(whereArgs, columnAttribSet, lower));
+                retval.add(this.newGet(withArgs, columnAttribSet, lower));
             }
 
             return retval;
         }
 
-        public RowRequest getScan(final WhereArgs whereArgs,
+        public RowRequest getScan(final WithArgs withArgs,
                                   final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
             final Scan scan = new Scan();
             if (!this.isAllRows()) {
@@ -139,18 +139,18 @@ public class KeyRangeArgs {
                 if (this.isRowRange())
                     scan.setStopRow(this.getUpperAsBytes());
             }
-            whereArgs.setScanArgs(scan, columnAttribSet);
+            withArgs.setScanArgs(scan, columnAttribSet);
             return new RowRequest(null, scan);
         }
 
-        public void process(final WhereArgs whereArgs,
+        public void process(final WithArgs withArgs,
                             final List<RowRequest> rowRequestList,
                             final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
 
             if (this.isSingleKey())
-                rowRequestList.addAll(this.getGet(whereArgs, columnAttribSet));
+                rowRequestList.addAll(this.getGet(withArgs, columnAttribSet));
             else
-                rowRequestList.add(this.getScan(whereArgs, columnAttribSet));
+                rowRequestList.add(this.getScan(withArgs, columnAttribSet));
         }
     }
 
