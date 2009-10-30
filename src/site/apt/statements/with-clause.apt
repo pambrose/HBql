@@ -1,14 +1,14 @@
     -----
-    WITH
+    WITH Clause
     -----
     -----
 
-WITH
+WITH Clause
 
 *Syntax
 
 ---------------------------
-WITH keys_range timestamp versions scan_limit query_limit server_filer client_filter
+WITH { keys_range | timestamp_range | versions | scan_limit  | query_limit | server_filer | client_filter }+
 
 keys_range:
     KEYS key_range [, ...]
@@ -19,22 +19,13 @@ key_range:
     | key_value TO key_value
     | key_value
 
-key_value:
-    any valid string expression
-
-timestamp:
+timestamp_range:
     TIME RANGE timestamp_value TO timestamp_value
     | TIME STAMP timestamp_value
-
-timestamp_value:
-    any valid date expression
 
 versions:
     VERSIONS version_value
     | VERSIONS MAX
-
-version_value:
-    any valid integer expression
 
 scan_limit:
     SCAN LIMIT limit_value
@@ -42,24 +33,28 @@ scan_limit:
 query_limit:
     QUERY LIMIT limit_value
 
-limit_value:
-    any valid integer value
-
 server_filter:
     SERVER FILTER WHERE where_clause
 
 client_filter:
     CLIENT FILTER WHERE where_clause
 
-where_clause:
-        
 ---------------------------
 
 *Description
 
     The WITH clause is used in the {{{insert.html}insert}}, {{{select.html}select}} and {{{delete.html}delete}} statements.
 
-    * WITH expressions (other than the WHERE clauses) cannot reference columns.
+    * key_value is any valid string expression (cannot reference columns)
+
+    * timestamp_value is any valid date expression (cannot reference columns)
+
+    * version_value is any valid integer expression (cannot reference columns)
+
+    * limit_value is any valid integer expression (cannot reference columns)
+
+    * where_clause is any valid boolean expression (can reference columns)
+
 
 *Example
 
