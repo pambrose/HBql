@@ -20,27 +20,37 @@ column_references:
 
 *Description
 
-*Operator precedence (decreasing precedence)
+*Operator ordering (decreasing precedence)
 
-    ** :       (family/column delimiter)
-
-    ** \-      (unary minus)
-
-    ** \* /    (multiplication, division)
-
-    ** \+ \-   (addition, subtraction)
-
-    ** CONTAINS, LIKE, IS, BETWEEN, IN  (boolean expressions)
-
-    ** \< <= \> >=  (boolean inequality)
-
-    ** \= !\=   (equality)
-
-    ** NOT  (negation)
-
-    ** AND  (logical intersection)
-
-    ** OR   (logical union)
+*-------------------+--------------+--------------------------+------------------------+
+|| Operator         || Precedence || Description              || Supported types       |
+*--+--+--+
+| \-     | right | unary minus    | numeric      |
+*--+--+--+
+| \* /   | left | multiplication, division  |  numeric      |
+*--+--+--+
+| \+ \- | left |  addition, subtraction    | numeric (+ applies to string)   |
+*--+--+--+
+| CONTAINS |  | substring containment  | string      |
+*--+--+--+
+|  LIKE |  | string pattern matching  | string     |
+*--+--+--+
+|  IS |  | test for NULL  | string     |
+*--+--+--+
+|  BETWEEN |  | containment  | numeric, string, date     |
+*--+--+--+
+|  IN |  | set membership  | numeric, string, date, boolean     |
+*--+--+--+
+| \< <= \> >= |  | boolean inequality  | numeric, string, date    |
+*--+--+--+
+|  \= !\= |  |  equality   | numeric, string, date      |
+*--+--+--+
+|  NOT | right | negation  | boolean      |
+*--+--+--+
+| AND  | left |logical intersection  |  boolean     |
+*--+--+--+
+| OR | left |  logical union  |  boolean    |
+*--+--+--+
 
 
 * Parameters
@@ -55,9 +65,9 @@ column_references:
 
     ** string_value IS [ NOT ] NULL
 
-    ** value [ NOT ] BETWEEN value AND value    (value can be type number, string, date)
+    ** value [ NOT ] BETWEEN value AND value
 
-    ** value [ NOT ] IN ( value [ , ... ] )     (value can be type number, string, date, boolean)
+    ** value [ NOT ] IN ( value [ , ... ] )    
 
 * Value expressions
 
