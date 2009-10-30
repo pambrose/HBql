@@ -10,29 +10,29 @@ HBql Statements
     * Statement keywords are case insensitive.
     
 
-*{{{statements/create-schema.html}CREATE SCHEMA}}
-
-*{{{statements/create-table.html}CREATE TABLE}}
-
-*{{{statements/disable-table.html}DISABLE TABLE}}
-
-*{{{statements/delete.html}DELETE}}
-
-*{{{statements/describe-table.html}DESCRIBE TABLE}}
-
-*{{{statements/drop-schema.html}DROP SCHEMA}}
-
-*{{{statements/drop-table.html}DROP TABLE}}
-
-*{{{statements/enable-table.html}ENABLE TABLE}}
-
-*{{{statements/insert.html}INSERT}}
+*{{{statements/version.html}VERSION}}
 
 *{{{statements/list-tables.html}LIST TABLES}}
 
+*{{{statements/create-schema.html}CREATE SCHEMA}}
+
+*{{{statements/drop-schema.html}DROP SCHEMA}}
+
+*{{{statements/create-table.html}CREATE TABLE}}
+
+*{{{statements/enable-table.html}ENABLE TABLE}}
+
+*{{{statements/disable-table.html}DISABLE TABLE}}
+
+*{{{statements/drop-table.html}DROP TABLE}}
+
+*{{{statements/describe-table.html}DESCRIBE TABLE}}
+
+*{{{statements/insert.html}INSERT}}
+
 *{{{statements/select.html}SELECT}}
 
-*{{{statements/version.html}VERSION}}
+*{{{statements/delete.html}DELETE}}
 
 *{{{statements/with-clause.html}WITH Clause}}
 
