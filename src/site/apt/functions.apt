@@ -29,7 +29,6 @@ String Functions
 | repeat(string, int) | string | Returns the string repeated int times | repeat('abc', 3) |  'abcabcabc'   |
 *--+--+--+--+
 
-
 Numeric Functions
 
 *-------------------+--------------+--------------------------+----------------------------------+---------------------+
@@ -60,6 +59,18 @@ Numeric Functions
 | randomdouble()    | double    | Returns random double value     | randomdouble()  |  random double value  |
 *--+--+--+--+
 
+Boolean Functions
+
+*-------------------+--------------+--------------------------+----------------------------------+---------------------+
+|| Function         || Return Type || Description             ||Example                          ||Result              |
+*--+--+--+--+
+| definedinrow(column)| boolean | Returns true if column is defined in current row| definedinrow(f1:val1) |  true if f1:val1 is defined in current row |
+*--+--+--+--+
+| randomboolean()| boolean | Returns random boolean value| randomboolean() |  random boolean value |
+*--+--+--+--+
+| eval(string) | boolean  | Returns the evaluation of string | eval('34 = 34') | true  |
+*--+--+--+--+
+
 Date Functions
 
 *-------------------+--------------+--------------------------+----------------------------------+---------------------+
@@ -78,18 +89,6 @@ Date Functions
 | mindate()| date | Returns minimum date value| mindate() |  longtodate(0) |
 *--+--+--+--+
 | maxdate()| date | Returns maximum date value| maxdate() |  longtodate(Long.MAX_VALUE) |
-*--+--+--+--+
-
-Boolean Functions
-
-*-------------------+--------------+--------------------------+----------------------------------+---------------------+
-|| Function         || Return Type || Description             ||Example                          ||Result              |
-*--+--+--+--+
-| definedinrow(column)| boolean | Returns true if column is defined in current row| definedinrow(f1:val1) |  true if f1:val1 is defined in current row |
-*--+--+--+--+
-| randomboolean()| boolean | Returns random boolean value| randomboolean() |  random boolean value |
-*--+--+--+--+
-| eval(string) | boolean  | Returns the evaluation of string | eval('34 = 34') | true  |
 *--+--+--+--+
 
 Interval Functions

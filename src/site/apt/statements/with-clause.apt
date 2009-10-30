@@ -20,18 +20,46 @@ key_range:
     | key_value
 
 key_value:
-    any string expression (not referencing a column)
+    any valid string expression
 
 timestamp:
     TIME RANGE timestamp_value TO timestamp_value
     | TIME STAMP timestamp_value
+
+timestamp_value:
+    any valid date expression
+
+versions:
+    VERSIONS version_value
+    | VERSIONS MAX
+
+version_value:
+    any valid integer expression
+
+scan_limit:
+    SCAN LIMIT limit_value
+
+query_limit:
+    QUERY LIMIT limit_value
+
+limit_value:
+    any valid integer value
+
+server_filter:
+    SERVER FILTER WHERE where_clause
+
+client_filter:
+    CLIENT FILTER WHERE where_clause
+
+where_clause:
+        
 ---------------------------
 
 *Description
 
     The WITH clause is used in the {{{insert.html}insert}}, {{{select.html}select}} and {{{delete.html}delete}} statements.
 
-
+    * WITH expressions (other than the WHERE clauses) cannot reference columns.
 
 *Example
 
