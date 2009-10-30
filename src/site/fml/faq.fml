@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <faqs title="Frequently Asked Questions">
     <part id="General">
-        <faq id="sample-project-sucks">
-            <question>Sample project doesn't work. Why does sample project suck?</question>
+        <faq id="hbql-goal">
+            <question>Is HBql trying to make HBase a relational store?</question>
             <answer>
                 <p>
-                    We resent that question. Sample wasn't designed to work, it was designed to
-                    show you how to use Maven. Is you really think this project sucks, then
-                    keep it to yourself. We're not interested in your pestering questions.
+                    No. HBql attempts to support overlapping concepts with common SQL functionality,
+                    but where HBase functionality is unique, the SQL syntax is distinct. The goal is
+                    not to make HBase look or feel like a relational store. The goal is to just
+                    make things a little easier by providing a well known, high-level syntax.
                 </p>
             </answer>
         </faq>
+        <!--
         <faq id="sample-project-source">
             <question>I want to put some code in Sample Project, how do I do this?</question>
             <answer>
@@ -26,5 +28,6 @@
                 </source>
             </answer>
         </faq>
+        -->
     </part>
 </faqs>

@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
 import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
 import org.apache.hadoop.hbase.contrib.hbql.client.HQueryListener;
 import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
-import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlParser;
+import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
@@ -31,7 +31,7 @@ public class QueryImpl<T> implements HQuery<T> {
     }
 
     public QueryImpl(final HConnection connection, final String query) throws HBqlException {
-        this(connection, HBqlParser.parseSelectStatement(connection, query));
+        this(connection, HBqlShell.parseSelectStatement(connection, query));
     }
 
     public synchronized void addListener(final HQueryListener<T> listener) {

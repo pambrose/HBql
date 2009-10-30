@@ -7,8 +7,9 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.var.GenericColumn;
 import org.apache.expreval.util.Lists;
+import org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
-import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlParser;
+import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpression;
@@ -27,15 +28,15 @@ public class TestSupport {
     }
 
     public Number parseNumberExpr(final String str) throws HBqlException {
-        return (Number)HBqlParser.parseExpression(str);
+        return (Number)HBqlShell.parseExpression(str);
     }
 
     public String parseStringExpr(final String str) throws HBqlException {
-        return (String)HBqlParser.parseExpression(str);
+        return (String)HBqlShell.parseExpression(str);
     }
 
     public Date parseDateExpr(final String str) throws HBqlException {
-        return (Date)HBqlParser.parseExpression(str);
+        return (Date)HBqlShell.parseExpression(str);
     }
 
     public void assertValidInput(final String expr, String... vals) throws HBqlException {
@@ -55,11 +56,11 @@ public class TestSupport {
     }
 
     public static SingleExpression parseSelectElement(final String str) throws HBqlException {
-        return HBqlParser.parseSelectElement(str);
+        return HBqlShell.parseSelectElement(str);
     }
 
     public static void assertTypeAndValue(final SingleExpression expr, final Class clazz, final Object val) throws HBqlException {
-        final Object obj = HBqlParser.evaluateSelectElement(expr);
+        final Object obj = HBqlShell.evaluateSelectElement(expr);
         System.out.println(expr.asString() + " returned value " + obj
                            + " expecting value " + val
                            + " returned type " + obj.getClass().getSimpleName()
@@ -126,7 +127,7 @@ public class TestSupport {
     }
 
     public Object evaluateExpr(final String expr) throws HBqlException {
-        return HBqlParser.parseExpression(expr);
+        return HBqlShell.parseExpression(expr);
     }
 
     public ExpressionTree parseExpr(final String expr) throws HBqlException {
@@ -189,7 +190,7 @@ public class TestSupport {
 
     public static ExpressionTree parseDescWhereExpr(final String str, final Schema schema) throws HBqlException {
         try {
-            final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = HBqlParser.newHBqlParser(str);
+            final HBqlParser parser = HBqlShell.newHBqlParser(str);
             final ExpressionTree expressionTree = parser.descWhereExpr();
             expressionTree.setSchema(schema);
             return expressionTree;
@@ -210,7 +211,7 @@ public class TestSupport {
 
     private static boolean evaluateWhereValue(final String expr) {
         try {
-            final WithArgs args = HBqlParser.parseWithClause(expr);
+            final WithArgs args = HBqlShell.parseWithClause(expr);
             System.out.println("Evaluating: " + args.asString());
             return true;
         }

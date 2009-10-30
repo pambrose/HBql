@@ -11,6 +11,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlLexer;
+import org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
 import org.apache.hadoop.hbase.contrib.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
@@ -24,15 +25,15 @@ import org.apache.log4j.Logger;
 
 import java.util.List;
 
-public class HBqlParser {
+public class HBqlShell {
 
-    final static Logger log = Logger.getLogger(HBqlParser.class.getSimpleName());
+    final static Logger log = Logger.getLogger(HBqlShell.class.getSimpleName());
 
-    public static org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser newHBqlParser(final String str) {
+    public static HBqlParser newHBqlParser(final String str) {
         log.info("Parsing: " + str);
         final Lexer lex = new HBqlLexer(new ANTLRStringStream(str));
         final CommonTokenStream tokens = new CommonTokenStream(lex);
-        return new org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser(tokens);
+        return new HBqlParser(tokens);
     }
 
     public static ExpressionTree parseWhereExpression(final String str, final Schema schema) throws HBqlException {
@@ -47,7 +48,7 @@ public class HBqlParser {
 
     public static Object parseExpression(final String str) throws HBqlException {
         try {
-            final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = newHBqlParser(str);
+            final HBqlParser parser = newHBqlParser(str);
             final GenericValue valueExpr = parser.topExpr();
             valueExpr.validateTypes(null, false);
             return valueExpr.getValue(null);
@@ -64,7 +65,7 @@ public class HBqlParser {
 
     public static SingleExpression parseSelectElement(final String str) throws HBqlException {
         try {
-            final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = newHBqlParser(str);
+            final HBqlParser parser = newHBqlParser(str);
             final SingleExpression elem = (SingleExpression)parser.selectElem();
             elem.setSchema(null);
             return elem;
@@ -81,7 +82,7 @@ public class HBqlParser {
 
     public static WithArgs parseWithClause(final String str) throws HBqlException {
         try {
-            final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = newHBqlParser(str);
+            final HBqlParser parser = newHBqlParser(str);
             return parser.withClause();
         }
         catch (RecognitionException e) {
@@ -92,7 +93,7 @@ public class HBqlParser {
 
     public static List<ShellStatement> parseCommands(final String str) throws ParseException {
         try {
-            final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = newHBqlParser(str);
+            final HBqlParser parser = newHBqlParser(str);
             return parser.shellCommand();
         }
         catch (RecognitionException e) {
@@ -103,7 +104,7 @@ public class HBqlParser {
 
     private static ShellStatement parse(final String str) throws ParseException {
         try {
-            final org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser parser = newHBqlParser(str);
+            final HBqlParser parser = newHBqlParser(str);
             return parser.commandStmt();
         }
         catch (RecognitionException e) {

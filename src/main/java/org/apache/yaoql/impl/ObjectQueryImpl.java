@@ -3,7 +3,7 @@ package org.apache.yaoql.impl;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.Lists;
-import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlParser;
+import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ReflectionSchema;
 import org.apache.yaoql.client.ObjectQuery;
 import org.apache.yaoql.client.ObjectQueryListener;
@@ -52,7 +52,7 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
         // Grab the first object to derive the schema
         final Object obj = objects.iterator().next();
         final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
-        final ExpressionTree expressionTree = HBqlParser.parseWhereExpression(this.getQuery(), schema);
+        final ExpressionTree expressionTree = HBqlShell.parseWhereExpression(this.getQuery(), schema);
         this.applyParameters(expressionTree);
         return expressionTree;
     }

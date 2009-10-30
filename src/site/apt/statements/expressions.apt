@@ -20,31 +20,34 @@ column_references:
 
 *Description
 
-*Operator precedence
+*Operator precedence (decreasing precedence)
 
-    ** OR
+    ** :       (family/column delimiter)
 
-    ** AND
+    ** \-      (unary minus)
 
-    ** NOT
+    ** \* /    (multiplication, division)
 
-    ** \= !\+
+    ** \+ \-   (addition, subtraction)
 
-    ** \< <= \> >=
+    ** CONTAINS, LIKE, IS, BETWEEN, IN  (boolean expressions)
 
-    ** boolean_functions
+    ** \< <= \> >=  (boolean inequality)
 
-    ** \+ \-
+    ** \= !\=   (equality)
 
-    ** \* /
+    ** NOT  (negation)
 
-    ** \-
+    ** AND  (logical intersection)
 
-    ** ()
+    ** OR   (logical union)
 
-    ** value_literal, column_reference, named_parameter, function
 
-* Boolean Functions
+* Parameters
+
+    A Parameter is used to 
+
+* Boolean expressions
 
     ** string_value [ NOT ] CONTAINS string_value
 
@@ -52,9 +55,11 @@ column_references:
 
     ** string_value IS [ NOT ] NULL
 
+    ** value [ NOT ] BETWEEN value AND value    (value can be type number, string, date)
+
     ** value [ NOT ] IN ( value [ , ... ] )     (value can be type number, string, date, boolean)
 
-* Value Functions
+* Value expressions
 
     ** IF boolean_value THEN value ELSE value END
 

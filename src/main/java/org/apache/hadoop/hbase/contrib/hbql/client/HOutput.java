@@ -13,10 +13,10 @@ public class HOutput {
 
     public HOutput(final String str) {
         this.out.println(str);
-        this.out.flush();
     }
 
     public String toString() {
+        this.out.flush();
         return baos.toString();
     }
 }

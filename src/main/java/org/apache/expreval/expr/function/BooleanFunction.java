@@ -8,7 +8,7 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
-import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlParser;
+import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public class BooleanFunction extends Function implements BooleanValue {
 
             case EVAL: {
                 final String exprStr = (String)this.getArg(0).getValue(object);
-                final ExpressionTree expressionTree = HBqlParser.parseWhereExpression(exprStr, this.getSchema());
+                final ExpressionTree expressionTree = HBqlShell.parseWhereExpression(exprStr, this.getSchema());
                 return expressionTree.evaluate(object);
             }
 

@@ -4,7 +4,7 @@ import com.google.common.base.Predicate;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlParser;
+import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ReflectionSchema;
 import org.apache.yaoql.impl.ParameterBinding;
 
@@ -31,7 +31,7 @@ public class ObjectQueryPredicate<T> extends ParameterBinding implements Predica
         try {
             if (!initialized) {
                 final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
-                this.expressionTree = HBqlParser.parseWhereExpression(this.query, schema);
+                this.expressionTree = HBqlShell.parseWhereExpression(this.query, schema);
                 this.applyParameters(this.expressionTree);
                 initialized = true;
             }

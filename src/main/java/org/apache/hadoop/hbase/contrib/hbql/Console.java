@@ -9,7 +9,7 @@ import org.apache.expreval.client.ParseException;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.contrib.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
-import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlParser;
+import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SchemaManagerStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ShellStatement;
@@ -43,7 +43,7 @@ public class Console {
                 break;
 
             try {
-                final List<ShellStatement> stmtList = HBqlParser.parseCommands(line);
+                final List<ShellStatement> stmtList = HBqlShell.parseCommands(line);
                 for (final ShellStatement stmt : stmtList) {
                     if (stmt instanceof ConnectionStatement)
                         out.println(((ConnectionStatement)stmt).execute(conn));

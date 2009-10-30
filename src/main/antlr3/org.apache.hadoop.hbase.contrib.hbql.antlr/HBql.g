@@ -64,7 +64,8 @@ package org.apache.hadoop.hbase.contrib.hbql.antlr;
 
 shellCommand returns [List<ShellStatement> retval]
 @init {retval = Lists.newArrayList();}
-	: c1=commandStmt {retval.add($c1.retval);} (SEMI (c2=commandStmt {retval.add($c2.retval);})? )*;
+	: c1=commandStmt {retval.add($c1.retval);} (SEMI (c2=commandStmt {retval.add($c2.retval);})? )*
+	;
 	
 commandStmt returns [ShellStatement retval]
 options {backtrack=true;}	
@@ -74,6 +75,8 @@ options {backtrack=true;}
 	| keyLIST keyTABLES 		 		{retval = new ShowTablesStatement();}
 	| keyVERSION					{retval = new VersionStatement();}
 	| keyHELP					{retval = new HelpStatement();}
+	| keyPARSE c=commandStmt			{retval = new ParseStatement($c.retval);}
+	| keyPARSE keyEXPR te=topExpr			{retval = new ParseStatement($te.retval);}
 	| keySET t=simpleName EQ? val=QUOTED	 	{retval = new SetStatement($t.text, $val.text);}
 	;						
 
@@ -442,3 +445,5 @@ keyINSERT	: {isKeyword(input, "INSERT")}? ID;
 keyINTO		: {isKeyword(input, "INTO")}? ID;
 keyVALUES	: {isKeyword(input, "VALUES")}? ID;
 keyHELP		: {isKeyword(input, "HELP")}? ID;
+keyPARSE	: {isKeyword(input, "PARSE")}? ID;
+keyEXPR		: {isKeyword(input, "EXPR")}? ID;
