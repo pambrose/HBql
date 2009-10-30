@@ -32,5 +32,7 @@ HBql Statements
 
 *{{{statements/select.html}SELECT}}
 
+*{{{statements/version.html}VERSION}}
+
 
 

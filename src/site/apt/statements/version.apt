@@ -1,0 +1,17 @@
+    -----
+    VERSION
+    -----
+    -----
+
+VERSION
+
+*Syntax
+
+---------------------------
+VERSION
+---------------------------
+
+*Description
+
+    Displays the version information for hbql, hbase, and hadoop. 
+
