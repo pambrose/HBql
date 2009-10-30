@@ -54,7 +54,7 @@ public class Console {
                 }
             }
             catch (ParseException e) {
-                out.println("Error in input: ");
+                out.println("Error parsing input: ");
                 out.println(e.getMessage());
                 if (e.getRecognitionException() != null) {
                     final StringBuilder sbuf = new StringBuilder();
@@ -65,7 +65,7 @@ public class Console {
                 }
             }
             catch (HBqlException e) {
-                out.println("Error in input: " + line);
+                out.println("Error in statement: " + line);
                 out.println(e.getMessage());
             }
 

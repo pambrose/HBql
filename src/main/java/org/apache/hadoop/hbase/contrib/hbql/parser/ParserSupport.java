@@ -2,7 +2,6 @@ package org.apache.hadoop.hbase.contrib.hbql.parser;
 
 import org.antlr.runtime.BitSet;
 import org.antlr.runtime.IntStream;
-import org.antlr.runtime.MismatchedTokenException;
 import org.antlr.runtime.Parser;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
@@ -51,12 +50,12 @@ public class ParserSupport extends Parser {
     public String getTokenErrorDisplay(Token t) {
         return t.toString();
     }
-    */
 
     protected void mismatch(IntStream input, int ttype, BitSet follow) throws RecognitionException {
         throw new MismatchedTokenException(ttype, input);
     }
 
+    */
     public Object recoverFromMismatchedSet(final IntStream input,
                                            final RecognitionException e,
                                            final BitSet follow) throws RecognitionException {
