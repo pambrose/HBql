@@ -28,19 +28,39 @@ column_references:
 
     ** NOT
 
-    ** = !+
+    ** \= !\+
 
-    ** &GT <= &LT >=
+    ** \< <= \> >=
 
     ** boolean_functions
 
-    ** + -
+    ** \+ \-
 
-    ** * /
+    ** \* /
 
-    ** -
+    ** \-
 
-    ** literal, column_reference, named_parameter
+    ** ()
+
+    ** value_literal, column_reference, named_parameter, function
+
+* Boolean Functions
+
+    ** string_value [ NOT ] CONTAINS string_value
+
+    ** string_value [ NOT ] LIKE string_value
+
+    ** string_value IS [ NOT ] NULL
+
+    ** value [ NOT ] IN ( value [ , ... ] )     (value can be type number, string, date, boolean)
+
+* Value Functions
+
+    ** IF boolean_value THEN value ELSE value END
+
+    ** CASE ( WHEN boolean_value THEN value [ , ... ] ) ELSE value END
+
+    ** Any of these {{{functions.html}functions}}
 
 
 
