@@ -64,7 +64,7 @@ package org.apache.hadoop.hbase.contrib.hbql.antlr;
 
 shellCommand returns [List<ShellStatement> retval]
 @init {retval = Lists.newArrayList();}
-	: c1=commandStmt {retval.add($c1.retval);} (SEMI (c2=commandStmt {retval.add($c2.retval);})?)*;
+	: c1=commandStmt {retval.add($c1.retval);} (SEMI (c2=commandStmt {retval.add($c2.retval);})? )*;
 	
 commandStmt returns [ShellStatement retval]
 options {backtrack=true;}	
@@ -238,8 +238,8 @@ longLiteral returns [LongLiteral retval]
 
 
 doubleLiteral returns [GenericValue retval]
-	: v=DOUBLE1					{retval = DoubleLiteral.valueOf($v.text);}
-	| v=DOUBLE2					{retval = DoubleLiteral.valueOf($v.text);}
+	: v1=DOUBLE1					{retval = DoubleLiteral.valueOf($v1.text);}
+	| v2=DOUBLE2					{retval = DoubleLiteral.valueOf($v2.text);}
 	;	
 
 booleanLiteral returns [BooleanLiteral retval]

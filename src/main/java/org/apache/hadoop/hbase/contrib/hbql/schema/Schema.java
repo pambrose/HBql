@@ -20,7 +20,7 @@ public abstract class Schema implements Serializable {
     private final Map<String, ColumnAttrib> columnAttribByVariableNameMap = Maps.newHashMap();
     private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
     private List<String> evalList = null;
-    private Map<String, ExpressionTree> evalMap = null;
+    private volatile Map<String, ExpressionTree> evalMap = null;
     private int expressionTreeCacheSize = 25;
     private final String schemaName;
 

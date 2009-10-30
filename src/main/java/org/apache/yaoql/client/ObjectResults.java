@@ -8,6 +8,7 @@ import org.apache.yaoql.impl.ObjectQueryImpl;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class ObjectResults<T> implements Iterable<T> {
 
@@ -80,7 +81,7 @@ public class ObjectResults<T> implements Iterable<T> {
             }
 
             public T next() {
-                return null;
+                throw new NoSuchElementException();
             }
 
             public void remove() {

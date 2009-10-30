@@ -11,7 +11,7 @@ public class CurrentAndVersionValue<T> extends HValue {
     private boolean currentValueSet = false;
     private T currentValue = null;
     private long currentValueTimestamp = -1;
-    private NavigableMap<Long, T> versionMap = null;
+    private volatile NavigableMap<Long, T> versionMap = null;
 
     public CurrentAndVersionValue(final HRecordImpl hrecord, final String name) throws HBqlException {
         super(hrecord, name);

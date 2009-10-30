@@ -28,7 +28,7 @@ public class FamilySelectElement implements SelectElement {
 
         this.familyName = familyName;
 
-        if (familyName != null && familyName.equals("*")) {
+        if (familyName.equals("*")) {
             this.useAllFamilies = true;
         }
         else {

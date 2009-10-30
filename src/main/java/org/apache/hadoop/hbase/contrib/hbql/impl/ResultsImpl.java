@@ -19,6 +19,7 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.select.RowRequest;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class ResultsImpl<T> implements HResults<T> {
 
@@ -220,7 +221,7 @@ public class ResultsImpl<T> implements HResults<T> {
             }
 
             public T next() {
-                return null;
+                throw new NoSuchElementException();
             }
 
             public void remove() {

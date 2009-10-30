@@ -18,10 +18,10 @@ public class HRecordImpl implements Serializable, HRecord {
     private HBaseSchema schema = null;
     private long timestamp = System.currentTimeMillis();
 
-    private ElementMap<ObjectValue> objectElements = null;
-    private ElementMap<TypedKeysAsColumnsValueMap> keysAsColumnsElements = null;
-    private ElementMap<HFamilyDefaultValueMap> familyDefaultElements = null;
-    private ElementMap<FamilyDefaultKeysAsColumnsValueMap> familyDefaultKeysAsColumnsElements = null;
+    private volatile ElementMap<ObjectValue> objectElements = null;
+    private volatile ElementMap<TypedKeysAsColumnsValueMap> keysAsColumnsElements = null;
+    private volatile ElementMap<HFamilyDefaultValueMap> familyDefaultElements = null;
+    private volatile ElementMap<FamilyDefaultKeysAsColumnsValueMap> familyDefaultKeysAsColumnsElements = null;
 
     public HRecordImpl(final HBaseSchema schema) {
         this.setSchema(schema);
@@ -36,47 +36,39 @@ public class HRecordImpl implements Serializable, HRecord {
     }
 
     private ElementMap<ObjectValue> getObjectElements() {
-        if (this.objectElements != null)
-            return this.objectElements;
-
-        synchronized (this) {
-            if (this.objectElements == null)
-                this.objectElements = new ElementMap<ObjectValue>(this);
-            return this.objectElements;
-        }
+        if (this.objectElements == null)
+            synchronized (this) {
+                if (this.objectElements == null)
+                    this.objectElements = new ElementMap<ObjectValue>(this);
+            }
+        return this.objectElements;
     }
 
     private ElementMap<TypedKeysAsColumnsValueMap> getKeysAsColumnsElements() {
-        if (this.keysAsColumnsElements != null)
-            return this.keysAsColumnsElements;
-
-        synchronized (this) {
-            if (this.keysAsColumnsElements == null)
-                this.keysAsColumnsElements = new ElementMap<TypedKeysAsColumnsValueMap>(this);
-            return this.keysAsColumnsElements;
-        }
+        if (this.keysAsColumnsElements == null)
+            synchronized (this) {
+                if (this.keysAsColumnsElements == null)
+                    this.keysAsColumnsElements = new ElementMap<TypedKeysAsColumnsValueMap>(this);
+            }
+        return this.keysAsColumnsElements;
     }
 
     private ElementMap<HFamilyDefaultValueMap> getFamilyDefaultElements() {
-        if (this.familyDefaultElements != null)
-            return this.familyDefaultElements;
-
-        synchronized (this) {
-            if (this.familyDefaultElements == null)
-                this.familyDefaultElements = new ElementMap<HFamilyDefaultValueMap>(this);
-            return this.familyDefaultElements;
-        }
+        if (this.familyDefaultElements == null)
+            synchronized (this) {
+                if (this.familyDefaultElements == null)
+                    this.familyDefaultElements = new ElementMap<HFamilyDefaultValueMap>(this);
+            }
+        return this.familyDefaultElements;
     }
 
     private ElementMap<FamilyDefaultKeysAsColumnsValueMap> getFamilyDefaultKeysAsColumnsElements() {
-        if (this.familyDefaultKeysAsColumnsElements != null)
-            return this.familyDefaultKeysAsColumnsElements;
-
-        synchronized (this) {
-            if (this.familyDefaultKeysAsColumnsElements == null)
-                this.familyDefaultKeysAsColumnsElements = new ElementMap<FamilyDefaultKeysAsColumnsValueMap>(this);
-            return this.familyDefaultKeysAsColumnsElements;
-        }
+        if (this.familyDefaultKeysAsColumnsElements == null)
+            synchronized (this) {
+                if (this.familyDefaultKeysAsColumnsElements == null)
+                    this.familyDefaultKeysAsColumnsElements = new ElementMap<FamilyDefaultKeysAsColumnsValueMap>(this);
+            }
+        return this.familyDefaultKeysAsColumnsElements;
     }
 
     public void addElement(final String name, final HValue value) throws HBqlException {

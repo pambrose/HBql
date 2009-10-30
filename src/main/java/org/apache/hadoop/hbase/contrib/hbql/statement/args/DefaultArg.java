@@ -12,7 +12,7 @@ public class DefaultArg extends ExpressionContext implements Serializable {
     // We have to make vlaue transient because Object is not serializable for hbqlfilter
     // We will compute it again on the server after reset is called
     private transient Object value = null;
-    private boolean computed = false;
+    private volatile boolean computed = false;
 
     public DefaultArg(final Class<? extends GenericValue> exprType, final GenericValue expr) throws HBqlException {
         super(new TypeSignature(null, exprType), expr);

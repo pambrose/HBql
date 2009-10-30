@@ -6,7 +6,7 @@ import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
 public abstract class SchemaStatement implements ShellStatement {
 
     private final String schemaName;
-    private HBaseSchema schema = null;
+    private volatile HBaseSchema schema = null;
 
     protected SchemaStatement(final String schemaName) {
         this.schemaName = schemaName;

@@ -200,6 +200,10 @@ public abstract class ColumnAttrib implements Serializable {
                && var.getFamilyQualifiedName().equals(this.getFamilyQualifiedName());
     }
 
+    public int hashCode() {
+        return this.getAliasName().hashCode() + this.getFamilyQualifiedName().hashCode();
+    }
+
     protected void defineAccessors() throws HBqlException {
         try {
             if (this.getGetter() != null && this.getGetter().length() > 0) {
