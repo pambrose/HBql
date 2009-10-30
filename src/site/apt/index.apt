@@ -38,7 +38,7 @@ Support
 
 Supported Platforms
 
-    The HBql.jar is is compatible with any 1.6 JVM.  The console is limited to those platforms supported
+    The HBql.jar is compatible with any 1.6 JVM.  The console is limited to those platforms supported
     by {{{http://jline.sourceforge.net/}JLine}}.  
 
 
