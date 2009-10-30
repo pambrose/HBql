@@ -36,14 +36,15 @@ public class TypeSignature implements Serializable {
     private final transient Constructor literalConstructor;
     private final Class literalCastClass;
 
-    public TypeSignature(final Class<? extends GenericValue> returnType, Class<? extends GenericValue>... typeSig) {
+    public TypeSignature(final Class<? extends GenericValue> returnType,
+                         final Class<? extends GenericValue>... typeSig) {
         this.returnType = returnType;
         this.literalCastClass = this.getLiteralCastClass(this.getReturnType());
         this.literalConstructor = this.getLiteralConstructor(this.getReturnType(), this.getLiteralCastClass());
         this.typeSig.addAll(Arrays.asList(typeSig));
     }
 
-    private Class getLiteralCastClass(Class<? extends GenericValue> type) {
+    private Class getLiteralCastClass(final Class<? extends GenericValue> type) {
 
         if (type == null)
             return null;

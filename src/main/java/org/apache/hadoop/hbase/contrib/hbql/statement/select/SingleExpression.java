@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.NavigableMap;
 
-public class SingleExpression extends ExpressionContext implements SelectElement {
+public final class SingleExpression extends ExpressionContext implements SelectElement {
 
     private String asName;
 

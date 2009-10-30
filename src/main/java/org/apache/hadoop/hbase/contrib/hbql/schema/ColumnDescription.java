@@ -5,7 +5,7 @@ import org.apache.expreval.expr.node.GenericValue;
 
 import java.io.Serializable;
 
-public class ColumnDescription implements Serializable {
+public final class ColumnDescription implements Serializable {
 
     private final String aliasName;
     private final String familyName, columnName;

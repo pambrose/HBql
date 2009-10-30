@@ -11,7 +11,7 @@ public abstract class InsertValueSource {
 
     private InsertStatement insertStatement = null;
 
-    public void setInsertStatement(InsertStatement insertStatement) {
+    public void setInsertStatement(final InsertStatement insertStatement) {
         this.insertStatement = insertStatement;
     }
 

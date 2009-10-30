@@ -37,10 +37,10 @@ public class ObjectResults<T> implements Iterable<T> {
                 // since it requires the objects to get the schema, I do it here
                 final ExpressionTree expressionTree = getObjectQuery().getExpressionTree(getObjects());
 
-                Iterator<T> objectIter = null;
+                private Iterator<T> objectIter = null;
 
                 // Prime the iterator with the first value
-                T nextObject = fetchNextObject();
+                private T nextObject = fetchNextObject();
 
                 protected T fetchNextObject() throws HBqlException {
 
