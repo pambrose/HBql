@@ -13,8 +13,8 @@ SELECT { '*' | select_element [, ...] } from schema_name with_clause
 select_element : column_reference | family_reference
 
 column_reference:
-    family_name ':' column_name
-    | alias_name
+    { alias_name | family_name ':' column_name } [ AS alias_name ]
+    | family_name ':' '*'
 ---------------------------
 
 *Description

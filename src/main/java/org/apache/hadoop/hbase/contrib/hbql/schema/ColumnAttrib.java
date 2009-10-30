@@ -19,8 +19,8 @@ public abstract class ColumnAttrib implements Serializable {
     private final String columnName;
     private final String aliasName;
     private final FieldType fieldType;
-    private byte[] familyBytes = null;
-    private byte[] columnBytes = null;
+    private volatile byte[] familyBytes = null;
+    private volatile byte[] columnBytes = null;
     private final String getter;
     private final String setter;
     private final boolean mapKeysAsColumns;
@@ -53,17 +53,17 @@ public abstract class ColumnAttrib implements Serializable {
         this.defaultArg = this.evaluateDefaultValue(defaultValueExpr);
     }
 
-    public Object getDefaultValue() throws HBqlException {
+    public final Object getDefaultValue() throws HBqlException {
         return (this.hasDefaultArg()) ? this.getDefaultArg().getValue() : null;
     }
 
     // This is necessary before sending off with filter
-    public void resetDefaultValue() {
+    public final void resetDefaultValue() {
         if (this.hasDefaultArg())
             this.getDefaultArg().reset();
     }
 
-    public boolean hasDefaultArg() {
+    public final boolean hasDefaultArg() {
         return this.getDefaultArg() != null;
     }
 
@@ -77,20 +77,25 @@ public abstract class ColumnAttrib implements Serializable {
             return null;
 
         if (this.isAKeyAttrib())
-            throw new HBqlException("Default values are not valid for key values: " + this.getNameToUseInExceptions());
+            throw new HBqlException("Default values are not valid for key values: "
+                                    + this.getNameToUseInExceptions());
 
         if (!defaultValueExpr.isAConstant())
-            throw new HBqlException("Default values must be constants: " + this.getNameToUseInExceptions());
+            throw new HBqlException("Default values must be constants: "
+                                    + this.getNameToUseInExceptions());
 
         if (this.isAnArray())
-            throw new HBqlException("Default values are not valid for array values: " + this.getNameToUseInExceptions());
+            throw new HBqlException("Default values are not valid for array values: "
+                                    + this.getNameToUseInExceptions());
 
         // This will apply only to Annotations
         if (this.isAVersionValue() && !this.isACurrentValue())
-            throw new HBqlException("Default values are not valid for version values: " + this.getNameToUseInExceptions());
+            throw new HBqlException("Default values are not valid for version values: "
+                                    + this.getNameToUseInExceptions());
 
         if (this.isMapKeysAsColumnsAttrib())
-            throw new HBqlException("Default values are not valid for MapKeysAsColumns values: " + this.getNameToUseInExceptions());
+            throw new HBqlException("Default values are not valid for MapKeysAsColumns values: "
+                                    + this.getNameToUseInExceptions());
 
         final Class<? extends GenericValue> type = this.getFieldType().getExprType();
 
@@ -134,9 +139,9 @@ public abstract class ColumnAttrib implements Serializable {
                                                                  final String mapKey, final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException;
 
 
-    public void setKeysAsColumnsVersionMap(final Object obj,
-                                           final String mapKey,
-                                           final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
+    public final void setKeysAsColumnsVersionMap(final Object obj,
+                                                 final String mapKey,
+                                                 final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
 
         final Map<Long, Object> mapVal = this.getKeysAsColumnsVersionMap(obj, mapKey);
 
@@ -173,19 +178,20 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public byte[] getFamilyNameBytes() throws HBqlException {
-        if (this.familyBytes != null)
-            return this.familyBytes;
-
-        this.familyBytes = IO.getSerialization().getStringAsBytes(this.getFamilyName());
+        if (this.familyBytes == null)
+            synchronized (this) {
+                if (this.familyBytes == null)
+                    this.familyBytes = IO.getSerialization().getStringAsBytes(this.getFamilyName());
+            }
         return this.familyBytes;
     }
 
     public byte[] getColumnNameBytes() throws HBqlException {
-
-        if (this.columnBytes != null)
-            return this.columnBytes;
-
-        this.columnBytes = IO.getSerialization().getStringAsBytes(this.getColumnName());
+        if (this.columnBytes == null)
+            synchronized (this) {
+                if (this.columnBytes == null)
+                    this.columnBytes = IO.getSerialization().getStringAsBytes(this.getColumnName());
+            }
         return this.columnBytes;
     }
 

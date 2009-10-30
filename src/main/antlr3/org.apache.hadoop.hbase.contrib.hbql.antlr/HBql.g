@@ -73,6 +73,7 @@ options {backtrack=true;}
 	| s3=tableStatement				{retval = $s3.retval;}
 	| keyLIST keyTABLES 		 		{retval = new ShowTablesStatement();}
 	| keyVERSION					{retval = new VersionStatement();}
+	| keyHELP					{retval = new HelpStatement();}
 	| keySET t=simpleName EQ? val=QUOTED	 	{retval = new SetStatement($t.text, $val.text);}
 	;						
 
@@ -440,3 +441,4 @@ keyWHEN		: {isKeyword(input, "WHEN")}? ID;
 keyINSERT	: {isKeyword(input, "INSERT")}? ID;
 keyINTO		: {isKeyword(input, "INTO")}? ID;
 keyVALUES	: {isKeyword(input, "VALUES")}? ID;
+keyHELP		: {isKeyword(input, "HELP")}? ID;

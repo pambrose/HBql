@@ -3,7 +3,9 @@ package org.apache.hadoop.hbase.contrib.hbql.client;
 import org.apache.expreval.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
 
-public abstract class HValue {
+import java.io.Serializable;
+
+public abstract class HValue implements Serializable {
 
     private final String name;
 

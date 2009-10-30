@@ -6,7 +6,9 @@ import org.apache.expreval.expr.node.LongValue;
 public class LongLiteral extends GenericLiteral<Long> implements LongValue {
 
     public LongLiteral(final String value) {
-        super(Long.valueOf(value.toUpperCase().endsWith("L") ? value.substring(0, value.length() - 1) : value));
+        super(Long.valueOf(value != null ? (value.toUpperCase().endsWith("L") ? value.substring(0, value.length() - 1)
+                                                                              : value)
+                                         : "0"));
     }
 
     public LongLiteral(final Long value) {

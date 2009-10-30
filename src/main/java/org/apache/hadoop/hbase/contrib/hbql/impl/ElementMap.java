@@ -6,7 +6,7 @@ import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import java.io.Serializable;
 import java.util.Map;
 
-public class ElementMap<T> implements Serializable {
+public class ElementMap<T extends Serializable> implements Serializable {
 
     private final Map<String, T> map = Maps.newHashMap();
 

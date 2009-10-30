@@ -6,7 +6,7 @@ import org.apache.expreval.expr.node.GenericValue;
 public class DoubleLiteral extends GenericLiteral<Double> implements DoubleValue {
 
     public static GenericValue valueOf(final String value) {
-        final String upper = value.toUpperCase();
+        final String upper = (value != null) ? value.toUpperCase() : "0";
         return upper.endsWith("F") ? new FloatLiteral(upper) : new DoubleLiteral(upper);
     }
 
