@@ -45,15 +45,15 @@ client_filter:
 
     The WITH clause is used in the {{{insert.html}insert}}, {{{select.html}select}} and {{{delete.html}delete}} statements.
 
-    * key_value is any valid string {{{expressions.html}expression} (cannot reference columns)
+    * key_value is any valid string {{{expressions.html}expression}} (cannot reference columns)
 
-    * timestamp_value is any valid date {{{expressions.html}expression} (cannot reference columns)
+    * timestamp_value is any valid date {{{expressions.html}expression}} (cannot reference columns)
 
-    * version_value is any valid integer {{{expressions.html}expression} (cannot reference columns)
+    * version_value is any valid integer {{{expressions.html}expression}} (cannot reference columns)
 
-    * limit_value is any valid integer {{{expressions.html}expression} (cannot reference columns)
+    * limit_value is any valid integer {{{expressions.html}expression}} (cannot reference columns)
 
-    * where_clause is any valid boolean {{{expressions.html}expression} (can reference columns)
+    * where_clause is any valid boolean {{{expressions.html}expression}} (can reference columns)
 
 
 *Example

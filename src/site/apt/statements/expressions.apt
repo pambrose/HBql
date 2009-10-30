@@ -23,6 +23,7 @@ column_references:
 *Operator precedence:
 
     ** AND
+    
     ** OR
 
 
