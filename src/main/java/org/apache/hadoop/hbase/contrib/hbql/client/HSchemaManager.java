@@ -46,7 +46,7 @@ public class HSchemaManager {
     }
 
     public static Set<String> getDefinedSchemaList() {
-        return definedSchemaMap.keySet();
+        return getDefinedSchemaMap().keySet();
     }
 
     public static DefinedSchema getDefinedSchema(final String tableName) {
