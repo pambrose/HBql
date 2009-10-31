@@ -108,6 +108,12 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+        <scriptSourceDirectory>${basedir}/src/main/scripts</scriptSourceDirectory>
+        <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
+        <outputDirectory>${basedir}/target/classes</outputDirectory>
+        <testOutputDirectory>${basedir}/target/test-classes</testOutputDirectory>
+
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -159,9 +165,6 @@
                         <phase>site</phase>
                         <goals>
                         </goals>
-                        <configuration>
-                            <outputDirectory>${project.reporting.outputDirectory}</outputDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

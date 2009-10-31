@@ -215,7 +215,7 @@ multExpr returns [GenericValue retval]
 							{retval = getLeftAssociativeCalculation(exprList, opList);};
 	
 signedExpr returns [GenericValue retval]
-	: (s=plusMinus)? n=parenExpr 			{$signedExpr.retval = ($s.retval == Operator.MINUS) ? new DelegateCalculation($n.retval, Operator.NEGATIVE, new IntegerLiteral(0)) : $n.retval;};
+	: (s=plusMinus)? n=parenExpr 			{retval = ($s.retval == Operator.MINUS) ? new DelegateCalculation($n.retval, Operator.NEGATIVE, new IntegerLiteral(0)) : $n.retval;};
 
 // The order here is important.  atomExpr has to come after valueFunctions to avoid simpleName conflict
 parenExpr returns [GenericValue retval]
@@ -312,8 +312,8 @@ selectElemList returns [List<SelectElement> retval]
 
 selectElem returns [SelectElement retval]
 options {backtrack=true; memoize=true;}	
-	: b=topExpr (keyAS i2=simpleName)?		{$selectElem.retval = SingleExpression.newSingleExpression($b.retval, $i2.text);}
-	| f=familyRef					{$selectElem.retval = FamilySelectElement.newFamilyElement($f.text);}
+	: b=topExpr (keyAS i2=simpleName)?		{retval = SingleExpression.newSingleExpression($b.retval, $i2.text);}
+	| f=familyRef					{retval = FamilySelectElement.newFamilyElement($f.text);}
 	;
 
 exprList returns [List<GenericValue> retval]
