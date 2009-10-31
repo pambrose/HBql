@@ -14,7 +14,7 @@ CREATE TABLE USING SCHEMA schema_name
 
 *Description
 
-    Creates table with the name and families indicated in named schema.
+    Creates table with the name and families declared in named schema.
 
 *Example
 

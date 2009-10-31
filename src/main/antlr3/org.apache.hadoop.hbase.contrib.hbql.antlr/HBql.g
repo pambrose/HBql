@@ -64,7 +64,7 @@ package org.apache.hadoop.hbase.contrib.hbql.antlr;
 
 shellCommand returns [List<ShellStatement> retval]
 @init {retval = Lists.newArrayList();}
-	: c1=commandStmt {retval.add($c1.retval);} (SEMI (c2=commandStmt {retval.add($c2.retval);})? )*
+	: c1=commandStmt SEMI {retval.add($c1.retval);} ((c2=commandStmt {retval.add($c2.retval);})? SEMI )*
 	;
 	
 commandStmt returns [ShellStatement retval]
@@ -92,6 +92,7 @@ schemaManagerStmt returns [SchemaStatement retval]
 	: keyCREATE keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
 							{retval = new CreateSchemaStatement($t.text, $a.text, $l.retval);}
 	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaStatement($t.text);}
+	| keyDESCRIBE keySCHEMA t=simpleName 		{retval = new DescribeSchemaStatement($t.text);}
 	;
 
 schemaStmt returns [SchemaStatement retval]

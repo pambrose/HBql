@@ -31,6 +31,15 @@ public class ExamplesTest extends TestSupport {
 
     }
 
+    public void describeSchema() throws HBqlException, IOException {
+
+        // START SNIPPET: describe-schema
+        HConnection conn = HConnectionManager.newHConnection();
+        System.out.println(conn.execute("DESCRIBE SCHEMA foo_schema"));
+        // END SNIPPET: describe-schema
+
+    }
+
     public void enableTable() throws HBqlException, IOException {
 
         // START SNIPPET: enable-table

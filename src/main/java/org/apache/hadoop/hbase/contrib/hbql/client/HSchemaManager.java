@@ -49,12 +49,12 @@ public class HSchemaManager {
         return getDefinedSchemaMap().keySet();
     }
 
-    public static DefinedSchema getDefinedSchema(final String tableName) {
-        return getDefinedSchemaMap().get(tableName);
+    public static DefinedSchema getDefinedSchema(final String schemaName) {
+        return getDefinedSchemaMap().get(schemaName);
     }
 
-    public static boolean doesDefinedSchemaExist(final String tableName) {
-        return null != getDefinedSchemaMap().get(tableName);
+    public static boolean doesDefinedSchemaExist(final String schemaName) {
+        return null != getDefinedSchemaMap().get(schemaName);
     }
 
     public static void dropSchema(final String schemaName) {
@@ -77,7 +77,23 @@ public class HSchemaManager {
     }
 
     public static HRecord newHRecord(final String schemaName) throws HBqlException {
-        final HBaseSchema schema = HBaseSchema.findSchema(schemaName);
+        final HBaseSchema schema = findSchema(schemaName);
         return new HRecordImpl(schema);
+    }
+
+    public static HBaseSchema findSchema(final String schemaName) throws HBqlException {
+
+        // First look in defined schema, then try annotation schema
+        HBaseSchema schema;
+
+        schema = getDefinedSchema(schemaName);
+        if (schema != null)
+            return schema;
+
+        schema = AnnotationSchema.getAnnotationSchema(schemaName);
+        if (schema != null)
+            return schema;
+
+        throw new HBqlException("Unknown schema: " + schemaName);
     }
 }

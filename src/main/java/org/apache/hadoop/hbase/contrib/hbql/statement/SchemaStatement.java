@@ -1,6 +1,7 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement;
 
 import org.apache.expreval.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
 
 public abstract class SchemaStatement implements ShellStatement {
@@ -21,7 +22,7 @@ public abstract class SchemaStatement implements ShellStatement {
         if (this.schema == null) {
             synchronized (this) {
                 if (this.schema == null)
-                    this.schema = HBaseSchema.findSchema(this.getSchemaName());
+                    this.schema = HSchemaManager.findSchema(this.getSchemaName());
             }
         }
         return this.schema;

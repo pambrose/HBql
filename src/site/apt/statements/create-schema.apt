@@ -20,10 +20,10 @@ key_description:
     key_name KEY
 
 column_description:
-    family_name ':' column_name type ['['']'] [MAPKEYSASCOLUMNS] [ALIAS alias_name] [DEFAULT constant_expression]
+    family_name ':' column_name type [ '['']' ] [ MAPKEYSASCOLUMNS ] [ ALIAS alias_name ] [ DEFAULT constant_expression ]
 
 family_default:
-    family_name ':' '*' [ALIAS alias_name]
+    family_name ':' '*' [ ALIAS alias_name ]
 
 type:
     BOOLEAN   (BOOL)

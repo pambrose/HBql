@@ -25,7 +25,7 @@ public abstract class ColumnAttrib implements Serializable {
     private final String setter;
     private final boolean mapKeysAsColumns;
     private final boolean familyDefault;
-    private final boolean isAnArray;
+    private final boolean anArray;
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
     private final DefaultArg defaultArg;
@@ -47,10 +47,33 @@ public abstract class ColumnAttrib implements Serializable {
         this.mapKeysAsColumns = mapKeysAsColumns;
         this.familyDefault = familyDefault;
         this.fieldType = fieldType;
-        this.isAnArray = isArray;
+        this.anArray = isArray;
         this.getter = getter;
         this.setter = setter;
         this.defaultArg = this.evaluateDefaultValue(defaultValueExpr);
+    }
+
+    public String asString() {
+
+        final StringBuilder sbuf = new StringBuilder();
+
+        sbuf.append(this.getFamilyQualifiedName());
+
+        sbuf.append(" " + this.getFieldType().getFirstSynonym());
+
+        if (this.isAnArray())
+            sbuf.append("[]");
+
+        if (this.isMapKeysAsColumnsAttrib())
+            sbuf.append(" MAPKEYSASCOLUMNS");
+
+        if (this.hasAlias())
+            sbuf.append(" ALIAS " + this.getAliasName());
+
+        if (this.hasDefaultArg())
+            sbuf.append(" DEFAULT " + this.getDefaultArg().asString());
+
+        return sbuf.toString();
     }
 
     public final Object getDefaultValue() throws HBqlException {
@@ -377,8 +400,12 @@ public abstract class ColumnAttrib implements Serializable {
         return false;
     }
 
+    private boolean hasAlias() {
+        return this.aliasName != null && this.aliasName.length() > 0;
+    }
+
     public String getAliasName() {
-        return (this.aliasName != null && this.aliasName.length() > 0) ? this.aliasName : this.getFamilyQualifiedName();
+        return (this.hasAlias()) ? this.aliasName : this.getFamilyQualifiedName();
     }
 
     public boolean isASelectFamilyAttrib() {
@@ -386,7 +413,7 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public boolean isAnArray() {
-        return this.isAnArray;
+        return this.anArray;
     }
 
     public String getFamilyName() {

@@ -1,0 +1,21 @@
+    -----
+    DESCRIBE SCHEMA
+    -----
+    -----
+
+
+DESCRIBE TABLE
+
+*Syntax
+
+---------------------------
+DESCRIBE SCHEMA schema_name
+---------------------------
+
+*Description
+
+    Describes named schema.
+
+*Example
+
+%{snippet|id=describe-schema|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
