@@ -18,7 +18,7 @@ public class ListTablesStatement implements ConnectionStatement {
         final HBaseAdmin admin = conn.getAdmin();
 
         final Output retval = new Output();
-        retval.out.println("Table names: ");
+        retval.out.println("Tables: ");
         for (final HTableDescriptor tableDesc : admin.listTables())
             retval.out.println("\t" + tableDesc.getNameAsString());
 

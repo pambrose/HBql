@@ -156,7 +156,7 @@ public class ExamplesTest extends TestSupport {
                               + "f3:* alias f3default "
                               + ")");
 
-        Query<Record> q1 = conn.newHQuery("SELECT val1, val5 FROM tab1");
+        Query<Record> q1 = conn.newQuery("SELECT val1, val5 FROM tab1");
         List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
     }

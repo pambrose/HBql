@@ -4,7 +4,7 @@ import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.StringValue;
-import org.apache.expreval.util.HUtil;
+import org.apache.expreval.util.Util;
 
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class StringFunction extends Function implements StringValue {
             case ZEROPAD: {
                 final int num = ((Number)this.getArg(0).getValue(object)).intValue();
                 final int width = ((Number)this.getArg(1).getValue(object)).intValue();
-                return HUtil.getZeroPaddedNumber(num, width);
+                return Util.getZeroPaddedNumber(num, width);
             }
 
             case REPEAT: {

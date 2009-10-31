@@ -1,7 +1,7 @@
 package org.apache.expreval.examples;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.util.HUtil;
+import org.apache.expreval.util.Util;
 import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
 import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
-public class HRecordExample {
+public class RecordExample {
 
     public static void main(String[] args) throws IOException, HBqlException {
 
@@ -43,7 +43,7 @@ public class HRecordExample {
             final Batch batch = new Batch();
             for (int i = 0; i < 10; i++) {
                 Record hrecord = SchemaManager.newHRecord("testobjects");
-                hrecord.setCurrentValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
+                hrecord.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
                 hrecord.setCurrentValue("author", "A new author value: " + i);
                 hrecord.setCurrentValue("title", "A very new title value: " + i);
                 batch.insert(hrecord);
@@ -64,7 +64,7 @@ public class HRecordExample {
                               //+ "SCAN LIMIT 4"
                               //+ "SERVER FILTER WHERE author LIKE '.*6200.*' "
                               + "CLIENT FILTER WHERE keyval = '0000000002' OR author LIKE '.*val.*'";
-        Query<Record> q1 = conn.newHQuery(query1);
+        Query<Record> q1 = conn.newQuery(query1);
         Results<Record> results1 = q1.getResults();
 
         for (Record val1 : results1) {

@@ -33,11 +33,11 @@ public class ConnectionImpl implements Connection {
         this.config = (config == null) ? new HBaseConfiguration() : config;
     }
 
-    public <T> Query<T> newHQuery(final String query) throws IOException, HBqlException {
+    public <T> Query<T> newQuery(final String query) throws IOException, HBqlException {
         return new QueryImpl<T>(this, query);
     }
 
-    public <T> Query<T> newHQuery(final SelectStatement selectStatement) throws IOException, HBqlException {
+    public <T> Query<T> newQuery(final SelectStatement selectStatement) throws IOException, HBqlException {
         return new QueryImpl<T>(this, selectStatement);
     }
 

@@ -15,7 +15,7 @@ public class ListSchemasStatement implements ConnectionStatement {
     public Output execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
         final Output retval = new Output();
-        retval.out.println("Schema names: ");
+        retval.out.println("Schemas: ");
         for (final String schemaName : SchemaManager.getDefinedSchemaList())
             retval.out.println("\t" + schemaName);
 

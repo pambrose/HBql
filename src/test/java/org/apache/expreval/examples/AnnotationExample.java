@@ -1,8 +1,8 @@
 package org.apache.expreval.examples;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Maps;
+import org.apache.expreval.util.Util;
 import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
 import org.apache.hadoop.hbase.contrib.hbql.client.Column;
 import org.apache.hadoop.hbase.contrib.hbql.client.ColumnVersionMap;
@@ -88,7 +88,7 @@ public class AnnotationExample {
         }
 
         public TestObject(int val) throws HBqlException {
-            this.keyval = HUtil.getZeroPaddedNumber(val, 6);
+            this.keyval = Util.getZeroPaddedNumber(val, 6);
 
             this.title = "A title value";
             this.author = "An author value";
@@ -144,7 +144,7 @@ public class AnnotationExample {
                               //+ "SERVER FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4 "
                               + "CLIENT FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4";
 
-        Query<TestObject> q2 = conn.newHQuery(query2);
+        Query<TestObject> q2 = conn.newQuery(query2);
         Results<TestObject> results2 = q2.getResults();
 
         for (TestObject val2 : results2) {

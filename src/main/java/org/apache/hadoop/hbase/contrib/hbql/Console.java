@@ -4,15 +4,18 @@ import jline.ArgumentCompletor;
 import jline.ConsoleReader;
 import jline.SimpleCompletor;
 import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ParseException;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.Query;
+import org.apache.hadoop.hbase.contrib.hbql.client.Record;
+import org.apache.hadoop.hbase.contrib.hbql.client.Results;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SchemaManagerStatement;
+import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ShellStatement;
 
 import java.io.IOException;
@@ -70,16 +73,18 @@ public class Console {
         try {
             final List<ShellStatement> stmtList = HBqlShell.parseCommands(line);
             for (final ShellStatement stmt : stmtList) {
-                if (stmt instanceof ConnectionStatement)
+                if (stmt instanceof SelectStatement)
+                    processSelect(out, conn, (SelectStatement)stmt);
+                else if (stmt instanceof ConnectionStatement)
                     out.println(((ConnectionStatement)stmt).execute(conn));
                 else if (stmt instanceof SchemaManagerStatement)
                     out.println(((SchemaManagerStatement)stmt).execute());
                 else
-                    throw new InternalErrorException("Unknown statement type");
+                    out.println("Unsupported statement type");
             }
         }
         catch (ParseException e) {
-            out.println("Error parsing input: ");
+            out.println("Error parsing: ");
             out.println(e.getMessage());
             if (e.getRecognitionException() != null) {
                 final StringBuilder sbuf = new StringBuilder();
@@ -95,5 +100,17 @@ public class Console {
         }
 
         out.flush();
+    }
+
+    private static void processSelect(final PrintWriter out,
+                                      final ConnectionImpl conn,
+                                      final SelectStatement selectStatement) throws HBqlException, IOException {
+
+        final Query<Record> query = conn.newQuery(selectStatement);
+        final Results<Record> results = query.getResults();
+
+        for (Record rec : results) {
+
+        }
     }
 }

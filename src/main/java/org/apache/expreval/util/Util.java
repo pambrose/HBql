@@ -2,7 +2,7 @@ package org.apache.expreval.util;
 
 import org.apache.expreval.client.HBqlException;
 
-public class HUtil {
+public class Util {
 
     public static String getZeroPaddedNumber(final long val, final int width) throws HBqlException {
 

@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.contrib.hbql;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.TypeException;
-import org.apache.expreval.util.HUtil;
+import org.apache.expreval.util.Util;
 import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.Output;
@@ -61,7 +61,7 @@ public class InsertWithSelectTest extends TestSupport {
 
             int val = 10 + i;
 
-            final String keyval = HUtil.getZeroPaddedNumber(i, Global.keywidth);
+            final String keyval = Util.getZeroPaddedNumber(i, Global.keywidth);
 
             stmt.setParameter("key", keyval);
             stmt.setParameter("val1", "" + val);
@@ -74,7 +74,7 @@ public class InsertWithSelectTest extends TestSupport {
 
         final String query1 = "SELECT keyval, val1, val2, val3 FROM tab3";
 
-        Query<Record> q1 = conn.newHQuery(query1);
+        Query<Record> q1 = conn.newQuery(query1);
 
         Results<Record> results = q1.getResults();
 
