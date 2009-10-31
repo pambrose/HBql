@@ -42,11 +42,11 @@ public class RecordExample {
 
             final Batch batch = new Batch();
             for (int i = 0; i < 10; i++) {
-                Record hrecord = SchemaManager.newHRecord("testobjects");
-                hrecord.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
-                hrecord.setCurrentValue("author", "A new author value: " + i);
-                hrecord.setCurrentValue("title", "A very new title value: " + i);
-                batch.insert(hrecord);
+                Record record = SchemaManager.newRecord("testobjects");
+                record.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
+                record.setCurrentValue("author", "A new author value: " + i);
+                record.setCurrentValue("title", "A very new title value: " + i);
+                batch.insert(record);
             }
 
             conn.apply(batch);

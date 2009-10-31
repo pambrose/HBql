@@ -13,8 +13,8 @@ public abstract class ValueMap<T> extends Value {
     private final Map<String, CurrentAndVersionValue<T>> currentAndVersionMap = Maps.newHashMap();
     private final Class elementClazz;
 
-    protected ValueMap(final RecordImpl hrecord, final String name, final Class elementClazz) throws HBqlException {
-        super(hrecord, name);
+    protected ValueMap(final RecordImpl record, final String name, final Class elementClazz) throws HBqlException {
+        super(record, name);
         this.elementClazz = elementClazz;
     }
 

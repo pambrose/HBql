@@ -76,7 +76,7 @@ public class SchemaManager {
         return schema;
     }
 
-    public static Record newHRecord(final String schemaName) throws HBqlException {
+    public static Record newRecord(final String schemaName) throws HBqlException {
         final HBaseSchema schema = findSchema(schemaName);
         return new RecordImpl(schema);
     }

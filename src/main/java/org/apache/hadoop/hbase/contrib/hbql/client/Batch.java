@@ -41,13 +41,13 @@ public class Batch {
     }
 
     public void insert(final Record rec) throws HBqlException {
-        final RecordImpl hrecord = (RecordImpl)rec;
-        final HBaseSchema schema = hrecord.getSchema();
+        final RecordImpl record = (RecordImpl)rec;
+        final HBaseSchema schema = record.getSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
-        if (!hrecord.isCurrentValueSet(keyAttrib))
-            throw new HBqlException("HRecord key value must be assigned");
+        if (!record.isCurrentValueSet(keyAttrib))
+            throw new HBqlException("Record key value must be assigned");
 
-        final Put put = this.createPut(schema, hrecord);
+        final Put put = this.createPut(schema, record);
         this.getActionList(schema.getTableName()).add(new InsertAction(put));
     }
 
@@ -56,12 +56,12 @@ public class Batch {
         this.delete(schema, newrec);
     }
 
-    public void delete(final RecordImpl hrecord) throws HBqlException {
-        final HBaseSchema schema = hrecord.getSchema();
+    public void delete(final RecordImpl record) throws HBqlException {
+        final HBaseSchema schema = record.getSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
-        if (!hrecord.isCurrentValueSet(keyAttrib))
-            throw new HBqlException("HRecord key value must be assigned");
-        this.delete(schema, hrecord);
+        if (!record.isCurrentValueSet(keyAttrib))
+            throw new HBqlException("Record key value must be assigned");
+        this.delete(schema, record);
     }
 
     private void delete(HBaseSchema schema, final Object newrec) throws HBqlException {
@@ -99,17 +99,17 @@ public class Batch {
         return put;
     }
 
-    private Put createPut(final HBaseSchema schema, final RecordImpl hrecord) throws HBqlException {
+    private Put createPut(final HBaseSchema schema, final RecordImpl record) throws HBqlException {
 
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
-        final byte[] keyval = keyAttrib.getValueAsBytes(hrecord);
+        final byte[] keyval = keyAttrib.getValueAsBytes(record);
         final Put put = new Put(keyval);
 
         for (final String family : schema.getFamilySet()) {
             for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {
 
                 if (attrib.isMapKeysAsColumnsAttrib()) {
-                    final Map mapval = (Map)attrib.getCurrentValue(hrecord);
+                    final Map mapval = (Map)attrib.getCurrentValue(record);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
                         final byte[] b = IO.getSerialization().getScalarAsBytes(mapval.get(keyobj));
@@ -120,8 +120,8 @@ public class Batch {
                     }
                 }
                 else {
-                    if (hrecord.isCurrentValueSet(attrib)) {
-                        final byte[] b = attrib.getValueAsBytes(hrecord);
+                    if (record.isCurrentValueSet(attrib)) {
+                        final byte[] b = attrib.getValueAsBytes(record);
                         put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), b);
                     }
                 }

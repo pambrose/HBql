@@ -10,14 +10,14 @@ public class ElementMap<T extends Serializable> implements Serializable {
 
     private final Map<String, T> map = Maps.newHashMap();
 
-    private final RecordImpl hrecord;
+    private final RecordImpl record;
 
-    public ElementMap(final RecordImpl hrecord) {
-        this.hrecord = hrecord;
+    public ElementMap(final RecordImpl record) {
+        this.record = record;
     }
 
-    private RecordImpl getHRecord() {
-        return this.hrecord;
+    private RecordImpl getRecord() {
+        return this.record;
     }
 
     public Map<String, T> getMap() {
@@ -25,7 +25,7 @@ public class ElementMap<T extends Serializable> implements Serializable {
     }
 
     private String getNameToUse(final String name) {
-        final ColumnAttrib attrib = this.getHRecord().getSchema().getAttribByVariableName(name);
+        final ColumnAttrib attrib = this.getRecord().getSchema().getAttribByVariableName(name);
         if (attrib == null)
             return name;
         else
@@ -52,7 +52,7 @@ public class ElementMap<T extends Serializable> implements Serializable {
             return this.getElement(name);
 
         // Look up by  alias name
-        final ColumnAttrib attrib = this.getHRecord().getSchema().getAttribByVariableName(name);
+        final ColumnAttrib attrib = this.getRecord().getSchema().getAttribByVariableName(name);
 
         if (attrib != null) {
             final String qualifiedName = attrib.getFamilyQualifiedName();

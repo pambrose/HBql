@@ -31,10 +31,10 @@ public class ResultsImpl<T> implements Results<T> {
     }
 
     private Connection getConnection() {
-        return this.getHQuery().getConnection();
+        return this.getQuery().getConnection();
     }
 
-    private QueryImpl<T> getHQuery() {
+    private QueryImpl<T> getQuery() {
         return this.hquery;
     }
 
@@ -43,7 +43,7 @@ public class ResultsImpl<T> implements Results<T> {
     }
 
     private SelectStatement getSelectStatement() {
-        return this.getHQuery().getSelectStatement();
+        return this.getQuery().getSelectStatement();
     }
 
     private WithArgs getWithArgs() {
@@ -51,11 +51,11 @@ public class ResultsImpl<T> implements Results<T> {
     }
 
     private List<QueryListener<T>> getListeners() {
-        return this.getHQuery().getListeners();
+        return this.getQuery().getListeners();
     }
 
     private List<RowRequest> getRowRequestList() throws HBqlException, IOException {
-        return this.getHQuery().getRowRequestList();
+        return this.getQuery().getRowRequestList();
     }
 
     public void close() {

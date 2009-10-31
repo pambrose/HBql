@@ -9,10 +9,10 @@ public abstract class Value implements Serializable {
 
     private final String name;
 
-    public Value(final RecordImpl hrecord, final String name) throws HBqlException {
+    public Value(final RecordImpl record, final String name) throws HBqlException {
         this.name = name;
-        if (hrecord != null)
-            hrecord.addElement(name, this);
+        if (record != null)
+            record.addElement(name, this);
     }
 
     public String getName() {

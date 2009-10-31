@@ -13,8 +13,8 @@ public class CurrentAndVersionValue<T> extends Value {
     private long currentValueTimestamp = -1;
     private volatile NavigableMap<Long, T> versionMap = null;
 
-    public CurrentAndVersionValue(final RecordImpl hrecord, final String name) throws HBqlException {
-        super(hrecord, name);
+    public CurrentAndVersionValue(final RecordImpl record, final String name) throws HBqlException {
+        super(record, name);
     }
 
     public T getValue() {

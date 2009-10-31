@@ -51,20 +51,20 @@ public class HBqlFilter implements Filter {
     private ExpressionTree expressionTree;
     private long scanLimit = -1;
     private long recordCount = 0;
-    public transient RecordImpl hrecord = new RecordImpl((HBaseSchema)null);
+    public transient RecordImpl record = new RecordImpl((HBaseSchema)null);
 
     public HBqlFilter(final ExpressionTree expressionTree, final long scanLimit) {
         this.expressionTree = expressionTree;
         this.scanLimit = scanLimit;
         this.recordCount = 0;
-        this.getHRecord().setSchema(this.getSchema());
+        this.getRecord().setSchema(this.getSchema());
     }
 
     public HBqlFilter() {
     }
 
-    private RecordImpl getHRecord() {
-        return this.hrecord;
+    private RecordImpl getRecord() {
+        return this.record;
     }
 
     private DefinedSchema getSchema() {
@@ -93,7 +93,7 @@ public class HBqlFilter implements Filter {
 
     public void reset() {
         LOG.info("In reset()");
-        this.getHRecord().clearValues();
+        this.getRecord().clearValues();
     }
 
     public boolean filterRowKey(byte[] buffer, int offset, int length) {
@@ -123,8 +123,8 @@ public class HBqlFilter implements Filter {
                 try {
                     LOG.info("In in filterKeyValue() setting value for: " + familyName + ":" + columnName);
                     final Object val = attrib.getValueFromBytes(null, v.getValue());
-                    this.getHRecord().setCurrentValue(familyName, columnName, v.getTimestamp(), val);
-                    this.getHRecord().setVersionValue(familyName, columnName, v.getTimestamp(), val, true);
+                    this.getRecord().setCurrentValue(familyName, columnName, v.getTimestamp(), val);
+                    this.getRecord().setVersionValue(familyName, columnName, v.getTimestamp(), val, true);
                 }
                 catch (Exception e) {
                     logException(LOG, e);
@@ -146,7 +146,7 @@ public class HBqlFilter implements Filter {
         }
         else {
             try {
-                final boolean filterRecord = !this.getExpressionTree().evaluate(this.getHRecord());
+                final boolean filterRecord = !this.getExpressionTree().evaluate(this.getRecord());
                 if (!filterRecord)
                     this.incrementRecordCount();
                 return filterRecord;
@@ -184,7 +184,7 @@ public class HBqlFilter implements Filter {
                                                                                            Bytes.readByteArray(in));
             this.scanLimit = (Long)IO.getSerialization().getScalarFromBytes(FieldType.LongType,
                                                                             Bytes.readByteArray(in));
-            this.getHRecord().setSchema(this.getSchema());
+            this.getRecord().setSchema(this.getSchema());
 
             this.getSchema().resetDefaultValues();
 
@@ -224,8 +224,8 @@ public class HBqlFilter implements Filter {
         };
 
         for (String val : vals) {
-            filter.getHRecord().setCurrentValue(family, column, 100, val);
-            filter.getHRecord().setVersionValue(family, column, 100, val, true);
+            filter.getRecord().setCurrentValue(family, column, 100, val);
+            filter.getRecord().setVersionValue(family, column, 100, val, true);
         }
 
         boolean v = filter.filterRow();

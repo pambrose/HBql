@@ -205,7 +205,7 @@ public final class SingleExpression extends ExpressionContext implements SelectE
         final Object elementValue = this.getValue(result);
 
         if (attrib == null) {
-            // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
+            // Find value in results and assign the byte[] value to Record, but bail on Annotated object
             if (!(obj instanceof Record))
                 return;
 

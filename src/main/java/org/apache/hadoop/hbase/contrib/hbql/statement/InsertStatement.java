@@ -48,7 +48,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         this.validated = true;
 
         this.connection = conn;
-        this.record = SchemaManager.newHRecord(this.getSchemaName());
+        this.record = SchemaManager.newRecord(this.getSchemaName());
 
         for (final SingleExpression element : this.getColumnList()) {
 

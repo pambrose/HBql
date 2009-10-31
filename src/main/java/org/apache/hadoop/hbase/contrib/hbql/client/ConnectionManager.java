@@ -31,11 +31,11 @@ public class ConnectionManager {
         return conn;
     }
 
-    public static Connection getHConnection(final String name) {
+    public static Connection getConnection(final String name) {
         return ConnectionManager.getConnectionMap().get(name);
     }
 
     private static Map<String, Connection> getConnectionMap() {
-        return connectionMap;
+        return ConnectionManager.connectionMap;
     }
 }

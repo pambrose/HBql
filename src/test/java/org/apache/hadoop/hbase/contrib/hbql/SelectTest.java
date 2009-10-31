@@ -106,7 +106,7 @@ public class SelectTest extends TestSupport {
                 val8check[j] = intv1[j];
             }
 
-            final Record rec = SchemaManager.newHRecord("tab1");
+            final Record rec = SchemaManager.newRecord("tab1");
             rec.setCurrentValue("keyval", keyval);
             rec.setCurrentValue("val1", s_val5);
             rec.setCurrentValue("val2", s_val5 + " " + msg);

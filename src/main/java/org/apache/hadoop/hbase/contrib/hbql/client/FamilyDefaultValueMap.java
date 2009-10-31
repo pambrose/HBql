@@ -6,8 +6,8 @@ import org.apache.hadoop.hbase.contrib.hbql.impl.ValueMap;
 
 public class FamilyDefaultValueMap extends ValueMap<byte[]> {
 
-    public FamilyDefaultValueMap(final RecordImpl hrecord, final String name) throws HBqlException {
-        super(hrecord, name, null);
+    public FamilyDefaultValueMap(final RecordImpl record, final String name) throws HBqlException {
+        super(record, name, null);
     }
 
     public String toString() {
