@@ -13,3 +13,5 @@ CREATE SCHEMA tab1 FOR TABLE table1 (
     f3:mapval2 string mapKeysAsColumns alias f3mapval2
 );
 
+
+select * from tab1;
