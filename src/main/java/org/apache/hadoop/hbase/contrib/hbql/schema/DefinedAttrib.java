@@ -59,7 +59,7 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     public Map<Long, Object> getVersionMap(final Object record) throws HBqlException {
-        return ((RecordImpl)record).getObjectValue(this.getAliasName(), true).getVersionMap(true);
+        return ((RecordImpl)record).getColumnValue(this.getAliasName(), true).getVersionMap(true);
     }
 
     public Map<Long, Object> getKeysAsColumnsVersionMap(final Object record,

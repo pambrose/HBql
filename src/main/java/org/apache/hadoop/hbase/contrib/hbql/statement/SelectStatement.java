@@ -28,7 +28,7 @@ public class SelectStatement extends SchemaStatement {
     }
 
     public String getNextExpressionName() {
-        return ":expr-" + this.expressionCounter++;
+        return "expr-" + this.expressionCounter++;
     }
 
     public void validate(final Connection connection) throws HBqlException {
@@ -70,11 +70,9 @@ public class SelectStatement extends SchemaStatement {
     }
 
     public boolean hasAsName(final String name) {
-
         for (final SelectElement selectElement : this.getSelectElementList())
             if (selectElement.hasAsName() && selectElement.getAsName().equals(name))
                 return true;
-
         return false;
     }
 
@@ -118,6 +116,7 @@ public class SelectStatement extends SchemaStatement {
 
         sbuf.append(" FROM ");
         sbuf.append(this.getSchemaName());
+
         sbuf.append(" ");
         sbuf.append(this.getWithArgs().asString());
 

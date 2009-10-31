@@ -12,13 +12,14 @@ import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Set;
 
 public class RecordImpl implements Serializable, Record {
 
     private HBaseSchema schema = null;
     private long timestamp = System.currentTimeMillis();
 
-    private volatile ElementMap<ObjectValue> objectElements = null;
+    private volatile ElementMap<ColumnValue> columnValues = null;
     private volatile ElementMap<TypedKeysAsColumnsValueMap> keysAsColumnsElements = null;
     private volatile ElementMap<FamilyDefaultValueMap> familyDefaultElements = null;
     private volatile ElementMap<FamilyDefaultKeysAsColumnsValueMap> familyDefaultKeysAsColumnsElements = null;
@@ -35,13 +36,13 @@ public class RecordImpl implements Serializable, Record {
         this.schema = schema;
     }
 
-    private ElementMap<ObjectValue> getObjectElements() {
-        if (this.objectElements == null)
+    private ElementMap<ColumnValue> getColumnValues() {
+        if (this.columnValues == null)
             synchronized (this) {
-                if (this.objectElements == null)
-                    this.objectElements = new ElementMap<ObjectValue>(this);
+                if (this.columnValues == null)
+                    this.columnValues = new ElementMap<ColumnValue>(this);
             }
-        return this.objectElements;
+        return this.columnValues;
     }
 
     private ElementMap<TypedKeysAsColumnsValueMap> getKeysAsColumnsElements() {
@@ -72,8 +73,8 @@ public class RecordImpl implements Serializable, Record {
     }
 
     public void addElement(final String name, final Value value) throws HBqlException {
-        if (value instanceof ObjectValue)
-            this.getObjectElements().addElement(name, (ObjectValue)value);
+        if (value instanceof ColumnValue)
+            this.getColumnValues().addElement(name, (ColumnValue)value);
         else if (value instanceof TypedKeysAsColumnsValueMap)
             this.getKeysAsColumnsElements().addElement(name, (TypedKeysAsColumnsValueMap)value);
         else if (value instanceof FamilyDefaultValueMap)
@@ -89,22 +90,22 @@ public class RecordImpl implements Serializable, Record {
     }
 
     public void clearValues() {
-        this.getObjectElements().clear();
+        this.getColumnValues().clear();
         this.getKeysAsColumnsElements().clear();
         this.getFamilyDefaultElements().clear();
         this.getFamilyDefaultKeysAsColumnsElements().clear();
     }
 
     // Simple get routines
-    public ObjectValue getObjectValue(final String name, final boolean inSchema) throws HBqlException {
-        final ObjectValue value = this.getObjectElements().findElement(name);
+    public ColumnValue getColumnValue(final String name, final boolean inSchema) throws HBqlException {
+        final ColumnValue value = this.getColumnValues().findElement(name);
         if (value != null) {
             return value;
         }
         else {
             if (inSchema && !this.getSchema().containsVariableName(name))
                 throw new HBqlException("Invalid variable name " + this.getSchema().getSchemaName() + "." + name);
-            return new ObjectValue(this, name);
+            return new ColumnValue(this, name);
         }
     }
 
@@ -160,8 +161,8 @@ public class RecordImpl implements Serializable, Record {
     }
 
     public boolean isCurrentValueSet(final ColumnAttrib attrib) {
-        final ObjectValue objectValue = this.getObjectElements().findElement(attrib.getAliasName());
-        return objectValue != null && objectValue.isValueSet();
+        final ColumnValue columnValue = this.getColumnValues().findElement(attrib.getAliasName());
+        return columnValue != null && columnValue.isValueSet();
     }
 
 
@@ -169,7 +170,7 @@ public class RecordImpl implements Serializable, Record {
                                 final long timestamp,
                                 final Object val,
                                 final boolean inSchema) throws HBqlException {
-        this.getObjectValue(name, inSchema).setCurrentValue(timestamp, val);
+        this.getColumnValue(name, inSchema).setCurrentValue(timestamp, val);
     }
 
     public void setVersionValue(final String familyName,
@@ -181,7 +182,7 @@ public class RecordImpl implements Serializable, Record {
         if (attrib == null)
             throw new HBqlException("Invalid column name " + familyName + ":" + columnName);
 
-        this.getObjectValue(attrib.getColumnName(), inSchema).getVersionMap(true).put(timestamp, val);
+        this.getColumnValue(attrib.getColumnName(), inSchema).getVersionMap(true).put(timestamp, val);
     }
 
     public void setKeysAsColumnsValue(final String name,
@@ -224,7 +225,7 @@ public class RecordImpl implements Serializable, Record {
     }
 
     public void reset() {
-        this.objectElements = null;
+        this.columnValues = null;
         this.keysAsColumnsElements = null;
         this.familyDefaultElements = null;
         this.familyDefaultKeysAsColumnsElements = null;
@@ -234,10 +235,14 @@ public class RecordImpl implements Serializable, Record {
         this.timestamp = timestamp;
     }
 
+    public void setCurrentValue(final String name, final Object val) throws HBqlException {
+        this.setCurrentValue(name, this.getTimestamp(), val, true);
+    }
+
     public Object getCurrentValue(final String name) throws HBqlException {
-        final ObjectValue objectValue = this.getObjectElements().findElement(name);
-        if (objectValue != null) {
-            final Object retval = objectValue.getValue();
+        final ColumnValue columnValue = this.getColumnValues().findElement(name);
+        if (columnValue != null) {
+            final Object retval = columnValue.getValue();
             if (retval != null)
                 return retval;
         }
@@ -247,12 +252,12 @@ public class RecordImpl implements Serializable, Record {
         return (attrib != null) ? attrib.getDefaultValue() : null;
     }
 
-    public void setCurrentValue(final String name, final Object val) throws HBqlException {
-        this.setCurrentValue(name, this.getTimestamp(), val, true);
+    public Set<String> getColumnNameList() throws HBqlException {
+        return this.getColumnValues().getMap().keySet();
     }
 
     public Map<Long, Object> getVersionMap(final String name) {
-        final ObjectValue value = this.getObjectElements().findElement(name);
+        final ColumnValue value = this.getColumnValues().findElement(name);
         return (value != null) ? value.getVersionMap(true) : null;
     }
 

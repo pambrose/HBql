@@ -17,9 +17,7 @@ public interface SelectElement {
 
     void assignAsNamesForExpressions(SelectStatement selectStatement);
 
-    void assignValues(Object newobj,
-                      int maxVerions,
-                      Result result) throws HBqlException;
+    void assignValues(Object newobj, int maxVerions, Result result) throws HBqlException;
 
     int setParameter(String name, Object val) throws HBqlException;
 

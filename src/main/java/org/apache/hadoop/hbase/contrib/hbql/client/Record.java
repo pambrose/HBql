@@ -4,6 +4,7 @@ import org.apache.expreval.client.HBqlException;
 
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Set;
 
 public interface Record {
 
@@ -11,9 +12,11 @@ public interface Record {
 
     void setTimestamp(final long timestamp);
 
+    void setCurrentValue(String name, Object val) throws HBqlException;
+
     Object getCurrentValue(String name) throws HBqlException;
 
-    void setCurrentValue(String name, Object val) throws HBqlException;
+    Set<String> getColumnNameList() throws HBqlException;
 
     Map<Long, Object> getVersionMap(final String name);
 

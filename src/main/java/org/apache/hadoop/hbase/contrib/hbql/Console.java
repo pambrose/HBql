@@ -109,8 +109,10 @@ public class Console {
         final Query<Record> query = conn.newQuery(selectStatement);
         final Results<Record> results = query.getResults();
 
-        for (Record rec : results) {
-
+        for (final Record rec : results) {
+            for (final String columnName : rec.getColumnNameList()) {
+                out.println(columnName + ": " + rec.getCurrentValue(columnName));
+            }
         }
     }
 }
