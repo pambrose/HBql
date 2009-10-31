@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public interface HConnection {
+public interface Connection {
 
-    <T> HQuery<T> newHQuery(String query) throws IOException, HBqlException;
+    <T> Query<T> newHQuery(String query) throws IOException, HBqlException;
 
     String getName();
 
@@ -30,9 +30,9 @@ public interface HConnection {
 
     Set<String> getFamilyList(String tableName) throws HBqlException;
 
-    HOutput execute(String str) throws HBqlException, IOException;
+    Output execute(String str) throws HBqlException, IOException;
 
-    HPreparedStatement prepare(String str) throws HBqlException;
+    PreparedStatement prepare(String str) throws HBqlException;
 
-    void apply(HBatch batch) throws IOException;
+    void apply(Batch batch) throws IOException;
 }

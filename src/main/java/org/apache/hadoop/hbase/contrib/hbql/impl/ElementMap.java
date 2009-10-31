@@ -10,13 +10,13 @@ public class ElementMap<T extends Serializable> implements Serializable {
 
     private final Map<String, T> map = Maps.newHashMap();
 
-    private final HRecordImpl hrecord;
+    private final RecordImpl hrecord;
 
-    public ElementMap(final HRecordImpl hrecord) {
+    public ElementMap(final RecordImpl hrecord) {
         this.hrecord = hrecord;
     }
 
-    private HRecordImpl getHRecord() {
+    private RecordImpl getHRecord() {
         return this.hrecord;
     }
 

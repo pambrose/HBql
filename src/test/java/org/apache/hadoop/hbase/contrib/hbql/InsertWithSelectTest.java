@@ -3,14 +3,14 @@ package org.apache.hadoop.hbase.contrib.hbql;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.TypeException;
 import org.apache.expreval.util.HUtil;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnectionManager;
-import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
-import org.apache.hadoop.hbase.contrib.hbql.client.HPreparedStatement;
-import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
-import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
-import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
-import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
+import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.Output;
+import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
+import org.apache.hadoop.hbase.contrib.hbql.client.Query;
+import org.apache.hadoop.hbase.contrib.hbql.client.Record;
+import org.apache.hadoop.hbase.contrib.hbql.client.Results;
+import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.util.Global;
 import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
 import org.junit.BeforeClass;
@@ -21,22 +21,22 @@ import java.util.Random;
 
 public class InsertWithSelectTest extends TestSupport {
 
-    static HConnection conn = null;
+    static Connection conn = null;
 
     static Random randomVal = new Random();
 
     @BeforeClass
     public static void onetimeSetup() throws HBqlException, IOException {
 
-        HSchemaManager.execute("CREATE SCHEMA tab3 FOR TABLE table3"
-                               + "("
-                               + "keyval key, "
-                               + "f1:val1 string alias val1, "
-                               + "f1:val2 int alias val2, "
-                               + "f1:val3 int alias val3 DEFAULT 12 "
-                               + ")");
+        SchemaManager.execute("CREATE SCHEMA tab3 FOR TABLE table3"
+                              + "("
+                              + "keyval key, "
+                              + "f1:val1 string alias val1, "
+                              + "f1:val2 int alias val2, "
+                              + "f1:val3 int alias val3 DEFAULT 12 "
+                              + ")");
 
-        conn = HConnectionManager.newHConnection();
+        conn = ConnectionManager.newHConnection();
 
         if (!conn.tableExists("table3"))
             System.out.println(conn.execute("create table using schema tab3"));
@@ -50,12 +50,12 @@ public class InsertWithSelectTest extends TestSupport {
         insertRecords(conn, 10);
     }
 
-    private static void insertRecords(final HConnection conn,
+    private static void insertRecords(final Connection conn,
                                       final int cnt) throws HBqlException, IOException {
 
-        HPreparedStatement stmt = conn.prepare("insert into tab3 " +
-                                               "(keyval, val1, val2, val3) values " +
-                                               "(:key, :val1, :val2, DEFAULT)");
+        PreparedStatement stmt = conn.prepare("insert into tab3 " +
+                                              "(keyval, val1, val2, val3) values " +
+                                              "(:key, :val1, :val2, DEFAULT)");
 
         for (int i = 0; i < cnt; i++) {
 
@@ -74,12 +74,12 @@ public class InsertWithSelectTest extends TestSupport {
 
         final String query1 = "SELECT keyval, val1, val2, val3 FROM tab3";
 
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        Query<Record> q1 = conn.newHQuery(query1);
 
-        HResults<HRecord> results = q1.getResults();
+        Results<Record> results = q1.getResults();
 
         int rec_cnt = 0;
-        for (HRecord rec : results) {
+        for (Record rec : results) {
 
             String keyval = (String)rec.getCurrentValue("keyval");
             String val1 = (String)rec.getCurrentValue("val1");
@@ -101,9 +101,9 @@ public class InsertWithSelectTest extends TestSupport {
                           "select keyval, val1+val1, val2+1 FROM tab3 ";
         showValues();
 
-        HPreparedStatement stmt = conn.prepare(q1);
+        PreparedStatement stmt = conn.prepare(q1);
 
-        HOutput output = stmt.execute();
+        Output output = stmt.execute();
 
         System.out.println(output);
 

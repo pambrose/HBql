@@ -4,10 +4,10 @@ import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
-import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
-import org.apache.hadoop.hbase.contrib.hbql.client.HQueryListener;
-import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
+import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
+import org.apache.hadoop.hbase.contrib.hbql.client.Query;
+import org.apache.hadoop.hbase.contrib.hbql.client.QueryListener;
+import org.apache.hadoop.hbase.contrib.hbql.client.Results;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
@@ -18,30 +18,30 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class QueryImpl<T> implements HQuery<T> {
+public class QueryImpl<T> implements Query<T> {
 
-    private final HConnection connection;
+    private final Connection connection;
     private final SelectStatement selectStatement;
 
-    private List<HQueryListener<T>> listeners = null;
+    private List<QueryListener<T>> listeners = null;
 
-    public QueryImpl(final HConnection connection, final SelectStatement selectStatement) throws HBqlException {
+    public QueryImpl(final Connection connection, final SelectStatement selectStatement) throws HBqlException {
         this.connection = connection;
         this.selectStatement = selectStatement;
     }
 
-    public QueryImpl(final HConnection connection, final String query) throws HBqlException {
+    public QueryImpl(final Connection connection, final String query) throws HBqlException {
         this(connection, HBqlShell.parseSelectStatement(connection, query));
     }
 
-    public synchronized void addListener(final HQueryListener<T> listener) {
+    public synchronized void addListener(final QueryListener<T> listener) {
         if (this.getListeners() == null)
             this.listeners = Lists.newArrayList();
 
         this.getListeners().add(listener);
     }
 
-    public HConnection getConnection() {
+    public Connection getConnection() {
         return this.connection;
     }
 
@@ -61,7 +61,7 @@ public class QueryImpl<T> implements HQuery<T> {
         return with.getRowRequestList(allAttribs);
     }
 
-    public List<HQueryListener<T>> getListeners() {
+    public List<QueryListener<T>> getListeners() {
         return this.listeners;
     }
 
@@ -77,13 +77,13 @@ public class QueryImpl<T> implements HQuery<T> {
             this.getListeners().clear();
     }
 
-    public HResults<T> getResults() {
+    public Results<T> getResults() {
 
         // Set it once per evaluation
         DateLiteral.resetNow();
 
         if (this.getListeners() != null) {
-            for (final HQueryListener<T> listener : this.getListeners())
+            for (final QueryListener<T> listener : this.getListeners())
                 listener.onQueryInit();
         }
 
@@ -94,7 +94,7 @@ public class QueryImpl<T> implements HQuery<T> {
 
         final List<T> retval = Lists.newArrayList();
 
-        HResults<T> results = null;
+        Results<T> results = null;
 
         try {
             results = this.getResults();

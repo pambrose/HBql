@@ -3,17 +3,17 @@ package org.apache.hadoop.hbase.contrib.hbql.impl;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.contrib.hbql.client.HValue;
+import org.apache.hadoop.hbase.contrib.hbql.client.Value;
 
 import java.util.Map;
 import java.util.NavigableMap;
 
-public abstract class ValueMap<T> extends HValue {
+public abstract class ValueMap<T> extends Value {
 
     private final Map<String, CurrentAndVersionValue<T>> currentAndVersionMap = Maps.newHashMap();
     private final Class elementClazz;
 
-    protected ValueMap(final HRecordImpl hrecord, final String name, final Class elementClazz) throws HBqlException {
+    protected ValueMap(final RecordImpl hrecord, final String name, final Class elementClazz) throws HBqlException {
         super(hrecord, name);
         this.elementClazz = elementClazz;
     }

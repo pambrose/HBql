@@ -9,11 +9,11 @@ import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBatch;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
-import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
-import org.apache.hadoop.hbase.contrib.hbql.client.HPreparedStatement;
-import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
+import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
+import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
+import org.apache.hadoop.hbase.contrib.hbql.client.Output;
+import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
+import org.apache.hadoop.hbase.contrib.hbql.client.Query;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class ConnectionImpl implements HConnection {
+public class ConnectionImpl implements Connection {
 
     private final HBaseConfiguration config;
     private final String name;
@@ -33,11 +33,11 @@ public class ConnectionImpl implements HConnection {
         this.config = (config == null) ? new HBaseConfiguration() : config;
     }
 
-    public <T> HQuery<T> newHQuery(final String query) throws IOException, HBqlException {
+    public <T> Query<T> newHQuery(final String query) throws IOException, HBqlException {
         return new QueryImpl<T>(this, query);
     }
 
-    public <T> HQuery<T> newHQuery(final SelectStatement selectStatement) throws IOException, HBqlException {
+    public <T> Query<T> newHQuery(final SelectStatement selectStatement) throws IOException, HBqlException {
         return new QueryImpl<T>(this, selectStatement);
     }
 
@@ -95,19 +95,19 @@ public class ConnectionImpl implements HConnection {
         }
     }
 
-    public HOutput execute(final String str) throws HBqlException, IOException {
+    public Output execute(final String str) throws HBqlException, IOException {
         final ConnectionStatement statement = HBqlShell.parseConnectionStatement(str);
         return statement.execute(this);
     }
 
-    public HPreparedStatement prepare(final String str) throws HBqlException {
-        final HPreparedStatement stmt = HBqlShell.parsePreparedStatement(str);
+    public PreparedStatement prepare(final String str) throws HBqlException {
+        final PreparedStatement stmt = HBqlShell.parsePreparedStatement(str);
         // Need to call this here to enable setParameters
         stmt.validate(this);
         return stmt;
     }
 
-    public void apply(final HBatch batch) throws IOException {
+    public void apply(final Batch batch) throws IOException {
         for (final String tableName : batch.getActionList().keySet()) {
             final HTable table = this.getHTable(tableName);
             for (final BatchAction batchAction : batch.getActionList(tableName))

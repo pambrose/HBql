@@ -4,7 +4,7 @@ import org.apache.expreval.client.HBqlException;
 
 public class ObjectValue extends CurrentAndVersionValue<Object> {
 
-    public ObjectValue(final HRecordImpl hrecord, final String name) throws HBqlException {
+    public ObjectValue(final RecordImpl hrecord, final String name) throws HBqlException {
         super(hrecord, name);
     }
 }

@@ -7,8 +7,8 @@ import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.contrib.hbql.impl.BatchAction;
 import org.apache.hadoop.hbase.contrib.hbql.impl.DeleteAction;
-import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.contrib.hbql.impl.InsertAction;
+import org.apache.hadoop.hbase.contrib.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
@@ -17,7 +17,7 @@ import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
 import java.util.List;
 import java.util.Map;
 
-public class HBatch {
+public class Batch {
 
     private final Map<String, List<BatchAction>> actionList = Maps.newHashMap();
 
@@ -40,8 +40,8 @@ public class HBatch {
         this.getActionList(schema.getTableName()).add(new InsertAction(put));
     }
 
-    public void insert(final HRecord rec) throws HBqlException {
-        final HRecordImpl hrecord = (HRecordImpl)rec;
+    public void insert(final Record rec) throws HBqlException {
+        final RecordImpl hrecord = (RecordImpl)rec;
         final HBaseSchema schema = hrecord.getSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         if (!hrecord.isCurrentValueSet(keyAttrib))
@@ -56,7 +56,7 @@ public class HBatch {
         this.delete(schema, newrec);
     }
 
-    public void delete(final HRecordImpl hrecord) throws HBqlException {
+    public void delete(final RecordImpl hrecord) throws HBqlException {
         final HBaseSchema schema = hrecord.getSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         if (!hrecord.isCurrentValueSet(keyAttrib))
@@ -99,7 +99,7 @@ public class HBatch {
         return put;
     }
 
-    private Put createPut(final HBaseSchema schema, final HRecordImpl hrecord) throws HBqlException {
+    private Put createPut(final HBaseSchema schema, final RecordImpl hrecord) throws HBqlException {
 
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         final byte[] keyval = keyAttrib.getValueAsBytes(hrecord);

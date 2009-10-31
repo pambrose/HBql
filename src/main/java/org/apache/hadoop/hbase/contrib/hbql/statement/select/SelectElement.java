@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.contrib.hbql.statement.select;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
+import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface SelectElement {
 
-    void validate(HBaseSchema schema, HConnection connection) throws HBqlException;
+    void validate(HBaseSchema schema, Connection connection) throws HBqlException;
 
     List<ColumnAttrib> getAttribsUsedInExpr();
 

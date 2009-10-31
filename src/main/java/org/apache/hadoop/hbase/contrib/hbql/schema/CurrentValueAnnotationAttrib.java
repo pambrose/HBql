@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.contrib.hbql.schema;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.expr.Util;
-import org.apache.hadoop.hbase.contrib.hbql.client.HColumn;
+import org.apache.hadoop.hbase.contrib.hbql.client.Column;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -11,14 +11,14 @@ import java.util.Map;
 public class CurrentValueAnnotationAttrib extends FieldAttrib {
 
     public CurrentValueAnnotationAttrib(final Field field) throws HBqlException {
-        super(field.getAnnotation(HColumn.class).family(),
-              field.getAnnotation(HColumn.class).column(),
+        super(field.getAnnotation(Column.class).family(),
+              field.getAnnotation(Column.class).column(),
               field,
               FieldType.getFieldType(field),
-              field.getAnnotation(HColumn.class).mapKeysAsColumns(),
-              field.getAnnotation(HColumn.class).familyDefault(),
-              field.getAnnotation(HColumn.class).getter(),
-              field.getAnnotation(HColumn.class).setter());
+              field.getAnnotation(Column.class).mapKeysAsColumns(),
+              field.getAnnotation(Column.class).familyDefault(),
+              field.getAnnotation(Column.class).getter(),
+              field.getAnnotation(Column.class).setter());
 
         this.defineAccessors();
 
@@ -32,8 +32,8 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
                                     "annotation but doesn't implement the Map interface");
     }
 
-    private HColumn getColumnAnno() {
-        return this.getField().getAnnotation(HColumn.class);
+    private Column getColumnAnno() {
+        return this.getField().getAnnotation(Column.class);
     }
 
     public boolean isAKeyAttrib() {

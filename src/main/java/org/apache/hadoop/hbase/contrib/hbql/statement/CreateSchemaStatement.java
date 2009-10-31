@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
-import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.Output;
+import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnDescription;
 import org.apache.hadoop.hbase.contrib.hbql.schema.DefinedSchema;
@@ -30,11 +30,11 @@ public class CreateSchemaStatement extends SchemaStatement implements SchemaMana
         return columnDescriptionList;
     }
 
-    public HOutput execute() throws HBqlException {
+    public Output execute() throws HBqlException {
 
-        final DefinedSchema schema = HSchemaManager.newDefinedSchema(this.getSchemaName(),
-                                                                     this.getTableName(),
-                                                                     this.getColumnDescriptionList());
+        final DefinedSchema schema = SchemaManager.newDefinedSchema(this.getSchemaName(),
+                                                                    this.getTableName(),
+                                                                    this.getColumnDescriptionList());
 
         for (final ColumnAttrib attrib : schema.getColumnAttribSet()) {
             if (attrib.getFieldType() == null && !attrib.isFamilyDefaultAttrib())
@@ -42,6 +42,6 @@ public class CreateSchemaStatement extends SchemaStatement implements SchemaMana
                                         + attrib.getFamilyQualifiedName() + " has unknown type.");
         }
 
-        return new HOutput("Schema " + schema.getSchemaName() + " defined.");
+        return new Output("Schema " + schema.getSchemaName() + " defined.");
     }
 }

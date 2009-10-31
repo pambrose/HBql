@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
+import org.apache.hadoop.hbase.contrib.hbql.client.Output;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
 
@@ -11,14 +11,14 @@ public class DescribeSchemaStatement extends SchemaStatement implements SchemaMa
         super(schemaName);
     }
 
-    public HOutput execute() throws HBqlException {
+    public Output execute() throws HBqlException {
 
         final HBaseSchema schema = this.getSchema();
 
         if (schema == null)
-            return new HOutput("Unknown schema: " + this.getSchemaName());
+            return new Output("Unknown schema: " + this.getSchemaName());
 
-        final HOutput retval = new HOutput();
+        final Output retval = new Output();
 
         retval.out.println("Schema name: " + this.getSchemaName());
         retval.out.println("Table name: " + schema.getTableName());

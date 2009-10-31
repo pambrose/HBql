@@ -7,10 +7,10 @@ import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
-import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
-import org.apache.hadoop.hbase.contrib.hbql.client.HQueryListener;
-import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
+import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
+import org.apache.hadoop.hbase.contrib.hbql.client.Query;
+import org.apache.hadoop.hbase.contrib.hbql.client.QueryListener;
+import org.apache.hadoop.hbase.contrib.hbql.client.Results;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
@@ -21,16 +21,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class ResultsImpl<T> implements HResults<T> {
+public class ResultsImpl<T> implements Results<T> {
 
     private final List<ResultScanner> scannerList = Lists.newArrayList();
     private final QueryImpl<T> hquery;
 
-    ResultsImpl(final HQuery<T> hquery) {
+    ResultsImpl(final Query<T> hquery) {
         this.hquery = (QueryImpl<T>)hquery;
     }
 
-    private HConnection getConnection() {
+    private Connection getConnection() {
         return this.getHQuery().getConnection();
     }
 
@@ -50,7 +50,7 @@ public class ResultsImpl<T> implements HResults<T> {
         return this.getSelectStatement().getWithArgs();
     }
 
-    private List<HQueryListener<T>> getListeners() {
+    private List<QueryListener<T>> getListeners() {
         return this.getHQuery().getListeners();
     }
 
@@ -179,7 +179,7 @@ public class ResultsImpl<T> implements HResults<T> {
                                                                       result);
 
                                     if (getListeners() != null)
-                                        for (final HQueryListener<T> listener : getListeners())
+                                        for (final QueryListener<T> listener : getListeners())
                                             listener.onEachRow(val);
 
                                     return val;
@@ -201,7 +201,7 @@ public class ResultsImpl<T> implements HResults<T> {
                     this.nextObject = nextObject;
 
                     if (nextObject == null && !fromExceptionCatch && getListeners() != null) {
-                        for (final HQueryListener<T> listener : getListeners())
+                        for (final QueryListener<T> listener : getListeners())
                             listener.onQueryComplete();
                     }
                 }

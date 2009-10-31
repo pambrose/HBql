@@ -6,7 +6,7 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
+import org.apache.hadoop.hbase.contrib.hbql.client.Output;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
@@ -32,7 +32,7 @@ public class DeleteStatement extends SchemaStatement implements ConnectionStatem
         return this.withArgs;
     }
 
-    public HOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public Output execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
         this.getWithArgs().setSchema(this.getSchema());
 
@@ -46,7 +46,7 @@ public class DeleteStatement extends SchemaStatement implements ConnectionStatem
         for (final RowRequest rowRequest : rowRequestList)
             cnt += this.delete(table, this.getWithArgs(), rowRequest);
 
-        return new HOutput("Delete count: " + cnt);
+        return new Output("Delete count: " + cnt);
     }
 
     private int delete(final HTable table,

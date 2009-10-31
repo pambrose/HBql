@@ -8,7 +8,7 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.var.GenericColumn;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser;
-import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
@@ -135,12 +135,12 @@ public class TestSupport {
     }
 
     public ExpressionTree parseExpr(final Object recordObj, final String expr) throws HBqlException {
-        final Schema schema = HSchemaManager.getObjectSchema(recordObj);
+        final Schema schema = SchemaManager.getObjectSchema(recordObj);
         return parseDescWhereExpr(expr, schema);
     }
 
     private static boolean evaluateExpression(final Object recordObj, final String expr) throws HBqlException {
-        final Schema schema = HSchemaManager.getObjectSchema(recordObj);
+        final Schema schema = SchemaManager.getObjectSchema(recordObj);
         final ExpressionTree tree = parseDescWhereExpr(expr, schema);
         return evaluateExprression(recordObj, tree);
     }

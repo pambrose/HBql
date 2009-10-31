@@ -5,10 +5,10 @@ import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.contrib.hbql.client.HColumn;
-import org.apache.hadoop.hbase.contrib.hbql.client.HColumnVersionMap;
-import org.apache.hadoop.hbase.contrib.hbql.client.HFamily;
-import org.apache.hadoop.hbase.contrib.hbql.client.HTable;
+import org.apache.hadoop.hbase.contrib.hbql.client.Column;
+import org.apache.hadoop.hbase.contrib.hbql.client.ColumnVersionMap;
+import org.apache.hadoop.hbase.contrib.hbql.client.Family;
+import org.apache.hadoop.hbase.contrib.hbql.client.Table;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SelectElement;
 
 import java.io.File;
@@ -27,8 +27,8 @@ public class AnnotationSchema extends HBaseSchema {
     private final static Map<String, Class<?>> classCacheMap = Maps.newHashMap();
 
     private final Class<?> clazz;
-    private final HTable table;
-    private final HFamily[] families;
+    private final Table table;
+    private final Family[] families;
 
     private DefinedSchema defineSchemaEquiv = null;
 
@@ -45,7 +45,7 @@ public class AnnotationSchema extends HBaseSchema {
             throw new HBqlException("Class " + this + " is missing a null constructor");
         }
 
-        this.table = this.getClazz().getAnnotation(HTable.class);
+        this.table = this.getClazz().getAnnotation(Table.class);
 
         if (this.table == null)
             throw new HBqlException("Class " + this + " is missing @HTable annotation");
@@ -55,14 +55,14 @@ public class AnnotationSchema extends HBaseSchema {
         if (this.families == null)
             throw new HBqlException("Class " + this + " is missing @HFamily values in @HTable annotation");
 
-        for (final HFamily family : families) {
+        for (final Family family : families) {
             final List<ColumnAttrib> attribs = Lists.newArrayList();
             this.addAttribToFamilyNameColumnListMap(family.name(), attribs);
         }
 
         // First process all HColumn fields so we can do lookup from HColumnVersionMaps
         for (final Field field : this.getClazz().getDeclaredFields())
-            if (field.getAnnotation(HColumn.class) != null)
+            if (field.getAnnotation(Column.class) != null)
                 this.processColumnAnnotation(field);
 
         if (this.getKeyAttrib() == null)
@@ -74,7 +74,7 @@ public class AnnotationSchema extends HBaseSchema {
                                     "cannot have a family name.");
 
         for (final Field field : this.getClazz().getDeclaredFields())
-            if (field.getAnnotation(HColumnVersionMap.class) != null)
+            if (field.getAnnotation(ColumnVersionMap.class) != null)
                 this.processColumnVersionAnnotation(field);
     }
 
@@ -258,13 +258,13 @@ public class AnnotationSchema extends HBaseSchema {
         return this.clazz;
     }
 
-    private HFamily[] getFamilies() {
+    private Family[] getFamilies() {
         return this.families;
     }
 
     public List<HColumnDescriptor> getColumnDescriptors() {
         final List<HColumnDescriptor> descList = Lists.newArrayList();
-        for (final HFamily family : this.getFamilies()) {
+        for (final Family family : this.getFamilies()) {
             final HColumnDescriptor columnDesc = new HColumnDescriptor(family.name());
             if (family.maxVersions() > 0)
                 columnDesc.setMaxVersions(family.maxVersions());

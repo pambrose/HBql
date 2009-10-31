@@ -7,9 +7,9 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
-import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
-import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
+import org.apache.hadoop.hbase.contrib.hbql.client.Record;
+import org.apache.hadoop.hbase.contrib.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
@@ -110,7 +110,7 @@ public final class SingleExpression extends ExpressionContext implements SelectE
         return this.columnNameBytes;
     }
 
-    public void validate(final HBaseSchema schema, final HConnection connection) throws HBqlException {
+    public void validate(final HBaseSchema schema, final Connection connection) throws HBqlException {
 
         this.setSchema(schema);
 
@@ -206,10 +206,10 @@ public final class SingleExpression extends ExpressionContext implements SelectE
 
         if (attrib == null) {
             // Find value in results and assign the byte[] value to HRecord, but bail on Annotated object
-            if (!(obj instanceof HRecord))
+            if (!(obj instanceof Record))
                 return;
 
-            ((HRecordImpl)obj).setCurrentValue(name, 0, elementValue, false);
+            ((RecordImpl)obj).setCurrentValue(name, 0, elementValue, false);
         }
         else {
             attrib.setCurrentValue(obj, 0, elementValue);

@@ -4,9 +4,9 @@ package org.apache.hadoop.hbase.contrib.hbql.client;
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 
 // START SNIPPET: doc
-public @interface HColumnVersionMap {
+public @interface Column {
 
-    String instance() default "";
+    boolean key() default false;
 
     String family() default "";
 

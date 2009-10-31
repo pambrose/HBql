@@ -2,13 +2,13 @@ package org.apache.expreval.examples;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.util.HUtil;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBatch;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnectionManager;
-import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
-import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
-import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
-import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
+import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
+import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.Query;
+import org.apache.hadoop.hbase.contrib.hbql.client.Record;
+import org.apache.hadoop.hbase.contrib.hbql.client.Results;
+import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 
 import java.io.IOException;
 import java.util.Date;
@@ -18,17 +18,17 @@ public class HRecordExample {
 
     public static void main(String[] args) throws IOException, HBqlException {
 
-        HSchemaManager.execute("CREATE SCHEMA testobjects alias testobjects2"
-                               + "("
-                               + "keyval key, "
-                               + "family1:author string alias author, "
-                               + "family1:title string  alias title, "
-                               + "family1:intValue int alias comp1"
-                               + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
-                               + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
-                               + ")");
+        SchemaManager.execute("CREATE SCHEMA testobjects alias testobjects2"
+                              + "("
+                              + "keyval key, "
+                              + "family1:author string alias author, "
+                              + "family1:title string  alias title, "
+                              + "family1:intValue int alias comp1"
+                              + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
+                              + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
+                              + ")");
 
-        HConnection conn = HConnectionManager.newHConnection();
+        Connection conn = ConnectionManager.newHConnection();
 
         // System.out.println(conn.execute("delete from TestObject with client filter where true"));
         // System.out.println(conn.execute("disable table testobjects"));
@@ -40,9 +40,9 @@ public class HRecordExample {
         if (!conn.tableExists("testobjects")) {
             System.out.println(conn.execute("create table with schema testobjects"));
 
-            final HBatch batch = new HBatch();
+            final Batch batch = new Batch();
             for (int i = 0; i < 10; i++) {
-                HRecord hrecord = HSchemaManager.newHRecord("testobjects");
+                Record hrecord = SchemaManager.newHRecord("testobjects");
                 hrecord.setCurrentValue("keyval", HUtil.getZeroPaddedNumber(i, 10));
                 hrecord.setCurrentValue("author", "A new author value: " + i);
                 hrecord.setCurrentValue("title", "A very new title value: " + i);
@@ -64,10 +64,10 @@ public class HRecordExample {
                               //+ "SCAN LIMIT 4"
                               //+ "SERVER FILTER WHERE author LIKE '.*6200.*' "
                               + "CLIENT FILTER WHERE keyval = '0000000002' OR author LIKE '.*val.*'";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        HResults<HRecord> results1 = q1.getResults();
+        Query<Record> q1 = conn.newHQuery(query1);
+        Results<Record> results1 = q1.getResults();
 
-        for (HRecord val1 : results1) {
+        for (Record val1 : results1) {
             System.out.println("Current Values: " + val1.getCurrentValue("keyval")
                                + " - " + val1.getCurrentValue("family1:author")
                                + " - " + val1.getCurrentValue("title")

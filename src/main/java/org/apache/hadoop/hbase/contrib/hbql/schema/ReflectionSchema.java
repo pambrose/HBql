@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.contrib.hbql.schema;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
+import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -50,7 +50,7 @@ public class ReflectionSchema extends Schema {
         return reflectionSchemaMap;
     }
 
-    public Collection<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException {
+    public Collection<String> getSchemaFamilyNames(final Connection connection) throws HBqlException {
         return Lists.newArrayList();
     }
 }

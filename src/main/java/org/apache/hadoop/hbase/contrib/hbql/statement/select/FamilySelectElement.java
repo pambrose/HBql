@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.contrib.hbql.statement.select;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
+import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
@@ -88,7 +88,7 @@ public class FamilySelectElement implements SelectElement {
         return 0;
     }
 
-    public void validate(final HBaseSchema schema, final HConnection connection) throws HBqlException {
+    public void validate(final HBaseSchema schema, final Connection connection) throws HBqlException {
 
         this.schema = schema;
         this.getAttribsUsedInExpr().clear();

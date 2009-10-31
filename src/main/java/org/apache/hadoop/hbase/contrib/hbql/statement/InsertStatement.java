@@ -6,11 +6,11 @@ import org.apache.expreval.expr.Util;
 import org.apache.expreval.expr.literal.DefaultKeyword;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBatch;
-import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
-import org.apache.hadoop.hbase.contrib.hbql.client.HPreparedStatement;
-import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
-import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
+import org.apache.hadoop.hbase.contrib.hbql.client.Output;
+import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
+import org.apache.hadoop.hbase.contrib.hbql.client.Record;
+import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.InsertValueSource;
@@ -19,13 +19,13 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpression;
 import java.io.IOException;
 import java.util.List;
 
-public class InsertStatement extends SchemaStatement implements HPreparedStatement {
+public class InsertStatement extends SchemaStatement implements PreparedStatement {
 
     private final List<SingleExpression> columnList = Lists.newArrayList();
     private final InsertValueSource valueSource;
 
     private ConnectionImpl connection = null;
-    private HRecord record = null;
+    private Record record = null;
     private boolean validated = false;
 
     public InsertStatement(final String schemaName,
@@ -48,7 +48,7 @@ public class InsertStatement extends SchemaStatement implements HPreparedStateme
         this.validated = true;
 
         this.connection = conn;
-        this.record = HSchemaManager.newHRecord(this.getSchemaName());
+        this.record = SchemaManager.newHRecord(this.getSchemaName());
 
         for (final SingleExpression element : this.getColumnList()) {
 
@@ -119,7 +119,7 @@ public class InsertStatement extends SchemaStatement implements HPreparedStateme
         return cnt;
     }
 
-    private HRecord getRecord() {
+    private Record getRecord() {
         return this.record;
     }
 
@@ -135,7 +135,7 @@ public class InsertStatement extends SchemaStatement implements HPreparedStateme
         return this.valueSource;
     }
 
-    public HOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public Output execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
         this.validate(conn);
 
@@ -147,7 +147,7 @@ public class InsertStatement extends SchemaStatement implements HPreparedStateme
 
         while (this.getValueSource().hasValues()) {
 
-            final HBatch batch = new HBatch();
+            final Batch batch = new Batch();
 
             for (int i = 0; i < this.getColumnList().size(); i++) {
                 final String name = this.getColumnList().get(i).asString();
@@ -168,10 +168,10 @@ public class InsertStatement extends SchemaStatement implements HPreparedStateme
             cnt++;
         }
 
-        return new HOutput(cnt + " record" + ((cnt > 1) ? "s" : "") + " inserted");
+        return new Output(cnt + " record" + ((cnt > 1) ? "s" : "") + " inserted");
     }
 
-    public HOutput execute() throws HBqlException, IOException {
+    public Output execute() throws HBqlException, IOException {
         return this.execute(this.getConnection());
     }
 

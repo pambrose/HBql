@@ -4,9 +4,9 @@ import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.TypeException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
-import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
-import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
-import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
+import org.apache.hadoop.hbase.contrib.hbql.client.Query;
+import org.apache.hadoop.hbase.contrib.hbql.client.Record;
+import org.apache.hadoop.hbase.contrib.hbql.client.Results;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SelectElement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpression;
@@ -18,8 +18,8 @@ import java.util.List;
 public class InsertSelectValues extends InsertValueSource {
 
     private final SelectStatement selectStatement;
-    private Iterator<HRecord> resultsIterator = null;
-    private HRecord currentRecord = null;
+    private Iterator<Record> resultsIterator = null;
+    private Record currentRecord = null;
 
 
     public InsertSelectValues(final SelectStatement selectStatement) {
@@ -44,25 +44,25 @@ public class InsertSelectValues extends InsertValueSource {
         this.getSelectStatement().validate(this.getInsertStatement().getConnection());
     }
 
-    private Iterator<HRecord> getResultsIterator() {
+    private Iterator<Record> getResultsIterator() {
         return this.resultsIterator;
     }
 
-    private void setResultsIterator(final Iterator<HRecord> resultsIterator) {
+    private void setResultsIterator(final Iterator<Record> resultsIterator) {
         this.resultsIterator = resultsIterator;
     }
 
-    private HRecord getCurrentRecord() {
+    private Record getCurrentRecord() {
         return this.currentRecord;
     }
 
-    private void setCurrentRecord(final HRecord currentRecord) {
+    private void setCurrentRecord(final Record currentRecord) {
         this.currentRecord = currentRecord;
     }
 
     public void execute() throws HBqlException, IOException {
-        final HQuery<HRecord> query = this.getInsertStatement().getConnection().newHQuery(this.getSelectStatement());
-        final HResults<HRecord> results = query.getResults();
+        final Query<Record> query = this.getInsertStatement().getConnection().newHQuery(this.getSelectStatement());
+        final Results<Record> results = query.getResults();
         this.setResultsIterator(results.iterator());
     }
 

@@ -5,13 +5,13 @@ import org.apache.expreval.client.TypeException;
 import org.apache.expreval.util.HUtil;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBatch;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnectionManager;
-import org.apache.hadoop.hbase.contrib.hbql.client.HQuery;
-import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
-import org.apache.hadoop.hbase.contrib.hbql.client.HResults;
-import org.apache.hadoop.hbase.contrib.hbql.client.HSchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
+import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
+import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.Query;
+import org.apache.hadoop.hbase.contrib.hbql.client.Record;
+import org.apache.hadoop.hbase.contrib.hbql.client.Results;
+import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.util.Global;
 import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
@@ -26,7 +26,7 @@ import java.util.Random;
 
 public class SelectTest extends TestSupport {
 
-    static HConnection conn = null;
+    static Connection conn = null;
     static List<String> keyList = Lists.newArrayList();
     static List<String> val1List = Lists.newArrayList();
     static List<Integer> val5List = Lists.newArrayList();
@@ -37,23 +37,23 @@ public class SelectTest extends TestSupport {
     @BeforeClass
     public static void onetimeSetup() throws HBqlException, IOException {
 
-        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                               + "("
-                               + "keyval key, "
-                               + "f1:val1 string alias val1, "
-                               + "f1:val2 string alias val2, "
-                               + "f1:val3 string alias notdefinedval, "
-                               + "f2:val1 date alias val3, "
-                               + "f2:val2 date alias val4, "
-                               + "f3:val1 int alias val5, "
-                               + "f3:val2 int alias val6, "
-                               + "f3:val3 int alias val7, "
-                               + "f3:val4 int[] alias val8, "
-                               + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
-                               + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
-                               + ")");
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                              + "("
+                              + "keyval key, "
+                              + "f1:val1 string alias val1, "
+                              + "f1:val2 string alias val2, "
+                              + "f1:val3 string alias notdefinedval, "
+                              + "f2:val1 date alias val3, "
+                              + "f2:val2 date alias val4, "
+                              + "f3:val1 int alias val5, "
+                              + "f3:val2 int alias val6, "
+                              + "f3:val3 int alias val7, "
+                              + "f3:val4 int[] alias val8, "
+                              + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
+                              + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
+                              + ")");
 
-        conn = HConnectionManager.newHConnection();
+        conn = ConnectionManager.newHConnection();
 
         if (!conn.tableExists("table1"))
             System.out.println(conn.execute("create table using schema tab1"));
@@ -74,11 +74,11 @@ public class SelectTest extends TestSupport {
         insertRecords(conn, 10, "Batch 3");
     }
 
-    private static void insertRecords(final HConnection conn,
+    private static void insertRecords(final Connection conn,
                                       final int cnt,
                                       final String msg) throws HBqlException, IOException {
 
-        final HBatch batch = new HBatch();
+        final Batch batch = new Batch();
 
         for (int i = 0; i < cnt; i++) {
 
@@ -106,7 +106,7 @@ public class SelectTest extends TestSupport {
                 val8check[j] = intv1[j];
             }
 
-            final HRecord rec = HSchemaManager.newHRecord("tab1");
+            final Record rec = SchemaManager.newHRecord("tab1");
             rec.setCurrentValue("keyval", keyval);
             rec.setCurrentValue("val1", s_val5);
             rec.setCurrentValue("val2", s_val5 + " " + msg);
@@ -128,9 +128,9 @@ public class SelectTest extends TestSupport {
 
         final String query1 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab1";
 
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
+        Query<Record> q1 = conn.newHQuery(query1);
 
-        HResults<HRecord> results1 = q1.getResults();
+        Results<Record> results1 = q1.getResults();
 
         List<String> testKeyVals = Lists.newArrayList();
         List<String> testVal1Vals = Lists.newArrayList();
@@ -138,7 +138,7 @@ public class SelectTest extends TestSupport {
         List<Integer> testVal6Vals = Lists.newArrayList();
 
         int rec_cnt = 0;
-        for (HRecord rec : results1) {
+        for (Record rec : results1) {
 
             String keyval = (String)rec.getCurrentValue("keyval");
             String val1 = (String)rec.getCurrentValue("val1");
@@ -163,40 +163,40 @@ public class SelectTest extends TestSupport {
         assertTrue(testVal5Vals.equals(val5List));
         assertTrue(testVal6Vals.equals(val5List));
 
-        HQuery<HRecord> q2 = conn.newHQuery(query1);
-        List<HRecord> recList2 = q1.getResultList();
+        Query<Record> q2 = conn.newHQuery(query1);
+        List<Record> recList2 = q1.getResultList();
         assertTrue(recList2.size() == rec_cnt);
 
         final String query3 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab1 " +
                               "WITH KEYS '0000000001' , '0000000002'";
-        HQuery<HRecord> q3 = conn.newHQuery(query3);
-        List<HRecord> recList3 = q3.getResultList();
+        Query<Record> q3 = conn.newHQuery(query3);
+        List<Record> recList3 = q3.getResultList();
         assertTrue(recList3.size() == 2);
 
         final String query4 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab1 " +
                               "WITH KEYS :key1";
-        HQuery<HRecord> q4 = conn.newHQuery(query4);
+        Query<Record> q4 = conn.newHQuery(query4);
         q4.setParameter("key1", "0000000001");
-        List<HRecord> recList4 = q4.getResultList();
+        List<Record> recList4 = q4.getResultList();
         assertTrue(recList4.size() == 1);
 
         final String query5 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab1 " +
                               "WITH KEYS :key1, :key2";
-        HQuery<HRecord> q5 = conn.newHQuery(query5);
+        Query<Record> q5 = conn.newHQuery(query5);
         q5.setParameter("key1", "0000000001");
         q5.setParameter("key2", "0000000002");
-        List<HRecord> recList5 = q5.getResultList();
+        List<Record> recList5 = q5.getResultList();
         assertTrue(recList5.size() == 2);
 
         final String query6 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab1 " +
                               "WITH KEYS :key1";
-        HQuery<HRecord> q6 = conn.newHQuery(query6);
+        Query<Record> q6 = conn.newHQuery(query6);
         List<String> listOfKeys = Lists.newArrayList();
         listOfKeys.add("0000000001");
         listOfKeys.add("0000000002");
         listOfKeys.add("0000000003");
         q6.setParameter("key1", listOfKeys);
-        List<HRecord> recList6 = q6.getResultList();
+        List<Record> recList6 = q6.getResultList();
         assertTrue(recList6.size() == 3);
     }
 
@@ -204,16 +204,16 @@ public class SelectTest extends TestSupport {
     public void selectMapExpressions() throws HBqlException, IOException {
 
         final String query1 = "SELECT f3mapval1 FROM tab1";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery(query1);
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
 
         final String query2 = "SELECT f3mapval1, f3mapval2 FROM tab1";
-        HQuery<HRecord> q2 = conn.newHQuery(query2);
-        List<HRecord> recList2 = q2.getResultList();
+        Query<Record> q2 = conn.newHQuery(query2);
+        List<Record> recList2 = q2.getResultList();
         assertTrue(recList2.size() == 10);
 
-        for (final HRecord rec : recList2) {
+        for (final Record rec : recList2) {
             Map<String, Object> map1 = rec.getKeysAsColumnsMap("f3mapval1");
             Map<String, Object> map2 = rec.getKeysAsColumnsMap("f3mapval2");
 
@@ -232,11 +232,11 @@ public class SelectTest extends TestSupport {
     public void selectVectorExpressions() throws HBqlException, IOException {
 
         final String query1 = "SELECT val8 FROM tab1";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery(query1);
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
 
-        for (final HRecord rec : recList1) {
+        for (final Record rec : recList1) {
             int[] intv = (int[])rec.getCurrentValue("val8");
             assertTrue(intv.length == 5);
         }
@@ -246,28 +246,28 @@ public class SelectTest extends TestSupport {
     public void selectInvalidColumnReferences() throws HBqlException, IOException {
 
         final String query1 = "SELECT * FROM tab1 with client FILTER where notdefinedval = 'dd'";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery(query1);
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 0);
 
         final String query2 = "SELECT * FROM tab1 with client FILTER where DEFINEDINROW(notdefinedval)";
-        HQuery<HRecord> q2 = conn.newHQuery(query2);
-        List<HRecord> recList2 = q2.getResultList();
+        Query<Record> q2 = conn.newHQuery(query2);
+        List<Record> recList2 = q2.getResultList();
         assertTrue(recList2.size() == 0);
 
         final String query3 = "SELECT * FROM tab1 with client FILTER where NOT DEFINEDINROW(notdefinedval)";
-        HQuery<HRecord> q3 = conn.newHQuery(query3);
-        List<HRecord> recList3 = q3.getResultList();
+        Query<Record> q3 = conn.newHQuery(query3);
+        List<Record> recList3 = q3.getResultList();
         assertTrue(recList3.size() == 10);
 
         final String query4 = "SELECT * FROM tab1 with client FILTER where DEFINEDINROW(f1:val1)";
-        HQuery<HRecord> q4 = conn.newHQuery(query4);
-        List<HRecord> recList4 = q4.getResultList();
+        Query<Record> q4 = conn.newHQuery(query4);
+        List<Record> recList4 = q4.getResultList();
         assertTrue(recList4.size() == 10);
 
         final String query5 = "SELECT * FROM tab1 with client FILTER where NOT DEFINEDINROW(f1:val1)";
-        HQuery<HRecord> q5 = conn.newHQuery(query5);
-        List<HRecord> recList5 = q5.getResultList();
+        Query<Record> q5 = conn.newHQuery(query5);
+        List<Record> recList5 = q5.getResultList();
         assertTrue(recList5.size() == 0);
     }
 
@@ -275,11 +275,11 @@ public class SelectTest extends TestSupport {
     public void selectVectorVersionExpressions() throws HBqlException, IOException {
 
         final String query1 = "SELECT f1:val2, val8 FROM tab1 WITH VERSIONS 5";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery(query1);
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
 
-        for (final HRecord rec : recList1) {
+        for (final Record rec : recList1) {
             Map<Long, Object> m1 = rec.getVersionMap("f1:val2");
             assertTrue(m1.size() == 3);
 
@@ -297,41 +297,41 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectFamiliesExpressions() throws HBqlException, IOException {
 
-        HSchemaManager.execute("drop schema tab1");
+        SchemaManager.execute("drop schema tab1");
 
-        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                               + "("
-                               + "keyval key, "
-                               //  + "f1:val1 string alias val1, "
-                               + "f1:val2 string alias val2, "
-                               + "f1:* alias f1default, "
-                               + "f2:val1 date alias val3, "
-                               + "f2:val2 date alias val4, "
-                               + "f3:val1 int alias val5, "
-                               + "f3:val2 int alias val6, "
-                               + "f3:val3 int alias val7, "
-                               + "f3:val4 int[] alias val8, "
-                               + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
-                               + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
-                               + ")");
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                              + "("
+                              + "keyval key, "
+                              //  + "f1:val1 string alias val1, "
+                              + "f1:val2 string alias val2, "
+                              + "f1:* alias f1default, "
+                              + "f2:val1 date alias val3, "
+                              + "f2:val2 date alias val4, "
+                              + "f3:val1 int alias val5, "
+                              + "f3:val2 int alias val6, "
+                              + "f3:val3 int alias val7, "
+                              + "f3:val4 int[] alias val8, "
+                              + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
+                              + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
+                              + ")");
 
-        HQuery<HRecord> q1 = conn.newHQuery("SELECT f1:* FROM tab1");
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery("SELECT f1:* FROM tab1");
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
 
-        HQuery<HRecord> q2 = conn.newHQuery("SELECT f1:* FROM tab1 WITH VERSIONS 5");
-        List<HRecord> recList2 = q2.getResultList();
+        Query<Record> q2 = conn.newHQuery("SELECT f1:* FROM tab1 WITH VERSIONS 5");
+        List<Record> recList2 = q2.getResultList();
         assertTrue(recList2.size() == 10);
 
-        HQuery<HRecord> q3 = conn.newHQuery("SELECT * FROM tab1");
-        List<HRecord> recList3 = q3.getResultList();
+        Query<Record> q3 = conn.newHQuery("SELECT * FROM tab1");
+        List<Record> recList3 = q3.getResultList();
         assertTrue(recList3.size() == 10);
 
-        HQuery<HRecord> q4 = conn.newHQuery("SELECT * FROM tab1 WITH VERSIONS 5");
-        List<HRecord> recList4 = q4.getResultList();
+        Query<Record> q4 = conn.newHQuery("SELECT * FROM tab1 WITH VERSIONS 5");
+        List<Record> recList4 = q4.getResultList();
         assertTrue(recList4.size() == 10);
 
-        for (final HRecord rec : recList4) {
+        for (final Record rec : recList4) {
             Map<Long, Object> m1 = rec.getVersionMap("val2");
             assertTrue(m1.size() == 3);
 
@@ -349,21 +349,21 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUndefinedExpressions() throws HBqlException, IOException {
 
-        HSchemaManager.execute("drop schema tab1");
+        SchemaManager.execute("drop schema tab1");
 
-        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                               + "("
-                               + "keyval key, "
-                               + "f1:* alias f1default "
-                               + ")");
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                              + "("
+                              + "keyval key, "
+                              + "f1:* alias f1default "
+                              + ")");
 
         final String query1 = "SELECT f1:val1, f1:val2 FROM tab1";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery(query1);
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
 
         int i = 0;
-        for (final HRecord rec : recList1) {
+        for (final Record rec : recList1) {
             Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
             assertTrue(vals.size() == 2);
             String val1 = IO.getSerialization().getStringFromBytes(vals.get("f1:val1"));
@@ -375,21 +375,21 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUndefinedVersionExpressions() throws HBqlException, IOException {
 
-        HSchemaManager.execute("drop schema tab1");
+        SchemaManager.execute("drop schema tab1");
 
-        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                               + "("
-                               + "keyval key, "
-                               + "f1:* alias f1default "
-                               + ")");
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                              + "("
+                              + "keyval key, "
+                              + "f1:* alias f1default "
+                              + ")");
 
         final String query1 = "SELECT f1:val1, f1:val2 FROM tab1 WITH VERSIONS 5";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery(query1);
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
 
         int i = 0;
-        for (final HRecord rec : recList1) {
+        for (final Record rec : recList1) {
             Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
             assertTrue(vals.size() == 2);
             String val1 = IO.getSerialization().getStringFromBytes(vals.get("f1:val1"));
@@ -406,21 +406,21 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUnknownExpressions() throws HBqlException, IOException {
 
-        HSchemaManager.execute("drop schema tab1");
+        SchemaManager.execute("drop schema tab1");
 
-        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                               + "("
-                               + "keyval key, "
-                               + "f1:* alias f1default "
-                               + ")");
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                              + "("
+                              + "keyval key, "
+                              + "f1:* alias f1default "
+                              + ")");
 
         final String query1 = "SELECT f1:valunknown FROM tab1";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery(query1);
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
 
         int i = 0;
-        for (final HRecord rec : recList1) {
+        for (final Record rec : recList1) {
             Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
             assertTrue(vals.size() == 1);
             String val1 = IO.getSerialization().getStringFromBytes(vals.get("f1:valunknown"));
@@ -432,21 +432,21 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUnknownCalcExpressions() throws HBqlException, IOException {
 
-        HSchemaManager.execute("drop schema tab1");
+        SchemaManager.execute("drop schema tab1");
 
-        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                               + "("
-                               + "keyval key, "
-                               + "f1:* alias f1default "
-                               + ")");
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                              + "("
+                              + "keyval key, "
+                              + "f1:* alias f1default "
+                              + ")");
 
         final String query1 = "SELECT ('dd'+'ff') as val1 FROM tab1";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery(query1);
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
 
         int i = 0;
-        for (final HRecord rec : recList1) {
+        for (final Record rec : recList1) {
             String val = (String)rec.getCurrentValue("val1");
             assertTrue(val.equals("ddff"));
 
@@ -460,18 +460,18 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUnknownMapExpressions() throws HBqlException, IOException {
 
-        HSchemaManager.execute("drop schema table1");
-        HSchemaManager.execute("CREATE SCHEMA table1"
-                               + "("
-                               + "keyval key, "
-                               + "f3:* alias f1default "
-                               + ")");
+        SchemaManager.execute("drop schema table1");
+        SchemaManager.execute("CREATE SCHEMA table1"
+                              + "("
+                              + "keyval key, "
+                              + "f3:* alias f1default "
+                              + ")");
 
         final String query1 = "SELECT f3:* FROM table1";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery(query1);
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
-        for (final HRecord rec : recList1) {
+        for (final Record rec : recList1) {
             Map<String, Map<String, byte[]>> val = rec.getFamilyDefaultKeysAsColumnsMap("f3:*");
             assertTrue(val.size() == 2);
 
@@ -480,11 +480,11 @@ public class SelectTest extends TestSupport {
         }
 
         final String query2 = "SELECT * FROM table1";
-        HQuery<HRecord> q2 = conn.newHQuery(query2);
-        List<HRecord> recList2 = q2.getResultList();
+        Query<Record> q2 = conn.newHQuery(query2);
+        List<Record> recList2 = q2.getResultList();
         assertTrue(recList2.size() == 10);
 
-        for (final HRecord rec : recList2) {
+        for (final Record rec : recList2) {
             Map map1 = rec.getFamilyDefaultValueMap("f3:*");
             Map map2 = rec.getFamilyDefaultKeysAsColumnsMap("f3:*");
 
@@ -496,20 +496,20 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUnnamedExpressions() throws HBqlException, IOException {
 
-        HSchemaManager.execute("drop schema tab1");
-        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                               + "("
-                               + "keyval key, "
-                               + "f1:val1 string alias val1, "
-                               + "f1:val10 string alias val10, "
-                               + "f1:* alias f1default "
-                               + ")");
+        SchemaManager.execute("drop schema tab1");
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                              + "("
+                              + "keyval key, "
+                              + "f1:val1 string alias val1, "
+                              + "f1:val10 string alias val10, "
+                              + "f1:* alias f1default "
+                              + ")");
 
         final String query1 = "SELECT 2+4, 5+9, 5+3 as expr1, DEFINEDINROW(val1), DEFINEDINROW(val10) FROM tab1";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery(query1);
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
-        for (final HRecord rec : recList1) {
+        for (final Record rec : recList1) {
             int val1 = (Integer)rec.getCurrentValue(":expr-0");
             assertTrue(val1 == 6);
             int val2 = (Integer)rec.getCurrentValue(":expr-1");
@@ -527,21 +527,21 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectEvalExpressions() throws HBqlException, IOException {
 
-        HSchemaManager.execute("drop schema tab1");
+        SchemaManager.execute("drop schema tab1");
 
-        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                               + "("
-                               + "keyval key, "
-                               + "f1:val1 string alias val1, "
-                               + "f1:val10 string alias val10, "
-                               + "f1:* alias f1default "
-                               + ")");
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                              + "("
+                              + "keyval key, "
+                              + "f1:val1 string alias val1, "
+                              + "f1:val10 string alias val10, "
+                              + "f1:* alias f1default "
+                              + ")");
 
         final String query1 = "SELECT EVAL('TRUE'), EVAL('FALSE') FROM tab1";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery(query1);
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
-        for (final HRecord rec : recList1) {
+        for (final Record rec : recList1) {
             boolean val1 = (Boolean)rec.getCurrentValue(":expr-0");
             assertTrue(val1);
             boolean val2 = (Boolean)rec.getCurrentValue(":expr-1");
@@ -549,12 +549,12 @@ public class SelectTest extends TestSupport {
         }
 
         final String query2 = "SELECT EVAL(:val1), EVAL(:val2) FROM tab1";
-        HQuery<HRecord> q2 = conn.newHQuery(query2);
+        Query<Record> q2 = conn.newHQuery(query2);
         q2.setParameter("val1", "TRUE OR FALSE");
         q2.setParameter("val2", "TRUE AND FALSE");
-        List<HRecord> recList2 = q2.getResultList();
+        List<Record> recList2 = q2.getResultList();
         assertTrue(recList2.size() == 10);
-        for (final HRecord rec : recList2) {
+        for (final Record rec : recList2) {
             boolean val1 = (Boolean)rec.getCurrentValue(":expr-0");
             assertTrue(val1);
             boolean val2 = (Boolean)rec.getCurrentValue(":expr-1");
@@ -566,21 +566,21 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectDefaults() throws HBqlException, IOException {
 
-        HSchemaManager.execute("drop schema tab1");
-        HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                               + "("
-                               + "keyval key, "
-                               + "f1:val1 string alias val1, "
-                               + "f1:val10 string alias val10 default 'test default', "
-                               + "f1:val11 string alias val11 , "
-                               + "f1:* alias f1default "
-                               + ")");
+        SchemaManager.execute("drop schema tab1");
+        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                              + "("
+                              + "keyval key, "
+                              + "f1:val1 string alias val1, "
+                              + "f1:val10 string alias val10 default 'test default', "
+                              + "f1:val11 string alias val11 , "
+                              + "f1:* alias f1default "
+                              + ")");
 
         final String query1 = "SELECT * FROM tab1";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery(query1);
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
-        for (final HRecord rec : recList1) {
+        for (final Record rec : recList1) {
             String val1 = (String)rec.getCurrentValue("val10");
             assertTrue(val1.equals("test default"));
             String val2 = (String)rec.getCurrentValue("val11");
@@ -588,27 +588,27 @@ public class SelectTest extends TestSupport {
         }
 
         final String query2 = "SELECT * FROM tab1 with client filter where val10 = 'test default'";
-        HQuery<HRecord> q2 = conn.newHQuery(query2);
-        List<HRecord> recList2 = q2.getResultList();
+        Query<Record> q2 = conn.newHQuery(query2);
+        List<Record> recList2 = q2.getResultList();
         assertTrue(recList2.size() == 10);
 
         final String query3 = "SELECT * FROM tab1 with client filter where val11 = 'test default'";
-        HQuery<HRecord> q3 = conn.newHQuery(query3);
-        List<HRecord> recList3 = q3.getResultList();
+        Query<Record> q3 = conn.newHQuery(query3);
+        List<Record> recList3 = q3.getResultList();
         assertTrue(recList3.size() == 0);
     }
 
     @Test
     public void selectMismatchedDefaults() throws HBqlException, IOException {
 
-        HSchemaManager.execute("drop schema tab1");
+        SchemaManager.execute("drop schema tab1");
         Exception caughtException = null;
         try {
-            HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                                   + "("
-                                   + "keyval key, "
-                                   + "f1:val10 string alias val10 default 4"
-                                   + ")");
+            SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                                  + "("
+                                  + "keyval key, "
+                                  + "f1:val10 string alias val10 default 4"
+                                  + ")");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -621,14 +621,14 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectObjectDefaults() throws HBqlException, IOException {
 
-        HSchemaManager.execute("drop schema tab1");
+        SchemaManager.execute("drop schema tab1");
         Exception caughtException = null;
         try {
-            HSchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                                   + "("
-                                   + "keyval key, "
-                                   + "f1:val10 object alias val10 default 'test default'"
-                                   + ")");
+            SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                                  + "("
+                                  + "keyval key, "
+                                  + "f1:val10 object alias val10 default 'test default'"
+                                  + ")");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -638,10 +638,10 @@ public class SelectTest extends TestSupport {
         assertTrue(caughtException == null);
 
         final String query1 = "SELECT * FROM tab1";
-        HQuery<HRecord> q1 = conn.newHQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        Query<Record> q1 = conn.newHQuery(query1);
+        List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
-        for (final HRecord rec : recList1) {
+        for (final Record rec : recList1) {
             String val1 = (String)rec.getCurrentValue("val10");
             assertTrue(val1.equals("test default"));
         }

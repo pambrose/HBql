@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.contrib.hbql.client;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.contrib.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnDescription;
@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HSchemaManager {
+public class SchemaManager {
 
     private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
-    public static HOutput execute(final String str) throws HBqlException {
+    public static Output execute(final String str) throws HBqlException {
         final SchemaManagerStatement cmd = HBqlShell.parseSchemaManagerStatement(str);
         return cmd.execute();
     }
@@ -66,7 +66,7 @@ public class HSchemaManager {
                                                               final String tableName,
                                                               final List<ColumnDescription> colList) throws HBqlException {
 
-        if (HSchemaManager.doesDefinedSchemaExist(schemaName))
+        if (SchemaManager.doesDefinedSchemaExist(schemaName))
             throw new HBqlException("Schema " + schemaName + " already defined");
 
         final DefinedSchema schema = new DefinedSchema(schemaName, tableName, colList);
@@ -76,9 +76,9 @@ public class HSchemaManager {
         return schema;
     }
 
-    public static HRecord newHRecord(final String schemaName) throws HBqlException {
+    public static Record newHRecord(final String schemaName) throws HBqlException {
         final HBaseSchema schema = findSchema(schemaName);
-        return new HRecordImpl(schema);
+        return new RecordImpl(schema);
     }
 
     public static HBaseSchema findSchema(final String schemaName) throws HBqlException {

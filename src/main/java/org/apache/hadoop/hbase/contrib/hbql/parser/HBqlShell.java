@@ -12,8 +12,8 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlLexer;
 import org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnection;
-import org.apache.hadoop.hbase.contrib.hbql.client.HPreparedStatement;
+import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
+import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SchemaManagerStatement;
@@ -132,17 +132,17 @@ public class HBqlShell {
         return (ConnectionStatement)statement;
     }
 
-    public static HPreparedStatement parsePreparedStatement(final String str) throws HBqlException {
+    public static PreparedStatement parsePreparedStatement(final String str) throws HBqlException {
 
         final ShellStatement statement = parse(str);
 
-        if (!(statement instanceof HPreparedStatement))
+        if (!(statement instanceof PreparedStatement))
             throw new HBqlException("Expecting a prepared statement");
 
-        return (HPreparedStatement)statement;
+        return (PreparedStatement)statement;
     }
 
-    public static SelectStatement parseSelectStatement(final HConnection connection, final String str) throws HBqlException {
+    public static SelectStatement parseSelectStatement(final Connection connection, final String str) throws HBqlException {
 
         final ShellStatement statement = parse(str);
 

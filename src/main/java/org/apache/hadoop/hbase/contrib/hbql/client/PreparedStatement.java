@@ -6,11 +6,11 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.ConnectionStatement;
 
 import java.io.IOException;
 
-public interface HPreparedStatement extends ConnectionStatement {
+public interface PreparedStatement extends ConnectionStatement {
 
     int setParameter(final String name, final Object val) throws HBqlException;
 
-    HOutput execute() throws HBqlException, IOException;
+    Output execute() throws HBqlException, IOException;
 
     void reset();
 

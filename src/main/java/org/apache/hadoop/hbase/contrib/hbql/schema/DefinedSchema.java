@@ -5,9 +5,9 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.contrib.hbql.client.HRecord;
+import org.apache.hadoop.hbase.contrib.hbql.client.Record;
 import org.apache.hadoop.hbase.contrib.hbql.filter.HBqlFilter;
-import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.contrib.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SelectElement;
 
@@ -57,12 +57,12 @@ public class DefinedSchema extends HBaseSchema {
         }
     }
 
-    public HRecord newObject(final List<SelectElement> selectElementList,
-                             final int maxVersions,
-                             final Result result) throws HBqlException {
+    public Record newObject(final List<SelectElement> selectElementList,
+                            final int maxVersions,
+                            final Result result) throws HBqlException {
 
         // Create object and assign values
-        final HRecordImpl newrec = new HRecordImpl(this);
+        final RecordImpl newrec = new RecordImpl(this);
 
         // Assign values
         this.assignSelectValues(newrec, selectElementList, maxVersions, result);

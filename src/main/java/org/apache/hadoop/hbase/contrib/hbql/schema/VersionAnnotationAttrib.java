@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.contrib.hbql.schema;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.expr.Util;
-import org.apache.hadoop.hbase.contrib.hbql.client.HColumnVersionMap;
+import org.apache.hadoop.hbase.contrib.hbql.client.ColumnVersionMap;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -26,7 +26,7 @@ public class VersionAnnotationAttrib extends FieldAttrib {
 
     public static VersionAnnotationAttrib newVersionAttrib(final HBaseSchema schema, final Field field) throws HBqlException {
 
-        final HColumnVersionMap versionAnno = field.getAnnotation(HColumnVersionMap.class);
+        final ColumnVersionMap versionAnno = field.getAnnotation(ColumnVersionMap.class);
         final String instance = versionAnno.instance();
 
         final String annoname = "@HColumnVersionMap annotation";

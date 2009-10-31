@@ -4,7 +4,7 @@ package org.apache.hadoop.hbase.contrib.hbql.client;
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 
 // START SNIPPET: doc
-public @interface HFamily {
+public @interface Family {
 
     public abstract String name() default "";
 

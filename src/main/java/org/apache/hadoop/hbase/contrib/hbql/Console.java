@@ -8,7 +8,7 @@ import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ParseException;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.contrib.hbql.client.HConnectionManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ConnectionStatement;
@@ -35,7 +35,7 @@ public class Console {
 
         final PrintWriter out = new PrintWriter(System.out);
 
-        final ConnectionImpl conn = (ConnectionImpl)HConnectionManager.newHConnection();
+        final ConnectionImpl conn = (ConnectionImpl)ConnectionManager.newHConnection();
 
         StringBuilder currentCommand = new StringBuilder();
         boolean continuation = false;

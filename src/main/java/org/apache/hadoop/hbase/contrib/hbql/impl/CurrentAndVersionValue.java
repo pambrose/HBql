@@ -1,19 +1,19 @@
 package org.apache.hadoop.hbase.contrib.hbql.impl;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.HValue;
+import org.apache.hadoop.hbase.contrib.hbql.client.Value;
 
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-public class CurrentAndVersionValue<T> extends HValue {
+public class CurrentAndVersionValue<T> extends Value {
 
     private boolean currentValueSet = false;
     private T currentValue = null;
     private long currentValueTimestamp = -1;
     private volatile NavigableMap<Long, T> versionMap = null;
 
-    public CurrentAndVersionValue(final HRecordImpl hrecord, final String name) throws HBqlException {
+    public CurrentAndVersionValue(final RecordImpl hrecord, final String name) throws HBqlException {
         super(hrecord, name);
     }
 

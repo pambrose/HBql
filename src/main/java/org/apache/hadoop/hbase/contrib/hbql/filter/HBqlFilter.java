@@ -26,7 +26,7 @@ import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.KeyValue;
-import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.contrib.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.schema.DefinedSchema;
@@ -51,7 +51,7 @@ public class HBqlFilter implements Filter {
     private ExpressionTree expressionTree;
     private long scanLimit = -1;
     private long recordCount = 0;
-    public transient HRecordImpl hrecord = new HRecordImpl((HBaseSchema)null);
+    public transient RecordImpl hrecord = new RecordImpl((HBaseSchema)null);
 
     public HBqlFilter(final ExpressionTree expressionTree, final long scanLimit) {
         this.expressionTree = expressionTree;
@@ -63,7 +63,7 @@ public class HBqlFilter implements Filter {
     public HBqlFilter() {
     }
 
-    private HRecordImpl getHRecord() {
+    private RecordImpl getHRecord() {
         return this.hrecord;
     }
 

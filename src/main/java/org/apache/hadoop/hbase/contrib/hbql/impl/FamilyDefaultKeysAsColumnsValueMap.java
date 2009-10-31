@@ -4,7 +4,7 @@ import org.apache.expreval.client.HBqlException;
 
 public class FamilyDefaultKeysAsColumnsValueMap extends ValueMap<UntypedKeysAsColumnsValueMap> {
 
-    public FamilyDefaultKeysAsColumnsValueMap(final HRecordImpl hrecord, final String name) throws HBqlException {
+    public FamilyDefaultKeysAsColumnsValueMap(final RecordImpl hrecord, final String name) throws HBqlException {
         super(hrecord, name, UntypedKeysAsColumnsValueMap.class);
     }
 

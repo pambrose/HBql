@@ -5,7 +5,7 @@ import org.apache.expreval.client.HBqlException;
 import java.util.Map;
 import java.util.NavigableMap;
 
-public interface HRecord {
+public interface Record {
 
     void reset();
 

@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.contrib.hbql.statement;
 import org.apache.expreval.client.HBqlException;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.contrib.hbql.client.HOutput;
+import org.apache.hadoop.hbase.contrib.hbql.client.Output;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class CreateTableStatement extends SchemaStatement implements ConnectionS
         super(schemaName);
     }
 
-    public HOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public Output execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
         final HTableDescriptor tableDesc = new HTableDescriptor(this.getSchema().getTableName());
 
@@ -23,6 +23,6 @@ public class CreateTableStatement extends SchemaStatement implements ConnectionS
 
         conn.getAdmin().createTable(tableDesc);
 
-        return new HOutput("Table " + tableDesc.getNameAsString() + " created.");
+        return new Output("Table " + tableDesc.getNameAsString() + " created.");
     }
 }

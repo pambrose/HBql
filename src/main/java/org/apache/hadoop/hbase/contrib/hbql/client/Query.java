@@ -4,19 +4,19 @@ import org.apache.expreval.client.HBqlException;
 
 import java.util.List;
 
-public interface HQuery<T> {
+public interface Query<T> {
 
-    HConnection getConnection();
+    Connection getConnection();
 
-    List<HQueryListener<T>> getListeners();
+    List<QueryListener<T>> getListeners();
 
     void setParameter(String name, Object val) throws HBqlException;
 
-    void addListener(HQueryListener<T> listener);
+    void addListener(QueryListener<T> listener);
 
     void clearListeners();
 
-    HResults<T> getResults();
+    Results<T> getResults();
 
     List<T> getResultList() throws HBqlException;
 }

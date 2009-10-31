@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.contrib.hbql.schema;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.util.Lists;
-import org.apache.hadoop.hbase.contrib.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.contrib.hbql.impl.RecordImpl;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -41,11 +41,11 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     public Object getCurrentValue(final Object hrecord) throws HBqlException {
-        return ((HRecordImpl)hrecord).getCurrentValue(this.getAliasName());
+        return ((RecordImpl)hrecord).getCurrentValue(this.getAliasName());
     }
 
     public void setCurrentValue(final Object hrecord, final long timestamp, final Object val) throws HBqlException {
-        ((HRecordImpl)hrecord).setCurrentValue(this.getAliasName(), timestamp, val, true);
+        ((RecordImpl)hrecord).setCurrentValue(this.getAliasName(), timestamp, val, true);
     }
 
     public void setKeysAsColumnsValue(final Object hrecord,
@@ -55,39 +55,39 @@ public class DefinedAttrib extends ColumnAttrib {
         if (!this.isMapKeysAsColumnsAttrib())
             throw new HBqlException(this.getFamilyQualifiedName() + " not marked as mapKeysAsColumns");
 
-        ((HRecordImpl)hrecord).setKeysAsColumnsValue(this.getAliasName(), mapKey, 0, objval, true);
+        ((RecordImpl)hrecord).setKeysAsColumnsValue(this.getAliasName(), mapKey, 0, objval, true);
     }
 
     public Map<Long, Object> getVersionMap(final Object hrecord) throws HBqlException {
-        return ((HRecordImpl)hrecord).getObjectValue(this.getAliasName(), true).getVersionMap(true);
+        return ((RecordImpl)hrecord).getObjectValue(this.getAliasName(), true).getVersionMap(true);
     }
 
     public Map<Long, Object> getKeysAsColumnsVersionMap(final Object hrecord,
                                                         final String mapKey) throws HBqlException {
-        return ((HRecordImpl)hrecord).getKeysAsColumnsValueMap(this.getAliasName(), true).getVersionMap(mapKey, true);
+        return ((RecordImpl)hrecord).getKeysAsColumnsValueMap(this.getAliasName(), true).getVersionMap(mapKey, true);
     }
 
     public void setFamilyDefaultCurrentValue(final Object hrecord,
                                              final String name,
                                              final byte[] value) throws HBqlException {
-        ((HRecordImpl)hrecord).setFamilyDefaultCurrentValue(this.getFamilyName(), name, 0, value);
+        ((RecordImpl)hrecord).setFamilyDefaultCurrentValue(this.getFamilyName(), name, 0, value);
     }
 
     public void setFamilyDefaultVersionMap(final Object hrecord,
                                            final String name,
                                            final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
-        ((HRecordImpl)hrecord).setFamilyDefaultVersionMap(this.getFamilyName(), name, timeStampMap);
+        ((RecordImpl)hrecord).setFamilyDefaultVersionMap(this.getFamilyName(), name, timeStampMap);
     }
 
     public void setFamilyDefaultKeysAsColumnsValue(final Object hrecord,
                                                    final String columnName,
                                                    final String mapKey,
                                                    final byte[] valueBytes) throws HBqlException {
-        ((HRecordImpl)hrecord).setFamilyDefaultKeysAsColumnsValue(this.getFamilyName() + ":*",
-                                                                  columnName,
-                                                                  mapKey,
-                                                                  0,
-                                                                  valueBytes);
+        ((RecordImpl)hrecord).setFamilyDefaultKeysAsColumnsValue(this.getFamilyName() + ":*",
+                                                                 columnName,
+                                                                 mapKey,
+                                                                 0,
+                                                                 valueBytes);
     }
 
     public void setFamilyDefaultKeysAsColumnsVersionMap(final Object obj,
@@ -95,10 +95,10 @@ public class DefinedAttrib extends ColumnAttrib {
                                                         final String mapKey,
                                                         final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
 
-        ((HRecordImpl)obj).setFamilyDefaultKeysAsColumnsVersionMap(this.getFamilyName(),
-                                                                   columnName,
-                                                                   mapKey,
-                                                                   timeStampMap);
+        ((RecordImpl)obj).setFamilyDefaultKeysAsColumnsVersionMap(this.getFamilyName(),
+                                                                  columnName,
+                                                                  mapKey,
+                                                                  timeStampMap);
     }
 
     protected Method getMethod(final String methodName,
