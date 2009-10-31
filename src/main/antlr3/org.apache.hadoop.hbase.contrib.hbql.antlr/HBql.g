@@ -313,7 +313,7 @@ selectElemList returns [List<SelectElement> retval]
 
 selectElem returns [SelectElement retval]
 options {backtrack=true; memoize=true;}	
-	: b=topExpr (keyAS i2=simpleName)?		{retval = SingleExpression.newSingleExpression($b.retval, $i2.text);}
+	: b=topExpr (keyAS i2=simpleName)?		{retval = SingleExpressionContext.newSingleExpression($b.retval, $i2.text);}
 	| f=familyRef					{retval = FamilySelectElement.newFamilyElement($f.text);}
 	;
 
