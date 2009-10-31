@@ -2,13 +2,13 @@ package org.apache.expreval.expr.node;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.ExpressionContext;
+import org.apache.expreval.expr.MultipleExpressionContext;
 
 import java.io.Serializable;
 
 public interface GenericValue extends Serializable {
 
-    void setExprContext(final ExpressionContext context) throws HBqlException;
+    void setExpressionContext(final MultipleExpressionContext context) throws HBqlException;
 
     Object getValue(final Object object) throws HBqlException, ResultMissingColumnException;
 

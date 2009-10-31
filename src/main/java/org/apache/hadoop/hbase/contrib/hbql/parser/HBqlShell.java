@@ -20,7 +20,7 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.SchemaManagerStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ShellStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
-import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpression;
+import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpressionContext;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -63,10 +63,10 @@ public class HBqlShell {
         }
     }
 
-    public static SingleExpression parseSelectElement(final String str) throws HBqlException {
+    public static SingleExpressionContext parseSelectElement(final String str) throws HBqlException {
         try {
             final HBqlParser parser = newHBqlParser(str);
-            final SingleExpression elem = (SingleExpression)parser.selectElem();
+            final SingleExpressionContext elem = (SingleExpressionContext)parser.selectElem();
             elem.setSchema(null);
             return elem;
         }
@@ -76,7 +76,7 @@ public class HBqlShell {
         }
     }
 
-    public static Object evaluateSelectElement(final SingleExpression elem) throws HBqlException {
+    public static Object evaluateSelectElement(final SingleExpressionContext elem) throws HBqlException {
         return elem.getValue(null);
     }
 

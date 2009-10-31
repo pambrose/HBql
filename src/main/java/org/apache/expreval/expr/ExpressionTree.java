@@ -6,7 +6,7 @@ import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 
-public class ExpressionTree extends ExpressionContext {
+public class ExpressionTree extends MultipleExpressionContext {
 
     private static TypeSignature exprSignature = new TypeSignature(null, BooleanValue.class);
     private boolean useResultData = false;

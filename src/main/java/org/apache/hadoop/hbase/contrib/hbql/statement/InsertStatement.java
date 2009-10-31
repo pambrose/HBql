@@ -14,14 +14,14 @@ import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.InsertValueSource;
-import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpression;
+import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpressionContext;
 
 import java.io.IOException;
 import java.util.List;
 
 public class InsertStatement extends SchemaStatement implements PreparedStatement {
 
-    private final List<SingleExpression> columnList = Lists.newArrayList();
+    private final List<SingleExpressionContext> columnList = Lists.newArrayList();
     private final InsertValueSource valueSource;
 
     private ConnectionImpl connection = null;
@@ -34,7 +34,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         super(schemaName);
 
         for (final GenericValue val : columnList)
-            this.getColumnList().add(SingleExpression.newSingleExpression(val, null));
+            this.getColumnList().add(SingleExpressionContext.newSingleExpression(val, null));
 
         this.valueSource = valueSource;
         this.getValueSource().setInsertStatement(this);
@@ -50,7 +50,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         this.connection = conn;
         this.record = SchemaManager.newRecord(this.getSchemaName());
 
-        for (final SingleExpression element : this.getColumnList()) {
+        for (final SingleExpressionContext element : this.getColumnList()) {
 
             element.validate(this.getSchema(), this.getConnection());
 
@@ -97,7 +97,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
     private List<Class<? extends GenericValue>> getColumnsTypeList() throws HBqlException {
         final List<Class<? extends GenericValue>> typeList = Lists.newArrayList();
-        for (final SingleExpression element : this.getColumnList()) {
+        for (final SingleExpressionContext element : this.getColumnList()) {
             final Class<? extends GenericValue> type = element.getExpressionType();
             typeList.add(type);
         }
@@ -105,7 +105,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
     }
 
     private boolean hasAKeyValue() {
-        for (final SingleExpression element : this.getColumnList()) {
+        for (final SingleExpressionContext element : this.getColumnList()) {
             if (element.isAKeyValue())
                 return true;
         }
@@ -127,7 +127,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         return this.connection;
     }
 
-    private List<SingleExpression> getColumnList() {
+    private List<SingleExpressionContext> getColumnList() {
         return columnList;
     }
 
@@ -189,7 +189,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         sbuf.append(" (");
 
         boolean firstTime = true;
-        for (final SingleExpression val : this.getColumnList()) {
+        for (final SingleExpressionContext val : this.getColumnList()) {
             if (!firstTime)
                 sbuf.append(", ");
             firstTime = false;

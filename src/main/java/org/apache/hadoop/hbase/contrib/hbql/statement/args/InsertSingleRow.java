@@ -5,21 +5,21 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
-import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpression;
+import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpressionContext;
 
 import java.util.List;
 
 public class InsertSingleRow extends InsertValueSource {
 
-    private final List<SingleExpression> valueList = Lists.newArrayList();
+    private final List<SingleExpressionContext> valueList = Lists.newArrayList();
     private boolean calledForValues = false;
 
     public InsertSingleRow(final List<GenericValue> valueList) {
         for (final GenericValue val : valueList)
-            this.getValueList().add(SingleExpression.newSingleExpression(val, null));
+            this.getValueList().add(SingleExpressionContext.newSingleExpression(val, null));
     }
 
-    private List<SingleExpression> getValueList() {
+    private List<SingleExpressionContext> getValueList() {
         return this.valueList;
     }
 
@@ -27,7 +27,7 @@ public class InsertSingleRow extends InsertValueSource {
 
         int cnt = 0;
 
-        for (final SingleExpression expr : this.getValueList())
+        for (final SingleExpressionContext expr : this.getValueList())
             cnt += expr.setParameter(name, val);
 
         return cnt;
@@ -38,7 +38,7 @@ public class InsertSingleRow extends InsertValueSource {
         final HBaseSchema schema = this.getInsertStatement().getSchema();
         final ConnectionImpl conn = this.getInsertStatement().getConnection();
 
-        for (final SingleExpression element : this.getValueList()) {
+        for (final SingleExpressionContext element : this.getValueList()) {
             element.validate(schema, conn);
 
             // Make sure values do not have column references
@@ -53,7 +53,7 @@ public class InsertSingleRow extends InsertValueSource {
 
     public void reset() {
         this.calledForValues = false;
-        for (final SingleExpression expr : this.getValueList())
+        for (final SingleExpressionContext expr : this.getValueList())
             expr.reset();
     }
 
@@ -64,7 +64,7 @@ public class InsertSingleRow extends InsertValueSource {
         sbuf.append("VALUES (");
 
         boolean firstTime = true;
-        for (final SingleExpression val : this.getValueList()) {
+        for (final SingleExpressionContext val : this.getValueList()) {
             if (!firstTime)
                 sbuf.append(", ");
             firstTime = false;
@@ -87,7 +87,7 @@ public class InsertSingleRow extends InsertValueSource {
 
     public List<Class<? extends GenericValue>> getValuesTypeList() throws HBqlException {
         final List<Class<? extends GenericValue>> typeList = Lists.newArrayList();
-        for (final SingleExpression element : this.getValueList()) {
+        for (final SingleExpressionContext element : this.getValueList()) {
             final Class<? extends GenericValue> type = element.getExpressionType();
             typeList.add(type);
         }

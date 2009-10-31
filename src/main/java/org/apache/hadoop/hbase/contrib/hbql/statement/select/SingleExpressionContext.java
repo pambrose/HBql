@@ -2,7 +2,7 @@ package org.apache.hadoop.hbase.contrib.hbql.statement.select;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.ExpressionContext;
+import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
 import org.apache.expreval.util.Maps;
@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.NavigableMap;
 
-public final class SingleExpression extends ExpressionContext implements SelectElement {
+public final class SingleExpressionContext extends MultipleExpressionContext implements SelectElement {
 
     private String asName;
 
@@ -29,13 +29,13 @@ public final class SingleExpression extends ExpressionContext implements SelectE
     private byte[] familyNameBytes = null;
     private byte[] columnNameBytes = null;
 
-    private SingleExpression(final GenericValue genericValue, final String asName) {
+    private SingleExpressionContext(final GenericValue genericValue, final String asName) {
         super(null, genericValue);
         this.asName = asName;
     }
 
-    public static SingleExpression newSingleExpression(final GenericValue expr, final String as) {
-        return new SingleExpression(expr, as);
+    public static SingleExpressionContext newSingleExpression(final GenericValue expr, final String as) {
+        return new SingleExpressionContext(expr, as);
     }
 
     public String getAsName() {

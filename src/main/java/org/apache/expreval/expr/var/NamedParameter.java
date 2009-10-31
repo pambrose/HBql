@@ -3,7 +3,7 @@ package org.apache.expreval.expr.var;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.client.TypeException;
-import org.apache.expreval.expr.ExpressionContext;
+import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.Util;
 import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.literal.DateLiteral;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class NamedParameter implements GenericValue {
 
-    private ExpressionContext context = null;
+    private MultipleExpressionContext context = null;
     private GenericValue typedExpr = null;
     private List<GenericValue> typedExprList = null;
 
@@ -108,12 +108,12 @@ public class NamedParameter implements GenericValue {
             return this.getTypedExprList();
     }
 
-    public void setExprContext(final ExpressionContext context) {
+    public void setExpressionContext(final MultipleExpressionContext context) {
         this.context = context;
         this.getContext().addNamedParameter(this);
     }
 
-    private ExpressionContext getContext() {
+    private MultipleExpressionContext getContext() {
         return this.context;
     }
 

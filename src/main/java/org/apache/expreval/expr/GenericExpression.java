@@ -31,7 +31,7 @@ public abstract class GenericExpression implements GenericValue {
     private boolean useFloat = false;
     private boolean useDouble = false;
 
-    private ExpressionContext expressionContext = null;
+    private MultipleExpressionContext expressionContext = null;
     private final ExpressionType type;
     private final List<GenericValue> exprList = Lists.newArrayList();
 
@@ -138,15 +138,15 @@ public abstract class GenericExpression implements GenericValue {
             val.reset();
     }
 
-    public void setExprContext(final ExpressionContext context) throws HBqlException {
+    public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
 
         this.expressionContext = context;
 
         for (final GenericValue val : this.getArgList())
-            val.setExprContext(context);
+            val.setExpressionContext(context);
     }
 
-    protected ExpressionContext getExprContext() {
+    protected MultipleExpressionContext getExpressionContext() {
         return this.expressionContext;
     }
 

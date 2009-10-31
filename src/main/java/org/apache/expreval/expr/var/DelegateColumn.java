@@ -2,7 +2,7 @@ package org.apache.expreval.expr.var;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.ExpressionContext;
+import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 
@@ -37,7 +37,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
         return this.getTypedColumn().validateTypes(parentExpr, allowsCollections);
     }
 
-    public void setExprContext(final ExpressionContext context) throws HBqlException {
+    public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
 
         if (context.getSchema() == null)
             throw new HBqlException("Internal error: null schema");
@@ -102,6 +102,6 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
                 throw new HBqlException("Invalid type: " + attrib.getFieldType().name());
         }
 
-        this.getTypedColumn().setExprContext(context);
+        this.getTypedColumn().setExpressionContext(context);
     }
 }

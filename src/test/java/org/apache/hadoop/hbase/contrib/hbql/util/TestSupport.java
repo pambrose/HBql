@@ -12,7 +12,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
-import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpression;
+import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpressionContext;
 
 import java.util.Date;
 import java.util.List;
@@ -55,11 +55,11 @@ public class TestSupport {
         assertTrue(evaluateExpression(recordObj, expr));
     }
 
-    public static SingleExpression parseSelectElement(final String str) throws HBqlException {
+    public static SingleExpressionContext parseSelectElement(final String str) throws HBqlException {
         return HBqlShell.parseSelectElement(str);
     }
 
-    public static void assertTypeAndValue(final SingleExpression expr, final Class clazz, final Object val) throws HBqlException {
+    public static void assertTypeAndValue(final SingleExpressionContext expr, final Class clazz, final Object val) throws HBqlException {
         final Object obj = HBqlShell.evaluateSelectElement(expr);
         System.out.println(expr.asString() + " returned value " + obj
                            + " expecting value " + val
@@ -69,7 +69,7 @@ public class TestSupport {
     }
 
     public static void assertTypeAndValue(final String str, final Class clazz, final Object val) throws HBqlException {
-        SingleExpression expr = parseSelectElement(str);
+        SingleExpressionContext expr = parseSelectElement(str);
         assertTypeAndValue(expr, clazz, val);
     }
 

@@ -1,13 +1,13 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement.args;
 
-import org.apache.expreval.expr.ExpressionContext;
+import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.TypeSignature;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.LongValue;
 import org.apache.expreval.expr.node.StringValue;
 
-public abstract class SelectArgs extends ExpressionContext {
+public abstract class SelectArgs extends MultipleExpressionContext {
 
     public static enum Type {
 

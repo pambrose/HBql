@@ -3,8 +3,8 @@ package org.apache.expreval.expr.function;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.client.TypeException;
-import org.apache.expreval.expr.ExpressionContext;
 import org.apache.expreval.expr.ExpressionTree;
+import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
@@ -36,8 +36,8 @@ public class BooleanFunction extends Function implements BooleanValue {
         //return super.validateTypes(parentExpr, allowsCollections);
     }
 
-    public void setExprContext(final ExpressionContext context) throws HBqlException {
-        super.setExprContext(context);
+    public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
+        super.setExpressionContext(context);
         this.schema = context.getSchema();
     }
 

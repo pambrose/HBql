@@ -1,7 +1,7 @@
 package org.apache.expreval.expr.var;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.expr.ExpressionContext;
+import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.MapValue;
 import org.apache.expreval.expr.node.ObjectValue;
@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.contrib.hbql.schema.FieldType;
 public abstract class GenericColumn<T extends GenericValue> implements GenericValue {
 
     private final ColumnAttrib columnAttrib;
-    private ExpressionContext expressionContext = null;
+    private MultipleExpressionContext expressionContext = null;
 
     protected GenericColumn(final ColumnAttrib attrib) {
         this.columnAttrib = attrib;
@@ -50,12 +50,12 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
             this.getExprContext().reset();
     }
 
-    public void setExprContext(final ExpressionContext context) throws HBqlException {
+    public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
         this.expressionContext = context;
         this.getExprContext().addColumnToUsedList(this);
     }
 
-    protected ExpressionContext getExprContext() {
+    protected MultipleExpressionContext getExprContext() {
         return this.expressionContext;
     }
 

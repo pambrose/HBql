@@ -1,13 +1,13 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement.args;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.expr.ExpressionContext;
+import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.TypeSignature;
 import org.apache.expreval.expr.node.GenericValue;
 
 import java.io.Serializable;
 
-public class DefaultArg extends ExpressionContext implements Serializable {
+public class DefaultArg extends MultipleExpressionContext implements Serializable {
 
     // We have to make vlaue transient because Object is not serializable for hbqlfilter
     // We will compute it again on the server after reset is called

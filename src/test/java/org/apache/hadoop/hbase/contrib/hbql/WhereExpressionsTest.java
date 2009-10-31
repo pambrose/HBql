@@ -4,7 +4,7 @@ import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.InvalidFunctionException;
 import org.apache.expreval.client.TypeException;
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpression;
+import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpressionContext;
 import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
 import org.apache.yaoql.ObjectAllTypes;
 import org.junit.Test;
@@ -596,7 +596,7 @@ public class WhereExpressionsTest extends TestSupport {
 
         assertTypeAndValue("5.0+ FLOAT('4.0') + LONG('5')", Double.class, 14.0);
 
-        SingleExpression elem = parseSelectElement(":a + :b");
+        SingleExpressionContext elem = parseSelectElement(":a + :b");
 
         elem.setParameter("a", (short)2);
         elem.setParameter("b", (short)4);

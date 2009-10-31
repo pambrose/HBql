@@ -1,7 +1,7 @@
 package org.apache.expreval.expr.literal;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.expr.ExpressionContext;
+import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 
 public abstract class GenericLiteral<T> implements GenericValue {
@@ -36,7 +36,7 @@ public abstract class GenericLiteral<T> implements GenericValue {
 
     }
 
-    public void setExprContext(final ExpressionContext context) {
+    public void setExpressionContext(final MultipleExpressionContext context) {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,

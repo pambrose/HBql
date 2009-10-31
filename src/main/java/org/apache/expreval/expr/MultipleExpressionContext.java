@@ -18,7 +18,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public abstract class ExpressionContext implements Serializable {
+public abstract class MultipleExpressionContext implements Serializable {
 
     private boolean inNeedOfTypeValidation = true;
     private boolean inNeedOfOptimization = true;
@@ -32,7 +32,7 @@ public abstract class ExpressionContext implements Serializable {
     private final TypeSignature typeSignature;
     private final List<GenericValue> expressions = Lists.newArrayList();
 
-    protected ExpressionContext(final TypeSignature typeSignature, final GenericValue... vals) {
+    protected MultipleExpressionContext(final TypeSignature typeSignature, final GenericValue... vals) {
         this.typeSignature = typeSignature;
         if (vals != null) {
             for (final GenericValue val : vals) {
@@ -106,7 +106,7 @@ public abstract class ExpressionContext implements Serializable {
         if (this.isInNeedOfSettingContext()) {
             try {
                 for (final GenericValue val : this.getExpressionList())
-                    val.setExprContext(this);
+                    val.setExpressionContext(this);
             }
             catch (HBqlException e) {
                 //  TODO This needs addressing

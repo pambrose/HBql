@@ -28,6 +28,6 @@ public abstract class DelegateStmt<T extends GenericExpression> extends GenericE
     protected void setTypedExpr(final T typedExpr) throws HBqlException {
         this.typedExpr = typedExpr;
 
-        this.getTypedExpr().setExprContext(this.getExprContext());
+        this.getTypedExpr().setExpressionContext(this.getExpressionContext());
     }
 }
