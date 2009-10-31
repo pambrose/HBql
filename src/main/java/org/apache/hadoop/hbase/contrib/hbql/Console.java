@@ -106,6 +106,8 @@ public class Console {
                                       final ConnectionImpl conn,
                                       final SelectStatement selectStatement) throws HBqlException, IOException {
 
+        selectStatement.validate(conn);
+
         final Query<Record> query = conn.newQuery(selectStatement);
         final Results<Record> results = query.getResults();
 

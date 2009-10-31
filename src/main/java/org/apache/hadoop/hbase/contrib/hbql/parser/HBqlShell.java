@@ -150,7 +150,9 @@ public class HBqlShell {
             throw new HBqlException("Expecting a select statement");
 
         final SelectStatement selectStatement = (SelectStatement)statement;
+
         selectStatement.validate(connection);
+
         return selectStatement;
     }
 }
