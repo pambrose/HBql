@@ -79,7 +79,7 @@ public class DefinedSchema extends HBaseSchema {
 
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
         final ExpressionTree expressionTree = HBqlShell.parseWhereExpression(query, this);
-        return new HBqlFilter(expressionTree, -1);
+        return new HBqlFilter(expressionTree);
     }
 
     public String getTableName() {

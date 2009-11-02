@@ -8,7 +8,7 @@ import org.apache.expreval.expr.node.GenericValue;
 
 public class ExpressionTree extends MultipleExpressionContext {
 
-    private static TypeSignature exprSignature = new TypeSignature(null, BooleanValue.class);
+    private static TypeSignature exprSignature = new TypeSignature(BooleanValue.class, BooleanValue.class);
     private boolean useResultData = false;
 
     private ExpressionTree(final GenericValue rootValue) {
@@ -27,8 +27,12 @@ public class ExpressionTree extends MultipleExpressionContext {
         return (Boolean)this.evaluate(0, true, false, object);
     }
 
+    private GenericValue getGenericValue() {
+        return this.getGenericValue(0);
+    }
+
     public String asString() {
-        return this.getGenericValue(0).asString();
+        return this.getGenericValue().asString();
     }
 
     public void setUseResultData(final boolean useResultData) {

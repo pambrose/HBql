@@ -49,14 +49,10 @@ public class HBqlFilter implements Filter {
     private static final Log LOG = LogFactory.getLog(HBqlFilter.class.getName());
 
     private ExpressionTree expressionTree;
-    private long scanLimit = -1;
-    private long recordCount = 0;
     public transient RecordImpl record = new RecordImpl((HBaseSchema)null);
 
-    public HBqlFilter(final ExpressionTree expressionTree, final long scanLimit) {
+    public HBqlFilter(final ExpressionTree expressionTree) {
         this.expressionTree = expressionTree;
-        this.scanLimit = scanLimit;
-        this.recordCount = 0;
         this.getRecord().setSchema(this.getSchema());
     }
 
@@ -75,18 +71,6 @@ public class HBqlFilter implements Filter {
         return this.expressionTree;
     }
 
-    private long getScanLimit() {
-        return this.scanLimit;
-    }
-
-    private long getRecordCount() {
-        return this.recordCount;
-    }
-
-    private void incrementRecordCount() {
-        this.recordCount++;
-    }
-
     private boolean hasValidExpressionTree() {
         return this.getExpressionTree() != null;
     }
@@ -102,13 +86,7 @@ public class HBqlFilter implements Filter {
     }
 
     public boolean filterAllRemaining() {
-
-        // TODO This will be a problem with versions, since versions count as distinct rows.
-        // TODO Need to track distinct key values
-
-        final boolean retval = this.getScanLimit() > 0 && this.getRecordCount() >= this.getScanLimit();
-        LOG.info("In filterAllRemaining() " + this.getScanLimit() + " - " + this.getRecordCount() + " - " + retval);
-        return retval;
+        return false;
     }
 
     public ReturnCode filterKeyValue(KeyValue v) {
@@ -145,14 +123,11 @@ public class HBqlFilter implements Filter {
         LOG.info("In filterRow()");
 
         if (!this.hasValidExpressionTree()) {
-            this.incrementRecordCount();
             return false;
         }
         else {
             try {
                 final boolean filterRecord = !this.getExpressionTree().evaluate(this.getRecord());
-                if (!filterRecord)
-                    this.incrementRecordCount();
                 return filterRecord;
             }
             catch (ResultMissingColumnException e) {
@@ -170,7 +145,6 @@ public class HBqlFilter implements Filter {
     public void write(DataOutput out) throws IOException {
         try {
             Bytes.writeByteArray(out, IO.getSerialization().getScalarAsBytes(this.getExpressionTree()));
-            Bytes.writeByteArray(out, IO.getSerialization().getScalarAsBytes(FieldType.LongType, this.getScanLimit()));
         }
         catch (HBqlException e) {
             e.printStackTrace();
@@ -186,13 +160,9 @@ public class HBqlFilter implements Filter {
         try {
             this.expressionTree = (ExpressionTree)IO.getSerialization().getScalarFromBytes(FieldType.ObjectType,
                                                                                            Bytes.readByteArray(in));
-            this.scanLimit = (Long)IO.getSerialization().getScalarFromBytes(FieldType.LongType,
-                                                                            Bytes.readByteArray(in));
             this.getRecord().setSchema(this.getSchema());
 
             this.getSchema().resetDefaultValues();
-
-            this.recordCount = 0;
         }
         catch (HBqlException e) {
             e.printStackTrace();

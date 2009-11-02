@@ -130,7 +130,7 @@ public class WithArgs {
     }
 
     public ExpressionTree getServerExpressionTree() {
-        return serverExpressionTree;
+        return this.serverExpressionTree;
     }
 
     public void setServerExpressionTree(final ExpressionTree serverExpressionTree) {
@@ -231,8 +231,7 @@ public class WithArgs {
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(get);
 
-        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExpressionTree(),
-                                                                       this.getLimit());
+        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExpressionTree());
         if (serverFilter != null)
             get.setFilter(serverFilter);
     }
@@ -260,8 +259,7 @@ public class WithArgs {
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(scan);
 
-        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExpressionTree(),
-                                                                       this.getLimit());
+        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExpressionTree());
         if (serverFilter != null)
             scan.setFilter(serverFilter);
     }
