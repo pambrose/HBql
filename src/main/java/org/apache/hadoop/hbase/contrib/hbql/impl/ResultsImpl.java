@@ -173,11 +173,11 @@ public class ResultsImpl<T> implements Results<T> {
                             try {
                                 if (getClientExpressionTree() == null || getClientExpressionTree().evaluate(result)) {
 
+                                    incrementReturnedRecordCount();
+
                                     final T val = (T)schema.newObject(getSelectStatement().getSelectElementList(),
                                                                       this.maxVersions,
                                                                       result);
-
-                                    incrementReturnedRecordCount();
 
                                     if (getListeners() != null)
                                         for (final QueryListener<T> listener : getListeners())

@@ -67,8 +67,6 @@ public abstract class Function extends GenericExpression {
         RANDOMFLOAT(new TypeSignature(FloatValue.class)),
         RANDOMDOUBLE(new TypeSignature(DoubleValue.class)),
 
-        RECORDCOUNT(new TypeSignature(LongValue.class)),
-
         // Boolean functions
         RANDOMBOOLEAN(new TypeSignature(BooleanValue.class)),
         DEFINEDINROW(new TypeSignature(BooleanValue.class, GenericValue.class)),
