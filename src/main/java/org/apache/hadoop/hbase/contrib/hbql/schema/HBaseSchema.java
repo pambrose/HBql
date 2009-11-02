@@ -211,7 +211,7 @@ public abstract class HBaseSchema extends Schema {
             // Connction will be null from tests
             this.familyNameSet = (connection == null)
                                  ? this.getFamilySet()
-                                 : connection.getFamilyList(this.getTableName());
+                                 : connection.getFamilyNames(this.getTableName());
         }
 
         return this.familyNameSet;

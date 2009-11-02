@@ -50,7 +50,7 @@ type:
     * Mutiple schemas can reference the same HBase table.
 
     * The SchemaManager object manages schemas and is indepedent of a particular
-    HConnection.
+    Connection.
 
     * A single key attribute is required for a schema.
 

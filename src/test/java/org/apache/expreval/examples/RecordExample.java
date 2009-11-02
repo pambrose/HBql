@@ -28,7 +28,7 @@ public class RecordExample {
                               + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
                               + ")");
 
-        Connection conn = ConnectionManager.newHConnection();
+        Connection conn = ConnectionManager.newConnection();
 
         // System.out.println(conn.execute("delete from TestObject with client filter where true"));
         // System.out.println(conn.execute("disable table testobjects"));

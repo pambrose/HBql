@@ -42,24 +42,24 @@ public class SchemaManager {
     }
 
     private static Map<String, DefinedSchema> getDefinedSchemaMap() {
-        return definedSchemaMap;
+        return SchemaManager.definedSchemaMap;
     }
 
-    public static Set<String> getDefinedSchemaList() {
+    public static Set<String> getDefinedSchemaNames() {
         return getDefinedSchemaMap().keySet();
     }
 
     public static DefinedSchema getDefinedSchema(final String schemaName) {
-        return getDefinedSchemaMap().get(schemaName);
+        return SchemaManager.getDefinedSchemaMap().get(schemaName);
     }
 
     public static boolean doesDefinedSchemaExist(final String schemaName) {
-        return null != getDefinedSchemaMap().get(schemaName);
+        return null != SchemaManager.getDefinedSchemaMap().get(schemaName);
     }
 
     public static void dropSchema(final String schemaName) {
-        if (getDefinedSchemaMap().containsKey(schemaName))
-            getDefinedSchemaMap().remove(schemaName);
+        if (SchemaManager.getDefinedSchemaMap().containsKey(schemaName))
+            SchemaManager.getDefinedSchemaMap().remove(schemaName);
     }
 
     public synchronized static DefinedSchema newDefinedSchema(final String schemaName,
@@ -71,7 +71,7 @@ public class SchemaManager {
 
         final DefinedSchema schema = new DefinedSchema(schemaName, tableName, colList);
 
-        getDefinedSchemaMap().put(schemaName, schema);
+        SchemaManager.getDefinedSchemaMap().put(schemaName, schema);
 
         return schema;
     }

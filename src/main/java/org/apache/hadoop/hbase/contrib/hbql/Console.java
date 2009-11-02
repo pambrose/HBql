@@ -38,7 +38,7 @@ public class Console {
 
         final PrintWriter out = new PrintWriter(System.out);
 
-        final ConnectionImpl conn = (ConnectionImpl)ConnectionManager.newHConnection();
+        final ConnectionImpl conn = (ConnectionImpl)ConnectionManager.newConnection();
 
         StringBuilder currentCommand = new StringBuilder();
         boolean continuation = false;

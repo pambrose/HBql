@@ -42,11 +42,12 @@ HBql Statements
 
     **{{{./statements/select.html}SELECT}}
 
-* Misc
-
     **{{{./statements/with-clause.html}WITH Clause}}
 
     **{{{./statements/expressions.html}Expressions}}
+
+
+* System
 
     **{{{./statements/version.html}VERSION}}
 

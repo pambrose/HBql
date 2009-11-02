@@ -53,7 +53,7 @@ public class InsertTest extends TestSupport {
                               + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
                               + ")");
 
-        conn = ConnectionManager.newHConnection();
+        conn = ConnectionManager.newConnection();
 
         if (!conn.tableExists("table2"))
             System.out.println(conn.execute("create table using schema tab2"));

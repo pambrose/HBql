@@ -5,7 +5,6 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 public interface Connection {
@@ -30,9 +29,11 @@ public interface Connection {
 
     void disableTable(String tableName) throws IOException;
 
-    List<String> getTableList() throws IOException;
+    void enableTable(String tableName) throws IOException;
 
-    Set<String> getFamilyList(String tableName) throws HBqlException;
+    Set<String> getTableNames() throws IOException;
+
+    Set<String> getFamilyNames(String tableName) throws HBqlException;
 
     void apply(Batch batch) throws IOException;
 }

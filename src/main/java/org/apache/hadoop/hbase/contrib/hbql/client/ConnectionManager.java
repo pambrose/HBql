@@ -10,19 +10,19 @@ public class ConnectionManager {
 
     private static Map<String, Connection> connectionMap = Maps.newHashMap();
 
-    public static Connection newHConnection() {
-        return newHConnection(null, null);
+    public static Connection newConnection() {
+        return newConnection(null, null);
     }
 
-    public static Connection newHConnection(final HBaseConfiguration config) {
-        return newHConnection(null, config);
+    public static Connection newConnection(final HBaseConfiguration config) {
+        return newConnection(null, config);
     }
 
-    public static synchronized Connection newHConnection(final String name) {
-        return newHConnection(name, null);
+    public static synchronized Connection newConnection(final String name) {
+        return newConnection(name, null);
     }
 
-    public static synchronized Connection newHConnection(final String name, final HBaseConfiguration config) {
+    public static synchronized Connection newConnection(final String name, final HBaseConfiguration config) {
         final ConnectionImpl conn = new ConnectionImpl(name, config);
 
         if (conn.getName() != null)

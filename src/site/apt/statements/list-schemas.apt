@@ -1,0 +1,20 @@
+    -----
+    LIST SCHEMAS
+    -----
+    -----
+
+LIST SCHEMAS
+
+*Syntax
+
+---------------------------
+LIST SCHEMAS
+---------------------------
+
+*Description
+
+    Displays all schema names.
+
+*Example
+
+%{snippet|id=list-schema|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}

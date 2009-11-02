@@ -1,7 +1,6 @@
 package org.apache.hadoop.hbase.contrib.hbql.impl;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -20,7 +19,6 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 public class ConnectionImpl implements Connection {
@@ -73,15 +71,19 @@ public class ConnectionImpl implements Connection {
         this.getAdmin().disableTable(tableName);
     }
 
-    public List<String> getTableList() throws IOException {
-        final HBaseAdmin admin = this.getAdmin();
-        final List<String> tableList = Lists.newArrayList();
-        for (final HTableDescriptor table : admin.listTables())
-            tableList.add(table.getNameAsString());
-        return tableList;
+    public void enableTable(final String tableName) throws IOException {
+        this.getAdmin().enableTable(tableName);
     }
 
-    public Set<String> getFamilyList(final String tableName) throws HBqlException {
+    public Set<String> getTableNames() throws IOException {
+        final HBaseAdmin admin = this.getAdmin();
+        final Set<String> tableSet = Sets.newHashSet();
+        for (final HTableDescriptor table : admin.listTables())
+            tableSet.add(table.getNameAsString());
+        return tableSet;
+    }
+
+    public Set<String> getFamilyNames(final String tableName) throws HBqlException {
         try {
             final HTableDescriptor table = this.getAdmin().getTableDescriptor(Bytes.toBytes(tableName));
             final Set<String> familySet = Sets.newHashSet();

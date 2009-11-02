@@ -116,7 +116,7 @@ public class AnnotationExample {
 
     public static void main(String[] args) throws IOException, HBqlException {
 
-        Connection conn = ConnectionManager.newHConnection();
+        Connection conn = ConnectionManager.newConnection();
 
         /*
         if (conn.tableExists("TestObject")) {

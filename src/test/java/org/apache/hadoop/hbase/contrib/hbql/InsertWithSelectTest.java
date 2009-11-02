@@ -36,7 +36,7 @@ public class InsertWithSelectTest extends TestSupport {
                               + "f1:val3 int alias val3 DEFAULT 12 "
                               + ")");
 
-        conn = ConnectionManager.newHConnection();
+        conn = ConnectionManager.newConnection();
 
         if (!conn.tableExists("table3"))
             System.out.println(conn.execute("create table using schema tab3"));

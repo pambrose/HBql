@@ -12,23 +12,43 @@ import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 public class ExamplesTest extends TestSupport {
 
 
-    public void showTable() throws HBqlException, IOException {
+    public void showTables() throws HBqlException, IOException {
 
         // START SNIPPET: list-tables
-        Connection conn = ConnectionManager.newHConnection();
+
+        Connection conn = ConnectionManager.newConnection();
         System.out.println(conn.execute("LIST TABLES"));
+
+        // Or using the API
+        Set<String> tableNamess = conn.getTableNames();
+
         // END SNIPPET: list-tables
+    }
+
+    public void showSchemas() throws HBqlException, IOException {
+
+        // START SNIPPET: list-schemas
+
+        System.out.println(SchemaManager.execute("LIST SCHEMAS"));
+
+        // Or using the API
+        Set<String> schemaNamess = SchemaManager.getDefinedSchemaNames();
+
+        // END SNIPPET: list-schemas
     }
 
     public void describeTable() throws HBqlException, IOException {
 
         // START SNIPPET: describe-table
-        Connection conn = ConnectionManager.newHConnection();
+
+        Connection conn = ConnectionManager.newConnection();
         System.out.println(conn.execute("DESCRIBE TABLE foo"));
+
         // END SNIPPET: describe-table
 
     }
@@ -36,8 +56,10 @@ public class ExamplesTest extends TestSupport {
     public void describeSchema() throws HBqlException, IOException {
 
         // START SNIPPET: describe-schema
-        Connection conn = ConnectionManager.newHConnection();
+
+        Connection conn = ConnectionManager.newConnection();
         System.out.println(conn.execute("DESCRIBE SCHEMA foo_schema"));
+
         // END SNIPPET: describe-schema
 
     }
@@ -45,8 +67,13 @@ public class ExamplesTest extends TestSupport {
     public void enableTable() throws HBqlException, IOException {
 
         // START SNIPPET: enable-table
-        Connection conn = ConnectionManager.newHConnection();
+
+        Connection conn = ConnectionManager.newConnection();
         System.out.println(conn.execute("ENABLE TABLE foo"));
+
+        // Or using the API
+        conn.enableTable("foo");
+
         // END SNIPPET: enable-table
 
     }
@@ -54,8 +81,13 @@ public class ExamplesTest extends TestSupport {
     public void disableTable() throws HBqlException, IOException {
 
         // START SNIPPET: disable-table
-        Connection conn = ConnectionManager.newHConnection();
-        System.out.println(conn.execute("DISABLE TABLE foo"));
+
+        Connection conn = ConnectionManager.newConnection();
+        conn.execute("DISABLE TABLE foo");
+
+        // Or using the API
+        conn.disableTable("foo");
+
         // END SNIPPET: disable-table
 
     }
@@ -63,7 +95,12 @@ public class ExamplesTest extends TestSupport {
     public void dropSchema() throws HBqlException, IOException {
 
         // START SNIPPET: drop-schema
-        System.out.println(SchemaManager.execute("DROP SCHEMA foo_schema"));
+
+        SchemaManager.execute("DROP SCHEMA foo_schema");
+
+        // Or using the API
+        SchemaManager.dropSchema("foo_schema");
+
         // END SNIPPET: drop-schema
 
     }
@@ -71,8 +108,10 @@ public class ExamplesTest extends TestSupport {
     public void createTable() throws HBqlException, IOException {
 
         // START SNIPPET: create-table
-        Connection conn = ConnectionManager.newHConnection();
-        System.out.println(conn.execute("CREATE TABLE USING SCHEMA foo_schema"));
+
+        Connection conn = ConnectionManager.newConnection();
+        conn.execute("CREATE TABLE USING SCHEMA foo_schema");
+
         // END SNIPPET: create-table
 
     }
@@ -80,8 +119,13 @@ public class ExamplesTest extends TestSupport {
     public void dropTable() throws HBqlException, IOException {
 
         // START SNIPPET: drop-table
-        Connection conn = ConnectionManager.newHConnection();
-        System.out.println(conn.execute("DROP TABLE foo"));
+
+        Connection conn = ConnectionManager.newConnection();
+        conn.execute("DROP TABLE foo");
+
+        // Or using the API
+        conn.dropTable("foo");
+
         // END SNIPPET: drop-table
 
     }
@@ -97,7 +141,7 @@ public class ExamplesTest extends TestSupport {
                               + "family1:val2 STRING ALIAS val2"
                               + ")");
 
-        Connection conn = ConnectionManager.newHConnection();
+        Connection conn = ConnectionManager.newConnection();
         System.out.println(conn.execute("INSERT INTO foo_schema (keyval, val1, val2) "
                                         + "VALUES (ZEROPAD(2, 10), 123, 'test val')"));
         // END SNIPPET: insert1
@@ -116,7 +160,7 @@ public class ExamplesTest extends TestSupport {
                               + "family1:val2 STRING ALIAS val2 DEFAULT 'this is a default value'"
                               + ")");
 
-        Connection conn = ConnectionManager.newHConnection();
+        Connection conn = ConnectionManager.newConnection();
         PreparedStatement ps = conn.prepare("INSERT INTO foo_schema (keyval, val1, val2) "
                                             + "VALUES (:key, :val1, DEFAULT)");
 
@@ -139,7 +183,7 @@ public class ExamplesTest extends TestSupport {
                               + "family1:val3 STRING ALIAS val3, "
                               + "family1:val4 STRING ALIAS val4 "
                               + ")");
-        Connection conn = ConnectionManager.newHConnection();
+        Connection conn = ConnectionManager.newConnection();
 
         System.out.println(conn.execute("INSERT INTO foo_schema (keyval, val1, val2) "
                                         + "SELECT keyval, val3, val4 FROM foo2_schema"));
@@ -183,7 +227,7 @@ public class ExamplesTest extends TestSupport {
 
     public void selectAll() throws HBqlException, IOException {
 
-        Connection conn = ConnectionManager.newHConnection();
+        Connection conn = ConnectionManager.newConnection();
 
         SchemaManager.execute("drop schema tab1");
 

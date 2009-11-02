@@ -16,7 +16,7 @@ public class ListSchemasStatement implements ConnectionStatement {
 
         final Output retval = new Output();
         retval.out.println("Schemas: ");
-        for (final String schemaName : SchemaManager.getDefinedSchemaList())
+        for (final String schemaName : SchemaManager.getDefinedSchemaNames())
             retval.out.println("\t" + schemaName);
 
         retval.out.flush();
