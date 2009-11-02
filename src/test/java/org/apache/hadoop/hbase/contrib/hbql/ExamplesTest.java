@@ -89,6 +89,14 @@ public class ExamplesTest extends TestSupport {
     public void insert1() throws HBqlException, IOException {
 
         // START SNIPPET: insert1
+
+        SchemaManager.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
+                              + "("
+                              + "keyval KEY, "
+                              + "family1:val1 INT ALIAS val1, "
+                              + "family1:val2 STRING ALIAS val2"
+                              + ")");
+
         Connection conn = ConnectionManager.newHConnection();
         System.out.println(conn.execute("INSERT INTO foo_schema (keyval, val1, val2) "
                                         + "VALUES (ZEROPAD(2, 10), 123, 'test val')"));
@@ -99,11 +107,22 @@ public class ExamplesTest extends TestSupport {
     public void insert2() throws HBqlException, IOException {
 
         // START SNIPPET: insert2
+
+        // A column with a default value.
+        SchemaManager.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
+                              + "("
+                              + "keyval KEY, "
+                              + "family1:val1 INT ALIAS val1, "
+                              + "family1:val2 STRING ALIAS val2 DEFAULT 'this is a default value'"
+                              + ")");
+
         Connection conn = ConnectionManager.newHConnection();
         PreparedStatement ps = conn.prepare("INSERT INTO foo_schema (keyval, val1, val2) "
                                             + "VALUES (:key, :val1, DEFAULT)");
+
         ps.setParameter("key", Util.getZeroPaddedNumber(2, 10));
         ps.setParameter("val1", 123);
+
         System.out.println(ps.execute());
         // END SNIPPET: insert2
 
@@ -111,11 +130,20 @@ public class ExamplesTest extends TestSupport {
 
     public void insert3() throws HBqlException, IOException {
 
-        // START SNIPPET: insert2
+        // START SNIPPET: insert3
+        SchemaManager.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
+                              + "("
+                              + "keyval KEY, "
+                              + "family1:val1 STRING ALIAS val1, "
+                              + "family1:val2 STRING ALIAS val2, "
+                              + "family1:val3 STRING ALIAS val3, "
+                              + "family1:val4 STRING ALIAS val4 "
+                              + ")");
         Connection conn = ConnectionManager.newHConnection();
+
         System.out.println(conn.execute("INSERT INTO foo_schema (keyval, val1, val2) "
                                         + "SELECT keyval, val3, val4 FROM foo2_schema"));
-        // END SNIPPET: insert2
+        // END SNIPPET: insert3
 
     }
 
@@ -137,7 +165,7 @@ public class ExamplesTest extends TestSupport {
         SchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo "
                               + "("
                               + "keyval key, "
-                              + "family1:val1 STRING ALIAS val2 DEFAULT 'this is a default value'"
+                              + "family1:val1 STRING ALIAS val1 DEFAULT 'this is a default value'"
                               + ")");
         // END SNIPPET: create-schema3
 
@@ -146,7 +174,7 @@ public class ExamplesTest extends TestSupport {
         SchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo "
                               + "("
                               + "keyval key, "
-                              + "family1:val1 STRING ALIAS val2, "
+                              + "family1:val1 STRING ALIAS val1, "
                               + "family1:* ALIAS family1_default"
                               + ")");
         // END SNIPPET: create-schema4
@@ -161,14 +189,14 @@ public class ExamplesTest extends TestSupport {
 
         SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                               + "("
-                              + "keyval key, "
-                              + "f1:val1 string alias val1, "
-                              + "f3:val1 int alias val5, "
-                              + "f3:val2 int alias val6, "
-                              + "f3:val3 int alias val7, "
-                              + "f1:* alias f1default, "
-                              + "f2:* alias f2default, "
-                              + "f3:* alias f3default "
+                              + "keyval KEY, "
+                              + "f1:val1 STRING ALIAS val1, "
+                              + "f3:val1 INT ALIAS val5, "
+                              + "f3:val2 INT ALIAS val6, "
+                              + "f3:val3 INT ALIAS val7, "
+                              + "f1:* ALIAS f1default, "
+                              + "f2:* ALIAS f2default, "
+                              + "f3:* ALIAS f3default "
                               + ")");
 
         Query<Record> q1 = conn.newQuery("SELECT val1, val5 FROM tab1");
