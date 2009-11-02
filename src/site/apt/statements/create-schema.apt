@@ -66,14 +66,14 @@ type:
     * The MAPSKEYSASCOLUMN clause indicates that the attribute value is a map with string keys and each
     key will be distinct column.  In the case of the column f1:val1, each key would be mapped
     to the column: f1:val1['key'].  A map with 5 values will map to 5 distonct columns.  An example can
-    be found {{{src/site/examples/kacexample.html}here}}.
+    be found {{{./src/site/examples/kacexample.html}here}}.
 
     * The DEFAULT clause cannot be used with arrays or MAPKEYSASCOLUMNS values.
 
     * Each table family can have one family_default attribute.  A family_default atttribute is used when
     a column value is found in the query results, and no corresponding attribute is present in the schema.
     Effectively it is a map with strings for keys (corresponding to the family qualified name) and byte[] values.
-    An example can be found {{{src/site/examples/family_default.html}here}}.
+    An example can be found {{{./src/site/examples/family_default.html}here}}.
 
     * Both column descriptions and family defaults can have an alias name.
     If present, it can be used interchangeably with the fully qualified column name.

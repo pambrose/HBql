@@ -14,7 +14,7 @@ DROP TABLE table_name
 
 *Description
 
-    Drops named table (requires {{{disable-table.html}disabling}} the table first).
+    Drops named table (requires {{{./disable-table.html}disabling}} the table first).
 
 *Example
 

@@ -13,7 +13,7 @@ DELETE FROM schema_name with_clause
 
 *Description
 
-    Delete records from the table referenced by schema_name using the {{{with-clause.html}WITH}} clause.
+    Delete records from the table referenced by schema_name using the {{{./with-clause.html}WITH}} clause.
 
 *Example
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#HBQL_HOME=/Users/pambrose/git/hbase-plugin
+#HBQL_HOME=/Users/pambrose/git/hbql
 #HBASE_HOME=/Users/pambrose/src/hbase-0.20.1
 
 HBASE_CLASSPATH=$HBASE_HOME/conf:$HBASE_HOME/hbase-0.20.1.jar:$HBASE_HOME/lib/hadoop-0.20.1-hdfs127-core.jar:$HBASE_HOME/lib/zookeeper-3.2.1.jar:$HBASE_HOME/lib/log4j-1.2.15.jar:$HBASE_HOME/lib/commons-logging-1.0.4.jar

@@ -23,7 +23,7 @@ Expressions
 
     ** CASE ( WHEN boolean_value THEN value [ , ... ] ) ELSE value END
 
-    ** Any of these {{{functions.html}functions}}
+    ** Any of these {{{./functions.html}functions}}
 
 
 Types
