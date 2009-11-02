@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="HBql">
     <bannerLeft>
-        <name>COQL</name>
+        <name>HBql</name>
         <src>http://maven.apache.org/images/apache-maven-project.png</src>
         <href>http://maven.apache.org/</href>
     </bannerLeft>
 
     <bannerRight>
-        <src>http://maven.apache.org/images/maven-small.gif</src>
+        <src>/images/hbql.png</src>
+        <href>http://www.sudothought.com/index.html</href>
     </bannerRight>
 
     <skin>
@@ -15,13 +16,6 @@
         <artifactId>maven-default-skin</artifactId>
         <version>1.0</version>
     </skin>
-
-    <distributionManagement>
-        <site>
-            <id>website</id>
-            <url>scp://www.sudothought.com/public_html/</url>
-        </site>
-    </distributionManagement>
 
     <body>
         <links>

@@ -11,6 +11,14 @@
     <description>HBase made easy.</description>
 
 
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <url>scp://sudothought@www.sudothought.com/home/sudothought/public_html/</url>
+        </site>
+    </distributionManagement>
+
+
     <repositories>
         <repository>
             <id>jboss.com</id>
