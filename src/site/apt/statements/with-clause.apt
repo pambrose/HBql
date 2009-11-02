@@ -8,9 +8,9 @@ WITH Clause
 *Syntax
 
 ---------------------------
-WITH { keys_range | timestamp_range | versions | query_limit | server_filer | client_filter }+
+WITH { keys | timestamp | versions | query_limit | server_filer | client_filter }+
 
-keys_range:
+keys:
     KEYS key_range [, ...]
     | KEYS ALL
 
@@ -20,9 +20,9 @@ key_range:
     | key_value TO key_value
     | key_value
 
-timestamp_range:
-    TIME RANGE timestamp_value TO timestamp_value
-    | TIME STAMP timestamp_value
+timestamp:
+    TIMESTAMP RANGE timestamp_value TO timestamp_value
+    | TIMESTAMP timestamp_value
 
 versions:
     VERSIONS version_value
@@ -41,23 +41,32 @@ client_filter:
 
 *Description
 
-    The WITH clause is used in the {{{./insert.html}insert}}, {{{select.html}select}} and {{{delete.html}delete}} statements.
+    The WITH clause is used in the {{{./insert.html}insert}}, {{{select.html}select}}
+    and {{{delete.html}delete}} statements.
+
+    * Named parameters can be applied to any of the values above.
 
     * key_value is any valid string {{{./expressions.html}expression}} (cannot reference columns).
+
+        Indicates key values for query.  A key_value  can be bound to a Collection of strings with a named
+        parameter.
        
     * timestamp_value is any valid date {{{./expressions.html}expression}} (cannot reference columns).
 
-        Indicates the timestamp value for query.
+        Indicates the timestamp value for the query.
 
     * version_value is any valid integer {{{./expressions.html}expression}} (cannot reference columns).
 
-        Indicates the number of versions in query.
+        Indicates the maximum number of column versions returned in query.
 
-    * query_value is any valid integer {{{./expressions.html}expression}} (cannot reference columns).
+    * limit_value is any valid long {{{./expressions.html}expression}} (cannot reference columns).
 
-        Indicates the maximum number of rows evaluated as true in query
+        Indicates the maximum number of rows returned, i.e., evaluated as true, in a query.
 
     * where_clause is any valid boolean {{{./expressions.html}expression}} (can reference columns).
+
+        The SERVER FILTER where_clause is evaluated on the HBase server (as an HBase filter)
+        while the CLIENT FILTER where_clause is evaluated on the HBase client.
 
 
 *Example
