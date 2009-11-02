@@ -9,31 +9,31 @@ Introduction
 
 Getting Started
 
-    * {{{download.html}Download}}
+    * {{{./download.html}Download}}
 
-    * {{{installation.html}Installation}}
+    * {{{./installation.html}Installation}}
 
 
 Documentation
 
-    * {{{statements.html}Statements}}
+    * {{{./statements.html}Statements}}
 
-    * {{{statements/functions.html}Functions}}
+    * {{{./statements/functions.html}Functions}}
 
-    * {{{schemas.html}Schemas}}
+    * {{{./schemas.html}Schemas}}
 
-    * {{{console.html}Console usage}}
+    * {{{./console.html}Console usage}}
 
-    * {{{apidocs/index.html}Javadocs}}
+    * {{{./apidocs/index.html}Javadocs}}
 
-    * {{{faq.html}FAQ}}
+    * {{{./faq.html}FAQ}}
 
-    * {{{dependencies.html}Project Dependencies}}
+    * {{{./dependencies.html}Project Dependencies}}
 
 Support
 
     HBql is still very much a work in progress.  If you have problems (or success), please send
-    {{{mailto:pambrose@gmail.com}me}} a note.
+    me a note @ <pambrose AT NOSPAM gmail DOT com>.
 
 
 Supported Platforms
@@ -51,8 +51,6 @@ Road Map
        * JSON results from selects
 
        * Aggregate select elements
-
-    If you have any other ideas on what you would like to see supported, I am all {{{mailto:pambrose@gmail.com}ears}}.
 
 
 
