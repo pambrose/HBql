@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="HBql">
     <bannerLeft>
-        <name>HBql</name>
-        <src>http://maven.apache.org/images/apache-maven-project.png</src>
-        <href>http://maven.apache.org/</href>
+        <name>Hadoop</name>
+        <src>http://hadoop.apache.org/hbase/images/hadoop-logo.jpg</src>
+        <href>http://hadoop.apache.org/</href>
     </bannerLeft>
 
     <bannerRight>
+        <name>HBql</name>
         <src>/images/hbql.png</src>
-        <href>http://www.sudothought.com/index.html</href>
+        <href>http://www.sudothought.com/index.html/</href>
     </bannerRight>
 
     <skin>

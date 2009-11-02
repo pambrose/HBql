@@ -139,6 +139,7 @@ rangeList returns [List<KeyRangeArgs.Range> retval]
 keyRange returns [KeyRangeArgs.Range retval]
 options {backtrack=true;}	
 	: q1=valPrimary keyTO keyLAST			{retval = KeyRangeArgs.newLastRange($q1.retval);}
+	| keyFIRST keyTO q1=valPrimary			{retval = KeyRangeArgs.newFirsttRange($q1.retval);}
 	| q1=valPrimary keyTO q2=valPrimary		{retval = KeyRangeArgs.newRange($q1.retval, $q2.retval);}
 	| q1=valPrimary 				{retval = KeyRangeArgs.newSingleKey($q1.retval);}
 	;
@@ -417,6 +418,7 @@ keyAS		: {isKeyword(input, "AS")}? ID;
 keyTHEN 	: {isKeyword(input, "THEN")}? ID;
 keyELSE 	: {isKeyword(input, "ELSE")}? ID;
 keyEND 		: {isKeyword(input, "END")}? ID;
+keyFIRST	: {isKeyword(input, "FIRST")}? ID;
 keyLAST		: {isKeyword(input, "LAST")}? ID;
 keySCAN 	: {isKeyword(input, "SCAN")}? ID;
 keyQUERY 	: {isKeyword(input, "QUERY")}? ID;

@@ -1,8 +1,10 @@
 package org.apache.hadoop.hbase.contrib.hbql;
 
 import org.apache.expreval.client.HBqlException;
+import org.apache.expreval.util.Util;
 import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.client.Query;
 import org.apache.hadoop.hbase.contrib.hbql.client.Record;
 import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
@@ -95,6 +97,19 @@ public class ExamplesTest extends TestSupport {
     }
 
     public void insert2() throws HBqlException, IOException {
+
+        // START SNIPPET: insert2
+        Connection conn = ConnectionManager.newHConnection();
+        PreparedStatement ps = conn.prepare("INSERT INTO foo_schema (keyval, val1, val2) "
+                                            + "VALUES (:key, :val1, DEFAULT)");
+        ps.setParameter("key", Util.getZeroPaddedNumber(2, 10));
+        ps.setParameter("val1", 123);
+        System.out.println(ps.execute());
+        // END SNIPPET: insert2
+
+    }
+
+    public void insert3() throws HBqlException, IOException {
 
         // START SNIPPET: insert2
         Connection conn = ConnectionManager.newHConnection();

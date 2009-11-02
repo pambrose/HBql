@@ -22,7 +22,7 @@ public class KeyRangeArgs {
     private final List<Range> rangeList;
 
     private enum Type {
-        SINGLE, RANGE, LAST, ALL
+        SINGLE, RANGE, FIRST, LAST, ALL
     }
 
     public static class Range extends SelectArgs {
@@ -43,11 +43,12 @@ public class KeyRangeArgs {
             this.type = KeyRangeArgs.Type.RANGE;
         }
 
-        private Object getLower(final boolean allowsCollections) throws HBqlException {
+        // This is an object because it might be a collection in the case of a param
+        private Object getFirstArg(final boolean allowsCollections) throws HBqlException {
             return this.evaluateConstant(0, allowsCollections, null);
         }
 
-        private String getUpper() throws HBqlException {
+        private String getSecondArg() throws HBqlException {
             return (String)this.evaluateConstant(1, false, null);
         }
 
@@ -56,8 +57,12 @@ public class KeyRangeArgs {
         }
 
         private byte[] getUpperAsBytes() throws HBqlException {
-            final String upper = this.getUpper();
+            final String upper = this.getSecondArg();
             return IO.getSerialization().getStringAsBytes(upper);
+        }
+
+        private boolean isFirstRange() {
+            return this.getType() == KeyRangeArgs.Type.FIRST;
         }
 
         private boolean isLastRange() {
@@ -85,12 +90,16 @@ public class KeyRangeArgs {
             else if (this.isSingleKey()) {
                 sbuf.append("'" + this.getGenericValue(0).asString() + "'");
             }
+            else if (this.isFirstRange()) {
+                sbuf.append("FIRST TO '" + this.getGenericValue(0).asString());
+            }
+            else if (this.isLastRange()) {
+                sbuf.append("'" + this.getGenericValue(0).asString() + "' TO LAST");
+            }
             else {
-                sbuf.append("'" + this.getGenericValue(0).asString() + "' TO ");
-                if (this.isLastRange())
-                    sbuf.append("LAST");
-                else
-                    sbuf.append("'" + this.getGenericValue(1).asString() + "'");
+                sbuf.append("'" + this.getGenericValue(0).asString() + "'");
+                sbuf.append(" TO ");
+                sbuf.append("'" + this.getGenericValue(1).asString() + "'");
             }
             return sbuf.toString();
         }
@@ -104,13 +113,13 @@ public class KeyRangeArgs {
             return new RowRequest(get, null);
         }
 
-        public List<RowRequest> getGet(final WithArgs withArgs,
-                                       final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+        private List<RowRequest> getGet(final WithArgs withArgs,
+                                        final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
 
-            List<RowRequest> retval = Lists.newArrayList();
+            final List<RowRequest> retval = Lists.newArrayList();
 
             // Check if the value returned is a collection
-            final Object objval = this.getLower(true);
+            final Object objval = this.getFirstArg(true);
             if (Util.isACollection(objval)) {
                 for (final GenericValue val : (Collection<GenericValue>)objval) {
                     try {
@@ -130,15 +139,29 @@ public class KeyRangeArgs {
             return retval;
         }
 
-        public RowRequest getScan(final WithArgs withArgs,
-                                  final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+        private RowRequest getScan(final WithArgs withArgs,
+                                   final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+
             final Scan scan = new Scan();
-            if (!this.isAllRows()) {
-                final byte[] lowerBytes = IO.getSerialization().getStringAsBytes((String)this.getLower(false));
-                scan.setStartRow(lowerBytes);
-                if (this.isRowRange())
-                    scan.setStopRow(this.getUpperAsBytes());
+
+            if (this.isAllRows()) {
+                // Let scan default to all rows
             }
+            else if (this.isFirstRange()) {
+                final byte[] upperBytes = IO.getSerialization().getStringAsBytes((String)this.getFirstArg(false));
+                scan.setStopRow(upperBytes);
+            }
+            else if (this.isLastRange()) {
+                final byte[] lowerBytes = IO.getSerialization().getStringAsBytes((String)this.getFirstArg(false));
+                scan.setStartRow(lowerBytes);
+            }
+            else {
+                final byte[] lowerBytes = IO.getSerialization().getStringAsBytes((String)this.getFirstArg(false));
+                final byte[] upperBytes = IO.getSerialization().getStringAsBytes(this.getSecondArg());
+                scan.setStartRow(lowerBytes);
+                scan.setStopRow(upperBytes);
+            }
+
             withArgs.setScanArgs(scan, columnAttribSet);
             return new RowRequest(null, scan);
         }
@@ -173,11 +196,15 @@ public class KeyRangeArgs {
     }
 
     public static Range newSingleKey(final GenericValue arg0) {
-        return new Range(KeyRangeArgs.Type.SINGLE, arg0);
+        return new Range(Type.SINGLE, arg0);
+    }
+
+    public static Range newFirstRange(final GenericValue arg0) {
+        return new Range(Type.FIRST, arg0);
     }
 
     public static Range newLastRange(final GenericValue arg0) {
-        return new Range(KeyRangeArgs.Type.LAST, arg0);
+        return new Range(Type.LAST, arg0);
     }
 
     public static Range newAllRange() {

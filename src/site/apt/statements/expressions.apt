@@ -23,7 +23,7 @@ Expressions
 
     ** CASE ( WHEN boolean_value THEN value [ , ... ] ) ELSE value END
 
-    ** Any of these {{{./functions.html}functions}}
+    ** A built-in {{{./functions.html}function}}
 
 
 Types
@@ -41,6 +41,15 @@ Types
 * Column references
 
     Column values can be referenced by family:column or alias name.
+
+
+* Parameters
+
+    Parameters are specified by :name notation.  Parameter types are not
+    determined until a value is bound through a setParameter() call.
+    The type can change is rebound with a different type through a
+    subsequent setParameter() call.  Where appropriate, parameter values can be
+    bound to a Collection value.
 
 
 Operators
