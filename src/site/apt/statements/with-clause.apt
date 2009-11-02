@@ -8,14 +8,15 @@ WITH Clause
 *Syntax
 
 ---------------------------
-WITH { keys_range | timestamp_range | versions | scan_limit  | query_limit | server_filer | client_filter }+
+WITH { keys_range | timestamp_range | versions | query_limit | server_filer | client_filter }+
 
 keys_range:
     KEYS key_range [, ...]
     | KEYS ALL
 
 key_range:
-    key_value TO LAST
+    FIRST TO key_value
+    | key_value TO LAST
     | key_value TO key_value
     | key_value
 
@@ -27,11 +28,8 @@ versions:
     VERSIONS version_value
     | VERSIONS MAX
 
-scan_limit:
-    SCAN LIMIT limit_value
-
 query_limit:
-    QUERY LIMIT limit_value
+    LIMIT limit_value
 
 server_filter:
     SERVER FILTER WHERE where_clause
@@ -45,15 +43,21 @@ client_filter:
 
     The WITH clause is used in the {{{./insert.html}insert}}, {{{select.html}select}} and {{{delete.html}delete}} statements.
 
-    * key_value is any valid string {{{./expressions.html}expression}} (cannot reference columns)
+    * key_value is any valid string {{{./expressions.html}expression}} (cannot reference columns).
+       
+    * timestamp_value is any valid date {{{./expressions.html}expression}} (cannot reference columns).
 
-    * timestamp_value is any valid date {{{./expressions.html}expression}} (cannot reference columns)
+        Indicates the timestamp value for query.
 
-    * version_value is any valid integer {{{./expressions.html}expression}} (cannot reference columns)
+    * version_value is any valid integer {{{./expressions.html}expression}} (cannot reference columns).
 
-    * limit_value is any valid integer {{{./expressions.html}expression}} (cannot reference columns)
+        Indicates the number of versions in query.
 
-    * where_clause is any valid boolean {{{./expressions.html}expression}} (can reference columns)
+    * query_value is any valid integer {{{./expressions.html}expression}} (cannot reference columns).
+
+        Indicates the maximum number of rows evaluated as true in query
+
+    * where_clause is any valid boolean {{{./expressions.html}expression}} (can reference columns).
 
 
 *Example

@@ -7,11 +7,11 @@ import org.apache.hadoop.hbase.client.Scan;
 
 import java.io.IOException;
 
-public class TimestampRangeArgs extends SelectArgs {
+public class TimestampArgs extends SelectArgs {
 
     final boolean singleValue;
 
-    public TimestampRangeArgs(final GenericValue arg0, final GenericValue arg1) {
+    public TimestampArgs(final GenericValue arg0, final GenericValue arg1) {
         super(SelectArgs.Type.TIMESTAMPRANGE, arg0, arg1);
         this.singleValue = arg0 == arg1;
     }

@@ -31,7 +31,7 @@ public class ObjectResults<T> implements Iterable<T> {
     public Iterator<T> iterator() {
 
         try {
-            return new ResultsIterator<T>() {
+            return new ResultsIterator<T>(-1L) {
 
                 // In theory, this should be done only once and in ObjectQuery, but
                 // since it requires the objects to get the schema, I do it here
@@ -42,15 +42,27 @@ public class ObjectResults<T> implements Iterable<T> {
                 // Prime the iterator with the first value
                 private T nextObject = fetchNextObject();
 
+                private Iterator<T> getObjectIter() {
+                    return this.objectIter;
+                }
+
+                private void setObjectIter(final Iterator<T> objectIter) {
+                    this.objectIter = objectIter;
+                }
+
+                private ExpressionTree getExpressionTree() {
+                    return this.expressionTree;
+                }
+
                 protected T fetchNextObject() throws HBqlException {
 
-                    if (objectIter == null)
-                        objectIter = getObjects().iterator();
+                    if (getObjectIter() == null)
+                        setObjectIter(getObjects().iterator());
 
-                    while (this.objectIter.hasNext()) {
-                        final T val = this.objectIter.next();
+                    while (this.getObjectIter().hasNext()) {
+                        final T val = this.getObjectIter().next();
                         try {
-                            if (this.expressionTree.evaluate(val))
+                            if (this.getExpressionTree().evaluate(val))
                                 return val;
                         }
                         catch (ResultMissingColumnException e) {

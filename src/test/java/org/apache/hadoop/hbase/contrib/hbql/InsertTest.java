@@ -508,16 +508,16 @@ public class InsertTest extends TestSupport {
         List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
         for (final Record rec : recList1) {
-            int val1 = (Integer)rec.getCurrentValue(":expr-0");
+            int val1 = (Integer)rec.getCurrentValue("expr-0");
             assertTrue(val1 == 6);
-            int val2 = (Integer)rec.getCurrentValue(":expr-1");
+            int val2 = (Integer)rec.getCurrentValue("expr-1");
             assertTrue(val2 == 14);
             int val3 = (Integer)rec.getCurrentValue("expr1");
             assertTrue(val3 == 8);
 
-            boolean val4 = (Boolean)rec.getCurrentValue(":expr-2");
+            boolean val4 = (Boolean)rec.getCurrentValue("expr-2");
             assertTrue(val4);
-            boolean val5 = (Boolean)rec.getCurrentValue(":expr-3");
+            boolean val5 = (Boolean)rec.getCurrentValue("expr-3");
             assertTrue(!val5);
         }
     }
@@ -540,9 +540,9 @@ public class InsertTest extends TestSupport {
         List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
         for (final Record rec : recList1) {
-            boolean val1 = (Boolean)rec.getCurrentValue(":expr-0");
+            boolean val1 = (Boolean)rec.getCurrentValue("expr-0");
             assertTrue(val1);
-            boolean val2 = (Boolean)rec.getCurrentValue(":expr-1");
+            boolean val2 = (Boolean)rec.getCurrentValue("expr-1");
             assertTrue(!val2);
         }
 
@@ -553,9 +553,9 @@ public class InsertTest extends TestSupport {
         List<Record> recList2 = q2.getResultList();
         assertTrue(recList2.size() == 10);
         for (final Record rec : recList2) {
-            boolean val1 = (Boolean)rec.getCurrentValue(":expr-0");
+            boolean val1 = (Boolean)rec.getCurrentValue("expr-0");
             assertTrue(val1);
-            boolean val2 = (Boolean)rec.getCurrentValue(":expr-1");
+            boolean val2 = (Boolean)rec.getCurrentValue("expr-1");
             assertTrue(!val2);
         }
     }

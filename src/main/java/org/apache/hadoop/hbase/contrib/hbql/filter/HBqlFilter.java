@@ -102,6 +102,10 @@ public class HBqlFilter implements Filter {
     }
 
     public boolean filterAllRemaining() {
+
+        // TODO This will be a problem with versions, since versions count as distinct rows.
+        // TODO Need to track distinct key values
+
         final boolean retval = this.getScanLimit() > 0 && this.getRecordCount() >= this.getScanLimit();
         LOG.info("In filterAllRemaining() " + this.getScanLimit() + " - " + this.getRecordCount() + " - " + retval);
         return retval;

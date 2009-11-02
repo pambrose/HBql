@@ -7,6 +7,15 @@ import java.util.Iterator;
 
 public abstract class ResultsIterator<T> implements Iterator<T> {
 
+    // Record count keeps track of values that have evaluated as true and returned to user
+    private long returnedRecordCount = 0L;
+
+    private final long returnedRecordLimit;
+
+    protected ResultsIterator(final long returnedRecordLimit) {
+        this.returnedRecordLimit = returnedRecordLimit;
+    }
+
     protected abstract T fetchNextObject() throws HBqlException, IOException;
 
     protected abstract T getNextObject();
@@ -20,8 +29,6 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
 
         // Now prefetch next value so that hasNext() will be correct
         try {
-            // Check if queryLimit has been exceeeded
-
             this.setNextObject(this.fetchNextObject(), false);
         }
         catch (HBqlException e) {
@@ -42,5 +49,28 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
 
     public void remove() {
 
+    }
+
+    private boolean returnedRecordLimitMet() {
+        return this.getReturnedRecordLimit() > 0 && this.getReturnedRecordCount() >= this.getReturnedRecordLimit();
+    }
+
+    private long getReturnedRecordCount() {
+        return this.returnedRecordCount;
+    }
+
+    protected void incrementReturnedRecordCount() {
+        this.returnedRecordCount++;
+
+        // See if the limit has been met.  If so, then advance through the rest of the results
+        if (this.returnedRecordLimitMet()) {
+            while (this.hasNext()) {
+                this.next();
+            }
+        }
+    }
+
+    private long getReturnedRecordLimit() {
+        return this.returnedRecordLimit;
     }
 }

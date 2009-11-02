@@ -83,19 +83,18 @@ public class ResultsImpl<T> implements Results<T> {
     public Iterator<T> iterator() {
 
         try {
-            return new ResultsIterator<T>() {
+            return new ResultsIterator<T>(this.getWithArgs().getLimit()) {
 
-                final HTable table = getConnection().getHTable(getSelectStatement().getSchema().getTableName());
-                final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
-                final Iterator<RowRequest> rowRequestIter = getRowRequestList().iterator();
+                private final HTable table = getConnection().getHTable(getSelectStatement().getSchema().getTableName());
+                private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
+                private final Iterator<RowRequest> rowRequestIter = getRowRequestList().iterator();
 
-                int maxVersions = 0;
-                ResultScanner currentResultScanner = null;
-                Iterator<Result> resultIter = null;
-                long recordCount = 0;
+                private int maxVersions = 0;
+                private ResultScanner currentResultScanner = null;
+                private Iterator<Result> resultIter = null;
 
                 // Prime the iterator with the first value
-                T nextObject = fetchNextObject();
+                private T nextObject = fetchNextObject();
 
                 private ExpressionTree getClientExpressionTree() {
                     return this.clientExpressionTree;
@@ -125,6 +124,7 @@ public class ResultsImpl<T> implements Results<T> {
                     if (this.getRowRequestIter().hasNext()) {
 
                         final RowRequest rowRequest = this.getRowRequestIter().next();
+
                         this.maxVersions = rowRequest.getMaxVersions();
 
                         // First close previous ResultScanner before reassigning
@@ -152,6 +152,7 @@ public class ResultsImpl<T> implements Results<T> {
                     val = doFetch();
                     if (val == null)
                         closeCurrentScanner(this.getCurrentResultScanner(), true);
+
                     return val;
                 }
 
@@ -172,11 +173,11 @@ public class ResultsImpl<T> implements Results<T> {
                             try {
                                 if (getClientExpressionTree() == null || getClientExpressionTree().evaluate(result)) {
 
-                                    this.recordCount++;
-
                                     final T val = (T)schema.newObject(getSelectStatement().getSelectElementList(),
                                                                       this.maxVersions,
                                                                       result);
+
+                                    incrementReturnedRecordCount();
 
                                     if (getListeners() != null)
                                         for (final QueryListener<T> listener : getListeners())

@@ -19,10 +19,9 @@ import java.util.Set;
 public class WithArgs {
 
     private KeyRangeArgs keyRangeArgs = null;
-    private TimestampRangeArgs timestampRangeArgs = null;
+    private TimestampArgs timestampArgs = null;
     private VersionArgs versionArgs = null;
-    private LimitArgs scanLimitArgs = null;
-    private LimitArgs queryLimitArgs = null;
+    private LimitArgs limitArgs = null;
     private ExpressionTree clientExpressionTree = null;
     private ExpressionTree serverExpressionTree = null;
 
@@ -42,17 +41,14 @@ public class WithArgs {
 
         this.getKeyRangeArgs().setSchema(null);
 
-        if (this.getTimestampRangeArgs() != null)
-            this.getTimestampRangeArgs().setSchema(null);
+        if (this.getTimestampArgs() != null)
+            this.getTimestampArgs().setSchema(null);
 
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setSchema(null);
 
-        if (this.getScanLimitArgs() != null)
-            this.getScanLimitArgs().setSchema(null);
-
-        if (this.getQueryLimitArgs() != null)
-            this.getQueryLimitArgs().setSchema(null);
+        if (this.getLimitArgs() != null)
+            this.getLimitArgs().setSchema(null);
 
         if (this.getServerExpressionTree() != null)
             this.getServerExpressionTree().setSchema(this.getSchema());
@@ -93,14 +89,14 @@ public class WithArgs {
         this.keyRangeArgs = keyRangeArgs;
     }
 
-    private TimestampRangeArgs getTimestampRangeArgs() {
-        return this.timestampRangeArgs;
+    private TimestampArgs getTimestampArgs() {
+        return this.timestampArgs;
     }
 
-    public void setTimestampRangeArgs(final TimestampRangeArgs timestampRangeArgs) {
-        if (this.getTimestampRangeArgs() != null)
+    public void setTimestampArgs(final TimestampArgs timestampArgs) {
+        if (this.getTimestampArgs() != null)
             this.addError("Time Range");
-        this.timestampRangeArgs = timestampRangeArgs;
+        this.timestampArgs = timestampArgs;
     }
 
     private VersionArgs getVersionArgs() {
@@ -113,24 +109,14 @@ public class WithArgs {
         this.versionArgs = versionArgs;
     }
 
-    public LimitArgs getScanLimitArgs() {
-        return this.scanLimitArgs;
+    public LimitArgs getLimitArgs() {
+        return this.limitArgs;
     }
 
-    public void setScanLimitArgs(final LimitArgs scanLimitArgs) {
-        if (this.getScanLimitArgs() != null)
-            this.addError("Scan Limit");
-        this.scanLimitArgs = scanLimitArgs;
-    }
-
-    public LimitArgs getQueryLimitArgs() {
-        return this.queryLimitArgs;
-    }
-
-    public void setQueryLimitArgs(final LimitArgs queryLimitArgs) {
-        if (this.getQueryLimitArgs() != null)
-            this.addError("Query Limit");
-        this.queryLimitArgs = queryLimitArgs;
+    public void setLimitArgs(final LimitArgs limitArgs) {
+        if (this.getLimitArgs() != null)
+            this.addError("Limit");
+        this.limitArgs = limitArgs;
     }
 
     public ExpressionTree getClientExpressionTree() {
@@ -153,12 +139,8 @@ public class WithArgs {
         this.serverExpressionTree = serverExpressionTree;
     }
 
-    public long getQueryLimit() throws HBqlException {
-        return (this.getQueryLimitArgs() != null) ? this.getQueryLimitArgs().getValue() : 0;
-    }
-
-    public long getScanLimit() throws HBqlException {
-        return (this.getScanLimitArgs() != null) ? this.getScanLimitArgs().getValue() : 0;
+    public long getLimit() throws HBqlException {
+        return (this.getLimitArgs() != null) ? this.getLimitArgs().getValue() : 0;
     }
 
     public String asString() {
@@ -168,17 +150,14 @@ public class WithArgs {
         if (this.getKeyRangeArgs() != null)
             sbuf.append(this.getKeyRangeArgs().asString() + "\n");
 
-        if (this.getTimestampRangeArgs() != null)
-            sbuf.append(this.getTimestampRangeArgs().asString() + "\n");
+        if (this.getTimestampArgs() != null)
+            sbuf.append(this.getTimestampArgs().asString() + "\n");
 
         if (this.getVersionArgs() != null)
             sbuf.append(this.getVersionArgs().asString() + "\n");
 
-        if (this.getScanLimitArgs() != null)
-            sbuf.append("SCAN " + this.getScanLimitArgs().asString() + "\n");
-
-        if (this.getQueryLimitArgs() != null)
-            sbuf.append("QUERY " + this.getQueryLimitArgs().asString() + "\n");
+        if (this.getLimitArgs() != null)
+            sbuf.append(this.getLimitArgs().asString() + "\n");
 
         if (this.getServerExpressionTree() != null)
             sbuf.append("SERVER FILTER " + this.getServerExpressionTree().asString() + "\n");
@@ -193,17 +172,14 @@ public class WithArgs {
 
         int cnt = this.getKeyRangeArgs().setParameter(name, val);
 
-        if (this.getTimestampRangeArgs() != null)
-            cnt += this.getTimestampRangeArgs().setParameter(name, val);
+        if (this.getTimestampArgs() != null)
+            cnt += this.getTimestampArgs().setParameter(name, val);
 
         if (this.getVersionArgs() != null)
             cnt += this.getVersionArgs().setParameter(name, val);
 
-        if (this.getScanLimitArgs() != null)
-            cnt += this.getScanLimitArgs().setParameter(name, val);
-
-        if (this.getQueryLimitArgs() != null)
-            cnt += this.getQueryLimitArgs().setParameter(name, val);
+        if (this.getLimitArgs() != null)
+            cnt += this.getLimitArgs().setParameter(name, val);
 
         if (this.getServerExpressionTree() != null)
             cnt += this.getServerExpressionTree().setParameter(name, val);
@@ -249,14 +225,14 @@ public class WithArgs {
                 get.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
         }
 
-        if (this.getTimestampRangeArgs() != null)
-            this.getTimestampRangeArgs().setTimeStamp(get);
+        if (this.getTimestampArgs() != null)
+            this.getTimestampArgs().setTimeStamp(get);
 
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(get);
 
         final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExpressionTree(),
-                                                                       this.getScanLimit());
+                                                                       this.getLimit());
         if (serverFilter != null)
             get.setFilter(serverFilter);
     }
@@ -278,14 +254,14 @@ public class WithArgs {
                 scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
         }
 
-        if (this.getTimestampRangeArgs() != null)
-            this.getTimestampRangeArgs().setTimeStamp(scan);
+        if (this.getTimestampArgs() != null)
+            this.getTimestampArgs().setTimeStamp(scan);
 
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(scan);
 
         final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExpressionTree(),
-                                                                       this.getScanLimit());
+                                                                       this.getLimit());
         if (serverFilter != null)
             scan.setFilter(serverFilter);
     }
