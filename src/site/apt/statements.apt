@@ -10,7 +10,7 @@ HBql Statements
     * Statement keywords are case insensitive.
     
 
-* Data Definition
+* Table Management
 
     **{{{./statements/create-table.html}CREATE TABLE}}
 
@@ -23,6 +23,8 @@ HBql Statements
     **{{{./statements/list-tables.html}LIST TABLES}}
 
     **{{{./statements/describe-table.html}DESCRIBE TABLE}}
+
+* Schema Management
 
     **{{{./statements/create-schema.html}CREATE SCHEMA}}
 
