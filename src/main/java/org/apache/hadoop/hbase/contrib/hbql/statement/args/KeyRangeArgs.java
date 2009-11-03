@@ -3,7 +3,7 @@ package org.apache.hadoop.hbase.contrib.hbql.statement.args;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.Util;
+import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Get;
@@ -120,7 +120,7 @@ public class KeyRangeArgs {
 
             // Check if the value returned is a collection
             final Object objval = this.getFirstArg(true);
-            if (Util.isACollection(objval)) {
+            if (TypeSupport.isACollection(objval)) {
                 for (final GenericValue val : (Collection<GenericValue>)objval) {
                     try {
                         final String lower = (String)val.getValue(null);

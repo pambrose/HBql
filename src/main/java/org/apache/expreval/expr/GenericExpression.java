@@ -213,7 +213,7 @@ public abstract class GenericExpression implements GenericValue {
                 || this.getTypeSignature().getReturnType() == DateValue.class)
                 return this.getTypeSignature().newLiteral(obj);
 
-            if (Util.isParentClass(NumberValue.class, this.getTypeSignature().getReturnType())) {
+            if (TypeSupport.isParentClass(NumberValue.class, this.getTypeSignature().getReturnType())) {
 
                 if (obj instanceof Short)
                     return new ShortLiteral((Short)obj);
@@ -265,8 +265,8 @@ public abstract class GenericExpression implements GenericValue {
             if (clazz == null)
                 continue;
 
-            if (Util.isParentClass(NumberValue.class, parentClazz)) {
-                if (!Util.isParentClass(NumberValue.class, clazz)) {
+            if (TypeSupport.isParentClass(NumberValue.class, parentClazz)) {
+                if (!TypeSupport.isParentClass(NumberValue.class, clazz)) {
                     classList.add(clazz);
                 }
                 else {
@@ -329,7 +329,7 @@ public abstract class GenericExpression implements GenericValue {
                                                                         BooleanValue.class);
 
         for (final Class<? extends GenericValue> type : types)
-            if (Util.isParentClass(type, clazz))
+            if (TypeSupport.isParentClass(type, clazz))
                 return type;
 
         this.throwInvalidTypeException(clazz);

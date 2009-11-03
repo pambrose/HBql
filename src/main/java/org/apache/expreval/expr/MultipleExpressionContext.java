@@ -161,7 +161,7 @@ public abstract class MultipleExpressionContext implements Serializable {
                     final Class<? extends GenericValue> parentClazz = this.getTypeSignature().getArg(i);
                     final Class<? extends GenericValue> clazz = clazzList.get(i);
                     // See if they are both NumberValues.  If they are, then check ranks
-                    if (Util.isParentClass(NumberValue.class, parentClazz, clazz)) {
+                    if (TypeSupport.isParentClass(NumberValue.class, parentClazz, clazz)) {
                         final int parentRank = NumericType.getTypeRanking(parentClazz);
                         final int clazzRank = NumericType.getTypeRanking(clazz);
                         if (clazzRank > parentRank)

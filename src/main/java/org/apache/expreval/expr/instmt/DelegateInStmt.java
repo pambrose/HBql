@@ -3,7 +3,7 @@ package org.apache.expreval.expr.instmt;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.Util;
+import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
@@ -29,13 +29,13 @@ public class DelegateInStmt extends GenericInStmt {
         for (final GenericValue val : this.getInList())
             this.validateParentClass(inType, val.validateTypes(this, true));
 
-        if (Util.isParentClass(StringValue.class, type))
+        if (TypeSupport.isParentClass(StringValue.class, type))
             this.setTypedExpr(new StringInStmt(this.getArg(0), this.isNot(), this.getInList()));
-        else if (Util.isParentClass(NumberValue.class, type))
+        else if (TypeSupport.isParentClass(NumberValue.class, type))
             this.setTypedExpr(new NumberInStmt(this.getArg(0), this.isNot(), this.getInList()));
-        else if (Util.isParentClass(DateValue.class, type))
+        else if (TypeSupport.isParentClass(DateValue.class, type))
             this.setTypedExpr(new DateInStmt(this.getArg(0), this.isNot(), this.getInList()));
-        else if (Util.isParentClass(BooleanValue.class, type))
+        else if (TypeSupport.isParentClass(BooleanValue.class, type))
             this.setTypedExpr(new BooleanInStmt(this.getArg(0), this.isNot(), this.getInList()));
         else
             this.throwInvalidTypeException(type);

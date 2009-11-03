@@ -1,7 +1,6 @@
 package org.apache.expreval.examples;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.util.Util;
 import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
 import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
@@ -9,6 +8,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.Query;
 import org.apache.hadoop.hbase.contrib.hbql.client.Record;
 import org.apache.hadoop.hbase.contrib.hbql.client.Results;
 import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.Util;
 
 import java.io.IOException;
 import java.util.Date;

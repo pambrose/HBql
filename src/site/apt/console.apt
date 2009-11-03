@@ -5,7 +5,8 @@
 
 Console
 
-    The console provides a simple command line interface for executing HBql statements.
+    The console provides a simple command line interface for executing HBql statements.  Commands are
+    terinated with the ";" character.  A single line can have multiple ";" separated statements.
 
 
 *Syntax

@@ -2,7 +2,7 @@ package org.apache.expreval.expr.instmt;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.Util;
+import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.GenericValue;
 
 import java.util.Collection;
@@ -21,7 +21,7 @@ public class DateInStmt extends GenericInStmt {
         for (final GenericValue obj : this.getInList()) {
             // Check if the value returned is a collection
             final Object objval = obj.getValue(object);
-            if (Util.isACollection(objval)) {
+            if (TypeSupport.isACollection(objval)) {
                 for (final GenericValue val : (Collection<GenericValue>)objval) {
                     if (attribVal == (Long)val.getValue(object))
                         return true;

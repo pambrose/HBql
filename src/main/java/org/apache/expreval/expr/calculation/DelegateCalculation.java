@@ -3,7 +3,7 @@ package org.apache.expreval.expr.calculation;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
-import org.apache.expreval.expr.Util;
+import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
@@ -21,11 +21,11 @@ public class DelegateCalculation extends GenericCalculation {
         final Class<? extends GenericValue> type1 = this.getArg(0).validateTypes(this, false);
         final Class<? extends GenericValue> type2 = this.getArg(1).validateTypes(this, false);
 
-        if (Util.isParentClass(StringValue.class, type1, type2))
+        if (TypeSupport.isParentClass(StringValue.class, type1, type2))
             this.setTypedExpr(new StringCalculation(this.getArg(0), this.getOperator(), this.getArg(1)));
-        else if (Util.isParentClass(NumberValue.class, type1, type2))
+        else if (TypeSupport.isParentClass(NumberValue.class, type1, type2))
             this.setTypedExpr(new NumberCalculation(this.getArg(0), this.getOperator(), this.getArg(1)));
-        else if (Util.isParentClass(DateValue.class, type1, type2))
+        else if (TypeSupport.isParentClass(DateValue.class, type1, type2))
             this.setTypedExpr(new DateCalculation(this.getArg(0), this.getOperator(), this.getArg(1)));
         else
             this.throwInvalidTypeException(type1, type2);

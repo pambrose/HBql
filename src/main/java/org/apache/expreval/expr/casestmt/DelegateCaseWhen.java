@@ -2,7 +2,7 @@ package org.apache.expreval.expr.casestmt;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.Util;
+import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
@@ -21,13 +21,13 @@ public class DelegateCaseWhen extends GenericCaseWhen {
         this.validateParentClass(BooleanValue.class, this.getArg(0).validateTypes(this, false));
         final Class<? extends GenericValue> valueType = this.getArg(1).validateTypes(this, false);
 
-        if (Util.isParentClass(StringValue.class, valueType))
+        if (TypeSupport.isParentClass(StringValue.class, valueType))
             this.setTypedExpr(new StringCaseWhen(this.getArg(0), this.getArg(1)));
-        else if (Util.isParentClass(NumberValue.class, valueType))
+        else if (TypeSupport.isParentClass(NumberValue.class, valueType))
             this.setTypedExpr(new NumberCaseWhen(this.getArg(0), this.getArg(1)));
-        else if (Util.isParentClass(DateValue.class, valueType))
+        else if (TypeSupport.isParentClass(DateValue.class, valueType))
             this.setTypedExpr(new DateCaseWhen(this.getArg(0), this.getArg(1)));
-        else if (Util.isParentClass(BooleanValue.class, valueType))
+        else if (TypeSupport.isParentClass(BooleanValue.class, valueType))
             this.setTypedExpr(new BooleanCaseWhen(this.getArg(0), this.getArg(1)));
         else
             this.throwInvalidTypeException(valueType);

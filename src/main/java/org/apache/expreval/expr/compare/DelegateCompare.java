@@ -3,7 +3,7 @@ package org.apache.expreval.expr.compare;
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
-import org.apache.expreval.expr.Util;
+import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
@@ -28,13 +28,13 @@ public class DelegateCompare extends GenericCompare {
         final Class<? extends GenericValue> type0 = this.getArg(0).validateTypes(this, false);
         final Class<? extends GenericValue> type1 = this.getArg(1).validateTypes(this, false);
 
-        if (Util.isParentClass(StringValue.class, type0, type1))
+        if (TypeSupport.isParentClass(StringValue.class, type0, type1))
             typedExpr = new StringCompare(this.getArg(0), this.getOperator(), this.getArg(1));
-        else if (Util.isParentClass(NumberValue.class, type0, type1))
+        else if (TypeSupport.isParentClass(NumberValue.class, type0, type1))
             typedExpr = new NumberCompare(this.getArg(0), this.getOperator(), this.getArg(1));
-        else if (Util.isParentClass(DateValue.class, type0, type1))
+        else if (TypeSupport.isParentClass(DateValue.class, type0, type1))
             typedExpr = new DateCompare(this.getArg(0), this.getOperator(), this.getArg(1));
-        else if (Util.isParentClass(BooleanValue.class, type0, type1))
+        else if (TypeSupport.isParentClass(BooleanValue.class, type0, type1))
             typedExpr = new BooleanCompare(this.getArg(0), this.getOperator(), this.getArg(1));
         else
             this.throwInvalidTypeException(type0, type1);

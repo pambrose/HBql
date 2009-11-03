@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.contrib.hbql.schema;
 
 import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.expr.Util;
+import org.apache.expreval.expr.TypeSupport;
 import org.apache.hadoop.hbase.contrib.hbql.client.ColumnVersionMap;
 
 import java.lang.reflect.Field;
@@ -32,7 +32,7 @@ public class VersionAnnotationAttrib extends FieldAttrib {
         final String annoname = "@HColumnVersionMap annotation";
 
         // Check if type is a Map
-        if (!Util.isParentClass(Map.class, field.getType()))
+        if (!TypeSupport.isParentClass(Map.class, field.getType()))
             throw new HBqlException(getObjectQualifiedName(field) + "has a " + annoname + " so it "
                                     + "must implement the Map interface");
 

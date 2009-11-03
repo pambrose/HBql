@@ -6,7 +6,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.client.TypeException;
 import org.apache.expreval.expr.GenericExpression;
 import org.apache.expreval.expr.TypeSignature;
-import org.apache.expreval.expr.Util;
+import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.DoubleValue;
@@ -95,13 +95,13 @@ public abstract class Function extends GenericExpression {
 
             final Class<? extends GenericValue> returnType = type.getTypeSignature().getReturnType();
 
-            if (Util.isParentClass(BooleanValue.class, returnType))
+            if (TypeSupport.isParentClass(BooleanValue.class, returnType))
                 return new BooleanFunction(type, exprList);
-            else if (Util.isParentClass(StringValue.class, returnType))
+            else if (TypeSupport.isParentClass(StringValue.class, returnType))
                 return new StringFunction(type, exprList);
-            else if (Util.isParentClass(NumberValue.class, returnType))
+            else if (TypeSupport.isParentClass(NumberValue.class, returnType))
                 return new NumberFunction(type, exprList);
-            else if (Util.isParentClass(DateValue.class, returnType))
+            else if (TypeSupport.isParentClass(DateValue.class, returnType))
                 return new DateFunction(type, exprList);
 
             return null;

@@ -12,13 +12,8 @@ import org.apache.expreval.expr.node.StringValue;
 
 import java.util.Collection;
 
-/**
- * Created by IntelliJ IDEA.
- * User: pambrose
- * Date: Oct 28, 2009
- * Time: 3:34:38 PM
- */
-public class Util {
+public class TypeSupport {
+
     public static boolean isACollection(final Object obj) {
         return isParentClass(Collection.class, obj.getClass());
     }

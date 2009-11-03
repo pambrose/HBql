@@ -2,7 +2,7 @@ package org.apache.expreval.expr.instmt;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.Util;
+import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.GenericValue;
 
 import java.util.Collection;
@@ -28,7 +28,7 @@ public class NumberInStmt extends GenericInStmt {
 
                 // Check if the value returned is a collection
                 final Object objval = obj.getValue(object);
-                if (Util.isACollection(objval)) {
+                if (TypeSupport.isACollection(objval)) {
                     for (final GenericValue genericValue : (Collection<GenericValue>)objval) {
                         if (val0 == ((Number)genericValue.getValue(object)).longValue())
                             return true;
@@ -49,7 +49,7 @@ public class NumberInStmt extends GenericInStmt {
 
                 // Check if the value returned is a collection
                 final Object objval = obj.getValue(object);
-                if (Util.isACollection(objval)) {
+                if (TypeSupport.isACollection(objval)) {
                     for (final GenericValue genericValue : (Collection<GenericValue>)objval) {
                         if (val0 == ((Number)genericValue.getValue(object)).doubleValue())
                             return true;
