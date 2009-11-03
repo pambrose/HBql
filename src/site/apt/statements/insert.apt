@@ -20,6 +20,8 @@ column_reference:
     Inserts values into a table.
 
     * A key value must be included in the column_reference list.
+
+    * Inserts can also done using Annotations or the Record interface, as seen below.
     
 *Example
 
@@ -28,3 +30,5 @@ column_reference:
 %{snippet|id=insert2|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
 
 %{snippet|id=insert3|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
+
+%{snippet|id=insert4|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}

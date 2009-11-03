@@ -2,6 +2,7 @@ package org.apache.hadoop.hbase.contrib.hbql;
 
 import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.util.Util;
+import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
 import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
@@ -142,8 +143,21 @@ public class ExamplesTest extends TestSupport {
                               + ")");
 
         Connection conn = ConnectionManager.newConnection();
+
         System.out.println(conn.execute("INSERT INTO foo_schema (keyval, val1, val2) "
                                         + "VALUES (ZEROPAD(2, 10), 123, 'test val')"));
+
+        // Or using the Record interface
+        Record rec = SchemaManager.newRecord("foo_schema");
+        rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(2, 10));
+        rec.setCurrentValue("val1", 123);
+        rec.setCurrentValue("al2", "testval");
+
+        Batch batch = new Batch();
+        batch.insert(rec);
+
+        conn.apply(batch);
+
         // END SNIPPET: insert1
 
     }
@@ -243,7 +257,7 @@ public class ExamplesTest extends TestSupport {
                               + "f3:* ALIAS f3default "
                               + ")");
 
-        Query<Record> q1 = conn.newQuery("SELECT val1, val5 FROM tab1");
+        Query<Record> q1 = conn.newQuery("SELECT val1, val5 FROM tab1 ");
         List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
     }

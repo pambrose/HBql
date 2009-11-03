@@ -20,17 +20,18 @@ HBql Statements
 
     **{{{./statements/drop-table.html}DROP TABLE}}
 
-    **{{{./statements/describe-table.html}DESCRIBE TABLE}}
-
     **{{{./statements/list-tables.html}LIST TABLES}}
+
+    **{{{./statements/describe-table.html}DESCRIBE TABLE}}
 
     **{{{./statements/create-schema.html}CREATE SCHEMA}}
 
     **{{{./statements/drop-schema.html}DROP SCHEMA}}
 
+    **{{{./statements/list-schemas.html}LIST SCHEMAS}}
+
     **{{{./statements/describe-schema.html}DESCRIBE SCHEMA}}
 
-    **{{{./statements/list-schemas.html}LIST SCHEMAS}}
 
 * Data Manipulation
 
