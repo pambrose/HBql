@@ -7,8 +7,6 @@ import org.apache.hadoop.hbase.contrib.hbql.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnDescription;
 import org.apache.hadoop.hbase.contrib.hbql.schema.DefinedSchema;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
-import org.apache.hadoop.hbase.contrib.hbql.schema.ReflectionSchema;
-import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SchemaManagerStatement;
 
 import java.util.List;
@@ -24,22 +22,6 @@ public class SchemaManager {
         return cmd.execute();
     }
 
-    // This is used for tests
-    public static Schema getObjectSchema(final Object recordObj) throws HBqlException {
-
-        if (recordObj == null)
-            return null;
-
-        try {
-            return AnnotationSchema.getAnnotationSchema(recordObj);
-        }
-        catch (HBqlException e) {
-            // Not annotated properly
-        }
-
-        return ReflectionSchema.getReflectionSchema(recordObj);
-    }
-
     private static Map<String, DefinedSchema> getDefinedSchemaMap() {
         return SchemaManager.definedSchemaMap;
     }
@@ -50,6 +32,10 @@ public class SchemaManager {
 
     public static DefinedSchema getDefinedSchema(final String schemaName) {
         return SchemaManager.getDefinedSchemaMap().get(schemaName);
+    }
+
+    public static AnnotationSchema getAnnotationSchema(final String schemaName) throws HBqlException {
+        return AnnotationSchema.getAnnotationSchema(schemaName);
     }
 
     public static boolean doesDefinedSchemaExist(final String schemaName) {
@@ -76,11 +62,11 @@ public class SchemaManager {
     }
 
     public static Record newRecord(final String schemaName) throws HBqlException {
-        final HBaseSchema schema = findSchema(schemaName);
+        final HBaseSchema schema = getSchema(schemaName);
         return new RecordImpl(schema);
     }
 
-    public static HBaseSchema findSchema(final String schemaName) throws HBqlException {
+    public static HBaseSchema getSchema(final String schemaName) throws HBqlException {
 
         // First look in defined schema, then try annotation schema
         HBaseSchema schema;
@@ -89,7 +75,7 @@ public class SchemaManager {
         if (schema != null)
             return schema;
 
-        schema = AnnotationSchema.getAnnotationSchema(schemaName);
+        schema = getAnnotationSchema(schemaName);
         if (schema != null)
             return schema;
 

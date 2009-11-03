@@ -4,6 +4,8 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.RecognitionException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
@@ -21,16 +23,15 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ShellStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpressionContext;
-import org.apache.log4j.Logger;
 
 import java.util.List;
 
 public class HBqlShell {
 
-    final static Logger log = Logger.getLogger(HBqlShell.class.getSimpleName());
+    private static final Log log = LogFactory.getLog(HBqlShell.class.getName());
 
     public static HBqlParser newHBqlParser(final String str) {
-        log.info("Parsing: " + str);
+        log.debug("Parsing: " + str);
         final Lexer lex = new HBqlLexer(new ANTLRStringStream(str));
         final CommonTokenStream tokens = new CommonTokenStream(lex);
         return new HBqlParser(tokens);

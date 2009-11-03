@@ -22,7 +22,7 @@ public abstract class SchemaStatement implements ShellStatement {
         if (this.schema == null) {
             synchronized (this) {
                 if (this.schema == null)
-                    this.schema = SchemaManager.findSchema(this.getSchemaName());
+                    this.schema = SchemaManager.getSchema(this.getSchemaName());
             }
         }
         return this.schema;
