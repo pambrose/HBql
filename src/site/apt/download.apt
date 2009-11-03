@@ -1,0 +1,23 @@
+    ------
+    Download
+    ------
+    ------
+
+Runtime
+
+    The hbql-0.9.0-alpha.jar is {{{./downloads/hbql-0.9.0-alpha.jar}here}}
+
+Javadocs
+
+    The javadocs-0.9.0-alpha.zip is {{{./downloads/javadocs-0.9.0-alpha.zip}here}}
+    
+
+Source
+
+    There is a git repository that you can clone:
+
+--------------------
+git clone git://github.com/pambrose/HBql.git
+--------------------
+
+

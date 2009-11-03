@@ -3,4 +3,5 @@ mvn clean
 mvn antlr3:antlr
 mvn compiler:compile
 mvn javadoc:javadoc
+mvn jar:jar
 mvn site-deploy
