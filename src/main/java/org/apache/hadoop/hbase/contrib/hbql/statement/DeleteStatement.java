@@ -1,11 +1,11 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Output;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;

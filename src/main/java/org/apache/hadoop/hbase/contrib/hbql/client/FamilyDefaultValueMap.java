@@ -1,6 +1,5 @@
 package org.apache.hadoop.hbase.contrib.hbql.client;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ValueMap;
 

@@ -1,6 +1,5 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement.select;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
@@ -8,6 +7,7 @@ import org.apache.expreval.expr.var.DelegateColumn;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Record;
 import org.apache.hadoop.hbase.contrib.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.contrib.hbql.io.IO;

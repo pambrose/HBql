@@ -1,6 +1,5 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement.args;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.TypeSupport;
@@ -8,6 +7,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;

@@ -6,11 +6,11 @@ import org.antlr.runtime.Parser;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.calculation.DelegateCalculation;
 import org.apache.expreval.expr.compare.BooleanCompare;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnDescription;
 import org.apache.hadoop.hbase.contrib.hbql.schema.DefinedSchema;
 

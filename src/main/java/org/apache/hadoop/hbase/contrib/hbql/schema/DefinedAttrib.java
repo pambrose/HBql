@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.contrib.hbql.schema;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.util.Lists;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.impl.RecordImpl;
 
 import java.lang.reflect.Method;

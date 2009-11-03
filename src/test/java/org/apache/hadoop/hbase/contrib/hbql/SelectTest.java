@@ -1,16 +1,16 @@
 package org.apache.hadoop.hbase.contrib.hbql;
 
-import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.client.TypeException;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
 import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Query;
 import org.apache.hadoop.hbase.contrib.hbql.client.Record;
 import org.apache.hadoop.hbase.contrib.hbql.client.Results;
 import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Util;
 import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.util.Global;

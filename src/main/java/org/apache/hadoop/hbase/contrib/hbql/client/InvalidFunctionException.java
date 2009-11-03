@@ -1,4 +1,4 @@
-package org.apache.expreval.client;
+package org.apache.hadoop.hbase.contrib.hbql.client;
 
 public class InvalidFunctionException extends HBqlException {
 

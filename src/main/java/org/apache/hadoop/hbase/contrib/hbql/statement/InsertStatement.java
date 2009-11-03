@@ -1,16 +1,16 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement;
 
-import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.client.TypeException;
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.literal.DefaultKeyword;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Output;
 import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.client.Record;
 import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
 import org.apache.hadoop.hbase.contrib.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.statement.args.InsertValueSource;

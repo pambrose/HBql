@@ -1,12 +1,12 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement.args;
 
-import org.apache.expreval.client.HBqlException;
-import org.apache.expreval.client.TypeException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Query;
 import org.apache.hadoop.hbase.contrib.hbql.client.Record;
 import org.apache.hadoop.hbase.contrib.hbql.client.Results;
+import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SelectElement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SingleExpressionContext;

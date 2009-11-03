@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.contrib.hbql.impl;
 
-import org.apache.expreval.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 
 public class FamilyDefaultKeysAsColumnsValueMap extends ValueMap<UntypedKeysAsColumnsValueMap> {
 

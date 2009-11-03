@@ -1,9 +1,9 @@
 package org.apache.expreval.expr.literal;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 
 public class DefaultKeyword implements GenericValue {
 

@@ -1,10 +1,10 @@
 package org.apache.hadoop.hbase.contrib.hbql.impl;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Query;
 import org.apache.hadoop.hbase.contrib.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.contrib.hbql.client.Results;

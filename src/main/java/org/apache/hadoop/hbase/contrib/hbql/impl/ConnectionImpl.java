@@ -1,6 +1,5 @@
 package org.apache.hadoop.hbase.contrib.hbql.impl;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -10,6 +9,7 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
 import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Output;
 import org.apache.hadoop.hbase.contrib.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.contrib.hbql.client.Query;

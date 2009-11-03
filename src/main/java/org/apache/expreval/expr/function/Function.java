@@ -1,9 +1,7 @@
 package org.apache.expreval.expr.function;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.client.TypeException;
 import org.apache.expreval.expr.GenericExpression;
 import org.apache.expreval.expr.TypeSignature;
 import org.apache.expreval.expr.TypeSupport;
@@ -17,6 +15,8 @@ import org.apache.expreval.expr.node.LongValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.ShortValue;
 import org.apache.expreval.expr.node.StringValue;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
 
 import java.util.List;
 import java.util.Random;

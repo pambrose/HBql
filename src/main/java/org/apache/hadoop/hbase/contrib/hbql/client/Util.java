@@ -1,7 +1,5 @@
 package org.apache.hadoop.hbase.contrib.hbql.client;
 
-import org.apache.expreval.client.HBqlException;
-
 public class Util {
 
     public static String getZeroPaddedNumber(final long val, final int width) throws HBqlException {

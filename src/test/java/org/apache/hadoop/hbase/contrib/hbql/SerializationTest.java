@@ -1,7 +1,7 @@
 package org.apache.hadoop.hbase.contrib.hbql;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.util.Lists;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.io.Serialization;
 import org.apache.hadoop.hbase.contrib.hbql.schema.FieldType;
 import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;

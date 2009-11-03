@@ -1,6 +1,5 @@
 package org.apache.expreval.expr.casestmt;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.BooleanValue;
@@ -8,6 +7,7 @@ import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 
 public class DelegateCaseElse extends GenericCaseElse {
 

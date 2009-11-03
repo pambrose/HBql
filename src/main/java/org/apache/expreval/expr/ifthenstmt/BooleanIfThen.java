@@ -1,10 +1,10 @@
 package org.apache.expreval.expr.ifthenstmt;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 
 public class BooleanIfThen extends GenericIfThen implements BooleanValue {
 

@@ -1,9 +1,9 @@
 package org.apache.expreval.expr.betweenstmt;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 
 public class StringBetweenStmt extends GenericBetweenStmt {
 

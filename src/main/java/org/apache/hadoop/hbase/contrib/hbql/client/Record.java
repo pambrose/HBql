@@ -1,7 +1,5 @@
 package org.apache.hadoop.hbase.contrib.hbql.client;
 
-import org.apache.expreval.client.HBqlException;
-
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;

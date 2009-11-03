@@ -1,10 +1,10 @@
 package org.apache.hadoop.hbase.contrib.hbql.schema;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Record;
 import org.apache.hadoop.hbase.contrib.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.contrib.hbql.impl.RecordImpl;

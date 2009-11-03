@@ -1,7 +1,5 @@
 package org.apache.hadoop.hbase.contrib.hbql.client;
 
-import org.apache.expreval.client.HBqlException;
-
 import java.util.List;
 
 public interface Query<T> {

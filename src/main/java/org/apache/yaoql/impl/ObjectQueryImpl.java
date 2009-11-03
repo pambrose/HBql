@@ -1,8 +1,8 @@
 package org.apache.yaoql.impl;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.Lists;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ReflectionSchema;
 import org.apache.yaoql.client.ObjectQuery;

@@ -1,13 +1,13 @@
 package org.apache.expreval.expr.function;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.client.TypeException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
 

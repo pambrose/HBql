@@ -1,6 +1,5 @@
 package org.apache.expreval.expr.compare;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.TypeSupport;
@@ -9,6 +8,7 @@ import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 
 public class DelegateCompare extends GenericCompare {
 

@@ -1,6 +1,6 @@
 package org.apache.hadoop.hbase.contrib.hbql.util;
 
-import org.apache.expreval.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.yaoql.client.ObjectQuery;
 import org.apache.yaoql.client.ObjectQueryManager;
 import org.apache.yaoql.client.ObjectResults;

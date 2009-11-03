@@ -1,14 +1,14 @@
 package org.apache.expreval.expr.compare;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.client.TypeException;
 import org.apache.expreval.expr.GenericExpression;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
 
 public abstract class GenericCompare extends GenericExpression implements BooleanValue {
 

@@ -1,13 +1,13 @@
 package org.apache.hadoop.hbase.contrib.hbql.util;
 
 import org.antlr.runtime.RecognitionException;
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.var.GenericColumn;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;

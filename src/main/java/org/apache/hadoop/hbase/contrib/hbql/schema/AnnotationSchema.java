@@ -1,6 +1,5 @@
 package org.apache.hadoop.hbase.contrib.hbql.schema;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -8,6 +7,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.contrib.hbql.client.Column;
 import org.apache.hadoop.hbase.contrib.hbql.client.ColumnVersionMap;
 import org.apache.hadoop.hbase.contrib.hbql.client.Family;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Table;
 import org.apache.hadoop.hbase.contrib.hbql.statement.select.SelectElement;
 

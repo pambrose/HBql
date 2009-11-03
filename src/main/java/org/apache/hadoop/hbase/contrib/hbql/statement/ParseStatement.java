@@ -1,8 +1,8 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Output;
 
 public class ParseStatement implements SchemaManagerStatement {

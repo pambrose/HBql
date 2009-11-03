@@ -1,9 +1,9 @@
 package org.apache.hadoop.hbase.contrib.hbql.statement.args;
 
-import org.apache.expreval.client.HBqlException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 
 import java.io.IOException;
 
