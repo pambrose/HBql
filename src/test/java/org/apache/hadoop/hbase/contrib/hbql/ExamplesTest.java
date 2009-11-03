@@ -12,7 +12,6 @@ import org.apache.hadoop.hbase.contrib.hbql.client.Util;
 import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 public class ExamplesTest extends TestSupport {
@@ -228,6 +227,7 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: create-schema3
 
         // START SNIPPET: create-schema4
+
         // A schema with a family default attribute.
         SchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo "
                               + "("
@@ -235,15 +235,16 @@ public class ExamplesTest extends TestSupport {
                               + "family1:val1 STRING ALIAS val1, "
                               + "family1:* ALIAS family1_default"
                               + ")");
+
         // END SNIPPET: create-schema4
 
     }
 
     public void selectAll() throws HBqlException, IOException {
 
-        Connection conn = ConnectionManager.newConnection();
+        // START SNIPPET: select1
 
-        SchemaManager.execute("drop schema tab1");
+        Connection conn = ConnectionManager.newConnection();
 
         SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                               + "("
@@ -257,8 +258,17 @@ public class ExamplesTest extends TestSupport {
                               + "f3:* ALIAS f3default "
                               + ")");
 
-        Query<Record> q1 = conn.newQuery("SELECT val1, val5 FROM tab1 ");
-        List<Record> recList1 = q1.getResultList();
-        assertTrue(recList1.size() == 10);
+        Query<Record> q1 = conn.newQuery("SELECT keyval, f1:val1, val5 FROM tab1 "
+                                         + "WITH KEYS FIRST TO :endkey "
+                                         + "VERSIONS 4 "
+                                         + "CLIENT FILTER WHERE val6 > 4");
+
+        q1.setParameter("endkey", Util.getZeroPaddedNumber(34, 10));
+
+        for (Record record : q1.getResults()) {
+            System.out.println("Key = " + record.getCurrentValue("keyval"));
+        }
+
+        // END SNIPPET: select1
     }
 }

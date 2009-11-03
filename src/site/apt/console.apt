@@ -5,8 +5,7 @@
 
 Console
 
-    The console provides a simple command line interface for executing HBql statements.  Commands are
-    terinated with the ";" character.  A single line can have multiple ";" separated statements.
+    The console provides a simple command line interface for executing HBql statements.
 
 
 *Syntax
@@ -17,6 +16,10 @@ $HBQL_HOME/bin/console.sh
 
 *Details
 
+    * Commands are terminated with the ";" character.
+
+    * A single line can have multiple ";" separated statements.
+    
     * The console requires the hbql, jline, haddop, hbase, log4j jar files. You can see the specific jars
     in bin/console.sh.
 

@@ -10,11 +10,14 @@ SELECT
 ---------------------------
 SELECT { '*' | select_element [, ...] } from schema_name with_clause
 
-select_element : column_reference | family_reference
+select_element : column_reference | family_wildcard
 
 column_reference:
     { alias_name | family_name ':' column_name } [ AS alias_name ]
+
+family_wildcard
     | family_name ':' '*'
+
 ---------------------------
 
 *Description
