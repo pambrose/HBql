@@ -8,15 +8,13 @@ SELECT
 *Syntax
 
 ---------------------------
-SELECT { '*' | select_element [, ...] } from schema_name with_clause
+SELECT { '*' | select_element [, ...] } FROM schema_name with_clause
 
-select_element : column_reference | family_wildcard
+select_element :  expression [ AS alias_name ] | family_wildcard
 
-column_reference:
-    { alias_name | family_name ':' column_name } [ AS alias_name ]
 
 family_wildcard
-    | family_name ':' '*'
+    family_name ':' '*'
 
 ---------------------------
 
