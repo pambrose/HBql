@@ -29,8 +29,10 @@ public class HadoopSerialization extends Serialization {
                 case ByteType:
                     return b[0];
 
-                case CharType:
-                    return Bytes.toShort(b);
+                case CharType: {
+                    final String s = Bytes.toString(b);
+                    return s.charAt(0);
+                }
 
                 case ShortType:
                     return Bytes.toShort(b);
@@ -92,8 +94,10 @@ public class HadoopSerialization extends Serialization {
                     return retval;
                 }
 
-                case CharType:
-                    return Bytes.toBytes((Short)obj);
+                case CharType: {
+                    final String s = String.valueOf(obj);
+                    return Bytes.toBytes(s);
+                }
 
                 case ShortType:
                     return Bytes.toBytes((Short)obj);

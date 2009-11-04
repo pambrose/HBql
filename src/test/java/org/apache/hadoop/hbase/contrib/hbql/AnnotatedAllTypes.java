@@ -33,6 +33,12 @@ public class AnnotatedAllTypes implements Serializable {
     public byte[] byteArrayValue = null;
 
     @Column(family = "family1")
+    public char charValue = 0;
+
+    @Column(family = "family1")
+    public char[] charArrayValue;
+
+    @Column(family = "family1")
     public short shortValue = 0;
 
     @Column(family = "family1")
@@ -100,11 +106,21 @@ public class AnnotatedAllTypes implements Serializable {
     public void setATestValue(int val) throws HBqlException {
 
         this.keyval = Util.getZeroPaddedNumber(val, 10);
-        this.booleanValue = random.nextBoolean();
 
+        this.booleanValue = random.nextBoolean();
         this.booleanArrayValue = new boolean[cnt];
         for (int i = 0; i < cnt; i++)
             this.booleanArrayValue[i] = random.nextBoolean();
+
+        this.byteValue = (byte)random.nextInt();
+        this.byteArrayValue = new byte[cnt];
+        for (int i = 0; i < cnt; i++)
+            this.byteArrayValue[i] = (byte)random.nextInt();
+
+        this.shortValue = (short)random.nextInt();
+        this.shortArrayValue = new short[cnt];
+        for (int i = 0; i < cnt; i++)
+            this.shortArrayValue[i] = (short)random.nextInt();
     }
 
     public boolean equals(final Object o) {
@@ -113,7 +129,12 @@ public class AnnotatedAllTypes implements Serializable {
 
         final AnnotatedAllTypes val = (AnnotatedAllTypes)o;
 
-        return val.byteValue == this.byteValue
-               && Arrays.equals(val.booleanArrayValue, this.booleanArrayValue);
+        return val.booleanValue == this.booleanValue
+               && Arrays.equals(val.booleanArrayValue, this.booleanArrayValue)
+               && val.byteValue == this.byteValue
+               && Arrays.equals(val.byteArrayValue, this.byteArrayValue)
+               && val.shortValue == this.shortValue
+               && Arrays.equals(val.shortArrayValue, this.shortArrayValue)
+                ;
     }
 }

@@ -27,7 +27,7 @@ public enum FieldType {
 
     BooleanType(Boolean.TYPE, BooleanValue.class, 0, Bytes.SIZEOF_BOOLEAN, "BOOLEAN", "BOOL"),
     ByteType(Byte.TYPE, ByteValue.class, 1, Bytes.SIZEOF_BYTE, "BYTE"),
-    CharType(Short.TYPE, CharValue.class, 1, Bytes.SIZEOF_CHAR, "CHAR"),
+    CharType(Character.TYPE, CharValue.class, 1, Bytes.SIZEOF_CHAR, "CHAR"),
 
     ShortType(Short.TYPE, ShortValue.class, 2, Bytes.SIZEOF_SHORT, "SHORT"),
     IntegerType(Integer.TYPE, IntegerValue.class, 3, Bytes.SIZEOF_INT, "INTEGER", "INT"),
@@ -106,9 +106,11 @@ public enum FieldType {
                 return ObjectType;
         }
         else {
-            for (final FieldType type : values())
-                if (clazz.equals(type.getComponentType()))
+            for (final FieldType type : values()) {
+                final Class compType = type.getComponentType();
+                if (clazz.equals(compType))
                     return type;
+            }
         }
 
         throw new RuntimeException("Unknown type: " + clazz + " in FieldType.getFieldType()");
