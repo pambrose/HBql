@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
 import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.client.Query;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -16,6 +17,8 @@ public class AnnotationInsertTest extends TestSupport {
     static Connection conn = null;
 
     static List<AnnotatedAllTypes> vals = null;
+
+    static int cnt = 10;
 
     //@BeforeClass
     public static void onetimeSetup() throws HBqlException, IOException {
@@ -28,7 +31,7 @@ public class AnnotationInsertTest extends TestSupport {
             System.out.println(conn.execute("delete from AnnotatedAllTypes"));
         }
 
-        vals = insertSomeData(10);
+        vals = insertSomeData(cnt);
     }
 
     public static List<AnnotatedAllTypes> insertSomeData(int cnt) throws HBqlException, IOException {
@@ -57,6 +60,14 @@ public class AnnotationInsertTest extends TestSupport {
 
         onetimeSetup();
 
-        assertTrue(vals.size() == 10);
+        assertTrue(vals.size() == cnt);
+
+        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from AnnotatedAllTypes");
+        List<AnnotatedAllTypes> recList = recs.getResultList();
+
+        assertTrue(recList.size() == cnt);
+
+        for (int i = 0; i < cnt; i++)
+            assertTrue(recList.get(i).equals(vals.get(i)));
     }
 }

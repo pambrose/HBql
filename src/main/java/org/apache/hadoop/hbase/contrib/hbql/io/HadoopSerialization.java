@@ -17,7 +17,7 @@ public class HadoopSerialization extends Serialization {
 
     public Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws HBqlException {
 
-        if (b == null)
+        if (b == null || b.length == 0)
             return null;
 
         try {
@@ -27,7 +27,7 @@ public class HadoopSerialization extends Serialization {
                     return Bytes.toBoolean(b);
 
                 case ByteType:
-                    return Bytes.toShort(b);
+                    return b[0];
 
                 case CharType:
                     return Bytes.toShort(b);
@@ -86,8 +86,11 @@ public class HadoopSerialization extends Serialization {
                 case BooleanType:
                     return Bytes.toBytes((Boolean)obj);
 
-                case ByteType:
-                    return Bytes.toBytes((Byte)obj);
+                case ByteType: {
+                    final byte[] retval = new byte[1];
+                    retval[0] = ((Byte)obj).byteValue();
+                    return retval;
+                }
 
                 case CharType:
                     return Bytes.toBytes((Short)obj);
@@ -135,7 +138,7 @@ public class HadoopSerialization extends Serialization {
 
     public Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws HBqlException {
 
-        if (b == null)
+        if (b == null || b.length == 0)
             return null;
 
         try {

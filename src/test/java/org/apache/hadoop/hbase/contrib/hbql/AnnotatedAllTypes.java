@@ -7,7 +7,9 @@ import org.apache.hadoop.hbase.contrib.hbql.client.Table;
 import org.apache.hadoop.hbase.contrib.hbql.client.Util;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Random;
 
 @Table(name = "alltypes",
        families = {
@@ -86,6 +88,9 @@ public class AnnotatedAllTypes implements Serializable {
     public AnnotatedAllTypes() {
     }
 
+    static int cnt = 20;
+    static Random random = new Random();
+
     public AnnotatedAllTypes(final String keyval, final int intValue, final String stringValue) {
         this.keyval = keyval;
         this.intValue = intValue;
@@ -95,6 +100,20 @@ public class AnnotatedAllTypes implements Serializable {
     public void setATestValue(int val) throws HBqlException {
 
         this.keyval = Util.getZeroPaddedNumber(val, 10);
-        this.booleanValue = val % 2 == 0;
+        this.booleanValue = random.nextBoolean();
+
+        this.booleanArrayValue = new boolean[cnt];
+        for (int i = 0; i < cnt; i++)
+            this.booleanArrayValue[i] = random.nextBoolean();
+    }
+
+    public boolean equals(final Object o) {
+        if (!(o instanceof AnnotatedAllTypes))
+            return false;
+
+        final AnnotatedAllTypes val = (AnnotatedAllTypes)o;
+
+        return val.byteValue == this.byteValue
+               && Arrays.equals(val.booleanArrayValue, this.booleanArrayValue);
     }
 }

@@ -14,7 +14,7 @@ public class JavaSerialization extends Serialization {
 
     public Object getScalarFromBytes(final FieldType fieldType, final byte[] b) throws HBqlException {
 
-        if (b == null)
+        if (b == null || b.length == 0)
             return null;
 
         ObjectInputStream ois = null;
@@ -147,7 +147,7 @@ public class JavaSerialization extends Serialization {
 
     public Object getArrayFromBytes(final FieldType fieldType, final Class clazz, final byte[] b) throws HBqlException {
 
-        if (b == null)
+        if (b == null || b.length == 0)
             return null;
 
         if (fieldType == FieldType.CharType) {
