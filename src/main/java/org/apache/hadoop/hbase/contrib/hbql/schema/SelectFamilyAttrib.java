@@ -10,7 +10,7 @@ import java.util.NavigableMap;
 public class SelectFamilyAttrib extends ColumnAttrib {
 
     public SelectFamilyAttrib(final String familyName) throws HBqlException {
-        super(familyName, "", "", false, false, null, false, null, null, null);
+        super(familyName, "", "", false, null, false, null, null, null);
     }
 
     public boolean isASelectFamilyAttrib() {
@@ -26,10 +26,6 @@ public class SelectFamilyAttrib extends ColumnAttrib {
     }
 
     protected Class getComponentType() throws HBqlException {
-        throw new InternalErrorException();
-    }
-
-    public Map<Long, Object> getKeysAsColumnsVersionMap(final Object obj, final String mapKey) throws HBqlException {
         throw new InternalErrorException();
     }
 
@@ -49,12 +45,6 @@ public class SelectFamilyAttrib extends ColumnAttrib {
         throw new InternalErrorException();
     }
 
-    public void setKeysAsColumnsValue(final Object obj,
-                                      final String mapKey,
-                                      final Object val) throws HBqlException {
-        throw new InternalErrorException();
-    }
-
     public void setFamilyDefaultCurrentValue(final Object obj,
                                              final String name,
                                              final byte[] value) throws HBqlException {
@@ -64,18 +54,6 @@ public class SelectFamilyAttrib extends ColumnAttrib {
     public void setFamilyDefaultVersionMap(final Object obj,
                                            final String name,
                                            final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
-        throw new InternalErrorException();
-    }
-
-    public void setFamilyDefaultKeysAsColumnsValue(final Object obj, final String columnName,
-                                                   final String mapKey,
-                                                   final byte[] valueBytes) throws HBqlException {
-        throw new InternalErrorException();
-    }
-
-    public void setFamilyDefaultKeysAsColumnsVersionMap(final Object obj,
-                                                        final String columnName,
-                                                        final String mapKey, final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
         throw new InternalErrorException();
     }
 }

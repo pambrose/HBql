@@ -142,31 +142,14 @@ public class FamilySelectElement implements SelectElement {
                 final byte[] valueBytes = columnMap.get(columnBytes);
                 final String columnName = IO.getSerialization().getStringFromBytes(columnBytes);
 
-                if (columnName.endsWith("]")) {
-
-                    final int lbrace = columnName.indexOf("[");
-                    final String mapColumn = columnName.substring(0, lbrace);
-                    final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
-                    final ColumnAttrib attrib = schema.getAttribFromFamilyQualifiedName(familyName, mapColumn);
-                    if (attrib == null) {
-                        final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
-                        if (familyDefaultAttrib != null)
-                            familyDefaultAttrib.setFamilyDefaultKeysAsColumnsValue(obj, mapColumn, mapKey, valueBytes);
-                    }
-                    else {
-                        attrib.setKeysAsColumnsValue(obj, mapKey, attrib.getValueFromBytes(obj, valueBytes));
-                    }
+                final ColumnAttrib attrib = schema.getAttribFromFamilyQualifiedName(familyName, columnName);
+                if (attrib == null) {
+                    final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
+                    if (familyDefaultAttrib != null)
+                        familyDefaultAttrib.setFamilyDefaultCurrentValue(obj, columnName, valueBytes);
                 }
                 else {
-                    final ColumnAttrib attrib = schema.getAttribFromFamilyQualifiedName(familyName, columnName);
-                    if (attrib == null) {
-                        final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
-                        if (familyDefaultAttrib != null)
-                            familyDefaultAttrib.setFamilyDefaultCurrentValue(obj, columnName, valueBytes);
-                    }
-                    else {
-                        attrib.setCurrentValue(obj, 0, valueBytes);
-                    }
+                    attrib.setCurrentValue(obj, 0, valueBytes);
                 }
             }
 
@@ -185,37 +168,15 @@ public class FamilySelectElement implements SelectElement {
                 final NavigableMap<Long, byte[]> timeStampMap = versionColumnMap.get(columnBytes);
                 final String columnName = IO.getSerialization().getStringFromBytes(columnBytes);
 
-                if (columnName.endsWith("]")) {
+                final ColumnAttrib attrib = schema.getVersionAttribMap(familyName, columnName);
 
-                    final int lbrace = columnName.indexOf("[");
-                    final String mapColumn = columnName.substring(0, lbrace);
-                    final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
-
-                    final ColumnAttrib attrib = schema.getVersionAttribMap(familyName, mapColumn);
-
-                    if (attrib == null) {
-                        final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
-                        if (familyDefaultAttrib != null)
-                            familyDefaultAttrib.setFamilyDefaultKeysAsColumnsVersionMap(obj,
-                                                                                        columnName,
-                                                                                        mapKey,
-                                                                                        timeStampMap);
-                    }
-                    else {
-                        attrib.setKeysAsColumnsVersionMap(obj, mapKey, timeStampMap);
-                    }
+                if (attrib == null) {
+                    final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
+                    if (familyDefaultAttrib != null)
+                        familyDefaultAttrib.setFamilyDefaultVersionMap(obj, columnName, timeStampMap);
                 }
                 else {
-                    final ColumnAttrib attrib = schema.getVersionAttribMap(familyName, columnName);
-
-                    if (attrib == null) {
-                        final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
-                        if (familyDefaultAttrib != null)
-                            familyDefaultAttrib.setFamilyDefaultVersionMap(obj, columnName, timeStampMap);
-                    }
-                    else {
-                        attrib.setVersionMap(obj, timeStampMap);
-                    }
+                    attrib.setVersionMap(obj, timeStampMap);
                 }
             }
         }

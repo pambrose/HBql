@@ -24,8 +24,8 @@ public class RecordExample {
                               + "family1:author string alias author, "
                               + "family1:title string  alias title, "
                               + "family1:intValue int alias comp1"
-                              + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
-                              + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
+                              + "f3:mapval1 string alias f3mapval1, "
+                              + "f3:mapval2 string alias f3mapval2 "
                               + ")");
 
         Connection conn = ConnectionManager.newConnection();

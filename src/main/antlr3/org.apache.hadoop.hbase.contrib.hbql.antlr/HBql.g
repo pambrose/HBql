@@ -294,8 +294,8 @@ attribList returns [List<ColumnDescription> retval]
 	: (a1=defineAttrib {retval.add($a1.retval);} (COMMA a2=defineAttrib {retval.add($a2.retval);})*)?;
 	
 defineAttrib returns [ColumnDescription retval]
-	: c=varRef type=simpleName (b=LBRACE RBRACE)? m=keyKACMAP? (keyALIAS a=simpleName)? (keyDEFAULT t=topExpr)?	
-							{retval = ColumnDescription.newColumn($c.text, $a.text, $m.text!=null, false, $type.text, $b.text!=null, $t.retval);}
+	: c=varRef type=simpleName (b=LBRACE RBRACE)? (keyALIAS a=simpleName)? (keyDEFAULT t=topExpr)?	
+							{retval = ColumnDescription.newColumn($c.text, $a.text, false, $type.text, $b.text!=null, $t.retval);}
 	| f=familyRef (keyALIAS a=simpleName)?		{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
 	;
 
@@ -437,7 +437,6 @@ keyMAX		: {isKeyword(input, "MAX")}? ID;
 keyKEYS		: {isKeyword(input, "KEYS")}? ID;
 keyALL		: {isKeyword(input, "ALL")}? ID;
 keyCONTAINS	: {isKeyword(input, "CONTAINS")}? ID;
-keyKACMAP	: {isKeyword(input, "MAPKEYSASCOLUMNS")}? ID;
 keyDEFAULT	: {isKeyword(input, "DEFAULT")}? ID;
 keyCASE		: {isKeyword(input, "CASE")}? ID;
 keyWHEN		: {isKeyword(input, "WHEN")}? ID;

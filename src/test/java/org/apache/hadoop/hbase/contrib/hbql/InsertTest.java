@@ -13,7 +13,6 @@ import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Util;
 import org.apache.hadoop.hbase.contrib.hbql.io.IO;
-import org.apache.hadoop.hbase.contrib.hbql.util.Global;
 import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,8 +48,8 @@ public class InsertTest extends TestSupport {
                               + "f3:val2 int alias val6, "
                               + "f3:val3 int alias val7, "
                               + "f3:val4 int[] alias val8, "
-                              + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
-                              + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
+                              + "f3:mapval1 object alias f3mapval1, "
+                              + "f3:mapval2 object alias f3mapval2 "
                               + ")");
 
         conn = ConnectionManager.newConnection();
@@ -84,7 +83,7 @@ public class InsertTest extends TestSupport {
 
         for (int i = 0; i < cnt; i++) {
 
-            final String keyval = Util.getZeroPaddedNumber(i, Global.keywidth);
+            final String keyval = Util.getZeroPaddedNumber(i, TestSupport.keywidth);
             keyList.add(keyval);
 
             int val5 = randomVal.nextInt();
@@ -210,20 +209,6 @@ public class InsertTest extends TestSupport {
         Query<Record> q2 = conn.newQuery(query2);
         List<Record> recList2 = q2.getResultList();
         assertTrue(recList2.size() == 10);
-
-        for (final Record rec : recList2) {
-            Map<String, Object> map1 = rec.getKeysAsColumnsMap("f3mapval1");
-            Map<String, Object> map2 = rec.getKeysAsColumnsMap("f3mapval2");
-
-            assertTrue(map1.size() == 2);
-            assertTrue(map2.size() == 3);
-
-            Map<String, NavigableMap<Long, Object>> vmap1 = rec.getKeysAsColumnsVersionMap("f3mapval1");
-            Map<String, NavigableMap<Long, Object>> vmap2 = rec.getKeysAsColumnsVersionMap("f3mapval2");
-
-            assertTrue(vmap1.size() == 2);
-            assertTrue(vmap2.size() == 3);
-        }
     }
 
     @Test
@@ -309,8 +294,8 @@ public class InsertTest extends TestSupport {
                               + "f3:val2 int alias val6, "
                               + "f3:val3 int alias val7, "
                               + "f3:val4 int[] alias val8, "
-                              + "f3:mapval1 string mapKeysAsColumns alias f3mapval1, "
-                              + "f3:mapval2 string mapKeysAsColumns alias f3mapval2 "
+                              + "f3:mapval1 string alias f3mapval1, "
+                              + "f3:mapval2 string alias f3mapval2 "
                               + ")");
 
         Query<Record> q1 = conn.newQuery("SELECT f1:* FROM tab2");
@@ -469,13 +454,6 @@ public class InsertTest extends TestSupport {
         Query<Record> q1 = conn.newQuery(query1);
         List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 10);
-        for (final Record rec : recList1) {
-            Map<String, Map<String, byte[]>> val = rec.getFamilyDefaultKeysAsColumnsMap("f3:*");
-            assertTrue(val.size() == 2);
-
-            Map<String, Map<String, NavigableMap<Long, byte[]>>> val2 = rec.getFamilyDefaultKeysAsColumnsVersionMap("f3:*");
-            assertTrue(val2.size() == 2);
-        }
 
         final String query2 = "SELECT * FROM table2";
         Query<Record> q2 = conn.newQuery(query2);
@@ -484,10 +462,8 @@ public class InsertTest extends TestSupport {
 
         for (final Record rec : recList2) {
             Map map1 = rec.getFamilyDefaultValueMap("f3:*");
-            Map map2 = rec.getFamilyDefaultKeysAsColumnsMap("f3:*");
 
-            assertTrue(map1.size() == 3);
-            assertTrue(map2.size() == 2);
+            assertTrue(map1.size() == 5);
         }
     }
 

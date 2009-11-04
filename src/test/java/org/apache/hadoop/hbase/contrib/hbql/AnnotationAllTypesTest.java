@@ -39,7 +39,7 @@ public class AnnotationAllTypesTest extends TestSupport {
         for (int i = 0; i < cnt; i++) {
 
             AnnotatedAllTypes aat = new AnnotatedAllTypes();
-            aat.setATestValue(i, noRandomData);
+            aat.setSomeValues(i, noRandomData, cnt);
 
             retval.add(aat);
 
@@ -55,7 +55,7 @@ public class AnnotationAllTypesTest extends TestSupport {
     @Test
     public void simpleSelect() throws HBqlException, IOException {
 
-        List<AnnotatedAllTypes> vals = insertSomeData(cnt, false);
+        List<AnnotatedAllTypes> vals = insertSomeData(cnt, true);
 
         assertTrue(vals.size() == cnt);
 
@@ -71,7 +71,7 @@ public class AnnotationAllTypesTest extends TestSupport {
     @Test
     public void simpleSparseSelect() throws HBqlException, IOException {
 
-        List<AnnotatedAllTypes> vals = insertSomeData(cnt, true);
+        List<AnnotatedAllTypes> vals = insertSomeData(cnt, false);
 
         assertTrue(vals.size() == cnt);
 

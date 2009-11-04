@@ -23,7 +23,6 @@ public abstract class ColumnAttrib implements Serializable {
     private volatile byte[] columnBytes = null;
     private final String getter;
     private final String setter;
-    private final boolean mapKeysAsColumns;
     private final boolean familyDefault;
     private final boolean anArray;
     private transient Method getterMethod = null;
@@ -33,7 +32,6 @@ public abstract class ColumnAttrib implements Serializable {
     protected ColumnAttrib(final String familyName,
                            final String columnName,
                            final String aliasName,
-                           final boolean mapKeysAsColumns,
                            final boolean familyDefault,
                            final FieldType fieldType,
                            final boolean isArray,
@@ -44,7 +42,6 @@ public abstract class ColumnAttrib implements Serializable {
         this.familyName = familyName;
         this.columnName = columnName;
         this.aliasName = aliasName;
-        this.mapKeysAsColumns = mapKeysAsColumns;
         this.familyDefault = familyDefault;
         this.fieldType = fieldType;
         this.anArray = isArray;
@@ -63,9 +60,6 @@ public abstract class ColumnAttrib implements Serializable {
 
         if (this.isAnArray())
             sbuf.append("[]");
-
-        if (this.isMapKeysAsColumnsAttrib())
-            sbuf.append(" MAPKEYSASCOLUMNS");
 
         if (this.hasAlias())
             sbuf.append(" ALIAS " + this.getAliasName());
@@ -116,10 +110,6 @@ public abstract class ColumnAttrib implements Serializable {
             throw new HBqlException("Default values are not valid for version values: "
                                     + this.getNameToUseInExceptions());
 
-        if (this.isMapKeysAsColumnsAttrib())
-            throw new HBqlException("Default values are not valid for MapKeysAsColumns values: "
-                                    + this.getNameToUseInExceptions());
-
         final Class<? extends GenericValue> type = this.getFieldType().getExprType();
 
         if (type == null)
@@ -136,13 +126,6 @@ public abstract class ColumnAttrib implements Serializable {
 
     public abstract Map<Long, Object> getVersionMap(final Object obj) throws HBqlException;
 
-    public abstract void setKeysAsColumnsValue(final Object obj,
-                                               final String mapKey,
-                                               final Object val) throws HBqlException;
-
-    public abstract Map<Long, Object> getKeysAsColumnsVersionMap(final Object obj,
-                                                                 final String mapKey) throws HBqlException;
-
     public abstract void setFamilyDefaultCurrentValue(final Object obj,
                                                       final String name,
                                                       final byte[] value) throws HBqlException;
@@ -150,29 +133,6 @@ public abstract class ColumnAttrib implements Serializable {
     public abstract void setFamilyDefaultVersionMap(final Object obj,
                                                     final String name,
                                                     final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException;
-
-
-    public abstract void setFamilyDefaultKeysAsColumnsValue(final Object obj,
-                                                            final String columnName,
-                                                            final String mapKey,
-                                                            final byte[] valueBytes) throws HBqlException;
-
-    public abstract void setFamilyDefaultKeysAsColumnsVersionMap(final Object obj,
-                                                                 final String columnName,
-                                                                 final String mapKey, final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException;
-
-
-    public final void setKeysAsColumnsVersionMap(final Object obj,
-                                                 final String mapKey,
-                                                 final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
-
-        final Map<Long, Object> mapVal = this.getKeysAsColumnsVersionMap(obj, mapKey);
-
-        for (final Long timestamp : timeStampMap.keySet()) {
-            final Object val = this.getValueFromBytes(obj, timeStampMap.get(timestamp));
-            mapVal.put(timestamp, val);
-        }
-    }
 
     public void setVersionMap(final Object obj, final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
 
@@ -374,10 +334,6 @@ public abstract class ColumnAttrib implements Serializable {
 
     protected Method getSetterMethod() {
         return this.setterMethod;
-    }
-
-    public boolean isMapKeysAsColumnsAttrib() {
-        return this.mapKeysAsColumns;
     }
 
     public boolean isFamilyDefaultAttrib() {

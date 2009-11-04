@@ -8,7 +8,6 @@ import org.apache.hadoop.hbase.contrib.hbql.impl.BatchAction;
 import org.apache.hadoop.hbase.contrib.hbql.impl.DeleteAction;
 import org.apache.hadoop.hbase.contrib.hbql.impl.InsertAction;
 import org.apache.hadoop.hbase.contrib.hbql.impl.RecordImpl;
-import org.apache.hadoop.hbase.contrib.hbql.io.IO;
 import org.apache.hadoop.hbase.contrib.hbql.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
@@ -78,23 +77,8 @@ public class Batch {
         for (final String family : schema.getFamilySet()) {
 
             for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {
-
-                if (attrib.isMapKeysAsColumnsAttrib()) {
-                    final Map mapval = (Map)attrib.getCurrentValue(newrec);
-                    for (final Object keyobj : mapval.keySet()) {
-                        final String colname = keyobj.toString();
-
-                        final byte[] b = IO.getSerialization().getScalarAsBytes(mapval.get(keyobj));
-
-                        // Use family:column[key] scheme to avoid column namespace collision
-                        put.add(attrib.getFamilyNameAsBytes(),
-                                IO.getSerialization().getStringAsBytes(attrib.getColumnName() + "[" + colname + "]"), b);
-                    }
-                }
-                else {
-                    final byte[] b = attrib.getValueAsBytes(newrec);
-                    put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), b);
-                }
+                final byte[] b = attrib.getValueAsBytes(newrec);
+                put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), b);
             }
         }
         return put;
@@ -108,23 +92,9 @@ public class Batch {
 
         for (final String family : schema.getFamilySet()) {
             for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {
-
-                if (attrib.isMapKeysAsColumnsAttrib()) {
-                    final Map mapval = (Map)attrib.getCurrentValue(record);
-                    for (final Object keyobj : mapval.keySet()) {
-                        final String colname = keyobj.toString();
-                        final byte[] b = IO.getSerialization().getScalarAsBytes(mapval.get(keyobj));
-
-                        // Use family:column[key] scheme to avoid column namespace collision
-                        put.add(attrib.getFamilyNameAsBytes(),
-                                IO.getSerialization().getStringAsBytes(attrib.getColumnName() + "[" + colname + "]"), b);
-                    }
-                }
-                else {
-                    if (record.isCurrentValueSet(attrib)) {
-                        final byte[] b = attrib.getValueAsBytes(record);
-                        put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), b);
-                    }
+                if (record.isCurrentValueSet(attrib)) {
+                    final byte[] b = attrib.getValueAsBytes(record);
+                    put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), b);
                 }
             }
         }

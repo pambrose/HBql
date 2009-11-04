@@ -11,7 +11,6 @@ import org.apache.hadoop.hbase.contrib.hbql.client.Results;
 import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Util;
-import org.apache.hadoop.hbase.contrib.hbql.util.Global;
 import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -61,7 +60,7 @@ public class InsertWithSelectTest extends TestSupport {
 
             int val = 10 + i;
 
-            final String keyval = Util.getZeroPaddedNumber(i, Global.keywidth);
+            final String keyval = Util.getZeroPaddedNumber(i, TestSupport.keywidth);
 
             stmt.setParameter("key", keyval);
             stmt.setParameter("val1", "" + val);

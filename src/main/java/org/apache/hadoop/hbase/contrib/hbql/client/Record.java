@@ -18,15 +18,7 @@ public interface Record {
 
     Map<Long, Object> getVersionMap(final String name);
 
-    Map<String, Object> getKeysAsColumnsMap(String name);
-
-    Map<String, NavigableMap<Long, Object>> getKeysAsColumnsVersionMap(String name);
-
     Map<String, byte[]> getFamilyDefaultValueMap(String name) throws HBqlException;
 
     Map<String, NavigableMap<Long, byte[]>> getFamilyDefaultVersionMap(String name) throws HBqlException;
-
-    Map<String, Map<String, byte[]>> getFamilyDefaultKeysAsColumnsMap(String name) throws HBqlException;
-
-    Map<String, Map<String, NavigableMap<Long, byte[]>>> getFamilyDefaultKeysAsColumnsVersionMap(String name) throws HBqlException;
 }

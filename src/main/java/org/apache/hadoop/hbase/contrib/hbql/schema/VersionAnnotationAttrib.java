@@ -15,11 +15,10 @@ public class VersionAnnotationAttrib extends FieldAttrib {
                                     final String columnName,
                                     final Field field,
                                     final FieldType fieldType,
-                                    final boolean mapKeysAsColumns,
                                     final boolean familyDefault,
                                     final String getter,
                                     final String setter) throws HBqlException {
-        super(familyName, columnName, field, fieldType, mapKeysAsColumns, familyDefault, getter, setter);
+        super(familyName, columnName, field, fieldType, familyDefault, getter, setter);
 
         this.defineAccessors();
     }
@@ -29,7 +28,7 @@ public class VersionAnnotationAttrib extends FieldAttrib {
         final ColumnVersionMap versionAnno = field.getAnnotation(ColumnVersionMap.class);
         final String instance = versionAnno.instance();
 
-        final String annoname = "@HColumnVersionMap annotation";
+        final String annoname = "@ColumnVersionMap annotation";
 
         // Check if type is a Map
         if (!TypeSupport.isParentClass(Map.class, field.getType()))
@@ -54,11 +53,6 @@ public class VersionAnnotationAttrib extends FieldAttrib {
             if (versionAnno.setter().length() > 0)
                 throw new HBqlException(getObjectQualifiedName(field)
                                         + " cannot have both an instance and setter value in " + annoname);
-
-            // This doesn't test false values -- they wil be ignored
-            if (versionAnno.mapKeysAsColumns())
-                throw new HBqlException(getObjectQualifiedName(field)
-                                        + " cannot have both an instance and mapKeysAsColumns value in " + annoname);
 
             if (versionAnno.familyDefault())
                 throw new HBqlException(getObjectQualifiedName(field)
@@ -89,22 +83,16 @@ public class VersionAnnotationAttrib extends FieldAttrib {
                                                currentAnnoAttrib.getColumnName(),
                                                field,
                                                currentAnnoAttrib.getFieldType(),
-                                               currentAnnoAttrib.isMapKeysAsColumnsAttrib(),
                                                currentAnnoAttrib.isFamilyDefaultAttrib(),
                                                currentAnnoAttrib.getGetter(),
                                                currentAnnoAttrib.getSetter());
         }
         else {
 
-            if (versionAnno.mapKeysAsColumns() && versionAnno.familyDefault())
-                throw new HBqlException(getObjectQualifiedName(field) + " cannot have both mapKeysAsColumns and "
-                                        + "familyDefault marked as true in " + annoname);
-
             return new VersionAnnotationAttrib(versionAnno.family(),
                                                versionAnno.column(),
                                                field,
                                                FieldType.getFieldType(mapValueType),
-                                               versionAnno.mapKeysAsColumns(),
                                                versionAnno.familyDefault(),
                                                versionAnno.getter(),
                                                versionAnno.setter());

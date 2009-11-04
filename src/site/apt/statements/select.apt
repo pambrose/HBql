@@ -10,11 +10,7 @@ SELECT
 ---------------------------
 SELECT { '*' | select_element [, ...] } FROM schema_name with_clause
 
-select_element :  expression [ AS alias_name ] | family_wildcard
-
-
-family_wildcard
-    family_name ':' '*'
+select_element : expression [ AS alias_name ] | family_name ':' '*'
 
 ---------------------------
 

@@ -9,7 +9,6 @@ public final class ColumnDescription implements Serializable {
 
     private final String aliasName;
     private final String familyName, columnName;
-    private final boolean mapKeysAsColumns;
     private final boolean familyDefault;
     private final boolean isArray;
     private final FieldType fieldType;
@@ -17,7 +16,6 @@ public final class ColumnDescription implements Serializable {
 
     private ColumnDescription(final String familyQualifiedName,
                               final String aliasName,
-                              final boolean mapKeysAsColumns,
                               final boolean familyDefault,
                               final String typeName,
                               final boolean isArray,
@@ -34,7 +32,6 @@ public final class ColumnDescription implements Serializable {
         }
 
         this.aliasName = aliasName;
-        this.mapKeysAsColumns = mapKeysAsColumns;
         this.familyDefault = familyDefault;
         this.fieldType = getFieldType(typeName);
         this.isArray = isArray;
@@ -43,14 +40,12 @@ public final class ColumnDescription implements Serializable {
 
     public static ColumnDescription newColumn(final String familyQualifiedName,
                                               final String aliasName,
-                                              final boolean mapKeysAsColumns,
                                               final boolean familyDefault,
                                               final String typeName,
                                               final boolean isArray,
                                               final GenericValue defaultValue) {
         return new ColumnDescription(familyQualifiedName,
                                      aliasName,
-                                     mapKeysAsColumns,
                                      familyDefault,
                                      typeName,
                                      isArray,
@@ -58,7 +53,7 @@ public final class ColumnDescription implements Serializable {
     }
 
     public static ColumnDescription newFamilyDefault(final String familyQualifiedName, final String aliasName) {
-        return new ColumnDescription(familyQualifiedName, aliasName, false, true, null, false, null);
+        return new ColumnDescription(familyQualifiedName, aliasName, true, null, false, null);
     }
 
     private static FieldType getFieldType(final String typeName) {
@@ -80,10 +75,6 @@ public final class ColumnDescription implements Serializable {
 
     public String getAliasName() {
         return this.aliasName;
-    }
-
-    public boolean isMapKeysAsColumns() {
-        return this.mapKeysAsColumns;
     }
 
     public boolean isFamilyDefault() {

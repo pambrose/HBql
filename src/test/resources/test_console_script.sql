@@ -9,8 +9,8 @@ CREATE SCHEMA tab1 FOR TABLE table1 (
     f3:val2 int alias val6,
     f3:val3 int alias val7,
     f3:val4 int[] alias val8,
-    f3:mapval1 string mapKeysAsColumns alias f3mapval1,
-    f3:mapval2 string mapKeysAsColumns alias f3mapval2
+    f3:mapval1 string alias f3mapval1,
+    f3:mapval2 string alias f3mapval2
 );
 
 

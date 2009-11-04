@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.contrib.hbql.util;
+package org.apache.yaoql.util;
 
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.yaoql.client.ObjectQuery;
@@ -9,7 +9,8 @@ import java.util.Collection;
 
 public class ObjectTests<T> {
 
-    protected void assertResultCount(final Collection<T> objList, final String expr, final int expected_cnt) throws HBqlException {
+    protected void assertResultCount(final Collection<T> objList, final String expr,
+                                     final int expected_cnt) throws HBqlException {
 
         final ObjectQuery<T> query = ObjectQueryManager.newObjectQuery(expr);
 

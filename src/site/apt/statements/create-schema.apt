@@ -20,7 +20,7 @@ key_description:
     key_name KEY
 
 column_description:
-    family_name ':' column_name type [ '['']' ] [ MAPKEYSASCOLUMNS ] [ ALIAS alias_name ] [ DEFAULT constant_expression ]
+    family_name ':' column_name type [ '['']' ] [ ALIAS alias_name ] [ DEFAULT constant_expression ]
 
 family_default:
     family_name ':' '*' [ ALIAS alias_name ]
@@ -63,12 +63,7 @@ type:
     * The default value is used whenever a value is missing for that attribute in a given record.  The
     constant_expression cannot contain any named parameters or column references.
 
-    * The MAPSKEYSASCOLUMN clause indicates that the attribute value is a map with string keys and each
-    key will be distinct column.  In the case of the column f1:val1, each key would be mapped
-    to the column: f1:val1['key'].  A map with 5 values will map to 5 distonct columns.  An example can
-    be found {{{./src/site/examples/kacexample.html}here}}.
-
-    * The DEFAULT clause cannot be used with arrays or MAPKEYSASCOLUMNS values.
+    * The DEFAULT clause cannot be used with array values.
 
     * Each table family can have one family_default attribute.  A family_default atttribute is used when
     a column value is found in the query results, and no corresponding attribute is present in the schema.

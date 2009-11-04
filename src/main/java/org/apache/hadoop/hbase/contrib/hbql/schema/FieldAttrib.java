@@ -5,7 +5,6 @@ import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -18,14 +17,12 @@ public abstract class FieldAttrib extends ColumnAttrib {
                           final String columnName,
                           final Field field,
                           final FieldType fieldType,
-                          final boolean mapKeysAsColumns,
                           final boolean familyDefault,
                           final String getter,
                           final String setter) throws HBqlException {
         super(familyName,
               (columnName != null && columnName.length() > 0) ? columnName : field.getName(),
               field.getName(),
-              mapKeysAsColumns,
               familyDefault,
               fieldType,
               field.getType().isArray(),
@@ -94,23 +91,6 @@ public abstract class FieldAttrib extends ColumnAttrib {
         }
     }
 
-    public void setKeysAsColumnsValue(final Object obj,
-                                      final String mapKey,
-                                      final Object val) throws HBqlException {
-
-        if (!this.isMapKeysAsColumnsAttrib())
-            throw new HBqlException(this.getFamilyQualifiedName() + " not marked as mapKeysAsColumns");
-
-        Map<String, Object> mapVal = (Map<String, Object>)this.getCurrentValue(obj);
-
-        if (mapVal == null) {
-            mapVal = Maps.newHashMap();
-            this.setCurrentValue(obj, 0, mapVal);
-        }
-
-        mapVal.put(mapKey, val);
-    }
-
     public void setFamilyDefaultCurrentValue(final Object obj,
                                              final String name,
                                              final byte[] val) throws HBqlException {
@@ -148,7 +128,7 @@ public abstract class FieldAttrib extends ColumnAttrib {
     public Map<Long, Object> getVersionMap(final Object obj) throws HBqlException {
 
         if (!this.isAVersionValue())
-            throw new HBqlException(this.getFamilyQualifiedName() + " not marked with @HColumnVersionMap");
+            throw new HBqlException(this.getFamilyQualifiedName() + " not marked with @ColumnVersionMap");
 
         // Just call current value for version since we have different fields for current value and versions
         Map<Long, Object> mapVal = (Map<Long, Object>)this.getCurrentValue(obj);
@@ -157,41 +137,6 @@ public abstract class FieldAttrib extends ColumnAttrib {
             this.setCurrentValue(obj, 0, mapVal);
         }
         return mapVal;
-    }
-
-    public Map<Long, Object> getKeysAsColumnsVersionMap(final Object obj, final String mapKey) throws HBqlException {
-
-        if (!this.isAVersionValue())
-            throw new HBqlException(this.getFamilyQualifiedName() + " not marked with @HColumnVersionMap");
-
-        // TODO Should make sure that this refers to column marked as mapKeysAsColumns as well
-
-        // Just call current value for version since we have different fields for current value and versions
-        Map<String, Map<Long, Object>> mapVal = (Map<String, Map<Long, Object>>)this.getCurrentValue(obj);
-        if (mapVal == null) {
-            mapVal = new HashMap<String, Map<Long, Object>>();
-            this.setCurrentValue(obj, 0, mapVal);
-        }
-
-        Map<Long, Object> mapForKey = mapVal.get(mapKey);
-        if (mapForKey == null) {
-            mapForKey = new TreeMap<Long, Object>();
-            mapVal.put(mapKey, mapForKey);
-        }
-        return mapForKey;
-    }
-
-    public void setFamilyDefaultKeysAsColumnsValue(final Object obj,
-                                                   final String columnName,
-                                                   final String mapKey, final byte[] valueBytes) throws HBqlException {
-        // TODO finish
-    }
-
-    public void setFamilyDefaultKeysAsColumnsVersionMap(final Object obj,
-                                                        final String columnName,
-                                                        final String mapKey,
-                                                        final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
-        // TODO finish
     }
 
     protected static void setAccessible(final Field field) {

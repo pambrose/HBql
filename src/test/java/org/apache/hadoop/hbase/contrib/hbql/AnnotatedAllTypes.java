@@ -1,5 +1,6 @@
 package org.apache.hadoop.hbase.contrib.hbql;
 
+import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.contrib.hbql.client.Column;
 import org.apache.hadoop.hbase.contrib.hbql.client.Family;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
@@ -9,6 +10,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.Util;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
 import java.util.Random;
 
 @Table(name = "alltypes",
@@ -81,6 +83,12 @@ public class AnnotatedAllTypes implements Serializable {
     public Date[] dateArrayValue = null;
 
     @Column(family = "family1")
+    public Map<String, String> mapValue = null;
+
+    @Column(family = "family1")
+    public Map<String, String>[] mapArrayValue = null;
+
+    @Column(family = "family1")
     public TestObject objectValue = null;
 
     @Column(family = "family1")
@@ -104,7 +112,6 @@ public class AnnotatedAllTypes implements Serializable {
     public AnnotatedAllTypes() {
     }
 
-    static int cnt = 200;
     static Random random = new Random();
 
     public AnnotatedAllTypes(final String keyval, final int intValue, final String stringValue) {
@@ -113,7 +120,7 @@ public class AnnotatedAllTypes implements Serializable {
         this.stringValue = stringValue;
     }
 
-    public void setATestValue(int val, boolean noRandomData) throws HBqlException {
+    public void setSomeValues(int val, boolean noRandomData, int cnt) throws HBqlException {
 
         this.keyval = Util.getZeroPaddedNumber(val, 10);
 
@@ -186,11 +193,28 @@ public class AnnotatedAllTypes implements Serializable {
         }
 
         if (noRandomData || random.nextBoolean()) {
+            this.mapValue = getRandomMap(cnt);
+
+            this.mapArrayValue = new Map[cnt];
+            for (int i = 0; i < cnt; i++)
+                this.mapArrayValue[i] = getRandomMap(cnt);
+        }
+
+        if (noRandomData || random.nextBoolean()) {
             this.objectValue = new TestObject();
             this.objectArrayValue = new TestObject[cnt];
             for (int i = 0; i < cnt; i++)
                 this.objectArrayValue[i] = new TestObject();
         }
+    }
+
+    private Map<String, String> getRandomMap(int cnt) {
+        Map<String, String> retval = Maps.newHashMap();
+
+        for (int i = 0; i < cnt; i++)
+            retval.put("" + random.nextInt(), "" + random.nextDouble());
+
+        return retval;
     }
 
     public boolean equals(final Object o) {
@@ -227,6 +251,11 @@ public class AnnotatedAllTypes implements Serializable {
                    || val.dateValue.equals(this.dateValue))
                && ((val.dateArrayValue == null && this.dateArrayValue == null)
                    || Arrays.equals(val.dateArrayValue, this.dateArrayValue))
+
+               && ((val.mapValue == null && this.mapValue == null)
+                   || val.mapValue.equals(this.mapValue))
+               && ((val.mapArrayValue == null && this.mapArrayValue == null)
+                   || Arrays.equals(val.mapArrayValue, this.mapArrayValue))
 
                && ((val.objectValue == null && this.objectValue == null)
                    || val.objectValue.equals(this.objectValue))

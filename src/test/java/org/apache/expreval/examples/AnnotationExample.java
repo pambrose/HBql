@@ -75,13 +75,13 @@ public class AnnotationExample {
         @Column(family = "family2")
         public String[] array2 = {"val1", "val2", "val3"};
 
-        @Column(family = "family3", mapKeysAsColumns = true)
+        @Column(family = "family3")
         public Map<String, String> mapval1 = Maps.newHashMap();
 
         @ColumnVersionMap(instance = "mapval1")
         public Map<String, NavigableMap<Long, String>> mapval1Versions;
 
-        @Column(family = "family3", mapKeysAsColumns = false)
+        @Column(family = "family3")
         public Map<String, String> mapval2 = Maps.newHashMap();
 
         public TestObject() {

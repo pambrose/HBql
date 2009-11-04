@@ -9,7 +9,6 @@ import org.apache.expreval.expr.literal.DoubleLiteral;
 import org.apache.expreval.expr.literal.FloatLiteral;
 import org.apache.expreval.expr.literal.IntegerLiteral;
 import org.apache.expreval.expr.literal.LongLiteral;
-import org.apache.expreval.expr.literal.MapLiteral;
 import org.apache.expreval.expr.literal.ObjectLiteral;
 import org.apache.expreval.expr.literal.ShortLiteral;
 import org.apache.expreval.expr.literal.StringLiteral;
@@ -22,7 +21,6 @@ import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class NamedParameter implements GenericValue {
 
@@ -179,9 +177,6 @@ public class NamedParameter implements GenericValue {
 
         if (val instanceof Date)
             return new DateLiteral((Date)val);
-
-        if (val instanceof Map)
-            return new MapLiteral((Map)val);
 
         if (val instanceof Object)
             return new ObjectLiteral(val);

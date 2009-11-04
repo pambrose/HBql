@@ -3,13 +3,13 @@ package org.apache.yaoql;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.util.Counter;
-import org.apache.hadoop.hbase.contrib.hbql.util.ObjectTests;
 import org.apache.yaoql.client.ObjectQuery;
 import org.apache.yaoql.client.ObjectQueryListenerAdapter;
 import org.apache.yaoql.client.ObjectQueryManager;
 import org.apache.yaoql.client.ObjectQueryPredicate;
 import org.apache.yaoql.client.ObjectResults;
+import org.apache.yaoql.util.Counter;
+import org.apache.yaoql.util.ObjectTests;
 import org.junit.Test;
 
 import java.util.Date;

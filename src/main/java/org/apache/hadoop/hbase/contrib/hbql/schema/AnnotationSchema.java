@@ -48,12 +48,12 @@ public class AnnotationSchema extends HBaseSchema {
         this.table = this.getClazz().getAnnotation(Table.class);
 
         if (this.table == null)
-            throw new HBqlException("Class " + this + " is missing @HTable annotation");
+            throw new HBqlException("Class " + this + " is missing @Table annotation");
 
         this.families = this.table.families();
 
         if (this.families == null)
-            throw new HBqlException("Class " + this + " is missing @HFamily values in @HTable annotation");
+            throw new HBqlException("Class " + this + " is missing @Family values in @Table annotation");
 
         for (final Family family : families) {
             final List<ColumnAttrib> attribs = Lists.newArrayList();
@@ -67,10 +67,10 @@ public class AnnotationSchema extends HBaseSchema {
 
         if (this.getKeyAttrib() == null)
             throw new HBqlException("Class " + this + " is missing an instance variable "
-                                    + "annotated with @HColumn(key=true)");
+                                    + "annotated with @Column(key=true)");
 
         if (this.getKeyAttrib().getFamilyName().length() > 0)
-            throw new HBqlException(this.getKeyAttrib().getNameToUseInExceptions() + " @HColumn annotation " +
+            throw new HBqlException(this.getKeyAttrib().getNameToUseInExceptions() + " @Column annotation " +
                                     "cannot have a family name.");
 
         for (final Field field : this.getClazz().getDeclaredFields())
@@ -284,7 +284,7 @@ public class AnnotationSchema extends HBaseSchema {
         if (attrib.isAKeyAttrib()) {
             if (this.getKeyAttrib() != null)
                 throw new HBqlException("Class " + this + " has multiple instance variables "
-                                        + "annotated with @HColumn(key=true)");
+                                        + "annotated with @Column(key=true)");
 
             this.setKeyAttrib(attrib);
         }
@@ -298,10 +298,6 @@ public class AnnotationSchema extends HBaseSchema {
                 throw new HBqlException(attrib.getObjectQualifiedName() + " references unknown family: " + familyName);
 
             if (attrib.isFamilyDefaultAttrib()) {
-
-                if (attrib.isMapKeysAsColumnsAttrib())
-                    throw new HBqlException(attrib.getObjectQualifiedName()
-                                            + " cannot have both mapKeysAsColumns and familyDefault marked as true");
 
                 if (attrib.getColumnName() != null || attrib.getColumnName().length() > 0)
                     throw new HBqlException(attrib.getObjectQualifiedName()
@@ -386,7 +382,6 @@ public class AnnotationSchema extends HBaseSchema {
                                       : columnAttrib.getFieldType().getFirstSynonym();
             varList.add(ColumnDescription.newColumn(columnAttrib.getFamilyQualifiedName(),
                                                     columnAttrib.getAliasName(),
-                                                    columnAttrib.isMapKeysAsColumnsAttrib(),
                                                     columnAttrib.isFamilyDefaultAttrib(),
                                                     columnType,
                                                     columnAttrib.isAnArray(),

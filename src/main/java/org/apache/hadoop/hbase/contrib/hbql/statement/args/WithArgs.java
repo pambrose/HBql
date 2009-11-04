@@ -219,7 +219,7 @@ public class WithArgs {
                 continue;
 
             // If it is a map, then request all columns for family
-            if (attrib.isASelectFamilyAttrib() || attrib.isMapKeysAsColumnsAttrib())
+            if (attrib.isASelectFamilyAttrib())
                 get.addFamily(attrib.getFamilyNameAsBytes());
             else
                 get.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
@@ -246,8 +246,7 @@ public class WithArgs {
             if (attrib.isAKeyAttrib())
                 continue;
 
-            // If it is a map, then request all columns for family
-            if (attrib.isASelectFamilyAttrib() || attrib.isMapKeysAsColumnsAttrib())
+            if (attrib.isASelectFamilyAttrib())
                 scan.addFamily(attrib.getFamilyNameAsBytes());
             else
                 scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());

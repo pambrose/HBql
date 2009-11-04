@@ -2,7 +2,6 @@ package org.apache.expreval.expr.var;
 
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.expr.node.MapValue;
 import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
@@ -61,9 +60,8 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws HBqlException {
-        if (this.getColumnAttrib().isMapKeysAsColumnsAttrib())
-            return MapValue.class;
-        else if (this.getColumnAttrib().isAnArray())
+
+        if (this.getColumnAttrib().isAnArray())
             return ObjectValue.class;
         else
             return this.getFieldType().getExprType();

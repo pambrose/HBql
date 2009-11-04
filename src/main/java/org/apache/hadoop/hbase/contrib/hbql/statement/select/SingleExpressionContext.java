@@ -4,7 +4,6 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
@@ -155,33 +154,6 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
         }
     }
 
-    private Map<String, Object> getMapKeysAsColumnsValue(final Result result) throws HBqlException {
-
-        final NavigableMap<byte[], byte[]> columnMap = result.getFamilyMap(this.getFamilyNameBytes());
-
-        final Map<String, Object> mapval = Maps.newHashMap();
-
-        for (final byte[] columnBytes : columnMap.keySet()) {
-
-            final String columnName = IO.getSerialization().getStringFromBytes(columnBytes);
-
-            if (columnName.endsWith("]")) {
-                final int lbrace = columnName.indexOf("[");
-                final String mapcolumn = columnName.substring(0, lbrace);
-
-                if (mapcolumn.equals(this.getColumnName())) {
-                    final String mapKey = columnName.substring(lbrace + 1, columnName.length() - 1);
-
-                    final byte[] b = columnMap.get(columnBytes);
-                    final Object val = this.getColumnAttrib().getValueFromBytes(null, b);
-
-                    mapval.put(mapKey, val);
-                }
-            }
-        }
-        return mapval;
-    }
-
     private String getSelectName() {
         return this.hasAsName() ? this.getAsName() : this.getFamilyName() + ":" + this.getColumnName();
     }
@@ -241,16 +213,8 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
         }
         else {
             if (this.getColumnAttrib().isACurrentValue()) {
-                // If this is a mapKeysAsColumns, then we need to build the map from all the related columns in the family
-                if (this.getColumnAttrib().isMapKeysAsColumnsAttrib()) {
-                    final Map<String, Object> kacMap = this.getMapKeysAsColumnsValue(result);
-                    for (final String mapKey : kacMap.keySet())
-                        this.getColumnAttrib().setKeysAsColumnsValue(obj, mapKey, kacMap.get(mapKey));
-                }
-                else {
-                    final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
-                    this.getColumnAttrib().setCurrentValue(obj, 0, b);
-                }
+                final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
+                this.getColumnAttrib().setCurrentValue(obj, 0, b);
             }
         }
 

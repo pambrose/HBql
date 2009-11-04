@@ -1,4 +1,4 @@
-package org.apache.hadoop.hbase.contrib.hbql.util;
+package org.apache.yaoql.util;
 
 public class Counter {
     int count = 0;

@@ -20,6 +20,8 @@ import java.util.List;
 
 public class TestSupport {
 
+    public final static int keywidth = 10;
+
     public static void assertTrue(final boolean val) throws HBqlException {
         org.junit.Assert.assertTrue(val);
     }

@@ -52,6 +52,7 @@ public abstract class ValueMap<T> extends Value {
     }
 
     public CurrentAndVersionValue<T> getMapValue(final String mapKey) throws HBqlException {
+
         CurrentAndVersionValue<T> hvalue = this.getCurrentAndVersionMap().get(mapKey);
         if (hvalue == null) {
             hvalue = new CurrentAndVersionValue<T>(null, null);

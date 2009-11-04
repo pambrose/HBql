@@ -1,12 +1,10 @@
 package org.apache.hadoop.hbase.contrib.hbql.schema;
 
-import org.apache.expreval.expr.TypeSupport;
 import org.apache.hadoop.hbase.contrib.hbql.client.Column;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Map;
 
 public class CurrentValueAnnotationAttrib extends FieldAttrib {
 
@@ -15,7 +13,6 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
               field.getAnnotation(Column.class).column(),
               field,
               FieldType.getFieldType(field),
-              field.getAnnotation(Column.class).mapKeysAsColumns(),
               field.getAnnotation(Column.class).familyDefault(),
               field.getAnnotation(Column.class).getter(),
               field.getAnnotation(Column.class).setter());
@@ -23,13 +20,8 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
         this.defineAccessors();
 
         if (isFinal(this.getField()))
-            throw new HBqlException(this + "." + this.getField().getName() + " cannot have a @HColumn "
+            throw new HBqlException(this + "." + this.getField().getName() + " cannot have a @Column "
                                     + "annotation and be marked final");
-
-        // Make sure type implements Map if this is true
-        if (this.isMapKeysAsColumnsAttrib() && !TypeSupport.isParentClass(Map.class, this.getField().getType()))
-            throw new HBqlException(this.getObjectQualifiedName() + " has @HColumn(mapKeysAsColumns=true) " +
-                                    "annotation but doesn't implement the Map interface");
     }
 
     private Column getColumnAnno() {

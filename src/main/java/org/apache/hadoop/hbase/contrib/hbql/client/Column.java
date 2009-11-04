@@ -16,8 +16,6 @@ public @interface Column {
 
     String setter() default "";
 
-    boolean mapKeysAsColumns() default false;
-
     boolean familyDefault() default false;
 }
 // END SNIPPET: doc
