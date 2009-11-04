@@ -1,19 +1,19 @@
-package org.apache.hadoop.hbase.contrib.hbql.util;
+package org.apache.hadoop.hbase.contrib.hbql;
 
 import org.apache.expreval.util.Lists;
-import org.apache.hadoop.hbase.contrib.hbql.AnnotatedAllTypes;
 import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
 import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Query;
+import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
 
-public class AnnotationInsertTest extends TestSupport {
+public class AnnotationAllTypesTest extends TestSupport {
 
     static Connection conn = null;
 
