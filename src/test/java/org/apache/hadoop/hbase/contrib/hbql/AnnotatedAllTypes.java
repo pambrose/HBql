@@ -2,17 +2,18 @@ package org.apache.hadoop.hbase.contrib.hbql;
 
 import org.apache.hadoop.hbase.contrib.hbql.client.Column;
 import org.apache.hadoop.hbase.contrib.hbql.client.Family;
+import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Table;
+import org.apache.hadoop.hbase.contrib.hbql.client.Util;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Table(name = "alltypes",
        families = {
-               @Family(name = "family1", maxVersions = 10),
-               @Family(name = "family2"),
-               @Family(name = "family3", maxVersions = 5)
+               @Family(name = "family1", maxVersions = 10)
        })
-public class AnnotatedAllTypes {
+public class AnnotatedAllTypes implements Serializable {
 
     @Column(key = true)
     public String keyval = null;
@@ -78,7 +79,7 @@ public class AnnotatedAllTypes {
     public TestObject[] objectArrayValue = null;
 
 
-    public static class TestObject {
+    public static class TestObject implements Serializable {
         public int intvalue = -9;
     }
 
@@ -89,5 +90,11 @@ public class AnnotatedAllTypes {
         this.keyval = keyval;
         this.intValue = intValue;
         this.stringValue = stringValue;
+    }
+
+    public void setATestValue(int val) throws HBqlException {
+
+        this.keyval = Util.getZeroPaddedNumber(val, 10);
+        this.booleanValue = val % 2 == 0;
     }
 }

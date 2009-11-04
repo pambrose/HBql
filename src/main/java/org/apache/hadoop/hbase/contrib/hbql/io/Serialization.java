@@ -30,7 +30,7 @@ public abstract class Serialization {
 
     abstract public Object getArrayFromBytes(FieldType fieldType, Class clazz, byte[] b) throws HBqlException;
 
-    abstract public byte[] getArrayasBytes(FieldType fieldType, Object obj) throws HBqlException;
+    abstract public byte[] getArrayAsBytes(FieldType fieldType, Object obj) throws HBqlException;
 
     public byte[] getStringAsBytes(final String obj) throws HBqlException {
         return this.getScalarAsBytes(FieldType.StringType, obj);
@@ -55,5 +55,9 @@ public abstract class Serialization {
             return false;
         }
         return true;
+    }
+
+    protected String getExceptionMessage(final String name, final Exception e) {
+        return "Error in " + name + ": " + e.getClass().getSimpleName() + "-" + e.getMessage();
     }
 }

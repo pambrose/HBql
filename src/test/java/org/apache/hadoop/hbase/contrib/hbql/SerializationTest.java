@@ -57,7 +57,7 @@ public class SerializationTest extends TestSupport {
             pos = 0;
             for (final Boolean val : boolList)
                 boolarr1[pos++] = val;
-            b = ser.getArrayasBytes(FieldType.BooleanType, boolarr1);
+            b = ser.getArrayAsBytes(FieldType.BooleanType, boolarr1);
             final boolean[] boolarr2 = (boolean[])ser.getArrayFromBytes(FieldType.BooleanType, Boolean.TYPE, b);
             assertTrue(Arrays.equals(boolarr1, boolarr2));
 
@@ -69,7 +69,7 @@ public class SerializationTest extends TestSupport {
             pos = 0;
             for (final Byte val : byteList)
                 bytearr1[pos++] = val;
-            b = ser.getArrayasBytes(FieldType.ByteType, bytearr1);
+            b = ser.getArrayAsBytes(FieldType.ByteType, bytearr1);
             final byte[] bytearr2 = (byte[])ser.getArrayFromBytes(FieldType.ByteType, Byte.TYPE, b);
             assertTrue(Arrays.equals(bytearr1, bytearr2));
 
@@ -81,7 +81,7 @@ public class SerializationTest extends TestSupport {
                 sbuf.append(t);
             }
             final char[] chararr1 = sbuf.toString().toCharArray();
-            b = ser.getArrayasBytes(FieldType.CharType, chararr1);
+            b = ser.getArrayAsBytes(FieldType.CharType, chararr1);
             final char[] chararr2 = (char[])ser.getArrayFromBytes(FieldType.CharType, Short.TYPE, b);
             assertTrue(Arrays.equals(chararr1, chararr2));
 
@@ -93,7 +93,7 @@ public class SerializationTest extends TestSupport {
             pos = 0;
             for (final Short val : shortList)
                 shortarr1[pos++] = val;
-            b = ser.getArrayasBytes(FieldType.ShortType, shortarr1);
+            b = ser.getArrayAsBytes(FieldType.ShortType, shortarr1);
             final short[] shortarr2 = (short[])ser.getArrayFromBytes(FieldType.ShortType, Short.TYPE, b);
             assertTrue(Arrays.equals(shortarr1, shortarr2));
 
@@ -105,7 +105,7 @@ public class SerializationTest extends TestSupport {
             pos = 0;
             for (final Integer val : intList)
                 intarr1[pos++] = val;
-            b = ser.getArrayasBytes(FieldType.IntegerType, intarr1);
+            b = ser.getArrayAsBytes(FieldType.IntegerType, intarr1);
             final int[] intarr2 = (int[])ser.getArrayFromBytes(FieldType.IntegerType, Integer.TYPE, b);
             assertTrue(Arrays.equals(intarr1, intarr2));
 
@@ -117,7 +117,7 @@ public class SerializationTest extends TestSupport {
             pos = 0;
             for (final Long val : longList)
                 longarr1[pos++] = val;
-            b = ser.getArrayasBytes(FieldType.LongType, longarr1);
+            b = ser.getArrayAsBytes(FieldType.LongType, longarr1);
             final long[] longarr2 = (long[])ser.getArrayFromBytes(FieldType.LongType, Long.TYPE, b);
             assertTrue(Arrays.equals(longarr1, longarr2));
 
@@ -129,7 +129,7 @@ public class SerializationTest extends TestSupport {
             pos = 0;
             for (final Float val : floatList)
                 floatarr1[pos++] = val;
-            b = ser.getArrayasBytes(FieldType.FloatType, floatarr1);
+            b = ser.getArrayAsBytes(FieldType.FloatType, floatarr1);
             final float[] floatarr2 = (float[])ser.getArrayFromBytes(FieldType.FloatType, Float.TYPE, b);
             assertTrue(Arrays.equals(floatarr1, floatarr2));
 
@@ -141,7 +141,7 @@ public class SerializationTest extends TestSupport {
             pos = 0;
             for (final Double val : doubleList)
                 doublearr1[pos++] = val;
-            b = ser.getArrayasBytes(FieldType.DoubleType, doublearr1);
+            b = ser.getArrayAsBytes(FieldType.DoubleType, doublearr1);
             final double[] doublearr2 = (double[])ser.getArrayFromBytes(FieldType.DoubleType, Double.TYPE, b);
             assertTrue(Arrays.equals(doublearr1, doublearr2));
 
@@ -153,7 +153,7 @@ public class SerializationTest extends TestSupport {
             pos = 0;
             for (final String val : stringList)
                 stringarr1[pos++] = val;
-            b = ser.getArrayasBytes(FieldType.StringType, stringarr1);
+            b = ser.getArrayAsBytes(FieldType.StringType, stringarr1);
             final String[] stringarr2 = (String[])ser.getArrayFromBytes(FieldType.StringType, String.class, b);
             assertTrue(Arrays.equals(stringarr1, stringarr2));
 
@@ -165,7 +165,7 @@ public class SerializationTest extends TestSupport {
             pos = 0;
             for (final Date val : dateList)
                 datearr1[pos++] = val;
-            b = ser.getArrayasBytes(FieldType.DateType, datearr1);
+            b = ser.getArrayAsBytes(FieldType.DateType, datearr1);
             final Date[] datearr2 = (Date[])ser.getArrayFromBytes(FieldType.DateType, Date.class, b);
             assertTrue(Arrays.equals(datearr1, datearr2));
 
@@ -177,7 +177,7 @@ public class SerializationTest extends TestSupport {
             pos = 0;
             for (final Object val : objectList)
                 objarr1[pos++] = val;
-            b = ser.getArrayasBytes(FieldType.ObjectType, objarr1);
+            b = ser.getArrayAsBytes(FieldType.ObjectType, objarr1);
             final Object[] objarr2 = (Object[])ser.getArrayFromBytes(FieldType.ObjectType, Object.class, b);
             assertTrue(Arrays.equals(objarr1, objarr2));
         }

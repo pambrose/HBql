@@ -59,16 +59,14 @@ public class JavaSerialization extends Serialization {
                     return ois.readObject();
 
                 default:
-                    throw new HBqlException("Unknown type in getScalarfromBytes() " + fieldType);
+                    throw new HBqlException("Unknown type in getScalarFromBytes() " + fieldType);
             }
         }
         catch (IOException e) {
-            e.printStackTrace();
-            throw new HBqlException("Error in getScalarfromBytes() " + e.getMessage());
+            throw new HBqlException(getExceptionMessage("getScalarFromBytes()", e));
         }
         catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new HBqlException("Error in getScalarfromBytes() " + e.getMessage());
+            throw new HBqlException(getExceptionMessage("getScalarFromBytes()", e));
         }
         finally {
             if (ois != null) {
@@ -143,7 +141,7 @@ public class JavaSerialization extends Serialization {
             return baos.toByteArray();
         }
         catch (IOException e) {
-            throw new HBqlException("Error in getScalarAsBytes() - " + fieldType);
+            throw new HBqlException(getExceptionMessage("getScalarAsBytes()", e));
         }
     }
 
@@ -225,10 +223,10 @@ public class JavaSerialization extends Serialization {
         }
 
         catch (IOException e) {
-            throw new HBqlException("Error in getScalarfromBytes() " + e.getMessage());
+            throw new HBqlException(getExceptionMessage("getScalarFromBytes()", e));
         }
         catch (ClassNotFoundException e) {
-            throw new HBqlException("Error in getScalarfromBytes() " + e.getMessage());
+            throw new HBqlException(getExceptionMessage("getScalarFromBytes()", e));
         }
         finally {
             if (ois != null) {
@@ -242,7 +240,7 @@ public class JavaSerialization extends Serialization {
         }
     }
 
-    public byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws HBqlException {
+    public byte[] getArrayAsBytes(final FieldType fieldType, final Object obj) throws HBqlException {
 
         if (obj == null)
             return null;
@@ -318,13 +316,13 @@ public class JavaSerialization extends Serialization {
                     break;
 
                 default:
-                    throw new HBqlException("Unknown type in getArrayasBytes() - " + fieldType);
+                    throw new HBqlException("Unknown type in getArrayAsBytes() - " + fieldType);
             }
             oos.flush();
             return baos.toByteArray();
         }
         catch (IOException e) {
-            throw new HBqlException("Error in getArrayasBytes() " + e.getMessage());
+            throw new HBqlException(getExceptionMessage("getArrayAsBytes()", e));
         }
     }
 }

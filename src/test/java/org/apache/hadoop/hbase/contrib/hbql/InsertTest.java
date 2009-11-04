@@ -59,7 +59,7 @@ public class InsertTest extends TestSupport {
             System.out.println(conn.execute("create table using schema tab2"));
         else {
             System.out.println(conn.execute("delete from tab2"));
-            //System.out.println(conn.execute("disable table table2"));
+            //System.out.println(conn.disable ("disable table table2"));
             //System.out.println(conn.execute("drop table table2"));
         }
 

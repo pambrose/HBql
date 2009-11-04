@@ -64,14 +64,14 @@ public class HadoopSerialization extends Serialization {
                 }
 
                 default:
-                    throw new HBqlException("Unknown type in getScalarfromBytes() - " + fieldType);
+                    throw new HBqlException("Unknown type in getScalarFromBytes() - " + fieldType);
             }
         }
         catch (IOException e) {
-            throw new HBqlException("Error in getScalarfromBytes() " + e.getMessage());
+            throw new HBqlException(getExceptionMessage("getScalarFromBytes()", e));
         }
         catch (ClassNotFoundException e) {
-            throw new HBqlException("Error in getScalarfromBytes() " + e.getMessage());
+            throw new HBqlException(getExceptionMessage("getScalarFromBytes()", e));
         }
     }
 
@@ -87,7 +87,7 @@ public class HadoopSerialization extends Serialization {
                     return Bytes.toBytes((Boolean)obj);
 
                 case ByteType:
-                    return Bytes.toBytes((Short)obj);
+                    return Bytes.toBytes((Byte)obj);
 
                 case CharType:
                     return Bytes.toBytes((Short)obj);
@@ -125,11 +125,11 @@ public class HadoopSerialization extends Serialization {
                     }
 
                 default:
-                    throw new HBqlException("Unknown type in getScalarfromBytes() - " + fieldType);
+                    throw new HBqlException("Unknown type in getScalarAsBytes() - " + fieldType);
             }
         }
         catch (IOException e) {
-            throw new HBqlException("Error in getScalarfromBytes() - " + e.getMessage());
+            throw new HBqlException(getExceptionMessage("getScalarAsBytes()", e));
         }
     }
 
@@ -254,18 +254,18 @@ public class HadoopSerialization extends Serialization {
                 }
 
                 default:
-                    throw new HBqlException("Unknown type in getScalarfromBytes() - " + fieldType);
+                    throw new HBqlException("Unknown type in getArrayFromBytes() - " + fieldType);
             }
         }
         catch (IOException e) {
-            throw new HBqlException("Error in getScalarfromBytes() " + e.getMessage());
+            throw new HBqlException(getExceptionMessage("getArrayFromBytes()", e));
         }
         catch (ClassNotFoundException e) {
-            throw new HBqlException("Error in getScalarfromBytes() " + e.getMessage());
+            throw new HBqlException(getExceptionMessage("getArrayFromBytes()", e));
         }
     }
 
-    public byte[] getArrayasBytes(final FieldType fieldType, final Object obj) throws HBqlException {
+    public byte[] getArrayAsBytes(final FieldType fieldType, final Object obj) throws HBqlException {
 
         if (obj == null)
             return null;
@@ -385,11 +385,11 @@ public class HadoopSerialization extends Serialization {
                 }
 
                 default:
-                    throw new HBqlException("Unknown type in getArrayasBytes() - " + fieldType);
+                    throw new HBqlException("Unknown type in getArrayAsBytes() - " + fieldType);
             }
         }
         catch (IOException e) {
-            throw new HBqlException("Error in getArrayasBytes() - " + e.getMessage());
+            throw new HBqlException(getExceptionMessage("getArrayAsBytes()", e));
         }
     }
 

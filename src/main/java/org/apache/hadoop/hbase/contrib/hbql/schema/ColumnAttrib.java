@@ -306,7 +306,7 @@ public abstract class ColumnAttrib implements Serializable {
         final Object value = this.getCurrentValue(obj);
 
         if (this.isAnArray())
-            return IO.getSerialization().getArrayasBytes(this.getFieldType(), value);
+            return IO.getSerialization().getArrayAsBytes(this.getFieldType(), value);
         else
             return IO.getSerialization().getScalarAsBytes(this.getFieldType(), value);
     }

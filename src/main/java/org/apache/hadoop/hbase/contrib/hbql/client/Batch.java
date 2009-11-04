@@ -76,12 +76,14 @@ public class Batch {
         final Put put = new Put(keyval);
 
         for (final String family : schema.getFamilySet()) {
+
             for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {
 
                 if (attrib.isMapKeysAsColumnsAttrib()) {
                     final Map mapval = (Map)attrib.getCurrentValue(newrec);
                     for (final Object keyobj : mapval.keySet()) {
                         final String colname = keyobj.toString();
+
                         final byte[] b = IO.getSerialization().getScalarAsBytes(mapval.get(keyobj));
 
                         // Use family:column[key] scheme to avoid column namespace collision
