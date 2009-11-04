@@ -81,14 +81,24 @@ public class AnnotatedAllTypes implements Serializable {
     public Date[] dateArrayValue = null;
 
     @Column(family = "family1")
-    public TestObject objectValue = new TestObject();
+    public TestObject objectValue = null;
 
     @Column(family = "family1")
     public TestObject[] objectArrayValue = null;
 
 
     public static class TestObject implements Serializable {
-        public int intvalue = -9;
+        public int intvalue = random.nextInt();
+
+        public boolean equals(final Object o) {
+
+            if (!(o instanceof TestObject))
+                return false;
+
+            final TestObject val = (TestObject)o;
+
+            return val.intvalue == this.intvalue;
+        }
     }
 
     public AnnotatedAllTypes() {
@@ -144,9 +154,25 @@ public class AnnotatedAllTypes implements Serializable {
         this.doubleArrayValue = new double[cnt];
         for (int i = 0; i < cnt; i++)
             this.doubleArrayValue[i] = random.nextDouble();
+
+        this.stringValue = "" + random.nextDouble();
+        this.stringArrayValue = new String[cnt];
+        for (int i = 0; i < cnt; i++)
+            this.stringArrayValue[i] = "" + random.nextDouble();
+
+        this.dateValue = new Date(random.nextLong());
+        this.dateArrayValue = new Date[cnt];
+        for (int i = 0; i < cnt; i++)
+            this.dateArrayValue[i] = new Date(random.nextLong());
+
+        this.objectValue = new TestObject();
+        this.objectArrayValue = new TestObject[cnt];
+        for (int i = 0; i < cnt; i++)
+            this.objectArrayValue[i] = new TestObject();
     }
 
     public boolean equals(final Object o) {
+
         if (!(o instanceof AnnotatedAllTypes))
             return false;
 
@@ -168,6 +194,12 @@ public class AnnotatedAllTypes implements Serializable {
                && Arrays.equals(val.floatArrayValue, this.floatArrayValue)
                && val.doubleValue == this.doubleValue
                && Arrays.equals(val.doubleArrayValue, this.doubleArrayValue)
+               && val.stringValue.equals(this.stringValue)
+               && Arrays.equals(val.stringArrayValue, this.stringArrayValue)
+               && val.dateValue.equals(this.dateValue)
+               && Arrays.equals(val.dateArrayValue, this.dateArrayValue)
+               && val.objectValue.equals(this.objectValue)
+               && Arrays.equals(val.objectArrayValue, this.objectArrayValue)
                 ;
     }
 }
