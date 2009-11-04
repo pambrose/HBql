@@ -94,7 +94,7 @@ public class AnnotatedAllTypes implements Serializable {
     public AnnotatedAllTypes() {
     }
 
-    static int cnt = 20;
+    static int cnt = 200;
     static Random random = new Random();
 
     public AnnotatedAllTypes(final String keyval, final int intValue, final String stringValue) {
@@ -117,10 +117,33 @@ public class AnnotatedAllTypes implements Serializable {
         for (int i = 0; i < cnt; i++)
             this.byteArrayValue[i] = (byte)random.nextInt();
 
+        this.charValue = ("" + random.nextInt()).charAt(0);
+        this.charArrayValue = ("" + random.nextInt()).toCharArray();
+
         this.shortValue = (short)random.nextInt();
         this.shortArrayValue = new short[cnt];
         for (int i = 0; i < cnt; i++)
             this.shortArrayValue[i] = (short)random.nextInt();
+
+        this.intValue = random.nextInt();
+        this.intArrayValue = new int[cnt];
+        for (int i = 0; i < cnt; i++)
+            this.intArrayValue[i] = random.nextInt();
+
+        this.longValue = random.nextLong();
+        this.longArrayValue = new long[cnt];
+        for (int i = 0; i < cnt; i++)
+            this.longArrayValue[i] = random.nextLong();
+
+        this.floatValue = random.nextFloat();
+        this.floatArrayValue = new float[cnt];
+        for (int i = 0; i < cnt; i++)
+            this.floatArrayValue[i] = random.nextFloat();
+
+        this.doubleValue = random.nextDouble();
+        this.doubleArrayValue = new double[cnt];
+        for (int i = 0; i < cnt; i++)
+            this.doubleArrayValue[i] = random.nextDouble();
     }
 
     public boolean equals(final Object o) {
@@ -133,8 +156,18 @@ public class AnnotatedAllTypes implements Serializable {
                && Arrays.equals(val.booleanArrayValue, this.booleanArrayValue)
                && val.byteValue == this.byteValue
                && Arrays.equals(val.byteArrayValue, this.byteArrayValue)
+               && val.charValue == this.charValue
+               && Arrays.equals(val.charArrayValue, this.charArrayValue)
                && val.shortValue == this.shortValue
                && Arrays.equals(val.shortArrayValue, this.shortArrayValue)
+               && val.intValue == this.intValue
+               && Arrays.equals(val.intArrayValue, this.intArrayValue)
+               && val.longValue == this.longValue
+               && Arrays.equals(val.longArrayValue, this.longArrayValue)
+               && val.floatValue == this.floatValue
+               && Arrays.equals(val.floatArrayValue, this.floatArrayValue)
+               && val.doubleValue == this.doubleValue
+               && Arrays.equals(val.doubleArrayValue, this.doubleArrayValue)
                 ;
     }
 }

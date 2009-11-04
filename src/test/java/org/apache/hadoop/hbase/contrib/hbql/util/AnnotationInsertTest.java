@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Query;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class AnnotationInsertTest extends TestSupport {
 
     static int cnt = 10;
 
-    //@BeforeClass
+    @BeforeClass
     public static void onetimeSetup() throws HBqlException, IOException {
 
         conn = ConnectionManager.newConnection();
@@ -58,7 +59,7 @@ public class AnnotationInsertTest extends TestSupport {
     @Test
     public void simpleSelect() throws HBqlException, IOException {
 
-        onetimeSetup();
+        //onetimeSetup();
 
         assertTrue(vals.size() == cnt);
 
