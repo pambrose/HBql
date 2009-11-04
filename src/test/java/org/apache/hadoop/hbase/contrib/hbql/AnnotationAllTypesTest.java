@@ -17,8 +17,6 @@ public class AnnotationAllTypesTest extends TestSupport {
 
     static Connection conn = null;
 
-    static List<AnnotatedAllTypes> vals = Lists.newArrayList();
-
     static int cnt = 10;
 
     @BeforeClass
@@ -57,7 +55,7 @@ public class AnnotationAllTypesTest extends TestSupport {
     @Test
     public void simpleSelect() throws HBqlException, IOException {
 
-        vals.addAll(insertSomeData(cnt, true));
+        List<AnnotatedAllTypes> vals = insertSomeData(cnt, false);
 
         assertTrue(vals.size() == cnt);
 
@@ -73,8 +71,7 @@ public class AnnotationAllTypesTest extends TestSupport {
     @Test
     public void simpleSparseSelect() throws HBqlException, IOException {
 
-        vals.clear();
-        vals.addAll(insertSomeData(cnt, false));
+        List<AnnotatedAllTypes> vals = insertSomeData(cnt, true);
 
         assertTrue(vals.size() == cnt);
 
@@ -85,5 +82,23 @@ public class AnnotationAllTypesTest extends TestSupport {
             assertTrue(rec.equals(vals.get(reccnt++)));
 
         assertTrue(reccnt == cnt);
+    }
+
+    @Test
+    public void simpleLimitSelect() throws HBqlException, IOException {
+
+        List<AnnotatedAllTypes> vals = insertSomeData(cnt, true);
+
+        assertTrue(vals.size() == cnt);
+
+        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from AnnotatedAllTypes WITH LIMIT :limit");
+
+        recs.setParameter("limit", cnt / 2);
+
+        int reccnt = 0;
+        for (final AnnotatedAllTypes rec : recs.getResults())
+            assertTrue(rec.equals(vals.get(reccnt++)));
+
+        assertTrue(reccnt == cnt / 2);
     }
 }
