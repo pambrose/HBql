@@ -54,7 +54,9 @@ public class AnnotationInsertTest extends TestSupport {
 
     @Test
     public void simpleSelect() throws HBqlException, IOException {
+
         onetimeSetup();
+
         assertTrue(vals.size() == 10);
     }
 }
