@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Query;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -16,12 +17,12 @@ public class AnnotationInsertTest extends TestSupport {
 
     static Connection conn = null;
 
-    static List<AnnotatedAllTypes> vals = null;
+    static List<AnnotatedAllTypes> vals = Lists.newArrayList();
 
     static int cnt = 10;
 
-    // @BeforeClass
-    public static void onetimeSetup() throws HBqlException, IOException {
+    @BeforeClass
+    public static void emptyTable() throws HBqlException, IOException {
 
         conn = ConnectionManager.newConnection();
 
@@ -30,11 +31,9 @@ public class AnnotationInsertTest extends TestSupport {
         else {
             System.out.println(conn.execute("delete from AnnotatedAllTypes"));
         }
-
-        vals = insertSomeData(cnt);
     }
 
-    public static List<AnnotatedAllTypes> insertSomeData(int cnt) throws HBqlException, IOException {
+    public static List<AnnotatedAllTypes> insertSomeData(int cnt, boolean noRandomData) throws HBqlException, IOException {
 
         List<AnnotatedAllTypes> retval = Lists.newArrayList();
         final Batch batch = new Batch();
@@ -42,7 +41,7 @@ public class AnnotationInsertTest extends TestSupport {
         for (int i = 0; i < cnt; i++) {
 
             AnnotatedAllTypes aat = new AnnotatedAllTypes();
-            aat.setATestValue(i);
+            aat.setATestValue(i, noRandomData);
 
             retval.add(aat);
 
@@ -58,7 +57,24 @@ public class AnnotationInsertTest extends TestSupport {
     @Test
     public void simpleSelect() throws HBqlException, IOException {
 
-        onetimeSetup();
+        vals.addAll(insertSomeData(cnt, true));
+
+        assertTrue(vals.size() == cnt);
+
+        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from AnnotatedAllTypes");
+
+        int reccnt = 0;
+        for (final AnnotatedAllTypes rec : recs.getResults())
+            assertTrue(rec.equals(vals.get(reccnt++)));
+
+        assertTrue(reccnt == cnt);
+    }
+
+    @Test
+    public void simpleSparseSelect() throws HBqlException, IOException {
+
+        vals.clear();
+        vals.addAll(insertSomeData(cnt, false));
 
         assertTrue(vals.size() == cnt);
 

@@ -69,7 +69,7 @@ public class AnnotatedAllTypes implements Serializable {
     public double[] doubleArrayValue = null;
 
     @Column(family = "family1")
-    public String stringValue = "";
+    public String stringValue = null;
 
     @Column(family = "family1")
     public String[] stringArrayValue = null;
@@ -113,62 +113,84 @@ public class AnnotatedAllTypes implements Serializable {
         this.stringValue = stringValue;
     }
 
-    public void setATestValue(int val) throws HBqlException {
+    public void setATestValue(int val, boolean noRandomData) throws HBqlException {
 
         this.keyval = Util.getZeroPaddedNumber(val, 10);
 
-        this.booleanValue = random.nextBoolean();
-        this.booleanArrayValue = new boolean[cnt];
-        for (int i = 0; i < cnt; i++)
-            this.booleanArrayValue[i] = random.nextBoolean();
+        if (noRandomData || random.nextBoolean()) {
+            this.booleanValue = random.nextBoolean();
+            this.booleanArrayValue = new boolean[cnt];
+            for (int i = 0; i < cnt; i++)
+                this.booleanArrayValue[i] = random.nextBoolean();
+        }
 
-        this.byteValue = (byte)random.nextInt();
-        this.byteArrayValue = new byte[cnt];
-        for (int i = 0; i < cnt; i++)
-            this.byteArrayValue[i] = (byte)random.nextInt();
+        if (noRandomData || random.nextBoolean()) {
+            this.byteValue = (byte)random.nextInt();
+            this.byteArrayValue = new byte[cnt];
+            for (int i = 0; i < cnt; i++)
+                this.byteArrayValue[i] = (byte)random.nextInt();
+        }
 
-        this.charValue = ("" + random.nextInt()).charAt(0);
-        this.charArrayValue = ("" + random.nextInt()).toCharArray();
+        if (noRandomData || random.nextBoolean()) {
+            this.charValue = ("" + random.nextInt()).charAt(0);
+            this.charArrayValue = ("" + random.nextInt()).toCharArray();
+        }
 
-        this.shortValue = (short)random.nextInt();
-        this.shortArrayValue = new short[cnt];
-        for (int i = 0; i < cnt; i++)
-            this.shortArrayValue[i] = (short)random.nextInt();
+        if (noRandomData || random.nextBoolean()) {
+            this.shortValue = (short)random.nextInt();
+            this.shortArrayValue = new short[cnt];
+            for (int i = 0; i < cnt; i++)
+                this.shortArrayValue[i] = (short)random.nextInt();
+        }
 
-        this.intValue = random.nextInt();
-        this.intArrayValue = new int[cnt];
-        for (int i = 0; i < cnt; i++)
-            this.intArrayValue[i] = random.nextInt();
+        if (noRandomData || random.nextBoolean()) {
+            this.intValue = random.nextInt();
+            this.intArrayValue = new int[cnt];
+            for (int i = 0; i < cnt; i++)
+                this.intArrayValue[i] = random.nextInt();
+        }
 
-        this.longValue = random.nextLong();
-        this.longArrayValue = new long[cnt];
-        for (int i = 0; i < cnt; i++)
-            this.longArrayValue[i] = random.nextLong();
+        if (noRandomData || random.nextBoolean()) {
+            this.longValue = random.nextLong();
+            this.longArrayValue = new long[cnt];
+            for (int i = 0; i < cnt; i++)
+                this.longArrayValue[i] = random.nextLong();
+        }
 
-        this.floatValue = random.nextFloat();
-        this.floatArrayValue = new float[cnt];
-        for (int i = 0; i < cnt; i++)
-            this.floatArrayValue[i] = random.nextFloat();
+        if (noRandomData || random.nextBoolean()) {
+            this.floatValue = random.nextFloat();
+            this.floatArrayValue = new float[cnt];
+            for (int i = 0; i < cnt; i++)
+                this.floatArrayValue[i] = random.nextFloat();
+        }
 
-        this.doubleValue = random.nextDouble();
-        this.doubleArrayValue = new double[cnt];
-        for (int i = 0; i < cnt; i++)
-            this.doubleArrayValue[i] = random.nextDouble();
+        if (noRandomData || random.nextBoolean()) {
+            this.doubleValue = random.nextDouble();
+            this.doubleArrayValue = new double[cnt];
+            for (int i = 0; i < cnt; i++)
+                this.doubleArrayValue[i] = random.nextDouble();
+        }
 
-        this.stringValue = "" + random.nextDouble();
-        this.stringArrayValue = new String[cnt];
-        for (int i = 0; i < cnt; i++)
-            this.stringArrayValue[i] = "" + random.nextDouble();
+        if (noRandomData || random.nextBoolean()) {
+            this.stringValue = "" + random.nextDouble();
+            this.stringArrayValue = new String[cnt];
+            for (int i = 0; i < cnt; i++)
+                this.stringArrayValue[i] = "" + random.nextDouble();
+        }
 
-        this.dateValue = new Date(random.nextLong());
-        this.dateArrayValue = new Date[cnt];
-        for (int i = 0; i < cnt; i++)
-            this.dateArrayValue[i] = new Date(random.nextLong());
+        if (noRandomData || random.nextBoolean()) {
+            this.dateValue = new Date(random.nextLong());
+            this.dateArrayValue = new Date[cnt];
+            for (int i = 0; i < cnt; i++)
+                this.dateArrayValue[i] = new Date(random.nextLong());
+        }
 
-        this.objectValue = new TestObject();
-        this.objectArrayValue = new TestObject[cnt];
-        for (int i = 0; i < cnt; i++)
-            this.objectArrayValue[i] = new TestObject();
+        if (noRandomData || random.nextBoolean()) {
+            this.objectValue = new TestObject();
+            this.objectArrayValue = new TestObject[cnt];
+            for (int i = 0; i < cnt; i++)
+                this.objectArrayValue[i] = new TestObject();
+        }
     }
 
     public boolean equals(final Object o) {
@@ -178,7 +200,8 @@ public class AnnotatedAllTypes implements Serializable {
 
         final AnnotatedAllTypes val = (AnnotatedAllTypes)o;
 
-        return val.booleanValue == this.booleanValue
+        return val.keyval.equals(this.keyval)
+               && val.booleanValue == this.booleanValue
                && Arrays.equals(val.booleanArrayValue, this.booleanArrayValue)
                && val.byteValue == this.byteValue
                && Arrays.equals(val.byteArrayValue, this.byteArrayValue)
@@ -194,12 +217,21 @@ public class AnnotatedAllTypes implements Serializable {
                && Arrays.equals(val.floatArrayValue, this.floatArrayValue)
                && val.doubleValue == this.doubleValue
                && Arrays.equals(val.doubleArrayValue, this.doubleArrayValue)
-               && val.stringValue.equals(this.stringValue)
-               && Arrays.equals(val.stringArrayValue, this.stringArrayValue)
-               && val.dateValue.equals(this.dateValue)
-               && Arrays.equals(val.dateArrayValue, this.dateArrayValue)
-               && val.objectValue.equals(this.objectValue)
-               && Arrays.equals(val.objectArrayValue, this.objectArrayValue)
+
+               && ((val.stringValue == null && this.stringValue == null)
+                   || val.stringValue.equals(this.stringValue))
+               && ((val.stringArrayValue == null && this.stringArrayValue == null)
+                   || Arrays.equals(val.stringArrayValue, this.stringArrayValue))
+
+               && ((val.dateValue == null && this.dateValue == null)
+                   || val.dateValue.equals(this.dateValue))
+               && ((val.dateArrayValue == null && this.dateArrayValue == null)
+                   || Arrays.equals(val.dateArrayValue, this.dateArrayValue))
+
+               && ((val.objectValue == null && this.objectValue == null)
+                   || val.objectValue.equals(this.objectValue))
+               && ((val.objectArrayValue == null && this.objectArrayValue == null)
+                   || Arrays.equals(val.objectArrayValue, this.objectArrayValue))
                 ;
     }
 }
