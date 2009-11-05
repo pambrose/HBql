@@ -7,6 +7,7 @@ import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.client.Output;
 import org.apache.hadoop.hbase.contrib.hbql.client.ParseException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Query;
 import org.apache.hadoop.hbase.contrib.hbql.client.Record;
@@ -17,18 +18,95 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SchemaManagerStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.contrib.hbql.statement.ShellStatement;
+import org.apache.hadoop.hbase.contrib.hbql.statement.VersionStatement;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class Console {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, HBqlException {
+
+        if (args != null && args.length > 0) {
+            final List<String> argList = new LinkedList<String>();
+            argList.addAll(Arrays.asList(args));
+
+            while (argList.size() > 0) {
+                if (!processArg(argList)) {
+                    usage();
+                    break;
+                }
+            }
+        }
+        else {
+            processCommandLineInput();
+        }
+    }
+
+    private static void usage() {
+
+        System.out.println("Usage: java " + Console.class.getName() + " [-options]");
+        System.out.println("\t\t(comand line usage");
+        System.out.println("   or  java " + Console.class.getName() + " [-options] [file_names]");
+        System.out.println("\t\t(executes the statements in the space-separated file names)");
+        System.out.println("\nwhere options include:");
+        System.out.println("\t-usage        print this message");
+        System.out.println("\t-version      print version info and exit");
+    }
+
+    private static boolean processArg(final List<String> argList) throws HBqlException, IOException {
+
+        final String option = argList.remove(0);
+
+        if (option.equals("-usage")) {
+            usage();
+            return true;
+        }
+
+        if (option.equals("-version")) {
+            final VersionStatement version = new VersionStatement();
+            final Output out = version.execute(null);
+            System.out.print(out);
+            return true;
+        }
+
+        if (!option.startsWith("-")) {
+
+            final StringBuilder stmtBuffer = new StringBuilder();
+            try {
+                final BufferedReader in = new BufferedReader(new FileReader(option));
+                String str;
+                while ((str = in.readLine()) != null)
+                    stmtBuffer.append(str);
+                in.close();
+            }
+            catch (FileNotFoundException e) {
+                System.out.println("Cannot find file: " + option);
+                return false;
+            }
+
+            final ConnectionImpl conn = (ConnectionImpl)ConnectionManager.newConnection();
+            processInput(new PrintWriter(System.out), conn, stmtBuffer.toString());
+
+            return true;
+        }
+
+        return false;
+    }
+
+
+    private static void processCommandLineInput() throws IOException {
 
         final List<SimpleCompletor> completors = Lists.newArrayList();
-        completors.add(new SimpleCompletor(new String[]{"select", "insert", "create", "table", "schema", "describe"}));
+        completors.add(new SimpleCompletor(new String[]{"select", "insert", "create", "table", "schema",
+                                                        "describe", "drop", "enable", "disable"}));
 
         final ConsoleReader reader = new ConsoleReader();
         reader.setBellEnabled(false);
@@ -40,12 +118,13 @@ public class Console {
 
         final ConnectionImpl conn = (ConnectionImpl)ConnectionManager.newConnection();
 
-        StringBuilder currentCommand = new StringBuilder();
+        StringBuilder stmtBuffer = new StringBuilder();
         boolean continuation = false;
 
         final Map<Boolean, String> prompts = Maps.newHashMap();
         prompts.put(Boolean.FALSE, "HBql> ");
         prompts.put(Boolean.TRUE, "> ");
+
         while (true) {
 
             final String line = reader.readLine(prompts.get(continuation));
@@ -54,24 +133,24 @@ public class Console {
                 break;
 
             if (line.trim().length() > 0) {
-                currentCommand.append(line);
+                stmtBuffer.append(line);
 
                 continuation = !line.trim().endsWith(";");
                 if (!continuation) {
-                    final String sql = currentCommand.toString();
-                    currentCommand = new StringBuilder();
-                    processStatement(out, conn, sql);
+                    final String sql = stmtBuffer.toString();
+                    stmtBuffer = new StringBuilder();
+                    processInput(out, conn, sql);
                 }
             }
         }
     }
 
-    private static void processStatement(final PrintWriter out,
-                                         final ConnectionImpl conn,
-                                         final String line) throws IOException {
+    private static void processInput(final PrintWriter out,
+                                     final ConnectionImpl conn,
+                                     final String input) throws IOException {
 
         try {
-            final List<ShellStatement> stmtList = HBqlShell.parseCommands(line);
+            final List<ShellStatement> stmtList = HBqlShell.parseCommands(input);
 
             for (final ShellStatement stmt : stmtList) {
                 if (stmt instanceof SelectStatement)
@@ -96,7 +175,7 @@ public class Console {
             }
         }
         catch (HBqlException e) {
-            out.println("Error in statement: " + line);
+            out.println("Error in statement: " + input);
             out.println(e.getMessage());
         }
 

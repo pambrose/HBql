@@ -7,4 +7,4 @@ HBASE_CLASSPATH=$HBASE_HOME/conf:$HBASE_HOME/hbase-0.20.1.jar:$HBASE_HOME/lib/ha
 
 HBQL_CLASSPATH=$HBQL_HOME/lib/jline-0.9.94.jar:$HBQL_HOME/lib/antlr-runtime-3.1.3.jar:$HBQL_HOME/target/classes
 
-java -classpath $HBASE_CLASSPATH:$HBQL_CLASSPATH org.apache.hadoop.hbase.contrib.hbql.Console
+java -classpath $HBASE_CLASSPATH:$HBQL_CLASSPATH org.apache.hadoop.hbase.contrib.hbql.Console $*

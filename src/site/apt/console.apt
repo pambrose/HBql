@@ -12,6 +12,10 @@ Console
 
 ---------------------------
 $HBQL_HOME/bin/console.sh
+
+or
+
+$HBQL_HOME/bin/console.sh {filename...}
 ---------------------------
 
 *Details
@@ -19,7 +23,13 @@ $HBQL_HOME/bin/console.sh
     * Commands are terminated with the ";" character.
 
     * A single line can have multiple ";" separated statements.
-    
+
+    * If one or more file names are provided, their contents as HBql statements.
+
+    * Comments are the same as Java comments
+
+    * The comand line mode has keyword completion for most of the statement keywords.
+
     * The console requires the hbql, jline, haddop, hbase, log4j jar files. You can see the specific jars
     in bin/console.sh.
 
