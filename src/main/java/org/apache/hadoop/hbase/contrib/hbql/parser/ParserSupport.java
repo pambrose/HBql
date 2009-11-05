@@ -7,6 +7,7 @@ import org.antlr.runtime.Parser;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
+import org.apache.expreval.client.LexerRecognitionException;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.calculation.DelegateCalculation;
 import org.apache.expreval.expr.compare.BooleanCompare;
@@ -113,5 +114,45 @@ public class ParserSupport extends Parser {
             e.printStackTrace();
             throw new RecognitionException(input);
         }
+    }
+
+    public static String decodeEscapedChar(final String str) {
+
+        if (!str.startsWith("\\"))
+            return str;
+
+        if (str.equals("\\b"))
+            return "\b";
+        if (str.equals("\\t"))
+            return "\t";
+        if (str.equals("\\n"))
+            return "\n";
+        if (str.equals("\\f"))
+            return "\f";
+        if (str.equals("\\r"))
+            return "\r";
+        if (str.equals("\\"))
+            return "\"";
+        if (str.equals("\\'"))
+            return "\'";
+        if (str.equals("\\\\"))
+            return "\\";
+
+        // Escaped Unicode
+        if (str.length() > 2 && str.startsWith("\\u")) {
+            final String nums = str.substring(2);
+            final int val = Integer.parseInt(nums, 16);
+            char[] ub = Character.toChars(val);
+            return new String(ub);
+        }
+
+        // Escaped Octal
+        if (str.length() > 1) {
+            final String nums = str.substring(1);
+            final Character val = (char)Integer.parseInt(nums, 8);
+            return val.toString();
+        }
+
+        throw new LexerRecognitionException(null, "Unable to parse: " + str);
     }
 }

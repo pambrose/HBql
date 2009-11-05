@@ -66,6 +66,7 @@ import org.apache.expreval.util.*;
 @lexer::header {
 package org.apache.hadoop.hbase.contrib.hbql.antlr;
 import org.apache.expreval.client.*;
+import org.apache.hadoop.hbase.contrib.hbql.parser.*;
 }
 
 shellCommand returns [List<ShellStatement> retval]
@@ -84,7 +85,7 @@ options {backtrack=true;}
 	| keyHELP					{retval = new HelpStatement();}
 	| keyPARSE c=commandStmt			{retval = new ParseStatement($c.retval);}
 	| keyPARSE keyEXPR te=topExpr			{retval = new ParseStatement($te.retval);}
-	| keySET t=simpleName EQ? val=QUOTED	 	{retval = new SetStatement($t.text, $val.text);}
+	| keySET t=simpleName EQ? val=STRING	 	{retval = new SetStatement($t.text, $val.text);}
 	;						
 
 tableStatement returns [TableStatement retval]
@@ -242,7 +243,7 @@ atomExpr returns [GenericValue retval]
 
 // Literals		
 stringLiteral returns [StringLiteral retval]
-	: v=QUOTED 					{retval = new StringLiteral($v.text);};
+	: v=STRING 					{retval = new StringLiteral($v.text);};
 	
 integerLiteral returns [IntegerLiteral retval]
 	: v=INT						{retval = new IntegerLiteral($v.text);};	
@@ -348,7 +349,7 @@ eqneOp returns [Operator retval]
 	| (LTGT | BANGEQ)				{retval = Operator.NOTEQ;}
 	;
 				
-qstring	: QUOTED ;					
+qstring	: STRING ;					
 
 plusMinus returns [Operator retval]
 	: PLUS						{retval = Operator.PLUS;}
@@ -379,18 +380,48 @@ DOUBLE1	: DIGIT+ (DOT DIGIT*)? ('D' | 'd' | 'F' | 'f');
 DOUBLE2	: DIGIT+ DOT DIGIT*;
 
 ID : CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)*; // DOLLAR is for inner class table names
-	 
-QUOTED		
-@init {final StringBuilder sbuf = new StringBuilder();}	
-	: DQUOTE (options {greedy=false;} : any=~('\\'|DQUOTE) {sbuf.append((char)$any);})* DQUOTE {setText(sbuf.toString());}
-	| SQUOTE (options {greedy=false;} : any=~('\\'|SQUOTE) {sbuf.append((char)$any);})* SQUOTE {setText(sbuf.toString());}
-	;
 
 fragment
 DIGIT	: '0'..'9'; 
 
 fragment
 CHAR 	: 'a'..'z' | 'A'..'Z'; 
+	 
+STRING		
+@init {final StringBuilder sbuf = new StringBuilder();}	
+	: DQUOTE (options {greedy=false;} : any=DQCHAR {sbuf.append(ParserSupport.decodeEscapedChar($any.getText()));})* DQUOTE {setText(sbuf.toString());}
+	| SQUOTE (options {greedy=false;} : any=SQCHAR {sbuf.append(ParserSupport.decodeEscapedChar($any.getText()));})* SQUOTE {setText(sbuf.toString());}
+	;
+
+fragment 
+DQCHAR
+    : ESC_SEQ | ~('\\'|'\"');
+    	
+fragment 
+SQCHAR
+    : ESC_SEQ | ~('\\'|'\'');
+    	
+fragment
+ESC_SEQ
+    :   '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
+    |   UNICODE_ESC
+    |   OCTAL_ESC
+    ;
+
+fragment
+OCTAL_ESC
+    :   '\\' ('0'..'3') ('0'..'7') ('0'..'7')
+    |   '\\' ('0'..'7') ('0'..'7')
+    |   '\\' ('0'..'7')
+    ;
+
+fragment
+UNICODE_ESC
+    :   '\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
+    ;
+
+fragment
+HEX_DIGIT : ('0'..'9'|'a'..'f'|'A'..'F') ;
 
 WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();};
 
