@@ -30,26 +30,32 @@ Types
 
 * Strings
 
-    Strings are quoted with matching ' or " chars, e.g., 'val' and "val"
+    ** Strings are quoted with matching ' or " chars, e.g., 'val' and "val".
+
+    ** Embedded ' and " chars are embedded with a \\ prefix.
+
+    ** Unicode and octal chars are encoded with \\u and \\ prefixes respectively.
 
 * Numbers
 
-    Numeric types are short, integer, long, float, and double.
+    ** Numeric types are short, integer, long, float, and double.
 
-    Longs, floats, and doubles support L, F, and D suffixes, e.g., 3L, 3.0F, and 3.0D.
+    ** Longs, floats, and doubles support L, F, and D suffixes, e.g., 3L, 3.0F, and 3.0D.
 
 * Column references
 
-    Column values can be referenced by family:column or alias name.
+    ** Column values can be referenced by family:column or alias name.
 
 
 * Parameters
 
-    Parameters are specified by :name notation.  Parameter types are not
-    determined until a value is bound through a setParameter() call.
-    The type can change is rebound with a different type through a
-    subsequent setParameter() call.  Where appropriate, parameter values can be
-    bound to a Collection value.
+    ** Parameters are specified by :name notation.
+
+    ** Parameter types are not determined until a value is bound with a setParameter() call.
+    Thus parameter types can change if bound with a different type in a
+    subsequent setParameter() call.
+
+    ** Where appropriate, parameter values can be bound to a Collection value.
 
 
 Operators

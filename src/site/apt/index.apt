@@ -20,13 +20,15 @@ Documentation
 
     * {{{./statements/functions.html}Functions}}
 
+    * {{{./statements/expressions.html}Expressions}}
+
     * {{{./schemas.html}Schemas}}
 
     * {{{./console.html}Console usage}}
 
     * {{{./apidocs/org/apache/hadoop/hbase/contrib/hbql/client/package-summary.html}HBql Client API}}
 
-    * {{{./apidocs/index.html}All Javadocs}}
+    * {{{./apidocs/index.html}Javadocs}}
 
     * {{{./faq.html}FAQ}}
 

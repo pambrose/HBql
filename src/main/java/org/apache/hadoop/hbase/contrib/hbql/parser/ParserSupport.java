@@ -142,7 +142,7 @@ public class ParserSupport extends Parser {
         if (str.length() > 2 && str.startsWith("\\u")) {
             final String nums = str.substring(2);
             final int val = Integer.parseInt(nums, 16);
-            char[] ub = Character.toChars(val);
+            final char[] ub = Character.toChars(val);
             return new String(ub);
         }
 
