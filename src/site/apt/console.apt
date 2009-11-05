@@ -11,11 +11,9 @@ Console
 *Syntax
 
 ---------------------------
-$HBQL_HOME/bin/console.sh
 
-or
+$HBQL_HOME/bin/console.sh [filename...]
 
-$HBQL_HOME/bin/console.sh {filename...}
 ---------------------------
 
 *Details
@@ -24,7 +22,7 @@ $HBQL_HOME/bin/console.sh {filename...}
 
     * A single line can have multiple ";" separated statements.
 
-    * If one or more file names are provided, their contents as HBql statements.
+    * If one or more file names are named, their contents are executed as HBql statements.
 
     * Comments are the same as Java comments
 
