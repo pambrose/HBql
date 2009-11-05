@@ -119,14 +119,6 @@
         <plugins>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <outputDirectory>${basedir}/target/site/downloads</outputDirectory>
-                </configuration>
-            </plugin>
-
-            <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
             </plugin>
 
