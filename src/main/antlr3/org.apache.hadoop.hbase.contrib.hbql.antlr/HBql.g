@@ -423,6 +423,11 @@ UNICODE_ESC
 fragment
 HEX_DIGIT : ('0'..'9'|'a'..'f'|'A'..'F') ;
 
+COMMENT
+    :   '//' ~('\n'|'\r')* '\r'? '\n' {skip();}
+    |   '/*' ( options {greedy=false;} : . )* '*/' {skip();}
+    ;
+
 WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();};
 
 keySELECT 	: {isKeyword(input, "SELECT")}? ID;

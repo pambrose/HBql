@@ -5,6 +5,7 @@
     <groupId>HBql</groupId>
     <artifactId>hbql</artifactId>
     <version>0.9.0-alpha</version>
+    <packaging>jar</packaging>
 
     <name>HBql</name>
     <url>http://www.sudothougt.com</url>
@@ -94,8 +95,9 @@
 
         <dependency>
             <groupId>org.antlr</groupId>
-            <artifactId>antlr</artifactId>
+            <artifactId>antlr-runtime</artifactId>
             <version>3.2</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -114,16 +116,6 @@
         <outputDirectory>${basedir}/target/classes</outputDirectory>
         <testOutputDirectory>${basedir}/target/test-classes</testOutputDirectory>
 
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <excludes>
-                    <exclude>checkstyle.xml</exclude>
-                </excludes>
-            </resource>
-        </resources>
-
         <plugins>
 
             <plugin>
@@ -136,10 +128,6 @@
 
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
 
             <plugin>
@@ -159,6 +147,13 @@
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr3-maven-plugin</artifactId>
                 <version>3.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>antlr</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -169,8 +164,6 @@
                     <execution>
                         <id>pdf</id>
                         <phase>site</phase>
-                        <goals>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -191,27 +184,6 @@
                     <!-- Configure filters & descriptors -->
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-artifacts</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <artifacts>
-                                <artifact>
-                                    <file>
-                                        ${project.build.directory}/${project.artifactId}-${project.version}-bin.tar.gz
-                                    </file>
-                                    <type>tar.gz</type>
-                                    <classifier>bin</classifier>
-                                </artifact>
-                            </artifacts>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 
         </plugins>
     </build>
@@ -221,9 +193,11 @@
 
             <!--
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.2</version>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-checkstyle-plugin</artifactId>
+              <configuration>
+                <configLocation>build/checkstyle/sun_checks.xml</configLocation>
+              </configuration>
             </plugin>
 
             <plugin>
@@ -264,7 +238,6 @@
 
 
             <!--
-
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-jxr-plugin</artifactId>
