@@ -31,6 +31,11 @@ tokens {
 	RCURLY = '}';
 }
 
+@lexer::members {
+  public void reportError(RecognitionException e) {
+    throw new LexerRecognitionException(e, e.getMessage());
+  }
+}
 @rulecatch {catch (RecognitionException re) {handleRecognitionException(re);}}
 
 @header {
@@ -60,6 +65,7 @@ import org.apache.expreval.util.*;
 
 @lexer::header {
 package org.apache.hadoop.hbase.contrib.hbql.antlr;
+import org.apache.expreval.client.*;
 }
 
 shellCommand returns [List<ShellStatement> retval]
@@ -376,8 +382,8 @@ ID : CHAR (CHAR | DOT | MINUS | DOLLAR | DIGIT)*; // DOLLAR is for inner class t
 	 
 QUOTED		
 @init {final StringBuilder sbuf = new StringBuilder();}	
-	: DQUOTE (options {greedy=false;} : any=. {sbuf.append((char)$any);})* DQUOTE {setText(sbuf.toString());}
-	| SQUOTE (options {greedy=false;} : any=. {sbuf.append((char)$any);})* SQUOTE {setText(sbuf.toString());}
+	: DQUOTE (options {greedy=false;} : any=~('\\'|DQUOTE) {sbuf.append((char)$any);})* DQUOTE {setText(sbuf.toString());}
+	| SQUOTE (options {greedy=false;} : any=~('\\'|SQUOTE) {sbuf.append((char)$any);})* SQUOTE {setText(sbuf.toString());}
 	;
 
 fragment

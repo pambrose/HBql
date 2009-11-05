@@ -14,7 +14,7 @@ Javadocs
 
 Source
 
-    There is a git repository that you can clone:
+    There is a git repository {{{http://github.com/pambrose/HBql/}here}} that you can clone:
 
 --------------------
 git clone git://github.com/pambrose/HBql.git

@@ -72,6 +72,7 @@ public class Console {
 
         try {
             final List<ShellStatement> stmtList = HBqlShell.parseCommands(line);
+
             for (final ShellStatement stmt : stmtList) {
                 if (stmt instanceof SelectStatement)
                     processSelect(out, conn, (SelectStatement)stmt);

@@ -7,6 +7,7 @@ import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.LexerRecognitionException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.node.GenericValue;
@@ -30,11 +31,16 @@ public class HBqlShell {
 
     private static final Log log = LogFactory.getLog(HBqlShell.class.getName());
 
-    public static HBqlParser newHBqlParser(final String str) {
-        log.debug("Parsing: " + str);
-        final Lexer lex = new HBqlLexer(new ANTLRStringStream(str));
-        final CommonTokenStream tokens = new CommonTokenStream(lex);
-        return new HBqlParser(tokens);
+    public static HBqlParser newHBqlParser(final String str) throws ParseException {
+        try {
+            log.debug("Parsing: " + str);
+            final Lexer lex = new HBqlLexer(new ANTLRStringStream(str));
+            final CommonTokenStream tokens = new CommonTokenStream(lex);
+            return new HBqlParser(tokens);
+        }
+        catch (LexerRecognitionException e) {
+            throw new ParseException(e.getRecognitionExecption(), e.getMessage());
+        }
     }
 
     public static ExpressionTree parseWhereExpression(final String str, final Schema schema) throws HBqlException {
@@ -81,7 +87,7 @@ public class HBqlShell {
         return elem.getValue(null);
     }
 
-    public static WithArgs parseWithClause(final String str) throws HBqlException {
+    public static WithArgs parseWithClause(final String str) throws ParseException {
         try {
             final HBqlParser parser = newHBqlParser(str);
             return parser.withClause();
@@ -97,8 +103,12 @@ public class HBqlShell {
             final HBqlParser parser = newHBqlParser(str);
             return parser.shellCommand();
         }
+        catch (LexerRecognitionException e) {
+            // e.printStackTrace();
+            throw new ParseException(e.getRecognitionExecption(), str);
+        }
         catch (RecognitionException e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
             throw new ParseException(e, str);
         }
     }

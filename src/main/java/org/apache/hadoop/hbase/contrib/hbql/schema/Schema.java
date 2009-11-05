@@ -8,6 +8,7 @@ import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.contrib.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.contrib.hbql.client.ParseException;
 import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
 
 import java.io.Serializable;
@@ -110,7 +111,7 @@ public abstract class Schema implements Serializable {
         }
     }
 
-    public ExpressionTree getExpressionTree(final String str) throws RecognitionException {
+    public ExpressionTree getExpressionTree(final String str) throws ParseException, RecognitionException {
         final Map<String, ExpressionTree> map = this.getEvalMap();
         ExpressionTree expressionTree = map.get(str);
 
