@@ -1,0 +1,27 @@
+    -----
+    PARSE
+    -----
+    -----
+
+PARSE
+
+*Syntax
+
+---------------------------
+
+PARSE statement
+
+or
+
+PARSE EXPR expression
+
+---------------------------
+
+*Description
+
+    ** The PARSE statement is used only in the console
+
+    ** If a statement is provided, its syntax is verified.
+
+    ** If an expression is provided, it is evaluated and the value is printed.
+
