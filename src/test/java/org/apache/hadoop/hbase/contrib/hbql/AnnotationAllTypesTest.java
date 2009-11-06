@@ -25,7 +25,7 @@ public class AnnotationAllTypesTest extends TestSupport {
         conn = ConnectionManager.newConnection();
 
         if (!conn.tableExists("alltypes"))
-            System.out.println(conn.execute("create table using schema AnnotatedAllTypes"));
+            System.out.println(conn.execute("create table using AnnotatedAllTypes"));
         else {
             System.out.println(conn.execute("delete from AnnotatedAllTypes"));
         }

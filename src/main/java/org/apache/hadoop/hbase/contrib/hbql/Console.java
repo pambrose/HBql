@@ -106,7 +106,7 @@ public class Console {
 
         final List<SimpleCompletor> completors = Lists.newArrayList();
         completors.add(new SimpleCompletor(new String[]{"select", "insert", "create", "table", "schema",
-                                                        "describe", "drop", "enable", "disable"}));
+                                                        "describe", "drop", "enable", "disable", "list"}));
 
         final ConsoleReader reader = new ConsoleReader();
         reader.setBellEnabled(false);

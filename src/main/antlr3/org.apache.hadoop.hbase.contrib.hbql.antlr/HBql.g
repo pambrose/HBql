@@ -103,7 +103,7 @@ schemaManagerStmt returns [SchemaStatement retval]
 	;
 
 schemaStmt returns [SchemaStatement retval]
-	: keyCREATE keyTABLE keyUSING keySCHEMA t=simpleName 	
+	: keyCREATE keyTABLE keyUSING keySCHEMA? t=simpleName 	
 							{retval = new CreateTableStatement($t.text);}
 	| keyDELETE keyFROM t=simpleName w=withClause?	{retval = new DeleteStatement($t.text, $w.retval);}
 	| keyINSERT keyINTO t=simpleName LPAREN e=exprList RPAREN ins=insertValues

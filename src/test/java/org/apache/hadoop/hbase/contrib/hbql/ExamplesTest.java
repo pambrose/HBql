@@ -10,6 +10,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.Record;
 import org.apache.hadoop.hbase.contrib.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.contrib.hbql.client.Util;
 import org.apache.hadoop.hbase.contrib.hbql.util.TestSupport;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Set;
@@ -110,7 +111,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: create-table
 
         Connection conn = ConnectionManager.newConnection();
-        conn.execute("CREATE TABLE USING SCHEMA foo_schema");
+        conn.execute("CREATE TABLE USING foo_schema");
 
         // END SNIPPET: create-table
 
@@ -270,5 +271,64 @@ public class ExamplesTest extends TestSupport {
         }
 
         // END SNIPPET: select1
+    }
+
+    @Test
+    public void definedSelect() throws HBqlException, IOException {
+
+        // START SNIPPET: definedExample1
+
+        // Create schema
+        SchemaManager.execute("CREATE SCHEMA demo1 FOR TABLE example1"
+                              + "("
+                              + "keyval KEY, "
+                              + "f1:val1 STRING ALIAS val1, "
+                              + "f1:val2 INT ALIAS val2, "
+                              + "f1:val3 STRING DEFAULT 'This is a default value' "
+                              + ")");
+
+        // Get Connection to HBase
+        Connection conn = ConnectionManager.newConnection();
+
+        // Clean up table
+        if (!conn.tableExists("example1"))
+            System.out.println(conn.execute("CREATE TABLE USING demo1"));
+        else
+            System.out.println(conn.execute("DELETE FROM demo1"));
+
+        // Add some records using an INSERT stmt
+        PreparedStatement stmt = conn.prepare("INSERT INTO demo1 " +
+                                              "(keyval, val1, val2, f1:val3) VALUES " +
+                                              "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
+
+        for (int i = 0; i < 5; i++) {
+            stmt.setParameter("key", i);
+            stmt.setParameter("val1", "Value: " + i);
+            stmt.setParameter("val2", i);
+            stmt.execute();
+        }
+
+        // Add some other records using the Record interface
+        final Batch batch = new Batch();
+        for (int i = 5; i < 10; i++) {
+            Record rec = SchemaManager.newRecord("demo1");
+            rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
+            rec.setCurrentValue("val1", "Value: " + i);
+            rec.setCurrentValue("f1:val2", i);
+            batch.insert(rec);
+        }
+        conn.apply(batch);
+
+        // Query the records just added
+        Query<Record> query = conn.newQuery("SELECT * FROM demo1");
+
+        for (Record rec : query.getResults()) {
+            System.out.println("Key = " + rec.getCurrentValue("keyval"));
+            System.out.println("f1:val1 = " + rec.getCurrentValue("val1"));
+            System.out.println("f1:val2 = " + rec.getCurrentValue("f1:val2"));
+            System.out.println("f1:val3 = " + rec.getCurrentValue("f1:val3"));
+        }
+
+        // END SNIPPET: definedExample1
     }
 }

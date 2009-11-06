@@ -9,7 +9,7 @@ CREATE TABLE
 *Syntax
 
 ---------------------------
-CREATE TABLE USING SCHEMA schema_name
+CREATE TABLE USING [SCHEMA] schema_name
 ---------------------------
 
 *Description

@@ -55,7 +55,7 @@ public class InsertTest extends TestSupport {
         conn = ConnectionManager.newConnection();
 
         if (!conn.tableExists("table2"))
-            System.out.println(conn.execute("create table using schema tab2"));
+            System.out.println(conn.execute("create table using tab2"));
         else {
             System.out.println(conn.execute("delete from tab2"));
             //System.out.println(conn.disable ("disable table table2"));

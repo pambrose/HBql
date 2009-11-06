@@ -1,7 +1,9 @@
 
 cp -r ./lib ./target/hbql-0.9.0-alpha
 cp -r ./bin ./target/hbql-0.9.0-alpha
-cp -r ./target/site ./target/hbql-0.9.0-alpha
+mkdir ./target/hbql-0.9.0-alpha/docs
+cp -r ./target/site/* ./target/hbql-0.9.0-alpha/docs/
+
 
 cd target/classes
 jar cf ../../target/hbql-0.9.0-alpha/hbql-0.9.0-alpha.jar *

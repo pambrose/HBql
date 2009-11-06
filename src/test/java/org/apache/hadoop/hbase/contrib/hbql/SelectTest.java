@@ -55,7 +55,7 @@ public class SelectTest extends TestSupport {
         conn = ConnectionManager.newConnection();
 
         if (!conn.tableExists("table1"))
-            System.out.println(conn.execute("create table using schema tab1"));
+            System.out.println(conn.execute("create table using tab1"));
         else {
             System.out.println(conn.execute("delete from tab1"));
             //conn.disableTable("table1");
