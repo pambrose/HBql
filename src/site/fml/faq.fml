@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2009.  The Apache Software Foundation
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <faqs title="Frequently Asked Questions">
     <part id="General">
         <faq id="hbql-goal">
@@ -6,7 +26,7 @@
             <answer>
                 <p>
                     No. HBql attempts to support overlapping concepts with common SQL functionality,
-                    but where HBase functionality is unique, the SQL syntax is distinct. The goal is
+                    but where HBase functionality is unique, the HBql syntax is distinct. The goal is
                     not to make HBase look or feel like a relational store. The goal is to just
                     make using HBase a little easier by providing a well known, high-level syntax.
                 </p>
