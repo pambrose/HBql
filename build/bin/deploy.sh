@@ -6,7 +6,7 @@ cp -r ./bin ./target/hbql-0.9.0-alpha
 mkdir ./target/hbql-0.9.0-alpha/src
 cp -r ./src/main ./target/hbql-0.9.0-alpha/src
 cp -r ./src/test ./target/hbql-0.9.0-alpha/src
-rm
+rm -rf ./target/hbql-0.9.0-alpha/src/main/antlr3/org/apache/hadoop/hbase/contrib/hbql/antlr/output
 
 cp LICENSE.txt ./target/hbql-0.9.0-alpha
 cp NOTICE.txt ./target/hbql-0.9.0-alpha
