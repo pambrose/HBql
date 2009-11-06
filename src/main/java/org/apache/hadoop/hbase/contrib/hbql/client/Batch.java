@@ -10,6 +10,7 @@ import org.apache.hadoop.hbase.contrib.hbql.impl.InsertAction;
 import org.apache.hadoop.hbase.contrib.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.contrib.hbql.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.contrib.hbql.schema.DefinedSchema;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
 
 import java.util.List;
@@ -40,7 +41,8 @@ public class Batch {
 
     public void insert(final Record rec) throws HBqlException {
         final RecordImpl record = (RecordImpl)rec;
-        final HBaseSchema schema = record.getSchema();
+
+        final DefinedSchema schema = record.getSchema().getDefinedSchemaEquivalent();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         if (!record.isCurrentValueSet(keyAttrib))
             throw new HBqlException("Record key value must be assigned");

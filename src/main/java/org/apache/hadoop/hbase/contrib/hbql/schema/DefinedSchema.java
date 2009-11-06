@@ -86,7 +86,7 @@ public class DefinedSchema extends HBaseSchema {
         return this.tableName;
     }
 
-    protected DefinedSchema getDefinedSchemaEquivalent() {
+    public DefinedSchema getDefinedSchemaEquivalent() {
         return this;
     }
 }

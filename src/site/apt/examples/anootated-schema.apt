@@ -1,0 +1,14 @@
+    -----
+    Using a Annotated Schema
+    -----
+    -----
+
+Using a Annotated Schema
+
+*Annotated Object
+
+%{snippet|id=annotatedExample1|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/AnnotatedExample.java}
+
+*Example
+
+%{snippet|id=annotatedExample2|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}

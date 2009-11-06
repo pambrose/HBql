@@ -8,7 +8,11 @@ import java.lang.reflect.Modifier;
 
 public class CurrentValueAnnotationAttrib extends FieldAttrib {
 
-    public CurrentValueAnnotationAttrib(final Field field) throws HBqlException {
+    private Object defaultValue = null;
+
+    public CurrentValueAnnotationAttrib(final AnnotationSchema parentSchema,
+                                        final Field field) throws HBqlException {
+
         super(field.getAnnotation(Column.class).family(),
               field.getAnnotation(Column.class).column(),
               field,
@@ -22,6 +26,13 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
         if (isFinal(this.getField()))
             throw new HBqlException(this + "." + this.getField().getName() + " cannot have a @Column "
                                     + "annotation and be marked final");
+
+        try {
+            defaultValue = field.get(parentSchema.getSingleInstance());
+        }
+        catch (IllegalAccessException e) {
+            defaultValue = null;
+        }
     }
 
     private Column getColumnAnno() {
@@ -34,5 +45,13 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
 
     private static boolean isFinal(final Field field) {
         return Modifier.isFinal(field.getModifiers());
+    }
+
+    public Object getDefaultValue() {
+        return this.defaultValue;
+    }
+
+    public boolean hasDefaultArg() {
+        return this.getDefaultValue() != null;
     }
 }

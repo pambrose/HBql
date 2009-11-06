@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.client.Record;
 import org.apache.hadoop.hbase.contrib.hbql.client.Value;
 import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.contrib.hbql.schema.DefinedSchema;
 import org.apache.hadoop.hbase.contrib.hbql.schema.HBaseSchema;
 
 import java.io.Serializable;
@@ -16,13 +17,13 @@ import java.util.Set;
 
 public class RecordImpl implements Serializable, Record {
 
-    private HBaseSchema schema = null;
+    private DefinedSchema schema = null;
     private long timestamp = System.currentTimeMillis();
 
     private volatile ElementMap<ColumnValue> columnValues = null;
     private volatile ElementMap<FamilyDefaultValueMap> familyDefaultElements = null;
 
-    public RecordImpl(final HBaseSchema schema) {
+    public RecordImpl(final DefinedSchema schema) {
         this.setSchema(schema);
     }
 
@@ -30,7 +31,7 @@ public class RecordImpl implements Serializable, Record {
         return this.schema;
     }
 
-    public void setSchema(final HBaseSchema schema) {
+    public void setSchema(final DefinedSchema schema) {
         this.schema = schema;
     }
 

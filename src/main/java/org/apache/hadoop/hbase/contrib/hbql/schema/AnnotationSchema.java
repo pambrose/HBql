@@ -13,7 +13,9 @@ import org.apache.hadoop.hbase.contrib.hbql.statement.select.SelectElement;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Enumeration;
 import java.util.List;
@@ -30,6 +32,8 @@ public class AnnotationSchema extends HBaseSchema {
     private final Table table;
     private final Family[] families;
 
+    private final Object singleInstance;
+
     private DefinedSchema defineSchemaEquiv = null;
 
     private AnnotationSchema(final Class clazz) throws HBqlException {
@@ -38,11 +42,22 @@ public class AnnotationSchema extends HBaseSchema {
         this.clazz = clazz;
 
         // Make sure there is an empty constructor declared
+        // And create an instance of the object to use for default values
         try {
-            this.getClazz().getConstructor();
+            Constructor constructor = this.getClazz().getConstructor();
+            this.singleInstance = constructor.newInstance();
         }
         catch (NoSuchMethodException e) {
             throw new HBqlException("Class " + this + " is missing a null constructor");
+        }
+        catch (InvocationTargetException e) {
+            throw new HBqlException("Class " + this + " has invalid null constructor");
+        }
+        catch (InstantiationException e) {
+            throw new HBqlException("Class " + this + " has invalid null constructor");
+        }
+        catch (IllegalAccessException e) {
+            throw new HBqlException("Class " + this + " has invalid null constructor");
         }
 
         this.table = this.getClazz().getAnnotation(Table.class);
@@ -76,6 +91,10 @@ public class AnnotationSchema extends HBaseSchema {
         for (final Field field : this.getClazz().getDeclaredFields())
             if (field.getAnnotation(ColumnVersionMap.class) != null)
                 this.processColumnVersionAnnotation(field);
+    }
+
+    public Object getSingleInstance() {
+        return this.singleInstance;
     }
 
     public synchronized static AnnotationSchema getAnnotationSchema(final String objName) throws HBqlException {
@@ -242,7 +261,9 @@ public class AnnotationSchema extends HBaseSchema {
 
     public synchronized DefinedSchema getDefinedSchemaEquivalent() throws HBqlException {
         if (this.defineSchemaEquiv == null)
-            this.defineSchemaEquiv = new DefinedSchema(this.getTableName(), this.getTableName(), this.getColumnDescriptionList());
+            this.defineSchemaEquiv = new DefinedSchema(this.getTableName(),
+                                                       this.getTableName(),
+                                                       this.getColumnDescriptionList());
         return this.defineSchemaEquiv;
     }
 
@@ -275,7 +296,7 @@ public class AnnotationSchema extends HBaseSchema {
 
     private void processColumnAnnotation(final Field field) throws HBqlException {
 
-        final CurrentValueAnnotationAttrib attrib = new CurrentValueAnnotationAttrib(field);
+        final CurrentValueAnnotationAttrib attrib = new CurrentValueAnnotationAttrib(this, field);
 
         this.addAttribToVariableNameMap(attrib, attrib.getAliasName());
         this.addAttribToFamilyQualifiedNameMap(attrib);

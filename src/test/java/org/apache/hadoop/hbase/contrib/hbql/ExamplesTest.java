@@ -331,4 +331,54 @@ public class ExamplesTest extends TestSupport {
 
         // END SNIPPET: definedExample1
     }
+
+    @Test
+    public void annotatedSelect() throws HBqlException, IOException {
+
+        // START SNIPPET: annotatedExample2
+
+        // Get Connection to HBase
+        Connection conn = ConnectionManager.newConnection();
+
+        // Clean up table
+        if (!conn.tableExists("example2"))
+            System.out.println(conn.execute("CREATE TABLE USING AnnotatedExample"));
+        else
+            System.out.println(conn.execute("DELETE FROM AnnotatedExample"));
+
+        // Add some records using an INSERT stmt
+        PreparedStatement stmt = conn.prepare("INSERT INTO AnnotatedExample " +
+                                              "(keyval, val1, val2, val3) VALUES " +
+                                              "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
+
+        for (int i = 0; i < 5; i++) {
+            stmt.setParameter("key", i);
+            stmt.setParameter("val1", "Value: " + i);
+            stmt.setParameter("val2", i);
+            stmt.execute();
+        }
+
+        // Add some other records using the Record interface
+        final Batch batch = new Batch();
+        for (int i = 5; i < 10; i++) {
+            AnnotatedExample rec = new AnnotatedExample();
+            rec.keyval = Util.getZeroPaddedNumber(i, 10);
+            rec.val1 = "Value: " + i;
+            rec.val2 = i;
+            batch.insert(rec);
+        }
+        conn.apply(batch);
+
+        // Query the records just added
+        Query<AnnotatedExample> query = conn.newQuery("SELECT * FROM AnnotatedExample");
+
+        for (AnnotatedExample rec : query.getResults()) {
+            System.out.println("Key = " + rec.keyval);
+            System.out.println("f1:val1 = " + rec.val1);
+            System.out.println("f1:val2 = " + rec.val2);
+            System.out.println("f1:val3 = " + rec.val3);
+        }
+
+        // END SNIPPET: annotatedExample2
+    }
 }

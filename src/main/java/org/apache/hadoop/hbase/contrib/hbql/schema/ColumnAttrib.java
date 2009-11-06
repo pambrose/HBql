@@ -70,17 +70,17 @@ public abstract class ColumnAttrib implements Serializable {
         return sbuf.toString();
     }
 
-    public final Object getDefaultValue() throws HBqlException {
-        return (this.hasDefaultArg()) ? this.getDefaultArg().getValue() : null;
-    }
-
     // This is necessary before sending off with filter
     public final void resetDefaultValue() {
         if (this.hasDefaultArg())
             this.getDefaultArg().reset();
     }
 
-    public final boolean hasDefaultArg() {
+    public Object getDefaultValue() throws HBqlException {
+        return (this.hasDefaultArg()) ? this.getDefaultArg().getValue() : null;
+    }
+
+    public boolean hasDefaultArg() {
         return this.getDefaultArg() != null;
     }
 

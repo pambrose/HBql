@@ -44,7 +44,7 @@ public abstract class HBaseSchema extends Schema {
 
     public abstract String getTableName();
 
-    protected abstract DefinedSchema getDefinedSchemaEquivalent() throws HBqlException;
+    public abstract DefinedSchema getDefinedSchemaEquivalent() throws HBqlException;
 
     public abstract List<HColumnDescriptor> getColumnDescriptors();
 

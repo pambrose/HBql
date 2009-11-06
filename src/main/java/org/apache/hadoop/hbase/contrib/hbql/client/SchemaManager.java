@@ -62,7 +62,7 @@ public class SchemaManager {
     }
 
     public static Record newRecord(final String schemaName) throws HBqlException {
-        final HBaseSchema schema = getSchema(schemaName);
+        final DefinedSchema schema = getSchema(schemaName).getDefinedSchemaEquivalent();
         return new RecordImpl(schema);
     }
 
