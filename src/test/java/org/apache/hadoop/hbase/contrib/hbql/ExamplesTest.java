@@ -358,14 +358,14 @@ public class ExamplesTest extends TestSupport {
             stmt.execute();
         }
 
-        // Add some other records using the Record interface
+        // Add some other records using an AnnotatedExample object
         final Batch batch = new Batch();
         for (int i = 5; i < 10; i++) {
-            AnnotatedExample rec = new AnnotatedExample();
-            rec.keyval = Util.getZeroPaddedNumber(i, 10);
-            rec.val1 = "Value: " + i;
-            rec.val2 = i;
-            batch.insert(rec);
+            AnnotatedExample obj = new AnnotatedExample();
+            obj.keyval = Util.getZeroPaddedNumber(i, 10);
+            obj.val1 = "Value: " + i;
+            obj.val2 = i;
+            batch.insert(obj);
         }
         conn.apply(batch);
 
