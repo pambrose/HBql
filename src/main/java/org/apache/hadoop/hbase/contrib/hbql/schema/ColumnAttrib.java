@@ -25,7 +25,6 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.io.IO;
-import org.apache.hadoop.hbase.contrib.hbql.statement.args.DefaultArg;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -47,7 +46,6 @@ public abstract class ColumnAttrib implements Serializable {
     private final boolean anArray;
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
-    private final DefaultArg defaultArg;
 
     protected ColumnAttrib(final String familyName,
                            final String columnName,
@@ -67,76 +65,16 @@ public abstract class ColumnAttrib implements Serializable {
         this.anArray = isArray;
         this.getter = getter;
         this.setter = setter;
-        this.defaultArg = this.evaluateDefaultValue(defaultValueExpr);
     }
 
-    public String asString() {
-
-        final StringBuilder sbuf = new StringBuilder();
-
-        sbuf.append(this.getFamilyQualifiedName());
-
-        sbuf.append(" " + this.getFieldType().getFirstSynonym());
-
-        if (this.isAnArray())
-            sbuf.append("[]");
-
-        if (this.hasAlias())
-            sbuf.append(" ALIAS " + this.getAliasName());
-
-        if (this.hasDefaultArg())
-            sbuf.append(" DEFAULT " + this.getDefaultArg().asString());
-
-        return sbuf.toString();
-    }
+    public abstract String asString();
 
     // This is necessary before sending off with filter
-    public final void resetDefaultValue() {
-        if (this.hasDefaultArg())
-            this.getDefaultArg().reset();
-    }
+    public abstract void resetDefaultValue();
 
-    public Object getDefaultValue() throws HBqlException {
-        return (this.hasDefaultArg()) ? this.getDefaultArg().getValue() : null;
-    }
+    public abstract Object getDefaultValue() throws HBqlException;
 
-    public boolean hasDefaultArg() {
-        return this.getDefaultArg() != null;
-    }
-
-    private DefaultArg getDefaultArg() {
-        return this.defaultArg;
-    }
-
-    private DefaultArg evaluateDefaultValue(final GenericValue defaultValueExpr) throws HBqlException {
-
-        if (defaultValueExpr == null)
-            return null;
-
-        if (this.isAKeyAttrib())
-            throw new HBqlException("Default values are not valid for key values: "
-                                    + this.getNameToUseInExceptions());
-
-        if (!defaultValueExpr.isAConstant())
-            throw new HBqlException("Default values must be constants: "
-                                    + this.getNameToUseInExceptions());
-
-        if (this.isAnArray())
-            throw new HBqlException("Default values are not valid for array values: "
-                                    + this.getNameToUseInExceptions());
-
-        // This will apply only to Annotations
-        if (this.isAVersionValue() && !this.isACurrentValue())
-            throw new HBqlException("Default values are not valid for version values: "
-                                    + this.getNameToUseInExceptions());
-
-        final Class<? extends GenericValue> type = this.getFieldType().getExprType();
-
-        if (type == null)
-            throw new HBqlException("Default values are not valid for: " + this.getNameToUseInExceptions());
-
-        return new DefaultArg(type, defaultValueExpr);
-    }
+    public abstract boolean hasDefaultArg();
 
     public abstract Object getCurrentValue(final Object obj) throws HBqlException;
 
@@ -376,7 +314,7 @@ public abstract class ColumnAttrib implements Serializable {
         return false;
     }
 
-    private boolean hasAlias() {
+    public boolean hasAlias() {
         return this.aliasName != null && this.aliasName.length() > 0;
     }
 

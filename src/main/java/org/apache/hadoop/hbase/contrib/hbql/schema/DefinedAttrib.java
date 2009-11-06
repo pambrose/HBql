@@ -21,9 +21,11 @@
 package org.apache.hadoop.hbase.contrib.hbql.schema;
 
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.contrib.hbql.impl.RecordImpl;
+import org.apache.hadoop.hbase.contrib.hbql.statement.args.DefaultArg;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -32,7 +34,10 @@ import java.util.NavigableMap;
 
 public class DefinedAttrib extends ColumnAttrib {
 
+    private final DefaultArg defaultArg;
+
     public DefinedAttrib(final ColumnDescription columnDescription) throws HBqlException {
+
         super(columnDescription.getFamilyName(),
               columnDescription.getColumnName(),
               columnDescription.getAliasName(),
@@ -43,8 +48,77 @@ public class DefinedAttrib extends ColumnAttrib {
               null,
               columnDescription.getDefaultValue());
 
+        this.defaultArg = this.evaluateDefaultValue(columnDescription.getDefaultValue());
+
         if (this.isAKeyAttrib() && this.getFamilyName().length() > 0)
             throw new HBqlException("Key value " + this.getNameToUseInExceptions() + " cannot have a family name");
+    }
+
+    private DefaultArg evaluateDefaultValue(final GenericValue defaultValueExpr) throws HBqlException {
+
+        if (defaultValueExpr == null)
+            return null;
+
+        if (this.isAKeyAttrib())
+            throw new HBqlException("Default values are not valid for key values: "
+                                    + this.getNameToUseInExceptions());
+
+        if (!defaultValueExpr.isAConstant())
+            throw new HBqlException("Default values must be constants: "
+                                    + this.getNameToUseInExceptions());
+
+        if (this.isAnArray())
+            throw new HBqlException("Default values are not valid for array values: "
+                                    + this.getNameToUseInExceptions());
+
+        // This will apply only to Annotations
+        if (this.isAVersionValue() && !this.isACurrentValue())
+            throw new HBqlException("Default values are not valid for version values: "
+                                    + this.getNameToUseInExceptions());
+
+        final Class<? extends GenericValue> type = this.getFieldType().getExprType();
+
+        if (type == null)
+            throw new HBqlException("Default values are not valid for: " + this.getNameToUseInExceptions());
+
+        return new DefaultArg(type, defaultValueExpr);
+    }
+
+    public Object getDefaultValue() throws HBqlException {
+        return (this.hasDefaultArg()) ? this.getDefaultArg().getValue() : null;
+    }
+
+    public boolean hasDefaultArg() {
+        return this.getDefaultArg() != null;
+    }
+
+    private DefaultArg getDefaultArg() {
+        return this.defaultArg;
+    }
+
+    public void resetDefaultValue() {
+        if (this.hasDefaultArg())
+            this.getDefaultArg().reset();
+    }
+
+    public String asString() {
+
+        final StringBuilder sbuf = new StringBuilder();
+
+        sbuf.append(this.getFamilyQualifiedName());
+
+        sbuf.append(" " + this.getFieldType().getFirstSynonym());
+
+        if (this.isAnArray())
+            sbuf.append("[]");
+
+        if (this.hasAlias())
+            sbuf.append(" ALIAS " + this.getAliasName());
+
+        if (this.hasDefaultArg())
+            sbuf.append(" DEFAULT " + this.getDefaultArg().asString());
+
+        return sbuf.toString();
     }
 
     public String toString() {

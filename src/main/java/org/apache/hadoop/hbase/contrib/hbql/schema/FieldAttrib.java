@@ -164,4 +164,30 @@ public abstract class FieldAttrib extends ColumnAttrib {
         if (!field.isAccessible())
             field.setAccessible(true);
     }
+
+    public String asString() {
+        final StringBuilder sbuf = new StringBuilder();
+
+        sbuf.append(this.getFamilyQualifiedName());
+
+        sbuf.append(" " + this.getFieldType().getFirstSynonym());
+
+        if (this.isAnArray())
+            sbuf.append("[]");
+
+        return sbuf.toString();
+    }
+
+
+    public void resetDefaultValue() {
+        // No op
+    }
+
+    public Object getDefaultValue() {
+        return null;
+    }
+
+    public boolean hasDefaultArg() {
+        return false;
+    }
 }

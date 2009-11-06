@@ -76,4 +76,20 @@ public class SelectFamilyAttrib extends ColumnAttrib {
                                            final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
         throw new InternalErrorException();
     }
+
+    public String asString() {
+        return "";
+    }
+
+    public void resetDefaultValue() {
+        // No op
+    }
+
+    public Object getDefaultValue() {
+        return null;
+    }
+
+    public boolean hasDefaultArg() {
+        return false;
+    }
 }

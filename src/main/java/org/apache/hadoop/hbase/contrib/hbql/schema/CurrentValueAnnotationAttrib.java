@@ -28,7 +28,7 @@ import java.lang.reflect.Modifier;
 
 public class CurrentValueAnnotationAttrib extends FieldAttrib {
 
-    private Object defaultValue = null;
+    private final Object defaultValue;
 
     public CurrentValueAnnotationAttrib(final AnnotationSchema parentSchema,
                                         final Field field) throws HBqlException {
@@ -47,11 +47,16 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
             throw new HBqlException(this + "." + this.getField().getName() + " cannot have a @Column "
                                     + "annotation and be marked final");
 
+        defaultValue = getDefaultFieldValue(parentSchema, field);
+    }
+
+    private Object getDefaultFieldValue(final AnnotationSchema parentSchema,
+                                        final Field field) {
         try {
-            defaultValue = field.get(parentSchema.getSingleInstance());
+            return field.get(parentSchema.getSingleInstance());
         }
         catch (IllegalAccessException e) {
-            defaultValue = null;
+            return null;
         }
     }
 
@@ -73,5 +78,28 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
 
     public boolean hasDefaultArg() {
         return this.getDefaultValue() != null;
+    }
+
+    public String asString() {
+        final StringBuilder sbuf = new StringBuilder();
+
+        sbuf.append(this.getFamilyQualifiedName());
+
+        sbuf.append(" " + this.getFieldType().getFirstSynonym());
+
+        if (this.isAnArray())
+            sbuf.append("[]");
+
+        if (this.hasAlias())
+            sbuf.append(" ALIAS " + this.getAliasName());
+
+        if (this.hasDefaultArg())
+            sbuf.append(" DEFAULT " + this.getDefaultValue());
+
+        return sbuf.toString();
+    }
+
+    public void resetDefaultValue() {
+        // No op
     }
 }
