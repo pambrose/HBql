@@ -47,8 +47,8 @@ public abstract class FieldAttrib extends ColumnAttrib {
               fieldType,
               field.getType().isArray(),
               getter,
-              setter,
-              null);
+              setter);
+
         this.field = field;
         setAccessible(this.getField());
     }
@@ -175,9 +175,14 @@ public abstract class FieldAttrib extends ColumnAttrib {
         if (this.isAnArray())
             sbuf.append("[]");
 
+        if (this.hasAlias())
+            sbuf.append(" ALIAS " + this.getAliasName());
+
+        if (this.hasDefaultArg())
+            sbuf.append(" DEFAULT " + this.getDefaultValue());
+
         return sbuf.toString();
     }
-
 
     public void resetDefaultValue() {
         // No op

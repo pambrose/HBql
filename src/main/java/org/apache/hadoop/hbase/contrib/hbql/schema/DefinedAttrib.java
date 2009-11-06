@@ -45,8 +45,8 @@ public class DefinedAttrib extends ColumnAttrib {
               columnDescription.getFieldType(),
               columnDescription.isArray(),
               null,
-              null,
-              columnDescription.getDefaultValue());
+              null
+        );
 
         this.defaultArg = this.evaluateDefaultValue(columnDescription.getDefaultValue());
 
