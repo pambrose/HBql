@@ -1,3 +1,4 @@
+#! /bin/bash
 
 cp -r ./lib ./target/hbql-0.9.0-alpha
 cp -r ./bin ./target/hbql-0.9.0-alpha
