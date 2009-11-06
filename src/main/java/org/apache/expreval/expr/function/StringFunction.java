@@ -23,8 +23,8 @@ package org.apache.expreval.expr.function;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.StringValue;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.Util;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.Util;
 
 import java.util.List;
 

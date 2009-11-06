@@ -27,7 +27,7 @@ import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public class DelegateCaseElse extends GenericCaseElse {
 

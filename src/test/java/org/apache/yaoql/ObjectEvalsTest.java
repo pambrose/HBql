@@ -22,7 +22,7 @@ package org.apache.yaoql;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.yaoql.client.ObjectQuery;
 import org.apache.yaoql.client.ObjectQueryListenerAdapter;
 import org.apache.yaoql.client.ObjectQueryManager;

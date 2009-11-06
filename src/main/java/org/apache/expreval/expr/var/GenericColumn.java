@@ -23,9 +23,9 @@ package org.apache.expreval.expr.var;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.ObjectValue;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.contrib.hbql.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.schema.FieldType;
 
 public abstract class GenericColumn<T extends GenericValue> implements GenericValue {
 

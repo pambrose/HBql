@@ -21,17 +21,17 @@
 package org.apache.expreval.examples;
 
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.contrib.hbql.client.Batch;
-import org.apache.hadoop.hbase.contrib.hbql.client.Column;
-import org.apache.hadoop.hbase.contrib.hbql.client.ColumnVersionMap;
-import org.apache.hadoop.hbase.contrib.hbql.client.Connection;
-import org.apache.hadoop.hbase.contrib.hbql.client.ConnectionManager;
-import org.apache.hadoop.hbase.contrib.hbql.client.Family;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.Query;
-import org.apache.hadoop.hbase.contrib.hbql.client.Results;
-import org.apache.hadoop.hbase.contrib.hbql.client.Table;
-import org.apache.hadoop.hbase.contrib.hbql.client.Util;
+import org.apache.hadoop.hbase.hbql.client.Batch;
+import org.apache.hadoop.hbase.hbql.client.Column;
+import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
+import org.apache.hadoop.hbase.hbql.client.Connection;
+import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.Family;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.Query;
+import org.apache.hadoop.hbase.hbql.client.Results;
+import org.apache.hadoop.hbase.hbql.client.Table;
+import org.apache.hadoop.hbase.hbql.client.Util;
 
 import java.io.IOException;
 import java.util.Date;

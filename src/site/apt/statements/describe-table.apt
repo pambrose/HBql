@@ -18,4 +18,4 @@ DESCRIBE TABLE table_name
 
 *Example
 
-%{snippet|id=describe-table|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
+%{snippet|id=describe-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

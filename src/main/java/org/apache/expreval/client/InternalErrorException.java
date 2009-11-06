@@ -20,7 +20,7 @@
 
 package org.apache.expreval.client;
 
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public class InternalErrorException extends HBqlException {
 

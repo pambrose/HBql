@@ -23,7 +23,7 @@ package org.apache.expreval.expr.betweenstmt;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public class NumberBetweenStmt extends GenericBetweenStmt {
 

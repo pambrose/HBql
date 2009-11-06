@@ -25,7 +25,7 @@ import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public class DateCalculation extends GenericCalculation implements DateValue {
 

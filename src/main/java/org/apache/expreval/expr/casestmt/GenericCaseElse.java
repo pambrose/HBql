@@ -24,7 +24,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.DelegateStmt;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public abstract class GenericCaseElse extends DelegateStmt<GenericCaseElse> {
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
     <Match>
-        <Package name="org\.apache\.hadoop\.hbase\.contrib\.hbql\.antlr\.*"/>
+        <Package name="org\.apache\.hadoop\.hbase\.hbql\.antlr\.*"/>
     </Match>
 </FindBugsFilter>

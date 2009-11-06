@@ -22,7 +22,7 @@ package org.apache.expreval.expr.stringpattern;
 
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

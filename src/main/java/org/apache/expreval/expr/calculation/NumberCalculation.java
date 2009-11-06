@@ -25,7 +25,7 @@ import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public class NumberCalculation extends GenericCalculation implements NumberValue {
 

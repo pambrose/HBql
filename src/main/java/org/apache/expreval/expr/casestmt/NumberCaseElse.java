@@ -24,7 +24,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public class NumberCaseElse extends GenericCaseElse implements NumberValue {
 

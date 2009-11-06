@@ -17,4 +17,4 @@ LIST SCHEMAS
 
 *Example
 
-%{snippet|id=list-schema|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
+%{snippet|id=list-schema|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

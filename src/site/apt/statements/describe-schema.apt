@@ -18,4 +18,4 @@ DESCRIBE SCHEMA schema_name
 
 *Example
 
-%{snippet|id=describe-schema|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
+%{snippet|id=describe-schema|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

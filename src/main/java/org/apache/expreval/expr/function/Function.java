@@ -35,8 +35,8 @@ import org.apache.expreval.expr.node.LongValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.ShortValue;
 import org.apache.expreval.expr.node.StringValue;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 
 import java.util.List;
 import java.util.Random;

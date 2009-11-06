@@ -40,7 +40,7 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.ShortValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.expreval.util.Lists;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;

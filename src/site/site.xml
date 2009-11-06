@@ -47,7 +47,7 @@
         <menu name="HBql">
             <item name="Home" href="./index.html"/>
             <item name="Download" href="./download.html"/>
-            <item name="Client API" href="./apidocs/org/apache/hadoop/hbase/contrib/hbql/client/package-summary.html"/>
+            <item name="Client API" href="./apidocs/org/apache/hadoop/hbase/hbql/client/package-summary.html"/>
             <item name="Javadocs" href="./apidocs/index.html"/>
             <item name="Examples" href="./examples.html"/>
             <item name="FAQ" href="./faq.html"/>

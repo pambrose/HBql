@@ -29,10 +29,10 @@ import org.apache.expreval.expr.var.GenericColumn;
 import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
-import org.apache.hadoop.hbase.contrib.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.schema.Schema;
 
 import java.io.Serializable;
 import java.util.List;

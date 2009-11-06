@@ -17,4 +17,4 @@ DELETE FROM [ SCHEMA ] schema_name with_clause
 
 *Example
 
-%{snippet|id=delete1|file=src/test/java/org/apache/hadoop/hbase/contrib/hbql/ExamplesTest.java}
+%{snippet|id=delete1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

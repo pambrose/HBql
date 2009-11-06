@@ -23,9 +23,9 @@ package org.apache.yaoql.client;
 import com.google.common.base.Predicate;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
-import org.apache.hadoop.hbase.contrib.hbql.schema.ReflectionSchema;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
+import org.apache.hadoop.hbase.hbql.schema.ReflectionSchema;
 import org.apache.yaoql.impl.ParameterBinding;
 
 public class ObjectQueryPredicate<T> extends ParameterBinding implements Predicate<T> {

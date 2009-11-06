@@ -26,10 +26,10 @@ import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.contrib.hbql.client.TypeException;
-import org.apache.hadoop.hbase.contrib.hbql.parser.HBqlShell;
-import org.apache.hadoop.hbase.contrib.hbql.schema.Schema;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
+import org.apache.hadoop.hbase.hbql.schema.Schema;
 
 import java.util.List;
 

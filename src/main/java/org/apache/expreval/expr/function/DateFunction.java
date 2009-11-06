@@ -24,7 +24,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.hadoop.hbase.contrib.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

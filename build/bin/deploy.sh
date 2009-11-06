@@ -1,30 +1,30 @@
 #! /bin/bash
 
-cp -r ./lib ./target/hbql-0.9.0-alpha
-cp -r ./bin ./target/hbql-0.9.0-alpha
+cp -r ./lib ./target/hbql-*
+cp -r ./bin ./target/hbql-*
 
-mkdir ./target/hbql-0.9.0-alpha/src
-cp -r ./src/main ./target/hbql-0.9.0-alpha/src
-cp -r ./src/test ./target/hbql-0.9.0-alpha/src
-rm -rf ./target/hbql-0.9.0-alpha/src/main/antlr3/org/apache/hadoop/hbase/contrib/hbql/antlr/output
+mkdir ./target/hbql-0.9.1-alpha/src
+cp -r ./src/main ./target/hbql-*/src
+cp -r ./src/test ./target/hbql-*/src
+rm -rf ./target/hbql-*/src/main/antlr3/org/apache/hadoop/hbase/hbql/antlr/output
 
-cp LICENSE.txt ./target/hbql-0.9.0-alpha
-cp NOTICE.txt ./target/hbql-0.9.0-alpha
+cp LICENSE.txt ./target/hbql-*
+cp NOTICE.txt ./target/hbql-*
 
-mkdir ./target/hbql-0.9.0-alpha/docs
-cp -r ./target/site/* ./target/hbql-0.9.0-alpha/docs/
+mkdir ./target/hbql-0.9.1-alpha/docs
+cp -r ./target/site/* ./target/hbql-*/docs/
 
 cd target/classes
-jar cf ../../target/hbql-0.9.0-alpha/hbql-0.9.0-alpha.jar *
+jar cf ../../target/hbql-0.9.1-alpha/hbql-0.9.1-alpha.jar *
 cd ../..
 
 mkdir ./target/site/downloads
 cd target
-zip -r ./site/downloads/hbql-0.9.0-alpha.zip hbql-0.9.0-alpha
+zip -r ./site/downloads/hbql-0.9.1-alpha.zip hbql-0.9.1-alpha
 cd ..
 
 cd ./target/site
-zip -r ../../target/site/downloads/javadocs-0.9.0-alpha.zip apidocs
+zip -r ../../target/site/downloads/javadocs-0.9.1-alpha.zip apidocs
 cd ../..
 
 mvn site-deploy
