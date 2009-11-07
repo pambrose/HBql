@@ -31,7 +31,9 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
+import org.apache.hadoop.hbase.hbql.statement.select.GetRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
+import org.apache.hadoop.hbase.hbql.statement.select.ScanRequest;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -130,7 +132,7 @@ public class KeyRangeArgs {
             final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(lower);
             final Get get = new Get(lowerBytes);
             withArgs.setGetArgs(get, columnAttribSet);
-            return new RowRequest(get, null);
+            return new GetRequest(get);
         }
 
         private List<RowRequest> getGet(final WithArgs withArgs,
@@ -183,7 +185,7 @@ public class KeyRangeArgs {
             }
 
             withArgs.setScanArgs(scan, columnAttribSet);
-            return new RowRequest(null, scan);
+            return new ScanRequest(scan);
         }
 
         public void process(final WithArgs withArgs,

@@ -83,7 +83,7 @@ public class Console {
 
         if (option.equals("-version")) {
             final VersionStatement version = new VersionStatement();
-            final ExecutionOutput output = version.execute(null);
+            final ExecutionOutput output = version.execute();
             System.out.print(output);
             return true;
         }

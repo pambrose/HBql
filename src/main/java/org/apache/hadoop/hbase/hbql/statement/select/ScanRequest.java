@@ -22,12 +22,28 @@ package org.apache.hadoop.hbase.hbql.statement.select;
 
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
 
 import java.io.IOException;
 
-public interface RowRequest {
+public class ScanRequest implements RowRequest {
 
-    int getMaxVersions();
+    final Scan scanValue;
 
-    ResultScanner getResultScanner(final HTable table) throws IOException;
+    public ScanRequest(final Scan scanValue) {
+        this.scanValue = scanValue;
+    }
+
+    private Scan getScanValue() {
+        return this.scanValue;
+    }
+
+    public int getMaxVersions() {
+        return this.getScanValue().getMaxVersions();
+    }
+
+    public ResultScanner getResultScanner(final HTable table) throws IOException {
+
+        return table.getScanner(this.getScanValue());
+    }
 }
