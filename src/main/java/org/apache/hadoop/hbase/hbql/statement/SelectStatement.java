@@ -109,22 +109,16 @@ public class SelectStatement extends SchemaStatement {
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
-
         int cnt = 0;
-
         for (final SelectElement selectElement : this.getSelectElementList())
             cnt += selectElement.setParameter(name, val);
 
         cnt += this.getWithArgs().setParameter(name, val);
-
         return cnt;
     }
 
     public String asString() {
-
-        final StringBuilder sbuf = new StringBuilder();
-
-        sbuf.append("SELECT  ");
+        final StringBuilder sbuf = new StringBuilder("SELECT  ");
         boolean firstTime = true;
         for (final SelectElement element : this.getSelectElementList()) {
             if (!firstTime)
@@ -136,10 +130,8 @@ public class SelectStatement extends SchemaStatement {
 
         sbuf.append(" FROM ");
         sbuf.append(this.getSchemaName());
-
         sbuf.append(" ");
         sbuf.append(this.getWithArgs().asString());
-
         return sbuf.toString();
     }
 }

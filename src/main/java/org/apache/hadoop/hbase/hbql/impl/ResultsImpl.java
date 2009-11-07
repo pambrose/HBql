@@ -124,6 +124,10 @@ public class ResultsImpl<T> implements Results<T> {
                     return this.rowRequestIter;
                 }
 
+                private int getMaxVersions() {
+                    return this.maxVersions;
+                }
+
                 private ResultScanner getCurrentResultScanner() {
                     return this.currentResultScanner;
                 }
@@ -150,7 +154,7 @@ public class ResultsImpl<T> implements Results<T> {
                         // First close previous ResultScanner before reassigning
                         closeCurrentScanner(this.getCurrentResultScanner(), true);
 
-                        currentResultScanner = rowRequest.getResultScanner(this.getTable());
+                        this.currentResultScanner = rowRequest.getResultScanner(this.getTable());
 
                         getScannerList().add(this.getCurrentResultScanner());
 
@@ -180,7 +184,7 @@ public class ResultsImpl<T> implements Results<T> {
                 private T doFetch() throws HBqlException, IOException {
 
                     if (this.getResultIter() == null)
-                        resultIter = getNextResultScanner();
+                        this.resultIter = getNextResultScanner();
 
                     if (this.getResultIter() != null) {
 
@@ -196,7 +200,7 @@ public class ResultsImpl<T> implements Results<T> {
                                     incrementReturnedRecordCount();
 
                                     final T val = (T)schema.newObject(getSelectStatement().getSelectElementList(),
-                                                                      this.maxVersions,
+                                                                      this.getMaxVersions(),
                                                                       result);
 
                                     if (getListeners() != null)
@@ -213,7 +217,7 @@ public class ResultsImpl<T> implements Results<T> {
                     }
 
                     // Reset to get next scanner
-                    resultIter = null;
+                    this.resultIter = null;
                     return null;
                 }
 
