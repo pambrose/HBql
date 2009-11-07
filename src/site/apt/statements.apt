@@ -54,6 +54,8 @@ HBql Statements
 
     **{{{./statements/version.html}VERSION}}
 
+    **{{{./statements/import.html}IMPORT}}
+
     **{{{./statements/parse.html}PARSE}}
 
 

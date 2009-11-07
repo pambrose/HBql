@@ -1,0 +1,17 @@
+    -----
+    IMPORT
+    -----
+    -----
+
+IMPORT
+
+*Syntax
+
+---------------------------
+IMPORT "file_name"
+---------------------------
+
+*Description
+
+    Reads and excutes the HBql statements found in file_name. 
+
