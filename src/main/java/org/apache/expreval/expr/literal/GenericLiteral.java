@@ -48,6 +48,10 @@ public abstract class GenericLiteral<T> implements GenericValue {
         return false;
     }
 
+    public boolean isAggregateValue() {
+        return false;
+    }
+
     public boolean hasAColumnReference() {
         return false;
     }

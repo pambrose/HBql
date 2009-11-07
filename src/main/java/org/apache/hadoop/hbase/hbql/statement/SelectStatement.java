@@ -38,6 +38,7 @@ public class SelectStatement extends SchemaStatement {
     private final WithArgs withArgs;
 
     private int expressionCounter = 0;
+    private boolean aggregateQuery = false;
 
     public SelectStatement(final List<SelectElement> selectElementList,
                            final String schemaName,
@@ -63,6 +64,8 @@ public class SelectStatement extends SchemaStatement {
 
         this.getWithArgs().setSchema(this.getSchema());
 
+        this.aggregateQuery = this.checkIfAggregateQuery();
+
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();
 
@@ -73,17 +76,22 @@ public class SelectStatement extends SchemaStatement {
             this.getWithArgs().getClientExpressionTree().setUseResultData(true);
     }
 
-    private void checkForDuplicateAsNames() throws HBqlException {
+    private boolean checkIfAggregateQuery() throws HBqlException {
+        final boolean firstIsAggregate = this.getSelectElementList().get(0).isAggregateValue();
+        for (final SelectElement selectElement : this.getSelectElementList()) {
+            if (selectElement.isAggregateValue() != firstIsAggregate)
+                throw new HBqlException("Cannot mix aggregate and non-aggregate select elements");
+        }
+        return firstIsAggregate;
+    }
 
+    private void checkForDuplicateAsNames() throws HBqlException {
         final Set<String> asNameSet = Sets.newHashSet();
         for (final SelectElement selectElement : this.getSelectElementList()) {
-
             if (selectElement.hasAsName()) {
                 final String asName = selectElement.getAsName();
-
                 if (asNameSet.contains(asName))
                     throw new HBqlException("Duplicate select name " + asName + " in select list");
-
                 asNameSet.add(asName);
             }
         }
@@ -94,6 +102,10 @@ public class SelectStatement extends SchemaStatement {
             if (selectElement.hasAsName() && selectElement.getAsName().equals(name))
                 return true;
         return false;
+    }
+
+    public boolean isAggregateQuery() {
+        return this.aggregateQuery;
     }
 
     public List<SelectElement> getSelectElementList() {

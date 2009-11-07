@@ -78,6 +78,8 @@ public abstract class Function extends GenericExpression {
         FLOAT(new TypeSignature(FloatValue.class, StringValue.class)),
         DOUBLE(new TypeSignature(DoubleValue.class, StringValue.class)),
 
+        COUNT(new TypeSignature(LongValue.class), true),
+
         ABS(new TypeSignature(NumberValue.class, NumberValue.class)),
         MIN(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
         MAX(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
@@ -93,13 +95,23 @@ public abstract class Function extends GenericExpression {
         EVAL(new TypeSignature(BooleanValue.class, StringValue.class));
 
         private final TypeSignature typeSignature;
+        private final boolean aggregateValue;
 
         FunctionType(final TypeSignature typeSignature) {
+            this(typeSignature, false);
+        }
+
+        FunctionType(final TypeSignature typeSignature, final boolean aggregateValue) {
             this.typeSignature = typeSignature;
+            this.aggregateValue = aggregateValue;
         }
 
         private TypeSignature getTypeSignature() {
-            return typeSignature;
+            return this.typeSignature;
+        }
+
+        public boolean isAggregateValue() {
+            return this.aggregateValue;
         }
 
         public static Function getFunction(final String functionName, final List<GenericValue> exprList) {
@@ -145,6 +157,10 @@ public abstract class Function extends GenericExpression {
 
     protected boolean isIntervalDate() {
         return this.getFunctionType() == FunctionType.DATEINTERVAL;
+    }
+
+    public boolean isAggregateValue() {
+        return this.getFunctionType().isAggregateValue();
     }
 
     protected boolean isConstantDate() {

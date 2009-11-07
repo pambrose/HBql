@@ -44,10 +44,10 @@ import java.util.NoSuchElementException;
 public class ResultsImpl<T> implements Results<T> {
 
     private final List<ResultScanner> scannerList = Lists.newArrayList();
-    private final QueryImpl<T> hquery;
+    private final QueryImpl<T> query;
 
-    ResultsImpl(final Query<T> hquery) {
-        this.hquery = (QueryImpl<T>)hquery;
+    ResultsImpl(final Query<T> query) {
+        this.query = (QueryImpl<T>)query;
     }
 
     private Connection getConnection() {
@@ -55,7 +55,7 @@ public class ResultsImpl<T> implements Results<T> {
     }
 
     private QueryImpl<T> getQuery() {
-        return this.hquery;
+        return this.query;
     }
 
     private List<ResultScanner> getScannerList() {
@@ -167,17 +167,17 @@ public class ResultsImpl<T> implements Results<T> {
 
                 protected T fetchNextObject() throws HBqlException, IOException {
 
-                    T val = doFetch();
+                    final T firstAttemptVal = doFetch();
 
-                    if (val != null)
-                        return val;
+                    if (firstAttemptVal != null)
+                        return firstAttemptVal;
 
                     // Try one more time
-                    val = doFetch();
-                    if (val == null)
+                    final T secondAttemptVal = doFetch();
+                    if (secondAttemptVal == null)
                         closeCurrentScanner(this.getCurrentResultScanner(), true);
 
-                    return val;
+                    return secondAttemptVal;
                 }
 
                 @SuppressWarnings("unchecked")

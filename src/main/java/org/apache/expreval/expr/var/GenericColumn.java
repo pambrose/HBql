@@ -60,6 +60,10 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         return false;
     }
 
+    public boolean isAggregateValue() {
+        return false;
+    }
+
     public boolean hasAColumnReference() {
         return true;
     }

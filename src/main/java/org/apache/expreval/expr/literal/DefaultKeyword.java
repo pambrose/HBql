@@ -51,6 +51,10 @@ public class DefaultKeyword implements GenericValue {
         return true;
     }
 
+    public boolean isAggregateValue() {
+        return false;
+    }
+
     public boolean hasAColumnReference() {
         return false;
     }

@@ -61,6 +61,10 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
         return this.asName;
     }
 
+    public boolean isAggregateValue() {
+        return this.getGenericValue().isAggregateValue();
+    }
+
     private GenericValue getGenericValue() {
         return this.getGenericValue(0);
     }

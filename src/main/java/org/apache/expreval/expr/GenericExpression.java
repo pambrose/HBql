@@ -146,6 +146,10 @@ public abstract class GenericExpression implements GenericValue {
         return false;
     }
 
+    public boolean isAggregateValue() {
+        return false;
+    }
+
     public boolean hasAColumnReference() {
         for (final GenericValue val : this.getArgList())
             if (val.hasAColumnReference())

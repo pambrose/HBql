@@ -103,6 +103,10 @@ public class FamilySelectElement implements SelectElement {
         return this.familyName;
     }
 
+    public boolean isAggregateValue() {
+        return false;
+    }
+
     public int setParameter(final String name, final Object val) {
         // Do nothing
         return 0;

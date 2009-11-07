@@ -50,4 +50,6 @@ public interface SelectElement {
     boolean isAFamilySelect();
 
     String asString();
+
+    boolean isAggregateValue();
 }
