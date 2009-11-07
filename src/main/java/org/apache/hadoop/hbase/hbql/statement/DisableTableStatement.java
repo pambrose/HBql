@@ -20,8 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Output;
 import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
 
 import java.io.IOException;
@@ -32,8 +32,8 @@ public class DisableTableStatement extends TableStatement {
         super(tableName);
     }
 
-    public Output execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
         conn.getAdmin().disableTable(this.getTableName());
-        return new Output("Table " + this.getTableName() + " disabled.");
+        return new ExecutionOutput("Table " + this.getTableName() + " disabled.");
     }
 }

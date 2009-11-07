@@ -20,10 +20,10 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Output;
 
 public interface SchemaManagerStatement extends ShellStatement {
 
-    public Output execute() throws HBqlException;
+    public ExecutionOutput execute() throws HBqlException;
 }

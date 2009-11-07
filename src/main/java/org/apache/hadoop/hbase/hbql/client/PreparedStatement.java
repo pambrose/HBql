@@ -29,7 +29,7 @@ public interface PreparedStatement extends ConnectionStatement {
 
     int setParameter(final String name, final Object val) throws HBqlException;
 
-    Output execute() throws HBqlException, IOException;
+    ExecutionOutput execute() throws HBqlException, IOException;
 
     void reset();
 

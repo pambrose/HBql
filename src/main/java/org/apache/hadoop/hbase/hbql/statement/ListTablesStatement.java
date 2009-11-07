@@ -22,8 +22,8 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Output;
 import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
 
 import java.io.IOException;
@@ -33,11 +33,11 @@ public class ListTablesStatement implements ConnectionStatement {
     public ListTablesStatement() {
     }
 
-    public Output execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
         final HBaseAdmin admin = conn.getAdmin();
 
-        final Output retval = new Output();
+        final ExecutionOutput retval = new ExecutionOutput();
         retval.out.println("Tables: ");
         for (final HTableDescriptor tableDesc : admin.listTables())
             retval.out.println("\t" + tableDesc.getNameAsString());

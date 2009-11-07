@@ -20,8 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Output;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
 
@@ -32,9 +32,9 @@ public class ListSchemasStatement implements ConnectionStatement {
     public ListSchemasStatement() {
     }
 
-    public Output execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
-        final Output retval = new Output();
+        final ExecutionOutput retval = new ExecutionOutput();
         retval.out.println("Schemas: ");
         for (final String schemaName : SchemaManager.getDefinedSchemaNames())
             retval.out.println("\t" + schemaName);

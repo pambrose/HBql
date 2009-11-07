@@ -34,7 +34,7 @@ public interface Connection {
 
     <T> Query<T> newQuery(String query) throws IOException, HBqlException;
 
-    Output execute(String str) throws HBqlException, IOException;
+    ExecutionOutput execute(String str) throws HBqlException, IOException;
 
     PreparedStatement prepare(String str) throws HBqlException;
 

@@ -26,23 +26,12 @@ import jline.SimpleCompletor;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Output;
-import org.apache.hadoop.hbase.hbql.client.ParseException;
-import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.Record;
-import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
-import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
-import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
-import org.apache.hadoop.hbase.hbql.statement.SchemaManagerStatement;
-import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
-import org.apache.hadoop.hbase.hbql.statement.ShellStatement;
+import org.apache.hadoop.hbase.hbql.statement.ImportStatement;
 import org.apache.hadoop.hbase.hbql.statement.VersionStatement;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -51,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Console {
+
+    private static ConnectionImpl conn = null;
 
     public static void main(String[] args) throws IOException, HBqlException {
 
@@ -92,35 +83,28 @@ public class Console {
 
         if (option.equals("-version")) {
             final VersionStatement version = new VersionStatement();
-            final Output out = version.execute(null);
-            System.out.print(out);
+            final ExecutionOutput output = version.execute(null);
+            System.out.print(output);
             return true;
         }
 
         if (!option.startsWith("-")) {
-
-            final StringBuilder stmtBuffer = new StringBuilder();
-            try {
-                final BufferedReader in = new BufferedReader(new FileReader(option));
-                String str;
-                while ((str = in.readLine()) != null)
-                    stmtBuffer.append(str);
-                in.close();
-            }
-            catch (FileNotFoundException e) {
-                System.out.println("Cannot find file: " + option);
-                return false;
-            }
-
-            final ConnectionImpl conn = (ConnectionImpl)ConnectionManager.newConnection();
-            processInput(new PrintWriter(System.out), conn, stmtBuffer.toString());
-
-            return true;
+            final ImportStatement importStmt = new ImportStatement(option);
+            final ExecutionOutput output = importStmt.execute(getConnection());
+            System.out.print(output);
+            return output.hadSuccess();
         }
 
         return false;
     }
 
+    private static ConnectionImpl getConnection() {
+
+        if (conn == null)
+            conn = (ConnectionImpl)ConnectionManager.newConnection();
+
+        return conn;
+    }
 
     private static void processCommandLineInput() throws IOException {
 
@@ -149,7 +133,7 @@ public class Console {
 
             final String line = reader.readLine(prompts.get(continuation));
 
-            if (line == null || line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit"))
+            if (line == null || line.toLowerCase().startsWith("quit") || line.toLowerCase().startsWith("exit"))
                 break;
 
             if (line.trim().length() > 0) {
@@ -159,61 +143,8 @@ public class Console {
                 if (!continuation) {
                     final String sql = stmtBuffer.toString();
                     stmtBuffer = new StringBuilder();
-                    processInput(out, conn, sql);
+                    ImportStatement.processInput(out, conn, sql);
                 }
-            }
-        }
-    }
-
-    private static void processInput(final PrintWriter out,
-                                     final ConnectionImpl conn,
-                                     final String input) throws IOException {
-
-        try {
-            final List<ShellStatement> stmtList = HBqlShell.parseCommands(input);
-
-            for (final ShellStatement stmt : stmtList) {
-                if (stmt instanceof SelectStatement)
-                    processSelect(out, conn, (SelectStatement)stmt);
-                else if (stmt instanceof ConnectionStatement)
-                    out.println(((ConnectionStatement)stmt).execute(conn));
-                else if (stmt instanceof SchemaManagerStatement)
-                    out.println(((SchemaManagerStatement)stmt).execute());
-                else
-                    out.println("Unsupported statement type");
-            }
-        }
-        catch (ParseException e) {
-            out.println("Error parsing: ");
-            out.println(e.getMessage());
-            if (e.getRecognitionException() != null) {
-                final StringBuilder sbuf = new StringBuilder();
-                for (int i = 0; i < e.getRecognitionException().charPositionInLine; i++)
-                    sbuf.append("-");
-                sbuf.append("^");
-                out.println(sbuf.toString());
-            }
-        }
-        catch (HBqlException e) {
-            out.println("Error in statement: " + input);
-            out.println(e.getMessage());
-        }
-
-        out.flush();
-    }
-
-    private static void processSelect(final PrintWriter out,
-                                      final ConnectionImpl conn,
-                                      final SelectStatement selectStatement) throws HBqlException, IOException {
-
-        selectStatement.validate(conn);
-
-        final Query<Record> query = conn.newQuery(selectStatement);
-        final Results<Record> results = query.getResults();
-
-        for (final Record rec : results) {
-            for (final String columnName : rec.getColumnNameList()) {
-                out.println(columnName + ": " + rec.getCurrentValue(columnName));
             }
         }
     }

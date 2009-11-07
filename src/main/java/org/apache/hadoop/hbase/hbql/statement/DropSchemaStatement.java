@@ -20,8 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Output;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 
 public class DropSchemaStatement extends SchemaStatement implements SchemaManagerStatement {
@@ -30,8 +30,8 @@ public class DropSchemaStatement extends SchemaStatement implements SchemaManage
         super(schemaName);
     }
 
-    public Output execute() throws HBqlException {
+    public ExecutionOutput execute() throws HBqlException {
         SchemaManager.dropSchema(this.getSchemaName());
-        return new Output("Schema " + this.getSchemaName() + " dropped.");
+        return new ExecutionOutput("Schema " + this.getSchemaName() + " dropped.");
     }
 }

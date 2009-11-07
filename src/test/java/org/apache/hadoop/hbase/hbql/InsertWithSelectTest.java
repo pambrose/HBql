@@ -22,8 +22,8 @@ package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Output;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.Record;
@@ -122,15 +122,15 @@ public class InsertWithSelectTest extends TestSupport {
 
         PreparedStatement stmt = conn.prepare(q1);
 
-        Output output = stmt.execute();
+        ExecutionOutput executionOutput = stmt.execute();
 
-        System.out.println(output);
+        System.out.println(executionOutput);
 
         showValues();
 
-        output = conn.execute(q1);
+        executionOutput = conn.execute(q1);
 
-        System.out.println(output);
+        System.out.println(executionOutput);
 
         showValues();
     }

@@ -100,11 +100,12 @@ options {backtrack=true;}
 	| s3=tableStatement				{retval = $s3.retval;}
 	| keyLIST keyTABLES 		 		{retval = new ListTablesStatement();}
 	| keyLIST keySCHEMAS 		 		{retval = new ListSchemasStatement();}
-	| keyVERSION					{retval = new VersionStatement();}
-	| keyHELP					{retval = new HelpStatement();}
+	| keyIMPORT val=QSTRING				{retval = new ImportStatement($val.text);}
 	| keyPARSE c=commandStmt			{retval = new ParseStatement($c.retval);}
 	| keyPARSE keyEXPR te=topExpr			{retval = new ParseStatement($te.retval);}
-	| keySET t=simpleName EQ? val=STRING	 	{retval = new SetStatement($t.text, $val.text);}
+	| keySET t=simpleName EQ? val=QSTRING	 	{retval = new SetStatement($t.text, $val.text);}
+	| keyVERSION					{retval = new VersionStatement();}
+	| keyHELP					{retval = new HelpStatement();}
 	;						
 
 tableStatement returns [TableStatement retval]
@@ -262,7 +263,7 @@ atomExpr returns [GenericValue retval]
 
 // Literals		
 stringLiteral returns [StringLiteral retval]
-	: v=STRING 					{retval = new StringLiteral($v.text);};
+	: v=QSTRING 					{retval = new StringLiteral($v.text);};
 	
 integerLiteral returns [IntegerLiteral retval]
 	: v=INT						{retval = new IntegerLiteral($v.text);};	
@@ -368,7 +369,7 @@ eqneOp returns [Operator retval]
 	| (LTGT | BANGEQ)				{retval = Operator.NOTEQ;}
 	;
 				
-qstring	: STRING ;					
+qstring	: QSTRING ;					
 
 plusMinus returns [Operator retval]
 	: PLUS						{retval = Operator.PLUS;}
@@ -406,7 +407,7 @@ DIGIT	: '0'..'9';
 fragment
 CHAR 	: 'a'..'z' | 'A'..'Z'; 
 	 
-STRING		
+QSTRING		
 @init {final StringBuilder sbuf = new StringBuilder();}	
 	: DQUOTE (options {greedy=false;} : any=DQCHAR {sbuf.append(ParserSupport.decodeEscapedChar($any.getText()));})* DQUOTE {setText(sbuf.toString());}
 	| SQUOTE (options {greedy=false;} : any=SQCHAR {sbuf.append(ParserSupport.decodeEscapedChar($any.getText()));})* SQUOTE {setText(sbuf.toString());}
@@ -507,3 +508,4 @@ keyVALUES	: {isKeyword(input, "VALUES")}? ID;
 keyHELP		: {isKeyword(input, "HELP")}? ID;
 keyPARSE	: {isKeyword(input, "PARSE")}? ID;
 keyEXPR		: {isKeyword(input, "EXPR")}? ID;
+keyIMPORT	: {isKeyword(input, "IMPORT")}? ID;

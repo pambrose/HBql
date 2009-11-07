@@ -20,17 +20,17 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Output;
 import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
 
 import java.io.IOException;
 
 public class HelpStatement implements ConnectionStatement {
 
-    public Output execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
-        final Output retval = new Output();
+        final ExecutionOutput retval = new ExecutionOutput();
         retval.out.println("VERSION");
         retval.out.println("LIST TABLES");
         retval.out.println("DESCRIBE TABLE table_name");

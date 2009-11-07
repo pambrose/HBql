@@ -29,8 +29,8 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.Connection;
+import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Output;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
@@ -117,7 +117,7 @@ public class ConnectionImpl implements Connection {
         }
     }
 
-    public Output execute(final String str) throws HBqlException, IOException {
+    public ExecutionOutput execute(final String str) throws HBqlException, IOException {
         final ConnectionStatement statement = HBqlShell.parseConnectionStatement(str);
         return statement.execute(this);
     }

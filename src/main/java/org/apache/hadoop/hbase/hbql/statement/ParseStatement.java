@@ -22,8 +22,8 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Output;
 
 public class ParseStatement implements SchemaManagerStatement {
 
@@ -48,8 +48,8 @@ public class ParseStatement implements SchemaManagerStatement {
         return this.value;
     }
 
-    public Output execute() throws HBqlException {
-        final Output retval = new Output("Parsed successfully");
+    public ExecutionOutput execute() throws HBqlException {
+        final ExecutionOutput retval = new ExecutionOutput("Parsed successfully");
         if (this.getStmt() != null)
             retval.out.println(this.getStmt().getClass().getSimpleName());
 

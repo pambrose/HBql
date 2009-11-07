@@ -25,8 +25,8 @@ import org.apache.expreval.expr.literal.DefaultKeyword;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.Batch;
+import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Output;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.Record;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
@@ -155,7 +155,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         return this.valueSource;
     }
 
-    public Output execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
         this.validate(conn);
 
@@ -188,10 +188,10 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
             cnt++;
         }
 
-        return new Output(cnt + " record" + ((cnt > 1) ? "s" : "") + " inserted");
+        return new ExecutionOutput(cnt + " record" + ((cnt > 1) ? "s" : "") + " inserted");
     }
 
-    public Output execute() throws HBqlException, IOException {
+    public ExecutionOutput execute() throws HBqlException, IOException {
         return this.execute(this.getConnection());
     }
 

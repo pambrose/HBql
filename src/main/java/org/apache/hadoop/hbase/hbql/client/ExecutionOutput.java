@@ -23,16 +23,25 @@ package org.apache.hadoop.hbase.hbql.client;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-public class Output {
+public class ExecutionOutput {
 
     private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     public final PrintStream out = new PrintStream(baos);
+    private boolean success = true;
 
-    public Output() {
+    public ExecutionOutput() {
     }
 
-    public Output(final String str) {
+    public ExecutionOutput(final String str) {
         this.out.println(str);
+    }
+
+    public boolean hadSuccess() {
+        return this.success;
+    }
+
+    public void setSuccess(final boolean success) {
+        this.success = success;
     }
 
     public String toString() {

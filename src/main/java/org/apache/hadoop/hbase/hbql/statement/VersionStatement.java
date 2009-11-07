@@ -20,8 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Output;
 import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.hbql.util.VersionInfo;
 
@@ -29,9 +29,9 @@ import java.io.IOException;
 
 public class VersionStatement implements ConnectionStatement {
 
-    public Output execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
-        final Output retval = new Output();
+        final ExecutionOutput retval = new ExecutionOutput();
         retval.out.println("Hadoop version: " + org.apache.hadoop.util.VersionInfo.getVersion());
         retval.out.println("HBase version: " + org.apache.hadoop.hbase.util.VersionInfo.getVersion());
         retval.out.println("HBql version: " + VersionInfo.getVersion());

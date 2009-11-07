@@ -37,7 +37,7 @@ public class SchemaManager {
 
     private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
-    public static Output execute(final String str) throws HBqlException {
+    public static ExecutionOutput execute(final String str) throws HBqlException {
         final SchemaManagerStatement cmd = HBqlShell.parseSchemaManagerStatement(str);
         return cmd.execute();
     }
