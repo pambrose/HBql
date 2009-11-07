@@ -24,7 +24,7 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.schema.EnvVars;
 
-public class SetStatement implements ConnectionlessStatement {
+public class SetStatement implements NonConnectionStatement {
 
     private final String variable, value;
 

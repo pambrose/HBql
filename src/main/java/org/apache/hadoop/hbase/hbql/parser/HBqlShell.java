@@ -39,7 +39,7 @@ import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
-import org.apache.hadoop.hbase.hbql.statement.ConnectionlessStatement;
+import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.ShellStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
@@ -144,13 +144,13 @@ public class HBqlShell {
         }
     }
 
-    public static ConnectionlessStatement parseSchemaManagerStatement(final String str) throws HBqlException {
+    public static NonConnectionStatement parseSchemaManagerStatement(final String str) throws HBqlException {
         final ShellStatement statement = parse(str);
 
-        if (!(statement instanceof ConnectionlessStatement))
+        if (!(statement instanceof NonConnectionStatement))
             throw new HBqlException("Expecting a schema manager statement");
 
-        return (ConnectionlessStatement)statement;
+        return (NonConnectionStatement)statement;
     }
 
     public static ConnectionStatement parseConnectionStatement(final String str) throws HBqlException {

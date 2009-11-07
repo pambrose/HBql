@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public interface ConnectionlessStatement extends ShellStatement {
+public interface NonConnectionStatement extends ShellStatement {
 
     public ExecutionOutput execute() throws HBqlException;
 }

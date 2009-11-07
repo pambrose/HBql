@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.util.VersionInfo;
 
-public class VersionStatement implements ConnectionlessStatement {
+public class VersionStatement implements NonConnectionStatement {
 
     public ExecutionOutput execute() {
 

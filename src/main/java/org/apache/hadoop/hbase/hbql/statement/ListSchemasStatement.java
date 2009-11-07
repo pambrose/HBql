@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 
-public class ListSchemasStatement implements ConnectionlessStatement {
+public class ListSchemasStatement implements NonConnectionStatement {
 
     public ListSchemasStatement() {
     }

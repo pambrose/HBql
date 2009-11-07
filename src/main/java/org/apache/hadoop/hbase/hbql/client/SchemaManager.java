@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.statement.ConnectionlessStatement;
+import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 
 import java.util.List;
 import java.util.Map;
@@ -38,7 +38,7 @@ public class SchemaManager {
     private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
 
     public static ExecutionOutput execute(final String str) throws HBqlException {
-        final ConnectionlessStatement cmd = HBqlShell.parseSchemaManagerStatement(str);
+        final NonConnectionStatement cmd = HBqlShell.parseSchemaManagerStatement(str);
         return cmd.execute();
     }
 
