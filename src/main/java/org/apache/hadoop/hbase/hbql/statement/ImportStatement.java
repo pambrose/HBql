@@ -95,8 +95,8 @@ public class ImportStatement implements ConnectionStatement {
                     processSelect(out, conn, (SelectStatement)stmt);
                 else if (stmt instanceof ConnectionStatement)
                     out.println(((ConnectionStatement)stmt).execute(conn));
-                else if (stmt instanceof SchemaManagerStatement)
-                    out.println(((SchemaManagerStatement)stmt).execute());
+                else if (stmt instanceof ConnectionlessStatement)
+                    out.println(((ConnectionlessStatement)stmt).execute());
                 else
                     out.println("Unsupported statement type: " + stmt.getClass().getSimpleName() + " - " + input);
             }

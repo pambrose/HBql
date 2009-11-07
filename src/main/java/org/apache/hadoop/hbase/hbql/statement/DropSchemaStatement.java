@@ -24,7 +24,7 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 
-public class DropSchemaStatement extends SchemaStatement implements SchemaManagerStatement {
+public class DropSchemaStatement extends SchemaStatement implements ConnectionlessStatement {
 
     public DropSchemaStatement(final String schemaName) {
         super(schemaName);

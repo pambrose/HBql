@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 
-public class DescribeSchemaStatement extends SchemaStatement implements SchemaManagerStatement {
+public class DescribeSchemaStatement extends SchemaStatement implements ConnectionlessStatement {
 
     public DescribeSchemaStatement(final String schemaName) {
         super(schemaName);

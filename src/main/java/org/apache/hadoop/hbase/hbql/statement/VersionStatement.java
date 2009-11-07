@@ -21,15 +21,11 @@
 package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.hbql.util.VersionInfo;
 
-import java.io.IOException;
+public class VersionStatement implements ConnectionlessStatement {
 
-public class VersionStatement implements ConnectionStatement {
-
-    public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute() {
 
         final ExecutionOutput retval = new ExecutionOutput();
         retval.out.println("Hadoop version: " + org.apache.hadoop.util.VersionInfo.getVersion());

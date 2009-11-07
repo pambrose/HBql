@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.hbql.schema.DefinedSchema;
 
 import java.util.List;
 
-public class CreateSchemaStatement extends SchemaStatement implements SchemaManagerStatement {
+public class CreateSchemaStatement extends SchemaStatement implements ConnectionlessStatement {
 
     private final String tableName;
     private final List<ColumnDescription> columnDescriptionList;

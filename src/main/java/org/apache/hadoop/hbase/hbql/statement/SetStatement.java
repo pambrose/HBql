@@ -22,12 +22,9 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.EnvVars;
 
-import java.io.IOException;
-
-public class SetStatement implements ConnectionStatement {
+public class SetStatement implements ConnectionlessStatement {
 
     private final String variable, value;
 
@@ -45,7 +42,7 @@ public class SetStatement implements ConnectionStatement {
     }
 
 
-    public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute() throws HBqlException {
 
         final String var = this.getVariable();
 

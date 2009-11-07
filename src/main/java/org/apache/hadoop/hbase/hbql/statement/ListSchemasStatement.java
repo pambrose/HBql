@@ -21,18 +21,14 @@
 package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
 
-import java.io.IOException;
-
-public class ListSchemasStatement implements ConnectionStatement {
+public class ListSchemasStatement implements ConnectionlessStatement {
 
     public ListSchemasStatement() {
     }
 
-    public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute() {
 
         final ExecutionOutput retval = new ExecutionOutput();
         retval.out.println("Schemas: ");
