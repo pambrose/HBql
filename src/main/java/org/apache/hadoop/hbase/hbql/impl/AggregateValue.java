@@ -18,34 +18,18 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.expr.node;
+package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.Value;
+import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
-import java.io.Serializable;
+public class AggregateValue extends Value {
 
-public interface GenericValue extends Serializable {
+    final SingleExpressionContext context;
 
-    void setExpressionContext(final MultipleExpressionContext context) throws HBqlException;
-
-    Object getValue(final Object object) throws HBqlException, ResultMissingColumnException;
-
-    GenericValue getOptimizedValue() throws HBqlException;
-
-    Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                final boolean allowsCollections) throws HBqlException;
-
-    boolean isAConstant();
-
-    boolean isDefaultKeyword();
-
-    boolean isAnAggregateValue();
-
-    boolean hasAColumnReference();
-
-    String asString();
-
-    void reset();
+    public AggregateValue(final String name, final SingleExpressionContext context) throws HBqlException {
+        super(name);
+        this.context = context;
+    }
 }

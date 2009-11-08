@@ -21,14 +21,15 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.util.Maps;
+import org.apache.hadoop.hbase.hbql.client.Value;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 
 import java.io.Serializable;
 import java.util.Map;
 
-public class ElementMap<T extends Serializable> implements Serializable {
+public class ElementMap<T extends Value> implements Serializable {
 
-    private final Map<String, T> map = Maps.newHashMap();
+    private final Map<String, T> valueMap = Maps.newHashMap();
 
     private final RecordImpl record;
 
@@ -40,28 +41,22 @@ public class ElementMap<T extends Serializable> implements Serializable {
         return this.record;
     }
 
-    public Map<String, T> getMap() {
-        return map;
+    public Map<String, T> getValueMap() {
+        return this.valueMap;
     }
 
-    private String getNameToUse(final String name) {
-        final ColumnAttrib attrib = this.getRecord().getSchema().getAttribByVariableName(name);
-        if (attrib == null)
-            return name;
-        else
-            return attrib.getFamilyQualifiedName();
-    }
-
-    public void addElement(final String name, final T value) {
-        this.getMap().put(this.getNameToUse(name), value);
+    public void addElement(final T value) {
+        final ColumnAttrib attrib = this.getRecord().getSchema().getAttribByVariableName(value.getName());
+        final String name = (attrib == null) ? value.getName() : attrib.getFamilyQualifiedName();
+        this.getValueMap().put(name, value);
     }
 
     public boolean containsName(final String name) {
-        return this.getMap().containsKey(name);
+        return this.getValueMap().containsKey(name);
     }
 
     private T getElement(final String name) {
-        return this.getMap().get(name);
+        return this.getValueMap().get(name);
     }
 
     public T findElement(final String name) {
@@ -85,6 +80,6 @@ public class ElementMap<T extends Serializable> implements Serializable {
 
     public void clear() {
 
-        this.getMap().clear();
+        this.getValueMap().clear();
     }
 }

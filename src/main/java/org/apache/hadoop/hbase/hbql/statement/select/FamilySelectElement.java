@@ -24,6 +24,7 @@ import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
@@ -103,7 +104,7 @@ public class FamilySelectElement implements SelectElement {
         return this.familyName;
     }
 
-    public boolean isAggregateValue() {
+    public boolean isAnAggregateElement() {
         return false;
     }
 
@@ -147,9 +148,14 @@ public class FamilySelectElement implements SelectElement {
         // No op
     }
 
-    public void assignValues(final Object obj,
-                             final int maxVersions,
-                             final Result result) throws HBqlException {
+    public AggregateValue newAggregateValue() throws HBqlException {
+        // No op
+        return null;
+    }
+
+    public void assignSelectValue(final Object obj,
+                                  final int maxVersions,
+                                  final Result result) throws HBqlException {
 
         final HBaseSchema schema = this.getSchema();
 

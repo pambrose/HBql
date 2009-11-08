@@ -23,6 +23,7 @@ package org.apache.hadoop.hbase.hbql.statement.select;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
@@ -37,7 +38,9 @@ public interface SelectElement {
 
     void assignAsNamesForExpressions(SelectStatement selectStatement);
 
-    void assignValues(Object newobj, int maxVerions, Result result) throws HBqlException;
+    void assignSelectValue(Object newobj, int maxVerions, Result result) throws HBqlException;
+
+    AggregateValue newAggregateValue() throws HBqlException;
 
     int setParameter(String name, Object val) throws HBqlException;
 
@@ -51,5 +54,5 @@ public interface SelectElement {
 
     String asString();
 
-    boolean isAggregateValue();
+    boolean isAnAggregateElement();
 }

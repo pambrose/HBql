@@ -77,9 +77,9 @@ public class SelectStatement extends SchemaStatement {
     }
 
     private boolean checkIfAggregateQuery() throws HBqlException {
-        final boolean firstIsAggregate = this.getSelectElementList().get(0).isAggregateValue();
+        final boolean firstIsAggregate = this.getSelectElementList().get(0).isAnAggregateElement();
         for (final SelectElement selectElement : this.getSelectElementList()) {
-            if (selectElement.isAggregateValue() != firstIsAggregate)
+            if (selectElement.isAnAggregateElement() != firstIsAggregate)
                 throw new HBqlException("Cannot mix aggregate and non-aggregate select elements");
         }
         return firstIsAggregate;
@@ -104,7 +104,7 @@ public class SelectStatement extends SchemaStatement {
         return false;
     }
 
-    public boolean isAggregateQuery() {
+    public boolean isAnAggregateQuery() {
         return this.aggregateQuery;
     }
 

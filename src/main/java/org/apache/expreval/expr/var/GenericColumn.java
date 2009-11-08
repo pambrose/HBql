@@ -60,7 +60,7 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         return false;
     }
 
-    public boolean isAggregateValue() {
+    public boolean isAnAggregateValue() {
         return false;
     }
 

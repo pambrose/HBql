@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
+import org.apache.hadoop.hbase.hbql.impl.AggregateRecord;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
@@ -76,6 +77,7 @@ public abstract class HBaseSchema extends Schema {
                                      final int maxVersions,
                                      final Result result) throws HBqlException;
 
+    public abstract AggregateRecord newAggregateRecord(final List<SelectElement> selectElementList) throws HBqlException;
 
     // *** columnAttribByFamilyQualifiedNameMap calls
     protected Map<String, ColumnAttrib> getAttribByFamilyQualifiedNameMap() {
@@ -209,10 +211,10 @@ public abstract class HBaseSchema extends Schema {
         // Set key value
         this.getKeyAttrib().setCurrentValue(newobj, 0, result.getRow());
 
+        // Set the non-key values
         for (final SelectElement selectElement : selectElementList)
-            selectElement.assignValues(newobj, maxVersions, result);
+            selectElement.assignSelectValue(newobj, maxVersions, result);
     }
-
 
     public HBqlFilter getHBqlFilter(final ExpressionTree origExpressionTree) throws HBqlException {
 

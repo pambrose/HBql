@@ -73,11 +73,11 @@ public class RecordImpl implements Serializable, Record {
         return this.familyDefaultElements;
     }
 
-    public void addElement(final String name, final Value value) throws HBqlException {
+    public void addElement(final Value value) throws HBqlException {
         if (value instanceof ColumnValue)
-            this.getColumnValues().addElement(name, (ColumnValue)value);
+            this.getColumnValues().addElement((ColumnValue)value);
         else if (value instanceof FamilyDefaultValueMap)
-            this.getFamilyDefaultElements().addElement(name, (FamilyDefaultValueMap)value);
+            this.getFamilyDefaultElements().addElement((FamilyDefaultValueMap)value);
         else
             throw new InternalErrorException(value.getClass().getName());
     }
@@ -100,7 +100,9 @@ public class RecordImpl implements Serializable, Record {
         else {
             if (inSchema && !this.getSchema().containsVariableName(name))
                 throw new HBqlException("Invalid variable name " + this.getSchema().getSchemaName() + "." + name);
-            return new ColumnValue(this, name);
+            final ColumnValue columnValue = new ColumnValue(name);
+            this.addElement(columnValue);
+            return columnValue;
         }
     }
 
@@ -111,10 +113,14 @@ public class RecordImpl implements Serializable, Record {
             return value;
         }
         else {
-            if (createNewIfMissing)
-                return new FamilyDefaultValueMap(this, name);
-            else
+            if (createNewIfMissing) {
+                final FamilyDefaultValueMap val = new FamilyDefaultValueMap(name);
+                this.addElement(val);
+                return val;
+            }
+            else {
                 return null;
+            }
         }
     }
 
@@ -133,7 +139,6 @@ public class RecordImpl implements Serializable, Record {
         final ColumnValue columnValue = this.getColumnValues().findElement(attrib.getAliasName());
         return columnValue != null && columnValue.isValueSet();
     }
-
 
     public void setCurrentValue(final String name,
                                 final long timestamp,
@@ -194,7 +199,7 @@ public class RecordImpl implements Serializable, Record {
     }
 
     public Set<String> getColumnNameList() throws HBqlException {
-        return this.getColumnValues().getMap().keySet();
+        return this.getColumnValues().getValueMap().keySet();
     }
 
     public Map<Long, Object> getVersionMap(final String name) {

@@ -18,34 +18,35 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.expr.node;
+package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.MultipleExpressionContext;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.schema.DefinedSchema;
+import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
-import java.io.Serializable;
+import java.util.List;
 
-public interface GenericValue extends Serializable {
+public class AggregateRecord extends RecordImpl {
 
-    void setExpressionContext(final MultipleExpressionContext context) throws HBqlException;
+    final List<SelectElement> selectElementList;
 
-    Object getValue(final Object object) throws HBqlException, ResultMissingColumnException;
+    public AggregateRecord(final DefinedSchema schema,
+                           final List<SelectElement> selectElementList) throws HBqlException {
+        super(schema);
 
-    GenericValue getOptimizedValue() throws HBqlException;
+        this.selectElementList = selectElementList;
 
-    Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                final boolean allowsCollections) throws HBqlException;
+        // Set key value
+        schema.getKeyAttrib().setCurrentValue(this, 0, "");
 
-    boolean isAConstant();
+        for (final SelectElement selectElement : selectElementList) {
+            final AggregateValue val = selectElement.newAggregateValue();
+            this.addElement(val);
+        }
+    }
 
-    boolean isDefaultKeyword();
+    public void processValues(final Result result) {
 
-    boolean isAnAggregateValue();
-
-    boolean hasAColumnReference();
-
-    String asString();
-
-    void reset();
+    }
 }

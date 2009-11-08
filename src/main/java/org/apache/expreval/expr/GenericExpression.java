@@ -146,7 +146,7 @@ public abstract class GenericExpression implements GenericValue {
         return false;
     }
 
-    public boolean isAggregateValue() {
+    public boolean isAnAggregateValue() {
         return false;
     }
 
@@ -257,7 +257,7 @@ public abstract class GenericExpression implements GenericValue {
             throw new InternalErrorException(this.getTypeSignature().getReturnType().getSimpleName());
         }
         catch (ResultMissingColumnException e) {
-            // This will never be hit because the exception is for constants only
+            // This should never be hit 
             throw new InternalErrorException();
         }
     }

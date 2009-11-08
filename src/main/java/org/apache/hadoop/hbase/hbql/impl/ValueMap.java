@@ -33,8 +33,8 @@ public abstract class ValueMap<T> extends Value {
     private final Map<String, CurrentAndVersionValue<T>> currentAndVersionMap = Maps.newHashMap();
     private final Class elementClazz;
 
-    protected ValueMap(final RecordImpl record, final String name, final Class elementClazz) throws HBqlException {
-        super(record, name);
+    protected ValueMap(final String name, final Class elementClazz) throws HBqlException {
+        super(name);
         this.elementClazz = elementClazz;
     }
 
@@ -75,7 +75,7 @@ public abstract class ValueMap<T> extends Value {
 
         CurrentAndVersionValue<T> hvalue = this.getCurrentAndVersionMap().get(mapKey);
         if (hvalue == null) {
-            hvalue = new CurrentAndVersionValue<T>(null, null);
+            hvalue = new CurrentAndVersionValue<T>(null);
             this.getCurrentAndVersionMap().put(mapKey, hvalue);
         }
         return hvalue;

@@ -105,6 +105,16 @@ public class ResultsImpl<T> implements Results<T> {
         try {
             return new ResultsIterator<T>(this.getWithArgs().getLimit()) {
 
+                {
+                    // Initialize aggregateRecord value if appropriate
+                    if (getSelectStatement().isAnAggregateQuery()) {
+                        final HBaseSchema schema = getSelectStatement().getSchema();
+                        this.aggregateRecord = schema.newAggregateRecord(getSelectStatement().getSelectElementList());
+                    }
+                }
+
+                private AggregateRecord aggregateRecord = null;
+
                 private final HTable table = getConnection().getHTable(getSelectStatement().getSchema().getTableName());
                 private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
                 private final Iterator<RowRequest> rowRequestIter = getRowRequestList().iterator();
@@ -115,6 +125,10 @@ public class ResultsImpl<T> implements Results<T> {
 
                 // Prime the iterator with the first value
                 private T nextObject = fetchNextObject();
+
+                private AggregateRecord getAggregateRecord() {
+                    return this.aggregateRecord;
+                }
 
                 private ExpressionTree getClientExpressionTree() {
                     return this.clientExpressionTree;
@@ -190,28 +204,35 @@ public class ResultsImpl<T> implements Results<T> {
 
                         final HBaseSchema schema = getSelectStatement().getSchema();
 
+                        // This is the heart of the query evaluation
                         while (this.getResultIter().hasNext()) {
 
                             final Result result = this.getResultIter().next();
 
                             try {
-                                if (getClientExpressionTree() == null || getClientExpressionTree().evaluate(result)) {
-
-                                    incrementReturnedRecordCount();
-
-                                    final T val = (T)schema.newObject(getSelectStatement().getSelectElementList(),
-                                                                      this.getMaxVersions(),
-                                                                      result);
-
-                                    if (getListeners() != null)
-                                        for (final QueryListener<T> listener : getListeners())
-                                            listener.onEachRow(val);
-
-                                    return val;
-                                }
+                                if (getClientExpressionTree() != null && !getClientExpressionTree().evaluate(result))
+                                    continue;
                             }
                             catch (ResultMissingColumnException e) {
-                                // Just skip and do nothing
+                                continue;
+                            }
+
+                            incrementReturnedRecordCount();
+
+                            if (getSelectStatement().isAnAggregateQuery()) {
+                                // Evaluate each of the agregate values
+                                this.getAggregateRecord().processValues(result);
+                            }
+                            else {
+                                final T val = (T)schema.newObject(getSelectStatement().getSelectElementList(),
+                                                                  this.getMaxVersions(),
+                                                                  result);
+
+                                if (getListeners() != null)
+                                    for (final QueryListener<T> listener : getListeners())
+                                        listener.onEachRow(val);
+
+                                return val;
                             }
                         }
                     }

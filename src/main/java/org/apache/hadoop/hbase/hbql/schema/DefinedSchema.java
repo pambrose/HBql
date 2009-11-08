@@ -27,6 +27,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Record;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
+import org.apache.hadoop.hbase.hbql.impl.AggregateRecord;
 import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
@@ -83,11 +84,12 @@ public class DefinedSchema extends HBaseSchema {
 
         // Create object and assign values
         final RecordImpl newrec = new RecordImpl(this);
-
-        // Assign values
         this.assignSelectValues(newrec, selectElementList, maxVersions, result);
-
         return newrec;
+    }
+
+    public AggregateRecord newAggregateRecord(final List<SelectElement> selectElementList) throws HBqlException {
+        return new AggregateRecord(this, selectElementList);
     }
 
     public List<HColumnDescriptor> getColumnDescriptors() {

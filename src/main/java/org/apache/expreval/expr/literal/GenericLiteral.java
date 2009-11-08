@@ -48,7 +48,7 @@ public abstract class GenericLiteral<T> implements GenericValue {
         return false;
     }
 
-    public boolean isAggregateValue() {
+    public boolean isAnAggregateValue() {
         return false;
     }
 

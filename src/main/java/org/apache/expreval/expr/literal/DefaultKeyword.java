@@ -51,7 +51,7 @@ public class DefaultKeyword implements GenericValue {
         return true;
     }
 
-    public boolean isAggregateValue() {
+    public boolean isAnAggregateValue() {
         return false;
     }
 

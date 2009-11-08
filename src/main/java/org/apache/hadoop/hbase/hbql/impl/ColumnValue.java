@@ -24,7 +24,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public class ColumnValue extends CurrentAndVersionValue<Object> {
 
-    public ColumnValue(final RecordImpl record, final String name) throws HBqlException {
-        super(record, name);
+    public ColumnValue(final String name) throws HBqlException {
+        super(name);
     }
 }

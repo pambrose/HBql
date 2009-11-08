@@ -43,7 +43,6 @@ public class ScanRequest implements RowRequest {
     }
 
     public ResultScanner getResultScanner(final HTable table) throws IOException {
-
         return table.getScanner(this.getScanValue());
     }
 }

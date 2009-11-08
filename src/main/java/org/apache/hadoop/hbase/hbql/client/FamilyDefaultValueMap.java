@@ -20,13 +20,12 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.hbql.impl.ValueMap;
 
 public class FamilyDefaultValueMap extends ValueMap<byte[]> {
 
-    public FamilyDefaultValueMap(final RecordImpl record, final String name) throws HBqlException {
-        super(record, name, null);
+    public FamilyDefaultValueMap(final String name) throws HBqlException {
+        super(name, null);
     }
 
     public String toString() {

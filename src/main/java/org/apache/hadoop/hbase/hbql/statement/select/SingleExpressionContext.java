@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Record;
+import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
@@ -61,8 +62,8 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
         return this.asName;
     }
 
-    public boolean isAggregateValue() {
-        return this.getGenericValue().isAggregateValue();
+    public boolean isAnAggregateElement() {
+        return this.getGenericValue().isAnAggregateValue();
     }
 
     private GenericValue getGenericValue() {
@@ -212,9 +213,9 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
         }
     }
 
-    public void assignValues(final Object obj,
-                             final int maxVerions,
-                             final Result result) throws HBqlException {
+    public void assignSelectValue(final Object obj,
+                                  final int maxVerions,
+                                  final Result result) throws HBqlException {
 
         if (this.isAKeyValue())
             return;
@@ -271,6 +272,10 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
                 }
             }
         }
+    }
+
+    public AggregateValue newAggregateValue() throws HBqlException {
+        return new AggregateValue(this.getSelectName(), this);
     }
 
     public Object getValue(final Result result) throws HBqlException {

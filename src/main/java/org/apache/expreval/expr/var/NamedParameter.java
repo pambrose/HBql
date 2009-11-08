@@ -151,7 +151,7 @@ public class NamedParameter implements GenericValue {
         return false;
     }
 
-    public boolean isAggregateValue() {
+    public boolean isAnAggregateValue() {
         return false;
     }
 

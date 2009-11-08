@@ -159,7 +159,7 @@ public abstract class Function extends GenericExpression {
         return this.getFunctionType() == FunctionType.DATEINTERVAL;
     }
 
-    public boolean isAggregateValue() {
+    public boolean isAnAggregateValue() {
         return this.getFunctionType().isAggregateValue();
     }
 
