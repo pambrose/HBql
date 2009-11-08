@@ -36,9 +36,9 @@ Numeric Functions
 *--+--+--+--+
 | abs(number)     | number     | Returns absolute value of number   | abs(-34)    |  34      |
 *--+--+--+--+
-| min(number1, number2) | number | Returns the smaller of number1 and number2   | min(2, 3)    |  2      |
+| lesser(number1, number2) | number | Returns the smaller of number1 and number2   | min(2, 3)    |  2      |
 *--+--+--+--+
-| max(number1, number2) | number | Returns the greater of number1 and number2   | abs(2, 3)    |  3      |
+| greater(number1, number2) | number | Returns the greater of number1 and number2   | abs(2, 3)    |  3      |
 *--+--+--+--+
 | short(string)     | short     | Returns short value of string   | short('34')    |  34      |
 *--+--+--+--+

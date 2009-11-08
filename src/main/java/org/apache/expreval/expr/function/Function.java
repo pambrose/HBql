@@ -79,10 +79,12 @@ public abstract class Function extends GenericExpression {
         DOUBLE(new TypeSignature(DoubleValue.class, StringValue.class)),
 
         COUNT(new TypeSignature(LongValue.class), true),
+        //MAX(new TypeSignature(NumberValue.class), true),
+        //MIN(new TypeSignature(NumberValue.class), true),
 
         ABS(new TypeSignature(NumberValue.class, NumberValue.class)),
-        MIN(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
-        MAX(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
+        LESSER(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
+        GREATER(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
 
         RANDOMINTEGER(new TypeSignature(IntegerValue.class)),
         RANDOMLONG(new TypeSignature(LongValue.class)),

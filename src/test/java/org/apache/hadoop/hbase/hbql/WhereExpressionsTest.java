@@ -146,8 +146,11 @@ public class WhereExpressionsTest extends TestSupport {
 
         assertTrue(parseStringExpr("repeat('abc', 3)").equals("abcabcabc"));
 
-        assertTrue(parseNumberExpr("min(4, 3)").intValue() == 3);
-        assertTrue(parseNumberExpr("min(4.0, 3.0)").doubleValue() == 3.0);
+        assertTrue(parseNumberExpr("lesser(4, 3)").intValue() == 3);
+        assertTrue(parseNumberExpr("lesser(4.0, 3.0)").doubleValue() == 3.0);
+
+        assertTrue(parseNumberExpr("greater(4, 3)").intValue() == 4);
+        assertTrue(parseNumberExpr("greater(4.0, 3.0)").doubleValue() == 4.0);
     }
 
     @Test

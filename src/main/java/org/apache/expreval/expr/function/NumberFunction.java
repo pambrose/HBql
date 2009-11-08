@@ -94,7 +94,7 @@ public class NumberFunction extends Function implements NumberValue {
                     return Math.abs(v1.doubleValue());
             }
 
-            case MIN: {
+            case LESSER: {
                 final Number v1 = (Number)this.getArg(0).getValue(object);
                 final Number v2 = (Number)this.getArg(1).getValue(object);
 
@@ -110,7 +110,7 @@ public class NumberFunction extends Function implements NumberValue {
                     return Math.min(v1.doubleValue(), v2.doubleValue());
             }
 
-            case MAX: {
+            case GREATER: {
                 final Number v1 = (Number)this.getArg(0).getValue(object);
                 final Number v2 = (Number)this.getArg(1).getValue(object);
 
