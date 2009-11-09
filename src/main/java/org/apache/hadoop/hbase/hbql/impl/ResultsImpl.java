@@ -43,7 +43,7 @@ import java.util.NoSuchElementException;
 
 public class ResultsImpl<T> implements Results<T> {
 
-    private final List<ResultScanner> scannerList = Lists.newArrayList();
+    private final List<ResultScanner> resultScannerList = Lists.newArrayList();
     private final QueryImpl<T> query;
 
     ResultsImpl(final Query<T> query) {
@@ -58,8 +58,8 @@ public class ResultsImpl<T> implements Results<T> {
         return this.query;
     }
 
-    private List<ResultScanner> getScannerList() {
-        return this.scannerList;
+    private List<ResultScanner> getResultScannerList() {
+        return this.resultScannerList;
     }
 
     private SelectStatement getSelectStatement() {
@@ -80,10 +80,10 @@ public class ResultsImpl<T> implements Results<T> {
 
     public void close() {
 
-        for (final ResultScanner scanner : this.getScannerList())
+        for (final ResultScanner scanner : this.getResultScannerList())
             closeCurrentResultScanner(scanner, false);
 
-        this.getScannerList().clear();
+        this.getResultScannerList().clear();
     }
 
     private void closeCurrentResultScanner(final ResultScanner scanner, final boolean removeFromList) {
@@ -97,7 +97,7 @@ public class ResultsImpl<T> implements Results<T> {
             }
 
             if (removeFromList)
-                getScannerList().remove(scanner);
+                getResultScannerList().remove(scanner);
         }
     }
 
@@ -129,6 +129,10 @@ public class ResultsImpl<T> implements Results<T> {
 
                 private int getMaxVersions() {
                     return this.maxVersions;
+                }
+
+                private void setMaxVersions(final int maxVersions) {
+                    this.maxVersions = maxVersions;
                 }
 
                 private ResultScanner getCurrentResultScanner() {
@@ -224,14 +228,14 @@ public class ResultsImpl<T> implements Results<T> {
 
                         final RowRequest rowRequest = this.getRowRequestIterator().next();
 
-                        this.maxVersions = rowRequest.getMaxVersions();
+                        this.setMaxVersions(rowRequest.getMaxVersions());
 
                         // First close previous ResultScanner before reassigning
                         closeCurrentResultScanner(this.getCurrentResultScanner(), true);
 
                         this.setCurrentResultScanner(rowRequest.getResultScanner(this.getTable()));
 
-                        getScannerList().add(this.getCurrentResultScanner());
+                        getResultScannerList().add(this.getCurrentResultScanner());
 
                         return this.getCurrentResultScanner().iterator();
                     }
