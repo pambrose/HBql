@@ -71,14 +71,14 @@ public class QueryImpl<T> implements Query<T> {
 
     public List<RowRequest> getRowRequestList() throws HBqlException, IOException {
 
-        final WithArgs with = this.getSelectStatement().getWithArgs();
+        final WithArgs withArgs = this.getSelectStatement().getWithArgs();
 
         // Get list of all columns that are used in select list and expr tree
         final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
         allAttribs.addAll(this.getSelectStatement().getSelectAttribList());
-        allAttribs.addAll(with.getAllColumnsUsedInExprs());
+        allAttribs.addAll(withArgs.getAllColumnsUsedInExprs());
 
-        return with.getRowRequestList(allAttribs);
+        return withArgs.getRowRequestList(allAttribs);
     }
 
     public List<QueryListener<T>> getListeners() {

@@ -79,10 +79,11 @@ public class ResultsImpl<T> implements Results<T> {
     }
 
     public void close() {
+
         for (final ResultScanner scanner : this.getScannerList())
             closeCurrentResultScanner(scanner, false);
 
-        this.scannerList.clear();
+        this.getScannerList().clear();
     }
 
     private void closeCurrentResultScanner(final ResultScanner scanner, final boolean removeFromList) {
@@ -109,7 +110,7 @@ public class ResultsImpl<T> implements Results<T> {
 
                 private final HTable table = getConnection().getHTable(getSelectStatement().getSchema().getTableName());
                 private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
-                private final Iterator<RowRequest> rowRequestIter = getRowRequestList().iterator();
+                private final Iterator<RowRequest> rowRequestIterator = getRowRequestList().iterator();
 
                 private int maxVersions = 0;
                 private ResultScanner currentResultScanner = null;
@@ -122,8 +123,8 @@ public class ResultsImpl<T> implements Results<T> {
                     return this.clientExpressionTree;
                 }
 
-                private Iterator<RowRequest> getRowRequestIter() {
-                    return this.rowRequestIter;
+                private Iterator<RowRequest> getRowRequestIterator() {
+                    return this.rowRequestIterator;
                 }
 
                 private int getMaxVersions() {
@@ -219,9 +220,9 @@ public class ResultsImpl<T> implements Results<T> {
 
                 private Iterator<Result> getNextResultScanner() throws IOException {
 
-                    if (this.getRowRequestIter().hasNext()) {
+                    if (this.getRowRequestIterator().hasNext()) {
 
-                        final RowRequest rowRequest = this.getRowRequestIter().next();
+                        final RowRequest rowRequest = this.getRowRequestIterator().next();
 
                         this.maxVersions = rowRequest.getMaxVersions();
 
