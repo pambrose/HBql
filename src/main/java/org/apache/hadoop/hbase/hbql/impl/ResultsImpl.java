@@ -80,12 +80,12 @@ public class ResultsImpl<T> implements Results<T> {
 
     public void close() {
         for (final ResultScanner scanner : this.getScannerList())
-            closeCurrentScanner(scanner, false);
+            closeCurrentResultScanner(scanner, false);
 
         this.scannerList.clear();
     }
 
-    private void closeCurrentScanner(final ResultScanner scanner, final boolean removeFromList) {
+    private void closeCurrentResultScanner(final ResultScanner scanner, final boolean removeFromList) {
 
         if (scanner != null) {
             try {
@@ -113,7 +113,7 @@ public class ResultsImpl<T> implements Results<T> {
 
                 private int maxVersions = 0;
                 private ResultScanner currentResultScanner = null;
-                private Iterator<Result> resultIter = null;
+                private Iterator<Result> currentResultIterator = null;
 
                 // Prime the iterator with the first value
                 private T nextObject = fetchNextObject();
@@ -144,8 +144,8 @@ public class ResultsImpl<T> implements Results<T> {
                     return this.currentResultScanner;
                 }
 
-                private Iterator<Result> getResultIter() {
-                    return this.resultIter;
+                private Iterator<Result> getCurrentResultIterator() {
+                    return this.currentResultIterator;
                 }
 
                 protected T getNextObject() {
@@ -164,7 +164,7 @@ public class ResultsImpl<T> implements Results<T> {
                         this.maxVersions = rowRequest.getMaxVersions();
 
                         // First close previous ResultScanner before reassigning
-                        closeCurrentScanner(this.getCurrentResultScanner(), true);
+                        closeCurrentResultScanner(this.getCurrentResultScanner(), true);
 
                         this.currentResultScanner = rowRequest.getResultScanner(this.getTable());
 
@@ -184,10 +184,10 @@ public class ResultsImpl<T> implements Results<T> {
                     if (firstAttemptVal != null)
                         return firstAttemptVal;
 
-                    // Try one more time
+                    // Try one more time to exhaust all scanners
                     final T secondAttemptVal = doFetch();
                     if (secondAttemptVal == null)
-                        closeCurrentScanner(this.getCurrentResultScanner(), true);
+                        closeCurrentResultScanner(this.getCurrentResultScanner(), true);
 
                     return secondAttemptVal;
                 }
@@ -195,17 +195,17 @@ public class ResultsImpl<T> implements Results<T> {
                 @SuppressWarnings("unchecked")
                 private T doFetch() throws HBqlException, IOException {
 
-                    if (this.getResultIter() == null)
-                        this.resultIter = getNextResultScanner();
+                    if (this.getCurrentResultIterator() == null)
+                        this.currentResultIterator = getNextResultScanner();
 
-                    if (this.getResultIter() != null) {
+                    if (this.getCurrentResultIterator() != null) {
 
                         final HBaseSchema schema = getSelectStatement().getSchema();
 
                         // This is the heart of the query evaluation
-                        while (this.getResultIter().hasNext()) {
+                        while (this.getCurrentResultIterator().hasNext()) {
 
-                            final Result result = this.getResultIter().next();
+                            final Result result = this.getCurrentResultIterator().next();
 
                             try {
                                 if (getClientExpressionTree() != null && !getClientExpressionTree().evaluate(result))
@@ -236,7 +236,7 @@ public class ResultsImpl<T> implements Results<T> {
                     }
 
                     // Reset to get next scanner
-                    this.resultIter = null;
+                    this.currentResultIterator = null;
                     return null;
                 }
 
