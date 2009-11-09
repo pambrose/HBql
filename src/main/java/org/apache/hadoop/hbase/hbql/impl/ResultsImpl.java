@@ -118,16 +118,6 @@ public class ResultsImpl<T> implements Results<T> {
                 // Prime the iterator with the first value
                 private T nextObject = fetchNextObject();
 
-                private AggregateRecord getAggregateRecord() throws HBqlException {
-
-                    if (this.aggregateRecord == null) {
-                        final HBaseSchema schema = getSelectStatement().getSchema();
-                        this.aggregateRecord = schema.newAggregateRecord(getSelectStatement().getSelectElementList());
-                    }
-
-                    return this.aggregateRecord;
-                }
-
                 private ExpressionTree getClientExpressionTree() {
                     return this.clientExpressionTree;
                 }
@@ -156,25 +146,12 @@ public class ResultsImpl<T> implements Results<T> {
                     return this.table;
                 }
 
-                private Iterator<Result> getNextResultScanner() throws IOException {
-                    if (this.getRowRequestIter().hasNext()) {
+                private void setCurrentResultScanner(final ResultScanner currentResultScanner) {
+                    this.currentResultScanner = currentResultScanner;
+                }
 
-                        final RowRequest rowRequest = this.getRowRequestIter().next();
-
-                        this.maxVersions = rowRequest.getMaxVersions();
-
-                        // First close previous ResultScanner before reassigning
-                        closeCurrentResultScanner(this.getCurrentResultScanner(), true);
-
-                        this.currentResultScanner = rowRequest.getResultScanner(this.getTable());
-
-                        getScannerList().add(this.getCurrentResultScanner());
-
-                        return this.getCurrentResultScanner().iterator();
-                    }
-                    else {
-                        return null;
-                    }
+                private void setCurrentResultIterator(final Iterator<Result> currentResultIterator) {
+                    this.currentResultIterator = currentResultIterator;
                 }
 
                 protected T fetchNextObject() throws HBqlException, IOException {
@@ -196,7 +173,7 @@ public class ResultsImpl<T> implements Results<T> {
                 private T doFetch() throws HBqlException, IOException {
 
                     if (this.getCurrentResultIterator() == null)
-                        this.currentResultIterator = getNextResultScanner();
+                        this.setCurrentResultIterator(getNextResultScanner());
 
                     if (this.getCurrentResultIterator() != null) {
 
@@ -236,8 +213,30 @@ public class ResultsImpl<T> implements Results<T> {
                     }
 
                     // Reset to get next scanner
-                    this.currentResultIterator = null;
+                    this.setCurrentResultIterator(null);
                     return null;
+                }
+
+                private Iterator<Result> getNextResultScanner() throws IOException {
+
+                    if (this.getRowRequestIter().hasNext()) {
+
+                        final RowRequest rowRequest = this.getRowRequestIter().next();
+
+                        this.maxVersions = rowRequest.getMaxVersions();
+
+                        // First close previous ResultScanner before reassigning
+                        closeCurrentResultScanner(this.getCurrentResultScanner(), true);
+
+                        this.setCurrentResultScanner(rowRequest.getResultScanner(this.getTable()));
+
+                        getScannerList().add(this.getCurrentResultScanner());
+
+                        return this.getCurrentResultScanner().iterator();
+                    }
+                    else {
+                        return null;
+                    }
                 }
 
                 protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
@@ -248,6 +247,16 @@ public class ResultsImpl<T> implements Results<T> {
                         for (final QueryListener<T> listener : getListeners())
                             listener.onQueryComplete();
                     }
+                }
+
+                private AggregateRecord getAggregateRecord() throws HBqlException {
+
+                    if (this.aggregateRecord == null) {
+                        final HBaseSchema schema = getSelectStatement().getSchema();
+                        this.aggregateRecord = schema.newAggregateRecord(getSelectStatement().getSelectElementList());
+                    }
+
+                    return this.aggregateRecord;
                 }
             };
         }
