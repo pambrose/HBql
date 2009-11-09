@@ -72,18 +72,29 @@ public class SelectStatement extends SchemaStatement {
 
         if (this.getWithArgs().getClientExpressionTree() != null)
             this.getWithArgs().getClientExpressionTree().setUseResultData(true);
+    }
+
+    public void determineIfAggregateQuery() throws HBqlException {
+
+        // This is required before the checkIfAggregateQuery() call.
+        for (final SelectElement element : this.getSelectElementList())
+            element.validateTypes(true, false);
 
         this.aggregateQuery = this.checkIfAggregateQuery();
     }
 
     private boolean checkIfAggregateQuery() throws HBqlException {
-        SelectElement elem = this.getSelectElementList().get(0);
-        final boolean firstIsAggregate = this.getSelectElementList().get(0).isAnAggregateElement();
+        final SelectElement firstElement = this.getSelectElementList().get(0);
+        final boolean firstIsAggregate = firstElement.isAnAggregateElement();
         for (final SelectElement selectElement : this.getSelectElementList()) {
             if (selectElement.isAnAggregateElement() != firstIsAggregate)
                 throw new HBqlException("Cannot mix aggregate and non-aggregate select elements");
         }
         return firstIsAggregate;
+    }
+
+    public boolean isAnAggregateQuery() {
+        return this.aggregateQuery;
     }
 
     private void checkForDuplicateAsNames() throws HBqlException {
@@ -103,10 +114,6 @@ public class SelectStatement extends SchemaStatement {
             if (selectElement.hasAsName() && selectElement.getAsName().equals(name))
                 return true;
         return false;
-    }
-
-    public boolean isAnAggregateQuery() {
-        return this.aggregateQuery;
     }
 
     public List<SelectElement> getSelectElementList() {

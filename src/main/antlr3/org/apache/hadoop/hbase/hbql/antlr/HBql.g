@@ -98,8 +98,8 @@ options {backtrack=true;}
 	: s1=schemaStmt					{retval = $s1.retval;}
 	| s2=schemaManagerStmt				{retval = $s2.retval;}
 	| s3=tableStatement				{retval = $s3.retval;}
-	| keyLIST keyTABLES 		 		{retval = new ListTablesStatement();}
-	| keyLIST keySCHEMAS 		 		{retval = new ListSchemasStatement();}
+	| keySHOW keyTABLES 		 		{retval = new ShowTablesStatement();}
+	| keySHOW keySCHEMAS 		 		{retval = new ShowSchemasStatement();}
 	| keyIMPORT val=QSTRING				{retval = new ImportStatement($val.text);}
 	| keyPARSE c=commandStmt			{retval = new ParseStatement($c.retval);}
 	| keyPARSE keyEXPR te=topExpr			{retval = new ParseStatement($te.retval);}
@@ -454,7 +454,7 @@ keySELECT 	: {isKeyword(input, "SELECT")}? ID;
 keyDELETE 	: {isKeyword(input, "DELETE")}? ID;
 keyCREATE 	: {isKeyword(input, "CREATE")}? ID;
 keyDESCRIBE 	: {isKeyword(input, "DESCRIBE")}? ID;
-keyLIST 	: {isKeyword(input, "LIST")}? ID;
+keySHOW 	: {isKeyword(input, "SHOW")}? ID;
 keyENABLE 	: {isKeyword(input, "ENABLE")}? ID;
 keyDISABLE 	: {isKeyword(input, "DISABLE")}? ID;
 keyDROP 	: {isKeyword(input, "DROP")}? ID;

@@ -20,20 +20,27 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
 
-public class ListSchemasStatement implements NonConnectionStatement {
+import java.io.IOException;
 
-    public ListSchemasStatement() {
+public class ShowTablesStatement implements ConnectionStatement {
+
+    public ShowTablesStatement() {
     }
 
-    public ExecutionOutput execute() {
+    public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
+
+        final HBaseAdmin admin = conn.getAdmin();
 
         final ExecutionOutput retval = new ExecutionOutput();
-        retval.out.println("Schemas: ");
-        for (final String schemaName : SchemaManager.getDefinedSchemaNames())
-            retval.out.println("\t" + schemaName);
+        retval.out.println("Tables: ");
+        for (final HTableDescriptor tableDesc : admin.listTables())
+            retval.out.println("\t" + tableDesc.getNameAsString());
 
         retval.out.flush();
         return retval;

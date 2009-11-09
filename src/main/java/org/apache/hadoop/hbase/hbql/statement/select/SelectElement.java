@@ -41,8 +41,6 @@ public interface SelectElement extends Serializable {
 
     void assignSelectValue(Object newobj, int maxVerions, Result result) throws HBqlException;
 
-    AggregateValue newAggregateValue() throws HBqlException;
-
     int setParameter(String name, Object val) throws HBqlException;
 
     String getAsName();
@@ -55,5 +53,9 @@ public interface SelectElement extends Serializable {
 
     String asString();
 
+    AggregateValue newAggregateValue() throws HBqlException;
+
     boolean isAnAggregateElement();
+
+    void validateTypes(boolean allowColumns, boolean allowCollections) throws HBqlException;
 }

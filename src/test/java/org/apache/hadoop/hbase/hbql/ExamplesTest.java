@@ -40,27 +40,27 @@ public class ExamplesTest extends TestSupport {
 
     public void showTables() throws HBqlException, IOException {
 
-        // START SNIPPET: list-tables
+        // START SNIPPET: show-tables
 
         Connection conn = ConnectionManager.newConnection();
-        System.out.println(conn.execute("LIST TABLES"));
+        System.out.println(conn.execute("SHOW TABLES"));
 
         // Or using the API
         Set<String> tableNamess = conn.getTableNames();
 
-        // END SNIPPET: list-tables
+        // END SNIPPET: show-tables
     }
 
     public void showSchemas() throws HBqlException, IOException {
 
-        // START SNIPPET: list-schemas
+        // START SNIPPET: show-schemas
 
-        System.out.println(SchemaManager.execute("LIST SCHEMAS"));
+        System.out.println(SchemaManager.execute("SHOW SCHEMAS"));
 
         // Or using the API
         Set<String> schemaNamess = SchemaManager.getDefinedSchemaNames();
 
-        // END SNIPPET: list-schemas
+        // END SNIPPET: show-schemas
     }
 
     public void describeTable() throws HBqlException, IOException {

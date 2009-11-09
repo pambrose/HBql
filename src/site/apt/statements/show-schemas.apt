@@ -1,14 +1,14 @@
     -----
-    LIST SCHEMAS
+    SHOW SCHEMAS
     -----
     -----
 
-LIST SCHEMAS
+SHOW SCHEMAS
 
 *Syntax
 
 ---------------------------
-LIST SCHEMAS
+SHOW SCHEMAS
 ---------------------------
 
 *Description
@@ -17,4 +17,4 @@ LIST SCHEMAS
 
 *Example
 
-%{snippet|id=list-schema|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=show-schema|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

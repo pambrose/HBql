@@ -97,7 +97,7 @@ public class QueryImpl<T> implements Query<T> {
             this.getListeners().clear();
     }
 
-    public Results<T> getResults() {
+    public Results<T> getResults() throws HBqlException {
 
         // Set it once per evaluation
         DateLiteral.resetNow();
@@ -106,6 +106,8 @@ public class QueryImpl<T> implements Query<T> {
             for (final QueryListener<T> listener : this.getListeners())
                 listener.onQueryInit();
         }
+
+        this.getSelectStatement().determineIfAggregateQuery();
 
         return new ResultsImpl<T>(this);
     }

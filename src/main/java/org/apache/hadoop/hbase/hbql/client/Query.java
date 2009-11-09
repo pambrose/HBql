@@ -34,7 +34,7 @@ public interface Query<T> {
 
     void clearListeners();
 
-    Results<T> getResults();
+    Results<T> getResults() throws HBqlException;
 
     List<T> getResultList() throws HBqlException;
 }

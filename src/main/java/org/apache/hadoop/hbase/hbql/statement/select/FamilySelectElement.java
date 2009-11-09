@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement.select;
 
+import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Connection;
@@ -154,8 +155,11 @@ public class FamilySelectElement implements SelectElement {
     }
 
     public AggregateValue newAggregateValue() throws HBqlException {
-        // No op
-        return null;
+        throw new InternalErrorException();
+    }
+
+    public void validateTypes(final boolean allowColumns, final boolean allowCollections) throws HBqlException {
+        throw new InternalErrorException();
     }
 
     public void assignSelectValue(final Object obj,

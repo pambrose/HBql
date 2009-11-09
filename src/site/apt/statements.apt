@@ -20,7 +20,7 @@ HBql Statements
 
     **{{{./statements/drop-table.html}DROP TABLE}}
 
-    **{{{./statements/list-tables.html}LIST TABLES}}
+    **{{{./statements/show-tables.html}SHOW TABLES}}
 
     **{{{./statements/describe-table.html}DESCRIBE TABLE}}
 
@@ -30,7 +30,7 @@ HBql Statements
 
     **{{{./statements/drop-schema.html}DROP SCHEMA}}
 
-    **{{{./statements/list-schemas.html}LIST SCHEMAS}}
+    **{{{./statements/show-schemas.html}SHOW SCHEMAS}}
 
     **{{{./statements/describe-schema.html}DESCRIBE SCHEMA}}
 
