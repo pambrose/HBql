@@ -28,9 +28,10 @@ import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface SelectElement {
+public interface SelectElement extends Serializable {
 
     void validate(HBaseSchema schema, Connection connection) throws HBqlException;
 
