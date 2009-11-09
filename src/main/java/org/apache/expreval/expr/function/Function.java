@@ -36,6 +36,7 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.ShortValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InvalidFunctionException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 
 import java.util.List;
@@ -116,7 +117,9 @@ public abstract class Function extends GenericExpression {
             return this.aggregateValue;
         }
 
-        public static Function getFunction(final String functionName, final List<GenericValue> exprList) {
+        public static Function getFunction(final String functionName,
+                                           final List<GenericValue> exprList,
+                                           final GenericValue parentExpr) throws InvalidFunctionException {
 
             final FunctionType type;
 
@@ -138,7 +141,15 @@ public abstract class Function extends GenericExpression {
             else if (TypeSupport.isParentClass(DateValue.class, returnType))
                 return new DateFunction(type, exprList);
 
-            return null;
+            Function function = DateFunction.IntervalType.getFunction(functionName, exprList);
+            if (function != null)
+                return function;
+
+            function = DateFunction.ConstantType.getFunction(functionName);
+            if (function != null)
+                return function;
+
+            throw new InvalidFunctionException(functionName + " in " + parentExpr.asString());
         }
     }
 
