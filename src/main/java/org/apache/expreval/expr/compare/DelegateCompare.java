@@ -43,7 +43,7 @@ public class DelegateCompare extends GenericCompare {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws HBqlException {
+                                                       final boolean allowCollections) throws HBqlException {
 
         final Class<? extends GenericValue> type0 = this.getArg(0).validateTypes(this, false);
         final Class<? extends GenericValue> type1 = this.getArg(1).validateTypes(this, false);

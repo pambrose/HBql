@@ -39,7 +39,7 @@ public class DelegateInStmt extends GenericInStmt {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws HBqlException {
+                                                       final boolean allowCollections) throws HBqlException {
 
         final Class<? extends GenericValue> type = this.getArg(0).validateTypes(this, false);
 

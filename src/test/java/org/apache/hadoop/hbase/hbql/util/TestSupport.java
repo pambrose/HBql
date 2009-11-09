@@ -185,7 +185,7 @@ public class TestSupport {
             final List<String> valList = Lists.newArrayList(vals);
 
             final List<String> attribList = Lists.newArrayList();
-            for (final GenericColumn column : tree.getColumnsUsedInExpr())
+            for (final GenericColumn column : tree.getColumnsUsedInExpression())
                 attribList.add(column.getVariableName());
 
             boolean retval = true;

@@ -36,7 +36,7 @@ public class DelegateIfThen extends GenericIfThen {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws HBqlException {
+                                                       final boolean allowCollections) throws HBqlException {
 
         this.validateParentClass(BooleanValue.class, this.getArg(0).validateTypes(this, false));
 

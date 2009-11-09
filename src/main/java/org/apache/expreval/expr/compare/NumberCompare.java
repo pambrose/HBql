@@ -33,7 +33,7 @@ public class NumberCompare extends GenericCompare {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws HBqlException {
+                                                       final boolean allowCollections) throws HBqlException {
         return this.validateType(NumberValue.class);
     }
 

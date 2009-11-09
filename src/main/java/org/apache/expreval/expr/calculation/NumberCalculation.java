@@ -34,7 +34,7 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws HBqlException {
+                                                       final boolean allowCollections) throws HBqlException {
         return this.validateNumericTypes();
     }
 

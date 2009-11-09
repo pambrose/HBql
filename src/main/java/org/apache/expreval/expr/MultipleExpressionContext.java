@@ -65,7 +65,7 @@ public abstract class MultipleExpressionContext implements Serializable {
 
     public abstract boolean useResultData();
 
-    public List<GenericColumn> getColumnsUsedInExpr() {
+    public List<GenericColumn> getColumnsUsedInExpression() {
         return this.columnsUsedInExpr;
     }
 
@@ -104,18 +104,18 @@ public abstract class MultipleExpressionContext implements Serializable {
 
     public Object evaluate(final int i,
                            final boolean allowColumns,
-                           final boolean allowsCollections,
+                           final boolean allowCollections,
                            final Object object) throws HBqlException, ResultMissingColumnException {
-        this.validateExprTypes(allowColumns, allowsCollections);
+        this.validateTypes(allowColumns, allowCollections);
         this.optimize();
         return this.getGenericValue(i).getValue(object);
     }
 
     public Object evaluateConstant(final int i,
-                                   final boolean allowsCollections,
+                                   final boolean allowCollections,
                                    final Object object) throws HBqlException {
         try {
-            return this.evaluate(i, false, allowsCollections, object);
+            return this.evaluate(i, false, allowCollections, object);
         }
         catch (ResultMissingColumnException e) {
             throw new InternalErrorException();
@@ -149,7 +149,7 @@ public abstract class MultipleExpressionContext implements Serializable {
         this.getExpressionList().set(i, treeRoot);
     }
 
-    public void optimize() throws HBqlException {
+    private void optimize() throws HBqlException {
         if (this.isInNeedOfOptimization()) {
             for (int i = 0; i < this.getExpressionList().size(); i++)
                 this.setGenericValue(i, this.getGenericValue(i).getOptimizedValue());
@@ -157,18 +157,19 @@ public abstract class MultipleExpressionContext implements Serializable {
         }
     }
 
-    public void validateExprTypes(final boolean allowColumns, final boolean allowsCollections) throws HBqlException {
+    public void validateTypes(final boolean allowColumns, final boolean allowCollections) throws HBqlException {
 
         if (this.isInNeedOfTypeValidation()) {
 
-            if (!allowColumns && this.getColumnsUsedInExpr().size() > 0)
-                throw new TypeException("Invalid column reference" + (this.getColumnsUsedInExpr().size() > 1 ? "s" : "")
+            if (!allowColumns && this.getColumnsUsedInExpression().size() > 0)
+                throw new TypeException("Invalid column reference"
+                                        + (this.getColumnsUsedInExpression().size() > 1 ? "s" : "")
                                         + " in " + this.asString());
 
             // Collect return types of all args
             final List<Class<? extends GenericValue>> clazzList = Lists.newArrayList();
             for (final GenericValue val : this.getExpressionList())
-                clazzList.add(val.validateTypes(null, allowsCollections));
+                clazzList.add(val.validateTypes(null, allowCollections));
 
             // Check against signature if there is one
             if (this.getTypeSignature() != null) {
@@ -180,6 +181,7 @@ public abstract class MultipleExpressionContext implements Serializable {
 
                     final Class<? extends GenericValue> parentClazz = this.getTypeSignature().getArg(i);
                     final Class<? extends GenericValue> clazz = clazzList.get(i);
+
                     // See if they are both NumberValues.  If they are, then check ranks
                     if (TypeSupport.isParentClass(NumberValue.class, parentClazz, clazz)) {
                         final int parentRank = NumericType.getTypeRanking(parentClazz);
@@ -222,7 +224,7 @@ public abstract class MultipleExpressionContext implements Serializable {
     }
 
     public void addColumnToUsedList(final GenericColumn column) {
-        this.getColumnsUsedInExpr().add(column);
+        this.getColumnsUsedInExpression().add(column);
         this.getAttribsUsedInExpr().add(column.getColumnAttrib());
     }
 

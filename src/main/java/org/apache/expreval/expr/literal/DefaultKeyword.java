@@ -42,7 +42,7 @@ public class DefaultKeyword implements GenericValue {
         return null;
     }
 
-    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr, final boolean allowsCollections) throws HBqlException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr, final boolean allowCollections) throws HBqlException {
         return DefaultKeyword.class;
     }
 

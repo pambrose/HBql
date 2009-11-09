@@ -47,7 +47,7 @@ public abstract class GenericInStmt extends NotValue<GenericInStmt> implements B
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws HBqlException {
+                                                       final boolean allowCollections) throws HBqlException {
         return BooleanValue.class;
     }
 

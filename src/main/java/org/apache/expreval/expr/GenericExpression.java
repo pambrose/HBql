@@ -199,7 +199,7 @@ public abstract class GenericExpression implements GenericValue {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws HBqlException {
+                                                       final boolean allowCollections) throws HBqlException {
 
         if (this.getArgList().size() != this.getTypeSignature().getArgCount())
             throw new TypeException("Incorrect number of arguments in " + this.asString());

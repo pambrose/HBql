@@ -94,7 +94,7 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws HBqlException {
+                                                       final boolean allowCollections) throws HBqlException {
 
         if (this.getColumnAttrib().isAnArray())
             return ObjectValue.class;

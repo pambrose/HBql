@@ -59,7 +59,8 @@ public abstract class GenericLiteral<T> implements GenericValue {
         throw new InternalErrorException("Not applicable");
     }
 
-    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException {
+    public void applyResultToAggregateValue(final AggregateValue aggregateValue,
+                                            final Result result) throws HBqlException {
         throw new InternalErrorException("Not applicable");
     }
 
@@ -75,7 +76,7 @@ public abstract class GenericLiteral<T> implements GenericValue {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws HBqlException {
+                                                       final boolean allowCollections) throws HBqlException {
         return this.getReturnType();
     }
 

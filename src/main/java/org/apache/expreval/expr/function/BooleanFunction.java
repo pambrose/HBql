@@ -42,7 +42,7 @@ public class BooleanFunction extends Function implements BooleanValue {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws HBqlException {
+                                                       final boolean allowCollections) throws HBqlException {
 
         switch (this.getFunctionType()) {
 
@@ -53,7 +53,7 @@ public class BooleanFunction extends Function implements BooleanValue {
         }
 
         return BooleanValue.class;
-        //return super.validateTypes(parentExpr, allowsCollections);
+        //return super.validateTypes(parentExpr, allowCollections);
     }
 
     public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {

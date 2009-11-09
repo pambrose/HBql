@@ -36,7 +36,7 @@ public class DelegateCalculation extends GenericCalculation {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws HBqlException {
+                                                       final boolean allowCollections) throws HBqlException {
 
         final Class<? extends GenericValue> type1 = this.getArg(0).validateTypes(this, false);
         final Class<? extends GenericValue> type2 = this.getArg(1).validateTypes(this, false);

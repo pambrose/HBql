@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 
 public class DelegateColumn extends GenericColumn<GenericValue> {
 
-    private GenericColumn typedColumn = null;
+    private GenericColumn<? extends GenericValue> typedColumn = null;
     private final String variableName;
 
     public DelegateColumn(final String variableName) {
@@ -36,11 +36,11 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
         this.variableName = variableName;
     }
 
-    public GenericColumn getTypedColumn() {
+    public GenericColumn<? extends GenericValue> getTypedColumn() {
         return this.typedColumn;
     }
 
-    private void setTypedColumn(final GenericColumn typedColumn) {
+    private void setTypedColumn(final GenericColumn<? extends GenericValue> typedColumn) {
         this.typedColumn = typedColumn;
     }
 
@@ -53,8 +53,8 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws HBqlException {
-        return this.getTypedColumn().validateTypes(parentExpr, allowsCollections);
+                                                       final boolean allowCollections) throws HBqlException {
+        return this.getTypedColumn().validateTypes(parentExpr, allowCollections);
     }
 
     public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {

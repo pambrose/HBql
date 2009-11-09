@@ -79,7 +79,7 @@ public class NamedParameter implements GenericValue {
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowsCollections) throws HBqlException {
+                                                       final boolean allowCollections) throws HBqlException {
 
         if (this.getTypedExpr() == null && this.getTypedExprList() == null)
             throw new TypeException("Parameter " + this.getParamName() + " not assigned a value");
@@ -89,7 +89,7 @@ public class NamedParameter implements GenericValue {
         }
         else {
             // Make sure a list is legal in this expr
-            if (!allowsCollections)
+            if (!allowCollections)
                 throw new TypeException("Parameter " + this.getParamName()
                                         + " is assigned a collection which is not allowed in the context "
                                         + parentExpr.asString());

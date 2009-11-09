@@ -66,8 +66,8 @@ public class KeyRangeArgs {
         }
 
         // This is an object because it might be a collection in the case of a param
-        private Object getFirstArg(final boolean allowsCollections) throws HBqlException {
-            return this.evaluateConstant(0, allowsCollections, null);
+        private Object getFirstArg(final boolean allowCollections) throws HBqlException {
+            return this.evaluateConstant(0, allowCollections, null);
         }
 
         private String getSecondArg() throws HBqlException {
