@@ -84,6 +84,10 @@ public class FamilySelectElement implements SelectElement {
         return this.schema;
     }
 
+    private void setSchema(final HBaseSchema schema) {
+        this.schema = schema;
+    }
+
     public String getAsName() {
         return null;
     }
@@ -115,7 +119,8 @@ public class FamilySelectElement implements SelectElement {
 
     public void validate(final HBaseSchema schema, final Connection connection) throws HBqlException {
 
-        this.schema = schema;
+        this.setSchema(schema);
+
         this.getAttribsUsedInExpr().clear();
         final Collection<String> familyList = this.getSchema().getSchemaFamilyNames(connection);
 

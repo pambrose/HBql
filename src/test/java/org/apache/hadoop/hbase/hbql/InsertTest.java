@@ -218,6 +218,15 @@ public class InsertTest extends TestSupport {
     }
 
     @Test
+    public void selectAggregates() throws HBqlException, IOException {
+
+        final String query1 = "SELECT count() FROM tab2";
+        Query<Record> q1 = conn.newQuery(query1);
+        List<Record> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 1);
+    }
+
+    @Test
     public void selectMapExpressions() throws HBqlException, IOException {
 
         final String query1 = "SELECT f3mapval1 FROM tab2";

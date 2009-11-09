@@ -45,6 +45,10 @@ public class DelegateFunction extends DelegateStmt<Function> {
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
+    public boolean isAnAggregateValue() {
+        return this.getTypedExpr().isAnAggregateValue();
+    }
+
     private Function getFunction(final String functionName,
                                  final List<GenericValue> exprList,
                                  final GenericValue parentExpr) throws InvalidFunctionException {

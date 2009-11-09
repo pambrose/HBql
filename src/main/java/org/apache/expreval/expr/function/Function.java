@@ -97,23 +97,23 @@ public abstract class Function extends GenericExpression {
         EVAL(new TypeSignature(BooleanValue.class, StringValue.class));
 
         private final TypeSignature typeSignature;
-        private final boolean aggregateValue;
+        private final boolean anAggregateValue;
 
         FunctionType(final TypeSignature typeSignature) {
             this(typeSignature, false);
         }
 
-        FunctionType(final TypeSignature typeSignature, final boolean aggregateValue) {
+        FunctionType(final TypeSignature typeSignature, final boolean anAggregateValue) {
             this.typeSignature = typeSignature;
-            this.aggregateValue = aggregateValue;
+            this.anAggregateValue = anAggregateValue;
         }
 
         private TypeSignature getTypeSignature() {
             return this.typeSignature;
         }
 
-        public boolean isAggregateValue() {
-            return this.aggregateValue;
+        public boolean isAnAggregateValue() {
+            return this.anAggregateValue;
         }
 
         public static Function getFunction(final String functionName, final List<GenericValue> exprList) {
@@ -162,7 +162,7 @@ public abstract class Function extends GenericExpression {
     }
 
     public boolean isAnAggregateValue() {
-        return this.getFunctionType().isAggregateValue();
+        return this.getFunctionType().isAnAggregateValue();
     }
 
     protected boolean isConstantDate() {

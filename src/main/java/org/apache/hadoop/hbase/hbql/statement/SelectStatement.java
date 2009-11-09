@@ -64,8 +64,6 @@ public class SelectStatement extends SchemaStatement {
 
         this.getWithArgs().setSchema(this.getSchema());
 
-        this.aggregateQuery = this.checkIfAggregateQuery();
-
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();
 
@@ -74,9 +72,12 @@ public class SelectStatement extends SchemaStatement {
 
         if (this.getWithArgs().getClientExpressionTree() != null)
             this.getWithArgs().getClientExpressionTree().setUseResultData(true);
+
+        this.aggregateQuery = this.checkIfAggregateQuery();
     }
 
     private boolean checkIfAggregateQuery() throws HBqlException {
+        SelectElement elem = this.getSelectElementList().get(0);
         final boolean firstIsAggregate = this.getSelectElementList().get(0).isAnAggregateElement();
         for (final SelectElement selectElement : this.getSelectElementList()) {
             if (selectElement.isAnAggregateElement() != firstIsAggregate)
