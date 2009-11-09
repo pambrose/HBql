@@ -24,6 +24,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.DelegateStmt;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InvalidFunctionException;
 
 import java.util.List;
 
@@ -39,11 +40,28 @@ public class DelegateFunction extends DelegateStmt<Function> {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowsCollections) throws HBqlException {
 
-        final Function function = Function.FunctionType.getFunction(this.getFunctionName(),
-                                                                    this.getArgList(),
-                                                                    parentExpr);
+        final Function function = getFunction(this.getFunctionName(), this.getArgList(), parentExpr);
         this.setTypedExpr(function);
         return this.getTypedExpr().validateTypes(parentExpr, false);
+    }
+
+    private Function getFunction(final String functionName,
+                                 final List<GenericValue> exprList,
+                                 final GenericValue parentExpr) throws InvalidFunctionException {
+
+        Function function = Function.FunctionType.getFunction(functionName, exprList);
+        if (function != null)
+            return function;
+
+        function = DateFunction.IntervalType.getFunction(functionName, exprList);
+        if (function != null)
+            return function;
+
+        function = DateFunction.ConstantType.getFunction(functionName);
+        if (function != null)
+            return function;
+
+        throw new InvalidFunctionException(functionName + " in " + parentExpr.asString());
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {

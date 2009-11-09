@@ -20,10 +20,13 @@
 
 package org.apache.expreval.expr.var;
 
+import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.ObjectValue;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.FieldType;
 
@@ -62,6 +65,14 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
 
     public boolean isAnAggregateValue() {
         return false;
+    }
+
+    public void initAggregateValue(final AggregateValue aggregateValue) throws HBqlException {
+        throw new InternalErrorException("Not applicable");
+    }
+
+    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException {
+        throw new InternalErrorException("Not applicable");
     }
 
     public boolean hasAColumnReference() {

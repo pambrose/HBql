@@ -48,7 +48,7 @@ public abstract class ValueMap<T> extends Value {
 
     public T getCurrentMapValue(final String name, final boolean createIfNull) throws HBqlException {
 
-        final T retval = this.getMapValue(name).getValue();
+        final T retval = this.getMapValue(name).getCurrentValue();
 
         if (retval != null || !createIfNull)
             return retval;

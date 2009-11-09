@@ -26,7 +26,7 @@ public abstract class Value implements Serializable {
 
     private final String name;
 
-    public Value(final String name) throws HBqlException {
+    public Value(final String name) {
         this.name = name;
     }
 

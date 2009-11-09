@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.var;
 
+import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.TypeSupport;
@@ -35,8 +36,10 @@ import org.apache.expreval.expr.literal.StringLiteral;
 import org.apache.expreval.expr.literal.StringNullLiteral;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 
 import java.util.Collection;
 import java.util.Date;
@@ -153,6 +156,14 @@ public class NamedParameter implements GenericValue {
 
     public boolean isAnAggregateValue() {
         return false;
+    }
+
+    public void initAggregateValue(final AggregateValue aggregateValue) throws HBqlException {
+        throw new InternalErrorException("Not applicable");
+    }
+
+    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException {
+        throw new InternalErrorException("Not applicable");
     }
 
     public void setParameter(final Object val) throws HBqlException {

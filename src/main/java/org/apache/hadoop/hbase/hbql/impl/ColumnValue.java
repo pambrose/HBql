@@ -20,11 +20,9 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-
 public class ColumnValue extends CurrentAndVersionValue<Object> {
 
-    public ColumnValue(final String name) throws HBqlException {
+    public ColumnValue(final String name) {
         super(name);
     }
 }

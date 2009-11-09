@@ -20,10 +20,13 @@
 
 package org.apache.expreval.expr.function;
 
+import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 
 import java.util.List;
 
@@ -31,6 +34,36 @@ public class NumberFunction extends Function implements NumberValue {
 
     public NumberFunction(final FunctionType functionType, final List<GenericValue> exprs) {
         super(functionType, exprs);
+    }
+
+    public void initAggregateValue(final AggregateValue aggregateValue) throws HBqlException {
+
+        switch (this.getFunctionType()) {
+
+            case COUNT: {
+                aggregateValue.setCurrentValue(0, 0L);
+                break;
+            }
+
+            default:
+                throw new InternalErrorException("Invalid aggregate function: " + this.getFunctionType());
+        }
+    }
+
+    public void applyResultToAggregateValue(final AggregateValue aggregateValue,
+                                            final Result result) throws HBqlException {
+
+        switch (this.getFunctionType()) {
+
+            case COUNT: {
+                long val = (Long)aggregateValue.getCurrentValue();
+                aggregateValue.setCurrentValue(0, val + 1);
+                break;
+            }
+
+            default:
+                throw new InternalErrorException("Invalid aggregate function: " + this.getFunctionType());
+        }
     }
 
     public Number getValue(final Object object) throws HBqlException, ResultMissingColumnException {
@@ -143,7 +176,7 @@ public class NumberFunction extends Function implements NumberValue {
             }
 
             default:
-                throw new HBqlException("Invalid function: " + this.getFunctionType());
+                throw new InternalErrorException("Invalid function: " + this.getFunctionType());
         }
     }
 }

@@ -22,7 +22,9 @@ package org.apache.expreval.expr.node;
 
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.MultipleExpressionContext;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 
 import java.io.Serializable;
 
@@ -42,6 +44,10 @@ public interface GenericValue extends Serializable {
     boolean isDefaultKeyword();
 
     boolean isAnAggregateValue();
+
+    void initAggregateValue(final AggregateValue aggregateValue) throws HBqlException;
+
+    void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException;
 
     boolean hasAColumnReference();
 

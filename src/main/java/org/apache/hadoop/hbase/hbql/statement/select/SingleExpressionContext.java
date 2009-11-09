@@ -70,6 +70,15 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
         return this.getGenericValue(0);
     }
 
+    public void initAggregateValue(final AggregateValue aggregateValue) throws HBqlException {
+        this.getGenericValue().initAggregateValue(aggregateValue);
+    }
+
+    public void applyResultToAggregateValue(final AggregateValue aggregateValue,
+                                            final Result result) throws HBqlException {
+        this.getGenericValue().applyResultToAggregateValue(aggregateValue, result);
+    }
+
     public String getElementName() {
         if (this.hasAsName())
             return this.getAsName();

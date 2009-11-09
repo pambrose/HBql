@@ -33,8 +33,10 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.expreval.util.Lists;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -148,6 +150,14 @@ public abstract class GenericExpression implements GenericValue {
 
     public boolean isAnAggregateValue() {
         return false;
+    }
+
+    public void initAggregateValue(final AggregateValue aggregateValue) throws HBqlException {
+        throw new InternalErrorException("Not applicable");
+    }
+
+    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException {
+        throw new InternalErrorException("Not applicable");
     }
 
     public boolean hasAColumnReference() {

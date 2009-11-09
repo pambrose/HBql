@@ -42,11 +42,12 @@ public class AggregateRecord extends RecordImpl {
 
         for (final SelectElement selectElement : selectElementList) {
             final AggregateValue val = selectElement.newAggregateValue();
+            val.initAggregateValue();
             this.addElement(val);
         }
     }
 
-    public void applyValues(final Result result) {
+    public void applyValues(final Result result) throws HBqlException {
 
         for (final ColumnValue val : this.getColumnValuesMap().values()) {
             final AggregateValue aggregateValue = (AggregateValue)val;

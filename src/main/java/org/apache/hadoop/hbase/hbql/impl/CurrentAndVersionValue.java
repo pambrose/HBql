@@ -20,7 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Value;
 
 import java.util.NavigableMap;
@@ -33,11 +32,11 @@ public class CurrentAndVersionValue<T> extends Value {
     private long currentValueTimestamp = -1;
     private volatile NavigableMap<Long, T> versionMap = null;
 
-    public CurrentAndVersionValue(final String name) throws HBqlException {
+    public CurrentAndVersionValue(final String name) {
         super(name);
     }
 
-    public T getValue() {
+    public T getCurrentValue() {
         return this.currentValue;
     }
 

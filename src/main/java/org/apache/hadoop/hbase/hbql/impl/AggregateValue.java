@@ -28,12 +28,20 @@ public class AggregateValue extends ColumnValue {
 
     final SingleExpressionContext context;
 
-    public AggregateValue(final String name, final SingleExpressionContext context) throws HBqlException {
+    public AggregateValue(final String name, final SingleExpressionContext context) {
         super(name);
         this.context = context;
     }
 
-    public void applyValues(final Result result) {
+    private SingleExpressionContext getContext() {
+        return this.context;
+    }
 
+    public void initAggregateValue() throws HBqlException {
+        this.getContext().initAggregateValue(this);
+    }
+
+    public void applyValues(final Result result) throws HBqlException {
+        this.getContext().applyResultToAggregateValue(this, result);
     }
 }

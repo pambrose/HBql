@@ -20,9 +20,12 @@
 
 package org.apache.expreval.expr.literal;
 
+import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 
 public abstract class GenericLiteral<T> implements GenericValue {
 
@@ -50,6 +53,14 @@ public abstract class GenericLiteral<T> implements GenericValue {
 
     public boolean isAnAggregateValue() {
         return false;
+    }
+
+    public void initAggregateValue(final AggregateValue aggregateValue) throws HBqlException {
+        throw new InternalErrorException("Not applicable");
+    }
+
+    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException {
+        throw new InternalErrorException("Not applicable");
     }
 
     public boolean hasAColumnReference() {

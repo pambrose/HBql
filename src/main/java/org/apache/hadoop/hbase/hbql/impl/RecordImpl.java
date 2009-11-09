@@ -189,7 +189,7 @@ public class RecordImpl implements Serializable, Record {
     public Object getCurrentValue(final String name) throws HBqlException {
         final ColumnValue columnValue = this.getColumnValuesMap().findElement(name);
         if (columnValue != null) {
-            final Object retval = columnValue.getValue();
+            final Object retval = columnValue.getCurrentValue();
             if (retval != null)
                 return retval;
         }
@@ -216,7 +216,7 @@ public class RecordImpl implements Serializable, Record {
 
         final Map<String, byte[]> retval = Maps.newHashMap();
         for (final String key : value.getCurrentAndVersionMap().keySet())
-            retval.put(key, value.getCurrentAndVersionMap().get(key).getValue());
+            retval.put(key, value.getCurrentAndVersionMap().get(key).getCurrentValue());
         return retval;
     }
 
