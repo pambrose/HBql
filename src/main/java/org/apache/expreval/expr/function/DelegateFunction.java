@@ -23,8 +23,10 @@ package org.apache.expreval.expr.function;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.DelegateStmt;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidFunctionException;
+import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 
 import java.util.List;
 
@@ -75,6 +77,14 @@ public class DelegateFunction extends DelegateStmt<Function> {
 
     public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
         return this.getTypedExpr().getValue(object);
+    }
+
+    public void initAggregateValue(final AggregateValue aggregateValue) throws HBqlException {
+        this.getTypedExpr().initAggregateValue(aggregateValue);
+    }
+
+    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException {
+        this.getTypedExpr().applyResultToAggregateValue(aggregateValue, result);
     }
 
     public String getFunctionName() {

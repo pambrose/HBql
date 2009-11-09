@@ -105,14 +105,6 @@ public class ResultsImpl<T> implements Results<T> {
         try {
             return new ResultsIterator<T>(this.getWithArgs().getLimit()) {
 
-                {
-                    // Initialize aggregateRecord value if appropriate
-                    if (getSelectStatement().isAnAggregateQuery()) {
-                        final HBaseSchema schema = getSelectStatement().getSchema();
-                        this.aggregateRecord = schema.newAggregateRecord(getSelectStatement().getSelectElementList());
-                    }
-                }
-
                 private AggregateRecord aggregateRecord = null;
 
                 private final HTable table = getConnection().getHTable(getSelectStatement().getSchema().getTableName());
@@ -126,7 +118,13 @@ public class ResultsImpl<T> implements Results<T> {
                 // Prime the iterator with the first value
                 private T nextObject = fetchNextObject();
 
-                private AggregateRecord getAggregateRecord() {
+                private AggregateRecord getAggregateRecord() throws HBqlException {
+
+                    if (this.aggregateRecord == null) {
+                        final HBaseSchema schema = getSelectStatement().getSchema();
+                        this.aggregateRecord = schema.newAggregateRecord(getSelectStatement().getSelectElementList());
+                    }
+
                     return this.aggregateRecord;
                 }
 

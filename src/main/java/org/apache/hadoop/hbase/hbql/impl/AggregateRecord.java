@@ -50,8 +50,10 @@ public class AggregateRecord extends RecordImpl {
     public void applyValues(final Result result) throws HBqlException {
 
         for (final ColumnValue val : this.getColumnValuesMap().values()) {
-            final AggregateValue aggregateValue = (AggregateValue)val;
-            aggregateValue.applyValues(result);
+            if (val instanceof AggregateValue) {
+                final AggregateValue aggregateValue = (AggregateValue)val;
+                aggregateValue.applyValues(result);
+            }
         }
     }
 }
