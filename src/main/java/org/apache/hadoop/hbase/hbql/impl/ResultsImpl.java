@@ -221,7 +221,7 @@ public class ResultsImpl<T> implements Results<T> {
 
                             if (getSelectStatement().isAnAggregateQuery()) {
                                 // Evaluate each of the agregate values
-                                this.getAggregateRecord().processValues(result);
+                                this.getAggregateRecord().applyValues(result);
                             }
                             else {
                                 final T val = (T)schema.newObject(getSelectStatement().getSelectElementList(),

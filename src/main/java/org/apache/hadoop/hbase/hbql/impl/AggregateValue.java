@@ -20,16 +20,20 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Value;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
-public class AggregateValue extends Value {
+public class AggregateValue extends ColumnValue {
 
     final SingleExpressionContext context;
 
     public AggregateValue(final String name, final SingleExpressionContext context) throws HBqlException {
         super(name);
         this.context = context;
+    }
+
+    public void applyValues(final Result result) {
+
     }
 }

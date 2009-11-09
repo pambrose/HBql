@@ -40,8 +40,8 @@ public class RecordImpl implements Serializable, Record {
     private DefinedSchema schema = null;
     private long timestamp = System.currentTimeMillis();
 
-    private volatile ElementMap<ColumnValue> columnValues = null;
-    private volatile ElementMap<FamilyDefaultValueMap> familyDefaultElements = null;
+    private volatile ElementMap<ColumnValue> columnValuesMap = null;
+    private volatile ElementMap<FamilyDefaultValueMap> familyDefaultElementsMap = null;
 
     public RecordImpl(final DefinedSchema schema) {
         this.setSchema(schema);
@@ -55,29 +55,30 @@ public class RecordImpl implements Serializable, Record {
         this.schema = schema;
     }
 
-    private ElementMap<ColumnValue> getColumnValues() {
-        if (this.columnValues == null)
+    protected ElementMap<ColumnValue> getColumnValuesMap() {
+        if (this.columnValuesMap == null)
             synchronized (this) {
-                if (this.columnValues == null)
-                    this.columnValues = new ElementMap<ColumnValue>(this);
+                if (this.columnValuesMap == null)
+                    this.columnValuesMap = new ElementMap<ColumnValue>(this);
             }
-        return this.columnValues;
+        return this.columnValuesMap;
     }
 
-    private ElementMap<FamilyDefaultValueMap> getFamilyDefaultElements() {
-        if (this.familyDefaultElements == null)
+    private ElementMap<FamilyDefaultValueMap> getFamilyDefaultElementsMap() {
+        if (this.familyDefaultElementsMap == null)
             synchronized (this) {
-                if (this.familyDefaultElements == null)
-                    this.familyDefaultElements = new ElementMap<FamilyDefaultValueMap>(this);
+                if (this.familyDefaultElementsMap == null)
+                    this.familyDefaultElementsMap = new ElementMap<FamilyDefaultValueMap>(this);
             }
-        return this.familyDefaultElements;
+        return this.familyDefaultElementsMap;
     }
 
     public void addElement(final Value value) throws HBqlException {
+
         if (value instanceof ColumnValue)
-            this.getColumnValues().addElement((ColumnValue)value);
+            this.getColumnValuesMap().addElement((ColumnValue)value);
         else if (value instanceof FamilyDefaultValueMap)
-            this.getFamilyDefaultElements().addElement((FamilyDefaultValueMap)value);
+            this.getFamilyDefaultElementsMap().addElement((FamilyDefaultValueMap)value);
         else
             throw new InternalErrorException(value.getClass().getName());
     }
@@ -87,13 +88,13 @@ public class RecordImpl implements Serializable, Record {
     }
 
     public void clearValues() {
-        this.getColumnValues().clear();
-        this.getFamilyDefaultElements().clear();
+        this.getColumnValuesMap().clear();
+        this.getFamilyDefaultElementsMap().clear();
     }
 
     // Simple get routines
     public ColumnValue getColumnValue(final String name, final boolean inSchema) throws HBqlException {
-        final ColumnValue value = this.getColumnValues().findElement(name);
+        final ColumnValue value = this.getColumnValuesMap().findElement(name);
         if (value != null) {
             return value;
         }
@@ -108,7 +109,7 @@ public class RecordImpl implements Serializable, Record {
 
     private FamilyDefaultValueMap getFamilyDefaultValueMap(final String name,
                                                            final boolean createNewIfMissing) throws HBqlException {
-        final FamilyDefaultValueMap value = this.getFamilyDefaultElements().findElement(name);
+        final FamilyDefaultValueMap value = this.getFamilyDefaultElementsMap().findElement(name);
         if (value != null) {
             return value;
         }
@@ -136,7 +137,7 @@ public class RecordImpl implements Serializable, Record {
     }
 
     public boolean isCurrentValueSet(final ColumnAttrib attrib) {
-        final ColumnValue columnValue = this.getColumnValues().findElement(attrib.getAliasName());
+        final ColumnValue columnValue = this.getColumnValuesMap().findElement(attrib.getAliasName());
         return columnValue != null && columnValue.isValueSet();
     }
 
@@ -173,8 +174,8 @@ public class RecordImpl implements Serializable, Record {
     }
 
     public void reset() {
-        this.columnValues = null;
-        this.familyDefaultElements = null;
+        this.columnValuesMap = null;
+        this.familyDefaultElementsMap = null;
     }
 
     public void setTimestamp(final long timestamp) {
@@ -186,7 +187,7 @@ public class RecordImpl implements Serializable, Record {
     }
 
     public Object getCurrentValue(final String name) throws HBqlException {
-        final ColumnValue columnValue = this.getColumnValues().findElement(name);
+        final ColumnValue columnValue = this.getColumnValuesMap().findElement(name);
         if (columnValue != null) {
             final Object retval = columnValue.getValue();
             if (retval != null)
@@ -199,11 +200,11 @@ public class RecordImpl implements Serializable, Record {
     }
 
     public Set<String> getColumnNameList() throws HBqlException {
-        return this.getColumnValues().getValueMap().keySet();
+        return this.getColumnValuesMap().keySet();
     }
 
     public Map<Long, Object> getVersionMap(final String name) {
-        final ColumnValue value = this.getColumnValues().findElement(name);
+        final ColumnValue value = this.getColumnValuesMap().findElement(name);
         return (value != null) ? value.getVersionMap(true) : null;
     }
 

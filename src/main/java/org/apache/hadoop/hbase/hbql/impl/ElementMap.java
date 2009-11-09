@@ -20,16 +20,13 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.Value;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.HashMap;
 
-public class ElementMap<T extends Value> implements Serializable {
-
-    private final Map<String, T> valueMap = Maps.newHashMap();
+public class ElementMap<T extends Value> extends HashMap<String, T> implements Serializable {
 
     private final RecordImpl record;
 
@@ -41,22 +38,18 @@ public class ElementMap<T extends Value> implements Serializable {
         return this.record;
     }
 
-    public Map<String, T> getValueMap() {
-        return this.valueMap;
-    }
-
     public void addElement(final T value) {
         final ColumnAttrib attrib = this.getRecord().getSchema().getAttribByVariableName(value.getName());
         final String name = (attrib == null) ? value.getName() : attrib.getFamilyQualifiedName();
-        this.getValueMap().put(name, value);
+        this.put(name, value);
     }
 
     public boolean containsName(final String name) {
-        return this.getValueMap().containsKey(name);
+        return this.containsKey(name);
     }
 
     private T getElement(final String name) {
-        return this.getValueMap().get(name);
+        return this.get(name);
     }
 
     public T findElement(final String name) {
@@ -76,10 +69,5 @@ public class ElementMap<T extends Value> implements Serializable {
         }
 
         return null;
-    }
-
-    public void clear() {
-
-        this.getValueMap().clear();
     }
 }

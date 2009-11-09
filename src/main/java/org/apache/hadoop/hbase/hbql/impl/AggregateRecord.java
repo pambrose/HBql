@@ -46,7 +46,11 @@ public class AggregateRecord extends RecordImpl {
         }
     }
 
-    public void processValues(final Result result) {
+    public void applyValues(final Result result) {
 
+        for (final ColumnValue val : this.getColumnValuesMap().values()) {
+            final AggregateValue aggregateValue = (AggregateValue)val;
+            aggregateValue.applyValues(result);
+        }
     }
 }
