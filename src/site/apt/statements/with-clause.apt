@@ -48,7 +48,7 @@ client_filter:
 
     * key_value is any valid string {{{./expressions.html}expression}} (cannot reference columns).
 
-        Indicates key values for query.  A key_value  can be bound to a Collection of strings with a named
+        Indicates key values for query.  A key_value can be bound to a Collection of strings with a named
         parameter.
        
     * timestamp_value is any valid date {{{./expressions.html}expression}} (cannot reference columns).
@@ -67,6 +67,8 @@ client_filter:
 
         The SERVER FILTER where_clause is evaluated on the HBase server (as an HBase filter)
         while the CLIENT FILTER where_clause is evaluated on the HBase client.
+        (At present, <<server side filter queries are not supported>> (work in progress))
+
 
 
 *Example
