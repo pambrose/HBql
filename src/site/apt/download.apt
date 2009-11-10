@@ -29,3 +29,5 @@ Release Notes
         * Added support for aggregate functions count(), max(), and min().
 
         * Renamed pre-existing max() and min() functions to greater() and lesser().
+
+        * Renamed LIST TABLES AND LIST SCHEMAS to SHOW TABLES and SHOW SCHEMAS
