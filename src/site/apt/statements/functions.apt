@@ -109,6 +109,18 @@ Interval Functions
 | year(long)| interval | Returns interval equal to long years | year(3) |  3 year interval |
 *--+--+--+--+
 
+Aggregate Functions
+
+*-------------------+--------------+--------------------------+----------------------------------+---------------------+
+|| Function         || Return Type || Description             ||Example                          ||Result              |
+*--+--+--+--+
+| min(expression)| type of expression  | Returns minimum value of expression across all values| min(f2:val1) |  minimum f2:val1 |
+*--+--+--+--+
+| max(expression)| type of expression | Returns maximum value of expression across all values | max(val2) |  maximum val2 |
+*--+--+--+--+
+| count()| long | Returns number of values | count() | Number of values |
+*--+--+--+--+
+
 
 
 

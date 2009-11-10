@@ -18,7 +18,7 @@ $HBQL_HOME/bin/console.sh [filename...]
 
 *Details
 
-    * Commands are terminated with the ";" character.
+    * Statements are terminated with the ";" character.
 
     * A single line can have multiple ";" separated statements.
 

@@ -18,7 +18,7 @@ select_element : expression [ AS alias_name ] | family_name ':' '*'
 
     Returns the requested values for the given {{{./with-clause.html}WITH}} clause
 
-    * At present, aggregate select items are not supported (work in progress).
+    * At present, <<server side filter queries are not supported (work in progress)>>
 
 *Example
 
