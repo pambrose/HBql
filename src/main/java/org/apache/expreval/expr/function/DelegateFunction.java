@@ -83,7 +83,8 @@ public class DelegateFunction extends DelegateStmt<Function> {
         this.getTypedExpr().initAggregateValue(aggregateValue);
     }
 
-    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException {
+    public void applyResultToAggregateValue(final AggregateValue aggregateValue,
+                                            final Result result) throws HBqlException, ResultMissingColumnException {
         this.getTypedExpr().applyResultToAggregateValue(aggregateValue, result);
     }
 

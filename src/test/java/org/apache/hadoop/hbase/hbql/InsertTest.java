@@ -54,7 +54,7 @@ public class InsertTest extends TestSupport {
     static Random randomVal = new Random();
 
     @BeforeClass
-    public static void onetimeSetup() throws HBqlException, IOException {
+    public static void testSetup() throws HBqlException, IOException {
 
         SchemaManager.execute("CREATE SCHEMA tab2 FOR TABLE table2"
                               + "("
@@ -76,11 +76,8 @@ public class InsertTest extends TestSupport {
 
         if (!conn.tableExists("table2"))
             System.out.println(conn.execute("create table using tab2"));
-        else {
+        else
             System.out.println(conn.execute("delete from tab2"));
-            //System.out.println(conn.disable ("disable table table2"));
-            //System.out.println(conn.execute("drop table table2"));
-        }
 
         insertRecords(conn, 10, "Batch 1");
         insertRecords(conn, 10, "Batch 2");
@@ -93,9 +90,9 @@ public class InsertTest extends TestSupport {
         insertRecords(conn, 10, "Batch 3");
     }
 
-    private static void insertRecords(final Connection conn,
-                                      final int cnt,
-                                      final String msg) throws HBqlException, IOException {
+    public static void insertRecords(final Connection conn,
+                                     final int cnt,
+                                     final String msg) throws HBqlException, IOException {
 
         PreparedStatement stmt = conn.prepare("insert into tab2 " +
                                               "(keyval, val1, val2, val5, val6, f3mapval1, f3mapval2, val8) values " +
@@ -215,15 +212,6 @@ public class InsertTest extends TestSupport {
         q6.setParameter("key1", listOfKeys);
         List<Record> recList6 = q6.getResultList();
         assertTrue(recList6.size() == 3);
-    }
-
-    @Test
-    public void selectAggregates() throws HBqlException, IOException {
-
-        final String query1 = "SELECT count() FROM tab2";
-        Query<Record> q1 = conn.newQuery(query1);
-        List<Record> recList1 = q1.getResultList();
-        assertTrue(recList1.size() == 1);
     }
 
     @Test

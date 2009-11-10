@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
@@ -64,7 +65,12 @@ public class AggregateRecord extends RecordImpl {
         for (final ColumnValue val : this.getColumnValuesMap().values()) {
             if (val instanceof AggregateValue) {
                 final AggregateValue aggregateValue = (AggregateValue)val;
-                aggregateValue.applyValues(result);
+                try {
+                    aggregateValue.applyValues(result);
+                }
+                catch (ResultMissingColumnException e) {
+                    // no op
+                }
             }
         }
     }

@@ -156,7 +156,7 @@ public abstract class GenericExpression implements GenericValue {
         throw new InternalErrorException("Not applicable");
     }
 
-    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException {
+    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException, ResultMissingColumnException {
         throw new InternalErrorException("Not applicable");
     }
 

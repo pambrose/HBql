@@ -75,7 +75,7 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
     }
 
     public void applyResultToAggregateValue(final AggregateValue aggregateValue,
-                                            final Result result) throws HBqlException {
+                                            final Result result) throws HBqlException, ResultMissingColumnException {
         this.getGenericValue().applyResultToAggregateValue(aggregateValue, result);
     }
 

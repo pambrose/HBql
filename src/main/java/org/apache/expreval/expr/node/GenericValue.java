@@ -47,7 +47,7 @@ public interface GenericValue extends Serializable {
 
     void initAggregateValue(final AggregateValue aggregateValue) throws HBqlException;
 
-    void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException;
+    void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException, ResultMissingColumnException;
 
     boolean hasAColumnReference();
 

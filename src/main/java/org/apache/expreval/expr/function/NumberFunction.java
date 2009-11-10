@@ -41,7 +41,12 @@ public class NumberFunction extends Function implements NumberValue {
         switch (this.getFunctionType()) {
 
             case COUNT: {
-                aggregateValue.setCurrentValue(0, 0L);
+                aggregateValue.setValue(0L);
+                break;
+            }
+
+            case MIN:
+            case MAX: {
                 break;
             }
 
@@ -50,14 +55,66 @@ public class NumberFunction extends Function implements NumberValue {
         }
     }
 
-    public void applyResultToAggregateValue(final AggregateValue aggregateValue,
-                                            final Result result) throws HBqlException {
+    public void applyResultToAggregateValue(final AggregateValue aggVal,
+                                            final Result result) throws HBqlException, ResultMissingColumnException {
 
         switch (this.getFunctionType()) {
 
             case COUNT: {
-                long val = (Long)aggregateValue.getCurrentValue();
-                aggregateValue.setCurrentValue(0, val + 1);
+                final long currval = (Long)aggVal.getCurrentValue();
+                aggVal.setValue(currval + 1);
+                break;
+            }
+
+            case MIN: {
+                final Number v1 = (Number)this.getArg(0).getValue(result);
+
+                if (v1 instanceof Short) {
+                    final short val = v1.shortValue();
+                    aggVal.setValue(aggVal.isValueSet() ? Math.min(val, (Short)aggVal.getValue()) : val);
+                }
+                else if (v1 instanceof Integer) {
+                    final int val = v1.intValue();
+                    aggVal.setValue(aggVal.isValueSet() ? Math.min(val, (Integer)aggVal.getValue()) : val);
+                }
+                else if (v1 instanceof Long) {
+                    final long val = v1.longValue();
+                    aggVal.setValue(aggVal.isValueSet() ? Math.min(val, (Long)aggVal.getValue()) : val);
+                }
+                else if (v1 instanceof Float) {
+                    final float val = v1.floatValue();
+                    aggVal.setValue(aggVal.isValueSet() ? Math.min(val, (Float)aggVal.getValue()) : val);
+                }
+                else if (v1 instanceof Double) {
+                    final double val = v1.doubleValue();
+                    aggVal.setValue(aggVal.isValueSet() ? Math.min(val, (Double)aggVal.getValue()) : val);
+                }
+                break;
+            }
+
+            case MAX: {
+                final Number v1 = (Number)this.getArg(0).getValue(result);
+
+                if (v1 instanceof Short) {
+                    final short val = v1.shortValue();
+                    aggVal.setValue(aggVal.isValueSet() ? Math.max(val, (Short)aggVal.getValue()) : val);
+                }
+                else if (v1 instanceof Integer) {
+                    final int val = v1.intValue();
+                    aggVal.setValue(aggVal.isValueSet() ? Math.max(val, (Integer)aggVal.getValue()) : val);
+                }
+                else if (v1 instanceof Long) {
+                    final long val = v1.longValue();
+                    aggVal.setValue(aggVal.isValueSet() ? Math.max(val, (Long)aggVal.getValue()) : val);
+                }
+                else if (v1 instanceof Float) {
+                    final float val = v1.floatValue();
+                    aggVal.setValue(aggVal.isValueSet() ? Math.max(val, (Float)aggVal.getValue()) : val);
+                }
+                else if (v1 instanceof Double) {
+                    final double val = v1.doubleValue();
+                    aggVal.setValue(aggVal.isValueSet() ? Math.max(val, (Double)aggVal.getValue()) : val);
+                }
                 break;
             }
 

@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
@@ -27,6 +28,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 public class AggregateValue extends ColumnValue {
 
     final SingleExpressionContext context;
+    boolean valueSet = false;
 
     public AggregateValue(final String name, final SingleExpressionContext context) {
         super(name);
@@ -37,11 +39,28 @@ public class AggregateValue extends ColumnValue {
         return this.context;
     }
 
+    public boolean isValueSet() {
+        return valueSet;
+    }
+
+    private void setValueSet(final boolean valueSet) {
+        this.valueSet = valueSet;
+    }
+
     public void initAggregateValue() throws HBqlException {
         this.getContext().initAggregateValue(this);
     }
 
-    public void applyValues(final Result result) throws HBqlException {
+    public void applyValues(final Result result) throws HBqlException, ResultMissingColumnException {
         this.getContext().applyResultToAggregateValue(this, result);
+    }
+
+    public Object getValue() {
+        return super.getCurrentValue();
+    }
+
+    public void setValue(final Object val) {
+        super.setCurrentValue(0, val);
+        setValueSet(true);
     }
 }
