@@ -22,7 +22,8 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.schema.DefinedSchema;
+import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
@@ -31,20 +32,31 @@ public class AggregateRecord extends RecordImpl {
 
     final List<SelectElement> selectElementList;
 
-    public AggregateRecord(final DefinedSchema schema,
-                           final List<SelectElement> selectElementList) throws HBqlException {
-        super(schema);
+    private AggregateRecord(final HBaseSchema schema,
+                            final List<SelectElement> selectElementList) throws HBqlException {
+        super(schema.getDefinedSchemaEquivalent());
 
         this.selectElementList = selectElementList;
 
         // Set key value
-        schema.getKeyAttrib().setCurrentValue(this, 0, "");
+        this.getSchema().getKeyAttrib().setCurrentValue(this, 0, "");
 
-        for (final SelectElement selectElement : selectElementList) {
+        for (final SelectElement selectElement : this.getSelectElementList()) {
             final AggregateValue val = selectElement.newAggregateValue();
             val.initAggregateValue();
             this.addElement(val);
         }
+    }
+
+    public static AggregateRecord newAggregateRecord(final SelectStatement selectStmt) throws HBqlException {
+        if (selectStmt.isAnAggregateQuery())
+            return new AggregateRecord(selectStmt.getSchema(), selectStmt.getSelectElementList());
+        else
+            return null;
+    }
+
+    private List<SelectElement> getSelectElementList() {
+        return this.selectElementList;
     }
 
     public void applyValues(final Result result) throws HBqlException {

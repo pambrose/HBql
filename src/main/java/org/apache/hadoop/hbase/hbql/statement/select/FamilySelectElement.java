@@ -159,7 +159,7 @@ public class FamilySelectElement implements SelectElement {
     }
 
     public void validateTypes(final boolean allowColumns, final boolean allowCollections) throws HBqlException {
-        throw new InternalErrorException();
+        // No op;
     }
 
     public void assignSelectValue(final Object obj,

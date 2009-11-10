@@ -196,7 +196,7 @@ nodescWhereExpr returns [ExpressionTree retval]
 	 : e=topExpr					{retval = ExpressionTree.newExpressionTree($e.retval);};
 
 descWhereExpr returns [ExpressionTree retval]
-	: s=schemaDesc? e=topExpr			{retval = ExpressionTree.newExpressionTree($e.retval); if ($s.retval != null) retval.setSchema($s.retval);};
+	: s=schemaDesc? e=topExpr			{retval = ExpressionTree.newExpressionTree($e.retval); if ($s.retval != null) retval.setSchemaAndContext($s.retval);};
 
 // Expressions
 topExpr returns [GenericValue retval]

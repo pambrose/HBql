@@ -93,7 +93,7 @@ public abstract class MultipleExpressionContext implements Serializable {
         return this.schema;
     }
 
-    public void setSchema(final Schema schema) {
+    public void setSchemaAndContext(final Schema schema) {
         this.schema = schema;
         this.setContext();
     }

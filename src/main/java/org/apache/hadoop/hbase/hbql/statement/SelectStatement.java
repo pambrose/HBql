@@ -24,6 +24,7 @@ import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InvalidVariableException;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
@@ -77,8 +78,14 @@ public class SelectStatement extends SchemaStatement {
     public void determineIfAggregateQuery() throws HBqlException {
 
         // This is required before the checkIfAggregateQuery() call.
-        for (final SelectElement element : this.getSelectElementList())
-            element.validateTypes(true, false);
+        for (final SelectElement element : this.getSelectElementList()) {
+            try {
+                element.validateTypes(true, false);
+            }
+            catch (InvalidVariableException e) {
+                // No op
+            }
+        }
 
         this.aggregateQuery = this.checkIfAggregateQuery();
     }

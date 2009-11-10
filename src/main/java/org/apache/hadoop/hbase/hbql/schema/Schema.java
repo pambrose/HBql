@@ -138,7 +138,7 @@ public abstract class Schema implements Serializable {
         if (expressionTree == null) {
             final HBqlParser parser = HBqlShell.newHBqlParser(str);
             expressionTree = parser.nodescWhereExpr();
-            expressionTree.setSchema(this);
+            expressionTree.setSchemaAndContext(this);
             this.addToExpressionTreeCache(str, expressionTree);
         }
         else {

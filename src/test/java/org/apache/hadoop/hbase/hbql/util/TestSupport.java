@@ -215,7 +215,7 @@ public class TestSupport {
         try {
             final HBqlParser parser = HBqlShell.newHBqlParser(str);
             final ExpressionTree expressionTree = parser.descWhereExpr();
-            expressionTree.setSchema(schema);
+            expressionTree.setSchemaAndContext(schema);
             return expressionTree;
         }
         catch (RecognitionException e) {

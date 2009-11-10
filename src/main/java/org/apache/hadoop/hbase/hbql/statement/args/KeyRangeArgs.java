@@ -239,7 +239,7 @@ public class KeyRangeArgs {
 
     public void setSchema(final Schema schema) {
         for (final Range range : this.getRangeList())
-            range.setSchema(schema);
+            range.setSchemaAndContext(schema);
     }
 
     public String asString() {

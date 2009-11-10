@@ -62,19 +62,19 @@ public class WithArgs {
         this.getKeyRangeArgs().setSchema(null);
 
         if (this.getTimestampArgs() != null)
-            this.getTimestampArgs().setSchema(null);
+            this.getTimestampArgs().setSchemaAndContext(null);
 
         if (this.getVersionArgs() != null)
-            this.getVersionArgs().setSchema(null);
+            this.getVersionArgs().setSchemaAndContext(null);
 
         if (this.getLimitArgs() != null)
-            this.getLimitArgs().setSchema(null);
+            this.getLimitArgs().setSchemaAndContext(null);
 
         if (this.getServerExpressionTree() != null)
-            this.getServerExpressionTree().setSchema(this.getSchema());
+            this.getServerExpressionTree().setSchemaAndContext(this.getSchema());
 
         if (this.getClientExpressionTree() != null)
-            this.getClientExpressionTree().setSchema(this.getSchema());
+            this.getClientExpressionTree().setSchemaAndContext(this.getSchema());
     }
 
     private void validateWithArgs() throws HBqlException {
@@ -219,12 +219,13 @@ public class WithArgs {
         return allAttribs;
     }
 
-    public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribSet)
-            throws IOException, HBqlException {
+    public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribSet) throws IOException,
+                                                                                                     HBqlException {
 
         final List<RowRequest> rowRequestList = Lists.newArrayList();
         for (final KeyRangeArgs.Range range : this.getKeyRangeArgs().getRangeList())
             range.process(this, rowRequestList, columnAttribSet);
+
         return rowRequestList;
     }
 

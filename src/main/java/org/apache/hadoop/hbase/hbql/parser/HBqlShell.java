@@ -94,7 +94,7 @@ public class HBqlShell {
         try {
             final HBqlParser parser = newHBqlParser(str);
             final SingleExpressionContext elem = (SingleExpressionContext)parser.selectElem();
-            elem.setSchema(null);
+            elem.setSchemaAndContext(null);
             return elem;
         }
         catch (RecognitionException e) {

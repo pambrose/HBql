@@ -29,7 +29,6 @@ import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.Family;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Table;
-import org.apache.hadoop.hbase.hbql.impl.AggregateRecord;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.io.File;
@@ -116,11 +115,6 @@ public class AnnotationSchema extends HBaseSchema {
 
     public Object getSingleInstance() {
         return this.singleInstance;
-    }
-
-    public AggregateRecord newAggregateRecord(final List<SelectElement> selectElementList) throws HBqlException {
-        // No op for now
-        return null;
     }
 
     public synchronized static AnnotationSchema getAnnotationSchema(final String objName) throws HBqlException {

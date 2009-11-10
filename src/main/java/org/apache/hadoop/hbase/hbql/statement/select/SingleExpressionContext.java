@@ -145,7 +145,7 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
 
     public void validate(final HBaseSchema schema, final Connection connection) throws HBqlException {
 
-        this.setSchema(schema);
+        this.setSchemaAndContext(schema);
 
         // TODO this needs to be done for expressions with col refs
 

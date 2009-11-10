@@ -62,12 +62,12 @@ public class ResultsImpl<T> implements Results<T> {
         return this.resultScannerList;
     }
 
-    private SelectStatement getSelectStatement() {
+    private SelectStatement getSelectStmt() {
         return this.getQuery().getSelectStatement();
     }
 
     private WithArgs getWithArgs() {
-        return this.getSelectStatement().getWithArgs();
+        return this.getSelectStmt().getWithArgs();
     }
 
     private List<QueryListener<T>> getListeners() {
@@ -81,12 +81,12 @@ public class ResultsImpl<T> implements Results<T> {
     public void close() {
 
         for (final ResultScanner scanner : this.getResultScannerList())
-            closeCurrentResultScanner(scanner, false);
+            closeResultScanner(scanner, false);
 
         this.getResultScannerList().clear();
     }
 
-    private void closeCurrentResultScanner(final ResultScanner scanner, final boolean removeFromList) {
+    private void closeResultScanner(final ResultScanner scanner, final boolean removeFromList) {
 
         if (scanner != null) {
             try {
@@ -106,15 +106,15 @@ public class ResultsImpl<T> implements Results<T> {
         try {
             return new ResultsIterator<T>(this.getWithArgs().getLimit()) {
 
-                private AggregateRecord aggregateRecord = null;
-
-                private final HTable table = getConnection().getHTable(getSelectStatement().getSchema().getTableName());
+                private final HTable table = getConnection().getHTable(getSelectStmt().getSchema().getTableName());
                 private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
                 private final Iterator<RowRequest> rowRequestIterator = getRowRequestList().iterator();
 
                 private int maxVersions = 0;
                 private ResultScanner currentResultScanner = null;
                 private Iterator<Result> currentResultIterator = null;
+
+                private AggregateRecord aggregateRecord = AggregateRecord.newAggregateRecord(getSelectStmt());
 
                 // Prime the iterator with the first value
                 private T nextObject = fetchNextObject();
@@ -152,39 +152,26 @@ public class ResultsImpl<T> implements Results<T> {
                 }
 
                 private void setCurrentResultScanner(final ResultScanner currentResultScanner) {
+                    // First close previous ResultScanner before reassigning
+                    closeResultScanner(this.getCurrentResultScanner(), true);
                     this.currentResultScanner = currentResultScanner;
+                    getResultScannerList().add(this.getCurrentResultScanner());
                 }
 
                 private void setCurrentResultIterator(final Iterator<Result> currentResultIterator) {
                     this.currentResultIterator = currentResultIterator;
                 }
 
+                @SuppressWarnings("unchecked")
                 protected T fetchNextObject() throws HBqlException, IOException {
 
-                    final T firstAttemptVal = doFetch();
+                    final HBaseSchema schema = getSelectStmt().getSchema();
 
-                    if (firstAttemptVal != null)
-                        return firstAttemptVal;
+                    while (this.getCurrentResultIterator() != null || this.getRowRequestIterator().hasNext()) {
 
-                    // Try one more time to exhaust all scanners
-                    final T secondAttemptVal = doFetch();
-                    if (secondAttemptVal == null)
-                        closeCurrentResultScanner(this.getCurrentResultScanner(), true);
+                        if (this.getCurrentResultIterator() == null)
+                            this.setCurrentResultIterator(getNextResultIterator());
 
-                    return secondAttemptVal;
-                }
-
-                @SuppressWarnings("unchecked")
-                private T doFetch() throws HBqlException, IOException {
-
-                    if (this.getCurrentResultIterator() == null)
-                        this.setCurrentResultIterator(getNextResultScanner());
-
-                    if (this.getCurrentResultIterator() != null) {
-
-                        final HBaseSchema schema = getSelectStatement().getSchema();
-
-                        // This is the heart of the query evaluation
                         while (this.getCurrentResultIterator().hasNext()) {
 
                             final Result result = this.getCurrentResultIterator().next();
@@ -199,12 +186,11 @@ public class ResultsImpl<T> implements Results<T> {
 
                             incrementReturnedRecordCount();
 
-                            if (getSelectStatement().isAnAggregateQuery()) {
-                                // Evaluate each of the agregate values
+                            if (getSelectStmt().isAnAggregateQuery()) {
                                 this.getAggregateRecord().applyValues(result);
                             }
                             else {
-                                final T val = (T)schema.newObject(getSelectStatement().getSelectElementList(),
+                                final T val = (T)schema.newObject(getSelectStmt().getSelectElementList(),
                                                                   this.getMaxVersions(),
                                                                   result);
 
@@ -215,33 +201,27 @@ public class ResultsImpl<T> implements Results<T> {
                                 return val;
                             }
                         }
+
+                        this.setCurrentResultIterator(null);
+
+                        closeResultScanner(this.getCurrentResultScanner(), true);
                     }
 
-                    // Reset to get next scanner
-                    this.setCurrentResultIterator(null);
+                    if (getSelectStmt().isAnAggregateQuery() && this.getAggregateRecord() != null) {
+                        // Stash the value and then null it out for next time through
+                        final AggregateRecord retval = this.getAggregateRecord();
+                        this.setAggregateRecord(null);
+                        return (T)retval;
+                    }
+
                     return null;
                 }
 
-                private Iterator<Result> getNextResultScanner() throws IOException {
-
-                    if (this.getRowRequestIterator().hasNext()) {
-
-                        final RowRequest rowRequest = this.getRowRequestIterator().next();
-
-                        this.setMaxVersions(rowRequest.getMaxVersions());
-
-                        // First close previous ResultScanner before reassigning
-                        closeCurrentResultScanner(this.getCurrentResultScanner(), true);
-
-                        this.setCurrentResultScanner(rowRequest.getResultScanner(this.getTable()));
-
-                        getResultScannerList().add(this.getCurrentResultScanner());
-
-                        return this.getCurrentResultScanner().iterator();
-                    }
-                    else {
-                        return null;
-                    }
+                private Iterator<Result> getNextResultIterator() throws IOException {
+                    final RowRequest rowRequest = this.getRowRequestIterator().next();
+                    this.setMaxVersions(rowRequest.getMaxVersions());
+                    this.setCurrentResultScanner(rowRequest.getResultScanner(this.getTable()));
+                    return this.getCurrentResultScanner().iterator();
                 }
 
                 protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
@@ -254,13 +234,11 @@ public class ResultsImpl<T> implements Results<T> {
                     }
                 }
 
+                private void setAggregateRecord(final AggregateRecord aggregateRecord) {
+                    this.aggregateRecord = aggregateRecord;
+                }
+
                 private AggregateRecord getAggregateRecord() throws HBqlException {
-
-                    if (this.aggregateRecord == null) {
-                        final HBaseSchema schema = getSelectStatement().getSchema();
-                        this.aggregateRecord = schema.newAggregateRecord(getSelectStatement().getSelectElementList());
-                    }
-
                     return this.aggregateRecord;
                 }
             };

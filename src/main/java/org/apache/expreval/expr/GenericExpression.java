@@ -296,21 +296,20 @@ public abstract class GenericExpression implements GenericValue {
 
         for (final Class<? extends GenericValue> clazz : clazzes) {
 
-            if (clazz == null)
-                continue;
-
-            if (TypeSupport.isParentClass(NumberValue.class, parentClazz)) {
-                if (!TypeSupport.isParentClass(NumberValue.class, clazz)) {
-                    classList.add(clazz);
+            if (clazz != null) {
+                if (TypeSupport.isParentClass(NumberValue.class, parentClazz)) {
+                    if (!TypeSupport.isParentClass(NumberValue.class, clazz)) {
+                        classList.add(clazz);
+                    }
+                    else {
+                        if (!NumericType.isAssignable(parentClazz, clazz))
+                            classList.add(clazz);
+                    }
                 }
                 else {
-                    if (!NumericType.isAssignable(parentClazz, clazz))
+                    if (!parentClazz.isAssignableFrom(clazz))
                         classList.add(clazz);
                 }
-            }
-            else {
-                if (!parentClazz.isAssignableFrom(clazz))
-                    classList.add(clazz);
             }
         }
 
