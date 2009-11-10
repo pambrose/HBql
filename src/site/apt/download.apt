@@ -30,4 +30,4 @@ Release Notes
 
         * Renamed pre-existing max() and min() functions to greater() and lesser().
 
-        * Renamed LIST TABLES AND LIST SCHEMAS to SHOW TABLES and SHOW SCHEMAS
+        * Renamed LIST TABLES and LIST SCHEMAS to SHOW TABLES and SHOW SCHEMAS
