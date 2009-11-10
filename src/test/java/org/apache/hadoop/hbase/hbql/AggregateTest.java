@@ -151,19 +151,53 @@ public class AggregateTest extends TestSupport {
         assertTrue(recList1.size() == 1);
         Record rec = recList1.get(0);
         long cnt = (Long)rec.getCurrentValue("cnt");
-        assertTrue(cnt == 10);
+        assertTrue(cnt == val5List.size());
+    }
+
+    @Test
+    public void selectMax() throws HBqlException, IOException {
+
+        final String query1 = "SELECT max(val5) as max FROM aggtab";
+        Query<Record> q1 = conn.newQuery(query1);
+        List<Record> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 1);
+        Record rec = recList1.get(0);
+        int max = (Integer)rec.getCurrentValue("max");
+
+        assertTrue(max == val5max);
     }
 
     @Test
     public void selectMin() throws HBqlException, IOException {
 
-        final String query1 = "SELECT min(val5) as min FROM aggtab";
+        final String query1 = "SELECT min(val5) as min, min(val5+1) as min2 FROM aggtab";
         Query<Record> q1 = conn.newQuery(query1);
         List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 1);
         Record rec = recList1.get(0);
         int min = (Integer)rec.getCurrentValue("min");
+        int min2 = (Integer)rec.getCurrentValue("min2");
 
         assertTrue(min == val5min);
+        assertTrue(min2 == val5min + 1);
+    }
+
+    @Test
+    public void selectAll() throws HBqlException, IOException {
+
+        final String query1 = "SELECT count() as cnt, max(val5) as max, min(val5) as min, min(val5+1) as min2 FROM aggtab";
+        Query<Record> q1 = conn.newQuery(query1);
+        List<Record> recList1 = q1.getResultList();
+        assertTrue(recList1.size() == 1);
+        Record rec = recList1.get(0);
+        long cnt = (Long)rec.getCurrentValue("cnt");
+        int max = (Integer)rec.getCurrentValue("max");
+        int min = (Integer)rec.getCurrentValue("min");
+        int min2 = (Integer)rec.getCurrentValue("min2");
+
+        assertTrue(cnt == val5List.size());
+        assertTrue(max == val5max);
+        assertTrue(min == val5min);
+        assertTrue(min2 == val5min + 1);
     }
 }
