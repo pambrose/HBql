@@ -42,7 +42,7 @@ import java.util.List;
 public class InsertStatement extends SchemaStatement implements PreparedStatement {
 
     private final List<SingleExpressionContext> columnList = Lists.newArrayList();
-    private final InsertValueSource valueSource;
+    private final InsertValueSource insertValuesSource;
 
     private ConnectionImpl connection = null;
     private Record record = null;
@@ -50,14 +50,14 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
     public InsertStatement(final String schemaName,
                            final List<GenericValue> columnList,
-                           final InsertValueSource valueSource) {
+                           final InsertValueSource insertValuesSource) {
         super(schemaName);
 
         for (final GenericValue val : columnList)
-            this.getColumnList().add(SingleExpressionContext.newSingleExpression(val, null));
+            this.getInsertColumnList().add(SingleExpressionContext.newSingleExpression(val, null));
 
-        this.valueSource = valueSource;
-        this.getValueSource().setInsertStatement(this);
+        this.insertValuesSource = insertValuesSource;
+        this.getInsertValuesSource().setInsertStatement(this);
     }
 
     public void validate(final ConnectionImpl conn) throws HBqlException {
@@ -70,7 +70,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         this.connection = conn;
         this.record = SchemaManager.newRecord(this.getSchemaName());
 
-        for (final SingleExpressionContext element : this.getColumnList()) {
+        for (final SingleExpressionContext element : this.getInsertColumnList()) {
 
             element.validate(this.getSchema(), this.getConnection());
 
@@ -81,13 +81,13 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         if (!this.hasAKeyValue())
             throw new TypeException("Missing a key value in attribute list in " + this.asString());
 
-        this.getValueSource().validate();
+        this.getInsertValuesSource().validate();
     }
 
     public void validateTypes() throws HBqlException {
 
         final List<Class<? extends GenericValue>> columnsTypeList = this.getColumnsTypeList();
-        final List<Class<? extends GenericValue>> valuesTypeList = this.getValueSource().getValuesTypeList();
+        final List<Class<? extends GenericValue>> valuesTypeList = this.getInsertValuesSource().getValuesTypeList();
 
         if (columnsTypeList.size() != valuesTypeList.size())
             throw new HBqlException("Number of columns not equal to number of values in " + this.asString());
@@ -99,7 +99,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
             // Skip Default values
             if (type2 == DefaultKeyword.class) {
-                final String name = this.getColumnList().get(i).asString();
+                final String name = this.getInsertColumnList().get(i).asString();
                 final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
                 if (!attrib.hasDefaultArg())
                     throw new HBqlException("No DEFAULT value specified for " + attrib.getNameToUseInExceptions()
@@ -117,7 +117,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
     private List<Class<? extends GenericValue>> getColumnsTypeList() throws HBqlException {
         final List<Class<? extends GenericValue>> typeList = Lists.newArrayList();
-        for (final SingleExpressionContext element : this.getColumnList()) {
+        for (final SingleExpressionContext element : this.getInsertColumnList()) {
             final Class<? extends GenericValue> type = element.getExpressionType();
             typeList.add(type);
         }
@@ -125,7 +125,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
     }
 
     private boolean hasAKeyValue() {
-        for (final SingleExpressionContext element : this.getColumnList()) {
+        for (final SingleExpressionContext element : this.getInsertColumnList()) {
             if (element.isAKeyValue())
                 return true;
         }
@@ -133,7 +133,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
-        final int cnt = this.getValueSource().setParameter(name, val);
+        final int cnt = this.getInsertValuesSource().setParameter(name, val);
         if (cnt == 0)
             throw new HBqlException("Parameter name " + name + " does not exist in " + this.asString());
         return cnt;
@@ -147,12 +147,12 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         return this.connection;
     }
 
-    private List<SingleExpressionContext> getColumnList() {
-        return columnList;
+    private List<SingleExpressionContext> getInsertColumnList() {
+        return this.columnList;
     }
 
-    private InsertValueSource getValueSource() {
-        return this.valueSource;
+    private InsertValueSource getInsertValuesSource() {
+        return this.insertValuesSource;
     }
 
     public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
@@ -163,21 +163,21 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
         int cnt = 0;
 
-        this.getValueSource().execute();
+        this.getInsertValuesSource().execute();
 
-        while (this.getValueSource().hasValues()) {
+        while (this.getInsertValuesSource().hasValues()) {
 
             final Batch batch = new Batch();
 
-            for (int i = 0; i < this.getColumnList().size(); i++) {
-                final String name = this.getColumnList().get(i).asString();
+            for (int i = 0; i < this.getInsertColumnList().size(); i++) {
+                final String name = this.getInsertColumnList().get(i).asString();
                 final Object val;
-                if (this.getValueSource().isDefaultValue(i)) {
+                if (this.getInsertValuesSource().isDefaultValue(i)) {
                     final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
                     val = attrib.getDefaultValue();
                 }
                 else {
-                    val = this.getValueSource().getValue(i);
+                    val = this.getInsertValuesSource().getValue(i);
                 }
                 this.getRecord().setCurrentValue(name, val);
             }
@@ -196,7 +196,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
     }
 
     public void reset() {
-        this.getValueSource().reset();
+        this.getInsertValuesSource().reset();
         this.getRecord().reset();
     }
 
@@ -209,7 +209,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         sbuf.append(" (");
 
         boolean firstTime = true;
-        for (final SingleExpressionContext val : this.getColumnList()) {
+        for (final SingleExpressionContext val : this.getInsertColumnList()) {
             if (!firstTime)
                 sbuf.append(", ");
             firstTime = false;
@@ -218,7 +218,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         }
 
         sbuf.append(") ");
-        sbuf.append(this.getValueSource().asString());
+        sbuf.append(this.getInsertValuesSource().asString());
         return sbuf.toString();
     }
 }

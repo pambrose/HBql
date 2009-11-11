@@ -70,9 +70,9 @@ public abstract class ColumnAttrib implements Serializable {
     // This is necessary before sending off with filter
     public abstract void resetDefaultValue();
 
-    public abstract Object getDefaultValue() throws HBqlException;
+    public abstract Object getDefaultValue();
 
-    public abstract boolean hasDefaultArg();
+    public abstract boolean hasDefaultArg() throws HBqlException;
 
     public abstract Object getCurrentValue(final Object obj) throws HBqlException;
 

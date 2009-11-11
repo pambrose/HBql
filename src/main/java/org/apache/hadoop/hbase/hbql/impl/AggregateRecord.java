@@ -35,7 +35,7 @@ public class AggregateRecord extends RecordImpl {
 
     private AggregateRecord(final HBaseSchema schema,
                             final List<SelectElement> selectElementList) throws HBqlException {
-        super(schema.getDefinedSchemaEquivalent());
+        super(schema);
 
         this.selectElementList = selectElementList;
 

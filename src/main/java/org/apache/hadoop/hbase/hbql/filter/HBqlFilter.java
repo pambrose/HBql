@@ -30,8 +30,8 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.ByteArrayInputStream;
@@ -48,7 +48,7 @@ public class HBqlFilter implements Filter {
     private static final Log LOG = LogFactory.getLog(HBqlFilter.class.getName());
 
     private ExpressionTree expressionTree;
-    public transient RecordImpl record = new RecordImpl((DefinedSchema)null);
+    public transient RecordImpl record = new RecordImpl((HBaseSchema)null);
 
     public HBqlFilter(final ExpressionTree expressionTree) {
         this.expressionTree = expressionTree;
@@ -62,8 +62,8 @@ public class HBqlFilter implements Filter {
         return this.record;
     }
 
-    private DefinedSchema getSchema() {
-        return (DefinedSchema)this.getExpressionTree().getSchema();
+    private HBaseSchema getSchema() {
+        return (HBaseSchema)this.getExpressionTree().getSchema();
     }
 
     private ExpressionTree getExpressionTree() {
@@ -96,7 +96,7 @@ public class HBqlFilter implements Filter {
 
             final String familyName = Bytes.toString(v.getFamily());
             final String columnName = Bytes.toString(v.getQualifier());
-            final DefinedSchema schema = this.getSchema();
+            final HBaseSchema schema = this.getSchema();
             final ColumnAttrib attrib = schema.getAttribFromFamilyQualifiedName(familyName, columnName);
 
             // Do not bother setting value if it is not used in expression

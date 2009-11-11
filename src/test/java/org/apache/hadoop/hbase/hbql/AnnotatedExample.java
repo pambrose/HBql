@@ -21,30 +21,26 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.hbql.client.Column;
-import org.apache.hadoop.hbase.hbql.client.Family;
-import org.apache.hadoop.hbase.hbql.client.Table;
+import org.apache.hadoop.hbase.hbql.client.Schema;
 
 import java.io.Serializable;
 
 // START SNIPPET: annotatedExample1
 
-@Table(name = "example2",
-       families = {
-               @Family(name = "f1", maxVersions = 10)
-       })
+@Schema(name = "demo2")
 public class AnnotatedExample implements Serializable {
 
-    @Column(key = true)
-    public String keyval = null;
+    @Column
+    public String keyval;
 
-    @Column(family = "f1")
+    @Column
     public String val1;
 
-    @Column(family = "f1")
+    @Column
     public int val2;
 
-    @Column(family = "f1")
-    public String val3 = "This is a default value";
+    @Column
+    public String val3;
 }
 
 // START SNIPPET: annotatedExample1

@@ -32,7 +32,7 @@ public class ShowSchemasStatement implements NonConnectionStatement {
 
         final ExecutionOutput retval = new ExecutionOutput();
         retval.out.println("Schemas: ");
-        for (final String schemaName : SchemaManager.getDefinedSchemaNames())
+        for (final String schemaName : SchemaManager.getHBaseSchemaNames())
             retval.out.println("\t" + schemaName);
 
         retval.out.flush();

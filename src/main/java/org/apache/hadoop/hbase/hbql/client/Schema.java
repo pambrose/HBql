@@ -24,10 +24,8 @@ package org.apache.hadoop.hbase.hbql.client;
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 
 // START SNIPPET: doc
-public @interface Family {
+public @interface Schema {
 
-    public abstract String name() default "";
-
-    int maxVersions() default -1;
+    java.lang.String name();
 }
 // END SNIPPET: doc

@@ -26,11 +26,10 @@ import org.apache.hadoop.hbase.hbql.client.Column;
 import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
-import org.apache.hadoop.hbase.hbql.client.Family;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.Results;
-import org.apache.hadoop.hbase.hbql.client.Table;
+import org.apache.hadoop.hbase.hbql.client.Schema;
 import org.apache.hadoop.hbase.hbql.client.Util;
 
 import java.io.IOException;
@@ -41,67 +40,51 @@ import java.util.TreeMap;
 
 public class AnnotationExample {
 
-    @Table(name = "testobjects",
-           families = {
-                   @Family(name = "family1", maxVersions = 10),
-                   @Family(name = "family2"),
-                   @Family(name = "family3", maxVersions = 5)
-           })
+    @Schema(name = "testobjects")
     public static class TestObject {
 
         private enum TestEnum {
             RED, BLUE, BLACK, ORANGE
         }
 
-        @Column(key = true)
         public String keyval;
 
-        @Column(family = "family1")
         public TestEnum enumValue = TestEnum.BLUE;
 
-        @Column(family = "family1")
         public int intValue = -1;
 
-        @Column(family = "family1")
         public String strValue = "";
 
-        @Column(family = "family1")
         public String title = "";
 
-        @ColumnVersionMap(instance = "title")
+        @ColumnVersionMap(name = "title")
         public NavigableMap<Long, String> titles = new TreeMap<Long, String>();
 
-        @Column(family = "family1", column = "author")
+        @Column(name = "author")
         public String author = "";
 
-        @ColumnVersionMap(instance = "author")
+        @ColumnVersionMap(name = "author")
         public NavigableMap<Long, String> authorVersions;
 
-        @Column(family = "family3", familyDefault = true)
         public Map<String, byte[]> family1Default = Maps.newHashMap();
 
-        @ColumnVersionMap(instance = "family1Default")
+        @ColumnVersionMap(name = "family1Default")
         public Map<String, NavigableMap<Long, byte[]>> family1DefaultVersions;
 
-        @Column(family = "family2", getter = "getHeaderBytes", setter = "setHeaderBytes")
         public String header = "A header value";
 
-        @Column(family = "family2", column = "bodyimage")
+        @Column(name = "bodyimage")
         public String bodyimage = "A bodyimage value";
 
-        @Column(family = "family2")
         public int[] array1 = {1, 2, 3};
 
-        @Column(family = "family2")
         public String[] array2 = {"val1", "val2", "val3"};
 
-        @Column(family = "family3")
         public Map<String, String> mapval1 = Maps.newHashMap();
 
-        @ColumnVersionMap(instance = "mapval1")
+        @ColumnVersionMap(name = "mapval1")
         public Map<String, NavigableMap<Long, String>> mapval1Versions;
 
-        @Column(family = "family3")
         public Map<String, String> mapval2 = Maps.newHashMap();
 
         public TestObject() {

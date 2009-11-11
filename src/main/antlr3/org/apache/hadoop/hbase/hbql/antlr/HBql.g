@@ -355,7 +355,7 @@ insertExpr returns [GenericValue retval]
 	;
 					
 schemaDesc returns [Schema retval]
-	: LCURLY a=attribList RCURLY			{retval = newDefinedSchema(input, $a.retval);};
+	: LCURLY a=attribList RCURLY			{retval = newHBaseSchema(input, $a.retval);};
 	
 ltgtOp returns [Operator retval]
 	: GT 						{retval = Operator.GT;}

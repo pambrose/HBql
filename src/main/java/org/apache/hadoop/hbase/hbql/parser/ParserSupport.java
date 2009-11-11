@@ -34,7 +34,7 @@ import org.apache.expreval.expr.compare.BooleanCompare;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
-import org.apache.hadoop.hbase.hbql.schema.DefinedSchema;
+import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 
 import java.util.List;
 
@@ -124,11 +124,11 @@ public class ParserSupport extends Parser {
         return root;
     }
 
-    // This keeps antlr code out of DefinedSchema, which is accessed server-side in HBase
-    public static DefinedSchema newDefinedSchema(final TokenStream input,
-                                                 final List<ColumnDescription> columList) throws RecognitionException {
+    // This keeps antlr code out of HBaseSchema, which is accessed server-side in HBase
+    public static HBaseSchema newHBaseSchema(final TokenStream input,
+                                             final List<ColumnDescription> columList) throws RecognitionException {
         try {
-            return new DefinedSchema(columList);
+            return new HBaseSchema(columList);
         }
         catch (HBqlException e) {
             e.printStackTrace();

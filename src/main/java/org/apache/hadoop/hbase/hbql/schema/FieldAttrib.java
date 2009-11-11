@@ -46,8 +46,8 @@ public abstract class FieldAttrib extends ColumnAttrib {
               familyDefault,
               fieldType,
               field.getType().isArray(),
-              getter,
-              setter);
+              null,
+              null);
 
         this.field = field;
         setAccessible(this.getField());

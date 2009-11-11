@@ -31,22 +31,16 @@ import java.util.Map;
 
 public class VersionAnnotationAttrib extends FieldAttrib {
 
-    private VersionAnnotationAttrib(final String familyName,
-                                    final String columnName,
-                                    final Field field,
-                                    final FieldType fieldType,
-                                    final boolean familyDefault,
-                                    final String getter,
-                                    final String setter) throws HBqlException {
+    public VersionAnnotationAttrib(final String familyName,
+                                   final String columnName,
+                                   final Field field,
+                                   final FieldType fieldType,
+                                   final boolean familyDefault,
+                                   final String getter,
+                                   final String setter) throws HBqlException {
         super(familyName, columnName, field, fieldType, familyDefault, getter, setter);
 
-        this.defineAccessors();
-    }
-
-    public static VersionAnnotationAttrib newVersionAttrib(final HBaseSchema schema, final Field field) throws HBqlException {
-
         final ColumnVersionMap versionAnno = field.getAnnotation(ColumnVersionMap.class);
-        final String instance = versionAnno.instance();
 
         final String annoname = "@ColumnVersionMap annotation";
 
@@ -60,63 +54,9 @@ public class VersionAnnotationAttrib extends FieldAttrib {
         final Type[] typeargs = ptype.getActualTypeArguments();
         final Type mapValueType = typeargs[1];
 
-        if (instance.length() > 0) {
-            if (versionAnno.family().length() > 0)
-                throw new HBqlException(getObjectQualifiedName(field)
-                                        + " cannot have both an instance and family value in " + annoname);
-            if (versionAnno.column().length() > 0)
-                throw new HBqlException(getObjectQualifiedName(field)
-                                        + " cannot have both an instance and column value in " + annoname);
-            if (versionAnno.getter().length() > 0)
-                throw new HBqlException(getObjectQualifiedName(field)
-                                        + " cannot have both an instance and getter value in " + annoname);
-            if (versionAnno.setter().length() > 0)
-                throw new HBqlException(getObjectQualifiedName(field)
-                                        + " cannot have both an instance and setter value in " + annoname);
+        // TODO Deal with type check on mapValueType
 
-            if (versionAnno.familyDefault())
-                throw new HBqlException(getObjectQualifiedName(field)
-                                        + " cannot have both an instance and familyDefault value in " + annoname);
-
-            // Check if instance variable exists
-            if (!schema.containsVariableName(instance))
-                throw new HBqlException(annoname + " for " + getObjectQualifiedName(field)
-                                        + " refers to invalid instance variable " + instance);
-
-            final ColumnAttrib attrib = schema.getAttribByVariableName(instance);
-
-            if (attrib == null)
-                throw new HBqlException("Instance variable " + schema.getSchemaName() + "." + instance + " does not exist");
-
-            if (!attrib.isACurrentValue())
-                throw new HBqlException(getObjectQualifiedName(field)
-                                        + "instance variable must have HColumn annotation");
-
-            final CurrentValueAnnotationAttrib currentAnnoAttrib = (CurrentValueAnnotationAttrib)attrib;
-
-            // Make sure type of Value in map matches type of instance var
-            if (!mapValueType.equals(currentAnnoAttrib.getField().getType()))
-                throw new HBqlException("Type of " + getObjectQualifiedName(field) + " map value type does not " +
-                                        "match type of " + currentAnnoAttrib.getObjectQualifiedName());
-
-            return new VersionAnnotationAttrib(currentAnnoAttrib.getFamilyName(),
-                                               currentAnnoAttrib.getColumnName(),
-                                               field,
-                                               currentAnnoAttrib.getFieldType(),
-                                               currentAnnoAttrib.isFamilyDefaultAttrib(),
-                                               currentAnnoAttrib.getGetter(),
-                                               currentAnnoAttrib.getSetter());
-        }
-        else {
-
-            return new VersionAnnotationAttrib(versionAnno.family(),
-                                               versionAnno.column(),
-                                               field,
-                                               FieldType.getFieldType(mapValueType),
-                                               versionAnno.familyDefault(),
-                                               versionAnno.getter(),
-                                               versionAnno.setter());
-        }
+        this.defineAccessors();
     }
 
     public boolean isACurrentValue() {

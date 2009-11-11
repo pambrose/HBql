@@ -29,6 +29,7 @@ import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
+import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
@@ -42,16 +43,24 @@ public class QueryImpl<T> implements Query<T> {
 
     private final Connection connection;
     private final SelectStatement selectStatement;
+    private final AnnotationMapping mapping;
 
     private List<QueryListener<T>> listeners = null;
 
-    public QueryImpl(final Connection connection, final SelectStatement selectStatement) throws HBqlException {
+    public QueryImpl(final Connection connection,
+                     final SelectStatement selectStatement,
+                     final AnnotationMapping mapping) throws HBqlException {
         this.connection = connection;
         this.selectStatement = selectStatement;
+        this.mapping = mapping;
+        if (this.mapping != null)
+            this.selectStatement.setSchema(this.mapping);
     }
 
-    public QueryImpl(final Connection connection, final String query) throws HBqlException {
-        this(connection, HBqlShell.parseSelectStatement(connection, query));
+    public QueryImpl(final Connection connection,
+                     final String query,
+                     final AnnotationMapping mapping) throws HBqlException {
+        this(connection, HBqlShell.parseSelectStatement(connection, query), mapping);
     }
 
     public synchronized void addListener(final QueryListener<T> listener) {
@@ -63,6 +72,10 @@ public class QueryImpl<T> implements Query<T> {
 
     public Connection getConnection() {
         return this.connection;
+    }
+
+    public AnnotationMapping getMapping() {
+        return this.mapping;
     }
 
     public SelectStatement getSelectStatement() {

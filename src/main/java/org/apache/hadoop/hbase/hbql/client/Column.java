@@ -26,16 +26,6 @@ package org.apache.hadoop.hbase.hbql.client;
 // START SNIPPET: doc
 public @interface Column {
 
-    boolean key() default false;
-
-    String family() default "";
-
-    String column() default "";
-
-    String getter() default "";
-
-    String setter() default "";
-
-    boolean familyDefault() default false;
+    String name() default "";
 }
 // END SNIPPET: doc

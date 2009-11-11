@@ -29,7 +29,7 @@ import java.io.Serializable;
 
 public class DefaultArg extends MultipleExpressionContext implements Serializable {
 
-    // We have to make vlaue transient because Object is not serializable for hbqlfilter
+    // We have to make value transient because Object is not serializable for hbqlfilter
     // We will compute it again on the server after reset is called
     private transient Object value = null;
     private volatile boolean computed = false;
@@ -45,13 +45,19 @@ public class DefaultArg extends MultipleExpressionContext implements Serializabl
         this.computed = false;
     }
 
-    public Object getValue() throws HBqlException {
+    public Object getValue() {
 
         if (!computed) {
             synchronized (this) {
                 if (!computed) {
                     // Type checking happens in this call, so we force it above in the constructor
-                    this.value = this.evaluateConstant(0, false, null);
+                    try {
+                        this.value = this.evaluateConstant(0, false, null);
+                    }
+                    catch (HBqlException e) {
+                        e.printStackTrace();
+                        this.value = null;
+                    }
                     this.computed = true;
                 }
             }

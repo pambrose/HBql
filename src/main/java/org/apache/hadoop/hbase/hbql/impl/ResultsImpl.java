@@ -28,7 +28,6 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
@@ -46,8 +45,8 @@ public class ResultsImpl<T> implements Results<T> {
     private final List<ResultScanner> resultScannerList = Lists.newArrayList();
     private final QueryImpl<T> query;
 
-    ResultsImpl(final Query<T> query) {
-        this.query = (QueryImpl<T>)query;
+    ResultsImpl(final QueryImpl<T> query) {
+        this.query = query;
     }
 
     private Connection getConnection() {
@@ -165,7 +164,12 @@ public class ResultsImpl<T> implements Results<T> {
                 @SuppressWarnings("unchecked")
                 protected T fetchNextObject() throws HBqlException, IOException {
 
-                    final HBaseSchema schema = getSelectStmt().getSchema();
+                    final HBaseSchema schema;
+
+                    if (getQuery().getMapping() == null)
+                        schema = getSelectStmt().getSchema();
+                    else
+                        schema = getQuery().getMapping();
 
                     while (this.getCurrentResultIterator() != null || this.getRowRequestIterator().hasNext()) {
 

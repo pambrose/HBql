@@ -58,7 +58,7 @@ public class ExamplesTest extends TestSupport {
         System.out.println(SchemaManager.execute("SHOW SCHEMAS"));
 
         // Or using the API
-        Set<String> schemaNamess = SchemaManager.getDefinedSchemaNames();
+        Set<String> schemaNamess = SchemaManager.getHBaseSchemaNames();
 
         // END SNIPPET: show-schemas
     }
@@ -357,17 +357,25 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: annotatedExample2
 
+        SchemaManager.execute("CREATE SCHEMA demo2 FOR TABLE example2"
+                              + "("
+                              + "keyval KEY, "
+                              + "f1:val1 STRING ALIAS val1, "
+                              + "f1:val2 INT ALIAS val2, "
+                              + "f1:val3 STRING ALIAS val3 DEFAULT 'This is a default value' "
+                              + ")");
+
         // Get Connection to HBase
         Connection conn = ConnectionManager.newConnection();
 
         // Clean up table
         if (!conn.tableExists("example2"))
-            System.out.println(conn.execute("CREATE TABLE USING AnnotatedExample"));
+            System.out.println(conn.execute("CREATE TABLE USING demo2"));
         else
-            System.out.println(conn.execute("DELETE FROM AnnotatedExample"));
+            System.out.println(conn.execute("DELETE FROM demo2"));
 
         // Add some records using an INSERT stmt
-        PreparedStatement stmt = conn.prepare("INSERT INTO AnnotatedExample " +
+        PreparedStatement stmt = conn.prepare("INSERT INTO demo2 " +
                                               "(keyval, val1, val2, val3) VALUES " +
                                               "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
 
@@ -390,7 +398,7 @@ public class ExamplesTest extends TestSupport {
         conn.apply(batch);
 
         // Query the records just added
-        Query<AnnotatedExample> query = conn.newQuery("SELECT * FROM AnnotatedExample");
+        Query<AnnotatedExample> query = conn.newQuery("SELECT * FROM demo2");
 
         for (AnnotatedExample rec : query.getResults()) {
             System.out.println("Key = " + rec.keyval);

@@ -29,7 +29,7 @@ import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
-import org.apache.hadoop.hbase.hbql.schema.AnnotationSchema;
+import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
@@ -249,7 +249,7 @@ public class TestSupport {
             return null;
 
         try {
-            return AnnotationSchema.getAnnotationSchema(recordObj);
+            return AnnotationMapping.getAnnotationMapping(recordObj);
         }
         catch (HBqlException e) {
             // Not annotated properly

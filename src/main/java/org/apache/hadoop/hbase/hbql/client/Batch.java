@@ -28,9 +28,8 @@ import org.apache.hadoop.hbase.hbql.impl.BatchAction;
 import org.apache.hadoop.hbase.hbql.impl.DeleteAction;
 import org.apache.hadoop.hbase.hbql.impl.InsertAction;
 import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
-import org.apache.hadoop.hbase.hbql.schema.AnnotationSchema;
+import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 
 import java.util.List;
@@ -54,15 +53,15 @@ public class Batch {
     }
 
     public void insert(final Object newrec) throws HBqlException {
-        final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(newrec);
-        final Put put = this.createPut(schema, newrec);
-        this.getActionList(schema.getTableName()).add(new InsertAction(put));
+        final AnnotationMapping mapping = AnnotationMapping.getAnnotationMapping(newrec);
+        final Put put = this.createPut(mapping, newrec);
+        this.getActionList(mapping.getTableName()).add(new InsertAction(put));
     }
 
     public void insert(final Record rec) throws HBqlException {
         final RecordImpl record = (RecordImpl)rec;
 
-        final DefinedSchema schema = record.getSchema().getDefinedSchemaEquivalent();
+        final HBaseSchema schema = record.getSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         if (!record.isCurrentValueSet(keyAttrib))
             throw new HBqlException("Record key value must be assigned");
@@ -72,8 +71,8 @@ public class Batch {
     }
 
     public void delete(final Object newrec) throws HBqlException {
-        final AnnotationSchema schema = AnnotationSchema.getAnnotationSchema(newrec);
-        this.delete(schema, newrec);
+        final AnnotationMapping mapping = AnnotationMapping.getAnnotationMapping(newrec);
+        this.delete(mapping, newrec);
     }
 
     public void delete(final RecordImpl record) throws HBqlException {
@@ -97,7 +96,6 @@ public class Batch {
         final Put put = new Put(keyval);
 
         for (final String family : schema.getFamilySet()) {
-
             for (final ColumnAttrib attrib : schema.getColumnAttribListByFamilyName(family)) {
                 final byte[] b = attrib.getValueAsBytes(newrec);
                 put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), b);

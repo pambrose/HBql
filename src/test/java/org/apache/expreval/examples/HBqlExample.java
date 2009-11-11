@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
-import org.apache.hadoop.hbase.hbql.schema.DefinedSchema;
+import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class HBqlExample {
                               + "family1:title string  alias title"
                               + ")");
 
-        DefinedSchema schema = SchemaManager.getDefinedSchema("testobjects");
+        HBaseSchema schema = SchemaManager.getSchema("testobjects");
         final HBqlFilter filter = schema.newHBqlFilter("title LIKE '.*3.*' OR family1:author LIKE '.*4.*'");
 
         Scan scan = new Scan();

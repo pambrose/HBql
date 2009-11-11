@@ -23,9 +23,7 @@ package org.apache.hadoop.hbase.hbql.client;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
-import org.apache.hadoop.hbase.hbql.schema.AnnotationSchema;
 import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
-import org.apache.hadoop.hbase.hbql.schema.DefinedSchema;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 
@@ -35,67 +33,52 @@ import java.util.Set;
 
 public class SchemaManager {
 
-    private final static Map<String, DefinedSchema> definedSchemaMap = Maps.newHashMap();
+    private final static Map<String, HBaseSchema> schemaMap = Maps.newHashMap();
 
     public static ExecutionOutput execute(final String str) throws HBqlException {
         final NonConnectionStatement cmd = HBqlShell.parseSchemaManagerStatement(str);
         return cmd.execute();
     }
 
-    private static Map<String, DefinedSchema> getDefinedSchemaMap() {
-        return SchemaManager.definedSchemaMap;
+    private static Map<String, HBaseSchema> getSchemaMap() {
+        return SchemaManager.schemaMap;
     }
 
-    public static Set<String> getDefinedSchemaNames() {
-        return getDefinedSchemaMap().keySet();
+    public static Set<String> getHBaseSchemaNames() {
+        return getSchemaMap().keySet();
     }
 
-    public static DefinedSchema getDefinedSchema(final String schemaName) {
-        return SchemaManager.getDefinedSchemaMap().get(schemaName);
-    }
-
-    public static AnnotationSchema getAnnotationSchema(final String schemaName) throws HBqlException {
-        return AnnotationSchema.getAnnotationSchema(schemaName);
-    }
-
-    public static boolean doesDefinedSchemaExist(final String schemaName) {
-        return null != SchemaManager.getDefinedSchemaMap().get(schemaName);
+    public static boolean doesSchemaExist(final String schemaName) {
+        return null != SchemaManager.getSchemaMap().get(schemaName);
     }
 
     public static void dropSchema(final String schemaName) {
-        if (SchemaManager.getDefinedSchemaMap().containsKey(schemaName))
-            SchemaManager.getDefinedSchemaMap().remove(schemaName);
+        if (SchemaManager.getSchemaMap().containsKey(schemaName))
+            SchemaManager.getSchemaMap().remove(schemaName);
     }
 
-    public synchronized static DefinedSchema newDefinedSchema(final String schemaName,
-                                                              final String tableName,
-                                                              final List<ColumnDescription> colList) throws HBqlException {
+    public synchronized static HBaseSchema newHBaseSchema(final String schemaName,
+                                                          final String tableName,
+                                                          final List<ColumnDescription> colList) throws HBqlException {
 
-        if (SchemaManager.doesDefinedSchemaExist(schemaName))
+        if (SchemaManager.doesSchemaExist(schemaName))
             throw new HBqlException("Schema " + schemaName + " already defined");
 
-        final DefinedSchema schema = new DefinedSchema(schemaName, tableName, colList);
+        final HBaseSchema schema = new HBaseSchema(schemaName, tableName, colList);
 
-        SchemaManager.getDefinedSchemaMap().put(schemaName, schema);
+        SchemaManager.getSchemaMap().put(schemaName, schema);
 
         return schema;
     }
 
     public static Record newRecord(final String schemaName) throws HBqlException {
-        final DefinedSchema schema = getSchema(schemaName).getDefinedSchemaEquivalent();
+        final HBaseSchema schema = getSchema(schemaName);
         return new RecordImpl(schema);
     }
 
     public static HBaseSchema getSchema(final String schemaName) throws HBqlException {
 
-        // First look in defined schema, then try annotation schema
-        HBaseSchema schema;
-
-        schema = getDefinedSchema(schemaName);
-        if (schema != null)
-            return schema;
-
-        schema = getAnnotationSchema(schemaName);
+        final HBaseSchema schema = SchemaManager.getSchemaMap().get(schemaName);
         if (schema != null)
             return schema;
 

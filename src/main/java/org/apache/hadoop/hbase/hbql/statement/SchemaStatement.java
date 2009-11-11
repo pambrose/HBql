@@ -37,12 +37,16 @@ public abstract class SchemaStatement implements ShellStatement {
         return schemaName;
     }
 
+    public void setSchema(final HBaseSchema schema) {
+        this.schema = schema;
+    }
+
     public final HBaseSchema getSchema() throws HBqlException {
 
         if (this.schema == null) {
             synchronized (this) {
                 if (this.schema == null)
-                    this.schema = SchemaManager.getSchema(this.getSchemaName());
+                    this.setSchema(SchemaManager.getSchema(this.getSchemaName()));
             }
         }
         return this.schema;

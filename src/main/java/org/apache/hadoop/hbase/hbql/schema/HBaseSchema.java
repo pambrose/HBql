@@ -28,16 +28,19 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
+import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
+import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class HBaseSchema extends Schema {
+public class HBaseSchema extends Schema {
 
     private ColumnAttrib keyAttrib = null;
+    private final String tableName;
 
     private Set<String> familyNameSet = null;
 
@@ -46,8 +49,26 @@ public abstract class HBaseSchema extends Schema {
     private final Map<String, ColumnAttrib> familyDefaultMap = Maps.newHashMap();
     private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
 
-    protected HBaseSchema(final String schemaName) {
+    public HBaseSchema(final List<ColumnDescription> columnDescriptionList) throws HBqlException {
+        super("embedded");
+        this.tableName = "embedded";
+        for (final ColumnDescription columnDescription : columnDescriptionList)
+            this.processColumn(columnDescription, false);
+    }
+
+    public HBaseSchema(final String schemaName,
+                       final String tableName,
+                       final List<ColumnDescription> columnDescriptionList) throws HBqlException {
         super(schemaName);
+        this.tableName = tableName;
+        for (final ColumnDescription columnDescription : columnDescriptionList)
+            processColumn(columnDescription, true);
+    }
+
+    public HBaseSchema(final String schemaName,
+                       final String tableName) throws HBqlException {
+        super(schemaName);
+        this.tableName = tableName;
     }
 
     public Object newInstance() throws IllegalAccessException, InstantiationException {
@@ -62,19 +83,44 @@ public abstract class HBaseSchema extends Schema {
         this.keyAttrib = keyAttrib;
     }
 
-    public abstract String getTableName();
+    public String getTableName() {
+        return this.tableName;
+    }
 
-    public abstract DefinedSchema getDefinedSchemaEquivalent() throws HBqlException;
+    public List<HColumnDescriptor> getColumnDescriptors() {
+        final List<HColumnDescriptor> descList = Lists.newArrayList();
+        for (final String familyName : this.getFamilySet())
+            descList.add(new HColumnDescriptor(familyName));
+        return descList;
+    }
 
-    public abstract List<HColumnDescriptor> getColumnDescriptors();
 
     public byte[] getTableNameAsBytes() throws HBqlException {
         return IO.getSerialization().getStringAsBytes(this.getTableName());
     }
 
-    public abstract Object newObject(final List<SelectElement> selectElementList,
-                                     final int maxVersions,
-                                     final Result result) throws HBqlException;
+    public Object newObject(final List<SelectElement> selectElementList,
+                            final int maxVersions,
+                            final Result result) throws HBqlException {
+
+        // Create object and assign values
+        final RecordImpl newrec = new RecordImpl(this);
+        this.assignSelectValues(newrec, selectElementList, maxVersions, result);
+        return newrec;
+    }
+
+    private void assignSelectValues(final Object newobj,
+                                    final List<SelectElement> selectElementList,
+                                    final int maxVersions,
+                                    final Result result) throws HBqlException {
+
+        // Set key value
+        this.getKeyAttrib().setCurrentValue(newobj, 0, result.getRow());
+
+        // Set the non-key values
+        for (final SelectElement selectElement : selectElementList)
+            selectElement.assignSelectValue(newobj, maxVersions, result);
+    }
 
     // *** columnAttribByFamilyQualifiedNameMap calls
     protected Map<String, ColumnAttrib> getAttribByFamilyQualifiedNameMap() {
@@ -200,26 +246,12 @@ public abstract class HBaseSchema extends Schema {
         attribList.add(attrib);
     }
 
-    protected void assignSelectValues(final Object newobj,
-                                      final List<SelectElement> selectElementList,
-                                      final int maxVersions,
-                                      final Result result) throws HBqlException {
-
-        // Set key value
-        this.getKeyAttrib().setCurrentValue(newobj, 0, result.getRow());
-
-        // Set the non-key values
-        for (final SelectElement selectElement : selectElementList)
-            selectElement.assignSelectValue(newobj, maxVersions, result);
-    }
-
     public HBqlFilter getHBqlFilter(final ExpressionTree origExpressionTree) throws HBqlException {
 
         if (origExpressionTree == null)
             return null;
 
-        final DefinedSchema definedSchema = this.getDefinedSchemaEquivalent();
-        origExpressionTree.setSchemaAndContext(definedSchema);
+        origExpressionTree.setSchemaAndContext(this);
         return new HBqlFilter(origExpressionTree);
     }
 
@@ -234,5 +266,33 @@ public abstract class HBaseSchema extends Schema {
         }
 
         return this.familyNameSet;
+    }
+
+    private void processColumn(final ColumnDescription columnDescription,
+                               final boolean requireFamilyName) throws HBqlException {
+
+        final HBaseAttrib attrib = new HBaseAttrib(columnDescription);
+
+        this.addAttribToVariableNameMap(attrib, attrib.getNamesForColumn());
+        this.addAttribToFamilyQualifiedNameMap(attrib);
+        this.addVersionAttrib(attrib);
+        this.addFamilyDefaultAttrib(attrib);
+        this.addAttribToFamilyNameColumnListMap(attrib);
+
+        if (attrib.isAKeyAttrib()) {
+            if (this.getKeyAttrib() != null)
+                throw new HBqlException("Schema " + this + " has multiple instance variables marked as keys");
+            this.setKeyAttrib(attrib);
+        }
+        else {
+            final String family = attrib.getFamilyName();
+            if (requireFamilyName && family.length() == 0)
+                throw new HBqlException(attrib.getColumnName() + " is missing family name");
+        }
+    }
+
+    public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
+        final ExpressionTree expressionTree = HBqlShell.parseWhereExpression(query, this);
+        return new HBqlFilter(expressionTree);
     }
 }

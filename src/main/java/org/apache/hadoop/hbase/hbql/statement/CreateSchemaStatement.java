@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
-import org.apache.hadoop.hbase.hbql.schema.DefinedSchema;
+import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 
 import java.util.List;
 
@@ -52,9 +52,9 @@ public class CreateSchemaStatement extends SchemaStatement implements NonConnect
 
     public ExecutionOutput execute() throws HBqlException {
 
-        final DefinedSchema schema = SchemaManager.newDefinedSchema(this.getSchemaName(),
-                                                                    this.getTableName(),
-                                                                    this.getColumnDescriptionList());
+        final HBaseSchema schema = SchemaManager.newHBaseSchema(this.getSchemaName(),
+                                                                this.getTableName(),
+                                                                this.getColumnDescriptionList());
 
         for (final ColumnAttrib attrib : schema.getColumnAttribSet()) {
             if (attrib.getFieldType() == null && !attrib.isFamilyDefaultAttrib())

@@ -20,7 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.schema;
 
-import org.apache.hadoop.hbase.hbql.client.Column;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.lang.reflect.Field;
@@ -28,18 +27,19 @@ import java.lang.reflect.Modifier;
 
 public class CurrentValueAnnotationAttrib extends FieldAttrib {
 
-    private final Object defaultValue;
+    final ColumnAttrib columnAttrib;
 
-    public CurrentValueAnnotationAttrib(final AnnotationSchema parentSchema,
-                                        final Field field) throws HBqlException {
+    public CurrentValueAnnotationAttrib(final Field field, final ColumnAttrib columnAttrib) throws HBqlException {
 
-        super(field.getAnnotation(Column.class).family(),
-              field.getAnnotation(Column.class).column(),
+        super(columnAttrib.getFamilyName(),
+              columnAttrib.getColumnName(),
               field,
-              FieldType.getFieldType(field),
-              field.getAnnotation(Column.class).familyDefault(),
-              field.getAnnotation(Column.class).getter(),
-              field.getAnnotation(Column.class).setter());
+              columnAttrib.getFieldType(),
+              columnAttrib.isFamilyDefaultAttrib(),
+              columnAttrib.getGetter(),
+              columnAttrib.getSetter());
+
+        this.columnAttrib = columnAttrib;
 
         this.defineAccessors();
 
@@ -47,25 +47,16 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
             throw new HBqlException(this + "." + this.getField().getName() + " cannot have a @Column "
                                     + "annotation and be marked final");
 
-        defaultValue = getDefaultFieldValue(parentSchema, field);
+        // TODO Check for type match
+
     }
 
-    private Object getDefaultFieldValue(final AnnotationSchema parentSchema,
-                                        final Field field) {
-        try {
-            return field.get(parentSchema.getSingleInstance());
-        }
-        catch (IllegalAccessException e) {
-            return null;
-        }
-    }
-
-    private Column getColumnAnno() {
-        return this.getField().getAnnotation(Column.class);
+    private ColumnAttrib getColumnAttrib() {
+        return columnAttrib;
     }
 
     public boolean isAKeyAttrib() {
-        return this.getColumnAnno().key();
+        return this.getColumnAttrib().isAKeyAttrib();
     }
 
     private static boolean isFinal(final Field field) {
@@ -73,7 +64,7 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
     }
 
     public Object getDefaultValue() {
-        return this.defaultValue;
+        return this.getColumnAttrib().getDefaultValue();
     }
 
     public boolean hasDefaultArg() {

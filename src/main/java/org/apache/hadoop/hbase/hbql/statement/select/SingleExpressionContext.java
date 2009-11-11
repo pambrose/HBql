@@ -160,7 +160,7 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
             }
             else {
                 if (!name.contains(":"))
-                    throw new HBqlException("Invalid select value: " + name);
+                    throw new HBqlException("Unknown select value: " + name);
                 final String[] strs = name.split(":");
                 this.familyName = strs[0];
                 this.columnName = strs[1];

@@ -32,11 +32,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 
-public class DefinedAttrib extends ColumnAttrib {
+public class HBaseAttrib extends ColumnAttrib {
 
     private final DefaultArg defaultArg;
 
-    public DefinedAttrib(final ColumnDescription columnDescription) throws HBqlException {
+    public HBaseAttrib(final ColumnDescription columnDescription) throws HBqlException {
 
         super(columnDescription.getFamilyName(),
               columnDescription.getColumnName(),
@@ -84,7 +84,7 @@ public class DefinedAttrib extends ColumnAttrib {
         return new DefaultArg(type, defaultValueExpr);
     }
 
-    public Object getDefaultValue() throws HBqlException {
+    public Object getDefaultValue() {
         return (this.hasDefaultArg()) ? this.getDefaultArg().getValue() : null;
     }
 
@@ -171,7 +171,7 @@ public class DefinedAttrib extends ColumnAttrib {
     }
 
     public String getEnclosingClassName() {
-        // TODO This will get resolved when getter/setter is added to DefinedSchema
+        // TODO This will get resolved when getter/setter is added to HBaseSchema
         return "";
     }
 

@@ -54,7 +54,7 @@ public class AggregateTest extends TestSupport {
     @BeforeClass
     public static void testSetup() throws HBqlException, IOException {
 
-        SchemaManager.execute("CREATE SCHEMA aggtab FOR TABLE table2"
+        SchemaManager.execute("CREATE SCHEMA aggschema FOR TABLE aggtable"
                               + "("
                               + "keyval key, "
                               + "f1:val1 string alias val1, "
@@ -72,10 +72,10 @@ public class AggregateTest extends TestSupport {
 
         conn = ConnectionManager.newConnection();
 
-        if (!conn.tableExists("table2"))
-            System.out.println(conn.execute("create table using aggtab"));
+        if (!conn.tableExists("aggtable"))
+            System.out.println(conn.execute("create table using aggschema"));
         else
-            System.out.println(conn.execute("delete from aggtab"));
+            System.out.println(conn.execute("delete from aggschema"));
 
         insertRecords(conn, 10, "Batch 1");
         insertRecords(conn, 10, "Batch 2");
@@ -100,7 +100,7 @@ public class AggregateTest extends TestSupport {
                                       final int cnt,
                                       final String msg) throws HBqlException, IOException {
 
-        PreparedStatement stmt = conn.prepare("insert into aggtab " +
+        PreparedStatement stmt = conn.prepare("insert into aggschema " +
                                               "(keyval, val1, val2, val5, val6, f3mapval1, f3mapval2, val8) values " +
                                               "(:key, :val1, :val2, :val5, :val6, :f3mapval1, :f3mapval2, :val8)");
 
@@ -145,7 +145,7 @@ public class AggregateTest extends TestSupport {
     @Test
     public void selectCount() throws HBqlException, IOException {
 
-        final String query1 = "SELECT count() as cnt FROM aggtab";
+        final String query1 = "SELECT count() as cnt FROM aggschema";
         Query<Record> q1 = conn.newQuery(query1);
         List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 1);
@@ -157,7 +157,7 @@ public class AggregateTest extends TestSupport {
     @Test
     public void selectMax() throws HBqlException, IOException {
 
-        final String query1 = "SELECT max(val5) as max FROM aggtab";
+        final String query1 = "SELECT max(val5) as max FROM aggschema";
         Query<Record> q1 = conn.newQuery(query1);
         List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 1);
@@ -170,7 +170,7 @@ public class AggregateTest extends TestSupport {
     @Test
     public void selectMin() throws HBqlException, IOException {
 
-        final String query1 = "SELECT min(val5) as min, min(val5+1) as min2 FROM aggtab";
+        final String query1 = "SELECT min(val5) as min, min(val5+1) as min2 FROM aggschema";
         Query<Record> q1 = conn.newQuery(query1);
         List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 1);
@@ -185,7 +185,7 @@ public class AggregateTest extends TestSupport {
     @Test
     public void selectAll() throws HBqlException, IOException {
 
-        final String query1 = "SELECT count() as cnt, max(val5) as max, min(val5) as min, min(val5+1) as min2 FROM aggtab";
+        final String query1 = "SELECT count() as cnt, max(val5) as max, min(val5) as min, min(val5+1) as min2 FROM aggschema";
         Query<Record> q1 = conn.newQuery(query1);
         List<Record> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 1);

@@ -34,7 +34,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 
-public class AnnotationAllTypesTest extends TestSupport {
+public class RecordAllTypesTest extends TestSupport {
 
     static Connection conn = null;
 
@@ -88,12 +88,12 @@ public class AnnotationAllTypesTest extends TestSupport {
 
         for (int i = 0; i < cnt; i++) {
 
-            AnnotatedAllTypes aat = new AnnotatedAllTypes();
-            aat.setSomeValues(i, noRandomData, cnt);
+            RecordAllTypes rat = new RecordAllTypes();
+            rat.setSomeValues(i, noRandomData, cnt);
 
-            retval.add(aat);
+            retval.add(rat.getRecord());
 
-            batch.insert(aat);
+            batch.insert(rat);
         }
 
         conn.apply(batch);

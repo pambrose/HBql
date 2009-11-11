@@ -34,6 +34,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
+import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -52,11 +53,25 @@ public class ConnectionImpl implements Connection {
     }
 
     public <T> Query<T> newQuery(final String query) throws IOException, HBqlException {
-        return new QueryImpl<T>(this, query);
+        return this.newQuery(query, null);
+    }
+
+    public <T> Query<T> newQuery(final String query, final Class clazz) throws IOException, HBqlException {
+        final AnnotationMapping mapping;
+        if (clazz != null) {
+            mapping = AnnotationMapping.getAnnotationMapping(clazz);
+            if (mapping == null)
+                throw new HBqlException("Unknown class " + clazz.getName());
+        }
+        else {
+            mapping = null;
+        }
+
+        return new QueryImpl<T>(this, query, mapping);
     }
 
     public <T> Query<T> newQuery(final SelectStatement selectStatement) throws IOException, HBqlException {
-        return new QueryImpl<T>(this, selectStatement);
+        return new QueryImpl<T>(this, selectStatement, null);
     }
 
     public String getName() {
