@@ -40,7 +40,7 @@ public class AggregateValue extends ColumnValue {
     }
 
     public boolean isValueSet() {
-        return valueSet;
+        return this.valueSet;
     }
 
     private void setValueSet(final boolean valueSet) {
