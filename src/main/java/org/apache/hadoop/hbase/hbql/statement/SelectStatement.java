@@ -22,8 +22,8 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
-import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.InvalidVariableException;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
@@ -53,7 +53,7 @@ public class SelectStatement extends SchemaStatement {
         return "expr-" + this.expressionCounter++;
     }
 
-    public void validate(final Connection connection) throws HBqlException {
+    public void validate(final HConnection connection) throws HBqlException {
 
         this.getSelectAttribList().clear();
 

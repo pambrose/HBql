@@ -22,10 +22,10 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.Record;
-import org.apache.hadoop.hbase.hbql.client.Results;
+import org.apache.hadoop.hbase.hbql.client.ResultSet;
 import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 
@@ -126,10 +126,10 @@ public class ImportStatement implements ConnectionStatement {
 
         selectStatement.validate(conn);
 
-        final Query<Record> query = conn.newQuery(selectStatement);
-        final Results<Record> results = query.getResults();
+        final Query<HRecord> query = conn.newQuery(selectStatement);
+        final ResultSet<HRecord> results = query.getResults();
 
-        for (final Record rec : results) {
+        for (final HRecord rec : results) {
             for (final String columnName : rec.getColumnNameList()) {
                 out.println(columnName + ": " + rec.getCurrentValue(columnName));
             }

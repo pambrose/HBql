@@ -22,9 +22,9 @@ package org.apache.hadoop.hbase.hbql;
 
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.Batch;
-import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
@@ -36,7 +36,7 @@ import java.util.List;
 
 public class AnnotationAllTypesTest extends TestSupport {
 
-    static Connection conn = null;
+    static HConnection conn = null;
 
     static int cnt = 10;
 

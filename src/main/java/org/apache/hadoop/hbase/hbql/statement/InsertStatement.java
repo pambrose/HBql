@@ -27,8 +27,8 @@ import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
-import org.apache.hadoop.hbase.hbql.client.Record;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
@@ -45,7 +45,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
     private final InsertValueSource insertValuesSource;
 
     private ConnectionImpl connection = null;
-    private Record record = null;
+    private HRecord record = null;
     private boolean validated = false;
 
     public InsertStatement(final String schemaName,
@@ -139,7 +139,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         return cnt;
     }
 
-    private Record getRecord() {
+    private HRecord getRecord() {
         return this.record;
     }
 

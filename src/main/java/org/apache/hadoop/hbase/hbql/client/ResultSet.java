@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import java.util.Iterator;
 
-public interface Results<T> extends Iterable<T> {
+public interface ResultSet<T> extends Iterable<T> {
 
     void close();
 

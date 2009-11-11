@@ -24,7 +24,7 @@ import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.FamilyDefaultValueMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Record;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.Value;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
 
-public class RecordImpl implements Serializable, Record {
+public class RecordImpl implements Serializable, HRecord {
 
     private HBaseSchema schema = null;
     private long timestamp = System.currentTimeMillis();

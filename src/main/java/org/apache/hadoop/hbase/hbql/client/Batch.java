@@ -58,7 +58,7 @@ public class Batch {
         this.getActionList(mapping.getTableName()).add(new InsertAction(put));
     }
 
-    public void insert(final Record rec) throws HBqlException {
+    public void insert(final HRecord rec) throws HBqlException {
         final RecordImpl record = (RecordImpl)rec;
 
         final HBaseSchema schema = record.getSchema();

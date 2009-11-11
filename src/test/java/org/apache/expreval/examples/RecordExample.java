@@ -21,12 +21,12 @@
 package org.apache.expreval.examples;
 
 import org.apache.hadoop.hbase.hbql.client.Batch;
-import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.Record;
-import org.apache.hadoop.hbase.hbql.client.Results;
+import org.apache.hadoop.hbase.hbql.client.ResultSet;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 
@@ -48,7 +48,7 @@ public class RecordExample {
                               + "f3:mapval2 string alias f3mapval2 "
                               + ")");
 
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
 
         // System.out.println(conn.execute("delete from TestObject with client filter where true"));
         // System.out.println(conn.execute("disable table testobjects"));
@@ -62,7 +62,7 @@ public class RecordExample {
 
             final Batch batch = new Batch();
             for (int i = 0; i < 10; i++) {
-                Record record = SchemaManager.newRecord("testobjects");
+                HRecord record = SchemaManager.newRecord("testobjects");
                 record.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
                 record.setCurrentValue("author", "A new author value: " + i);
                 record.setCurrentValue("title", "A very new title value: " + i);
@@ -84,10 +84,10 @@ public class RecordExample {
                               //+ "SCAN LIMIT 4"
                               //+ "SERVER FILTER WHERE author LIKE '.*6200.*' "
                               + "CLIENT FILTER WHERE keyval = '0000000002' OR author LIKE '.*val.*'";
-        Query<Record> q1 = conn.newQuery(query1);
-        Results<Record> results1 = q1.getResults();
+        Query<HRecord> q1 = conn.newQuery(query1);
+        ResultSet<HRecord> results1 = q1.getResults();
 
-        for (Record val1 : results1) {
+        for (HRecord val1 : results1) {
             System.out.println("Current Values: " + val1.getCurrentValue("keyval")
                                + " - " + val1.getCurrentValue("family1:author")
                                + " - " + val1.getCurrentValue("title")

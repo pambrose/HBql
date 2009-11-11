@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.MasterNotRunningException;
 import java.io.IOException;
 import java.util.Set;
 
-public interface Connection {
+public interface HConnection {
 
     String getName();
 

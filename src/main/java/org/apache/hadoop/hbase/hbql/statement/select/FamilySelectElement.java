@@ -23,8 +23,8 @@ package org.apache.hadoop.hbase.hbql.statement.select;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
@@ -118,7 +118,7 @@ public class FamilySelectElement implements SelectElement {
         return 0;
     }
 
-    public void validate(final HBaseSchema schema, final Connection connection) throws HBqlException {
+    public void validate(final HBaseSchema schema, final HConnection connection) throws HBqlException {
 
         this.setSchema(schema);
 

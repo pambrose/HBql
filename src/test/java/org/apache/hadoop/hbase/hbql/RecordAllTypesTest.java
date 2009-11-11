@@ -22,9 +22,10 @@ package org.apache.hadoop.hbase.hbql;
 
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.Batch;
-import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
@@ -36,7 +37,7 @@ import java.util.List;
 
 public class RecordAllTypesTest extends TestSupport {
 
-    static Connection conn = null;
+    static HConnection conn = null;
 
     static int cnt = 10;
 
@@ -81,9 +82,9 @@ public class RecordAllTypesTest extends TestSupport {
         }
     }
 
-    public static List<AnnotatedAllTypes> insertSomeData(int cnt, boolean noRandomData) throws HBqlException, IOException {
+    public static List<HRecord> insertSomeData(int cnt, boolean noRandomData) throws HBqlException, IOException {
 
-        List<AnnotatedAllTypes> retval = Lists.newArrayList();
+        List<HRecord> retval = Lists.newArrayList();
         final Batch batch = new Batch();
 
         for (int i = 0; i < cnt; i++) {
@@ -91,7 +92,7 @@ public class RecordAllTypesTest extends TestSupport {
             RecordAllTypes rat = new RecordAllTypes();
             rat.setSomeValues(i, noRandomData, cnt);
 
-            retval.add(rat.getRecord());
+            retval.add(rat.getRec());
 
             batch.insert(rat);
         }
@@ -105,14 +106,14 @@ public class RecordAllTypesTest extends TestSupport {
     @Test
     public void simpleSelect() throws HBqlException, IOException {
 
-        List<AnnotatedAllTypes> vals = insertSomeData(cnt, true);
+        List<HRecord> vals = insertSomeData(cnt, true);
 
         assertTrue(vals.size() == cnt);
 
-        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from alltypes", AnnotatedAllTypes.class);
+        Query<HRecord> recs = conn.newQuery("select * from alltypes", AnnotatedAllTypes.class);
 
         int reccnt = 0;
-        for (final AnnotatedAllTypes rec : recs.getResults())
+        for (final HRecord rec : recs.getResults())
             assertTrue(rec.equals(vals.get(reccnt++)));
 
         assertTrue(reccnt == cnt);
@@ -121,14 +122,14 @@ public class RecordAllTypesTest extends TestSupport {
     @Test
     public void simpleSparseSelect() throws HBqlException, IOException {
 
-        List<AnnotatedAllTypes> vals = insertSomeData(cnt, false);
+        List<HRecord> vals = insertSomeData(cnt, false);
 
         assertTrue(vals.size() == cnt);
 
-        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from alltypes", AnnotatedAllTypes.class);
+        Query<HRecord> recs = conn.newQuery("select * from alltypes", AnnotatedAllTypes.class);
 
         int reccnt = 0;
-        for (final AnnotatedAllTypes rec : recs.getResults())
+        for (final HRecord rec : recs.getResults())
             assertTrue(rec.equals(vals.get(reccnt++)));
 
         assertTrue(reccnt == cnt);
@@ -137,16 +138,16 @@ public class RecordAllTypesTest extends TestSupport {
     @Test
     public void simpleLimitSelect() throws HBqlException, IOException {
 
-        List<AnnotatedAllTypes> vals = insertSomeData(cnt, true);
+        List<HRecord> vals = insertSomeData(cnt, true);
 
         assertTrue(vals.size() == cnt);
 
-        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from alltypes WITH LIMIT :limit", AnnotatedAllTypes.class);
+        Query<HRecord> recs = conn.newQuery("select * from alltypes WITH LIMIT :limit", AnnotatedAllTypes.class);
 
         recs.setParameter("limit", cnt / 2);
 
         int reccnt = 0;
-        for (final AnnotatedAllTypes rec : recs.getResults())
+        for (final HRecord rec : recs.getResults())
             assertTrue(rec.equals(vals.get(reccnt++)));
 
         assertTrue(reccnt == cnt / 2);

@@ -25,9 +25,9 @@ import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Record;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
@@ -143,7 +143,7 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
         return this.columnNameBytes;
     }
 
-    public void validate(final HBaseSchema schema, final Connection connection) throws HBqlException {
+    public void validate(final HBaseSchema schema, final HConnection connection) throws HBqlException {
 
         this.setSchemaAndContext(schema);
 
@@ -212,7 +212,7 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
 
         if (attrib == null) {
             // Find value in results and assign the byte[] value to Record, but bail on Annotated object
-            if (!(obj instanceof Record))
+            if (!(obj instanceof HRecord))
                 return;
 
             ((RecordImpl)obj).setCurrentValue(name, 0, elementValue, false);

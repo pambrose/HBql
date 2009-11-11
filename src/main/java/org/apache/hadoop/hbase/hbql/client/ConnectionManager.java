@@ -28,21 +28,21 @@ import java.util.Map;
 
 public class ConnectionManager {
 
-    private static Map<String, Connection> connectionMap = Maps.newHashMap();
+    private static Map<String, HConnection> connectionMap = Maps.newHashMap();
 
-    public static Connection newConnection() {
+    public static HConnection newConnection() {
         return newConnection(null, null);
     }
 
-    public static Connection newConnection(final HBaseConfiguration config) {
+    public static HConnection newConnection(final HBaseConfiguration config) {
         return newConnection(null, config);
     }
 
-    public static synchronized Connection newConnection(final String name) {
+    public static synchronized HConnection newConnection(final String name) {
         return newConnection(name, null);
     }
 
-    public static synchronized Connection newConnection(final String name, final HBaseConfiguration config) {
+    public static synchronized HConnection newConnection(final String name, final HBaseConfiguration config) {
         final ConnectionImpl conn = new ConnectionImpl(name, config);
 
         if (conn.getName() != null)
@@ -51,11 +51,11 @@ public class ConnectionManager {
         return conn;
     }
 
-    public static Connection getConnection(final String name) {
+    public static HConnection getConnection(final String name) {
         return ConnectionManager.getConnectionMap().get(name);
     }
 
-    private static Map<String, Connection> getConnectionMap() {
+    private static Map<String, HConnection> getConnectionMap() {
         return ConnectionManager.connectionMap;
     }
 }

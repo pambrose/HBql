@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
 
-public interface Record {
+public interface HRecord {
 
     void reset();
 

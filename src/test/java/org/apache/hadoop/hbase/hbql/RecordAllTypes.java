@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql;
 
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Record;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 
@@ -34,7 +34,7 @@ import java.util.Random;
 
 public class RecordAllTypes implements Serializable {
 
-    Record rec;
+    HRecord rec;
 
     public static class TestObject implements Serializable {
         public int intvalue = random.nextInt();
@@ -70,88 +70,88 @@ public class RecordAllTypes implements Serializable {
 
         if (noRandomData || random.nextBoolean()) {
             this.rec.setCurrentValue("byteValue", (byte)random.nextInt());
-            this.byteArrayValue = new byte[cnt];
+            byte[] array = new byte[cnt];
             for (int i = 0; i < cnt; i++)
-                this.byteArrayValue[i] = (byte)random.nextInt();
-            this.rec.setCurrentValue("byteValue", array);
+                array[i] = (byte)random.nextInt();
+            this.rec.setCurrentValue("byteArrayValue", array);
         }
 
         if (noRandomData || random.nextBoolean()) {
             this.rec.setCurrentValue("charValue", ("" + random.nextInt()).charAt(0));
-            this.charArrayValue = ("" + random.nextInt()).toCharArray();
-            this.rec.setCurrentValue("charValue", array);
+            char[] array = ("" + random.nextInt()).toCharArray();
+            this.rec.setCurrentValue("charArrayValue", array);
         }
 
         if (noRandomData || random.nextBoolean()) {
             this.rec.setCurrentValue("shortValue", (short)random.nextInt());
-            this.shortArrayValue = new short[cnt];
+            short[] array = new short[cnt];
             for (int i = 0; i < cnt; i++)
-                this.shortArrayValue[i] = (short)random.nextInt();
-            this.rec.setCurrentValue("shortValue", array);
+                array[i] = (short)random.nextInt();
+            this.rec.setCurrentValue("shortArrayValue", array);
         }
 
         if (noRandomData || random.nextBoolean()) {
             this.rec.setCurrentValue("intValue", random.nextInt());
-            this.intArrayValue = new int[cnt];
+            int[] array = new int[cnt];
             for (int i = 0; i < cnt; i++)
-                this.intArrayValue[i] = random.nextInt();
-            this.rec.setCurrentValue("booleanArrayValue", array);
+                array[i] = random.nextInt();
+            this.rec.setCurrentValue("intArrayValue", array);
         }
 
         if (noRandomData || random.nextBoolean()) {
             this.rec.setCurrentValue("longValue", random.nextLong());
-            this.longArrayValue = new long[cnt];
+            long[] array = new long[cnt];
             for (int i = 0; i < cnt; i++)
-                this.longArrayValue[i] = random.nextLong();
-            this.rec.setCurrentValue("booleanArrayValue", array);
+                array[i] = random.nextLong();
+            this.rec.setCurrentValue("longArrayValue", array);
         }
 
         if (noRandomData || random.nextBoolean()) {
             this.rec.setCurrentValue("floatValue", random.nextFloat());
-            this.floatArrayValue = new float[cnt];
+            float[] array = new float[cnt];
             for (int i = 0; i < cnt; i++)
-                this.floatArrayValue[i] = random.nextFloat();
-            this.rec.setCurrentValue("booleanArrayValue", array);
+                array[i] = random.nextFloat();
+            this.rec.setCurrentValue("floatArrayValue", array);
         }
 
         if (noRandomData || random.nextBoolean()) {
             this.rec.setCurrentValue("doubleValue", random.nextDouble());
-            this.doubleArrayValue = new double[cnt];
+            double[] array = new double[cnt];
             for (int i = 0; i < cnt; i++)
-                this.doubleArrayValue[i] = random.nextDouble();
-            this.rec.setCurrentValue("booleanArrayValue", array);
+                array[i] = random.nextDouble();
+            this.rec.setCurrentValue("doubleArrayValue", array);
         }
 
         if (noRandomData || random.nextBoolean()) {
             this.rec.setCurrentValue("stringValue", "" + random.nextDouble());
-            this.stringArrayValue = new String[cnt];
+            String[] array = new String[cnt];
             for (int i = 0; i < cnt; i++)
-                this.stringArrayValue[i] = "" + random.nextDouble();
-            this.rec.setCurrentValue("booleanArrayValue", array);
+                array[i] = "" + random.nextDouble();
+            this.rec.setCurrentValue("stringArrayValue", array);
         }
 
         if (noRandomData || random.nextBoolean()) {
             this.rec.setCurrentValue("dateValue", new Date(random.nextLong()));
-            this.dateArrayValue = new Date[cnt];
+            Date[] array = new Date[cnt];
             for (int i = 0; i < cnt; i++)
-                this.dateArrayValue[i] = new Date(random.nextLong());
-            this.rec.setCurrentValue("booleanArrayValue", array);
+                array[i] = new Date(random.nextLong());
+            this.rec.setCurrentValue("dateArrayValue", array);
         }
 
         if (noRandomData || random.nextBoolean()) {
             this.rec.setCurrentValue("mapValue", getRandomMap(cnt));
-            this.mapArrayValue = new Map[cnt];
+            Map[] array = new Map[cnt];
             for (int i = 0; i < cnt; i++)
-                this.mapArrayValue[i] = getRandomMap(cnt);
-            this.rec.setCurrentValue("booleanArrayValue", array);
+                array[i] = getRandomMap(cnt);
+            this.rec.setCurrentValue("mapArrayValue", array);
         }
 
         if (noRandomData || random.nextBoolean()) {
             this.rec.setCurrentValue("objectValue", new TestObject());
-            this.objectArrayValue = new TestObject[cnt];
+            TestObject[] array = new TestObject[cnt];
             for (int i = 0; i < cnt; i++)
-                this.objectArrayValue[i] = new TestObject();
-            this.rec.setCurrentValue("booleanArrayValue", array);
+                array[i] = new TestObject();
+            this.rec.setCurrentValue("objectArrayValue", array);
         }
     }
 
@@ -164,6 +164,10 @@ public class RecordAllTypes implements Serializable {
         return retval;
     }
 
+    public HRecord getRec() {
+        return rec;
+    }
+
     public boolean equals(final Object o) {
 
         if (!(o instanceof RecordAllTypes))
@@ -171,43 +175,83 @@ public class RecordAllTypes implements Serializable {
 
         final RecordAllTypes val = (RecordAllTypes)o;
 
-        return val.keyval.equals(this.keyval)
-               && val.booleanValue == this.booleanValue
-               && Arrays.equals(val.booleanArrayValue, this.booleanArrayValue)
-               && val.byteValue == this.byteValue
-               && Arrays.equals(val.byteArrayValue, this.byteArrayValue)
-               && val.charValue == this.charValue
-               && Arrays.equals(val.charArrayValue, this.charArrayValue)
-               && val.shortValue == this.shortValue
-               && Arrays.equals(val.shortArrayValue, this.shortArrayValue)
-               && val.intValue == this.intValue
-               && Arrays.equals(val.intArrayValue, this.intArrayValue)
-               && val.longValue == this.longValue
-               && Arrays.equals(val.longArrayValue, this.longArrayValue)
-               && val.floatValue == this.floatValue
-               && Arrays.equals(val.floatArrayValue, this.floatArrayValue)
-               && val.doubleValue == this.doubleValue
-               && Arrays.equals(val.doubleArrayValue, this.doubleArrayValue)
+        try {
+            return val.getRec().getCurrentValue("keyval").equals(this.getRec().getCurrentValue("keyval"))
+                   && val.getRec().getCurrentValue("booleanValue") == this.getRec().getCurrentValue("booleanValue")
 
-               && ((val.stringValue == null && this.stringValue == null)
-                   || val.stringValue.equals(this.stringValue))
-               && ((val.stringArrayValue == null && this.stringArrayValue == null)
-                   || Arrays.equals(val.stringArrayValue, this.stringArrayValue))
+                   && Arrays.equals((boolean[])val.getRec().getCurrentValue("booleanArrayValue"),
+                                    (boolean[])this.getRec().getCurrentValue("booleanArrayValue"))
 
-               && ((val.dateValue == null && this.dateValue == null)
-                   || val.dateValue.equals(this.dateValue))
-               && ((val.dateArrayValue == null && this.dateArrayValue == null)
-                   || Arrays.equals(val.dateArrayValue, this.dateArrayValue))
+                   && val.getRec().getCurrentValue("byteValue") == this.getRec().getCurrentValue("byteValue")
+                   && Arrays.equals((byte[])val.getRec().getCurrentValue("byteArrayValue"),
+                                    (byte[])this.getRec().getCurrentValue("byteArrayValue"))
 
-               && ((val.mapValue == null && this.mapValue == null)
-                   || val.mapValue.equals(this.mapValue))
-               && ((val.mapArrayValue == null && this.mapArrayValue == null)
-                   || Arrays.equals(val.mapArrayValue, this.mapArrayValue))
+                   && val.getRec().getCurrentValue("charValue") == this.getRec().getCurrentValue("charValue")
+                   && Arrays.equals((char[])val.getRec().getCurrentValue("charArrayValue"),
+                                    (char[])this.getRec().getCurrentValue("charArrayValue"))
 
-               && ((val.objectValue == null && this.objectValue == null)
-                   || val.objectValue.equals(this.objectValue))
-               && ((val.objectArrayValue == null && this.objectArrayValue == null)
-                   || Arrays.equals(val.objectArrayValue, this.objectArrayValue))
-                ;
+                   && val.getRec().getCurrentValue("shortValue") == this.getRec().getCurrentValue("shortValue")
+                   && Arrays.equals((short[])val.getRec().getCurrentValue("shortArrayValue"),
+                                    (short[])this.getRec().getCurrentValue("shortArrayValue"))
+
+                   && val.getRec().getCurrentValue("intValue") == this.getRec().getCurrentValue("intValue")
+                   && Arrays.equals((int[])val.getRec().getCurrentValue("intArrayValue"),
+                                    (int[])this.getRec().getCurrentValue("intArrayValue"))
+
+                   && val.getRec().getCurrentValue("longValue") == this.getRec().getCurrentValue("longValue")
+                   && Arrays.equals((long[])val.getRec().getCurrentValue("longArrayValue"),
+                                    (long[])this.getRec().getCurrentValue("longArrayValue"))
+
+                   && val.getRec().getCurrentValue("floatValue") == this.getRec().getCurrentValue("floatValue")
+                   && Arrays.equals((float[])val.getRec().getCurrentValue("floatArrayValue"),
+                                    (float[])this.getRec().getCurrentValue("floatArrayValue"))
+
+                   && val.getRec().getCurrentValue("doubleValue") == this.getRec().getCurrentValue("doubleValue")
+                   && Arrays.equals((double[])val.getRec().getCurrentValue("doubleArrayValue"),
+                                    (double[])this.getRec().getCurrentValue("doubleArrayValue"))
+
+                   && ((val.getRec().getCurrentValue("stringValue") == null
+                        && this.getRec().getCurrentValue("stringValue") == null)
+                       || val.getRec().getCurrentValue("stringValue")
+                    .equals(this.getRec().getCurrentValue("stringValue")))
+
+                   && ((val.getRec().getCurrentValue("stringArrayValue") == null
+                        && this.getRec().getCurrentValue("stringArrayValue") == null)
+                       || Arrays.equals((String[])val.getRec().getCurrentValue("stringArrayValue"),
+                                        (String[])this.getRec().getCurrentValue("stringArrayValue")))
+
+                   && ((val.getRec().getCurrentValue("dateValue") == null && this.getRec()
+                    .getCurrentValue("dateValue") == null)
+                       || val.getRec().getCurrentValue("dateValue").equals(this.getRec().getCurrentValue("dateValue")))
+
+                   && ((val.getRec().getCurrentValue("dateArrayValue") == null && this.getRec()
+                    .getCurrentValue("dateArrayValue") == null)
+                       || Arrays.equals((Date[])val.getRec().getCurrentValue("dateArrayValue"),
+                                        (Date[])this.getRec()
+                                                .getCurrentValue("dateArrayValue")))
+
+                   && ((val.getRec().getCurrentValue("mapValue") == null
+                        && this.getRec().getCurrentValue("mapValue") == null)
+                       || val.getRec().getCurrentValue("mapValue").equals(this.getRec().getCurrentValue("mapValue")))
+
+                   && ((val.getRec().getCurrentValue("mapArrayValue") == null && this.getRec()
+                    .getCurrentValue("mapArrayValue") == null)
+                       || Arrays.equals((Map[])val.getRec().getCurrentValue("mapArrayValue"),
+                                        (Map[])this.getRec().getCurrentValue("mapArrayValue")))
+
+                   && ((val.getRec().getCurrentValue("objectValue") == null
+                        && this.getRec().getCurrentValue("objectValue") == null)
+                       || val.getRec().getCurrentValue("objectValue")
+                    .equals(this.getRec().getCurrentValue("objectValue")))
+                   && ((val.getRec().getCurrentValue("objectArrayValue") == null
+                        && this.getRec().getCurrentValue("objectArrayValue") == null)
+                       || Arrays.equals((Object[])val.getRec().getCurrentValue("objectArrayValue"),
+                                        (Object[])this.getRec().getCurrentValue("objectArrayValue")))
+                    ;
+        }
+        catch (HBqlException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

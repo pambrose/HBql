@@ -22,12 +22,12 @@ package org.apache.hadoop.hbase.hbql;
 
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.Record;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
@@ -41,7 +41,7 @@ import java.util.Random;
 
 public class AggregateTest extends TestSupport {
 
-    static Connection conn = null;
+    static HConnection conn = null;
     static List<String> keyList = Lists.newArrayList();
     static List<String> val1List = Lists.newArrayList();
     static List<Integer> val5List = Lists.newArrayList();
@@ -96,7 +96,7 @@ public class AggregateTest extends TestSupport {
             val5min = Math.min(val5List.get(i), val5min);
     }
 
-    private static void insertRecords(final Connection conn,
+    private static void insertRecords(final HConnection conn,
                                       final int cnt,
                                       final String msg) throws HBqlException, IOException {
 
@@ -146,10 +146,10 @@ public class AggregateTest extends TestSupport {
     public void selectCount() throws HBqlException, IOException {
 
         final String query1 = "SELECT count() as cnt FROM aggschema";
-        Query<Record> q1 = conn.newQuery(query1);
-        List<Record> recList1 = q1.getResultList();
+        Query<HRecord> q1 = conn.newQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 1);
-        Record rec = recList1.get(0);
+        HRecord rec = recList1.get(0);
         long cnt = (Long)rec.getCurrentValue("cnt");
         assertTrue(cnt == val5List.size());
     }
@@ -158,10 +158,10 @@ public class AggregateTest extends TestSupport {
     public void selectMax() throws HBqlException, IOException {
 
         final String query1 = "SELECT max(val5) as max FROM aggschema";
-        Query<Record> q1 = conn.newQuery(query1);
-        List<Record> recList1 = q1.getResultList();
+        Query<HRecord> q1 = conn.newQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 1);
-        Record rec = recList1.get(0);
+        HRecord rec = recList1.get(0);
         int max = (Integer)rec.getCurrentValue("max");
 
         assertTrue(max == val5max);
@@ -171,10 +171,10 @@ public class AggregateTest extends TestSupport {
     public void selectMin() throws HBqlException, IOException {
 
         final String query1 = "SELECT min(val5) as min, min(val5+1) as min2 FROM aggschema";
-        Query<Record> q1 = conn.newQuery(query1);
-        List<Record> recList1 = q1.getResultList();
+        Query<HRecord> q1 = conn.newQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 1);
-        Record rec = recList1.get(0);
+        HRecord rec = recList1.get(0);
         int min = (Integer)rec.getCurrentValue("min");
         int min2 = (Integer)rec.getCurrentValue("min2");
 
@@ -186,10 +186,10 @@ public class AggregateTest extends TestSupport {
     public void selectAll() throws HBqlException, IOException {
 
         final String query1 = "SELECT count() as cnt, max(val5) as max, min(val5) as min, min(val5+1) as min2 FROM aggschema";
-        Query<Record> q1 = conn.newQuery(query1);
-        List<Record> recList1 = q1.getResultList();
+        Query<HRecord> q1 = conn.newQuery(query1);
+        List<HRecord> recList1 = q1.getResultList();
         assertTrue(recList1.size() == 1);
-        Record rec = recList1.get(0);
+        HRecord rec = recList1.get(0);
         long cnt = (Long)rec.getCurrentValue("cnt");
         int max = (Integer)rec.getCurrentValue("max");
         int min = (Integer)rec.getCurrentValue("min");

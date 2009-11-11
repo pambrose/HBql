@@ -23,9 +23,9 @@ package org.apache.hadoop.hbase.hbql.statement.args;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.Record;
-import org.apache.hadoop.hbase.hbql.client.Results;
+import org.apache.hadoop.hbase.hbql.client.ResultSet;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
@@ -38,8 +38,8 @@ import java.util.List;
 public class InsertSelectValues extends InsertValueSource {
 
     private final SelectStatement selectStatement;
-    private Iterator<Record> resultsIterator = null;
-    private Record currentRecord = null;
+    private Iterator<HRecord> resultsIterator = null;
+    private HRecord currentRecord = null;
 
 
     public InsertSelectValues(final SelectStatement selectStatement) {
@@ -64,25 +64,25 @@ public class InsertSelectValues extends InsertValueSource {
         this.getSelectStatement().validate(this.getInsertStatement().getConnection());
     }
 
-    private Iterator<Record> getResultsIterator() {
+    private Iterator<HRecord> getResultsIterator() {
         return this.resultsIterator;
     }
 
-    private void setResultsIterator(final Iterator<Record> resultsIterator) {
+    private void setResultsIterator(final Iterator<HRecord> resultsIterator) {
         this.resultsIterator = resultsIterator;
     }
 
-    private Record getCurrentRecord() {
+    private HRecord getCurrentRecord() {
         return this.currentRecord;
     }
 
-    private void setCurrentRecord(final Record currentRecord) {
+    private void setCurrentRecord(final HRecord currentRecord) {
         this.currentRecord = currentRecord;
     }
 
     public void execute() throws HBqlException, IOException {
-        final Query<Record> query = this.getInsertStatement().getConnection().newQuery(this.getSelectStatement());
-        final Results<Record> results = query.getResults();
+        final Query<HRecord> query = this.getInsertStatement().getConnection().newQuery(this.getSelectStatement());
+        final ResultSet<HRecord> results = query.getResults();
         this.setResultsIterator(results.iterator());
     }
 

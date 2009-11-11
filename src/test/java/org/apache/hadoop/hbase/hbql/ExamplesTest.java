@@ -21,12 +21,12 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.hbql.client.Batch;
-import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.Record;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
@@ -42,7 +42,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: show-tables
 
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
         System.out.println(conn.execute("SHOW TABLES"));
 
         // Or using the API
@@ -67,7 +67,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: describe-table
 
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
         System.out.println(conn.execute("DESCRIBE TABLE foo"));
 
         // END SNIPPET: describe-table
@@ -78,7 +78,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: describe-schema
 
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
         System.out.println(conn.execute("DESCRIBE SCHEMA foo_schema"));
 
         // END SNIPPET: describe-schema
@@ -89,7 +89,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: enable-table
 
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
         System.out.println(conn.execute("ENABLE TABLE foo"));
 
         // Or using the API
@@ -103,7 +103,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: disable-table
 
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
         conn.execute("DISABLE TABLE foo");
 
         // Or using the API
@@ -130,7 +130,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: create-table
 
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
         conn.execute("CREATE TABLE USING foo_schema");
 
         // END SNIPPET: create-table
@@ -141,7 +141,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: drop-table
 
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
         conn.execute("DROP TABLE foo");
 
         // Or using the API
@@ -162,13 +162,13 @@ public class ExamplesTest extends TestSupport {
                               + "family1:val2 STRING ALIAS val2"
                               + ")");
 
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
 
         System.out.println(conn.execute("INSERT INTO foo_schema (keyval, val1, val2) "
                                         + "VALUES (ZEROPAD(2, 10), 123, 'test val')"));
 
         // Or using the Record interface
-        Record rec = SchemaManager.newRecord("foo_schema");
+        HRecord rec = SchemaManager.newRecord("foo_schema");
         rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(2, 10));
         rec.setCurrentValue("val1", 123);
         rec.setCurrentValue("al2", "testval");
@@ -194,7 +194,7 @@ public class ExamplesTest extends TestSupport {
                               + "family1:val2 STRING ALIAS val2 DEFAULT 'this is a default value'"
                               + ")");
 
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
         PreparedStatement ps = conn.prepare("INSERT INTO foo_schema (keyval, val1, val2) "
                                             + "VALUES (:key, :val1, DEFAULT)");
 
@@ -217,7 +217,7 @@ public class ExamplesTest extends TestSupport {
                               + "family1:val3 STRING ALIAS val3, "
                               + "family1:val4 STRING ALIAS val4 "
                               + ")");
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
 
         System.out.println(conn.execute("INSERT INTO foo_schema (keyval, val1, val2) "
                                         + "SELECT keyval, val3, val4 FROM foo2_schema"));
@@ -265,7 +265,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: select1
 
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
 
         SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                               + "("
@@ -279,14 +279,14 @@ public class ExamplesTest extends TestSupport {
                               + "f3:* ALIAS f3default "
                               + ")");
 
-        Query<Record> q1 = conn.newQuery("SELECT keyval, f1:val1, val5 FROM tab1 "
-                                         + "WITH KEYS FIRST TO :endkey "
-                                         + "VERSIONS 4 "
-                                         + "CLIENT FILTER WHERE val6 > 4");
+        Query<HRecord> q1 = conn.newQuery("SELECT keyval, f1:val1, val5 FROM tab1 "
+                                          + "WITH KEYS FIRST TO :endkey "
+                                          + "VERSIONS 4 "
+                                          + "CLIENT FILTER WHERE val6 > 4");
 
         q1.setParameter("endkey", Util.getZeroPaddedNumber(34, 10));
 
-        for (Record record : q1.getResults()) {
+        for (HRecord record : q1.getResults()) {
             System.out.println("Key = " + record.getCurrentValue("keyval"));
         }
 
@@ -308,7 +308,7 @@ public class ExamplesTest extends TestSupport {
                               + ")");
 
         // Get Connection to HBase
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
 
         // Clean up table
         if (!conn.tableExists("example1"))
@@ -331,7 +331,7 @@ public class ExamplesTest extends TestSupport {
         // Add some other records using the Record interface
         final Batch batch = new Batch();
         for (int i = 5; i < 10; i++) {
-            Record rec = SchemaManager.newRecord("demo1");
+            HRecord rec = SchemaManager.newRecord("demo1");
             rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
             rec.setCurrentValue("val1", "Value: " + i);
             rec.setCurrentValue("f1:val2", i);
@@ -340,9 +340,9 @@ public class ExamplesTest extends TestSupport {
         conn.apply(batch);
 
         // Query the records just added
-        Query<Record> query = conn.newQuery("SELECT * FROM demo1");
+        Query<HRecord> query = conn.newQuery("SELECT * FROM demo1");
 
-        for (Record rec : query.getResults()) {
+        for (HRecord rec : query.getResults()) {
             System.out.println("Key = " + rec.getCurrentValue("keyval"));
             System.out.println("f1:val1 = " + rec.getCurrentValue("val1"));
             System.out.println("f1:val2 = " + rec.getCurrentValue("f1:val2"));
@@ -366,7 +366,7 @@ public class ExamplesTest extends TestSupport {
                               + ")");
 
         // Get Connection to HBase
-        Connection conn = ConnectionManager.newConnection();
+        HConnection conn = ConnectionManager.newConnection();
 
         // Clean up table
         if (!conn.tableExists("example2"))

@@ -23,11 +23,11 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
-import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
-import org.apache.hadoop.hbase.hbql.client.Results;
+import org.apache.hadoop.hbase.hbql.client.ResultSet;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
@@ -41,13 +41,13 @@ import java.util.Set;
 
 public class QueryImpl<T> implements Query<T> {
 
-    private final Connection connection;
+    private final HConnection connection;
     private final SelectStatement selectStatement;
     private final AnnotationMapping mapping;
 
     private List<QueryListener<T>> listeners = null;
 
-    public QueryImpl(final Connection connection,
+    public QueryImpl(final HConnection connection,
                      final SelectStatement selectStatement,
                      final AnnotationMapping mapping) throws HBqlException {
         this.connection = connection;
@@ -57,7 +57,7 @@ public class QueryImpl<T> implements Query<T> {
             this.selectStatement.setSchema(this.mapping);
     }
 
-    public QueryImpl(final Connection connection,
+    public QueryImpl(final HConnection connection,
                      final String query,
                      final AnnotationMapping mapping) throws HBqlException {
         this(connection, HBqlShell.parseSelectStatement(connection, query), mapping);
@@ -70,7 +70,7 @@ public class QueryImpl<T> implements Query<T> {
         this.getListeners().add(listener);
     }
 
-    public Connection getConnection() {
+    public HConnection getConnection() {
         return this.connection;
     }
 
@@ -110,7 +110,7 @@ public class QueryImpl<T> implements Query<T> {
             this.getListeners().clear();
     }
 
-    public Results<T> getResults() throws HBqlException {
+    public ResultSet<T> getResults() throws HBqlException {
 
         // Set it once per evaluation
         DateLiteral.resetNow();
@@ -129,7 +129,7 @@ public class QueryImpl<T> implements Query<T> {
 
         final List<T> retval = Lists.newArrayList();
 
-        Results<T> results = null;
+        ResultSet<T> results = null;
 
         try {
             results = this.getResults();

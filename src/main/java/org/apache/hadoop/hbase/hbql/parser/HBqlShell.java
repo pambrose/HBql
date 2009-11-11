@@ -33,8 +33,8 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.antlr.HBqlLexer;
 import org.apache.hadoop.hbase.hbql.antlr.HBqlParser;
-import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
@@ -173,7 +173,7 @@ public class HBqlShell {
         return (PreparedStatement)statement;
     }
 
-    public static SelectStatement parseSelectStatement(final Connection connection, final String str) throws HBqlException {
+    public static SelectStatement parseSelectStatement(final HConnection connection, final String str) throws HBqlException {
 
         final ShellStatement statement = parse(str);
 

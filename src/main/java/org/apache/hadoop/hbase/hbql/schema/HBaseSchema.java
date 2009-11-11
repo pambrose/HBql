@@ -25,8 +25,8 @@ import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
@@ -255,7 +255,7 @@ public class HBaseSchema extends Schema {
         return new HBqlFilter(origExpressionTree);
     }
 
-    public synchronized Set<String> getSchemaFamilyNames(final Connection connection) throws HBqlException {
+    public synchronized Set<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException {
 
         // TODO May not want to cache this
         if (this.familyNameSet == null) {

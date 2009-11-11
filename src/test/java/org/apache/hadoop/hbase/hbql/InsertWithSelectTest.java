@@ -20,14 +20,14 @@
 
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.Connection;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.Record;
-import org.apache.hadoop.hbase.hbql.client.Results;
+import org.apache.hadoop.hbase.hbql.client.ResultSet;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.client.Util;
@@ -40,7 +40,7 @@ import java.util.Random;
 
 public class InsertWithSelectTest extends TestSupport {
 
-    static Connection conn = null;
+    static HConnection conn = null;
 
     static Random randomVal = new Random();
 
@@ -69,7 +69,7 @@ public class InsertWithSelectTest extends TestSupport {
         insertRecords(conn, 10);
     }
 
-    private static void insertRecords(final Connection conn,
+    private static void insertRecords(final HConnection conn,
                                       final int cnt) throws HBqlException, IOException {
 
         PreparedStatement stmt = conn.prepare("insert into tab3 " +
@@ -93,12 +93,12 @@ public class InsertWithSelectTest extends TestSupport {
 
         final String query1 = "SELECT keyval, val1, val2, val3 FROM tab3";
 
-        Query<Record> q1 = conn.newQuery(query1);
+        Query<HRecord> q1 = conn.newQuery(query1);
 
-        Results<Record> results = q1.getResults();
+        ResultSet<HRecord> results = q1.getResults();
 
         int rec_cnt = 0;
-        for (Record rec : results) {
+        for (HRecord rec : results) {
 
             String keyval = (String)rec.getCurrentValue("keyval");
             String val1 = (String)rec.getCurrentValue("val1");
