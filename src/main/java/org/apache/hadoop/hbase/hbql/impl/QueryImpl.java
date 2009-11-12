@@ -29,8 +29,9 @@ import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.client.ResultSet;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
-import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
+import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
@@ -43,21 +44,21 @@ public class QueryImpl<T> implements Query<T> {
 
     private final HConnection connection;
     private final SelectStatement selectStatement;
-    private final AnnotationMapping mapping;
+    private final Mapping mapping;
 
     private List<QueryListener<T>> listeners = null;
 
     public QueryImpl(final HConnection connection,
                      final SelectStatement selectStatement,
-                     final AnnotationMapping mapping) throws HBqlException {
+                     final Mapping mapping) throws HBqlException {
         this.connection = connection;
         this.selectStatement = selectStatement;
-        this.mapping = mapping;
+        this.mapping = mapping != null ? mapping : new HRecordMapping(selectStatement.getSchema());
     }
 
     public QueryImpl(final HConnection connection,
                      final String query,
-                     final AnnotationMapping mapping) throws HBqlException {
+                     final Mapping mapping) throws HBqlException {
         this(connection, HBqlShell.parseSelectStatement(connection, query), mapping);
     }
 
@@ -72,7 +73,7 @@ public class QueryImpl<T> implements Query<T> {
         return this.connection;
     }
 
-    public AnnotationMapping getMapping() {
+    public Mapping getMapping() {
         return this.mapping;
     }
 

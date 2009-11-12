@@ -104,7 +104,7 @@ public class AnnotationMapping extends Mapping {
 
         final Column columnAnno = field.getAnnotation(Column.class);
         final String attribName = columnAnno.name().length() == 0 ? field.getName() : columnAnno.name();
-        final HBaseAttrib columnAttrib = (HBaseAttrib)this.getSchema().getAttribByVariableName(attribName);
+        final HRecordAttrib columnAttrib = (HRecordAttrib)this.getSchema().getAttribByVariableName(attribName);
 
         if (columnAttrib == null)
             throw new HBqlException("Unknown attribute " + this.getSchema() + "." + attribName

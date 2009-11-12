@@ -35,6 +35,7 @@ import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
+import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -71,7 +72,7 @@ public class ConnectionImpl implements HConnection {
     }
 
     public <T> Query<T> newQuery(final SelectStatement selectStatement) throws IOException, HBqlException {
-        return new QueryImpl<T>(this, selectStatement, null);
+        return new QueryImpl<T>(this, selectStatement, new HRecordMapping(selectStatement.getSchema()));
     }
 
     public String getName() {

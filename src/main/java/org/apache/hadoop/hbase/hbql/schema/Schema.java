@@ -105,7 +105,6 @@ public abstract class Schema implements Serializable {
         return this.schemaName;
     }
 
-
     private List<String> getEvalList() {
         return this.evalList;
     }
@@ -158,7 +157,7 @@ public abstract class Schema implements Serializable {
             list.add(exprStr);
             map.put(exprStr, expressionTree);
 
-            if (list.size() > expressionTreeCacheSize) {
+            if (list.size() > this.expressionTreeCacheSize) {
                 final String firstOne = list.get(0);
                 map.remove(firstOne);
                 list.remove(0);

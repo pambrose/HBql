@@ -53,6 +53,7 @@ public class AggregateRecord extends RecordImpl {
     public static AggregateRecord newAggregateRecord(final Mapping mapping,
                                                      final SelectStatement selectStmt) throws HBqlException {
 
+        // TODO Fix this to work with annotations
         if (!(mapping instanceof HRecordMapping))
             throw new HBqlException("Aggregates do not work with Annotated objects yet");
 

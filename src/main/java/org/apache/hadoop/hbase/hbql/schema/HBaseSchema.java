@@ -36,9 +36,8 @@ import java.util.Set;
 
 public class HBaseSchema extends Schema {
 
-    private ColumnAttrib keyAttrib = null;
     private final String tableName;
-
+    private ColumnAttrib keyAttrib = null;
     private Set<String> familyNameSet = null;
 
     private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
@@ -71,7 +70,7 @@ public class HBaseSchema extends Schema {
     private void processColumn(final ColumnDescription columnDescription,
                                final boolean requireFamilyName) throws HBqlException {
 
-        final HBaseAttrib attrib = new HBaseAttrib(columnDescription);
+        final HRecordAttrib attrib = new HRecordAttrib(columnDescription);
 
         this.addAttribToVariableNameMap(attrib, attrib.getNamesForColumn());
         this.addAttribToFamilyQualifiedNameMap(attrib);
