@@ -45,19 +45,13 @@ public class DefaultArg extends MultipleExpressionContext implements Serializabl
         this.computed = false;
     }
 
-    public Object getValue() {
+    public Object getValue() throws HBqlException {
 
         if (!computed) {
             synchronized (this) {
                 if (!computed) {
                     // Type checking happens in this call, so we force it above in the constructor
-                    try {
-                        this.value = this.evaluateConstant(0, false, null);
-                    }
-                    catch (HBqlException e) {
-                        e.printStackTrace();
-                        this.value = null;
-                    }
+                    this.value = this.evaluateConstant(0, false, null);
                     this.computed = true;
                 }
             }
