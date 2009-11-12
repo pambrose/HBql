@@ -48,7 +48,7 @@ public class HRecordAttrib extends ColumnAttrib {
             throw new HBqlException("Key value " + this.getNameToUseInExceptions() + " cannot have a family name");
     }
 
-    public String asString() {
+    public String asString() throws HBqlException {
 
         final StringBuilder sbuf = new StringBuilder();
 

@@ -72,14 +72,14 @@ public abstract class ColumnAttrib implements Serializable {
         this.defaultArg = this.evaluateDefaultValue(genericValue);
     }
 
-    public abstract String asString();
+    public abstract String asString() throws HBqlException;
 
 
-    public Object getDefaultValue() {
+    public Object getDefaultValue() throws HBqlException {
         return (this.hasDefaultArg()) ? this.getDefaultArg().getValue() : null;
     }
 
-    public boolean hasDefaultArg() {
+    public boolean hasDefaultArg() throws HBqlException {
         return this.getDefaultArg() != null;
     }
 
@@ -88,7 +88,7 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     // This is necessary before sending off with filter
-    public void resetDefaultValue() {
+    public void resetDefaultValue() throws HBqlException {
         if (this.hasDefaultArg())
             this.getDefaultArg().reset();
     }
@@ -390,6 +390,7 @@ public abstract class ColumnAttrib implements Serializable {
         if (type == null)
             throw new HBqlException("Default values are not valid for: " + this.getNameToUseInExceptions());
 
+        // Type checking will happen in this call        
         return new DefaultArg(type, defaultValueExpr);
     }
 }

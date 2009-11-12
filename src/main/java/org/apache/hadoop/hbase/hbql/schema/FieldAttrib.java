@@ -166,7 +166,7 @@ public abstract class FieldAttrib extends ColumnAttrib {
             field.setAccessible(true);
     }
 
-    public String asString() {
+    public String asString() throws HBqlException {
         final StringBuilder sbuf = new StringBuilder();
 
         sbuf.append(this.getFamilyQualifiedName());
@@ -189,11 +189,11 @@ public abstract class FieldAttrib extends ColumnAttrib {
         // No op
     }
 
-    public Object getDefaultValue() {
+    public Object getDefaultValue() throws HBqlException {
         return null;
     }
 
-    public boolean hasDefaultArg() {
+    public boolean hasDefaultArg() throws HBqlException {
         return false;
     }
 }

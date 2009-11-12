@@ -73,7 +73,7 @@ public abstract class Schema implements Serializable {
         return this.getColumnAttribByVariableNameMap().get(name);
     }
 
-    public void resetDefaultValues() {
+    public void resetDefaultValues() throws HBqlException {
         for (final ColumnAttrib attrib : this.getColumnAttribSet())
             attrib.resetDefaultValue();
     }

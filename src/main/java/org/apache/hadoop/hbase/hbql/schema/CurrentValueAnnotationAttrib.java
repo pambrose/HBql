@@ -63,11 +63,11 @@ public class CurrentValueAnnotationAttrib extends FieldAttrib {
         return Modifier.isFinal(field.getModifiers());
     }
 
-    public Object getDefaultValue() {
+    public Object getDefaultValue() throws HBqlException {
         return this.getColumnAttrib().getDefaultValue();
     }
 
-    public boolean hasDefaultArg() {
+    public boolean hasDefaultArg() throws HBqlException {
         return this.getDefaultValue() != null;
     }
 }
