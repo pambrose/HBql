@@ -82,9 +82,9 @@ public class RecordAllTypesTest extends TestSupport {
         }
     }
 
-    public static List<HRecord> insertSomeData(int cnt, boolean noRandomData) throws HBqlException, IOException {
+    public static List<RecordAllTypes> insertSomeData(int cnt, boolean noRandomData) throws HBqlException, IOException {
 
-        List<HRecord> retval = Lists.newArrayList();
+        List<RecordAllTypes> retval = Lists.newArrayList();
         final Batch batch = new Batch();
 
         for (int i = 0; i < cnt; i++) {
@@ -92,9 +92,9 @@ public class RecordAllTypesTest extends TestSupport {
             RecordAllTypes rat = new RecordAllTypes();
             rat.setSomeValues(i, noRandomData, cnt);
 
-            retval.add(rat.getRec());
+            retval.add(rat);
 
-            batch.insert(rat);
+            batch.insert(rat.getHRecord());
         }
 
         conn.apply(batch);
@@ -106,15 +106,15 @@ public class RecordAllTypesTest extends TestSupport {
     @Test
     public void simpleSelect() throws HBqlException, IOException {
 
-        List<HRecord> vals = insertSomeData(cnt, true);
+        List<RecordAllTypes> vals = insertSomeData(cnt, true);
 
         assertTrue(vals.size() == cnt);
 
-        Query<HRecord> recs = conn.newQuery("select * from alltypes", AnnotatedAllTypes.class);
+        Query<HRecord> recs = conn.newQuery("select * from alltypes");
 
         int reccnt = 0;
         for (final HRecord rec : recs.getResults())
-            assertTrue(rec.equals(vals.get(reccnt++)));
+            assertTrue((new RecordAllTypes(rec)).equals(vals.get(reccnt++)));
 
         assertTrue(reccnt == cnt);
     }
@@ -122,15 +122,15 @@ public class RecordAllTypesTest extends TestSupport {
     @Test
     public void simpleSparseSelect() throws HBqlException, IOException {
 
-        List<HRecord> vals = insertSomeData(cnt, false);
+        List<RecordAllTypes> vals = insertSomeData(cnt, false);
 
         assertTrue(vals.size() == cnt);
 
-        Query<HRecord> recs = conn.newQuery("select * from alltypes", AnnotatedAllTypes.class);
+        Query<HRecord> recs = conn.newQuery("select * from alltypes");
 
         int reccnt = 0;
         for (final HRecord rec : recs.getResults())
-            assertTrue(rec.equals(vals.get(reccnt++)));
+            assertTrue((new RecordAllTypes(rec)).equals(vals.get(reccnt++)));
 
         assertTrue(reccnt == cnt);
     }
@@ -138,17 +138,17 @@ public class RecordAllTypesTest extends TestSupport {
     @Test
     public void simpleLimitSelect() throws HBqlException, IOException {
 
-        List<HRecord> vals = insertSomeData(cnt, true);
+        List<RecordAllTypes> vals = insertSomeData(cnt, true);
 
         assertTrue(vals.size() == cnt);
 
-        Query<HRecord> recs = conn.newQuery("select * from alltypes WITH LIMIT :limit", AnnotatedAllTypes.class);
+        Query<HRecord> recs = conn.newQuery("select * from alltypes WITH LIMIT :limit");
 
         recs.setParameter("limit", cnt / 2);
 
         int reccnt = 0;
         for (final HRecord rec : recs.getResults())
-            assertTrue(rec.equals(vals.get(reccnt++)));
+            assertTrue((new RecordAllTypes(rec)).equals(vals.get(reccnt++)));
 
         assertTrue(reccnt == cnt / 2);
     }

@@ -68,7 +68,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         this.validated = true;
 
         this.connection = conn;
-        this.record = SchemaManager.newRecord(this.getSchemaName());
+        this.record = SchemaManager.newHRecord(this.getSchemaName());
 
         for (final SingleExpressionContext element : this.getInsertColumnList()) {
 
@@ -139,7 +139,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
         return cnt;
     }
 
-    private HRecord getRecord() {
+    private HRecord getHRecord() {
         return this.record;
     }
 
@@ -179,10 +179,10 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
                 else {
                     val = this.getInsertValuesSource().getValue(i);
                 }
-                this.getRecord().setCurrentValue(name, val);
+                this.getHRecord().setCurrentValue(name, val);
             }
 
-            batch.insert(this.getRecord());
+            batch.insert(this.getHRecord());
 
             conn.apply(batch);
             cnt++;
@@ -197,7 +197,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
     public void reset() {
         this.getInsertValuesSource().reset();
-        this.getRecord().reset();
+        this.getHRecord().reset();
     }
 
     public String asString() {

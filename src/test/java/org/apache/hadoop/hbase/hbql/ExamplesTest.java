@@ -168,7 +168,7 @@ public class ExamplesTest extends TestSupport {
                                         + "VALUES (ZEROPAD(2, 10), 123, 'test val')"));
 
         // Or using the Record interface
-        HRecord rec = SchemaManager.newRecord("foo_schema");
+        HRecord rec = SchemaManager.newHRecord("foo_schema");
         rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(2, 10));
         rec.setCurrentValue("val1", 123);
         rec.setCurrentValue("al2", "testval");
@@ -331,7 +331,7 @@ public class ExamplesTest extends TestSupport {
         // Add some other records using the Record interface
         final Batch batch = new Batch();
         for (int i = 5; i < 10; i++) {
-            HRecord rec = SchemaManager.newRecord("demo1");
+            HRecord rec = SchemaManager.newHRecord("demo1");
             rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
             rec.setCurrentValue("val1", "Value: " + i);
             rec.setCurrentValue("f1:val2", i);
