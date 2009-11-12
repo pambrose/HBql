@@ -32,6 +32,7 @@ import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.ByteArrayInputStream;
@@ -48,11 +49,11 @@ public class HBqlFilter implements Filter {
     private static final Log LOG = LogFactory.getLog(HBqlFilter.class.getName());
 
     private ExpressionTree expressionTree;
-    public transient RecordImpl record = new RecordImpl((HBaseSchema)null);
+    public transient RecordImpl record = new RecordImpl((HRecordMapping)null);
 
     public HBqlFilter(final ExpressionTree expressionTree) {
         this.expressionTree = expressionTree;
-        this.getHRecord().setSchema(this.getSchema());
+        this.getHRecord().setMapping(new HRecordMapping(this.getSchema()));
     }
 
     public HBqlFilter() {
@@ -159,7 +160,7 @@ public class HBqlFilter implements Filter {
         try {
             this.expressionTree = (ExpressionTree)IO.getSerialization().getScalarFromBytes(FieldType.ObjectType,
                                                                                            Bytes.readByteArray(in));
-            this.getHRecord().setSchema(this.getSchema());
+            this.getHRecord().setMapping(new HRecordMapping(this.getSchema()));
 
             this.getSchema().resetDefaultValues();
         }

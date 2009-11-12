@@ -18,37 +18,27 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.statement;
+package org.apache.hadoop.hbase.hbql.schema;
 
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
-public abstract class SchemaStatement implements ShellStatement {
+import java.util.List;
 
-    private final String schemaName;
-    private volatile HBaseSchema schema = null;
+public abstract class Mapping {
 
-    protected SchemaStatement(final String schemaName) {
-        this.schemaName = schemaName;
-    }
+    private final HBaseSchema schema;
 
-    protected final String getSchemaName() {
-        return schemaName;
-    }
-
-    private void setSchema(final HBaseSchema schema) {
+    public Mapping(final HBaseSchema schema) {
         this.schema = schema;
     }
 
-    public final HBaseSchema getSchema() throws HBqlException {
-
-        if (this.schema == null) {
-            synchronized (this) {
-                if (this.schema == null)
-                    this.setSchema(SchemaManager.getSchema(this.getSchemaName()));
-            }
-        }
+    public HBaseSchema getSchema() {
         return this.schema;
     }
+
+    public abstract Object newObject(final List<SelectElement> selectElementList,
+                                     final int maxVersions,
+                                     final Result result) throws HBqlException;
 }

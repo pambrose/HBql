@@ -23,7 +23,8 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
+import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
@@ -33,9 +34,9 @@ public class AggregateRecord extends RecordImpl {
 
     final List<SelectElement> selectElementList;
 
-    private AggregateRecord(final HBaseSchema schema,
+    private AggregateRecord(final HRecordMapping mapping,
                             final List<SelectElement> selectElementList) throws HBqlException {
-        super(schema);
+        super(mapping);
 
         this.selectElementList = selectElementList;
 
@@ -49,9 +50,14 @@ public class AggregateRecord extends RecordImpl {
         }
     }
 
-    public static AggregateRecord newAggregateRecord(final SelectStatement selectStmt) throws HBqlException {
+    public static AggregateRecord newAggregateRecord(final Mapping mapping,
+                                                     final SelectStatement selectStmt) throws HBqlException {
+
+        if (!(mapping instanceof HRecordMapping))
+            throw new HBqlException("Aggregates do not work with Annotated objects yet");
+
         if (selectStmt.isAnAggregateQuery())
-            return new AggregateRecord(selectStmt.getSchema(), selectStmt.getSelectElementList());
+            return new AggregateRecord((HRecordMapping)mapping, selectStmt.getSelectElementList());
         else
             return null;
     }

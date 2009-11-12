@@ -39,23 +39,21 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class AnnotationMapping extends HBaseSchema {
+public class AnnotationMapping extends Mapping {
 
     private final static Map<Class<?>, AnnotationMapping> annotationMappingMap = Maps.newHashMap();
     private final static Map<String, Class<?>> classCacheMap = Maps.newHashMap();
 
-    private final HBaseSchema mappedSchema;
     private final Class<?> clazz;
     private final Map<String, CurrentValueAnnotationAttrib> columnMap = Maps.newHashMap();
     private final Map<String, VersionAnnotationAttrib> columnVersionMap = Maps.newHashMap();
 
-    private AnnotationMapping(final HBaseSchema mappedSchema,
+    private AnnotationMapping(final HBaseSchema schema,
                               final String schemaName,
                               final Class clazz) throws HBqlException {
 
-        super(schemaName, mappedSchema.getTableName());
+        super(schema);
 
-        this.mappedSchema = mappedSchema;
         this.clazz = clazz;
 
         // Make sure there is an empty constructor declared
@@ -74,9 +72,9 @@ public class AnnotationMapping extends HBaseSchema {
                 this.processColumnVersionAnnotation(field);
         }
 
-        if (!this.getColumnMap().containsKey(this.getMappedSchema().getKeyAttrib().getFamilyQualifiedName()))
+        if (!this.getColumnMap().containsKey(this.getSchema().getKeyAttrib().getFamilyQualifiedName()))
             throw new HBqlException(this.getClazz().getName() + " must contain a mapping to key attribute "
-                                    + this.getMappedSchema().getKeyAttrib().getFamilyQualifiedName());
+                                    + this.getSchema().getKeyAttrib().getFamilyQualifiedName());
     }
 
     public synchronized static AnnotationMapping getAnnotationMapping(final Class<?> clazz) throws HBqlException {
@@ -106,10 +104,10 @@ public class AnnotationMapping extends HBaseSchema {
 
         final Column columnAnno = field.getAnnotation(Column.class);
         final String attribName = columnAnno.name().length() == 0 ? field.getName() : columnAnno.name();
-        final HBaseAttrib columnAttrib = (HBaseAttrib)this.getMappedSchema().getAttribByVariableName(attribName);
+        final HBaseAttrib columnAttrib = (HBaseAttrib)this.getSchema().getAttribByVariableName(attribName);
 
         if (columnAttrib == null)
-            throw new HBqlException("Unknown attribute " + this.getMappedSchema() + "." + attribName
+            throw new HBqlException("Unknown attribute " + this.getSchema() + "." + attribName
                                     + " in " + this.getClazz().getName());
 
         if (this.getColumnMap().containsKey(columnAttrib.getFamilyQualifiedName()))
@@ -118,19 +116,13 @@ public class AnnotationMapping extends HBaseSchema {
 
         final CurrentValueAnnotationAttrib attrib = new CurrentValueAnnotationAttrib(field, columnAttrib);
         this.getColumnMap().put(columnAttrib.getFamilyQualifiedName(), attrib);
-
-        this.addAttribToVariableNameMap(attrib, columnAttrib.getNamesForColumn());
-        this.addAttribToFamilyQualifiedNameMap(attrib);
-        this.addVersionAttrib(attrib);
-        this.addFamilyDefaultAttrib(attrib);
-        this.addAttribToFamilyNameColumnListMap(attrib);
     }
 
     private void processColumnVersionAnnotation(final Field field) throws HBqlException {
 
         final ColumnVersionMap versionAnno = field.getAnnotation(ColumnVersionMap.class);
         final String attribName = versionAnno.name().length() == 0 ? field.getName() : versionAnno.name();
-        final ColumnAttrib columnAttrib = this.getMappedSchema().getAttribByVariableName(attribName);
+        final ColumnAttrib columnAttrib = this.getSchema().getAttribByVariableName(attribName);
 
         this.getColumnVersionMap().put(columnAttrib.getFamilyQualifiedName(),
                                        new VersionAnnotationAttrib(columnAttrib.getFamilyName(),
@@ -142,22 +134,115 @@ public class AnnotationMapping extends HBaseSchema {
                                                                    columnAttrib.getSetter()));
     }
 
-    public String getTableName() {
-        return this.getMappedSchema().getTableName();
-    }
-
-    private HBaseSchema getMappedSchema() {
-        return this.mappedSchema;
-    }
 
     public ColumnAttrib getKeyAttrib() {
-        final String valname = this.getMappedSchema().getKeyAttrib().getFamilyQualifiedName();
+        final String valname = this.getSchema().getKeyAttrib().getFamilyQualifiedName();
         return this.getAttrib(valname);
     }
 
     public ColumnAttrib getAttribByVariableName(final String name) {
-        final String valname = super.getAttribByVariableName(name).getFamilyQualifiedName();
+        final String valname = this.getSchema().getAttribByVariableName(name).getFamilyQualifiedName();
         return this.getAttrib(valname);
+    }
+
+    public static AnnotationMapping getAnnotationMapping(final Object obj) throws HBqlException {
+        return getAnnotationMapping(obj.getClass());
+    }
+
+    private static Map<Class<?>, AnnotationMapping> getAnnotationMappingMap() {
+        return annotationMappingMap;
+    }
+
+    private static Map<String, Class<?>> getClassCacheMap() {
+        return classCacheMap;
+    }
+
+    private Class<?> getClazz() {
+        return this.clazz;
+    }
+
+    private Map<String, CurrentValueAnnotationAttrib> getColumnMap() {
+        return this.columnMap;
+    }
+
+    private Map<String, VersionAnnotationAttrib> getColumnVersionMap() {
+        return this.columnVersionMap;
+    }
+
+    public CurrentValueAnnotationAttrib getAttrib(final String name) {
+        return this.getColumnMap().get(name);
+    }
+
+    public VersionAnnotationAttrib getVersionAttrib(final String name) {
+        return this.getColumnVersionMap().get(name);
+    }
+
+    private Object newInstance() throws IllegalAccessException, InstantiationException {
+        return this.getClazz().newInstance();
+    }
+
+    public Object newObject(final List<SelectElement> selectElementList,
+                            final int maxVersions,
+                            final Result result) throws HBqlException {
+
+        try {
+            // Create object and assign values
+            final Object newobj = this.createNewObject();
+            this.assignSelectValues(newobj, selectElementList, maxVersions, result);
+            return newobj;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            throw new HBqlException("Error in newObject() " + e.getMessage());
+        }
+    }
+
+    private void assignSelectValues(final Object newobj,
+                                    final List<SelectElement> selectElementList,
+                                    final int maxVersions,
+                                    final Result result) throws HBqlException {
+
+        // Set key value
+        this.getAttrib(this.getKeyAttrib().getFamilyQualifiedName()).setCurrentValue(newobj, 0, result.getRow());
+
+        // Set the non-key values
+        for (final SelectElement selectElement : selectElementList)
+            selectElement.assignSelectValue(newobj, maxVersions, result);
+    }
+
+    private Object createNewObject() throws HBqlException {
+
+        // Create new instance
+        final Object newobj;
+        try {
+            newobj = this.newInstance();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            throw new HBqlException("Cannot create new instance of " + this.getClazz().getName());
+        }
+
+        return newobj;
+    }
+
+    private List<ColumnDescription> getColumnDescriptionList() {
+        final List<ColumnDescription> varList = Lists.newArrayList();
+        for (final ColumnAttrib columnAttrib : this.getColumnMap().values()) {
+            final String columnType = columnAttrib.isAKeyAttrib()
+                                      ? FieldType.KeyType.getFirstSynonym()
+                                      : columnAttrib.getFieldType().getFirstSynonym();
+            varList.add(ColumnDescription.newColumn(columnAttrib.getFamilyQualifiedName(),
+                                                    columnAttrib.getAliasName(),
+                                                    columnAttrib.isFamilyDefaultAttrib(),
+                                                    columnType,
+                                                    columnAttrib.isAnArray(),
+                                                    null));
+        }
+        return varList;
+    }
+
+    private static String stripDotClass(final String str) {
+        return str.substring(0, str.length() - ".class".length());
     }
 
     public synchronized static AnnotationMapping getAnnotationMapping(final String objName) throws HBqlException {
@@ -227,106 +312,6 @@ public class AnnotationMapping extends HBaseSchema {
         }
 
         return null;
-    }
-
-    public static AnnotationMapping getAnnotationMapping(final Object obj) throws HBqlException {
-        return getAnnotationMapping(obj.getClass());
-    }
-
-    private static Map<Class<?>, AnnotationMapping> getAnnotationMappingMap() {
-        return annotationMappingMap;
-    }
-
-    private static Map<String, Class<?>> getClassCacheMap() {
-        return classCacheMap;
-    }
-
-    private Class<?> getClazz() {
-        return this.clazz;
-    }
-
-    private Map<String, CurrentValueAnnotationAttrib> getColumnMap() {
-        return this.columnMap;
-    }
-
-    private Map<String, VersionAnnotationAttrib> getColumnVersionMap() {
-        return this.columnVersionMap;
-    }
-
-    public CurrentValueAnnotationAttrib getAttrib(final String name) {
-        return this.getColumnMap().get(name);
-    }
-
-    public VersionAnnotationAttrib getVersionAttrib(final String name) {
-        return this.getColumnVersionMap().get(name);
-    }
-
-    public Object newInstance() throws IllegalAccessException, InstantiationException {
-        return this.getClazz().newInstance();
-    }
-
-    public Object newObject(final List<SelectElement> selectElementList,
-                            final int maxVersions,
-                            final Result result) throws HBqlException {
-
-        try {
-            // Create object and assign values
-            final Object newobj = this.createNewObject();
-            this.assignSelectValues(newobj, selectElementList, maxVersions, result);
-            return newobj;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            throw new HBqlException("Error in newObject() " + e.getMessage());
-        }
-    }
-
-    private void assignSelectValues(final Object newobj,
-                                    final List<SelectElement> selectElementList,
-                                    final int maxVersions,
-                                    final Result result) throws HBqlException {
-
-        // Set key value
-        this.getAttrib(this.getKeyAttrib().getFamilyQualifiedName()).setCurrentValue(newobj, 0, result.getRow());
-
-        // Set the non-key values
-        for (final SelectElement selectElement : selectElementList)
-            selectElement.assignSelectValue(newobj, maxVersions, result);
-    }
-
-    private Object createNewObject() throws HBqlException {
-
-        // Create new instance
-        final Object newobj;
-        try {
-            newobj = this.newInstance();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            throw new HBqlException("Cannot create new instance of " + this.getMappedSchema().getSchemaName());
-        }
-
-        return newobj;
-    }
-
-    private List<ColumnDescription> getColumnDescriptionList() {
-        final List<ColumnDescription> varList = Lists.newArrayList();
-        for (final ColumnAttrib columnAttrib : this.getColumnMap().values()) {
-            final String columnType = columnAttrib.isAKeyAttrib()
-                                      ? FieldType.KeyType.getFirstSynonym()
-                                      : columnAttrib.getFieldType().getFirstSynonym();
-            varList.add(ColumnDescription.newColumn(columnAttrib.getFamilyQualifiedName(),
-                                                    columnAttrib.getAliasName(),
-                                                    columnAttrib.isFamilyDefaultAttrib(),
-                                                    columnType,
-                                                    columnAttrib.isAnArray(),
-                                                    null));
-        }
-        return varList;
-    }
-
-    private static String stripDotClass(final String str) {
-        return str.substring(0, str.length() - ".class".length());
     }
 
     private static AnnotationMapping searchPackage(final String pkgName, final String objName) throws HBqlException {

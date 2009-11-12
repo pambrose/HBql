@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.Value;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -36,22 +37,26 @@ import java.util.Set;
 
 public class RecordImpl implements Serializable, HRecord {
 
-    private HBaseSchema schema = null;
+    private HRecordMapping mapping;
     private long timestamp = System.currentTimeMillis();
 
     private volatile ElementMap<ColumnValue> columnValuesMap = null;
     private volatile ElementMap<FamilyDefaultValueMap> familyDefaultElementsMap = null;
 
-    public RecordImpl(final HBaseSchema schema) {
-        this.setSchema(schema);
+    public RecordImpl(final HRecordMapping mapping) {
+        this.mapping = mapping;
+    }
+
+    private HRecordMapping getMapping() {
+        return mapping;
+    }
+
+    public void setMapping(final HRecordMapping mapping) {
+        this.mapping = mapping;
     }
 
     public HBaseSchema getSchema() {
-        return this.schema;
-    }
-
-    public void setSchema(final HBaseSchema schema) {
-        this.schema = schema;
+        return this.getMapping().getSchema();
     }
 
     protected ElementMap<ColumnValue> getColumnValuesMap() {

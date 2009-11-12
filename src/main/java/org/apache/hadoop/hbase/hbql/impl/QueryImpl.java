@@ -53,8 +53,6 @@ public class QueryImpl<T> implements Query<T> {
         this.connection = connection;
         this.selectStatement = selectStatement;
         this.mapping = mapping;
-        if (this.mapping != null)
-            this.selectStatement.setSchema(this.mapping);
     }
 
     public QueryImpl(final HConnection connection,

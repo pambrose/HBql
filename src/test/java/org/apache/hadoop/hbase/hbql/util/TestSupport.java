@@ -249,7 +249,8 @@ public class TestSupport {
             return null;
 
         try {
-            return AnnotationMapping.getAnnotationMapping(recordObj);
+            final AnnotationMapping mapping = AnnotationMapping.getAnnotationMapping(recordObj);
+            return mapping.getSchema();
         }
         catch (HBqlException e) {
             // Not annotated properly

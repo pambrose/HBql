@@ -30,7 +30,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.client.ResultSet;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
@@ -113,7 +113,8 @@ public class ResultsImpl<T> implements ResultSet<T> {
                 private ResultScanner currentResultScanner = null;
                 private Iterator<Result> currentResultIterator = null;
 
-                private AggregateRecord aggregateRecord = AggregateRecord.newAggregateRecord(getSelectStmt());
+                private AggregateRecord aggregateRecord = AggregateRecord.newAggregateRecord(getQuery().getMapping(),
+                                                                                             getSelectStmt());
 
                 // Prime the iterator with the first value
                 private T nextObject = fetchNextObject();
@@ -164,12 +165,7 @@ public class ResultsImpl<T> implements ResultSet<T> {
                 @SuppressWarnings("unchecked")
                 protected T fetchNextObject() throws HBqlException, IOException {
 
-                    final HBaseSchema schema;
-
-                    if (getQuery().getMapping() == null)
-                        schema = getSelectStmt().getSchema();
-                    else
-                        schema = getQuery().getMapping();
+                    final Mapping mapping = getQuery().getMapping();
 
                     while (this.getCurrentResultIterator() != null || this.getRowRequestIterator().hasNext()) {
 
@@ -194,9 +190,9 @@ public class ResultsImpl<T> implements ResultSet<T> {
                                 this.getAggregateRecord().applyValues(result);
                             }
                             else {
-                                final T val = (T)schema.newObject(getSelectStmt().getSelectElementList(),
-                                                                  this.getMaxVersions(),
-                                                                  result);
+                                final T val = (T)mapping.newObject(getSelectStmt().getSelectElementList(),
+                                                                   this.getMaxVersions(),
+                                                                   result);
 
                                 if (getListeners() != null)
                                     for (final QueryListener<T> listener : getListeners())

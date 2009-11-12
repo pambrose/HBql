@@ -24,14 +24,11 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
-import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
-import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
 import java.util.Map;
@@ -71,6 +68,29 @@ public class HBaseSchema extends Schema {
         this.tableName = tableName;
     }
 
+    private void processColumn(final ColumnDescription columnDescription,
+                               final boolean requireFamilyName) throws HBqlException {
+
+        final HBaseAttrib attrib = new HBaseAttrib(columnDescription);
+
+        this.addAttribToVariableNameMap(attrib, attrib.getNamesForColumn());
+        this.addAttribToFamilyQualifiedNameMap(attrib);
+        this.addVersionAttrib(attrib);
+        this.addFamilyDefaultAttrib(attrib);
+        this.addAttribToFamilyNameColumnListMap(attrib);
+
+        if (attrib.isAKeyAttrib()) {
+            if (this.getKeyAttrib() != null)
+                throw new HBqlException("Schema " + this + " has multiple instance variables marked as keys");
+            this.setKeyAttrib(attrib);
+        }
+        else {
+            final String family = attrib.getFamilyName();
+            if (requireFamilyName && family.length() == 0)
+                throw new HBqlException(attrib.getColumnName() + " is missing family name");
+        }
+    }
+
     public Object newInstance() throws IllegalAccessException, InstantiationException {
         return null;
     }
@@ -99,28 +119,6 @@ public class HBaseSchema extends Schema {
         return IO.getSerialization().getStringAsBytes(this.getTableName());
     }
 
-    public Object newObject(final List<SelectElement> selectElementList,
-                            final int maxVersions,
-                            final Result result) throws HBqlException {
-
-        // Create object and assign values
-        final RecordImpl newrec = new RecordImpl(this);
-        this.assignSelectValues(newrec, selectElementList, maxVersions, result);
-        return newrec;
-    }
-
-    private void assignSelectValues(final Object newobj,
-                                    final List<SelectElement> selectElementList,
-                                    final int maxVersions,
-                                    final Result result) throws HBqlException {
-
-        // Set key value
-        this.getKeyAttrib().setCurrentValue(newobj, 0, result.getRow());
-
-        // Set the non-key values
-        for (final SelectElement selectElement : selectElementList)
-            selectElement.assignSelectValue(newobj, maxVersions, result);
-    }
 
     // *** columnAttribByFamilyQualifiedNameMap calls
     protected Map<String, ColumnAttrib> getAttribByFamilyQualifiedNameMap() {
@@ -266,29 +264,6 @@ public class HBaseSchema extends Schema {
         }
 
         return this.familyNameSet;
-    }
-
-    private void processColumn(final ColumnDescription columnDescription,
-                               final boolean requireFamilyName) throws HBqlException {
-
-        final HBaseAttrib attrib = new HBaseAttrib(columnDescription);
-
-        this.addAttribToVariableNameMap(attrib, attrib.getNamesForColumn());
-        this.addAttribToFamilyQualifiedNameMap(attrib);
-        this.addVersionAttrib(attrib);
-        this.addFamilyDefaultAttrib(attrib);
-        this.addAttribToFamilyNameColumnListMap(attrib);
-
-        if (attrib.isAKeyAttrib()) {
-            if (this.getKeyAttrib() != null)
-                throw new HBqlException("Schema " + this + " has multiple instance variables marked as keys");
-            this.setKeyAttrib(attrib);
-        }
-        else {
-            final String family = attrib.getFamilyName();
-            if (requireFamilyName && family.length() == 0)
-                throw new HBqlException(attrib.getColumnName() + " is missing family name");
-        }
     }
 
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
