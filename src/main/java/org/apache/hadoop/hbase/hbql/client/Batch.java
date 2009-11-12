@@ -54,7 +54,7 @@ public class Batch {
 
     public void insert(final Object newrec) throws HBqlException {
         final AnnotationMapping mapping = AnnotationMapping.getAnnotationMapping(newrec);
-        final Put put = this.createPut(mapping.getSchema(), newrec);
+        final Put put = this.createPut((HBaseSchema)mapping.getSchema(), newrec);
         this.getActionList(mapping.getSchema().getTableName()).add(new InsertAction(put));
     }
 
@@ -72,7 +72,7 @@ public class Batch {
 
     public void delete(final Object newrec) throws HBqlException {
         final AnnotationMapping mapping = AnnotationMapping.getAnnotationMapping(newrec);
-        this.delete(mapping.getSchema(), newrec);
+        this.delete((HBaseSchema)mapping.getSchema(), newrec);
     }
 
     public void delete(final RecordImpl record) throws HBqlException {

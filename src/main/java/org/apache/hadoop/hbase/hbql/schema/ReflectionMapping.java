@@ -20,27 +20,28 @@
 
 package org.apache.hadoop.hbase.hbql.schema;
 
+import org.apache.expreval.client.InternalErrorException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
 
-public abstract class Mapping {
+public class ReflectionMapping extends Mapping {
 
-    private final Schema schema;
 
-    public Mapping(final Schema schema) {
-        this.schema = schema;
+    public ReflectionMapping(final ReflectionSchema schema) {
+        super(schema);
     }
 
-    public Schema getSchema() {
-        return this.schema;
+    public Object newObject(final List<SelectElement> selectElementList,
+                            final int maxVersions,
+                            final Result result) throws HBqlException {
+
+        throw new InternalErrorException();
     }
 
-    public abstract Object newObject(final List<SelectElement> selectElementList,
-                                     final int maxVersions,
-                                     final Result result) throws HBqlException;
-
-    public abstract ColumnAttrib getAttribByVariableName(final String name);
+    public ColumnAttrib getAttribByVariableName(final String name) {
+        return this.getSchema().getAttribByVariableName(name);
+    }
 }

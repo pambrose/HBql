@@ -36,8 +36,6 @@ import java.util.Set;
 
 public class HBaseSchema extends Schema {
 
-    private final String tableName;
-    private ColumnAttrib keyAttrib = null;
     private Set<String> familyNameSet = null;
 
     private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
@@ -46,8 +44,7 @@ public class HBaseSchema extends Schema {
     private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
 
     public HBaseSchema(final List<ColumnDescription> columnDescriptionList) throws HBqlException {
-        super("embedded");
-        this.tableName = "embedded";
+        super("embedded", "embedded");
         for (final ColumnDescription columnDescription : columnDescriptionList)
             this.processColumn(columnDescription, false);
     }
@@ -55,16 +52,14 @@ public class HBaseSchema extends Schema {
     public HBaseSchema(final String schemaName,
                        final String tableName,
                        final List<ColumnDescription> columnDescriptionList) throws HBqlException {
-        super(schemaName);
-        this.tableName = tableName;
+        super(schemaName, tableName);
         for (final ColumnDescription columnDescription : columnDescriptionList)
             processColumn(columnDescription, true);
     }
 
     public HBaseSchema(final String schemaName,
                        final String tableName) throws HBqlException {
-        super(schemaName);
-        this.tableName = tableName;
+        super(schemaName, tableName);
     }
 
     private void processColumn(final ColumnDescription columnDescription,
@@ -92,18 +87,6 @@ public class HBaseSchema extends Schema {
 
     public Object newInstance() throws IllegalAccessException, InstantiationException {
         return null;
-    }
-
-    public ColumnAttrib getKeyAttrib() {
-        return this.keyAttrib;
-    }
-
-    protected void setKeyAttrib(final ColumnAttrib keyAttrib) {
-        this.keyAttrib = keyAttrib;
-    }
-
-    public String getTableName() {
-        return this.tableName;
     }
 
     public List<HColumnDescriptor> getColumnDescriptors() {

@@ -47,8 +47,8 @@ public class RecordImpl implements Serializable, HRecord {
         this.mapping = mapping;
     }
 
-    private HRecordMapping getMapping() {
-        return mapping;
+    public HRecordMapping getMapping() {
+        return this.mapping;
     }
 
     public void setMapping(final HRecordMapping mapping) {
@@ -56,7 +56,7 @@ public class RecordImpl implements Serializable, HRecord {
     }
 
     public HBaseSchema getSchema() {
-        return this.getMapping().getSchema();
+        return (HBaseSchema)this.getMapping().getSchema();
     }
 
     protected ElementMap<ColumnValue> getColumnValuesMap() {
@@ -199,7 +199,7 @@ public class RecordImpl implements Serializable, HRecord {
         }
 
         // Return default value if it exists
-        final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
+        final ColumnAttrib attrib = this.getMapping().getAttribByVariableName(name);
         return (attrib != null) ? attrib.getDefaultValue() : null;
     }
 

@@ -39,6 +39,9 @@ import java.util.Set;
 
 public abstract class Schema implements Serializable {
 
+    private final String tableName;
+    private ColumnAttrib keyAttrib = null;
+
     private final Map<String, ColumnAttrib> columnAttribByVariableNameMap = Maps.newHashMap();
     private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
     private List<String> evalList = null;
@@ -46,8 +49,9 @@ public abstract class Schema implements Serializable {
     private int expressionTreeCacheSize = 25;
     private final String schemaName;
 
-    protected Schema(final String schemaName) {
+    protected Schema(final String schemaName, final String tableName) {
         this.schemaName = schemaName;
+        this.tableName = tableName;
     }
 
     public abstract Collection<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException;
@@ -115,6 +119,18 @@ public abstract class Schema implements Serializable {
 
     public int getEvalCacheSize() {
         return this.expressionTreeCacheSize;
+    }
+
+    public ColumnAttrib getKeyAttrib() {
+        return this.keyAttrib;
+    }
+
+    protected void setKeyAttrib(final ColumnAttrib keyAttrib) {
+        this.keyAttrib = keyAttrib;
+    }
+
+    public String getTableName() {
+        return this.tableName;
     }
 
     public void setEvalCacheSize(final int size) {

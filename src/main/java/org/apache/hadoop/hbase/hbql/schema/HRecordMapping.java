@@ -56,4 +56,8 @@ public class HRecordMapping extends Mapping {
         for (final SelectElement selectElement : selectElementList)
             selectElement.assignSelectValue(newobj, maxVersions, result);
     }
+
+    public ColumnAttrib getAttribByVariableName(final String name) {
+        return this.getSchema().getAttribByVariableName(name);
+    }
 }

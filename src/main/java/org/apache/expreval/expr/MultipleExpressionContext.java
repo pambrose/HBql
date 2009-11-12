@@ -32,6 +32,11 @@ import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
+import org.apache.hadoop.hbase.hbql.schema.Mapping;
+import org.apache.hadoop.hbase.hbql.schema.ReflectionMapping;
+import org.apache.hadoop.hbase.hbql.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 
 import java.io.Serializable;
@@ -49,6 +54,7 @@ public abstract class MultipleExpressionContext implements Serializable {
     private final Map<String, List<NamedParameter>> namedParamMap = Maps.newHashMap();
 
     private Schema schema = null;
+    private Mapping mapping = null;
     private final TypeSignature typeSignature;
     private final List<GenericValue> expressions = Lists.newArrayList();
 
@@ -93,8 +99,16 @@ public abstract class MultipleExpressionContext implements Serializable {
         return this.schema;
     }
 
+    public Mapping getMapping() {
+        return this.mapping;
+    }
+
     public void setSchemaAndContext(final Schema schema) {
         this.schema = schema;
+        if (schema instanceof ReflectionSchema)
+            this.mapping = new ReflectionMapping((ReflectionSchema)schema);
+        else
+            this.mapping = new HRecordMapping((HBaseSchema)schema);
         this.setContext();
     }
 
