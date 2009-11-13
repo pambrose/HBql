@@ -60,6 +60,21 @@ public class RecordImpl implements Serializable, HRecord {
         this.schemaContext = schemaContext;
     }
 
+    public String getAttribName(final int i) throws HBqlException {
+
+        if (i == 1)
+            return this.getMapping().getHBaseSchema().getKeyAttrib().getFamilyQualifiedName();
+
+        try {
+            final KeyValue kv = this.getKeyValueList().get(i - 2);
+            final String column = new String(kv.getColumn());
+            return column;
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
+            throw new HBqlException("Invalid column number " + i);
+        }
+    }
+
     private List<KeyValue> getKeyValueList() {
         return this.keyValueList;
     }

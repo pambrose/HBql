@@ -62,6 +62,9 @@ public class BasicTest {
             String first = rs.getString("val1");
             String last = rs.getString("val2");
 
+            String b0 = rs.getString(1);
+            byte[] b1 = rs.getBytes(2);
+
             System.out.print("ID: " + id);
             System.out.print(", Age: " + age);
             System.out.print(", First: " + first);

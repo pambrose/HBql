@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.jdbc;
 
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.Results;
+import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -50,7 +51,7 @@ public class ResultSetImpl implements ResultSet {
 
     final Results<HRecord> results;
     private Iterator<HRecord> resultsIterator;
-    private HRecord currentRecord = null;
+    private RecordImpl currentRecord = null;
 
     public ResultSetImpl(final Results<HRecord> results) {
         this.results = results;
@@ -65,7 +66,7 @@ public class ResultSetImpl implements ResultSet {
         return this.resultsIterator;
     }
 
-    private HRecord getCurrentRecord() {
+    private RecordImpl getCurrentRecord() {
         return this.currentRecord;
     }
 
@@ -79,7 +80,7 @@ public class ResultSetImpl implements ResultSet {
 
     public boolean next() throws SQLException {
         if (this.getResultsIterator().hasNext()) {
-            this.currentRecord = this.getResultsIterator().next();
+            this.currentRecord = (RecordImpl)this.getResultsIterator().next();
             return true;
         }
         else {
@@ -96,35 +97,43 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public String getString(final int i) throws SQLException {
-        return null;
+        final String name = this.getCurrentRecord().getAttribName(i);
+        return this.getString(name);
     }
 
     public boolean getBoolean(final int i) throws SQLException {
-        return false;
+        final String name = this.getCurrentRecord().getAttribName(i);
+        return this.getBoolean(name);
     }
 
     public byte getByte(final int i) throws SQLException {
-        return 0;
+        final String name = this.getCurrentRecord().getAttribName(i);
+        return this.getByte(name);
     }
 
     public short getShort(final int i) throws SQLException {
-        return 0;
+        final String name = this.getCurrentRecord().getAttribName(i);
+        return this.getShort(name);
     }
 
     public int getInt(final int i) throws SQLException {
-        return 0;
+        final String name = this.getCurrentRecord().getAttribName(i);
+        return this.getInt(name);
     }
 
     public long getLong(final int i) throws SQLException {
-        return 0;
+        final String name = this.getCurrentRecord().getAttribName(i);
+        return this.getInt(name);
     }
 
     public float getFloat(final int i) throws SQLException {
-        return 0;
+        final String name = this.getCurrentRecord().getAttribName(i);
+        return this.getInt(name);
     }
 
     public double getDouble(final int i) throws SQLException {
-        return 0;
+        final String name = this.getCurrentRecord().getAttribName(i);
+        return this.getInt(name);
     }
 
     public BigDecimal getBigDecimal(final int i, final int i1) throws SQLException {
@@ -132,11 +141,13 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public byte[] getBytes(final int i) throws SQLException {
-        return new byte[0];
+        final String name = this.getCurrentRecord().getAttribName(i);
+        return this.getBytes(name);
     }
 
     public Date getDate(final int i) throws SQLException {
-        return null;
+        final String name = this.getCurrentRecord().getAttribName(i);
+        return this.getDate(name);
     }
 
     public Time getTime(final int i) throws SQLException {
@@ -640,11 +651,11 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public RowId getRowId(final int i) throws SQLException {
-        return null;
+        return new RowIdImpl(this.getString(i));
     }
 
     public RowId getRowId(final String s) throws SQLException {
-        return null;
+        return new RowIdImpl(this.getString(s));
     }
 
     public void updateRowId(final int i, final RowId rowId) throws SQLException {
