@@ -25,6 +25,8 @@ import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.hbql.schema.ReflectionSchema;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 import org.apache.yaoql.client.ObjectQuery;
 import org.apache.yaoql.client.ObjectQueryListener;
 import org.apache.yaoql.client.ObjectResults;
@@ -34,8 +36,8 @@ import java.util.List;
 
 public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<T> {
 
-    final String query;
-    List<ObjectQueryListener<T>> listeners = null;
+    private final String query;
+    private List<ObjectQueryListener<T>> listeners = null;
 
     public ObjectQueryImpl(final String query) {
         this.query = query;
@@ -72,7 +74,8 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
         // Grab the first object to derive the schema
         final Object obj = objects.iterator().next();
         final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
-        final ExpressionTree expressionTree = HBqlShell.parseWhereExpression(this.getQuery(), schema);
+        final SchemaContext schemaContext = new SimpleSchemaContext(schema);
+        final ExpressionTree expressionTree = HBqlShell.parseWhereExpression(this.getQuery(), schemaContext);
         this.applyParameters(expressionTree);
         return expressionTree;
     }

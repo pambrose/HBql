@@ -30,6 +30,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 
 import java.util.List;
 
@@ -61,10 +62,6 @@ public class BooleanFunction extends Function implements BooleanValue {
         this.schema = context.getHBaseSchema();
     }
 
-    private Schema getSchema() {
-        return this.schema;
-    }
-
     public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 
         switch (this.getFunctionType()) {
@@ -85,7 +82,8 @@ public class BooleanFunction extends Function implements BooleanValue {
 
             case EVAL: {
                 final String exprStr = (String)this.getArg(0).getValue(object);
-                final ExpressionTree expressionTree = HBqlShell.parseWhereExpression(exprStr, this.getSchema());
+                final SchemaContext schemaContext = this.getExpressionContext().getSchemaContext();
+                final ExpressionTree expressionTree = HBqlShell.parseWhereExpression(exprStr, schemaContext);
                 return expressionTree.evaluate(object);
             }
 

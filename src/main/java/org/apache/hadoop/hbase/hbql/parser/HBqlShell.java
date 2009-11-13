@@ -38,9 +38,9 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
-import org.apache.hadoop.hbase.hbql.schema.Schema;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.ShellStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
@@ -64,9 +64,10 @@ public class HBqlShell {
         }
     }
 
-    public static ExpressionTree parseWhereExpression(final String str, final Schema schema) throws HBqlException {
+    public static ExpressionTree parseWhereExpression(final String str,
+                                                      final SchemaContext schemaContext) throws HBqlException {
         try {
-            return schema.getExpressionTree(str, schema);
+            return schemaContext.getSchema().getExpressionTree(str, schemaContext);
         }
         catch (RecognitionException e) {
             e.printStackTrace();

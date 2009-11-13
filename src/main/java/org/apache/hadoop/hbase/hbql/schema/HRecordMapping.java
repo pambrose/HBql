@@ -30,7 +30,6 @@ import java.util.List;
 
 public class HRecordMapping extends Mapping {
 
-
     public HRecordMapping(final SchemaContext schemaContext) {
         super(schemaContext);
     }

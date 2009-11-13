@@ -26,6 +26,8 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.hbql.schema.ReflectionSchema;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 import org.apache.yaoql.impl.ParameterBinding;
 
 public class ObjectQueryPredicate<T> extends ParameterBinding implements Predicate<T> {
@@ -51,7 +53,8 @@ public class ObjectQueryPredicate<T> extends ParameterBinding implements Predica
         try {
             if (!initialized) {
                 final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
-                this.expressionTree = HBqlShell.parseWhereExpression(this.query, schema);
+                final SchemaContext schemaContext = new SimpleSchemaContext(schema);
+                this.expressionTree = HBqlShell.parseWhereExpression(this.query, schemaContext);
                 this.applyParameters(this.expressionTree);
                 initialized = true;
             }

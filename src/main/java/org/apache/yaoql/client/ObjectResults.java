@@ -35,7 +35,7 @@ public class ObjectResults<T> implements Iterable<T> {
     final ObjectQueryImpl<T> objectQuery;
     final Collection<T> objects;
 
-    public ObjectResults(final ObjectQueryImpl objectQuery, final Collection<T> objects) {
+    public ObjectResults(final ObjectQueryImpl<T> objectQuery, final Collection<T> objects) {
         this.objectQuery = objectQuery;
         this.objects = objects;
     }

@@ -26,8 +26,8 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Column;
 import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.statement.NoStatementSchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.io.File;
@@ -52,7 +52,7 @@ public class AnnotationMapping extends Mapping {
     private AnnotationMapping(final String schemaName,
                               final Class clazz) throws HBqlException {
 
-        super(new NoStatementSchemaContext(schemaName));
+        super(new SimpleSchemaContext(schemaName));
 
         this.clazz = clazz;
 
@@ -80,6 +80,7 @@ public class AnnotationMapping extends Mapping {
     public synchronized static AnnotationMapping getAnnotationMapping(final Class<?> clazz) throws HBqlException {
 
         AnnotationMapping mapping = getAnnotationMappingMap().get(clazz);
+
         if (mapping != null)
             return mapping;
 
@@ -94,6 +95,7 @@ public class AnnotationMapping extends Mapping {
 
         mapping = new AnnotationMapping(schemaAnnotation.name(), clazz);
         getAnnotationMappingMap().put(clazz, mapping);
+
         return mapping;
     }
 

@@ -32,7 +32,7 @@ import org.apache.hadoop.hbase.hbql.schema.Schema;
 public abstract class SchemaContext implements ShellStatement {
 
     private final String schemaName;
-    private Mapping mapping;
+    private Mapping mapping = null;
     private volatile Schema schema = null;
 
     protected SchemaContext(final String schemaName) {
@@ -40,7 +40,7 @@ public abstract class SchemaContext implements ShellStatement {
     }
 
     protected SchemaContext(final Schema schema) {
-        this.schemaName = null;
+        this.schemaName = schema == null ? null : schema.getSchemaName();
         this.setSchema(schema);
     }
 
@@ -48,14 +48,16 @@ public abstract class SchemaContext implements ShellStatement {
         return schemaName;
     }
 
-    public Mapping getMapping() throws HBqlException {
+    public synchronized Mapping getMapping() throws HBqlException {
+
+        // This is the default if it has not already been set.
         if (this.mapping == null)
             this.mapping = new HRecordMapping(this);
 
         return this.mapping;
     }
 
-    public void setMapping(final Mapping mapping) {
+    public synchronized void setMapping(final Mapping mapping) {
         this.mapping = mapping;
     }
 
@@ -83,7 +85,7 @@ public abstract class SchemaContext implements ShellStatement {
         if (origExpressionTree == null)
             return null;
 
-        origExpressionTree.setSchemaContext(new NoStatementSchemaContext(this.getSchemaName()));
+        origExpressionTree.setSchemaContext(this);
         return new HBqlFilter(origExpressionTree);
     }
 }

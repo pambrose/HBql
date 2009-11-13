@@ -23,13 +23,13 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 
 
-public class NoStatementSchemaContext extends SchemaContext {
+public class SimpleSchemaContext extends SchemaContext {
 
-    public NoStatementSchemaContext(final String schemaName) {
+    public SimpleSchemaContext(final String schemaName) {
         super(schemaName);
     }
 
-    public NoStatementSchemaContext(final Schema schema) {
+    public SimpleSchemaContext(final Schema schema) {
         super(schema);
     }
 }
