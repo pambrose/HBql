@@ -164,15 +164,15 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public boolean getBoolean(final String s) throws SQLException {
-        return false;
+        return ((Boolean)this.getCurrentRecord().getCurrentValue(s));
     }
 
     public byte getByte(final String s) throws SQLException {
-        return 0;
+        return ((Byte)this.getCurrentRecord().getCurrentValue(s));
     }
 
     public short getShort(final String s) throws SQLException {
-        return 0;
+        return ((Number)this.getCurrentRecord().getCurrentValue(s)).shortValue();
     }
 
     public int getInt(final String s) throws SQLException {
@@ -180,15 +180,15 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public long getLong(final String s) throws SQLException {
-        return 0;
+        return ((Number)this.getCurrentRecord().getCurrentValue(s)).longValue();
     }
 
     public float getFloat(final String s) throws SQLException {
-        return 0;
+        return ((Number)this.getCurrentRecord().getCurrentValue(s)).floatValue();
     }
 
     public double getDouble(final String s) throws SQLException {
-        return 0;
+        return ((Number)this.getCurrentRecord().getCurrentValue(s)).doubleValue();
     }
 
     public BigDecimal getBigDecimal(final String s, final int i) throws SQLException {
@@ -196,11 +196,11 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public byte[] getBytes(final String s) throws SQLException {
-        return new byte[0];
+        return ((byte[])this.getCurrentRecord().getCurrentValue(s));
     }
 
     public Date getDate(final String s) throws SQLException {
-        return null;
+        return ((Date)this.getCurrentRecord().getCurrentValue(s));
     }
 
     public Time getTime(final String s) throws SQLException {
@@ -244,7 +244,7 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public Object getObject(final String s) throws SQLException {
-        return null;
+        return this.getCurrentRecord().getCurrentValue(s);
     }
 
     public int findColumn(final String s) throws SQLException {
