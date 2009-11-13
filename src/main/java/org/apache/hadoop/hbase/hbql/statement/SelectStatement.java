@@ -55,6 +55,8 @@ public class SelectStatement extends SchemaContext {
 
     public void validate(final HConnection connection) throws HBqlException {
 
+        this.checkIfValidSchemaName();
+
         this.getSelectAttribList().clear();
 
         for (final SelectElement element : this.getSelectElementList()) {

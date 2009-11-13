@@ -31,6 +31,9 @@ public class DropSchemaStatement extends SchemaContext implements NonConnectionS
     }
 
     public ExecutionOutput execute() throws HBqlException {
+
+        // this.checkIfValidSchemaName();
+
         SchemaManager.dropSchema(this.getSchemaName());
         return new ExecutionOutput("Schema " + this.getSchemaName() + " dropped.");
     }

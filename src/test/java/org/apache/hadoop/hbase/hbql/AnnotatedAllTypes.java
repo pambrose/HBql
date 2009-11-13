@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 
-@Schema(name = "alltypes")
+@Schema(name = "alltypes2")
 public class AnnotatedAllTypes implements Serializable {
 
     @Column

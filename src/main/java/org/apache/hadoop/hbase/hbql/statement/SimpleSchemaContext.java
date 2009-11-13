@@ -20,13 +20,16 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 
 
 public class SimpleSchemaContext extends SchemaContext {
 
-    public SimpleSchemaContext(final String schemaName) {
+    public SimpleSchemaContext(final String schemaName) throws HBqlException {
         super(schemaName);
+
+        this.checkIfValidSchemaName();
     }
 
     public SimpleSchemaContext(final Schema schema) {

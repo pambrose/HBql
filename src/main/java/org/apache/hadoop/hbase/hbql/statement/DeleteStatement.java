@@ -54,6 +54,8 @@ public class DeleteStatement extends SchemaContext implements ConnectionStatemen
 
     public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
+        this.checkIfValidSchemaName();
+
         this.getWithArgs().setSchemaContext(this);
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWithArgs().getAllColumnsUsedInExprs();

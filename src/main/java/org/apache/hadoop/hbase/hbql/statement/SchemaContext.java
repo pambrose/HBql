@@ -32,20 +32,36 @@ import org.apache.hadoop.hbase.hbql.schema.Schema;
 
 public abstract class SchemaContext implements ShellStatement {
 
-    private String schemaName;
     private Mapping mapping = null;
     private volatile Schema schema = null;
+    private boolean validSchemaName = true;
+    private String invalidSchemaName = null;
 
     protected SchemaContext(final String schemaName) {
-        this.schemaName = schemaName;
+        try {
+            this.setSchema(SchemaManager.getSchema(schemaName));
+        }
+        catch (HBqlException e) {
+            validSchemaName = false;
+            invalidSchemaName = schemaName;
+        }
     }
 
     protected SchemaContext(final Schema schema) {
         this.setSchema(schema);
     }
 
-    protected final String getSchemaName() {
-        return schemaName;
+    protected String getSchemaName() {
+        return this.getSchema() == null ? null : this.getSchema().getSchemaName();
+    }
+
+    public void setSchema(final Schema schema) {
+        this.schema = schema;
+        this.validSchemaName = true;
+    }
+
+    public Schema getSchema() {
+        return this.schema;
     }
 
     public synchronized Mapping getMapping() throws HBqlException {
@@ -55,6 +71,11 @@ public abstract class SchemaContext implements ShellStatement {
             this.mapping = new HRecordMapping(this);
 
         return this.mapping;
+    }
+
+    protected void checkIfValidSchemaName() throws HBqlException {
+        if (!this.validSchemaName)
+            throw new HBqlException("Unknown schema name: " + this.invalidSchemaName);
     }
 
     public synchronized void setMapping(final Mapping mapping) throws HBqlException {
@@ -69,24 +90,8 @@ public abstract class SchemaContext implements ShellStatement {
         this.mapping = mapping;
     }
 
-    public void setSchema(final Schema schema) {
-        this.schemaName = schema == null ? null : schema.getSchemaName();
-        this.schema = schema;
-    }
-
     public HBaseSchema getHBaseSchema() throws HBqlException {
         return (HBaseSchema)this.getSchema();
-    }
-
-    public Schema getSchema() throws HBqlException {
-
-        if (this.schema == null) {
-            synchronized (this) {
-                if (this.schema == null)
-                    this.setSchema(SchemaManager.getSchema(this.getSchemaName()));
-            }
-        }
-        return this.schema;
     }
 
     public HBqlFilter getHBqlFilter(final ExpressionTree origExpressionTree) throws HBqlException {

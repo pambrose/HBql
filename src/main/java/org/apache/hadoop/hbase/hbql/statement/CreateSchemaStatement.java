@@ -31,6 +31,7 @@ import java.util.List;
 
 public class CreateSchemaStatement extends SchemaContext implements NonConnectionStatement {
 
+    private final String schemaName;
     private final String tableName;
     private final List<ColumnDescription> columnDescriptionList;
 
@@ -38,12 +39,17 @@ public class CreateSchemaStatement extends SchemaContext implements NonConnectio
                                  final String tableName,
                                  final List<ColumnDescription> columnDescriptionList) {
         super(schemaName);
+        this.schemaName = schemaName;
         this.tableName = (tableName == null || tableName.length() == 0) ? schemaName : tableName;
         this.columnDescriptionList = columnDescriptionList;
     }
 
     private String getTableName() {
-        return tableName;
+        return this.tableName;
+    }
+
+    public String getSchemaName() {
+        return this.schemaName;
     }
 
     private List<ColumnDescription> getColumnDescriptionList() {
@@ -55,6 +61,8 @@ public class CreateSchemaStatement extends SchemaContext implements NonConnectio
         final HBaseSchema schema = SchemaManager.newHBaseSchema(this.getSchemaName(),
                                                                 this.getTableName(),
                                                                 this.getColumnDescriptionList());
+
+        this.setSchema(schema);
 
         for (final ColumnAttrib attrib : schema.getColumnAttribSet()) {
             if (attrib.getFieldType() == null && !attrib.isFamilyDefaultAttrib())

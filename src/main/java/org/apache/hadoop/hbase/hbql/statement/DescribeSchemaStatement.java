@@ -33,6 +33,8 @@ public class DescribeSchemaStatement extends SchemaContext implements NonConnect
 
     public ExecutionOutput execute() throws HBqlException {
 
+        this.checkIfValidSchemaName();
+
         final HBaseSchema schema = this.getHBaseSchema();
 
         if (schema == null)

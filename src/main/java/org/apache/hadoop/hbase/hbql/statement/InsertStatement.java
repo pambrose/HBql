@@ -62,6 +62,8 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
 
     public void validate(final ConnectionImpl conn) throws HBqlException {
 
+        this.checkIfValidSchemaName();
+
         if (validated)
             return;
 
