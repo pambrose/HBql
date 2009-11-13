@@ -86,7 +86,7 @@ public class AnnotatedAllTypes implements Serializable {
     @Column
     public double[] doubleArrayValue = null;
 
-    @Column
+    @Column(name = "stringValue")
     public String stringValue = null;
 
     @Column

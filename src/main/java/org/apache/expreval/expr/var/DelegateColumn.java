@@ -68,7 +68,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
     }
 
     private boolean isVariableDefinedInSchema() {
-        return variableDefinedInSchema;
+        return this.variableDefinedInSchema;
     }
 
     public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
@@ -77,7 +77,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
             throw new InternalErrorException("Null schema for: " + this.asString());
 
         // See if referenced var is in schema
-        final ColumnAttrib attrib = context.getSchema().getAttribByVariableName(this.getVariableName());
+        final ColumnAttrib attrib = context.getMapping().getAttribByVariableName(this.getVariableName());
 
         this.variableDefinedInSchema = (attrib != null);
 
