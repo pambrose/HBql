@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 
 import java.io.IOException;
@@ -33,5 +33,5 @@ public interface PreparedStatement extends ConnectionStatement {
 
     void reset();
 
-    void validate(final ConnectionImpl connection) throws HBqlException;
+    void validate(final HConnectionImpl connection) throws HBqlException;
 }

@@ -31,7 +31,7 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.InsertValueSource;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
@@ -44,7 +44,7 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
     private final List<SingleExpressionContext> columnList = Lists.newArrayList();
     private final InsertValueSource insertValuesSource;
 
-    private ConnectionImpl connection = null;
+    private HConnectionImpl connection = null;
     private HRecord record = null;
     private boolean validated = false;
 
@@ -60,7 +60,7 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
         this.getInsertValuesSource().setInsertStatement(this);
     }
 
-    public void validate(final ConnectionImpl conn) throws HBqlException {
+    public void validate(final HConnectionImpl conn) throws HBqlException {
 
         this.checkIfValidSchemaName();
 
@@ -145,7 +145,7 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
         return this.record;
     }
 
-    public ConnectionImpl getConnection() {
+    public HConnectionImpl getConnection() {
         return this.connection;
     }
 
@@ -157,7 +157,7 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
         return this.insertValuesSource;
     }
 
-    public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException, IOException {
 
         this.validate(conn);
 

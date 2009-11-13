@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.Map;
 
@@ -43,7 +43,7 @@ public class ConnectionManager {
     }
 
     public static synchronized HConnection newConnection(final String name, final HBaseConfiguration config) {
-        final ConnectionImpl conn = new ConnectionImpl(name, config);
+        final HConnectionImpl conn = new HConnectionImpl(name, config);
 
         if (conn.getName() != null)
             ConnectionManager.getConnectionMap().put(conn.getName(), conn);

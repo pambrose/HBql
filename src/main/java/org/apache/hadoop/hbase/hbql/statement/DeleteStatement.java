@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
@@ -52,7 +52,7 @@ public class DeleteStatement extends SchemaContext implements ConnectionStatemen
         return this.withArgs;
     }
 
-    public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException, IOException {
 
         this.checkIfValidSchemaName();
 

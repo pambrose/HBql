@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
-import org.apache.hadoop.hbase.hbql.client.ResultSet;
+import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
@@ -40,7 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class ResultsImpl<T> implements ResultSet<T> {
+public class ResultsImpl<T> implements Results<T> {
 
     private final List<ResultScanner> resultScannerList = Lists.newArrayList();
     private final QueryImpl<T> query;

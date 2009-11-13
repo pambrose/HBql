@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.ResultSet;
+import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.client.Schema;
 import org.apache.hadoop.hbase.hbql.client.Util;
 
@@ -148,7 +148,7 @@ public class AnnotationExample {
                               + "CLIENT FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4";
 
         Query<TestObject> q2 = conn.newQuery(query2);
-        ResultSet<TestObject> results2 = q2.getResults();
+        Results<TestObject> results2 = q2.getResults();
 
         for (TestObject val2 : results2) {
             System.out.println("Current Values: " + val2.keyval + " - " + val2.author + " - " + val2.title);

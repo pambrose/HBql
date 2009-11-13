@@ -43,12 +43,12 @@ import org.apache.hadoop.hbase.util.Bytes;
 import java.io.IOException;
 import java.util.Set;
 
-public class ConnectionImpl implements HConnection {
+public class HConnectionImpl implements HConnection {
 
     private final HBaseConfiguration config;
     private final String name;
 
-    public ConnectionImpl(final String name, final HBaseConfiguration config) {
+    public HConnectionImpl(final String name, final HBaseConfiguration config) {
         this.name = name;
         this.config = (config == null) ? new HBaseConfiguration() : config;
     }

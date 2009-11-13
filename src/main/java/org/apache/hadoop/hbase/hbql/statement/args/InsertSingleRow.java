@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql.statement.args;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
 import java.util.List;
@@ -54,7 +54,7 @@ public class InsertSingleRow extends InsertValueSource {
 
     public void validate() throws HBqlException {
 
-        final ConnectionImpl conn = this.getInsertStatement().getConnection();
+        final HConnectionImpl conn = this.getInsertStatement().getConnection();
 
         for (final SingleExpressionContext element : this.getValueList()) {
             element.validate(this.getInsertStatement(), conn);

@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.ResultSet;
+import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 
@@ -85,7 +85,7 @@ public class RecordExample {
                               //+ "SERVER FILTER WHERE author LIKE '.*6200.*' "
                               + "CLIENT FILTER WHERE keyval = '0000000002' OR author LIKE '.*val.*'";
         Query<HRecord> q1 = conn.newQuery(query1);
-        ResultSet<HRecord> results1 = q1.getResults();
+        Results<HRecord> results1 = q1.getResults();
 
         for (HRecord val1 : results1) {
             System.out.println("Current Values: " + val1.getCurrentValue("keyval")

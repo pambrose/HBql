@@ -25,7 +25,7 @@ import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.ResultSet;
+import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
@@ -82,7 +82,7 @@ public class InsertSelectValues extends InsertValueSource {
 
     public void execute() throws HBqlException, IOException {
         final Query<HRecord> query = this.getInsertStatement().getConnection().newQuery(this.getSelectStatement());
-        final ResultSet<HRecord> results = query.getResults();
+        final Results<HRecord> results = query.getResults();
         this.setResultsIterator(results.iterator());
     }
 

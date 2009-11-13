@@ -20,7 +20,9 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-public class HBqlException extends java.lang.Exception {
+import java.sql.SQLException;
+
+public class HBqlException extends SQLException {
 
     public HBqlException(final String s) {
         super(s);

@@ -24,7 +24,7 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.io.IOException;
 
@@ -34,7 +34,7 @@ public class CreateTableStatement extends SchemaContext implements ConnectionSta
         super(schemaName);
     }
 
-    public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException, IOException {
 
         this.checkIfValidSchemaName();
 

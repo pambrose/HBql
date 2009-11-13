@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
-import org.apache.hadoop.hbase.hbql.client.ResultSet;
+import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
@@ -105,7 +105,7 @@ public class QueryImpl<T> implements Query<T> {
             this.getListeners().clear();
     }
 
-    public ResultSet<T> getResults() throws HBqlException {
+    public Results<T> getResults() throws HBqlException {
 
         // Set it once per evaluation
         DateLiteral.resetNow();
@@ -124,7 +124,7 @@ public class QueryImpl<T> implements Query<T> {
 
         final List<T> retval = Lists.newArrayList();
 
-        ResultSet<T> results = null;
+        Results<T> results = null;
 
         try {
             results = this.getResults();
