@@ -18,9 +18,9 @@
  * limitations under the License.
  */
 
-@VersionAnnotation(version = "0.9.2",
-                   date = "11/10/09",
+@VersionAnnotation(version = "0.9.3",
+                   date = "11/12/09",
                    user = "pambrose",
                    revision = "",
-                   url = "") package org.apache.hadoop.hbase.hbql;
+                   url = "http://www.sudothought.com") package org.apache.hadoop.hbase.hbql;
 

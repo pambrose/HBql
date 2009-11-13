@@ -26,6 +26,6 @@ package org.apache.hadoop.hbase.hbql.client;
 // START SNIPPET: doc
 public @interface ColumnVersionMap {
 
-    String name();
+    String name() default "";
 }
 // END SNIPPET: doc

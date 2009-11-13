@@ -24,6 +24,7 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
+import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
@@ -31,7 +32,7 @@ import org.apache.hadoop.hbase.hbql.schema.Schema;
 
 public abstract class SchemaContext implements ShellStatement {
 
-    private final String schemaName;
+    private String schemaName;
     private Mapping mapping = null;
     private volatile Schema schema = null;
 
@@ -40,7 +41,6 @@ public abstract class SchemaContext implements ShellStatement {
     }
 
     protected SchemaContext(final Schema schema) {
-        this.schemaName = schema == null ? null : schema.getSchemaName();
         this.setSchema(schema);
     }
 
@@ -57,11 +57,20 @@ public abstract class SchemaContext implements ShellStatement {
         return this.mapping;
     }
 
-    public synchronized void setMapping(final Mapping mapping) {
+    public synchronized void setMapping(final Mapping mapping) throws HBqlException {
+
+        if (mapping != null && mapping instanceof AnnotationMapping) {
+            final String mappingName = mapping.getSchema().getSchemaName();
+            final String selectName = this.getSchema().getSchemaName();
+            if (!mappingName.equals(selectName))
+                throw new HBqlException("Class " + mappingName + " instead of " + selectName);
+        }
+
         this.mapping = mapping;
     }
 
-    private void setSchema(final Schema schema) {
+    public void setSchema(final Schema schema) {
+        this.schemaName = schema == null ? null : schema.getSchemaName();
         this.schema = schema;
     }
 

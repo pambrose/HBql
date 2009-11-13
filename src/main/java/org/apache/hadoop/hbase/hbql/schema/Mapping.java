@@ -44,6 +44,10 @@ public abstract class Mapping implements Serializable {
         return this.getSchemaContext().getSchema();
     }
 
+    public void setSchema(final Schema schema) {
+        this.getSchemaContext().setSchema(schema);
+    }
+
     public HBaseSchema getHBaseSchema() throws HBqlException {
         return (HBaseSchema)this.getSchema();
     }

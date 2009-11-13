@@ -42,7 +42,7 @@ type:
 
 *Description
 
-    Defines a schema.
+    Defines a schema. A schema is required to create tables or select, insert and delete records. 
 
     * If the table name clause is omitted, then the table name defaults
     to the schema name.

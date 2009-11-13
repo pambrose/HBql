@@ -20,7 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.schema;
 
-import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Column;
@@ -30,27 +29,19 @@ import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 public class AnnotationMapping extends Mapping {
 
     private final static Map<Class<?>, AnnotationMapping> annotationMappingMap = Maps.newHashMap();
-    private final static Map<String, Class<?>> classCacheMap = Maps.newHashMap();
 
     private final Class<?> clazz;
     private final Map<String, CurrentValueAnnotationAttrib> columnMap = Maps.newHashMap();
     private final Map<String, VersionAnnotationAttrib> columnVersionMap = Maps.newHashMap();
 
-    private AnnotationMapping(final String schemaName,
-                              final Class clazz) throws HBqlException {
+    private AnnotationMapping(final String schemaName, final Class clazz) throws HBqlException {
 
         super(new SimpleSchemaContext(schemaName));
 
@@ -81,8 +72,9 @@ public class AnnotationMapping extends Mapping {
 
         AnnotationMapping mapping = getAnnotationMappingMap().get(clazz);
 
-        if (mapping != null)
+        if (mapping != null) {
             return mapping;
+        }
 
         org.apache.hadoop.hbase.hbql.client.Schema schemaAnnotation =
                 clazz.getAnnotation(org.apache.hadoop.hbase.hbql.client.Schema.class);
@@ -94,6 +86,7 @@ public class AnnotationMapping extends Mapping {
             throw new HBqlException("@Schema annotation for class " + clazz.getName() + " is missing a name");
 
         mapping = new AnnotationMapping(schemaAnnotation.name(), clazz);
+
         getAnnotationMappingMap().put(clazz, mapping);
 
         return mapping;
@@ -158,10 +151,6 @@ public class AnnotationMapping extends Mapping {
 
     private static Map<Class<?>, AnnotationMapping> getAnnotationMappingMap() {
         return annotationMappingMap;
-    }
-
-    private static Map<String, Class<?>> getClassCacheMap() {
-        return classCacheMap;
     }
 
     private Class<?> getClazz() {
@@ -231,168 +220,5 @@ public class AnnotationMapping extends Mapping {
         }
 
         return newobj;
-    }
-
-    private List<ColumnDescription> getColumnDescriptionList() {
-        final List<ColumnDescription> varList = Lists.newArrayList();
-        for (final ColumnAttrib columnAttrib : this.getColumnMap().values()) {
-            final String columnType = columnAttrib.isAKeyAttrib()
-                                      ? FieldType.KeyType.getFirstSynonym()
-                                      : columnAttrib.getFieldType().getFirstSynonym();
-            varList.add(ColumnDescription.newColumn(columnAttrib.getFamilyQualifiedName(),
-                                                    columnAttrib.getAliasName(),
-                                                    columnAttrib.isFamilyDefaultAttrib(),
-                                                    columnType,
-                                                    columnAttrib.isAnArray(),
-                                                    null));
-        }
-        return varList;
-    }
-
-    private static String stripDotClass(final String str) {
-        return str.substring(0, str.length() - ".class".length());
-    }
-
-    public synchronized static AnnotationMapping getAnnotationMapping(final String objName) throws HBqlException {
-
-        // First see if already cached
-        Class<?> clazz = getClassCacheMap().get(objName);
-
-        if (clazz != null)
-            return getAnnotationMapping(clazz);
-
-        final String classpath = System.getProperty("java.class.path");
-        for (final String val : classpath.split(":")) {
-            try {
-                if (val.toLowerCase().endsWith(".jar")) {
-                    JarFile jarFile = new JarFile(val);
-                    Enumeration<JarEntry> entries = jarFile.entries();
-                    while (entries.hasMoreElements()) {
-                        final JarEntry entry = entries.nextElement();
-                        final AnnotationMapping mapping = searchPackage(entry.getName(), objName);
-                        if (mapping != null)
-                            return mapping;
-                    }
-                }
-
-                final File rootdir = new File(val);
-                if (rootdir.isDirectory())
-                    return searchDirectory(rootdir, rootdir.getCanonicalPath(), "", objName + ".class");
-            }
-            catch (IOException e) {
-                // Go to next entry
-            }
-        }
-
-        return null;
-    }
-
-    private static AnnotationMapping searchDirectory(final File dir,
-                                                     final String rootDir,
-                                                     final String prefix,
-                                                     final String dotClassName) throws HBqlException {
-
-        final List<File> subdirs = Lists.newArrayList();
-        final String[] contents = dir.list();
-
-        for (final String elem : contents) {
-
-            final File file = new File(dir + "/" + elem);
-            if (file.isDirectory()) {
-                subdirs.add(file);
-            }
-            else {
-                final String pathname = file.getAbsolutePath().replace('/', '.');
-                if (pathname.endsWith(dotClassName)) {
-                    final String rootprefix = rootDir.replace('/', '.');
-                    final String pathsuffix = pathname.substring(rootprefix.length() + 1);
-                    return setClassCache(stripDotClass(pathsuffix), stripDotClass(dotClassName));
-                }
-            }
-        }
-
-        // Now search the dirs
-        for (final File subdir : subdirs) {
-            final String nextdir = (prefix.length() == 0) ? subdir.getName() : prefix + "." + subdir.getName();
-            final AnnotationMapping mapping = searchDirectory(subdir, rootDir, nextdir, dotClassName);
-            if (mapping != null)
-                return mapping;
-        }
-
-        return null;
-    }
-
-    private static AnnotationMapping searchPackage(final String pkgName, final String objName) throws HBqlException {
-
-        if (pkgName == null)
-            return null;
-
-        final String prefix = pkgName.replaceAll("/", ".");
-
-        if (prefix.startsWith("META-INF.")
-            || prefix.startsWith("antlr.")
-            || prefix.startsWith("org.antlr.")
-            || prefix.startsWith("apple.")
-            || prefix.startsWith("com.apple.")
-            || prefix.startsWith("sun.")
-            || prefix.startsWith("com.sun.")
-            || prefix.startsWith("java.")
-            || prefix.startsWith("javax.")
-            || prefix.startsWith("org.apache.zookeeper.")
-            || prefix.startsWith("org.apache.bookkeeper.")
-            || prefix.startsWith("org.apache.jute.")
-            || prefix.startsWith("com.google.common.")
-            || prefix.startsWith("org.apache.log4j.")
-            || prefix.startsWith("junit.")
-            || prefix.startsWith("org.junit.")
-            || prefix.startsWith("org.xml.")
-            || prefix.startsWith("org.w3c.")
-            || prefix.startsWith("org.omg.")
-            || prefix.startsWith("org.apache.mina.")
-            || prefix.startsWith("org.apache.hadoop.")
-            || prefix.startsWith("org.apache.commons.logging.")
-            || prefix.startsWith("org.jcp.")
-            || prefix.startsWith("org.slf4j.")
-            || prefix.startsWith("org.ietf.")
-            || prefix.startsWith("org.relaxng.")
-            || prefix.startsWith("netscape.")
-                )
-            return null;
-
-        final String fullname = prefix
-                                + ((!prefix.endsWith(".") && prefix.length() > 0) ? "." : "")
-                                + objName;
-
-        return setClassCache(fullname, objName);
-    }
-
-    private static AnnotationMapping setClassCache(final String name, final String objName) throws HBqlException {
-
-        final Class<?> clazz = getClass(name);
-        if (clazz == null) {
-            return null;
-        }
-        else {
-            getClassCacheMap().put(objName, clazz);
-            return getAnnotationMapping(clazz);
-        }
-    }
-
-    private static Class getClass(final String str) throws HBqlException {
-        try {
-            final Class<?> clazz = Class.forName(str);
-
-            // Make sure inner class is static
-            if (clazz.isMemberClass() && !Modifier.isStatic(clazz.getModifiers())) {
-                final String s = "Inner class " + clazz.getName() + " must be declared static";
-                System.err.println(s);
-                throw new HBqlException(s);
-            }
-
-            return clazz;
-        }
-        catch (ClassNotFoundException e) {
-            return null;
-        }
     }
 }
