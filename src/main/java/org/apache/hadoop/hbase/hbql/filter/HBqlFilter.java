@@ -32,7 +32,7 @@ import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.FieldType;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.ByteArrayInputStream;
@@ -49,11 +49,11 @@ public class HBqlFilter implements Filter {
     private static final Log LOG = LogFactory.getLog(HBqlFilter.class.getName());
 
     private ExpressionTree expressionTree;
-    public transient RecordImpl record = new RecordImpl((HRecordMapping)null);
+    public transient RecordImpl record = new RecordImpl((SchemaContext)null);
 
-    public HBqlFilter(final ExpressionTree expressionTree) {
+    public HBqlFilter(final ExpressionTree expressionTree) throws HBqlException {
         this.expressionTree = expressionTree;
-        this.getHRecord().setMapping(new HRecordMapping(this.getSchema()));
+        this.getHRecord().setSchemaContext(this.getExpressionTree().getSchemaContext());
     }
 
     public HBqlFilter() {
@@ -63,8 +63,8 @@ public class HBqlFilter implements Filter {
         return this.record;
     }
 
-    private HBaseSchema getSchema() {
-        return (HBaseSchema)this.getExpressionTree().getSchema();
+    private HBaseSchema getSchema() throws HBqlException {
+        return this.getExpressionTree().getHBaseSchema();
     }
 
     private ExpressionTree getExpressionTree() {
@@ -95,23 +95,23 @@ public class HBqlFilter implements Filter {
 
         if (this.hasValidExpressionTree()) {
 
-            final String familyName = Bytes.toString(v.getFamily());
-            final String columnName = Bytes.toString(v.getQualifier());
-            final HBaseSchema schema = this.getSchema();
-            final ColumnAttrib attrib = schema.getAttribFromFamilyQualifiedName(familyName, columnName);
+            try {
+                final String familyName = Bytes.toString(v.getFamily());
+                final String columnName = Bytes.toString(v.getQualifier());
+                final HBaseSchema schema = this.getSchema();
+                final ColumnAttrib attrib = schema.getAttribFromFamilyQualifiedName(familyName, columnName);
 
-            // Do not bother setting value if it is not used in expression
-            if (this.getExpressionTree().getAttribsUsedInExpr().contains(attrib)) {
-                try {
+                // Do not bother setting value if it is not used in expression
+                if (this.getExpressionTree().getAttribsUsedInExpr().contains(attrib)) {
                     LOG.info("In in filterKeyValue() setting value for: " + familyName + ":" + columnName);
                     final Object val = attrib.getValueFromBytes(null, v.getValue());
                     this.getHRecord().setCurrentValue(familyName, columnName, v.getTimestamp(), val);
                     this.getHRecord().setVersionValue(familyName, columnName, v.getTimestamp(), val, true);
                 }
-                catch (Exception e) {
-                    logException(LOG, e);
-                    LOG.info("Had exception in filterKeyValue(): " + e.getClass().getName() + " - " + e.getMessage());
-                }
+            }
+            catch (Exception e) {
+                logException(LOG, e);
+                LOG.info("Had exception in filterKeyValue(): " + e.getClass().getName() + " - " + e.getMessage());
             }
         }
 
@@ -160,7 +160,7 @@ public class HBqlFilter implements Filter {
         try {
             this.expressionTree = (ExpressionTree)IO.getSerialization().getScalarFromBytes(FieldType.ObjectType,
                                                                                            Bytes.readByteArray(in));
-            this.getHRecord().setMapping(new HRecordMapping(this.getSchema()));
+            this.getHRecord().setSchemaContext(this.getExpressionTree().getSchemaContext());
 
             this.getSchema().resetDefaultValues();
         }

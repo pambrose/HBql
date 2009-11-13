@@ -23,8 +23,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
-import org.apache.hadoop.hbase.hbql.schema.Mapping;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
@@ -34,14 +33,14 @@ public class AggregateRecord extends RecordImpl {
 
     final List<SelectElement> selectElementList;
 
-    private AggregateRecord(final HRecordMapping mapping,
+    private AggregateRecord(final SchemaContext schemaContext,
                             final List<SelectElement> selectElementList) throws HBqlException {
-        super(mapping);
+        super(schemaContext);
 
         this.selectElementList = selectElementList;
 
         // Set key value
-        this.getSchema().getKeyAttrib().setCurrentValue(this, 0, "");
+        this.getHBaseSchema().getKeyAttrib().setCurrentValue(this, 0, "");
 
         for (final SelectElement selectElement : this.getSelectElementList()) {
             final AggregateValue val = selectElement.newAggregateValue();
@@ -50,15 +49,11 @@ public class AggregateRecord extends RecordImpl {
         }
     }
 
-    public static AggregateRecord newAggregateRecord(final Mapping mapping,
+    public static AggregateRecord newAggregateRecord(final SchemaContext schemaContext,
                                                      final SelectStatement selectStmt) throws HBqlException {
 
-        // TODO Fix this to work with annotations
-        if (!(mapping instanceof HRecordMapping))
-            throw new HBqlException("Aggregates do not work with Annotated objects yet");
-
         if (selectStmt.isAnAggregateQuery())
-            return new AggregateRecord((HRecordMapping)mapping, selectStmt.getSelectElementList());
+            return new AggregateRecord(schemaContext, selectStmt.getSelectElementList());
         else
             return null;
     }

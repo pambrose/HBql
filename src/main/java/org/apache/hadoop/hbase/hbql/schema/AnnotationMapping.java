@@ -26,7 +26,8 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Column;
 import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.statement.NoStatementSchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.io.File;
@@ -48,11 +49,10 @@ public class AnnotationMapping extends Mapping {
     private final Map<String, CurrentValueAnnotationAttrib> columnMap = Maps.newHashMap();
     private final Map<String, VersionAnnotationAttrib> columnVersionMap = Maps.newHashMap();
 
-    private AnnotationMapping(final HBaseSchema schema,
-                              final String schemaName,
+    private AnnotationMapping(final String schemaName,
                               final Class clazz) throws HBqlException {
 
-        super(schema);
+        super(new NoStatementSchemaContext(schemaName));
 
         this.clazz = clazz;
 
@@ -92,9 +92,7 @@ public class AnnotationMapping extends Mapping {
         if (schemaAnnotation.name() == null || schemaAnnotation.name().length() == 0)
             throw new HBqlException("@Schema annotation for class " + clazz.getName() + " is missing a name");
 
-        final HBaseSchema schema = SchemaManager.getSchema(schemaAnnotation.name());
-
-        mapping = new AnnotationMapping(schema, schemaAnnotation.name(), clazz);
+        mapping = new AnnotationMapping(schemaAnnotation.name(), clazz);
         getAnnotationMappingMap().put(clazz, mapping);
         return mapping;
     }
@@ -135,12 +133,19 @@ public class AnnotationMapping extends Mapping {
     }
 
 
-    public ColumnAttrib getKeyAttrib() {
+    public ColumnAttrib getKeyAttrib() throws HBqlException {
         final String valname = this.getSchema().getKeyAttrib().getFamilyQualifiedName();
         return this.getAttrib(valname);
     }
 
-    public ColumnAttrib getAttribByVariableName(final String name) {
+    public ColumnAttrib getAttribFromFamilyQualifiedName(final String familyName,
+                                                         final String columnName) throws HBqlException {
+        final ColumnAttrib attrib = this.getHBaseSchema().getAttribFromFamilyQualifiedName(familyName
+                                                                                           + ":" + columnName);
+        return this.getAttribByVariableName(attrib.getFamilyQualifiedName());
+    }
+
+    public ColumnAttrib getAttribByVariableName(final String name) throws HBqlException {
         final String valname = this.getSchema().getAttribByVariableName(name).getFamilyQualifiedName();
         return this.getAttrib(valname);
     }
@@ -181,7 +186,8 @@ public class AnnotationMapping extends Mapping {
         return this.getClazz().newInstance();
     }
 
-    public Object newObject(final List<SelectElement> selectElementList,
+    public Object newObject(final SchemaContext schemaContext,
+                            final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {
 

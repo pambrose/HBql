@@ -32,6 +32,7 @@ import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
+import org.apache.hadoop.hbase.hbql.statement.NoStatementSchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
@@ -215,7 +216,7 @@ public class TestSupport {
         try {
             final HBqlParser parser = HBqlShell.newHBqlParser(str);
             final ExpressionTree expressionTree = parser.descWhereExpr();
-            expressionTree.setSchemaAndContext(schema);
+            expressionTree.setSchemaContext(new NoStatementSchemaContext(schema));
             return expressionTree;
         }
         catch (RecognitionException e) {

@@ -20,18 +20,16 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.schema.Schema;
 
-public class DropSchemaStatement extends SchemaContext implements NonConnectionStatement {
 
-    public DropSchemaStatement(final String schemaName) {
+public class NoStatementSchemaContext extends SchemaContext {
+
+    public NoStatementSchemaContext(final String schemaName) {
         super(schemaName);
     }
 
-    public ExecutionOutput execute() throws HBqlException {
-        SchemaManager.dropSchema(this.getSchemaName());
-        return new ExecutionOutput("Schema " + this.getSchemaName() + " dropped.");
+    public NoStatementSchemaContext(final Schema schema) {
+        super(schema);
     }
 }

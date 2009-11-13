@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Value;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 
@@ -38,7 +39,7 @@ public class ElementMap<T extends Value> extends HashMap<String, T> implements S
         return this.record;
     }
 
-    public void addElement(final T value) {
+    public void addElement(final T value) throws HBqlException {
         final ColumnAttrib attrib = this.getRecord().getMapping().getAttribByVariableName(value.getName());
         final String name = (attrib == null) ? value.getName() : attrib.getFamilyQualifiedName();
         this.put(name, value);
@@ -52,7 +53,7 @@ public class ElementMap<T extends Value> extends HashMap<String, T> implements S
         return this.get(name);
     }
 
-    public T findElement(final String name) {
+    public T findElement(final String name) throws HBqlException {
 
         // First try the name given.
         // If that doesn't work, then try qualified name

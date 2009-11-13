@@ -20,28 +20,54 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
+import org.apache.hadoop.hbase.hbql.schema.Mapping;
+import org.apache.hadoop.hbase.hbql.schema.Schema;
 
-public abstract class SchemaStatement implements ShellStatement {
+public abstract class SchemaContext implements ShellStatement {
 
     private final String schemaName;
-    private volatile HBaseSchema schema = null;
+    private Mapping mapping;
+    private volatile Schema schema = null;
 
-    protected SchemaStatement(final String schemaName) {
+    protected SchemaContext(final String schemaName) {
         this.schemaName = schemaName;
+    }
+
+    protected SchemaContext(final Schema schema) {
+        this.schemaName = null;
+        this.setSchema(schema);
     }
 
     protected final String getSchemaName() {
         return schemaName;
     }
 
-    private void setSchema(final HBaseSchema schema) {
+    public Mapping getMapping() throws HBqlException {
+        if (this.mapping == null)
+            this.mapping = new HRecordMapping(this);
+
+        return this.mapping;
+    }
+
+    public void setMapping(final Mapping mapping) {
+        this.mapping = mapping;
+    }
+
+    private void setSchema(final Schema schema) {
         this.schema = schema;
     }
 
-    public final HBaseSchema getSchema() throws HBqlException {
+    public HBaseSchema getHBaseSchema() throws HBqlException {
+        return (HBaseSchema)this.getSchema();
+    }
+
+    public Schema getSchema() throws HBqlException {
 
         if (this.schema == null) {
             synchronized (this) {
@@ -50,5 +76,14 @@ public abstract class SchemaStatement implements ShellStatement {
             }
         }
         return this.schema;
+    }
+
+    public HBqlFilter getHBqlFilter(final ExpressionTree origExpressionTree) throws HBqlException {
+
+        if (origExpressionTree == null)
+            return null;
+
+        origExpressionTree.setSchemaContext(new NoStatementSchemaContext(this.getSchemaName()));
+        return new HBqlFilter(origExpressionTree);
     }
 }

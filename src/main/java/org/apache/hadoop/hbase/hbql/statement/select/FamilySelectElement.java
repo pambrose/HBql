@@ -29,7 +29,9 @@ import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.schema.SelectFamilyAttrib;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
 import java.util.Collection;
@@ -44,7 +46,7 @@ public class FamilySelectElement implements SelectElement {
     private final List<ColumnAttrib> attribsUsedInExpr = Lists.newArrayList();
     private final String familyName;
 
-    private HBaseSchema schema;
+    private SchemaContext schemaContext;
 
     public FamilySelectElement(final String familyName) {
 
@@ -81,12 +83,20 @@ public class FamilySelectElement implements SelectElement {
         return this.familyNameBytesList;
     }
 
-    protected HBaseSchema getSchema() {
-        return this.schema;
+    private SchemaContext getSchemaContext() {
+        return this.schemaContext;
     }
 
-    private void setSchema(final HBaseSchema schema) {
-        this.schema = schema;
+    protected HBaseSchema getHBaseSchema() throws HBqlException {
+        return this.getSchemaContext().getHBaseSchema();
+    }
+
+    private Mapping getMapping() throws HBqlException {
+        return this.getSchemaContext().getMapping();
+    }
+
+    private void setSchemaContext(final SchemaContext schemaContext) {
+        this.schemaContext = schemaContext;
     }
 
     public String getAsName() {
@@ -118,12 +128,12 @@ public class FamilySelectElement implements SelectElement {
         return 0;
     }
 
-    public void validate(final HBaseSchema schema, final HConnection connection) throws HBqlException {
+    public void validate(final SchemaContext schemaContext, final HConnection connection) throws HBqlException {
 
-        this.setSchema(schema);
+        this.setSchemaContext(schemaContext);
 
         this.getAttribsUsedInExpr().clear();
-        final Collection<String> familyList = this.getSchema().getSchemaFamilyNames(connection);
+        final Collection<String> familyList = this.getHBaseSchema().getSchemaFamilyNames(connection);
 
         if (this.useAllFamilies) {
             // connction will be null from tests
@@ -166,7 +176,7 @@ public class FamilySelectElement implements SelectElement {
                                   final int maxVersions,
                                   final Result result) throws HBqlException {
 
-        final HBaseSchema schema = this.getSchema();
+        final HBaseSchema schema = this.getHBaseSchema();
 
         // Evaluate each of the families (select * will yield all families)
         for (int i = 0; i < this.getFamilyNameBytesList().size(); i++) {
@@ -181,7 +191,7 @@ public class FamilySelectElement implements SelectElement {
                 final byte[] valueBytes = columnMap.get(columnBytes);
                 final String columnName = IO.getSerialization().getStringFromBytes(columnBytes);
 
-                final ColumnAttrib attrib = schema.getAttribFromFamilyQualifiedName(familyName, columnName);
+                final ColumnAttrib attrib = this.getMapping().getAttribFromFamilyQualifiedName(familyName, columnName);
                 if (attrib == null) {
                     final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
                     if (familyDefaultAttrib != null)

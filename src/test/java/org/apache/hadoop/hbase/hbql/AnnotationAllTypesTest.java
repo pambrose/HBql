@@ -43,7 +43,7 @@ public class AnnotationAllTypesTest extends TestSupport {
     @BeforeClass
     public static void emptyTable() throws HBqlException, IOException {
 
-        SchemaManager.execute("CREATE SCHEMA alltypes FOR TABLE example2"
+        SchemaManager.execute("CREATE SCHEMA alltypes2 FOR TABLE example2"
                               + "("
                               + "keyval KEY, "
                               + "f1:val1 boolean ALIAS booleanValue, "
@@ -75,9 +75,9 @@ public class AnnotationAllTypesTest extends TestSupport {
         conn = ConnectionManager.newConnection();
 
         if (!conn.tableExists("example2"))
-            System.out.println(conn.execute("create table using alltypes"));
+            System.out.println(conn.execute("create table using alltypes2"));
         else {
-            System.out.println(conn.execute("delete from alltypes"));
+            System.out.println(conn.execute("delete from alltypes2"));
         }
     }
 
@@ -109,7 +109,7 @@ public class AnnotationAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from alltypes", AnnotatedAllTypes.class);
+        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from alltypes2", AnnotatedAllTypes.class);
 
         int reccnt = 0;
         for (final AnnotatedAllTypes rec : recs.getResults())
@@ -125,7 +125,7 @@ public class AnnotationAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from alltypes", AnnotatedAllTypes.class);
+        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from alltypes2", AnnotatedAllTypes.class);
 
         int reccnt = 0;
         for (final AnnotatedAllTypes rec : recs.getResults())
@@ -141,7 +141,7 @@ public class AnnotationAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from alltypes WITH LIMIT :limit", AnnotatedAllTypes.class);
+        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from alltypes2 WITH LIMIT :limit", AnnotatedAllTypes.class);
 
         recs.setParameter("limit", cnt / 2);
 

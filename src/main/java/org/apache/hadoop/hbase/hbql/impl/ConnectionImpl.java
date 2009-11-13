@@ -35,7 +35,7 @@ import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
-import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
+import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -58,7 +58,7 @@ public class ConnectionImpl implements HConnection {
     }
 
     public <T> Query<T> newQuery(final String query, final Class clazz) throws IOException, HBqlException {
-        final AnnotationMapping mapping;
+        final Mapping mapping;
         if (clazz != null) {
             mapping = AnnotationMapping.getAnnotationMapping(clazz);
             if (mapping == null)
@@ -72,7 +72,7 @@ public class ConnectionImpl implements HConnection {
     }
 
     public <T> Query<T> newQuery(final SelectStatement selectStatement) throws IOException, HBqlException {
-        return new QueryImpl<T>(this, selectStatement, new HRecordMapping(selectStatement.getSchema()));
+        return new QueryImpl<T>(this, selectStatement);
     }
 
     public String getName() {
@@ -140,6 +140,7 @@ public class ConnectionImpl implements HConnection {
 
     public PreparedStatement prepare(final String str) throws HBqlException {
         final PreparedStatement stmt = HBqlShell.parsePreparedStatement(str);
+
         // Need to call this here to enable setParameters
         stmt.validate(this);
         return stmt;

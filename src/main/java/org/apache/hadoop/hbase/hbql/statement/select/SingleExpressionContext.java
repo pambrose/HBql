@@ -33,6 +33,7 @@ import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
 import java.util.Collection;
@@ -143,9 +144,9 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
         return this.columnNameBytes;
     }
 
-    public void validate(final HBaseSchema schema, final HConnection connection) throws HBqlException {
+    public void validate(final SchemaContext schemaContext, final HConnection connection) throws HBqlException {
 
-        this.setSchemaAndContext(schema);
+        this.setSchemaContext(schemaContext);
 
         // TODO this needs to be done for expressions with col refs
 
@@ -164,7 +165,7 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
                 final String[] strs = name.split(":");
                 this.familyName = strs[0];
                 this.columnName = strs[1];
-                final Collection<String> families = this.getSchema().getSchemaFamilyNames(connection);
+                final Collection<String> families = this.getHBaseSchema().getSchemaFamilyNames(connection);
                 if (!families.contains(this.getFamilyName()))
                     throw new HBqlException("Unknown family name: " + this.getFamilyName());
             }
@@ -235,7 +236,7 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
             return;
         }
 
-        final HBaseSchema schema = (HBaseSchema)this.getSchema();
+        final HBaseSchema schema = this.getHBaseSchema();
 
         // Column reference is not known to schema, so just assign byte[] value
         if (this.getColumnAttrib() == null) {

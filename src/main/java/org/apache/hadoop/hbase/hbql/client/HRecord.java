@@ -36,7 +36,7 @@ public interface HRecord {
 
     Set<String> getColumnNameList() throws HBqlException;
 
-    Map<Long, Object> getVersionMap(final String name);
+    Map<Long, Object> getVersionMap(final String name) throws HBqlException;
 
     Map<String, byte[]> getFamilyDefaultValueMap(String name) throws HBqlException;
 

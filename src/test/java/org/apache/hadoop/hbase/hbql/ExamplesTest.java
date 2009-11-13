@@ -398,7 +398,7 @@ public class ExamplesTest extends TestSupport {
         conn.apply(batch);
 
         // Query the records just added
-        Query<AnnotatedExample> query = conn.newQuery("SELECT * FROM demo2");
+        Query<AnnotatedExample> query = conn.newQuery("SELECT * FROM demo2", AnnotatedExample.class);
 
         for (AnnotatedExample rec : query.getResults()) {
             System.out.println("Key = " + rec.keyval);

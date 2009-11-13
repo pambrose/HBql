@@ -39,7 +39,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 import java.io.IOException;
 import java.util.List;
 
-public class InsertStatement extends SchemaStatement implements PreparedStatement {
+public class InsertStatement extends SchemaContext implements PreparedStatement {
 
     private final List<SingleExpressionContext> columnList = Lists.newArrayList();
     private final InsertValueSource insertValuesSource;
@@ -72,7 +72,7 @@ public class InsertStatement extends SchemaStatement implements PreparedStatemen
 
         for (final SingleExpressionContext element : this.getInsertColumnList()) {
 
-            element.validate(this.getSchema(), this.getConnection());
+            element.validate(this, this.getConnection());
 
             if (!element.isASimpleColumnReference())
                 throw new TypeException(element.asString() + " is not a column reference in " + this.asString());

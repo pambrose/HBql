@@ -226,15 +226,6 @@ public class HBaseSchema extends Schema {
         attribList.add(attrib);
     }
 
-    public HBqlFilter getHBqlFilter(final ExpressionTree origExpressionTree) throws HBqlException {
-
-        if (origExpressionTree == null)
-            return null;
-
-        origExpressionTree.setSchemaAndContext(this);
-        return new HBqlFilter(origExpressionTree);
-    }
-
     public synchronized Set<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException {
 
         // TODO May not want to cache this

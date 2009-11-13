@@ -113,7 +113,7 @@ public class ResultsImpl<T> implements ResultSet<T> {
                 private ResultScanner currentResultScanner = null;
                 private Iterator<Result> currentResultIterator = null;
 
-                private AggregateRecord aggregateRecord = AggregateRecord.newAggregateRecord(getQuery().getMapping(),
+                private AggregateRecord aggregateRecord = AggregateRecord.newAggregateRecord(getQuery().getSelectStatement(),
                                                                                              getSelectStmt());
 
                 // Prime the iterator with the first value
@@ -190,7 +190,8 @@ public class ResultsImpl<T> implements ResultSet<T> {
                                 this.getAggregateRecord().applyValues(result);
                             }
                             else {
-                                final T val = (T)mapping.newObject(getSelectStmt().getSelectElementList(),
+                                final T val = (T)mapping.newObject(getSelectStmt(),
+                                                                   getSelectStmt().getSelectElementList(),
                                                                    this.getMaxVersions(),
                                                                    result);
 

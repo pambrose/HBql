@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class DeleteStatement extends SchemaStatement implements ConnectionStatement {
+public class DeleteStatement extends SchemaContext implements ConnectionStatement {
 
     private final WithArgs withArgs;
 
@@ -54,7 +54,7 @@ public class DeleteStatement extends SchemaStatement implements ConnectionStatem
 
     public ExecutionOutput execute(final ConnectionImpl conn) throws HBqlException, IOException {
 
-        this.getWithArgs().setSchema(this.getSchema());
+        this.getWithArgs().setSchemaContext(this);
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWithArgs().getAllColumnsUsedInExprs();
         final HTable table = conn.getHTable(this.getSchema().getTableName());

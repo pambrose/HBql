@@ -22,25 +22,41 @@ package org.apache.hadoop.hbase.hbql.schema;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
+import java.io.Serializable;
 import java.util.List;
 
-public abstract class Mapping {
+public abstract class Mapping implements Serializable {
 
-    private final Schema schema;
+    private final SchemaContext schemaContext;
 
-    public Mapping(final Schema schema) {
-        this.schema = schema;
+    public Mapping(final SchemaContext schemaContext) {
+        this.schemaContext = schemaContext;
     }
 
-    public Schema getSchema() {
-        return this.schema;
+    private SchemaContext getSchemaContext() {
+        return schemaContext;
     }
 
-    public abstract Object newObject(final List<SelectElement> selectElementList,
+    public Schema getSchema() throws HBqlException {
+        return this.getSchemaContext().getSchema();
+    }
+
+    public HBaseSchema getHBaseSchema() throws HBqlException {
+        return (HBaseSchema)this.getSchema();
+    }
+
+    public abstract Object newObject(final SchemaContext schemaContext,
+                                     final List<SelectElement> selectElementList,
                                      final int maxVersions,
                                      final Result result) throws HBqlException;
 
-    public abstract ColumnAttrib getAttribByVariableName(final String name);
+    public abstract ColumnAttrib getKeyAttrib() throws HBqlException;
+
+    public abstract ColumnAttrib getAttribByVariableName(String name) throws HBqlException;
+
+    public abstract ColumnAttrib getAttribFromFamilyQualifiedName(String familyName,
+                                                                  String columnName) throws HBqlException;
 }

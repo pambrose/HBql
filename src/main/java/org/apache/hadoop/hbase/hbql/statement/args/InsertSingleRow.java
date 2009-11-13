@@ -24,7 +24,6 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
 import java.util.List;
@@ -55,11 +54,10 @@ public class InsertSingleRow extends InsertValueSource {
 
     public void validate() throws HBqlException {
 
-        final HBaseSchema schema = this.getInsertStatement().getSchema();
         final ConnectionImpl conn = this.getInsertStatement().getConnection();
 
         for (final SingleExpressionContext element : this.getValueList()) {
-            element.validate(schema, conn);
+            element.validate(this.getInsertStatement(), conn);
 
             // Make sure values do not have column references
             if (element.hasAColumnReference())

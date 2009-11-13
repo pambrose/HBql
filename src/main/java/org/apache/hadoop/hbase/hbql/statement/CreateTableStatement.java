@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.impl.ConnectionImpl;
 
 import java.io.IOException;
 
-public class CreateTableStatement extends SchemaStatement implements ConnectionStatement {
+public class CreateTableStatement extends SchemaContext implements ConnectionStatement {
 
     public CreateTableStatement(final String schemaName) {
         super(schemaName);
@@ -38,7 +38,7 @@ public class CreateTableStatement extends SchemaStatement implements ConnectionS
 
         final HTableDescriptor tableDesc = new HTableDescriptor(this.getSchema().getTableName());
 
-        for (final HColumnDescriptor columnDesc : this.getSchema().getColumnDescriptors())
+        for (final HColumnDescriptor columnDesc : this.getHBaseSchema().getColumnDescriptors())
             tableDesc.addFamily(columnDesc);
 
         conn.getAdmin().createTable(tableDesc);

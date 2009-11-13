@@ -33,11 +33,9 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
-import org.apache.hadoop.hbase.hbql.schema.ReflectionMapping;
-import org.apache.hadoop.hbase.hbql.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 
 import java.io.Serializable;
 import java.util.List;
@@ -53,8 +51,7 @@ public abstract class MultipleExpressionContext implements Serializable {
     private final List<ColumnAttrib> attribsUsedInExpr = Lists.newArrayList();
     private final Map<String, List<NamedParameter>> namedParamMap = Maps.newHashMap();
 
-    private Schema schema = null;
-    private Mapping mapping = null;
+    private SchemaContext schemaContext = null;
     private final TypeSignature typeSignature;
     private final List<GenericValue> expressions = Lists.newArrayList();
 
@@ -95,20 +92,24 @@ public abstract class MultipleExpressionContext implements Serializable {
         return this.typeSignature;
     }
 
-    public Schema getSchema() {
-        return this.schema;
+    public SchemaContext getSchemaContext() {
+        return this.schemaContext;
     }
 
-    public Mapping getMapping() {
-        return this.mapping;
+    public Schema getSchema() throws HBqlException {
+        return this.getSchemaContext().getSchema();
     }
 
-    public void setSchemaAndContext(final Schema schema) {
-        this.schema = schema;
-        if (schema instanceof ReflectionSchema)
-            this.mapping = new ReflectionMapping((ReflectionSchema)schema);
-        else
-            this.mapping = new HRecordMapping((HBaseSchema)schema);
+    public HBaseSchema getHBaseSchema() throws HBqlException {
+        return this.getSchemaContext().getHBaseSchema();
+    }
+
+    public Mapping getMapping() throws HBqlException {
+        return this.getSchemaContext().getMapping();
+    }
+
+    public void setSchemaContext(final SchemaContext schemaContext) {
+        this.schemaContext = schemaContext;
         this.setContext();
     }
 

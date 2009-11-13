@@ -115,14 +115,14 @@ tableStatement returns [TableStatement retval]
 	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableStatement($t.text);}
 	;
 	 
-schemaManagerStmt returns [SchemaStatement retval]
+schemaManagerStmt returns [SchemaContext retval]
 	: keyCREATE keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
 							{retval = new CreateSchemaStatement($t.text, $a.text, $l.retval);}
 	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaStatement($t.text);}
 	| keyDESCRIBE keySCHEMA t=simpleName 		{retval = new DescribeSchemaStatement($t.text);}
 	;
 
-schemaStmt returns [SchemaStatement retval]
+schemaStmt returns [SchemaContext retval]
 	: keyCREATE keyTABLE keyUSING keySCHEMA? t=simpleName 	
 							{retval = new CreateTableStatement($t.text);}
 	| keyDELETE keyFROM keySCHEMA? t=simpleName w=withClause?	{retval = new DeleteStatement($t.text, $w.retval);}
@@ -196,7 +196,7 @@ nodescWhereExpr returns [ExpressionTree retval]
 	 : e=topExpr					{retval = ExpressionTree.newExpressionTree($e.retval);};
 
 descWhereExpr returns [ExpressionTree retval]
-	: s=schemaDesc? e=topExpr			{retval = ExpressionTree.newExpressionTree($e.retval); if ($s.retval != null) retval.setSchemaAndContext($s.retval);};
+	: s=schemaDesc? e=topExpr			{retval = ExpressionTree.newExpressionTree($e.retval); if ($s.retval != null) retval.setSchemaContext(new NoStatementSchemaContext($s.retval));};
 
 // Expressions
 topExpr returns [GenericValue retval]

@@ -23,6 +23,8 @@ package org.apache.hadoop.hbase.hbql.schema;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.statement.NoStatementSchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
@@ -31,17 +33,27 @@ public class ReflectionMapping extends Mapping {
 
 
     public ReflectionMapping(final ReflectionSchema schema) {
-        super(schema);
+        super(new NoStatementSchemaContext(schema));
     }
 
-    public Object newObject(final List<SelectElement> selectElementList,
+    public Object newObject(final SchemaContext schemaContext, final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {
 
         throw new InternalErrorException();
     }
 
-    public ColumnAttrib getAttribByVariableName(final String name) {
+    public ColumnAttrib getKeyAttrib() throws HBqlException {
+        return this.getSchema().getKeyAttrib();
+    }
+
+
+    public ColumnAttrib getAttribByVariableName(final String name) throws HBqlException {
         return this.getSchema().getAttribByVariableName(name);
+    }
+
+    public ColumnAttrib getAttribFromFamilyQualifiedName(final String familyName,
+                                                         final String columnName) throws HBqlException {
+        throw new InternalErrorException();
     }
 }

@@ -32,7 +32,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 import java.util.List;
 import java.util.Set;
 
-public class SelectStatement extends SchemaStatement {
+public class SelectStatement extends SchemaContext {
 
     private final List<SelectElement> selectElementList;
     private final List<ColumnAttrib> selectColumnAttribList = Lists.newArrayList();
@@ -58,12 +58,12 @@ public class SelectStatement extends SchemaStatement {
         this.getSelectAttribList().clear();
 
         for (final SelectElement element : this.getSelectElementList()) {
-            element.validate(this.getSchema(), connection);
+            element.validate(this, connection);
             element.assignAsNamesForExpressions(this);
             this.getSelectAttribList().addAll(element.getAttribsUsedInExpr());
         }
 
-        this.getWithArgs().setSchema(this.getSchema());
+        this.getWithArgs().setSchemaContext(this);
 
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();

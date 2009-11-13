@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 
 import java.io.IOException;
@@ -45,36 +45,36 @@ public class WithArgs {
     private ExpressionTree clientExpressionTree = null;
     private ExpressionTree serverExpressionTree = null;
 
-    private HBaseSchema schema;
+    private SchemaContext schemaContext;
 
     // Keep track of args set multiple times
     private final Set<String> multipleSetValues = Sets.newHashSet();
 
-    public void setSchema(final HBaseSchema schema) throws HBqlException {
+    public void setSchemaContext(final SchemaContext schemaContext) throws HBqlException {
 
-        this.schema = schema;
+        this.schemaContext = schemaContext;
 
         this.validateWithArgs();
 
         if (this.getKeyRangeArgs() == null)
-            this.setKeyRangeArgs(new KeyRangeArgs());    // Defualt to ALL records
+            this.setKeyRangeArgs(new KeyRangeArgs());    // Default to ALL records
 
-        this.getKeyRangeArgs().setSchema(null);
+        this.getKeyRangeArgs().setSchemaContext(null);
 
         if (this.getTimestampArgs() != null)
-            this.getTimestampArgs().setSchemaAndContext(null);
+            this.getTimestampArgs().setSchemaContext(null);
 
         if (this.getVersionArgs() != null)
-            this.getVersionArgs().setSchemaAndContext(null);
+            this.getVersionArgs().setSchemaContext(null);
 
         if (this.getLimitArgs() != null)
-            this.getLimitArgs().setSchemaAndContext(null);
+            this.getLimitArgs().setSchemaContext(null);
 
         if (this.getServerExpressionTree() != null)
-            this.getServerExpressionTree().setSchemaAndContext(this.getSchema());
+            this.getServerExpressionTree().setSchemaContext(this.getSchemaContext());
 
         if (this.getClientExpressionTree() != null)
-            this.getClientExpressionTree().setSchemaAndContext(this.getSchema());
+            this.getClientExpressionTree().setSchemaContext(this.getSchemaContext());
     }
 
     private void validateWithArgs() throws HBqlException {
@@ -91,8 +91,8 @@ public class WithArgs {
         }
     }
 
-    private HBaseSchema getSchema() {
-        return this.schema;
+    private SchemaContext getSchemaContext() {
+        return this.schemaContext;
     }
 
     private void addError(final String str) {
@@ -252,7 +252,7 @@ public class WithArgs {
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(get);
 
-        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExpressionTree());
+        final HBqlFilter serverFilter = this.getSchemaContext().getHBqlFilter(this.getServerExpressionTree());
         if (serverFilter != null)
             get.setFilter(serverFilter);
     }
@@ -279,7 +279,7 @@ public class WithArgs {
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(scan);
 
-        final HBqlFilter serverFilter = this.getSchema().getHBqlFilter(this.getServerExpressionTree());
+        final HBqlFilter serverFilter = this.getSchemaContext().getHBqlFilter(this.getServerExpressionTree());
         if (serverFilter != null)
             scan.setFilter(serverFilter);
     }

@@ -58,7 +58,7 @@ public class BooleanFunction extends Function implements BooleanValue {
 
     public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
         super.setExpressionContext(context);
-        this.schema = context.getSchema();
+        this.schema = context.getHBaseSchema();
     }
 
     private Schema getSchema() {

@@ -37,6 +37,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
+import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
@@ -65,7 +66,7 @@ public class HBqlShell {
 
     public static ExpressionTree parseWhereExpression(final String str, final Schema schema) throws HBqlException {
         try {
-            return schema.getExpressionTree(str);
+            return schema.getExpressionTree(str, schema);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
@@ -94,7 +95,7 @@ public class HBqlShell {
         try {
             final HBqlParser parser = newHBqlParser(str);
             final SingleExpressionContext elem = (SingleExpressionContext)parser.selectElem();
-            elem.setSchemaAndContext(null);
+            elem.setSchemaContext(null);
             return elem;
         }
         catch (RecognitionException e) {
@@ -173,7 +174,9 @@ public class HBqlShell {
         return (PreparedStatement)statement;
     }
 
-    public static SelectStatement parseSelectStatement(final HConnection connection, final String str) throws HBqlException {
+    public static SelectStatement parseSelectStatement(final HConnection connection,
+                                                       final String str,
+                                                       Mapping mapping) throws HBqlException {
 
         final ShellStatement statement = parse(str);
 
@@ -181,6 +184,9 @@ public class HBqlShell {
             throw new HBqlException("Expecting a select statement");
 
         final SelectStatement selectStatement = (SelectStatement)statement;
+
+        if (mapping != null)
+            selectStatement.setMapping(mapping);
 
         selectStatement.validate(connection);
 

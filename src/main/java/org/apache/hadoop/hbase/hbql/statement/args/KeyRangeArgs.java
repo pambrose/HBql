@@ -30,7 +30,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.Schema;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.GetRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.ScanRequest;
@@ -237,9 +237,9 @@ public class KeyRangeArgs {
         return this.rangeList;
     }
 
-    public void setSchema(final Schema schema) {
+    public void setSchemaContext(final SchemaContext schemaContext) {
         for (final Range range : this.getRangeList())
-            range.setSchemaAndContext(schema);
+            range.setSchemaContext(schemaContext);
     }
 
     public String asString() {

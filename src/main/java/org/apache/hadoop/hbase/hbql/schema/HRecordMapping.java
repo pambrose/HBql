@@ -23,6 +23,7 @@ package org.apache.hadoop.hbase.hbql.schema;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
@@ -30,16 +31,17 @@ import java.util.List;
 public class HRecordMapping extends Mapping {
 
 
-    public HRecordMapping(final HBaseSchema schema) {
-        super(schema);
+    public HRecordMapping(final SchemaContext schemaContext) {
+        super(schemaContext);
     }
 
-    public Object newObject(final List<SelectElement> selectElementList,
+    public Object newObject(final SchemaContext schemaContext,
+                            final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {
 
         // Create object and assign values
-        final RecordImpl newrec = new RecordImpl(this);
+        final RecordImpl newrec = new RecordImpl(schemaContext);
         this.assignSelectValues(newrec, selectElementList, maxVersions, result);
         return newrec;
     }
@@ -57,7 +59,16 @@ public class HRecordMapping extends Mapping {
             selectElement.assignSelectValue(newobj, maxVersions, result);
     }
 
-    public ColumnAttrib getAttribByVariableName(final String name) {
+    public ColumnAttrib getKeyAttrib() throws HBqlException {
+        return this.getSchema().getKeyAttrib();
+    }
+
+    public ColumnAttrib getAttribFromFamilyQualifiedName(final String familyName,
+                                                         final String columnName) throws HBqlException {
+        return this.getHBaseSchema().getAttribFromFamilyQualifiedName(familyName + ":" + columnName);
+    }
+
+    public ColumnAttrib getAttribByVariableName(final String name) throws HBqlException {
         return this.getSchema().getAttribByVariableName(name);
     }
 }

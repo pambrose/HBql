@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 
 import java.util.List;
 
-public class CreateSchemaStatement extends SchemaStatement implements NonConnectionStatement {
+public class CreateSchemaStatement extends SchemaContext implements NonConnectionStatement {
 
     private final String tableName;
     private final List<ColumnDescription> columnDescriptionList;
