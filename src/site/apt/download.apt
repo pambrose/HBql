@@ -27,7 +27,7 @@ Release Notes
     0.9.3-alpha -- 11/12/09
 
         * Annotations no longer define schemas.  Schemas are created with the
-        {{{statements/create-schema.html}CREATE SCHEMA}} statements and the HBql annotations map
+        {{{statements/create-schema.html}CREATE SCHEMA}} statement and the HBql annotations map
         objects to existing schemas.
 
 
