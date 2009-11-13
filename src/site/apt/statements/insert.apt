@@ -21,11 +21,7 @@ column_reference:
 
     * A key value must be included in the column_reference list.
 
-    * Inserts can also done using Annotations or the Record interface, as seen below.
-
-    * When inserting a DEFAULT value, an Annotated schema uses the default instance variable value,
-    while a defined schema uses the DEFAULT value declared in the schema definition.
-
+    * Inserts can also done using annotated objects or the HRecord interface, as seen below.
 
     
 *Example

@@ -5,9 +5,9 @@ HBql Examples
 
 HBql Examples
 
-    {{{./examples/defined-schema.html}Inserting records using a defined schema}}
+    {{{./examples/defined-schema.html}Inserting records using an HRecord}}
 
-    {{{./examples/annotated-schema.html}Inserting records using an annotated schema}}
+    {{{./examples/annotated-schema.html}Inserting records using an annotated object}}
 
 
 

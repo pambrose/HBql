@@ -77,7 +77,8 @@ public class HRecordAttrib extends ColumnAttrib {
     }
 
     protected void defineAccessors() {
-        // No-op for Defined schema
+        // TODO This needs to be implemented
+        // No-op
     }
 
     public Object getCurrentValue(final Object record) throws HBqlException {
