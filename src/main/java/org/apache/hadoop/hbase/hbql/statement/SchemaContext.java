@@ -30,7 +30,9 @@ import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 
-public abstract class SchemaContext implements ShellStatement {
+import java.io.Serializable;
+
+public abstract class SchemaContext implements ShellStatement, Serializable {
 
     private Mapping mapping = null;
     private volatile Schema schema = null;

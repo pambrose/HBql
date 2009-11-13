@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.util.Maps;
+import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.hbql.client.FamilyDefaultValueMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
@@ -32,6 +33,7 @@ import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
@@ -40,6 +42,8 @@ public class RecordImpl implements Serializable, HRecord {
 
     private SchemaContext schemaContext;
     private long timestamp = System.currentTimeMillis();
+
+    private List<KeyValue> keyValueList = null;
 
     private volatile ElementMap<ColumnValue> columnValuesMap = null;
     private volatile ElementMap<FamilyDefaultValueMap> familyDefaultElementsMap = null;
@@ -54,6 +58,14 @@ public class RecordImpl implements Serializable, HRecord {
 
     public void setSchemaContext(final SchemaContext schemaContext) {
         this.schemaContext = schemaContext;
+    }
+
+    private List<KeyValue> getKeyValueList() {
+        return this.keyValueList;
+    }
+
+    public void setKeyValueList(final List<KeyValue> keyValueList) {
+        this.keyValueList = keyValueList;
     }
 
     public HBaseSchema getHBaseSchema() throws HBqlException {

@@ -45,17 +45,19 @@ public class HRecordMapping extends Mapping {
         return newrec;
     }
 
-    private void assignSelectValues(final Object newobj,
+    private void assignSelectValues(final RecordImpl record,
                                     final List<SelectElement> selectElementList,
                                     final int maxVersions,
                                     final Result result) throws HBqlException {
 
+        record.setKeyValueList(result.list());
+
         // Set key value
-        this.getSchema().getKeyAttrib().setCurrentValue(newobj, 0, result.getRow());
+        this.getSchema().getKeyAttrib().setCurrentValue(record, 0, result.getRow());
 
         // Set the non-key values
         for (final SelectElement selectElement : selectElementList)
-            selectElement.assignSelectValue(newobj, maxVersions, result);
+            selectElement.assignSelectValue(record, maxVersions, result);
     }
 
     public ColumnAttrib getKeyAttrib() throws HBqlException {

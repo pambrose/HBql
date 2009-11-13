@@ -87,12 +87,6 @@ public abstract class ColumnAttrib implements Serializable {
         return this.defaultArg;
     }
 
-    // This is necessary before sending off with filter
-    public void resetDefaultValue() throws HBqlException {
-        if (this.hasDefaultArg())
-            this.getDefaultArg().reset();
-    }
-
     public abstract Object getCurrentValue(final Object obj) throws HBqlException;
 
     public abstract void setCurrentValue(final Object obj,
@@ -109,6 +103,21 @@ public abstract class ColumnAttrib implements Serializable {
                                                     final String name,
                                                     final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException;
 
+    protected abstract Method getMethod(final String methodName,
+                                        final Class<?>... params) throws NoSuchMethodException, HBqlException;
+
+    protected abstract Class getComponentType() throws HBqlException;
+
+    public abstract String getNameToUseInExceptions();
+
+    public abstract String getEnclosingClassName();
+
+    // This is necessary before sending off with filter
+    public void resetDefaultValue() throws HBqlException {
+        if (this.hasDefaultArg())
+            this.getDefaultArg().reset();
+    }
+
     public void setVersionMap(final Object obj, final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
 
         final Map<Long, Object> mapVal = this.getVersionMap(obj);
@@ -118,15 +127,6 @@ public abstract class ColumnAttrib implements Serializable {
             mapVal.put(timestamp, val);
         }
     }
-
-    protected abstract Method getMethod(final String methodName,
-                                        final Class<?>... params) throws NoSuchMethodException, HBqlException;
-
-    protected abstract Class getComponentType() throws HBqlException;
-
-    public abstract String getNameToUseInExceptions();
-
-    public abstract String getEnclosingClassName();
 
     public String getFamilyQualifiedName() {
         if (this.getFamilyName() != null && this.getFamilyName().length() > 0)

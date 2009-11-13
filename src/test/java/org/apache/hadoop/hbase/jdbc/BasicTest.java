@@ -53,12 +53,8 @@ public class BasicTest {
         Class.forName("org.apache.hadoop.hbase.jdbc.Driver");
 
         Connection conn = DriverManager.getConnection("hbql", "user", "secret");
-
         Statement stmt = conn.createStatement();
-
-        String sql = "select * from tab3";
-
-        ResultSet rs = stmt.executeQuery(sql);
+        ResultSet rs = stmt.executeQuery("select * from tab3");
 
         while (rs.next()) {
             int id = rs.getInt("val5");
