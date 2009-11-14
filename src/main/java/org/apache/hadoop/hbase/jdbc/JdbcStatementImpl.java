@@ -26,6 +26,7 @@ import org.apache.hadoop.hbase.hbql.client.Query;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 
@@ -49,12 +50,16 @@ public class JdbcStatementImpl implements Statement {
         return false;
     }
 
+    public boolean execute(final String sql) throws SQLException {
+        return false;
+    }
+
     public ResultSet executeQuery(final String sql) throws SQLException {
         final Query<HRecord> query = this.getConnectionImpl().newQuery(sql);
         return new JdbcResultSetImpl(this, query.getResults());
     }
 
-    public int executeUpdate(final String s) throws SQLException {
+    public int executeUpdate(final String sql) throws SQLException {
         return 0;
     }
 
@@ -104,10 +109,6 @@ public class JdbcStatementImpl implements Statement {
 
     public void setCursorName(final String s) throws SQLException {
 
-    }
-
-    public boolean execute(final String s) throws SQLException {
-        return false;
     }
 
     public ResultSet getResultSet() throws SQLException {
@@ -171,27 +172,27 @@ public class JdbcStatementImpl implements Statement {
     }
 
     public int executeUpdate(final String s, final int i) throws SQLException {
-        return 0;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public int executeUpdate(final String s, final int[] ints) throws SQLException {
-        return 0;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public int executeUpdate(final String s, final String[] strings) throws SQLException {
-        return 0;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public boolean execute(final String s, final int i) throws SQLException {
-        return false;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public boolean execute(final String s, final int[] ints) throws SQLException {
-        return false;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public boolean execute(final String s, final String[] strings) throws SQLException {
-        return false;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public int getResultSetHoldability() throws SQLException {
