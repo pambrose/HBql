@@ -18,12 +18,13 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema;
+package org.apache.yaoql.impl;
 
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.schema.Schema;
 
 import java.lang.reflect.Field;
 import java.util.Collection;

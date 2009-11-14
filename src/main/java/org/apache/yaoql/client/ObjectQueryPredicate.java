@@ -25,10 +25,10 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
-import org.apache.hadoop.hbase.hbql.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 import org.apache.yaoql.impl.ParameterBinding;
+import org.apache.yaoql.impl.ReflectionSchema;
 
 public class ObjectQueryPredicate<T> extends ParameterBinding implements Predicate<T> {
 

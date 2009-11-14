@@ -18,7 +18,10 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema;
+package org.apache.yaoql.impl;
+
+import org.apache.hadoop.hbase.hbql.schema.FieldAttrib;
+import org.apache.hadoop.hbase.hbql.schema.FieldType;
 
 import java.lang.reflect.Field;
 

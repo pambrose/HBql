@@ -18,10 +18,12 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema;
+package org.apache.yaoql.impl;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
