@@ -38,7 +38,7 @@ public abstract class Mapping implements Serializable {
 
     public SchemaContext getSchemaContext() throws HBqlException {
         if (this.schemaContext != null)
-            this.schemaContext.setMapping2(this);
+            this.schemaContext.setMapping(this);
         return this.schemaContext;
     }
 
@@ -46,14 +46,9 @@ public abstract class Mapping implements Serializable {
         return this.getSchemaContext().getSchema();
     }
 
-    public void setSchema(final Schema schema) throws HBqlException {
-        this.getSchemaContext().setSchema(schema);
-    }
-
     public HBaseSchema getHBaseSchema() throws HBqlException {
         return (HBaseSchema)this.getSchema();
     }
-
 
     public abstract Object newObject(final SchemaContext schemaContext,
                                      final List<SelectElement> selectElementList,

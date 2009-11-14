@@ -80,11 +80,11 @@ public abstract class SchemaContext implements ShellStatement, Serializable {
             throw new HBqlException("Unknown schema name: " + this.invalidSchemaName);
     }
 
-    public void setMapping2(final Mapping mapping) throws HBqlException {
+    public void setMapping(final Mapping mapping) throws HBqlException {
         this.mapping = mapping;
     }
 
-    public synchronized void setMapping(final Mapping mapping) throws HBqlException {
+    public synchronized void validateAndSetMapping(final Mapping mapping) throws HBqlException {
 
         if (mapping != null && mapping instanceof AnnotationMapping) {
             final String mappingName = mapping.getSchema().getSchemaName();
@@ -93,7 +93,7 @@ public abstract class SchemaContext implements ShellStatement, Serializable {
                 throw new HBqlException("Class " + mappingName + " instead of " + selectName);
         }
 
-        this.mapping = mapping;
+        this.setMapping(mapping);
     }
 
     public HBaseSchema getHBaseSchema() throws HBqlException {

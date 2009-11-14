@@ -187,7 +187,7 @@ public class HBqlShell {
         final SelectStatement selectStatement = (SelectStatement)statement;
 
         if (mapping != null)
-            selectStatement.setMapping(mapping);
+            selectStatement.validateAndSetMapping(mapping);
 
         selectStatement.validate(connection);
 
