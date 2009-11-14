@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class HBqlException extends SQLException {
@@ -30,5 +31,9 @@ public class HBqlException extends SQLException {
 
     public HBqlException(final String s, final Throwable throwable) {
         super(s, throwable);
+    }
+
+    public HBqlException(final IOException e) {
+        super("IOException: " + e.getMessage(), e);
     }
 }

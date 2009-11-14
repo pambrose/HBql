@@ -35,7 +35,6 @@ import org.apache.hadoop.hbase.hbql.statement.select.GetRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.ScanRequest;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -128,7 +127,7 @@ public class KeyRangeArgs {
 
         private RowRequest newGet(final WithArgs withArgs,
                                   final Collection<ColumnAttrib> columnAttribSet,
-                                  final String lower) throws HBqlException, IOException {
+                                  final String lower) throws HBqlException {
             final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(lower);
             final Get get = new Get(lowerBytes);
             withArgs.setGetArgs(get, columnAttribSet);
@@ -136,7 +135,7 @@ public class KeyRangeArgs {
         }
 
         private List<RowRequest> getGet(final WithArgs withArgs,
-                                        final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+                                        final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
 
             final List<RowRequest> retval = Lists.newArrayList();
 
@@ -162,7 +161,7 @@ public class KeyRangeArgs {
         }
 
         private RowRequest getScan(final WithArgs withArgs,
-                                   final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+                                   final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
 
             final Scan scan = new Scan();
 
@@ -190,7 +189,7 @@ public class KeyRangeArgs {
 
         public void process(final WithArgs withArgs,
                             final List<RowRequest> rowRequestList,
-                            final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+                            final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
 
             if (this.isSingleKey())
                 rowRequestList.addAll(this.getGet(withArgs, columnAttribSet));

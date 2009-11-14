@@ -57,6 +57,7 @@ public class ImportStatement implements ConnectionStatement {
         }
         catch (IOException e) {
             output.setSuccess(false);
+            output.out.println(e.getMessage());
         }
 
         return output;
@@ -74,12 +75,10 @@ public class ImportStatement implements ConnectionStatement {
             return stmtBuffer.toString();
         }
         catch (FileNotFoundException e) {
-            System.out.println("Cannot find file: " + filename);
-            throw e;
+            throw new IOException("Cannot find file: " + filename);
         }
         catch (IOException e) {
-            System.out.println("Unable to read file: " + filename + " - " + e.getMessage());
-            throw e;
+            throw new IOException("Unable to read file: " + filename + " - " + e.getMessage());
         }
     }
 
@@ -122,7 +121,7 @@ public class ImportStatement implements ConnectionStatement {
 
     private static void processSelect(final PrintWriter out,
                                       final HConnectionImpl conn,
-                                      final SelectStatement selectStatement) throws HBqlException, IOException {
+                                      final SelectStatement selectStatement) throws HBqlException {
 
         selectStatement.validate(conn);
 

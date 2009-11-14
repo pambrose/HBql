@@ -31,7 +31,6 @@ import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -80,7 +79,7 @@ public class InsertSelectValues extends InsertValueSource {
         this.currentRecord = currentRecord;
     }
 
-    public void execute() throws HBqlException, IOException {
+    public void execute() throws HBqlException {
         final Query<HRecord> query = this.getInsertStatement().getConnection().newQuery(this.getSelectStatement());
         final Results<HRecord> results = query.getResults();
         this.setResultsIterator(results.iterator());

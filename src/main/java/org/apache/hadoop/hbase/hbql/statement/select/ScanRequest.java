@@ -23,6 +23,7 @@ package org.apache.hadoop.hbase.hbql.statement.select;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.io.IOException;
 
@@ -42,7 +43,12 @@ public class ScanRequest implements RowRequest {
         return this.getScanValue().getMaxVersions();
     }
 
-    public ResultScanner getResultScanner(final HTable table) throws IOException {
-        return table.getScanner(this.getScanValue());
+    public ResultScanner getResultScanner(final HTable table) throws HBqlException {
+        try {
+            return table.getScanner(this.getScanValue());
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 }

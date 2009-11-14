@@ -24,7 +24,6 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.statement.InsertStatement;
 
-import java.io.IOException;
 import java.util.List;
 
 public abstract class InsertValueSource {
@@ -53,7 +52,7 @@ public abstract class InsertValueSource {
 
     public abstract boolean hasValues();
 
-    public abstract void execute() throws HBqlException, IOException;
+    public abstract void execute() throws HBqlException;
 
     public abstract List<Class<? extends GenericValue>> getValuesTypeList() throws HBqlException;
 }

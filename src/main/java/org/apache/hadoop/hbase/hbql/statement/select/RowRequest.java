@@ -22,12 +22,11 @@ package org.apache.hadoop.hbase.hbql.statement.select;
 
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.ResultScanner;
-
-import java.io.IOException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public interface RowRequest {
 
     int getMaxVersions();
 
-    ResultScanner getResultScanner(final HTable table) throws IOException;
+    ResultScanner getResultScanner(final HTable table) throws HBqlException;
 }

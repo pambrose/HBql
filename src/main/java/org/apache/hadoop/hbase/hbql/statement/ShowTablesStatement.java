@@ -33,16 +33,21 @@ public class ShowTablesStatement implements ConnectionStatement {
     public ShowTablesStatement() {
     }
 
-    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException {
 
-        final HBaseAdmin admin = conn.getAdmin();
+        try {
+            final HBaseAdmin admin = conn.getAdmin();
 
-        final ExecutionOutput retval = new ExecutionOutput();
-        retval.out.println("Tables: ");
-        for (final HTableDescriptor tableDesc : admin.listTables())
-            retval.out.println("\t" + tableDesc.getNameAsString());
+            final ExecutionOutput retval = new ExecutionOutput();
+            retval.out.println("Tables: ");
+            for (final HTableDescriptor tableDesc : admin.listTables())
+                retval.out.println("\t" + tableDesc.getNameAsString());
 
-        retval.out.flush();
-        return retval;
+            retval.out.flush();
+            return retval;
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 }

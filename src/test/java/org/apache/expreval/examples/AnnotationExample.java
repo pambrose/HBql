@@ -32,7 +32,6 @@ import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.client.Schema;
 import org.apache.hadoop.hbase.hbql.client.Util;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -117,7 +116,7 @@ public class AnnotationExample {
         }
     }
 
-    public static void main(String[] args) throws IOException, HBqlException {
+    public static void main(String[] args) throws HBqlException {
 
         HConnection conn = ConnectionManager.newConnection();
 

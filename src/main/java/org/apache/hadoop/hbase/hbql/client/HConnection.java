@@ -21,9 +21,7 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.MasterNotRunningException;
 
-import java.io.IOException;
 import java.util.Set;
 
 public interface HConnection {
@@ -32,31 +30,31 @@ public interface HConnection {
 
     HBaseConfiguration getConfig();
 
-    <T> Query<T> newQuery(String query) throws IOException, HBqlException;
+    <T> Query<T> newQuery(String query) throws HBqlException;
 
-    <T> Query<T> newQuery(String query, Class clazz) throws IOException, HBqlException;
+    <T> Query<T> newQuery(String query, Class clazz) throws HBqlException;
 
-    ExecutionOutput execute(String str) throws HBqlException, IOException;
+    ExecutionOutput execute(String str) throws HBqlException, HBqlException;
 
     PreparedStatement prepare(String str) throws HBqlException;
 
-    org.apache.hadoop.hbase.client.HTable getHTable(String tableName) throws IOException;
+    org.apache.hadoop.hbase.client.HTable getHTable(String tableName) throws HBqlException;
 
-    boolean tableExists(String tableName) throws MasterNotRunningException;
+    boolean tableExists(String tableName) throws HBqlException;
 
-    boolean tableEnabled(String tableName) throws IOException;
+    boolean tableEnabled(String tableName) throws HBqlException;
 
-    void dropTable(String tableName) throws IOException;
+    void dropTable(String tableName) throws HBqlException;
 
-    void disableTable(String tableName) throws IOException;
+    void disableTable(String tableName) throws HBqlException;
 
-    void enableTable(String tableName) throws IOException;
+    void enableTable(String tableName) throws HBqlException;
 
-    Set<String> getTableNames() throws IOException;
+    Set<String> getTableNames() throws HBqlException;
 
     Set<String> getFamilyNames(String tableName) throws HBqlException;
 
-    void apply(Batch batch) throws IOException;
+    void apply(Batch batch) throws HBqlException;
 
     void close() throws HBqlException;
 

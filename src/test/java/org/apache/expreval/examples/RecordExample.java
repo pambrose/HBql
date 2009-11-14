@@ -30,13 +30,12 @@ import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
 public class RecordExample {
 
-    public static void main(String[] args) throws IOException, HBqlException {
+    public static void main(String[] args) throws HBqlException {
 
         SchemaManager.execute("CREATE SCHEMA testobjects alias testobjects2"
                               + "("

@@ -35,7 +35,6 @@ import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.Random;
 
 public class InsertWithSelectTest extends TestSupport {
@@ -45,7 +44,7 @@ public class InsertWithSelectTest extends TestSupport {
     static Random randomVal = new Random();
 
     @BeforeClass
-    public static void onetimeSetup() throws HBqlException, IOException {
+    public static void onetimeSetup() throws HBqlException {
 
         SchemaManager.execute("CREATE SCHEMA tab3 FOR TABLE table3"
                               + "("
@@ -70,7 +69,7 @@ public class InsertWithSelectTest extends TestSupport {
     }
 
     private static void insertRecords(final HConnection conn,
-                                      final int cnt) throws HBqlException, IOException {
+                                      final int cnt) throws HBqlException {
 
         PreparedStatement stmt = conn.prepare("insert into tab3 " +
                                               "(keyval, val1, val2, val3) values " +
@@ -89,7 +88,7 @@ public class InsertWithSelectTest extends TestSupport {
         }
     }
 
-    private static void showValues() throws HBqlException, IOException {
+    private static void showValues() throws HBqlException {
 
         final String query1 = "SELECT keyval, val1, val2, val3 FROM tab3";
 
@@ -113,7 +112,7 @@ public class InsertWithSelectTest extends TestSupport {
     }
 
     @Test
-    public void insertWithSelect() throws HBqlException, IOException {
+    public void insertWithSelect() throws HBqlException {
 
         final String q1 = "insert into tab3 " +
                           "(keyval, val1, val2) " +
@@ -148,7 +147,7 @@ public class InsertWithSelectTest extends TestSupport {
     }
 
     @Test
-    public void insertTypeExceptions() throws HBqlException, IOException {
+    public void insertTypeExceptions() throws HBqlException {
 
         Class<? extends Exception> caught;
 

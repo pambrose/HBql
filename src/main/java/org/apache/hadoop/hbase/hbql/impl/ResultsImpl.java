@@ -35,7 +35,6 @@ import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -73,7 +72,7 @@ public class ResultsImpl<T> implements Results<T> {
         return this.getQuery().getListeners();
     }
 
-    private List<RowRequest> getRowRequestList() throws HBqlException, IOException {
+    private List<RowRequest> getRowRequestList() throws HBqlException {
         return this.getQuery().getRowRequestList();
     }
 
@@ -163,7 +162,7 @@ public class ResultsImpl<T> implements Results<T> {
                 }
 
                 @SuppressWarnings("unchecked")
-                protected T fetchNextObject() throws HBqlException, IOException {
+                protected T fetchNextObject() throws HBqlException {
 
                     final Mapping mapping = getQuery().getMapping();
 
@@ -218,7 +217,7 @@ public class ResultsImpl<T> implements Results<T> {
                     return null;
                 }
 
-                private Iterator<Result> getNextResultIterator() throws IOException {
+                private Iterator<Result> getNextResultIterator() throws HBqlException {
                     final RowRequest rowRequest = this.getRowRequestIterator().next();
                     this.setMaxVersions(rowRequest.getMaxVersions());
                     this.setCurrentResultScanner(rowRequest.getResultScanner(this.getTable()));
@@ -245,9 +244,6 @@ public class ResultsImpl<T> implements Results<T> {
             };
         }
         catch (HBqlException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
             e.printStackTrace();
         }
 

@@ -32,7 +32,6 @@ import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 public class RecordAllTypesTest extends TestSupport {
@@ -42,7 +41,7 @@ public class RecordAllTypesTest extends TestSupport {
     static int cnt = 10;
 
     @BeforeClass
-    public static void emptyTable() throws HBqlException, IOException {
+    public static void emptyTable() throws HBqlException {
 
         SchemaManager.execute("CREATE SCHEMA alltypes FOR TABLE example2"
                               + "("
@@ -82,7 +81,7 @@ public class RecordAllTypesTest extends TestSupport {
         }
     }
 
-    public static List<RecordAllTypes> insertSomeData(int cnt, boolean noRandomData) throws HBqlException, IOException {
+    public static List<RecordAllTypes> insertSomeData(int cnt, boolean noRandomData) throws HBqlException {
 
         List<RecordAllTypes> retval = Lists.newArrayList();
         final Batch batch = new Batch();
@@ -104,7 +103,7 @@ public class RecordAllTypesTest extends TestSupport {
 
 
     @Test
-    public void simpleSelect() throws HBqlException, IOException {
+    public void simpleSelect() throws HBqlException {
 
         List<RecordAllTypes> vals = insertSomeData(cnt, true);
 
@@ -120,7 +119,7 @@ public class RecordAllTypesTest extends TestSupport {
     }
 
     @Test
-    public void simpleSparseSelect() throws HBqlException, IOException {
+    public void simpleSparseSelect() throws HBqlException {
 
         List<RecordAllTypes> vals = insertSomeData(cnt, false);
 
@@ -136,7 +135,7 @@ public class RecordAllTypesTest extends TestSupport {
     }
 
     @Test
-    public void simpleLimitSelect() throws HBqlException, IOException {
+    public void simpleLimitSelect() throws HBqlException {
 
         List<RecordAllTypes> vals = insertSomeData(cnt, true);
 

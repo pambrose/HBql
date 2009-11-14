@@ -35,7 +35,6 @@ import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -77,7 +76,7 @@ public class QueryImpl<T> implements Query<T> {
         return this.selectStatement;
     }
 
-    public List<RowRequest> getRowRequestList() throws HBqlException, IOException {
+    public List<RowRequest> getRowRequestList() throws HBqlException {
 
         final WithArgs withArgs = this.getSelectStatement().getWithArgs();
 

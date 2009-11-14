@@ -20,11 +20,6 @@
 
 package org.apache.hadoop.hbase.jdbc;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.QueryImpl;
-import org.apache.hadoop.hbase.hbql.schema.Mapping;
-import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
-
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -48,33 +43,29 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-public class JdbcQueryImpl<T> extends QueryImpl<T> implements PreparedStatement {
+public class JdbcPreparedStatementImpl implements PreparedStatement {
 
-    public JdbcQueryImpl(final JdbcConnectionImpl connection, final SelectStatement selectStatement) throws HBqlException {
-        super(connection, selectStatement);
-    }
+    private final JdbcConnectionImpl connection;
+    private final String sql;
 
-    public JdbcQueryImpl(final JdbcConnectionImpl connection, final String query, final Mapping mapping) throws HBqlException {
-        super(connection, query, mapping);
+    public JdbcPreparedStatementImpl(final JdbcConnectionImpl connection, final String sql) {
+        this.connection = connection;
+        this.sql = sql;
     }
 
     public <T> T unwrap(final Class<T> tClass) throws SQLException {
         return null;
     }
 
-    public Connection getConnection() throws SQLException {
-        return (JdbcConnectionImpl)super.getHConnection();
-    }
-
     public ResultSet executeQuery() throws SQLException {
         return null;
     }
 
-    public boolean execute(final String s, final int i) throws SQLException {
+    public boolean isWrapperFor(final Class<?> aClass) throws SQLException {
         return false;
     }
 
-    public boolean isWrapperFor(final Class<?> aClass) throws SQLException {
+    public boolean execute(final String s, final int i) throws SQLException {
         return false;
     }
 
@@ -284,6 +275,10 @@ public class JdbcQueryImpl<T> extends QueryImpl<T> implements PreparedStatement 
 
     public void setRef(final int i, final Ref ref) throws SQLException {
 
+    }
+
+    public Connection getConnection() throws SQLException {
+        return null;
     }
 
     public void setBlob(final int i, final Blob blob) throws SQLException {

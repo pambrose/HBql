@@ -23,13 +23,11 @@ package org.apache.hadoop.hbase.hbql.client;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 
-import java.io.IOException;
-
 public interface PreparedStatement extends ConnectionStatement {
 
     int setParameter(final String name, final Object val) throws HBqlException;
 
-    ExecutionOutput execute() throws HBqlException, IOException;
+    ExecutionOutput execute() throws HBqlException;
 
     void reset();
 

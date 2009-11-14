@@ -43,7 +43,7 @@ public class Console {
 
     private static HConnectionImpl conn = null;
 
-    public static void main(String[] args) throws IOException, HBqlException {
+    public static void main(String[] args) throws HBqlException, IOException {
 
         if (args != null && args.length > 0) {
             final List<String> argList = new LinkedList<String>();
@@ -72,7 +72,7 @@ public class Console {
         System.out.println("\t-version      print version info and exit");
     }
 
-    private static boolean processArg(final List<String> argList) throws HBqlException, IOException {
+    private static boolean processArg(final List<String> argList) throws HBqlException {
 
         final String option = argList.remove(0);
 

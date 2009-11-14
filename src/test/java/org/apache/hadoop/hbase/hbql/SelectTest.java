@@ -37,7 +37,6 @@ import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -54,7 +53,7 @@ public class SelectTest extends TestSupport {
     static Random randomVal = new Random();
 
     @BeforeClass
-    public static void onetimeSetup() throws HBqlException, IOException {
+    public static void onetimeSetup() throws HBqlException {
 
         SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
                               + "("
@@ -95,7 +94,7 @@ public class SelectTest extends TestSupport {
 
     private static void insertRecords(final HConnection conn,
                                       final int cnt,
-                                      final String msg) throws HBqlException, IOException {
+                                      final String msg) throws HBqlException {
 
         final Batch batch = new Batch();
 
@@ -143,7 +142,7 @@ public class SelectTest extends TestSupport {
 
 
     @Test
-    public void selectExpressions() throws HBqlException, IOException {
+    public void selectExpressions() throws HBqlException {
 
         final String query1 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab1";
 
@@ -220,7 +219,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectMapExpressions() throws HBqlException, IOException {
+    public void selectMapExpressions() throws HBqlException {
 
         final String query1 = "SELECT f3mapval1 FROM tab1";
         Query<HRecord> q1 = conn.newQuery(query1);
@@ -234,7 +233,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectVectorExpressions() throws HBqlException, IOException {
+    public void selectVectorExpressions() throws HBqlException {
 
         final String query1 = "SELECT val8 FROM tab1";
         Query<HRecord> q1 = conn.newQuery(query1);
@@ -248,7 +247,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectInvalidColumnReferences() throws HBqlException, IOException {
+    public void selectInvalidColumnReferences() throws HBqlException {
 
         final String query1 = "SELECT * FROM tab1 with client FILTER where notdefinedval = 'dd'";
         Query<HRecord> q1 = conn.newQuery(query1);
@@ -277,7 +276,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectVectorVersionExpressions() throws HBqlException, IOException {
+    public void selectVectorVersionExpressions() throws HBqlException {
 
         final String query1 = "SELECT f1:val2, val8 FROM tab1 WITH VERSIONS 5";
         Query<HRecord> q1 = conn.newQuery(query1);
@@ -300,7 +299,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectFamiliesExpressions() throws HBqlException, IOException {
+    public void selectFamiliesExpressions() throws HBqlException {
 
         SchemaManager.execute("drop schema tab1");
 
@@ -352,7 +351,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectUndefinedExpressions() throws HBqlException, IOException {
+    public void selectUndefinedExpressions() throws HBqlException {
 
         SchemaManager.execute("drop schema tab1");
 
@@ -378,7 +377,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectUndefinedVersionExpressions() throws HBqlException, IOException {
+    public void selectUndefinedVersionExpressions() throws HBqlException {
 
         SchemaManager.execute("drop schema tab1");
 
@@ -409,7 +408,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectUnknownExpressions() throws HBqlException, IOException {
+    public void selectUnknownExpressions() throws HBqlException {
 
         SchemaManager.execute("drop schema tab1");
 
@@ -435,7 +434,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectUnknownCalcExpressions() throws HBqlException, IOException {
+    public void selectUnknownCalcExpressions() throws HBqlException {
 
         SchemaManager.execute("drop schema tab1");
 
@@ -463,7 +462,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectUnknownMapExpressions() throws HBqlException, IOException {
+    public void selectUnknownMapExpressions() throws HBqlException {
 
         SchemaManager.execute("drop schema table1");
         SchemaManager.execute("CREATE SCHEMA table1"
@@ -489,7 +488,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectUnnamedExpressions() throws HBqlException, IOException {
+    public void selectUnnamedExpressions() throws HBqlException {
 
         SchemaManager.execute("drop schema tab1");
         SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
@@ -520,7 +519,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectEvalExpressions() throws HBqlException, IOException {
+    public void selectEvalExpressions() throws HBqlException {
 
         SchemaManager.execute("drop schema tab1");
 
@@ -559,7 +558,7 @@ public class SelectTest extends TestSupport {
 
 
     @Test
-    public void selectDefaults() throws HBqlException, IOException {
+    public void selectDefaults() throws HBqlException {
 
         SchemaManager.execute("drop schema tab1");
         SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
@@ -594,7 +593,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectMismatchedDefaults() throws HBqlException, IOException {
+    public void selectMismatchedDefaults() throws HBqlException {
 
         SchemaManager.execute("drop schema tab1");
         Exception caughtException = null;
@@ -614,7 +613,7 @@ public class SelectTest extends TestSupport {
     }
 
     @Test
-    public void selectObjectDefaults() throws HBqlException, IOException {
+    public void selectObjectDefaults() throws HBqlException {
 
         SchemaManager.execute("drop schema tab1");
         Exception caughtException = null;

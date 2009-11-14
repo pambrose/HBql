@@ -34,23 +34,28 @@ public class DescribeTableStatement extends TableStatement {
         super(tableName);
     }
 
-    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException {
 
-        final HTableDescriptor tableDesc = conn.getAdmin().getTableDescriptor(this.getTableName().getBytes());
+        try {
+            final HTableDescriptor tableDesc = conn.getAdmin().getTableDescriptor(this.getTableName().getBytes());
 
-        final ExecutionOutput retval = new ExecutionOutput();
-        retval.out.println("Table name: " + tableDesc.getNameAsString());
-        retval.out.println("Families:");
-        for (final HColumnDescriptor columnDesc : tableDesc.getFamilies()) {
-            retval.out.println("\t" + columnDesc.getNameAsString()
-                               + " Max Verions: " + columnDesc.getMaxVersions()
-                               + " TTL: " + columnDesc.getTimeToLive()
-                               + " Block Size: " + columnDesc.getBlocksize()
-                               + " Compression: " + columnDesc.getCompression().getName()
-                               + " Compression Type: " + columnDesc.getCompressionType().getName());
+            final ExecutionOutput retval = new ExecutionOutput();
+            retval.out.println("Table name: " + tableDesc.getNameAsString());
+            retval.out.println("Families:");
+            for (final HColumnDescriptor columnDesc : tableDesc.getFamilies()) {
+                retval.out.println("\t" + columnDesc.getNameAsString()
+                                   + " Max Verions: " + columnDesc.getMaxVersions()
+                                   + " TTL: " + columnDesc.getTimeToLive()
+                                   + " Block Size: " + columnDesc.getBlocksize()
+                                   + " Compression: " + columnDesc.getCompression().getName()
+                                   + " Compression Type: " + columnDesc.getCompressionType().getName());
+            }
+
+            retval.out.flush();
+            return retval;
         }
-
-        retval.out.flush();
-        return retval;
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 }

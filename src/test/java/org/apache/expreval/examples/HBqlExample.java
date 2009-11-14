@@ -35,7 +35,7 @@ import java.io.IOException;
 
 public class HBqlExample {
 
-    public static void main(String[] args) throws IOException, HBqlException {
+    public static void main(String[] args) throws HBqlException, IOException {
 
         final byte[] family = Bytes.toBytes("family1");
         final byte[] author = Bytes.toBytes("author");

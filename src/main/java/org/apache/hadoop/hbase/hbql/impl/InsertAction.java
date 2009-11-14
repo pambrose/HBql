@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.io.IOException;
 
@@ -37,8 +38,13 @@ public class InsertAction implements BatchAction {
         return this.actionValue;
     }
 
-    public void apply(final HTable table) throws IOException {
-        table.put(this.getActionValue());
+    public void apply(final HTable table) throws HBqlException {
+        try {
+            table.put(this.getActionValue());
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 
     public String toString() {

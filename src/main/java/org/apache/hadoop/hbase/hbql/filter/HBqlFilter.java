@@ -171,7 +171,7 @@ public class HBqlFilter implements Filter {
         }
     }
 
-    public static void testFilter(final HBqlFilter origFilter) throws IOException, HBqlException {
+    public static void testFilter(final HBqlFilter origFilter) throws HBqlException, IOException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);

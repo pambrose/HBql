@@ -31,7 +31,6 @@ import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -219,8 +218,7 @@ public class WithArgs {
         return allAttribs;
     }
 
-    public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribSet) throws IOException,
-                                                                                                     HBqlException {
+    public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
 
         final List<RowRequest> rowRequestList = Lists.newArrayList();
         for (final KeyRangeArgs.Range range : this.getKeyRangeArgs().getRangeList())
@@ -230,7 +228,7 @@ public class WithArgs {
     }
 
     public void setGetArgs(final Get get,
-                           final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+                           final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
 
         // Set column names
         for (final ColumnAttrib attrib : columnAttribSet) {
@@ -257,8 +255,7 @@ public class WithArgs {
             get.setFilter(serverFilter);
     }
 
-    public void setScanArgs(final Scan scan,
-                            final Collection<ColumnAttrib> columnAttribSet) throws HBqlException, IOException {
+    public void setScanArgs(final Scan scan, final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
 
         // Set column names
         for (final ColumnAttrib attrib : columnAttribSet) {

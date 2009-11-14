@@ -41,12 +41,17 @@ public class VersionArgs extends SelectArgs {
         return "VERSIONS " + this.getGenericValue(0).asString();
     }
 
-    public void setMaxVersions(final Get get) throws HBqlException, IOException {
-        final int max = this.getValue();
-        if (max == Integer.MAX_VALUE)
-            get.setMaxVersions();
-        else
-            get.setMaxVersions(max);
+    public void setMaxVersions(final Get get) throws HBqlException {
+        try {
+            final int max = this.getValue();
+            if (max == Integer.MAX_VALUE)
+                get.setMaxVersions();
+            else
+                get.setMaxVersions(max);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 
     public void setMaxVersions(final Scan scan) throws HBqlException {

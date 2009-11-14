@@ -32,7 +32,7 @@ import java.io.IOException;
 
 public class RawAccess3 {
 
-    public static void main(String[] args) throws IOException, HBqlException {
+    public static void main(String[] args) throws HBqlException, IOException {
 
         final byte[] family = Bytes.toBytes("f1");
         final byte[] col1 = Bytes.toBytes("val1");

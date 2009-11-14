@@ -22,7 +22,6 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 public abstract class ResultsIterator<T> implements Iterator<T> {
@@ -36,7 +35,7 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
         this.returnedRecordLimit = returnedRecordLimit;
     }
 
-    protected abstract T fetchNextObject() throws HBqlException, IOException;
+    protected abstract T fetchNextObject() throws HBqlException;
 
     protected abstract T getNextObject();
 
@@ -52,10 +51,6 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
             this.setNextObject(this.fetchNextObject(), false);
         }
         catch (HBqlException e) {
-            e.printStackTrace();
-            this.setNextObject(null, true);
-        }
-        catch (IOException e) {
             e.printStackTrace();
             this.setNextObject(null, true);
         }

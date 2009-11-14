@@ -25,6 +25,7 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -46,31 +47,35 @@ public class GetRequest implements RowRequest {
         return this.getGetValue().getMaxVersions();
     }
 
-    public ResultScanner getResultScanner(final HTable table) throws IOException {
+    public ResultScanner getResultScanner(final HTable table) throws HBqlException {
+        try {
+            // We need to fake a ResultScanner with the Get result
+            final Result result = table.get(this.getGetValue());
+            final List<Result> resultList = Lists.newArrayList();
+            if (result != null && !result.isEmpty())
+                resultList.add(result);
 
-        // We need to fake a ResultScanner with the Get result
-        final Result result = table.get(this.getGetValue());
-        final List<Result> resultList = Lists.newArrayList();
-        if (result != null && !result.isEmpty())
-            resultList.add(result);
+            return new ResultScanner() {
 
-        return new ResultScanner() {
+                public Result next() {
+                    return null;
+                }
 
-            public Result next() throws IOException {
-                return null;
-            }
+                public Result[] next(final int nbRows) {
+                    return null;
+                }
 
-            public Result[] next(final int nbRows) throws IOException {
-                return null;
-            }
+                public Iterator<Result> iterator() {
+                    return resultList.iterator();
+                }
 
-            public Iterator<Result> iterator() {
-                return resultList.iterator();
-            }
+                public void close() {
 
-            public void close() {
-
-            }
-        };
+                }
+            };
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 }

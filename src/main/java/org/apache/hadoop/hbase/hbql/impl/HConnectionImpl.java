@@ -54,11 +54,11 @@ public class HConnectionImpl implements HConnection {
         this.config = (config == null) ? new HBaseConfiguration() : config;
     }
 
-    public <T> Query<T> newQuery(final String query) throws IOException, HBqlException {
+    public <T> Query<T> newQuery(final String query) throws HBqlException {
         return this.newQuery(query, null);
     }
 
-    public <T> Query<T> newQuery(final String query, final Class clazz) throws IOException, HBqlException {
+    public <T> Query<T> newQuery(final String query, final Class clazz) throws HBqlException {
         final Mapping mapping;
         if (clazz != null) {
             mapping = AnnotationMapping.getAnnotationMapping(clazz);
@@ -72,7 +72,7 @@ public class HConnectionImpl implements HConnection {
         return new QueryImpl<T>(this, query, mapping);
     }
 
-    public <T> Query<T> newQuery(final SelectStatement selectStatement) throws IOException, HBqlException {
+    public <T> Query<T> newQuery(final SelectStatement selectStatement) throws HBqlException {
         return new QueryImpl<T>(this, selectStatement);
     }
 
@@ -84,40 +84,80 @@ public class HConnectionImpl implements HConnection {
         return this.config;
     }
 
-    public HBaseAdmin getAdmin() throws MasterNotRunningException {
-        return new HBaseAdmin(this.getConfig());
+    public HBaseAdmin getAdmin() throws HBqlException {
+        try {
+            return new HBaseAdmin(this.getConfig());
+        }
+        catch (MasterNotRunningException e) {
+            throw new HBqlException(e);
+        }
     }
 
-    public HTable getHTable(final String tableName) throws IOException {
-        return new HTable(this.getConfig(), tableName);
+    public HTable getHTable(final String tableName) throws HBqlException {
+        try {
+            return new HTable(this.getConfig(), tableName);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 
-    public boolean tableExists(final String tableName) throws MasterNotRunningException {
-        return this.getAdmin().tableExists(tableName);
+    public boolean tableExists(final String tableName) throws HBqlException {
+        try {
+            return this.getAdmin().tableExists(tableName);
+        }
+        catch (MasterNotRunningException e) {
+            throw new HBqlException(e);
+        }
     }
 
-    public boolean tableEnabled(final String tableName) throws IOException {
-        return this.getAdmin().isTableEnabled(tableName);
+    public boolean tableEnabled(final String tableName) throws HBqlException {
+        try {
+            return this.getAdmin().isTableEnabled(tableName);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 
-    public void dropTable(final String tableName) throws IOException {
-        this.getAdmin().deleteTable(tableName);
+    public void dropTable(final String tableName) throws HBqlException {
+        try {
+            this.getAdmin().deleteTable(tableName);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 
-    public void disableTable(final String tableName) throws IOException {
-        this.getAdmin().disableTable(tableName);
+    public void disableTable(final String tableName) throws HBqlException {
+        try {
+            this.getAdmin().disableTable(tableName);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 
-    public void enableTable(final String tableName) throws IOException {
-        this.getAdmin().enableTable(tableName);
+    public void enableTable(final String tableName) throws HBqlException {
+        try {
+            this.getAdmin().enableTable(tableName);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 
-    public Set<String> getTableNames() throws IOException {
-        final HBaseAdmin admin = this.getAdmin();
-        final Set<String> tableSet = Sets.newHashSet();
-        for (final HTableDescriptor table : admin.listTables())
-            tableSet.add(table.getNameAsString());
-        return tableSet;
+    public Set<String> getTableNames() throws HBqlException {
+        try {
+            final HBaseAdmin admin = this.getAdmin();
+            final Set<String> tableSet = Sets.newHashSet();
+            for (final HTableDescriptor table : admin.listTables())
+                tableSet.add(table.getNameAsString());
+            return tableSet;
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 
     public Set<String> getFamilyNames(final String tableName) throws HBqlException {
@@ -134,7 +174,7 @@ public class HConnectionImpl implements HConnection {
         }
     }
 
-    public ExecutionOutput execute(final String str) throws HBqlException, IOException {
+    public ExecutionOutput execute(final String str) throws HBqlException {
         final ConnectionStatement statement = HBqlShell.parseConnectionStatement(str);
         return statement.execute(this);
     }
@@ -147,12 +187,17 @@ public class HConnectionImpl implements HConnection {
         return stmt;
     }
 
-    public void apply(final Batch batch) throws IOException {
-        for (final String tableName : batch.getActionList().keySet()) {
-            final HTable table = this.getHTable(tableName);
-            for (final BatchAction batchAction : batch.getActionList(tableName))
-                batchAction.apply(table);
-            table.flushCommits();
+    public void apply(final Batch batch) throws HBqlException {
+        try {
+            for (final String tableName : batch.getActionList().keySet()) {
+                final HTable table = this.getHTable(tableName);
+                for (final BatchAction batchAction : batch.getActionList(tableName))
+                    batchAction.apply(table);
+                table.flushCommits();
+            }
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
         }
     }
 

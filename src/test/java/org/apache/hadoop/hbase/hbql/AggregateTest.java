@@ -34,7 +34,6 @@ import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -52,7 +51,7 @@ public class AggregateTest extends TestSupport {
     static Random randomVal = new Random();
 
     @BeforeClass
-    public static void testSetup() throws HBqlException, IOException {
+    public static void testSetup() throws HBqlException {
 
         SchemaManager.execute("CREATE SCHEMA aggschema FOR TABLE aggtable"
                               + "("
@@ -98,7 +97,7 @@ public class AggregateTest extends TestSupport {
 
     private static void insertRecords(final HConnection conn,
                                       final int cnt,
-                                      final String msg) throws HBqlException, IOException {
+                                      final String msg) throws HBqlException {
 
         PreparedStatement stmt = conn.prepare("insert into aggschema " +
                                               "(keyval, val1, val2, val5, val6, f3mapval1, f3mapval2, val8) values " +
@@ -143,7 +142,7 @@ public class AggregateTest extends TestSupport {
     }
 
     @Test
-    public void selectCount() throws HBqlException, IOException {
+    public void selectCount() throws HBqlException {
 
         final String query1 = "SELECT count() as cnt FROM aggschema";
         Query<HRecord> q1 = conn.newQuery(query1);
@@ -155,7 +154,7 @@ public class AggregateTest extends TestSupport {
     }
 
     @Test
-    public void selectMax() throws HBqlException, IOException {
+    public void selectMax() throws HBqlException {
 
         final String query1 = "SELECT max(val5) as max FROM aggschema";
         Query<HRecord> q1 = conn.newQuery(query1);
@@ -168,7 +167,7 @@ public class AggregateTest extends TestSupport {
     }
 
     @Test
-    public void selectMin() throws HBqlException, IOException {
+    public void selectMin() throws HBqlException {
 
         final String query1 = "SELECT min(val5) as min, min(val5+1) as min2 FROM aggschema";
         Query<HRecord> q1 = conn.newQuery(query1);
@@ -183,7 +182,7 @@ public class AggregateTest extends TestSupport {
     }
 
     @Test
-    public void selectAll() throws HBqlException, IOException {
+    public void selectAll() throws HBqlException {
 
         final String query1 = "SELECT count() as cnt, max(val5) as max, min(val5) as min, min(val5+1) as min2 FROM aggschema";
         Query<HRecord> q1 = conn.newQuery(query1);

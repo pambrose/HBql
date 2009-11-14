@@ -32,8 +32,15 @@ public class EnableTableStatement extends TableStatement {
         super(tableName);
     }
 
-    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException, IOException {
-        conn.getAdmin().enableTable(this.getTableName());
+    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException {
+
+        try {
+            conn.getAdmin().enableTable(this.getTableName());
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
+
         return new ExecutionOutput("Table " + this.getTableName() + " enabled.");
     }
 }

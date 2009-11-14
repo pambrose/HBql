@@ -32,13 +32,12 @@ import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.Set;
 
 public class ExamplesTest extends TestSupport {
 
 
-    public void showTables() throws HBqlException, IOException {
+    public void showTables() throws HBqlException {
 
         // START SNIPPET: show-tables
 
@@ -51,7 +50,7 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: show-tables
     }
 
-    public void showSchemas() throws HBqlException, IOException {
+    public void showSchemas() throws HBqlException {
 
         // START SNIPPET: show-schemas
 
@@ -63,7 +62,7 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: show-schemas
     }
 
-    public void describeTable() throws HBqlException, IOException {
+    public void describeTable() throws HBqlException {
 
         // START SNIPPET: describe-table
 
@@ -74,7 +73,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    public void describeSchema() throws HBqlException, IOException {
+    public void describeSchema() throws HBqlException {
 
         // START SNIPPET: describe-schema
 
@@ -85,7 +84,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    public void enableTable() throws HBqlException, IOException {
+    public void enableTable() throws HBqlException {
 
         // START SNIPPET: enable-table
 
@@ -99,7 +98,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    public void disableTable() throws HBqlException, IOException {
+    public void disableTable() throws HBqlException {
 
         // START SNIPPET: disable-table
 
@@ -113,7 +112,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    public void dropSchema() throws HBqlException, IOException {
+    public void dropSchema() throws HBqlException {
 
         // START SNIPPET: drop-schema
 
@@ -126,7 +125,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    public void createTable() throws HBqlException, IOException {
+    public void createTable() throws HBqlException {
 
         // START SNIPPET: create-table
 
@@ -137,7 +136,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    public void dropTable() throws HBqlException, IOException {
+    public void dropTable() throws HBqlException {
 
         // START SNIPPET: drop-table
 
@@ -151,7 +150,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    public void insert1() throws HBqlException, IOException {
+    public void insert1() throws HBqlException {
 
         // START SNIPPET: insert1
 
@@ -182,7 +181,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    public void insert2() throws HBqlException, IOException {
+    public void insert2() throws HBqlException {
 
         // START SNIPPET: insert2
 
@@ -206,7 +205,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    public void insert3() throws HBqlException, IOException {
+    public void insert3() throws HBqlException {
 
         // START SNIPPET: insert3
         SchemaManager.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
@@ -226,7 +225,7 @@ public class ExamplesTest extends TestSupport {
     }
 
 
-    public void createSchema() throws HBqlException, IOException {
+    public void createSchema() throws HBqlException {
 
         // START SNIPPET: create-schema1
         // Schema named foo that corresponds to table foo.
@@ -261,7 +260,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    public void selectAll() throws HBqlException, IOException {
+    public void selectAll() throws HBqlException {
 
         // START SNIPPET: select1
 
@@ -294,7 +293,7 @@ public class ExamplesTest extends TestSupport {
     }
 
     @Test
-    public void definedSelect() throws HBqlException, IOException {
+    public void definedSelect() throws HBqlException {
 
         // START SNIPPET: definedExample1
 
@@ -353,7 +352,7 @@ public class ExamplesTest extends TestSupport {
     }
 
     @Test
-    public void annotatedSelect() throws HBqlException, IOException {
+    public void annotatedSelect() throws HBqlException {
 
         // START SNIPPET: annotatedExample2
 

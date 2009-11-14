@@ -36,7 +36,6 @@ import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.InsertValueSource;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
-import java.io.IOException;
 import java.util.List;
 
 public class InsertStatement extends SchemaContext implements PreparedStatement {
@@ -157,7 +156,7 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
         return this.insertValuesSource;
     }
 
-    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException {
 
         this.validate(conn);
 
@@ -193,7 +192,7 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
         return new ExecutionOutput(cnt + " record" + ((cnt > 1) ? "s" : "") + " inserted");
     }
 
-    public ExecutionOutput execute() throws HBqlException, IOException {
+    public ExecutionOutput execute() throws HBqlException {
         return this.execute(this.getConnection());
     }
 

@@ -52,7 +52,7 @@ public class DeleteStatement extends SchemaContext implements ConnectionStatemen
         return this.withArgs;
     }
 
-    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException {
 
         this.checkIfValidSchemaName();
 
@@ -73,24 +73,29 @@ public class DeleteStatement extends SchemaContext implements ConnectionStatemen
 
     private int delete(final HTable table,
                        final WithArgs with,
-                       final RowRequest rowRequest) throws IOException, HBqlException {
+                       final RowRequest rowRequest) throws HBqlException {
 
-        final ExpressionTree clientExpressionTree = with.getClientExpressionTree();
+        try {
+            final ExpressionTree clientExpressionTree = with.getClientExpressionTree();
 
-        int cnt = 0;
-        for (final Result result : rowRequest.getResultScanner(table)) {
-            try {
-                if (clientExpressionTree == null || clientExpressionTree.evaluate(result)) {
-                    table.delete(new Delete(result.getRow()));
-                    cnt++;
+            int cnt = 0;
+            for (final Result result : rowRequest.getResultScanner(table)) {
+                try {
+                    if (clientExpressionTree == null || clientExpressionTree.evaluate(result)) {
+                        table.delete(new Delete(result.getRow()));
+                        cnt++;
+                    }
+                }
+                catch (ResultMissingColumnException e) {
+                    // Just skip and do nothing
                 }
             }
-            catch (ResultMissingColumnException e) {
-                // Just skip and do nothing
-            }
+            if (cnt > 0)
+                table.flushCommits();
+            return cnt;
         }
-        if (cnt > 0)
-            table.flushCommits();
-        return cnt;
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 }

@@ -56,17 +56,27 @@ public class TimestampArgs extends SelectArgs {
                    + this.getGenericValue(1).asString();
     }
 
-    public void setTimeStamp(final Get get) throws HBqlException, IOException {
-        if (this.isSingleValue())
-            get.setTimeStamp(this.getLower());
-        else
-            get.setTimeRange(this.getLower(), this.getUpper());
+    public void setTimeStamp(final Get get) throws HBqlException {
+        try {
+            if (this.isSingleValue())
+                get.setTimeStamp(this.getLower());
+            else
+                get.setTimeRange(this.getLower(), this.getUpper());
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 
-    public void setTimeStamp(final Scan scan) throws HBqlException, IOException {
-        if (this.isSingleValue())
-            scan.setTimeStamp(this.getLower());
-        else
-            scan.setTimeRange(this.getLower(), this.getUpper());
+    public void setTimeStamp(final Scan scan) throws HBqlException {
+        try {
+            if (this.isSingleValue())
+                scan.setTimeStamp(this.getLower());
+            else
+                scan.setTimeRange(this.getLower(), this.getUpper());
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 }

@@ -24,15 +24,13 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-import java.io.IOException;
-
 public class DropTableStatement extends TableStatement {
 
     public DropTableStatement(final String tableName) {
         super(tableName);
     }
 
-    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException, IOException {
+    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException {
         conn.dropTable(this.getTableName());
         return new ExecutionOutput("Table " + this.getTableName() + " dropped.");
     }

@@ -20,9 +20,9 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import java.io.IOException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public interface BatchAction {
 
-    void apply(final org.apache.hadoop.hbase.client.HTable table) throws IOException;
+    void apply(final org.apache.hadoop.hbase.client.HTable table) throws HBqlException;
 }

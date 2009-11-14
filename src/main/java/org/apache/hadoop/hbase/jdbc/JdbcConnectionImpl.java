@@ -33,6 +33,7 @@ import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Savepoint;
@@ -52,31 +53,31 @@ public class JdbcConnectionImpl extends HConnectionImpl implements Connection {
     }
 
     public PreparedStatement prepareStatement(final String s) throws SQLException {
-        return null;
+        return new JdbcPreparedStatementImpl(this, s);
     }
 
     public CallableStatement prepareCall(final String s) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public String nativeSQL(final String s) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setAutoCommit(final boolean b) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public boolean getAutoCommit() throws SQLException {
-        return false;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void commit() throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void rollback() throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public DatabaseMetaData getMetaData() throws SQLException {
@@ -100,11 +101,11 @@ public class JdbcConnectionImpl extends HConnectionImpl implements Connection {
     }
 
     public void setTransactionIsolation(final int i) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public int getTransactionIsolation() throws SQLException {
-        return 0;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public SQLWarning getWarnings() throws SQLException {
@@ -116,15 +117,15 @@ public class JdbcConnectionImpl extends HConnectionImpl implements Connection {
     }
 
     public Statement createStatement(final int i, final int i1) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public PreparedStatement prepareStatement(final String s, final int i, final int i1) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public CallableStatement prepareCall(final String s, final int i, final int i1) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public Map<String, Class<?>> getTypeMap() throws SQLException {
@@ -136,27 +137,27 @@ public class JdbcConnectionImpl extends HConnectionImpl implements Connection {
     }
 
     public void setHoldability(final int i) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public int getHoldability() throws SQLException {
-        return 0;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public Savepoint setSavepoint() throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public Savepoint setSavepoint(final String s) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void rollback(final Savepoint savepoint) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void releaseSavepoint(final Savepoint savepoint) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public Statement createStatement(final int i, final int i1, final int i2) throws SQLException {

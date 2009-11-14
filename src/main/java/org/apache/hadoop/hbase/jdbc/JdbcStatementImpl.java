@@ -23,7 +23,6 @@ package org.apache.hadoop.hbase.jdbc;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.Query;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,13 +50,8 @@ public class JdbcStatementImpl implements Statement {
     }
 
     public ResultSet executeQuery(final String sql) throws SQLException {
-        try {
-            final Query<HRecord> query = this.getConnectionImpl().newQuery(sql);
-            return new JdbcResultSetImpl(this, query.getResults());
-        }
-        catch (IOException e) {
-            throw new SQLException(e.getMessage());
-        }
+        final Query<HRecord> query = this.getConnectionImpl().newQuery(sql);
+        return new JdbcResultSetImpl(this, query.getResults());
     }
 
     public int executeUpdate(final String s) throws SQLException {
