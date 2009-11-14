@@ -30,16 +30,16 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 
-public class StatementImpl implements Statement {
+public class JdbcStatementImpl implements Statement {
 
-    private final ConnectionImpl connection;
+    private final JdbcConnectionImpl connection;
 
-    public StatementImpl(final ConnectionImpl connection) {
+    public JdbcStatementImpl(final JdbcConnectionImpl connection) {
         this.connection = connection;
     }
 
-    private ConnectionImpl getConnectionImpl() {
-        return (ConnectionImpl)this.getConnection();
+    private JdbcConnectionImpl getConnectionImpl() {
+        return (JdbcConnectionImpl)this.getConnection();
     }
 
     public <T> T unwrap(final Class<T> tClass) throws SQLException {
@@ -53,7 +53,7 @@ public class StatementImpl implements Statement {
     public ResultSet executeQuery(final String sql) throws SQLException {
         try {
             final Query<HRecord> query = this.getConnectionImpl().newQuery(sql);
-            return new ResultSetImpl(query.getResults());
+            return new JdbcResultSetImpl(this, query.getResults());
         }
         catch (IOException e) {
             throw new SQLException(e.getMessage());

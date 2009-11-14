@@ -24,7 +24,7 @@ import java.util.List;
 
 public interface Query<T> {
 
-    HConnection getConnection();
+    HConnection getHConnection() throws HBqlException;
 
     List<QueryListener<T>> getListeners();
 

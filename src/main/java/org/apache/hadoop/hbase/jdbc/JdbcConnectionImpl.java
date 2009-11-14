@@ -41,14 +41,14 @@ import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
 
-public class ConnectionImpl extends HConnectionImpl implements Connection {
+public class JdbcConnectionImpl extends HConnectionImpl implements Connection {
 
-    public ConnectionImpl(final String name, final HBaseConfiguration config) {
+    public JdbcConnectionImpl(final String name, final HBaseConfiguration config) {
         super(name, config);
     }
 
     public Statement createStatement() throws SQLException {
-        return new StatementImpl(this);
+        return new JdbcStatementImpl(this);
     }
 
     public PreparedStatement prepareStatement(final String s) throws SQLException {
@@ -77,14 +77,6 @@ public class ConnectionImpl extends HConnectionImpl implements Connection {
 
     public void rollback() throws SQLException {
 
-    }
-
-    public void close() throws SQLException {
-
-    }
-
-    public boolean isClosed() throws SQLException {
-        return false;
     }
 
     public DatabaseMetaData getMetaData() throws SQLException {

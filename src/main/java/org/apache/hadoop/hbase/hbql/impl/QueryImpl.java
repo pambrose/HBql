@@ -46,13 +46,13 @@ public class QueryImpl<T> implements Query<T> {
 
     private List<QueryListener<T>> listeners = null;
 
-    public QueryImpl(final HConnection connection,
+    public QueryImpl(final HConnectionImpl connection,
                      final SelectStatement selectStatement) throws HBqlException {
         this.connection = connection;
         this.selectStatement = selectStatement;
     }
 
-    public QueryImpl(final HConnection connection,
+    public QueryImpl(final HConnectionImpl connection,
                      final String query,
                      final Mapping mapping) throws HBqlException {
         this(connection, HBqlShell.parseSelectStatement(connection, query, mapping));
@@ -65,7 +65,7 @@ public class QueryImpl<T> implements Query<T> {
         this.getListeners().add(listener);
     }
 
-    public HConnection getConnection() {
+    public HConnection getHConnection() {
         return this.connection;
     }
 

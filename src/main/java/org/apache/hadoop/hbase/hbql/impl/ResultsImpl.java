@@ -50,7 +50,7 @@ public class ResultsImpl<T> implements Results<T> {
     }
 
     private HConnection getConnection() {
-        return this.getQuery().getConnection();
+        return this.getQuery().getHConnection();
     }
 
     private QueryImpl<T> getQuery() {

@@ -22,11 +22,11 @@ package org.apache.hadoop.hbase.jdbc;
 
 import java.sql.RowId;
 
-public class RowIdImpl implements RowId {
+public class JdbcRowIdImpl implements RowId {
 
     private final String keyval;
 
-    public RowIdImpl(final String keyval) {
+    public JdbcRowIdImpl(final String keyval) {
         this.keyval = keyval;
     }
 

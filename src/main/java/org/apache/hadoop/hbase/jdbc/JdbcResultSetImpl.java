@@ -47,13 +47,15 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
 
-public class ResultSetImpl implements ResultSet {
+public class JdbcResultSetImpl implements ResultSet {
 
     final Results<HRecord> results;
     private Iterator<HRecord> resultsIterator;
+    private final JdbcStatementImpl statement;
     private RecordImpl currentRecord = null;
 
-    public ResultSetImpl(final Results<HRecord> results) {
+    public JdbcResultSetImpl(final JdbcStatementImpl statement, final Results<HRecord> results) {
+        this.statement = statement;
         this.results = results;
         this.resultsIterator = results.iterator();
     }
@@ -547,7 +549,7 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public Statement getStatement() throws SQLException {
-        return null;
+        return this.statement;
     }
 
     public Object getObject(final int i, final Map<String, Class<?>> stringClassMap) throws SQLException {
@@ -655,11 +657,11 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public RowId getRowId(final int i) throws SQLException {
-        return new RowIdImpl(this.getString(i));
+        return new JdbcRowIdImpl(this.getString(i));
     }
 
     public RowId getRowId(final String s) throws SQLException {
-        return new RowIdImpl(this.getString(s));
+        return new JdbcRowIdImpl(this.getString(s));
     }
 
     public void updateRowId(final int i, final RowId rowId) throws SQLException {

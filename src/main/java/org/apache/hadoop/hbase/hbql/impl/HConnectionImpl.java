@@ -47,6 +47,7 @@ public class HConnectionImpl implements HConnection {
 
     private final HBaseConfiguration config;
     private final String name;
+    private boolean closed = false;
 
     public HConnectionImpl(final String name, final HBaseConfiguration config) {
         this.name = name;
@@ -153,5 +154,13 @@ public class HConnectionImpl implements HConnection {
                 batchAction.apply(table);
             table.flushCommits();
         }
+    }
+
+    public void close() throws HBqlException {
+        this.closed = true;
+    }
+
+    public boolean isClosed() throws HBqlException {
+        return this.closed;
     }
 }

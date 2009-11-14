@@ -57,4 +57,8 @@ public interface HConnection {
     Set<String> getFamilyNames(String tableName) throws HBqlException;
 
     void apply(Batch batch) throws IOException;
+
+    void close() throws HBqlException;
+
+    boolean isClosed() throws HBqlException;
 }
