@@ -30,8 +30,11 @@ import org.apache.hadoop.hbase.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
+import org.apache.hadoop.hbase.hbql.schema.Mapping;
+import org.apache.hadoop.hbase.hbql.schema.ReflectionMapping;
 import org.apache.hadoop.hbase.hbql.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
@@ -159,13 +162,22 @@ public class TestSupport {
     }
 
     public ExpressionTree parseExpr(final Object recordObj, final String expr) throws HBqlException {
-        final Schema schema = getObjectSchema(recordObj);
-        return parseDescWhereExpr(expr, schema);
+        final SchemaContext schemaContext;
+        if (recordObj == null)
+            schemaContext = new SimpleSchemaContext((Schema)null);
+        else
+            schemaContext = getMappingForObject(recordObj).getSchemaContext();
+        return parseDescWhereExpr(expr, schemaContext);
     }
 
     private static boolean evaluateExpression(final Object recordObj, final String expr) throws HBqlException {
-        final Schema schema = getObjectSchema(recordObj);
-        final ExpressionTree tree = parseDescWhereExpr(expr, schema);
+        final SchemaContext schemaContext;
+        if (recordObj == null)
+            schemaContext = new SimpleSchemaContext((Schema)null);
+        else
+            schemaContext = getMappingForObject(recordObj).getSchemaContext();
+
+        final ExpressionTree tree = parseDescWhereExpr(expr, schemaContext);
         return evaluateExprression(recordObj, tree);
     }
 
@@ -212,11 +224,12 @@ public class TestSupport {
         }
     }
 
-    public static ExpressionTree parseDescWhereExpr(final String str, final Schema schema) throws HBqlException {
+    public static ExpressionTree parseDescWhereExpr(final String str,
+                                                    final SchemaContext schemaContext) throws HBqlException {
         try {
             final HBqlParser parser = HBqlShell.newHBqlParser(str);
             final ExpressionTree expressionTree = parser.descWhereExpr();
-            expressionTree.setSchemaContext(new SimpleSchemaContext(schema));
+            expressionTree.setSchemaContext(schemaContext);
             return expressionTree;
         }
         catch (RecognitionException e) {
@@ -244,19 +257,18 @@ public class TestSupport {
         }
     }
 
-    public static Schema getObjectSchema(final Object recordObj) throws HBqlException {
+    public static Mapping getMappingForObject(final Object recordObj) throws HBqlException {
 
         if (recordObj == null)
             return null;
 
         try {
-            final AnnotationMapping mapping = AnnotationMapping.getAnnotationMapping(recordObj);
-            return mapping.getSchema();
+            return AnnotationMapping.getAnnotationMapping(recordObj);
         }
         catch (HBqlException e) {
-            // Not annotated properly
+            // Not annotated 
         }
 
-        return ReflectionSchema.getReflectionSchema(recordObj);
+        return new ReflectionMapping(new SimpleSchemaContext(ReflectionSchema.getReflectionSchema(recordObj)));
     }
 }

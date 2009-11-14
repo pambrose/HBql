@@ -242,7 +242,7 @@ public class HBaseSchema extends Schema {
     }
 
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
-        final SchemaContext schemaContext = new SimpleSchemaContext(this);
+        final SchemaContext schemaContext = new SimpleSchemaContext(this, null);
         final ExpressionTree expressionTree = HBqlShell.parseWhereExpression(query, schemaContext);
         return new HBqlFilter(expressionTree);
     }

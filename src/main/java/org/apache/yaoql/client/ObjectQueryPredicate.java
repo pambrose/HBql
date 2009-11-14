@@ -53,7 +53,7 @@ public class ObjectQueryPredicate<T> extends ParameterBinding implements Predica
         try {
             if (!initialized) {
                 final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
-                final SchemaContext schemaContext = new SimpleSchemaContext(schema);
+                final SchemaContext schemaContext = new SimpleSchemaContext(schema, null);
                 this.expressionTree = HBqlShell.parseWhereExpression(this.query, schemaContext);
                 this.applyParameters(this.expressionTree);
                 initialized = true;

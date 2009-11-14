@@ -80,6 +80,10 @@ public abstract class SchemaContext implements ShellStatement, Serializable {
             throw new HBqlException("Unknown schema name: " + this.invalidSchemaName);
     }
 
+    public void setMapping2(final Mapping mapping) throws HBqlException {
+        this.mapping = mapping;
+    }
+
     public synchronized void setMapping(final Mapping mapping) throws HBqlException {
 
         if (mapping != null && mapping instanceof AnnotationMapping) {

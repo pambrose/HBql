@@ -78,7 +78,6 @@ public class HRecordAttrib extends ColumnAttrib {
 
     protected void defineAccessors() {
         // TODO This needs to be implemented
-        // No-op
     }
 
     public Object getCurrentValue(final Object record) throws HBqlException {

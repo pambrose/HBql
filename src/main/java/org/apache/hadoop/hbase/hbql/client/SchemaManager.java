@@ -74,7 +74,7 @@ public class SchemaManager {
 
     public static HRecord newHRecord(final String schemaName) throws HBqlException {
         final HBaseSchema schema = getSchema(schemaName);
-        return new RecordImpl(new SimpleSchemaContext(schema));
+        return new RecordImpl(new SimpleSchemaContext(schema, null));
     }
 
     public static HBaseSchema getSchema(final String schemaName) throws HBqlException {
