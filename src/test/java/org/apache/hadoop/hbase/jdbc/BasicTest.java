@@ -32,9 +32,9 @@ import java.sql.Statement;
 public class BasicTest {
 
     @Test
-    public void simpleLogin() throws ClassNotFoundException, SQLException {
+    public void simpleQuery() throws ClassNotFoundException, SQLException {
 
-        SchemaManager.execute("CREATE SCHEMA tab3 FOR TABLE table2"
+        SchemaManager.execute("CREATE SCHEMA tab4 FOR TABLE table2"
                               + "("
                               + "keyval key, "
                               + "f1:val1 string alias val1, "
@@ -52,23 +52,20 @@ public class BasicTest {
 
         Class.forName("org.apache.hadoop.hbase.jdbc.Driver");
 
-        Connection conn = DriverManager.getConnection("hbql", "user", "secret");
+        Connection conn = DriverManager.getConnection("hbql", null, null);
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("select * from tab3");
+        ResultSet rs = stmt.executeQuery("select * from tab4");
 
         while (rs.next()) {
-            int id = rs.getInt("val5");
-            int age = rs.getInt("val6");
-            String first = rs.getString("val1");
-            String last = rs.getString("val2");
+            int val5 = rs.getInt("val5");
+            int val6 = rs.getInt("val6");
+            String val1 = rs.getString("val1");
+            String val2 = rs.getString("val2");
 
-            String b0 = rs.getString(1);
-            byte[] b1 = rs.getBytes(2);
-
-            System.out.print("ID: " + id);
-            System.out.print(", Age: " + age);
-            System.out.print(", First: " + first);
-            System.out.println(", Last: " + last);
+            System.out.print("val5: " + val5);
+            System.out.print(", val6: " + val6);
+            System.out.print(", val1: " + val1);
+            System.out.println(", val2: " + val2);
         }
     }
 }

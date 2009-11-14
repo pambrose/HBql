@@ -70,6 +70,10 @@ public class ResultSetImpl implements ResultSet {
         return this.currentRecord;
     }
 
+    private void setCurrentRecord(final RecordImpl currentRecord) {
+        this.currentRecord = currentRecord;
+    }
+
     public <T> T unwrap(final Class<T> tClass) throws SQLException {
         return null;
     }
@@ -80,7 +84,7 @@ public class ResultSetImpl implements ResultSet {
 
     public boolean next() throws SQLException {
         if (this.getResultsIterator().hasNext()) {
-            this.currentRecord = (RecordImpl)this.getResultsIterator().next();
+            this.setCurrentRecord((RecordImpl)this.getResultsIterator().next());
             return true;
         }
         else {

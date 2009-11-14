@@ -26,6 +26,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
+import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
@@ -190,6 +191,11 @@ public class FamilySelectElement implements SelectElement {
 
                 final byte[] valueBytes = columnMap.get(columnBytes);
                 final String columnName = IO.getSerialization().getStringFromBytes(columnBytes);
+
+                if (obj instanceof RecordImpl) {
+                    final RecordImpl record = (RecordImpl)obj;
+                    record.addNameToPositionList(familyName + ":" + columnName);
+                }
 
                 final ColumnAttrib attrib = this.getMapping().getAttribFromFamilyQualifiedName(familyName, columnName);
                 if (attrib == null) {

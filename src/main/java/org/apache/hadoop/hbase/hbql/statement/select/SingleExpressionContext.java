@@ -227,6 +227,11 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
                                   final int maxVerions,
                                   final Result result) throws HBqlException {
 
+        if (obj instanceof RecordImpl) {
+            final RecordImpl record = (RecordImpl)obj;
+            record.addNameToPositionList(this.getSelectName());
+        }
+
         if (this.isAKeyValue())
             return;
 

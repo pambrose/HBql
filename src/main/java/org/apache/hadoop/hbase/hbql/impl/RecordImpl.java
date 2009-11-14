@@ -21,8 +21,8 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.hbql.client.FamilyDefaultValueMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
@@ -43,7 +43,7 @@ public class RecordImpl implements Serializable, HRecord {
     private SchemaContext schemaContext;
     private long timestamp = System.currentTimeMillis();
 
-    private List<KeyValue> keyValueList = null;
+    private List<String> namePositionList = Lists.newArrayList();
 
     private volatile ElementMap<ColumnValue> columnValuesMap = null;
     private volatile ElementMap<FamilyDefaultValueMap> familyDefaultElementsMap = null;
@@ -62,25 +62,20 @@ public class RecordImpl implements Serializable, HRecord {
 
     public String getAttribName(final int i) throws HBqlException {
 
-        if (i == 1)
-            return this.getMapping().getHBaseSchema().getKeyAttrib().getFamilyQualifiedName();
-
         try {
-            final KeyValue kv = this.getKeyValueList().get(i - 2);
-            final String column = new String(kv.getColumn());
-            return column;
+            return this.getNamePositionList().get(i - 1);
         }
         catch (ArrayIndexOutOfBoundsException e) {
             throw new HBqlException("Invalid column number " + i);
         }
     }
 
-    private List<KeyValue> getKeyValueList() {
-        return this.keyValueList;
+    private List<String> getNamePositionList() {
+        return this.namePositionList;
     }
 
-    public void setKeyValueList(final List<KeyValue> keyValueList) {
-        this.keyValueList = keyValueList;
+    public void addNameToPositionList(final String name) {
+        this.getNamePositionList().add(name);
     }
 
     public HBaseSchema getHBaseSchema() throws HBqlException {

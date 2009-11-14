@@ -50,8 +50,6 @@ public class HRecordMapping extends Mapping {
                                     final int maxVersions,
                                     final Result result) throws HBqlException {
 
-        record.setKeyValueList(result.list());
-
         // Set key value
         this.getSchema().getKeyAttrib().setCurrentValue(record, 0, result.getRow());
 
