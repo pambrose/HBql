@@ -34,7 +34,7 @@ public class ReflectionSchema extends Schema {
 
     private final static Map<Class<?>, ReflectionSchema> reflectionSchemaMap = Maps.newHashMap();
 
-    private ReflectionSchema(final Class clazz) throws HBqlException {
+    private ReflectionSchema(final Class clazz) {
         super(clazz.getName(), null);
 
         for (final Field field : clazz.getDeclaredFields()) {
@@ -46,16 +46,22 @@ public class ReflectionSchema extends Schema {
                 || field.getType().equals(String.class)
                 || field.getType().equals(Date.class)) {
                 final ReflectionAttrib attrib = new ReflectionAttrib(field);
-                addAttribToVariableNameMap(attrib, attrib.getVariableName());
+                try {
+                    addAttribToVariableNameMap(attrib, attrib.getVariableName());
+                }
+                catch (HBqlException e) {
+                    // Not going to be hit with ReflectionSchema
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    public static ReflectionSchema getReflectionSchema(final Object obj) throws HBqlException {
+    public static ReflectionSchema getReflectionSchema(final Object obj) {
         return getReflectionSchema(obj.getClass());
     }
 
-    public synchronized static ReflectionSchema getReflectionSchema(final Class clazz) throws HBqlException {
+    public synchronized static ReflectionSchema getReflectionSchema(final Class clazz) {
 
         ReflectionSchema schema = getReflectionSchemaMap().get(clazz);
         if (schema != null)

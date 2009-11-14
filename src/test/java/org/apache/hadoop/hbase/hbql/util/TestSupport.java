@@ -32,7 +32,6 @@ import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.schema.ReflectionMapping;
-import org.apache.hadoop.hbase.hbql.schema.ReflectionSchema;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
@@ -262,13 +261,9 @@ public class TestSupport {
         if (recordObj == null)
             return null;
 
-        try {
+        if (AnnotationMapping.isAnnotatedObject(recordObj.getClass()))
             return AnnotationMapping.getAnnotationMapping(recordObj);
-        }
-        catch (HBqlException e) {
-            // Not annotated 
-        }
-
-        return new ReflectionMapping(new SimpleSchemaContext(ReflectionSchema.getReflectionSchema(recordObj)));
+        else
+            return new ReflectionMapping(recordObj);
     }
 }

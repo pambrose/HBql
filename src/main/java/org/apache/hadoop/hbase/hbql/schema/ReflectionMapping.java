@@ -23,14 +23,15 @@ package org.apache.hadoop.hbase.hbql.schema;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
 
 public class ReflectionMapping extends Mapping {
 
-    public ReflectionMapping(final SchemaContext schemaContext) {
-        super(schemaContext);
+    public ReflectionMapping(final Object object) {
+        super(new SimpleSchemaContext(ReflectionSchema.getReflectionSchema(object)));
     }
 
     public Object newObject(final SchemaContext schemaContext, final List<SelectElement> selectElementList, final int maxVersions, final Result result) throws HBqlException {

@@ -68,13 +68,16 @@ public class AnnotationMapping extends Mapping {
                                     + this.getSchema().getKeyAttrib().getFamilyQualifiedName());
     }
 
+    public synchronized static boolean isAnnotatedObject(final Class<?> clazz) {
+        return clazz.getAnnotation(org.apache.hadoop.hbase.hbql.client.Schema.class) != null;
+    }
+
     public synchronized static AnnotationMapping getAnnotationMapping(final Class<?> clazz) throws HBqlException {
 
         AnnotationMapping mapping = getAnnotationMappingMap().get(clazz);
 
-        if (mapping != null) {
+        if (mapping != null)
             return mapping;
-        }
 
         org.apache.hadoop.hbase.hbql.client.Schema schemaAnnotation =
                 clazz.getAnnotation(org.apache.hadoop.hbase.hbql.client.Schema.class);

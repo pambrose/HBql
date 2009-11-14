@@ -20,16 +20,12 @@
 
 package org.apache.hadoop.hbase.hbql.schema;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-
 import java.lang.reflect.Field;
 
 public class ReflectionAttrib extends FieldAttrib {
 
-    public ReflectionAttrib(final Field field) throws HBqlException {
+    public ReflectionAttrib(final Field field) {
         super(null, null, field, FieldType.getFieldType(field.getType()), false, null, null);
-
-        this.defineAccessors();
     }
 
     final String getVariableName() {

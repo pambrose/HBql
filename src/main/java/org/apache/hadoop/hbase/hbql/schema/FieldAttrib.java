@@ -39,7 +39,7 @@ public abstract class FieldAttrib extends ColumnAttrib {
                           final FieldType fieldType,
                           final boolean familyDefault,
                           final String getter,
-                          final String setter) throws HBqlException {
+                          final String setter) {
         super(familyName,
               (columnName != null && columnName.length() > 0) ? columnName : field.getName(),
               field.getName(),
@@ -47,8 +47,7 @@ public abstract class FieldAttrib extends ColumnAttrib {
               fieldType,
               field.getType().isArray(),
               getter,
-              setter,
-              null);
+              setter);
 
         this.field = field;
         setAccessible(this.getField());

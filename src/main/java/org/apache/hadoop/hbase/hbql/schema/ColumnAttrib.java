@@ -21,7 +21,6 @@
 package org.apache.hadoop.hbase.hbql.schema;
 
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.io.IO;
@@ -48,7 +47,6 @@ public abstract class ColumnAttrib implements Serializable {
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
 
-    private final DefaultArg defaultArg;
 
     protected ColumnAttrib(final String familyName,
                            final String columnName,
@@ -57,8 +55,7 @@ public abstract class ColumnAttrib implements Serializable {
                            final FieldType fieldType,
                            final boolean isArray,
                            final String getter,
-                           final String setter,
-                           final GenericValue genericValue) throws HBqlException {
+                           final String setter) {
 
         this.familyName = familyName;
         this.columnName = columnName;
@@ -68,8 +65,6 @@ public abstract class ColumnAttrib implements Serializable {
         this.anArray = isArray;
         this.getter = getter;
         this.setter = setter;
-
-        this.defaultArg = this.evaluateDefaultValue(genericValue);
     }
 
     public abstract String asString() throws HBqlException;
@@ -84,7 +79,7 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     protected DefaultArg getDefaultArg() {
-        return this.defaultArg;
+        return null;
     }
 
     public abstract Object getCurrentValue(final Object obj) throws HBqlException;
@@ -361,36 +356,5 @@ public abstract class ColumnAttrib implements Serializable {
 
     public boolean isAKeyAttrib() {
         return false;
-    }
-
-    private DefaultArg evaluateDefaultValue(final GenericValue defaultValueExpr) throws HBqlException {
-
-        if (defaultValueExpr == null)
-            return null;
-
-        if (this.isAKeyAttrib())
-            throw new HBqlException("Default values are not valid for key values: "
-                                    + this.getNameToUseInExceptions());
-
-        if (!defaultValueExpr.isAConstant())
-            throw new HBqlException("Default values must be constants: "
-                                    + this.getNameToUseInExceptions());
-
-        if (this.isAnArray())
-            throw new HBqlException("Default values are not valid for array values: "
-                                    + this.getNameToUseInExceptions());
-
-        // This will apply only to Annotations
-        if (this.isAVersionValue() && !this.isACurrentValue())
-            throw new HBqlException("Default values are not valid for version values: "
-                                    + this.getNameToUseInExceptions());
-
-        final Class<? extends GenericValue> type = this.getFieldType().getExprType();
-
-        if (type == null)
-            throw new HBqlException("Default values are not valid for: " + this.getNameToUseInExceptions());
-
-        // Type checking will happen in this call        
-        return new DefaultArg(type, defaultValueExpr);
     }
 }
