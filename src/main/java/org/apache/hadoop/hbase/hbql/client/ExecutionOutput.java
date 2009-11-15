@@ -28,6 +28,7 @@ public class ExecutionOutput {
     private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     public final PrintStream out = new PrintStream(baos);
     private boolean success = true;
+    private int count = -1;
 
     public ExecutionOutput() {
     }
@@ -47,5 +48,13 @@ public class ExecutionOutput {
     public String toString() {
         this.out.flush();
         return baos.toString();
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(final int count) {
+        this.count = count;
     }
 }

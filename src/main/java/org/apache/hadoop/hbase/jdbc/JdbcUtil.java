@@ -24,7 +24,9 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
+import org.apache.hadoop.hbase.hbql.statement.DeleteStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
+import org.apache.hadoop.hbase.hbql.statement.InsertStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
@@ -36,11 +38,9 @@ public class JdbcUtil {
         try {
             final HBqlStatement stmt = HBqlShell.parseJdbcStatement(sql);
 
-            if (stmt instanceof SelectStatement)
-                return stmt;
-            else if (stmt instanceof ConnectionStatement)
-                return stmt;
-            else if (stmt instanceof NonConnectionStatement)
+            if (stmt instanceof SelectStatement
+                || stmt instanceof ConnectionStatement
+                || stmt instanceof NonConnectionStatement)
                 return stmt;
             else
                 throw new HBqlException("Unsupported statement type: " + stmt.getClass().getSimpleName() + " - " + sql);
@@ -52,6 +52,11 @@ public class JdbcUtil {
 
     public static boolean isSelectStatemet(final HBqlStatement stmt) {
         return stmt instanceof SelectStatement;
+    }
+
+    public static boolean isDMLStatement(final HBqlStatement stmt) {
+        return stmt instanceof InsertStatement
+               || stmt instanceof DeleteStatement;
     }
 
     public static boolean isConnectionStatemet(final HBqlStatement stmt) {

@@ -20,6 +20,16 @@
 
 package org.apache.hadoop.hbase.jdbc;
 
+import org.apache.expreval.client.InternalErrorException;
+import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.Query;
+import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
+import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
+import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
+import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -27,7 +37,6 @@ import java.net.URL;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.NClob;
 import java.sql.ParameterMetaData;
@@ -37,40 +46,73 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
-import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-public class JdbcPreparedStatementImpl implements PreparedStatement {
+public class JdbcPreparedStatementImpl extends JdbcStatementImpl implements PreparedStatement {
 
-    private final JdbcConnectionImpl connection;
     private final String sql;
+    private final HBqlStatement statement;
 
-    public JdbcPreparedStatementImpl(final JdbcConnectionImpl connection, final String sql) {
-        this.connection = connection;
+    public JdbcPreparedStatementImpl(final JdbcConnectionImpl connection, final String sql) throws HBqlException {
+        super(connection);
         this.sql = sql;
+        this.statement = JdbcUtil.parseJdbcStatement(sql);
     }
 
-    public <T> T unwrap(final Class<T> tClass) throws SQLException {
-        return null;
+    private HBqlStatement getStatement() {
+        return this.statement;
     }
 
     public ResultSet executeQuery() throws SQLException {
-        return null;
-    }
+        if (!JdbcUtil.isSelectStatemet(this.getStatement()))
+            throw new HBqlException("executeQuery() requires a SELECT statement");
 
-    public boolean isWrapperFor(final Class<?> aClass) throws SQLException {
-        return false;
-    }
-
-    public boolean execute(final String s, final int i) throws SQLException {
-        return false;
+        final Query<HRecord> query = this.getConnectionImpl().newQuery((SelectStatement)this.getStatement());
+        this.setResultSet(new JdbcResultSetImpl(this, query.getResults()));
+        return this.getResultSet();
     }
 
     public int executeUpdate() throws SQLException {
+        if (JdbcUtil.isSelectStatemet(this.getStatement())) {
+            throw new HBqlException("executeUpdate() requires a non-SELECT statement");
+        }
+        else if (JdbcUtil.isDMLStatement(this.getStatement())) {
+            final ExecutionOutput output = ((ConnectionStatement)this.getStatement()).execute(this.getConnectionImpl());
+            return output.getCount();
+        }
+        else if (JdbcUtil.isConnectionStatemet(this.getStatement())) {
+            ((ConnectionStatement)this.getStatement()).execute(this.getConnectionImpl());
+        }
+        else if (JdbcUtil.isNonConectionStatemet(this.getStatement())) {
+            ((NonConnectionStatement)this.getStatement()).execute();
+        }
+        else {
+            throw new InternalErrorException("Bad state with " + this.getStatement().getClass().getSimpleName());
+        }
+
         return 0;
+    }
+
+    public boolean execute() throws SQLException {
+        if (JdbcUtil.isSelectStatemet(this.getStatement())) {
+            this.executeQuery();
+            return true;
+        }
+        else {
+            this.executeUpdate();
+            return false;
+        }
+    }
+
+    public ResultSetMetaData getMetaData() throws SQLException {
+        return null;
+    }
+
+    public ParameterMetaData getParameterMetaData() throws SQLException {
+        return null;
     }
 
     public void setNull(final int i, final int i1) throws SQLException {
@@ -81,23 +123,11 @@ public class JdbcPreparedStatementImpl implements PreparedStatement {
 
     }
 
-    public ResultSet executeQuery(final String s) throws SQLException {
-        return null;
-    }
-
     public void setByte(final int i, final byte b) throws SQLException {
 
     }
 
-    public int executeUpdate(final String s) throws SQLException {
-        return 0;
-    }
-
     public void setShort(final int i, final short i2) throws SQLException {
-
-    }
-
-    public void close() throws SQLException {
 
     }
 
@@ -105,15 +135,7 @@ public class JdbcPreparedStatementImpl implements PreparedStatement {
 
     }
 
-    public int getMaxFieldSize() throws SQLException {
-        return 0;
-    }
-
     public void setLong(final int i, final long l) throws SQLException {
-
-    }
-
-    public void setMaxFieldSize(final int i) throws SQLException {
 
     }
 
@@ -121,19 +143,7 @@ public class JdbcPreparedStatementImpl implements PreparedStatement {
 
     }
 
-    public int getMaxRows() throws SQLException {
-        return 0;
-    }
-
     public void setDouble(final int i, final double v) throws SQLException {
-
-    }
-
-    public void setMaxRows(final int i) throws SQLException {
-
-    }
-
-    public void setEscapeProcessing(final boolean b) throws SQLException {
 
     }
 
@@ -141,15 +151,7 @@ public class JdbcPreparedStatementImpl implements PreparedStatement {
 
     }
 
-    public int getQueryTimeout() throws SQLException {
-        return 0;
-    }
-
     public void setString(final int i, final String s) throws SQLException {
-
-    }
-
-    public void setQueryTimeout(final int i) throws SQLException {
 
     }
 
@@ -157,19 +159,7 @@ public class JdbcPreparedStatementImpl implements PreparedStatement {
 
     }
 
-    public void cancel() throws SQLException {
-
-    }
-
     public void setDate(final int i, final Date date) throws SQLException {
-
-    }
-
-    public SQLWarning getWarnings() throws SQLException {
-        return null;
-    }
-
-    public void clearWarnings() throws SQLException {
 
     }
 
@@ -177,39 +167,15 @@ public class JdbcPreparedStatementImpl implements PreparedStatement {
 
     }
 
-    public void setCursorName(final String s) throws SQLException {
-
-    }
-
     public void setTimestamp(final int i, final Timestamp timestamp) throws SQLException {
 
-    }
-
-    public boolean execute(final String s) throws SQLException {
-        return false;
     }
 
     public void setAsciiStream(final int i, final InputStream inputStream, final int i1) throws SQLException {
 
     }
 
-    public ResultSet getResultSet() throws SQLException {
-        return null;
-    }
-
-    public int getUpdateCount() throws SQLException {
-        return 0;
-    }
-
     public void setUnicodeStream(final int i, final InputStream inputStream, final int i1) throws SQLException {
-
-    }
-
-    public boolean getMoreResults() throws SQLException {
-        return false;
-    }
-
-    public void setFetchDirection(final int i) throws SQLException {
 
     }
 
@@ -217,15 +183,7 @@ public class JdbcPreparedStatementImpl implements PreparedStatement {
 
     }
 
-    public int getFetchDirection() throws SQLException {
-        return 0;
-    }
-
     public void clearParameters() throws SQLException {
-
-    }
-
-    public void setFetchSize(final int i) throws SQLException {
 
     }
 
@@ -233,27 +191,7 @@ public class JdbcPreparedStatementImpl implements PreparedStatement {
 
     }
 
-    public int getFetchSize() throws SQLException {
-        return 0;
-    }
-
-    public int getResultSetConcurrency() throws SQLException {
-        return 0;
-    }
-
     public void setObject(final int i, final Object o) throws SQLException {
-
-    }
-
-    public int getResultSetType() throws SQLException {
-        return 0;
-    }
-
-    public boolean execute() throws SQLException {
-        return false;
-    }
-
-    public void addBatch(final String s) throws SQLException {
 
     }
 
@@ -261,60 +199,24 @@ public class JdbcPreparedStatementImpl implements PreparedStatement {
 
     }
 
-    public void clearBatch() throws SQLException {
-
-    }
-
     public void setCharacterStream(final int i, final Reader reader, final int i1) throws SQLException {
 
-    }
-
-    public int[] executeBatch() throws SQLException {
-        return new int[0];
     }
 
     public void setRef(final int i, final Ref ref) throws SQLException {
 
     }
 
-    public Connection getConnection() throws SQLException {
-        return null;
-    }
-
     public void setBlob(final int i, final Blob blob) throws SQLException {
 
-    }
-
-    public boolean getMoreResults(final int i) throws SQLException {
-        return false;
     }
 
     public void setClob(final int i, final Clob clob) throws SQLException {
 
     }
 
-    public ResultSet getGeneratedKeys() throws SQLException {
-        return null;
-    }
-
-    public int executeUpdate(final String s, final int i) throws SQLException {
-        return 0;
-    }
-
     public void setArray(final int i, final Array array) throws SQLException {
 
-    }
-
-    public int executeUpdate(final String s, final int[] ints) throws SQLException {
-        return 0;
-    }
-
-    public ResultSetMetaData getMetaData() throws SQLException {
-        return null;
-    }
-
-    public int executeUpdate(final String s, final String[] strings) throws SQLException {
-        return 0;
     }
 
     public void setDate(final int i, final Date date, final Calendar calendar) throws SQLException {
@@ -325,44 +227,16 @@ public class JdbcPreparedStatementImpl implements PreparedStatement {
 
     }
 
-    public boolean execute(final String s, final int[] ints) throws SQLException {
-        return false;
-    }
-
     public void setTimestamp(final int i, final Timestamp timestamp, final Calendar calendar) throws SQLException {
 
-    }
-
-    public boolean execute(final String s, final String[] strings) throws SQLException {
-        return false;
     }
 
     public void setNull(final int i, final int i1, final String s) throws SQLException {
 
     }
 
-    public int getResultSetHoldability() throws SQLException {
-        return 0;
-    }
-
     public void setURL(final int i, final URL url) throws SQLException {
 
-    }
-
-    public boolean isClosed() throws SQLException {
-        return false;
-    }
-
-    public void setPoolable(final boolean b) throws SQLException {
-
-    }
-
-    public ParameterMetaData getParameterMetaData() throws SQLException {
-        return null;
-    }
-
-    public boolean isPoolable() throws SQLException {
-        return false;
     }
 
     public void setRowId(final int i, final RowId rowId) throws SQLException {

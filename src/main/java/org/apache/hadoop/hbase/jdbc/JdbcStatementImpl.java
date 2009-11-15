@@ -34,11 +34,13 @@ public class JdbcStatementImpl implements Statement {
 
     private final JdbcConnectionImpl connection;
 
+    private ResultSet resultSet = null;
+
     public JdbcStatementImpl(final JdbcConnectionImpl connection) {
         this.connection = connection;
     }
 
-    private JdbcConnectionImpl getConnectionImpl() {
+    protected JdbcConnectionImpl getConnectionImpl() {
         return (JdbcConnectionImpl)this.getConnection();
     }
 
@@ -111,8 +113,12 @@ public class JdbcStatementImpl implements Statement {
 
     }
 
+    protected void setResultSet(final ResultSet resultSet) {
+        this.resultSet = resultSet;
+    }
+
     public ResultSet getResultSet() throws SQLException {
-        return null;
+        return this.resultSet;
     }
 
     public int getUpdateCount() throws SQLException {

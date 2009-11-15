@@ -129,7 +129,8 @@ schemaManagerStmt returns [SchemaContext retval]
 schemaStmt returns [SchemaContext retval]
 	: keyCREATE keyTABLE keyUSING keySCHEMA? t=simpleName 	
 							{retval = new CreateTableStatement($t.text);}
-	| keyDELETE keyFROM keySCHEMA? t=simpleName w=withClause?	{retval = new DeleteStatement($t.text, $w.retval);}
+	| keyDELETE keyFROM keySCHEMA? t=simpleName w=withClause?	
+							{retval = new DeleteStatement($t.text, $w.retval);}
 	| keyINSERT keyINTO keySCHEMA? t=simpleName LPAREN e=exprList RPAREN ins=insertValues
 							{retval = new InsertStatement($t.text, $e.retval, $ins.retval);}
 	| sel=selectStatement				{retval = $sel.retval;}			
