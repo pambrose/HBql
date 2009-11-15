@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
+import org.apache.hadoop.hbase.hbql.parser.HBqlUtil;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -89,7 +89,7 @@ public class ImportStatement implements ConnectionStatement {
                                        final String str) {
 
         try {
-            final List<HBqlStatement> stmtList = HBqlShell.parseConsoleStatements(str);
+            final List<HBqlStatement> stmtList = HBqlUtil.parseConsoleStatements(str);
 
             for (final HBqlStatement stmt : stmtList) {
                 if (stmt instanceof SelectStatement)

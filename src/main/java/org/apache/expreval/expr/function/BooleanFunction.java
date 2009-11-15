@@ -28,7 +28,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
+import org.apache.hadoop.hbase.hbql.parser.HBqlUtil;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 
@@ -83,7 +83,7 @@ public class BooleanFunction extends Function implements BooleanValue {
             case EVAL: {
                 final String exprStr = (String)this.getArg(0).getValue(object);
                 final SchemaContext schemaContext = this.getExpressionContext().getSchemaContext();
-                final ExpressionTree expressionTree = HBqlShell.parseWhereExpression(exprStr, schemaContext);
+                final ExpressionTree expressionTree = HBqlUtil.parseWhereExpression(exprStr, schemaContext);
                 return expressionTree.evaluate(object);
             }
 

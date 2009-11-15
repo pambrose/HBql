@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.jdbc;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
-import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
+import org.apache.hadoop.hbase.hbql.parser.HBqlUtil;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.DeleteStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
@@ -36,7 +36,7 @@ public class JdbcUtil {
     public static HBqlStatement parseJdbcStatement(final String sql) throws HBqlException {
 
         try {
-            final HBqlStatement stmt = HBqlShell.parseJdbcStatement(sql);
+            final HBqlStatement stmt = HBqlUtil.parseJdbcStatement(sql);
 
             if (stmt instanceof SelectStatement
                 || stmt instanceof ConnectionStatement

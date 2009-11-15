@@ -73,9 +73,7 @@ public class DeleteStatement extends SchemaContext implements ConnectionStatemen
         return results;
     }
 
-    private int delete(final HTable table,
-                       final WithArgs with,
-                       final RowRequest rowRequest) throws HBqlException {
+    private int delete(final HTable table, final WithArgs with, final RowRequest rowRequest) throws HBqlException {
 
         try {
             final ExpressionTree clientExpressionTree = with.getClientExpressionTree();

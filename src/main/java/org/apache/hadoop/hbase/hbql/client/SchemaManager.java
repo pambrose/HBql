@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
-import org.apache.hadoop.hbase.hbql.parser.HBqlShell;
+import org.apache.hadoop.hbase.hbql.parser.HBqlUtil;
 import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
@@ -37,7 +37,7 @@ public class SchemaManager {
     private final static Map<String, HBaseSchema> schemaMap = Maps.newHashMap();
 
     public static ExecutionResults execute(final String str) throws HBqlException {
-        final NonConnectionStatement cmd = HBqlShell.parseSchemaManagerStatement(str);
+        final NonConnectionStatement cmd = HBqlUtil.parseSchemaManagerStatement(str);
         return cmd.execute();
     }
 

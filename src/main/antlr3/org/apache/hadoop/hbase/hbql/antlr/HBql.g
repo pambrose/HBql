@@ -88,15 +88,14 @@ import org.apache.expreval.client.*;
 import org.apache.hadoop.hbase.hbql.parser.*;
 }
 
-consoleStatements returns [List<ShellStatement> retval]
+consoleStatements returns [List<HBqlStatement> retval]
 @init {retval = Lists.newArrayList();}
 	: c1=consoleStatement SEMI {retval.add($c1.retval);} ((c2=consoleStatement {retval.add($c2.retval);})? SEMI )*
 	;
 	
-consoleStatement returns [ShellStatement retval]
+consoleStatement returns [HBqlStatement retval]
 options {backtrack=true;}	
-	: j=jdbcStatement				{retval = $j.retval;}
-	| keySHOW keyTABLES 		 		{retval = new ShowTablesStatement();}
+	: keySHOW keyTABLES 		 		{retval = new ShowTablesStatement();}
 	| keySHOW keySCHEMAS 		 		{retval = new ShowSchemasStatement();}
 	| keyIMPORT val=QSTRING				{retval = new ImportStatement($val.text);}
 	| keyPARSE c=consoleStatement			{retval = new ParseStatement($c.retval);}
@@ -104,29 +103,17 @@ options {backtrack=true;}
 	| keySET t=simpleName EQ? val=QSTRING	 	{retval = new SetStatement($t.text, $val.text);}
 	| keyVERSION					{retval = new VersionStatement();}
 	| keyHELP					{retval = new HelpStatement();}
+	| jdbc=jdbcStatement				{retval = $jdbc.retval;}
 	;						
 
-jdbcStatement returns [ShellStatement retval]
-	: s1=schemaStmt					{retval = $s1.retval;}
-	| s2=schemaManagerStmt				{retval = $s2.retval;}
+jdbcStatement returns [HBqlStatement retval]
+options {backtrack=true;}	
+	: s1=schemaStatement				{retval = $s1.retval;}
+	| s2=schemaManagerStatement			{retval = $s2.retval;}
 	| s3=tableStatement				{retval = $s3.retval;}
 	;
 	
-tableStatement returns [TableStatement retval]
-	: keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
-	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableStatement($t.text);}
-	| keyDROP keyTABLE t=simpleName 		{retval = new DropTableStatement($t.text);}
-	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableStatement($t.text);}
-	;
-	 
-schemaManagerStmt returns [SchemaContext retval]
-	: keyCREATE keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
-							{retval = new CreateSchemaStatement($t.text, $a.text, $l.retval);}
-	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaStatement($t.text);}
-	| keyDESCRIBE keySCHEMA t=simpleName 		{retval = new DescribeSchemaStatement($t.text);}
-	;
-
-schemaStmt returns [SchemaContext retval]
+schemaStatement returns [SchemaContext retval]
 	: keyCREATE keyTABLE keyUSING keySCHEMA? t=simpleName 	
 							{retval = new CreateTableStatement($t.text);}
 	| keyDELETE keyFROM keySCHEMA? t=simpleName w=withClause?	
@@ -135,16 +122,30 @@ schemaStmt returns [SchemaContext retval]
 							{retval = new InsertStatement($t.text, $e.retval, $ins.retval);}
 	| sel=selectStatement				{retval = $sel.retval;}			
 	;
-		
-selectStatement returns [SelectStatement retval]
-	: keySELECT c=selectElems keyFROM keySCHEMA? t=simpleName w=withClause?
-							{retval = new SelectStatement($c.retval, $t.text, $w.retval);};
-							
+
 insertValues returns [InsertValueSource retval]
 	: keyVALUES LPAREN e=insertExprList RPAREN	{retval = new InsertSingleRow($e.retval);}
 	| sel=selectStatement				{retval = new InsertSelectValues($sel.retval);}			
 	;
-	
+			
+selectStatement returns [SelectStatement retval]
+	: keySELECT c=selectElems keyFROM keySCHEMA? t=simpleName w=withClause?
+							{retval = new SelectStatement($c.retval, $t.text, $w.retval);};
+							
+schemaManagerStatement returns [SchemaContext retval]
+	: keyCREATE keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
+							{retval = new CreateSchemaStatement($t.text, $a.text, $l.retval);}
+	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaStatement($t.text);}
+	| keyDESCRIBE keySCHEMA t=simpleName 		{retval = new DescribeSchemaStatement($t.text);}
+	;
+
+tableStatement returns [TableStatement retval]
+	: keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
+	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableStatement($t.text);}
+	| keyDROP keyTABLE t=simpleName 		{retval = new DropTableStatement($t.text);}
+	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableStatement($t.text);}
+	;
+	 
 withClause returns [WithArgs retval]
 @init {retval = new WithArgs();}
 	: keyWITH withElements[retval]+;
