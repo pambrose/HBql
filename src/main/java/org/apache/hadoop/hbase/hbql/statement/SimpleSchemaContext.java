@@ -36,7 +36,6 @@ public class SimpleSchemaContext extends SchemaContext {
     public SimpleSchemaContext(final Schema schema) {
         super(schema);
         try {
-            this.matchNames(null);
             this.setMapping(null);
         }
         catch (HBqlException e) {
@@ -46,7 +45,6 @@ public class SimpleSchemaContext extends SchemaContext {
 
     public SimpleSchemaContext(final Schema schema, final Mapping mapping) throws HBqlException {
         super(schema);
-        this.matchNames(mapping);
         this.setMapping(mapping);
     }
 }

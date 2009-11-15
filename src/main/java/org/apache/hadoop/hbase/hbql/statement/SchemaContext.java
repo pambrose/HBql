@@ -81,19 +81,17 @@ public abstract class SchemaContext implements HBqlStatement, Serializable {
     }
 
     public void setMapping(final Mapping mapping) throws HBqlException {
+        this.matchNames(mapping);
         this.mapping = mapping;
     }
 
-    public synchronized void matchNames(final Mapping mapping) throws HBqlException {
-
+    private void matchNames(final Mapping mapping) throws HBqlException {
         if (mapping != null && mapping instanceof AnnotationMapping) {
             final String mappingName = mapping.getSchema().getSchemaName();
             final String selectName = this.getSchema().getSchemaName();
             if (!mappingName.equals(selectName))
                 throw new HBqlException("Class " + mappingName + " instead of " + selectName);
         }
-
-        this.setMapping(mapping);
     }
 
     public HBaseSchema getHBaseSchema() throws HBqlException {

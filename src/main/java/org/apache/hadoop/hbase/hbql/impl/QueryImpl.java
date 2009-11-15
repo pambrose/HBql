@@ -50,10 +50,8 @@ public class QueryImpl<T> implements Query<T> {
         this.connection = connection;
         this.selectStatement = selectStatement;
 
-        if (mapping != null) {
-            this.getSelectStatement().matchNames(mapping);
+        if (mapping != null)
             this.getSelectStatement().setMapping(mapping);
-        }
 
         this.getSelectStatement().validate(this.getHConnection());
     }
