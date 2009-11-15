@@ -36,7 +36,8 @@ public class SimpleSchemaContext extends SchemaContext {
     public SimpleSchemaContext(final Schema schema) {
         super(schema);
         try {
-            this.validateAndSetMapping(null);
+            this.matchNames(null);
+            this.setMapping(null);
         }
         catch (HBqlException e) {
             // Cannot be reached with null mapping
@@ -45,6 +46,7 @@ public class SimpleSchemaContext extends SchemaContext {
 
     public SimpleSchemaContext(final Schema schema, final Mapping mapping) throws HBqlException {
         super(schema);
-        this.validateAndSetMapping(mapping);
+        this.matchNames(mapping);
+        this.setMapping(mapping);
     }
 }

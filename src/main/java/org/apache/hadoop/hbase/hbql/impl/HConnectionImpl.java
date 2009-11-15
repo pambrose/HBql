@@ -54,8 +54,12 @@ public class HConnectionImpl implements HConnection {
         this.config = (config == null) ? new HBaseConfiguration() : config;
     }
 
+    public <T> Query<T> newQuery(final SelectStatement selectStatement) throws HBqlException {
+        return new QueryImpl<T>(this, selectStatement, null);
+    }
+
     public <T> Query<T> newQuery(final String sql) throws HBqlException {
-        return new QueryImpl<T>(this, sql, null);
+        return new QueryImpl<T>(this, HBqlUtil.parseSelectStatement(sql), null);
     }
 
     public <T> Query<T> newQuery(final String sql, final Class clazz) throws HBqlException {
@@ -65,11 +69,7 @@ public class HConnectionImpl implements HConnection {
         if (mapping == null)
             throw new HBqlException("Unknown class " + clazz.getName());
 
-        return new QueryImpl<T>(this, sql, mapping);
-    }
-
-    public <T> Query<T> newQuery(final SelectStatement selectStatement) throws HBqlException {
-        return new QueryImpl<T>(this, selectStatement, null);
+        return new QueryImpl<T>(this, HBqlUtil.parseSelectStatement(sql), mapping);
     }
 
     public String getName() {

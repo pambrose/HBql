@@ -28,7 +28,6 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.client.Results;
-import org.apache.hadoop.hbase.hbql.parser.HBqlUtil;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
@@ -51,16 +50,12 @@ public class QueryImpl<T> implements Query<T> {
         this.connection = connection;
         this.selectStatement = selectStatement;
 
-        if (mapping != null)
-            selectStatement.validateAndSetMapping(mapping);
+        if (mapping != null) {
+            this.getSelectStatement().matchNames(mapping);
+            this.getSelectStatement().setMapping(mapping);
+        }
 
         this.getSelectStatement().validate(this.getHConnection());
-    }
-
-    public QueryImpl(final HConnectionImpl connection,
-                     final String sql,
-                     final Mapping mapping) throws HBqlException {
-        this(connection, HBqlUtil.parseSelectStatement(sql), mapping);
     }
 
     public synchronized void addListener(final QueryListener<T> listener) {

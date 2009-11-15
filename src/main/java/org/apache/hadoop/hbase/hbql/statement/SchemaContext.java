@@ -84,7 +84,7 @@ public abstract class SchemaContext implements HBqlStatement, Serializable {
         this.mapping = mapping;
     }
 
-    public synchronized void validateAndSetMapping(final Mapping mapping) throws HBqlException {
+    public synchronized void matchNames(final Mapping mapping) throws HBqlException {
 
         if (mapping != null && mapping instanceof AnnotationMapping) {
             final String mappingName = mapping.getSchema().getSchemaName();
