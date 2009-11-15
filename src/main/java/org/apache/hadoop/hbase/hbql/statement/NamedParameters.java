@@ -23,18 +23,19 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.expreval.util.Lists;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class ParameterSet {
+public class NamedParameters implements Serializable {
 
     private final SortedSet<NamedParameter> paramSet;
     private volatile List<NamedParameter> paramList = null;
 
 
-    public ParameterSet() {
+    public NamedParameters() {
         this.paramSet = new TreeSet<NamedParameter>(NamedParameter.getComparator());
     }
 
@@ -47,7 +48,7 @@ public class ParameterSet {
             this.getParamSet().addAll(params);
     }
 
-    private List<NamedParameter> getParamList() {
+    public List<NamedParameter> getParameterList() {
 
         if (this.paramList != null)
             return this.paramList;
@@ -63,10 +64,10 @@ public class ParameterSet {
     }
 
     public int getParameterCount() {
-        return this.getParamList().size();
+        return this.getParameterList().size();
     }
 
     public NamedParameter getParameter(final int i) {
-        return this.getParamList().get(i);
+        return this.getParameterList().get(i);
     }
 }

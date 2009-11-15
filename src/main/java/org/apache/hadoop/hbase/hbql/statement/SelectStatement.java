@@ -32,12 +32,12 @@ import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 import java.util.List;
 import java.util.Set;
 
-public class SelectStatement extends SchemaContext {
+public class SelectStatement extends SchemaContext implements ParameterSupport {
 
     private final List<SelectElement> selectElementList;
     private final List<ColumnAttrib> selectColumnAttribList = Lists.newArrayList();
     private final WithArgs withArgs;
-    private final ParameterSet parameterSet = new ParameterSet();
+    private final NamedParameters namedParameters = new NamedParameters();
 
 
     private volatile int expressionCounter = 0;
@@ -55,8 +55,8 @@ public class SelectStatement extends SchemaContext {
         return "expr-" + this.expressionCounter++;
     }
 
-    public ParameterSet getParameterSet() {
-        return parameterSet;
+    public NamedParameters getNamedParameters() {
+        return this.namedParameters;
     }
 
     public void validate(final HConnectionImpl connection) throws HBqlException {
@@ -148,9 +148,9 @@ public class SelectStatement extends SchemaContext {
 
     private void collectParameters() {
         for (final SelectElement selectElement : this.getSelectElementList())
-            this.getParameterSet().addParameters(selectElement.getParameterList());
+            this.getNamedParameters().addParameters(selectElement.getParameterList());
 
-        this.getParameterSet().addParameters(this.getWithArgs().getParameterList());
+        this.getNamedParameters().addParameters(this.getWithArgs().getParameterList());
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {

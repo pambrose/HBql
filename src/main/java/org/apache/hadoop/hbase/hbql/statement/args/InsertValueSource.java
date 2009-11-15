@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.statement.args;
 
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.statement.InsertStatement;
 
@@ -38,6 +39,8 @@ public abstract class InsertValueSource implements Serializable {
     protected InsertStatement getInsertStatement() {
         return this.insertStatement;
     }
+
+    public abstract List<NamedParameter> getParameterList();
 
     public abstract int setParameter(String name, Object val) throws HBqlException;
 

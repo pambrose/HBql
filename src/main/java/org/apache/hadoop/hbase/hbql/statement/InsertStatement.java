@@ -38,10 +38,11 @@ import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
 import java.util.List;
 
-public class InsertStatement extends SchemaContext implements PreparedStatement {
+public class InsertStatement extends SchemaContext implements PreparedStatement, ParameterSupport {
 
     private final List<SingleExpressionContext> columnList = Lists.newArrayList();
     private final InsertValueSource insertValuesSource;
+    private final NamedParameters namedParameters = new NamedParameters();
 
     private transient HConnectionImpl connection = null;
     private HRecord record = null;
@@ -57,6 +58,10 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
 
         this.insertValuesSource = insertValuesSource;
         this.getInsertValuesSource().setInsertStatement(this);
+    }
+
+    public NamedParameters getNamedParameters() {
+        return this.namedParameters;
     }
 
     public void validate(final HConnectionImpl connection) throws HBqlException {
@@ -83,6 +88,8 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
             throw new TypeException("Missing a key value in attribute list in " + this.asString());
 
         this.getInsertValuesSource().validate();
+
+        this.collectParameters();
     }
 
     public void validateTypes() throws HBqlException {
@@ -131,6 +138,10 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
                 return true;
         }
         return false;
+    }
+
+    private void collectParameters() {
+        this.getNamedParameters().addParameters(this.getInsertValuesSource().getParameterList());
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {

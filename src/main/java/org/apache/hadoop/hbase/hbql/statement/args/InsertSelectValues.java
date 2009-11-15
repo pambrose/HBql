@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.statement.args;
 
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
@@ -47,6 +48,10 @@ public class InsertSelectValues extends InsertValueSource {
 
     public SelectStatement getSelectStatement() {
         return this.selectStatement;
+    }
+
+    public List<NamedParameter> getParameterList() {
+        return this.getSelectStatement().getNamedParameters().getParameterList();
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {

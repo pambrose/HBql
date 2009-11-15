@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.statement.args;
 
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -40,6 +41,16 @@ public class InsertSingleRow extends InsertValueSource {
 
     private List<SingleExpressionContext> getValueList() {
         return this.valueList;
+    }
+
+    public List<NamedParameter> getParameterList() {
+
+        final List<NamedParameter> parameterList = Lists.newArrayList();
+
+        for (final SingleExpressionContext expr : this.getValueList())
+            parameterList.addAll(expr.getParameterList());
+
+        return parameterList;
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {

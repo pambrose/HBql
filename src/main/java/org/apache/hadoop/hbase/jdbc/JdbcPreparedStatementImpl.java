@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.jdbc;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
+import org.apache.hadoop.hbase.hbql.statement.ParameterSupport;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -69,6 +70,13 @@ public class JdbcPreparedStatementImpl extends JdbcStatementImpl implements Prep
         return this.execute(this.getStatement());
     }
 
+    private void checkIfSupportsParameters() throws HBqlException {
+        if (!(this.getStatement() instanceof ParameterSupport)) {
+            throw new HBqlException(this.getStatement().getClass().getSimpleName()
+                                    + " statements do not support parameters");
+        }
+    }
+
     public ResultSetMetaData getMetaData() throws SQLException {
         return null;
     }
@@ -77,84 +85,85 @@ public class JdbcPreparedStatementImpl extends JdbcStatementImpl implements Prep
         return null;
     }
 
-    public void setNull(final int i, final int i1) throws SQLException {
+    private void setParameter(final int i, final Object obj) throws HBqlException {
+        this.checkIfSupportsParameters();
+    }
+
+    public void setNull(final int i, final int i1) throws HBqlException {
+        this.setParameter(i, i1);
+    }
+
+    public void setBoolean(final int i, final boolean b) throws HBqlException {
+        this.setParameter(i, b);
+    }
+
+    public void setByte(final int i, final byte b) throws HBqlException {
+        this.setParameter(i, b);
+    }
+
+    public void setShort(final int i, final short i2) throws HBqlException {
+        this.setParameter(i, i2);
+    }
+
+    public void setInt(final int i, final int i1) throws HBqlException {
+        this.setParameter(i, i1);
+    }
+
+    public void setLong(final int i, final long l) throws HBqlException {
+        this.setParameter(i, l);
+    }
+
+    public void setFloat(final int i, final float v) throws HBqlException {
+        this.setParameter(i, v);
+    }
+
+    public void setDouble(final int i, final double v) throws HBqlException {
+        this.setParameter(i, v);
+    }
+
+    public void setBigDecimal(final int i, final BigDecimal bigDecimal) throws HBqlException {
+        this.setParameter(i, bigDecimal);
+    }
+
+    public void setString(final int i, final String s) throws HBqlException {
+        this.setParameter(i, s);
+    }
+
+    public void setBytes(final int i, final byte[] bytes) throws HBqlException {
+        this.setParameter(i, bytes);
+    }
+
+    public void setDate(final int i, final Date date) throws HBqlException {
+        this.setParameter(i, date);
+    }
+
+    public void setTime(final int i, final Time time) throws HBqlException {
+        this.setParameter(i, time);
+    }
+
+    public void setTimestamp(final int i, final Timestamp timestamp) throws HBqlException {
+        this.setParameter(i, timestamp);
+    }
+
+    public void setAsciiStream(final int i, final InputStream inputStream, final int i1) throws HBqlException {
+    }
+
+    public void setUnicodeStream(final int i, final InputStream inputStream, final int i1) throws HBqlException {
+    }
+
+    public void setBinaryStream(final int i, final InputStream inputStream, final int i1) throws HBqlException {
+    }
+
+    public void clearParameters() throws HBqlException {
 
     }
 
-    public void setBoolean(final int i, final boolean b) throws SQLException {
+    public void setObject(final int i, final Object o, final int i1) throws HBqlException {
 
     }
 
-    public void setByte(final int i, final byte b) throws SQLException {
-
-    }
-
-    public void setShort(final int i, final short i2) throws SQLException {
-
-    }
-
-    public void setInt(final int i, final int i1) throws SQLException {
-
-    }
-
-    public void setLong(final int i, final long l) throws SQLException {
-
-    }
-
-    public void setFloat(final int i, final float v) throws SQLException {
-
-    }
-
-    public void setDouble(final int i, final double v) throws SQLException {
-
-    }
-
-    public void setBigDecimal(final int i, final BigDecimal bigDecimal) throws SQLException {
-
-    }
-
-    public void setString(final int i, final String s) throws SQLException {
-
-    }
-
-    public void setBytes(final int i, final byte[] bytes) throws SQLException {
-
-    }
-
-    public void setDate(final int i, final Date date) throws SQLException {
-
-    }
-
-    public void setTime(final int i, final Time time) throws SQLException {
-
-    }
-
-    public void setTimestamp(final int i, final Timestamp timestamp) throws SQLException {
-
-    }
-
-    public void setAsciiStream(final int i, final InputStream inputStream, final int i1) throws SQLException {
-
-    }
-
-    public void setUnicodeStream(final int i, final InputStream inputStream, final int i1) throws SQLException {
-
-    }
-
-    public void setBinaryStream(final int i, final InputStream inputStream, final int i1) throws SQLException {
-
-    }
-
-    public void clearParameters() throws SQLException {
-
-    }
-
-    public void setObject(final int i, final Object o, final int i1) throws SQLException {
-
-    }
-
-    public void setObject(final int i, final Object o) throws SQLException {
-
+    public void setObject(final int i, final Object o) throws HBqlException {
+        this.setParameter(i, o);
     }
 
     public void addBatch() throws SQLException {

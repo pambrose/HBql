@@ -37,11 +37,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class DeleteStatement extends SchemaContext implements PreparedStatement {
+public class DeleteStatement extends SchemaContext implements PreparedStatement, ParameterSupport {
 
     private transient HConnectionImpl connection = null;
     private final WithArgs withArgs;
     private boolean validated = false;
+    private final NamedParameters namedParameters = new NamedParameters();
 
     public DeleteStatement(final String schemaName, final WithArgs withArgs) {
         super(schemaName);
@@ -63,6 +64,10 @@ public class DeleteStatement extends SchemaContext implements PreparedStatement 
 
     }
 
+    public NamedParameters getNamedParameters() {
+        return this.namedParameters;
+    }
+
     public void validate(final HConnectionImpl connection) throws HBqlException {
 
         if (validated)
@@ -75,6 +80,8 @@ public class DeleteStatement extends SchemaContext implements PreparedStatement 
         this.checkIfValidSchemaName();
 
         this.getWithArgs().setSchemaContext(this);
+
+        this.collectParameters();
     }
 
     public ExecutionResults execute() throws HBqlException {
@@ -124,6 +131,10 @@ public class DeleteStatement extends SchemaContext implements PreparedStatement 
         catch (IOException e) {
             throw new HBqlException(e);
         }
+    }
+
+    private void collectParameters() {
+        this.getNamedParameters().addParameters(this.getWithArgs().getParameterList());
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
