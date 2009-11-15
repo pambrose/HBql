@@ -63,11 +63,12 @@ public class NamedParameters implements Serializable {
         }
     }
 
-    public int getParameterCount() {
-        return this.getParameterList().size();
-    }
-
     public NamedParameter getParameter(final int i) {
         return this.getParameterList().get(i);
+    }
+
+    public void clearParameters() {
+        for (final NamedParameter param : this.getParameterList())
+            param.reset();
     }
 }

@@ -103,7 +103,7 @@ public class InsertSelectValues extends InsertValueSource {
     }
 
     public void reset() {
-
+        this.getSelectStatement().reset();
     }
 
     public String asString() {

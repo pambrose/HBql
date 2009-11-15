@@ -211,6 +211,24 @@ public class WithArgs implements Serializable {
         return parameterList;
     }
 
+    public void reset() {
+
+        if (this.getTimestampArgs() != null)
+            this.getTimestampArgs().reset();
+
+        if (this.getVersionArgs() != null)
+            this.getVersionArgs().reset();
+
+        if (this.getLimitArgs() != null)
+            this.getLimitArgs().reset();
+
+        if (this.getServerExpressionTree() != null)
+            this.getServerExpressionTree().reset();
+
+        if (this.getClientExpressionTree() != null)
+            this.getClientExpressionTree().reset();
+    }
+
     public int setParameter(final String name, final Object val) throws HBqlException {
 
         int cnt = this.getKeyRangeArgs().setParameter(name, val);

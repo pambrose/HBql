@@ -28,4 +28,6 @@ public interface ParameterSupport {
     NamedParameters getNamedParameters();
 
     void validate(final HConnectionImpl connection) throws HBqlException;
+
+    void reset();
 }

@@ -163,6 +163,14 @@ public class SelectStatement extends SchemaContext implements ParameterSupport {
         this.getNamedParameters().addParameters(this.getWithArgs().getParameterList());
     }
 
+    public void reset() {
+        for (final SelectElement selectElement : this.getSelectElementList())
+            selectElement.reset();
+
+        this.getWithArgs().reset();
+    }
+
+
     public int setParameter(final String name, final Object val) throws HBqlException {
         int cnt = 0;
         for (final SelectElement selectElement : this.getSelectElementList())

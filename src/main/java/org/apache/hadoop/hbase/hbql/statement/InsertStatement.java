@@ -148,6 +148,17 @@ public class InsertStatement extends SchemaContext implements PreparedStatement,
         this.getNamedParameters().addParameters(this.getInsertValuesSource().getParameterList());
     }
 
+    public void resetStatement() {
+        this.getInsertValuesSource().reset();
+        this.getHRecord().reset();
+        this.reset();
+    }
+
+    public void reset() {
+        this.getInsertValuesSource().reset();
+    }
+
+
     public int setParameter(final String name, final Object val) throws HBqlException {
         final int cnt = this.getInsertValuesSource().setParameter(name, val);
         if (cnt == 0)
@@ -211,11 +222,6 @@ public class InsertStatement extends SchemaContext implements PreparedStatement,
 
     public ExecutionResults execute() throws HBqlException {
         return this.execute(this.getConnection());
-    }
-
-    public void reset() {
-        this.getInsertValuesSource().reset();
-        this.getHRecord().reset();
     }
 
     public String asString() {

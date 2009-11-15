@@ -121,5 +121,8 @@ public class BasicTest {
             System.out.print(", val1: " + val1);
             System.out.println(", val2: " + val2);
         }
+
+        stmt.clearParameters();
+        ResultSet rs2 = stmt.executeQuery();
     }
 }

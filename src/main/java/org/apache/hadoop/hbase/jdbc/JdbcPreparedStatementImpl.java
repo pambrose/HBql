@@ -41,6 +41,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -143,53 +144,62 @@ public class JdbcPreparedStatementImpl extends JdbcStatementImpl implements Prep
         this.setParameter(i, date);
     }
 
-    public void setTime(final int i, final Time time) throws HBqlException {
-        this.setParameter(i, time);
+    public void setTime(final int i, final Time time) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
-    public void setTimestamp(final int i, final Timestamp timestamp) throws HBqlException {
-        this.setParameter(i, timestamp);
-    }
-
-    public void setAsciiStream(final int i, final InputStream inputStream, final int i1) throws HBqlException {
-    }
-
-    public void setUnicodeStream(final int i, final InputStream inputStream, final int i1) throws HBqlException {
-    }
-
-    public void setBinaryStream(final int i, final InputStream inputStream, final int i1) throws HBqlException {
-    }
-
-    public void clearParameters() throws HBqlException {
-
-    }
-
-    public void setObject(final int i, final Object o, final int i1) throws HBqlException {
-
+    public void setTimestamp(final int i, final Timestamp timestamp) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setObject(final int i, final Object o) throws HBqlException {
         this.setParameter(i, o);
     }
 
-    public void addBatch() throws SQLException {
+    public void setAsciiStream(final int i, final InputStream inputStream, final int i1) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
 
+    public void setUnicodeStream(final int i, final InputStream inputStream, final int i1) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setBinaryStream(final int i, final InputStream inputStream, final int i1) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void clearParameters() throws HBqlException {
+        if (!(this.getStatement() instanceof ParameterSupport)) {
+            throw new HBqlException(this.getStatement().getClass().getSimpleName()
+                                    + " statements do not support parameters");
+        }
+
+        final ParameterSupport paramStmt = (ParameterSupport)this.getStatement();
+        paramStmt.reset();
+    }
+
+    public void setObject(final int i, final Object o, final int i1) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void addBatch() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setCharacterStream(final int i, final Reader reader, final int i1) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setRef(final int i, final Ref ref) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setBlob(final int i, final Blob blob) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setClob(final int i, final Clob clob) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setArray(final int i, final Array array) throws SQLException {
@@ -197,98 +207,98 @@ public class JdbcPreparedStatementImpl extends JdbcStatementImpl implements Prep
     }
 
     public void setDate(final int i, final Date date, final Calendar calendar) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setTime(final int i, final Time time, final Calendar calendar) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setTimestamp(final int i, final Timestamp timestamp, final Calendar calendar) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setNull(final int i, final int i1, final String s) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setURL(final int i, final URL url) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setRowId(final int i, final RowId rowId) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setNString(final int i, final String s) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setNCharacterStream(final int i, final Reader reader, final long l) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setNClob(final int i, final NClob nClob) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setClob(final int i, final Reader reader, final long l) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setBlob(final int i, final InputStream inputStream, final long l) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setNClob(final int i, final Reader reader, final long l) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setSQLXML(final int i, final SQLXML sqlxml) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setObject(final int i, final Object o, final int i1, final int i2) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setAsciiStream(final int i, final InputStream inputStream, final long l) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setBinaryStream(final int i, final InputStream inputStream, final long l) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setCharacterStream(final int i, final Reader reader, final long l) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setAsciiStream(final int i, final InputStream inputStream) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setBinaryStream(final int i, final InputStream inputStream) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setCharacterStream(final int i, final Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setNCharacterStream(final int i, final Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setClob(final int i, final Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setBlob(final int i, final InputStream inputStream) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setNClob(final int i, final Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 }

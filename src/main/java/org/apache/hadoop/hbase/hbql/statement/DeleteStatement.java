@@ -60,10 +60,6 @@ public class DeleteStatement extends SchemaContext implements PreparedStatement,
         return this.connection;
     }
 
-    public void reset() {
-
-    }
-
     public NamedParameters getNamedParameters() {
         return this.namedParameters;
     }
@@ -135,6 +131,14 @@ public class DeleteStatement extends SchemaContext implements PreparedStatement,
         catch (IOException e) {
             throw new HBqlException(e);
         }
+    }
+
+    public void resetStatement() {
+        this.reset();
+    }
+
+    public void reset() {
+        this.getWithArgs().reset();
     }
 
     private void collectParameters() {

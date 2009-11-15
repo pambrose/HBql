@@ -46,6 +46,8 @@ public interface SelectElement extends Serializable {
 
     List<NamedParameter> getParameterList();
 
+    void reset();
+
     String getAsName();
 
     String getElementName();
