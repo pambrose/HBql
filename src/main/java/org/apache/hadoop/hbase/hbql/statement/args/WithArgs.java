@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.statement.args;
 
 import org.apache.expreval.expr.ExpressionTree;
+import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.client.Get;
@@ -186,6 +187,28 @@ public class WithArgs implements Serializable {
             sbuf.append("CLIENT FILTER " + this.getClientExpressionTree().asString() + "\n");
 
         return sbuf.toString();
+    }
+
+    public List<NamedParameter> getParameterList() {
+
+        final List<NamedParameter> parameterList = Lists.newArrayList();
+
+        if (this.getTimestampArgs() != null)
+            parameterList.addAll(this.getTimestampArgs().getParameterList());
+
+        if (this.getVersionArgs() != null)
+            parameterList.addAll(this.getVersionArgs().getParameterList());
+
+        if (this.getLimitArgs() != null)
+            parameterList.addAll(this.getLimitArgs().getParameterList());
+
+        if (this.getServerExpressionTree() != null)
+            parameterList.addAll(this.getServerExpressionTree().getParameterList());
+
+        if (this.getClientExpressionTree() != null)
+            parameterList.addAll(this.getClientExpressionTree().getParameterList());
+
+        return parameterList;
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {

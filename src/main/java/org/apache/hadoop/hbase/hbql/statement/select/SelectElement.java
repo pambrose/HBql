@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement.select;
 
+import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -42,6 +43,8 @@ public interface SelectElement extends Serializable {
     void assignSelectValue(Object newobj, int maxVerions, Result result) throws HBqlException;
 
     int setParameter(String name, Object val) throws HBqlException;
+
+    List<NamedParameter> getParameterList();
 
     String getAsName();
 

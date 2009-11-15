@@ -42,23 +42,36 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 public class NamedParameter implements GenericValue {
+
+    private static long counter = Long.MIN_VALUE;
 
     private MultipleExpressionContext context = null;
     private GenericValue typedExpr = null;
     private List<GenericValue> typedExprList = null;
 
     private final String paramName;
+    private final long position;
 
     public NamedParameter(final String paramName) {
         this.paramName = paramName;
+        this.position = getNextPosition();
+    }
+
+    private static synchronized long getNextPosition() {
+        return counter++;
     }
 
     public String getParamName() {
         return this.paramName;
+    }
+
+    public long getPosition() {
+        return this.position;
     }
 
     private boolean isScalarValueSet() {
@@ -222,5 +235,18 @@ public class NamedParameter implements GenericValue {
 
     public String asString() {
         return this.getParamName();
+    }
+
+    public static Comparator<? super NamedParameter> getComparator() {
+        return new Comparator<NamedParameter>() {
+            public int compare(final NamedParameter param1, final NamedParameter param2) {
+                if (param1.getPosition() < param2.getPosition())
+                    return -1;
+                else if (param1.getPosition() > param2.getPosition())
+                    return +1;
+                else
+                    return 0;
+            }
+        };
     }
 }

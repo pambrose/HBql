@@ -224,21 +224,13 @@ public abstract class MultipleExpressionContext implements Serializable {
         }
     }
 
-    public int getNamedParameterCount() {
-        return this.getNamedParamList().size();
-    }
-
-    public NamedParameter getNamedParameter(final int i) {
-        return this.getNamedParamList().get(i);
-    }
-
-    private List<NamedParameter> getNamedParamList() {
-        return namedParamList;
+    public List<NamedParameter> getParameterList() {
+        return this.namedParamList;
     }
 
     public void addNamedParameter(final NamedParameter param) {
 
-        this.getNamedParamList().add(param);
+        this.getParameterList().add(param);
 
         final String name = param.getParamName();
         final List<NamedParameter> paramList;
@@ -252,11 +244,6 @@ public abstract class MultipleExpressionContext implements Serializable {
         }
 
         paramList.add(param);
-    }
-
-    public void addColumnToUsedList(final GenericColumn column) {
-        this.getColumnsUsedInExpression().add(column);
-        this.getAttribsUsedInExpr().add(column.getColumnAttrib());
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
@@ -274,6 +261,11 @@ public abstract class MultipleExpressionContext implements Serializable {
         this.setInNeedOfTypeValidation(true);
 
         return paramList.size();
+    }
+
+    public void addColumnToUsedList(final GenericColumn column) {
+        this.getColumnsUsedInExpression().add(column);
+        this.getAttribsUsedInExpr().add(column.getColumnAttrib());
     }
 
     private boolean isInNeedOfTypeValidation() {

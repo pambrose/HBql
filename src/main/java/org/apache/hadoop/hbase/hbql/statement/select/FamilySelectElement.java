@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.statement.select;
 
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -122,6 +123,10 @@ public class FamilySelectElement implements SelectElement {
 
     public boolean isAnAggregateElement() {
         return false;
+    }
+
+    public List<NamedParameter> getParameterList() {
+        return null;
     }
 
     public int setParameter(final String name, final Object val) {

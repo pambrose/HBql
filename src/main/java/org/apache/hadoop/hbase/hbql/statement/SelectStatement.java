@@ -37,8 +37,10 @@ public class SelectStatement extends SchemaContext {
     private final List<SelectElement> selectElementList;
     private final List<ColumnAttrib> selectColumnAttribList = Lists.newArrayList();
     private final WithArgs withArgs;
+    private final ParameterSet parameterSet = new ParameterSet();
 
-    private int expressionCounter = 0;
+
+    private volatile int expressionCounter = 0;
     private boolean aggregateQuery = false;
 
     public SelectStatement(final List<SelectElement> selectElementList,
@@ -49,8 +51,12 @@ public class SelectStatement extends SchemaContext {
         this.withArgs = withArgs != null ? withArgs : new WithArgs();
     }
 
-    public String getNextExpressionName() {
+    public synchronized String getNextExpressionName() {
         return "expr-" + this.expressionCounter++;
+    }
+
+    public ParameterSet getParameterSet() {
+        return parameterSet;
     }
 
     public void validate(final HConnectionImpl connection) throws HBqlException {
@@ -69,6 +75,9 @@ public class SelectStatement extends SchemaContext {
 
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();
+
+        // Build sorted set of parameters
+        this.collectParameters();
 
         if (this.getWithArgs().getServerExpressionTree() != null)
             this.getWithArgs().getServerExpressionTree().setUseResultData(false);
@@ -135,6 +144,13 @@ public class SelectStatement extends SchemaContext {
 
     public WithArgs getWithArgs() {
         return this.withArgs;
+    }
+
+    private void collectParameters() {
+        for (final SelectElement selectElement : this.getSelectElementList())
+            this.getParameterSet().addParameters(selectElement.getParameterList());
+
+        this.getParameterSet().addParameters(this.getWithArgs().getParameterList());
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
