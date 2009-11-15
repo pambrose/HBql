@@ -47,8 +47,10 @@ public abstract class MultipleExpressionContext implements Serializable {
     private boolean inNeedOfOptimization = true;
     private boolean inNeedOfSettingContext = true;
 
+
     private final List<GenericColumn> columnsUsedInExpr = Lists.newArrayList();
     private final List<ColumnAttrib> attribsUsedInExpr = Lists.newArrayList();
+    private final List<NamedParameter> namedParamList = Lists.newArrayList();
     private final Map<String, List<NamedParameter>> namedParamMap = Maps.newHashMap();
 
     private SchemaContext schemaContext = null;
@@ -222,7 +224,21 @@ public abstract class MultipleExpressionContext implements Serializable {
         }
     }
 
+    public int getNamedParameterCount() {
+        return this.getNamedParamList().size();
+    }
+
+    public NamedParameter getNamedParameter(final int i) {
+        return this.getNamedParamList().get(i);
+    }
+
+    private List<NamedParameter> getNamedParamList() {
+        return namedParamList;
+    }
+
     public void addNamedParameter(final NamedParameter param) {
+
+        this.getNamedParamList().add(param);
 
         final String name = param.getParamName();
         final List<NamedParameter> paramList;
