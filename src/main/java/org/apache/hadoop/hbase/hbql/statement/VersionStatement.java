@@ -20,14 +20,14 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.util.VersionInfo;
 
 public class VersionStatement implements NonConnectionStatement {
 
-    public ExecutionOutput execute() {
+    public ExecutionResults execute() {
 
-        final ExecutionOutput retval = new ExecutionOutput();
+        final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Hadoop version: " + org.apache.hadoop.util.VersionInfo.getVersion());
         retval.out.println("HBase version: " + org.apache.hadoop.hbase.util.VersionInfo.getVersion());
         retval.out.println("HBql version: " + VersionInfo.getVersion());

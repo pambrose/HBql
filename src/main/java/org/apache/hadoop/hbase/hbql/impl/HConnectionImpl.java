@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.hbql.client.Batch;
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
@@ -174,7 +174,7 @@ public class HConnectionImpl implements HConnection {
         }
     }
 
-    public ExecutionOutput execute(final String str) throws HBqlException {
+    public ExecutionResults execute(final String str) throws HBqlException {
         final ConnectionStatement statement = HBqlShell.parseConnectionStatement(str);
         return statement.execute(this);
     }

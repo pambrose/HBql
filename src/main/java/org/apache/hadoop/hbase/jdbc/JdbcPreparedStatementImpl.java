@@ -21,7 +21,7 @@
 package org.apache.hadoop.hbase.jdbc;
 
 import org.apache.expreval.client.InternalErrorException;
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.Query;
@@ -53,12 +53,10 @@ import java.util.Calendar;
 
 public class JdbcPreparedStatementImpl extends JdbcStatementImpl implements PreparedStatement {
 
-    private final String sql;
     private final HBqlStatement statement;
 
     public JdbcPreparedStatementImpl(final JdbcConnectionImpl connection, final String sql) throws HBqlException {
         super(connection);
-        this.sql = sql;
         this.statement = JdbcUtil.parseJdbcStatement(sql);
     }
 
@@ -80,20 +78,20 @@ public class JdbcPreparedStatementImpl extends JdbcStatementImpl implements Prep
             throw new HBqlException("executeUpdate() requires a non-SELECT statement");
         }
         else if (JdbcUtil.isDMLStatement(this.getStatement())) {
-            final ExecutionOutput output = ((ConnectionStatement)this.getStatement()).execute(this.getConnectionImpl());
-            return output.getCount();
+            final ExecutionResults results = ((ConnectionStatement)this.getStatement()).execute(this.getConnectionImpl());
+            return results.getCount();
         }
         else if (JdbcUtil.isConnectionStatemet(this.getStatement())) {
             ((ConnectionStatement)this.getStatement()).execute(this.getConnectionImpl());
+            return 0;
         }
         else if (JdbcUtil.isNonConectionStatemet(this.getStatement())) {
             ((NonConnectionStatement)this.getStatement()).execute();
+            return 0;
         }
         else {
             throw new InternalErrorException("Bad state with " + this.getStatement().getClass().getSimpleName());
         }
-
-        return 0;
     }
 
     public boolean execute() throws SQLException {

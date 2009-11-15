@@ -20,13 +20,13 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 
 public class HelpStatement implements NonConnectionStatement {
 
-    public ExecutionOutput execute() {
+    public ExecutionResults execute() {
 
-        final ExecutionOutput retval = new ExecutionOutput();
+        final ExecutionResults retval = new ExecutionResults();
         retval.out.println("VERSION");
         retval.out.println("LIST TABLES");
         retval.out.println("DESCRIBE TABLE table_name");

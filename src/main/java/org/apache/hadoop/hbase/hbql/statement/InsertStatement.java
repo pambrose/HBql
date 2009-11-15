@@ -25,7 +25,7 @@ import org.apache.expreval.expr.literal.DefaultKeyword;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.Batch;
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
@@ -43,7 +43,7 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
     private final List<SingleExpressionContext> columnList = Lists.newArrayList();
     private final InsertValueSource insertValuesSource;
 
-    private HConnectionImpl connection = null;
+    private transient HConnectionImpl connection = null;
     private HRecord record = null;
     private boolean validated = false;
 
@@ -156,7 +156,7 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
         return this.insertValuesSource;
     }
 
-    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException {
+    public ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         this.validate(conn);
 
@@ -189,10 +189,12 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
             cnt++;
         }
 
-        return new ExecutionOutput(cnt + " record" + ((cnt > 1) ? "s" : "") + " inserted");
+        final ExecutionResults results = new ExecutionResults(cnt + " record" + ((cnt > 1) ? "s" : "") + " inserted");
+        results.setCount(cnt);
+        return results;
     }
 
-    public ExecutionOutput execute() throws HBqlException {
+    public ExecutionResults execute() throws HBqlException {
         return this.execute(this.getConnection());
     }
 

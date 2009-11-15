@@ -24,9 +24,10 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.statement.InsertStatement;
 
+import java.io.Serializable;
 import java.util.List;
 
-public abstract class InsertValueSource {
+public abstract class InsertValueSource implements Serializable {
 
     private InsertStatement insertStatement = null;
 

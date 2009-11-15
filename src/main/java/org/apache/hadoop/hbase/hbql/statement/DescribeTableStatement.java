@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
@@ -34,12 +34,12 @@ public class DescribeTableStatement extends TableStatement {
         super(tableName);
     }
 
-    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException {
+    public ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         try {
             final HTableDescriptor tableDesc = conn.getAdmin().getTableDescriptor(this.getTableName().getBytes());
 
-            final ExecutionOutput retval = new ExecutionOutput();
+            final ExecutionResults retval = new ExecutionResults();
             retval.out.println("Table name: " + tableDesc.getNameAsString());
             retval.out.println("Families:");
             for (final HColumnDescriptor columnDesc : tableDesc.getFamilies()) {

@@ -20,11 +20,11 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public interface ConnectionStatement extends HBqlStatement {
 
-    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException;
+    public ExecutionResults execute(final HConnectionImpl conn) throws HBqlException;
 }

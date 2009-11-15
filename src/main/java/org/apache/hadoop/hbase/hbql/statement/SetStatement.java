@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.schema.EnvVars;
 
@@ -42,7 +42,7 @@ public class SetStatement implements NonConnectionStatement {
     }
 
 
-    public ExecutionOutput execute() throws HBqlException {
+    public ExecutionResults execute() throws HBqlException {
 
         final String var = this.getVariable();
 
@@ -51,7 +51,7 @@ public class SetStatement implements NonConnectionStatement {
 
         if (var.equalsIgnoreCase("packagepath")) {
             EnvVars.setPackagePath(this.getValue());
-            return new ExecutionOutput("PackagePath set to " + this.getValue());
+            return new ExecutionResults("PackagePath set to " + this.getValue());
         }
 
         throw new HBqlException("Unknown variable: " + var);

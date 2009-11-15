@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
@@ -56,7 +56,7 @@ public class CreateSchemaStatement extends SchemaContext implements NonConnectio
         return columnDescriptionList;
     }
 
-    public ExecutionOutput execute() throws HBqlException {
+    public ExecutionResults execute() throws HBqlException {
 
         final HBaseSchema schema = SchemaManager.newHBaseSchema(this.getSchemaName(),
                                                                 this.getTableName(),
@@ -70,6 +70,6 @@ public class CreateSchemaStatement extends SchemaContext implements NonConnectio
                                         + attrib.getFamilyQualifiedName() + " has unknown type.");
         }
 
-        return new ExecutionOutput("Schema " + schema.getSchemaName() + " defined.");
+        return new ExecutionResults("Schema " + schema.getSchemaName() + " defined.");
     }
 }

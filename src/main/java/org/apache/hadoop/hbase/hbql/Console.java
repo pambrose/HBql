@@ -26,7 +26,7 @@ import jline.SimpleCompletor;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.ImportStatement;
@@ -83,16 +83,16 @@ public class Console {
 
         if (option.equals("-version")) {
             final VersionStatement version = new VersionStatement();
-            final ExecutionOutput output = version.execute();
-            System.out.print(output);
+            final ExecutionResults results = version.execute();
+            System.out.print(results);
             return true;
         }
 
         if (!option.startsWith("-")) {
             final ImportStatement importStmt = new ImportStatement(option);
-            final ExecutionOutput output = importStmt.execute(getConnection());
-            System.out.print(output);
-            return output.hadSuccess();
+            final ExecutionResults results = importStmt.execute(getConnection());
+            System.out.print(results);
+            return results.hadSuccess();
         }
 
         return false;

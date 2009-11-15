@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public class ParseStatement implements NonConnectionStatement {
@@ -48,8 +48,8 @@ public class ParseStatement implements NonConnectionStatement {
         return this.value;
     }
 
-    public ExecutionOutput execute() throws HBqlException {
-        final ExecutionOutput retval = new ExecutionOutput("Parsed successfully");
+    public ExecutionResults execute() throws HBqlException {
+        final ExecutionResults retval = new ExecutionResults("Parsed successfully");
         if (this.getStmt() != null)
             retval.out.println(this.getStmt().getClass().getSimpleName());
 

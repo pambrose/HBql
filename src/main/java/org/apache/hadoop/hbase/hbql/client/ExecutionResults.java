@@ -23,17 +23,17 @@ package org.apache.hadoop.hbase.hbql.client;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-public class ExecutionOutput {
+public class ExecutionResults {
 
     private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     public final PrintStream out = new PrintStream(baos);
     private boolean success = true;
     private int count = -1;
 
-    public ExecutionOutput() {
+    public ExecutionResults() {
     }
 
-    public ExecutionOutput(final String str) {
+    public ExecutionResults(final String str) {
         this.out.println(str);
     }
 

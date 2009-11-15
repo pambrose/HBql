@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 
 public class ShowSchemasStatement implements NonConnectionStatement {
@@ -28,9 +28,9 @@ public class ShowSchemasStatement implements NonConnectionStatement {
     public ShowSchemasStatement() {
     }
 
-    public ExecutionOutput execute() {
+    public ExecutionResults execute() {
 
-        final ExecutionOutput retval = new ExecutionOutput();
+        final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Schemas: ");
         for (final String schemaName : SchemaManager.getHBaseSchemaNames())
             retval.out.println("\t" + schemaName);

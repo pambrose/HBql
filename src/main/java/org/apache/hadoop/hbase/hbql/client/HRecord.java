@@ -20,11 +20,12 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
 
-public interface HRecord {
+public interface HRecord extends Serializable {
 
     void reset();
 

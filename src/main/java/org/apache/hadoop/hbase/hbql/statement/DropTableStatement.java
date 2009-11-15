@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
@@ -30,8 +30,8 @@ public class DropTableStatement extends TableStatement {
         super(tableName);
     }
 
-    public ExecutionOutput execute(final HConnectionImpl conn) throws HBqlException {
+    public ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
         conn.dropTable(this.getTableName());
-        return new ExecutionOutput("Table " + this.getTableName() + " dropped.");
+        return new ExecutionResults("Table " + this.getTableName() + " dropped.");
     }
 }

@@ -36,7 +36,7 @@ public class SchemaManager {
 
     private final static Map<String, HBaseSchema> schemaMap = Maps.newHashMap();
 
-    public static ExecutionOutput execute(final String str) throws HBqlException {
+    public static ExecutionResults execute(final String str) throws HBqlException {
         final NonConnectionStatement cmd = HBqlShell.parseSchemaManagerStatement(str);
         return cmd.execute();
     }

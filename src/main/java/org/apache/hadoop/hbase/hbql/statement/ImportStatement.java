@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
@@ -48,21 +48,21 @@ public class ImportStatement implements ConnectionStatement {
         return filename;
     }
 
-    public ExecutionOutput execute(final HConnectionImpl conn) {
+    public ExecutionResults execute(final HConnectionImpl conn) {
 
-        final ExecutionOutput output = new ExecutionOutput();
+        final ExecutionResults results = new ExecutionResults();
 
         boolean success;
         try {
-            success = processInput(new PrintWriter(output.out), conn, readFile(this.getFilename()));
+            success = processInput(new PrintWriter(results.out), conn, readFile(this.getFilename()));
         }
         catch (IOException e) {
             success = false;
-            output.out.println(e.getMessage());
+            results.out.println(e.getMessage());
         }
-        output.setSuccess(success);
+        results.setSuccess(success);
 
-        return output;
+        return results;
     }
 
     public static String readFile(final String filename) throws IOException {

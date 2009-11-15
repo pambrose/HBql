@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.ExecutionOutput;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
@@ -31,16 +31,16 @@ public class DescribeSchemaStatement extends SchemaContext implements NonConnect
         super(schemaName);
     }
 
-    public ExecutionOutput execute() throws HBqlException {
+    public ExecutionResults execute() throws HBqlException {
 
         this.checkIfValidSchemaName();
 
         final HBaseSchema schema = this.getHBaseSchema();
 
         if (schema == null)
-            return new ExecutionOutput("Unknown schema: " + this.getSchemaName());
+            return new ExecutionResults("Unknown schema: " + this.getSchemaName());
 
-        final ExecutionOutput retval = new ExecutionOutput();
+        final ExecutionResults retval = new ExecutionResults();
 
         retval.out.println("Schema name: " + this.getSchemaName());
         retval.out.println("Table name: " + schema.getTableName());
