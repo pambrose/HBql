@@ -27,10 +27,10 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public class ParseStatement implements NonConnectionStatement {
 
-    private final ShellStatement stmt;
+    private final HBqlStatement stmt;
     private final GenericValue value;
 
-    public ParseStatement(final ShellStatement stmt) {
+    public ParseStatement(final HBqlStatement stmt) {
         this.stmt = stmt;
         this.value = null;
     }
@@ -40,7 +40,7 @@ public class ParseStatement implements NonConnectionStatement {
         this.value = value;
     }
 
-    private ShellStatement getStmt() {
+    private HBqlStatement getStmt() {
         return this.stmt;
     }
 

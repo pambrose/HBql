@@ -20,5 +20,5 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-public interface ShellStatement {
+public interface HBqlStatement {
 }

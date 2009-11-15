@@ -39,10 +39,10 @@ import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
+import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
-import org.apache.hadoop.hbase.hbql.statement.ShellStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
@@ -120,7 +120,7 @@ public class HBqlShell {
         }
     }
 
-    public static List<ShellStatement> parseConsoleStatements(final String str) throws ParseException {
+    public static List<HBqlStatement> parseConsoleStatements(final String str) throws ParseException {
         try {
             final HBqlParser parser = newHBqlParser(str);
             return parser.consoleStatements();
@@ -135,7 +135,7 @@ public class HBqlShell {
         }
     }
 
-    public static ShellStatement parseJdbcStatement(final String str) throws ParseException {
+    public static HBqlStatement parseJdbcStatement(final String str) throws ParseException {
         try {
             final HBqlParser parser = newHBqlParser(str);
             return parser.jdbcStatement();
@@ -150,7 +150,7 @@ public class HBqlShell {
         }
     }
 
-    private static ShellStatement parse(final String str) throws ParseException {
+    private static HBqlStatement parse(final String str) throws ParseException {
         try {
             final HBqlParser parser = newHBqlParser(str);
             return parser.consoleStatement();
@@ -162,7 +162,7 @@ public class HBqlShell {
     }
 
     public static NonConnectionStatement parseSchemaManagerStatement(final String str) throws HBqlException {
-        final ShellStatement statement = parse(str);
+        final HBqlStatement statement = parse(str);
 
         if (!(statement instanceof NonConnectionStatement))
             throw new HBqlException("Expecting a schema manager statement");
@@ -172,7 +172,7 @@ public class HBqlShell {
 
     public static ConnectionStatement parseConnectionStatement(final String str) throws HBqlException {
 
-        final ShellStatement statement = parse(str);
+        final HBqlStatement statement = parse(str);
 
         if (!(statement instanceof ConnectionStatement))
             throw new HBqlException("Expecting a connection statement");
@@ -182,7 +182,7 @@ public class HBqlShell {
 
     public static PreparedStatement parsePreparedStatement(final String str) throws HBqlException {
 
-        final ShellStatement statement = parse(str);
+        final HBqlStatement statement = parse(str);
 
         if (!(statement instanceof PreparedStatement))
             throw new HBqlException("Expecting a prepared statement");
@@ -194,7 +194,7 @@ public class HBqlShell {
                                                        final String str,
                                                        Mapping mapping) throws HBqlException {
 
-        final ShellStatement statement = parse(str);
+        final HBqlStatement statement = parse(str);
 
         if (!(statement instanceof SelectStatement))
             throw new HBqlException("Expecting a select statement");

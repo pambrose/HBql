@@ -32,7 +32,7 @@ import org.apache.hadoop.hbase.hbql.schema.Schema;
 
 import java.io.Serializable;
 
-public abstract class SchemaContext implements ShellStatement, Serializable {
+public abstract class SchemaContext implements HBqlStatement, Serializable {
 
     private Mapping mapping = null;
     private volatile Schema schema = null;

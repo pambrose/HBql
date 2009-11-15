@@ -52,8 +52,8 @@ public class JdbcConnectionImpl extends HConnectionImpl implements Connection {
         return new JdbcStatementImpl(this);
     }
 
-    public PreparedStatement prepareStatement(final String s) throws SQLException {
-        return new JdbcPreparedStatementImpl(this, s);
+    public PreparedStatement prepareStatement(final String sql) throws SQLException {
+        return new JdbcPreparedStatementImpl(this, sql);
     }
 
     public CallableStatement prepareCall(final String s) throws SQLException {

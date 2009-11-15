@@ -86,12 +86,12 @@ public class ImportStatement implements ConnectionStatement {
 
     public static boolean processInput(final PrintWriter out,
                                        final HConnectionImpl conn,
-                                       final String input) {
+                                       final String str) {
 
         try {
-            final List<ShellStatement> stmtList = HBqlShell.parseConsoleStatements(input);
+            final List<HBqlStatement> stmtList = HBqlShell.parseConsoleStatements(str);
 
-            for (final ShellStatement stmt : stmtList) {
+            for (final HBqlStatement stmt : stmtList) {
                 if (stmt instanceof SelectStatement)
                     processSelect(out, conn, (SelectStatement)stmt);
                 else if (stmt instanceof ConnectionStatement)
@@ -99,23 +99,15 @@ public class ImportStatement implements ConnectionStatement {
                 else if (stmt instanceof NonConnectionStatement)
                     out.println(((NonConnectionStatement)stmt).execute());
                 else
-                    out.println("Unsupported statement type: " + stmt.getClass().getSimpleName() + " - " + input);
+                    out.println("Unsupported statement type: " + stmt.getClass().getSimpleName() + " - " + str);
             }
         }
         catch (ParseException e) {
-            out.println("Error parsing: ");
-            out.println(e.getMessage());
-            if (e.getRecognitionException() != null) {
-                final StringBuilder sbuf = new StringBuilder();
-                for (int i = 0; i < e.getRecognitionException().charPositionInLine; i++)
-                    sbuf.append("-");
-                sbuf.append("^");
-                out.println(sbuf.toString());
-            }
+            out.println(e.getErrorMessage());
             return false;
         }
         catch (HBqlException e) {
-            out.println("Error in statement: " + input);
+            out.println("Error in statement: " + str);
             out.println(e.getMessage());
             return false;
         }

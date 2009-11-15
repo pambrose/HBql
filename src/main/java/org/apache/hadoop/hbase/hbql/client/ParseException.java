@@ -33,4 +33,16 @@ public class ParseException extends HBqlException {
     public RecognitionException getRecognitionException() {
         return recognitionException;
     }
+
+    public String getErrorMessage() {
+        final StringBuilder sbuf = new StringBuilder();
+        sbuf.append("Error parsing: \n");
+        sbuf.append(this.getMessage() + "\n");
+        if (this.getRecognitionException() != null) {
+            for (int i = 0; i < this.getRecognitionException().charPositionInLine; i++)
+                sbuf.append("-");
+            sbuf.append("^");
+        }
+        return sbuf.toString();
+    }
 }
