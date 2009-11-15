@@ -64,12 +64,16 @@ public class InsertStatement extends SchemaContext implements PreparedStatement,
         return this.namedParameters;
     }
 
+    private boolean isValidated() {
+        return this.validated;
+    }
+
     public void validate(final HConnectionImpl connection) throws HBqlException {
 
-        if (validated)
+        if (this.isValidated())
             return;
-
-        this.validated = true;
+        else
+            this.validated = true;
 
         this.connection = connection;
         this.record = SchemaManager.newHRecord(this.getSchemaName());

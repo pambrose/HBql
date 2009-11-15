@@ -20,7 +20,12 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+
 public interface ParameterSupport {
 
     NamedParameters getNamedParameters();
+
+    void validate(final HConnectionImpl connection) throws HBqlException;
 }

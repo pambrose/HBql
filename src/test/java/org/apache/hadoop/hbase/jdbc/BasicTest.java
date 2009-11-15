@@ -20,20 +20,22 @@
 
 package org.apache.hadoop.hbase.jdbc;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class BasicTest {
 
-    @Test
-    public void simpleQuery() throws ClassNotFoundException, SQLException {
-
+    @BeforeClass
+    public static void setup() throws HBqlException, ClassNotFoundException {
         SchemaManager.execute("CREATE SCHEMA tab4 FOR TABLE table2"
                               + "("
                               + "keyval key, "
@@ -51,10 +53,39 @@ public class BasicTest {
                               + ")");
 
         Class.forName("org.apache.hadoop.hbase.jdbc.Driver");
+    }
 
-        Connection conn = DriverManager.getConnection("hbql", null, null);
+
+    @Test
+    public void simpleQuery() throws SQLException {
+
+        Connection conn = DriverManager.getConnection("jdbc:hbase", null, null);
+
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery("select * from tab4");
+
+        while (rs.next()) {
+            int val5 = rs.getInt("val5");
+            int val6 = rs.getInt("val6");
+            String val1 = rs.getString("val1");
+            String val2 = rs.getString("val2");
+
+            System.out.print("val5: " + val5);
+            System.out.print(", val6: " + val6);
+            System.out.print(", val1: " + val1);
+            System.out.println(", val2: " + val2);
+        }
+    }
+
+    @Test
+    public void simpleQueryWithParams() throws SQLException {
+
+        Connection conn = DriverManager.getConnection("jdbc:hbase", null, null);
+
+        PreparedStatement stmt = conn.prepareStatement("select * from tab4 WITH CLIENT FILTER WHERE :val1 = :val2");
+        stmt.setString(1, "aaa");
+        stmt.setString(2, "aaa");
+        ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {
             int val5 = rs.getInt("val5");

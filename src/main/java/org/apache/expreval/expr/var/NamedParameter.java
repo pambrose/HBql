@@ -66,6 +66,10 @@ public class NamedParameter implements GenericValue {
         return counter++;
     }
 
+    public String toString() {
+        return this.getParamName();
+    }
+
     public String getParamName() {
         return this.paramName;
     }

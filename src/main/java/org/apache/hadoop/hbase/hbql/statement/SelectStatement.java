@@ -41,6 +41,7 @@ public class SelectStatement extends SchemaContext implements ParameterSupport {
 
 
     private volatile int expressionCounter = 0;
+    private boolean validated = false;
     private boolean aggregateQuery = false;
 
     public SelectStatement(final List<SelectElement> selectElementList,
@@ -59,7 +60,16 @@ public class SelectStatement extends SchemaContext implements ParameterSupport {
         return this.namedParameters;
     }
 
-    public void validate(final HConnectionImpl connection) throws HBqlException {
+    private boolean isValidated() {
+        return this.validated;
+    }
+
+    public synchronized void validate(final HConnectionImpl connection) throws HBqlException {
+
+        if (this.isValidated())
+            return;
+        else
+            this.validated = true;
 
         this.checkIfValidSchemaName();
 

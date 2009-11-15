@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.jdbc;
 
+import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.ParameterSupport;
@@ -52,6 +53,11 @@ public class JdbcPreparedStatementImpl extends JdbcStatementImpl implements Prep
     public JdbcPreparedStatementImpl(final JdbcConnectionImpl connection, final String sql) throws HBqlException {
         super(connection);
         this.statement = JdbcUtil.parseJdbcStatement(sql);
+
+        if ((this.getStatement() instanceof ParameterSupport)) {
+            final ParameterSupport paramStmt = (ParameterSupport)this.getStatement();
+            paramStmt.validate(this.getConnectionImpl());
+        }
     }
 
     private HBqlStatement getStatement() {
@@ -70,13 +76,6 @@ public class JdbcPreparedStatementImpl extends JdbcStatementImpl implements Prep
         return this.execute(this.getStatement());
     }
 
-    private void checkIfSupportsParameters() throws HBqlException {
-        if (!(this.getStatement() instanceof ParameterSupport)) {
-            throw new HBqlException(this.getStatement().getClass().getSimpleName()
-                                    + " statements do not support parameters");
-        }
-    }
-
     public ResultSetMetaData getMetaData() throws SQLException {
         return null;
     }
@@ -86,7 +85,14 @@ public class JdbcPreparedStatementImpl extends JdbcStatementImpl implements Prep
     }
 
     private void setParameter(final int i, final Object obj) throws HBqlException {
-        this.checkIfSupportsParameters();
+        if (!(this.getStatement() instanceof ParameterSupport)) {
+            throw new HBqlException(this.getStatement().getClass().getSimpleName()
+                                    + " statements do not support parameters");
+        }
+
+        final ParameterSupport paramStmt = (ParameterSupport)this.getStatement();
+        final NamedParameter param = paramStmt.getNamedParameters().getParameter(i - 1);
+        param.setParameter(obj);
     }
 
     public void setNull(final int i, final int i1) throws HBqlException {

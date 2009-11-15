@@ -42,7 +42,7 @@ public class Driver implements java.sql.Driver {
     }
 
     public boolean acceptsURL(final String url) throws SQLException {
-        return (url != null && url.startsWith("hbql"));
+        return (url != null && url.toLowerCase().startsWith("jdbc:hbase"));
     }
 
     public DriverPropertyInfo[] getPropertyInfo(final String s, final Properties properties) throws SQLException {
