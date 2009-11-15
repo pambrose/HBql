@@ -52,13 +52,15 @@ public class ImportStatement implements ConnectionStatement {
 
         final ExecutionOutput output = new ExecutionOutput();
 
+        boolean success;
         try {
-            processInput(new PrintWriter(output.out), conn, readFile(this.getFilename()));
+            success = processInput(new PrintWriter(output.out), conn, readFile(this.getFilename()));
         }
         catch (IOException e) {
-            output.setSuccess(false);
+            success = false;
             output.out.println(e.getMessage());
         }
+        output.setSuccess(success);
 
         return output;
     }
@@ -82,12 +84,12 @@ public class ImportStatement implements ConnectionStatement {
         }
     }
 
-    public static void processInput(final PrintWriter out,
-                                    final HConnectionImpl conn,
-                                    final String input) throws IOException {
+    public static boolean processInput(final PrintWriter out,
+                                       final HConnectionImpl conn,
+                                       final String input) {
 
         try {
-            final List<ShellStatement> stmtList = HBqlShell.parseCommands(input);
+            final List<ShellStatement> stmtList = HBqlShell.parseConsoleStatements(input);
 
             for (final ShellStatement stmt : stmtList) {
                 if (stmt instanceof SelectStatement)
@@ -110,13 +112,18 @@ public class ImportStatement implements ConnectionStatement {
                 sbuf.append("^");
                 out.println(sbuf.toString());
             }
+            return false;
         }
         catch (HBqlException e) {
             out.println("Error in statement: " + input);
             out.println(e.getMessage());
+            return false;
+        }
+        finally {
+            out.flush();
         }
 
-        out.flush();
+        return true;
     }
 
     private static void processSelect(final PrintWriter out,

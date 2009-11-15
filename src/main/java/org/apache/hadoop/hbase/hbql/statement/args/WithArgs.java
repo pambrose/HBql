@@ -31,11 +31,12 @@ import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-public class WithArgs {
+public class WithArgs implements Serializable {
 
     private KeyRangeArgs keyRangeArgs = null;
     private TimestampArgs timestampArgs = null;

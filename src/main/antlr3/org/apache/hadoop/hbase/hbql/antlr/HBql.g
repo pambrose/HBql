@@ -88,26 +88,30 @@ import org.apache.expreval.client.*;
 import org.apache.hadoop.hbase.hbql.parser.*;
 }
 
-shellCommand returns [List<ShellStatement> retval]
+consoleStatements returns [List<ShellStatement> retval]
 @init {retval = Lists.newArrayList();}
-	: c1=commandStmt SEMI {retval.add($c1.retval);} ((c2=commandStmt {retval.add($c2.retval);})? SEMI )*
+	: c1=consoleStatement SEMI {retval.add($c1.retval);} ((c2=consoleStatement {retval.add($c2.retval);})? SEMI )*
 	;
 	
-commandStmt returns [ShellStatement retval]
+consoleStatement returns [ShellStatement retval]
 options {backtrack=true;}	
-	: s1=schemaStmt					{retval = $s1.retval;}
-	| s2=schemaManagerStmt				{retval = $s2.retval;}
-	| s3=tableStatement				{retval = $s3.retval;}
+	: j=jdbcStatement				{retval = $j.retval;}
 	| keySHOW keyTABLES 		 		{retval = new ShowTablesStatement();}
 	| keySHOW keySCHEMAS 		 		{retval = new ShowSchemasStatement();}
 	| keyIMPORT val=QSTRING				{retval = new ImportStatement($val.text);}
-	| keyPARSE c=commandStmt			{retval = new ParseStatement($c.retval);}
+	| keyPARSE c=consoleStatement			{retval = new ParseStatement($c.retval);}
 	| keyPARSE keyEXPR te=topExpr			{retval = new ParseStatement($te.retval);}
 	| keySET t=simpleName EQ? val=QSTRING	 	{retval = new SetStatement($t.text, $val.text);}
 	| keyVERSION					{retval = new VersionStatement();}
 	| keyHELP					{retval = new HelpStatement();}
 	;						
 
+jdbcStatement returns [ShellStatement retval]
+	: s1=schemaStmt					{retval = $s1.retval;}
+	| s2=schemaManagerStmt				{retval = $s2.retval;}
+	| s3=tableStatement				{retval = $s3.retval;}
+	;
+	
 tableStatement returns [TableStatement retval]
 	: keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
 	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableStatement($t.text);}

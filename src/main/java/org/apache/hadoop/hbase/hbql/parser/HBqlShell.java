@@ -120,10 +120,25 @@ public class HBqlShell {
         }
     }
 
-    public static List<ShellStatement> parseCommands(final String str) throws ParseException {
+    public static List<ShellStatement> parseConsoleStatements(final String str) throws ParseException {
         try {
             final HBqlParser parser = newHBqlParser(str);
-            return parser.shellCommand();
+            return parser.consoleStatements();
+        }
+        catch (LexerRecognitionException e) {
+            // e.printStackTrace();
+            throw new ParseException(e.getRecognitionExecption(), str);
+        }
+        catch (RecognitionException e) {
+            // e.printStackTrace();
+            throw new ParseException(e, str);
+        }
+    }
+
+    public static ShellStatement parseJdbcStatement(final String str) throws ParseException {
+        try {
+            final HBqlParser parser = newHBqlParser(str);
+            return parser.jdbcStatement();
         }
         catch (LexerRecognitionException e) {
             // e.printStackTrace();
@@ -138,7 +153,7 @@ public class HBqlShell {
     private static ShellStatement parse(final String str) throws ParseException {
         try {
             final HBqlParser parser = newHBqlParser(str);
-            return parser.commandStmt();
+            return parser.consoleStatement();
         }
         catch (RecognitionException e) {
             //e.printStackTrace();

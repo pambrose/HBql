@@ -35,10 +35,11 @@ import org.apache.hadoop.hbase.hbql.statement.select.GetRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.ScanRequest;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-public class KeyRangeArgs {
+public class KeyRangeArgs implements Serializable {
 
     private final List<Range> rangeList;
 
