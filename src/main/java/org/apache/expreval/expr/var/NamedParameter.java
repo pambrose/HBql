@@ -50,6 +50,7 @@ public class NamedParameter implements GenericValue {
 
     private static long counter = Long.MIN_VALUE;
 
+
     private MultipleExpressionContext context = null;
     private GenericValue typedExpr = null;
     private List<GenericValue> typedExprList = null;
@@ -58,7 +59,11 @@ public class NamedParameter implements GenericValue {
     private final long position;
 
     public NamedParameter(final String paramName) {
-        this.paramName = paramName;
+        if (paramName.equals("?"))
+            this.paramName = "unnamed";
+        else
+            this.paramName = paramName;
+
         this.position = getNextPosition();
     }
 

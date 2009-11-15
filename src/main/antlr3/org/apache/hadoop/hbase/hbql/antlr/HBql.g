@@ -398,7 +398,8 @@ familyRef
 	: ID COLON STAR;
 	
 paramRef
-	: COLON ID;
+	: COLON ID
+	| QMARK;
 		
 INT	: DIGIT+;
 LONG	: DIGIT+ ('L' | 'l');
