@@ -20,8 +20,15 @@
 
 package org.apache.hadoop.hbase.jdbc;
 
+import org.apache.expreval.client.InternalErrorException;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.Query;
+import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
+import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
+import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
+import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -44,25 +51,58 @@ public class JdbcStatementImpl implements Statement {
         return (JdbcConnectionImpl)this.getConnection();
     }
 
-    public <T> T unwrap(final Class<T> tClass) throws SQLException {
-        return null;
+    protected int executeUpdate(final HBqlStatement statement) throws HBqlException {
+
+        if (JdbcUtil.isSelectStatemet(statement)) {
+            throw new HBqlException("executeUpdate() requires a non-SELECT statement");
+        }
+        else if (JdbcUtil.isDMLStatement(statement)) {
+            final ExecutionResults results = ((ConnectionStatement)statement).execute(this.getConnectionImpl());
+            return results.getCount();
+        }
+        else if (JdbcUtil.isConnectionStatemet(statement)) {
+            ((ConnectionStatement)statement).execute(this.getConnectionImpl());
+            return 0;
+        }
+        else if (JdbcUtil.isNonConectionStatemet(statement)) {
+            ((NonConnectionStatement)statement).execute();
+            return 0;
+        }
+        else {
+            throw new InternalErrorException("Bad state with " + statement.getClass().getSimpleName());
+        }
     }
 
-    public boolean isWrapperFor(final Class<?> aClass) throws SQLException {
-        return false;
+    protected ResultSet executeQuery(final HBqlStatement statement) throws HBqlException {
+        if (!JdbcUtil.isSelectStatemet(statement))
+            throw new HBqlException("executeQuery() requires a SELECT statement");
+
+        final Query<HRecord> query = this.getConnectionImpl().newQuery((SelectStatement)statement);
+        this.setResultSet(new JdbcResultSetImpl(this, query.getResults()));
+        return this.getResultSet();
+    }
+
+    protected boolean execute(final HBqlStatement statement) throws HBqlException {
+        if (JdbcUtil.isSelectStatemet(statement)) {
+            this.executeQuery(statement);
+            return true;
+        }
+        else {
+            this.executeUpdate(statement);
+            return false;
+        }
     }
 
     public boolean execute(final String sql) throws SQLException {
-        return false;
+        return execute(JdbcUtil.parseJdbcStatement(sql));
     }
 
-    public ResultSet executeQuery(final String sql) throws SQLException {
-        final Query<HRecord> query = this.getConnectionImpl().newQuery(sql);
-        return new JdbcResultSetImpl(this, query.getResults());
+    public ResultSet executeQuery(final String sql) throws HBqlException {
+        return executeQuery(JdbcUtil.parseJdbcStatement(sql));
     }
 
     public int executeUpdate(final String sql) throws SQLException {
-        return 0;
+        return executeUpdate(JdbcUtil.parseJdbcStatement(sql));
     }
 
     public void close() throws SQLException {
@@ -117,7 +157,7 @@ public class JdbcStatementImpl implements Statement {
         this.resultSet = resultSet;
     }
 
-    public ResultSet getResultSet() throws SQLException {
+    public ResultSet getResultSet() {
         return this.resultSet;
     }
 
@@ -214,6 +254,14 @@ public class JdbcStatementImpl implements Statement {
     }
 
     public boolean isPoolable() throws SQLException {
+        return false;
+    }
+
+    public <T> T unwrap(final Class<T> tClass) throws SQLException {
+        return null;
+    }
+
+    public boolean isWrapperFor(final Class<?> aClass) throws SQLException {
         return false;
     }
 }

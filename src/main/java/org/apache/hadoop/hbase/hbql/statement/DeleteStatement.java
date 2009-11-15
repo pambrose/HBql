@@ -27,6 +27,7 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
@@ -36,9 +37,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class DeleteStatement extends SchemaContext implements ConnectionStatement {
+public class DeleteStatement extends SchemaContext implements PreparedStatement {
 
+    private transient HConnectionImpl connection = null;
     private final WithArgs withArgs;
+    private boolean validated = false;
 
     public DeleteStatement(final String schemaName, final WithArgs withArgs) {
         super(schemaName);
@@ -52,14 +55,38 @@ public class DeleteStatement extends SchemaContext implements ConnectionStatemen
         return this.withArgs;
     }
 
-    public ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
+    private HConnectionImpl getConnection() {
+        return this.connection;
+    }
+
+    public void reset() {
+
+    }
+
+    public void validate(final HConnectionImpl connection) throws HBqlException {
+
+        if (validated)
+            return;
+
+        this.validated = true;
+
+        this.connection = connection;
 
         this.checkIfValidSchemaName();
 
         this.getWithArgs().setSchemaContext(this);
+    }
+
+    public ExecutionResults execute() throws HBqlException {
+        return this.execute(this.getConnection());
+    }
+
+    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+
+        this.validate(connection);
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWithArgs().getAllColumnsUsedInExprs();
-        final HTable table = conn.getHTable(this.getSchema().getTableName());
+        final HTable table = connection.getHTable(this.getSchema().getTableName());
 
         final List<RowRequest> rowRequestList = this.getWithArgs().getRowRequestList(allWhereAttribs);
 
@@ -97,5 +124,9 @@ public class DeleteStatement extends SchemaContext implements ConnectionStatemen
         catch (IOException e) {
             throw new HBqlException(e);
         }
+    }
+
+    public int setParameter(final String name, final Object val) throws HBqlException {
+        return this.getWithArgs().setParameter(name, val);
     }
 }

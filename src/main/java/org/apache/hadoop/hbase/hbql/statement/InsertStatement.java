@@ -59,17 +59,17 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
         this.getInsertValuesSource().setInsertStatement(this);
     }
 
-    public void validate(final HConnectionImpl conn) throws HBqlException {
-
-        this.checkIfValidSchemaName();
+    public void validate(final HConnectionImpl connection) throws HBqlException {
 
         if (validated)
             return;
 
         this.validated = true;
 
-        this.connection = conn;
+        this.connection = connection;
         this.record = SchemaManager.newHRecord(this.getSchemaName());
+
+        this.checkIfValidSchemaName();
 
         for (final SingleExpressionContext element : this.getInsertColumnList()) {
 
@@ -156,9 +156,9 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
         return this.insertValuesSource;
     }
 
-    public ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
+    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        this.validate(conn);
+        this.validate(connection);
 
         this.validateTypes();
 
@@ -185,7 +185,7 @@ public class InsertStatement extends SchemaContext implements PreparedStatement 
 
             batch.insert(this.getHRecord());
 
-            conn.apply(batch);
+            connection.apply(batch);
             cnt++;
         }
 

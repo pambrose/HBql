@@ -20,15 +20,8 @@
 
 package org.apache.hadoop.hbase.jdbc;
 
-import org.apache.expreval.client.InternalErrorException;
-import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
-import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
-import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -65,44 +58,15 @@ public class JdbcPreparedStatementImpl extends JdbcStatementImpl implements Prep
     }
 
     public ResultSet executeQuery() throws SQLException {
-        if (!JdbcUtil.isSelectStatemet(this.getStatement()))
-            throw new HBqlException("executeQuery() requires a SELECT statement");
-
-        final Query<HRecord> query = this.getConnectionImpl().newQuery((SelectStatement)this.getStatement());
-        this.setResultSet(new JdbcResultSetImpl(this, query.getResults()));
-        return this.getResultSet();
+        return this.executeQuery(this.getStatement());
     }
 
     public int executeUpdate() throws SQLException {
-        if (JdbcUtil.isSelectStatemet(this.getStatement())) {
-            throw new HBqlException("executeUpdate() requires a non-SELECT statement");
-        }
-        else if (JdbcUtil.isDMLStatement(this.getStatement())) {
-            final ExecutionResults results = ((ConnectionStatement)this.getStatement()).execute(this.getConnectionImpl());
-            return results.getCount();
-        }
-        else if (JdbcUtil.isConnectionStatemet(this.getStatement())) {
-            ((ConnectionStatement)this.getStatement()).execute(this.getConnectionImpl());
-            return 0;
-        }
-        else if (JdbcUtil.isNonConectionStatemet(this.getStatement())) {
-            ((NonConnectionStatement)this.getStatement()).execute();
-            return 0;
-        }
-        else {
-            throw new InternalErrorException("Bad state with " + this.getStatement().getClass().getSimpleName());
-        }
+        return this.executeUpdate(this.getStatement());
     }
 
     public boolean execute() throws SQLException {
-        if (JdbcUtil.isSelectStatemet(this.getStatement())) {
-            this.executeQuery();
-            return true;
-        }
-        else {
-            this.executeUpdate();
-            return false;
-        }
+        return this.execute(this.getStatement());
     }
 
     public ResultSetMetaData getMetaData() throws SQLException {

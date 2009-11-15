@@ -24,7 +24,6 @@ import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.client.Results;
@@ -39,7 +38,7 @@ import java.util.Set;
 
 public class QueryImpl<T> implements Query<T> {
 
-    private final HConnection connection;
+    private final HConnectionImpl connection;
     private final SelectStatement selectStatement;
 
     private List<QueryListener<T>> listeners = null;
@@ -63,7 +62,7 @@ public class QueryImpl<T> implements Query<T> {
         this.getListeners().add(listener);
     }
 
-    public HConnection getHConnection() {
+    public HConnectionImpl getHConnection() {
         return this.connection;
     }
 
