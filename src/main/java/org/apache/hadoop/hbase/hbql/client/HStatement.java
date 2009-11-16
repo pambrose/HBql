@@ -25,10 +25,6 @@ import java.util.List;
 
 public interface HStatement {
 
-    void addListener(QueryListener<?> listener);
-
-    void clearListeners();
-
     ExecutionResults execute(String sql) throws HBqlException;
 
     HResultSet<HRecord> executeQuery(String sql) throws HBqlException;

@@ -24,7 +24,6 @@ import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
-import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
@@ -36,7 +35,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import java.util.List;
 import java.util.Set;
 
-public class QueryImpl<T> implements Query<T> {
+public class QueryImpl<T> {
 
     private final HBqlConnectionImpl connection;
     private final SelectStatement selectStatement;
