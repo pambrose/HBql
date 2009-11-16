@@ -59,7 +59,7 @@ public class BasicTest {
     @Test
     public void simpleQuery() throws SQLException {
 
-        Connection conn = DriverManager.getConnection("jdbc:hbql", null, null);
+        Connection conn = DriverManager.getConnection("jdbc:hbql");
 
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery("select * from tab4");

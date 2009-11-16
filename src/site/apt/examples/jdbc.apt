@@ -1,0 +1,10 @@
+    -----
+    Using JDBC Driver
+    -----
+    -----
+
+Using JDBC Driver
+
+*Example
+
+%{snippet|id=jdbc1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

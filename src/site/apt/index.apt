@@ -26,6 +26,8 @@ Documentation
 
     * {{{./console.html}Console usage}}
 
+    * {{{./jdbc_support.html}JDBC support}}
+
     * {{{./apidocs/org/apache/hadoop/hbase/hbql/client/package-summary.html}HBql Client API}}
 
     * {{{./apidocs/index.html}Javadocs}}

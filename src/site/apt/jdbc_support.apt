@@ -1,0 +1,15 @@
+    ------
+    JDBC Support
+    ------
+    ------
+
+JDBC Support
+
+    * The driver is not yet comlete. The Driver, Connection, Statement, PreparedStatement, and
+     ResultSet implementations are reasonable, but the metadata calls are still in progress.
+
+    * THe other work in progress is surfacing the non-relational features of HBase through the
+    JDBC driver.  Specifically, value versions and columns that end up in the family default map will
+    be made available.
+
+

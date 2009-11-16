@@ -32,6 +32,11 @@ import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Set;
 
 public class ExamplesTest extends TestSupport {
@@ -353,6 +358,41 @@ public class ExamplesTest extends TestSupport {
         }
 
         // END SNIPPET: definedExample1
+    }
+
+    @Test
+    public void jdbc1() throws SQLException, ClassNotFoundException {
+
+        // START SNIPPET: jdbc1
+
+        SchemaManager.execute("CREATE SCHEMA sch9 FOR TABLE table2"
+                              + "("
+                              + "keyval key, "
+                              + "f1:val1 string alias val1, "
+                              + "f1:val2 string alias val2, "
+                              + "f3:val1 int alias val5, "
+                              + "f3:val2 int alias val6 "
+                              + ")");
+
+        Class.forName("org.apache.hadoop.hbase.jdbc.Driver");
+        Connection conn = DriverManager.getConnection("jdbc:hbql");
+
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("select * from sch9");
+
+        while (rs.next()) {
+            int val5 = rs.getInt("val5");
+            int val6 = rs.getInt("val6");
+            String val1 = rs.getString("val1");
+            String val2 = rs.getString("val2");
+
+            System.out.print("val5: " + val5);
+            System.out.print(", val6: " + val6);
+            System.out.print(", val1: " + val1);
+            System.out.println(", val2: " + val2);
+        }
+
+        // END SNIPPET: jdbc1
     }
 
     @Test
