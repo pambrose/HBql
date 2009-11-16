@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class DeleteStatement extends SchemaContext implements ParameterSupport {
+public class DeleteStatement extends SchemaContext implements ParameterSupport, ConnectionStatement {
 
     private transient HBqlConnectionImpl connection = null;
     private final WithArgs withArgs;

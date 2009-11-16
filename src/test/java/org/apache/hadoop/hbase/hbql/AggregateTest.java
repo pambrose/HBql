@@ -26,10 +26,12 @@ import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
-import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -47,8 +49,8 @@ public class AggregateTest extends TestSupport {
 
     static Random randomVal = new Random();
 
-    @BeforeClass
-    public static void testSetup() throws HBqlException {
+    //@BeforeClass
+    public static void initMethod() throws HBqlException {
 
         SchemaManager.execute("CREATE SCHEMA aggschema FOR TABLE aggtable"
                               + "("
@@ -138,19 +140,21 @@ public class AggregateTest extends TestSupport {
         }
     }
 
-    /* PRA
     @Test
     public void selectCount() throws HBqlException {
 
+        initMethod();
+
         final String query1 = "SELECT count() as cnt FROM aggschema";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        HStatement stmt = conn.createStatement();
+        List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 1);
         HRecord rec = recList1.get(0);
         long cnt = (Long)rec.getCurrentValue("cnt");
         assertTrue(cnt == val5List.size());
     }
 
+    /* PRA
     @Test
     public void selectMax() throws HBqlException {
 

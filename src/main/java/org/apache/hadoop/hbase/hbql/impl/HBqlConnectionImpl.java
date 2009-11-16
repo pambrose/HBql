@@ -36,7 +36,6 @@ import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
-import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -176,8 +175,10 @@ public class HBqlConnectionImpl implements HConnection {
     }
 
     public ExecutionResults execute(final String str) throws HBqlException {
-        final ConnectionStatement statement = ParserUtil.parseConnectionStatement(str);
-        return statement.execute(this);
+        //  final ConnectionStatement statement = ParserUtil.parseConnectionStatement(str);
+        //  return statement.execute(this);
+        final HStatement stmt = this.createStatement();
+        return stmt.execute(str);
     }
 
     public HStatement createStatement() {

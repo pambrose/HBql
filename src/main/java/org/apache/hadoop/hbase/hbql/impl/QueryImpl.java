@@ -20,7 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -103,16 +102,6 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     public HResultSet<T> getResults() throws HBqlException {
-
-        // Set it once per evaluation
-        DateLiteral.resetNow();
-
-        if (this.getListeners() != null) {
-            for (final QueryListener<T> listener : this.getListeners())
-                listener.onQueryInit();
-        }
-
-        this.getSelectStatement().determineIfAggregateQuery();
 
         return new HResultSetImpl<T>(this);
     }

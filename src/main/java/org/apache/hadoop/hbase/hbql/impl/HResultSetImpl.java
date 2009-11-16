@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
+import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
@@ -44,8 +45,18 @@ public class HResultSetImpl<T> implements HResultSet<T> {
     private final List<ResultScanner> resultScannerList = Lists.newArrayList();
     private final QueryImpl<T> query;
 
-    HResultSetImpl(final QueryImpl<T> query) {
+    HResultSetImpl(final QueryImpl<T> query) throws HBqlException {
         this.query = query;
+
+        // Set it once per evaluation
+        DateLiteral.resetNow();
+
+        if (this.getListeners() != null) {
+            for (final QueryListener<T> listener : this.getListeners())
+                listener.onQueryInit();
+        }
+
+        this.getQuery().getSelectStatement().determineIfAggregateQuery();
     }
 
     private HConnection getConnection() {

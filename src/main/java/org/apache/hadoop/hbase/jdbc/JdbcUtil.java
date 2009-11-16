@@ -38,7 +38,7 @@ public class JdbcUtil {
         try {
             final HBqlStatement stmt = ParserUtil.parseJdbcStatement(sql);
 
-            if (stmt instanceof SelectStatement
+            if (JdbcUtil.isSelectStatement(stmt)
                 || stmt instanceof ConnectionStatement
                 || stmt instanceof NonConnectionStatement)
                 return stmt;
