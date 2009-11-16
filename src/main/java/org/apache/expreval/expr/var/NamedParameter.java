@@ -104,7 +104,7 @@ public class NamedParameter implements GenericValue {
                                                        final boolean allowCollections) throws HBqlException {
 
         if (this.getTypedExpr() == null && this.getTypedExprList() == null)
-            throw new TypeException("Parameter " + this.getParamName() + " not assigned a value");
+            throw new TypeException("Parameter \"" + this.getParamName() + "\" not assigned a value");
 
         if (this.isScalarValueSet()) {
             return this.getTypedExpr().getClass();

@@ -133,10 +133,6 @@ public class DeleteStatement extends SchemaContext implements PreparedStatement,
         }
     }
 
-    public void resetStatement() {
-        this.reset();
-    }
-
     public void reset() {
         this.getWithArgs().reset();
     }

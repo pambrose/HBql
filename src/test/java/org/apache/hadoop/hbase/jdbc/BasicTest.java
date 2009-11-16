@@ -59,7 +59,7 @@ public class BasicTest {
     @Test
     public void simpleQuery() throws SQLException {
 
-        Connection conn = DriverManager.getConnection("jdbc:hbase", null, null);
+        Connection conn = DriverManager.getConnection("jdbc:hbql", null, null);
 
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery("select * from tab4");
@@ -80,7 +80,7 @@ public class BasicTest {
     @Test
     public void simpleQueryWithNamedParams() throws SQLException {
 
-        Connection conn = DriverManager.getConnection("jdbc:hbase", null, null);
+        Connection conn = DriverManager.getConnection("jdbc:hbql", null, null);
 
         PreparedStatement stmt = conn.prepareStatement("select * from tab4 WITH CLIENT FILTER WHERE :val1 = :val2");
         stmt.setString(1, "aaa");
@@ -103,7 +103,7 @@ public class BasicTest {
     @Test
     public void simpleQueryWithUnNamedParams() throws SQLException {
 
-        Connection conn = DriverManager.getConnection("jdbc:hbase", null, null);
+        Connection conn = DriverManager.getConnection("jdbc:hbql", null, null);
 
         PreparedStatement stmt = conn.prepareStatement("select * from tab4 WITH CLIENT FILTER WHERE ? = ?");
         stmt.setString(1, "aaa");

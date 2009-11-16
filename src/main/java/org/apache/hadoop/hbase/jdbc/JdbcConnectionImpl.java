@@ -42,18 +42,24 @@ import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
 
-public class JdbcConnectionImpl extends HConnectionImpl implements Connection {
+public class JdbcConnectionImpl implements Connection {
+
+    private final HConnectionImpl hbqlConnection;
 
     public JdbcConnectionImpl(final String name, final HBaseConfiguration config) {
-        super(name, config);
+        this.hbqlConnection = new HConnectionImpl(name, config);
+    }
+
+    private HConnectionImpl getHbqlConnection() {
+        return this.hbqlConnection;
     }
 
     public Statement createStatement() throws SQLException {
-        return new JdbcStatementImpl(this);
+        return new JdbcStatementImpl(this, this.getHbqlConnection());
     }
 
     public PreparedStatement prepareStatement(final String sql) throws SQLException {
-        return new JdbcPreparedStatementImpl(this, sql);
+        return new JdbcPreparedStatementImpl(this, this.getHbqlConnection(), sql);
     }
 
     public CallableStatement prepareCall(final String s) throws SQLException {
@@ -78,6 +84,14 @@ public class JdbcConnectionImpl extends HConnectionImpl implements Connection {
 
     public void rollback() throws SQLException {
         throw new SQLFeatureNotSupportedException();
+    }
+
+    public void close() throws SQLException {
+        this.getHbqlConnection().close();
+    }
+
+    public boolean isClosed() throws SQLException {
+        return this.getHbqlConnection().isClosed();
     }
 
     public DatabaseMetaData getMetaData() throws SQLException {

@@ -29,7 +29,5 @@ public interface PreparedStatement extends ConnectionStatement {
 
     ExecutionResults execute() throws HBqlException;
 
-    void resetStatement();
-
     void validate(final HConnectionImpl connection) throws HBqlException;
 }

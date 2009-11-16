@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.jdbc;
 
 import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.ParameterSupport;
 
@@ -51,13 +52,16 @@ public class JdbcPreparedStatementImpl extends JdbcStatementImpl implements Prep
 
     private final HBqlStatement statement;
 
-    public JdbcPreparedStatementImpl(final JdbcConnectionImpl connection, final String sql) throws HBqlException {
-        super(connection);
+    public JdbcPreparedStatementImpl(final JdbcConnectionImpl jdbcConnection,
+                                     final HConnectionImpl hbqlConnection,
+                                     final String sql) throws HBqlException {
+        super(jdbcConnection, hbqlConnection);
+
         this.statement = JdbcUtil.parseJdbcStatement(sql);
 
         if ((this.getStatement() instanceof ParameterSupport)) {
             final ParameterSupport paramStmt = (ParameterSupport)this.getStatement();
-            paramStmt.validate(this.getConnectionImpl());
+            paramStmt.validate(this.getHbqlConnection());
         }
     }
 
