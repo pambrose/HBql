@@ -20,8 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.hadoop.hbase.hbql.client.Value;
-
 import java.util.NavigableMap;
 import java.util.TreeMap;
 

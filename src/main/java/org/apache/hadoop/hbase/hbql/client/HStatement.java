@@ -20,7 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface HStatement {
@@ -35,7 +34,11 @@ public interface HStatement {
 
     <T> List<T> executeQueryAndFetch(String sql, Class clazz) throws HBqlException;
 
-    ExecutionResults executeUpdate(String sql) throws SQLException;
+    ExecutionResults executeUpdate(String sql) throws HBqlException;
 
     <T> HResultSet<T> getResultSet();
+
+    void close() throws HBqlException;
+
+    boolean isClosed();
 }

@@ -33,14 +33,13 @@ import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.jdbc.JdbcUtil;
 
-import java.sql.SQLException;
 import java.util.List;
 
 
 public class HStatementImpl implements HStatement {
 
     private final HConnectionImpl hbqlConnection;
-
+    private volatile boolean closed = false;
     private HResultSetImpl resultSet = null;
 
     public HStatementImpl(final HConnectionImpl hbqlConnection) {
@@ -139,7 +138,18 @@ public class HStatementImpl implements HStatement {
         return this.executeQueryAndFetch(JdbcUtil.parseJdbcStatement(sql), clazz);
     }
 
-    public ExecutionResults executeUpdate(final String sql) throws SQLException {
+    public ExecutionResults executeUpdate(final String sql) throws HBqlException {
         return this.executeUpdate(JdbcUtil.parseJdbcStatement(sql));
+    }
+
+    public synchronized void close() throws HBqlException {
+        if (!isClosed() && this.getResultSet() != null) {
+            this.closed = true;
+            this.getResultSet().close();
+        }
+    }
+
+    public boolean isClosed() {
+        return this.closed;
     }
 }

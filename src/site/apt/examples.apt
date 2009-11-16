@@ -9,7 +9,7 @@ HBql Examples
 
     {{{./examples/annotated-schema.html}Inserting records using an annotated object}}
 
-    {{{./examples/jdbc.html}Using JDBC driver}}
+    {{{./examples/jdbc.html}Using the JDBC driver}}
 
 
 

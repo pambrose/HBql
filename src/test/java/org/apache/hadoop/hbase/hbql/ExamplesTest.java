@@ -347,7 +347,6 @@ public class ExamplesTest extends TestSupport {
         conn.apply(batch);
 
         // Query the records just added
-
         HResultSet<HRecord> records = conn.executeQuery("SELECT * FROM demo1");
 
         for (HRecord rec : records) {
