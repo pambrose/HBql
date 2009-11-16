@@ -20,10 +20,17 @@
 
 package org.apache.expreval.examples;
 
+import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.client.Util;
+
+import java.util.Date;
+import java.util.Map;
 
 public class RecordExample {
 
@@ -46,7 +53,6 @@ public class RecordExample {
         // System.out.println(conn.execute("enable table testobjects"));
         // System.out.println(conn.execute("drop table testobjects"));
 
-        /* PRA
         System.out.println(conn.execute("LIST TABLES"));
 
         if (!conn.tableExists("testobjects")) {
@@ -76,8 +82,7 @@ public class RecordExample {
                               //+ "SCAN LIMIT 4"
                               //+ "SERVER FILTER WHERE author LIKE '.*6200.*' "
                               + "CLIENT FILTER WHERE keyval = '0000000002' OR author LIKE '.*val.*'";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        HResultSet<HRecord> results1 = q1.getResults();
+        HResultSet<HRecord> results1 = conn.executeQuery(query1);
 
         for (HRecord val1 : results1) {
             System.out.println("Current Values: " + val1.getCurrentValue("keyval")
@@ -101,6 +106,5 @@ public class RecordExample {
             }
         }
         results1.close();
-        */
     }
 }
