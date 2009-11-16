@@ -27,7 +27,7 @@ import org.apache.yaoql.client.ObjectQuery;
 import org.apache.yaoql.client.ObjectQueryListenerAdapter;
 import org.apache.yaoql.client.ObjectQueryManager;
 import org.apache.yaoql.client.ObjectQueryPredicate;
-import org.apache.yaoql.client.ObjectResults;
+import org.apache.yaoql.client.ObjectResultSet;
 import org.apache.yaoql.util.Counter;
 import org.apache.yaoql.util.ObjectTests;
 import org.junit.Test;
@@ -98,7 +98,7 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
         // Using Iterator
         int cnt2 = 0;
         ObjectQuery<SimpleObject> query2 = ObjectQueryManager.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
-        final ObjectResults<SimpleObject> results = query2.getResults(objList);
+        final ObjectResultSet<SimpleObject> results = query2.getResults(objList);
         for (final SimpleObject obj : results)
             cnt2++;
         assertTrue(cnt2 == 3);

@@ -126,7 +126,6 @@ public class ImportStatement implements ConnectionStatement {
 
         final Query<HRecord> query = Query.newQuery(conn, selectStatement);
         final HResultSet<HRecord> results = query.getResults();
-
         for (final HRecord rec : results) {
             for (final String columnName : rec.getColumnNameList()) {
                 out.println(columnName + ": " + rec.getCurrentValue(columnName));

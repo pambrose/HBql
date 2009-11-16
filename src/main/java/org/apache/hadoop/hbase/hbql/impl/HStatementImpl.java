@@ -96,7 +96,7 @@ public class HStatementImpl implements HStatement {
         try {
             results = this.executeQuery(statement, clazz);
 
-            for (T val : results)
+            for (final T val : results)
                 retval.add(val);
         }
         finally {

@@ -25,6 +25,7 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -112,7 +113,8 @@ public class DeleteStatement extends SchemaContext implements ParameterStatement
             final ExpressionTree clientExpressionTree = with.getClientExpressionTree();
 
             int cnt = 0;
-            for (final Result result : rowRequest.getResultScanner(table)) {
+            final ResultScanner resultScaner = rowRequest.getResultScanner(table);
+            for (final Result result : resultScaner) {
                 try {
                     if (clientExpressionTree == null || clientExpressionTree.evaluate(result)) {
                         table.delete(new Delete(result.getRow()));

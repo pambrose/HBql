@@ -35,7 +35,7 @@ public interface ObjectQuery<T> {
 
     void setParameter(String name, Object val);
 
-    ObjectResults<T> getResults(Collection<T> objs) throws HBqlException;
+    ObjectResultSet<T> getResults(Collection<T> objs) throws HBqlException;
 
     List<T> getResultList(final Collection<T> objs) throws HBqlException;
 }

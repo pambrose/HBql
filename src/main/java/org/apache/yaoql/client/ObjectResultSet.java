@@ -30,12 +30,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class ObjectResults<T> implements Iterable<T> {
+public class ObjectResultSet<T> implements Iterable<T> {
 
     final ObjectQueryImpl<T> objectQuery;
     final Collection<T> objects;
 
-    public ObjectResults(final ObjectQueryImpl<T> objectQuery, final Collection<T> objects) {
+    public ObjectResultSet(final ObjectQueryImpl<T> objectQuery, final Collection<T> objects) {
         this.objectQuery = objectQuery;
         this.objects = objects;
     }

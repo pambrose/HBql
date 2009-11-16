@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 import org.apache.yaoql.client.ObjectQuery;
 import org.apache.yaoql.client.ObjectQueryListener;
-import org.apache.yaoql.client.ObjectResults;
+import org.apache.yaoql.client.ObjectResultSet;
 
 import java.util.Collection;
 import java.util.List;
@@ -79,9 +79,9 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
         return expressionTree;
     }
 
-    public ObjectResults<T> getResults(final Collection<T> objs) throws HBqlException {
+    public ObjectResultSet<T> getResults(final Collection<T> objs) throws HBqlException {
 
-        final ObjectResults<T> retval = new ObjectResults<T>(this, objs);
+        final ObjectResultSet<T> retval = new ObjectResultSet<T>(this, objs);
 
         if (this.getListeners() != null && this.getListeners().size() > 0) {
 
@@ -104,9 +104,9 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
 
         final List<T> retval = Lists.newArrayList();
 
-        final ObjectResults<T> results = this.getResults(objs);
+        final ObjectResultSet<T> results = this.getResults(objs);
 
-        for (T val : results)
+        for (final T val : results)
             retval.add(val);
 
         return retval;

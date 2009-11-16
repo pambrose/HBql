@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>HBql</groupId>
-    <artifactId>hbql</artifactId>
-    <version>0.9.4-alpha</version>
-    <packaging>jar</packaging>
 
+    <groupId>com.sudothought</groupId>
+    <artifactId>HBql</artifactId>
     <name>HBql</name>
+    <version>0.9.4-alpha</version>
+
+    <packaging>jar</packaging>
     <url>http://www.sudothougt.com</url>
     <description>HBase made easier.</description>
-
 
     <distributionManagement>
         <site>
@@ -18,7 +18,6 @@
             <url>scp://sudothought@www.sudothought.com/home/sudothought/public_html/</url>
         </site>
     </distributionManagement>
-
 
     <repositories>
         <repository>
@@ -57,6 +56,19 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr-runtime</artifactId>
+            <version>3.2</version>
+            <!--     <scope>compile</scope>  -->
+        </dependency>
+
+        <dependency>
+            <groupId>jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>0.9.9</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.6</version>
@@ -93,42 +105,98 @@
             <version>1.0-rc2</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr-runtime</artifactId>
-            <version>3.2</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>jline</groupId>
-            <artifactId>jline</artifactId>
-            <version>0.9.9</version>
-        </dependency>
 
     </dependencies>
 
     <build>
-        <finalName>${artifactId}-${version}</finalName>
-        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
-        <scriptSourceDirectory>${basedir}/src/main/scripts</scriptSourceDirectory>
-        <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
-        <outputDirectory>${basedir}/target/classes</outputDirectory>
-        <testOutputDirectory>${basedir}/target/test-classes</testOutputDirectory>
+
+        <defaultGoal>install</defaultGoal>
 
         <plugins>
 
             <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
+
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr3-maven-plugin</artifactId>
+                <version>3.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>antlr</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
             </plugin>
+
 
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
+                    <source>1.6</source>
+                    <target>jsr14</target>
+                    <!--  <sourceDirectory>src</sourceDirectory> -->
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.3</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <!--    <goal>add-source</goal>     -->
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src</source>
+                                <source>target/generated-sources/antlr3</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <!--
+
+                        Specify that we want the resulting jar to be executable
+                        via java -jar, which we do by modifying the manifest
+                        of course.
+                    <archive>
+
+                        <manifest>
+                            <mainClass>org.apache.hadoop.hbase.hbql.antlr.Main</mainClass>
+                        </manifest>
+                    </archive>
+                      -->
 
                 </configuration>
+
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attached</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
             </plugin>
 
             <plugin>
@@ -160,6 +228,7 @@
                 </executions>
             </plugin>
 
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -173,44 +242,15 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- Configure filters & descriptors -->
                 </configuration>
             </plugin>
+    -->
 
         </plugins>
     </build>
 
     <reporting>
         <plugins>
-
-            <!--
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-checkstyle-plugin</artifactId>
-              <configuration>
-                <configLocation>build/checkstyle/sun_checks.xml</configLocation>
-              </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>2.0.1</version>
-                <configuration>
-                    <effort>Max</effort>
-                </configuration>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jdepend-maven-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>dashboard-maven-plugin</artifactId>
-            </plugin>
-            -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -230,6 +270,33 @@
 
 
             <!--
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-checkstyle-plugin</artifactId>
+              <configuration>
+                <configLocation>build/checkstyle/sun_checks.xml</configLocation>
+              </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>2.0.1</version>
+                <configuration>
+                    <effort>Max</effort>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>dashboard-maven-plugin</artifactId>
+            </plugin>
+
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-jxr-plugin</artifactId>
@@ -254,9 +321,5 @@
 
         </plugins>
     </reporting>
-
-    <properties>
-        <jdk.version>1.6</jdk.version>
-    </properties>
 
 </project>

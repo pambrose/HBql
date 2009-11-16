@@ -23,7 +23,7 @@ package org.apache.yaoql.util;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.yaoql.client.ObjectQuery;
 import org.apache.yaoql.client.ObjectQueryManager;
-import org.apache.yaoql.client.ObjectResults;
+import org.apache.yaoql.client.ObjectResultSet;
 
 import java.util.Collection;
 
@@ -35,7 +35,7 @@ public class ObjectTests<T> {
         final ObjectQuery<T> query = ObjectQueryManager.newObjectQuery(expr);
 
         int cnt = 0;
-        ObjectResults<T> results = query.getResults(objList);
+        ObjectResultSet<T> results = query.getResults(objList);
         for (final T val : results)
             cnt++;
 
