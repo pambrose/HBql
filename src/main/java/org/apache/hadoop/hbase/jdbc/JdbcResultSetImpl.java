@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.jdbc;
 
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
+import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 
 import java.io.InputStream;
@@ -58,6 +59,14 @@ public class JdbcResultSetImpl implements ResultSet {
         this.statement = statement;
         this.results = results;
         this.resultsIterator = results.iterator();
+    }
+
+    public void addQueryListener(QueryListener<HRecord> listener) {
+        this.getResults().addQueryListener(listener);
+    }
+
+    public void clearQueryListeners() {
+        this.getResults().clearQueryListeners();
     }
 
     private HResultSet<HRecord> getResults() {

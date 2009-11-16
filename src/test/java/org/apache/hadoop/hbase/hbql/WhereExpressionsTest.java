@@ -373,6 +373,9 @@ public class WhereExpressionsTest extends TestSupport {
         assertExprEvalFalse(obj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
         assertExprEvalFalse(obj, "NOT ((('asasas' NOT CONTAINS stringValue)))");
 
+        // Defines schema
+        AnnotationAllTypesTest.setup();
+
         final AnnotatedAllTypes annoObj = new AnnotatedAllTypes("aaabbb", 3, "aaab");
 
         assertEvalTrue(annoObj, "keyval CONTAINS 'ab'");

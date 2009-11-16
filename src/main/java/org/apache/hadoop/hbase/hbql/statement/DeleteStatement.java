@@ -141,6 +141,20 @@ public class DeleteStatement extends SchemaContext implements ParameterSupport, 
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
-        return this.getWithArgs().setParameter(name, val);
+        final int cnt = this.getWithArgs().setParameter(name, val);
+        if (cnt == 0)
+            throw new HBqlException("Parameter name " + name + " does not exist in " + this.asString());
+        return cnt;
+    }
+
+    public String asString() {
+
+        final StringBuilder sbuf = new StringBuilder();
+
+        sbuf.append("DELETE FROM ");
+        sbuf.append(this.getSchemaName());
+        sbuf.append(" ");
+        sbuf.append(this.getWithArgs().asString());
+        return sbuf.toString();
     }
 }

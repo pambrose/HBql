@@ -35,10 +35,6 @@ import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
-import org.apache.hadoop.hbase.hbql.schema.Mapping;
-import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
@@ -55,29 +51,6 @@ public class HBqlConnectionImpl implements HConnection {
     public HBqlConnectionImpl(final String name, final HBaseConfiguration config) {
         this.name = name;
         this.config = (config == null) ? new HBaseConfiguration() : config;
-    }
-
-    public <T> QueryImpl<T> newQuery(final String sql) throws HBqlException {
-        return newQuery(sql, null);
-    }
-
-    public <T> QueryImpl<T> newQuery(final String sql, final Class clazz) throws HBqlException {
-        return this.newQuery(ParserUtil.parseSelectStatement(sql), clazz);
-    }
-
-    public <T> QueryImpl<T> newQuery(final SelectStatement selectStatement) throws HBqlException {
-        return new QueryImpl<T>(this, selectStatement, null);
-    }
-
-    public <T> QueryImpl<T> newQuery(final SelectStatement selectStatement, final Class clazz) throws HBqlException {
-        Mapping mapping = null;
-        if (clazz != null) {
-            mapping = AnnotationMapping.getAnnotationMapping(clazz);
-
-            if (mapping == null)
-                throw new HBqlException("Unknown class " + clazz.getName());
-        }
-        return new QueryImpl<T>(this, selectStatement, mapping);
     }
 
     public String getName() {

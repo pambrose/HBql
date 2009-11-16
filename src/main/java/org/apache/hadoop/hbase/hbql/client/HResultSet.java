@@ -27,4 +27,8 @@ public interface HResultSet<T> extends Iterable<T> {
     void close();
 
     Iterator<T> iterator();
+
+    void addQueryListener(QueryListener<T> listener);
+
+    void clearQueryListeners();
 }

@@ -49,7 +49,7 @@ public class SchemaManager {
         return getSchemaMap().keySet();
     }
 
-    public static boolean doesSchemaExist(final String schemaName) {
+    public static boolean schemaExists(final String schemaName) {
         return null != SchemaManager.getSchemaMap().get(schemaName);
     }
 
@@ -62,7 +62,7 @@ public class SchemaManager {
                                                           final String tableName,
                                                           final List<ColumnDescription> colList) throws HBqlException {
 
-        if (SchemaManager.doesSchemaExist(schemaName))
+        if (SchemaManager.schemaExists(schemaName))
             throw new HBqlException("Schema " + schemaName + " already defined");
 
         final HBaseSchema schema = new HBaseSchema(schemaName, tableName, colList);

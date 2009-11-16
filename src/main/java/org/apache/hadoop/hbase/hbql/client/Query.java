@@ -20,21 +20,9 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import java.util.List;
-
 public interface Query<T> {
-
-    HConnection getHConnection() throws HBqlException;
-
-    List<QueryListener<T>> getListeners();
-
-    void setParameter(String name, Object val) throws HBqlException;
 
     void addListener(QueryListener<T> listener);
 
     void clearListeners();
-
-    HResultSet<T> getResults() throws HBqlException;
-
-    // List<T> getResultList() throws HBqlException;
 }

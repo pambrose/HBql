@@ -26,6 +26,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
+import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
@@ -39,12 +40,11 @@ public class QueryImpl<T> implements Query<T> {
 
     private final HBqlConnectionImpl connection;
     private final SelectStatement selectStatement;
-
     private List<QueryListener<T>> listeners = null;
 
-    public QueryImpl(final HBqlConnectionImpl connection,
-                     final SelectStatement selectStatement,
-                     final Mapping mapping) throws HBqlException {
+    private QueryImpl(final HBqlConnectionImpl connection,
+                      final SelectStatement selectStatement,
+                      final Mapping mapping) throws HBqlException {
         this.connection = connection;
         this.selectStatement = selectStatement;
 
@@ -53,6 +53,25 @@ public class QueryImpl<T> implements Query<T> {
 
         this.getSelectStatement().validate(this.getHConnection());
     }
+
+    public static <T> QueryImpl<T> newQuery(final HBqlConnectionImpl connection,
+                                            final SelectStatement selectStatement) throws HBqlException {
+        return new QueryImpl<T>(connection, selectStatement, null);
+    }
+
+    public static <T> QueryImpl<T> newQuery(final HBqlConnectionImpl connection,
+                                            final SelectStatement selectStatement,
+                                            final Class clazz) throws HBqlException {
+        Mapping mapping = null;
+        if (clazz != null) {
+            mapping = AnnotationMapping.getAnnotationMapping(clazz);
+
+            if (mapping == null)
+                throw new HBqlException("Unknown class " + clazz.getName());
+        }
+        return new QueryImpl<T>(connection, selectStatement, mapping);
+    }
+
 
     public synchronized void addListener(final QueryListener<T> listener) {
         if (this.getListeners() == null)
@@ -63,10 +82,6 @@ public class QueryImpl<T> implements Query<T> {
 
     public HBqlConnectionImpl getHConnection() {
         return this.connection;
-    }
-
-    public Mapping getMapping() throws HBqlException {
-        return this.getSelectStatement().getMapping();
     }
 
     public SelectStatement getSelectStatement() {
@@ -89,13 +104,6 @@ public class QueryImpl<T> implements Query<T> {
         return this.listeners;
     }
 
-    public void setParameter(final String name, final Object val) throws HBqlException {
-        int cnt = this.getSelectStatement().setParameter(name, val);
-        if (cnt == 0)
-            throw new HBqlException("Parameter name " + name + " does not exist in "
-                                    + this.getSelectStatement().asString());
-    }
-
     public void clearListeners() {
         if (this.getListeners() != null)
             this.getListeners().clear();
@@ -104,26 +112,4 @@ public class QueryImpl<T> implements Query<T> {
     public HResultSet<T> getResults() throws HBqlException {
         return new HResultSetImpl<T>(this);
     }
-
-    /*
-    public List<T> getResultList() throws HBqlException {
-
-        final List<T> retval = Lists.newArrayList();
-
-        HResultSet<T> results = null;
-
-        try {
-            results = this.getResults();
-
-            for (T val : results)
-                retval.add(val);
-        }
-        finally {
-            if (results != null)
-                results.close();
-        }
-
-        return retval;
-    }
-    */
 }

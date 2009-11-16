@@ -24,8 +24,8 @@ import org.apache.expreval.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.QueryImpl;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
@@ -89,7 +89,7 @@ public class JdbcStatementImpl implements Statement {
         if (!JdbcUtil.isSelectStatement(statement))
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
-        final Query<HRecord> query = this.getHBqlConnection().newQuery((SelectStatement)statement);
+        final QueryImpl<HRecord> query = QueryImpl.newQuery(this.getHBqlConnection(), (SelectStatement)statement);
         this.setResultSet(new JdbcResultSetImpl(this, query.getResults()));
         return this.getResultSet();
     }

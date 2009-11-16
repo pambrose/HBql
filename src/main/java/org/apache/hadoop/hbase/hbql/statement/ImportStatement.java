@@ -25,8 +25,8 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
-import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.QueryImpl;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 
 import java.io.BufferedReader;
@@ -124,7 +124,7 @@ public class ImportStatement implements ConnectionStatement {
 
         selectStatement.validate(conn);
 
-        final Query<HRecord> query = conn.newQuery(selectStatement);
+        final QueryImpl<HRecord> query = QueryImpl.newQuery(conn, selectStatement);
         final HResultSet<HRecord> results = query.getResults();
 
         for (final HRecord rec : results) {

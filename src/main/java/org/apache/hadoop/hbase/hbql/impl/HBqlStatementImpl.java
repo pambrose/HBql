@@ -83,7 +83,7 @@ public class HBqlStatementImpl implements HStatement {
         if (!JdbcUtil.isSelectStatement(statement))
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
-        final QueryImpl<T> query = this.getHBqlConnection().newQuery((SelectStatement)statement, clazz);
+        final QueryImpl<T> query = QueryImpl.newQuery(this.getHBqlConnection(), (SelectStatement)statement, clazz);
         final HResultSetImpl<T> resultSetImpl = new HResultSetImpl<T>(query);
         this.setResultSet(resultSetImpl);
         return resultSetImpl;

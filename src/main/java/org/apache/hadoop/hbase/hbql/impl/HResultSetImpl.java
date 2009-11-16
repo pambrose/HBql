@@ -67,6 +67,14 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         return this.query;
     }
 
+    public void addQueryListener(QueryListener<T> listener) {
+        this.getQuery().addListener(listener);
+    }
+
+    public void clearQueryListeners() {
+        this.getQuery().clearListeners();
+    }
+
     private List<ResultScanner> getResultScannerList() {
         return this.resultScannerList;
     }
@@ -175,7 +183,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                 @SuppressWarnings("unchecked")
                 protected T fetchNextObject() throws HBqlException {
 
-                    final Mapping mapping = getQuery().getMapping();
+                    final Mapping mapping = getQuery().getSelectStatement().getMapping();
 
                     while (this.getCurrentResultIterator() != null || this.getRowRequestIterator().hasNext()) {
 
