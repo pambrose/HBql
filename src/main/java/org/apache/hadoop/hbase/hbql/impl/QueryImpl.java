@@ -102,10 +102,10 @@ public class QueryImpl<T> implements Query<T> {
     }
 
     public HResultSet<T> getResults() throws HBqlException {
-
         return new HResultSetImpl<T>(this);
     }
 
+    /*
     public List<T> getResultList() throws HBqlException {
 
         final List<T> retval = Lists.newArrayList();
@@ -125,4 +125,5 @@ public class QueryImpl<T> implements Query<T> {
 
         return retval;
     }
+    */
 }

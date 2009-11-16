@@ -36,5 +36,5 @@ public interface Query<T> {
 
     HResultSet<T> getResults() throws HBqlException;
 
-    List<T> getResultList() throws HBqlException;
+    // List<T> getResultList() throws HBqlException;
 }

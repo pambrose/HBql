@@ -25,9 +25,14 @@ import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
+import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.util.List;
 
@@ -97,7 +102,6 @@ public class RecordAllTypesTest extends TestSupport {
 
         return retval;
     }
-    /* PRA
 
     @Test
     public void simpleSelect() throws HBqlException {
@@ -106,10 +110,11 @@ public class RecordAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        Query<HRecord> recs = conn.newQuery("select * from alltypes");
+        HStatement stmt = conn.createStatement();
+        HResultSet<HRecord> recs = stmt.executeQuery("select * from alltypes");
 
         int reccnt = 0;
-        for (final HRecord rec : recs.getResults())
+        for (final HRecord rec : recs)
             assertTrue((new RecordAllTypes(rec)).equals(vals.get(reccnt++)));
 
         assertTrue(reccnt == cnt);
@@ -122,10 +127,11 @@ public class RecordAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        Query<HRecord> recs = conn.newQuery("select * from alltypes");
+        HStatement stmt = conn.createStatement();
+        HResultSet<HRecord> recs = stmt.executeQuery("select * from alltypes");
 
         int reccnt = 0;
-        for (final HRecord rec : recs.getResults())
+        for (final HRecord rec : recs)
             assertTrue((new RecordAllTypes(rec)).equals(vals.get(reccnt++)));
 
         assertTrue(reccnt == cnt);
@@ -138,15 +144,15 @@ public class RecordAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        Query<HRecord> recs = conn.newQuery("select * from alltypes WITH LIMIT :limit");
+        HPreparedStatement stmt = conn.prepareStatement("select * from alltypes WITH LIMIT :limit");
 
-        recs.setParameter("limit", cnt / 2);
+        stmt.setParameter("limit", cnt / 2);
+        HResultSet<HRecord> recs = stmt.executeQuery();
 
         int reccnt = 0;
-        for (final HRecord rec : recs.getResults())
+        for (final HRecord rec : recs)
             assertTrue((new RecordAllTypes(rec)).equals(vals.get(reccnt++)));
 
         assertTrue(reccnt == cnt / 2);
     }
-    */
 }

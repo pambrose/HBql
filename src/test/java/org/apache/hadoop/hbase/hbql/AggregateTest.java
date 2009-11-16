@@ -31,6 +31,7 @@ import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class AggregateTest extends TestSupport {
 
     static Random randomVal = new Random();
 
-    //@BeforeClass
+    @BeforeClass
     public static void initMethod() throws HBqlException {
 
         SchemaManager.execute("CREATE SCHEMA aggschema FOR TABLE aggtable"
@@ -143,8 +144,6 @@ public class AggregateTest extends TestSupport {
     @Test
     public void selectCount() throws HBqlException {
 
-        initMethod();
-
         final String query1 = "SELECT count() as cnt FROM aggschema";
         HStatement stmt = conn.createStatement();
         List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
@@ -154,13 +153,12 @@ public class AggregateTest extends TestSupport {
         assertTrue(cnt == val5List.size());
     }
 
-    /* PRA
     @Test
     public void selectMax() throws HBqlException {
 
         final String query1 = "SELECT max(val5) as max FROM aggschema";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        HStatement stmt = conn.createStatement();
+        List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 1);
         HRecord rec = recList1.get(0);
         int max = (Integer)rec.getCurrentValue("max");
@@ -172,8 +170,8 @@ public class AggregateTest extends TestSupport {
     public void selectMin() throws HBqlException {
 
         final String query1 = "SELECT min(val5) as min, min(val5+1) as min2 FROM aggschema";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        HStatement stmt = conn.createStatement();
+        List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 1);
         HRecord rec = recList1.get(0);
         int min = (Integer)rec.getCurrentValue("min");
@@ -187,8 +185,8 @@ public class AggregateTest extends TestSupport {
     public void selectAll() throws HBqlException {
 
         final String query1 = "SELECT count() as cnt, max(val5) as max, min(val5) as min, min(val5+1) as min2 FROM aggschema";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        HStatement stmt = conn.createStatement();
+        List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 1);
         HRecord rec = recList1.get(0);
         long cnt = (Long)rec.getCurrentValue("cnt");
@@ -201,5 +199,4 @@ public class AggregateTest extends TestSupport {
         assertTrue(min == val5min);
         assertTrue(min2 == val5min + 1);
     }
-    */
 }
