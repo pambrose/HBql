@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
-import org.apache.hadoop.hbase.hbql.client.Query;
+import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.Schema;
 import org.apache.hadoop.hbase.hbql.client.Util;
 
@@ -120,13 +120,6 @@ public class AnnotationExample {
 
         HConnection conn = ConnectionManager.newConnection();
 
-        /*
-        if (conn.tableExists("TestObject")) {
-            System.out.println(conn.execute("disable table TestObject"));
-            System.out.println(conn.execute("drop table TestObject"));
-        }
-        */
-
         if (!conn.tableExists("TestObject")) {
             System.out.println(conn.execute("create table with schema TestObject"));
 
@@ -146,8 +139,8 @@ public class AnnotationExample {
                               //+ "SERVER FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4 "
                               + "CLIENT FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4";
 
-        Query<TestObject> q2 = conn.newQuery(query2);
-        HResultSet<TestObject> results2 = q2.getResults();
+        HStatement stmt = conn.createStatement();
+        HResultSet<TestObject> results2 = stmt.executeQuery(query2, TestObject.class);
 
         for (TestObject val2 : results2) {
             System.out.println("Current Values: " + val2.keyval + " - " + val2.author + " - " + val2.title);

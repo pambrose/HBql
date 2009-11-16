@@ -26,11 +26,9 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
-import org.junit.Test;
 
 import java.util.Set;
 
@@ -260,6 +258,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
+    /* PRA
     public void selectAll() throws HBqlException {
 
         // START SNIPPET: select1
@@ -408,4 +407,5 @@ public class ExamplesTest extends TestSupport {
 
         // END SNIPPET: annotatedExample2
     }
+    */
 }

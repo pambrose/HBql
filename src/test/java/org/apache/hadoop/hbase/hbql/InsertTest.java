@@ -26,20 +26,13 @@ import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
-import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.HResultSet;
-import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.client.Util;
-import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.Random;
 
 public class InsertTest extends TestSupport {
@@ -135,7 +128,7 @@ public class InsertTest extends TestSupport {
         }
     }
 
-
+    /* PRA
     @Test
     public void selectExpressions() throws HBqlException {
 
@@ -636,4 +629,5 @@ public class InsertTest extends TestSupport {
             assertTrue(val1.equals("test default"));
         }
     }
+    */
 }

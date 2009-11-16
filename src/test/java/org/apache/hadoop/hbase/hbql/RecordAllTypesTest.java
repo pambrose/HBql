@@ -25,12 +25,9 @@ import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import java.util.List;
 
@@ -100,7 +97,7 @@ public class RecordAllTypesTest extends TestSupport {
 
         return retval;
     }
-
+    /* PRA
 
     @Test
     public void simpleSelect() throws HBqlException {
@@ -151,4 +148,5 @@ public class RecordAllTypesTest extends TestSupport {
 
         assertTrue(reccnt == cnt / 2);
     }
+    */
 }

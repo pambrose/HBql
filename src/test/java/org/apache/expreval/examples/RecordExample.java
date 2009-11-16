@@ -20,18 +20,10 @@
 
 package org.apache.expreval.examples;
 
-import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.HResultSet;
-import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.client.Util;
-
-import java.util.Date;
-import java.util.Map;
 
 public class RecordExample {
 
@@ -54,6 +46,7 @@ public class RecordExample {
         // System.out.println(conn.execute("enable table testobjects"));
         // System.out.println(conn.execute("drop table testobjects"));
 
+        /* PRA
         System.out.println(conn.execute("LIST TABLES"));
 
         if (!conn.tableExists("testobjects")) {
@@ -108,5 +101,6 @@ public class RecordExample {
             }
         }
         results1.close();
+        */
     }
 }

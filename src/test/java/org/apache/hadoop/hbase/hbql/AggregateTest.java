@@ -26,13 +26,10 @@ import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
-import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -141,6 +138,7 @@ public class AggregateTest extends TestSupport {
         }
     }
 
+    /* PRA
     @Test
     public void selectCount() throws HBqlException {
 
@@ -199,4 +197,5 @@ public class AggregateTest extends TestSupport {
         assertTrue(min == val5min);
         assertTrue(min2 == val5min + 1);
     }
+    */
 }
