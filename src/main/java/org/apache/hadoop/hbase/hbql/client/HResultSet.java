@@ -20,13 +20,9 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import java.util.Iterator;
-
 public interface HResultSet<T> extends Iterable<T> {
 
     void close();
-
-    Iterator<T> iterator();
 
     void addQueryListener(QueryListener<T> listener);
 
