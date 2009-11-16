@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.Util;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
-import org.apache.hadoop.hbase.hbql.statement.ParameterSupport;
+import org.apache.hadoop.hbase.hbql.statement.ParameterStatement;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -60,8 +60,8 @@ public class PreparedStatementImpl extends StatementImpl implements PreparedStat
 
         this.statement = Util.parseJdbcStatement(sql);
 
-        if ((this.getStatement() instanceof ParameterSupport)) {
-            final ParameterSupport paramStmt = (ParameterSupport)this.getStatement();
+        if ((this.getStatement() instanceof ParameterStatement)) {
+            final ParameterStatement paramStmt = (ParameterStatement)this.getStatement();
             // Need to call this here to enable setParameters
             paramStmt.validate(this.getHBqlConnection());
         }
@@ -92,12 +92,7 @@ public class PreparedStatementImpl extends StatementImpl implements PreparedStat
     }
 
     private void setParameter(final int i, final Object obj) throws HBqlException {
-        if (!(this.getStatement() instanceof ParameterSupport)) {
-            throw new HBqlException(this.getStatement().getClass().getSimpleName()
-                                    + " statements do not support parameters");
-        }
-
-        final ParameterSupport paramStmt = (ParameterSupport)this.getStatement();
+        final ParameterStatement paramStmt = Util.getParameterStatement(this.getStatement());
         final NamedParameter param = paramStmt.getNamedParameters().getParameter(i - 1);
         param.setParameter(obj);
     }
@@ -134,8 +129,8 @@ public class PreparedStatementImpl extends StatementImpl implements PreparedStat
         this.setParameter(i, v);
     }
 
-    public void setBigDecimal(final int i, final BigDecimal bigDecimal) throws HBqlException {
-        this.setParameter(i, bigDecimal);
+    public void setBigDecimal(final int i, final BigDecimal bigDecimal) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setString(final int i, final String s) throws HBqlException {
@@ -175,12 +170,12 @@ public class PreparedStatementImpl extends StatementImpl implements PreparedStat
     }
 
     public void clearParameters() throws HBqlException {
-        if (!(this.getStatement() instanceof ParameterSupport)) {
+        if (!(this.getStatement() instanceof ParameterStatement)) {
             throw new HBqlException(this.getStatement().getClass().getSimpleName()
                                     + " statements do not support parameters");
         }
 
-        final ParameterSupport paramStmt = (ParameterSupport)this.getStatement();
+        final ParameterStatement paramStmt = (ParameterStatement)this.getStatement();
         paramStmt.reset();
     }
 

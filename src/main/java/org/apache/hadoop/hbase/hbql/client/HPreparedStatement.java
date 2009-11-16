@@ -20,12 +20,9 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface HPreparedStatement extends HStatement {
-
-    int setParameter(String name, Object val) throws HBqlException;
 
     ExecutionResults execute() throws HBqlException;
 
@@ -37,5 +34,9 @@ public interface HPreparedStatement extends HStatement {
 
     <T> List<T> executeQueryAndFetch(final Class clazz) throws HBqlException;
 
-    ExecutionResults executeUpdate() throws SQLException;
+    ExecutionResults executeUpdate() throws HBqlException;
+
+    int setParameter(String name, Object val) throws HBqlException;
+
+    void setParameter(final int i, final Object obj) throws HBqlException;
 }

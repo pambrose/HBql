@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public interface ParameterSupport {
+public interface ParameterStatement {
 
     int setParameter(final String name, final Object val) throws HBqlException;
 

@@ -20,13 +20,14 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
-import org.apache.hadoop.hbase.hbql.statement.ParameterSupport;
+import org.apache.hadoop.hbase.hbql.statement.ParameterStatement;
 
 import java.util.List;
 
@@ -41,8 +42,8 @@ public class HPreparedStatementImpl extends HStatementImpl implements HPreparedS
 
         this.statement = Util.parseJdbcStatement(sql);
 
-        if ((this.getStatement() instanceof ParameterSupport)) {
-            final ParameterSupport paramStmt = (ParameterSupport)this.getStatement();
+        if ((this.getStatement() instanceof ParameterStatement)) {
+            final ParameterStatement paramStmt = (ParameterStatement)this.getStatement();
             // Need to call this here to enable setParameters
             paramStmt.validate(this.getHBqlConnection());
         }
@@ -77,18 +78,13 @@ public class HPreparedStatementImpl extends HStatementImpl implements HPreparedS
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
-
-        if (!(this.getStatement() instanceof ParameterSupport)) {
-            throw new HBqlException(this.getStatement().getClass().getSimpleName()
-                                    + " statements do not support parameters");
-        }
-
-        final ParameterSupport paramStmt = (ParameterSupport)this.getStatement();
-
+        final ParameterStatement paramStmt = Util.getParameterStatement(this.getStatement());
         return paramStmt.setParameter(name, val);
     }
 
-    public void validate(final HConnectionImpl connection) throws HBqlException {
-
+    public void setParameter(final int i, final Object obj) throws HBqlException {
+        final ParameterStatement paramStmt = Util.getParameterStatement(this.getStatement());
+        final NamedParameter param = paramStmt.getNamedParameters().getParameter(i - 1);
+        param.setParameter(obj);
     }
 }

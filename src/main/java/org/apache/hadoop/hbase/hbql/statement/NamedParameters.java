@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.expreval.util.Lists;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -63,8 +64,13 @@ public class NamedParameters implements Serializable {
         }
     }
 
-    public NamedParameter getParameter(final int i) {
-        return this.getParameterList().get(i);
+    public NamedParameter getParameter(final int i) throws HBqlException {
+        try {
+            return this.getParameterList().get(i);
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
+            throw new HBqlException("Invalid index: " + i);
+        }
     }
 
     public void clearParameters() {

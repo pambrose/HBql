@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.hbql.statement.DeleteStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.InsertStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
+import org.apache.hadoop.hbase.hbql.statement.ParameterStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
 
@@ -65,5 +66,14 @@ public class Util {
 
     public static boolean isNonConectionStatemet(final HBqlStatement stmt) {
         return stmt instanceof NonConnectionStatement;
+    }
+
+    public static ParameterStatement getParameterStatement(final HBqlStatement statement) throws HBqlException {
+        if (!(statement instanceof ParameterStatement)) {
+            throw new HBqlException(statement.getClass().getSimpleName()
+                                    + " statements do not support parameters");
+        }
+
+        return (ParameterStatement)statement;
     }
 }

@@ -32,7 +32,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 import java.util.List;
 import java.util.Set;
 
-public class SelectStatement extends SchemaContext implements ParameterSupport {
+public class SelectStatement extends SchemaContext implements ParameterStatement {
 
     private final List<SelectElement> selectElementList;
     private final List<ColumnAttrib> selectColumnAttribList = Lists.newArrayList();

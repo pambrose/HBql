@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class DeleteStatement extends SchemaContext implements ParameterSupport, ConnectionStatement {
+public class DeleteStatement extends SchemaContext implements ParameterStatement, ConnectionStatement {
 
     private transient HConnectionImpl connection = null;
     private final WithArgs withArgs;

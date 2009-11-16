@@ -12,6 +12,8 @@ JDBC Support
     JDBC driver.  Specifically, value versions and columns that end up in the family default map will
     be made available.
 
-    * A simple examle can be seen {{{./examples/jdbc.html}here}}.
+    * HBql supports both named parameters and parameters indicated with "?" character.
+
+    * A simple exapmle can be seen {{{./examples/jdbc.html}here}}.
     
 
