@@ -412,7 +412,7 @@ fragment
 DIGIT	: '0'..'9'; 
 
 fragment
-CHAR 	: 'a'..'z' | 'A'..'Z'; 
+CHAR 	: 'a'..'z' | 'A'..'Z' | '_' | '-'; 
 	 
 QSTRING		
 @init {final StringBuilder sbuf = new StringBuilder();}	

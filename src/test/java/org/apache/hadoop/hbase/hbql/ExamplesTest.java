@@ -26,9 +26,11 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
+import org.junit.Test;
 
 import java.util.Set;
 
@@ -258,7 +260,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    /* PRA
+    @Test
     public void selectAll() throws HBqlException {
 
         // START SNIPPET: select1
@@ -277,14 +279,16 @@ public class ExamplesTest extends TestSupport {
                               + "f3:* ALIAS f3default "
                               + ")");
 
-        Query<HRecord> q1 = conn.newQuery("SELECT keyval, f1:val1, val5 FROM tab1 "
-                                          + "WITH KEYS FIRST TO :endkey "
-                                          + "VERSIONS 4 "
-                                          + "CLIENT FILTER WHERE val6 > 4");
+        HPreparedStatement pstmt = conn.prepareStatement("SELECT keyval, f1:val1, val5 FROM tab1 "
+                                                         + "WITH KEYS FIRST TO :endkey "
+                                                         + "VERSIONS 4 "
+                                                         + "CLIENT FILTER WHERE val6 > 4");
 
-        q1.setParameter("endkey", Util.getZeroPaddedNumber(34, 10));
+        pstmt.setParameter("endkey", Util.getZeroPaddedNumber(34, 10));
 
-        for (HRecord record : q1.getResults()) {
+        HResultSet<HRecord> records = pstmt.executeQuery();
+
+        for (HRecord record : records) {
             System.out.println("Key = " + record.getCurrentValue("keyval"));
         }
 
@@ -338,9 +342,10 @@ public class ExamplesTest extends TestSupport {
         conn.apply(batch);
 
         // Query the records just added
-        Query<HRecord> query = conn.newQuery("SELECT * FROM demo1");
 
-        for (HRecord rec : query.getResults()) {
+        HResultSet<HRecord> records = conn.executeQuery("SELECT * FROM demo1");
+
+        for (HRecord rec : records) {
             System.out.println("Key = " + rec.getCurrentValue("keyval"));
             System.out.println("f1:val1 = " + rec.getCurrentValue("val1"));
             System.out.println("f1:val2 = " + rec.getCurrentValue("f1:val2"));
@@ -396,9 +401,9 @@ public class ExamplesTest extends TestSupport {
         conn.apply(batch);
 
         // Query the records just added
-        Query<AnnotatedExample> query = conn.newQuery("SELECT * FROM demo2", AnnotatedExample.class);
+        HResultSet<AnnotatedExample> records = conn.executeQuery("SELECT * FROM demo2", AnnotatedExample.class);
 
-        for (AnnotatedExample rec : query.getResults()) {
+        for (AnnotatedExample rec : records) {
             System.out.println("Key = " + rec.keyval);
             System.out.println("f1:val1 = " + rec.val1);
             System.out.println("f1:val2 = " + rec.val2);
@@ -407,5 +412,4 @@ public class ExamplesTest extends TestSupport {
 
         // END SNIPPET: annotatedExample2
     }
-    */
 }

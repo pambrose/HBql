@@ -102,7 +102,7 @@ public class HBqlConnectionImpl implements HConnection {
             return new HTable(this.getConfig(), tableName);
         }
         catch (IOException e) {
-            throw new HBqlException(e);
+            throw new HBqlException("Invalid table name: " + tableName);
         }
     }
 

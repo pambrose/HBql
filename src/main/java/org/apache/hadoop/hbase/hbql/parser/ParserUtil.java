@@ -152,6 +152,9 @@ public class ParserUtil {
         catch (RecognitionException e) {
             throw new ParseException(e, sql);
         }
+        catch (LexerRecognitionException e) {
+            throw new ParseException(e.getRecognitionExecption(), sql);
+        }
     }
 
     public static NonConnectionStatement parseSchemaManagerStatement(final String sql) throws HBqlException {
