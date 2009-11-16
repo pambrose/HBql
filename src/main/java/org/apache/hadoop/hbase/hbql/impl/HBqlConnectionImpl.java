@@ -32,6 +32,8 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
@@ -40,6 +42,8 @@ import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 public class HBqlConnectionImpl implements HConnection {
@@ -174,13 +178,6 @@ public class HBqlConnectionImpl implements HConnection {
         }
     }
 
-    public ExecutionResults execute(final String str) throws HBqlException {
-        //  final ConnectionStatement statement = ParserUtil.parseConnectionStatement(str);
-        //  return statement.execute(this);
-        final HStatement stmt = this.createStatement();
-        return stmt.execute(str);
-    }
-
     public HStatement createStatement() {
         return new HBqlStatementImpl(this);
     }
@@ -209,5 +206,35 @@ public class HBqlConnectionImpl implements HConnection {
 
     public boolean isClosed() throws HBqlException {
         return this.closed;
+    }
+
+    public ExecutionResults execute(final String sql) throws HBqlException {
+        final HStatement stmt = this.createStatement();
+        return stmt.execute(sql);
+    }
+
+    public HResultSet<HRecord> executeQuery(final String sql) throws HBqlException {
+        final HStatement stmt = this.createStatement();
+        return stmt.executeQuery(sql);
+    }
+
+    public <T> HResultSet<T> executeQuery(final String sql, final Class clazz) throws HBqlException {
+        final HStatement stmt = this.createStatement();
+        return stmt.executeQuery(sql, clazz);
+    }
+
+    public List<HRecord> executeQueryAndFetch(final String sql) throws HBqlException {
+        final HStatement stmt = this.createStatement();
+        return stmt.executeQueryAndFetch(sql);
+    }
+
+    public <T> List<T> executeQueryAndFetch(final String sql, final Class clazz) throws HBqlException {
+        final HStatement stmt = this.createStatement();
+        return stmt.executeQueryAndFetch(sql, clazz);
+    }
+
+    public ExecutionResults executeUpdate(final String sql) throws SQLException {
+        final HStatement stmt = this.createStatement();
+        return stmt.executeUpdate(sql);
     }
 }

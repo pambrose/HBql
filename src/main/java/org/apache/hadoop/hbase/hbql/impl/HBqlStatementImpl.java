@@ -128,7 +128,7 @@ public class HBqlStatementImpl implements HStatement {
     }
 
     public <T> HResultSet<T> executeQuery(final String sql, final Class clazz) throws HBqlException {
-        return this.executeQuery(JdbcUtil.parseJdbcStatement(sql), null);
+        return this.executeQuery(JdbcUtil.parseJdbcStatement(sql), clazz);
     }
 
     public List<HRecord> executeQueryAndFetch(final String sql) throws HBqlException {

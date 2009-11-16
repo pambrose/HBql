@@ -22,6 +22,8 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 public interface HConnection {
@@ -29,12 +31,6 @@ public interface HConnection {
     String getName();
 
     HBaseConfiguration getConfig();
-
-    //<T> Query<T> newQuery(String query) throws HBqlException;
-
-    //<T> Query<T> newQuery(String query, Class clazz) throws HBqlException;
-
-    ExecutionResults execute(String str) throws HBqlException;
 
     HStatement createStatement();
 
@@ -61,4 +57,16 @@ public interface HConnection {
     void close() throws HBqlException;
 
     boolean isClosed() throws HBqlException;
+
+    ExecutionResults execute(String sql) throws HBqlException;
+
+    HResultSet<HRecord> executeQuery(String sql) throws HBqlException;
+
+    <T> HResultSet<T> executeQuery(String sql, Class clazz) throws HBqlException;
+
+    List<HRecord> executeQueryAndFetch(String sql) throws HBqlException;
+
+    <T> List<T> executeQueryAndFetch(String sql, Class clazz) throws HBqlException;
+
+    ExecutionResults executeUpdate(String sql) throws SQLException;
 }

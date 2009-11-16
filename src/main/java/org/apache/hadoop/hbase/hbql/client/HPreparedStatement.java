@@ -20,8 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
-
 import java.sql.SQLException;
 import java.util.List;
 
@@ -40,6 +38,4 @@ public interface HPreparedStatement extends HStatement {
     <T> List<T> executeQueryAndFetch(final Class clazz) throws HBqlException;
 
     ExecutionResults executeUpdate() throws SQLException;
-
-    void validate(HBqlConnectionImpl connection) throws HBqlException;
 }

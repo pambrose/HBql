@@ -21,13 +21,19 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
+import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.util.Random;
 
@@ -81,14 +87,13 @@ public class InsertWithSelectTest extends TestSupport {
             stmt.execute();
         }
     }
-    /* PRA
+
     private static void showValues() throws HBqlException {
 
         final String query1 = "SELECT keyval, val1, val2, val3 FROM tab3";
 
-        Query<HRecord> q1 = conn.newQuery(query1);
-
-        HResultSet<HRecord> results = q1.getResults();
+        HStatement stmt = conn.createStatement();
+        HResultSet<HRecord> results = stmt.executeQuery(query1);
 
         int rec_cnt = 0;
         for (HRecord rec : results) {
@@ -127,6 +132,7 @@ public class InsertWithSelectTest extends TestSupport {
 
         showValues();
     }
+
 
     private Class<? extends Exception> execute(final String str) {
 
@@ -185,5 +191,4 @@ public class InsertWithSelectTest extends TestSupport {
                               "values (ZEROPAD(12, 5), 'aaa', DEFAULT) ");
         assertTrue(caught != null && caught == HBqlException.class);
     }
-    */
 }
