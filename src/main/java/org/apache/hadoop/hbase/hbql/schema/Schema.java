@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
-import org.apache.hadoop.hbase.hbql.parser.HBqlUtil;
+import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 
 import java.io.Serializable;
@@ -154,7 +154,7 @@ public abstract class Schema implements Serializable {
         ExpressionTree expressionTree = map.get(str);
 
         if (expressionTree == null) {
-            final HBqlParser parser = HBqlUtil.newHBqlParser(str);
+            final HBqlParser parser = ParserUtil.newHBqlParser(str);
             expressionTree = parser.nodescWhereExpr();
             expressionTree.setSchemaContext(schemaContext);
             this.addToExpressionTreeCache(str, expressionTree);

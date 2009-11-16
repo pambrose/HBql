@@ -24,10 +24,10 @@ import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.client.Util;
@@ -71,9 +71,9 @@ public class InsertWithSelectTest extends TestSupport {
     private static void insertRecords(final HConnection conn,
                                       final int cnt) throws HBqlException {
 
-        PreparedStatement stmt = conn.prepare("insert into tab3 " +
-                                              "(keyval, val1, val2, val3) values " +
-                                              "(:key, :val1, :val2, DEFAULT)");
+        HPreparedStatement stmt = conn.prepareStatement("insert into tab3 " +
+                                                        "(keyval, val1, val2, val3) values " +
+                                                        "(:key, :val1, :val2, DEFAULT)");
 
         for (int i = 0; i < cnt; i++) {
 
@@ -94,7 +94,7 @@ public class InsertWithSelectTest extends TestSupport {
 
         Query<HRecord> q1 = conn.newQuery(query1);
 
-        Results<HRecord> results = q1.getResults();
+        HResultSet<HRecord> results = q1.getResults();
 
         int rec_cnt = 0;
         for (HRecord rec : results) {
@@ -119,7 +119,7 @@ public class InsertWithSelectTest extends TestSupport {
                           "select keyval, val1+val1, val2+1 FROM tab3 ";
         showValues();
 
-        PreparedStatement stmt = conn.prepare(q1);
+        HPreparedStatement stmt = conn.prepareStatement(q1);
 
         ExecutionResults executionResults = stmt.execute();
 

@@ -27,8 +27,7 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
@@ -37,9 +36,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class DeleteStatement extends SchemaContext implements PreparedStatement, ParameterSupport {
+public class DeleteStatement extends SchemaContext implements ParameterSupport {
 
-    private transient HConnectionImpl connection = null;
+    private transient HBqlConnectionImpl connection = null;
     private final WithArgs withArgs;
     private boolean validated = false;
     private final NamedParameters namedParameters = new NamedParameters();
@@ -56,7 +55,7 @@ public class DeleteStatement extends SchemaContext implements PreparedStatement,
         return this.withArgs;
     }
 
-    private HConnectionImpl getConnection() {
+    private HBqlConnectionImpl getConnection() {
         return this.connection;
     }
 
@@ -68,7 +67,7 @@ public class DeleteStatement extends SchemaContext implements PreparedStatement,
         return this.validated;
     }
 
-    public void validate(final HConnectionImpl connection) throws HBqlException {
+    public void validate(final HBqlConnectionImpl connection) throws HBqlException {
 
         if (this.isValidated())
             return;
@@ -88,7 +87,7 @@ public class DeleteStatement extends SchemaContext implements PreparedStatement,
         return this.execute(this.getConnection());
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    public ExecutionResults execute(final HBqlConnectionImpl connection) throws HBqlException {
 
         this.validate(connection);
 

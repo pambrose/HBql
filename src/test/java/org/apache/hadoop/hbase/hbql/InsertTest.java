@@ -25,10 +25,10 @@ import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.client.Util;
@@ -93,9 +93,9 @@ public class InsertTest extends TestSupport {
                                      final int cnt,
                                      final String msg) throws HBqlException {
 
-        PreparedStatement stmt = conn.prepare("insert into tab2 " +
-                                              "(keyval, val1, val2, val5, val6, f3mapval1, f3mapval2, val8) values " +
-                                              "(:key, :val1, :val2, :val5, :val6, :f3mapval1, :f3mapval2, :val8)");
+        HPreparedStatement stmt = conn.prepareStatement("insert into tab2 " +
+                                                        "(keyval, val1, val2, val5, val6, f3mapval1, f3mapval2, val8) values " +
+                                                        "(:key, :val1, :val2, :val5, :val6, :f3mapval1, :f3mapval2, :val8)");
 
         for (int i = 0; i < cnt; i++) {
 
@@ -143,7 +143,7 @@ public class InsertTest extends TestSupport {
 
         Query<HRecord> q1 = conn.newQuery(query1);
 
-        Results<HRecord> results1 = q1.getResults();
+        HResultSet<HRecord> results1 = q1.getResults();
 
         List<String> testKeyVals = Lists.newArrayList();
         List<String> testVal1Vals = Lists.newArrayList();

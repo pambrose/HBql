@@ -24,9 +24,9 @@ import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
-import org.apache.hadoop.hbase.hbql.client.Results;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
@@ -38,12 +38,12 @@ import java.util.Set;
 
 public class QueryImpl<T> implements Query<T> {
 
-    private final HConnectionImpl connection;
+    private final HBqlConnectionImpl connection;
     private final SelectStatement selectStatement;
 
     private List<QueryListener<T>> listeners = null;
 
-    public QueryImpl(final HConnectionImpl connection,
+    public QueryImpl(final HBqlConnectionImpl connection,
                      final SelectStatement selectStatement,
                      final Mapping mapping) throws HBqlException {
         this.connection = connection;
@@ -62,7 +62,7 @@ public class QueryImpl<T> implements Query<T> {
         this.getListeners().add(listener);
     }
 
-    public HConnectionImpl getHConnection() {
+    public HBqlConnectionImpl getHConnection() {
         return this.connection;
     }
 
@@ -102,7 +102,7 @@ public class QueryImpl<T> implements Query<T> {
             this.getListeners().clear();
     }
 
-    public Results<T> getResults() throws HBqlException {
+    public HResultSet<T> getResults() throws HBqlException {
 
         // Set it once per evaluation
         DateLiteral.resetNow();
@@ -114,14 +114,14 @@ public class QueryImpl<T> implements Query<T> {
 
         this.getSelectStatement().determineIfAggregateQuery();
 
-        return new ResultsImpl<T>(this);
+        return new HResultSetImpl<T>(this);
     }
 
     public List<T> getResultList() throws HBqlException {
 
         final List<T> retval = Lists.newArrayList();
 
-        Results<T> results = null;
+        HResultSet<T> results = null;
 
         try {
             results = this.getResults();

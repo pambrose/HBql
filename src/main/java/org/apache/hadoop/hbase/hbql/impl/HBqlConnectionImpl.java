@@ -31,9 +31,9 @@ import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
-import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.parser.HBqlUtil;
+import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
+import org.apache.hadoop.hbase.hbql.client.HStatement;
+import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
@@ -43,33 +43,38 @@ import org.apache.hadoop.hbase.util.Bytes;
 import java.io.IOException;
 import java.util.Set;
 
-public class HConnectionImpl implements HConnection {
+public class HBqlConnectionImpl implements HConnection {
 
     private final HBaseConfiguration config;
     private final String name;
     private boolean closed = false;
 
-    public HConnectionImpl(final String name, final HBaseConfiguration config) {
+    public HBqlConnectionImpl(final String name, final HBaseConfiguration config) {
         this.name = name;
         this.config = (config == null) ? new HBaseConfiguration() : config;
     }
 
-    public <T> Query<T> newQuery(final SelectStatement selectStatement) throws HBqlException {
+    public <T> QueryImpl<T> newQuery(final String sql) throws HBqlException {
+        return newQuery(sql, null);
+    }
+
+    public <T> QueryImpl<T> newQuery(final String sql, final Class clazz) throws HBqlException {
+        return this.newQuery(ParserUtil.parseSelectStatement(sql), clazz);
+    }
+
+    public <T> QueryImpl<T> newQuery(final SelectStatement selectStatement) throws HBqlException {
         return new QueryImpl<T>(this, selectStatement, null);
     }
 
-    public <T> Query<T> newQuery(final String sql) throws HBqlException {
-        return new QueryImpl<T>(this, HBqlUtil.parseSelectStatement(sql), null);
-    }
+    public <T> QueryImpl<T> newQuery(final SelectStatement selectStatement, final Class clazz) throws HBqlException {
+        Mapping mapping = null;
+        if (clazz != null) {
+            mapping = AnnotationMapping.getAnnotationMapping(clazz);
 
-    public <T> Query<T> newQuery(final String sql, final Class clazz) throws HBqlException {
-
-        final Mapping mapping = AnnotationMapping.getAnnotationMapping(clazz);
-
-        if (mapping == null)
-            throw new HBqlException("Unknown class " + clazz.getName());
-
-        return new QueryImpl<T>(this, HBqlUtil.parseSelectStatement(sql), mapping);
+            if (mapping == null)
+                throw new HBqlException("Unknown class " + clazz.getName());
+        }
+        return new QueryImpl<T>(this, selectStatement, mapping);
     }
 
     public String getName() {
@@ -171,16 +176,16 @@ public class HConnectionImpl implements HConnection {
     }
 
     public ExecutionResults execute(final String str) throws HBqlException {
-        final ConnectionStatement statement = HBqlUtil.parseConnectionStatement(str);
+        final ConnectionStatement statement = ParserUtil.parseConnectionStatement(str);
         return statement.execute(this);
     }
 
-    public PreparedStatement prepare(final String str) throws HBqlException {
-        final PreparedStatement stmt = HBqlUtil.parsePreparedStatement(str);
+    public HStatement createStatement() {
+        return new HBqlStatementImpl(this);
+    }
 
-        // Need to call this here to enable setParameters
-        stmt.validate(this);
-        return stmt;
+    public HPreparedStatement prepareStatement(final String sql) throws HBqlException {
+        return new HBqlPreparedStatementImpl(this, sql);
     }
 
     public void apply(final Batch batch) throws HBqlException {

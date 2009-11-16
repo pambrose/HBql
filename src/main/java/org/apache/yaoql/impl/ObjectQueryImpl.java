@@ -23,7 +23,7 @@ package org.apache.yaoql.impl;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.parser.HBqlUtil;
+import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 import org.apache.yaoql.client.ObjectQuery;
@@ -74,7 +74,7 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
         final Object obj = objects.iterator().next();
         final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
         final SchemaContext schemaContext = new SimpleSchemaContext(schema);
-        final ExpressionTree expressionTree = HBqlUtil.parseWhereExpression(this.getQuery(), schemaContext);
+        final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(this.getQuery(), schemaContext);
         this.applyParameters(expressionTree);
         return expressionTree;
     }

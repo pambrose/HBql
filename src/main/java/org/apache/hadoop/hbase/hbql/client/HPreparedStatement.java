@@ -18,11 +18,28 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.impl;
+package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
 
-public interface BatchAction {
+import java.sql.SQLException;
+import java.util.List;
 
-    void apply(org.apache.hadoop.hbase.client.HTable table) throws HBqlException;
+public interface HPreparedStatement extends HStatement {
+
+    int setParameter(String name, Object val) throws HBqlException;
+
+    ExecutionResults execute() throws HBqlException;
+
+    HResultSet<HRecord> executeQuery() throws HBqlException;
+
+    <T> HResultSet<T> executeQuery(final Class clazz) throws HBqlException;
+
+    List<HRecord> executeQueryAndFetch() throws HBqlException;
+
+    <T> List<T> executeQueryAndFetch(final Class clazz) throws HBqlException;
+
+    ExecutionResults executeUpdate() throws SQLException;
+
+    void validate(HBqlConnectionImpl connection) throws HBqlException;
 }

@@ -21,7 +21,7 @@
 package org.apache.hadoop.hbase.jdbc;
 
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.Results;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 
 import java.io.InputStream;
@@ -49,18 +49,18 @@ import java.util.Map;
 
 public class JdbcResultSetImpl implements ResultSet {
 
-    final Results<HRecord> results;
+    final HResultSet<HRecord> results;
     private Iterator<HRecord> resultsIterator;
     private final JdbcStatementImpl statement;
     private RecordImpl currentRecord = null;
 
-    public JdbcResultSetImpl(final JdbcStatementImpl statement, final Results<HRecord> results) {
+    public JdbcResultSetImpl(final JdbcStatementImpl statement, final HResultSet<HRecord> results) {
         this.statement = statement;
         this.results = results;
         this.resultsIterator = results.iterator();
     }
 
-    private Results<HRecord> getResults() {
+    private HResultSet<HRecord> getResults() {
         return this.results;
     }
 

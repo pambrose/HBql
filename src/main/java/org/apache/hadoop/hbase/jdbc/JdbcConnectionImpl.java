@@ -21,7 +21,7 @@
 package org.apache.hadoop.hbase.jdbc;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
 
 import java.sql.Array;
 import java.sql.Blob;
@@ -44,22 +44,22 @@ import java.util.Properties;
 
 public class JdbcConnectionImpl implements Connection {
 
-    private final HConnectionImpl hbqlConnection;
+    private final HBqlConnectionImpl hbqlConnection;
 
     public JdbcConnectionImpl(final String name, final HBaseConfiguration config) {
-        this.hbqlConnection = new HConnectionImpl(name, config);
+        this.hbqlConnection = new HBqlConnectionImpl(name, config);
     }
 
-    private HConnectionImpl getHbqlConnection() {
+    private HBqlConnectionImpl getHBqlConnection() {
         return this.hbqlConnection;
     }
 
     public Statement createStatement() throws SQLException {
-        return new JdbcStatementImpl(this, this.getHbqlConnection());
+        return new JdbcStatementImpl(this, this.getHBqlConnection());
     }
 
     public PreparedStatement prepareStatement(final String sql) throws SQLException {
-        return new JdbcPreparedStatementImpl(this, this.getHbqlConnection(), sql);
+        return new JdbcPreparedStatementImpl(this, this.getHBqlConnection(), sql);
     }
 
     public CallableStatement prepareCall(final String s) throws SQLException {
@@ -87,11 +87,11 @@ public class JdbcConnectionImpl implements Connection {
     }
 
     public void close() throws SQLException {
-        this.getHbqlConnection().close();
+        this.getHBqlConnection().close();
     }
 
     public boolean isClosed() throws SQLException {
-        return this.getHbqlConnection().isClosed();
+        return this.getHBqlConnection().isClosed();
     }
 
     public DatabaseMetaData getMetaData() throws SQLException {

@@ -24,8 +24,8 @@ import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.Query;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
@@ -194,8 +194,8 @@ public class ExamplesTest extends TestSupport {
                               + ")");
 
         HConnection conn = ConnectionManager.newConnection();
-        PreparedStatement ps = conn.prepare("INSERT INTO foo_schema (keyval, val1, val2) "
-                                            + "VALUES (:key, :val1, DEFAULT)");
+        HPreparedStatement ps = conn.prepareStatement("INSERT INTO foo_schema (keyval, val1, val2) "
+                                                      + "VALUES (:key, :val1, DEFAULT)");
 
         ps.setParameter("key", Util.getZeroPaddedNumber(2, 10));
         ps.setParameter("val1", 123);
@@ -316,9 +316,9 @@ public class ExamplesTest extends TestSupport {
             System.out.println(conn.execute("DELETE FROM demo1"));
 
         // Add some records using an INSERT stmt
-        PreparedStatement stmt = conn.prepare("INSERT INTO demo1 " +
-                                              "(keyval, val1, val2, f1:val3) VALUES " +
-                                              "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
+        HPreparedStatement stmt = conn.prepareStatement("INSERT INTO demo1 " +
+                                                        "(keyval, val1, val2, f1:val3) VALUES " +
+                                                        "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
 
         for (int i = 0; i < 5; i++) {
             stmt.setParameter("key", i);
@@ -374,9 +374,9 @@ public class ExamplesTest extends TestSupport {
             System.out.println(conn.execute("DELETE FROM demo2"));
 
         // Add some records using an INSERT stmt
-        PreparedStatement stmt = conn.prepare("INSERT INTO demo2 " +
-                                              "(keyval, val1, val2, val3) VALUES " +
-                                              "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
+        HPreparedStatement stmt = conn.prepareStatement("INSERT INTO demo2 " +
+                                                        "(keyval, val1, val2, val3) VALUES " +
+                                                        "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
 
         for (int i = 0; i < 5; i++) {
             stmt.setParameter("key", i);

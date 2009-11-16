@@ -28,23 +28,22 @@ import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.InsertValueSource;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
 import java.util.List;
 
-public class InsertStatement extends SchemaContext implements PreparedStatement, ParameterSupport {
+public class InsertStatement extends SchemaContext implements ParameterSupport {
 
     private final List<SingleExpressionContext> columnList = Lists.newArrayList();
     private final InsertValueSource insertValuesSource;
     private final NamedParameters namedParameters = new NamedParameters();
 
-    private transient HConnectionImpl connection = null;
+    private transient HBqlConnectionImpl connection = null;
     private HRecord record = null;
     private boolean validated = false;
 
@@ -68,7 +67,7 @@ public class InsertStatement extends SchemaContext implements PreparedStatement,
         return this.validated;
     }
 
-    public void validate(final HConnectionImpl connection) throws HBqlException {
+    public void validate(final HBqlConnectionImpl connection) throws HBqlException {
 
         if (this.isValidated())
             return;
@@ -164,7 +163,7 @@ public class InsertStatement extends SchemaContext implements PreparedStatement,
         return this.record;
     }
 
-    public HConnectionImpl getConnection() {
+    public HBqlConnectionImpl getConnection() {
         return this.connection;
     }
 
@@ -176,7 +175,7 @@ public class InsertStatement extends SchemaContext implements PreparedStatement,
         return this.insertValuesSource;
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    public ExecutionResults execute(final HBqlConnectionImpl connection) throws HBqlException {
 
         this.validate(connection);
 

@@ -28,7 +28,7 @@ import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.ImportStatement;
 import org.apache.hadoop.hbase.hbql.statement.VersionStatement;
 
@@ -41,7 +41,7 @@ import java.util.Map;
 
 public class Console {
 
-    private static HConnectionImpl conn = null;
+    private static HBqlConnectionImpl conn = null;
 
     public static void main(String[] args) throws HBqlException, IOException {
 
@@ -98,10 +98,10 @@ public class Console {
         return false;
     }
 
-    private static HConnectionImpl getConnection() {
+    private static HBqlConnectionImpl getConnection() {
 
         if (conn == null)
-            conn = (HConnectionImpl)ConnectionManager.newConnection();
+            conn = (HBqlConnectionImpl)ConnectionManager.newConnection();
 
         return conn;
     }
@@ -120,7 +120,7 @@ public class Console {
 
         final PrintWriter out = new PrintWriter(System.out);
 
-        final HConnectionImpl conn = (HConnectionImpl)ConnectionManager.newConnection();
+        final HBqlConnectionImpl conn = (HBqlConnectionImpl)ConnectionManager.newConnection();
 
         StringBuilder stmtBuffer = new StringBuilder();
         boolean continuation = false;

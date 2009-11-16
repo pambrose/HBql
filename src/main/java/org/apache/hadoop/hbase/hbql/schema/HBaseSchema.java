@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.io.IO;
-import org.apache.hadoop.hbase.hbql.parser.HBqlUtil;
+import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 
@@ -243,7 +243,7 @@ public class HBaseSchema extends Schema {
 
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
         final SchemaContext schemaContext = new SimpleSchemaContext(this, null);
-        final ExpressionTree expressionTree = HBqlUtil.parseWhereExpression(query, schemaContext);
+        final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(query, schemaContext);
         return new HBqlFilter(expressionTree);
     }
 }

@@ -24,7 +24,7 @@ import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
 
 import java.io.IOException;
 
@@ -33,7 +33,7 @@ public class ShowTablesStatement implements ConnectionStatement {
     public ShowTablesStatement() {
     }
 
-    public ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
+    public ExecutionResults execute(final HBqlConnectionImpl conn) throws HBqlException {
 
         try {
             final HBaseAdmin admin = conn.getAdmin();

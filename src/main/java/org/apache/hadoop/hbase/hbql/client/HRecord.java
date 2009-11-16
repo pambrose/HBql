@@ -29,7 +29,7 @@ public interface HRecord extends Serializable {
 
     void reset();
 
-    void setTimestamp(final long timestamp);
+    void setTimestamp(long timestamp);
 
     void setCurrentValue(String name, Object val) throws HBqlException;
 
@@ -37,7 +37,7 @@ public interface HRecord extends Serializable {
 
     Set<String> getColumnNameList() throws HBqlException;
 
-    Map<Long, Object> getVersionMap(final String name) throws HBqlException;
+    Map<Long, Object> getVersionMap(String name) throws HBqlException;
 
     Map<String, byte[]> getFamilyDefaultValueMap(String name) throws HBqlException;
 

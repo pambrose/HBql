@@ -23,11 +23,11 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.Results;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.parser.HBqlUtil;
+import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
+import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -48,7 +48,7 @@ public class ImportStatement implements ConnectionStatement {
         return filename;
     }
 
-    public ExecutionResults execute(final HConnectionImpl conn) {
+    public ExecutionResults execute(final HBqlConnectionImpl conn) {
 
         final ExecutionResults results = new ExecutionResults();
 
@@ -85,11 +85,11 @@ public class ImportStatement implements ConnectionStatement {
     }
 
     public static boolean processInput(final PrintWriter out,
-                                       final HConnectionImpl conn,
+                                       final HBqlConnectionImpl conn,
                                        final String str) {
 
         try {
-            final List<HBqlStatement> stmtList = HBqlUtil.parseConsoleStatements(str);
+            final List<HBqlStatement> stmtList = ParserUtil.parseConsoleStatements(str);
 
             for (final HBqlStatement stmt : stmtList) {
                 if (stmt instanceof SelectStatement)
@@ -119,13 +119,13 @@ public class ImportStatement implements ConnectionStatement {
     }
 
     private static void processSelect(final PrintWriter out,
-                                      final HConnectionImpl conn,
+                                      final HBqlConnectionImpl conn,
                                       final SelectStatement selectStatement) throws HBqlException {
 
         selectStatement.validate(conn);
 
         final Query<HRecord> query = conn.newQuery(selectStatement);
-        final Results<HRecord> results = query.getResults();
+        final HResultSet<HRecord> results = query.getResults();
 
         for (final HRecord rec : results) {
             for (final String columnName : rec.getColumnNameList()) {

@@ -20,14 +20,11 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
+import java.util.Iterator;
 
-public interface PreparedStatement extends ConnectionStatement {
+public interface HResultSet<T> extends Iterable<T> {
 
-    int setParameter(final String name, final Object val) throws HBqlException;
+    void close();
 
-    ExecutionResults execute() throws HBqlException;
-
-    void validate(final HConnectionImpl connection) throws HBqlException;
+    Iterator<T> iterator();
 }

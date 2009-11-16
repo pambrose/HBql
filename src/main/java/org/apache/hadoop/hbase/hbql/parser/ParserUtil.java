@@ -34,8 +34,8 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.antlr.HBqlLexer;
 import org.apache.hadoop.hbase.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
-import org.apache.hadoop.hbase.hbql.client.PreparedStatement;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
@@ -46,9 +46,9 @@ import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
 import java.util.List;
 
-public class HBqlUtil {
+public class ParserUtil {
 
-    private static final Log log = LogFactory.getLog(HBqlUtil.class.getName());
+    private static final Log log = LogFactory.getLog(ParserUtil.class.getName());
 
     public static HBqlParser newHBqlParser(final String sql) throws ParseException {
         try {
@@ -75,7 +75,7 @@ public class HBqlUtil {
 
     public static Object parseExpression(final String sql) throws HBqlException {
         try {
-            final HBqlParser parser = HBqlUtil.newHBqlParser(sql);
+            final HBqlParser parser = ParserUtil.newHBqlParser(sql);
             final GenericValue valueExpr = parser.topExpr();
             valueExpr.validateTypes(null, false);
             return valueExpr.getValue(null);
@@ -92,7 +92,7 @@ public class HBqlUtil {
 
     public static SingleExpressionContext parseSelectElement(final String sql) throws HBqlException {
         try {
-            final HBqlParser parser = HBqlUtil.newHBqlParser(sql);
+            final HBqlParser parser = ParserUtil.newHBqlParser(sql);
             final SingleExpressionContext elem = (SingleExpressionContext)parser.selectElem();
             elem.setSchemaContext(null);
             return elem;
@@ -109,7 +109,7 @@ public class HBqlUtil {
 
     public static WithArgs parseWithClause(final String sql) throws ParseException {
         try {
-            final HBqlParser parser = HBqlUtil.newHBqlParser(sql);
+            final HBqlParser parser = ParserUtil.newHBqlParser(sql);
             return parser.withClause();
         }
         catch (RecognitionException e) {
@@ -120,7 +120,7 @@ public class HBqlUtil {
 
     public static List<HBqlStatement> parseConsoleStatements(final String sql) throws ParseException {
         try {
-            final HBqlParser parser = HBqlUtil.newHBqlParser(sql);
+            final HBqlParser parser = ParserUtil.newHBqlParser(sql);
             return parser.consoleStatements();
         }
         catch (LexerRecognitionException e) {
@@ -133,7 +133,7 @@ public class HBqlUtil {
 
     public static HBqlStatement parseJdbcStatement(final String sql) throws ParseException {
         try {
-            final HBqlParser parser = HBqlUtil.newHBqlParser(sql);
+            final HBqlParser parser = ParserUtil.newHBqlParser(sql);
             return parser.jdbcStatement();
         }
         catch (LexerRecognitionException e) {
@@ -146,7 +146,7 @@ public class HBqlUtil {
 
     private static HBqlStatement parse(final String sql) throws ParseException {
         try {
-            final HBqlParser parser = HBqlUtil.newHBqlParser(sql);
+            final HBqlParser parser = ParserUtil.newHBqlParser(sql);
             return parser.consoleStatement();
         }
         catch (RecognitionException e) {
@@ -155,7 +155,7 @@ public class HBqlUtil {
     }
 
     public static NonConnectionStatement parseSchemaManagerStatement(final String sql) throws HBqlException {
-        final HBqlStatement statement = HBqlUtil.parse(sql);
+        final HBqlStatement statement = ParserUtil.parse(sql);
 
         if (!(statement instanceof NonConnectionStatement))
             throw new HBqlException("Expecting a schema manager statement");
@@ -165,7 +165,7 @@ public class HBqlUtil {
 
     public static ConnectionStatement parseConnectionStatement(final String sql) throws HBqlException {
 
-        final HBqlStatement statement = HBqlUtil.parse(sql);
+        final HBqlStatement statement = ParserUtil.parse(sql);
 
         if (!(statement instanceof ConnectionStatement))
             throw new HBqlException("Expecting a connection statement");
@@ -173,19 +173,19 @@ public class HBqlUtil {
         return (ConnectionStatement)statement;
     }
 
-    public static PreparedStatement parsePreparedStatement(final String sql) throws HBqlException {
+    public static HPreparedStatement parsePreparedStatement(final String sql) throws HBqlException {
 
         final HBqlStatement statement = parse(sql);
 
-        if (!(statement instanceof PreparedStatement))
+        if (!(statement instanceof HPreparedStatement))
             throw new HBqlException("Expecting a prepared statement");
 
-        return (PreparedStatement)statement;
+        return (HPreparedStatement)statement;
     }
 
     public static SelectStatement parseSelectStatement(final String sql) throws HBqlException {
 
-        final HBqlStatement statement = HBqlUtil.parse(sql);
+        final HBqlStatement statement = ParserUtil.parse(sql);
 
         if (!(statement instanceof SelectStatement))
             throw new HBqlException("Expecting a SELECT statement");

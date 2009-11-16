@@ -30,13 +30,15 @@ public interface HConnection {
 
     HBaseConfiguration getConfig();
 
-    <T> Query<T> newQuery(String query) throws HBqlException;
+    //<T> Query<T> newQuery(String query) throws HBqlException;
 
-    <T> Query<T> newQuery(String query, Class clazz) throws HBqlException;
+    //<T> Query<T> newQuery(String query, Class clazz) throws HBqlException;
 
-    ExecutionResults execute(String str) throws HBqlException, HBqlException;
+    ExecutionResults execute(String str) throws HBqlException;
 
-    PreparedStatement prepare(String str) throws HBqlException;
+    HStatement createStatement();
+
+    HPreparedStatement prepareStatement(String str) throws HBqlException;
 
     org.apache.hadoop.hbase.client.HTable getHTable(String tableName) throws HBqlException;
 

@@ -26,20 +26,18 @@ import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.Query;
-import org.apache.hadoop.hbase.hbql.client.Results;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
+import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.client.Util;
-import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.Random;
 
 public class SelectTest extends TestSupport {
@@ -146,9 +144,8 @@ public class SelectTest extends TestSupport {
 
         final String query1 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab1";
 
-        Query<HRecord> q1 = conn.newQuery(query1);
-
-        Results<HRecord> results1 = q1.getResults();
+        HStatement stmt = conn.createStatement();
+        HResultSet<HRecord> results1 = stmt.executeQuery(query1);
 
         List<String> testKeyVals = Lists.newArrayList();
         List<String> testVal1Vals = Lists.newArrayList();
@@ -181,43 +178,53 @@ public class SelectTest extends TestSupport {
         assertTrue(testVal5Vals.equals(val5List));
         assertTrue(testVal6Vals.equals(val5List));
 
-        Query<HRecord> q2 = conn.newQuery(query1);
-        List<HRecord> recList2 = q1.getResultList();
+        stmt = conn.createStatement();
+        List<HRecord> recList2 = stmt.executeQueryAndFetch(query1);
+
         assertTrue(recList2.size() == rec_cnt);
 
         final String query3 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab1 " +
                               "WITH KEYS '0000000001' , '0000000002'";
-        Query<HRecord> q3 = conn.newQuery(query3);
-        List<HRecord> recList3 = q3.getResultList();
+
+        stmt = conn.createStatement();
+        List<HRecord> recList3 = stmt.executeQueryAndFetch(query3);
         assertTrue(recList3.size() == 2);
 
         final String query4 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab1 " +
                               "WITH KEYS :key1";
-        Query<HRecord> q4 = conn.newQuery(query4);
-        q4.setParameter("key1", "0000000001");
-        List<HRecord> recList4 = q4.getResultList();
+
+        HPreparedStatement pstmt = conn.prepareStatement(query4);
+
+        pstmt.setParameter("key1", "0000000001");
+        List<HRecord> recList4 = pstmt.executeQueryAndFetch();
+
         assertTrue(recList4.size() == 1);
 
         final String query5 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab1 " +
                               "WITH KEYS :key1, :key2";
-        Query<HRecord> q5 = conn.newQuery(query5);
-        q5.setParameter("key1", "0000000001");
-        q5.setParameter("key2", "0000000002");
-        List<HRecord> recList5 = q5.getResultList();
+
+        pstmt = conn.prepareStatement(query5);
+        pstmt.setParameter("key1", "0000000001");
+        pstmt.setParameter("key2", "0000000002");
+        List<HRecord> recList5 = pstmt.executeQueryAndFetch();
+
         assertTrue(recList5.size() == 2);
 
         final String query6 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab1 " +
                               "WITH KEYS :key1";
-        Query<HRecord> q6 = conn.newQuery(query6);
+        pstmt = conn.prepareStatement(query6);
+
         List<String> listOfKeys = Lists.newArrayList();
         listOfKeys.add("0000000001");
         listOfKeys.add("0000000002");
         listOfKeys.add("0000000003");
-        q6.setParameter("key1", listOfKeys);
-        List<HRecord> recList6 = q6.getResultList();
+        pstmt.setParameter("key1", listOfKeys);
+
+        List<HRecord> recList6 = pstmt.executeQueryAndFetch();
         assertTrue(recList6.size() == 3);
     }
 
+    /*
     @Test
     public void selectMapExpressions() throws HBqlException {
 
@@ -640,4 +647,5 @@ public class SelectTest extends TestSupport {
             assertTrue(val1.equals("test default"));
         }
     }
+    */
 }

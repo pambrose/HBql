@@ -25,7 +25,9 @@ import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.client.Query;
+import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
+import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
@@ -108,10 +110,11 @@ public class AnnotationAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from alltypes2", AnnotatedAllTypes.class);
+        HStatement stmt = conn.createStatement();
+        HResultSet<AnnotatedAllTypes> recs = stmt.executeQuery("select * from alltypes2", AnnotatedAllTypes.class);
 
         int reccnt = 0;
-        for (final AnnotatedAllTypes rec : recs.getResults())
+        for (final AnnotatedAllTypes rec : recs)
             assertTrue(rec.equals(vals.get(reccnt++)));
 
         assertTrue(reccnt == cnt);
@@ -124,10 +127,11 @@ public class AnnotationAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from alltypes2", AnnotatedAllTypes.class);
+        HStatement stmt = conn.createStatement();
+        HResultSet<AnnotatedAllTypes> recs = stmt.executeQuery("select * from alltypes2", AnnotatedAllTypes.class);
 
         int reccnt = 0;
-        for (final AnnotatedAllTypes rec : recs.getResults())
+        for (final AnnotatedAllTypes rec : recs)
             assertTrue(rec.equals(vals.get(reccnt++)));
 
         assertTrue(reccnt == cnt);
@@ -140,12 +144,14 @@ public class AnnotationAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        Query<AnnotatedAllTypes> recs = conn.newQuery("select * from alltypes2 WITH LIMIT :limit", AnnotatedAllTypes.class);
+        HPreparedStatement pstmt = conn.prepareStatement("select * from alltypes2 WITH LIMIT :limit");
 
-        recs.setParameter("limit", cnt / 2);
+        pstmt.setParameter("limit", cnt / 2);
+
+        HResultSet<AnnotatedAllTypes> recs = pstmt.executeQuery(AnnotatedAllTypes.class);
 
         int reccnt = 0;
-        for (final AnnotatedAllTypes rec : recs.getResults())
+        for (final AnnotatedAllTypes rec : recs)
             assertTrue(rec.equals(vals.get(reccnt++)));
 
         assertTrue(reccnt == cnt / 2);

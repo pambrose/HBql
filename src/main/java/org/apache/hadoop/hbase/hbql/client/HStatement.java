@@ -20,11 +20,22 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import java.util.Iterator;
+import java.sql.SQLException;
+import java.util.List;
 
-public interface Results<T> extends Iterable<T> {
+public interface HStatement {
 
-    void close();
+    ExecutionResults execute(String sql) throws HBqlException;
 
-    Iterator<T> iterator();
+    HResultSet<HRecord> executeQuery(String sql) throws HBqlException;
+
+    <T> HResultSet<T> executeQuery(String sql, Class clazz) throws HBqlException;
+
+    List<HRecord> executeQueryAndFetch(String sql) throws HBqlException;
+
+    <T> List<T> executeQueryAndFetch(String sql, Class clazz) throws HBqlException;
+
+    ExecutionResults executeUpdate(String sql) throws SQLException;
+
+    <T> HResultSet<T> getResultSet();
 }
