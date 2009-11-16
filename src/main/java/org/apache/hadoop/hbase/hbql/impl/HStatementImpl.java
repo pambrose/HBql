@@ -31,7 +31,6 @@ import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
-import org.apache.hadoop.hbase.jdbc.JdbcUtil;
 
 import java.util.List;
 
@@ -60,16 +59,16 @@ public class HStatementImpl implements HStatement {
 
     public ExecutionResults executeUpdate(final HBqlStatement statement) throws HBqlException {
 
-        if (JdbcUtil.isSelectStatement(statement)) {
+        if (Util.isSelectStatement(statement)) {
             throw new HBqlException("executeUpdate() requires a non-SELECT statement");
         }
-        else if (JdbcUtil.isDMLStatement(statement)) {
+        else if (Util.isDMLStatement(statement)) {
             return ((ConnectionStatement)statement).execute(this.getHBqlConnection());
         }
-        else if (JdbcUtil.isConnectionStatemet(statement)) {
+        else if (Util.isConnectionStatemet(statement)) {
             return ((ConnectionStatement)statement).execute(this.getHBqlConnection());
         }
-        else if (JdbcUtil.isNonConectionStatemet(statement)) {
+        else if (Util.isNonConectionStatemet(statement)) {
             return ((NonConnectionStatement)statement).execute();
         }
         else {
@@ -79,7 +78,7 @@ public class HStatementImpl implements HStatement {
 
     protected <T> HResultSet<T> executeQuery(final HBqlStatement statement, final Class clazz) throws HBqlException {
 
-        if (!JdbcUtil.isSelectStatement(statement))
+        if (!Util.isSelectStatement(statement))
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
         final Query<T> query = Query.newQuery(this.getHBqlConnection(), (SelectStatement)statement, clazz);
@@ -109,7 +108,7 @@ public class HStatementImpl implements HStatement {
     }
 
     protected ExecutionResults execute(final HBqlStatement statement) throws HBqlException {
-        if (JdbcUtil.isSelectStatement(statement)) {
+        if (Util.isSelectStatement(statement)) {
             this.executeQuery(statement, null);
             return new ExecutionResults("Query executed");
         }
@@ -119,27 +118,27 @@ public class HStatementImpl implements HStatement {
     }
 
     public ExecutionResults execute(final String sql) throws HBqlException {
-        return this.execute(JdbcUtil.parseJdbcStatement(sql));
+        return this.execute(Util.parseJdbcStatement(sql));
     }
 
     public HResultSet<HRecord> executeQuery(final String sql) throws HBqlException {
-        return this.executeQuery(JdbcUtil.parseJdbcStatement(sql), null);
+        return this.executeQuery(Util.parseJdbcStatement(sql), null);
     }
 
     public <T> HResultSet<T> executeQuery(final String sql, final Class clazz) throws HBqlException {
-        return this.executeQuery(JdbcUtil.parseJdbcStatement(sql), clazz);
+        return this.executeQuery(Util.parseJdbcStatement(sql), clazz);
     }
 
     public List<HRecord> executeQueryAndFetch(final String sql) throws HBqlException {
-        return this.executeQueryAndFetch(JdbcUtil.parseJdbcStatement(sql), null);
+        return this.executeQueryAndFetch(Util.parseJdbcStatement(sql), null);
     }
 
     public <T> List<T> executeQueryAndFetch(final String sql, final Class clazz) throws HBqlException {
-        return this.executeQueryAndFetch(JdbcUtil.parseJdbcStatement(sql), clazz);
+        return this.executeQueryAndFetch(Util.parseJdbcStatement(sql), clazz);
     }
 
     public ExecutionResults executeUpdate(final String sql) throws HBqlException {
-        return this.executeUpdate(JdbcUtil.parseJdbcStatement(sql));
+        return this.executeUpdate(Util.parseJdbcStatement(sql));
     }
 
     public synchronized void close() throws HBqlException {

@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.jdbc;
+package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
@@ -31,14 +31,14 @@ import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
 
-public class JdbcUtil {
+public class Util {
 
     public static HBqlStatement parseJdbcStatement(final String sql) throws HBqlException {
 
         try {
             final HBqlStatement stmt = ParserUtil.parseJdbcStatement(sql);
 
-            if (JdbcUtil.isSelectStatement(stmt)
+            if (Util.isSelectStatement(stmt)
                 || stmt instanceof ConnectionStatement
                 || stmt instanceof NonConnectionStatement)
                 return stmt;

@@ -23,6 +23,7 @@ package org.apache.hadoop.hbase.jdbc;
 import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.Util;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.ParameterSupport;
 
@@ -48,16 +49,16 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-public class JdbcPreparedStatementImpl extends JdbcStatementImpl implements PreparedStatement {
+public class PreparedStatementImpl extends StatementImpl implements PreparedStatement {
 
     private final HBqlStatement statement;
 
-    public JdbcPreparedStatementImpl(final JdbcConnectionImpl jdbcConnection,
-                                     final HConnectionImpl hbqlConnection,
-                                     final String sql) throws HBqlException {
+    public PreparedStatementImpl(final ConnectionImpl jdbcConnection,
+                                 final HConnectionImpl hbqlConnection,
+                                 final String sql) throws HBqlException {
         super(jdbcConnection, hbqlConnection);
 
-        this.statement = JdbcUtil.parseJdbcStatement(sql);
+        this.statement = Util.parseJdbcStatement(sql);
 
         if ((this.getStatement() instanceof ParameterSupport)) {
             final ParameterSupport paramStmt = (ParameterSupport)this.getStatement();

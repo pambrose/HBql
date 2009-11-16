@@ -48,14 +48,14 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
 
-public class JdbcResultSetImpl implements ResultSet {
+public class ResultSetImpl implements ResultSet {
 
     final HResultSet<HRecord> results;
     private Iterator<HRecord> resultsIterator;
-    private final JdbcStatementImpl statement;
+    private final StatementImpl statement;
     private HRecordImpl currentRecord = null;
 
-    public JdbcResultSetImpl(final JdbcStatementImpl statement, final HResultSet<HRecord> results) {
+    public ResultSetImpl(final StatementImpl statement, final HResultSet<HRecord> results) {
         this.statement = statement;
         this.results = results;
         this.resultsIterator = results.iterator();
@@ -666,11 +666,11 @@ public class JdbcResultSetImpl implements ResultSet {
     }
 
     public RowId getRowId(final int i) throws SQLException {
-        return new JdbcRowIdImpl(this.getString(i));
+        return new RowIdImpl(this.getString(i));
     }
 
     public RowId getRowId(final String s) throws SQLException {
-        return new JdbcRowIdImpl(this.getString(s));
+        return new RowIdImpl(this.getString(s));
     }
 
     public void updateRowId(final int i, final RowId rowId) throws SQLException {

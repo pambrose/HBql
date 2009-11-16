@@ -38,7 +38,7 @@ public class Driver implements java.sql.Driver {
     }
 
     public Connection connect(final String str, final Properties properties) throws SQLException {
-        return new JdbcConnectionImpl(null, null);
+        return new ConnectionImpl(null, null);
     }
 
     public boolean acceptsURL(final String url) throws SQLException {

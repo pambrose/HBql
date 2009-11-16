@@ -27,7 +27,6 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.ParameterSupport;
-import org.apache.hadoop.hbase.jdbc.JdbcUtil;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class HPreparedStatementImpl extends HStatementImpl implements HPreparedS
         super(hbqlConnection);
         this.sql = sql;
 
-        this.statement = JdbcUtil.parseJdbcStatement(sql);
+        this.statement = Util.parseJdbcStatement(sql);
 
         if ((this.getStatement() instanceof ParameterSupport)) {
             final ParameterSupport paramStmt = (ParameterSupport)this.getStatement();

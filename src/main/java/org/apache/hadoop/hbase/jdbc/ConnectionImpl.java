@@ -42,11 +42,11 @@ import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
 
-public class JdbcConnectionImpl implements Connection {
+public class ConnectionImpl implements Connection {
 
     private final HConnectionImpl hbqlConnection;
 
-    public JdbcConnectionImpl(final String name, final HBaseConfiguration config) {
+    public ConnectionImpl(final String name, final HBaseConfiguration config) {
         this.hbqlConnection = new HConnectionImpl(name, config);
     }
 
@@ -55,11 +55,11 @@ public class JdbcConnectionImpl implements Connection {
     }
 
     public Statement createStatement() throws SQLException {
-        return new JdbcStatementImpl(this, this.getHBqlConnection());
+        return new StatementImpl(this, this.getHBqlConnection());
     }
 
     public PreparedStatement prepareStatement(final String sql) throws SQLException {
-        return new JdbcPreparedStatementImpl(this, this.getHBqlConnection(), sql);
+        return new PreparedStatementImpl(this, this.getHBqlConnection(), sql);
     }
 
     public CallableStatement prepareCall(final String s) throws SQLException {
