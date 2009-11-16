@@ -25,8 +25,8 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
-import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
-import org.apache.hadoop.hbase.hbql.impl.QueryImpl;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.Query;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 
 import java.io.BufferedReader;
@@ -48,7 +48,7 @@ public class ImportStatement implements ConnectionStatement {
         return filename;
     }
 
-    public ExecutionResults execute(final HBqlConnectionImpl conn) {
+    public ExecutionResults execute(final HConnectionImpl conn) {
 
         final ExecutionResults results = new ExecutionResults();
 
@@ -85,7 +85,7 @@ public class ImportStatement implements ConnectionStatement {
     }
 
     public static boolean processInput(final PrintWriter out,
-                                       final HBqlConnectionImpl conn,
+                                       final HConnectionImpl conn,
                                        final String str) {
 
         try {
@@ -119,12 +119,12 @@ public class ImportStatement implements ConnectionStatement {
     }
 
     private static void processSelect(final PrintWriter out,
-                                      final HBqlConnectionImpl conn,
+                                      final HConnectionImpl conn,
                                       final SelectStatement selectStatement) throws HBqlException {
 
         selectStatement.validate(conn);
 
-        final QueryImpl<HRecord> query = QueryImpl.newQuery(conn, selectStatement);
+        final Query<HRecord> query = Query.newQuery(conn, selectStatement);
         final HResultSet<HRecord> results = query.getResults();
 
         for (final HRecord rec : results) {

@@ -24,7 +24,7 @@ import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
+import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.statement.args.DefaultArg;
 
 import java.lang.reflect.Method;
@@ -91,27 +91,27 @@ public class HRecordAttrib extends ColumnAttrib {
     }
 
     public Object getCurrentValue(final Object record) throws HBqlException {
-        return ((RecordImpl)record).getCurrentValue(this.getAliasName());
+        return ((HRecordImpl)record).getCurrentValue(this.getAliasName());
     }
 
     public void setCurrentValue(final Object record, final long timestamp, final Object val) throws HBqlException {
-        ((RecordImpl)record).setCurrentValue(this.getAliasName(), timestamp, val, true);
+        ((HRecordImpl)record).setCurrentValue(this.getAliasName(), timestamp, val, true);
     }
 
     public Map<Long, Object> getVersionMap(final Object record) throws HBqlException {
-        return ((RecordImpl)record).getColumnValue(this.getAliasName(), true).getVersionMap(true);
+        return ((HRecordImpl)record).getColumnValue(this.getAliasName(), true).getVersionMap(true);
     }
 
     public void setFamilyDefaultCurrentValue(final Object record,
                                              final String name,
                                              final byte[] value) throws HBqlException {
-        ((RecordImpl)record).setFamilyDefaultCurrentValue(this.getFamilyName(), name, 0, value);
+        ((HRecordImpl)record).setFamilyDefaultCurrentValue(this.getFamilyName(), name, 0, value);
     }
 
     public void setFamilyDefaultVersionMap(final Object record,
                                            final String name,
                                            final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
-        ((RecordImpl)record).setFamilyDefaultVersionMap(this.getFamilyName(), name, timeStampMap);
+        ((HRecordImpl)record).setFamilyDefaultVersionMap(this.getFamilyName(), name, timeStampMap);
     }
 
     protected Method getMethod(final String methodName,

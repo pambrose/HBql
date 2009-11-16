@@ -43,9 +43,9 @@ import java.util.NoSuchElementException;
 public class HResultSetImpl<T> implements HResultSet<T> {
 
     private final List<ResultScanner> resultScannerList = Lists.newArrayList();
-    private final QueryImpl<T> query;
+    private final Query<T> query;
 
-    HResultSetImpl(final QueryImpl<T> query) throws HBqlException {
+    HResultSetImpl(final Query<T> query) throws HBqlException {
         this.query = query;
 
         // Set it once per evaluation
@@ -63,7 +63,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         return this.getQuery().getHConnection();
     }
 
-    private QueryImpl<T> getQuery() {
+    private Query<T> getQuery() {
         return this.query;
     }
 

@@ -21,7 +21,7 @@
 package org.apache.hadoop.hbase.jdbc;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.sql.Array;
 import java.sql.Blob;
@@ -44,13 +44,13 @@ import java.util.Properties;
 
 public class JdbcConnectionImpl implements Connection {
 
-    private final HBqlConnectionImpl hbqlConnection;
+    private final HConnectionImpl hbqlConnection;
 
     public JdbcConnectionImpl(final String name, final HBaseConfiguration config) {
-        this.hbqlConnection = new HBqlConnectionImpl(name, config);
+        this.hbqlConnection = new HConnectionImpl(name, config);
     }
 
-    private HBqlConnectionImpl getHBqlConnection() {
+    private HConnectionImpl getHBqlConnection() {
         return this.hbqlConnection;
     }
 

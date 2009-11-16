@@ -37,17 +37,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-public class HBqlStatementImpl implements HStatement {
+public class HStatementImpl implements HStatement {
 
-    private final HBqlConnectionImpl hbqlConnection;
+    private final HConnectionImpl hbqlConnection;
 
     private HResultSetImpl resultSet = null;
 
-    public HBqlStatementImpl(final HBqlConnectionImpl hbqlConnection) {
+    public HStatementImpl(final HConnectionImpl hbqlConnection) {
         this.hbqlConnection = hbqlConnection;
     }
 
-    protected HBqlConnectionImpl getHBqlConnection() {
+    protected HConnectionImpl getHBqlConnection() {
         return hbqlConnection;
     }
 
@@ -83,7 +83,7 @@ public class HBqlStatementImpl implements HStatement {
         if (!JdbcUtil.isSelectStatement(statement))
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
-        final QueryImpl<T> query = QueryImpl.newQuery(this.getHBqlConnection(), (SelectStatement)statement, clazz);
+        final Query<T> query = Query.newQuery(this.getHBqlConnection(), (SelectStatement)statement, clazz);
         final HResultSetImpl<T> resultSetImpl = new HResultSetImpl<T>(query);
         this.setResultSet(resultSetImpl);
         return resultSetImpl;

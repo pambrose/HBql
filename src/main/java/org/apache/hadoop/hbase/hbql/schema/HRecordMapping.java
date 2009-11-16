@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.schema;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
+import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
@@ -40,12 +40,12 @@ public class HRecordMapping extends Mapping {
                             final Result result) throws HBqlException {
 
         // Create object and assign values
-        final RecordImpl newrec = new RecordImpl(schemaContext);
+        final HRecordImpl newrec = new HRecordImpl(schemaContext);
         this.assignSelectValues(newrec, selectElementList, maxVersions, result);
         return newrec;
     }
 
-    private void assignSelectValues(final RecordImpl record,
+    private void assignSelectValues(final HRecordImpl record,
                                     final List<SelectElement> selectElementList,
                                     final int maxVersions,
                                     final Result result) throws HBqlException {

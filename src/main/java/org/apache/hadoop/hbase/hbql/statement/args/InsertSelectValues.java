@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.impl.QueryImpl;
+import org.apache.hadoop.hbase.hbql.impl.Query;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
@@ -85,8 +85,8 @@ public class InsertSelectValues extends InsertValueSource {
     }
 
     public void execute() throws HBqlException {
-        final QueryImpl<HRecord> query = QueryImpl.newQuery(this.getInsertStatement().getConnection(),
-                                                            this.getSelectStatement());
+        final Query<HRecord> query = Query.newQuery(this.getInsertStatement().getConnection(),
+                                                    this.getSelectStatement());
         final HResultSet<HRecord> results = query.getResults();
         this.setResultsIterator(results.iterator());
     }

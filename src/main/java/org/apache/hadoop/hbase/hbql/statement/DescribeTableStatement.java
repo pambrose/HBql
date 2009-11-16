@@ -24,7 +24,7 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.io.IOException;
 
@@ -34,7 +34,7 @@ public class DescribeTableStatement extends TableStatement {
         super(tableName);
     }
 
-    public ExecutionResults execute(final HBqlConnectionImpl conn) throws HBqlException {
+    public ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         try {
             final HTableDescriptor tableDesc = conn.getAdmin().getTableDescriptor(this.getTableName().getBytes());

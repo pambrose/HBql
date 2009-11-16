@@ -31,12 +31,12 @@ import org.apache.hadoop.hbase.jdbc.JdbcUtil;
 
 import java.util.List;
 
-public class HBqlPreparedStatementImpl extends HBqlStatementImpl implements HPreparedStatement {
+public class HPreparedStatementImpl extends HStatementImpl implements HPreparedStatement {
 
     final String sql;
     final HBqlStatement statement;
 
-    public HBqlPreparedStatementImpl(final HBqlConnectionImpl hbqlConnection, final String sql) throws HBqlException {
+    public HPreparedStatementImpl(final HConnectionImpl hbqlConnection, final String sql) throws HBqlException {
         super(hbqlConnection);
         this.sql = sql;
 
@@ -89,7 +89,7 @@ public class HBqlPreparedStatementImpl extends HBqlStatementImpl implements HPre
         return paramStmt.setParameter(name, val);
     }
 
-    public void validate(final HBqlConnectionImpl connection) throws HBqlException {
+    public void validate(final HConnectionImpl connection) throws HBqlException {
 
     }
 }

@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
 
-public class RecordImpl implements Serializable, HRecord {
+public class HRecordImpl implements Serializable, HRecord {
 
     private SchemaContext schemaContext;
     private long timestamp = System.currentTimeMillis();
@@ -48,7 +48,7 @@ public class RecordImpl implements Serializable, HRecord {
     private volatile ElementMap<ColumnValue> columnValuesMap = null;
     private volatile ElementMap<FamilyDefaultValueMap> familyDefaultElementsMap = null;
 
-    public RecordImpl(final SchemaContext schemaContext) {
+    public HRecordImpl(final SchemaContext schemaContext) {
         this.setSchemaContext(schemaContext);
     }
 

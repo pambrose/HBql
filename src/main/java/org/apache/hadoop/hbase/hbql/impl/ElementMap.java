@@ -29,13 +29,13 @@ import java.util.HashMap;
 
 public class ElementMap<T extends Value> extends HashMap<String, T> implements Serializable {
 
-    private final RecordImpl record;
+    private final HRecordImpl record;
 
-    public ElementMap(final RecordImpl record) {
+    public ElementMap(final HRecordImpl record) {
         this.record = record;
     }
 
-    private RecordImpl getRecord() {
+    private HRecordImpl getRecord() {
         return this.record;
     }
 

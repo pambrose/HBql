@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.io.IOException;
 
@@ -32,7 +32,7 @@ public class EnableTableStatement extends TableStatement {
         super(tableName);
     }
 
-    public ExecutionResults execute(final HBqlConnectionImpl conn) throws HBqlException {
+    public ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         try {
             conn.getAdmin().enableTable(this.getTableName());

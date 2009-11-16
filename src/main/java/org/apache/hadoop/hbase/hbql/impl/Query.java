@@ -35,15 +35,15 @@ import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import java.util.List;
 import java.util.Set;
 
-public class QueryImpl<T> {
+public class Query<T> {
 
-    private final HBqlConnectionImpl connection;
+    private final HConnectionImpl connection;
     private final SelectStatement selectStatement;
     private List<QueryListener<T>> listeners = null;
 
-    private QueryImpl(final HBqlConnectionImpl connection,
-                      final SelectStatement selectStatement,
-                      final Mapping mapping) throws HBqlException {
+    private Query(final HConnectionImpl connection,
+                  final SelectStatement selectStatement,
+                  final Mapping mapping) throws HBqlException {
         this.connection = connection;
         this.selectStatement = selectStatement;
 
@@ -53,14 +53,14 @@ public class QueryImpl<T> {
         this.getSelectStatement().validate(this.getHConnection());
     }
 
-    public static <T> QueryImpl<T> newQuery(final HBqlConnectionImpl connection,
-                                            final SelectStatement selectStatement) throws HBqlException {
-        return new QueryImpl<T>(connection, selectStatement, null);
+    public static <T> Query<T> newQuery(final HConnectionImpl connection,
+                                        final SelectStatement selectStatement) throws HBqlException {
+        return new Query<T>(connection, selectStatement, null);
     }
 
-    public static <T> QueryImpl<T> newQuery(final HBqlConnectionImpl connection,
-                                            final SelectStatement selectStatement,
-                                            final Class clazz) throws HBqlException {
+    public static <T> Query<T> newQuery(final HConnectionImpl connection,
+                                        final SelectStatement selectStatement,
+                                        final Class clazz) throws HBqlException {
         Mapping mapping = null;
         if (clazz != null) {
             mapping = AnnotationMapping.getAnnotationMapping(clazz);
@@ -68,7 +68,7 @@ public class QueryImpl<T> {
             if (mapping == null)
                 throw new HBqlException("Unknown class " + clazz.getName());
         }
-        return new QueryImpl<T>(connection, selectStatement, mapping);
+        return new Query<T>(connection, selectStatement, mapping);
     }
 
 
@@ -79,7 +79,7 @@ public class QueryImpl<T> {
         this.getListeners().add(listener);
     }
 
-    public HBqlConnectionImpl getHConnection() {
+    public HConnectionImpl getHConnection() {
         return this.connection;
     }
 

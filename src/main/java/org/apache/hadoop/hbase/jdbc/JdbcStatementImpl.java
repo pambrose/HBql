@@ -24,8 +24,8 @@ import org.apache.expreval.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
-import org.apache.hadoop.hbase.hbql.impl.QueryImpl;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.Query;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
@@ -40,12 +40,12 @@ import java.sql.Statement;
 
 public class JdbcStatementImpl implements Statement {
 
-    private final HBqlConnectionImpl hbqlConnection;
+    private final HConnectionImpl hbqlConnection;
     private final JdbcConnectionImpl jdbcConnection;
 
     private ResultSet resultSet = null;
 
-    public JdbcStatementImpl(final JdbcConnectionImpl jdbcConnection, final HBqlConnectionImpl hbqlConnection) {
+    public JdbcStatementImpl(final JdbcConnectionImpl jdbcConnection, final HConnectionImpl hbqlConnection) {
         this.jdbcConnection = jdbcConnection;
         this.hbqlConnection = hbqlConnection;
     }
@@ -54,7 +54,7 @@ public class JdbcStatementImpl implements Statement {
         return this.jdbcConnection;
     }
 
-    protected HBqlConnectionImpl getHBqlConnection() {
+    protected HConnectionImpl getHBqlConnection() {
         return this.hbqlConnection;
     }
 
@@ -89,7 +89,7 @@ public class JdbcStatementImpl implements Statement {
         if (!JdbcUtil.isSelectStatement(statement))
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
-        final QueryImpl<HRecord> query = QueryImpl.newQuery(this.getHBqlConnection(), (SelectStatement)statement);
+        final Query<HRecord> query = Query.newQuery(this.getHBqlConnection(), (SelectStatement)statement);
         this.setResultSet(new JdbcResultSetImpl(this, query.getResults()));
         return this.getResultSet();
     }

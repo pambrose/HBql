@@ -26,8 +26,8 @@ import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.hbql.impl.BatchAction;
 import org.apache.hadoop.hbase.hbql.impl.DeleteAction;
+import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.impl.InsertAction;
-import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
@@ -60,7 +60,7 @@ public class Batch {
     }
 
     public void insert(final HRecord rec) throws HBqlException {
-        final RecordImpl record = (RecordImpl)rec;
+        final HRecordImpl record = (HRecordImpl)rec;
 
         final HBaseSchema schema = record.getHBaseSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
@@ -76,7 +76,7 @@ public class Batch {
         this.delete(mapping.getHBaseSchema(), newrec);
     }
 
-    public void delete(final RecordImpl record) throws HBqlException {
+    public void delete(final HRecordImpl record) throws HBqlException {
         final HBaseSchema schema = record.getHBaseSchema();
         final ColumnAttrib keyAttrib = schema.getKeyAttrib();
         if (!record.isCurrentValueSet(keyAttrib))
@@ -110,7 +110,7 @@ public class Batch {
         return put;
     }
 
-    private Put createPut(final Mapping mapping, final RecordImpl record) throws HBqlException {
+    private Put createPut(final Mapping mapping, final HRecordImpl record) throws HBqlException {
 
         final HBaseSchema schema = mapping.getHBaseSchema();
 

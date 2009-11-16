@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
-import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
+import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
@@ -216,7 +216,7 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
             if (!(obj instanceof HRecord))
                 return;
 
-            ((RecordImpl)obj).setCurrentValue(name, 0, elementValue, false);
+            ((HRecordImpl)obj).setCurrentValue(name, 0, elementValue, false);
         }
         else {
             attrib.setCurrentValue(obj, 0, elementValue);
@@ -227,8 +227,8 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
                                   final int maxVerions,
                                   final Result result) throws HBqlException {
 
-        if (obj instanceof RecordImpl) {
-            final RecordImpl record = (RecordImpl)obj;
+        if (obj instanceof HRecordImpl) {
+            final HRecordImpl record = (HRecordImpl)obj;
             record.addNameToPositionList(this.getSelectName());
         }
 

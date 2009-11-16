@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
 
-public class AggregateRecord extends RecordImpl {
+public class AggregateRecord extends HRecordImpl {
 
     final List<SelectElement> selectElementList;
 

@@ -21,7 +21,7 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
+import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
@@ -74,7 +74,7 @@ public class SchemaManager {
 
     public static HRecord newHRecord(final String schemaName) throws HBqlException {
         final HBaseSchema schema = getSchema(schemaName);
-        return new RecordImpl(new SimpleSchemaContext(schema, null));
+        return new HRecordImpl(new SimpleSchemaContext(schema, null));
     }
 
     public static HBaseSchema getSchema(final String schemaName) throws HBqlException {

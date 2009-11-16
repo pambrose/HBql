@@ -27,7 +27,7 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
+import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.FieldType;
@@ -49,7 +49,7 @@ public class HBqlFilter implements Filter {
     private static final Log LOG = LogFactory.getLog(HBqlFilter.class.getName());
 
     private ExpressionTree expressionTree;
-    public transient RecordImpl record = new RecordImpl((SchemaContext)null);
+    public transient HRecordImpl record = new HRecordImpl((SchemaContext)null);
 
     public HBqlFilter(final ExpressionTree expressionTree) throws HBqlException {
         this.expressionTree = expressionTree;
@@ -59,7 +59,7 @@ public class HBqlFilter implements Filter {
     public HBqlFilter() {
     }
 
-    private RecordImpl getHRecord() {
+    private HRecordImpl getHRecord() {
         return this.record;
     }
 

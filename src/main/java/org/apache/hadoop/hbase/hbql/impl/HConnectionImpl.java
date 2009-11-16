@@ -42,13 +42,13 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
-public class HBqlConnectionImpl implements HConnection {
+public class HConnectionImpl implements HConnection {
 
     private final HBaseConfiguration config;
     private final String name;
     private boolean closed = false;
 
-    public HBqlConnectionImpl(final String name, final HBaseConfiguration config) {
+    public HConnectionImpl(final String name, final HBaseConfiguration config) {
         this.name = name;
         this.config = (config == null) ? new HBaseConfiguration() : config;
     }
@@ -152,11 +152,11 @@ public class HBqlConnectionImpl implements HConnection {
     }
 
     public HStatement createStatement() {
-        return new HBqlStatementImpl(this);
+        return new HStatementImpl(this);
     }
 
     public HPreparedStatement prepareStatement(final String sql) throws HBqlException {
-        return new HBqlPreparedStatementImpl(this, sql);
+        return new HPreparedStatementImpl(this, sql);
     }
 
     public void apply(final Batch batch) throws HBqlException {

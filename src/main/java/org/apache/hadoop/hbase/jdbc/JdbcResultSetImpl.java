@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.jdbc;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
-import org.apache.hadoop.hbase.hbql.impl.RecordImpl;
+import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -53,7 +53,7 @@ public class JdbcResultSetImpl implements ResultSet {
     final HResultSet<HRecord> results;
     private Iterator<HRecord> resultsIterator;
     private final JdbcStatementImpl statement;
-    private RecordImpl currentRecord = null;
+    private HRecordImpl currentRecord = null;
 
     public JdbcResultSetImpl(final JdbcStatementImpl statement, final HResultSet<HRecord> results) {
         this.statement = statement;
@@ -77,11 +77,11 @@ public class JdbcResultSetImpl implements ResultSet {
         return this.resultsIterator;
     }
 
-    private RecordImpl getCurrentRecord() {
+    private HRecordImpl getCurrentRecord() {
         return this.currentRecord;
     }
 
-    private void setCurrentRecord(final RecordImpl currentRecord) {
+    private void setCurrentRecord(final HRecordImpl currentRecord) {
         this.currentRecord = currentRecord;
     }
 
@@ -95,7 +95,7 @@ public class JdbcResultSetImpl implements ResultSet {
 
     public boolean next() throws SQLException {
         if (this.getResultsIterator().hasNext()) {
-            this.setCurrentRecord((RecordImpl)this.getResultsIterator().next());
+            this.setCurrentRecord((HRecordImpl)this.getResultsIterator().next());
             return true;
         }
         else {

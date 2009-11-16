@@ -24,7 +24,7 @@ import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidVariableException;
-import org.apache.hadoop.hbase.hbql.impl.HBqlConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
@@ -64,7 +64,7 @@ public class SelectStatement extends SchemaContext implements ParameterSupport {
         return this.validated;
     }
 
-    public synchronized void validate(final HBqlConnectionImpl connection) throws HBqlException {
+    public synchronized void validate(final HConnectionImpl connection) throws HBqlException {
 
         if (this.isValidated())
             return;
