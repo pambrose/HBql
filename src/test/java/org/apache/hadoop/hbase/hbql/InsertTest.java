@@ -26,13 +26,19 @@ import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.client.Util;
+import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Random;
 
 public class InsertTest extends TestSupport {
@@ -128,15 +134,12 @@ public class InsertTest extends TestSupport {
         }
     }
 
-    /* PRA
     @Test
     public void selectExpressions() throws HBqlException {
 
         final String query1 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab2";
 
-        Query<HRecord> q1 = conn.newQuery(query1);
-
-        HResultSet<HRecord> results1 = q1.getResults();
+        HResultSet<HRecord> results1 = conn.executeQuery(query1);
 
         List<String> testKeyVals = Lists.newArrayList();
         List<String> testVal1Vals = Lists.newArrayList();
@@ -169,40 +172,38 @@ public class InsertTest extends TestSupport {
         assertTrue(testVal5Vals.equals(val5List));
         assertTrue(testVal6Vals.equals(val5List));
 
-        Query<HRecord> q2 = conn.newQuery(query1);
-        List<HRecord> recList2 = q1.getResultList();
+        List<HRecord> recList2 = conn.executeQueryAndFetch(query1);
         assertTrue(recList2.size() == rec_cnt);
 
         final String query3 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab2 " +
                               "WITH KEYS '0000000001' , '0000000002'";
-        Query<HRecord> q3 = conn.newQuery(query3);
-        List<HRecord> recList3 = q3.getResultList();
+        List<HRecord> recList3 = conn.executeQueryAndFetch(query3);
         assertTrue(recList3.size() == 2);
 
         final String query4 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab2 " +
                               "WITH KEYS :key1";
-        Query<HRecord> q4 = conn.newQuery(query4);
+        HPreparedStatement q4 = conn.prepareStatement(query4);
         q4.setParameter("key1", "0000000001");
-        List<HRecord> recList4 = q4.getResultList();
+        List<HRecord> recList4 = q4.executeQueryAndFetch();
         assertTrue(recList4.size() == 1);
 
         final String query5 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab2 " +
                               "WITH KEYS :key1, :key2";
-        Query<HRecord> q5 = conn.newQuery(query5);
+        HPreparedStatement q5 = conn.prepareStatement(query5);
         q5.setParameter("key1", "0000000001");
         q5.setParameter("key2", "0000000002");
-        List<HRecord> recList5 = q5.getResultList();
+        List<HRecord> recList5 = q5.executeQueryAndFetch();
         assertTrue(recList5.size() == 2);
 
         final String query6 = "SELECT val1, val5, (val5 - val5 + val5) as val6, (val5+val5) as val7 FROM tab2 " +
                               "WITH KEYS :key1";
-        Query<HRecord> q6 = conn.newQuery(query6);
+        HPreparedStatement q6 = conn.prepareStatement(query6);
         List<String> listOfKeys = Lists.newArrayList();
         listOfKeys.add("0000000001");
         listOfKeys.add("0000000002");
         listOfKeys.add("0000000003");
         q6.setParameter("key1", listOfKeys);
-        List<HRecord> recList6 = q6.getResultList();
+        List<HRecord> recList6 = q6.executeQueryAndFetch();
         assertTrue(recList6.size() == 3);
     }
 
@@ -210,13 +211,11 @@ public class InsertTest extends TestSupport {
     public void selectMapExpressions() throws HBqlException {
 
         final String query1 = "SELECT f3mapval1 FROM tab2";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 10);
 
         final String query2 = "SELECT f3mapval1, f3mapval2 FROM tab2";
-        Query<HRecord> q2 = conn.newQuery(query2);
-        List<HRecord> recList2 = q2.getResultList();
+        List<HRecord> recList2 = conn.executeQueryAndFetch(query2);
         assertTrue(recList2.size() == 10);
     }
 
@@ -224,8 +223,7 @@ public class InsertTest extends TestSupport {
     public void selectVectorExpressions() throws HBqlException {
 
         final String query1 = "SELECT val8 FROM tab2";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 10);
 
         for (final HRecord rec : recList1) {
@@ -238,28 +236,23 @@ public class InsertTest extends TestSupport {
     public void selectInvalidColumnReferences() throws HBqlException {
 
         final String query1 = "SELECT * FROM tab2 with client FILTER where notdefinedval = 'dd'";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 0);
 
         final String query2 = "SELECT * FROM tab2 with client FILTER where DEFINEDINROW(notdefinedval)";
-        Query<HRecord> q2 = conn.newQuery(query2);
-        List<HRecord> recList2 = q2.getResultList();
+        List<HRecord> recList2 = conn.executeQueryAndFetch(query2);
         assertTrue(recList2.size() == 0);
 
         final String query3 = "SELECT * FROM tab2 with client FILTER where NOT DEFINEDINROW(notdefinedval)";
-        Query<HRecord> q3 = conn.newQuery(query3);
-        List<HRecord> recList3 = q3.getResultList();
+        List<HRecord> recList3 = conn.executeQueryAndFetch(query3);
         assertTrue(recList3.size() == 10);
 
         final String query4 = "SELECT * FROM tab2 with client FILTER where DEFINEDINROW(f1:val1)";
-        Query<HRecord> q4 = conn.newQuery(query4);
-        List<HRecord> recList4 = q4.getResultList();
+        List<HRecord> recList4 = conn.executeQueryAndFetch(query4);
         assertTrue(recList4.size() == 10);
 
         final String query5 = "SELECT * FROM tab2 with client FILTER where NOT DEFINEDINROW(f1:val1)";
-        Query<HRecord> q5 = conn.newQuery(query5);
-        List<HRecord> recList5 = q5.getResultList();
+        List<HRecord> recList5 = conn.executeQueryAndFetch(query5);
         assertTrue(recList5.size() == 0);
     }
 
@@ -267,8 +260,7 @@ public class InsertTest extends TestSupport {
     public void selectVectorVersionExpressions() throws HBqlException {
 
         final String query1 = "SELECT f1:val2, val8 FROM tab2 WITH VERSIONS 5";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 10);
 
         for (final HRecord rec : recList1) {
@@ -307,20 +299,16 @@ public class InsertTest extends TestSupport {
                               + "f3:mapval2 string alias f3mapval2 "
                               + ")");
 
-        Query<HRecord> q1 = conn.newQuery("SELECT f1:* FROM tab2");
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch("SELECT f1:* FROM tab2");
         assertTrue(recList1.size() == 10);
 
-        Query<HRecord> q2 = conn.newQuery("SELECT f1:* FROM tab2 WITH VERSIONS 5");
-        List<HRecord> recList2 = q2.getResultList();
+        List<HRecord> recList2 = conn.executeQueryAndFetch("SELECT f1:* FROM tab2 WITH VERSIONS 5");
         assertTrue(recList2.size() == 10);
 
-        Query<HRecord> q3 = conn.newQuery("SELECT * FROM tab2");
-        List<HRecord> recList3 = q3.getResultList();
+        List<HRecord> recList3 = conn.executeQueryAndFetch("SELECT * FROM tab2");
         assertTrue(recList3.size() == 10);
 
-        Query<HRecord> q4 = conn.newQuery("SELECT * FROM tab2 WITH VERSIONS 5");
-        List<HRecord> recList4 = q4.getResultList();
+        List<HRecord> recList4 = conn.executeQueryAndFetch("SELECT * FROM tab2 WITH VERSIONS 5");
         assertTrue(recList4.size() == 10);
 
         for (final HRecord rec : recList4) {
@@ -350,8 +338,7 @@ public class InsertTest extends TestSupport {
                               + ")");
 
         final String query1 = "SELECT f1:val1, f1:val2 FROM tab2";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 10);
 
         int i = 0;
@@ -376,8 +363,7 @@ public class InsertTest extends TestSupport {
                               + ")");
 
         final String query1 = "SELECT f1:val1, f1:val2 FROM tab2 WITH VERSIONS 5";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 10);
 
         int i = 0;
@@ -407,8 +393,7 @@ public class InsertTest extends TestSupport {
                               + ")");
 
         final String query1 = "SELECT f1:valunknown FROM tab2";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 10);
 
         int i = 0;
@@ -433,8 +418,7 @@ public class InsertTest extends TestSupport {
                               + ")");
 
         final String query1 = "SELECT ('dd'+'ff') as val1 FROM tab2";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 10);
 
         int i = 0;
@@ -460,13 +444,11 @@ public class InsertTest extends TestSupport {
                               + ")");
 
         final String query1 = "SELECT f3:* FROM table2";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 10);
 
         final String query2 = "SELECT * FROM table2";
-        Query<HRecord> q2 = conn.newQuery(query2);
-        List<HRecord> recList2 = q2.getResultList();
+        List<HRecord> recList2 = conn.executeQueryAndFetch(query2);
         assertTrue(recList2.size() == 10);
 
         for (final HRecord rec : recList2) {
@@ -489,8 +471,7 @@ public class InsertTest extends TestSupport {
                               + ")");
 
         final String query1 = "SELECT 2+4, 5+9, 5+3 as expr1, DEFINEDINROW(val1), DEFINEDINROW(val10) FROM tab2";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 10);
         for (final HRecord rec : recList1) {
             int val1 = (Integer)rec.getCurrentValue("expr-0");
@@ -521,8 +502,7 @@ public class InsertTest extends TestSupport {
                               + ")");
 
         final String query1 = "SELECT EVAL('TRUE'), EVAL('FALSE') FROM tab2";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 10);
         for (final HRecord rec : recList1) {
             boolean val1 = (Boolean)rec.getCurrentValue("expr-0");
@@ -532,10 +512,10 @@ public class InsertTest extends TestSupport {
         }
 
         final String query2 = "SELECT EVAL(:val1), EVAL(:val2) FROM tab2";
-        Query<HRecord> q2 = conn.newQuery(query2);
+        HPreparedStatement q2 = conn.prepareStatement(query2);
         q2.setParameter("val1", "TRUE OR FALSE");
         q2.setParameter("val2", "TRUE AND FALSE");
-        List<HRecord> recList2 = q2.getResultList();
+        List<HRecord> recList2 = q2.executeQueryAndFetch();
         assertTrue(recList2.size() == 10);
         for (final HRecord rec : recList2) {
             boolean val1 = (Boolean)rec.getCurrentValue("expr-0");
@@ -560,8 +540,7 @@ public class InsertTest extends TestSupport {
                               + ")");
 
         final String query1 = "SELECT * FROM tab2";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 10);
         for (final HRecord rec : recList1) {
             String val1 = (String)rec.getCurrentValue("val10");
@@ -571,13 +550,11 @@ public class InsertTest extends TestSupport {
         }
 
         final String query2 = "SELECT * FROM tab2 with client filter where val10 = 'test default'";
-        Query<HRecord> q2 = conn.newQuery(query2);
-        List<HRecord> recList2 = q2.getResultList();
+        List<HRecord> recList2 = conn.executeQueryAndFetch(query2);
         assertTrue(recList2.size() == 10);
 
         final String query3 = "SELECT * FROM tab2 with client filter where val11 = 'test default'";
-        Query<HRecord> q3 = conn.newQuery(query3);
-        List<HRecord> recList3 = q3.getResultList();
+        List<HRecord> recList3 = conn.executeQueryAndFetch(query3);
         assertTrue(recList3.size() == 0);
     }
 
@@ -621,13 +598,11 @@ public class InsertTest extends TestSupport {
         assertTrue(caughtException == null);
 
         final String query1 = "SELECT * FROM tab2";
-        Query<HRecord> q1 = conn.newQuery(query1);
-        List<HRecord> recList1 = q1.getResultList();
+        List<HRecord> recList1 = conn.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 10);
         for (final HRecord rec : recList1) {
             String val1 = (String)rec.getCurrentValue("val10");
             assertTrue(val1.equals("test default"));
         }
     }
-    */
 }
