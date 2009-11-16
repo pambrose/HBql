@@ -44,6 +44,10 @@ public class NamedParameters implements Serializable {
         return this.paramSet;
     }
 
+    private List<NamedParameter> getParamList() {
+        return this.paramList;
+    }
+
     public void addParameters(final Collection<NamedParameter> params) {
         if (params != null)
             this.getParamSet().addAll(params);
@@ -51,16 +55,16 @@ public class NamedParameters implements Serializable {
 
     public List<NamedParameter> getParameterList() {
 
-        if (this.paramList != null)
-            return this.paramList;
+        if (this.getParamList() != null)
+            return this.getParamList();
 
         synchronized (this) {
-            if (this.paramList != null)
-                return this.paramList;
+            if (this.getParamList() != null)
+                return this.getParamList();
 
             final int size = this.getParamSet().size();
             this.paramList = Lists.newArrayList(this.getParamSet().toArray(new NamedParameter[size]));
-            return this.paramList;
+            return this.getParamList();
         }
     }
 
