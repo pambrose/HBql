@@ -59,9 +59,9 @@ public class CreateSchemaStatement extends SchemaContext implements ConnectionSt
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        final HBaseSchema schema = connection.getSchemaManager().createHBaseSchema(this.getSchemaName(),
-                                                                                   this.getTableName(),
-                                                                                   this.getColumnDescriptionList());
+        final HBaseSchema schema = connection.createHBaseSchema(this.getSchemaName(),
+                                                                this.getTableName(),
+                                                                this.getColumnDescriptionList());
 
         this.setSchema(schema);
 

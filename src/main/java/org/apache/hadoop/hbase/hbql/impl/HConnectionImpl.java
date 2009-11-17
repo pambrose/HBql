@@ -37,6 +37,7 @@ import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
+import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -70,7 +71,7 @@ public class HConnectionImpl implements HConnection {
         return this.config;
     }
 
-    public SchemaManager getSchemaManager() {
+    private SchemaManager getSchemaManager() {
         return this.schemaManager;
     }
 
@@ -89,7 +90,7 @@ public class HConnectionImpl implements HConnection {
         if (mapping != null)
             return mapping;
 
-        mapping = AnnotationMapping.newAnnotationMapping(clazz);
+        mapping = AnnotationMapping.newAnnotationMapping(this, clazz);
 
         getAnnotationMappingMap().put(clazz, mapping);
 
@@ -246,5 +247,11 @@ public class HConnectionImpl implements HConnection {
 
     public Set<String> getSchemaNames() {
         return this.getSchemaManager().getSchemaNames();
+    }
+
+    public synchronized HBaseSchema createHBaseSchema(final String schemaName,
+                                                      final String tableName,
+                                                      final List<ColumnDescription> colList) throws HBqlException {
+        return this.getSchemaManager().createHBaseSchema(schemaName, tableName, colList);
     }
 }

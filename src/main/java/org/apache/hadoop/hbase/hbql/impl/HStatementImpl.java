@@ -37,16 +37,16 @@ import java.util.List;
 
 public class HStatementImpl implements HStatement {
 
-    private final HConnectionImpl hbqlConnection;
+    private final HConnectionImpl connection;
     private volatile boolean closed = false;
     private HResultSetImpl resultSet = null;
 
-    public HStatementImpl(final HConnectionImpl hbqlConnection) {
-        this.hbqlConnection = hbqlConnection;
+    public HStatementImpl(final HConnectionImpl connection) {
+        this.connection = connection;
     }
 
-    protected HConnectionImpl getHBqlConnection() {
-        return hbqlConnection;
+    protected HConnectionImpl getConnection() {
+        return this.connection;
     }
 
     public <T> HResultSet<T> getResultSet() {
@@ -59,10 +59,10 @@ public class HStatementImpl implements HStatement {
             throw new HBqlException("executeUpdate() requires a non-SELECT statement");
         }
         else if (Util.isDMLStatement(statement)) {
-            return ((ConnectionStatement)statement).execute(this.getHBqlConnection());
+            return ((ConnectionStatement)statement).execute(this.getConnection());
         }
         else if (Util.isConnectionStatemet(statement)) {
-            return ((ConnectionStatement)statement).execute(this.getHBqlConnection());
+            return ((ConnectionStatement)statement).execute(this.getConnection());
         }
         else if (Util.isNonConectionStatemet(statement)) {
             return ((NonConnectionStatement)statement).execute();
@@ -77,7 +77,7 @@ public class HStatementImpl implements HStatement {
         if (!Util.isSelectStatement(statement))
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
-        final Query<T> query = Query.newQuery(this.getHBqlConnection(), (SelectStatement)statement, clazz);
+        final Query<T> query = Query.newQuery(this.getConnection(), (SelectStatement)statement, clazz);
         final HResultSetImpl<T> resultSetImpl = new HResultSetImpl<T>(query);
 
         this.resultSet = resultSetImpl;

@@ -47,11 +47,13 @@ public abstract class SchemaContext implements HBqlStatement, Serializable {
     }
 
     protected void validateSchemaName(final HConnectionImpl connection) throws HBqlException {
-        try {
-            this.setSchema(connection.getSchemaManager().getSchema(this.schemaName));
-        }
-        catch (HBqlException e) {
-            throw new HBqlException("Unknown schema name: " + this.schemaName);
+        if (this.getSchema() == null) {
+            try {
+                this.setSchema(connection.getSchema(this.getSchemaName()));
+            }
+            catch (HBqlException e) {
+                throw new HBqlException("Unknown schema name: " + this.getSchemaName());
+            }
         }
     }
 

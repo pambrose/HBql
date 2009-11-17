@@ -25,6 +25,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Column;
 import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
@@ -40,9 +41,11 @@ public class AnnotationMapping extends Mapping {
     private final Map<String, CurrentValueAnnotationAttrib> columnMap = Maps.newHashMap();
     private final Map<String, VersionAnnotationAttrib> columnVersionMap = Maps.newHashMap();
 
-    private AnnotationMapping(final String schemaName, final Class clazz) throws HBqlException {
+    private AnnotationMapping(final HBaseSchema schema, final Class clazz) throws HBqlException {
 
-        super(new SimpleSchemaContext(schemaName));
+        super(new SimpleSchemaContext(schema));
+
+        getSchemaContext().setMapping(this);
 
         this.clazz = clazz;
 
@@ -71,7 +74,8 @@ public class AnnotationMapping extends Mapping {
         return clazz.getAnnotation(org.apache.hadoop.hbase.hbql.client.Schema.class) != null;
     }
 
-    public static AnnotationMapping newAnnotationMapping(final Class<?> clazz) throws HBqlException {
+    public static AnnotationMapping newAnnotationMapping(final HConnectionImpl connection,
+                                                         final Class<?> clazz) throws HBqlException {
 
         org.apache.hadoop.hbase.hbql.client.Schema schemaAnnotation =
                 clazz.getAnnotation(org.apache.hadoop.hbase.hbql.client.Schema.class);
@@ -82,7 +86,8 @@ public class AnnotationMapping extends Mapping {
         if (schemaAnnotation.name() == null || schemaAnnotation.name().length() == 0)
             throw new HBqlException("@Schema annotation for class " + clazz.getName() + " is missing a name");
 
-        return new AnnotationMapping(schemaAnnotation.name(), clazz);
+        HBaseSchema schema = connection.getSchema(schemaAnnotation.name());
+        return new AnnotationMapping(schema, clazz);
     }
 
     private void processColumnAnnotation(final Field field) throws HBqlException {

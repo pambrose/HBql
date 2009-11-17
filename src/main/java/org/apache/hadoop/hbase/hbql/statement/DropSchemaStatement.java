@@ -34,7 +34,7 @@ public class DropSchemaStatement extends SchemaContext implements ConnectionStat
 
         // this.validateSchemaName(connection);
 
-        connection.getSchemaManager().dropSchema(this.getSchemaName());
+        connection.dropSchema(this.getSchemaName());
         return new ExecutionResults("Schema " + this.getSchemaName() + " dropped.");
     }
 }

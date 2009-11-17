@@ -32,7 +32,7 @@ public class ShowSchemasStatement implements ConnectionStatement {
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Schemas: ");
-        for (final String schemaName : connection.getSchemaManager().getSchemaNames())
+        for (final String schemaName : connection.getSchemaNames())
             retval.out.println("\t" + schemaName);
 
         retval.out.flush();
