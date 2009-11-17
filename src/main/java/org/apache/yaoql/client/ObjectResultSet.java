@@ -45,7 +45,7 @@ public class ObjectResultSet<T> implements Iterable<T> {
     }
 
     private Collection<T> getObjects() {
-        return objects;
+        return this.objects;
     }
 
     public Iterator<T> iterator() {

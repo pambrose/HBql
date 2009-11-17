@@ -35,11 +35,11 @@ import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import java.util.List;
 import java.util.Set;
 
-public class Query<T> {
+public class Query<E> {
 
     private final HConnectionImpl connection;
     private final SelectStatement selectStatement;
-    private List<QueryListener<T>> listeners = null;
+    private List<QueryListener<E>> listeners = null;
 
     private Query(final HConnectionImpl connection,
                   final SelectStatement selectStatement,
@@ -72,7 +72,7 @@ public class Query<T> {
     }
 
 
-    public synchronized void addListener(final QueryListener<T> listener) {
+    public synchronized void addListener(final QueryListener<E> listener) {
         if (this.getListeners() == null)
             this.listeners = Lists.newArrayList();
 
@@ -99,7 +99,7 @@ public class Query<T> {
         return withArgs.getRowRequestList(allAttribs);
     }
 
-    public List<QueryListener<T>> getListeners() {
+    public List<QueryListener<E>> getListeners() {
         return this.listeners;
     }
 
@@ -108,7 +108,7 @@ public class Query<T> {
             this.getListeners().clear();
     }
 
-    public HResultSet<T> getResults() throws HBqlException {
-        return new HResultSetImpl<T>(this);
+    public HResultSet<E> getResults() throws HBqlException {
+        return new HResultSetImpl<E>(this);
     }
 }

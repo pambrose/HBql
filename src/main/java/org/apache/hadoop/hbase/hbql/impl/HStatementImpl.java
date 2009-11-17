@@ -53,10 +53,6 @@ public class HStatementImpl implements HStatement {
         return (HResultSet<T>)this.resultSet;
     }
 
-    public <T> void setResultSet(final HResultSetImpl<T> resultSet) {
-        this.resultSet = resultSet;
-    }
-
     public ExecutionResults executeUpdate(final HBqlStatement statement) throws HBqlException {
 
         if (Util.isSelectStatement(statement)) {
@@ -83,7 +79,8 @@ public class HStatementImpl implements HStatement {
 
         final Query<T> query = Query.newQuery(this.getHBqlConnection(), (SelectStatement)statement, clazz);
         final HResultSetImpl<T> resultSetImpl = new HResultSetImpl<T>(query);
-        this.setResultSet(resultSetImpl);
+
+        this.resultSet = resultSetImpl;
         return resultSetImpl;
     }
 
