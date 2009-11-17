@@ -3,14 +3,16 @@
     ------
     ------
 
-Distribution
+Releases
 
-    The hbql-0.9.4-alpha.zip is {{{./downloads/hbql-0.9.4-alpha.zip}here}}
+    *{{{./downloads/hbql-0.9.4-alpha.zip}0.9.4-alpha.zip}}
+    
+    *{{{./downloads/hbql-0.9.4-alpha.tar.gz}0.9.4-alpha.tar.gz}}
 
 
 Javadocs
 
-    The javadocs-0.9.4-alpha.zip is {{{./downloads/javadocs-0.9.4-alpha.zip}here}}
+    *{{{./downloads/javadocs-0.9.4-alpha.zip}javadocs-0.9.4-alpha.zip}}
     
 
 Source

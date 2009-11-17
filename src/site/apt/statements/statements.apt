@@ -1,0 +1,64 @@
+    -----
+HBql Statements
+    -----
+    -----
+
+HBql Statements
+
+    * Statements are available in both the console and the API.  
+    
+    * Statement keywords are case insensitive.
+    
+
+* Table Management
+
+    **{{{./create-table.html}CREATE TABLE}}
+
+    **{{{./enable-table.html}ENABLE TABLE}}
+
+    **{{{./disable-table.html}DISABLE TABLE}}
+
+    **{{{./drop-table.html}DROP TABLE}}
+
+    **{{{./show-tables.html}SHOW TABLES}}
+
+    **{{{./describe-table.html}DESCRIBE TABLE}}
+
+* Schema Management
+
+    **{{{./create-schema.html}CREATE SCHEMA}}
+
+    **{{{./drop-schema.html}DROP SCHEMA}}
+
+    **{{{./show-schemas.html}SHOW SCHEMAS}}
+
+    **{{{./describe-schema.html}DESCRIBE SCHEMA}}
+
+
+* Data Manipulation
+
+    **{{{./insert.html}INSERT}}
+
+    **{{{./delete.html}DELETE}}
+
+* Queries
+
+    **{{{./select.html}SELECT}}
+
+    **{{{./with-clause.html}WITH Clause}}
+
+    **{{{./expressions.html}Expressions}}
+
+
+* System
+
+    **{{{./version.html}VERSION}}
+
+    **{{{./import.html}IMPORT}}
+
+    **{{{./parse.html}PARSE}}
+
+
+
+
+

@@ -1,14 +1,11 @@
     ------
-    Schemas
+    Annotations
     ------
     ------
 
-Schemas
+Annotations
 
-
-*Annotations
-
-    HBql provides the following annotations for associating a java class with a schema:
+    *HBql provides the following annotations for associating a java class with a schema:
 
 %{snippet|id=doc|file=src/main/java/org/apache/hadoop/hbase/hbql/client/Schema.java}
 

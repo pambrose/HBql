@@ -2,40 +2,45 @@
 
 export MAVEN_OPTS="-Xms256m -Xmx256m"
 
+export HBQL="/Users/pambrose/git/hbase-plugin"
+export VERSION="hbql-0.9.4-alpha"
+export DOCS="javadocs-0.9.4-alpha"
+export RELEASE=${HBQL}/target/release/${VERSION}
+export SITE=${HBQL}/target/site
+
 mvn clean
 
-mkdir -p ./target/hbql-0.9.4-alpha/
+mkdir -p ${RELEASE}
+mkdir ${RELEASE}/docs
+mkdir ${RELEASE}/src
+
+cp ${HBQL}/LICENSE.txt ${RELEASE}
+cp ${HBQL}/NOTICE.txt ${RELEASE}
+cp -r ${HBQL}/lib ${RELEASE}
+cp -r ${HBQL}/bin ${RELEASE}
+cp -r ${HBQL}/src/main ${RELEASE}/src
+cp -r ${HBQL}/src/test ${RELEASE}/src
+rm -rf ${RELEASE}/src/main/antlr3/org/apache/hadoop/hbase/hbql/antlr/output
+
 
 mvn antlr3:antlr
 mvn compiler:compile
 mvn javadoc:javadoc
 mvn site:site
 
-cp -r ./lib ./target/hbql-*
-cp -r ./bin ./target/hbql-*
+cd ${HBQL}/target/classes
+jar cf ${RELEASE}/${VERSION}.jar *
 
-mkdir ./target/hbql-0.9.4-alpha/src
-cp -r ./src/main ./target/hbql-*/src
-cp -r ./src/test ./target/hbql-*/src
-rm -rf ./target/hbql-*/src/main/antlr3/org/apache/hadoop/hbase/hbql/antlr/output
+mkdir ${SITE}/downloads
+cp -r ${SITE}/* ${RELEASE}/docs/
 
-cp LICENSE.txt ./target/hbql-*
-cp NOTICE.txt ./target/hbql-*
+cd ${SITE}
+zip -r ${SITE}/downloads/${DOCS}.zip apidocs
 
-mkdir ./target/hbql-0.9.4-alpha/docs
-cp -r ./target/site/* ./target/hbql-*/docs/
+cd ${RELEASE}/..
+zip -r ${SITE}/downloads/${VERSION}.zip ${VERSION}
+tar cvf ${SITE}/downloads/${VERSION}.tar ${VERSION}
+gzip ${SITE}/downloads/${VERSION}.tar
 
-cd target/classes
-jar cf ../../target/hbql-0.9.4-alpha/hbql-0.9.4-alpha.jar *
-cd ../..
-
-mkdir ./target/site/downloads
-cd target
-zip -r ./site/downloads/hbql-0.9.4-alpha.zip hbql-0.9.4-alpha
-cd ..
-
-cd ./target/site
-zip -r ../../target/site/downloads/javadocs-0.9.4-alpha.zip apidocs
-cd ../..
-
+cd ${HBQL}
 mvn site-deploy

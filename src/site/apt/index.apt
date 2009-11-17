@@ -13,20 +13,22 @@ Getting Started
 
     * {{{./installation.html}Installation}}
 
-    * {{{./examples.html}Examples}}
+    * {{{./examples/examples.html}Examples}}
     
 
 Documentation
 
-    * {{{./statements.html}Statements}}
+    * {{{./statements/statements.html}Statements}}
 
     * {{{./statements/functions.html}Functions}}
 
     * {{{./statements/expressions.html}Expressions}}
 
-    * {{{./console.html}Console usage}}
+    * {{{./annotations/annotations.html}Annotations}}
 
-    * {{{./jdbc_support.html}JDBC support}}
+    * {{{./console/console.html}Console usage}}
+
+    * {{{./jdbc/jdbc_support.html}JDBC support}}
 
     * {{{./apidocs/org/apache/hadoop/hbase/hbql/client/package-summary.html}HBql Client API}}
 
@@ -34,7 +36,7 @@ Documentation
 
     * {{{./faq.html}FAQ}}
 
-    * {{{./dependencies.html}Project Dependencies}}
+    * {{{./project-info.html}Project Information}}
 
 Support
 

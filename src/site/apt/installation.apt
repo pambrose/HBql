@@ -9,7 +9,8 @@ Installation
 
     * Add the hbql.jar and the jars in $HBQL_HOME/lib directory to your classpath.
 
-    * To verify your installation, run the {{{./console.html}console}} and enter the {{{./statements/version.html}version}}
-    and {{{statements/list-tables.html}list tables}} commands.
+    * To verify your installation, run the {{{./console/console.html}console}}
+    and enter the {{{./statements/version.html}VERSION}}
+    and {{{statements/show-tables.html}SHOW TABLES}} commands.
 
 
