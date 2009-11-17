@@ -22,12 +22,8 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
-import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
-import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 
 import java.util.List;
 import java.util.Map;
@@ -35,56 +31,59 @@ import java.util.Set;
 
 public class SchemaManager {
 
-    private final static Map<String, HBaseSchema> schemaMap = Maps.newHashMap();
+    private final HConnectionImpl connection;
+    private final Map<String, HBaseSchema> schemaMap = Maps.newHashMap();
 
-    public static ExecutionResults execute(final String str) throws HBqlException {
-        final NonConnectionStatement cmd = ParserUtil.parseSchemaManagerStatement(str);
-        return cmd.execute();
+    public SchemaManager(final HConnectionImpl connection) {
+        this.connection = connection;
     }
 
-    private static Map<String, HBaseSchema> getSchemaMap() {
-        return SchemaManager.schemaMap;
+    private HConnectionImpl getConnection() {
+        return connection;
     }
 
-    public static Set<String> getHBaseSchemaNames() {
+    private Map<String, HBaseSchema> getSchemaMap() {
+        return this.schemaMap;
+    }
+
+    public Set<String> getSchemaNames() {
         return getSchemaMap().keySet();
     }
 
-    public static boolean schemaExists(final String schemaName) {
-        return null != SchemaManager.getSchemaMap().get(schemaName);
+    public boolean schemaExists(final String schemaName) {
+        return this.getSchemaMap().get(schemaName) != null;
     }
 
-    public static void dropSchema(final String schemaName) {
-        if (SchemaManager.getSchemaMap().containsKey(schemaName))
-            SchemaManager.getSchemaMap().remove(schemaName);
+    public boolean dropSchema(final String schemaName) {
+        if (this.getSchemaMap().containsKey(schemaName)) {
+            this.getSchemaMap().remove(schemaName);
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
-    public synchronized static HBaseSchema createHBaseSchema(final HConnectionImpl connection,
-                                                             final String schemaName,
-                                                             final String tableName,
-                                                             final List<ColumnDescription> colList) throws HBqlException {
+    public synchronized HBaseSchema createHBaseSchema(final String schemaName,
+                                                      final String tableName,
+                                                      final List<ColumnDescription> colList) throws HBqlException {
 
-        if (SchemaManager.schemaExists(schemaName))
+        if (this.schemaExists(schemaName))
             throw new HBqlException("Schema " + schemaName + " already defined");
 
         final HBaseSchema schema = new HBaseSchema(schemaName, tableName, colList);
 
-        SchemaManager.getSchemaMap().put(schemaName, schema);
+        this.getSchemaMap().put(schemaName, schema);
 
         return schema;
     }
 
-    public static HRecord newHRecord(final String schemaName) throws HBqlException {
-        final HBaseSchema schema = getSchema(schemaName);
-        return new HRecordImpl(new SimpleSchemaContext(schema, null));
-    }
+    public HBaseSchema getSchema(final String schemaName) throws HBqlException {
 
-    public static HBaseSchema getSchema(final String schemaName) throws HBqlException {
-
-        final HBaseSchema schema = SchemaManager.getSchemaMap().get(schemaName);
+        final HBaseSchema schema = this.getSchemaMap().get(schemaName);
         if (schema != null)
             return schema;
 
-        throw new HBqlException("Unknown schema: " + schemaName);
+        throw new HBqlException("Schema not found: " + schemaName);
     }
 }

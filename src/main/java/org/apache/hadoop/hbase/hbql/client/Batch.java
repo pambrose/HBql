@@ -23,9 +23,11 @@ package org.apache.hadoop.hbase.hbql.client;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.client.Delete;
+import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.hbql.impl.BatchAction;
 import org.apache.hadoop.hbase.hbql.impl.DeleteAction;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.impl.InsertAction;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
@@ -33,12 +35,27 @@ import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public class Batch {
 
+    private final HConnection connection;
+
     private final Map<String, List<BatchAction>> actionList = Maps.newHashMap();
+
+    public Batch(final HConnection connection) {
+        this.connection = connection;
+    }
+
+    public HConnection getConnection() {
+        return connection;
+    }
+
+    private HConnectionImpl getConnectionImpl() {
+        return (HConnectionImpl)connection;
+    }
 
     public Map<String, List<BatchAction>> getActionList() {
         return this.actionList;
@@ -54,7 +71,7 @@ public class Batch {
     }
 
     public void insert(final Object newrec) throws HBqlException {
-        final AnnotationMapping mapping = AnnotationMapping.getAnnotationMapping(newrec);
+        final AnnotationMapping mapping = this.getConnectionImpl().getAnnotationMapping(newrec);
         final Put put = this.createPut(mapping, newrec);
         this.getActionList(mapping.getSchema().getTableName()).add(new InsertAction(put));
     }
@@ -72,7 +89,7 @@ public class Batch {
     }
 
     public void delete(final Object newrec) throws HBqlException {
-        final AnnotationMapping mapping = AnnotationMapping.getAnnotationMapping(newrec);
+        final AnnotationMapping mapping = this.getConnectionImpl().getAnnotationMapping(newrec);
         this.delete(mapping.getHBaseSchema(), newrec);
     }
 
@@ -127,5 +144,19 @@ public class Batch {
             }
         }
         return put;
+    }
+
+    public void apply() throws HBqlException {
+        try {
+            for (final String tableName : this.getActionList().keySet()) {
+                final HTable table = this.getConnection().getHTable(tableName);
+                for (final BatchAction batchAction : this.getActionList(tableName))
+                    batchAction.apply(table);
+                table.flushCommits();
+            }
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 }

@@ -26,7 +26,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 
 import java.util.Date;
@@ -36,17 +35,17 @@ public class RecordExample {
 
     public static void main(String[] args) throws HBqlException {
 
-        SchemaManager.execute("CREATE SCHEMA testobjects alias testobjects2"
-                              + "("
-                              + "keyval key, "
-                              + "family1:author string alias author, "
-                              + "family1:title string  alias title, "
-                              + "family1:intValue int alias comp1"
-                              + "f3:mapval1 string alias f3mapval1, "
-                              + "f3:mapval2 string alias f3mapval2 "
-                              + ")");
-
         HConnection connection = ConnectionManager.newConnection();
+
+        connection.execute("CREATE SCHEMA testobjects alias testobjects2"
+                           + "("
+                           + "keyval key, "
+                           + "family1:author string alias author, "
+                           + "family1:title string  alias title, "
+                           + "family1:intValue int alias comp1"
+                           + "f3:mapval1 string alias f3mapval1, "
+                           + "f3:mapval2 string alias f3mapval2 "
+                           + ")");
 
         // System.out.println(conn.execute("delete from TestObject with client filter where true"));
         // System.out.println(conn.execute("disable table testobjects"));
@@ -58,16 +57,16 @@ public class RecordExample {
         if (!connection.tableExists("testobjects")) {
             System.out.println(connection.execute("create table with schema testobjects"));
 
-            final Batch batch = new Batch();
+            final Batch batch = new Batch(connection);
             for (int i = 0; i < 10; i++) {
-                HRecord record = SchemaManager.newHRecord("testobjects");
+                HRecord record = connection.getSchema("testobjects").newHRecord();
                 record.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
                 record.setCurrentValue("author", "A new author value: " + i);
                 record.setCurrentValue("title", "A very new title value: " + i);
                 batch.insert(record);
             }
 
-            connection.apply(batch);
+            batch.apply();
         }
 
         if (connection.tableEnabled("testobjects2"))

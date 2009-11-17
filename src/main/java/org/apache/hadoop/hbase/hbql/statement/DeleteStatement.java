@@ -77,7 +77,7 @@ public class DeleteStatement extends SchemaContext implements ParameterStatement
 
         this.connection = connection;
 
-        this.checkIfValidSchemaName();
+        this.validateSchemaName(connection);
 
         this.getWithArgs().setSchemaContext(this);
 

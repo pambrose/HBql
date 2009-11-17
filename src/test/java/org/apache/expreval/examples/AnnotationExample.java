@@ -123,11 +123,11 @@ public class AnnotationExample {
         if (!connection.tableExists("TestObject")) {
             System.out.println(connection.execute("create table with schema TestObject"));
 
-            final Batch batch = new Batch();
+            final Batch batch = new Batch(connection);
             for (int i = 0; i < 10; i++)
                 batch.insert(new TestObject(i));
 
-            connection.apply(batch);
+            batch.apply();
         }
 
         final String query2 = "SELECT title, titles, author, authorVersions "

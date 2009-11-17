@@ -20,8 +20,6 @@
 
 package org.apache.hadoop.hbase.jdbc;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,23 +32,30 @@ import java.sql.Statement;
 
 public class BasicTest {
 
+    static Connection connection = null;
+
     @BeforeClass
-    public static void setup() throws HBqlException, ClassNotFoundException {
-        SchemaManager.execute("CREATE SCHEMA tab4 FOR TABLE table2"
-                              + "("
-                              + "keyval key, "
-                              + "f1:val1 string alias val1, "
-                              + "f1:val2 string alias val2, "
-                              + "f1:val3 string alias notdefinedval, "
-                              + "f2:val1 date alias val3, "
-                              + "f2:val2 date alias val4, "
-                              + "f3:val1 int alias val5, "
-                              + "f3:val2 int alias val6, "
-                              + "f3:val3 int alias val7, "
-                              + "f3:val4 int[] alias val8, "
-                              + "f3:mapval1 object alias f3mapval1, "
-                              + "f3:mapval2 object alias f3mapval2 "
-                              + ")");
+    public static void beforeClass() throws SQLException, ClassNotFoundException {
+
+        connection = DriverManager.getConnection("jdbc:hbql");
+
+        Statement stmt = connection.createStatement();
+
+        stmt.execute("CREATE SCHEMA tab4 FOR TABLE table2"
+                     + "("
+                     + "keyval key, "
+                     + "f1:val1 string alias val1, "
+                     + "f1:val2 string alias val2, "
+                     + "f1:val3 string alias notdefinedval, "
+                     + "f2:val1 date alias val3, "
+                     + "f2:val2 date alias val4, "
+                     + "f3:val1 int alias val5, "
+                     + "f3:val2 int alias val6, "
+                     + "f3:val3 int alias val7, "
+                     + "f3:val4 int[] alias val8, "
+                     + "f3:mapval1 object alias f3mapval1, "
+                     + "f3:mapval2 object alias f3mapval2 "
+                     + ")");
 
         Class.forName("org.apache.hadoop.hbase.jdbc.Driver");
     }
@@ -58,8 +63,6 @@ public class BasicTest {
 
     @Test
     public void simpleQuery() throws SQLException {
-
-        Connection connection = DriverManager.getConnection("jdbc:hbql");
 
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("select * from tab4");
@@ -79,8 +82,6 @@ public class BasicTest {
 
     @Test
     public void simpleQueryWithNamedParams() throws SQLException {
-
-        Connection connection = DriverManager.getConnection("jdbc:hbql", null, null);
 
         PreparedStatement stmt = connection.prepareStatement("select * from tab4 WITH CLIENT FILTER WHERE :val1 = :val2");
         stmt.setString(1, "aaa");
@@ -102,8 +103,6 @@ public class BasicTest {
 
     @Test
     public void simpleQueryWithUnNamedParams() throws SQLException {
-
-        Connection connection = DriverManager.getConnection("jdbc:hbql", null, null);
 
         PreparedStatement stmt = connection.prepareStatement("select * from tab4 WITH CLIENT FILTER WHERE ? = ?");
         stmt.setString(1, "aaa");

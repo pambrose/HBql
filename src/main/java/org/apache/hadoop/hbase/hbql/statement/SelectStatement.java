@@ -71,7 +71,7 @@ public class SelectStatement extends SchemaContext implements ParameterStatement
         else
             this.validated = true;
 
-        this.checkIfValidSchemaName();
+        this.validateSchemaName(connection);
 
         this.getSelectAttribList().clear();
 

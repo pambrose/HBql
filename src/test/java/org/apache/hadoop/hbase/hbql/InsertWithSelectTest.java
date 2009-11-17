@@ -28,7 +28,6 @@ import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
@@ -44,17 +43,17 @@ public class InsertWithSelectTest extends TestSupport {
     static Random randomVal = new Random();
 
     @BeforeClass
-    public static void onetimeSetup() throws HBqlException {
-
-        SchemaManager.execute("CREATE SCHEMA tab3 FOR TABLE table3"
-                              + "("
-                              + "keyval key, "
-                              + "f1:val1 string alias val1, "
-                              + "f1:val2 int alias val2, "
-                              + "f1:val3 int alias val3 DEFAULT 12 "
-                              + ")");
+    public static void beforeClass() throws HBqlException {
 
         connection = ConnectionManager.newConnection();
+
+        connection.execute("CREATE SCHEMA tab3 FOR TABLE table3"
+                           + "("
+                           + "keyval key, "
+                           + "f1:val1 string alias val1, "
+                           + "f1:val2 int alias val2, "
+                           + "f1:val3 int alias val3 DEFAULT 12 "
+                           + ")");
 
         if (!connection.tableExists("table3"))
             System.out.println(connection.execute("create table using tab3"));

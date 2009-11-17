@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.util.Maps;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -27,7 +28,6 @@ import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -35,11 +35,15 @@ import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
+import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
+import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class HConnectionImpl implements HConnection {
@@ -48,9 +52,14 @@ public class HConnectionImpl implements HConnection {
     private final String name;
     private boolean closed = false;
 
+    private final SchemaManager schemaManager;
+    private final Map<Class<?>, AnnotationMapping> annotationMappingMap = Maps.newHashMap();
+
+
     public HConnectionImpl(final String name, final HBaseConfiguration config) {
         this.name = name;
         this.config = (config == null) ? new HBaseConfiguration() : config;
+        this.schemaManager = new SchemaManager(this);
     }
 
     public String getName() {
@@ -59,6 +68,32 @@ public class HConnectionImpl implements HConnection {
 
     public HBaseConfiguration getConfig() {
         return this.config;
+    }
+
+    public SchemaManager getSchemaManager() {
+        return this.schemaManager;
+    }
+
+    private Map<Class<?>, AnnotationMapping> getAnnotationMappingMap() {
+        return this.annotationMappingMap;
+    }
+
+    public AnnotationMapping getAnnotationMapping(final Object obj) throws HBqlException {
+        return this.getAnnotationMapping(obj.getClass());
+    }
+
+    public synchronized AnnotationMapping getAnnotationMapping(final Class<?> clazz) throws HBqlException {
+
+        AnnotationMapping mapping = getAnnotationMappingMap().get(clazz);
+
+        if (mapping != null)
+            return mapping;
+
+        mapping = AnnotationMapping.newAnnotationMapping(clazz);
+
+        getAnnotationMappingMap().put(clazz, mapping);
+
+        return mapping;
     }
 
     public HBaseAdmin getAdmin() throws HBqlException {
@@ -159,20 +194,6 @@ public class HConnectionImpl implements HConnection {
         return new HPreparedStatementImpl(this, sql);
     }
 
-    public void apply(final Batch batch) throws HBqlException {
-        try {
-            for (final String tableName : batch.getActionList().keySet()) {
-                final HTable table = this.getHTable(tableName);
-                for (final BatchAction batchAction : batch.getActionList(tableName))
-                    batchAction.apply(table);
-                table.flushCommits();
-            }
-        }
-        catch (IOException e) {
-            throw new HBqlException(e);
-        }
-    }
-
     public void close() throws HBqlException {
         this.closed = true;
     }
@@ -209,5 +230,21 @@ public class HConnectionImpl implements HConnection {
     public ExecutionResults executeUpdate(final String sql) throws SQLException {
         final HStatement stmt = this.createStatement();
         return stmt.executeUpdate(sql);
+    }
+
+    public boolean schemaExists(final String schemaName) {
+        return this.getSchemaManager().schemaExists(schemaName);
+    }
+
+    public HBaseSchema getSchema(final String schemaName) throws HBqlException {
+        return this.getSchemaManager().getSchema(schemaName);
+    }
+
+    public boolean dropSchema(final String schemaName) {
+        return this.getSchemaManager().dropSchema(schemaName);
+    }
+
+    public Set<String> getSchemaNames() {
+        return this.getSchemaManager().getSchemaNames();
     }
 }

@@ -28,7 +28,6 @@ import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
@@ -75,9 +74,8 @@ public class InsertStatement extends SchemaContext implements ParameterStatement
             this.validated = true;
 
         this.connection = connection;
-        this.record = SchemaManager.newHRecord(this.getSchemaName());
-
-        this.checkIfValidSchemaName();
+        this.validateSchemaName(this.getConnection());
+        this.record = this.getConnection().getSchema(this.getSchemaName()).newHRecord();
 
         for (final SingleExpressionContext element : this.getInsertColumnList()) {
 
@@ -187,7 +185,7 @@ public class InsertStatement extends SchemaContext implements ParameterStatement
 
         while (this.getInsertValuesSource().hasValues()) {
 
-            final Batch batch = new Batch();
+            final Batch batch = new Batch(connection);
 
             for (int i = 0; i < this.getInsertColumnList().size(); i++) {
                 final String name = this.getInsertColumnList().get(i).asString();
@@ -204,7 +202,7 @@ public class InsertStatement extends SchemaContext implements ParameterStatement
 
             batch.insert(this.getHRecord());
 
-            connection.apply(batch);
+            batch.apply();
             cnt++;
         }
 

@@ -25,8 +25,9 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -41,14 +42,16 @@ public class HBqlExample {
         final byte[] author = Bytes.toBytes("author");
         final byte[] title = Bytes.toBytes("title");
 
-        SchemaManager.execute("CREATE SCHEMA testobjects alias testobjects2"
-                              + "("
-                              + "keyval key, "
-                              + "family1:author string alias author, "
-                              + "family1:title string  alias title"
-                              + ")");
+        HConnection connection = ConnectionManager.newConnection();
 
-        HBaseSchema schema = SchemaManager.getSchema("testobjects");
+        connection.execute("CREATE SCHEMA testobjects alias testobjects2"
+                           + "("
+                           + "keyval key, "
+                           + "family1:author string alias author, "
+                           + "family1:title string  alias title"
+                           + ")");
+
+        HBaseSchema schema = connection.getSchema("testobjects");
 
         final HBqlFilter filter = schema.newHBqlFilter("title LIKE '.*3.*' OR family1:author LIKE '.*4.*'");
 

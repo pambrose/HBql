@@ -22,7 +22,6 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
@@ -60,10 +59,9 @@ public class CreateSchemaStatement extends SchemaContext implements ConnectionSt
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        final HBaseSchema schema = SchemaManager.createHBaseSchema(connection,
-                                                                   this.getSchemaName(),
-                                                                   this.getTableName(),
-                                                                   this.getColumnDescriptionList());
+        final HBaseSchema schema = connection.getSchemaManager().createHBaseSchema(this.getSchemaName(),
+                                                                                   this.getTableName(),
+                                                                                   this.getColumnDescriptionList());
 
         this.setSchema(schema);
 

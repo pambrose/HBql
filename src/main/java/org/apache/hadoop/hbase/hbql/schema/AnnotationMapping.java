@@ -35,7 +35,6 @@ import java.util.Map;
 
 public class AnnotationMapping extends Mapping {
 
-    private final static Map<Class<?>, AnnotationMapping> annotationMappingMap = Maps.newHashMap();
 
     private final Class<?> clazz;
     private final Map<String, CurrentValueAnnotationAttrib> columnMap = Maps.newHashMap();
@@ -68,16 +67,11 @@ public class AnnotationMapping extends Mapping {
                                     + this.getSchema().getKeyAttrib().getFamilyQualifiedName());
     }
 
-    public synchronized static boolean isAnnotatedObject(final Class<?> clazz) {
+    public static boolean isAnnotatedObject(final Class<?> clazz) {
         return clazz.getAnnotation(org.apache.hadoop.hbase.hbql.client.Schema.class) != null;
     }
 
-    public synchronized static AnnotationMapping getAnnotationMapping(final Class<?> clazz) throws HBqlException {
-
-        AnnotationMapping mapping = getAnnotationMappingMap().get(clazz);
-
-        if (mapping != null)
-            return mapping;
+    public static AnnotationMapping newAnnotationMapping(final Class<?> clazz) throws HBqlException {
 
         org.apache.hadoop.hbase.hbql.client.Schema schemaAnnotation =
                 clazz.getAnnotation(org.apache.hadoop.hbase.hbql.client.Schema.class);
@@ -88,13 +82,8 @@ public class AnnotationMapping extends Mapping {
         if (schemaAnnotation.name() == null || schemaAnnotation.name().length() == 0)
             throw new HBqlException("@Schema annotation for class " + clazz.getName() + " is missing a name");
 
-        mapping = new AnnotationMapping(schemaAnnotation.name(), clazz);
-
-        getAnnotationMappingMap().put(clazz, mapping);
-
-        return mapping;
+        return new AnnotationMapping(schemaAnnotation.name(), clazz);
     }
-
 
     private void processColumnAnnotation(final Field field) throws HBqlException {
 
@@ -146,14 +135,6 @@ public class AnnotationMapping extends Mapping {
     public ColumnAttrib getAttribByVariableName(final String name) throws HBqlException {
         final String valname = this.getSchema().getAttribByVariableName(name).getFamilyQualifiedName();
         return this.getAttrib(valname);
-    }
-
-    public static AnnotationMapping getAnnotationMapping(final Object obj) throws HBqlException {
-        return getAnnotationMapping(obj.getClass());
-    }
-
-    private static Map<Class<?>, AnnotationMapping> getAnnotationMappingMap() {
-        return annotationMappingMap;
     }
 
     private Class<?> getClazz() {

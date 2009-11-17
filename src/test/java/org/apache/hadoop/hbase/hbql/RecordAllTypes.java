@@ -22,8 +22,8 @@ package org.apache.hadoop.hbase.hbql;
 
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 
 import java.io.Serializable;
@@ -130,9 +130,9 @@ public class RecordAllTypes implements Serializable {
         }
     }
 
-    public HRecord getHRecord() throws HBqlException {
+    public HRecord getHRecord(final HConnection connection) throws HBqlException {
 
-        HRecord rec = SchemaManager.newHRecord("alltypes");
+        HRecord rec = connection.getSchema("alltypes").newHRecord();
 
         rec.setCurrentValue("keyval", this.keyval);
         rec.setCurrentValue("booleanValue", this.booleanValue);

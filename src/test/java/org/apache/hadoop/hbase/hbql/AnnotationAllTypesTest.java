@@ -28,7 +28,6 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,39 +41,39 @@ public class AnnotationAllTypesTest extends TestSupport {
     static int cnt = 10;
 
     @BeforeClass
-    public static void setup() throws HBqlException {
-
-        if (!SchemaManager.schemaExists("alltypes2"))
-            SchemaManager.execute("CREATE SCHEMA alltypes2 FOR TABLE example2"
-                                  + "("
-                                  + "keyval KEY, "
-                                  + "f1:val1 boolean ALIAS booleanValue, "
-                                  + "f1:val2 boolean[] ALIAS booleanArrayValue, "
-                                  + "f1:val3 byte ALIAS byteValue, "
-                                  + "f1:val4 byte[] ALIAS byteArrayValue, "
-                                  + "f1:val5 char ALIAS charValue, "
-                                  + "f1:val6 char[] ALIAS charArrayValue, "
-                                  + "f1:val7 short ALIAS shortValue, "
-                                  + "f1:val8 short[] ALIAS shortArrayValue, "
-                                  + "f1:val9 int ALIAS intValue, "
-                                  + "f1:val10 int[] ALIAS intArrayValue, "
-                                  + "f1:val11 long ALIAS longValue, "
-                                  + "f1:val12 long[] ALIAS longArrayValue, "
-                                  + "f1:val13 float ALIAS floatValue, "
-                                  + "f1:val14 float[] ALIAS floatArrayValue, "
-                                  + "f1:val15 double ALIAS doubleValue, "
-                                  + "f1:val16 double[] ALIAS doubleArrayValue, "
-                                  + "f1:val17 string ALIAS stringValue, "
-                                  + "f1:val18 string[] ALIAS stringArrayValue, "
-                                  + "f1:val19 date ALIAS dateValue, "
-                                  + "f1:val20 date[] ALIAS dateArrayValue, "
-                                  + "f1:val21 object ALIAS mapValue, "
-                                  + "f1:val22 object[] ALIAS mapArrayValue, "
-                                  + "f1:val23 object ALIAS objectValue, "
-                                  + "f1:val24 object[] ALIAS objectArrayValue "
-                                  + ")");
+    public static void beforeClass() throws HBqlException {
 
         connection = ConnectionManager.newConnection();
+
+        if (!connection.schemaExists("alltypes2"))
+            connection.execute("CREATE SCHEMA alltypes2 FOR TABLE example2"
+                               + "("
+                               + "keyval KEY, "
+                               + "f1:val1 boolean ALIAS booleanValue, "
+                               + "f1:val2 boolean[] ALIAS booleanArrayValue, "
+                               + "f1:val3 byte ALIAS byteValue, "
+                               + "f1:val4 byte[] ALIAS byteArrayValue, "
+                               + "f1:val5 char ALIAS charValue, "
+                               + "f1:val6 char[] ALIAS charArrayValue, "
+                               + "f1:val7 short ALIAS shortValue, "
+                               + "f1:val8 short[] ALIAS shortArrayValue, "
+                               + "f1:val9 int ALIAS intValue, "
+                               + "f1:val10 int[] ALIAS intArrayValue, "
+                               + "f1:val11 long ALIAS longValue, "
+                               + "f1:val12 long[] ALIAS longArrayValue, "
+                               + "f1:val13 float ALIAS floatValue, "
+                               + "f1:val14 float[] ALIAS floatArrayValue, "
+                               + "f1:val15 double ALIAS doubleValue, "
+                               + "f1:val16 double[] ALIAS doubleArrayValue, "
+                               + "f1:val17 string ALIAS stringValue, "
+                               + "f1:val18 string[] ALIAS stringArrayValue, "
+                               + "f1:val19 date ALIAS dateValue, "
+                               + "f1:val20 date[] ALIAS dateArrayValue, "
+                               + "f1:val21 object ALIAS mapValue, "
+                               + "f1:val22 object[] ALIAS mapArrayValue, "
+                               + "f1:val23 object ALIAS objectValue, "
+                               + "f1:val24 object[] ALIAS objectArrayValue "
+                               + ")");
 
         if (!connection.tableExists("example2"))
             System.out.println(connection.execute("create table using alltypes2"));
@@ -86,7 +85,7 @@ public class AnnotationAllTypesTest extends TestSupport {
     public static List<AnnotatedAllTypes> insertSomeData(int cnt, boolean noRandomData) throws HBqlException {
 
         List<AnnotatedAllTypes> retval = Lists.newArrayList();
-        final Batch batch = new Batch();
+        final Batch batch = new Batch(connection);
 
         for (int i = 0; i < cnt; i++) {
 
@@ -98,7 +97,7 @@ public class AnnotationAllTypesTest extends TestSupport {
             batch.insert(aat);
         }
 
-        connection.apply(batch);
+        batch.apply();
 
         return retval;
     }

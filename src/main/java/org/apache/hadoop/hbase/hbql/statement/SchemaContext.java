@@ -22,8 +22,8 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
@@ -36,30 +36,33 @@ public abstract class SchemaContext implements HBqlStatement, Serializable {
 
     private Mapping mapping = null;
     private volatile Schema schema = null;
-    private boolean validSchemaName = true;
-    private String invalidSchemaName = null;
+    private String schemaName = null;
 
     protected SchemaContext(final String schemaName) {
-        try {
-            this.setSchema(SchemaManager.getSchema(schemaName));
-        }
-        catch (HBqlException e) {
-            validSchemaName = false;
-            invalidSchemaName = schemaName;
-        }
+        this.schemaName = schemaName;
     }
 
     protected SchemaContext(final Schema schema) {
         this.setSchema(schema);
     }
 
+    protected void validateSchemaName(final HConnectionImpl connection) throws HBqlException {
+        try {
+            this.setSchema(connection.getSchemaManager().getSchema(this.schemaName));
+        }
+        catch (HBqlException e) {
+            throw new HBqlException("Unknown schema name: " + this.schemaName);
+        }
+    }
+
     protected String getSchemaName() {
-        return this.getSchema() == null ? null : this.getSchema().getSchemaName();
+        return this.schemaName;
     }
 
     public void setSchema(final Schema schema) {
         this.schema = schema;
-        this.validSchemaName = true;
+        if (this.getSchema() != null)
+            this.schemaName = this.getSchema().getSchemaName();
     }
 
     public Schema getSchema() {
@@ -73,11 +76,6 @@ public abstract class SchemaContext implements HBqlStatement, Serializable {
             this.mapping = new HRecordMapping(this);
 
         return this.mapping;
-    }
-
-    protected void checkIfValidSchemaName() throws HBqlException {
-        if (!this.validSchemaName)
-            throw new HBqlException("Unknown schema name: " + this.invalidSchemaName);
     }
 
     public void setMapping(final Mapping mapping) throws HBqlException {

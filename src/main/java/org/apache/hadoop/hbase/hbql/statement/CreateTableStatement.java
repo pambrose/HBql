@@ -36,7 +36,7 @@ public class CreateTableStatement extends SchemaContext implements ConnectionSta
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        this.checkIfValidSchemaName();
+        this.validateSchemaName(connection);
 
         final HTableDescriptor tableDesc = new HTableDescriptor(this.getSchema().getTableName());
 

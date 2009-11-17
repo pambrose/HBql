@@ -26,8 +26,10 @@ import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
@@ -70,6 +72,10 @@ public class HBaseSchema extends Schema {
     public HBaseSchema(final String schemaName,
                        final String tableName) throws HBqlException {
         this(schemaName, tableName, null);
+    }
+
+    public HRecord newHRecord() throws HBqlException {
+        return new HRecordImpl(new SimpleSchemaContext(this, null));
     }
 
     private void processColumn(final ColumnDescription columnDescription,

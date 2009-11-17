@@ -21,7 +21,9 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.expreval.expr.ExpressionTree;
+import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.InvalidFunctionException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
@@ -362,35 +364,37 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalFalse("'a' IN ('d', 'b')");
         assertEvalTrue("'a' NOT IN ('d', 'b')");
 
+        HConnection connection = ConnectionManager.newConnection();
         final ObjectAllTypes obj = new ObjectAllTypes("aaabbb", 3, "aaab");
 
-        assertEvalTrue(obj, "keyval CONTAINS 'ab'");
-        assertExprEvalFalse(obj, "keyval CONTAINS 'ba'");
-        assertExprEvalFalse(obj, "'asasas' CONTAINS stringValue");
-        assertEvalTrue(obj, "'xxaaabxx' CONTAINS stringValue");
-        assertEvalTrue(obj, "keyval CONTAINS stringValue");
-        assertEvalTrue(obj, "keyval+'zz' CONTAINS stringValue+'bbz'");
-        assertExprEvalFalse(obj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
-        assertExprEvalFalse(obj, "NOT ((('asasas' NOT CONTAINS stringValue)))");
+        assertAnnotationEvalTrue(connection, obj, "keyval CONTAINS 'ab'");
+        assertAnnotationEvalFalse(connection, obj, "keyval CONTAINS 'ba'");
+        assertAnnotationEvalFalse(connection, obj, "'asasas' CONTAINS stringValue");
+        assertAnnotationEvalTrue(connection, obj, "'xxaaabxx' CONTAINS stringValue");
+        assertAnnotationEvalTrue(connection, obj, "keyval CONTAINS stringValue");
+        assertAnnotationEvalTrue(connection, obj, "keyval+'zz' CONTAINS stringValue+'bbz'");
+        assertAnnotationEvalFalse(connection, obj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
+        assertAnnotationEvalFalse(connection, obj, "NOT ((('asasas' NOT CONTAINS stringValue)))");
+        assertAnnotationEvalTrue(connection, obj, "NOT(keyval+'zz' NOT CONTAINS stringValue+'bbz')");
 
         // Defines schema
-        AnnotationAllTypesTest.setup();
+        AnnotationAllTypesTest.beforeClass();
 
         final AnnotatedAllTypes annoObj = new AnnotatedAllTypes("aaabbb", 3, "aaab");
 
-        assertEvalTrue(annoObj, "keyval CONTAINS 'ab'");
-        assertExprEvalFalse(annoObj, "keyval CONTAINS 'ba'");
-        assertExprEvalFalse(annoObj, "'asasas' CONTAINS stringValue");
-        assertEvalTrue(annoObj, "'xxaaabxx' CONTAINS stringValue");
-        assertEvalTrue(annoObj, "keyval CONTAINS stringValue");
-        assertEvalTrue(annoObj, "keyval+'zz' CONTAINS stringValue+'bbz'");
-        assertExprEvalFalse(annoObj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
-        assertEvalTrue(obj, "NOT(keyval+'zz' NOT CONTAINS stringValue+'bbz')");
+        assertAnnotationEvalTrue(connection, annoObj, "keyval CONTAINS 'ab'");
+        assertAnnotationEvalFalse(connection, annoObj, "keyval CONTAINS 'ba'");
+        assertAnnotationEvalFalse(connection, annoObj, "'asasas' CONTAINS stringValue");
+        assertAnnotationEvalTrue(connection, annoObj, "'xxaaabxx' CONTAINS stringValue");
+        assertAnnotationEvalTrue(connection, annoObj, "keyval CONTAINS stringValue");
+        assertAnnotationEvalTrue(connection, annoObj, "keyval+'zz' CONTAINS stringValue+'bbz'");
+        assertAnnotationEvalFalse(connection, annoObj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
     }
 
     @Test
     public void booleanParamFunctions() throws HBqlException {
 
+        HConnection connection = ConnectionManager.newConnection();
         ExpressionTree tree;
 
         tree = parseExpr(":a CONTAINS :b");
@@ -403,7 +407,7 @@ public class WhereExpressionsTest extends TestSupport {
 
         final ObjectAllTypes obj = new ObjectAllTypes("aaabbb", 3, "aaab");
 
-        tree = parseExpr(obj, "keyval CONTAINS :a");
+        tree = parseAnnotationExpr(connection, obj, "keyval CONTAINS :a");
         tree.setParameter("a", "ab");
         assertExpressionEvalTrue(obj, tree);
         tree.setParameter("a", "ba");
@@ -513,6 +517,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void regexFunctions() throws HBqlException {
 
+        HConnection connection = ConnectionManager.newConnection();
         final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "aaab");
 
         assertEvalTrue("'abc' like 'abc'");
@@ -520,30 +525,31 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalTrue("'aaaaab' like 'a*b'");
         assertEvalTrue("'aaaaa' + 'b' like 'a*b'");
         assertEvalTrue("('aaaaa' + 'b') like 'a*b'");
-        assertEvalTrue(obj, "stringValue + 'b' like 'a*bb'");
-        assertEvalTrue(obj, "(((((stringValue + 'b'))))) like 'a*bb'");
+        assertAnnotationEvalTrue(connection, obj, "stringValue + 'b' like 'a*bb'");
+        assertAnnotationEvalTrue(connection, obj, "(((((stringValue + 'b'))))) like 'a*bb'");
     }
 
     @Test
     public void objectFunctions() throws HBqlException {
 
+        HConnection connection = ConnectionManager.newConnection();
         final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "bbb");
 
-        assertEvalTrue(obj, "stringValue between 'aaa' AND 'ccc'");
-        assertEvalTrue(obj, "stringValue between 'aaa' AND 'ccc' AND stringValue between 'aaa' AND 'ccc'");
-        assertEvalTrue(obj, "stringValue between 'bbb' AND 'ccc'");
-        assertExprEvalFalse(obj, "stringValue between 'ccc' AND 'ddd'");
-        assertEvalTrue(obj, "('bbb' between stringValue AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
+        assertAnnotationEvalTrue(connection, obj, "stringValue between 'aaa' AND 'ccc'");
+        assertAnnotationEvalTrue(connection, obj, "stringValue between 'aaa' AND 'ccc' AND stringValue between 'aaa' AND 'ccc'");
+        assertAnnotationEvalTrue(connection, obj, "stringValue between 'bbb' AND 'ccc'");
+        assertAnnotationEvalFalse(connection, obj, "stringValue between 'ccc' AND 'ddd'");
+        assertAnnotationEvalTrue(connection, obj, "('bbb' between stringValue AND 'ccc') AND ('fff' between 'eee' AND 'ggg')");
 
-        assertEvalTrue(obj, "intValue between 2 AND 5");
-        assertEvalTrue(obj, "intValue between (1+1) AND (intValue+2)");
-        assertExprEvalFalse(obj, "stringValue IN ('v2', 'v0', 'v999')");
-        assertEvalTrue(obj, "'v19' = 'v19'");
-        assertExprEvalFalse(obj, "'v19'= stringValue");
-        assertExprEvalFalse(obj, "stringValue = 'v19'");
-        assertExprEvalFalse(obj, "stringValue = 'v19' OR stringValue IN ('v2', 'v0', 'v999')");
-        assertEvalTrue(obj, "stringValue IS NOT NULL");
-        assertExprEvalFalse(obj, "stringValue IS NULL");
+        assertAnnotationEvalTrue(connection, obj, "intValue between 2 AND 5");
+        assertAnnotationEvalTrue(connection, obj, "intValue between (1+1) AND (intValue+2)");
+        assertAnnotationEvalFalse(connection, obj, "stringValue IN ('v2', 'v0', 'v999')");
+        assertAnnotationEvalTrue(connection, obj, "'v19' = 'v19'");
+        assertAnnotationEvalFalse(connection, obj, "'v19'= stringValue");
+        assertAnnotationEvalFalse(connection, obj, "stringValue = 'v19'");
+        assertAnnotationEvalFalse(connection, obj, "stringValue = 'v19' OR stringValue IN ('v2', 'v0', 'v999')");
+        assertAnnotationEvalTrue(connection, obj, "stringValue IS NOT NULL");
+        assertAnnotationEvalFalse(connection, obj, "stringValue IS NULL");
     }
 
     @Test

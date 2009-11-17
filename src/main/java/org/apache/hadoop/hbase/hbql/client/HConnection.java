@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -52,8 +53,6 @@ public interface HConnection {
 
     Set<String> getFamilyNames(String tableName) throws HBqlException;
 
-    void apply(Batch batch) throws HBqlException;
-
     void close() throws HBqlException;
 
     boolean isClosed() throws HBqlException;
@@ -69,4 +68,12 @@ public interface HConnection {
     <T> List<T> executeQueryAndFetch(String sql, Class clazz) throws HBqlException;
 
     ExecutionResults executeUpdate(String sql) throws SQLException;
+
+    HBaseSchema getSchema(final String schemaName) throws HBqlException;
+
+    boolean schemaExists(String schemaName);
+
+    boolean dropSchema(final String schemaName);
+
+    Set<String> getSchemaNames();
 }

@@ -25,7 +25,6 @@ import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
-import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
@@ -63,7 +62,7 @@ public class Query<E> {
                                         final Class clazz) throws HBqlException {
         Mapping mapping = null;
         if (clazz != null) {
-            mapping = AnnotationMapping.getAnnotationMapping(clazz);
+            mapping = connection.getAnnotationMapping(clazz);
 
             if (mapping == null)
                 throw new HBqlException("Unknown class " + clazz.getName());

@@ -27,7 +27,6 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
@@ -40,7 +39,6 @@ import java.sql.Statement;
 import java.util.Set;
 
 public class ExamplesTest extends TestSupport {
-
 
     public void showTables() throws HBqlException {
 
@@ -59,10 +57,12 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: show-schemas
 
-        System.out.println(SchemaManager.execute("SHOW SCHEMAS"));
+        HConnection connection = ConnectionManager.newConnection();
+
+        System.out.println(connection.execute("SHOW SCHEMAS"));
 
         // Or using the API
-        Set<String> schemaNamess = SchemaManager.getHBaseSchemaNames();
+        Set<String> schemaNamess = connection.getSchemaNames();
 
         // END SNIPPET: show-schemas
     }
@@ -121,10 +121,12 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: drop-schema
 
-        SchemaManager.execute("DROP SCHEMA foo_schema");
+        HConnection connection = ConnectionManager.newConnection();
+
+        connection.execute("DROP SCHEMA foo_schema");
 
         // Or using the API
-        SchemaManager.dropSchema("foo_schema");
+        connection.dropSchema("foo_schema");
 
         // END SNIPPET: drop-schema
 
@@ -159,28 +161,27 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: insert1
 
-        SchemaManager.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
-                              + "("
-                              + "keyval KEY, "
-                              + "family1:val1 INT ALIAS val1, "
-                              + "family1:val2 STRING ALIAS val2"
-                              + ")");
-
         HConnection connection = ConnectionManager.newConnection();
+
+        connection.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
+                           + "("
+                           + "keyval KEY, "
+                           + "family1:val1 INT ALIAS val1, "
+                           + "family1:val2 STRING ALIAS val2"
+                           + ")");
 
         System.out.println(connection.execute("INSERT INTO foo_schema (keyval, val1, val2) "
                                               + "VALUES (ZEROPAD(2, 10), 123, 'test val')"));
 
         // Or using the Record interface
-        HRecord rec = SchemaManager.newHRecord("foo_schema");
+        HRecord rec = connection.getSchema("foo_schema").newHRecord();
         rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(2, 10));
         rec.setCurrentValue("val1", 123);
         rec.setCurrentValue("al2", "testval");
 
-        Batch batch = new Batch();
+        Batch batch = new Batch(connection);
         batch.insert(rec);
-
-        connection.apply(batch);
+        batch.apply();
 
         // END SNIPPET: insert1
 
@@ -190,15 +191,16 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: insert2
 
-        // A column with a default value.
-        SchemaManager.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
-                              + "("
-                              + "keyval KEY, "
-                              + "family1:val1 INT ALIAS val1, "
-                              + "family1:val2 STRING ALIAS val2 DEFAULT 'this is a default value'"
-                              + ")");
-
         HConnection connection = ConnectionManager.newConnection();
+
+        // A column with a default value.
+        connection.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
+                           + "("
+                           + "keyval KEY, "
+                           + "family1:val1 INT ALIAS val1, "
+                           + "family1:val2 STRING ALIAS val2 DEFAULT 'this is a default value'"
+                           + ")");
+
         HPreparedStatement ps = connection.prepareStatement("INSERT INTO foo_schema (keyval, val1, val2) "
                                                             + "VALUES (:key, :val1, DEFAULT)");
 
@@ -212,17 +214,17 @@ public class ExamplesTest extends TestSupport {
 
     public void insert3() throws HBqlException {
 
-        // START SNIPPET: insert3
-        SchemaManager.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
-                              + "("
-                              + "keyval KEY, "
-                              + "family1:val1 STRING ALIAS val1, "
-                              + "family1:val2 STRING ALIAS val2, "
-                              + "family1:val3 STRING ALIAS val3, "
-                              + "family1:val4 STRING ALIAS val4 "
-                              + ")");
         HConnection connection = ConnectionManager.newConnection();
 
+        // START SNIPPET: insert3
+        connection.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
+                           + "("
+                           + "keyval KEY, "
+                           + "family1:val1 STRING ALIAS val1, "
+                           + "family1:val2 STRING ALIAS val2, "
+                           + "family1:val3 STRING ALIAS val3, "
+                           + "family1:val4 STRING ALIAS val4 "
+                           + ")");
         System.out.println(connection.execute("INSERT INTO foo_schema (keyval, val1, val2) "
                                               + "SELECT keyval, val3, val4 FROM foo2_schema"));
         // END SNIPPET: insert3
@@ -233,33 +235,36 @@ public class ExamplesTest extends TestSupport {
     public void createSchema() throws HBqlException {
 
         // START SNIPPET: create-schema1
+
+        HConnection connection = ConnectionManager.newConnection();
+
         // Schema named foo that corresponds to table foo.
-        SchemaManager.execute("CREATE SCHEMA foo (keyval key, family1:val1 STRING)");
+        connection.execute("CREATE SCHEMA foo (keyval key, family1:val1 STRING)");
         // END SNIPPET: create-schema1
 
         // START SNIPPET: create-schema2
         // Schema named schema1 that corresponds to table foo.
-        SchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo (keyval key, family1:val1 STRING ALIAS val2)");
+        connection.execute("CREATE SCHEMA schema1 FOR TABLE foo (keyval key, family1:val1 STRING ALIAS val2)");
         // END SNIPPET: create-schema2
 
         // START SNIPPET: create-schema3
         // A column with a default value.
-        SchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo "
-                              + "("
-                              + "keyval key, "
-                              + "family1:val1 STRING ALIAS val1 DEFAULT 'this is a default value'"
-                              + ")");
+        connection.execute("CREATE SCHEMA schema1 FOR TABLE foo "
+                           + "("
+                           + "keyval key, "
+                           + "family1:val1 STRING ALIAS val1 DEFAULT 'this is a default value'"
+                           + ")");
         // END SNIPPET: create-schema3
 
         // START SNIPPET: create-schema4
 
         // A schema with a family default attribute.
-        SchemaManager.execute("CREATE SCHEMA schema1 FOR TABLE foo "
-                              + "("
-                              + "keyval key, "
-                              + "family1:val1 STRING ALIAS val1, "
-                              + "family1:* ALIAS family1_default"
-                              + ")");
+        connection.execute("CREATE SCHEMA schema1 FOR TABLE foo "
+                           + "("
+                           + "keyval key, "
+                           + "family1:val1 STRING ALIAS val1, "
+                           + "family1:* ALIAS family1_default"
+                           + ")");
 
         // END SNIPPET: create-schema4
 
@@ -272,17 +277,17 @@ public class ExamplesTest extends TestSupport {
 
         HConnection connection = ConnectionManager.newConnection();
 
-        SchemaManager.execute("CREATE SCHEMA tab1 FOR TABLE table1"
-                              + "("
-                              + "keyval KEY, "
-                              + "f1:val1 STRING ALIAS val1, "
-                              + "f3:val1 INT ALIAS val5, "
-                              + "f3:val2 INT ALIAS val6, "
-                              + "f3:val3 INT ALIAS val7, "
-                              + "f1:* ALIAS f1default, "
-                              + "f2:* ALIAS f2default, "
-                              + "f3:* ALIAS f3default "
-                              + ")");
+        connection.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+                           + "("
+                           + "keyval KEY, "
+                           + "f1:val1 STRING ALIAS val1, "
+                           + "f3:val1 INT ALIAS val5, "
+                           + "f3:val2 INT ALIAS val6, "
+                           + "f3:val3 INT ALIAS val7, "
+                           + "f1:* ALIAS f1default, "
+                           + "f2:* ALIAS f2default, "
+                           + "f3:* ALIAS f3default "
+                           + ")");
 
         HPreparedStatement pstmt = connection.prepareStatement("SELECT keyval, f1:val1, val5 FROM tab1 "
                                                                + "WITH KEYS FIRST TO :endkey "
@@ -305,17 +310,17 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: definedExample1
 
-        // Create schema
-        SchemaManager.execute("CREATE SCHEMA demo1 FOR TABLE example1"
-                              + "("
-                              + "keyval KEY, "
-                              + "f1:val1 STRING ALIAS val1, "
-                              + "f1:val2 INT ALIAS val2, "
-                              + "f1:val3 STRING DEFAULT 'This is a default value' "
-                              + ")");
-
-        // Get Connection to HBase
+        // Get a connection to HBase
         HConnection connection = ConnectionManager.newConnection();
+
+        // Create schema
+        connection.execute("CREATE SCHEMA demo1 FOR TABLE example1"
+                           + "("
+                           + "keyval KEY, "
+                           + "f1:val1 STRING ALIAS val1, "
+                           + "f1:val2 INT ALIAS val2, "
+                           + "f1:val3 STRING DEFAULT 'This is a default value' "
+                           + ")");
 
         // Clean up table
         if (!connection.tableExists("example1"))
@@ -336,15 +341,15 @@ public class ExamplesTest extends TestSupport {
         }
 
         // Add some other records using the Record interface
-        final Batch batch = new Batch();
+        final Batch batch = new Batch(connection);
         for (int i = 5; i < 10; i++) {
-            HRecord rec = SchemaManager.newHRecord("demo1");
+            HRecord rec = connection.getSchema("demo1").newHRecord();
             rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
             rec.setCurrentValue("val1", "Value: " + i);
             rec.setCurrentValue("f1:val2", i);
             batch.insert(rec);
         }
-        connection.apply(batch);
+        batch.apply();
 
         // Query the records just added
         HResultSet<HRecord> records = connection.executeQuery("SELECT * FROM demo1");
@@ -364,20 +369,21 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: jdbc1
 
-        SchemaManager.execute("CREATE SCHEMA sch9 FOR TABLE table2"
-                              + "("
-                              + "keyval key, "
-                              + "f1:val1 string alias val1, "
-                              + "f1:val2 string alias val2, "
-                              + "f3:val1 int alias val5, "
-                              + "f3:val2 int alias val6 "
-                              + ")");
-
         Class.forName("org.apache.hadoop.hbase.jdbc.Driver");
         Connection connection = DriverManager.getConnection("jdbc:hbql");
 
-        Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery("select * from sch9");
+        Statement stmt1 = connection.createStatement();
+        stmt1.execute("CREATE SCHEMA sch9 FOR TABLE table2"
+                      + "("
+                      + "keyval key, "
+                      + "f1:val1 string alias val1, "
+                      + "f1:val2 string alias val2, "
+                      + "f3:val1 int alias val5, "
+                      + "f3:val2 int alias val6 "
+                      + ")");
+
+        Statement stmt2 = connection.createStatement();
+        ResultSet rs = stmt2.executeQuery("select * from sch9");
 
         while (rs.next()) {
             int val5 = rs.getInt("val5");
@@ -399,16 +405,16 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: annotatedExample2
 
-        SchemaManager.execute("CREATE SCHEMA demo2 FOR TABLE example2"
-                              + "("
-                              + "keyval KEY, "
-                              + "f1:val1 STRING ALIAS val1, "
-                              + "f1:val2 INT ALIAS val2, "
-                              + "f1:val3 STRING ALIAS val3 DEFAULT 'This is a default value' "
-                              + ")");
-
-        // Get Connection to HBase
+        // Get a connection to HBase
         HConnection connection = ConnectionManager.newConnection();
+
+        connection.execute("CREATE SCHEMA demo2 FOR TABLE example2"
+                           + "("
+                           + "keyval KEY, "
+                           + "f1:val1 STRING ALIAS val1, "
+                           + "f1:val2 INT ALIAS val2, "
+                           + "f1:val3 STRING ALIAS val3 DEFAULT 'This is a default value' "
+                           + ")");
 
         // Clean up table
         if (!connection.tableExists("example2"))
@@ -429,7 +435,7 @@ public class ExamplesTest extends TestSupport {
         }
 
         // Add some other records using an AnnotatedExample object
-        final Batch batch = new Batch();
+        final Batch batch = new Batch(connection);
         for (int i = 5; i < 10; i++) {
             AnnotatedExample obj = new AnnotatedExample();
             obj.keyval = Util.getZeroPaddedNumber(i, 10);
@@ -437,7 +443,7 @@ public class ExamplesTest extends TestSupport {
             obj.val2 = i;
             batch.insert(obj);
         }
-        connection.apply(batch);
+        batch.apply();
 
         // Query the records just added
         HResultSet<AnnotatedExample> records = connection.executeQuery("SELECT * FROM demo2", AnnotatedExample.class);

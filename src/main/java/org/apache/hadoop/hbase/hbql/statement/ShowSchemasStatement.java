@@ -21,18 +21,18 @@
 package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class ShowSchemasStatement implements NonConnectionStatement {
+public class ShowSchemasStatement implements ConnectionStatement {
 
     public ShowSchemasStatement() {
     }
 
-    public ExecutionResults execute() {
+    public ExecutionResults execute(final HConnectionImpl connection) {
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Schemas: ");
-        for (final String schemaName : SchemaManager.getHBaseSchemaNames())
+        for (final String schemaName : connection.getSchemaManager().getSchemaNames())
             retval.out.println("\t" + schemaName);
 
         retval.out.flush();

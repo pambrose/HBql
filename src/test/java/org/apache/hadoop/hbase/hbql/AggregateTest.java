@@ -28,7 +28,6 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
@@ -51,25 +50,25 @@ public class AggregateTest extends TestSupport {
     static Random randomVal = new Random();
 
     @BeforeClass
-    public static void initMethod() throws HBqlException {
-
-        SchemaManager.execute("CREATE SCHEMA aggschema FOR TABLE aggtable"
-                              + "("
-                              + "keyval key, "
-                              + "f1:val1 string alias val1, "
-                              + "f1:val2 string alias val2, "
-                              + "f1:val3 string alias notdefinedval, "
-                              + "f2:val1 date alias val3, "
-                              + "f2:val2 date alias val4, "
-                              + "f3:val1 int alias val5, "
-                              + "f3:val2 int alias val6, "
-                              + "f3:val3 int alias val7, "
-                              + "f3:val4 int[] alias val8, "
-                              + "f3:mapval1 object alias f3mapval1, "
-                              + "f3:mapval2 object alias f3mapval2 "
-                              + ")");
+    public static void beforeClass() throws HBqlException {
 
         connection = ConnectionManager.newConnection();
+
+        connection.execute("CREATE SCHEMA aggschema FOR TABLE aggtable"
+                           + "("
+                           + "keyval key, "
+                           + "f1:val1 string alias val1, "
+                           + "f1:val2 string alias val2, "
+                           + "f1:val3 string alias notdefinedval, "
+                           + "f2:val1 date alias val3, "
+                           + "f2:val2 date alias val4, "
+                           + "f3:val1 int alias val5, "
+                           + "f3:val2 int alias val6, "
+                           + "f3:val3 int alias val7, "
+                           + "f3:val4 int[] alias val8, "
+                           + "f3:mapval1 object alias f3mapval1, "
+                           + "f3:mapval2 object alias f3mapval2 "
+                           + ")");
 
         if (!connection.tableExists("aggtable"))
             System.out.println(connection.execute("create table using aggschema"));

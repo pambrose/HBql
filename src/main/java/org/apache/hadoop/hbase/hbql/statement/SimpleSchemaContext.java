@@ -29,8 +29,8 @@ public class SimpleSchemaContext extends SchemaContext {
 
     public SimpleSchemaContext(final String schemaName) throws HBqlException {
         super(schemaName);
-
-        this.checkIfValidSchemaName();
+        // This is called from Annotated only
+        // this.validateSchemaName();
     }
 
     public SimpleSchemaContext(final Schema schema) {

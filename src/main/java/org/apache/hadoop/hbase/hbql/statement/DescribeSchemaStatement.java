@@ -22,18 +22,19 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 
-public class DescribeSchemaStatement extends SchemaContext implements NonConnectionStatement {
+public class DescribeSchemaStatement extends SchemaContext implements ConnectionStatement {
 
     public DescribeSchemaStatement(final String schemaName) {
         super(schemaName);
     }
 
-    public ExecutionResults execute() throws HBqlException {
+    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        this.checkIfValidSchemaName();
+        this.validateSchemaName(connection);
 
         final HBaseSchema schema = this.getHBaseSchema();
 
