@@ -65,10 +65,10 @@ public class InsertSingleRow extends InsertValueSource {
 
     public void validate() throws HBqlException {
 
-        final HConnectionImpl conn = this.getInsertStatement().getConnection();
+        final HConnectionImpl connection = this.getInsertStatement().getConnection();
 
         for (final SingleExpressionContext element : this.getValueList()) {
-            element.validate(this.getInsertStatement(), conn);
+            element.validate(this.getInsertStatement(), connection);
 
             // Make sure values do not have column references
             if (element.hasAColumnReference())

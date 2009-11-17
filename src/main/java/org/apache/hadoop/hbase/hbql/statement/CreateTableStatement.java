@@ -34,7 +34,7 @@ public class CreateTableStatement extends SchemaContext implements ConnectionSta
         super(schemaName);
     }
 
-    public ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
+    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         this.checkIfValidSchemaName();
 
@@ -44,7 +44,7 @@ public class CreateTableStatement extends SchemaContext implements ConnectionSta
             tableDesc.addFamily(columnDesc);
 
         try {
-            conn.getAdmin().createTable(tableDesc);
+            connection.getAdmin().createTable(tableDesc);
         }
         catch (IOException e) {
             throw new HBqlException(e);

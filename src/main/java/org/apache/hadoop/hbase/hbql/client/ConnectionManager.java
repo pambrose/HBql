@@ -43,12 +43,12 @@ public class ConnectionManager {
     }
 
     public static synchronized HConnection newConnection(final String name, final HBaseConfiguration config) {
-        final HConnectionImpl conn = new HConnectionImpl(name, config);
+        final HConnectionImpl connection = new HConnectionImpl(name, config);
 
-        if (conn.getName() != null)
-            ConnectionManager.getConnectionMap().put(conn.getName(), conn);
+        if (connection.getName() != null)
+            ConnectionManager.getConnectionMap().put(connection.getName(), connection);
 
-        return conn;
+        return connection;
     }
 
     public static HConnection getConnection(final String name) {

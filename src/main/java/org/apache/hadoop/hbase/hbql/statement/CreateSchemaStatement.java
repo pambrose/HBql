@@ -23,13 +23,14 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 
 import java.util.List;
 
-public class CreateSchemaStatement extends SchemaContext implements NonConnectionStatement {
+public class CreateSchemaStatement extends SchemaContext implements ConnectionStatement {
 
     private final String schemaName;
     private final String tableName;
@@ -56,11 +57,13 @@ public class CreateSchemaStatement extends SchemaContext implements NonConnectio
         return columnDescriptionList;
     }
 
-    public ExecutionResults execute() throws HBqlException {
 
-        final HBaseSchema schema = SchemaManager.newHBaseSchema(this.getSchemaName(),
-                                                                this.getTableName(),
-                                                                this.getColumnDescriptionList());
+    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+
+        final HBaseSchema schema = SchemaManager.createHBaseSchema(connection,
+                                                                   this.getSchemaName(),
+                                                                   this.getTableName(),
+                                                                   this.getColumnDescriptionList());
 
         this.setSchema(schema);
 

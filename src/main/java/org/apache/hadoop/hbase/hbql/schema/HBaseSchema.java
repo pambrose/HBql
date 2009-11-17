@@ -27,6 +27,7 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
@@ -38,6 +39,7 @@ import java.util.Set;
 
 public class HBaseSchema extends Schema {
 
+    private HConnectionImpl connection;
     private Set<String> familyNameSet = null;
 
     private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
@@ -45,23 +47,29 @@ public class HBaseSchema extends Schema {
     private final Map<String, ColumnAttrib> familyDefaultMap = Maps.newHashMap();
     private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
 
+    public HBaseSchema(final String schemaName,
+                       final String tableName,
+                       final List<ColumnDescription> columnDescriptionList,
+                       final boolean requireFamilyName) throws HBqlException {
+        super(schemaName, tableName);
+        if (columnDescriptionList != null)
+            for (final ColumnDescription columnDescription : columnDescriptionList)
+                processColumn(columnDescription, requireFamilyName);
+    }
+
     public HBaseSchema(final List<ColumnDescription> columnDescriptionList) throws HBqlException {
-        super("embedded", "embedded");
-        for (final ColumnDescription columnDescription : columnDescriptionList)
-            this.processColumn(columnDescription, false);
+        this("embedded", "embedded", columnDescriptionList, false);
     }
 
     public HBaseSchema(final String schemaName,
                        final String tableName,
                        final List<ColumnDescription> columnDescriptionList) throws HBqlException {
-        super(schemaName, tableName);
-        for (final ColumnDescription columnDescription : columnDescriptionList)
-            processColumn(columnDescription, true);
+        this(schemaName, tableName, columnDescriptionList, true);
     }
 
     public HBaseSchema(final String schemaName,
                        final String tableName) throws HBqlException {
-        super(schemaName, tableName);
+        this(schemaName, tableName, null);
     }
 
     private void processColumn(final ColumnDescription columnDescription,
@@ -87,10 +95,6 @@ public class HBaseSchema extends Schema {
         }
     }
 
-    public Object newInstance() throws IllegalAccessException, InstantiationException {
-        return null;
-    }
-
     public List<HColumnDescriptor> getColumnDescriptors() {
         final List<HColumnDescriptor> descList = Lists.newArrayList();
         for (final String familyName : this.getFamilySet())
@@ -98,11 +102,9 @@ public class HBaseSchema extends Schema {
         return descList;
     }
 
-
     public byte[] getTableNameAsBytes() throws HBqlException {
         return IO.getSerialization().getStringAsBytes(this.getTableName());
     }
-
 
     // *** columnAttribByFamilyQualifiedNameMap calls
     protected Map<String, ColumnAttrib> getAttribByFamilyQualifiedNameMap() {

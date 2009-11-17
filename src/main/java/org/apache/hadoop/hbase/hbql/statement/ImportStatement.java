@@ -48,13 +48,13 @@ public class ImportStatement implements ConnectionStatement {
         return filename;
     }
 
-    public ExecutionResults execute(final HConnectionImpl conn) {
+    public ExecutionResults execute(final HConnectionImpl connection) {
 
         final ExecutionResults results = new ExecutionResults();
 
         boolean success;
         try {
-            success = processInput(new PrintWriter(results.out), conn, readFile(this.getFilename()));
+            success = processInput(new PrintWriter(results.out), connection, readFile(this.getFilename()));
         }
         catch (IOException e) {
             success = false;
@@ -85,7 +85,7 @@ public class ImportStatement implements ConnectionStatement {
     }
 
     public static boolean processInput(final PrintWriter out,
-                                       final HConnectionImpl conn,
+                                       final HConnectionImpl connection,
                                        final String str) {
 
         try {
@@ -93,9 +93,9 @@ public class ImportStatement implements ConnectionStatement {
 
             for (final HBqlStatement stmt : stmtList) {
                 if (stmt instanceof SelectStatement)
-                    processSelect(out, conn, (SelectStatement)stmt);
+                    processSelect(out, connection, (SelectStatement)stmt);
                 else if (stmt instanceof ConnectionStatement)
-                    out.println(((ConnectionStatement)stmt).execute(conn));
+                    out.println(((ConnectionStatement)stmt).execute(connection));
                 else if (stmt instanceof NonConnectionStatement)
                     out.println(((NonConnectionStatement)stmt).execute());
                 else
@@ -119,12 +119,12 @@ public class ImportStatement implements ConnectionStatement {
     }
 
     private static void processSelect(final PrintWriter out,
-                                      final HConnectionImpl conn,
+                                      final HConnectionImpl connection,
                                       final SelectStatement selectStatement) throws HBqlException {
 
-        selectStatement.validate(conn);
+        selectStatement.validate(connection);
 
-        final Query<HRecord> query = Query.newQuery(conn, selectStatement);
+        final Query<HRecord> query = Query.newQuery(connection, selectStatement);
         final HResultSet<HRecord> results = query.getResults();
         for (final HRecord rec : results) {
             for (final String columnName : rec.getColumnNameList()) {

@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.expreval.util.Maps;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
@@ -58,9 +59,10 @@ public class SchemaManager {
             SchemaManager.getSchemaMap().remove(schemaName);
     }
 
-    public synchronized static HBaseSchema newHBaseSchema(final String schemaName,
-                                                          final String tableName,
-                                                          final List<ColumnDescription> colList) throws HBqlException {
+    public synchronized static HBaseSchema createHBaseSchema(final HConnectionImpl connection,
+                                                             final String schemaName,
+                                                             final String tableName,
+                                                             final List<ColumnDescription> colList) throws HBqlException {
 
         if (SchemaManager.schemaExists(schemaName))
             throw new HBqlException("Schema " + schemaName + " already defined");

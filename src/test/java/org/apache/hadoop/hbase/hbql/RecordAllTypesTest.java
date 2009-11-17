@@ -38,7 +38,7 @@ import java.util.List;
 
 public class RecordAllTypesTest extends TestSupport {
 
-    static HConnection conn = null;
+    static HConnection connection = null;
 
     static int cnt = 10;
 
@@ -74,12 +74,12 @@ public class RecordAllTypesTest extends TestSupport {
                               + "f1:val24 object[] ALIAS objectArrayValue "
                               + ")");
 
-        conn = ConnectionManager.newConnection();
+        connection = ConnectionManager.newConnection();
 
-        if (!conn.tableExists("example2"))
-            System.out.println(conn.execute("create table using alltypes"));
+        if (!connection.tableExists("example2"))
+            System.out.println(connection.execute("create table using alltypes"));
         else {
-            System.out.println(conn.execute("delete from alltypes"));
+            System.out.println(connection.execute("delete from alltypes"));
         }
     }
 
@@ -98,7 +98,7 @@ public class RecordAllTypesTest extends TestSupport {
             batch.insert(rat.getHRecord());
         }
 
-        conn.apply(batch);
+        connection.apply(batch);
 
         return retval;
     }
@@ -110,7 +110,7 @@ public class RecordAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        HStatement stmt = conn.createStatement();
+        HStatement stmt = connection.createStatement();
         HResultSet<HRecord> recs = stmt.executeQuery("select * from alltypes");
 
         int reccnt = 0;
@@ -127,7 +127,7 @@ public class RecordAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        HStatement stmt = conn.createStatement();
+        HStatement stmt = connection.createStatement();
         HResultSet<HRecord> recs = stmt.executeQuery("select * from alltypes");
 
         int reccnt = 0;
@@ -144,7 +144,7 @@ public class RecordAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        HPreparedStatement stmt = conn.prepareStatement("select * from alltypes WITH LIMIT :limit");
+        HPreparedStatement stmt = connection.prepareStatement("select * from alltypes WITH LIMIT :limit");
 
         stmt.setParameter("limit", cnt / 2);
         HResultSet<HRecord> recs = stmt.executeQuery();

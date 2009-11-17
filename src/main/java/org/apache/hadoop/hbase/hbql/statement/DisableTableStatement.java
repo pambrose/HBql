@@ -32,9 +32,9 @@ public class DisableTableStatement extends TableStatement {
         super(tableName);
     }
 
-    public ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
+    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
         try {
-            conn.getAdmin().disableTable(this.getTableName());
+            connection.getAdmin().disableTable(this.getTableName());
         }
         catch (IOException e) {
             throw new HBqlException(e);

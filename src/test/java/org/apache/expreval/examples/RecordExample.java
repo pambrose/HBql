@@ -46,17 +46,17 @@ public class RecordExample {
                               + "f3:mapval2 string alias f3mapval2 "
                               + ")");
 
-        HConnection conn = ConnectionManager.newConnection();
+        HConnection connection = ConnectionManager.newConnection();
 
         // System.out.println(conn.execute("delete from TestObject with client filter where true"));
         // System.out.println(conn.execute("disable table testobjects"));
         // System.out.println(conn.execute("enable table testobjects"));
         // System.out.println(conn.execute("drop table testobjects"));
 
-        System.out.println(conn.execute("LIST TABLES"));
+        System.out.println(connection.execute("LIST TABLES"));
 
-        if (!conn.tableExists("testobjects")) {
-            System.out.println(conn.execute("create table with schema testobjects"));
+        if (!connection.tableExists("testobjects")) {
+            System.out.println(connection.execute("create table with schema testobjects"));
 
             final Batch batch = new Batch();
             for (int i = 0; i < 10; i++) {
@@ -67,11 +67,11 @@ public class RecordExample {
                 batch.insert(record);
             }
 
-            conn.apply(batch);
+            connection.apply(batch);
         }
 
-        if (conn.tableEnabled("testobjects2"))
-            System.out.println(conn.execute("describe table testobjects2"));
+        if (connection.tableEnabled("testobjects2"))
+            System.out.println(connection.execute("describe table testobjects2"));
 
         final String query1 = "SELECT keyval, author, title, (3*12) as comp1 "
                               + "FROM testobjects2 "
@@ -82,7 +82,7 @@ public class RecordExample {
                               //+ "SCAN LIMIT 4"
                               //+ "SERVER FILTER WHERE author LIKE '.*6200.*' "
                               + "CLIENT FILTER WHERE keyval = '0000000002' OR author LIKE '.*val.*'";
-        HResultSet<HRecord> results1 = conn.executeQuery(query1);
+        HResultSet<HRecord> results1 = connection.executeQuery(query1);
 
         for (HRecord val1 : results1) {
             System.out.println("Current Values: " + val1.getCurrentValue("keyval")

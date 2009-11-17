@@ -118,16 +118,16 @@ public class AnnotationExample {
 
     public static void main(String[] args) throws HBqlException {
 
-        HConnection conn = ConnectionManager.newConnection();
+        HConnection connection = ConnectionManager.newConnection();
 
-        if (!conn.tableExists("TestObject")) {
-            System.out.println(conn.execute("create table with schema TestObject"));
+        if (!connection.tableExists("TestObject")) {
+            System.out.println(connection.execute("create table with schema TestObject"));
 
             final Batch batch = new Batch();
             for (int i = 0; i < 10; i++)
                 batch.insert(new TestObject(i));
 
-            conn.apply(batch);
+            connection.apply(batch);
         }
 
         final String query2 = "SELECT title, titles, author, authorVersions "
@@ -139,7 +139,7 @@ public class AnnotationExample {
                               //+ "SERVER FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4 "
                               + "CLIENT FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4";
 
-        HStatement stmt = conn.createStatement();
+        HStatement stmt = connection.createStatement();
         HResultSet<TestObject> results2 = stmt.executeQuery(query2, TestObject.class);
 
         for (TestObject val2 : results2) {

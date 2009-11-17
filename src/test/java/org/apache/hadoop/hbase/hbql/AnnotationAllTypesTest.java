@@ -37,7 +37,7 @@ import java.util.List;
 
 public class AnnotationAllTypesTest extends TestSupport {
 
-    static HConnection conn = null;
+    static HConnection connection = null;
 
     static int cnt = 10;
 
@@ -74,12 +74,12 @@ public class AnnotationAllTypesTest extends TestSupport {
                                   + "f1:val24 object[] ALIAS objectArrayValue "
                                   + ")");
 
-        conn = ConnectionManager.newConnection();
+        connection = ConnectionManager.newConnection();
 
-        if (!conn.tableExists("example2"))
-            System.out.println(conn.execute("create table using alltypes2"));
+        if (!connection.tableExists("example2"))
+            System.out.println(connection.execute("create table using alltypes2"));
         else {
-            System.out.println(conn.execute("delete from alltypes2"));
+            System.out.println(connection.execute("delete from alltypes2"));
         }
     }
 
@@ -98,7 +98,7 @@ public class AnnotationAllTypesTest extends TestSupport {
             batch.insert(aat);
         }
 
-        conn.apply(batch);
+        connection.apply(batch);
 
         return retval;
     }
@@ -111,7 +111,7 @@ public class AnnotationAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        HStatement stmt = conn.createStatement();
+        HStatement stmt = connection.createStatement();
         HResultSet<AnnotatedAllTypes> recs = stmt.executeQuery("select * from alltypes2", AnnotatedAllTypes.class);
 
         int reccnt = 0;
@@ -128,7 +128,7 @@ public class AnnotationAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        HStatement stmt = conn.createStatement();
+        HStatement stmt = connection.createStatement();
         HResultSet<AnnotatedAllTypes> recs = stmt.executeQuery("select * from alltypes2", AnnotatedAllTypes.class);
 
         int reccnt = 0;
@@ -145,7 +145,7 @@ public class AnnotationAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        HPreparedStatement pstmt = conn.prepareStatement("select * from alltypes2 WITH LIMIT :limit");
+        HPreparedStatement pstmt = connection.prepareStatement("select * from alltypes2 WITH LIMIT :limit");
 
         pstmt.setParameter("limit", cnt / 2);
 

@@ -40,7 +40,7 @@ import java.util.Random;
 
 public class AggregateTest extends TestSupport {
 
-    static HConnection conn = null;
+    static HConnection connection = null;
     static List<String> keyList = Lists.newArrayList();
     static List<String> val1List = Lists.newArrayList();
     static List<Integer> val5List = Lists.newArrayList();
@@ -69,22 +69,22 @@ public class AggregateTest extends TestSupport {
                               + "f3:mapval2 object alias f3mapval2 "
                               + ")");
 
-        conn = ConnectionManager.newConnection();
+        connection = ConnectionManager.newConnection();
 
-        if (!conn.tableExists("aggtable"))
-            System.out.println(conn.execute("create table using aggschema"));
+        if (!connection.tableExists("aggtable"))
+            System.out.println(connection.execute("create table using aggschema"));
         else
-            System.out.println(conn.execute("delete from aggschema"));
+            System.out.println(connection.execute("delete from aggschema"));
 
-        insertRecords(conn, 10, "Batch 1");
-        insertRecords(conn, 10, "Batch 2");
+        insertRecords(connection, 10, "Batch 1");
+        insertRecords(connection, 10, "Batch 2");
 
         keyList.clear();
         val1List.clear();
         val5List.clear();
         val8check = null;
 
-        insertRecords(conn, 10, "Batch 3");
+        insertRecords(connection, 10, "Batch 3");
 
         val5max = Integer.MIN_VALUE;
         for (int i = 0; i < val5List.size(); i++)
@@ -95,13 +95,13 @@ public class AggregateTest extends TestSupport {
             val5min = Math.min(val5List.get(i), val5min);
     }
 
-    private static void insertRecords(final HConnection conn,
+    private static void insertRecords(final HConnection connection,
                                       final int cnt,
                                       final String msg) throws HBqlException {
 
-        HPreparedStatement stmt = conn.prepareStatement("insert into aggschema " +
-                                                        "(keyval, val1, val2, val5, val6, f3mapval1, f3mapval2, val8) values " +
-                                                        "(:key, :val1, :val2, :val5, :val6, :f3mapval1, :f3mapval2, :val8)");
+        HPreparedStatement stmt = connection.prepareStatement("insert into aggschema " +
+                                                              "(keyval, val1, val2, val5, val6, f3mapval1, f3mapval2, val8) values " +
+                                                              "(:key, :val1, :val2, :val5, :val6, :f3mapval1, :f3mapval2, :val8)");
 
         for (int i = 0; i < cnt; i++) {
 
@@ -145,7 +145,7 @@ public class AggregateTest extends TestSupport {
     public void selectCount() throws HBqlException {
 
         final String query1 = "SELECT count() as cnt FROM aggschema";
-        HStatement stmt = conn.createStatement();
+        HStatement stmt = connection.createStatement();
         List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 1);
         HRecord rec = recList1.get(0);
@@ -157,7 +157,7 @@ public class AggregateTest extends TestSupport {
     public void selectMax() throws HBqlException {
 
         final String query1 = "SELECT max(val5) as max FROM aggschema";
-        HStatement stmt = conn.createStatement();
+        HStatement stmt = connection.createStatement();
         List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 1);
         HRecord rec = recList1.get(0);
@@ -170,7 +170,7 @@ public class AggregateTest extends TestSupport {
     public void selectMin() throws HBqlException {
 
         final String query1 = "SELECT min(val5) as min, min(val5+1) as min2 FROM aggschema";
-        HStatement stmt = conn.createStatement();
+        HStatement stmt = connection.createStatement();
         List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 1);
         HRecord rec = recList1.get(0);
@@ -185,7 +185,7 @@ public class AggregateTest extends TestSupport {
     public void selectAll() throws HBqlException {
 
         final String query1 = "SELECT count() as cnt, max(val5) as max, min(val5) as min, min(val5+1) as min2 FROM aggschema";
-        HStatement stmt = conn.createStatement();
+        HStatement stmt = connection.createStatement();
         List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 1);
         HRecord rec = recList1.get(0);

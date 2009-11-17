@@ -34,10 +34,10 @@ public class DescribeTableStatement extends TableStatement {
         super(tableName);
     }
 
-    public ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
+    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         try {
-            final HTableDescriptor tableDesc = conn.getAdmin().getTableDescriptor(this.getTableName().getBytes());
+            final HTableDescriptor tableDesc = connection.getAdmin().getTableDescriptor(this.getTableName().getBytes());
 
             final ExecutionResults retval = new ExecutionResults();
             retval.out.println("Table name: " + tableDesc.getNameAsString());

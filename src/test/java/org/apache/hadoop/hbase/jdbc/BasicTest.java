@@ -59,9 +59,9 @@ public class BasicTest {
     @Test
     public void simpleQuery() throws SQLException {
 
-        Connection conn = DriverManager.getConnection("jdbc:hbql");
+        Connection connection = DriverManager.getConnection("jdbc:hbql");
 
-        Statement stmt = conn.createStatement();
+        Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("select * from tab4");
 
         while (rs.next()) {
@@ -80,9 +80,9 @@ public class BasicTest {
     @Test
     public void simpleQueryWithNamedParams() throws SQLException {
 
-        Connection conn = DriverManager.getConnection("jdbc:hbql", null, null);
+        Connection connection = DriverManager.getConnection("jdbc:hbql", null, null);
 
-        PreparedStatement stmt = conn.prepareStatement("select * from tab4 WITH CLIENT FILTER WHERE :val1 = :val2");
+        PreparedStatement stmt = connection.prepareStatement("select * from tab4 WITH CLIENT FILTER WHERE :val1 = :val2");
         stmt.setString(1, "aaa");
         stmt.setString(2, "aaa");
         ResultSet rs = stmt.executeQuery();
@@ -103,9 +103,9 @@ public class BasicTest {
     @Test
     public void simpleQueryWithUnNamedParams() throws SQLException {
 
-        Connection conn = DriverManager.getConnection("jdbc:hbql", null, null);
+        Connection connection = DriverManager.getConnection("jdbc:hbql", null, null);
 
-        PreparedStatement stmt = conn.prepareStatement("select * from tab4 WITH CLIENT FILTER WHERE ? = ?");
+        PreparedStatement stmt = connection.prepareStatement("select * from tab4 WITH CLIENT FILTER WHERE ? = ?");
         stmt.setString(1, "aaa");
         stmt.setString(2, "aaa");
         ResultSet rs = stmt.executeQuery();

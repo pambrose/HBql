@@ -33,10 +33,10 @@ public class ShowTablesStatement implements ConnectionStatement {
     public ShowTablesStatement() {
     }
 
-    public ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
+    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         try {
-            final HBaseAdmin admin = conn.getAdmin();
+            final HBaseAdmin admin = connection.getAdmin();
 
             final ExecutionResults retval = new ExecutionResults();
             retval.out.println("Tables: ");

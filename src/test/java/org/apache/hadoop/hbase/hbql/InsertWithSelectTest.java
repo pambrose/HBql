@@ -39,7 +39,7 @@ import java.util.Random;
 
 public class InsertWithSelectTest extends TestSupport {
 
-    static HConnection conn = null;
+    static HConnection connection = null;
 
     static Random randomVal = new Random();
 
@@ -54,26 +54,26 @@ public class InsertWithSelectTest extends TestSupport {
                               + "f1:val3 int alias val3 DEFAULT 12 "
                               + ")");
 
-        conn = ConnectionManager.newConnection();
+        connection = ConnectionManager.newConnection();
 
-        if (!conn.tableExists("table3"))
-            System.out.println(conn.execute("create table using tab3"));
+        if (!connection.tableExists("table3"))
+            System.out.println(connection.execute("create table using tab3"));
         else {
-            System.out.println(conn.execute("delete from tab3"));
+            System.out.println(connection.execute("delete from tab3"));
             //System.out.println(conn.execute("disable table table3"));
             //System.out.println(conn.execute("drop table table3"));
             //System.out.println(conn.execute("create table using tab3"));
         }
 
-        insertRecords(conn, 10);
+        insertRecords(connection, 10);
     }
 
-    private static void insertRecords(final HConnection conn,
+    private static void insertRecords(final HConnection connection,
                                       final int cnt) throws HBqlException {
 
-        HPreparedStatement stmt = conn.prepareStatement("insert into tab3 " +
-                                                        "(keyval, val1, val2, val3) values " +
-                                                        "(:key, :val1, :val2, DEFAULT)");
+        HPreparedStatement stmt = connection.prepareStatement("insert into tab3 " +
+                                                              "(keyval, val1, val2, val3) values " +
+                                                              "(:key, :val1, :val2, DEFAULT)");
 
         for (int i = 0; i < cnt; i++) {
 
@@ -92,7 +92,7 @@ public class InsertWithSelectTest extends TestSupport {
 
         final String query1 = "SELECT keyval, val1, val2, val3 FROM tab3";
 
-        HStatement stmt = conn.createStatement();
+        HStatement stmt = connection.createStatement();
         HResultSet<HRecord> results = stmt.executeQuery(query1);
 
         int rec_cnt = 0;
@@ -118,7 +118,7 @@ public class InsertWithSelectTest extends TestSupport {
                           "select keyval, val1+val1, val2+1 FROM tab3 ";
         showValues();
 
-        HPreparedStatement stmt = conn.prepareStatement(q1);
+        HPreparedStatement stmt = connection.prepareStatement(q1);
 
         ExecutionResults executionResults = stmt.execute();
 
@@ -126,7 +126,7 @@ public class InsertWithSelectTest extends TestSupport {
 
         showValues();
 
-        executionResults = conn.execute(q1);
+        executionResults = connection.execute(q1);
 
         System.out.println(executionResults);
 
@@ -137,7 +137,7 @@ public class InsertWithSelectTest extends TestSupport {
     private Class<? extends Exception> execute(final String str) {
 
         try {
-            conn.execute(str);
+            connection.execute(str);
         }
         catch (Exception e) {
             e.printStackTrace();
