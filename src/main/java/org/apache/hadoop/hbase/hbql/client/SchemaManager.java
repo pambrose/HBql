@@ -120,6 +120,14 @@ public class SchemaManager {
         if (schema != null)
             return schema;
 
-        throw new HBqlException("Schema not found: " + schemaName);
+        final String sql = "SELECT schema_obj FROM system_schemas WITH CLIENT FILTER WHERE schema_name =  ?)";
+        final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
+        stmt.setParameter(1, schemaName);
+        List<HRecord> recs = stmt.executeQueryAndFetch();
+
+        if (recs.size() == 0)
+            throw new HBqlException("Schema not found: " + schemaName);
+
+        return (HBaseSchema)recs.get(0).getCurrentValue("schema_obj");
     }
 }
