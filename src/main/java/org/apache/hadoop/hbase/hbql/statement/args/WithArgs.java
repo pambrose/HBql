@@ -292,7 +292,8 @@ public class WithArgs implements Serializable {
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(get);
 
-        final HBqlFilter serverFilter = this.getSchemaContext().getHBqlFilter(this.getServerExpressionTree());
+        final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getSchemaContext(),
+                                                                 this.getServerExpressionTree());
         if (serverFilter != null)
             get.setFilter(serverFilter);
     }
@@ -318,7 +319,8 @@ public class WithArgs implements Serializable {
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(scan);
 
-        final HBqlFilter serverFilter = this.getSchemaContext().getHBqlFilter(this.getServerExpressionTree());
+        final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getSchemaContext(),
+                                                                 this.getServerExpressionTree());
         if (serverFilter != null)
             scan.setFilter(serverFilter);
     }

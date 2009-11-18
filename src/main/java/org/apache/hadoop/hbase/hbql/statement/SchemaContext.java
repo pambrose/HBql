@@ -20,9 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
@@ -33,9 +31,9 @@ import java.io.Serializable;
 
 public abstract class SchemaContext implements HBqlStatement, Serializable {
 
-    private Mapping mapping = null;
     private String schemaName = null;
     private Schema schema = null;
+    private Mapping mapping = null;
 
     protected SchemaContext(final String schemaName) {
         this.schemaName = schemaName;
@@ -92,14 +90,5 @@ public abstract class SchemaContext implements HBqlStatement, Serializable {
 
     public HBaseSchema getHBaseSchema() throws HBqlException {
         return (HBaseSchema)this.getSchema();
-    }
-
-    public HBqlFilter getHBqlFilter(final ExpressionTree origExpressionTree) throws HBqlException {
-
-        if (origExpressionTree == null)
-            return null;
-
-        origExpressionTree.setSchemaContext(this);
-        return new HBqlFilter(origExpressionTree);
     }
 }

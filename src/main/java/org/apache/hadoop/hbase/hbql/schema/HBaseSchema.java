@@ -71,7 +71,7 @@ public class HBaseSchema extends Schema {
 
     public HBaseSchema(final String schemaName,
                        final String tableName) throws HBqlException {
-        this(schemaName, tableName, null);
+        this(schemaName, tableName, null, false);
     }
 
     public HRecord newHRecord() throws HBqlException {

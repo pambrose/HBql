@@ -51,12 +51,22 @@ public class HBqlFilter implements Filter {
     private ExpressionTree expressionTree;
     public transient HRecordImpl record = new HRecordImpl((SchemaContext)null);
 
-    public HBqlFilter(final ExpressionTree expressionTree) throws HBqlException {
+    public HBqlFilter(final ExpressionTree expressionTree) {
         this.expressionTree = expressionTree;
         this.getHRecord().setSchemaContext(this.getExpressionTree().getSchemaContext());
     }
 
     public HBqlFilter() {
+    }
+
+    public static HBqlFilter newHBqlFilter(final SchemaContext schemaContext,
+                                           final ExpressionTree origExpressionTree) {
+
+        if (origExpressionTree == null)
+            return null;
+
+        origExpressionTree.setSchemaContext(schemaContext);
+        return new HBqlFilter(origExpressionTree);
     }
 
     private HRecordImpl getHRecord() {
