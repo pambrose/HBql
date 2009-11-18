@@ -44,6 +44,7 @@ public abstract class Schema implements Serializable {
     private final String tableName;
     private final Map<String, ColumnAttrib> columnAttribByVariableNameMap = Maps.newHashMap();
     private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
+
     private ColumnAttrib keyAttrib = null;
     private List<String> evalList = null;
     private int expressionTreeCacheSize = 25;

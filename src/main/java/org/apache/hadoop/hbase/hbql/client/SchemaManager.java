@@ -64,9 +64,9 @@ public class SchemaManager {
         }
     }
 
-    public synchronized HBaseSchema createHBaseSchema(final String schemaName,
-                                                      final String tableName,
-                                                      final List<ColumnDescription> colList) throws HBqlException {
+    public synchronized HBaseSchema createSchema(final String schemaName,
+                                                 final String tableName,
+                                                 final List<ColumnDescription> colList) throws HBqlException {
 
         if (this.schemaExists(schemaName))
             throw new HBqlException("Schema " + schemaName + " already defined");

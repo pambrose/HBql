@@ -49,8 +49,8 @@ import java.util.Set;
 
 public class HConnectionImpl implements HConnection {
 
-    private final HBaseConfiguration config;
     private final String name;
+    private final HBaseConfiguration config;
     private boolean closed = false;
     private HBaseAdmin hbaseAdmin = null;
 
@@ -171,6 +171,7 @@ public class HConnectionImpl implements HConnection {
         return stmt.executeUpdate(sql);
     }
 
+    // Schema Routines
     public boolean schemaExists(final String schemaName) {
         return this.getSchemaManager().schemaExists(schemaName);
     }
@@ -187,12 +188,13 @@ public class HConnectionImpl implements HConnection {
         return this.getSchemaManager().getSchemaNames();
     }
 
-    public synchronized HBaseSchema createHBaseSchema(final String schemaName,
-                                                      final String tableName,
-                                                      final List<ColumnDescription> colList) throws HBqlException {
-        return this.getSchemaManager().createHBaseSchema(schemaName, tableName, colList);
+    public synchronized HBaseSchema createSchema(final String schemaName,
+                                                 final String tableName,
+                                                 final List<ColumnDescription> colList) throws HBqlException {
+        return this.getSchemaManager().createSchema(schemaName, tableName, colList);
     }
 
+    // Table Routines
     public void createTable(final HTableDescriptor tableDesc) throws HBqlException {
         try {
             this.newHBaseAdmin().createTable(tableDesc);

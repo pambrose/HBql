@@ -41,7 +41,7 @@ import java.util.Set;
 
 public class HBaseSchema extends Schema {
 
-    private HConnectionImpl connection;
+    private transient HConnectionImpl connection;
     private Set<String> familyNameSet = null;
 
     private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
