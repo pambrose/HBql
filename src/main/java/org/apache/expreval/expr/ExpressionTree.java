@@ -26,7 +26,7 @@ import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
-import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.NoStatementSchemaContext;
 
 public class ExpressionTree extends MultipleExpressionContext {
 
@@ -40,7 +40,7 @@ public class ExpressionTree extends MultipleExpressionContext {
     public static ExpressionTree newExpressionTree(final Schema schema, final GenericValue booleanValue) {
         final ExpressionTree tree = new ExpressionTree(booleanValue == null ? new BooleanLiteral(true) : booleanValue);
         if (schema != null)
-            tree.setSchemaContext(new SimpleSchemaContext(schema, null));
+            tree.setSchemaContext(new NoStatementSchemaContext(schema, null));
         return tree;
     }
 

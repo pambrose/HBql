@@ -24,15 +24,9 @@ import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 
 
-public class SimpleSchemaContext extends SchemaContext {
+public class NoStatementSchemaContext extends SchemaContext {
 
-    public SimpleSchemaContext(final Schema schema) {
-        super(schema);
-
-        //this.setMapping(null);
-    }
-
-    public SimpleSchemaContext(final Schema schema, final Mapping mapping) {
+    public NoStatementSchemaContext(final Schema schema, final Mapping mapping) {
         super(schema);
         this.setMapping(mapping);
     }

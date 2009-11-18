@@ -114,8 +114,8 @@ public abstract class MultipleExpressionContext implements Serializable {
     public void setSchemaContext(final SchemaContext schemaContext) {
         this.schemaContext = schemaContext;
 
-        if (schemaContext != null && schemaContext.getMapping() == null)
-            schemaContext.setMapping(new HRecordMapping(schemaContext));
+        if (this.getSchemaContext() != null && this.getSchemaContext().getMapping() == null)
+            this.getSchemaContext().setMapping(new HRecordMapping(schemaContext));
 
         this.setContext();
     }

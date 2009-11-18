@@ -32,8 +32,8 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
+import org.apache.hadoop.hbase.hbql.statement.NoStatementSchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
-import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 
 import java.util.List;
 import java.util.Map;
@@ -75,7 +75,7 @@ public class HBaseSchema extends Schema {
     }
 
     public HRecord newHRecord() throws HBqlException {
-        final SchemaContext schemaContext = new SimpleSchemaContext(this, null);
+        final SchemaContext schemaContext = new NoStatementSchemaContext(this, null);
         schemaContext.setMapping(new HRecordMapping(schemaContext));
         return new HRecordImpl(schemaContext);
     }
@@ -252,7 +252,7 @@ public class HBaseSchema extends Schema {
     }
 
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
-        final SchemaContext schemaContext = new SimpleSchemaContext(this, null);
+        final SchemaContext schemaContext = new NoStatementSchemaContext(this, null);
         schemaContext.setMapping(new HRecordMapping(schemaContext));
         final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(query, schemaContext);
         return new HBqlFilter(expressionTree);
