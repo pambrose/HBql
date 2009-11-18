@@ -34,6 +34,7 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
+import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.SchemaManager;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
@@ -186,8 +187,8 @@ public class HConnectionImpl implements HConnection {
         return this.getSchemaManager().dropSchema(schemaName);
     }
 
-    public Set<String> getSchemaNames() {
-        return this.getSchemaManager().getSchemaNames();
+    public Set<HSchema> getSchemas() throws HBqlException {
+        return this.getSchemaManager().getSchemas();
     }
 
     public synchronized HBaseSchema createSchema(final boolean tempSchema,

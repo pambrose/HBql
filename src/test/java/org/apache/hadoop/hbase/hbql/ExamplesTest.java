@@ -27,6 +27,7 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
+import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
@@ -62,7 +63,9 @@ public class ExamplesTest extends TestSupport {
         System.out.println(connection.execute("SHOW SCHEMAS"));
 
         // Or using the API
-        Set<String> schemaNamess = connection.getSchemaNames();
+        Set<HSchema> schemas = connection.getSchemas();
+        for (HSchema schema : schemas)
+            System.out.println(schema.getSchemaName());
 
         // END SNIPPET: show-schemas
     }

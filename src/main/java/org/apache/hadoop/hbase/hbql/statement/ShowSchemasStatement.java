@@ -21,6 +21,8 @@
 package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class ShowSchemasStatement implements ConnectionStatement {
@@ -28,12 +30,12 @@ public class ShowSchemasStatement implements ConnectionStatement {
     public ShowSchemasStatement() {
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) {
+    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Schemas: ");
-        for (final String schemaName : connection.getSchemaNames())
-            retval.out.println("\t" + schemaName);
+        for (final HSchema schema : connection.getSchemas())
+            retval.out.println("\t" + schema.getSchemaName() + " mapped to table " + schema.getTableName());
 
         retval.out.flush();
         return retval;

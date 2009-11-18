@@ -23,10 +23,13 @@ package org.apache.hadoop.hbase.hbql;
 import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
+
+import java.util.Set;
 
 public class SchemaTest extends TestSupport {
 
@@ -44,6 +47,8 @@ public class SchemaTest extends TestSupport {
         assertTrue(connection.schemaExists("test"));
 
         HBaseSchema schema = ((HConnectionImpl)connection).getSchema("test");
+
+        Set<HSchema> schemas = connection.getSchemas();
 
         return;
     }

@@ -27,10 +27,10 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
-import org.apache.hadoop.hbase.hbql.impl.HSchema;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.NoStatementSchemaContext;
@@ -43,6 +43,7 @@ import java.util.Set;
 public class HBaseSchema extends Schema implements HSchema {
 
     private transient HConnectionImpl connection;
+    private boolean tempSchema;
     private Set<String> familyNameSet = null;
 
     private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
@@ -54,29 +55,20 @@ public class HBaseSchema extends Schema implements HSchema {
     public HBaseSchema() {
     }
 
-    public HBaseSchema(final String schemaName,
+    public HBaseSchema(final boolean tempSchema,
+                       final String schemaName,
                        final String tableName,
                        final List<ColumnDescription> columnDescriptionList,
                        final boolean requireFamilyName) throws HBqlException {
         super(schemaName, tableName);
+        this.tempSchema = tempSchema;
         if (columnDescriptionList != null)
             for (final ColumnDescription columnDescription : columnDescriptionList)
                 processColumn(columnDescription, requireFamilyName);
     }
 
     public HBaseSchema(final List<ColumnDescription> columnDescriptionList) throws HBqlException {
-        this("embedded", "embedded", columnDescriptionList, false);
-    }
-
-    public HBaseSchema(final String schemaName,
-                       final String tableName,
-                       final List<ColumnDescription> columnDescriptionList) throws HBqlException {
-        this(schemaName, tableName, columnDescriptionList, true);
-    }
-
-    public HBaseSchema(final String schemaName,
-                       final String tableName) throws HBqlException {
-        this(schemaName, tableName, null, false);
+        this(true, "embedded", "embedded", columnDescriptionList, false);
     }
 
     public HRecord newHRecord() throws HBqlException {
@@ -261,5 +253,13 @@ public class HBaseSchema extends Schema implements HSchema {
         schemaContext.setMapping(new HRecordMapping(schemaContext));
         final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(query, schemaContext);
         return new HBqlFilter(expressionTree);
+    }
+
+    public void setTempSchema(final boolean tempSchema) {
+        this.tempSchema = tempSchema;
+    }
+
+    public boolean isTempSchema() {
+        return this.tempSchema;
     }
 }

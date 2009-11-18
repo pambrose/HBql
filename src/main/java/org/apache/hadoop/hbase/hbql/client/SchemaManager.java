@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.expreval.util.Maps;
+import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
@@ -55,20 +56,31 @@ public class SchemaManager {
         return this.schemaMap;
     }
 
-    public Set<String> getSchemaNames() {
-        return getSchemaMap().keySet();
+    public Set<HSchema> getSchemas() throws HBqlException {
+
+        final Set<HSchema> names = Sets.newHashSet();
+        names.addAll(getSchemaMap().values());
+
+        final String sql = "SELECT schema_obj FROM system_schemas)";
+        final List<HRecord> recs = this.getConnection().executeQueryAndFetch(sql);
+
+        for (final HRecord rec : recs)
+            names.add((HBaseSchema)rec.getCurrentValue("schema_obj"));
+
+        return names;
     }
 
     public boolean schemaExists(final String schemaName) throws HBqlException {
 
         if (this.getSchemaMap().get(schemaName) != null)
             return true;
-
-        final String sql = "SELECT schema_name FROM system_schemas WITH CLIENT FILTER WHERE schema_name =  ?)";
-        final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
-        stmt.setParameter(1, schemaName);
-        final List<HRecord> recs = stmt.executeQueryAndFetch();
-        return recs.size() > 0;
+        else {
+            final String sql = "SELECT schema_name FROM system_schemas WITH CLIENT FILTER WHERE schema_name =  ?)";
+            final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
+            stmt.setParameter(1, schemaName);
+            final List<HRecord> recs = stmt.executeQueryAndFetch();
+            return recs.size() > 0;
+        }
     }
 
     public boolean dropSchema(final String schemaName) throws HBqlException {
@@ -77,13 +89,13 @@ public class SchemaManager {
             this.getSchemaMap().remove(schemaName);
             return true;
         }
-
-        final String sql = "DELETE FROM system_schemas WITH CLIENT FILTER WHERE schema_name =  ?)";
-        final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
-        stmt.setParameter(1, schemaName);
-        final int cnt = stmt.executeUpdate().getCount();
-
-        return cnt > 0;
+        else {
+            final String sql = "DELETE FROM system_schemas WITH CLIENT FILTER WHERE schema_name =  ?)";
+            final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
+            stmt.setParameter(1, schemaName);
+            final int cnt = stmt.executeUpdate().getCount();
+            return cnt > 0;
+        }
     }
 
     public synchronized HBaseSchema createSchema(final boolean tempSchema,
@@ -94,9 +106,9 @@ public class SchemaManager {
         if (!schemaName.equals("system_schemas") && this.schemaExists(schemaName))
             throw new HBqlException("Schema already defined: " + schemaName);
 
-        final HBaseSchema schema = new HBaseSchema(schemaName, tableName, colList);
+        final HBaseSchema schema = new HBaseSchema(tempSchema, schemaName, tableName, colList, true);
 
-        if (tempSchema)
+        if (schema.isTempSchema())
             this.getSchemaMap().put(schemaName, schema);
         else
             this.insertSchema(schema);
@@ -116,18 +128,19 @@ public class SchemaManager {
 
     public HBaseSchema getSchema(final String schemaName) throws HBqlException {
 
-        final HBaseSchema schema = this.getSchemaMap().get(schemaName);
-        if (schema != null)
-            return schema;
+        if (this.getSchemaMap().containsKey(schemaName)) {
+            return this.getSchemaMap().get(schemaName);
+        }
+        else {
+            final String sql = "SELECT schema_obj FROM system_schemas WITH CLIENT FILTER WHERE schema_name =  ?)";
+            final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
+            stmt.setParameter(1, schemaName);
+            List<HRecord> recs = stmt.executeQueryAndFetch();
 
-        final String sql = "SELECT schema_obj FROM system_schemas WITH CLIENT FILTER WHERE schema_name =  ?)";
-        final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
-        stmt.setParameter(1, schemaName);
-        List<HRecord> recs = stmt.executeQueryAndFetch();
+            if (recs.size() == 0)
+                throw new HBqlException("Schema not found: " + schemaName);
 
-        if (recs.size() == 0)
-            throw new HBqlException("Schema not found: " + schemaName);
-
-        return (HBaseSchema)recs.get(0).getCurrentValue("schema_obj");
+            return (HBaseSchema)recs.get(0).getCurrentValue("schema_obj");
+        }
     }
 }

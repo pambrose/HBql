@@ -18,12 +18,13 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.impl;
-
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HRecord;
+package org.apache.hadoop.hbase.hbql.client;
 
 public interface HSchema {
 
     HRecord newHRecord() throws HBqlException;
+
+    String getSchemaName();
+
+    String getTableName();
 }

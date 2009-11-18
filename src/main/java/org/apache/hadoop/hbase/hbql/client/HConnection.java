@@ -21,7 +21,6 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.hbql.impl.HSchema;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -75,5 +74,5 @@ public interface HConnection {
 
     boolean dropSchema(final String schemaName) throws HBqlException;
 
-    Set<String> getSchemaNames();
+    Set<HSchema> getSchemas() throws HBqlException;
 }
