@@ -49,7 +49,7 @@ public class AnnotationAllTypesTest extends TestSupport {
     public static void setupSchema(HConnection connection) throws HBqlException {
 
         if (!connection.schemaExists("alltypes2"))
-            connection.execute("CREATE SCHEMA alltypes2 FOR TABLE example2"
+            connection.execute("CREATE TEMP SCHEMA alltypes2 FOR TABLE example2"
                                + "("
                                + "keyval KEY, "
                                + "f1:val1 boolean ALIAS booleanValue, "

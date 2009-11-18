@@ -42,7 +42,7 @@ public class BasicTest {
 
         Statement stmt = connection.createStatement();
 
-        stmt.execute("CREATE SCHEMA tab4 FOR TABLE table2"
+        stmt.execute("CREATE TEMP SCHEMA tab4 FOR TABLE table2"
                      + "("
                      + "keyval key, "
                      + "f1:val1 string alias val1, "

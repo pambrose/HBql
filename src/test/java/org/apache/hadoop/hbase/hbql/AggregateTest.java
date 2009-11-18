@@ -54,7 +54,7 @@ public class AggregateTest extends TestSupport {
 
         connection = ConnectionManager.newConnection();
 
-        connection.execute("CREATE SCHEMA aggschema FOR TABLE aggtable"
+        connection.execute("CREATE TEMP SCHEMA aggschema FOR TABLE aggtable"
                            + "("
                            + "keyval key, "
                            + "f1:val1 string alias val1, "

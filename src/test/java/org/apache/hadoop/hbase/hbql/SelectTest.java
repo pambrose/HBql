@@ -57,7 +57,7 @@ public class SelectTest extends TestSupport {
 
         connection = ConnectionManager.newConnection();
 
-        connection.execute("CREATE SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1:val1 string alias val1, "
@@ -299,7 +299,7 @@ public class SelectTest extends TestSupport {
 
         connection.execute("drop schema tab8");
 
-        connection.execute("CREATE SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            //  + "f1:val1 string alias val1, "
@@ -347,7 +347,7 @@ public class SelectTest extends TestSupport {
 
         connection.execute("drop schema tab8");
 
-        connection.execute("CREATE SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1:* alias f1default "
@@ -373,7 +373,7 @@ public class SelectTest extends TestSupport {
 
         connection.execute("drop schema tab8");
 
-        connection.execute("CREATE SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1:* alias f1default "
@@ -403,7 +403,7 @@ public class SelectTest extends TestSupport {
 
         connection.execute("drop schema tab8");
 
-        connection.execute("CREATE SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1:* alias f1default "
@@ -428,7 +428,7 @@ public class SelectTest extends TestSupport {
 
         connection.execute("drop schema tab8");
 
-        connection.execute("CREATE SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1:* alias f1default "
@@ -455,7 +455,7 @@ public class SelectTest extends TestSupport {
 
         connection.execute("drop schema table1");
 
-        connection.execute("CREATE SCHEMA table1"
+        connection.execute("CREATE TEMP SCHEMA table1"
                            + "("
                            + "keyval key, "
                            + "f3:* alias f1default "
@@ -480,7 +480,7 @@ public class SelectTest extends TestSupport {
 
         connection.execute("drop schema tab8");
 
-        connection.execute("CREATE SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1:val1 string alias val1, "
@@ -511,7 +511,7 @@ public class SelectTest extends TestSupport {
 
         connection.execute("drop schema tab8");
 
-        connection.execute("CREATE SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1:val1 string alias val1, "
@@ -549,7 +549,7 @@ public class SelectTest extends TestSupport {
 
         connection.execute("drop schema tab8");
 
-        connection.execute("CREATE SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1:val1 string alias val1, "
@@ -584,7 +584,7 @@ public class SelectTest extends TestSupport {
 
         Exception caughtException = null;
         try {
-            connection.execute("CREATE SCHEMA tab8 FOR TABLE table1"
+            connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
                                + "("
                                + "keyval key, "
                                + "f1:val10 string alias val10 default 4"
@@ -604,7 +604,7 @@ public class SelectTest extends TestSupport {
         connection.execute("drop schema tab8");
         Exception caughtException = null;
         try {
-            connection.execute("CREATE SCHEMA tab8 FOR TABLE table1"
+            connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
                                + "("
                                + "keyval key, "
                                + "f1:val10 object alias val10 default 'test default'"

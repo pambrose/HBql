@@ -9,7 +9,7 @@ CREATE SCHEMA
 *Syntax
 
 ---------------------------
-CREATE SCHEMA schema_name [FOR TABLE table_name] '(' attrib [, ...] ')'
+CREATE [TEMP] SCHEMA schema_name [FOR TABLE table_name] '(' attrib [, ...] ')'
 
 attrib:
     key_description
@@ -43,6 +43,9 @@ type:
 *Description
 
     Defines a schema. A schema is required to create tables or select, insert and delete records. 
+
+    * If TEMP is omitted, then the schema is persisted.  If it is included, then
+    the schema will go away when the connection is closed.
 
     * If the table name clause is omitted, then the table name defaults
     to the schema name.

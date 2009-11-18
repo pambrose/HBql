@@ -30,6 +30,7 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.hbql.impl.HSchema;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.NoStatementSchemaContext;
@@ -39,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HBaseSchema extends Schema {
+public class HBaseSchema extends Schema implements HSchema {
 
     private transient HConnectionImpl connection;
     private Set<String> familyNameSet = null;
@@ -48,6 +49,10 @@ public class HBaseSchema extends Schema {
     private final Map<String, ColumnAttrib> versionAttribMap = Maps.newHashMap();
     private final Map<String, ColumnAttrib> familyDefaultMap = Maps.newHashMap();
     private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
+
+    // For serialization
+    public HBaseSchema() {
+    }
 
     public HBaseSchema(final String schemaName,
                        final String tableName,

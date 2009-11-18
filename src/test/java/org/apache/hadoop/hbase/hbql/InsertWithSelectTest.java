@@ -47,7 +47,7 @@ public class InsertWithSelectTest extends TestSupport {
 
         connection = ConnectionManager.newConnection();
 
-        connection.execute("CREATE SCHEMA tab3 FOR TABLE table3"
+        connection.execute("CREATE TEMP SCHEMA tab3 FOR TABLE table3"
                            + "("
                            + "keyval key, "
                            + "f1:val1 string alias val1, "

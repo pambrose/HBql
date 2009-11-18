@@ -57,10 +57,12 @@ public class HConnectionImpl implements HConnection {
     private final SchemaManager schemaManager;
     private final Map<Class, AnnotationMapping> annotationMappingMap = Maps.newHashMap();
 
-    public HConnectionImpl(final String name, final HBaseConfiguration config) {
+    public HConnectionImpl(final String name, final HBaseConfiguration config) throws HBqlException {
         this.name = name;
         this.config = (config == null) ? new HBaseConfiguration() : config;
         this.schemaManager = new SchemaManager(this);
+
+        this.getSchemaManager().validateStore();
     }
 
     public String getName() {
@@ -188,10 +190,11 @@ public class HConnectionImpl implements HConnection {
         return this.getSchemaManager().getSchemaNames();
     }
 
-    public synchronized HBaseSchema createSchema(final String schemaName,
+    public synchronized HBaseSchema createSchema(final boolean tempSchema,
+                                                 final String schemaName,
                                                  final String tableName,
                                                  final List<ColumnDescription> colList) throws HBqlException {
-        return this.getSchemaManager().createSchema(schemaName, tableName, colList);
+        return this.getSchemaManager().createSchema(tempSchema, schemaName, tableName, colList);
     }
 
     // Table Routines

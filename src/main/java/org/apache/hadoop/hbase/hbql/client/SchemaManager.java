@@ -38,6 +38,14 @@ public class SchemaManager {
         this.connection = connection;
     }
 
+    public void validateStore() throws HBqlException {
+        this.getConnection().execute("CREATE TEMP SCHEMA system_schemas"
+                                     + "(schema_name key, f1:schema_obj object alias schema_obj)");
+
+        if (!this.getConnection().tableExists("system_schemas"))
+            this.getConnection().execute("CREATE TABLE USING system_schemas");
+    }
+
     private HConnectionImpl getConnection() {
         return connection;
     }
@@ -64,18 +72,32 @@ public class SchemaManager {
         }
     }
 
-    public synchronized HBaseSchema createSchema(final String schemaName,
+    public synchronized HBaseSchema createSchema(final boolean tempSchema,
+                                                 final String schemaName,
                                                  final String tableName,
                                                  final List<ColumnDescription> colList) throws HBqlException {
 
         if (this.schemaExists(schemaName))
-            throw new HBqlException("Schema " + schemaName + " already defined");
+            throw new HBqlException("Schema already defined: " + schemaName);
 
         final HBaseSchema schema = new HBaseSchema(schemaName, tableName, colList);
 
-        this.getSchemaMap().put(schemaName, schema);
+        if (tempSchema)
+            this.getSchemaMap().put(schemaName, schema);
+        else
+            this.insertSchema(schema);
 
         return schema;
+    }
+
+    private void insertSchema(final HBaseSchema schema) throws HBqlException {
+
+        final String sql = "INSERT INTO system_schemas (schema_name, schema_obj) VALUES (?, ?)";
+        final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
+
+        stmt.setParameter(1, schema.getSchemaName());
+        stmt.setParameter(2, schema);
+        stmt.execute();
     }
 
     public HBaseSchema getSchema(final String schemaName) throws HBqlException {

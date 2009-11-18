@@ -46,7 +46,7 @@ public class RecordAllTypesTest extends TestSupport {
 
         connection = ConnectionManager.newConnection();
 
-        connection.execute("CREATE SCHEMA alltypes FOR TABLE example2"
+        connection.execute("CREATE TEMP SCHEMA alltypes FOR TABLE example2"
                            + "("
                            + "keyval KEY, "
                            + "f1:val1 boolean ALIAS booleanValue, "

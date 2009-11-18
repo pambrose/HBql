@@ -30,19 +30,20 @@ public class ConnectionManager {
 
     private static Map<String, HConnection> connectionMap = Maps.newHashMap();
 
-    public static HConnection newConnection() {
+    public static HConnection newConnection() throws HBqlException {
         return newConnection(null, null);
     }
 
-    public static HConnection newConnection(final HBaseConfiguration config) {
+    public static HConnection newConnection(final HBaseConfiguration config) throws HBqlException {
         return newConnection(null, config);
     }
 
-    public static synchronized HConnection newConnection(final String name) {
+    public static synchronized HConnection newConnection(final String name) throws HBqlException {
         return newConnection(name, null);
     }
 
-    public static synchronized HConnection newConnection(final String name, final HBaseConfiguration config) {
+    public static synchronized HConnection newConnection(final String name,
+                                                         final HBaseConfiguration config) throws HBqlException {
         final HConnectionImpl connection = new HConnectionImpl(name, config);
 
         if (connection.getName() != null)

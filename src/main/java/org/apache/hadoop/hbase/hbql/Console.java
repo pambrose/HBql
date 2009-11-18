@@ -98,7 +98,7 @@ public class Console {
         return false;
     }
 
-    private static HConnectionImpl getConnection() {
+    private static HConnectionImpl getConnection() throws HBqlException {
 
         if (conn == null)
             conn = (HConnectionImpl)ConnectionManager.newConnection();
@@ -106,7 +106,7 @@ public class Console {
         return conn;
     }
 
-    private static void processCommandLineInput() throws IOException {
+    private static void processCommandLineInput() throws IOException, HBqlException {
 
         final List<SimpleCompletor> completors = Lists.newArrayList();
         completors.add(new SimpleCompletor(new String[]{"select", "insert", "create", "table", "schema",

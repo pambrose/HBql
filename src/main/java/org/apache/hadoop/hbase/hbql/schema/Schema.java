@@ -40,8 +40,8 @@ import java.util.Set;
 
 public abstract class Schema implements Serializable {
 
-    private final String schemaName;
-    private final String tableName;
+    private String schemaName;
+    private String tableName;
     private final Map<String, ColumnAttrib> columnAttribByVariableNameMap = Maps.newHashMap();
     private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
 
@@ -49,6 +49,10 @@ public abstract class Schema implements Serializable {
     private List<String> evalList = null;
     private int expressionTreeCacheSize = 25;
     private volatile Map<String, ExpressionTree> evalMap = null;
+
+    // For serialization
+    protected Schema() {
+    }
 
     protected Schema(final String schemaName, final String tableName) {
         this.schemaName = schemaName;

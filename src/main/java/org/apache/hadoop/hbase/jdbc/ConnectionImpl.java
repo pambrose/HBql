@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.jdbc;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.sql.Array;
@@ -46,7 +47,7 @@ public class ConnectionImpl implements Connection {
 
     private final HConnectionImpl hbqlConnection;
 
-    public ConnectionImpl(final String name, final HBaseConfiguration config) {
+    public ConnectionImpl(final String name, final HBaseConfiguration config) throws HBqlException {
         this.hbqlConnection = new HConnectionImpl(name, config);
     }
 

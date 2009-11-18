@@ -55,7 +55,7 @@ public class InsertTest extends TestSupport {
 
         connection = ConnectionManager.newConnection();
 
-        connection.execute("CREATE SCHEMA tab2 FOR TABLE table2"
+        connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
                            + "f1:val1 string alias val1, "
@@ -285,7 +285,7 @@ public class InsertTest extends TestSupport {
         if (connection.schemaExists("tab2"))
             connection.dropSchema("tab2");
 
-        connection.execute("CREATE SCHEMA tab2 FOR TABLE table2"
+        connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
                            //  + "f1:val1 string alias val1, "
@@ -333,7 +333,7 @@ public class InsertTest extends TestSupport {
 
         connection.execute("drop schema tab2");
 
-        connection.execute("CREATE SCHEMA tab2 FOR TABLE table2"
+        connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
                            + "f1:* alias f1default "
@@ -358,7 +358,7 @@ public class InsertTest extends TestSupport {
 
         connection.execute("drop schema tab2");
 
-        connection.execute("CREATE SCHEMA tab2 FOR TABLE table2"
+        connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
                            + "f1:* alias f1default "
@@ -388,7 +388,7 @@ public class InsertTest extends TestSupport {
 
         connection.execute("drop schema tab2");
 
-        connection.execute("CREATE SCHEMA tab2 FOR TABLE table2"
+        connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
                            + "f1:* alias f1default "
@@ -413,7 +413,7 @@ public class InsertTest extends TestSupport {
 
         connection.execute("drop schema tab2");
 
-        connection.execute("CREATE SCHEMA tab2 FOR TABLE table2"
+        connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
                            + "f1:* alias f1default "
@@ -439,7 +439,7 @@ public class InsertTest extends TestSupport {
     public void selectUnknownMapExpressions() throws HBqlException {
 
         connection.execute("drop schema table2");
-        connection.execute("CREATE SCHEMA table2"
+        connection.execute("CREATE TEMP SCHEMA table2"
                            + "("
                            + "keyval key, "
                            + "f3:* alias f1default "
@@ -464,7 +464,7 @@ public class InsertTest extends TestSupport {
     public void selectUnnamedExpressions() throws HBqlException {
 
         connection.execute("drop schema tab2");
-        connection.execute("CREATE SCHEMA tab2 FOR TABLE table2"
+        connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
                            + "f1:val1 string alias val1, "
@@ -495,7 +495,7 @@ public class InsertTest extends TestSupport {
 
         connection.execute("drop schema tab2");
 
-        connection.execute("CREATE SCHEMA tab2 FOR TABLE table2"
+        connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
                            + "f1:val1 string alias val1, "
@@ -532,7 +532,7 @@ public class InsertTest extends TestSupport {
     public void selectDefaults() throws HBqlException {
 
         connection.execute("drop schema tab2");
-        connection.execute("CREATE SCHEMA tab2 FOR TABLE table2"
+        connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
                            + "f1:val1 string alias val1, "
@@ -566,7 +566,7 @@ public class InsertTest extends TestSupport {
         connection.execute("drop schema tab2");
         Exception caughtException = null;
         try {
-            connection.execute("CREATE SCHEMA tab2 FOR TABLE table2"
+            connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                                + "("
                                + "keyval key, "
                                + "f1:val10 string alias val10 default 4"
@@ -586,7 +586,7 @@ public class InsertTest extends TestSupport {
         connection.execute("drop schema tab2");
         Exception caughtException = null;
         try {
-            connection.execute("CREATE SCHEMA tab2 FOR TABLE table2"
+            connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                                + "("
                                + "keyval key, "
                                + "f1:val10 object alias val10 default 'test default'"

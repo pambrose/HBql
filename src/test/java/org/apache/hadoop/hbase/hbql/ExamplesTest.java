@@ -163,7 +163,7 @@ public class ExamplesTest extends TestSupport {
 
         HConnection connection = ConnectionManager.newConnection();
 
-        connection.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
+        connection.execute("CREATE TEMP SCHEMA foo_schema FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
                            + "family1:val1 INT ALIAS val1, "
@@ -194,7 +194,7 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = ConnectionManager.newConnection();
 
         // A column with a default value.
-        connection.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
+        connection.execute("CREATE TEMP SCHEMA foo_schema FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
                            + "family1:val1 INT ALIAS val1, "
@@ -217,7 +217,7 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = ConnectionManager.newConnection();
 
         // START SNIPPET: insert3
-        connection.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
+        connection.execute("CREATE TEMP SCHEMA foo_schema FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
                            + "family1:val1 STRING ALIAS val1, "
@@ -239,17 +239,17 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = ConnectionManager.newConnection();
 
         // Schema named foo that corresponds to table foo.
-        connection.execute("CREATE SCHEMA foo (keyval key, family1:val1 STRING)");
+        connection.execute("CREATE TEMP SCHEMA foo (keyval key, family1:val1 STRING)");
         // END SNIPPET: create-schema1
 
         // START SNIPPET: create-schema2
         // Schema named schema1 that corresponds to table foo.
-        connection.execute("CREATE SCHEMA schema1 FOR TABLE foo (keyval key, family1:val1 STRING ALIAS val2)");
+        connection.execute("CREATE TEMP SCHEMA schema1 FOR TABLE foo (keyval key, family1:val1 STRING ALIAS val2)");
         // END SNIPPET: create-schema2
 
         // START SNIPPET: create-schema3
         // A column with a default value.
-        connection.execute("CREATE SCHEMA schema1 FOR TABLE foo "
+        connection.execute("CREATE TEMP SCHEMA schema1 FOR TABLE foo "
                            + "("
                            + "keyval key, "
                            + "family1:val1 STRING ALIAS val1 DEFAULT 'this is a default value'"
@@ -259,7 +259,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: create-schema4
 
         // A schema with a family default attribute.
-        connection.execute("CREATE SCHEMA schema1 FOR TABLE foo "
+        connection.execute("CREATE TEMP SCHEMA schema1 FOR TABLE foo "
                            + "("
                            + "keyval key, "
                            + "family1:val1 STRING ALIAS val1, "
@@ -277,7 +277,7 @@ public class ExamplesTest extends TestSupport {
 
         HConnection connection = ConnectionManager.newConnection();
 
-        connection.execute("CREATE SCHEMA tab1 FOR TABLE table1"
+        connection.execute("CREATE TEMP SCHEMA tab1 FOR TABLE table1"
                            + "("
                            + "keyval KEY, "
                            + "f1:val1 STRING ALIAS val1, "
@@ -313,8 +313,8 @@ public class ExamplesTest extends TestSupport {
         // Get a connection to HBase
         HConnection connection = ConnectionManager.newConnection();
 
-        // Create schema
-        connection.execute("CREATE SCHEMA demo1 FOR TABLE example1"
+        // CREATE TEMP SCHEMA
+        connection.execute("CREATE TEMP SCHEMA demo1 FOR TABLE example1"
                            + "("
                            + "keyval KEY, "
                            + "f1:val1 STRING ALIAS val1, "
@@ -373,7 +373,7 @@ public class ExamplesTest extends TestSupport {
         Connection connection = DriverManager.getConnection("jdbc:hbql");
 
         Statement stmt1 = connection.createStatement();
-        stmt1.execute("CREATE SCHEMA sch9 FOR TABLE table2"
+        stmt1.execute("CREATE TEMP SCHEMA sch9 FOR TABLE table2"
                       + "("
                       + "keyval key, "
                       + "f1:val1 string alias val1, "
@@ -408,7 +408,7 @@ public class ExamplesTest extends TestSupport {
         // Get a connection to HBase
         HConnection connection = ConnectionManager.newConnection();
 
-        connection.execute("CREATE SCHEMA demo2 FOR TABLE example2"
+        connection.execute("CREATE TEMP SCHEMA demo2 FOR TABLE example2"
                            + "("
                            + "keyval KEY, "
                            + "f1:val1 STRING ALIAS val1, "

@@ -37,7 +37,7 @@ public class RecordExample {
 
         HConnection connection = ConnectionManager.newConnection();
 
-        connection.execute("CREATE SCHEMA testobjects alias testobjects2"
+        connection.execute("CREATE TEMP SCHEMA testobjects alias testobjects2"
                            + "("
                            + "keyval key, "
                            + "family1:author string alias author, "

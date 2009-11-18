@@ -133,8 +133,8 @@ selectStatement returns [SelectStatement retval]
 							{retval = new SelectStatement($c.retval, $t.text, $w.retval);};
 							
 schemaManagerStatement returns [SchemaContext retval]
-	: keyCREATE keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
-							{retval = new CreateSchemaStatement($t.text, $a.text, $l.retval);}
+	: keyCREATE (tmp=keyTEMP)? keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
+							{retval = new CreateSchemaStatement(($tmp.text != null),$t.text, $a.text, $l.retval);}
 	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaStatement($t.text);}
 	| keyDESCRIBE keySCHEMA t=simpleName 		{retval = new DescribeSchemaStatement($t.text);}
 	;
@@ -516,3 +516,4 @@ keyHELP		: {isKeyword(input, "HELP")}? ID;
 keyPARSE	: {isKeyword(input, "PARSE")}? ID;
 keyEXPR		: {isKeyword(input, "EXPR")}? ID;
 keyIMPORT	: {isKeyword(input, "IMPORT")}? ID;
+keyTEMP		: {isKeyword(input, "TEMP")}? ID;

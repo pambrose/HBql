@@ -31,17 +31,24 @@ import java.util.List;
 
 public class CreateSchemaStatement extends SchemaContext implements ConnectionStatement {
 
+    private final boolean tempSchema;
     private final String schemaName;
     private final String tableName;
     private final List<ColumnDescription> columnDescriptionList;
 
-    public CreateSchemaStatement(final String schemaName,
+    public CreateSchemaStatement(final boolean tempSchema,
+                                 final String schemaName,
                                  final String tableName,
                                  final List<ColumnDescription> columnDescriptionList) {
         super(schemaName);
+        this.tempSchema = tempSchema;
         this.schemaName = schemaName;
         this.tableName = (tableName == null || tableName.length() == 0) ? schemaName : tableName;
         this.columnDescriptionList = columnDescriptionList;
+    }
+
+    private boolean isTempSchema() {
+        return this.tempSchema;
     }
 
     private String getTableName() {
@@ -59,7 +66,8 @@ public class CreateSchemaStatement extends SchemaContext implements ConnectionSt
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        final HBaseSchema schema = connection.createSchema(this.getSchemaName(),
+        final HBaseSchema schema = connection.createSchema(this.isTempSchema(),
+                                                           this.getSchemaName(),
                                                            this.getTableName(),
                                                            this.getColumnDescriptionList());
 

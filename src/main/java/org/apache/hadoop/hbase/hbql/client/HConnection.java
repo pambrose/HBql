@@ -21,7 +21,7 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.impl.HSchema;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -69,7 +69,7 @@ public interface HConnection {
 
     ExecutionResults executeUpdate(String sql) throws SQLException;
 
-    HBaseSchema getSchema(final String schemaName) throws HBqlException;
+    HSchema getSchema(final String schemaName) throws HBqlException;
 
     boolean schemaExists(String schemaName);
 
