@@ -23,7 +23,6 @@ package org.apache.yaoql.impl;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 
 import java.lang.reflect.Field;
@@ -77,7 +76,7 @@ public class ReflectionSchema extends Schema {
         return reflectionSchemaMap;
     }
 
-    public Collection<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException {
+    public Collection<String> getSchemaFamilyNames() throws HBqlException {
         return Lists.newArrayList();
     }
 }

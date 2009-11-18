@@ -24,8 +24,6 @@ import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HSchema;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 
@@ -46,7 +44,7 @@ public class SchemaTest extends TestSupport {
         connection.execute("CREATE SCHEMA test (keyval key, f1:val2 object alias val3)");
         assertTrue(connection.schemaExists("test"));
 
-        HBaseSchema schema = ((HConnectionImpl)connection).getSchema("test");
+        HSchema schema = connection.getSchema("test");
 
         Set<HSchema> schemas = connection.getSchemas();
 

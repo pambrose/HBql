@@ -25,7 +25,6 @@ import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
@@ -55,20 +54,26 @@ public class HBaseSchema extends Schema implements HSchema {
     public HBaseSchema() {
     }
 
-    public HBaseSchema(final boolean tempSchema,
+    public HBaseSchema(final HConnectionImpl connection,
+                       final boolean tempSchema,
                        final String schemaName,
                        final String tableName,
                        final List<ColumnDescription> columnDescriptionList,
                        final boolean requireFamilyName) throws HBqlException {
         super(schemaName, tableName);
+        this.connection = connection;
         this.tempSchema = tempSchema;
         if (columnDescriptionList != null)
             for (final ColumnDescription columnDescription : columnDescriptionList)
                 processColumn(columnDescription, requireFamilyName);
     }
 
+    private HConnectionImpl getConnection() {
+        return connection;
+    }
+
     public HBaseSchema(final List<ColumnDescription> columnDescriptionList) throws HBqlException {
-        this(true, "embedded", "embedded", columnDescriptionList, false);
+        this(null, true, "embedded", "embedded", columnDescriptionList, false);
     }
 
     public HRecord newHRecord() throws HBqlException {
@@ -235,14 +240,14 @@ public class HBaseSchema extends Schema implements HSchema {
         attribList.add(attrib);
     }
 
-    public synchronized Set<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException {
+    public synchronized Set<String> getSchemaFamilyNames() throws HBqlException {
 
         // TODO May not want to cache this
         if (this.familyNameSet == null) {
             // Connction will be null from tests
-            this.familyNameSet = (connection == null)
+            this.familyNameSet = (this.getConnection() == null)
                                  ? this.getFamilySet()
-                                 : connection.getFamilyNames(this.getTableName());
+                                 : this.getConnection().getFamilyNames(this.getTableName());
         }
 
         return this.familyNameSet;
@@ -255,11 +260,11 @@ public class HBaseSchema extends Schema implements HSchema {
         return new HBqlFilter(expressionTree);
     }
 
-    public void setTempSchema(final boolean tempSchema) {
-        this.tempSchema = tempSchema;
-    }
-
     public boolean isTempSchema() {
         return this.tempSchema;
+    }
+
+    public void dropSchema() throws HBqlException {
+        this.getConnection().dropSchema(this.getSchemaName());
     }
 }

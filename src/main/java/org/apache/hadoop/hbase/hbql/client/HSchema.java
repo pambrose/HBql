@@ -27,4 +27,8 @@ public interface HSchema {
     String getSchemaName();
 
     String getTableName();
+
+    void dropSchema() throws HBqlException;
+
+    boolean isTempSchema();
 }

@@ -143,7 +143,7 @@ public class FamilySelectElement implements SelectElement {
         this.setSchemaContext(schemaContext);
 
         this.getAttribsUsedInExpr().clear();
-        final Collection<String> familyList = this.getHBaseSchema().getSchemaFamilyNames(connection);
+        final Collection<String> familyList = this.getHBaseSchema().getSchemaFamilyNames();
 
         if (this.useAllFamilies) {
             // connction will be null from tests

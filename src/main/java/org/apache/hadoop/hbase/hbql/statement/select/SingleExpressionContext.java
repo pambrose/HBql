@@ -165,7 +165,7 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
                 final String[] strs = name.split(":");
                 this.familyName = strs[0];
                 this.columnName = strs[1];
-                final Collection<String> families = this.getHBaseSchema().getSchemaFamilyNames(connection);
+                final Collection<String> families = this.getHBaseSchema().getSchemaFamilyNames();
                 if (!families.contains(this.getFamilyName()))
                     throw new HBqlException("Unknown family name: " + this.getFamilyName());
             }

@@ -106,7 +106,7 @@ public class SchemaManager {
         if (!schemaName.equals("system_schemas") && this.schemaExists(schemaName))
             throw new HBqlException("Schema already defined: " + schemaName);
 
-        final HBaseSchema schema = new HBaseSchema(tempSchema, schemaName, tableName, colList, true);
+        final HBaseSchema schema = new HBaseSchema(this.getConnection(), tempSchema, schemaName, tableName, colList, true);
 
         if (schema.isTempSchema())
             this.getSchemaMap().put(schemaName, schema);

@@ -27,7 +27,6 @@ import org.apache.expreval.util.Maps;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
@@ -59,7 +58,7 @@ public abstract class Schema implements Serializable {
         this.tableName = tableName;
     }
 
-    public abstract Collection<String> getSchemaFamilyNames(final HConnection connection) throws HBqlException;
+    public abstract Collection<String> getSchemaFamilyNames() throws HBqlException;
 
     public Set<ColumnAttrib> getColumnAttribSet() {
         return this.columnAttribSet;
