@@ -33,6 +33,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
@@ -112,6 +113,10 @@ public abstract class MultipleExpressionContext implements Serializable {
 
     public void setSchemaContext(final SchemaContext schemaContext) {
         this.schemaContext = schemaContext;
+
+        if (schemaContext != null && schemaContext.getMapping() == null)
+            schemaContext.setMapping(new HRecordMapping(schemaContext));
+
         this.setContext();
     }
 

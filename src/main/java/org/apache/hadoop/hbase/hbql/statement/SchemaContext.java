@@ -26,7 +26,6 @@ import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 
@@ -35,8 +34,8 @@ import java.io.Serializable;
 public abstract class SchemaContext implements HBqlStatement, Serializable {
 
     private Mapping mapping = null;
-    private volatile Schema schema = null;
     private String schemaName = null;
+    private Schema schema = null;
 
     protected SchemaContext(final String schemaName) {
         this.schemaName = schemaName;
@@ -46,7 +45,8 @@ public abstract class SchemaContext implements HBqlStatement, Serializable {
         this.setSchema(schema);
     }
 
-    protected void validateSchemaName(final HConnectionImpl connection) throws HBqlException {
+    protected synchronized void validateSchemaName(final HConnectionImpl connection) throws HBqlException {
+
         if (this.getSchema() == null) {
             try {
                 this.setSchema(connection.getSchema(this.getSchemaName()));
@@ -55,6 +55,8 @@ public abstract class SchemaContext implements HBqlStatement, Serializable {
                 throw new HBqlException("Unknown schema name: " + this.getSchemaName());
             }
         }
+
+        this.validateMatchingNames(this.getMapping());
     }
 
     protected String getSchemaName() {
@@ -71,21 +73,15 @@ public abstract class SchemaContext implements HBqlStatement, Serializable {
         return this.schema;
     }
 
-    public synchronized Mapping getMapping() throws HBqlException {
-
-        // This is the default if it has not already been set.
-        if (this.mapping == null)
-            this.mapping = new HRecordMapping(this);
-
+    public Mapping getMapping() {
         return this.mapping;
     }
 
-    public void setMapping(final Mapping mapping) throws HBqlException {
-        this.matchNames(mapping);
+    public void setMapping(final Mapping mapping) {
         this.mapping = mapping;
     }
 
-    private void matchNames(final Mapping mapping) throws HBqlException {
+    private void validateMatchingNames(final Mapping mapping) throws HBqlException {
         if (mapping != null && mapping instanceof AnnotationMapping) {
             final String mappingName = mapping.getSchema().getSchemaName();
             final String selectName = this.getSchema().getSchemaName();

@@ -75,7 +75,9 @@ public class HBaseSchema extends Schema {
     }
 
     public HRecord newHRecord() throws HBqlException {
-        return new HRecordImpl(new SimpleSchemaContext(this, null));
+        final SchemaContext schemaContext = new SimpleSchemaContext(this, null);
+        schemaContext.setMapping(new HRecordMapping(schemaContext));
+        return new HRecordImpl(schemaContext);
     }
 
     private void processColumn(final ColumnDescription columnDescription,
@@ -251,6 +253,7 @@ public class HBaseSchema extends Schema {
 
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
         final SchemaContext schemaContext = new SimpleSchemaContext(this, null);
+        schemaContext.setMapping(new HRecordMapping(schemaContext));
         final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(query, schemaContext);
         return new HBqlFilter(expressionTree);
     }

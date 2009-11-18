@@ -37,6 +37,7 @@ public class BasicTest {
     @BeforeClass
     public static void beforeClass() throws SQLException, ClassNotFoundException {
 
+        Class.forName("org.apache.hadoop.hbase.jdbc.Driver");
         connection = DriverManager.getConnection("jdbc:hbql");
 
         Statement stmt = connection.createStatement();

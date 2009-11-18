@@ -367,18 +367,18 @@ public class WhereExpressionsTest extends TestSupport {
         HConnection connection = ConnectionManager.newConnection();
         final ObjectAllTypes obj = new ObjectAllTypes("aaabbb", 3, "aaab");
 
-        assertAnnotationEvalTrue(connection, obj, "keyval CONTAINS 'ab'");
-        assertAnnotationEvalFalse(connection, obj, "keyval CONTAINS 'ba'");
-        assertAnnotationEvalFalse(connection, obj, "'asasas' CONTAINS stringValue");
-        assertAnnotationEvalTrue(connection, obj, "'xxaaabxx' CONTAINS stringValue");
-        assertAnnotationEvalTrue(connection, obj, "keyval CONTAINS stringValue");
-        assertAnnotationEvalTrue(connection, obj, "keyval+'zz' CONTAINS stringValue+'bbz'");
-        assertAnnotationEvalFalse(connection, obj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
-        assertAnnotationEvalFalse(connection, obj, "NOT ((('asasas' NOT CONTAINS stringValue)))");
-        assertAnnotationEvalTrue(connection, obj, "NOT(keyval+'zz' NOT CONTAINS stringValue+'bbz')");
+        assertReflectionEvalTrue(obj, "keyval CONTAINS 'ab'");
+        assertReflectionEvalFalse(obj, "keyval CONTAINS 'ba'");
+        assertReflectionEvalFalse(obj, "'asasas' CONTAINS stringValue");
+        assertReflectionEvalTrue(obj, "'xxaaabxx' CONTAINS stringValue");
+        assertReflectionEvalTrue(obj, "keyval CONTAINS stringValue");
+        assertReflectionEvalTrue(obj, "keyval+'zz' CONTAINS stringValue+'bbz'");
+        assertReflectionEvalFalse(obj, "NOT(keyval+'zz' CONTAINS stringValue+'bbz')");
+        assertReflectionEvalFalse(obj, "NOT ((('asasas' NOT CONTAINS stringValue)))");
+        assertReflectionEvalTrue(obj, "NOT(keyval+'zz' NOT CONTAINS stringValue+'bbz')");
 
         // Defines schema
-        AnnotationAllTypesTest.beforeClass();
+        AnnotationAllTypesTest.setupSchema(connection);
 
         final AnnotatedAllTypes annoObj = new AnnotatedAllTypes("aaabbb", 3, "aaab");
 
@@ -407,7 +407,7 @@ public class WhereExpressionsTest extends TestSupport {
 
         final ObjectAllTypes obj = new ObjectAllTypes("aaabbb", 3, "aaab");
 
-        tree = parseAnnotationExpr(connection, obj, "keyval CONTAINS :a");
+        tree = parseReflectionExpr(obj, "keyval CONTAINS :a");
         tree.setParameter("a", "ab");
         assertExpressionEvalTrue(obj, tree);
         tree.setParameter("a", "ba");
@@ -518,6 +518,7 @@ public class WhereExpressionsTest extends TestSupport {
     public void regexFunctions() throws HBqlException {
 
         HConnection connection = ConnectionManager.newConnection();
+        AnnotationAllTypesTest.setupSchema(connection);
         final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "aaab");
 
         assertEvalTrue("'abc' like 'abc'");
@@ -533,6 +534,7 @@ public class WhereExpressionsTest extends TestSupport {
     public void objectFunctions() throws HBqlException {
 
         HConnection connection = ConnectionManager.newConnection();
+        AnnotationAllTypesTest.setupSchema(connection);
         final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "bbb");
 
         assertAnnotationEvalTrue(connection, obj, "stringValue between 'aaa' AND 'ccc'");

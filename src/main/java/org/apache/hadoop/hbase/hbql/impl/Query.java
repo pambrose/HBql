@@ -23,9 +23,11 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
@@ -40,34 +42,31 @@ public class Query<E> {
     private final SelectStatement selectStatement;
     private List<QueryListener<E>> listeners = null;
 
-    private Query(final HConnectionImpl connection,
-                  final SelectStatement selectStatement,
-                  final Mapping mapping) throws HBqlException {
+    private Query(final HConnectionImpl connection, final SelectStatement selectStatement) throws HBqlException {
         this.connection = connection;
         this.selectStatement = selectStatement;
-
-        if (mapping != null)
-            this.getSelectStatement().setMapping(mapping);
 
         this.getSelectStatement().validate(this.getHConnection());
     }
 
     public static <T> Query<T> newQuery(final HConnectionImpl connection,
-                                        final SelectStatement selectStatement) throws HBqlException {
-        return new Query<T>(connection, selectStatement, null);
-    }
-
-    public static <T> Query<T> newQuery(final HConnectionImpl connection,
                                         final SelectStatement selectStatement,
                                         final Class clazz) throws HBqlException {
-        Mapping mapping = null;
-        if (clazz != null) {
+
+        final Mapping mapping;
+        if (clazz.equals(HRecord.class)) {
+            mapping = new HRecordMapping(selectStatement);
+        }
+        else {
             mapping = connection.getAnnotationMapping(clazz);
 
             if (mapping == null)
                 throw new HBqlException("Unknown class " + clazz.getName());
         }
-        return new Query<T>(connection, selectStatement, mapping);
+
+        selectStatement.setMapping(mapping);
+
+        return new Query<T>(connection, selectStatement);
     }
 
 

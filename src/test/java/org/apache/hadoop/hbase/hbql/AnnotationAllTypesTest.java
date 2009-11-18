@@ -42,8 +42,11 @@ public class AnnotationAllTypesTest extends TestSupport {
 
     @BeforeClass
     public static void beforeClass() throws HBqlException {
-
         connection = ConnectionManager.newConnection();
+        setupSchema(connection);
+    }
+
+    public static void setupSchema(HConnection connection) throws HBqlException {
 
         if (!connection.schemaExists("alltypes2"))
             connection.execute("CREATE SCHEMA alltypes2 FOR TABLE example2"

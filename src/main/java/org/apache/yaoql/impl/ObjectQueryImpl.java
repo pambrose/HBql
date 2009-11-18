@@ -21,6 +21,7 @@
 package org.apache.yaoql.impl;
 
 import org.apache.expreval.expr.ExpressionTree;
+import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
@@ -65,7 +66,7 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
     public ExpressionTree getExpressionTree(final Collection<T> objects) throws HBqlException {
 
         if (objects == null || objects.size() == 0) {
-            final ExpressionTree expressionTree = ExpressionTree.newExpressionTree(true);
+            final ExpressionTree expressionTree = ExpressionTree.newExpressionTree(null, new BooleanLiteral(true));
             expressionTree.setSchemaContext(null);
             return expressionTree;
         }
@@ -73,7 +74,7 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
         // Grab the first object to derive the schema
         final Object obj = objects.iterator().next();
         final ReflectionSchema schema = ReflectionSchema.getReflectionSchema(obj);
-        final SchemaContext schemaContext = new SimpleSchemaContext(schema);
+        final SchemaContext schemaContext = new SimpleSchemaContext(schema, null);
         final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(this.getQuery(), schemaContext);
         this.applyParameters(expressionTree);
         return expressionTree;

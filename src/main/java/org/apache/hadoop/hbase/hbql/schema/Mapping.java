@@ -34,18 +34,15 @@ public abstract class Mapping implements Serializable {
 
     public Mapping(final SchemaContext schemaContext) {
         this.schemaContext = schemaContext;
+        this.getSchemaContext().setMapping(this);
     }
 
-    public SchemaContext getSchemaContext() throws HBqlException {
-        // TODO This is a hack that needs to get cleanup
-        if (this.schemaContext != null)
-            this.schemaContext.setMapping(this);
+    public SchemaContext getSchemaContext() {
         return this.schemaContext;
     }
 
-    public Schema getSchema() throws HBqlException {
-        // Do not use the accessor because of the hack
-        return this.schemaContext.getSchema();
+    public Schema getSchema() {
+        return this.getSchemaContext().getSchema();
     }
 
     public HBaseSchema getHBaseSchema() throws HBqlException {

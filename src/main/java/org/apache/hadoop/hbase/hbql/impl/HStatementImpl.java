@@ -119,7 +119,7 @@ public class HStatementImpl implements HStatement {
     }
 
     public HResultSet<HRecord> executeQuery(final String sql) throws HBqlException {
-        return this.executeQuery(Util.parseJdbcStatement(sql), null);
+        return this.executeQuery(Util.parseJdbcStatement(sql), HRecord.class);
     }
 
     public <T> HResultSet<T> executeQuery(final String sql, final Class clazz) throws HBqlException {
@@ -127,7 +127,7 @@ public class HStatementImpl implements HStatement {
     }
 
     public List<HRecord> executeQueryAndFetch(final String sql) throws HBqlException {
-        return this.executeQueryAndFetch(Util.parseJdbcStatement(sql), null);
+        return this.executeQueryAndFetch(Util.parseJdbcStatement(sql), HRecord.class);
     }
 
     public <T> List<T> executeQueryAndFetch(final String sql, final Class clazz) throws HBqlException {

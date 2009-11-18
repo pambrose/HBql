@@ -54,7 +54,7 @@ public class HPreparedStatementImpl extends HStatementImpl implements HPreparedS
     }
 
     public HResultSet<HRecord> executeQuery() throws HBqlException {
-        return this.executeQuery(this.getStatement(), null);
+        return this.executeQuery(this.getStatement(), HRecord.class);
     }
 
     public <T> HResultSet<T> executeQuery(final Class clazz) throws HBqlException {
@@ -62,7 +62,7 @@ public class HPreparedStatementImpl extends HStatementImpl implements HPreparedS
     }
 
     public List<HRecord> executeQueryAndFetch() throws HBqlException {
-        return this.executeQueryAndFetch(this.getStatement(), null);
+        return this.executeQueryAndFetch(this.getStatement(), HRecord.class);
     }
 
     public <T> List<T> executeQueryAndFetch(final Class clazz) throws HBqlException {

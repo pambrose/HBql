@@ -23,12 +23,14 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
+import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.DeleteStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.InsertStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.ParameterStatement;
+import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
 
@@ -39,12 +41,17 @@ public class Util {
         try {
             final HBqlStatement stmt = ParserUtil.parseJdbcStatement(sql);
 
-            if (Util.isSelectStatement(stmt)
-                || stmt instanceof ConnectionStatement
-                || stmt instanceof NonConnectionStatement)
-                return stmt;
-            else
+            if (!Util.isSelectStatement(stmt)
+                && !(stmt instanceof ConnectionStatement)
+                && !(stmt instanceof NonConnectionStatement))
                 throw new HBqlException("Unsupported statement type: " + stmt.getClass().getSimpleName() + " - " + sql);
+
+            if (stmt instanceof SchemaContext) {
+                final SchemaContext schemaContext = (SchemaContext)stmt;
+                schemaContext.setMapping(new HRecordMapping(schemaContext));
+            }
+
+            return stmt;
         }
         catch (ParseException e) {
             throw new HBqlException(e.getErrorMessage());

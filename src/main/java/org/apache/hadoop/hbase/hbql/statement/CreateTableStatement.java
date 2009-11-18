@@ -26,8 +26,6 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-import java.io.IOException;
-
 public class CreateTableStatement extends SchemaContext implements ConnectionStatement {
 
     public CreateTableStatement(final String schemaName) {
@@ -43,12 +41,7 @@ public class CreateTableStatement extends SchemaContext implements ConnectionSta
         for (final HColumnDescriptor columnDesc : this.getHBaseSchema().getColumnDescriptors())
             tableDesc.addFamily(columnDesc);
 
-        try {
-            connection.getAdmin().createTable(tableDesc);
-        }
-        catch (IOException e) {
-            throw new HBqlException(e);
-        }
+        connection.createTable(tableDesc);
 
         return new ExecutionResults("Table " + tableDesc.getNameAsString() + " created.");
     }

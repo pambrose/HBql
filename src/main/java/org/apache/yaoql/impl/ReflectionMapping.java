@@ -33,7 +33,7 @@ import java.util.List;
 public class ReflectionMapping extends Mapping {
 
     public ReflectionMapping(final Object object) {
-        super(new SimpleSchemaContext(ReflectionSchema.getReflectionSchema(object)));
+        super(new SimpleSchemaContext(ReflectionSchema.getReflectionSchema(object), null));
     }
 
     public Object newObject(final SchemaContext schemaContext, final List<SelectElement> selectElementList, final int maxVersions, final Result result) throws HBqlException {

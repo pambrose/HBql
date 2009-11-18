@@ -199,10 +199,10 @@ serverFilter returns [ExpressionTree retval]
 							{retval = $w.retval;};
 	
 nodescWhereExpr returns [ExpressionTree retval]
-	 : e=topExpr					{retval = ExpressionTree.newExpressionTree($e.retval);};
+	 : e=topExpr					{retval = ExpressionTree.newExpressionTree(null, $e.retval);};
 
 descWhereExpr returns [ExpressionTree retval]
-	: s=schemaDesc? e=topExpr			{retval = ExpressionTree.newExpressionTree($e.retval); if ($s.retval != null) retval.setSchemaContext(new SimpleSchemaContext($s.retval));};
+	: s=schemaDesc? e=topExpr			{retval = ExpressionTree.newExpressionTree($s.retval, $e.retval);};
 
 // Expressions
 topExpr returns [GenericValue retval]

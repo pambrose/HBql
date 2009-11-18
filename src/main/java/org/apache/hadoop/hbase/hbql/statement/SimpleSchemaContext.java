@@ -20,31 +20,19 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 
 
 public class SimpleSchemaContext extends SchemaContext {
 
-    /*
-    public SimpleSchemaContext(final String schemaName) throws HBqlException {
-        super(schemaName);
-        // This is called from Annotated only
-        // this.validateSchemaName();
-    }
-    */
     public SimpleSchemaContext(final Schema schema) {
         super(schema);
-        try {
-            this.setMapping(null);
-        }
-        catch (HBqlException e) {
-            // Cannot be reached with null mapping
-        }
+
+        //this.setMapping(null);
     }
 
-    public SimpleSchemaContext(final Schema schema, final Mapping mapping) throws HBqlException {
+    public SimpleSchemaContext(final Schema schema, final Mapping mapping) {
         super(schema);
         this.setMapping(mapping);
     }

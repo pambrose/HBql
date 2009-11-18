@@ -56,7 +56,6 @@ public class HConnectionImpl implements HConnection {
     private final SchemaManager schemaManager;
     private final Map<Class<?>, AnnotationMapping> annotationMappingMap = Maps.newHashMap();
 
-
     public HConnectionImpl(final String name, final HBaseConfiguration config) {
         this.name = name;
         this.config = (config == null) ? new HBaseConfiguration() : config;
@@ -253,5 +252,14 @@ public class HConnectionImpl implements HConnection {
                                                       final String tableName,
                                                       final List<ColumnDescription> colList) throws HBqlException {
         return this.getSchemaManager().createHBaseSchema(schemaName, tableName, colList);
+    }
+
+    public void createTable(final HTableDescriptor tableDesc) throws HBqlException {
+        try {
+            this.getAdmin().createTable(tableDesc);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 }

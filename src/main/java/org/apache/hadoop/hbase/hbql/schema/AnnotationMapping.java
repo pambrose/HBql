@@ -43,7 +43,7 @@ public class AnnotationMapping extends Mapping {
 
     private AnnotationMapping(final HBaseSchema schema, final Class clazz) throws HBqlException {
 
-        super(new SimpleSchemaContext(schema));
+        super(new SimpleSchemaContext(schema, null));
 
         getSchemaContext().setMapping(this);
 

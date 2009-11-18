@@ -25,6 +25,8 @@ import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.schema.Schema;
+import org.apache.hadoop.hbase.hbql.statement.SimpleSchemaContext;
 
 public class ExpressionTree extends MultipleExpressionContext {
 
@@ -35,12 +37,11 @@ public class ExpressionTree extends MultipleExpressionContext {
         super(exprSignature, rootValue);
     }
 
-    public static ExpressionTree newExpressionTree(final boolean booleanValue) {
-        return newExpressionTree(new BooleanLiteral(booleanValue));
-    }
-
-    public static ExpressionTree newExpressionTree(final GenericValue booleanValue) {
-        return new ExpressionTree(booleanValue == null ? new BooleanLiteral(true) : booleanValue);
+    public static ExpressionTree newExpressionTree(final Schema schema, final GenericValue booleanValue) {
+        final ExpressionTree tree = new ExpressionTree(booleanValue == null ? new BooleanLiteral(true) : booleanValue);
+        if (schema != null)
+            tree.setSchemaContext(new SimpleSchemaContext(schema, null));
+        return tree;
     }
 
     public Boolean evaluate(final Object object) throws HBqlException, ResultMissingColumnException {
