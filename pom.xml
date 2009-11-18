@@ -6,7 +6,7 @@
     <groupId>com.sudothought</groupId>
     <artifactId>HBql</artifactId>
     <name>HBql</name>
-    <version>0.9.4-alpha</version>
+    <version>0.9.5-alpha</version>
 
     <scm>
         <connection>scm:git:git://github.com/pambrose/HBql.git/</connection>

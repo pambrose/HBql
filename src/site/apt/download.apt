@@ -5,14 +5,14 @@
 
 Releases
 
-    *{{{./downloads/hbql-0.9.4-alpha.zip}0.9.4-alpha.zip}}
+    *{{{./downloads/hbql-0.9.5-alpha.zip}0.9.5-alpha.zip}}
     
-    *{{{./downloads/hbql-0.9.4-alpha.tar.gz}0.9.4-alpha.tar.gz}}
+    *{{{./downloads/hbql-0.9.5-alpha.tar.gz}0.9.5-alpha.tar.gz}}
 
 
 Javadocs
 
-    *{{{./downloads/javadocs-0.9.4-alpha.zip}javadocs-0.9.4-alpha.zip}}
+    *{{{./downloads/javadocs-0.9.5-alpha.zip}javadocs-0.9.5-alpha.zip}}
     
 
 Source
@@ -25,6 +25,10 @@ git clone git://github.com/pambrose/HBql.git
 
 
 Release Notes
+
+    0.9.5-alpha -- 11/18/09
+
+        * Associated schemas with connections and added support for temporary and persistent schemas.
 
     0.9.4-alpha -- 11/16/09
 

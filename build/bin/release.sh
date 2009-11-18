@@ -3,9 +3,10 @@
 export MAVEN_OPTS="-Xms256m -Xmx256m"
 
 export HBQL="/Users/pambrose/git/hbase-plugin"
-export VERSION="hbql-0.9.4-alpha"
-export DOCS="javadocs-0.9.4-alpha"
-export RELEASE=${HBQL}/target/release/${VERSION}
+VERSION="0.9.5-alpha"
+export DIST="hbql-"${VERSION}
+export DOCS="javadocs-"${VERSION}
+export RELEASE=${HBQL}/target/release/${DIST}
 export SITE=${HBQL}/target/site
 
 mvn clean
@@ -29,7 +30,7 @@ mvn javadoc:javadoc
 mvn site:site
 
 cd ${HBQL}/target/classes
-jar cf ${RELEASE}/${VERSION}.jar *
+jar cf ${RELEASE}/${DIST}.jar *
 
 mkdir ${SITE}/downloads
 cp -r ${SITE}/* ${RELEASE}/docs/
@@ -38,9 +39,9 @@ cd ${SITE}
 zip -r ${SITE}/downloads/${DOCS}.zip apidocs
 
 cd ${RELEASE}/..
-zip -r ${SITE}/downloads/${VERSION}.zip ${VERSION}
-tar cvf ${SITE}/downloads/${VERSION}.tar ${VERSION}
-gzip ${SITE}/downloads/${VERSION}.tar
+zip -r ${SITE}/downloads/${DIST}.zip ${DIST}
+tar cvf ${SITE}/downloads/${DIST}.tar ${DIST}
+gzip ${SITE}/downloads/${DIST}.tar
 
 cd ${HBQL}
 mvn site-deploy
