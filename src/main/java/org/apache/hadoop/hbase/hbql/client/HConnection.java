@@ -32,12 +32,15 @@ public interface HConnection {
 
     HBaseConfiguration getConfig();
 
-    HStatement createStatement();
-
-    HPreparedStatement prepareStatement(String str) throws HBqlException;
-
     org.apache.hadoop.hbase.client.HTable newHTable(String tableName) throws HBqlException;
 
+    Set<String> getFamilyNames(String tableName) throws HBqlException;
+
+    void close() throws HBqlException;
+
+    boolean isClosed() throws HBqlException;
+
+    // Table Routines    
     boolean tableExists(String tableName) throws HBqlException;
 
     boolean tableEnabled(String tableName) throws HBqlException;
@@ -50,12 +53,13 @@ public interface HConnection {
 
     Set<String> getTableNames() throws HBqlException;
 
-    Set<String> getFamilyNames(String tableName) throws HBqlException;
+    // Statement Routines
+    HStatement createStatement();
 
-    void close() throws HBqlException;
+    HPreparedStatement prepareStatement(String str) throws HBqlException;
 
-    boolean isClosed() throws HBqlException;
 
+    // Execute Routines
     ExecutionResults execute(String sql) throws HBqlException;
 
     HResultSet<HRecord> executeQuery(String sql) throws HBqlException;
@@ -68,6 +72,7 @@ public interface HConnection {
 
     ExecutionResults executeUpdate(String sql) throws SQLException;
 
+    // Schema Routines
     HSchema getSchema(final String schemaName) throws HBqlException;
 
     boolean schemaExists(String schemaName) throws HBqlException;
