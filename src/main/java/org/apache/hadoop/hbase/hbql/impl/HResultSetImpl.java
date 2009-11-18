@@ -123,7 +123,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         try {
             return new ResultsIterator<T>(this.getWithArgs().getLimit()) {
 
-                private final HTable table = getConnection().getHTable(getSelectStmt().getSchema().getTableName());
+                private final HTable table = getConnection().newHTable(getSelectStmt().getSchema().getTableName());
                 private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
                 private final Iterator<RowRequest> rowRequestIterator = getRowRequestList().iterator();
 

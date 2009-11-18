@@ -36,7 +36,7 @@ public class ShowTablesStatement implements ConnectionStatement {
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         try {
-            final HBaseAdmin admin = connection.getAdmin();
+            final HBaseAdmin admin = connection.newHBaseAdmin();
 
             final ExecutionResults retval = new ExecutionResults();
             retval.out.println("Tables: ");

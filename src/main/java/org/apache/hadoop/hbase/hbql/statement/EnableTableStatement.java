@@ -35,7 +35,7 @@ public class EnableTableStatement extends TableStatement {
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         try {
-            connection.getAdmin().enableTable(this.getTableName());
+            connection.newHBaseAdmin().enableTable(this.getTableName());
         }
         catch (IOException e) {
             throw new HBqlException(e);

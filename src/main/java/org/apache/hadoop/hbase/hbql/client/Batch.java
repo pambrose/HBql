@@ -149,7 +149,7 @@ public class Batch {
     public void apply() throws HBqlException {
         try {
             for (final String tableName : this.getActionList().keySet()) {
-                final HTable table = this.getConnection().getHTable(tableName);
+                final HTable table = this.getConnection().newHTable(tableName);
                 for (final BatchAction batchAction : this.getActionList(tableName))
                     batchAction.apply(table);
                 table.flushCommits();

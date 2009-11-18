@@ -93,7 +93,7 @@ public class DeleteStatement extends SchemaContext implements ParameterStatement
         this.validate(connection);
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWithArgs().getAllColumnsUsedInExprs();
-        final HTable table = connection.getHTable(this.getSchema().getTableName());
+        final HTable table = connection.newHTable(this.getSchema().getTableName());
 
         final List<RowRequest> rowRequestList = this.getWithArgs().getRowRequestList(allWhereAttribs);
 

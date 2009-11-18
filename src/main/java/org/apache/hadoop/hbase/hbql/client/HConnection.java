@@ -37,7 +37,7 @@ public interface HConnection {
 
     HPreparedStatement prepareStatement(String str) throws HBqlException;
 
-    org.apache.hadoop.hbase.client.HTable getHTable(String tableName) throws HBqlException;
+    org.apache.hadoop.hbase.client.HTable newHTable(String tableName) throws HBqlException;
 
     boolean tableExists(String tableName) throws HBqlException;
 

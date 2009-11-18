@@ -37,7 +37,8 @@ public class DescribeTableStatement extends TableStatement {
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         try {
-            final HTableDescriptor tableDesc = connection.getAdmin().getTableDescriptor(this.getTableName().getBytes());
+            final HTableDescriptor tableDesc = connection.newHBaseAdmin()
+                    .getTableDescriptor(this.getTableName().getBytes());
 
             final ExecutionResults retval = new ExecutionResults();
             retval.out.println("Table name: " + tableDesc.getNameAsString());

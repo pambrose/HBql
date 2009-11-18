@@ -52,9 +52,10 @@ public class HConnectionImpl implements HConnection {
     private final HBaseConfiguration config;
     private final String name;
     private boolean closed = false;
+    private HBaseAdmin hbaseAdmin = null;
 
     private final SchemaManager schemaManager;
-    private final Map<Class<?>, AnnotationMapping> annotationMappingMap = Maps.newHashMap();
+    private final Map<Class, AnnotationMapping> annotationMappingMap = Maps.newHashMap();
 
     public HConnectionImpl(final String name, final HBaseConfiguration config) {
         this.name = name;
@@ -74,7 +75,7 @@ public class HConnectionImpl implements HConnection {
         return this.schemaManager;
     }
 
-    private Map<Class<?>, AnnotationMapping> getAnnotationMappingMap() {
+    private Map<Class, AnnotationMapping> getAnnotationMappingMap() {
         return this.annotationMappingMap;
     }
 
@@ -96,85 +97,23 @@ public class HConnectionImpl implements HConnection {
         return mapping;
     }
 
-    public HBaseAdmin getAdmin() throws HBqlException {
-        try {
-            return new HBaseAdmin(this.getConfig());
-        }
-        catch (MasterNotRunningException e) {
-            throw new HBqlException(e);
-        }
-    }
+    public synchronized HBaseAdmin newHBaseAdmin() throws HBqlException {
 
-    public HTable getHTable(final String tableName) throws HBqlException {
-        try {
-            return new HTable(this.getConfig(), tableName);
+        if (this.hbaseAdmin == null) {
+            try {
+                this.hbaseAdmin = new HBaseAdmin(this.getConfig());
+            }
+            catch (MasterNotRunningException e) {
+                throw new HBqlException(e);
+            }
         }
-        catch (IOException e) {
-            throw new HBqlException("Invalid table name: " + tableName);
-        }
-    }
 
-    public boolean tableExists(final String tableName) throws HBqlException {
-        try {
-            return this.getAdmin().tableExists(tableName);
-        }
-        catch (MasterNotRunningException e) {
-            throw new HBqlException(e);
-        }
-    }
-
-    public boolean tableEnabled(final String tableName) throws HBqlException {
-        try {
-            return this.getAdmin().isTableEnabled(tableName);
-        }
-        catch (IOException e) {
-            throw new HBqlException(e);
-        }
-    }
-
-    public void dropTable(final String tableName) throws HBqlException {
-        try {
-            this.getAdmin().deleteTable(tableName);
-        }
-        catch (IOException e) {
-            throw new HBqlException(e);
-        }
-    }
-
-    public void disableTable(final String tableName) throws HBqlException {
-        try {
-            this.getAdmin().disableTable(tableName);
-        }
-        catch (IOException e) {
-            throw new HBqlException(e);
-        }
-    }
-
-    public void enableTable(final String tableName) throws HBqlException {
-        try {
-            this.getAdmin().enableTable(tableName);
-        }
-        catch (IOException e) {
-            throw new HBqlException(e);
-        }
-    }
-
-    public Set<String> getTableNames() throws HBqlException {
-        try {
-            final HBaseAdmin admin = this.getAdmin();
-            final Set<String> tableSet = Sets.newHashSet();
-            for (final HTableDescriptor table : admin.listTables())
-                tableSet.add(table.getNameAsString());
-            return tableSet;
-        }
-        catch (IOException e) {
-            throw new HBqlException(e);
-        }
+        return this.hbaseAdmin;
     }
 
     public Set<String> getFamilyNames(final String tableName) throws HBqlException {
         try {
-            final HTableDescriptor table = this.getAdmin().getTableDescriptor(Bytes.toBytes(tableName));
+            final HTableDescriptor table = this.newHBaseAdmin().getTableDescriptor(Bytes.toBytes(tableName));
             final Set<String> familySet = Sets.newHashSet();
             for (final HColumnDescriptor descriptor : table.getColumnFamilies())
                 familySet.add(Bytes.toString(descriptor.getName()));
@@ -256,7 +195,74 @@ public class HConnectionImpl implements HConnection {
 
     public void createTable(final HTableDescriptor tableDesc) throws HBqlException {
         try {
-            this.getAdmin().createTable(tableDesc);
+            this.newHBaseAdmin().createTable(tableDesc);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
+    }
+
+    public HTable newHTable(final String tableName) throws HBqlException {
+        try {
+            return new HTable(this.getConfig(), tableName);
+        }
+        catch (IOException e) {
+            throw new HBqlException("Invalid table name: " + tableName);
+        }
+    }
+
+    public boolean tableExists(final String tableName) throws HBqlException {
+        try {
+            return this.newHBaseAdmin().tableExists(tableName);
+        }
+        catch (MasterNotRunningException e) {
+            throw new HBqlException(e);
+        }
+    }
+
+    public boolean tableEnabled(final String tableName) throws HBqlException {
+        try {
+            return this.newHBaseAdmin().isTableEnabled(tableName);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
+    }
+
+    public void dropTable(final String tableName) throws HBqlException {
+        try {
+            this.newHBaseAdmin().deleteTable(tableName);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
+    }
+
+    public void disableTable(final String tableName) throws HBqlException {
+        try {
+            this.newHBaseAdmin().disableTable(tableName);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
+    }
+
+    public void enableTable(final String tableName) throws HBqlException {
+        try {
+            this.newHBaseAdmin().enableTable(tableName);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
+    }
+
+    public Set<String> getTableNames() throws HBqlException {
+        try {
+            final HBaseAdmin admin = this.newHBaseAdmin();
+            final Set<String> tableSet = Sets.newHashSet();
+            for (final HTableDescriptor table : admin.listTables())
+                tableSet.add(table.getNameAsString());
+            return tableSet;
         }
         catch (IOException e) {
             throw new HBqlException(e);
