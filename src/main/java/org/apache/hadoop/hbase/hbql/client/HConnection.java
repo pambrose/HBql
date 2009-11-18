@@ -71,9 +71,9 @@ public interface HConnection {
 
     HSchema getSchema(final String schemaName) throws HBqlException;
 
-    boolean schemaExists(String schemaName);
+    boolean schemaExists(String schemaName) throws HBqlException;
 
-    boolean dropSchema(final String schemaName);
+    boolean dropSchema(final String schemaName) throws HBqlException;
 
     Set<String> getSchemaNames();
 }

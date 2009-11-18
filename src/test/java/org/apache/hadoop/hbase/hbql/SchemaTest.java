@@ -35,7 +35,13 @@ public class SchemaTest extends TestSupport {
 
         HConnection connection = ConnectionManager.newConnection();
 
-        connection.execute("CREATE  SCHEMA test (keyval key, f1:val2 object alias val3)");
+        assertFalse(connection.schemaExists("zzz"));
+        assertTrue(connection.schemaExists("system_schemas"));
+
+        connection.dropSchema("test");
+        assertFalse(connection.schemaExists("test"));
+        connection.execute("CREATE SCHEMA test (keyval key, f1:val2 object alias val3)");
+        assertTrue(connection.schemaExists("test"));
 
         HBaseSchema schema = ((HConnectionImpl)connection).getSchema("test");
 

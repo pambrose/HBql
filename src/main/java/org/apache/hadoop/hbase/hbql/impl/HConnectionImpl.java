@@ -62,7 +62,7 @@ public class HConnectionImpl implements HConnection {
         this.config = (config == null) ? new HBaseConfiguration() : config;
         this.schemaManager = new SchemaManager(this);
 
-        this.getSchemaManager().validateStore();
+        this.getSchemaManager().validatePersistentMetadata();
     }
 
     public String getName() {
@@ -174,7 +174,7 @@ public class HConnectionImpl implements HConnection {
     }
 
     // Schema Routines
-    public boolean schemaExists(final String schemaName) {
+    public boolean schemaExists(final String schemaName) throws HBqlException {
         return this.getSchemaManager().schemaExists(schemaName);
     }
 
@@ -182,7 +182,7 @@ public class HConnectionImpl implements HConnection {
         return this.getSchemaManager().getSchema(schemaName);
     }
 
-    public boolean dropSchema(final String schemaName) {
+    public boolean dropSchema(final String schemaName) throws HBqlException {
         return this.getSchemaManager().dropSchema(schemaName);
     }
 

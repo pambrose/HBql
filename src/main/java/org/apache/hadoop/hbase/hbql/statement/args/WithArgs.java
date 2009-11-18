@@ -71,11 +71,15 @@ public class WithArgs implements Serializable {
         if (this.getLimitArgs() != null)
             this.getLimitArgs().setSchemaContext(null);
 
-        if (this.getServerExpressionTree() != null)
+        if (this.getServerExpressionTree() != null) {
             this.getServerExpressionTree().setSchemaContext(this.getSchemaContext());
+            this.getServerExpressionTree().setUseResultData(false);
+        }
 
-        if (this.getClientExpressionTree() != null)
+        if (this.getClientExpressionTree() != null) {
             this.getClientExpressionTree().setSchemaContext(this.getSchemaContext());
+            this.getClientExpressionTree().setUseResultData(true);
+        }
     }
 
     private void validateWithArgs() throws HBqlException {

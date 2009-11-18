@@ -68,8 +68,8 @@ public class SelectStatement extends SchemaContext implements ParameterStatement
 
         if (this.isValidated())
             return;
-        else
-            this.validated = true;
+
+        this.validated = true;
 
         this.validateSchemaName(connection);
 
@@ -88,12 +88,6 @@ public class SelectStatement extends SchemaContext implements ParameterStatement
 
         // Build sorted set of parameters
         this.collectParameters();
-
-        if (this.getWithArgs().getServerExpressionTree() != null)
-            this.getWithArgs().getServerExpressionTree().setUseResultData(false);
-
-        if (this.getWithArgs().getClientExpressionTree() != null)
-            this.getWithArgs().getClientExpressionTree().setUseResultData(true);
     }
 
     public void determineIfAggregateQuery() throws HBqlException {
