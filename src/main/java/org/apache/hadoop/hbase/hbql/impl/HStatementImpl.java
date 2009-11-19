@@ -38,8 +38,8 @@ import java.util.List;
 public class HStatementImpl implements HStatement {
 
     private final HConnectionImpl connection;
-    private volatile boolean closed = false;
     private HResultSetImpl resultSet = null;
+    private volatile boolean closed = false;
 
     public HStatementImpl(final HConnectionImpl connection) {
         this.connection = connection;

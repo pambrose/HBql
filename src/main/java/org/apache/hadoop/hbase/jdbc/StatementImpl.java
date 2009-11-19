@@ -23,6 +23,7 @@ package org.apache.hadoop.hbase.jdbc;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.Query;
@@ -41,22 +42,26 @@ import java.sql.Statement;
 
 public class StatementImpl implements Statement {
 
-    private final HConnectionImpl hbqlConnection;
     private final ConnectionImpl jdbcConnection;
+    private final HConnectionImpl hConnection;
 
     private ResultSet resultSet = null;
 
-    public StatementImpl(final ConnectionImpl jdbcConnection, final HConnectionImpl hbqlConnection) {
+    public StatementImpl(final ConnectionImpl jdbcConnection, final HConnectionImpl hConnection) {
         this.jdbcConnection = jdbcConnection;
-        this.hbqlConnection = hbqlConnection;
+        this.hConnection = hConnection;
     }
 
     protected ConnectionImpl getJdbcConnection() {
         return this.jdbcConnection;
     }
 
-    protected HConnectionImpl getHBqlConnection() {
-        return this.hbqlConnection;
+    protected HConnectionImpl getHConnectionImpl() {
+        return this.hConnection;
+    }
+
+    public HConnection getHConnection() {
+        return this.getHConnectionImpl();
     }
 
     public Connection getConnection() {
@@ -69,11 +74,11 @@ public class StatementImpl implements Statement {
             throw new HBqlException("executeUpdate() requires a non-SELECT statement");
         }
         else if (Util.isDMLStatement(statement)) {
-            final ExecutionResults results = ((ConnectionStatement)statement).execute(this.getHBqlConnection());
+            final ExecutionResults results = ((ConnectionStatement)statement).execute(this.getHConnectionImpl());
             return results.getCount();
         }
         else if (Util.isConnectionStatemet(statement)) {
-            ((ConnectionStatement)statement).execute(this.getHBqlConnection());
+            ((ConnectionStatement)statement).execute(this.getHConnectionImpl());
             return 0;
         }
         else if (Util.isNonConectionStatemet(statement)) {
@@ -90,7 +95,7 @@ public class StatementImpl implements Statement {
         if (!Util.isSelectStatement(statement))
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
-        final Query<HRecord> query = Query.newQuery(this.getHBqlConnection(),
+        final Query<HRecord> query = Query.newQuery(this.getHConnectionImpl(),
                                                     (SelectStatement)statement,
                                                     HRecord.class);
         this.setResultSet(new ResultSetImpl(this, query.getResults()));

@@ -324,12 +324,12 @@ whenItem [DelegateCase stmt]
 	
 attribList returns [List<ColumnDescription> retval] 
 @init {retval = Lists.newArrayList();}
-	: (a1=defineAttrib {retval.add($a1.retval);} (COMMA a2=defineAttrib {retval.add($a2.retval);})*)?;
+	: (a1=attribDesc {retval.add($a1.retval);} (COMMA a2=attribDesc {retval.add($a2.retval);})*)?;
 	
-defineAttrib returns [ColumnDescription retval]
+attribDesc returns [ColumnDescription retval]
 	: c=varRef type=simpleName (b=LBRACE RBRACE)? (keyALIAS a=simpleName)? (keyDEFAULT t=topExpr)?	
 							{retval = ColumnDescription.newColumn($c.text, $a.text, false, $type.text, $b.text!=null, $t.retval);}
-	| f=familyRef (keyALIAS a=simpleName)?		{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
+	| f=familyWildCard (keyALIAS a=simpleName)?	{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
 	;
 
 selectElems returns [List<SelectElement> retval]
@@ -344,7 +344,7 @@ selectElemList returns [List<SelectElement> retval]
 selectElem returns [SelectElement retval]
 options {backtrack=true; memoize=true;}	
 	: b=topExpr (keyAS i2=simpleName)?		{retval = SingleExpressionContext.newSingleExpression($b.retval, $i2.text);}
-	| f=familyRef					{retval = FamilySelectElement.newFamilyElement($f.text);}
+	| f=familyWildCard					{retval = FamilySelectElement.newFamilyElement($f.text);}
 	;
 
 exprList returns [List<GenericValue> retval]
@@ -394,7 +394,7 @@ simpleName
 varRef 
 	: ID (COLON ID)?;
 	
-familyRef 
+familyWildCard 
 	: ID COLON STAR;
 	
 paramRef

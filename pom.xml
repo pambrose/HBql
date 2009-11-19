@@ -6,7 +6,7 @@
     <groupId>com.sudothought</groupId>
     <artifactId>HBql</artifactId>
     <name>HBql</name>
-    <version>0.9.5-alpha</version>
+    <version>0.9.6-alpha</version>
 
     <scm>
         <connection>scm:git:git://github.com/pambrose/HBql.git/</connection>
@@ -25,16 +25,11 @@
     </distributionManagement>
 
     <repositories>
+
         <repository>
             <id>jboss.com</id>
             <name>JBoss.com Repository</name>
             <url>http://repository.jboss.com/maven2/</url>
-        </repository>
-
-        <repository>
-            <id>jahia.org</id>
-            <name>jahia.org Repository</name>
-            <url>http://maven.jahia.org/maven2/</url>
         </repository>
 
         <repository>
@@ -44,17 +39,10 @@
         </repository>
 
         <repository>
-            <id>archive-releases</id>
-            <name>Archive Releases</name>
-            <url>http://builds.archive.org:8080/maven2/</url>
+            <id>local</id>
+            <name>local</name>
+            <url>http://localhost:8081/artifactory/libs-releases-local/</url>
         </repository>
-
-        <repository>
-            <id>opensourcemasters.org</id>
-            <name>opensourcemasters.org</name>
-            <url>http://repo1.opensourcemasters.org:8081/nexus/content/groups/public/</url>
-        </repository>
-
 
     </repositories>
 
@@ -64,7 +52,6 @@
             <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
             <version>3.2</version>
-            <!--     <scope>compile</scope>  -->
         </dependency>
 
         <dependency>
@@ -99,15 +86,15 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.hadoop</groupId>
+            <groupId>hbase</groupId>
             <artifactId>hbase</artifactId>
-            <version>0.20.1</version>
+            <version>0.20.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.collections</groupId>
             <artifactId>google-collections</artifactId>
-            <version>1.0-rc2</version>
+            <version>1.0-rc4</version>
         </dependency>
 
 

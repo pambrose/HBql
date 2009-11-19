@@ -5,15 +5,14 @@
 
 JDBC Support
 
-    * The driver is not yet comlete. The Driver, Connection, Statement, PreparedStatement, and
+    * The driver is not yet 100% comlete. The Driver, Connection, Statement, PreparedStatement, and
      ResultSet implementations are reasonable, but the metadata calls are still in progress.
 
-    * The other work in progress is surfacing the non-relational features of HBase through the
-    JDBC driver.  Specifically, value versions and columns that end up in the family default map will
-    be made available.
+    * You can access non-relational features of HBase not supported in JDBC, e.g., value versions and
+    columns in the family default map, by casting A ResultSet to a ResulSetImpl and
+    then calling ResultSetImpl.getCurrentHRecord().
 
     * HBql supports both named parameters and parameters indicated with "?" character.
 
-    * A simple exapmle can be seen {{{./examples/jdbc.html}here}}.
+    * A simple example can be seen {{{./examples/jdbc.html}here}}.
     
-

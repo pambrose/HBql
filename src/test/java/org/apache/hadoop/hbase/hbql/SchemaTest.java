@@ -39,15 +39,41 @@ public class SchemaTest extends TestSupport {
         assertFalse(connection.schemaExists("zzz"));
         assertTrue(connection.schemaExists("system_schemas"));
 
-        connection.dropSchema("test");
-        assertFalse(connection.schemaExists("test"));
-        connection.execute("CREATE SCHEMA test (keyval key, f1:val2 object alias val3)");
-        assertTrue(connection.schemaExists("test"));
+        String schemaName = "test1";
+        connection.dropSchema(schemaName);
+        assertFalse(connection.schemaExists(schemaName));
+        connection.execute("CREATE SCHEMA " + schemaName + " (keyval key, f1:val2 object alias val3)");
+        assertTrue(connection.schemaExists(schemaName));
+        HSchema schema = connection.getSchema(schemaName);
+        assertTrue(schema.getSchemaName().equals(schemaName) && schema.getTableName().equals(schemaName));
+        assertTrue(!schema.isTempSchema());
+        connection.dropSchema(schemaName);
+        assertFalse(connection.schemaExists(schemaName));
 
-        HSchema schema = connection.getSchema("test");
+        schemaName = "test2";
+        connection.dropSchema(schemaName);
+        assertFalse(connection.schemaExists(schemaName));
+        connection.execute("CREATE TEMP SCHEMA " + schemaName + " (keyval key, f1:val2 object alias val3)");
+        assertTrue(connection.schemaExists(schemaName));
+        schema = connection.getSchema(schemaName);
+        assertTrue(schema.getSchemaName().equals(schemaName) && schema.getTableName().equals(schemaName));
+        assertTrue(schema.isTempSchema());
+        connection.dropSchema(schemaName);
+        assertFalse(connection.schemaExists(schemaName));
+
+        /*
+        schemaName = "test3";
+       connection.dropSchema(schemaName);
+       assertFalse(connection.schemaExists(schemaName));
+       connection.execute("CREATE TEMP SCHEMA " + schemaName + " (keyval key, f1 {val2 object alias val3})");
+       assertTrue(connection.schemaExists(schemaName));
+        schema = connection.getSchema(schemaName);
+       assertTrue(schema.getSchemaName().equals(schemaName) && schema.getTableName().equals(schemaName));
+       assertTrue(schema.isTempSchema());
+       connection.dropSchema(schemaName);
+       assertFalse(connection.schemaExists(schemaName));
+       */
 
         Set<HSchema> schemas = connection.getSchemas();
-
-        return;
     }
 }

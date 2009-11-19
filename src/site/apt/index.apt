@@ -46,7 +46,7 @@ Support
 
 Supported Platforms
 
-    HBql is compatible with any 1.6 JVM and HBase 0.20.1.  The console is limited to
+    HBql is compatible with any 1.6 JVM and HBase 0.20.1+.  The console is limited to
     those platforms supported by {{{http://jline.sourceforge.net/}JLine}}.  
 
 

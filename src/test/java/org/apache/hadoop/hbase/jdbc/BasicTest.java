@@ -58,6 +58,11 @@ public class BasicTest {
                      + "f3:mapval2 object alias f3mapval2 "
                      + ")");
 
+        if (!((ConnectionImpl)connection).getHConnection().tableExists("table2"))
+            System.out.println(((ConnectionImpl)connection).getHConnection().execute("create table using tab4"));
+        else
+            System.out.println(((ConnectionImpl)connection).getHConnection().execute("delete from tab4"));
+
         Class.forName("org.apache.hadoop.hbase.jdbc.Driver");
     }
 

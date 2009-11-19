@@ -2,7 +2,7 @@
 
 export MAVEN_OPTS="-Xms256m -Xmx256m"
 
-export VERSION="0.9.5-alpha"
+export VERSION="0.9.6-alpha"
 export DIST="hbql-"${VERSION}
 export DOCS="javadocs-"${VERSION}
 export HBQL="/Users/pambrose/git/hbase-plugin"

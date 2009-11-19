@@ -50,10 +50,10 @@ import java.util.Map;
 
 public class ResultSetImpl implements ResultSet {
 
-    final HResultSet<HRecord> results;
-    private Iterator<HRecord> resultsIterator;
     private final StatementImpl statement;
-    private HRecordImpl currentRecord = null;
+    private final HResultSet<HRecord> results;
+    private Iterator<HRecord> resultsIterator;
+    private HRecordImpl currentHRecordImpl = null;
 
     public ResultSetImpl(final StatementImpl statement, final HResultSet<HRecord> results) {
         this.statement = statement;
@@ -77,12 +77,16 @@ public class ResultSetImpl implements ResultSet {
         return this.resultsIterator;
     }
 
-    private HRecordImpl getCurrentRecord() {
-        return this.currentRecord;
+    private HRecordImpl getCurrentHRecordImpl() {
+        return this.currentHRecordImpl;
     }
 
-    private void setCurrentRecord(final HRecordImpl currentRecord) {
-        this.currentRecord = currentRecord;
+    public HRecord getCurrentHRecord() {
+        return this.getCurrentHRecordImpl();
+    }
+
+    private void setCurrentHRecordImpl(final HRecordImpl currentHRecordImpl) {
+        this.currentHRecordImpl = currentHRecordImpl;
     }
 
     public <T> T unwrap(final Class<T> tClass) throws SQLException {
@@ -95,7 +99,7 @@ public class ResultSetImpl implements ResultSet {
 
     public boolean next() throws SQLException {
         if (this.getResultsIterator().hasNext()) {
-            this.setCurrentRecord((HRecordImpl)this.getResultsIterator().next());
+            this.setCurrentHRecordImpl((HRecordImpl)this.getResultsIterator().next());
             return true;
         }
         else {
@@ -112,42 +116,42 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public String getString(final int i) throws SQLException {
-        final String name = this.getCurrentRecord().getAttribName(i);
+        final String name = this.getCurrentHRecordImpl().getAttribName(i);
         return this.getString(name);
     }
 
     public boolean getBoolean(final int i) throws SQLException {
-        final String name = this.getCurrentRecord().getAttribName(i);
+        final String name = this.getCurrentHRecordImpl().getAttribName(i);
         return this.getBoolean(name);
     }
 
     public byte getByte(final int i) throws SQLException {
-        final String name = this.getCurrentRecord().getAttribName(i);
+        final String name = this.getCurrentHRecordImpl().getAttribName(i);
         return this.getByte(name);
     }
 
     public short getShort(final int i) throws SQLException {
-        final String name = this.getCurrentRecord().getAttribName(i);
+        final String name = this.getCurrentHRecordImpl().getAttribName(i);
         return this.getShort(name);
     }
 
     public int getInt(final int i) throws SQLException {
-        final String name = this.getCurrentRecord().getAttribName(i);
+        final String name = this.getCurrentHRecordImpl().getAttribName(i);
         return this.getInt(name);
     }
 
     public long getLong(final int i) throws SQLException {
-        final String name = this.getCurrentRecord().getAttribName(i);
+        final String name = this.getCurrentHRecordImpl().getAttribName(i);
         return this.getInt(name);
     }
 
     public float getFloat(final int i) throws SQLException {
-        final String name = this.getCurrentRecord().getAttribName(i);
+        final String name = this.getCurrentHRecordImpl().getAttribName(i);
         return this.getInt(name);
     }
 
     public double getDouble(final int i) throws SQLException {
-        final String name = this.getCurrentRecord().getAttribName(i);
+        final String name = this.getCurrentHRecordImpl().getAttribName(i);
         return this.getInt(name);
     }
 
@@ -156,12 +160,12 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public byte[] getBytes(final int i) throws SQLException {
-        final String name = this.getCurrentRecord().getAttribName(i);
+        final String name = this.getCurrentHRecordImpl().getAttribName(i);
         return this.getBytes(name);
     }
 
     public Date getDate(final int i) throws SQLException {
-        final String name = this.getCurrentRecord().getAttribName(i);
+        final String name = this.getCurrentHRecordImpl().getAttribName(i);
         return this.getDate(name);
     }
 
@@ -186,35 +190,35 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public String getString(final String s) throws SQLException {
-        return ((String)this.getCurrentRecord().getCurrentValue(s));
+        return ((String)this.getCurrentHRecordImpl().getCurrentValue(s));
     }
 
     public boolean getBoolean(final String s) throws SQLException {
-        return ((Boolean)this.getCurrentRecord().getCurrentValue(s));
+        return ((Boolean)this.getCurrentHRecordImpl().getCurrentValue(s));
     }
 
     public byte getByte(final String s) throws SQLException {
-        return ((Byte)this.getCurrentRecord().getCurrentValue(s));
+        return ((Byte)this.getCurrentHRecordImpl().getCurrentValue(s));
     }
 
     public short getShort(final String s) throws SQLException {
-        return ((Number)this.getCurrentRecord().getCurrentValue(s)).shortValue();
+        return ((Number)this.getCurrentHRecordImpl().getCurrentValue(s)).shortValue();
     }
 
     public int getInt(final String s) throws SQLException {
-        return ((Number)this.getCurrentRecord().getCurrentValue(s)).intValue();
+        return ((Number)this.getCurrentHRecordImpl().getCurrentValue(s)).intValue();
     }
 
     public long getLong(final String s) throws SQLException {
-        return ((Number)this.getCurrentRecord().getCurrentValue(s)).longValue();
+        return ((Number)this.getCurrentHRecordImpl().getCurrentValue(s)).longValue();
     }
 
     public float getFloat(final String s) throws SQLException {
-        return ((Number)this.getCurrentRecord().getCurrentValue(s)).floatValue();
+        return ((Number)this.getCurrentHRecordImpl().getCurrentValue(s)).floatValue();
     }
 
     public double getDouble(final String s) throws SQLException {
-        return ((Number)this.getCurrentRecord().getCurrentValue(s)).doubleValue();
+        return ((Number)this.getCurrentHRecordImpl().getCurrentValue(s)).doubleValue();
     }
 
     public BigDecimal getBigDecimal(final String s, final int i) throws SQLException {
@@ -222,11 +226,11 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public byte[] getBytes(final String s) throws SQLException {
-        return ((byte[])this.getCurrentRecord().getCurrentValue(s));
+        return ((byte[])this.getCurrentHRecordImpl().getCurrentValue(s));
     }
 
     public Date getDate(final String s) throws SQLException {
-        return ((Date)this.getCurrentRecord().getCurrentValue(s));
+        return ((Date)this.getCurrentHRecordImpl().getCurrentValue(s));
     }
 
     public Time getTime(final String s) throws SQLException {
@@ -270,7 +274,7 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public Object getObject(final String s) throws SQLException {
-        return this.getCurrentRecord().getCurrentValue(s);
+        return this.getCurrentHRecordImpl().getCurrentValue(s);
     }
 
     public int findColumn(final String s) throws SQLException {
