@@ -32,20 +32,15 @@ import java.util.TreeSet;
 
 public class NamedParameters implements Serializable {
 
-    private final SortedSet<NamedParameter> parameterSet;
-    private volatile List<NamedParameter> parameterList = null;
+    private volatile List<NamedParameter> paramList = null;
+    private final SortedSet<NamedParameter> paramSet = new TreeSet<NamedParameter>(NamedParameter.getComparator());
 
-
-    public NamedParameters() {
-        this.parameterSet = new TreeSet<NamedParameter>(NamedParameter.getComparator());
+    private List<NamedParameter> getParamList() {
+        return this.paramList;
     }
 
     private SortedSet<NamedParameter> getParamSet() {
-        return this.parameterSet;
-    }
-
-    private List<NamedParameter> getParamList() {
-        return this.parameterList;
+        return this.paramSet;
     }
 
     public void addParameters(final Collection<NamedParameter> params) {
@@ -59,12 +54,12 @@ public class NamedParameters implements Serializable {
             return this.getParamList();
 
         synchronized (this) {
-
             if (this.getParamList() != null)
                 return this.getParamList();
 
             final int size = this.getParamSet().size();
-            this.parameterList = Lists.newArrayList(this.getParamSet().toArray(new NamedParameter[size]));
+            // This takes the ordered set and converts to a list
+            this.paramList = Lists.newArrayList(this.getParamSet().toArray(new NamedParameter[size]));
             return this.getParamList();
         }
     }
