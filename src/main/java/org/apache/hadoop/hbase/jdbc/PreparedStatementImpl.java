@@ -93,7 +93,7 @@ public class PreparedStatementImpl extends StatementImpl implements PreparedStat
 
     private void setParameter(final int i, final Object obj) throws HBqlException {
         final ParameterStatement paramStmt = Util.getParameterStatement(this.getStatement());
-        final NamedParameter param = paramStmt.getNamedParameters().getParameter(i - 1);
+        final NamedParameter param = paramStmt.getNamedParameters().getParameter(i);
         param.setParameter(obj);
     }
 

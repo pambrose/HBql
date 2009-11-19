@@ -20,9 +20,9 @@
 
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class SchemaTest extends TestSupport {
     @Test
     public void declareSchema() throws HBqlException {
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         assertFalse(connection.schemaExists("zzz"));
         assertTrue(connection.schemaExists("system_schemas"));

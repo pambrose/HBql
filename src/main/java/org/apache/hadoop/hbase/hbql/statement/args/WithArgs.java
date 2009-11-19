@@ -197,6 +197,9 @@ public class WithArgs implements Serializable {
 
         final List<NamedParameter> parameterList = Lists.newArrayList();
 
+        if (this.getKeyRangeArgs() != null)
+            parameterList.addAll(this.getKeyRangeArgs().getParameterList());
+
         if (this.getTimestampArgs() != null)
             parameterList.addAll(this.getTimestampArgs().getParameterList());
 
@@ -217,6 +220,9 @@ public class WithArgs implements Serializable {
 
     public void reset() {
 
+        if (this.getKeyRangeArgs() != null)
+            this.getKeyRangeArgs().reset();
+
         if (this.getTimestampArgs() != null)
             this.getTimestampArgs().reset();
 
@@ -235,7 +241,10 @@ public class WithArgs implements Serializable {
 
     public int setParameter(final String name, final Object val) throws HBqlException {
 
-        int cnt = this.getKeyRangeArgs().setParameter(name, val);
+        int cnt = 0;
+
+        if (this.getKeyRangeArgs() != null)
+            cnt += this.getKeyRangeArgs().setParameter(name, val);
 
         if (this.getTimestampArgs() != null)
             cnt += this.getTimestampArgs().setParameter(name, val);

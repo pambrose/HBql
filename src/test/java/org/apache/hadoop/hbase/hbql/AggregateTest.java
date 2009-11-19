@@ -22,9 +22,9 @@ package org.apache.hadoop.hbase.hbql;
 
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
@@ -52,7 +52,7 @@ public class AggregateTest extends TestSupport {
     @BeforeClass
     public static void beforeClass() throws HBqlException {
 
-        connection = ConnectionManager.newConnection();
+        connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP SCHEMA aggschema FOR TABLE aggtable"
                            + "("

@@ -21,10 +21,10 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.expreval.util.Lists;
-import org.apache.hadoop.hbase.hbql.client.Batch;
-import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
@@ -44,7 +44,7 @@ public class RecordAllTypesTest extends TestSupport {
     @BeforeClass
     public static void beforeClass() throws HBqlException {
 
-        connection = ConnectionManager.newConnection();
+        connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP SCHEMA alltypes FOR TABLE example2"
                            + "("
@@ -85,7 +85,7 @@ public class RecordAllTypesTest extends TestSupport {
     public static List<RecordAllTypes> insertSomeData(int cnt, boolean noRandomData) throws HBqlException {
 
         List<RecordAllTypes> retval = Lists.newArrayList();
-        final Batch batch = new Batch(connection);
+        final HBatch batch = new HBatch(connection);
 
         for (int i = 0; i < cnt; i++) {
 

@@ -188,7 +188,7 @@ versionArgs returns [VersionArgs retval]
 	;
 	
 limitArgs returns [LimitArgs retval]
-	: keyLIMIT v=valPrimary			{retval = new LimitArgs($v.retval);};
+	: keyLIMIT v=valPrimary				{retval = new LimitArgs($v.retval);};
 		
 clientFilter returns [ExpressionTree retval]
 	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr	

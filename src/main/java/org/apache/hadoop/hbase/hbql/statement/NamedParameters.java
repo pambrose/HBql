@@ -32,20 +32,20 @@ import java.util.TreeSet;
 
 public class NamedParameters implements Serializable {
 
-    private final SortedSet<NamedParameter> paramSet;
-    private volatile List<NamedParameter> paramList = null;
+    private final SortedSet<NamedParameter> parameterSet;
+    private volatile List<NamedParameter> parameterList = null;
 
 
     public NamedParameters() {
-        this.paramSet = new TreeSet<NamedParameter>(NamedParameter.getComparator());
+        this.parameterSet = new TreeSet<NamedParameter>(NamedParameter.getComparator());
     }
 
     private SortedSet<NamedParameter> getParamSet() {
-        return this.paramSet;
+        return this.parameterSet;
     }
 
     private List<NamedParameter> getParamList() {
-        return this.paramList;
+        return this.parameterList;
     }
 
     public void addParameters(final Collection<NamedParameter> params) {
@@ -59,21 +59,22 @@ public class NamedParameters implements Serializable {
             return this.getParamList();
 
         synchronized (this) {
+
             if (this.getParamList() != null)
                 return this.getParamList();
 
             final int size = this.getParamSet().size();
-            this.paramList = Lists.newArrayList(this.getParamSet().toArray(new NamedParameter[size]));
+            this.parameterList = Lists.newArrayList(this.getParamSet().toArray(new NamedParameter[size]));
             return this.getParamList();
         }
     }
 
     public NamedParameter getParameter(final int i) throws HBqlException {
         try {
-            return this.getParameterList().get(i);
+            return this.getParameterList().get(i - 1);
         }
-        catch (ArrayIndexOutOfBoundsException e) {
-            throw new HBqlException("Invalid index: " + i);
+        catch (Exception e) {
+            throw new HBqlException("Invalid index: " + (i - 1));
         }
     }
 

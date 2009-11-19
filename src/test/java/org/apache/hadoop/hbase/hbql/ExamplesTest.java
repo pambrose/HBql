@@ -20,10 +20,10 @@
 
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.Batch;
-import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
@@ -45,7 +45,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: show-tables
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
         System.out.println(connection.execute("SHOW TABLES"));
 
         // Or using the API
@@ -58,7 +58,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: show-schemas
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         System.out.println(connection.execute("SHOW SCHEMAS"));
 
@@ -74,7 +74,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: describe-table
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
         System.out.println(connection.execute("DESCRIBE TABLE foo"));
 
         // END SNIPPET: describe-table
@@ -85,7 +85,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: describe-schema
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
         System.out.println(connection.execute("DESCRIBE SCHEMA foo_schema"));
 
         // END SNIPPET: describe-schema
@@ -96,7 +96,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: enable-table
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
         System.out.println(connection.execute("ENABLE TABLE foo"));
 
         // Or using the API
@@ -110,7 +110,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: disable-table
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
         connection.execute("DISABLE TABLE foo");
 
         // Or using the API
@@ -124,7 +124,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: drop-schema
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("DROP SCHEMA foo_schema");
 
@@ -139,7 +139,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: create-table
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
         connection.execute("CREATE TABLE USING foo_schema");
 
         // END SNIPPET: create-table
@@ -150,7 +150,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: drop-table
 
-        HConnection conection = ConnectionManager.newConnection();
+        HConnection conection = HConnectionManager.newConnection();
         conection.execute("DROP TABLE foo");
 
         // Or using the API
@@ -164,7 +164,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: insert1
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP SCHEMA foo_schema FOR TABLE foo "
                            + "("
@@ -182,7 +182,7 @@ public class ExamplesTest extends TestSupport {
         rec.setCurrentValue("val1", 123);
         rec.setCurrentValue("al2", "testval");
 
-        Batch batch = new Batch(connection);
+        HBatch batch = new HBatch(connection);
         batch.insert(rec);
         batch.apply();
 
@@ -194,7 +194,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: insert2
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         // A column with a default value.
         connection.execute("CREATE TEMP SCHEMA foo_schema FOR TABLE foo "
@@ -217,7 +217,7 @@ public class ExamplesTest extends TestSupport {
 
     public void insert3() throws HBqlException {
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         // START SNIPPET: insert3
         connection.execute("CREATE TEMP SCHEMA foo_schema FOR TABLE foo "
@@ -239,7 +239,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: create-schema1
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         // Schema named foo that corresponds to table foo.
         connection.execute("CREATE TEMP SCHEMA foo (keyval key, family1:val1 STRING)");
@@ -278,7 +278,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: select1
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP SCHEMA tab1 FOR TABLE table1"
                            + "("
@@ -314,7 +314,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: definedExample1
 
         // Get a connection to HBase
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         // CREATE TEMP SCHEMA
         connection.execute("CREATE TEMP SCHEMA demo1 FOR TABLE example1"
@@ -344,7 +344,7 @@ public class ExamplesTest extends TestSupport {
         }
 
         // Add some other records using the Record interface
-        final Batch batch = new Batch(connection);
+        final HBatch batch = new HBatch(connection);
         for (int i = 5; i < 10; i++) {
             HRecord rec = connection.getSchema("demo1").newHRecord();
             rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
@@ -409,7 +409,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: annotatedExample2
 
         // Get a connection to HBase
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP SCHEMA demo2 FOR TABLE example2"
                            + "("
@@ -438,7 +438,7 @@ public class ExamplesTest extends TestSupport {
         }
 
         // Add some other records using an AnnotatedExample object
-        final Batch batch = new Batch(connection);
+        final HBatch batch = new HBatch(connection);
         for (int i = 5; i < 10; i++) {
             AnnotatedExample obj = new AnnotatedExample();
             obj.keyval = Util.getZeroPaddedNumber(i, 10);

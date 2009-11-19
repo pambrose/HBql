@@ -25,9 +25,9 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
@@ -43,7 +43,7 @@ public class HBqlExample {
         final byte[] author = Bytes.toBytes("author");
         final byte[] title = Bytes.toBytes("title");
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP SCHEMA testobjects alias testobjects2"
                            + "("

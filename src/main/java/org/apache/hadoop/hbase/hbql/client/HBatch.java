@@ -39,13 +39,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class Batch {
+public class HBatch {
 
     private final HConnection connection;
 
     private final Map<String, List<BatchAction>> actionList = Maps.newHashMap();
 
-    public Batch(final HConnection connection) {
+    public HBatch(final HConnection connection) {
         this.connection = connection;
     }
 

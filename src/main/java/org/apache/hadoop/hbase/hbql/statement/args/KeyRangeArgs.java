@@ -24,6 +24,7 @@ import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
@@ -42,6 +43,7 @@ import java.util.List;
 public class KeyRangeArgs implements Serializable {
 
     private final List<Range> rangeList;
+    private final List<NamedParameter> namedParamList = Lists.newArrayList();
 
     private enum Type {
         SINGLE, RANGE, FIRST, LAST, ALL
@@ -240,6 +242,9 @@ public class KeyRangeArgs implements Serializable {
     public void setSchemaContext(final SchemaContext schemaContext) {
         for (final Range range : this.getRangeList())
             range.setSchemaContext(schemaContext);
+
+        for (final Range range : this.getRangeList())
+            this.getParameterList().addAll(range.getParameterList());
     }
 
     public String asString() {
@@ -252,6 +257,15 @@ public class KeyRangeArgs implements Serializable {
             first = false;
         }
         return sbuf.toString();
+    }
+
+    public List<NamedParameter> getParameterList() {
+        return this.namedParamList;
+    }
+
+    public void reset() {
+        for (final Range range : this.getRangeList())
+            range.reset();
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {

@@ -24,8 +24,8 @@ import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.literal.DefaultKeyword;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
-import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
+import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
@@ -185,7 +185,7 @@ public class InsertStatement extends SchemaContext implements ParameterStatement
 
         while (this.getInsertValuesSource().hasValues()) {
 
-            final Batch batch = new Batch(connection);
+            final HBatch batch = new HBatch(connection);
 
             for (int i = 0; i < this.getInsertColumnList().size(); i++) {
                 final String name = this.getInsertColumnList().get(i).asString();

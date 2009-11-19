@@ -21,12 +21,12 @@
 package org.apache.expreval.examples;
 
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.hbql.client.Batch;
 import org.apache.hadoop.hbase.hbql.client.Column;
 import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
-import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.Schema;
@@ -118,12 +118,12 @@ public class AnnotationExample {
 
     public static void main(String[] args) throws HBqlException {
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         if (!connection.tableExists("TestObject")) {
             System.out.println(connection.execute("create table with schema TestObject"));
 
-            final Batch batch = new Batch(connection);
+            final HBatch batch = new HBatch(connection);
             for (int i = 0; i < 10; i++)
                 batch.insert(new TestObject(i));
 

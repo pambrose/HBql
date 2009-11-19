@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.Map;
 
-public class ConnectionManager {
+public class HConnectionManager {
 
     private static Map<String, HConnection> connectionMap = Maps.newHashMap();
 
@@ -47,16 +47,16 @@ public class ConnectionManager {
         final HConnectionImpl connection = new HConnectionImpl(name, config);
 
         if (connection.getName() != null)
-            ConnectionManager.getConnectionMap().put(connection.getName(), connection);
+            HConnectionManager.getConnectionMap().put(connection.getName(), connection);
 
         return connection;
     }
 
     public static HConnection getConnection(final String name) {
-        return ConnectionManager.getConnectionMap().get(name);
+        return HConnectionManager.getConnectionMap().get(name);
     }
 
     private static Map<String, HConnection> getConnectionMap() {
-        return ConnectionManager.connectionMap;
+        return HConnectionManager.connectionMap;
     }
 }

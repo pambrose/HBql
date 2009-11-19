@@ -20,10 +20,10 @@
 
 package org.apache.expreval.examples;
 
-import org.apache.hadoop.hbase.hbql.client.Batch;
-import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.Util;
@@ -35,7 +35,7 @@ public class RecordExample {
 
     public static void main(String[] args) throws HBqlException {
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP SCHEMA testobjects alias testobjects2"
                            + "("
@@ -57,7 +57,7 @@ public class RecordExample {
         if (!connection.tableExists("testobjects")) {
             System.out.println(connection.execute("create table with schema testobjects"));
 
-            final Batch batch = new Batch(connection);
+            final HBatch batch = new HBatch(connection);
             for (int i = 0; i < 10; i++) {
                 HRecord record = connection.getSchema("testobjects").newHRecord();
                 record.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));

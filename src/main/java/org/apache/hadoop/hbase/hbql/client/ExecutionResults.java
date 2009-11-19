@@ -25,15 +25,19 @@ import java.io.PrintStream;
 
 public class ExecutionResults {
 
-    private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    public final PrintStream out = new PrintStream(baos);
+    private final ByteArrayOutputStream baos;
+    public final PrintStream out;
+
     private boolean success = true;
     private int count = -1;
 
     public ExecutionResults() {
+        baos = new ByteArrayOutputStream();
+        out = new PrintStream(baos);
     }
 
     public ExecutionResults(final String str) {
+        this();
         this.out.println(str);
     }
 

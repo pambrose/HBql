@@ -18,11 +18,14 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.util.Maps;
 import org.apache.expreval.util.Sets;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 
@@ -75,7 +78,7 @@ public class SchemaManager {
         if (this.getSchemaMap().get(schemaName) != null)
             return true;
         else {
-            final String sql = "SELECT schema_name FROM system_schemas WITH CLIENT FILTER WHERE schema_name =  ?)";
+            final String sql = "SELECT schema_name FROM system_schemas WITH KEYS ?)";
             final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
             stmt.setParameter(1, schemaName);
             final List<HRecord> recs = stmt.executeQueryAndFetch();
@@ -90,7 +93,7 @@ public class SchemaManager {
             return true;
         }
         else {
-            final String sql = "DELETE FROM system_schemas WITH CLIENT FILTER WHERE schema_name =  ?)";
+            final String sql = "DELETE FROM system_schemas WITH KEYS ?)";
             final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
             stmt.setParameter(1, schemaName);
             final int cnt = stmt.executeUpdate().getCount();
@@ -120,7 +123,6 @@ public class SchemaManager {
 
         final String sql = "INSERT INTO system_schemas (schema_name, schema_obj) VALUES (?, ?)";
         final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
-
         stmt.setParameter(1, schema.getSchemaName());
         stmt.setParameter(2, schema);
         stmt.execute();
@@ -132,7 +134,7 @@ public class SchemaManager {
             return this.getSchemaMap().get(schemaName);
         }
         else {
-            final String sql = "SELECT schema_obj FROM system_schemas WITH CLIENT FILTER WHERE schema_name =  ?)";
+            final String sql = "SELECT schema_obj FROM system_schemas WITH KEYS ?)";
             final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
             stmt.setParameter(1, schemaName);
             List<HRecord> recs = stmt.executeQueryAndFetch();

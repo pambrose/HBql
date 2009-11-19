@@ -21,9 +21,9 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.InvalidFunctionException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
@@ -364,7 +364,7 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalFalse("'a' IN ('d', 'b')");
         assertEvalTrue("'a' NOT IN ('d', 'b')");
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
         final ObjectAllTypes obj = new ObjectAllTypes("aaabbb", 3, "aaab");
 
         assertReflectionEvalTrue(obj, "keyval CONTAINS 'ab'");
@@ -394,7 +394,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void booleanParamFunctions() throws HBqlException {
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
         ExpressionTree tree;
 
         tree = parseExpr(":a CONTAINS :b");
@@ -517,7 +517,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void regexFunctions() throws HBqlException {
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
         AnnotationAllTypesTest.setupSchema(connection);
         final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "aaab");
 
@@ -533,7 +533,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void objectFunctions() throws HBqlException {
 
-        HConnection connection = ConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newConnection();
         AnnotationAllTypesTest.setupSchema(connection);
         final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "bbb");
 

@@ -22,10 +22,10 @@ package org.apache.hadoop.hbase.hbql;
 
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.hbql.client.Batch;
-import org.apache.hadoop.hbase.hbql.client.ConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
@@ -55,7 +55,7 @@ public class SelectTest extends TestSupport {
     @BeforeClass
     public static void beforeClass() throws HBqlException {
 
-        connection = ConnectionManager.newConnection();
+        connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
                            + "("
@@ -93,7 +93,7 @@ public class SelectTest extends TestSupport {
                                       final int cnt,
                                       final String msg) throws HBqlException {
 
-        final Batch batch = new Batch(connection);
+        final HBatch batch = new HBatch(connection);
 
         for (int i = 0; i < cnt; i++) {
 
