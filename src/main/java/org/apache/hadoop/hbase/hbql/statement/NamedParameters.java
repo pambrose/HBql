@@ -57,8 +57,9 @@ public class NamedParameters implements Serializable {
             if (this.getParamList() != null)
                 return this.getParamList();
 
-            final int size = this.getParamSet().size();
             // This takes the ordered set and converts to a list
+            // The order is determined by when the param was created.
+            final int size = this.getParamSet().size();
             this.paramList = Lists.newArrayList(this.getParamSet().toArray(new NamedParameter[size]));
             return this.getParamList();
         }
