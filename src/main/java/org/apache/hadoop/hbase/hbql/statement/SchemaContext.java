@@ -27,9 +27,7 @@ import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 
-import java.io.Serializable;
-
-public abstract class SchemaContext implements HBqlStatement, Serializable {
+public abstract class SchemaContext {
 
     private String schemaName = null;
     private Schema schema = null;

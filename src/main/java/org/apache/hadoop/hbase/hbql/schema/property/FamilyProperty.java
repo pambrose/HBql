@@ -27,7 +27,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.IntegerValue;
 import org.apache.expreval.expr.node.StringValue;
 
-public abstract class FamilyProperties extends MultipleExpressionContext {
+public abstract class FamilyProperty extends MultipleExpressionContext {
 
     public static enum Type {
 
@@ -51,8 +51,15 @@ public abstract class FamilyProperties extends MultipleExpressionContext {
         }
     }
 
-    protected FamilyProperties(final Type type, final GenericValue... exprs) {
+    private final Type propertyType;
+
+    protected FamilyProperty(final Type type, final GenericValue... exprs) {
         super(type.getTypeSignature(), exprs);
+        this.propertyType = type;
+    }
+
+    public Type getPropertyType() {
+        return this.propertyType;
     }
 
     public boolean useResultData() {

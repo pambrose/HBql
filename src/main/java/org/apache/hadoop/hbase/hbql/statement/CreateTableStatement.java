@@ -20,26 +20,31 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.schema.FamilyDefinition;
 
-public class CreateTableStatement extends SchemaContext implements ConnectionStatement {
+import java.util.List;
 
-    public CreateTableStatement(final String schemaName) {
-        super(schemaName);
+public class CreateTableStatement implements ConnectionStatement {
+
+    private final String tableName;
+    private final List<FamilyDefinition> familyList;
+
+    public CreateTableStatement(final String tableName, List<FamilyDefinition> familyList) {
+        this.tableName = tableName;
+        this.familyList = familyList;
     }
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        this.validateSchemaName(connection);
+        final HTableDescriptor tableDesc = new HTableDescriptor(this.tableName);
 
-        final HTableDescriptor tableDesc = new HTableDescriptor(this.getSchema().getTableName());
-
-        for (final HColumnDescriptor columnDesc : this.getHBaseSchema().getColumnDescriptors())
-            tableDesc.addFamily(columnDesc);
+        for (final FamilyDefinition familyDefintion : this.familyList) {
+            tableDesc.addFamily(familyDefintion.getColumnDescriptor());
+        }
 
         connection.createTable(tableDesc);
 

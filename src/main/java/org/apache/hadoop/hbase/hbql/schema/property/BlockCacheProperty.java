@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql.schema.property;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class BlockCacheProperty extends FamilyProperties {
+public class BlockCacheProperty extends FamilyProperty {
 
     public BlockCacheProperty(final GenericValue arg0) {
         super(Type.BLOCKCACHE, arg0);

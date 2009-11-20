@@ -65,6 +65,7 @@ import org.apache.hadoop.hbase.hbql.statement.*;
 import org.apache.hadoop.hbase.hbql.statement.args.*;
 import org.apache.hadoop.hbase.hbql.statement.select.*;
 import org.apache.hadoop.hbase.hbql.schema.*;
+import org.apache.hadoop.hbase.hbql.schema.property.*;
 
 import org.apache.expreval.expr.*;
 import org.apache.expreval.expr.node.*;
@@ -146,20 +147,19 @@ tableStatement returns [TableStatement retval]
 	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableStatement($t.text);}
 	;
 
-familyDefinitionList [List<FamilyDefinition> retval]
+familyDefinitionList returns [List<FamilyDefinition> retval]
 @init {retval = Lists.newArrayList();}
 	: (a1=familyDefinition {retval.add($a1.retval);} (COMMA a2=familyDefinition {retval.add($a2.retval);})*)?;
-	;
 
-familyDefinition [FamilyDefinition retval]
+familyDefinition returns [FamilyDefinition retval]
 	: f=simpleName LPAREN p=familyPropertyList RPAREN	
 							{retval = new FamilyProperty($f.text, $p.retval);};
 
-familyPropertyList [List<FamilyProperty> retval]							
+familyPropertyList returns [List<FamilyProperty> retval]							
 @init {retval = Lists.newArrayList();}
-	: (a1=familyProperty {retval.add($a1.retval);} (COMMA a2=familyProperty {retval.add($a2.retval);})*)?;;
+	: (a1=familyProperty {retval.add($a1.retval);} (COMMA a2=familyProperty {retval.add($a2.retval);})*)?;
 	
-familyProperty [FamilyProperty retval]
+familyProperty returns [FamilyProperty retval]
 	: keyMAX keyVERSIONS v=valPrimary		{retval = new VersionProperty($v.retval);}
 	| keyBLOOM keyFILTER b=topExpr			{retval = new BloomFilterProperty($b.retval);}
 	| keyBLOCK keySIZE v=valPrimary			{retval = new BlockSizeProperty($b.retval);}

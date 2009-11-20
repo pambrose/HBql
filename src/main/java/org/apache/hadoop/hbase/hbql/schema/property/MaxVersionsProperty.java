@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql.schema.property;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class MaxVersionsProperty extends FamilyProperties {
+public class MaxVersionsProperty extends FamilyProperty {
 
     public MaxVersionsProperty(final GenericValue arg0) {
         super(Type.MAXVERSIONS, arg0);

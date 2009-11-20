@@ -23,7 +23,6 @@ package org.apache.hadoop.hbase.hbql.schema;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HSchema;
@@ -103,13 +102,6 @@ public class HBaseSchema extends Schema implements HSchema {
             if (requireFamilyName && family.length() == 0)
                 throw new HBqlException(attrib.getColumnName() + " is missing family name");
         }
-    }
-
-    public List<HColumnDescriptor> getColumnDescriptors() {
-        final List<HColumnDescriptor> descList = Lists.newArrayList();
-        for (final String familyName : this.getFamilySet())
-            descList.add(new HColumnDescriptor(familyName));
-        return descList;
     }
 
     public byte[] getTableNameAsBytes() throws HBqlException {

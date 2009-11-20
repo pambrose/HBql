@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql.schema.property;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class BlockSizeProperty extends FamilyProperties {
+public class BlockSizeProperty extends FamilyProperty {
 
     public BlockSizeProperty(final GenericValue arg0) {
         super(Type.BLOCKSIZE, arg0);

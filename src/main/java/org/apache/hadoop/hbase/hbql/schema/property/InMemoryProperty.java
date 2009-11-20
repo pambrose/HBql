@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql.schema.property;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class InMemoryProperty extends FamilyProperties {
+public class InMemoryProperty extends FamilyProperty {
 
     public InMemoryProperty(final GenericValue arg0) {
         super(Type.INMEMORY, arg0);

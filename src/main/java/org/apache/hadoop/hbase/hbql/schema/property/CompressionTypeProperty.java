@@ -24,10 +24,10 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.io.hfile.Compression;
 
-public class CompressionTypeProperty extends FamilyProperties {
+public class CompressionTypeProperty extends FamilyProperty {
 
     public CompressionTypeProperty(final GenericValue arg0) {
-        super(Type.INMEMORY, arg0);
+        super(Type.COMPRESSIONTYPE, arg0);
     }
 
     public Compression.Algorithm getValue() throws HBqlException {

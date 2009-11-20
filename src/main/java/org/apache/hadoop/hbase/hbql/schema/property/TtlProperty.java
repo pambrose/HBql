@@ -23,10 +23,10 @@ package org.apache.hadoop.hbase.hbql.schema.property;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class TtlProperty extends FamilyProperties {
+public class TtlProperty extends FamilyProperty {
 
     public TtlProperty(final GenericValue arg0) {
-        super(FamilyProperties.Type.TTL, arg0);
+        super(FamilyProperty.Type.TTL, arg0);
     }
 
     public int getValue() throws HBqlException {

@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql.schema.property;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class BloomFilterProperty extends FamilyProperties {
+public class BloomFilterProperty extends FamilyProperty {
 
     public BloomFilterProperty(final GenericValue arg0) {
         super(Type.BLOOMFILTER, arg0);
