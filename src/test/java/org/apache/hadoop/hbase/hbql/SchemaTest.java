@@ -61,18 +61,16 @@ public class SchemaTest extends TestSupport {
         connection.dropSchema(schemaName);
         assertFalse(connection.schemaExists(schemaName));
 
-        /*
         schemaName = "test3";
-       connection.dropSchema(schemaName);
-       assertFalse(connection.schemaExists(schemaName));
-       connection.execute("CREATE TEMP SCHEMA " + schemaName + " (keyval key, f1 {val2 object alias val3})");
-       assertTrue(connection.schemaExists(schemaName));
+        connection.dropSchema(schemaName);
+        assertFalse(connection.schemaExists(schemaName));
+        connection.execute("CREATE TEMP SCHEMA " + schemaName + " (keyval key, f1 {val2 object alias val3})");
+        assertTrue(connection.schemaExists(schemaName));
         schema = connection.getSchema(schemaName);
-       assertTrue(schema.getSchemaName().equals(schemaName) && schema.getTableName().equals(schemaName));
-       assertTrue(schema.isTempSchema());
-       connection.dropSchema(schemaName);
-       assertFalse(connection.schemaExists(schemaName));
-       */
+        assertTrue(schema.getSchemaName().equals(schemaName) && schema.getTableName().equals(schemaName));
+        assertTrue(schema.isTempSchema());
+        connection.dropSchema(schemaName);
+        assertFalse(connection.schemaExists(schemaName));
 
         Set<HSchema> schemas = connection.getSchemas();
     }

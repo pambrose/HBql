@@ -29,11 +29,16 @@ import java.io.IOException;
 
 public class TimestampArgs extends SelectArgs {
 
-    final boolean singleValue;
+    final boolean aSingleValue;
+
+    public TimestampArgs(final GenericValue arg0) {
+        super(SelectArgs.Type.TIMESTAMPRANGE, arg0, arg0);
+        this.aSingleValue = true;
+    }
 
     public TimestampArgs(final GenericValue arg0, final GenericValue arg1) {
         super(SelectArgs.Type.TIMESTAMPRANGE, arg0, arg1);
-        this.singleValue = arg0 == arg1;
+        this.aSingleValue = false;
     }
 
     private long getLower() throws HBqlException {
@@ -44,12 +49,12 @@ public class TimestampArgs extends SelectArgs {
         return (Long)this.evaluateConstant(1, false, null);
     }
 
-    private boolean isSingleValue() {
-        return this.singleValue;
+    private boolean isASingleValue() {
+        return this.aSingleValue;
     }
 
     public String asString() {
-        if (this.isSingleValue())
+        if (this.isASingleValue())
             return "TIMESTAMP " + this.getGenericValue(0).asString();
         else
             return "TIMESTAMP RANGE " + this.getGenericValue(0).asString() + " TO "
@@ -58,7 +63,7 @@ public class TimestampArgs extends SelectArgs {
 
     public void setTimeStamp(final Get get) throws HBqlException {
         try {
-            if (this.isSingleValue())
+            if (this.isASingleValue())
                 get.setTimeStamp(this.getLower());
             else
                 get.setTimeRange(this.getLower(), this.getUpper());
@@ -70,7 +75,7 @@ public class TimestampArgs extends SelectArgs {
 
     public void setTimeStamp(final Scan scan) throws HBqlException {
         try {
-            if (this.isSingleValue())
+            if (this.isASingleValue())
                 scan.setTimeStamp(this.getLower());
             else
                 scan.setTimeRange(this.getLower(), this.getUpper());

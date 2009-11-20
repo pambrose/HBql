@@ -74,7 +74,7 @@ public abstract class GenericExpression implements GenericValue {
             this.getArgList().addAll(exprList);
     }
 
-    protected TypeSignature getTypeSignature() {
+    protected FunctionTypeSignature getTypeSignature() {
         return this.type.getTypeSignature();
     }
 

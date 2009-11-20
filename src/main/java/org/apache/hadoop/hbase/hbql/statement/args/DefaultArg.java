@@ -20,8 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.statement.args;
 
+import org.apache.expreval.expr.ArgumentListTypeSignature;
 import org.apache.expreval.expr.MultipleExpressionContext;
-import org.apache.expreval.expr.TypeSignature;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
@@ -35,7 +35,7 @@ public class DefaultArg extends MultipleExpressionContext implements Serializabl
     private volatile boolean computed = false;
 
     public DefaultArg(final Class<? extends GenericValue> exprType, final GenericValue expr) throws HBqlException {
-        super(new TypeSignature(null, exprType), expr);
+        super(new ArgumentListTypeSignature(exprType), expr);
 
         // This will force the type checking to happen
         this.getValue();

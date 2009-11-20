@@ -49,7 +49,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class TypeSignature implements Serializable {
+public abstract class TypeSignature implements Serializable {
 
     private final Class<? extends GenericValue> returnType;
     private final List<Class<? extends GenericValue>> typeSig = Lists.newArrayList();

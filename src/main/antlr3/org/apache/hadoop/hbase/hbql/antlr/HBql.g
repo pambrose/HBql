@@ -114,9 +114,7 @@ options {backtrack=true;}
 	;
 	
 schemaStatement returns [SchemaContext retval]
-	: keyCREATE keyTABLE keyUSING keySCHEMA? t=simpleName 	
-							{retval = new CreateTableStatement($t.text);}
-	| keyDELETE keyFROM keySCHEMA? t=simpleName w=withClause?	
+	: keyDELETE keyFROM keySCHEMA? t=simpleName w=withClause?	
 							{retval = new DeleteStatement($t.text, $w.retval);}
 	| keyINSERT keyINTO keySCHEMA? t=simpleName LPAREN e=exprList RPAREN ins=insertValues
 							{retval = new InsertStatement($t.text, $e.retval, $ins.retval);}
@@ -140,12 +138,38 @@ schemaManagerStatement returns [SchemaContext retval]
 	;
 
 tableStatement returns [TableStatement retval]
-	: keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
+	: keyCREATE keyTABLE t=simpleName LPAREN f=familyDefinitionList RPAREN	
+							{retval = new CreateTableStatement($t.text, $f.retval);}
+	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
 	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableStatement($t.text);}
 	| keyDROP keyTABLE t=simpleName 		{retval = new DropTableStatement($t.text);}
 	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableStatement($t.text);}
 	;
-	 
+
+familyDefinitionList [List<FamilyDefinition> retval]
+@init {retval = Lists.newArrayList();}
+	: (a1=familyDefinition {retval.add($a1.retval);} (COMMA a2=familyDefinition {retval.add($a2.retval);})*)?;
+	;
+
+familyDefinition [FamilyDefinition retval]
+	: f=simpleName LPAREN p=familyPropertyList RPAREN	
+							{retval = new FamilyProperty($f.text, $p.retval);};
+
+familyPropertyList [List<FamilyProperty> retval]							
+@init {retval = Lists.newArrayList();}
+	: (a1=familyProperty {retval.add($a1.retval);} (COMMA a2=familyProperty {retval.add($a2.retval);})*)?;;
+	
+familyProperty [FamilyProperty retval]
+	: keyMAX keyVERSIONS v=valPrimary		{retval = new VersionProperty($v.retval);}
+	| keyBLOOM keyFILTER b=topExpr			{retval = new BloomFilterProperty($b.retval);}
+	| keyBLOCK keySIZE v=valPrimary			{retval = new BlockSizeProperty($b.retval);}
+	| keyBLOCK keyCACHE v=valPrimary		{retval = new BlockCacheProperty($b.retval);}
+	| keyCOMPRESSION keyTYPE v=valPrimary		{retval = new CompressionTypeProperty($b.retval);}
+	| keyIN keyMEMORY v=valPrimary			{retval = new InMemoryProperty($b.retval);}
+	| keyINDEX keyINTERVAL v=valPrimary		{retval = new IndexIntervalProperty($b.retval);}
+	| keyTTL v=valPrimary				{retval = new TtlProperty($b.retval);}
+	;
+			 
 withClause returns [WithArgs retval]
 @init {retval = new WithArgs();}
 	: keyWITH withElements[retval]+;
@@ -179,7 +203,7 @@ options {backtrack=true;}
 timestampArgs returns [TimestampArgs retval]
 	: keyTIMESTAMP keyRANGE d1=valPrimary keyTO d2=valPrimary	
 							{retval = new TimestampArgs($d1.retval, $d2.retval);}
-	| keyTIMESTAMP d1=valPrimary			{retval = new TimestampArgs($d1.retval, $d1.retval);}
+	| keyTIMESTAMP d1=valPrimary			{retval = new TimestampArgs($d1.retval);}
 	;
 		
 versionArgs returns [VersionArgs retval]
@@ -470,7 +494,6 @@ keySCHEMA 	: {isKeyword(input, "SCHEMA")}? ID;
 keySCHEMAS 	: {isKeyword(input, "SCHEMAS")}? ID;
 keyTABLES 	: {isKeyword(input, "TABLES")}? ID;
 keyWHERE	: {isKeyword(input, "WHERE")}? ID;
-keyUSING	: {isKeyword(input, "USING")}? ID;
 keyWITH		: {isKeyword(input, "WITH")}? ID;
 keyFILTER	: {isKeyword(input, "FILTER")}? ID;
 keyFROM 	: {isKeyword(input, "FROM")}? ID;
@@ -517,3 +540,13 @@ keyPARSE	: {isKeyword(input, "PARSE")}? ID;
 keyEXPR		: {isKeyword(input, "EXPR")}? ID;
 keyIMPORT	: {isKeyword(input, "IMPORT")}? ID;
 keyTEMP		: {isKeyword(input, "TEMP")}? ID;
+keyBLOOM	: {isKeyword(input, "BLOOM")}? ID;
+keyBLOCK	: {isKeyword(input, "BLOCK")}? ID;
+keySIZE		: {isKeyword(input, "SIZE")}? ID;
+keyCACHE	: {isKeyword(input, "CACHE")}? ID;
+keyCOMPRESSION	: {isKeyword(input, "COMPRESSION")}? ID;
+keyTYPE		: {isKeyword(input, "TYPE")}? ID;
+keyMEMORY	: {isKeyword(input, "MEMORY")}? ID;
+keyINDEX	: {isKeyword(input, "INDEX")}? ID;
+keyINTERVAL	: {isKeyword(input, "INTERVAL")}? ID;
+keyTTL		: {isKeyword(input, "TTL")}? ID;

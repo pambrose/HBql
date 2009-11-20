@@ -30,7 +30,7 @@ import org.apache.hadoop.hbase.hbql.statement.NoStatementSchemaContext;
 
 public class ExpressionTree extends MultipleExpressionContext {
 
-    private static TypeSignature exprSignature = new TypeSignature(BooleanValue.class, BooleanValue.class);
+    private static FunctionTypeSignature exprSignature = new FunctionTypeSignature(BooleanValue.class, BooleanValue.class);
     private boolean useResultData = false;
 
     private ExpressionTree(final GenericValue rootValue) {

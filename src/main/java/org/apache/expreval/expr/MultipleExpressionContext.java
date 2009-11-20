@@ -48,7 +48,6 @@ public abstract class MultipleExpressionContext implements Serializable {
     private boolean inNeedOfOptimization = true;
     private boolean inNeedOfSettingContext = true;
 
-
     private final List<GenericColumn> columnsUsedInExpr = Lists.newArrayList();
     private final List<ColumnAttrib> attribsUsedInExpr = Lists.newArrayList();
     private final List<NamedParameter> namedParamList = Lists.newArrayList();
@@ -61,9 +60,8 @@ public abstract class MultipleExpressionContext implements Serializable {
     protected MultipleExpressionContext(final TypeSignature typeSignature, final GenericValue... vals) {
         this.typeSignature = typeSignature;
         if (vals != null) {
-            for (final GenericValue val : vals) {
+            for (final GenericValue val : vals)
                 this.addExpression(val);
-            }
         }
     }
 

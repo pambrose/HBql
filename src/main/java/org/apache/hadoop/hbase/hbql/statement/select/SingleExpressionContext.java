@@ -40,7 +40,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.NavigableMap;
 
-public final class SingleExpressionContext extends MultipleExpressionContext implements SelectElement {
+public class SingleExpressionContext extends MultipleExpressionContext implements SelectElement {
 
     private String asName;
 
@@ -212,7 +212,8 @@ public final class SingleExpressionContext extends MultipleExpressionContext imp
         final Object elementValue = this.getValue(result);
 
         if (attrib == null) {
-            // Find value in results and assign the byte[] value to Record, but bail on Annotated object
+            // Find value in results and assign the byte[] value to Record, but bail on Annotated object because
+            // it cannot deal with unknown/unmapped values
             if (!(obj instanceof HRecord))
                 return;
 

@@ -22,8 +22,8 @@ package org.apache.expreval.expr.function;
 
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
+import org.apache.expreval.expr.FunctionTypeSignature;
 import org.apache.expreval.expr.GenericExpression;
-import org.apache.expreval.expr.TypeSignature;
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.DateValue;
@@ -48,67 +48,67 @@ public abstract class Function extends GenericExpression {
     public static enum FunctionType {
 
         // Dealt with in DateFunction
-        DATEINTERVAL(new TypeSignature(DateValue.class, LongValue.class)),
-        DATECONSTANT(new TypeSignature(DateValue.class)),
+        DATEINTERVAL(new FunctionTypeSignature(DateValue.class, LongValue.class)),
+        DATECONSTANT(new FunctionTypeSignature(DateValue.class)),
 
         // Date functions
-        DATE(new TypeSignature(DateValue.class, StringValue.class, StringValue.class)),
-        LONGTODATE(new TypeSignature(DateValue.class, LongValue.class)),
-        RANDOMDATE(new TypeSignature(DateValue.class)),
+        DATE(new FunctionTypeSignature(DateValue.class, StringValue.class, StringValue.class)),
+        LONGTODATE(new FunctionTypeSignature(DateValue.class, LongValue.class)),
+        RANDOMDATE(new FunctionTypeSignature(DateValue.class)),
 
         // String functions
-        TRIM(new TypeSignature(StringValue.class, StringValue.class)),
-        LOWER(new TypeSignature(StringValue.class, StringValue.class)),
-        UPPER(new TypeSignature(StringValue.class, StringValue.class)),
-        CONCAT(new TypeSignature(StringValue.class, StringValue.class, StringValue.class)),
-        REPLACE(new TypeSignature(StringValue.class, StringValue.class, StringValue.class, StringValue.class)),
-        SUBSTRING(new TypeSignature(StringValue.class, StringValue.class, IntegerValue.class, IntegerValue.class)),
-        ZEROPAD(new TypeSignature(StringValue.class, LongValue.class, IntegerValue.class)),
-        REPEAT(new TypeSignature(StringValue.class, StringValue.class, IntegerValue.class)),
+        TRIM(new FunctionTypeSignature(StringValue.class, StringValue.class)),
+        LOWER(new FunctionTypeSignature(StringValue.class, StringValue.class)),
+        UPPER(new FunctionTypeSignature(StringValue.class, StringValue.class)),
+        CONCAT(new FunctionTypeSignature(StringValue.class, StringValue.class, StringValue.class)),
+        REPLACE(new FunctionTypeSignature(StringValue.class, StringValue.class, StringValue.class, StringValue.class)),
+        SUBSTRING(new FunctionTypeSignature(StringValue.class, StringValue.class, IntegerValue.class, IntegerValue.class)),
+        ZEROPAD(new FunctionTypeSignature(StringValue.class, LongValue.class, IntegerValue.class)),
+        REPEAT(new FunctionTypeSignature(StringValue.class, StringValue.class, IntegerValue.class)),
 
         // Number functions
-        LENGTH(new TypeSignature(IntegerValue.class, StringValue.class)),
-        INDEXOF(new TypeSignature(IntegerValue.class, StringValue.class, StringValue.class)),
+        LENGTH(new FunctionTypeSignature(IntegerValue.class, StringValue.class)),
+        INDEXOF(new FunctionTypeSignature(IntegerValue.class, StringValue.class, StringValue.class)),
 
-        DATETOLONG(new TypeSignature(LongValue.class, DateValue.class)),
+        DATETOLONG(new FunctionTypeSignature(LongValue.class, DateValue.class)),
 
-        SHORT(new TypeSignature(ShortValue.class, StringValue.class)),
-        INTEGER(new TypeSignature(IntegerValue.class, StringValue.class)),
-        LONG(new TypeSignature(LongValue.class, StringValue.class)),
-        FLOAT(new TypeSignature(FloatValue.class, StringValue.class)),
-        DOUBLE(new TypeSignature(DoubleValue.class, StringValue.class)),
+        SHORT(new FunctionTypeSignature(ShortValue.class, StringValue.class)),
+        INTEGER(new FunctionTypeSignature(IntegerValue.class, StringValue.class)),
+        LONG(new FunctionTypeSignature(LongValue.class, StringValue.class)),
+        FLOAT(new FunctionTypeSignature(FloatValue.class, StringValue.class)),
+        DOUBLE(new FunctionTypeSignature(DoubleValue.class, StringValue.class)),
 
-        COUNT(new TypeSignature(LongValue.class), true),
-        MIN(new TypeSignature(NumberValue.class, NumberValue.class), true),
-        MAX(new TypeSignature(NumberValue.class, NumberValue.class), true),
+        COUNT(new FunctionTypeSignature(LongValue.class), true),
+        MIN(new FunctionTypeSignature(NumberValue.class, NumberValue.class), true),
+        MAX(new FunctionTypeSignature(NumberValue.class, NumberValue.class), true),
 
-        ABS(new TypeSignature(NumberValue.class, NumberValue.class)),
-        LESSER(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
-        GREATER(new TypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
+        ABS(new FunctionTypeSignature(NumberValue.class, NumberValue.class)),
+        LESSER(new FunctionTypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
+        GREATER(new FunctionTypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
 
-        RANDOMINTEGER(new TypeSignature(IntegerValue.class)),
-        RANDOMLONG(new TypeSignature(LongValue.class)),
-        RANDOMFLOAT(new TypeSignature(FloatValue.class)),
-        RANDOMDOUBLE(new TypeSignature(DoubleValue.class)),
+        RANDOMINTEGER(new FunctionTypeSignature(IntegerValue.class)),
+        RANDOMLONG(new FunctionTypeSignature(LongValue.class)),
+        RANDOMFLOAT(new FunctionTypeSignature(FloatValue.class)),
+        RANDOMDOUBLE(new FunctionTypeSignature(DoubleValue.class)),
 
         // Boolean functions
-        RANDOMBOOLEAN(new TypeSignature(BooleanValue.class)),
-        DEFINEDINROW(new TypeSignature(BooleanValue.class, GenericValue.class)),
-        EVAL(new TypeSignature(BooleanValue.class, StringValue.class));
+        RANDOMBOOLEAN(new FunctionTypeSignature(BooleanValue.class)),
+        DEFINEDINROW(new FunctionTypeSignature(BooleanValue.class, GenericValue.class)),
+        EVAL(new FunctionTypeSignature(BooleanValue.class, StringValue.class));
 
-        private final TypeSignature typeSignature;
+        private final FunctionTypeSignature typeSignature;
         private final boolean anAggregateValue;
 
-        FunctionType(final TypeSignature typeSignature) {
+        FunctionType(final FunctionTypeSignature typeSignature) {
             this(typeSignature, false);
         }
 
-        FunctionType(final TypeSignature typeSignature, final boolean anAggregateValue) {
+        FunctionType(final FunctionTypeSignature typeSignature, final boolean anAggregateValue) {
             this.typeSignature = typeSignature;
             this.anAggregateValue = anAggregateValue;
         }
 
-        private TypeSignature getTypeSignature() {
+        private FunctionTypeSignature getTypeSignature() {
             return this.typeSignature;
         }
 
@@ -153,7 +153,7 @@ public abstract class Function extends GenericExpression {
         return this.functionType;
     }
 
-    protected TypeSignature getTypeSignature() {
+    protected FunctionTypeSignature getTypeSignature() {
         return this.getFunctionType().getTypeSignature();
     }
 

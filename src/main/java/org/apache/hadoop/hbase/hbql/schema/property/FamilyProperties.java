@@ -18,25 +18,27 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.statement.args;
+package org.apache.hadoop.hbase.hbql.schema.property;
 
 import org.apache.expreval.expr.ArgumentListTypeSignature;
 import org.apache.expreval.expr.MultipleExpressionContext;
-import org.apache.expreval.expr.node.DateValue;
+import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.expr.node.LongValue;
+import org.apache.expreval.expr.node.IntegerValue;
 import org.apache.expreval.expr.node.StringValue;
 
-public abstract class SelectArgs extends MultipleExpressionContext {
+public abstract class FamilyProperties extends MultipleExpressionContext {
 
     public static enum Type {
 
-        NOARGSKEY(new ArgumentListTypeSignature()),
-        SINGLEKEY(new ArgumentListTypeSignature(StringValue.class)),
-        KEYRANGE(new ArgumentListTypeSignature(StringValue.class, StringValue.class)),
-        TIMESTAMPRANGE(new ArgumentListTypeSignature(DateValue.class, DateValue.class)),
-        LIMIT(new ArgumentListTypeSignature(LongValue.class)),
-        VERSION(new ArgumentListTypeSignature(LongValue.class));
+        TTL(new ArgumentListTypeSignature(IntegerValue.class)),
+        INDEXINTERVAL(new ArgumentListTypeSignature(StringValue.class)),
+        INMEMORY(new ArgumentListTypeSignature(BooleanValue.class)),
+        COMPRESSIONTYPE(new ArgumentListTypeSignature(StringValue.class)),
+        BLOCKCACHE(new ArgumentListTypeSignature(BooleanValue.class)),
+        BLOCKSIZE(new ArgumentListTypeSignature(IntegerValue.class)),
+        BLOOMFILTER(new ArgumentListTypeSignature(BooleanValue.class)),
+        MAXVERSIONS(new ArgumentListTypeSignature(IntegerValue.class));
 
         private final ArgumentListTypeSignature typeSignature;
 
@@ -49,7 +51,7 @@ public abstract class SelectArgs extends MultipleExpressionContext {
         }
     }
 
-    protected SelectArgs(final Type type, final GenericValue... exprs) {
+    protected FamilyProperties(final Type type, final GenericValue... exprs) {
         super(type.getTypeSignature(), exprs);
     }
 
