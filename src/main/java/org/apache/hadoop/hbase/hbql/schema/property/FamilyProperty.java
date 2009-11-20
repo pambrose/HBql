@@ -31,23 +31,29 @@ public abstract class FamilyProperty extends MultipleExpressionContext {
 
     public static enum Type {
 
-        TTL(new ArgumentListTypeSignature(IntegerValue.class)),
-        INDEXINTERVAL(new ArgumentListTypeSignature(StringValue.class)),
-        INMEMORY(new ArgumentListTypeSignature(BooleanValue.class)),
-        COMPRESSIONTYPE(new ArgumentListTypeSignature(StringValue.class)),
-        BLOCKCACHE(new ArgumentListTypeSignature(BooleanValue.class)),
-        BLOCKSIZE(new ArgumentListTypeSignature(IntegerValue.class)),
-        BLOOMFILTER(new ArgumentListTypeSignature(BooleanValue.class)),
-        MAXVERSIONS(new ArgumentListTypeSignature(IntegerValue.class));
+        TTL(new ArgumentListTypeSignature(IntegerValue.class), "TTL"),
+        INDEXINTERVAL(new ArgumentListTypeSignature(StringValue.class), "INDEX INTERVAL"),
+        INMEMORY(new ArgumentListTypeSignature(BooleanValue.class), "IN MEMORY"),
+        COMPRESSIONTYPE(new ArgumentListTypeSignature(StringValue.class), "COMPRESSION TYPE"),
+        BLOCKCACHE(new ArgumentListTypeSignature(BooleanValue.class), "BLOCK CACHE"),
+        BLOCKSIZE(new ArgumentListTypeSignature(IntegerValue.class), "BLOCK SIZE"),
+        BLOOMFILTER(new ArgumentListTypeSignature(BooleanValue.class), "BLOOM FILTER"),
+        MAXVERSIONS(new ArgumentListTypeSignature(IntegerValue.class), "MAX VERSIONS");
 
         private final ArgumentListTypeSignature typeSignature;
+        private final String description;
 
-        Type(final ArgumentListTypeSignature typeSignature) {
+        Type(final ArgumentListTypeSignature typeSignature, final String description) {
             this.typeSignature = typeSignature;
+            this.description = description;
         }
 
         public ArgumentListTypeSignature getTypeSignature() {
-            return typeSignature;
+            return this.typeSignature;
+        }
+
+        public String getDescription() {
+            return this.description;
         }
     }
 

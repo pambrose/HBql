@@ -71,9 +71,10 @@ public class FamilyDefinition {
                                      this.bloomFilter.getValue());
     }
 
-    private void validateProperty(final FamilyProperty familyProperty, final String str) throws HBqlException {
-        if (familyProperty != null)
-            throw new HBqlException("Multiple " + str + " values for " + this.getFamilyName() + " not allowed");
+    private void validateProperty(final FamilyProperty assignee, final FamilyProperty value) throws HBqlException {
+        if (assignee != null)
+            throw new HBqlException("Multiple " + value.getPropertyType().getDescription()
+                                    + " values for " + this.getFamilyName() + " not allowed");
     }
 
     private void validateFamily() throws HBqlException {
@@ -83,49 +84,49 @@ public class FamilyDefinition {
             switch (familyProperty.getPropertyType()) {
 
                 case BLOCKCACHE: {
-                    this.validateProperty(this.blockCache, "BLOCK CACHE");
+                    this.validateProperty(this.blockCache, familyProperty);
                     this.blockCache = (BlockCacheProperty)familyProperty;
                     break;
                 }
 
                 case BLOCKSIZE: {
-                    this.validateProperty(this.blockSize, "BLOCK SIZE");
+                    this.validateProperty(this.blockSize, familyProperty);
                     this.blockSize = (BlockSizeProperty)familyProperty;
                     break;
                 }
 
                 case BLOOMFILTER: {
-                    this.validateProperty(this.bloomFilter, "BLOOM FILTER");
+                    this.validateProperty(this.bloomFilter, familyProperty);
                     this.bloomFilter = (BloomFilterProperty)familyProperty;
                     break;
                 }
 
                 case COMPRESSIONTYPE: {
-                    this.validateProperty(this.compressionType, "COMPRESSION TYPE");
+                    this.validateProperty(this.compressionType, familyProperty);
                     this.compressionType = (CompressionTypeProperty)familyProperty;
                     break;
                 }
 
                 case INDEXINTERVAL: {
-                    this.validateProperty(this.indexInterval, "INDEX INTERVAL");
+                    this.validateProperty(this.indexInterval, familyProperty);
                     this.indexInterval = (IndexIntervalProperty)familyProperty;
                     break;
                 }
 
                 case INMEMORY: {
-                    this.validateProperty(this.inMemory, "IN MEMORY");
+                    this.validateProperty(this.inMemory, familyProperty);
                     this.inMemory = (InMemoryProperty)familyProperty;
                     break;
                 }
 
                 case MAXVERSIONS: {
-                    this.validateProperty(this.maxVersions, "MAX VERSIONS");
+                    this.validateProperty(this.maxVersions, familyProperty);
                     this.maxVersions = (MaxVersionsProperty)familyProperty;
                     break;
                 }
 
                 case TTL: {
-                    this.validateProperty(this.ttl, "TTL");
+                    this.validateProperty(this.ttl, familyProperty);
                     this.ttl = (TtlProperty)familyProperty;
                     break;
                 }
