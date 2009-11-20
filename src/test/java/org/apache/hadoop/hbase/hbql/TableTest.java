@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql;
 
+import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -45,6 +46,12 @@ public class TableTest extends TestSupport {
         connection.execute("CREATE TABLE " + tableName + " (family1, family2, family3)");
         assertTrue(connection.tableExists(tableName));
         HTableDescriptor table = connection.getTable(tableName);
+        HColumnDescriptor[] hcd = table.getColumnFamilies();
+        assertTrue(table.hasFamily("family1".getBytes()));
+        assertTrue(table.hasFamily("family2".getBytes()));
+        assertTrue(table.hasFamily("family3".getBytes()));
+        assertTrue((hcd.length == 3));
+
         assertTrue(table.getNameAsString().equals(tableName));
 
         connection.disableTable(tableName);
