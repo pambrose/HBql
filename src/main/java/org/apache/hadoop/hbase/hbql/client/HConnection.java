@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HTableDescriptor;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -42,6 +43,8 @@ public interface HConnection {
 
     // Table Routines    
     boolean tableExists(String tableName) throws HBqlException;
+
+    HTableDescriptor getTable(final String tableName) throws HBqlException;
 
     boolean tableEnabled(String tableName) throws HBqlException;
 

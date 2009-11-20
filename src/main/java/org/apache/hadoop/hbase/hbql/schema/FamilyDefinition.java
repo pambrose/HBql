@@ -54,14 +54,19 @@ public class FamilyDefinition {
     }
 
     public String getFamilyName() {
-        return familyName;
+        return this.familyName;
+    }
+
+    private List<FamilyProperty> getFamilyPropertyList() {
+        return this.familyPropertyList;
     }
 
     public HColumnDescriptor getColumnDescriptor() throws HBqlException {
 
-        this.validateFamily();
+        this.validateFamilyPropertyList();
 
-        final HColumnDescriptor columnDesc = new HColumnDescriptor(this.getFamilyName());
+        final String name = (this.getFamilyName().endsWith(":")) ? this.getFamilyName() : this.getFamilyName() + ":";
+        final HColumnDescriptor columnDesc = new HColumnDescriptor(name);
 
         if (this.maxVersions != null)
             columnDesc.setMaxVersions(this.maxVersions.getValue());
@@ -91,9 +96,12 @@ public class FamilyDefinition {
         return value;
     }
 
-    private void validateFamily() throws HBqlException {
+    private void validateFamilyPropertyList() throws HBqlException {
 
-        for (final FamilyProperty familyProperty : this.familyPropertyList) {
+        if (this.getFamilyPropertyList() == null)
+            return;
+
+        for (final FamilyProperty familyProperty : this.getFamilyPropertyList()) {
 
             switch (familyProperty.getPropertyType()) {
 

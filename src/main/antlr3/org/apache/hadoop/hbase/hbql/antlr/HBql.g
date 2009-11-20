@@ -109,19 +109,23 @@ options {backtrack=true;}
 
 jdbcStatement returns [HBqlStatement retval]
 options {backtrack=true;}	
-	: s1=schemaStatement				{retval = $s1.retval;}
-	| s2=schemaManagerStatement			{retval = $s2.retval;}
-	| s3=tableStatement				{retval = $s3.retval;}
-	;
-	
-schemaStatement returns [SchemaContext retval]
 	: keyDELETE keyFROM keySCHEMA? t=simpleName w=withClause?	
 							{retval = new DeleteStatement($t.text, $w.retval);}
 	| keyINSERT keyINTO keySCHEMA? t=simpleName LPAREN e=exprList RPAREN ins=insertValues
 							{retval = new InsertStatement($t.text, $e.retval, $ins.retval);}
 	| sel=selectStatement				{retval = $sel.retval;}			
+	| keyCREATE (tmp=keyTEMP)? keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
+							{retval = new CreateSchemaStatement(($tmp.text != null),$t.text, $a.text, $l.retval);}
+	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaStatement($t.text);}
+	| keyDESCRIBE keySCHEMA t=simpleName 		{retval = new DescribeSchemaStatement($t.text);}
+	| keyCREATE keyTABLE t=simpleName LPAREN f=familyDefinitionList RPAREN	
+							{retval = new CreateTableStatement($t.text, $f.retval);}
+	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
+	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableStatement($t.text);}
+	| keyDROP keyTABLE t=simpleName 		{retval = new DropTableStatement($t.text);}
+	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableStatement($t.text);}
 	;
-
+	
 insertValues returns [InsertValueSource retval]
 	: keyVALUES LPAREN e=insertExprList RPAREN	{retval = new InsertSingleRow($e.retval);}
 	| sel=selectStatement				{retval = new InsertSelectValues($sel.retval);}			
@@ -131,36 +135,20 @@ selectStatement returns [SelectStatement retval]
 	: keySELECT c=selectElems keyFROM keySCHEMA? t=simpleName w=withClause?
 							{retval = new SelectStatement($c.retval, $t.text, $w.retval);};
 							
-schemaManagerStatement returns [SchemaContext retval]
-	: keyCREATE (tmp=keyTEMP)? keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
-							{retval = new CreateSchemaStatement(($tmp.text != null),$t.text, $a.text, $l.retval);}
-	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaStatement($t.text);}
-	| keyDESCRIBE keySCHEMA t=simpleName 		{retval = new DescribeSchemaStatement($t.text);}
-	;
-
-tableStatement returns [TableStatement retval]
-	: keyCREATE keyTABLE t=simpleName LPAREN f=familyDefinitionList RPAREN	
-							{retval = new CreateTableStatement($t.text, $f.retval);}
-	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
-	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableStatement($t.text);}
-	| keyDROP keyTABLE t=simpleName 		{retval = new DropTableStatement($t.text);}
-	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableStatement($t.text);}
-	;
-
 familyDefinitionList returns [List<FamilyDefinition> retval]
 @init {retval = Lists.newArrayList();}
 	: (a1=familyDefinition {retval.add($a1.retval);} (COMMA a2=familyDefinition {retval.add($a2.retval);})*)?;
 
 familyDefinition returns [FamilyDefinition retval]
-	: f=simpleName LPAREN p=familyPropertyList RPAREN	
-							{retval = new FamilyProperty($f.text, $p.retval);};
+	: f=simpleName (LPAREN p=familyPropertyList RPAREN)?	
+							{retval = new FamilyDefinition($f.text, $p.retval);};
 
 familyPropertyList returns [List<FamilyProperty> retval]							
 @init {retval = Lists.newArrayList();}
 	: (a1=familyProperty {retval.add($a1.retval);} (COMMA a2=familyProperty {retval.add($a2.retval);})*)?;
 	
 familyProperty returns [FamilyProperty retval]
-	: keyMAX keyVERSIONS v=valPrimary		{retval = new VersionProperty($v.retval);}
+	: keyMAX keyVERSIONS v=valPrimary		{retval = new MaxVersionsProperty($v.retval);}
 	| keyBLOOM keyFILTER b=topExpr			{retval = new BloomFilterProperty($b.retval);}
 	| keyBLOCK keySIZE v=valPrimary			{retval = new BlockSizeProperty($b.retval);}
 	| keyBLOCK keyCACHE v=valPrimary		{retval = new BlockCacheProperty($b.retval);}

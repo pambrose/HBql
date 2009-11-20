@@ -37,19 +37,23 @@ public class DescribeTableStatement extends TableStatement {
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         try {
-            final HTableDescriptor tableDesc = connection.newHBaseAdmin()
-                    .getTableDescriptor(this.getTableName().getBytes());
+            final byte[] bytes = this.getTableName().getBytes();
+            final HTableDescriptor tableDesc = connection.newHBaseAdmin().getTableDescriptor(bytes);
 
             final ExecutionResults retval = new ExecutionResults();
             retval.out.println("Table name: " + tableDesc.getNameAsString());
             retval.out.println("Families:");
             for (final HColumnDescriptor columnDesc : tableDesc.getFamilies()) {
                 retval.out.println("\t" + columnDesc.getNameAsString()
-                                   + " Max Verions: " + columnDesc.getMaxVersions()
+                                   + " Max versions: " + columnDesc.getMaxVersions()
                                    + " TTL: " + columnDesc.getTimeToLive()
-                                   + " Block Size: " + columnDesc.getBlocksize()
+                                   + " Block size: " + columnDesc.getBlocksize()
                                    + " Compression: " + columnDesc.getCompression().getName()
-                                   + " Compression Type: " + columnDesc.getCompressionType().getName());
+                                   + " Compression type: " + columnDesc.getCompressionType().getName()
+                                   + " Block cache enabled: " + columnDesc.isBlockCacheEnabled()
+                                   + " Bloom filter: " + columnDesc.isBloomfilter()
+                                   + " In memory: " + columnDesc.isInMemory()
+                );
             }
 
             retval.out.flush();

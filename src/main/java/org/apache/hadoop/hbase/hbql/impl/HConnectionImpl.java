@@ -225,6 +225,15 @@ public class HConnectionImpl implements HConnection {
         }
     }
 
+    public HTableDescriptor getTable(final String tableName) throws HBqlException {
+        try {
+            return this.newHBaseAdmin().getTableDescriptor(tableName.getBytes());
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
+    }
+
     public boolean tableEnabled(final String tableName) throws HBqlException {
         try {
             return this.newHBaseAdmin().isTableEnabled(tableName);
