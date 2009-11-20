@@ -32,7 +32,7 @@ public abstract class FamilyProperty extends MultipleExpressionContext {
     public static enum Type {
 
         TTL(new ArgumentListTypeSignature(IntegerValue.class), "TTL"),
-        INDEXINTERVAL(new ArgumentListTypeSignature(StringValue.class), "INDEX INTERVAL"),
+        MAPFILEINDEXINTERVAL(new ArgumentListTypeSignature(StringValue.class), "INDEX INTERVAL"),
         INMEMORY(new ArgumentListTypeSignature(BooleanValue.class), "IN MEMORY"),
         COMPRESSIONTYPE(new ArgumentListTypeSignature(StringValue.class), "COMPRESSION TYPE"),
         BLOCKCACHE(new ArgumentListTypeSignature(BooleanValue.class), "BLOCK CACHE"),
@@ -70,5 +70,9 @@ public abstract class FamilyProperty extends MultipleExpressionContext {
 
     public boolean useResultData() {
         return false;
+    }
+
+    public String asString() {
+        return this.getPropertyType().getDescription() + " " + this.getGenericValue(0).asString();
     }
 }

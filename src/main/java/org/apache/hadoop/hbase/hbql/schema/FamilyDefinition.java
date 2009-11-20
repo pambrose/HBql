@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.schema.property.BloomFilterProperty;
 import org.apache.hadoop.hbase.hbql.schema.property.CompressionTypeProperty;
 import org.apache.hadoop.hbase.hbql.schema.property.FamilyProperty;
 import org.apache.hadoop.hbase.hbql.schema.property.InMemoryProperty;
-import org.apache.hadoop.hbase.hbql.schema.property.IndexIntervalProperty;
+import org.apache.hadoop.hbase.hbql.schema.property.MapFileIndexIntervalProperty;
 import org.apache.hadoop.hbase.hbql.schema.property.MaxVersionsProperty;
 import org.apache.hadoop.hbase.hbql.schema.property.TtlProperty;
 
@@ -43,11 +43,10 @@ public class FamilyDefinition {
     private BlockSizeProperty blockSize = null;
     private BloomFilterProperty bloomFilter = null;
     private CompressionTypeProperty compressionType = null;
-    private IndexIntervalProperty indexInterval = null;
+    private MapFileIndexIntervalProperty mapFileIndexInterval = null;
     private InMemoryProperty inMemory = null;
     private MaxVersionsProperty maxVersions = null;
     private TtlProperty ttl = null;
-
 
     public FamilyDefinition(final String familyName, final List<FamilyProperty> familyPropertyList) {
         this.familyName = familyName;
@@ -62,19 +61,34 @@ public class FamilyDefinition {
 
         this.validateFamily();
 
-        return new HColumnDescriptor(this.getFamilyName().getBytes(),
-                                     this.maxVersions.getValue(),
-                                     this.compressionType.getValue().name(),
-                                     this.inMemory.getValue(),
-                                     this.blockCache.getValue(),
-                                     this.ttl.getValue(),
-                                     this.bloomFilter.getValue());
+        final HColumnDescriptor columnDesc = new HColumnDescriptor(this.getFamilyName());
+
+        if (this.maxVersions != null)
+            columnDesc.setMaxVersions(this.maxVersions.getValue());
+        if (this.compressionType != null)
+            columnDesc.setCompressionType(this.compressionType.getValue());
+        if (this.inMemory != null)
+            columnDesc.setInMemory(this.inMemory.getValue());
+        if (this.blockCache != null)
+            columnDesc.setBlockCacheEnabled(this.blockCache.getValue());
+        if (this.blockSize != null)
+            columnDesc.setBlocksize(this.blockSize.getValue());
+        if (this.mapFileIndexInterval != null)
+            columnDesc.setMapFileIndexInterval(this.mapFileIndexInterval.getValue());
+        if (this.ttl != null)
+            columnDesc.setTimeToLive(this.ttl.getValue());
+        if (this.bloomFilter != null)
+            columnDesc.setBloomfilter(this.bloomFilter.getValue());
+
+        return columnDesc;
     }
 
-    private void validateProperty(final FamilyProperty assignee, final FamilyProperty value) throws HBqlException {
+    private FamilyProperty validateProperty(final FamilyProperty assignee,
+                                            final FamilyProperty value) throws HBqlException {
         if (assignee != null)
             throw new HBqlException("Multiple " + value.getPropertyType().getDescription()
                                     + " values for " + this.getFamilyName() + " not allowed");
+        return value;
     }
 
     private void validateFamily() throws HBqlException {
@@ -83,53 +97,37 @@ public class FamilyDefinition {
 
             switch (familyProperty.getPropertyType()) {
 
-                case BLOCKCACHE: {
-                    this.validateProperty(this.blockCache, familyProperty);
-                    this.blockCache = (BlockCacheProperty)familyProperty;
+                case BLOCKCACHE:
+                    this.blockCache = (BlockCacheProperty)this.validateProperty(this.blockCache, familyProperty);
                     break;
-                }
 
-                case BLOCKSIZE: {
-                    this.validateProperty(this.blockSize, familyProperty);
-                    this.blockSize = (BlockSizeProperty)familyProperty;
+                case BLOCKSIZE:
+                    this.blockSize = (BlockSizeProperty)this.validateProperty(this.blockSize, familyProperty);
                     break;
-                }
 
-                case BLOOMFILTER: {
-                    this.validateProperty(this.bloomFilter, familyProperty);
-                    this.bloomFilter = (BloomFilterProperty)familyProperty;
+                case BLOOMFILTER:
+                    this.bloomFilter = (BloomFilterProperty)this.validateProperty(this.bloomFilter, familyProperty);
                     break;
-                }
 
-                case COMPRESSIONTYPE: {
-                    this.validateProperty(this.compressionType, familyProperty);
-                    this.compressionType = (CompressionTypeProperty)familyProperty;
+                case COMPRESSIONTYPE:
+                    this.compressionType = (CompressionTypeProperty)this.validateProperty(this.compressionType, familyProperty);
                     break;
-                }
 
-                case INDEXINTERVAL: {
-                    this.validateProperty(this.indexInterval, familyProperty);
-                    this.indexInterval = (IndexIntervalProperty)familyProperty;
+                case MAPFILEINDEXINTERVAL:
+                    this.mapFileIndexInterval = (MapFileIndexIntervalProperty)this.validateProperty(this.mapFileIndexInterval, familyProperty);
                     break;
-                }
 
-                case INMEMORY: {
-                    this.validateProperty(this.inMemory, familyProperty);
-                    this.inMemory = (InMemoryProperty)familyProperty;
+                case INMEMORY:
+                    this.inMemory = (InMemoryProperty)this.validateProperty(this.inMemory, familyProperty);
                     break;
-                }
 
-                case MAXVERSIONS: {
-                    this.validateProperty(this.maxVersions, familyProperty);
-                    this.maxVersions = (MaxVersionsProperty)familyProperty;
+                case MAXVERSIONS:
+                    this.maxVersions = (MaxVersionsProperty)this.validateProperty(this.maxVersions, familyProperty);
                     break;
-                }
 
-                case TTL: {
-                    this.validateProperty(this.ttl, familyProperty);
-                    this.ttl = (TtlProperty)familyProperty;
+                case TTL:
+                    this.ttl = (TtlProperty)this.validateProperty(this.ttl, familyProperty);
                     break;
-                }
             }
         }
     }

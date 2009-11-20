@@ -32,8 +32,4 @@ public class MaxVersionsProperty extends FamilyProperty {
     public int getValue() throws HBqlException {
         return ((Number)this.evaluateConstant(0, false, null)).intValue();
     }
-
-    public String asString() {
-        return "MAX VERSIONS " + this.getGenericValue(0).asString();
-    }
 }

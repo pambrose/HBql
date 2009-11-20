@@ -32,8 +32,4 @@ public class BlockCacheProperty extends FamilyProperty {
     public boolean getValue() throws HBqlException {
         return ((Boolean)this.evaluateConstant(0, false, null));
     }
-
-    public String asString() {
-        return "INDEX INTERVAL " + this.getGenericValue(0).asString();
-    }
 }

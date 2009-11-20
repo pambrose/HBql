@@ -32,8 +32,4 @@ public class TtlProperty extends FamilyProperty {
     public int getValue() throws HBqlException {
         return ((Number)this.evaluateConstant(0, false, null)).intValue();
     }
-
-    public String asString() {
-        return "TTL " + this.getGenericValue(0).asString();
-    }
 }

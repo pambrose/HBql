@@ -23,17 +23,13 @@ package org.apache.hadoop.hbase.hbql.schema.property;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class IndexIntervalProperty extends FamilyProperty {
+public class MapFileIndexIntervalProperty extends FamilyProperty {
 
-    public IndexIntervalProperty(final GenericValue arg0) {
-        super(Type.INDEXINTERVAL, arg0);
+    public MapFileIndexIntervalProperty(final GenericValue arg0) {
+        super(Type.MAPFILEINDEXINTERVAL, arg0);
     }
 
     public int getValue() throws HBqlException {
         return ((Number)this.evaluateConstant(0, false, null)).intValue();
-    }
-
-    public String asString() {
-        return "INDEX INTERVAL " + this.getGenericValue(0).asString();
     }
 }

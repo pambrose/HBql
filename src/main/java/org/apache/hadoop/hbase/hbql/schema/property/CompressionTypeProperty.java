@@ -40,8 +40,4 @@ public class CompressionTypeProperty extends FamilyProperty {
             throw new HBqlException("Invalid compression type: " + val);
         }
     }
-
-    public String asString() {
-        return "INDEX INTERVAL " + this.getGenericValue(0).asString();
-    }
 }

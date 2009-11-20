@@ -166,7 +166,8 @@ familyProperty returns [FamilyProperty retval]
 	| keyBLOCK keyCACHE v=valPrimary		{retval = new BlockCacheProperty($b.retval);}
 	| keyCOMPRESSION keyTYPE v=valPrimary		{retval = new CompressionTypeProperty($b.retval);}
 	| keyIN keyMEMORY v=valPrimary			{retval = new InMemoryProperty($b.retval);}
-	| keyINDEX keyINTERVAL v=valPrimary		{retval = new IndexIntervalProperty($b.retval);}
+	| keyMAP keyFILE keyINDEX keyINTERVAL v=valPrimary		
+							{retval = new MapFileIndexIntervalProperty($b.retval);}
 	| keyTTL v=valPrimary				{retval = new TtlProperty($b.retval);}
 	;
 			 
@@ -547,6 +548,8 @@ keyCACHE	: {isKeyword(input, "CACHE")}? ID;
 keyCOMPRESSION	: {isKeyword(input, "COMPRESSION")}? ID;
 keyTYPE		: {isKeyword(input, "TYPE")}? ID;
 keyMEMORY	: {isKeyword(input, "MEMORY")}? ID;
+keyMAP		: {isKeyword(input, "MAP")}? ID;
+keyFILE		: {isKeyword(input, "FILE")}? ID;
 keyINDEX	: {isKeyword(input, "INDEX")}? ID;
 keyINTERVAL	: {isKeyword(input, "INTERVAL")}? ID;
 keyTTL		: {isKeyword(input, "TTL")}? ID;
