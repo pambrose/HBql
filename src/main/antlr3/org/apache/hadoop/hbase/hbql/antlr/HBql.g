@@ -337,7 +337,23 @@ caseStmt returns [DelegateCase retval]
 	
 whenItem [DelegateCase stmt] 
 	: keyWHEN t1=exprValue keyTHEN t2=exprValue	{stmt.addWhen($t1.retval, $t2.retval);};
-	
+
+familyMappingList returns [List<FamilyMapping> retval]
+@init {retval = Lists.newArrayList();}
+	: a1=familyMapping {retval.add($a1.retval);} (COMMA a2=familyMapping {retval.add($a2.retval);})*;
+
+familyMapping returns [FamilyMapping retval]
+	: f=simpleName LPAREN c=columnDefinitionnList RPAREN
+							{retval = new FamilyMapping($f.text, $c.retval);};
+
+columnDefinitionnList returns [List<ColumnDefinition> retval]
+@init {retval = Lists.newArrayList();}
+	: a1=columnDefinition {retval.add($a1.retval);} (COMMA a2=columnDefinition {retval.add($a2.retval);})*;
+							
+columnDefinition returns [ColumnDefinition retval]
+	: s=simpleName type=simpleName (b=LBRACE RBRACE)? (keyALIAS a=simpleName)? (keyDEFAULT def=exprValue)?
+							{retval = new ColumnDefinition($s.text, $type.text, $b.text!=null, $a.text, $def.retval);};
+				
 attribList returns [List<ColumnDescription> retval] 
 @init {retval = Lists.newArrayList();}
 	: a1=attribDesc {retval.add($a1.retval);} (COMMA a2=attribDesc {retval.add($a2.retval);})*;
@@ -360,7 +376,7 @@ selectElemList returns [List<SelectElement> retval]
 selectElem returns [SelectElement retval]
 options {backtrack=true; memoize=true;}	
 	: b=exprValue (keyAS i2=simpleName)?		{retval = SingleExpressionContext.newSingleExpression($b.retval, $i2.text);}
-	| f=familyWildCard					{retval = FamilySelectElement.newFamilyElement($f.text);}
+	| f=familyWildCard				{retval = FamilySelectElement.newFamilyElement($f.text);}
 	;
 
 exprList returns [List<GenericValue> retval]

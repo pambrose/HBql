@@ -61,7 +61,6 @@ public class SchemaTest extends TestSupport {
         connection.dropSchema(schemaName);
         assertFalse(connection.schemaExists(schemaName));
 
-        /*
         schemaName = "test3";
         connection.dropSchema(schemaName);
         assertFalse(connection.schemaExists(schemaName));
@@ -72,7 +71,6 @@ public class SchemaTest extends TestSupport {
         assertTrue(schema.isTempSchema());
         connection.dropSchema(schemaName);
         assertFalse(connection.schemaExists(schemaName));
-        */
 
         Set<HSchema> schemas = connection.getSchemas();
     }
