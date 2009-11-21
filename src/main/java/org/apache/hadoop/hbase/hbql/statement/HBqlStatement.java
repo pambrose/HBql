@@ -20,5 +20,9 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+
 public interface HBqlStatement {
+
+    void validate() throws HBqlException;
 }

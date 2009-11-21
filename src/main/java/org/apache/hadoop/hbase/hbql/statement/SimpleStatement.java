@@ -22,17 +22,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public abstract class TableStatement implements ConnectionStatement {
-
-    private final String tableName;
-
-    protected TableStatement(final String tableName) {
-        this.tableName = tableName;
-    }
-
-    protected String getTableName() {
-        return tableName;
-    }
+public abstract class SimpleStatement {
 
     public void validate() throws HBqlException {
 

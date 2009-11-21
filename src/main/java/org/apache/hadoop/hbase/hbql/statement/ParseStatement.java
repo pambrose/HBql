@@ -25,7 +25,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class ParseStatement implements NonConnectionStatement {
+public class ParseStatement extends SimpleStatement implements NonConnectionStatement {
 
     private final HBqlStatement stmt;
     private final GenericValue value;

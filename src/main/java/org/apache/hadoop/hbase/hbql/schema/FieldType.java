@@ -65,7 +65,6 @@ public enum FieldType {
     private final int size;
     private final List<String> synonymList;
 
-
     FieldType(final Class componentType,
               final Class<? extends GenericValue> exprType,
               final int typeRanking,

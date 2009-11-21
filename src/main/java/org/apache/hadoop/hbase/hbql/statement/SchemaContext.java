@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.hbql.schema.Mapping;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 
-public abstract class SchemaContext {
+public abstract class SchemaContext extends SimpleStatement {
 
     private String schemaName = null;
     private Schema schema = null;

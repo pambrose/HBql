@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class ShowSchemasStatement implements ConnectionStatement {
+public class ShowSchemasStatement extends SimpleStatement implements ConnectionStatement {
 
     public ShowSchemasStatement() {
     }

@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -28,6 +29,7 @@ import org.apache.hadoop.hbase.hbql.schema.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 
 import java.util.List;
+import java.util.Set;
 
 public class CreateSchemaStatement extends SchemaContext implements ConnectionStatement {
 
@@ -70,6 +72,20 @@ public class CreateSchemaStatement extends SchemaContext implements ConnectionSt
         return familyMappingList;
     }
 
+    public void validate() throws HBqlException {
+
+        // Make sure family names are unique
+        if (this.getFamilyMappingList() != null) {
+            final Set<String> nameSet = Sets.newHashSet();
+            for (final FamilyMapping familyMapping : this.getFamilyMappingList()) {
+                final String familyName = familyMapping.getFamilyName();
+                if (nameSet.contains(familyName))
+                    throw new HBqlException("Family name already mapped: " + familyName);
+                else
+                    nameSet.add(familyName);
+            }
+        }
+    }
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 

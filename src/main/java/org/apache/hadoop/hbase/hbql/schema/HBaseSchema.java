@@ -64,17 +64,20 @@ public class HBaseSchema extends Schema implements HSchema {
         this.tempSchema = tempSchema;
 
         // Add KEY column
-        processColumn(new ColumnDefinition(keyName));
+        if (keyName != null)
+            processColumn(ColumnDefinition.newKeyColumn(keyName));
 
         if (familyMappingList != null) {
             for (final FamilyMapping familyDefinition : familyMappingList)
                 for (final ColumnDefinition columnDefinition : familyDefinition.getColumnList())
                     processColumn(columnDefinition);
 
-            // Now add family defaults
+            // Add Family Defaults
             for (final FamilyMapping familyDefinition : familyMappingList) {
                 if (familyDefinition.includeFamilyDefault()) {
-
+                    final String familyName = familyDefinition.getFamilyName();
+                    final ColumnDefinition columnDefinition = ColumnDefinition.newFamilyDefaultColumn(familyName);
+                    final HRecordAttrib attrib = new HRecordAttrib(columnDefinition);
                     this.addFamilyDefaultAttrib(attrib);
                 }
             }
@@ -144,7 +147,7 @@ public class HBaseSchema extends Schema implements HSchema {
         return this.getFamilyDefaultMap().get(name);
     }
 
-    protected void addFamilyDefaultAttrib(final ColumnAttrib attrib) throws HBqlException {
+    private void addFamilyDefaultAttrib(final ColumnAttrib attrib) throws HBqlException {
 
         if (!attrib.isFamilyDefaultAttrib())
             return;

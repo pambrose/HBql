@@ -134,7 +134,7 @@ public class ParserSupport extends Parser {
         final List<FamilyMapping> mappingList = Lists.newArrayList(mapping);
 
         try {
-            return new HBaseSchema(null, true, "embedded", "embedded", mappingList, false);
+            return new HBaseSchema(null, true, "embedded", "embedded", null, mappingList);
         }
         catch (HBqlException e) {
             e.printStackTrace();

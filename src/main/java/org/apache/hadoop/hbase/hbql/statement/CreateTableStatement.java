@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.schema.FamilyDefinition;
 
 import java.util.List;
 
-public class CreateTableStatement implements ConnectionStatement {
+public class CreateTableStatement extends SimpleStatement implements ConnectionStatement {
 
     private final String tableName;
     private final List<FamilyDefinition> familyList;

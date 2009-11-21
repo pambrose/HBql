@@ -114,10 +114,13 @@ public class ParserUtil {
         }
     }
 
-    public static List<HBqlStatement> parseConsoleStatements(final String sql) throws ParseException {
+    public static List<HBqlStatement> parseConsoleStatements(final String sql) throws HBqlException {
         try {
             final HBqlParser parser = ParserUtil.newHBqlParser(sql);
-            return parser.consoleStatements();
+            final List<HBqlStatement> stmts = parser.consoleStatements();
+            for (final HBqlStatement stmt : stmts)
+                stmt.validate();
+            return stmts;
         }
         catch (LexerRecognitionException e) {
             throw new ParseException(e.getRecognitionExecption(), sql);
@@ -127,10 +130,12 @@ public class ParserUtil {
         }
     }
 
-    public static HBqlStatement parseJdbcStatement(final String sql) throws ParseException {
+    public static HBqlStatement parseJdbcStatement(final String sql) throws HBqlException {
         try {
             final HBqlParser parser = ParserUtil.newHBqlParser(sql);
-            return parser.jdbcStatement();
+            final HBqlStatement stmt = parser.jdbcStatement();
+            stmt.validate();
+            return stmt;
         }
         catch (LexerRecognitionException e) {
             throw new ParseException(e.getRecognitionExecption(), sql);
