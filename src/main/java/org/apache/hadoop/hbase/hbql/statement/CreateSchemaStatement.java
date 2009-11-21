@@ -24,7 +24,7 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
+import org.apache.hadoop.hbase.hbql.schema.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 
 import java.util.List;
@@ -34,17 +34,17 @@ public class CreateSchemaStatement extends SchemaContext implements ConnectionSt
     private final boolean tempSchema;
     private final String schemaName;
     private final String tableName;
-    private final List<ColumnDescription> columnDescriptionList;
+    private final List<FamilyMapping> familyMappingList;
 
     public CreateSchemaStatement(final boolean tempSchema,
                                  final String schemaName,
                                  final String tableName,
-                                 final List<ColumnDescription> columnDescriptionList) {
+                                 final List<FamilyMapping> familyMappingList) {
         super(schemaName);
         this.tempSchema = tempSchema;
         this.schemaName = schemaName;
         this.tableName = (tableName == null || tableName.length() == 0) ? schemaName : tableName;
-        this.columnDescriptionList = columnDescriptionList;
+        this.familyMappingList = familyMappingList;
     }
 
     private boolean isTempSchema() {
@@ -59,8 +59,8 @@ public class CreateSchemaStatement extends SchemaContext implements ConnectionSt
         return this.schemaName;
     }
 
-    private List<ColumnDescription> getColumnDescriptionList() {
-        return columnDescriptionList;
+    private List<FamilyMapping> getFamilyMappingList() {
+        return familyMappingList;
     }
 
 
@@ -69,7 +69,7 @@ public class CreateSchemaStatement extends SchemaContext implements ConnectionSt
         final HBaseSchema schema = connection.createSchema(this.isTempSchema(),
                                                            this.getSchemaName(),
                                                            this.getTableName(),
-                                                           this.getColumnDescriptionList());
+                                                           this.getFamilyMappingList());
 
         this.setSchema(schema);
 

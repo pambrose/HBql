@@ -57,22 +57,19 @@ public class HBaseSchema extends Schema implements HSchema {
                        final boolean tempSchema,
                        final String schemaName,
                        final String tableName,
-                       final List<ColumnDescription> columnDescriptionList,
+                       final List<FamilyMapping> familyMappingList,
                        final boolean requireFamilyName) throws HBqlException {
         super(schemaName, tableName);
         this.connection = connection;
         this.tempSchema = tempSchema;
-        if (columnDescriptionList != null)
-            for (final ColumnDescription columnDescription : columnDescriptionList)
-                processColumn(columnDescription, requireFamilyName);
+        if (familyMappingList != null)
+            for (final FamilyMapping familyDefinition : familyMappingList)
+                for (final ColumnDefinition columnDefinition : familyDefinition.getColumnList())
+                    processFamily(columnDefinition, requireFamilyName);
     }
 
     private HConnectionImpl getConnection() {
         return connection;
-    }
-
-    public HBaseSchema(final List<ColumnDescription> columnDescriptionList) throws HBqlException {
-        this(null, true, "embedded", "embedded", columnDescriptionList, false);
     }
 
     public HRecord newHRecord() throws HBqlException {
@@ -81,10 +78,10 @@ public class HBaseSchema extends Schema implements HSchema {
         return new HRecordImpl(schemaContext);
     }
 
-    private void processColumn(final ColumnDescription columnDescription,
+    private void processFamily(final ColumnDefinition columnDefinition,
                                final boolean requireFamilyName) throws HBqlException {
 
-        final HRecordAttrib attrib = new HRecordAttrib(columnDescription);
+        final HRecordAttrib attrib = new HRecordAttrib(columnDefinition);
 
         this.addAttribToVariableNameMap(attrib, attrib.getNamesForColumn());
         this.addAttribToFamilyQualifiedNameMap(attrib);

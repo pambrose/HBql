@@ -28,22 +28,21 @@ import java.io.Serializable;
 
 public final class ColumnDefinition implements Serializable {
 
-    private FamilyMapping familyMapping = null;
-
     private final String columnName;
     private final String aliasName;
     private final boolean isArray;
     private final FieldType fieldType;
     private final GenericValue defaultValue;
 
-    private ColumnDefinition(final String columnName,
-                             final String typeName,
-                             final boolean isArray,
-                             final String aliasName,
-                             final GenericValue defaultValue) {
+    private FamilyMapping familyMapping = null;
+
+    public ColumnDefinition(final String columnName,
+                            final String typeName,
+                            final boolean isArray,
+                            final String aliasName,
+                            final GenericValue defaultValue) {
 
         this.columnName = columnName;
-
         this.aliasName = aliasName;
         this.fieldType = getFieldType(typeName);
         this.isArray = isArray;
@@ -69,7 +68,7 @@ public final class ColumnDefinition implements Serializable {
     }
 
     public String getFamilyName() {
-        return this.getFamilyMapping().familyName;
+        return this.getFamilyMapping().getFamilyName();
     }
 
     public String getColumnName() {
@@ -78,10 +77,6 @@ public final class ColumnDefinition implements Serializable {
 
     public String getAliasName() {
         return this.aliasName;
-    }
-
-    public boolean isFamilyDefault() {
-        return this.familyDefault;
     }
 
     public FieldType getFieldType() {

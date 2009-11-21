@@ -32,8 +32,10 @@ import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.calculation.DelegateCalculation;
 import org.apache.expreval.expr.compare.BooleanCompare;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
+import org.apache.hadoop.hbase.hbql.schema.ColumnDefinition;
+import org.apache.hadoop.hbase.hbql.schema.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 
 import java.util.List;
@@ -126,9 +128,13 @@ public class ParserSupport extends Parser {
 
     // This keeps antlr code out of HBaseSchema, which is accessed server-side in HBase
     public static HBaseSchema newHBaseSchema(final TokenStream input,
-                                             final List<ColumnDescription> columList) throws RecognitionException {
+                                             final List<ColumnDefinition> columnList) throws RecognitionException {
+
+        final FamilyMapping mapping = new FamilyMapping("embedded", columnList, false);
+        final List<FamilyMapping> mappingList = Lists.newArrayList(mapping);
+
         try {
-            return new HBaseSchema(columList);
+            return new HBaseSchema(null, true, "embedded", "embedded", mappingList, false);
         }
         catch (HBqlException e) {
             e.printStackTrace();

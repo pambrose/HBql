@@ -36,18 +36,18 @@ public class HRecordAttrib extends ColumnAttrib {
 
     private final DefaultArg defaultArg;
 
-    public HRecordAttrib(final ColumnDescription columnDescription) throws HBqlException {
+    public HRecordAttrib(final ColumnDefinition columnDefinition) throws HBqlException {
 
-        super(columnDescription.getFamilyName(),
-              columnDescription.getColumnName(),
-              columnDescription.getAliasName(),
-              columnDescription.isFamilyDefault(),
-              columnDescription.getFieldType(),
-              columnDescription.isArray(),
+        super(columnDefinition.getFamilyName(),
+              columnDefinition.getColumnName(),
+              columnDefinition.getAliasName(),
+              false,
+              columnDefinition.getFieldType(),
+              columnDefinition.isArray(),
               null,
               null);
 
-        this.defaultArg = this.evaluateDefaultValue(columnDescription.getDefaultValue());
+        this.defaultArg = this.evaluateDefaultValue(columnDefinition.getDefaultValue());
 
         if (this.isAKeyAttrib() && this.getFamilyName().length() > 0)
             throw new HBqlException("Key value " + this.getNameToUseInExceptions() + " cannot have a family name");

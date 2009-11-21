@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HSchema;
-import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
+import org.apache.hadoop.hbase.hbql.schema.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 
 import java.util.List;
@@ -104,12 +104,17 @@ public class SchemaManager {
     public synchronized HBaseSchema createSchema(final boolean tempSchema,
                                                  final String schemaName,
                                                  final String tableName,
-                                                 final List<ColumnDescription> colList) throws HBqlException {
+                                                 final List<FamilyMapping> familyMappingList) throws HBqlException {
 
         if (!schemaName.equals("system_schemas") && this.schemaExists(schemaName))
             throw new HBqlException("Schema already defined: " + schemaName);
 
-        final HBaseSchema schema = new HBaseSchema(this.getConnection(), tempSchema, schemaName, tableName, colList, true);
+        final HBaseSchema schema = new HBaseSchema(this.getConnection(),
+                                                   tempSchema,
+                                                   schemaName,
+                                                   tableName,
+                                                   familyMappingList,
+                                                   true);
 
         if (schema.isTempSchema())
             this.getSchemaMap().put(schemaName, schema);

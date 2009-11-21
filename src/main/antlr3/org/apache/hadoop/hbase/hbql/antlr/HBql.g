@@ -114,12 +114,12 @@ options {backtrack=true;}
 	| keyINSERT keyINTO keySCHEMA? t=simpleName LPAREN e=exprList RPAREN ins=insertValues
 							{retval = new InsertStatement($t.text, $e.retval, $ins.retval);}
 	| sel=selectStatement				{retval = $sel.retval;}			
-	| keyCREATE (tmp=keyTEMP)? keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN l=attribList RPAREN
-							{retval = new CreateSchemaStatement(($tmp.text != null),$t.text, $a.text, $l.retval);}
+	| keyCREATE (tmp=keyTEMP)? keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN fm=familyMappingList RPAREN
+							{retval = new CreateSchemaStatement(($tmp.text != null),$t.text, $a.text, $fm.retval);}
 	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaStatement($t.text);}
 	| keyDESCRIBE keySCHEMA t=simpleName 		{retval = new DescribeSchemaStatement($t.text);}
-	| keyCREATE keyTABLE t=simpleName LPAREN f=familyDefinitionList RPAREN	
-							{retval = new CreateTableStatement($t.text, $f.retval);}
+	| keyCREATE keyTABLE t=simpleName LPAREN fd=familyDefinitionList RPAREN	
+							{retval = new CreateTableStatement($t.text, $fd.retval);}
 	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
 	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableStatement($t.text);}
 	| keyDROP keyTABLE t=simpleName 		{retval = new DropTableStatement($t.text);}
@@ -162,7 +162,23 @@ options {backtrack=true;}
 
 compressionType
 	: keyGZ | keyLZO | keyNONE;
-				 
+
+familyMappingList returns [List<FamilyMapping> retval]
+@init {retval = Lists.newArrayList();}
+	: a1=familyMapping {retval.add($a1.retval);} (COMMA a2=familyMapping {retval.add($a2.retval);})*;
+
+familyMapping returns [FamilyMapping retval]
+	: f=simpleName LPAREN c=columnDefinitionnList RPAREN (keyINCLUDE keyFAMILY d=keyDEFAULT)?
+							{retval = new FamilyMapping($f.text, $c.retval, $d.text!=null);};
+
+columnDefinitionnList returns [List<ColumnDefinition> retval]
+@init {retval = Lists.newArrayList();}
+	: a1=columnDefinition {retval.add($a1.retval);} (COMMA a2=columnDefinition {retval.add($a2.retval);})*;
+							
+columnDefinition returns [ColumnDefinition retval]
+	: s=simpleName type=simpleName (b=LBRACE RBRACE)? (keyALIAS a=simpleName)? (keyDEFAULT def=exprValue)?
+							{retval = new ColumnDefinition($s.text, $type.text, $b.text!=null, $a.text, $def.retval);};
+								 
 withClause returns [WithArgs retval]
 @init {retval = new WithArgs();}
 	: keyWITH withElements[retval]+;
@@ -338,32 +354,6 @@ caseStmt returns [DelegateCase retval]
 whenItem [DelegateCase stmt] 
 	: keyWHEN t1=exprValue keyTHEN t2=exprValue	{stmt.addWhen($t1.retval, $t2.retval);};
 
-familyMappingList returns [List<FamilyMapping> retval]
-@init {retval = Lists.newArrayList();}
-	: a1=familyMapping {retval.add($a1.retval);} (COMMA a2=familyMapping {retval.add($a2.retval);})*;
-
-familyMapping returns [FamilyMapping retval]
-	: f=simpleName LPAREN c=columnDefinitionnList RPAREN
-							{retval = new FamilyMapping($f.text, $c.retval);};
-
-columnDefinitionnList returns [List<ColumnDefinition> retval]
-@init {retval = Lists.newArrayList();}
-	: a1=columnDefinition {retval.add($a1.retval);} (COMMA a2=columnDefinition {retval.add($a2.retval);})*;
-							
-columnDefinition returns [ColumnDefinition retval]
-	: s=simpleName type=simpleName (b=LBRACE RBRACE)? (keyALIAS a=simpleName)? (keyDEFAULT def=exprValue)?
-							{retval = new ColumnDefinition($s.text, $type.text, $b.text!=null, $a.text, $def.retval);};
-				
-attribList returns [List<ColumnDescription> retval] 
-@init {retval = Lists.newArrayList();}
-	: a1=attribDesc {retval.add($a1.retval);} (COMMA a2=attribDesc {retval.add($a2.retval);})*;
-	
-attribDesc returns [ColumnDescription retval]
-	: c=varRef type=simpleName (b=LBRACE RBRACE)? (keyALIAS a=simpleName)? (keyDEFAULT t=exprValue)?	
-							{retval = ColumnDescription.newColumn($c.text, $a.text, false, $type.text, $b.text!=null, $t.retval);}
-	| f=familyWildCard (keyALIAS a=simpleName)?	{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
-	;
-
 selectElems returns [List<SelectElement> retval]
 	: STAR						{retval = FamilySelectElement.newAllFamilies();}
 	| c=selectElemList				{retval = $c.retval;}
@@ -394,7 +384,15 @@ insertExpr returns [GenericValue retval]
 					
 schemaDesc returns [Schema retval]
 	: LCURLY a=attribList RCURLY			{retval = newHBaseSchema(input, $a.retval);};
-	
+
+attribList returns [List<ColumnDefinition> retval] 
+@init {retval = Lists.newArrayList();}
+	: a1=attribDesc {retval.add($a1.retval);} (COMMA a2=attribDesc {retval.add($a2.retval);})*;
+
+attribDesc returns [ColumnDefinition retval]
+	: c=varRef type=simpleName (b=LBRACE RBRACE)? (keyALIAS a=simpleName)? (keyDEFAULT t=exprValue)?	
+							{retval = new ColumnDefinition($c.text, $type.text, $b.text!=null, $a.text, $t.retval);};
+		
 ltgtOp returns [Operator retval]
 	: GT 						{retval = Operator.GT;}
 	| GTEQ 						{retval = Operator.GTEQ;}
@@ -564,3 +562,5 @@ keyENABLED	: {isKeyword(input, "ENABLED")}? ID;
 keyGZ		: {isKeyword(input, "GZ")}? ID;
 keyLZO		: {isKeyword(input, "LZO")}? ID;
 keyNONE		: {isKeyword(input, "NONE")}? ID;
+keyINCLUDE	: {isKeyword(input, "INCLUDE")}? ID;
+keyFAMILY	: {isKeyword(input, "FAMILY")}? ID;

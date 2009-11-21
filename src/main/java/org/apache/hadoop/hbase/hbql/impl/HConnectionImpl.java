@@ -37,7 +37,7 @@ import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
-import org.apache.hadoop.hbase.hbql.schema.ColumnDescription;
+import org.apache.hadoop.hbase.hbql.schema.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -193,8 +193,8 @@ public class HConnectionImpl implements HConnection {
     public synchronized HBaseSchema createSchema(final boolean tempSchema,
                                                  final String schemaName,
                                                  final String tableName,
-                                                 final List<ColumnDescription> colList) throws HBqlException {
-        return this.getSchemaManager().createSchema(tempSchema, schemaName, tableName, colList);
+                                                 final List<FamilyMapping> familyList) throws HBqlException {
+        return this.getSchemaManager().createSchema(tempSchema, schemaName, tableName, familyList);
     }
 
     // Table Routines

@@ -20,16 +20,21 @@
 
 package org.apache.hadoop.hbase.hbql.schema;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class FamilyMapping {
+public class FamilyMapping implements Serializable {
 
     private final String familyName;
     private final List<ColumnDefinition> columnList;
+    private final boolean includeFamilyDefault;
 
-    public FamilyMapping(final String familyName, final List<ColumnDefinition> columnList) {
+    public FamilyMapping(final String familyName,
+                         final List<ColumnDefinition> columnList,
+                         final boolean includeFamilyDefault) {
         this.familyName = familyName;
         this.columnList = columnList;
+        this.includeFamilyDefault = includeFamilyDefault;
 
         for (final ColumnDefinition columnDefinition : this.getColumnList())
             columnDefinition.setFamilyMapping(this);
@@ -41,5 +46,9 @@ public class FamilyMapping {
 
     public List<ColumnDefinition> getColumnList() {
         return columnList;
+    }
+
+    public boolean includeFamilyDefault() {
+        return this.includeFamilyDefault;
     }
 }
