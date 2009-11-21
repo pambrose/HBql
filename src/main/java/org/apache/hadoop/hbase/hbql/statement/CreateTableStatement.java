@@ -42,9 +42,8 @@ public class CreateTableStatement implements ConnectionStatement {
 
         final HTableDescriptor tableDesc = new HTableDescriptor(this.tableName);
 
-        for (final FamilyDefinition familyDefintion : this.familyList) {
+        for (final FamilyDefinition familyDefintion : this.familyList)
             tableDesc.addFamily(familyDefintion.getColumnDescriptor());
-        }
 
         connection.createTable(tableDesc);
 

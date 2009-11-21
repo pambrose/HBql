@@ -32,7 +32,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
 
     private GenericColumn<? extends GenericValue> typedColumn = null;
     private final String variableName;
-    private boolean variableDefinedInSchema = true;
+    private boolean variableDefinedInSchema = false;
 
     public DelegateColumn(final String variableName) {
         super(null);
@@ -63,6 +63,9 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
                                                        final boolean allowCollections) throws HBqlException {
         if (!this.isVariableDefinedInSchema())
             throw new InvalidVariableException(this.getVariableName());
+
+        // if (this.getTypedColumn() == null)
+        //     throw new InvalidVariableException(this.getVariableName());
 
         return this.getTypedColumn().validateTypes(parentExpr, allowCollections);
     }

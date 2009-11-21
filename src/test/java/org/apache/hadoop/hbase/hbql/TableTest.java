@@ -26,12 +26,13 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
+import org.apache.hadoop.hbase.io.hfile.Compression;
 import org.junit.Test;
 
 public class TableTest extends TestSupport {
 
     @Test
-    public void createTable() throws HBqlException {
+    public void simpleTable() throws HBqlException {
 
         HConnection connection = HConnectionManager.newConnection();
 
@@ -47,12 +48,58 @@ public class TableTest extends TestSupport {
         assertTrue(connection.tableExists(tableName));
         HTableDescriptor table = connection.getTable(tableName);
         HColumnDescriptor[] hcd = table.getColumnFamilies();
+        assertTrue((hcd.length == 3));
         assertTrue(table.hasFamily("family1".getBytes()));
         assertTrue(table.hasFamily("family2".getBytes()));
         assertTrue(table.hasFamily("family3".getBytes()));
-        assertTrue((hcd.length == 3));
 
         assertTrue(table.getNameAsString().equals(tableName));
+
+        connection.disableTable(tableName);
+        connection.dropTable(tableName);
+
+        assertFalse(connection.schemaExists(tableName));
+    }
+
+    @Test
+    public void fullTable() throws HBqlException {
+
+        HConnection connection = HConnectionManager.newConnection();
+
+        String tableName = "tabletest1";
+        if (connection.tableExists(tableName)) {
+            connection.disableTable(tableName);
+            connection.dropTable(tableName);
+        }
+        assertFalse(connection.tableExists(tableName));
+        connection.execute("CREATE TABLE " + tableName + " (family1 ("
+                           + "MAX VERSIONS  12, "
+                           + "BLOOM FILTER  TRUE, "
+                           + "BLOCK SIZE 123, "
+                           + "BLOCK CACHE ENABLED TRUE, "
+                           + "COMPRESSION TYPE GZ, "
+                           + "IN MEMORY TRUE, "
+                           + "MAP FILE INDEX INTERVAL  230, "
+                           + "TTL 440"
+                           + "))");
+        assertTrue(connection.tableExists(tableName));
+        HTableDescriptor table = connection.getTable(tableName);
+        HColumnDescriptor[] hcd = table.getColumnFamilies();
+        assertTrue((hcd.length == 1));
+        assertTrue(table.hasFamily("family1".getBytes()));
+        assertTrue(table.getNameAsString().equals(tableName));
+
+        HColumnDescriptor family = table.getFamily("family1".getBytes());
+
+        assertTrue(family.getNameAsString().equals("family1"));
+        assertTrue(family.getMaxVersions() == 12);
+        assertTrue(family.isBloomfilter());
+        assertTrue(family.getBlocksize() == 123);
+        assertTrue(family.isBlockCacheEnabled());
+        assertTrue(family.getCompressionType() == Compression.Algorithm.GZ);
+        assertTrue(family.isInMemory());
+        assertTrue(family.getValue(HColumnDescriptor.MAPFILE_INDEX_INTERVAL).equals("230"));
+        assertTrue(family.getTimeToLive() == 440);
 
         connection.disableTable(tableName);
         connection.dropTable(tableName);

@@ -65,8 +65,8 @@ public class FamilyDefinition {
 
         this.validateFamilyPropertyList();
 
-        final String name = (this.getFamilyName().endsWith(":")) ? this.getFamilyName() : this.getFamilyName() + ":";
-        final HColumnDescriptor columnDesc = new HColumnDescriptor(name);
+        //final String name = (this.getFamilyName().endsWith(":")) ? this.getFamilyName() : this.getFamilyName() + ":";
+        final HColumnDescriptor columnDesc = new HColumnDescriptor(this.getFamilyName());
 
         if (this.maxVersions != null)
             columnDesc.setMaxVersions(this.maxVersions.getValue());

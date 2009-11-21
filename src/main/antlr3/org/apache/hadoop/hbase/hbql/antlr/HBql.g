@@ -100,7 +100,7 @@ options {backtrack=true;}
 	| keySHOW keySCHEMAS 		 		{retval = new ShowSchemasStatement();}
 	| keyIMPORT val=QSTRING				{retval = new ImportStatement($val.text);}
 	| keyPARSE c=consoleStatement			{retval = new ParseStatement($c.retval);}
-	| keyPARSE keyEXPR te=topExpr			{retval = new ParseStatement($te.retval);}
+	| keyPARSE keyEXPR te=exprValue			{retval = new ParseStatement($te.retval);}
 	| keySET t=simpleName EQ? val=QSTRING	 	{retval = new SetStatement($t.text, $val.text);}
 	| keyVERSION					{retval = new VersionStatement();}
 	| keyHELP					{retval = new HelpStatement();}
@@ -137,7 +137,7 @@ selectStatement returns [SelectStatement retval]
 							
 familyDefinitionList returns [List<FamilyDefinition> retval]
 @init {retval = Lists.newArrayList();}
-	: (a1=familyDefinition {retval.add($a1.retval);} (COMMA a2=familyDefinition {retval.add($a2.retval);})*)?;
+	: a1=familyDefinition {retval.add($a1.retval);} (COMMA a2=familyDefinition {retval.add($a2.retval);})*;
 
 familyDefinition returns [FamilyDefinition retval]
 	: f=simpleName (LPAREN p=familyPropertyList RPAREN)?	
@@ -145,18 +145,20 @@ familyDefinition returns [FamilyDefinition retval]
 
 familyPropertyList returns [List<FamilyProperty> retval]							
 @init {retval = Lists.newArrayList();}
-	: (a1=familyProperty {retval.add($a1.retval);} (COMMA a2=familyProperty {retval.add($a2.retval);})*)?;
+	: a1=familyProperty {retval.add($a1.retval);} (COMMA a2=familyProperty {retval.add($a2.retval);})*;
 	
 familyProperty returns [FamilyProperty retval]
-	: keyMAX keyVERSIONS v=valPrimary		{retval = new MaxVersionsProperty($v.retval);}
-	| keyBLOOM keyFILTER b=topExpr			{retval = new BloomFilterProperty($b.retval);}
-	| keyBLOCK keySIZE v=valPrimary			{retval = new BlockSizeProperty($b.retval);}
-	| keyBLOCK keyCACHE v=valPrimary		{retval = new BlockCacheProperty($b.retval);}
-	| keyCOMPRESSION keyTYPE v=valPrimary		{retval = new CompressionTypeProperty($b.retval);}
-	| keyIN keyMEMORY v=valPrimary			{retval = new InMemoryProperty($b.retval);}
-	| keyMAP keyFILE keyINDEX keyINTERVAL v=valPrimary		
-							{retval = new MapFileIndexIntervalProperty($b.retval);}
-	| keyTTL v=valPrimary				{retval = new TtlProperty($b.retval);}
+options {backtrack=true;}	
+	: keyMAX keyVERSIONS v=exprValue		{retval = new MaxVersionsProperty($v.retval);}
+	| keyBLOOM keyFILTER v=exprValue		{retval = new BloomFilterProperty($v.retval);}
+	| keyBLOCK keySIZE v=exprValue			{retval = new BlockSizeProperty($v.retval);}
+	| keyBLOCK keyCACHE keyENABLED v=exprValue	{retval = new BlockCacheProperty($v.retval);}
+	| keyCOMPRESSION keyTYPE (c=keyGZ | c=keyLZO | c=keyNONE)	
+							{retval = new CompressionTypeProperty($c.text);}
+	| keyIN keyMEMORY v=exprValue			{retval = new InMemoryProperty($v.retval);}
+	| keyMAP keyFILE keyINDEX keyINTERVAL v=exprValue		
+							{retval = new MapFileIndexIntervalProperty($v.retval);}
+	| keyTTL v=exprValue				{retval = new TtlProperty($v.retval);}
 	;
 			 
 withClause returns [WithArgs retval]
@@ -183,25 +185,25 @@ rangeList returns [List<KeyRangeArgs.Range> retval]
 	
 keyRange returns [KeyRangeArgs.Range retval]
 options {backtrack=true;}	
-	: q1=valPrimary keyTO keyLAST			{retval = KeyRangeArgs.newLastRange($q1.retval);}
-	| keyFIRST keyTO q1=valPrimary			{retval = KeyRangeArgs.newFirstRange($q1.retval);}
-	| q1=valPrimary keyTO q2=valPrimary		{retval = KeyRangeArgs.newRange($q1.retval, $q2.retval);}
-	| q1=valPrimary 				{retval = KeyRangeArgs.newSingleKey($q1.retval);}
+	: q1=exprValue keyTO keyLAST			{retval = KeyRangeArgs.newLastRange($q1.retval);}
+	| keyFIRST keyTO q1=exprValue			{retval = KeyRangeArgs.newFirstRange($q1.retval);}
+	| q1=exprValue keyTO q2=exprValue		{retval = KeyRangeArgs.newRange($q1.retval, $q2.retval);}
+	| q1=exprValue 					{retval = KeyRangeArgs.newSingleKey($q1.retval);}
 	;
 		
 timestampArgs returns [TimestampArgs retval]
-	: keyTIMESTAMP keyRANGE d1=valPrimary keyTO d2=valPrimary	
+	: keyTIMESTAMP keyRANGE d1=exprValue keyTO d2=exprValue	
 							{retval = new TimestampArgs($d1.retval, $d2.retval);}
-	| keyTIMESTAMP d1=valPrimary			{retval = new TimestampArgs($d1.retval);}
+	| keyTIMESTAMP d1=exprValue			{retval = new TimestampArgs($d1.retval);}
 	;
 		
 versionArgs returns [VersionArgs retval]
-	: keyVERSIONS v=valPrimary			{retval = new VersionArgs($v.retval);}
+	: keyVERSIONS v=exprValue			{retval = new VersionArgs($v.retval);}
 	| keyVERSIONS keyMAX				{retval = new VersionArgs(new IntegerLiteral(Integer.MAX_VALUE));}
 	;
 	
 limitArgs returns [LimitArgs retval]
-	: keyLIMIT v=valPrimary				{retval = new LimitArgs($v.retval);};
+	: keyLIMIT v=exprValue				{retval = new LimitArgs($v.retval);};
 		
 clientFilter returns [ExpressionTree retval]
 	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr	
@@ -212,13 +214,13 @@ serverFilter returns [ExpressionTree retval]
 							{retval = $w.retval;};
 	
 nodescWhereExpr returns [ExpressionTree retval]
-	 : e=topExpr					{retval = ExpressionTree.newExpressionTree(null, $e.retval);};
+	 : e=exprValue					{retval = ExpressionTree.newExpressionTree(null, $e.retval);};
 
 descWhereExpr returns [ExpressionTree retval]
-	: s=schemaDesc? e=topExpr			{retval = ExpressionTree.newExpressionTree($s.retval, $e.retval);};
+	: s=schemaDesc? e=exprValue			{retval = ExpressionTree.newExpressionTree($s.retval, $e.retval);};
 
 // Expressions
-topExpr returns [GenericValue retval]
+exprValue returns [GenericValue retval]
 	: o=orExpr					{retval = $o.retval;};
 				
 orExpr returns [GenericValue retval]
@@ -232,7 +234,7 @@ andExpr returns [GenericValue retval]
 							{retval = getLeftAssociativeBooleanCompare(exprList, opList);};
 
 notExpr returns [GenericValue retval]			 
-	: (n=keyNOT)? p=eqneExpr			{retval = ($n.text != null) ? new BooleanNot(true, $p.retval) :  $p.retval;};
+	: (n=keyNOT)? p=eqneExpr			{retval = ($n.text != null) ? new BooleanNot(true, $p.retval) : $p.retval;};
 
 eqneExpr returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
@@ -242,13 +244,13 @@ options {backtrack=true; memoize=true;}
 
 ltgtExpr returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
-	: v1=valPrimary o=ltgtOp v2=valPrimary		{retval = new DelegateCompare($v1.retval, $o.retval, $v2.retval);}
+	: v1=calcExpr o=ltgtOp v2=calcExpr		{retval = new DelegateCompare($v1.retval, $o.retval, $v2.retval);}
 	| b=booleanFunctions				{retval = $b.retval;}
-	| p=valPrimary					{retval = $p.retval;}
+	| p=calcExpr					{retval = $p.retval;}
 	;
 
 // Value Expressions
-valPrimary returns [GenericValue retval] 
+calcExpr returns [GenericValue retval] 
 @init {List<GenericValue> exprList = Lists.newArrayList(); List<Operator> opList = Lists.newArrayList(); }
 	: e1=multExpr {exprList.add($e1.retval);} (op=plusMinus e2=multExpr {opList.add($op.retval); exprList.add($e2.retval);})*	
 							{retval = getLeftAssociativeCalculation(exprList, opList);};
@@ -266,7 +268,7 @@ parenExpr returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
 	: f=valueFunctions				{retval = $f.retval;}
 	| n=atomExpr					{retval = $n.retval;}
-	| LPAREN s=topExpr RPAREN			{retval = $s.retval;}
+	| LPAREN s=exprValue RPAREN			{retval = $s.retval;}
 	;
 	   						 
 atomExpr returns [GenericValue retval]
@@ -304,19 +306,19 @@ booleanLiteral returns [BooleanLiteral retval]
 // Functions
 booleanFunctions returns [BooleanValue retval]
 options {backtrack=true; memoize=true;}	
-	: s1=valPrimary n=keyNOT? keyCONTAINS s2=valPrimary		
+	: s1=calcExpr n=keyNOT? keyCONTAINS s2=calcExpr		
 							{retval = new ContainsStmt($s1.retval, ($n.text != null), $s2.retval);}
-	| s1=valPrimary n=keyNOT? keyLIKE s2=valPrimary {retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);}
-	| s1=valPrimary n=keyNOT? keyBETWEEN s2=valPrimary keyAND s3=valPrimary		
+	| s1=calcExpr n=keyNOT? keyLIKE s2=calcExpr {retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);}
+	| s1=calcExpr n=keyNOT? keyBETWEEN s2=calcExpr keyAND s3=calcExpr		
 							{retval = new DelegateBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
-	| s1=valPrimary n=keyNOT? keyIN LPAREN l=exprList RPAREN			
+	| s1=calcExpr n=keyNOT? keyIN LPAREN l=exprList RPAREN			
 							{retval = new DelegateInStmt($s1.retval, ($n.text != null), $l.retval);} 
-	| s1=valPrimary keyIS n=keyNOT? keyNULL		{retval = new DelegateNullCompare(($n.text != null), $s1.retval);}	
+	| s1=calcExpr keyIS n=keyNOT? keyNULL		{retval = new DelegateNullCompare(($n.text != null), $s1.retval);}	
 	;
 
 valueFunctions returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
-	: keyIF t1=topExpr keyTHEN t2=topExpr keyELSE t3=topExpr keyEND	
+	: keyIF t1=exprValue keyTHEN t2=exprValue keyELSE t3=exprValue keyEND	
 							{retval = new DelegateIfThen($t1.retval, $t2.retval, $t3.retval);}
 	
 	| c=caseStmt					{retval = $c.retval;} 						
@@ -327,20 +329,19 @@ options {backtrack=true; memoize=true;}
 caseStmt returns [DelegateCase retval]
 	: keyCASE 					{retval = new DelegateCase();}
 	   whenItem[retval]+
-	   (keyELSE t=topExpr)? 			{retval.addElse($t.retval);}
+	   (keyELSE t=exprValue)? 			{retval.addElse($t.retval);}
 	  keyEND
 	;
 	
 whenItem [DelegateCase stmt] 
-	: keyWHEN t1=topExpr keyTHEN t2=topExpr		{stmt.addWhen($t1.retval, $t2.retval);}
-	;
+	: keyWHEN t1=exprValue keyTHEN t2=exprValue	{stmt.addWhen($t1.retval, $t2.retval);};
 	
 attribList returns [List<ColumnDescription> retval] 
 @init {retval = Lists.newArrayList();}
-	: (a1=attribDesc {retval.add($a1.retval);} (COMMA a2=attribDesc {retval.add($a2.retval);})*)?;
+	: a1=attribDesc {retval.add($a1.retval);} (COMMA a2=attribDesc {retval.add($a2.retval);})*;
 	
 attribDesc returns [ColumnDescription retval]
-	: c=varRef type=simpleName (b=LBRACE RBRACE)? (keyALIAS a=simpleName)? (keyDEFAULT t=topExpr)?	
+	: c=varRef type=simpleName (b=LBRACE RBRACE)? (keyALIAS a=simpleName)? (keyDEFAULT t=exprValue)?	
 							{retval = ColumnDescription.newColumn($c.text, $a.text, false, $type.text, $b.text!=null, $t.retval);}
 	| f=familyWildCard (keyALIAS a=simpleName)?	{retval = ColumnDescription.newFamilyDefault($f.text, $a.text);}
 	;
@@ -356,20 +357,20 @@ selectElemList returns [List<SelectElement> retval]
 
 selectElem returns [SelectElement retval]
 options {backtrack=true; memoize=true;}	
-	: b=topExpr (keyAS i2=simpleName)?		{retval = SingleExpressionContext.newSingleExpression($b.retval, $i2.text);}
+	: b=exprValue (keyAS i2=simpleName)?		{retval = SingleExpressionContext.newSingleExpression($b.retval, $i2.text);}
 	| f=familyWildCard					{retval = FamilySelectElement.newFamilyElement($f.text);}
 	;
 
 exprList returns [List<GenericValue> retval]
 @init {retval = Lists.newArrayList();}
-	: i1=topExpr {retval.add($i1.retval);} (COMMA i2=topExpr {retval.add($i2.retval);})*;
+	: i1=exprValue {retval.add($i1.retval);} (COMMA i2=exprValue {retval.add($i2.retval);})*;
 				
 insertExprList returns [List<GenericValue> retval]
 @init {retval = Lists.newArrayList();}
 	: i1=insertExpr {retval.add($i1.retval);} (COMMA i2=insertExpr {retval.add($i2.retval);})*;
 
 insertExpr returns [GenericValue retval]
-	: t=topExpr					{retval = $t.retval;} 
+	: t=exprValue					{retval = $t.retval;} 
 	| keyDEFAULT					{retval = new DefaultKeyword();}
 	;
 					
@@ -541,3 +542,7 @@ keyFILE		: {isKeyword(input, "FILE")}? ID;
 keyINDEX	: {isKeyword(input, "INDEX")}? ID;
 keyINTERVAL	: {isKeyword(input, "INTERVAL")}? ID;
 keyTTL		: {isKeyword(input, "TTL")}? ID;
+keyENABLED	: {isKeyword(input, "ENABLED")}? ID;
+keyGZ		: {isKeyword(input, "GZ")}? ID;
+keyLZO		: {isKeyword(input, "LZO")}? ID;
+keyNONE		: {isKeyword(input, "NONE")}? ID;

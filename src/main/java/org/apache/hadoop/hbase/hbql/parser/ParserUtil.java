@@ -72,7 +72,7 @@ public class ParserUtil {
     public static Object parseExpression(final String sql) throws HBqlException {
         try {
             final HBqlParser parser = ParserUtil.newHBqlParser(sql);
-            final GenericValue valueExpr = parser.topExpr();
+            final GenericValue valueExpr = parser.exprValue();
             valueExpr.validateTypes(null, false);
             return valueExpr.getValue(null);
         }

@@ -20,24 +20,25 @@
 
 package org.apache.hadoop.hbase.hbql.schema.property;
 
-import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.io.hfile.Compression;
 
 public class CompressionTypeProperty extends FamilyProperty {
 
-    public CompressionTypeProperty(final GenericValue arg0) {
-        super(Type.COMPRESSIONTYPE, arg0);
+    final String type;
+
+    public CompressionTypeProperty(final String type) {
+        super(Type.COMPRESSIONTYPE);
+        this.type = type;
     }
 
     public Compression.Algorithm getValue() throws HBqlException {
-        final String val = (String)this.evaluateConstant(0, false, null);
 
         try {
-            return Compression.Algorithm.valueOf(val);
+            return Compression.Algorithm.valueOf(this.type);
         }
         catch (Exception e) {
-            throw new HBqlException("Invalid compression type: " + val);
+            throw new HBqlException("Invalid compression type: " + this.type);
         }
     }
 }
