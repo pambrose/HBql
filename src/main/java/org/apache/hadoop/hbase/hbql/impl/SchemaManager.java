@@ -48,7 +48,7 @@ public class SchemaManager {
         this.getConnection().execute(sql);
 
         if (!this.getConnection().tableExists("system_schemas"))
-            this.getConnection().execute("CREATE TABLE USING system_schemas");
+            this.getConnection().execute("CREATE TABLE system_schemas (f1)");
     }
 
     private HConnectionImpl getConnection() {

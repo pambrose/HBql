@@ -71,7 +71,7 @@ public class AggregateTest extends TestSupport {
                            + ")");
 
         if (!connection.tableExists("aggtable"))
-            System.out.println(connection.execute("create table using aggschema"));
+            System.out.println(connection.execute("create table aggtable (f1, f2, f3)"));
         else
             System.out.println(connection.execute("delete from aggschema"));
 
@@ -142,7 +142,6 @@ public class AggregateTest extends TestSupport {
 
     @Test
     public void selectCount() throws HBqlException {
-
         final String query1 = "SELECT count() as cnt FROM aggschema";
         HStatement stmt = connection.createStatement();
         List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
@@ -183,7 +182,8 @@ public class AggregateTest extends TestSupport {
     @Test
     public void selectAll() throws HBqlException {
 
-        final String query1 = "SELECT count() as cnt, max(val5) as max, min(val5) as min, min(val5+1) as min2 FROM aggschema";
+        final String query1 = "SELECT count() as cnt, max(val5) as max, min(val5) as min, min(val5+1) as min2 " +
+                              "FROM aggschema";
         HStatement stmt = connection.createStatement();
         List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 1);

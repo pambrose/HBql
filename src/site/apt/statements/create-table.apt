@@ -9,12 +9,26 @@ CREATE TABLE
 *Syntax
 
 ---------------------------
-CREATE TABLE USING [ SCHEMA ] schema_name
+CREATE TABLE table_name '(' family_description [, ...] ')'
+
+family_description:
+    family_name [ '(' family_property [, ...] ')' ]
+
+family_property:
+    MAX VERSIONS integer_value
+	| BLOOM FILTER boolean_value
+	| BLOCK SIZE integer_value
+	| BLOCK CACHE ENABLED boolean_value
+	| COMPRESSION TYPE ( GZ | LZO | NONE )	
+	| IN MEMORY boolean_value
+	| MAP FILE INDEX INTERVAL integer_value
+	| TTL integer_value
+
 ---------------------------
 
 *Description
 
-    Creates table with the name and families declared in named schema.
+    Creates table table_name with the declared families.
 
 *Example
 

@@ -153,14 +153,16 @@ options {backtrack=true;}
 	| keyBLOOM keyFILTER v=exprValue		{retval = new BloomFilterProperty($v.retval);}
 	| keyBLOCK keySIZE v=exprValue			{retval = new BlockSizeProperty($v.retval);}
 	| keyBLOCK keyCACHE keyENABLED v=exprValue	{retval = new BlockCacheProperty($v.retval);}
-	| keyCOMPRESSION keyTYPE (c=keyGZ | c=keyLZO | c=keyNONE)	
-							{retval = new CompressionTypeProperty($c.text);}
+	| keyCOMPRESSION keyTYPE c=compressionType	{retval = new CompressionTypeProperty($c.text);}
 	| keyIN keyMEMORY v=exprValue			{retval = new InMemoryProperty($v.retval);}
 	| keyMAP keyFILE keyINDEX keyINTERVAL v=exprValue		
 							{retval = new MapFileIndexIntervalProperty($v.retval);}
 	| keyTTL v=exprValue				{retval = new TtlProperty($v.retval);}
 	;
-			 
+
+compressionType
+	: keyGZ | keyLZO | keyNONE;
+				 
 withClause returns [WithArgs retval]
 @init {retval = new WithArgs();}
 	: keyWITH withElements[retval]+;

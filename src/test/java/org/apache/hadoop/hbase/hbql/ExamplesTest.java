@@ -140,7 +140,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: create-table
 
         HConnection connection = HConnectionManager.newConnection();
-        connection.execute("CREATE TABLE USING foo_schema");
+        connection.execute("CREATE TABLE foo (family1 (MAX VERSIONS 10), family2, family3)");
 
         // END SNIPPET: create-table
 
@@ -327,7 +327,7 @@ public class ExamplesTest extends TestSupport {
 
         // Clean up table
         if (!connection.tableExists("example1"))
-            System.out.println(connection.execute("CREATE TABLE USING demo1"));
+            System.out.println(connection.execute("CREATE TABLE example1 (f1) "));
         else
             System.out.println(connection.execute("DELETE FROM demo1"));
 
@@ -375,18 +375,19 @@ public class ExamplesTest extends TestSupport {
         Class.forName("org.apache.hadoop.hbase.jdbc.Driver");
         Connection connection = DriverManager.getConnection("jdbc:hbql");
 
-        Statement stmt1 = connection.createStatement();
-        stmt1.execute("CREATE TEMP SCHEMA sch9 FOR TABLE table2"
-                      + "("
-                      + "keyval key, "
-                      + "f1:val1 string alias val1, "
-                      + "f1:val2 string alias val2, "
-                      + "f3:val1 int alias val5, "
-                      + "f3:val2 int alias val6 "
-                      + ")");
+        Statement stmt = connection.createStatement();
+        stmt.execute("CREATE TABLE table12 (f1, f3)");
 
-        Statement stmt2 = connection.createStatement();
-        ResultSet rs = stmt2.executeQuery("select * from sch9");
+        stmt.execute("CREATE TEMP SCHEMA sch9 FOR TABLE table12"
+                     + "("
+                     + "keyval key, "
+                     + "f1:val1 string alias val1, "
+                     + "f1:val2 string alias val2, "
+                     + "f3:val1 int alias val5, "
+                     + "f3:val2 int alias val6 "
+                     + ")");
+
+        ResultSet rs = stmt.executeQuery("select * from sch9");
 
         while (rs.next()) {
             int val5 = rs.getInt("val5");
@@ -399,6 +400,9 @@ public class ExamplesTest extends TestSupport {
             System.out.print(", val1: " + val1);
             System.out.println(", val2: " + val2);
         }
+
+        stmt.execute("DISABLE TABLE table12");
+        stmt.execute("DROP TABLE table12");
 
         // END SNIPPET: jdbc1
     }
@@ -421,7 +425,7 @@ public class ExamplesTest extends TestSupport {
 
         // Clean up table
         if (!connection.tableExists("example2"))
-            System.out.println(connection.execute("CREATE TABLE USING demo2"));
+            System.out.println(connection.execute("CREATE TABLE example2 (f1)"));
         else
             System.out.println(connection.execute("DELETE FROM demo2"));
 

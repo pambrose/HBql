@@ -59,7 +59,8 @@ public class BasicTest {
                      + ")");
 
         if (!((ConnectionImpl)connection).getHConnection().tableExists("table2"))
-            System.out.println(((ConnectionImpl)connection).getHConnection().execute("create table using tab4"));
+            System.out
+                    .println(((ConnectionImpl)connection).getHConnection().execute("create table table2 (f1, f2, f3)"));
         else
             System.out.println(((ConnectionImpl)connection).getHConnection().execute("delete from tab4"));
 

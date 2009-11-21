@@ -72,7 +72,7 @@ public class InsertTest extends TestSupport {
                            + ")");
 
         if (!connection.tableExists("table2"))
-            System.out.println(connection.execute("create table using tab2"));
+            System.out.println(connection.execute("create table table2 (f1, f2, f3)"));
         else
             System.out.println(connection.execute("delete from tab2"));
 
