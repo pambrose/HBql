@@ -64,9 +64,6 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
         if (!this.isVariableDefinedInSchema())
             throw new InvalidVariableException(this.getVariableName());
 
-        // if (this.getTypedColumn() == null)
-        //     throw new InvalidVariableException(this.getVariableName());
-
         return this.getTypedColumn().validateTypes(parentExpr, allowCollections);
     }
 
