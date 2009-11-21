@@ -43,7 +43,7 @@ import java.util.List;
 
 public enum FieldType {
 
-    KeyType(String.class, StringValue.class, -1, -1, "KEY"),
+    KeyType(String.class, StringValue.class, -1, -1),  // No type synonyms for KEY
 
     BooleanType(Boolean.TYPE, BooleanValue.class, 0, Bytes.SIZEOF_BOOLEAN, "BOOLEAN", "BOOL"),
     ByteType(Byte.TYPE, ByteValue.class, 1, Bytes.SIZEOF_BYTE, "BYTE"),

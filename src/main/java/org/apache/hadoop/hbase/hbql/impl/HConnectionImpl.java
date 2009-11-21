@@ -193,8 +193,9 @@ public class HConnectionImpl implements HConnection {
     public synchronized HBaseSchema createSchema(final boolean tempSchema,
                                                  final String schemaName,
                                                  final String tableName,
+                                                 final String keyName,
                                                  final List<FamilyMapping> familyList) throws HBqlException {
-        return this.getSchemaManager().createSchema(tempSchema, schemaName, tableName, familyList);
+        return this.getSchemaManager().createSchema(tempSchema, schemaName, tableName, keyName, familyList);
     }
 
     // Table Routines

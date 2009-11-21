@@ -34,16 +34,19 @@ public class CreateSchemaStatement extends SchemaContext implements ConnectionSt
     private final boolean tempSchema;
     private final String schemaName;
     private final String tableName;
+    private final String keyName;
     private final List<FamilyMapping> familyMappingList;
 
     public CreateSchemaStatement(final boolean tempSchema,
                                  final String schemaName,
                                  final String tableName,
+                                 final String keyName,
                                  final List<FamilyMapping> familyMappingList) {
         super(schemaName);
         this.tempSchema = tempSchema;
         this.schemaName = schemaName;
         this.tableName = (tableName == null || tableName.length() == 0) ? schemaName : tableName;
+        this.keyName = keyName;
         this.familyMappingList = familyMappingList;
     }
 
@@ -59,6 +62,10 @@ public class CreateSchemaStatement extends SchemaContext implements ConnectionSt
         return this.schemaName;
     }
 
+    public String getKeyName() {
+        return this.keyName;
+    }
+
     private List<FamilyMapping> getFamilyMappingList() {
         return familyMappingList;
     }
@@ -69,6 +76,7 @@ public class CreateSchemaStatement extends SchemaContext implements ConnectionSt
         final HBaseSchema schema = connection.createSchema(this.isTempSchema(),
                                                            this.getSchemaName(),
                                                            this.getTableName(),
+                                                           this.getKeyName(),
                                                            this.getFamilyMappingList());
 
         this.setSchema(schema);

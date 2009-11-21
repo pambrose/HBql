@@ -57,15 +57,28 @@ public class HBaseSchema extends Schema implements HSchema {
                        final boolean tempSchema,
                        final String schemaName,
                        final String tableName,
-                       final List<FamilyMapping> familyMappingList,
-                       final boolean requireFamilyName) throws HBqlException {
+                       final String keyName,
+                       final List<FamilyMapping> familyMappingList) throws HBqlException {
         super(schemaName, tableName);
         this.connection = connection;
         this.tempSchema = tempSchema;
-        if (familyMappingList != null)
+
+        // Add KEY column
+        processColumn(new ColumnDefinition(keyName));
+
+        if (familyMappingList != null) {
             for (final FamilyMapping familyDefinition : familyMappingList)
                 for (final ColumnDefinition columnDefinition : familyDefinition.getColumnList())
-                    processFamily(columnDefinition, requireFamilyName);
+                    processColumn(columnDefinition);
+
+            // Now add family defaults
+            for (final FamilyMapping familyDefinition : familyMappingList) {
+                if (familyDefinition.includeFamilyDefault()) {
+
+                    this.addFamilyDefaultAttrib(attrib);
+                }
+            }
+        }
     }
 
     private HConnectionImpl getConnection() {
@@ -78,26 +91,19 @@ public class HBaseSchema extends Schema implements HSchema {
         return new HRecordImpl(schemaContext);
     }
 
-    private void processFamily(final ColumnDefinition columnDefinition,
-                               final boolean requireFamilyName) throws HBqlException {
+    private void processColumn(final ColumnDefinition columnDefinition) throws HBqlException {
 
         final HRecordAttrib attrib = new HRecordAttrib(columnDefinition);
 
         this.addAttribToVariableNameMap(attrib, attrib.getNamesForColumn());
         this.addAttribToFamilyQualifiedNameMap(attrib);
         this.addVersionAttrib(attrib);
-        this.addFamilyDefaultAttrib(attrib);
         this.addAttribToFamilyNameColumnListMap(attrib);
 
         if (attrib.isAKeyAttrib()) {
             if (this.getKeyAttrib() != null)
                 throw new HBqlException("Schema " + this + " has multiple instance variables marked as keys");
             this.setKeyAttrib(attrib);
-        }
-        else {
-            final String family = attrib.getFamilyName();
-            if (requireFamilyName && family.length() == 0)
-                throw new HBqlException(attrib.getColumnName() + " is missing family name");
         }
     }
 

@@ -44,7 +44,9 @@ public class SchemaManager {
 
     public void validatePersistentMetadata() throws HBqlException {
 
-        final String sql = "CREATE TEMP SCHEMA system_schemas (schema_name key, f1:schema_obj object alias schema_obj)";
+        final String sql = "CREATE TEMP SCHEMA system_schemas (" +
+                           "schema_name KEY, " +
+                           "f1 (schema_obj object alias schema_obj))";
         this.getConnection().execute(sql);
 
         if (!this.getConnection().tableExists("system_schemas"))
@@ -104,6 +106,7 @@ public class SchemaManager {
     public synchronized HBaseSchema createSchema(final boolean tempSchema,
                                                  final String schemaName,
                                                  final String tableName,
+                                                 final String keyName,
                                                  final List<FamilyMapping> familyMappingList) throws HBqlException {
 
         if (!schemaName.equals("system_schemas") && this.schemaExists(schemaName))
@@ -113,8 +116,8 @@ public class SchemaManager {
                                                    tempSchema,
                                                    schemaName,
                                                    tableName,
-                                                   familyMappingList,
-                                                   true);
+                                                   keyName,
+                                                   familyMappingList);
 
         if (schema.isTempSchema())
             this.getSchemaMap().put(schemaName, schema);

@@ -114,8 +114,9 @@ options {backtrack=true;}
 	| keyINSERT keyINTO keySCHEMA? t=simpleName LPAREN e=exprList RPAREN ins=insertValues
 							{retval = new InsertStatement($t.text, $e.retval, $ins.retval);}
 	| sel=selectStatement				{retval = $sel.retval;}			
-	| keyCREATE (tmp=keyTEMP)? keySCHEMA t=simpleName (keyFOR keyTABLE a=simpleName)? LPAREN fm=familyMappingList RPAREN
-							{retval = new CreateSchemaStatement(($tmp.text != null),$t.text, $a.text, $fm.retval);}
+	| keyCREATE (tmp=keyTEMP)? keySCHEMA t=simpleName 
+	  (keyFOR keyTABLE a=simpleName)? LPAREN (key=simpleName keyKEY COMMA fm=familyMappingList)? RPAREN
+							{retval = new CreateSchemaStatement(($tmp.text != null),$t.text, $a.text, $key.text, $fm.retval);}
 	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaStatement($t.text);}
 	| keyDESCRIBE keySCHEMA t=simpleName 		{retval = new DescribeSchemaStatement($t.text);}
 	| keyCREATE keyTABLE t=simpleName LPAREN fd=familyDefinitionList RPAREN	
@@ -564,3 +565,4 @@ keyLZO		: {isKeyword(input, "LZO")}? ID;
 keyNONE		: {isKeyword(input, "NONE")}? ID;
 keyINCLUDE	: {isKeyword(input, "INCLUDE")}? ID;
 keyFAMILY	: {isKeyword(input, "FAMILY")}? ID;
+keyKEY		: {isKeyword(input, "KEY")}? ID;

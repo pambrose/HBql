@@ -36,8 +36,9 @@ public class FamilyMapping implements Serializable {
         this.columnList = columnList;
         this.includeFamilyDefault = includeFamilyDefault;
 
-        for (final ColumnDefinition columnDefinition : this.getColumnList())
-            columnDefinition.setFamilyMapping(this);
+        if (this.getColumnList() != null)
+            for (final ColumnDefinition columnDefinition : this.getColumnList())
+                columnDefinition.setFamilyMapping(this);
     }
 
     public String getFamilyName() {

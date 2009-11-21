@@ -49,6 +49,15 @@ public final class ColumnDefinition implements Serializable {
         this.defaultValue = defaultValue;
     }
 
+    // For KEY Attribs
+    public ColumnDefinition(final String keyName) {
+        this.columnName = keyName;
+        this.aliasName = keyName;
+        this.fieldType = FieldType.KeyType;
+        this.isArray = false;
+        this.defaultValue = null;
+        this.familyMapping = new FamilyMapping("", null, false);
+    }
 
     private FamilyMapping getFamilyMapping() {
         return this.familyMapping;
