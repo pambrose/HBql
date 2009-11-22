@@ -57,7 +57,7 @@ public class SelectTest extends TestSupport {
 
         connection = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1 ("
@@ -302,9 +302,9 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectFamiliesExpressions() throws HBqlException {
 
-        connection.execute("drop schema tab8");
+        connection.execute("DROP MAPPING tab8");
 
-        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1 INCLUDE FAMILY DEFAULT ("
@@ -353,9 +353,9 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUndefinedExpressions() throws HBqlException {
 
-        connection.execute("drop schema tab8");
+        connection.execute("DROP MAPPING tab8");
 
-        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1 INCLUDE FAMILY DEFAULT "
@@ -379,9 +379,9 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUndefinedVersionExpressions() throws HBqlException {
 
-        connection.execute("drop schema tab8");
+        connection.execute("DROP MAPPING tab8");
 
-        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1 INCLUDE FAMILY DEFAULT "
@@ -409,9 +409,9 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUnknownExpressions() throws HBqlException {
 
-        connection.execute("drop schema tab8");
+        connection.execute("DROP MAPPING tab8");
 
-        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1 INCLUDE FAMILY DEFAULT "
@@ -434,9 +434,9 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUnknownCalcExpressions() throws HBqlException {
 
-        connection.execute("drop schema tab8");
+        connection.execute("DROP MAPPING tab8");
 
-        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1 INCLUDE FAMILY DEFAULT "
@@ -461,9 +461,9 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUnknownMapExpressions() throws HBqlException {
 
-        connection.execute("drop schema table1");
+        connection.execute("DROP MAPPING table1");
 
-        connection.execute("CREATE TEMP SCHEMA table1"
+        connection.execute("CREATE TEMP MAPPING table1"
                            + "("
                            + "keyval key, "
                            + "f3 INCLUDE FAMILY DEFAULT "
@@ -486,9 +486,9 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectUnnamedExpressions() throws HBqlException {
 
-        connection.execute("drop schema tab8");
+        connection.execute("DROP MAPPING tab8");
 
-        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1 INCLUDE FAMILY DEFAULT ("
@@ -517,9 +517,9 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectEvalExpressions() throws HBqlException {
 
-        connection.execute("drop schema tab8");
+        connection.execute("DROP MAPPING tab8");
 
-        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1 INCLUDE FAMILY DEFAULT ("
@@ -555,9 +555,9 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectDefaults() throws HBqlException {
 
-        connection.execute("drop schema tab8");
+        connection.execute("DROP MAPPING tab8");
 
-        connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
+        connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
                            + "f1 INCLUDE FAMILY DEFAULT ("
@@ -588,11 +588,11 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectMismatchedDefaults() throws HBqlException {
 
-        connection.execute("drop schema tab8");
+        connection.execute("DROP MAPPING tab8");
 
         Exception caughtException = null;
         try {
-            connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
+            connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                                + "(keyval key, f1 (val10 string alias val10 default 4))");
         }
         catch (Exception e) {
@@ -606,10 +606,10 @@ public class SelectTest extends TestSupport {
     @Test
     public void selectObjectDefaults() throws HBqlException {
 
-        connection.execute("drop schema tab8");
+        connection.execute("DROP MAPPING tab8");
         Exception caughtException = null;
         try {
-            connection.execute("CREATE TEMP SCHEMA tab8 FOR TABLE table1"
+            connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                                + "(keyval key, f1 (val10 object alias val10 default 'test default'))");
         }
         catch (Exception e) {

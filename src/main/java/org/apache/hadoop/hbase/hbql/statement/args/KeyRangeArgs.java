@@ -239,9 +239,9 @@ public class KeyRangeArgs implements Serializable {
         return this.rangeList;
     }
 
-    public void setSchemaContext(final MappingContext mappingContext) {
+    public void setMappingContext(final MappingContext mappingContext) {
         for (final Range range : this.getRangeList())
-            range.setSchemaContext(mappingContext);
+            range.setMappingContext(mappingContext);
 
         for (final Range range : this.getRangeList())
             this.getParameterList().addAll(range.getParameterList());

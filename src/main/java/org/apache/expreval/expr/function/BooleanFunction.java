@@ -59,7 +59,7 @@ public class BooleanFunction extends Function implements BooleanValue {
 
     public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
         super.setExpressionContext(context);
-        this.mapping = context.getHBaseSchema();
+        this.mapping = context.getHBaseMapping();
     }
 
     public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
@@ -82,7 +82,7 @@ public class BooleanFunction extends Function implements BooleanValue {
 
             case EVAL: {
                 final String exprStr = (String)this.getArg(0).getValue(object);
-                final MappingContext mappingContext = this.getExpressionContext().getSchemaContext();
+                final MappingContext mappingContext = this.getExpressionContext().getMappingContext();
                 final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(exprStr, mappingContext);
                 return expressionTree.evaluate(object);
             }

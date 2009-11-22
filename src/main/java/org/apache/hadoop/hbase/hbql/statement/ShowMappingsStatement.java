@@ -34,7 +34,7 @@ public class ShowMappingsStatement extends SimpleStatement implements Connection
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Mappings: ");
-        for (final HMapping mapping : connection.getSchemas())
+        for (final HMapping mapping : connection.getMappings())
             retval.out.println("\t" + mapping.getMappingName() + " mapped to table " + mapping.getTableName());
 
         retval.out.flush();

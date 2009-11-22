@@ -1,15 +1,15 @@
     -----
-    CREATE SCHEMA
+    CREATE MAPPING
     -----
     -----
 
 
-CREATE SCHEMA
+CREATE MAPPING
 
 *Syntax
 
 ---------------------------
-CREATE [TEMP] SCHEMA schema_name [FOR TABLE table_name] '(' attrib [, ...] ')'
+CREATE [TEMP] SCHEMA mapping_name [FOR TABLE table_name] '(' attrib [, ...] ')'
 
 attrib:
     key_description

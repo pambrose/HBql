@@ -1,4 +1,4 @@
-CREATE SCHEMA tab1 FOR TABLE table1 (
+CREATE MAPPING tab1 FOR TABLE table1 (
     keyval key,
     f1:val1 string alias val1,
     f1:val2 string alias val2,
@@ -13,7 +13,7 @@ CREATE SCHEMA tab1 FOR TABLE table1 (
     f3:mapval2 string alias f3mapval2
 );
 
-CREATE SCHEMA tab1 FOR TABLE table1 (
+CREATE MAPPING tab1 FOR TABLE table1 (
     keyval KEY,
     f1 (
         val1 string alias val1,

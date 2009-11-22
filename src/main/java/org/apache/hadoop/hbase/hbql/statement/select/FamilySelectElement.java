@@ -85,19 +85,19 @@ public class FamilySelectElement implements SelectElement {
         return this.familyNameBytesList;
     }
 
-    private MappingContext getSchemaContext() {
+    private MappingContext getMappingContext() {
         return this.mappingContext;
     }
 
-    protected HBaseMapping getHBaseSchema() throws HBqlException {
-        return this.getSchemaContext().getHBaseMapping();
+    protected HBaseMapping getHBaseMapping() throws HBqlException {
+        return this.getMappingContext().getHBaseMapping();
     }
 
-    private ResultMapping getMapping() throws HBqlException {
-        return this.getSchemaContext().getResultMapping();
+    private ResultMapping getResultMapping() throws HBqlException {
+        return this.getMappingContext().getResultMapping();
     }
 
-    private void setSchemaContext(final MappingContext mappingContext) {
+    private void setMappingContext(final MappingContext mappingContext) {
         this.mappingContext = mappingContext;
     }
 
@@ -140,10 +140,10 @@ public class FamilySelectElement implements SelectElement {
 
     public void validate(final MappingContext mappingContext, final HConnection connection) throws HBqlException {
 
-        this.setSchemaContext(mappingContext);
+        this.setMappingContext(mappingContext);
 
         this.getAttribsUsedInExpr().clear();
-        final Collection<String> familyList = this.getHBaseSchema().getSchemaFamilyNames();
+        final Collection<String> familyList = this.getHBaseMapping().getMappingFamilyNames();
 
         if (this.useAllFamilies) {
             // connction will be null from tests
@@ -186,7 +186,7 @@ public class FamilySelectElement implements SelectElement {
                                   final int maxVersions,
                                   final Result result) throws HBqlException {
 
-        final HBaseMapping mapping = this.getHBaseSchema();
+        final HBaseMapping mapping = this.getHBaseMapping();
 
         // Evaluate each of the families (select * will yield all families)
         for (int i = 0; i < this.getFamilyNameBytesList().size(); i++) {
@@ -206,7 +206,8 @@ public class FamilySelectElement implements SelectElement {
                     record.addNameToPositionList(familyName + ":" + columnName);
                 }
 
-                final ColumnAttrib attrib = this.getMapping().getAttribFromFamilyQualifiedName(familyName, columnName);
+                final ColumnAttrib attrib = this.getResultMapping()
+                        .getAttribFromFamilyQualifiedName(familyName, columnName);
                 if (attrib == null) {
                     final ColumnAttrib familyDefaultAttrib = mapping.getFamilyDefault(familyName);
                     if (familyDefaultAttrib != null)

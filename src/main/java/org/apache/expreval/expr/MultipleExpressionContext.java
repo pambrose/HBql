@@ -93,27 +93,27 @@ public abstract class MultipleExpressionContext implements Serializable {
         return this.typeSignature;
     }
 
-    public MappingContext getSchemaContext() {
+    public MappingContext getMappingContext() {
         return this.mappingContext;
     }
 
-    public Mapping getSchema() throws HBqlException {
-        return this.getSchemaContext().getMapping();
+    public Mapping getMapping() throws HBqlException {
+        return this.getMappingContext().getMapping();
     }
 
-    public HBaseMapping getHBaseSchema() throws HBqlException {
-        return this.getSchemaContext().getHBaseMapping();
+    public HBaseMapping getHBaseMapping() throws HBqlException {
+        return this.getMappingContext().getHBaseMapping();
     }
 
-    public ResultMapping getMapping() throws HBqlException {
-        return this.getSchemaContext().getResultMapping();
+    public ResultMapping getResultMapping() throws HBqlException {
+        return this.getMappingContext().getResultMapping();
     }
 
-    public void setSchemaContext(final MappingContext mappingContext) {
+    public void setMappingContext(final MappingContext mappingContext) {
         this.mappingContext = mappingContext;
 
-        if (this.getSchemaContext() != null && this.getSchemaContext().getResultMapping() == null)
-            this.getSchemaContext().setResultMapping(new HRecordResultMapping(mappingContext));
+        if (this.getMappingContext() != null && this.getMappingContext().getResultMapping() == null)
+            this.getMappingContext().setResultMapping(new HRecordResultMapping(mappingContext));
 
         this.setContext();
     }

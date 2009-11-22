@@ -60,7 +60,7 @@ public class HRecordResultMapping extends ResultMapping {
 
     public ColumnAttrib getAttribFromFamilyQualifiedName(final String familyName,
                                                          final String columnName) throws HBqlException {
-        return this.getHBaseSchema().getAttribFromFamilyQualifiedName(familyName + ":" + columnName);
+        return this.getHBaseMapping().getAttribFromFamilyQualifiedName(familyName + ":" + columnName);
     }
 
     public ColumnAttrib getAttribByVariableName(final String name) throws HBqlException {

@@ -54,7 +54,7 @@ public class AggregateTest extends TestSupport {
 
         connection = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP SCHEMA aggschema FOR TABLE aggtable"
+        connection.execute("CREATE TEMP MAPPING aggmapping FOR TABLE aggtable"
                            + "("
                            + "keyval key, "
                            + "f1:val1 string alias val1, "
@@ -73,7 +73,7 @@ public class AggregateTest extends TestSupport {
         if (!connection.tableExists("aggtable"))
             System.out.println(connection.execute("create table aggtable (f1, f2, f3)"));
         else
-            System.out.println(connection.execute("delete from aggschema"));
+            System.out.println(connection.execute("delete from aggmapping"));
 
         insertRecords(connection, 10, "Batch 1");
         insertRecords(connection, 10, "Batch 2");
@@ -98,7 +98,7 @@ public class AggregateTest extends TestSupport {
                                       final int cnt,
                                       final String msg) throws HBqlException {
 
-        HPreparedStatement stmt = connection.prepareStatement("insert into aggschema " +
+        HPreparedStatement stmt = connection.prepareStatement("insert into aggmapping " +
                                                               "(keyval, val1, val2, val5, val6, f3mapval1, f3mapval2, val8) values " +
                                                               "(:key, :val1, :val2, :val5, :val6, :f3mapval1, :f3mapval2, :val8)");
 
@@ -142,7 +142,7 @@ public class AggregateTest extends TestSupport {
 
     @Test
     public void selectCount() throws HBqlException {
-        final String query1 = "SELECT count() as cnt FROM aggschema";
+        final String query1 = "SELECT count() as cnt FROM aggmapping";
         HStatement stmt = connection.createStatement();
         List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 1);
@@ -154,7 +154,7 @@ public class AggregateTest extends TestSupport {
     @Test
     public void selectMax() throws HBqlException {
 
-        final String query1 = "SELECT max(val5) as max FROM aggschema";
+        final String query1 = "SELECT max(val5) as max FROM aggmapping";
         HStatement stmt = connection.createStatement();
         List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 1);
@@ -167,7 +167,7 @@ public class AggregateTest extends TestSupport {
     @Test
     public void selectMin() throws HBqlException {
 
-        final String query1 = "SELECT min(val5) as min, min(val5+1) as min2 FROM aggschema";
+        final String query1 = "SELECT min(val5) as min, min(val5+1) as min2 FROM aggmapping";
         HStatement stmt = connection.createStatement();
         List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 1);
@@ -183,7 +183,7 @@ public class AggregateTest extends TestSupport {
     public void selectAll() throws HBqlException {
 
         final String query1 = "SELECT count() as cnt, max(val5) as max, min(val5) as min, min(val5+1) as min2 " +
-                              "FROM aggschema";
+                              "FROM aggmapping";
         HStatement stmt = connection.createStatement();
         List<HRecord> recList1 = stmt.executeQueryAndFetch(query1);
         assertTrue(recList1.size() == 1);

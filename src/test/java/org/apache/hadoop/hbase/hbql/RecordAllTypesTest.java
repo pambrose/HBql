@@ -46,7 +46,7 @@ public class RecordAllTypesTest extends TestSupport {
 
         connection = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP SCHEMA alltypes FOR TABLE example2"
+        connection.execute("CREATE TEMP MAPPING alltypes FOR TABLE example2"
                            + "("
                            + "keyval KEY, "
                            + "f1 ("

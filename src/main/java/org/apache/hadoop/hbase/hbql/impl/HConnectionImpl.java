@@ -54,15 +54,15 @@ public class HConnectionImpl implements HConnection {
     private boolean closed = false;
     private HBaseAdmin hbaseAdmin = null;
 
-    private final SchemaManager schemaManager;
+    private final MappingManager mappingManager;
     private final Map<Class, AnnotationResultMapping> annotationMappingMap = Maps.newHashMap();
 
     public HConnectionImpl(final String name, final HBaseConfiguration config) throws HBqlException {
         this.name = name;
         this.config = (config == null) ? new HBaseConfiguration() : config;
-        this.schemaManager = new SchemaManager(this);
+        this.mappingManager = new MappingManager(this);
 
-        this.getSchemaManager().validatePersistentMetadata();
+        this.getMappingManager().validatePersistentMetadata();
     }
 
     public String getName() {
@@ -73,8 +73,8 @@ public class HConnectionImpl implements HConnection {
         return this.config;
     }
 
-    private SchemaManager getSchemaManager() {
-        return this.schemaManager;
+    private MappingManager getMappingManager() {
+        return this.mappingManager;
     }
 
     private Map<Class, AnnotationResultMapping> getAnnotationMappingMap() {
@@ -173,29 +173,29 @@ public class HConnectionImpl implements HConnection {
         return stmt.executeUpdate(sql);
     }
 
-    // Schema Routines
-    public boolean schemaExists(final String schemaName) throws HBqlException {
-        return this.getSchemaManager().schemaExists(schemaName);
+    // Mapping Routines
+    public boolean mappingExists(final String mappingName) throws HBqlException {
+        return this.getMappingManager().mappingExists(mappingName);
     }
 
-    public HBaseMapping getMapping(final String schemaName) throws HBqlException {
-        return this.getSchemaManager().getSchema(schemaName);
+    public HBaseMapping getMapping(final String mappingName) throws HBqlException {
+        return this.getMappingManager().getMapping(mappingName);
     }
 
-    public boolean dropSchema(final String schemaName) throws HBqlException {
-        return this.getSchemaManager().dropSchema(schemaName);
+    public boolean dropMapping(final String mappingName) throws HBqlException {
+        return this.getMappingManager().dropMapping(mappingName);
     }
 
-    public Set<HMapping> getSchemas() throws HBqlException {
-        return this.getSchemaManager().getSchemas();
+    public Set<HMapping> getMappings() throws HBqlException {
+        return this.getMappingManager().getMappings();
     }
 
-    public synchronized HBaseMapping createMapping(final boolean tempSchema,
-                                                   final String schemaName,
+    public synchronized HBaseMapping createMapping(final boolean tempMapping,
+                                                   final String mappingName,
                                                    final String tableName,
                                                    final String keyName,
                                                    final List<FamilyMapping> familyList) throws HBqlException {
-        return this.getSchemaManager().createSchema(tempSchema, schemaName, tableName, keyName, familyList);
+        return this.getMappingManager().createMapping(tempMapping, mappingName, tableName, keyName, familyList);
     }
 
     // Table Routines

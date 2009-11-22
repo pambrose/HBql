@@ -58,7 +58,7 @@ public abstract class Mapping implements Serializable {
         this.tableName = tableName;
     }
 
-    public abstract Collection<String> getSchemaFamilyNames() throws HBqlException;
+    public abstract Collection<String> getMappingFamilyNames() throws HBqlException;
 
     public Set<ColumnAttrib> getColumnAttribSet() {
         return this.columnAttribSet;
@@ -159,7 +159,7 @@ public abstract class Mapping implements Serializable {
         if (expressionTree == null) {
             final HBqlParser parser = ParserUtil.newHBqlParser(str);
             expressionTree = parser.nodescWhereExpr();
-            expressionTree.setSchemaContext(mappingContext);
+            expressionTree.setMappingContext(mappingContext);
             this.addToExpressionTreeCache(str, expressionTree);
         }
         else {

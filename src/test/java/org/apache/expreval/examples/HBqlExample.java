@@ -45,7 +45,7 @@ public class HBqlExample {
 
         HConnection connection = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP SCHEMA testobjects alias testobjects2"
+        connection.execute("CREATE TEMP MAPPING testobjects alias testobjects2"
                            + "("
                            + "keyval key, "
                            + "family1 ("

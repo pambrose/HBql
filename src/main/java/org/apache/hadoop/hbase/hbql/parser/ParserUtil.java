@@ -90,7 +90,7 @@ public class ParserUtil {
         try {
             final HBqlParser parser = ParserUtil.newHBqlParser(sql);
             final SingleExpressionContext elem = (SingleExpressionContext)parser.selectElem();
-            elem.setSchemaContext(null);
+            elem.setMappingContext(null);
             return elem;
         }
         catch (RecognitionException e) {

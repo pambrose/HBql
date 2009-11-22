@@ -79,22 +79,22 @@ public class HBatch {
     public void insert(final HRecord rec) throws HBqlException {
         final HRecordImpl record = (HRecordImpl)rec;
 
-        final HBaseMapping mapping = record.getHBaseSchema();
+        final HBaseMapping mapping = record.getHBaseMapping();
         final ColumnAttrib keyAttrib = mapping.getKeyAttrib();
         if (!record.isCurrentValueSet(keyAttrib))
             throw new HBqlException("Record key value must be assigned");
 
-        final Put put = this.createPut(record.getMapping(), record);
+        final Put put = this.createPut(record.getResultMapping(), record);
         this.getActionList(mapping.getTableName()).add(new InsertAction(put));
     }
 
     public void delete(final Object newrec) throws HBqlException {
         final AnnotationResultMapping mapping = this.getConnectionImpl().getAnnotationMapping(newrec);
-        this.delete(mapping.getHBaseSchema(), newrec);
+        this.delete(mapping.getHBaseMapping(), newrec);
     }
 
     public void delete(final HRecordImpl record) throws HBqlException {
-        final HBaseMapping mapping = record.getHBaseSchema();
+        final HBaseMapping mapping = record.getHBaseMapping();
         final ColumnAttrib keyAttrib = mapping.getKeyAttrib();
         if (!record.isCurrentValueSet(keyAttrib))
             throw new HBqlException("Record key value must be assigned");
@@ -109,7 +109,7 @@ public class HBatch {
 
     private Put createPut(final ResultMapping resultMapping, final Object newrec) throws HBqlException {
 
-        final HBaseMapping mapping = resultMapping.getHBaseSchema();
+        final HBaseMapping mapping = resultMapping.getHBaseMapping();
 
         final ColumnAttrib keyAttrib = mapping.getKeyAttrib();
         final byte[] keyval = keyAttrib.getValueAsBytes(newrec);
@@ -129,7 +129,7 @@ public class HBatch {
 
     private Put createPut(final ResultMapping resultMapping, final HRecordImpl record) throws HBqlException {
 
-        final HBaseMapping mapping = resultMapping.getHBaseSchema();
+        final HBaseMapping mapping = resultMapping.getHBaseMapping();
 
         final ColumnAttrib keyAttrib = mapping.getKeyAttrib();
         final byte[] keyval = keyAttrib.getValueAsBytes(record);

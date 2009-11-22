@@ -44,8 +44,8 @@ public class DeleteStatement extends MappingContext implements ParameterStatemen
     private boolean validated = false;
     private final NamedParameters namedParameters = new NamedParameters();
 
-    public DeleteStatement(final String schemaName, final WithArgs withArgs) {
-        super(schemaName);
+    public DeleteStatement(final String mappingName, final WithArgs withArgs) {
+        super(mappingName);
         if (withArgs == null)
             this.withArgs = new WithArgs();
         else
@@ -79,7 +79,7 @@ public class DeleteStatement extends MappingContext implements ParameterStatemen
 
         this.validateMappingName(connection);
 
-        this.getWithArgs().setSchemaContext(this);
+        this.getWithArgs().setMappingContext(this);
 
         this.collectParameters();
     }

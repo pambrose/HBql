@@ -179,38 +179,38 @@ public class TestSupport {
     public ExpressionTree parseAnnotationExpr(final HConnection connection,
                                               final Object recordObj,
                                               final String expr) throws HBqlException {
-        final MappingContext mappingContext = getAnnotationSchemaContext(connection, recordObj);
+        final MappingContext mappingContext = getAnnotationMappingContext(connection, recordObj);
         return parseDescWhereExpr(expr, mappingContext);
     }
 
     public ExpressionTree parseReflectionExpr(final Object recordObj, final String expr) throws HBqlException {
-        final MappingContext mappingContext = getReflectionSchemaContext(recordObj);
+        final MappingContext mappingContext = getReflectionMappingContext(recordObj);
         return parseDescWhereExpr(expr, mappingContext);
     }
 
     private static boolean evaluateAnnotationExpression(final HConnection connection,
                                                         final Object recordObj,
                                                         final String expr) throws HBqlException {
-        final MappingContext mappingContext = getAnnotationSchemaContext(connection, recordObj);
+        final MappingContext mappingContext = getAnnotationMappingContext(connection, recordObj);
         final ExpressionTree tree = parseDescWhereExpr(expr, mappingContext);
         return evaluateExprression(recordObj, tree);
     }
 
     private static boolean evaluateReflectionExpression(final Object recordObj, final String expr) throws HBqlException {
-        final MappingContext mappingContext = getReflectionSchemaContext(recordObj);
+        final MappingContext mappingContext = getReflectionMappingContext(recordObj);
         final ExpressionTree tree = parseDescWhereExpr(expr, mappingContext);
         return evaluateExprression(recordObj, tree);
     }
 
-    private static MappingContext getAnnotationSchemaContext(final HConnection connection,
-                                                             final Object obj) throws HBqlException {
+    private static MappingContext getAnnotationMappingContext(final HConnection connection,
+                                                              final Object obj) throws HBqlException {
         if (obj == null)
             return new NoStatementMappingContext(null, null);
         else
             return getAnnotatedMapping(connection, obj).getMappingContext();
     }
 
-    private static MappingContext getReflectionSchemaContext(final Object obj) throws HBqlException {
+    private static MappingContext getReflectionMappingContext(final Object obj) throws HBqlException {
         if (obj == null)
             return new NoStatementMappingContext(null, null);
         else
@@ -267,7 +267,7 @@ public class TestSupport {
             final HBqlParser parser = ParserUtil.newHBqlParser(str);
             final ExpressionTree expressionTree = parser.descWhereExpr();
             final MappingContext mappingContext = (sc == null) ? new NoStatementMappingContext(null, null) : sc;
-            expressionTree.setSchemaContext(mappingContext);
+            expressionTree.setMappingContext(mappingContext);
 
             return expressionTree;
         }

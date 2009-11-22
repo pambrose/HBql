@@ -32,7 +32,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
 
     private GenericColumn<? extends GenericValue> typedColumn = null;
     private final String variableName;
-    private boolean variableDefinedInSchema = false;
+    private boolean variableDefinedInMapping = false;
 
     public DelegateColumn(final String variableName) {
         super(null);
@@ -53,7 +53,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
 
     public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
 
-        if (!this.isVariableDefinedInSchema())
+        if (!this.isVariableDefinedInMapping())
             throw new InvalidVariableException(this.getVariableName());
 
         return this.getTypedColumn().getValue(object);
@@ -61,27 +61,27 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
-        if (!this.isVariableDefinedInSchema())
+        if (!this.isVariableDefinedInMapping())
             throw new InvalidVariableException(this.getVariableName());
 
         return this.getTypedColumn().validateTypes(parentExpr, allowCollections);
     }
 
-    private boolean isVariableDefinedInSchema() {
-        return this.variableDefinedInSchema;
+    private boolean isVariableDefinedInMapping() {
+        return this.variableDefinedInMapping;
     }
 
     public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
 
-        if (context.getSchema() == null)
-            throw new InternalErrorException("Null schema for: " + this.asString());
+        if (context.getMapping() == null)
+            throw new InternalErrorException("Null mapping for: " + this.asString());
 
         // See if referenced var is in schema
-        final ColumnAttrib attrib = context.getMapping().getAttribByVariableName(this.getVariableName());
+        final ColumnAttrib attrib = context.getResultMapping().getAttribByVariableName(this.getVariableName());
 
-        this.variableDefinedInSchema = (attrib != null);
+        this.variableDefinedInMapping = (attrib != null);
 
-        if (this.isVariableDefinedInSchema()) {
+        if (this.isVariableDefinedInMapping()) {
 
             switch (attrib.getFieldType()) {
 

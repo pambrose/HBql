@@ -76,7 +76,7 @@ public class ReflectionMapping extends Mapping {
         return reflectionMappingMap;
     }
 
-    public Collection<String> getSchemaFamilyNames() throws HBqlException {
+    public Collection<String> getMappingFamilyNames() throws HBqlException {
         return Lists.newArrayList();
     }
 }

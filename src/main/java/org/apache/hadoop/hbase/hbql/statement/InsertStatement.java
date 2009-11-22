@@ -46,10 +46,10 @@ public class InsertStatement extends MappingContext implements ParameterStatemen
     private HRecord record = null;
     private boolean validated = false;
 
-    public InsertStatement(final String schemaName,
+    public InsertStatement(final String mappingName,
                            final List<GenericValue> columnList,
                            final InsertValueSource insertValuesSource) {
-        super(schemaName);
+        super(mappingName);
 
         for (final GenericValue val : columnList)
             this.getInsertColumnList().add(SingleExpressionContext.newSingleExpression(val, null));

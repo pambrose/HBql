@@ -40,7 +40,7 @@ public class ExpressionTree extends MultipleExpressionContext {
     public static ExpressionTree newExpressionTree(final Mapping mapping, final GenericValue booleanValue) {
         final ExpressionTree tree = new ExpressionTree(booleanValue == null ? new BooleanLiteral(true) : booleanValue);
         if (mapping != null)
-            tree.setSchemaContext(new NoStatementMappingContext(mapping, null));
+            tree.setMappingContext(new NoStatementMappingContext(mapping, null));
         return tree;
     }
 

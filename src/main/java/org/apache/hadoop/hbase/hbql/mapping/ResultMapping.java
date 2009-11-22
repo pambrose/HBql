@@ -45,7 +45,7 @@ public abstract class ResultMapping implements Serializable {
         return this.getMappingContext().getMapping();
     }
 
-    public HBaseMapping getHBaseSchema() throws HBqlException {
+    public HBaseMapping getHBaseMapping() throws HBqlException {
         return (HBaseMapping)this.getMapping();
     }
 

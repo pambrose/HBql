@@ -51,7 +51,7 @@ public class WithArgs implements Serializable {
     // Keep track of args set multiple times
     private final Set<String> multipleSetValues = Sets.newHashSet();
 
-    public void setSchemaContext(final MappingContext mappingContext) throws HBqlException {
+    public void setMappingContext(final MappingContext mappingContext) throws HBqlException {
 
         this.mappingContext = mappingContext;
 
@@ -60,24 +60,24 @@ public class WithArgs implements Serializable {
         if (this.getKeyRangeArgs() == null)
             this.setKeyRangeArgs(new KeyRangeArgs());    // Default to ALL records
 
-        this.getKeyRangeArgs().setSchemaContext(null);
+        this.getKeyRangeArgs().setMappingContext(null);
 
         if (this.getTimestampArgs() != null)
-            this.getTimestampArgs().setSchemaContext(null);
+            this.getTimestampArgs().setMappingContext(null);
 
         if (this.getVersionArgs() != null)
-            this.getVersionArgs().setSchemaContext(null);
+            this.getVersionArgs().setMappingContext(null);
 
         if (this.getLimitArgs() != null)
-            this.getLimitArgs().setSchemaContext(null);
+            this.getLimitArgs().setMappingContext(null);
 
         if (this.getServerExpressionTree() != null) {
-            this.getServerExpressionTree().setSchemaContext(this.getSchemaContext());
+            this.getServerExpressionTree().setMappingContext(this.getMappingContext());
             this.getServerExpressionTree().setUseResultData(false);
         }
 
         if (this.getClientExpressionTree() != null) {
-            this.getClientExpressionTree().setSchemaContext(this.getSchemaContext());
+            this.getClientExpressionTree().setMappingContext(this.getMappingContext());
             this.getClientExpressionTree().setUseResultData(true);
         }
     }
@@ -96,7 +96,7 @@ public class WithArgs implements Serializable {
         }
     }
 
-    private MappingContext getSchemaContext() {
+    private MappingContext getMappingContext() {
         return this.mappingContext;
     }
 
@@ -305,7 +305,7 @@ public class WithArgs implements Serializable {
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(get);
 
-        final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getSchemaContext(),
+        final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getMappingContext(),
                                                                  this.getServerExpressionTree());
         if (serverFilter != null)
             get.setFilter(serverFilter);
@@ -332,7 +332,7 @@ public class WithArgs implements Serializable {
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(scan);
 
-        final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getSchemaContext(),
+        final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getMappingContext(),
                                                                  this.getServerExpressionTree());
         if (serverFilter != null)
             scan.setFilter(serverFilter);

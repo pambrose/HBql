@@ -1,15 +1,15 @@
     -----
-    DROP SCHEMA
+    DROP MAPPING
     -----
     -----
 
 
-DROP SCHEMA
+DROP MAPPING
 
 *Syntax
 
 ---------------------------
-DROP SCHEMA schema_name    
+DROP MAPPING mapping_name    
 ---------------------------
 
 *Description

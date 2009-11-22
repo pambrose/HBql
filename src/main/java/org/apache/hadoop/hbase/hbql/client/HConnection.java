@@ -76,11 +76,11 @@ public interface HConnection {
     ExecutionResults executeUpdate(String sql) throws SQLException;
 
     // Schema Routines
-    HMapping getMapping(final String schemaName) throws HBqlException;
+    HMapping getMapping(final String mappingName) throws HBqlException;
 
-    boolean schemaExists(String schemaName) throws HBqlException;
+    boolean mappingExists(String mappingName) throws HBqlException;
 
-    boolean dropSchema(final String schemaName) throws HBqlException;
+    boolean dropMapping(final String mappingName) throws HBqlException;
 
-    Set<HMapping> getSchemas() throws HBqlException;
+    Set<HMapping> getMappings() throws HBqlException;
 }

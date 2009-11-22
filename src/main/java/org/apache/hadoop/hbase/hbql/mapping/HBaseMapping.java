@@ -41,7 +41,7 @@ import java.util.Set;
 public class HBaseMapping extends Mapping implements HMapping {
 
     private transient HConnectionImpl connection;
-    private boolean tempSchema;
+    private boolean isTemp;
     private Set<String> familyNameSet = null;
 
     private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
@@ -54,14 +54,14 @@ public class HBaseMapping extends Mapping implements HMapping {
     }
 
     public HBaseMapping(final HConnectionImpl connection,
-                        final boolean tempSchema,
-                        final String schemaName,
+                        final boolean isTemp,
+                        final String mappingName,
                         final String tableName,
                         final String keyName,
                         final List<FamilyMapping> familyMappingList) throws HBqlException {
-        super(schemaName, tableName);
+        super(mappingName, tableName);
         this.connection = connection;
-        this.tempSchema = tempSchema;
+        this.isTemp = isTemp;
 
         // Add KEY column
         if (keyName != null)
@@ -86,7 +86,7 @@ public class HBaseMapping extends Mapping implements HMapping {
     }
 
     private HConnectionImpl getConnection() {
-        return connection;
+        return this.connection;
     }
 
     public HRecord newHRecord() throws HBqlException {
@@ -106,7 +106,7 @@ public class HBaseMapping extends Mapping implements HMapping {
 
         if (attrib.isAKeyAttrib()) {
             if (this.getKeyAttrib() != null)
-                throw new HBqlException("Schema " + this + " has multiple instance variables marked as keys");
+                throw new HBqlException("Mapping " + this + " has multiple instance variables marked as keys");
             this.setKeyAttrib(attrib);
         }
     }
@@ -239,7 +239,7 @@ public class HBaseMapping extends Mapping implements HMapping {
         attribList.add(attrib);
     }
 
-    public synchronized Set<String> getSchemaFamilyNames() throws HBqlException {
+    public synchronized Set<String> getMappingFamilyNames() throws HBqlException {
 
         // TODO May not want to cache this
         if (this.familyNameSet == null) {
@@ -260,10 +260,10 @@ public class HBaseMapping extends Mapping implements HMapping {
     }
 
     public boolean isTempMapping() {
-        return this.tempSchema;
+        return this.isTemp;
     }
 
     public void dropMapping() throws HBqlException {
-        this.getConnection().dropSchema(this.getMappingName());
+        this.getConnection().dropMapping(this.getMappingName());
     }
 }

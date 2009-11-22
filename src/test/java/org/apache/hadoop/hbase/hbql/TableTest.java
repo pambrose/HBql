@@ -58,7 +58,7 @@ public class TableTest extends TestSupport {
         connection.disableTable(tableName);
         connection.dropTable(tableName);
 
-        assertFalse(connection.schemaExists(tableName));
+        assertFalse(connection.mappingExists(tableName));
     }
 
     @Test
@@ -104,6 +104,6 @@ public class TableTest extends TestSupport {
         connection.disableTable(tableName);
         connection.dropTable(tableName);
 
-        assertFalse(connection.schemaExists(tableName));
+        assertFalse(connection.mappingExists(tableName));
     }
 }

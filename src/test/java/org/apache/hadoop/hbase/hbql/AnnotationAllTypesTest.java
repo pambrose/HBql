@@ -48,10 +48,10 @@ public class AnnotationAllTypesTest extends TestSupport {
 
     public static void setupSchema(HConnection connection) throws HBqlException {
 
-        if (connection.schemaExists("alltypes2"))
-            connection.execute("DROP SCHEMA alltypes2");
+        if (connection.mappingExists("alltypes2"))
+            connection.execute("DROP MAPPING alltypes2");
 
-        connection.execute("CREATE SCHEMA alltypes2 FOR TABLE example2"
+        connection.execute("CREATE MAPPING alltypes2 FOR TABLE example2"
                            + "("
                            + "keyval KEY, "
                            + "f1 ("

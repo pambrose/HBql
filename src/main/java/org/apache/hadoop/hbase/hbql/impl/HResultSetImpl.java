@@ -183,7 +183,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                 @SuppressWarnings("unchecked")
                 protected T fetchNextObject() throws HBqlException {
 
-                    final ResultMapping mapping = getQuery().getSelectStatement().getResultMapping();
+                    final ResultMapping resultMapping = getQuery().getSelectStatement().getResultMapping();
 
                     while (this.getCurrentResultIterator() != null || this.getRowRequestIterator().hasNext()) {
 
@@ -208,10 +208,10 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                                 this.getAggregateRecord().applyValues(result);
                             }
                             else {
-                                final T val = (T)mapping.newObject(getSelectStmt(),
-                                                                   getSelectStmt().getSelectElementList(),
-                                                                   this.getMaxVersions(),
-                                                                   result);
+                                final T val = (T)resultMapping.newObject(getSelectStmt(),
+                                                                         getSelectStmt().getSelectElementList(),
+                                                                         this.getMaxVersions(),
+                                                                         result);
 
                                 if (getListeners() != null)
                                     for (final QueryListener<T> listener : getListeners())

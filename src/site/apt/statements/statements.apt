@@ -26,9 +26,9 @@ HBql Statements
 
 * Schema Management
 
-    **{{{./create-schema.html}CREATE SCHEMA}}
+    **{{{./create-schema.html}CREATE MAPPING}}
 
-    **{{{./drop-schema.html}DROP SCHEMA}}
+    **{{{./drop-schema.html}DROP MAPPING}}
 
     **{{{./show-schemas.html}SHOW SCHEMAS}}
 

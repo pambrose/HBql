@@ -53,7 +53,7 @@ public class HBqlFilter implements Filter {
 
     public HBqlFilter(final ExpressionTree expressionTree) {
         this.expressionTree = expressionTree;
-        this.getHRecord().setSchemaContext(this.getExpressionTree().getSchemaContext());
+        this.getHRecord().setMappingContext(this.getExpressionTree().getMappingContext());
     }
 
     public HBqlFilter() {
@@ -65,7 +65,7 @@ public class HBqlFilter implements Filter {
         if (origExpressionTree == null)
             return null;
 
-        origExpressionTree.setSchemaContext(mappingContext);
+        origExpressionTree.setMappingContext(mappingContext);
         return new HBqlFilter(origExpressionTree);
     }
 
@@ -73,8 +73,8 @@ public class HBqlFilter implements Filter {
         return this.record;
     }
 
-    private HBaseMapping getSchema() throws HBqlException {
-        return this.getExpressionTree().getHBaseSchema();
+    private HBaseMapping getMapping() throws HBqlException {
+        return this.getExpressionTree().getHBaseMapping();
     }
 
     private ExpressionTree getExpressionTree() {
@@ -108,7 +108,7 @@ public class HBqlFilter implements Filter {
             try {
                 final String familyName = Bytes.toString(v.getFamily());
                 final String columnName = Bytes.toString(v.getQualifier());
-                final HBaseMapping mapping = this.getSchema();
+                final HBaseMapping mapping = this.getMapping();
                 final ColumnAttrib attrib = mapping.getAttribFromFamilyQualifiedName(familyName, columnName);
 
                 // Do not bother setting value if it is not used in expression
@@ -170,9 +170,9 @@ public class HBqlFilter implements Filter {
         try {
             this.expressionTree = (ExpressionTree)IO.getSerialization().getScalarFromBytes(FieldType.ObjectType,
                                                                                            Bytes.readByteArray(in));
-            this.getHRecord().setSchemaContext(this.getExpressionTree().getSchemaContext());
+            this.getHRecord().setMappingContext(this.getExpressionTree().getMappingContext());
 
-            this.getSchema().resetDefaultValues();
+            this.getMapping().resetDefaultValues();
         }
         catch (HBqlException e) {
             e.printStackTrace();

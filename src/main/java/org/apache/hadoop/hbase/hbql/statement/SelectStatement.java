@@ -45,9 +45,9 @@ public class SelectStatement extends MappingContext implements ParameterStatemen
     private boolean aggregateQuery = false;
 
     public SelectStatement(final List<SelectElement> selectElementList,
-                           final String schemaName,
+                           final String mappingName,
                            final WithArgs withArgs) {
-        super(schemaName);
+        super(mappingName);
         this.selectElementList = selectElementList;
         this.withArgs = withArgs != null ? withArgs : new WithArgs();
     }
@@ -81,7 +81,7 @@ public class SelectStatement extends MappingContext implements ParameterStatemen
             this.getSelectAttribList().addAll(element.getAttribsUsedInExpr());
         }
 
-        this.getWithArgs().setSchemaContext(this);
+        this.getWithArgs().setMappingContext(this);
 
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();

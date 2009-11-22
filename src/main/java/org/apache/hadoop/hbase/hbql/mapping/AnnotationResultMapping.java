@@ -131,8 +131,8 @@ public class AnnotationResultMapping extends ResultMapping {
 
     public ColumnAttrib getAttribFromFamilyQualifiedName(final String familyName,
                                                          final String columnName) throws HBqlException {
-        final ColumnAttrib attrib = this.getHBaseSchema().getAttribFromFamilyQualifiedName(familyName
-                                                                                           + ":" + columnName);
+        final ColumnAttrib attrib = this.getHBaseMapping().getAttribFromFamilyQualifiedName(familyName
+                                                                                            + ":" + columnName);
         return this.getAttribByVariableName(attrib.getFamilyQualifiedName());
     }
 

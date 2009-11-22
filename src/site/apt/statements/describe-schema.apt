@@ -1,21 +1,21 @@
     -----
-    DESCRIBE SCHEMA
+    DESCRIBE MAPPING
     -----
     -----
 
 
-DESCRIBE TABLE
+DESCRIBE MAPPING
 
 *Syntax
 
 ---------------------------
-DESCRIBE SCHEMA schema_name
+DESCRIBE MAPPING mapping_name
 ---------------------------
 
 *Description
 
-    Describes named schema.
+    Describes named mapping.
 
 *Example
 
-%{snippet|id=describe-schema|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=describe-mapping|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

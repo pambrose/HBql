@@ -63,7 +63,7 @@ public class ExamplesTest extends TestSupport {
         System.out.println(connection.execute("SHOW SCHEMAS"));
 
         // Or using the API
-        Set<HMapping> mappings = connection.getSchemas();
+        Set<HMapping> mappings = connection.getMappings();
         for (HMapping mapping : mappings)
             System.out.println(mapping.getMappingName());
 
@@ -83,12 +83,12 @@ public class ExamplesTest extends TestSupport {
 
     public void describeSchema() throws HBqlException {
 
-        // START SNIPPET: describe-schema
+        // START SNIPPET: describe-mapping
 
         HConnection connection = HConnectionManager.newConnection();
-        System.out.println(connection.execute("DESCRIBE SCHEMA foo_schema"));
+        System.out.println(connection.execute("DESCRIBE MAPPING foo_mapping"));
 
-        // END SNIPPET: describe-schema
+        // END SNIPPET: describe-mapping
 
     }
 
@@ -126,10 +126,10 @@ public class ExamplesTest extends TestSupport {
 
         HConnection connection = HConnectionManager.newConnection();
 
-        connection.execute("DROP SCHEMA foo_schema");
+        connection.execute("DROP MAPPING foo_schema");
 
         // Or using the API
-        connection.dropSchema("foo_schema");
+        connection.dropMapping("foo_schema");
 
         // END SNIPPET: drop-schema
 
@@ -166,7 +166,7 @@ public class ExamplesTest extends TestSupport {
 
         HConnection connection = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP SCHEMA foo_schema FOR TABLE foo "
+        connection.execute("CREATE TEMP MAPPING foo_schema FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
                            + "family1 ("
@@ -198,7 +198,7 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = HConnectionManager.newConnection();
 
         // A column with a default value.
-        connection.execute("CREATE TEMP SCHEMA foo_schema FOR TABLE foo "
+        connection.execute("CREATE TEMP MAPPING foo_schema FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
                            + "family1 ("
@@ -222,7 +222,7 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = HConnectionManager.newConnection();
 
         // START SNIPPET: insert3
-        connection.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
+        connection.execute("CREATE MAPPING foo_schema FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
                            + "family1 ("
@@ -245,17 +245,17 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = HConnectionManager.newConnection();
 
         // Schema named foo that corresponds to table foo.
-        connection.execute("CREATE TEMP SCHEMA foo (keyval key, family1 (val1 STRING))");
+        connection.execute("CREATE TEMP MAPPING foo (keyval key, family1 (val1 STRING))");
         // END SNIPPET: create-schema1
 
         // START SNIPPET: create-schema2
         // Schema named schema1 that corresponds to table foo.
-        connection.execute("CREATE SCHEMA schema1 FOR TABLE foo (keyval key, family1 (val1 STRING ALIAS val2))");
+        connection.execute("CREATE MAPPING schema1 FOR TABLE foo (keyval key, family1 (val1 STRING ALIAS val2))");
         // END SNIPPET: create-schema2
 
         // START SNIPPET: create-schema3
         // A column with a default value.
-        connection.execute("CREATE SCHEMA schema1 FOR TABLE foo "
+        connection.execute("CREATE MAPPING schema1 FOR TABLE foo "
                            + "("
                            + "keyval key, "
                            + "family1 (val1 STRING ALIAS val1 DEFAULT 'this is a default value')"
@@ -265,7 +265,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: create-schema4
 
         // A schema with a family default attribute.
-        connection.execute("CREATE TEMP SCHEMA schema1 FOR TABLE foo "
+        connection.execute("CREATE TEMP MAPPING schema1 FOR TABLE foo "
                            + "("
                            + "keyval key, "
                            + "family1 INCLUDE FAMILY DEFAULT ("
@@ -284,7 +284,7 @@ public class ExamplesTest extends TestSupport {
 
         HConnection connection = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP SCHEMA tab1 FOR TABLE table1"
+        connection.execute("CREATE TEMP MAPPING tab1 FOR TABLE table1"
                            + "("
                            + "keyval KEY, "
                            + "f1 INCLUDE FAMILY DEFAULT ("
@@ -321,8 +321,8 @@ public class ExamplesTest extends TestSupport {
         // Get a connection to HBase
         HConnection connection = HConnectionManager.newConnection();
 
-        // CREATE TEMP SCHEMA
-        connection.execute("CREATE TEMP SCHEMA demo1 FOR TABLE example1"
+        // CREATE TEMP MAPPING
+        connection.execute("CREATE TEMP MAPPING demo1 FOR TABLE example1"
                            + "("
                            + "keyval KEY, "
                            + "f1 ("
@@ -384,7 +384,7 @@ public class ExamplesTest extends TestSupport {
         Statement stmt = connection.createStatement();
         stmt.execute("CREATE TABLE table12 (f1, f3)");
 
-        stmt.execute("CREATE TEMP SCHEMA sch9 FOR TABLE table12"
+        stmt.execute("CREATE TEMP MAPPING sch9 FOR TABLE table12"
                      + "("
                      + "keyval key, "
                      + "f1 ("
@@ -424,7 +424,7 @@ public class ExamplesTest extends TestSupport {
         // Get a connection to HBase
         HConnection connection = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP SCHEMA demo2 FOR TABLE example2"
+        connection.execute("CREATE TEMP MAPPING demo2 FOR TABLE example2"
                            + "("
                            + "keyval KEY, "
                            + "f1 ("

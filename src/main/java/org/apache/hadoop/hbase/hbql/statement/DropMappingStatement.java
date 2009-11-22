@@ -34,7 +34,7 @@ public class DropMappingStatement extends MappingContext implements ConnectionSt
 
         // this.validateMappingName(connection);
 
-        connection.dropSchema(this.getMappingName());
+        connection.dropMapping(this.getMappingName());
         return new ExecutionResults("Mapping " + this.getMappingName() + " dropped.");
     }
 }

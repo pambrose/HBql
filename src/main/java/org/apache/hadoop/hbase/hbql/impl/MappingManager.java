@@ -33,124 +33,124 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SchemaManager {
+public class MappingManager {
 
     private final HConnectionImpl connection;
-    private final Map<String, HBaseMapping> schemaMap = Maps.newConcurrentHashMap();
+    private final Map<String, HBaseMapping> mappingMap = Maps.newConcurrentHashMap();
 
-    public SchemaManager(final HConnectionImpl connection) {
+    public MappingManager(final HConnectionImpl connection) {
         this.connection = connection;
     }
 
     public void validatePersistentMetadata() throws HBqlException {
 
-        final String sql = "CREATE TEMP SCHEMA system_schemas (" +
-                           "schema_name KEY, " +
-                           "f1 (schema_obj object alias schema_obj))";
+        final String sql = "CREATE TEMP MAPPING system_mappings (" +
+                           "mapping_name KEY, " +
+                           "f1 (mapping_obj object alias mapping_obj))";
         this.getConnection().execute(sql);
 
-        if (!this.getConnection().tableExists("system_schemas"))
-            this.getConnection().execute("CREATE TABLE system_schemas (f1)");
+        if (!this.getConnection().tableExists("system_mappings"))
+            this.getConnection().execute("CREATE TABLE system_mappings (f1 (MAX VERSIONS 5)");
     }
 
     private HConnectionImpl getConnection() {
         return connection;
     }
 
-    private Map<String, HBaseMapping> getSchemaMap() {
-        return this.schemaMap;
+    private Map<String, HBaseMapping> getMappingMap() {
+        return this.mappingMap;
     }
 
-    public Set<HMapping> getSchemas() throws HBqlException {
+    public Set<HMapping> getMappings() throws HBqlException {
 
         final Set<HMapping> names = Sets.newHashSet();
-        names.addAll(getSchemaMap().values());
+        names.addAll(getMappingMap().values());
 
-        final String sql = "SELECT schema_obj FROM system_schemas)";
+        final String sql = "SELECT mapping_obj FROM system_mappings)";
         final List<HRecord> recs = this.getConnection().executeQueryAndFetch(sql);
 
         for (final HRecord rec : recs)
-            names.add((HBaseMapping)rec.getCurrentValue("schema_obj"));
+            names.add((HBaseMapping)rec.getCurrentValue("mapping_obj"));
 
         return names;
     }
 
-    public boolean schemaExists(final String schemaName) throws HBqlException {
+    public boolean mappingExists(final String mappingName) throws HBqlException {
 
-        if (this.getSchemaMap().get(schemaName) != null)
+        if (this.getMappingMap().get(mappingName) != null)
             return true;
         else {
-            final String sql = "SELECT schema_name FROM system_schemas WITH KEYS ?)";
+            final String sql = "SELECT mapping_name FROM system_mappings WITH KEYS ?)";
             final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
-            stmt.setParameter(1, schemaName);
+            stmt.setParameter(1, mappingName);
             final List<HRecord> recs = stmt.executeQueryAndFetch();
             return recs.size() > 0;
         }
     }
 
-    public boolean dropSchema(final String schemaName) throws HBqlException {
+    public boolean dropMapping(final String mappingName) throws HBqlException {
 
-        if (this.getSchemaMap().containsKey(schemaName)) {
-            this.getSchemaMap().remove(schemaName);
+        if (this.getMappingMap().containsKey(mappingName)) {
+            this.getMappingMap().remove(mappingName);
             return true;
         }
         else {
-            final String sql = "DELETE FROM system_schemas WITH KEYS ?)";
+            final String sql = "DELETE FROM system_mappings WITH KEYS ?)";
             final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
-            stmt.setParameter(1, schemaName);
+            stmt.setParameter(1, mappingName);
             final int cnt = stmt.executeUpdate().getCount();
             return cnt > 0;
         }
     }
 
-    public synchronized HBaseMapping createSchema(final boolean tempSchema,
-                                                  final String schemaName,
-                                                  final String tableName,
-                                                  final String keyName,
-                                                  final List<FamilyMapping> familyMappingList) throws HBqlException {
+    public synchronized HBaseMapping createMapping(final boolean isTemp,
+                                                   final String mappingName,
+                                                   final String tableName,
+                                                   final String keyName,
+                                                   final List<FamilyMapping> familyMappingList) throws HBqlException {
 
-        if (!schemaName.equals("system_schemas") && this.schemaExists(schemaName))
-            throw new HBqlException("Schema already defined: " + schemaName);
+        if (!mappingName.equals("system_mappings") && this.mappingExists(mappingName))
+            throw new HBqlException("Mapping already defined: " + mappingName);
 
         final HBaseMapping mapping = new HBaseMapping(this.getConnection(),
-                                                      tempSchema,
-                                                      schemaName,
+                                                      isTemp,
+                                                      mappingName,
                                                       tableName,
                                                       keyName,
                                                       familyMappingList);
 
         if (mapping.isTempMapping())
-            this.getSchemaMap().put(schemaName, mapping);
+            this.getMappingMap().put(mappingName, mapping);
         else
-            this.insertSchema(mapping);
+            this.insertMapping(mapping);
 
         return mapping;
     }
 
-    private void insertSchema(final HBaseMapping mapping) throws HBqlException {
+    private void insertMapping(final HBaseMapping mapping) throws HBqlException {
 
-        final String sql = "INSERT INTO system_schemas (schema_name, schema_obj) VALUES (?, ?)";
+        final String sql = "INSERT INTO system_mappings (mapping_name, mapping_obj) VALUES (?, ?)";
         final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
         stmt.setParameter(1, mapping.getMappingName());
         stmt.setParameter(2, mapping);
         stmt.execute();
     }
 
-    public HBaseMapping getSchema(final String schemaName) throws HBqlException {
+    public HBaseMapping getMapping(final String mappingName) throws HBqlException {
 
-        if (this.getSchemaMap().containsKey(schemaName)) {
-            return this.getSchemaMap().get(schemaName);
+        if (this.getMappingMap().containsKey(mappingName)) {
+            return this.getMappingMap().get(mappingName);
         }
         else {
-            final String sql = "SELECT schema_obj FROM system_schemas WITH KEYS ?)";
+            final String sql = "SELECT mapping_obj FROM system_mappings WITH KEYS ?)";
             final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
-            stmt.setParameter(1, schemaName);
+            stmt.setParameter(1, mappingName);
             List<HRecord> recs = stmt.executeQueryAndFetch();
 
             if (recs.size() == 0)
-                throw new HBqlException("Schema not found: " + schemaName);
+                throw new HBqlException("Mapping not found: " + mappingName);
 
-            return (HBaseMapping)recs.get(0).getCurrentValue("schema_obj");
+            return (HBaseMapping)recs.get(0).getCurrentValue("mapping_obj");
         }
     }
 }

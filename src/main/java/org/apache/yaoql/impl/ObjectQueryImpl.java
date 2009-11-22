@@ -67,11 +67,11 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
 
         if (objects == null || objects.size() == 0) {
             final ExpressionTree expressionTree = ExpressionTree.newExpressionTree(null, new BooleanLiteral(true));
-            expressionTree.setSchemaContext(null);
+            expressionTree.setMappingContext(null);
             return expressionTree;
         }
 
-        // Grab the first object to derive the schema
+        // Grab the first object to derive the mapping
         final Object obj = objects.iterator().next();
         final ReflectionMapping mapping = ReflectionMapping.getReflectionMapping(obj);
         final MappingContext mappingContext = new NoStatementMappingContext(mapping, null);
