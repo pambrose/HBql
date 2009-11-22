@@ -5,9 +5,9 @@ HBql Examples
 
 HBql Examples
 
-    {{{./defined-schema.html}Inserting records using an HRecord}}
+    {{{./defined-mapping.html}Inserting records using an HRecord}}
 
-    {{{./annotated-schema.html}Inserting records using an annotated object}}
+    {{{./annotated-mapping.html}Inserting records using an annotated object}}
 
     {{{./jdbc.html}Using the JDBC driver}}
 

@@ -24,7 +24,7 @@ package org.apache.hadoop.hbase.hbql.client;
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 
 // START SNIPPET: doc
-public @interface TableMapping {
+public @interface Mapping {
 
     java.lang.String name();
 }

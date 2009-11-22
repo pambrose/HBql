@@ -54,20 +54,20 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: show-tables
     }
 
-    public void showSchemas() throws HBqlException {
+    public void showMappings() throws HBqlException {
 
-        // START SNIPPET: show-schemas
+        // START SNIPPET: show-mappings
 
         HConnection connection = HConnectionManager.newConnection();
 
-        System.out.println(connection.execute("SHOW SCHEMAS"));
+        System.out.println(connection.execute("SHOW MAPPINGS"));
 
         // Or using the API
         Set<HMapping> mappings = connection.getMappings();
         for (HMapping mapping : mappings)
             System.out.println(mapping.getMappingName());
 
-        // END SNIPPET: show-schemas
+        // END SNIPPET: show-mappings
     }
 
     public void describeTable() throws HBqlException {
@@ -81,7 +81,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    public void describeSchema() throws HBqlException {
+    public void describeMapping() throws HBqlException {
 
         // START SNIPPET: describe-mapping
 
@@ -120,18 +120,18 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    public void dropSchema() throws HBqlException {
+    public void dropMapping() throws HBqlException {
 
-        // START SNIPPET: drop-schema
+        // START SNIPPET: drop-mapping
 
         HConnection connection = HConnectionManager.newConnection();
 
-        connection.execute("DROP MAPPING foo_schema");
+        connection.execute("DROP MAPPING foo_mapping");
 
         // Or using the API
-        connection.dropMapping("foo_schema");
+        connection.dropMapping("foo_mapping");
 
-        // END SNIPPET: drop-schema
+        // END SNIPPET: drop-mapping
 
     }
 
@@ -166,7 +166,7 @@ public class ExamplesTest extends TestSupport {
 
         HConnection connection = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP MAPPING foo_schema FOR TABLE foo "
+        connection.execute("CREATE TEMP MAPPING foo_mapping FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
                            + "family1 ("
@@ -174,11 +174,11 @@ public class ExamplesTest extends TestSupport {
                            + "  val2 STRING ALIAS val2"
                            + "))");
 
-        System.out.println(connection.execute("INSERT INTO foo_schema (keyval, val1, val2) "
+        System.out.println(connection.execute("INSERT INTO foo_mapping (keyval, val1, val2) "
                                               + "VALUES (ZEROPAD(2, 10), 123, 'test val')"));
 
         // Or using the Record interface
-        HRecord rec = connection.getMapping("foo_schema").newHRecord();
+        HRecord rec = connection.getMapping("foo_mapping").newHRecord();
         rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(2, 10));
         rec.setCurrentValue("val1", 123);
         rec.setCurrentValue("al2", "testval");
@@ -198,7 +198,7 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = HConnectionManager.newConnection();
 
         // A column with a default value.
-        connection.execute("CREATE TEMP MAPPING foo_schema FOR TABLE foo "
+        connection.execute("CREATE TEMP MAPPING foo_mapping FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
                            + "family1 ("
@@ -206,7 +206,7 @@ public class ExamplesTest extends TestSupport {
                            + "  val2 STRING ALIAS val2 DEFAULT 'this is a default value'"
                            + "))");
 
-        HPreparedStatement ps = connection.prepareStatement("INSERT INTO foo_schema (keyval, val1, val2) "
+        HPreparedStatement ps = connection.prepareStatement("INSERT INTO foo_mapping (keyval, val1, val2) "
                                                             + "VALUES (:key, :val1, DEFAULT)");
 
         ps.setParameter("key", Util.getZeroPaddedNumber(2, 10));
@@ -222,7 +222,7 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = HConnectionManager.newConnection();
 
         // START SNIPPET: insert3
-        connection.execute("CREATE MAPPING foo_schema FOR TABLE foo "
+        connection.execute("CREATE MAPPING foo_mapping FOR TABLE foo_table "
                            + "("
                            + "keyval KEY, "
                            + "family1 ("
@@ -231,41 +231,42 @@ public class ExamplesTest extends TestSupport {
                            + "  val3 STRING ALIAS val3, "
                            + "  val4 STRING ALIAS val4 "
                            + "))");
-        System.out.println(connection.execute("INSERT INTO foo_schema (keyval, val1, val2) "
-                                              + "SELECT keyval, val3, val4 FROM foo2_schema"));
+        System.out.println(connection.execute("INSERT INTO foo_mapping (keyval, val1, val2) "
+                                              + "SELECT keyval, val3, val4 FROM foo2"));
+
         // END SNIPPET: insert3
 
     }
 
 
-    public void createSchema() throws HBqlException {
+    public void createMapping() throws HBqlException {
 
-        // START SNIPPET: create-schema1
+        // START SNIPPET: create-mapping1
 
         HConnection connection = HConnectionManager.newConnection();
 
-        // Schema named foo that corresponds to table foo.
+        // Mapping named foo that corresponds to table foo.
         connection.execute("CREATE TEMP MAPPING foo (keyval key, family1 (val1 STRING))");
-        // END SNIPPET: create-schema1
+        // END SNIPPET: create-mapping1
 
-        // START SNIPPET: create-schema2
-        // Schema named schema1 that corresponds to table foo.
-        connection.execute("CREATE MAPPING schema1 FOR TABLE foo (keyval key, family1 (val1 STRING ALIAS val2))");
-        // END SNIPPET: create-schema2
+        // START SNIPPET: create-mapping2
+        // Mapping named mapping1 that corresponds to table foo.
+        connection.execute("CREATE MAPPING mapping1 FOR TABLE foo (keyval key, family1 (val1 STRING ALIAS val2))");
+        // END SNIPPET: create-mapping2
 
-        // START SNIPPET: create-schema3
+        // START SNIPPET: create-mapping3
         // A column with a default value.
-        connection.execute("CREATE MAPPING schema1 FOR TABLE foo "
+        connection.execute("CREATE MAPPING mapping1 FOR TABLE foo "
                            + "("
                            + "keyval key, "
                            + "family1 (val1 STRING ALIAS val1 DEFAULT 'this is a default value')"
                            + ")");
-        // END SNIPPET: create-schema3
+        // END SNIPPET: create-mapping3
 
-        // START SNIPPET: create-schema4
+        // START SNIPPET: create-mapping4
 
-        // A schema with a family default attribute.
-        connection.execute("CREATE TEMP MAPPING schema1 FOR TABLE foo "
+        // A Mapping with a family default attribute.
+        connection.execute("CREATE TEMP MAPPING mapping1 FOR TABLE foo "
                            + "("
                            + "keyval key, "
                            + "family1 INCLUDE FAMILY DEFAULT ("
@@ -273,7 +274,7 @@ public class ExamplesTest extends TestSupport {
                            + "  val2 STRING ALIAS val3 "
                            + "))");
 
-        // END SNIPPET: create-schema4
+        // END SNIPPET: create-mapping4
 
     }
 

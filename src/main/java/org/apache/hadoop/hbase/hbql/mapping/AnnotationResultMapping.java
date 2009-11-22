@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Column;
 import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TableMapping;
+import org.apache.hadoop.hbase.hbql.client.Mapping;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.NoStatementMappingContext;
@@ -72,19 +72,19 @@ public class AnnotationResultMapping extends ResultMapping {
     }
 
     public static boolean isAnnotatedObject(final Class<?> clazz) {
-        return clazz.getAnnotation(TableMapping.class) != null;
+        return clazz.getAnnotation(org.apache.hadoop.hbase.hbql.client.Mapping.class) != null;
     }
 
     public static AnnotationResultMapping newAnnotationMapping(final HConnectionImpl connection,
                                                                final Class<?> clazz) throws HBqlException {
 
-        TableMapping mappingAnnotation = clazz.getAnnotation(TableMapping.class);
+        Mapping mappingAnnotation = clazz.getAnnotation(Mapping.class);
 
         if (mappingAnnotation == null)
-            throw new HBqlException("Class " + clazz.getName() + " is missing @Schema annotation");
+            throw new HBqlException("Class " + clazz.getName() + " is missing @Mapping annotation");
 
         if (mappingAnnotation.name() == null || mappingAnnotation.name().length() == 0)
-            throw new HBqlException("@Schema annotation for class " + clazz.getName() + " is missing a name");
+            throw new HBqlException("@Mapping annotation for class " + clazz.getName() + " is missing a name");
 
         HBaseMapping mapping = connection.getMapping(mappingAnnotation.name());
         return new AnnotationResultMapping(mapping, clazz);

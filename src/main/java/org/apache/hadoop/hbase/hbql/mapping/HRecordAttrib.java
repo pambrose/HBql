@@ -128,7 +128,7 @@ public class HRecordAttrib extends ColumnAttrib {
     }
 
     public String getEnclosingClassName() {
-        // TODO This will get resolved when getter/setter is added to HBaseSchema
+        // TODO This will get resolved when getter/setter is added to HBaseMapping
         return "";
     }
 

@@ -244,7 +244,7 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
 
         final HBaseMapping mapping = this.getHBaseMapping();
 
-        // Column reference is not known to schema, so just assign byte[] value
+        // Column reference is not known to mapping, so just assign byte[] value
         if (this.getColumnAttrib() == null) {
             final ColumnAttrib familyDefaultAttrib = mapping.getFamilyDefault(this.getFamilyName());
             if (familyDefaultAttrib != null) {

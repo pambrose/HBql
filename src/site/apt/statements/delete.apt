@@ -8,7 +8,7 @@ DELETE
 *Syntax
 
 ---------------------------
-DELETE FROM [ SCHEMA ] mapping_name with_clause
+DELETE FROM [ MAPPING ] mapping_name with_clause
 ---------------------------
 
 *Description

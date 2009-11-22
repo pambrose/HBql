@@ -55,7 +55,7 @@ public class RecordExample {
         System.out.println(connection.execute("LIST TABLES"));
 
         if (!connection.tableExists("testobjects")) {
-            System.out.println(connection.execute("create table with schema testobjects"));
+            System.out.println(connection.execute("create table with mapping testobjects"));
 
             final HBatch batch = new HBatch(connection);
             for (int i = 0; i < 10; i++) {

@@ -75,7 +75,7 @@ public interface HConnection {
 
     ExecutionResults executeUpdate(String sql) throws SQLException;
 
-    // Schema Routines
+    // Mapping Routines
     HMapping getMapping(final String mappingName) throws HBqlException;
 
     boolean mappingExists(String mappingName) throws HBqlException;

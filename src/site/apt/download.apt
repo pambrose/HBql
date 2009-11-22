@@ -34,7 +34,7 @@ Release Notes
 
     0.9.5-alpha -- 11/18/09
 
-        * Associated schemas with connections and added support for temporary and persistent schemas.
+        * Associated mappings with connections and added support for temporary and persistent mappings.
 
     0.9.4-alpha -- 11/16/09
 
@@ -45,9 +45,9 @@ Release Notes
 
     0.9.3-alpha -- 11/12/09
 
-        * Annotations no longer define schemas.  Schemas are created with the
-        {{{statements/create-schema.html}CREATE MAPPING}} statement and the HBql annotations map
-        objects to existing schemas.
+        * Annotations no longer define mappings.  Mappings are created with the
+        {{{statements/create-mapping.html}CREATE MAPPING}} statement and the HBql annotations map
+        objects to existing mappings.
 
     0.9.2-alpha -- 11/10/09
 
@@ -55,4 +55,4 @@ Release Notes
 
         * Renamed pre-existing max() and min() functions to greater() and lesser().
 
-        * Renamed LIST TABLES and LIST SCHEMAS to SHOW TABLES and SHOW SCHEMAS
+        * Renamed LIST TABLES and LIST MAPPINGS to SHOW TABLES and SHOW MAPPINGS

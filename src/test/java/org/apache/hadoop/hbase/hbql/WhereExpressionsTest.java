@@ -377,8 +377,8 @@ public class WhereExpressionsTest extends TestSupport {
         assertReflectionEvalFalse(obj, "NOT ((('asasas' NOT CONTAINS stringValue)))");
         assertReflectionEvalTrue(obj, "NOT(keyval+'zz' NOT CONTAINS stringValue+'bbz')");
 
-        // Defines schema
-        AnnotationAllTypesTest.setupSchema(connection);
+        // Defines Mappings
+        AnnotationAllTypesTest.setupMapping(connection);
 
         final AnnotatedAllTypes annoObj = new AnnotatedAllTypes("aaabbb", 3, "aaab");
 
@@ -518,7 +518,7 @@ public class WhereExpressionsTest extends TestSupport {
     public void regexFunctions() throws HBqlException {
 
         HConnection connection = HConnectionManager.newConnection();
-        AnnotationAllTypesTest.setupSchema(connection);
+        AnnotationAllTypesTest.setupMapping(connection);
         final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "aaab");
 
         assertEvalTrue("'abc' like 'abc'");
@@ -534,7 +534,7 @@ public class WhereExpressionsTest extends TestSupport {
     public void objectFunctions() throws HBqlException {
 
         HConnection connection = HConnectionManager.newConnection();
-        AnnotationAllTypesTest.setupSchema(connection);
+        AnnotationAllTypesTest.setupMapping(connection);
         final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "bbb");
 
         assertAnnotationEvalTrue(connection, obj, "stringValue between 'aaa' AND 'ccc'");

@@ -43,10 +43,10 @@ public class AnnotationAllTypesTest extends TestSupport {
     @BeforeClass
     public static void beforeClass() throws HBqlException {
         connection = HConnectionManager.newConnection();
-        setupSchema(connection);
+        setupMapping(connection);
     }
 
-    public static void setupSchema(HConnection connection) throws HBqlException {
+    public static void setupMapping(HConnection connection) throws HBqlException {
 
         if (connection.mappingExists("alltypes2"))
             connection.execute("DROP MAPPING alltypes2");

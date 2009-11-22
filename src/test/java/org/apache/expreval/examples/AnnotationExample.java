@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.client.TableMapping;
+import org.apache.hadoop.hbase.hbql.client.Mapping;
 import org.apache.hadoop.hbase.hbql.client.Util;
 
 import java.util.Date;
@@ -39,7 +39,7 @@ import java.util.TreeMap;
 
 public class AnnotationExample {
 
-    @TableMapping(name = "testobjects")
+    @Mapping(name = "testobjects")
     public static class TestObject {
 
         private enum TestEnum {
@@ -120,15 +120,11 @@ public class AnnotationExample {
 
         HConnection connection = HConnectionManager.newConnection();
 
-        if (!connection.tableExists("TestObject")) {
-            System.out.println(connection.execute("create table with schema TestObject"));
+        final HBatch batch = new HBatch(connection);
+        for (int i = 0; i < 10; i++)
+            batch.insert(new TestObject(i));
 
-            final HBatch batch = new HBatch(connection);
-            for (int i = 0; i < 10; i++)
-                batch.insert(new TestObject(i));
-
-            batch.apply();
-        }
+        batch.apply();
 
         final String query2 = "SELECT title, titles, author, authorVersions "
                               + "FROM TestObject "

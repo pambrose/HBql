@@ -1,0 +1,20 @@
+    -----
+    SHOW MAPPINGS
+    -----
+    -----
+
+SHOW MAPPINGS
+
+*Syntax
+
+---------------------------
+SHOW MAPPINGS
+---------------------------
+
+*Description
+
+    Displays all mapping names.
+
+*Example
+
+%{snippet|id=show-mappings|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

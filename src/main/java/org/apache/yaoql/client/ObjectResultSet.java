@@ -54,7 +54,7 @@ public class ObjectResultSet<T> implements Iterable<T> {
             return new ResultsIterator<T>(-1L) {
 
                 // In theory, this should be done only once and in ObjectQuery, but
-                // since it requires the objects to get the schema, I do it here
+                // since it requires the objects to get the mapping, I do it here
                 final ExpressionTree expressionTree = getObjectQuery().getExpressionTree(getObjects());
 
                 private Iterator<T> objectIter = null;

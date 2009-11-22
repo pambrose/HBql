@@ -109,7 +109,7 @@ public class Console {
     private static void processCommandLineInput() throws IOException, HBqlException {
 
         final List<SimpleCompletor> completors = Lists.newArrayList();
-        completors.add(new SimpleCompletor(new String[]{"select", "insert", "create", "table", "schema",
+        completors.add(new SimpleCompletor(new String[]{"select", "insert", "create", "table", "mapping",
                                                         "describe", "drop", "enable", "disable", "list"}));
 
         final ConsoleReader reader = new ConsoleReader();

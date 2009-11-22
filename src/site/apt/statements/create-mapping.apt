@@ -9,7 +9,7 @@ CREATE MAPPING
 *Syntax
 
 ---------------------------
-CREATE [TEMP] SCHEMA mapping_name [FOR TABLE table_name] '(' attrib [, ...] ')'
+CREATE [TEMP] MAPPING mapping_name [FOR TABLE table_name] '(' attrib [, ...] ')'
 
 attrib:
     key_description
@@ -42,20 +42,17 @@ type:
 
 *Description
 
-    Defines a schema. A schema is required to create tables or select, insert and delete records. 
+    Defines a mapping. A mapping is required to select, insert and delete records. 
 
-    * If TEMP is omitted, then the schema is persisted.  If it is included, then
-    the schema will go away when the connection is closed.
+    * If TEMP is omitted, then the mapping is persisted in HBase.  If it is included, then
+    the mapping will go away when the connection is closed.
 
     * If the table name clause is omitted, then the table name defaults
-    to the schema name.
+    to the mapping name.
 
-    * Mutiple schemas can reference the same HBase table.
+    * Mutiple mappings can reference the same HBase table.
 
-    * The SchemaManager object manages schemas and is indepedent of a particular
-    Connection.
-
-    * A single key attribute is required for a schema.
+    * A single KEY attribute is required for a mapping.
 
     * [] indicates an array type.
 
@@ -69,7 +66,7 @@ type:
     * The DEFAULT clause cannot be used with array values.
 
     * Each table family can have one family_default attribute.  A family_default atttribute is used when
-    a column value is found in the query results, and no corresponding attribute is present in the schema.
+    a column value is found in the query results, and no corresponding attribute is present in the mapping.
     Effectively it is a map with strings for keys (corresponding to the family qualified name) and byte[] values.
     An example can be found {{{./src/site/examples/family_default.html}here}}.
 
@@ -78,19 +75,16 @@ type:
     Without an alias, column descriptions are referenced as "family:column" and family
      defaults are referenced as "family:*" in the API.
 
-    * At present, schema declarations are not persistent.  Hopefully, this will change, thus
-    the CREATE/DROP verbs.
-
 
 
 *Examples
 
-%{snippet|id=create-schema1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-mapping1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
 
-%{snippet|id=create-schema2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-mapping2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
 
-%{snippet|id=create-schema3|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-mapping3|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
 
-%{snippet|id=create-schema4|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-mapping4|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
 
 

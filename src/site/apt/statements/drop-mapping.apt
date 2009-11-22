@@ -14,8 +14,8 @@ DROP MAPPING mapping_name
 
 *Description
 
-    Drops named schema.
+    Drops named mapping.
 
 *Example
 
-%{snippet|id=drop-schema|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=drop-mapping|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

@@ -50,7 +50,7 @@ public class ReflectionMapping extends Mapping {
                     addAttribToVariableNameMap(attrib, attrib.getVariableName());
                 }
                 catch (HBqlException e) {
-                    // Not going to be hit with ReflectionSchema
+                    // Not going to be hit with ReflectionMapping
                     e.printStackTrace();
                 }
             }
