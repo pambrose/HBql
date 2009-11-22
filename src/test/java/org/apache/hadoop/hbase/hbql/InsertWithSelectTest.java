@@ -50,10 +50,11 @@ public class InsertWithSelectTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA tab3 FOR TABLE table3"
                            + "("
                            + "keyval key, "
-                           + "f1:val1 string alias val1, "
-                           + "f1:val2 int alias val2, "
-                           + "f1:val3 int alias val3 DEFAULT 12 "
-                           + ")");
+                           + "f1 ("
+                           + "  val1 string alias val1, "
+                           + "  val2 int alias val2, "
+                           + "  val3 int alias val3 DEFAULT 12 "
+                           + "))");
 
         if (!connection.tableExists("table3"))
             System.out.println(connection.execute("create table table3 (f1)"));

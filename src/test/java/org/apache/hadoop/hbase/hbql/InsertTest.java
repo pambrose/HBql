@@ -58,18 +58,23 @@ public class InsertTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
-                           + "f1:val1 string alias val1, "
-                           + "f1:val2 string alias val2, "
-                           + "f1:val3 string alias notdefinedval, "
-                           + "f2:val1 date alias val3, "
-                           + "f2:val2 date alias val4, "
-                           + "f3:val1 int alias val5, "
-                           + "f3:val2 int alias val6, "
-                           + "f3:val3 int alias val7, "
-                           + "f3:val4 int[] alias val8, "
-                           + "f3:mapval1 object alias f3mapval1, "
-                           + "f3:mapval2 object alias f3mapval2 "
-                           + ")");
+                           + "f1 ("
+                           + "  val1 string alias val1, "
+                           + "  val2 string alias val2, "
+                           + "  val3 string alias notdefinedval "
+                           + "), "
+                           + "f2 ("
+                           + "  val1 date alias val3, "
+                           + "  val2 date alias val4 "
+                           + "), "
+                           + "f3 ("
+                           + "  val1 int alias val5, "
+                           + "  val2 int alias val6, "
+                           + "  val3 int alias val7, "
+                           + "  val4 int[] alias val8, "
+                           + "  mapval1 object alias f3mapval1, "
+                           + "  mapval2 object alias f3mapval2 "
+                           + "))");
 
         if (!connection.tableExists("table2"))
             System.out.println(connection.execute("create table table2 (f1, f2, f3)"));
@@ -288,18 +293,21 @@ public class InsertTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
-                           //  + "f1:val1 string alias val1, "
-                           + "f1:val2 string alias val2, "
-                           + "f1:* alias f1default, "
-                           + "f2:val1 date alias val3, "
-                           + "f2:val2 date alias val4, "
-                           + "f3:val1 int alias val5, "
-                           + "f3:val2 int alias val6, "
-                           + "f3:val3 int alias val7, "
-                           + "f3:val4 int[] alias val8, "
-                           + "f3:mapval1 string alias f3mapval1, "
-                           + "f3:mapval2 string alias f3mapval2 "
-                           + ")");
+                           + "f1 INCLUDE FAMILY DEFAULT ("
+                           + "  val2 string alias val2, "
+                           + "), "
+                           + "f2 ("
+                           + "  val1 date alias val3, "
+                           + "  val2 date alias val4, "
+                           + "), "
+                           + "f3 ("
+                           + "  val1 int alias val5, "
+                           + "  val2 int alias val6, "
+                           + "  val3 int alias val7, "
+                           + "  val4 int[] alias val8, "
+                           + "  mapval1 string alias f3mapval1, "
+                           + "  mapval2 string alias f3mapval2 "
+                           + "))");
 
         List<HRecord> recList1 = connection.executeQueryAndFetch("SELECT f1:* FROM tab2");
         assertTrue(recList1.size() == 10);
@@ -442,7 +450,7 @@ public class InsertTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA table2"
                            + "("
                            + "keyval key, "
-                           + "f3:* alias f1default "
+                           + "f3 INCLUDE FAMILY DEFAULT "
                            + ")");
 
         final String query1 = "SELECT f3:* FROM table2";
@@ -454,7 +462,7 @@ public class InsertTest extends TestSupport {
         assertTrue(recList2.size() == 10);
 
         for (final HRecord rec : recList2) {
-            Map map1 = rec.getFamilyDefaultValueMap("f3:*");
+            Map map1 = rec.getFamilyDefaultValueMap("f3");
 
             assertTrue(map1.size() == 5);
         }
@@ -467,10 +475,10 @@ public class InsertTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
-                           + "f1:val1 string alias val1, "
-                           + "f1:val10 string alias val10, "
-                           + "f1:* alias f1default "
-                           + ")");
+                           + "f1 INCLUDE FAMILY DEFAULT ("
+                           + "  val1 string alias val1, "
+                           + "  val10 string alias val10 "
+                           + "))");
 
         final String query1 = "SELECT 2+4, 5+9, 5+3 as expr1, DEFINEDINROW(val1), DEFINEDINROW(val10) FROM tab2";
         List<HRecord> recList1 = connection.executeQueryAndFetch(query1);
@@ -498,10 +506,10 @@ public class InsertTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
-                           + "f1:val1 string alias val1, "
-                           + "f1:val10 string alias val10, "
-                           + "f1:* alias f1default "
-                           + ")");
+                           + "f1 INCLUDE FAMILY DEFAULT ("
+                           + "  val1 string alias val1, "
+                           + "  val10 string alias val10 "
+                           + "))");
 
         final String query1 = "SELECT EVAL('TRUE'), EVAL('FALSE') FROM tab2";
         List<HRecord> recList1 = connection.executeQueryAndFetch(query1);
@@ -535,11 +543,11 @@ public class InsertTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
-                           + "f1:val1 string alias val1, "
-                           + "f1:val10 string alias val10 default 'test default', "
-                           + "f1:val11 string alias val11 , "
-                           + "f1:* alias f1default "
-                           + ")");
+                           + "f1 INCLUDE FAMILY DEFAULT ("
+                           + "  val1 string alias val1, "
+                           + "  val10 string alias val10 default 'test default', "
+                           + "  val11 string alias val11 "
+                           + "))");
 
         final String query1 = "SELECT * FROM tab2";
         List<HRecord> recList1 = connection.executeQueryAndFetch(query1);
@@ -567,10 +575,7 @@ public class InsertTest extends TestSupport {
         Exception caughtException = null;
         try {
             connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
-                               + "("
-                               + "keyval key, "
-                               + "f1:val10 string alias val10 default 4"
-                               + ")");
+                               + "(keyval key, f1 (val10 string alias val10 default 4))");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -589,7 +594,7 @@ public class InsertTest extends TestSupport {
             connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                                + "("
                                + "keyval key, "
-                               + "f1:val10 object alias val10 default 'test default'"
+                               + "f1 (val10 object alias val10 default 'test default')"
                                + ")");
         }
         catch (Exception e) {

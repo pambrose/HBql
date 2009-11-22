@@ -169,9 +169,10 @@ public class ExamplesTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA foo_schema FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
-                           + "family1:val1 INT ALIAS val1, "
-                           + "family1:val2 STRING ALIAS val2"
-                           + ")");
+                           + "family1 ("
+                           + "  val1 INT ALIAS val1, "
+                           + "  val2 STRING ALIAS val2"
+                           + "))");
 
         System.out.println(connection.execute("INSERT INTO foo_schema (keyval, val1, val2) "
                                               + "VALUES (ZEROPAD(2, 10), 123, 'test val')"));
@@ -200,9 +201,10 @@ public class ExamplesTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA foo_schema FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
-                           + "family1:val1 INT ALIAS val1, "
-                           + "family1:val2 STRING ALIAS val2 DEFAULT 'this is a default value'"
-                           + ")");
+                           + "family1 ("
+                           + "  val1 INT ALIAS val1, "
+                           + "  val2 STRING ALIAS val2 DEFAULT 'this is a default value'"
+                           + "))");
 
         HPreparedStatement ps = connection.prepareStatement("INSERT INTO foo_schema (keyval, val1, val2) "
                                                             + "VALUES (:key, :val1, DEFAULT)");
@@ -220,14 +222,15 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = HConnectionManager.newConnection();
 
         // START SNIPPET: insert3
-        connection.execute("CREATE TEMP SCHEMA foo_schema FOR TABLE foo "
+        connection.execute("CREATE SCHEMA foo_schema FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
-                           + "family1:val1 STRING ALIAS val1, "
-                           + "family1:val2 STRING ALIAS val2, "
-                           + "family1:val3 STRING ALIAS val3, "
-                           + "family1:val4 STRING ALIAS val4 "
-                           + ")");
+                           + "family1 ("
+                           + "  val1 STRING ALIAS val1, "
+                           + "  val2 STRING ALIAS val2, "
+                           + "  val3 STRING ALIAS val3, "
+                           + "  val4 STRING ALIAS val4 "
+                           + "))");
         System.out.println(connection.execute("INSERT INTO foo_schema (keyval, val1, val2) "
                                               + "SELECT keyval, val3, val4 FROM foo2_schema"));
         // END SNIPPET: insert3
@@ -242,20 +245,20 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = HConnectionManager.newConnection();
 
         // Schema named foo that corresponds to table foo.
-        connection.execute("CREATE TEMP SCHEMA foo (keyval key, family1:val1 STRING)");
+        connection.execute("CREATE TEMP SCHEMA foo (keyval key, family1 (val1 STRING))");
         // END SNIPPET: create-schema1
 
         // START SNIPPET: create-schema2
         // Schema named schema1 that corresponds to table foo.
-        connection.execute("CREATE TEMP SCHEMA schema1 FOR TABLE foo (keyval key, family1:val1 STRING ALIAS val2)");
+        connection.execute("CREATE SCHEMA schema1 FOR TABLE foo (keyval key, family1 (val1 STRING ALIAS val2))");
         // END SNIPPET: create-schema2
 
         // START SNIPPET: create-schema3
         // A column with a default value.
-        connection.execute("CREATE TEMP SCHEMA schema1 FOR TABLE foo "
+        connection.execute("CREATE SCHEMA schema1 FOR TABLE foo "
                            + "("
                            + "keyval key, "
-                           + "family1:val1 STRING ALIAS val1 DEFAULT 'this is a default value'"
+                           + "family1 (val1 STRING ALIAS val1 DEFAULT 'this is a default value')"
                            + ")");
         // END SNIPPET: create-schema3
 
@@ -265,9 +268,10 @@ public class ExamplesTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA schema1 FOR TABLE foo "
                            + "("
                            + "keyval key, "
-                           + "family1:val1 STRING ALIAS val1, "
-                           + "family1:* ALIAS family1_default"
-                           + ")");
+                           + "family1 INCLUDE FAMILY DEFAULT ("
+                           + "  val1 STRING ALIAS val1, "
+                           + "  val2 STRING ALIAS val3 "
+                           + "))");
 
         // END SNIPPET: create-schema4
 
@@ -283,14 +287,15 @@ public class ExamplesTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA tab1 FOR TABLE table1"
                            + "("
                            + "keyval KEY, "
-                           + "f1:val1 STRING ALIAS val1, "
-                           + "f3:val1 INT ALIAS val5, "
-                           + "f3:val2 INT ALIAS val6, "
-                           + "f3:val3 INT ALIAS val7, "
-                           + "f1:* ALIAS f1default, "
-                           + "f2:* ALIAS f2default, "
-                           + "f3:* ALIAS f3default "
-                           + ")");
+                           + "f1 INCLUDE FAMILY DEFAULT ("
+                           + "  val1 STRING ALIAS val1, "
+                           + "  val1 INT ALIAS val5"
+                           + "),  "
+                           + "f2 INCLUDE FAMILY DEFAULT, "
+                           + "f3 INCLUDE FAMILY DEFAULT ("
+                           + "  val2 INT ALIAS val6, "
+                           + "  val3 INT ALIAS val7 "
+                           + "))");
 
         HPreparedStatement pstmt = connection.prepareStatement("SELECT keyval, f1:val1, val5 FROM tab1 "
                                                                + "WITH KEYS FIRST TO :endkey "
@@ -320,10 +325,11 @@ public class ExamplesTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA demo1 FOR TABLE example1"
                            + "("
                            + "keyval KEY, "
-                           + "f1:val1 STRING ALIAS val1, "
-                           + "f1:val2 INT ALIAS val2, "
-                           + "f1:val3 STRING DEFAULT 'This is a default value' "
-                           + ")");
+                           + "f1 ("
+                           + "  val1 STRING ALIAS val1, "
+                           + "  val2 INT ALIAS val2, "
+                           + "  val3 STRING DEFAULT 'This is a default value' "
+                           + "))");
 
         // Clean up table
         if (!connection.tableExists("example1"))
@@ -381,11 +387,14 @@ public class ExamplesTest extends TestSupport {
         stmt.execute("CREATE TEMP SCHEMA sch9 FOR TABLE table12"
                      + "("
                      + "keyval key, "
-                     + "f1:val1 string alias val1, "
-                     + "f1:val2 string alias val2, "
-                     + "f3:val1 int alias val5, "
-                     + "f3:val2 int alias val6 "
-                     + ")");
+                     + "f1 ("
+                     + "    val1 string alias val1, "
+                     + "    val2 string alias val2, "
+                     + "), "
+                     + "f3 ("
+                     + "    val1 int alias val5, "
+                     + "    val2 int alias val6 "
+                     + "))");
 
         ResultSet rs = stmt.executeQuery("select * from sch9");
 
@@ -418,10 +427,11 @@ public class ExamplesTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA demo2 FOR TABLE example2"
                            + "("
                            + "keyval KEY, "
-                           + "f1:val1 STRING ALIAS val1, "
-                           + "f1:val2 INT ALIAS val2, "
-                           + "f1:val3 STRING ALIAS val3 DEFAULT 'This is a default value' "
-                           + ")");
+                           + "f1 ("
+                           + "  val1 STRING ALIAS val1, "
+                           + "  val2 INT ALIAS val2, "
+                           + "  val3 STRING ALIAS val3 DEFAULT 'This is a default value' "
+                           + "))");
 
         // Clean up table
         if (!connection.tableExists("example2"))

@@ -48,9 +48,10 @@ public class HBqlExample {
         connection.execute("CREATE TEMP SCHEMA testobjects alias testobjects2"
                            + "("
                            + "keyval key, "
-                           + "family1:author string alias author, "
-                           + "family1:title string  alias title"
-                           + ")");
+                           + "family1 ("
+                           + "  author string alias author, "
+                           + "  title string  alias title"
+                           + "))");
 
         HSchema schema = connection.getSchema("testobjects");
 
