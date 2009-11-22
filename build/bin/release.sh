@@ -36,12 +36,12 @@ mkdir ${SITE}/downloads
 cp -r ${SITE}/* ${RELEASE}/docs/
 
 cd ${SITE}
-zip -r ${SITE}/downloads/${DOCS}.zip apidocs
+zip -q -r ${SITE}/downloads/${DOCS}.zip apidocs
 
 cd ${RELEASE}/..
-zip -r ${SITE}/downloads/${DIST}.zip ${DIST}
-tar cvf ${SITE}/downloads/${DIST}.tar ${DIST}
-gzip ${SITE}/downloads/${DIST}.tar
+zip -q -r ${SITE}/downloads/${DIST}.zip ${DIST}
+tar cf ${SITE}/downloads/${DIST}.tar ${DIST}
+gzip --quiet ${SITE}/downloads/${DIST}.tar
 
 cd ${HBQL}
 mvn site-deploy

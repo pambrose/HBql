@@ -14,5 +14,5 @@ JDBC Support
 
     * HBql supports both named parameters and parameters indicated with "?" character.
 
-    * A simple example can be seen {{{./examples/jdbc.html}here}}.
+    * A simple example can be seen {{{../examples/jdbc.html}here}}.
     
