@@ -231,12 +231,12 @@ public class TestSupport {
     private static boolean evaluateExprColumnNames(final String expr, String... vals) {
 
         try {
-            final ExpressionTree tree = parseDescWhereExpr(expr, null);
+            final ExpressionTree expressionTree = parseDescWhereExpr(expr, null);
 
             final List<String> valList = Lists.newArrayList(vals);
 
             final List<String> attribList = Lists.newArrayList();
-            for (final GenericColumn column : tree.getColumnsUsedInExpression())
+            for (final GenericColumn column : expressionTree.getColumnsUsedInExpression())
                 attribList.add(column.getVariableName());
 
             boolean retval = true;
@@ -266,8 +266,11 @@ public class TestSupport {
         try {
             final HBqlParser parser = ParserUtil.newHBqlParser(str);
             final ExpressionTree expressionTree = parser.descWhereExpr();
-            final MappingContext mappingContext = (sc == null) ? new NoStatementMappingContext(null, null) : sc;
-            expressionTree.setMappingContext(mappingContext);
+
+            if (expressionTree.getMappingContext() == null) {
+                final MappingContext mappingContext = (sc == null) ? new NoStatementMappingContext(null, null) : sc;
+                expressionTree.setMappingContext(mappingContext);
+            }
 
             return expressionTree;
         }

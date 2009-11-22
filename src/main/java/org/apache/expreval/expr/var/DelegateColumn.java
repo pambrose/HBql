@@ -77,7 +77,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
             throw new InternalErrorException("Null mapping for: " + this.asString());
 
         // See if referenced var is in mapping
-        final ColumnAttrib attrib = context.getResultMapping().getAttribByVariableName(this.getVariableName());
+        final ColumnAttrib attrib = context.getResultMapping().getColumnAttribByName(this.getVariableName());
 
         this.variableDefinedInMapping = (attrib != null);
 

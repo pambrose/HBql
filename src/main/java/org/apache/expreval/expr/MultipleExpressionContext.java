@@ -118,6 +118,20 @@ public abstract class MultipleExpressionContext implements Serializable {
         this.setContext();
     }
 
+    private void setContext() {
+        if (this.isInNeedOfSettingContext()) {
+            try {
+                for (final GenericValue val : this.getExpressionList())
+                    val.setExpressionContext(this);
+            }
+            catch (HBqlException e) {
+                //  TODO This needs addressing
+                e.printStackTrace();
+            }
+            this.setInNeedOfSettingContext(false);
+        }
+    }
+
     protected GenericValue getGenericValue(final int i) {
         return this.getExpressionList().get(i);
     }
@@ -139,20 +153,6 @@ public abstract class MultipleExpressionContext implements Serializable {
         }
         catch (ResultMissingColumnException e) {
             throw new InternalErrorException();
-        }
-    }
-
-    protected void setContext() {
-        if (this.isInNeedOfSettingContext()) {
-            try {
-                for (final GenericValue val : this.getExpressionList())
-                    val.setExpressionContext(this);
-            }
-            catch (HBqlException e) {
-                //  TODO This needs addressing
-                e.printStackTrace();
-            }
-            this.setInNeedOfSettingContext(false);
         }
     }
 

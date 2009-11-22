@@ -58,12 +58,12 @@ public class HRecordResultMapping extends ResultMapping {
             selectElement.assignSelectValue(record, maxVersions, result);
     }
 
-    public ColumnAttrib getAttribFromFamilyQualifiedName(final String familyName,
-                                                         final String columnName) throws HBqlException {
+    public ColumnAttrib getColumnAttribByQualifiedName(final String familyName,
+                                                       final String columnName) throws HBqlException {
         return this.getHBaseMapping().getAttribFromFamilyQualifiedName(familyName + ":" + columnName);
     }
 
-    public ColumnAttrib getAttribByVariableName(final String name) throws HBqlException {
+    public ColumnAttrib getColumnAttribByName(final String name) throws HBqlException {
         return this.getMapping().getAttribByVariableName(name);
     }
 }

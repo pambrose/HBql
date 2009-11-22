@@ -58,8 +58,8 @@ public abstract class ResultMapping implements Serializable {
         return this.getMapping().getKeyAttrib();
     }
 
-    public abstract ColumnAttrib getAttribByVariableName(String name) throws HBqlException;
+    public abstract ColumnAttrib getColumnAttribByName(String name) throws HBqlException;
 
-    public abstract ColumnAttrib getAttribFromFamilyQualifiedName(String familyName,
-                                                                  String columnName) throws HBqlException;
+    public abstract ColumnAttrib getColumnAttribByQualifiedName(String familyName,
+                                                                String columnName) throws HBqlException;
 }

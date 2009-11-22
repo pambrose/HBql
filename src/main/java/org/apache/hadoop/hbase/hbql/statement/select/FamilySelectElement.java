@@ -207,7 +207,7 @@ public class FamilySelectElement implements SelectElement {
                 }
 
                 final ColumnAttrib attrib = this.getResultMapping()
-                        .getAttribFromFamilyQualifiedName(familyName, columnName);
+                        .getColumnAttribByQualifiedName(familyName, columnName);
                 if (attrib == null) {
                     final ColumnAttrib familyDefaultAttrib = mapping.getFamilyDefault(familyName);
                     if (familyDefaultAttrib != null)

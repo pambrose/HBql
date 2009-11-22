@@ -129,14 +129,14 @@ public class AnnotationResultMapping extends ResultMapping {
         return this.getAttrib(valname);
     }
 
-    public ColumnAttrib getAttribFromFamilyQualifiedName(final String familyName,
-                                                         final String columnName) throws HBqlException {
+    public ColumnAttrib getColumnAttribByQualifiedName(final String familyName,
+                                                       final String columnName) throws HBqlException {
         final ColumnAttrib attrib = this.getHBaseMapping().getAttribFromFamilyQualifiedName(familyName
                                                                                             + ":" + columnName);
-        return this.getAttribByVariableName(attrib.getFamilyQualifiedName());
+        return this.getColumnAttribByName(attrib.getFamilyQualifiedName());
     }
 
-    public ColumnAttrib getAttribByVariableName(final String name) throws HBqlException {
+    public ColumnAttrib getColumnAttribByName(final String name) throws HBqlException {
         final String valname = this.getMapping().getAttribByVariableName(name).getFamilyQualifiedName();
         return this.getAttrib(valname);
     }

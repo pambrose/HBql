@@ -153,7 +153,7 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
         // Look up stuff for simple column references
         if (this.isASimpleColumnReference()) {
             final String name = ((DelegateColumn)this.getGenericValue()).getVariableName();
-            this.columnAttrib = this.getResultMapping().getAttribByVariableName(name);
+            this.columnAttrib = this.getResultMapping().getColumnAttribByName(name);
 
             if (this.getColumnAttrib() != null) {
                 this.familyName = this.getColumnAttrib().getFamilyName();
@@ -207,7 +207,7 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
     private void assignCalculation(final Object obj, final Result result) throws HBqlException {
         // If it is a calculation, then assign according to the AS name
         final String name = this.getAsName();
-        final ColumnAttrib attrib = this.getResultMapping().getAttribByVariableName(name);
+        final ColumnAttrib attrib = this.getResultMapping().getColumnAttribByName(name);
 
         final Object elementValue = this.getValue(result);
 

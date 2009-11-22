@@ -43,11 +43,11 @@ public class ReflectionResultMapping extends ResultMapping {
         return null;
     }
 
-    public ColumnAttrib getAttribByVariableName(final String name) throws HBqlException {
+    public ColumnAttrib getColumnAttribByName(final String name) throws HBqlException {
         return this.getMapping().getAttribByVariableName(name);
     }
 
-    public ColumnAttrib getAttribFromFamilyQualifiedName(final String familyName, final String columnName) throws HBqlException {
+    public ColumnAttrib getColumnAttribByQualifiedName(final String familyName, final String columnName) throws HBqlException {
         return null;
     }
 }

@@ -142,7 +142,7 @@ public class HBatch<T> {
                 for (final ColumnAttrib colattrib : mapping.getColumnAttribListByFamilyName(family)) {
 
                     // One extra lookup for annotations
-                    final ColumnAttrib attrib = resultMapping.getAttribByVariableName(colattrib.getFamilyQualifiedName());
+                    final ColumnAttrib attrib = resultMapping.getColumnAttribByName(colattrib.getFamilyQualifiedName());
                     final byte[] b = attrib.getValueAsBytes(newrec);
                     put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), b);
                 }

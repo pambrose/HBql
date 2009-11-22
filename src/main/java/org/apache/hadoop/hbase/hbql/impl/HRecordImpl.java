@@ -226,7 +226,7 @@ public class HRecordImpl implements Serializable, HRecord {
         }
 
         // Return default value if it exists
-        final ColumnAttrib attrib = this.getMappingContext().getResultMapping().getAttribByVariableName(name);
+        final ColumnAttrib attrib = this.getMappingContext().getResultMapping().getColumnAttribByName(name);
         return (attrib != null) ? attrib.getDefaultValue() : null;
     }
 

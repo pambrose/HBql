@@ -224,11 +224,11 @@ limitArgs returns [LimitArgs retval]
 	: keyLIMIT v=exprValue				{retval = new LimitArgs($v.retval);};
 		
 clientFilter returns [ExpressionTree retval]
-	: keyCLIENT keyFILTER keyWHERE w=descWhereExpr	
+	: keyCLIENT keyFILTER keyWHERE w=nodescWhereExpr	
 							{retval = $w.retval;};
 	
 serverFilter returns [ExpressionTree retval]
-	: keySERVER keyFILTER keyWHERE w=descWhereExpr	
+	: keySERVER keyFILTER keyWHERE w=nodescWhereExpr	
 							{retval = $w.retval;};
 	
 nodescWhereExpr returns [ExpressionTree retval]
