@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 
 import java.io.Serializable;
@@ -46,14 +46,14 @@ public class WithArgs implements Serializable {
     private ExpressionTree clientExpressionTree = null;
     private ExpressionTree serverExpressionTree = null;
 
-    private SchemaContext schemaContext;
+    private MappingContext mappingContext;
 
     // Keep track of args set multiple times
     private final Set<String> multipleSetValues = Sets.newHashSet();
 
-    public void setSchemaContext(final SchemaContext schemaContext) throws HBqlException {
+    public void setSchemaContext(final MappingContext mappingContext) throws HBqlException {
 
-        this.schemaContext = schemaContext;
+        this.mappingContext = mappingContext;
 
         this.validateWithArgs();
 
@@ -96,8 +96,8 @@ public class WithArgs implements Serializable {
         }
     }
 
-    private SchemaContext getSchemaContext() {
-        return this.schemaContext;
+    private MappingContext getSchemaContext() {
+        return this.mappingContext;
     }
 
     private void addError(final String str) {

@@ -31,14 +31,14 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.statement.NoStatementSchemaContext;
-import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
+import org.apache.hadoop.hbase.hbql.statement.NoStatementMappingContext;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HBaseSchema extends Schema implements HSchema {
+public class HBaseMapping extends Schema implements HSchema {
 
     private transient HConnectionImpl connection;
     private boolean tempSchema;
@@ -50,15 +50,15 @@ public class HBaseSchema extends Schema implements HSchema {
     private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
 
     // For serialization
-    public HBaseSchema() {
+    public HBaseMapping() {
     }
 
-    public HBaseSchema(final HConnectionImpl connection,
-                       final boolean tempSchema,
-                       final String schemaName,
-                       final String tableName,
-                       final String keyName,
-                       final List<FamilyMapping> familyMappingList) throws HBqlException {
+    public HBaseMapping(final HConnectionImpl connection,
+                        final boolean tempSchema,
+                        final String schemaName,
+                        final String tableName,
+                        final String keyName,
+                        final List<FamilyMapping> familyMappingList) throws HBqlException {
         super(schemaName, tableName);
         this.connection = connection;
         this.tempSchema = tempSchema;
@@ -69,8 +69,9 @@ public class HBaseSchema extends Schema implements HSchema {
 
         if (familyMappingList != null) {
             for (final FamilyMapping familyDefinition : familyMappingList)
-                for (final ColumnDefinition columnDefinition : familyDefinition.getColumnList())
-                    processColumn(columnDefinition);
+                if (familyDefinition.getColumnList() != null)
+                    for (final ColumnDefinition columnDefinition : familyDefinition.getColumnList())
+                        processColumn(columnDefinition);
 
             // Add Family Defaults
             for (final FamilyMapping familyDefinition : familyMappingList) {
@@ -89,9 +90,9 @@ public class HBaseSchema extends Schema implements HSchema {
     }
 
     public HRecord newHRecord() throws HBqlException {
-        final SchemaContext schemaContext = new NoStatementSchemaContext(this, null);
-        schemaContext.setMapping(new HRecordMapping(schemaContext));
-        return new HRecordImpl(schemaContext);
+        final MappingContext mappingContext = new NoStatementMappingContext(this, null);
+        mappingContext.setMapping(new HRecordResultMapping(mappingContext));
+        return new HRecordImpl(mappingContext);
     }
 
     private void processColumn(final ColumnDefinition columnDefinition) throws HBqlException {
@@ -252,9 +253,9 @@ public class HBaseSchema extends Schema implements HSchema {
     }
 
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
-        final SchemaContext schemaContext = new NoStatementSchemaContext(this, null);
-        schemaContext.setMapping(new HRecordMapping(schemaContext));
-        final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(query, schemaContext);
+        final MappingContext mappingContext = new NoStatementMappingContext(this, null);
+        mappingContext.setMapping(new HRecordResultMapping(mappingContext));
+        final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(query, mappingContext);
         return new HBqlFilter(expressionTree);
     }
 

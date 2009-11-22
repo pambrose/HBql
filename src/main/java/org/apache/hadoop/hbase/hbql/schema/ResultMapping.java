@@ -22,39 +22,41 @@ package org.apache.hadoop.hbase.hbql.schema;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class Mapping implements Serializable {
+public abstract class ResultMapping implements Serializable {
 
-    private final SchemaContext schemaContext;
+    private final MappingContext mappingContext;
 
-    public Mapping(final SchemaContext schemaContext) {
-        this.schemaContext = schemaContext;
-        this.getSchemaContext().setMapping(this);
+    public ResultMapping(final MappingContext mappingContext) {
+        this.mappingContext = mappingContext;
+        this.getMappingContext().setMapping(this);
     }
 
-    public SchemaContext getSchemaContext() {
-        return this.schemaContext;
+    public MappingContext getMappingContext() {
+        return this.mappingContext;
     }
 
     public Schema getSchema() {
-        return this.getSchemaContext().getSchema();
+        return this.getMappingContext().getSchema();
     }
 
-    public HBaseSchema getHBaseSchema() throws HBqlException {
-        return (HBaseSchema)this.getSchema();
+    public HBaseMapping getHBaseSchema() throws HBqlException {
+        return (HBaseMapping)this.getSchema();
     }
 
-    public abstract Object newObject(final SchemaContext schemaContext,
+    public abstract Object newObject(final MappingContext mappingContext,
                                      final List<SelectElement> selectElementList,
                                      final int maxVersions,
                                      final Result result) throws HBqlException;
 
-    public abstract ColumnAttrib getKeyAttrib() throws HBqlException;
+    public ColumnAttrib getKeyAttrib() throws HBqlException {
+        return this.getSchema().getKeyAttrib();
+    }
 
     public abstract ColumnAttrib getAttribByVariableName(String name) throws HBqlException;
 

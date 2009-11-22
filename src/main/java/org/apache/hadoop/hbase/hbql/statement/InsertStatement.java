@@ -36,7 +36,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
 import java.util.List;
 
-public class InsertStatement extends SchemaContext implements ParameterStatement, ConnectionStatement {
+public class InsertStatement extends MappingContext implements ParameterStatement, ConnectionStatement {
 
     private final List<SingleExpressionContext> columnList = Lists.newArrayList();
     private final InsertValueSource insertValuesSource;
@@ -74,8 +74,8 @@ public class InsertStatement extends SchemaContext implements ParameterStatement
             this.validated = true;
 
         this.connection = connection;
-        this.validateSchemaName(this.getConnection());
-        this.record = this.getConnection().getSchema(this.getSchemaName()).newHRecord();
+        this.validateMappingName(this.getConnection());
+        this.record = this.getConnection().getSchema(this.getMappingName()).newHRecord();
 
         for (final SingleExpressionContext element : this.getInsertColumnList()) {
 
@@ -220,7 +220,7 @@ public class InsertStatement extends SchemaContext implements ParameterStatement
         final StringBuilder sbuf = new StringBuilder();
 
         sbuf.append("INSERT INTO ");
-        sbuf.append(this.getSchemaName());
+        sbuf.append(this.getMappingName());
         sbuf.append(" (");
 
         boolean firstTime = true;

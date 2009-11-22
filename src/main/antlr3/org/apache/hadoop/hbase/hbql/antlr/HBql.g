@@ -97,7 +97,7 @@ consoleStatements returns [List<HBqlStatement> retval]
 consoleStatement returns [HBqlStatement retval]
 options {backtrack=true;}	
 	: keySHOW keyTABLES 		 		{retval = new ShowTablesStatement();}
-	| keySHOW keySCHEMAS 		 		{retval = new ShowSchemasStatement();}
+	| keySHOW keyMAPPINGS 		 		{retval = new ShowMappingsStatement();}
 	| keyIMPORT val=QSTRING				{retval = new ImportStatement($val.text);}
 	| keyPARSE c=consoleStatement			{retval = new ParseStatement($c.retval);}
 	| keyPARSE keyEXPR te=exprValue			{retval = new ParseStatement($te.retval);}
@@ -109,16 +109,16 @@ options {backtrack=true;}
 
 jdbcStatement returns [HBqlStatement retval]
 options {backtrack=true;}	
-	: keyDELETE keyFROM keySCHEMA? t=simpleName w=withClause?	
+	: keyDELETE keyFROM keyMAPPING? t=simpleName w=withClause?	
 							{retval = new DeleteStatement($t.text, $w.retval);}
-	| keyINSERT keyINTO keySCHEMA? t=simpleName LPAREN e=exprList RPAREN ins=insertValues
+	| keyINSERT keyINTO keyMAPPING? t=simpleName LPAREN e=exprList RPAREN ins=insertValues
 							{retval = new InsertStatement($t.text, $e.retval, $ins.retval);}
 	| sel=selectStatement				{retval = $sel.retval;}			
-	| keyCREATE (tmp=keyTEMP)? keySCHEMA t=simpleName 
+	| keyCREATE (tmp=keyTEMP)? keyMAPPING t=simpleName 
 	  (keyFOR keyTABLE a=simpleName)? LPAREN (key=simpleName keyKEY COMMA fm=familyMappingList)? RPAREN
-							{retval = new CreateSchemaStatement(($tmp.text != null),$t.text, $a.text, $key.text, $fm.retval);}
-	| keyDROP keySCHEMA t=simpleName 		{retval = new DropSchemaStatement($t.text);}
-	| keyDESCRIBE keySCHEMA t=simpleName 		{retval = new DescribeSchemaStatement($t.text);}
+							{retval = new CreateMappingStatement(($tmp.text != null),$t.text, $a.text, $key.text, $fm.retval);}
+	| keyDROP keyMAPPING t=simpleName 		{retval = new DropMappingStatement($t.text);}
+	| keyDESCRIBE keyMAPPING t=simpleName 		{retval = new DescribeMappingStatement($t.text);}
 	| keyCREATE keyTABLE t=simpleName LPAREN fd=familyDefinitionList RPAREN	
 							{retval = new CreateTableStatement($t.text, $fd.retval);}
 	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
@@ -133,7 +133,7 @@ insertValues returns [InsertValueSource retval]
 	;
 			
 selectStatement returns [SelectStatement retval]
-	: keySELECT c=selectElems keyFROM keySCHEMA? t=simpleName w=withClause?
+	: keySELECT c=selectElems keyFROM keyMAPPING? t=simpleName w=withClause?
 							{retval = new SelectStatement($c.retval, $t.text, $w.retval);};
 							
 familyDefinitionList returns [List<FamilyDefinition> retval]
@@ -169,7 +169,7 @@ familyMappingList returns [List<FamilyMapping> retval]
 	: a1=familyMapping {retval.add($a1.retval);} (COMMA a2=familyMapping {retval.add($a2.retval);})*;
 
 familyMapping returns [FamilyMapping retval]
-	: f=simpleName LPAREN c=columnDefinitionnList RPAREN (keyINCLUDE keyFAMILY d=keyDEFAULT)?
+	: f=simpleName (keyINCLUDE keyFAMILY d=keyDEFAULT)? (LPAREN c=columnDefinitionnList RPAREN)? 
 							{retval = new FamilyMapping($f.text, $c.retval, $d.text!=null);};
 
 columnDefinitionnList returns [List<ColumnDefinition> retval]
@@ -236,7 +236,7 @@ nodescWhereExpr returns [ExpressionTree retval]
 	 : e=exprValue					{retval = ExpressionTree.newExpressionTree(null, $e.retval);};
 
 descWhereExpr returns [ExpressionTree retval]
-	: s=schemaDesc? e=exprValue			{retval = ExpressionTree.newExpressionTree($s.retval, $e.retval);};
+	: s=mappingDesc? e=exprValue			{retval = ExpressionTree.newExpressionTree($s.retval, $e.retval);};
 
 // Expressions
 exprValue returns [GenericValue retval]
@@ -383,8 +383,8 @@ insertExpr returns [GenericValue retval]
 	| keyDEFAULT					{retval = new DefaultKeyword();}
 	;
 					
-schemaDesc returns [Schema retval]
-	: LCURLY a=attribList RCURLY			{retval = newHBaseSchema(input, $a.retval);};
+mappingDesc returns [Schema retval]
+	: LCURLY a=attribList RCURLY			{retval = newHBaseMapping(input, $a.retval);};
 
 attribList returns [List<ColumnDefinition> retval] 
 @init {retval = Lists.newArrayList();}
@@ -497,8 +497,8 @@ keyENABLE 	: {isKeyword(input, "ENABLE")}? ID;
 keyDISABLE 	: {isKeyword(input, "DISABLE")}? ID;
 keyDROP 	: {isKeyword(input, "DROP")}? ID;
 keyTABLE 	: {isKeyword(input, "TABLE")}? ID;
-keySCHEMA 	: {isKeyword(input, "SCHEMA")}? ID;
-keySCHEMAS 	: {isKeyword(input, "SCHEMAS")}? ID;
+keyMAPPING 	: {isKeyword(input, "MAPPING")}? ID;
+keyMAPPINGS 	: {isKeyword(input, "MAPPINGS")}? ID;
 keyTABLES 	: {isKeyword(input, "TABLES")}? ID;
 keyWHERE	: {isKeyword(input, "WHERE")}? ID;
 keyWITH		: {isKeyword(input, "WITH")}? ID;

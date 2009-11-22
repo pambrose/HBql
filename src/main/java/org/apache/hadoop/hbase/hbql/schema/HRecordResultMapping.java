@@ -23,24 +23,24 @@ package org.apache.hadoop.hbase.hbql.schema;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
-import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
 
-public class HRecordMapping extends Mapping {
+public class HRecordResultMapping extends ResultMapping {
 
-    public HRecordMapping(final SchemaContext schemaContext) {
-        super(schemaContext);
+    public HRecordResultMapping(final MappingContext mappingContext) {
+        super(mappingContext);
     }
 
-    public Object newObject(final SchemaContext schemaContext,
+    public Object newObject(final MappingContext mappingContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {
 
         // Create object and assign values
-        final HRecordImpl newrec = new HRecordImpl(schemaContext);
+        final HRecordImpl newrec = new HRecordImpl(mappingContext);
         this.assignSelectValues(newrec, selectElementList, maxVersions, result);
         return newrec;
     }
@@ -56,10 +56,6 @@ public class HRecordMapping extends Mapping {
         // Set the non-key values
         for (final SelectElement selectElement : selectElementList)
             selectElement.assignSelectValue(record, maxVersions, result);
-    }
-
-    public ColumnAttrib getKeyAttrib() throws HBqlException {
-        return this.getSchema().getKeyAttrib();
     }
 
     public ColumnAttrib getAttribFromFamilyQualifiedName(final String familyName,

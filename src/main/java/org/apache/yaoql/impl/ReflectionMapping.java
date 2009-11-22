@@ -20,35 +20,63 @@
 
 package org.apache.yaoql.impl;
 
-import org.apache.hadoop.hbase.client.Result;
+import org.apache.expreval.util.Lists;
+import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.Mapping;
-import org.apache.hadoop.hbase.hbql.statement.NoStatementSchemaContext;
-import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
-import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
+import org.apache.hadoop.hbase.hbql.schema.Schema;
 
-import java.util.List;
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
 
-public class ReflectionMapping extends Mapping {
+public class ReflectionMapping extends Schema {
 
-    public ReflectionMapping(final Object object) {
-        super(new NoStatementSchemaContext(ReflectionSchema.getReflectionSchema(object), null));
+    private final static Map<Class<?>, ReflectionMapping> reflectionMappingMap = Maps.newHashMap();
+
+    private ReflectionMapping(final Class clazz) {
+        super(clazz.getName(), null);
+
+        for (final Field field : clazz.getDeclaredFields()) {
+
+            if (field.getType().isArray())
+                continue;
+
+            if (field.getType().isPrimitive()
+                || field.getType().equals(String.class)
+                || field.getType().equals(Date.class)) {
+                final ReflectionAttrib attrib = new ReflectionAttrib(field);
+                try {
+                    addAttribToVariableNameMap(attrib, attrib.getVariableName());
+                }
+                catch (HBqlException e) {
+                    // Not going to be hit with ReflectionSchema
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
-    public Object newObject(final SchemaContext schemaContext, final List<SelectElement> selectElementList, final int maxVersions, final Result result) throws HBqlException {
-        return null;
+    public static ReflectionMapping getReflectionMapping(final Object obj) {
+        return getReflectionMapping(obj.getClass());
     }
 
-    public ColumnAttrib getKeyAttrib() throws HBqlException {
-        return this.getSchema().getKeyAttrib();
+    public synchronized static ReflectionMapping getReflectionMapping(final Class clazz) {
+
+        ReflectionMapping mapping = getReflectionMappingMap().get(clazz);
+        if (mapping != null)
+            return mapping;
+
+        mapping = new ReflectionMapping(clazz);
+        getReflectionMappingMap().put(clazz, mapping);
+        return mapping;
     }
 
-    public ColumnAttrib getAttribByVariableName(final String name) throws HBqlException {
-        return this.getSchema().getAttribByVariableName(name);
+    private static Map<Class<?>, ReflectionMapping> getReflectionMappingMap() {
+        return reflectionMappingMap;
     }
 
-    public ColumnAttrib getAttribFromFamilyQualifiedName(final String familyName, final String columnName) throws HBqlException {
-        return null;
+    public Collection<String> getSchemaFamilyNames() throws HBqlException {
+        return Lists.newArrayList();
     }
 }

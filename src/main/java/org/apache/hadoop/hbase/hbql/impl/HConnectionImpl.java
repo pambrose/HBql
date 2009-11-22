@@ -36,9 +36,9 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
+import org.apache.hadoop.hbase.hbql.schema.AnnotationResultMapping;
 import org.apache.hadoop.hbase.hbql.schema.FamilyMapping;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class HConnectionImpl implements HConnection {
     private HBaseAdmin hbaseAdmin = null;
 
     private final SchemaManager schemaManager;
-    private final Map<Class, AnnotationMapping> annotationMappingMap = Maps.newHashMap();
+    private final Map<Class, AnnotationResultMapping> annotationMappingMap = Maps.newHashMap();
 
     public HConnectionImpl(final String name, final HBaseConfiguration config) throws HBqlException {
         this.name = name;
@@ -77,22 +77,22 @@ public class HConnectionImpl implements HConnection {
         return this.schemaManager;
     }
 
-    private Map<Class, AnnotationMapping> getAnnotationMappingMap() {
+    private Map<Class, AnnotationResultMapping> getAnnotationMappingMap() {
         return this.annotationMappingMap;
     }
 
-    public AnnotationMapping getAnnotationMapping(final Object obj) throws HBqlException {
+    public AnnotationResultMapping getAnnotationMapping(final Object obj) throws HBqlException {
         return this.getAnnotationMapping(obj.getClass());
     }
 
-    public synchronized AnnotationMapping getAnnotationMapping(final Class<?> clazz) throws HBqlException {
+    public synchronized AnnotationResultMapping getAnnotationMapping(final Class<?> clazz) throws HBqlException {
 
-        AnnotationMapping mapping = getAnnotationMappingMap().get(clazz);
+        AnnotationResultMapping mapping = getAnnotationMappingMap().get(clazz);
 
         if (mapping != null)
             return mapping;
 
-        mapping = AnnotationMapping.newAnnotationMapping(this, clazz);
+        mapping = AnnotationResultMapping.newAnnotationMapping(this, clazz);
 
         getAnnotationMappingMap().put(clazz, mapping);
 
@@ -178,7 +178,7 @@ public class HConnectionImpl implements HConnection {
         return this.getSchemaManager().schemaExists(schemaName);
     }
 
-    public HBaseSchema getSchema(final String schemaName) throws HBqlException {
+    public HBaseMapping getSchema(final String schemaName) throws HBqlException {
         return this.getSchemaManager().getSchema(schemaName);
     }
 
@@ -190,11 +190,11 @@ public class HConnectionImpl implements HConnection {
         return this.getSchemaManager().getSchemas();
     }
 
-    public synchronized HBaseSchema createSchema(final boolean tempSchema,
-                                                 final String schemaName,
-                                                 final String tableName,
-                                                 final String keyName,
-                                                 final List<FamilyMapping> familyList) throws HBqlException {
+    public synchronized HBaseMapping createMapping(final boolean tempSchema,
+                                                   final String schemaName,
+                                                   final String tableName,
+                                                   final String keyName,
+                                                   final List<FamilyMapping> familyList) throws HBqlException {
         return this.getSchemaManager().createSchema(tempSchema, schemaName, tableName, keyName, familyList);
     }
 

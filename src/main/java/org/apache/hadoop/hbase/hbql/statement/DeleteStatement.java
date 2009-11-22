@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class DeleteStatement extends SchemaContext implements ParameterStatement, ConnectionStatement {
+public class DeleteStatement extends MappingContext implements ParameterStatement, ConnectionStatement {
 
     private transient HConnectionImpl connection = null;
     private final WithArgs withArgs;
@@ -77,7 +77,7 @@ public class DeleteStatement extends SchemaContext implements ParameterStatement
 
         this.connection = connection;
 
-        this.validateSchemaName(connection);
+        this.validateMappingName(connection);
 
         this.getWithArgs().setSchemaContext(this);
 
@@ -154,7 +154,7 @@ public class DeleteStatement extends SchemaContext implements ParameterStatement
         final StringBuilder sbuf = new StringBuilder();
 
         sbuf.append("DELETE FROM ");
-        sbuf.append(this.getSchemaName());
+        sbuf.append(this.getMappingName());
         sbuf.append(" ");
         sbuf.append(this.getWithArgs().asString());
         return sbuf.toString();

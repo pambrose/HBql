@@ -31,12 +31,12 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.schema.Mapping;
-import org.apache.hadoop.hbase.hbql.statement.NoStatementSchemaContext;
-import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.schema.ResultMapping;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
+import org.apache.hadoop.hbase.hbql.statement.NoStatementMappingContext;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
-import org.apache.yaoql.impl.ReflectionMapping;
+import org.apache.yaoql.impl.ReflectionResultMapping;
 
 import java.util.Date;
 import java.util.List;
@@ -179,42 +179,42 @@ public class TestSupport {
     public ExpressionTree parseAnnotationExpr(final HConnection connection,
                                               final Object recordObj,
                                               final String expr) throws HBqlException {
-        final SchemaContext schemaContext = getAnnotationSchemaContext(connection, recordObj);
-        return parseDescWhereExpr(expr, schemaContext);
+        final MappingContext mappingContext = getAnnotationSchemaContext(connection, recordObj);
+        return parseDescWhereExpr(expr, mappingContext);
     }
 
     public ExpressionTree parseReflectionExpr(final Object recordObj, final String expr) throws HBqlException {
-        final SchemaContext schemaContext = getReflectionSchemaContext(recordObj);
-        return parseDescWhereExpr(expr, schemaContext);
+        final MappingContext mappingContext = getReflectionSchemaContext(recordObj);
+        return parseDescWhereExpr(expr, mappingContext);
     }
 
     private static boolean evaluateAnnotationExpression(final HConnection connection,
                                                         final Object recordObj,
                                                         final String expr) throws HBqlException {
-        final SchemaContext schemaContext = getAnnotationSchemaContext(connection, recordObj);
-        final ExpressionTree tree = parseDescWhereExpr(expr, schemaContext);
+        final MappingContext mappingContext = getAnnotationSchemaContext(connection, recordObj);
+        final ExpressionTree tree = parseDescWhereExpr(expr, mappingContext);
         return evaluateExprression(recordObj, tree);
     }
 
     private static boolean evaluateReflectionExpression(final Object recordObj, final String expr) throws HBqlException {
-        final SchemaContext schemaContext = getReflectionSchemaContext(recordObj);
-        final ExpressionTree tree = parseDescWhereExpr(expr, schemaContext);
+        final MappingContext mappingContext = getReflectionSchemaContext(recordObj);
+        final ExpressionTree tree = parseDescWhereExpr(expr, mappingContext);
         return evaluateExprression(recordObj, tree);
     }
 
-    private static SchemaContext getAnnotationSchemaContext(final HConnection connection,
-                                                            final Object obj) throws HBqlException {
+    private static MappingContext getAnnotationSchemaContext(final HConnection connection,
+                                                             final Object obj) throws HBqlException {
         if (obj == null)
-            return new NoStatementSchemaContext(null, null);
+            return new NoStatementMappingContext(null, null);
         else
-            return getAnnotatedMapping(connection, obj).getSchemaContext();
+            return getAnnotatedMapping(connection, obj).getMappingContext();
     }
 
-    private static SchemaContext getReflectionSchemaContext(final Object obj) throws HBqlException {
+    private static MappingContext getReflectionSchemaContext(final Object obj) throws HBqlException {
         if (obj == null)
-            return new NoStatementSchemaContext(null, null);
+            return new NoStatementMappingContext(null, null);
         else
-            return getReflectionMapping(obj).getSchemaContext();
+            return getReflectionMapping(obj).getMappingContext();
     }
 
 
@@ -262,12 +262,12 @@ public class TestSupport {
         }
     }
 
-    public static ExpressionTree parseDescWhereExpr(final String str, final SchemaContext sc) throws HBqlException {
+    public static ExpressionTree parseDescWhereExpr(final String str, final MappingContext sc) throws HBqlException {
         try {
             final HBqlParser parser = ParserUtil.newHBqlParser(str);
             final ExpressionTree expressionTree = parser.descWhereExpr();
-            final SchemaContext schemaContext = (sc == null) ? new NoStatementSchemaContext(null, null) : sc;
-            expressionTree.setSchemaContext(schemaContext);
+            final MappingContext mappingContext = (sc == null) ? new NoStatementMappingContext(null, null) : sc;
+            expressionTree.setSchemaContext(mappingContext);
 
             return expressionTree;
         }
@@ -296,8 +296,8 @@ public class TestSupport {
         }
     }
 
-    public static Mapping getAnnotatedMapping(final HConnection connection,
-                                              final Object recordObj) throws HBqlException {
+    public static ResultMapping getAnnotatedMapping(final HConnection connection,
+                                                    final Object recordObj) throws HBqlException {
 
         if (recordObj == null)
             return null;
@@ -305,11 +305,11 @@ public class TestSupport {
         return ((HConnectionImpl)connection).getAnnotationMapping(recordObj);
     }
 
-    public static Mapping getReflectionMapping(final Object recordObj) throws HBqlException {
+    public static ResultMapping getReflectionMapping(final Object recordObj) throws HBqlException {
 
         if (recordObj == null)
             return null;
 
-        return new ReflectionMapping(recordObj);
+        return new ReflectionResultMapping(recordObj);
     }
 }

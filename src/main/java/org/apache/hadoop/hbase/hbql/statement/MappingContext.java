@@ -22,40 +22,40 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.schema.AnnotationMapping;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.schema.Mapping;
+import org.apache.hadoop.hbase.hbql.schema.AnnotationResultMapping;
+import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.schema.ResultMapping;
 import org.apache.hadoop.hbase.hbql.schema.Schema;
 
-public abstract class SchemaContext extends SimpleStatement {
+public abstract class MappingContext extends SimpleStatement {
 
     private String schemaName = null;
     private Schema schema = null;
-    private Mapping mapping = null;
+    private ResultMapping mapping = null;
 
-    protected SchemaContext(final String schemaName) {
+    protected MappingContext(final String schemaName) {
         this.schemaName = schemaName;
     }
 
-    protected SchemaContext(final Schema schema) {
+    protected MappingContext(final Schema schema) {
         this.setSchema(schema);
     }
 
-    protected synchronized void validateSchemaName(final HConnectionImpl connection) throws HBqlException {
+    protected synchronized void validateMappingName(final HConnectionImpl connection) throws HBqlException {
 
         if (this.getSchema() == null) {
             try {
-                this.setSchema(connection.getSchema(this.getSchemaName()));
+                this.setSchema(connection.getSchema(this.getMappingName()));
             }
             catch (HBqlException e) {
-                throw new HBqlException("Unknown schema name: " + this.getSchemaName());
+                throw new HBqlException("Unknown schema name: " + this.getMappingName());
             }
         }
 
         this.validateMatchingNames(this.getMapping());
     }
 
-    protected String getSchemaName() {
+    protected String getMappingName() {
         return this.schemaName;
     }
 
@@ -69,16 +69,16 @@ public abstract class SchemaContext extends SimpleStatement {
         return this.schema;
     }
 
-    public Mapping getMapping() {
+    public ResultMapping getMapping() {
         return this.mapping;
     }
 
-    public void setMapping(final Mapping mapping) {
+    public void setMapping(final ResultMapping mapping) {
         this.mapping = mapping;
     }
 
-    private void validateMatchingNames(final Mapping mapping) throws HBqlException {
-        if (mapping != null && mapping instanceof AnnotationMapping) {
+    private void validateMatchingNames(final ResultMapping mapping) throws HBqlException {
+        if (mapping != null && mapping instanceof AnnotationResultMapping) {
             final String mappingName = mapping.getSchema().getSchemaName();
             final String selectName = this.getSchema().getSchemaName();
             if (!mappingName.equals(selectName))
@@ -86,7 +86,7 @@ public abstract class SchemaContext extends SimpleStatement {
         }
     }
 
-    public HBaseSchema getHBaseSchema() throws HBqlException {
-        return (HBaseSchema)this.getSchema();
+    public HBaseMapping getHBaseSchema() throws HBqlException {
+        return (HBaseMapping)this.getSchema();
     }
 }

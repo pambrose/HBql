@@ -32,7 +32,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 import java.util.List;
 import java.util.Set;
 
-public class SelectStatement extends SchemaContext implements ParameterStatement, HBqlStatement {
+public class SelectStatement extends MappingContext implements ParameterStatement, HBqlStatement {
 
     private final List<SelectElement> selectElementList;
     private final List<ColumnAttrib> selectColumnAttribList = Lists.newArrayList();
@@ -71,7 +71,7 @@ public class SelectStatement extends SchemaContext implements ParameterStatement
 
         this.validated = true;
 
-        this.validateSchemaName(connection);
+        this.validateMappingName(connection);
 
         this.getSelectAttribList().clear();
 
@@ -186,7 +186,7 @@ public class SelectStatement extends SchemaContext implements ParameterStatement
         }
 
         sbuf.append(" FROM ");
-        sbuf.append(this.getSchemaName());
+        sbuf.append(this.getMappingName());
         sbuf.append(" ");
         sbuf.append(this.getWithArgs().asString());
         return sbuf.toString();

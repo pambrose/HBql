@@ -31,8 +31,8 @@ import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.schema.FieldType;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.ByteArrayInputStream;
@@ -49,7 +49,7 @@ public class HBqlFilter implements Filter {
     private static final Log LOG = LogFactory.getLog(HBqlFilter.class.getName());
 
     private ExpressionTree expressionTree;
-    public transient HRecordImpl record = new HRecordImpl((SchemaContext)null);
+    public transient HRecordImpl record = new HRecordImpl((MappingContext)null);
 
     public HBqlFilter(final ExpressionTree expressionTree) {
         this.expressionTree = expressionTree;
@@ -59,13 +59,13 @@ public class HBqlFilter implements Filter {
     public HBqlFilter() {
     }
 
-    public static HBqlFilter newHBqlFilter(final SchemaContext schemaContext,
+    public static HBqlFilter newHBqlFilter(final MappingContext mappingContext,
                                            final ExpressionTree origExpressionTree) {
 
         if (origExpressionTree == null)
             return null;
 
-        origExpressionTree.setSchemaContext(schemaContext);
+        origExpressionTree.setSchemaContext(mappingContext);
         return new HBqlFilter(origExpressionTree);
     }
 
@@ -73,7 +73,7 @@ public class HBqlFilter implements Filter {
         return this.record;
     }
 
-    private HBaseSchema getSchema() throws HBqlException {
+    private HBaseMapping getSchema() throws HBqlException {
         return this.getExpressionTree().getHBaseSchema();
     }
 
@@ -108,8 +108,8 @@ public class HBqlFilter implements Filter {
             try {
                 final String familyName = Bytes.toString(v.getFamily());
                 final String columnName = Bytes.toString(v.getQualifier());
-                final HBaseSchema schema = this.getSchema();
-                final ColumnAttrib attrib = schema.getAttribFromFamilyQualifiedName(familyName, columnName);
+                final HBaseMapping mapping = this.getSchema();
+                final ColumnAttrib attrib = mapping.getAttribFromFamilyQualifiedName(familyName, columnName);
 
                 // Do not bother setting value if it is not used in expression
                 if (this.getExpressionTree().getAttribsUsedInExpr().contains(attrib)) {

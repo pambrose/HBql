@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.client.Schema;
+import org.apache.hadoop.hbase.hbql.client.TableMapping;
 import org.apache.hadoop.hbase.hbql.client.Util;
 
 import java.util.Date;
@@ -39,7 +39,7 @@ import java.util.TreeMap;
 
 public class AnnotationExample {
 
-    @Schema(name = "testobjects")
+    @TableMapping(name = "testobjects")
     public static class TestObject {
 
         private enum TestEnum {

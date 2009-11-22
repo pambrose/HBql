@@ -25,27 +25,28 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Column;
 import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.TableMapping;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.statement.NoStatementSchemaContext;
-import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
+import org.apache.hadoop.hbase.hbql.statement.NoStatementMappingContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
-public class AnnotationMapping extends Mapping {
+public class AnnotationResultMapping extends ResultMapping {
 
 
     private final Class<?> clazz;
     private final Map<String, CurrentValueAnnotationAttrib> columnMap = Maps.newHashMap();
     private final Map<String, VersionAnnotationAttrib> columnVersionMap = Maps.newHashMap();
 
-    private AnnotationMapping(final HBaseSchema schema, final Class clazz) throws HBqlException {
+    private AnnotationResultMapping(final HBaseMapping mapping, final Class clazz) throws HBqlException {
 
-        super(new NoStatementSchemaContext(schema, null));
+        super(new NoStatementMappingContext(mapping, null));
 
-        getSchemaContext().setMapping(this);
+        getMappingContext().setMapping(this);
 
         this.clazz = clazz;
 
@@ -71,23 +72,22 @@ public class AnnotationMapping extends Mapping {
     }
 
     public static boolean isAnnotatedObject(final Class<?> clazz) {
-        return clazz.getAnnotation(org.apache.hadoop.hbase.hbql.client.Schema.class) != null;
+        return clazz.getAnnotation(TableMapping.class) != null;
     }
 
-    public static AnnotationMapping newAnnotationMapping(final HConnectionImpl connection,
-                                                         final Class<?> clazz) throws HBqlException {
+    public static AnnotationResultMapping newAnnotationMapping(final HConnectionImpl connection,
+                                                               final Class<?> clazz) throws HBqlException {
 
-        org.apache.hadoop.hbase.hbql.client.Schema schemaAnnotation =
-                clazz.getAnnotation(org.apache.hadoop.hbase.hbql.client.Schema.class);
+        TableMapping mappingAnnotation = clazz.getAnnotation(TableMapping.class);
 
-        if (schemaAnnotation == null)
+        if (mappingAnnotation == null)
             throw new HBqlException("Class " + clazz.getName() + " is missing @Schema annotation");
 
-        if (schemaAnnotation.name() == null || schemaAnnotation.name().length() == 0)
+        if (mappingAnnotation.name() == null || mappingAnnotation.name().length() == 0)
             throw new HBqlException("@Schema annotation for class " + clazz.getName() + " is missing a name");
 
-        HBaseSchema schema = connection.getSchema(schemaAnnotation.name());
-        return new AnnotationMapping(schema, clazz);
+        HBaseMapping mapping = connection.getSchema(mappingAnnotation.name());
+        return new AnnotationResultMapping(mapping, clazz);
     }
 
     private void processColumnAnnotation(final Field field) throws HBqlException {
@@ -123,7 +123,6 @@ public class AnnotationMapping extends Mapping {
                                                                    columnAttrib.getGetter(),
                                                                    columnAttrib.getSetter()));
     }
-
 
     public ColumnAttrib getKeyAttrib() throws HBqlException {
         final String valname = this.getSchema().getKeyAttrib().getFamilyQualifiedName();
@@ -166,7 +165,7 @@ public class AnnotationMapping extends Mapping {
         return this.getClazz().newInstance();
     }
 
-    public Object newObject(final SchemaContext schemaContext,
+    public Object newObject(final MappingContext mappingContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {

@@ -24,31 +24,31 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
 
-public class DescribeSchemaStatement extends SchemaContext implements ConnectionStatement {
+public class DescribeMappingStatement extends MappingContext implements ConnectionStatement {
 
-    public DescribeSchemaStatement(final String schemaName) {
-        super(schemaName);
+    public DescribeMappingStatement(final String mappingName) {
+        super(mappingName);
     }
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        this.validateSchemaName(connection);
+        this.validateMappingName(connection);
 
-        final HBaseSchema schema = this.getHBaseSchema();
+        final HBaseMapping mapping = this.getHBaseSchema();
 
-        if (schema == null)
-            return new ExecutionResults("Unknown schema: " + this.getSchemaName());
+        if (mapping == null)
+            return new ExecutionResults("Unknown mapping: " + this.getMappingName());
 
         final ExecutionResults retval = new ExecutionResults();
 
-        retval.out.println("Schema name: " + this.getSchemaName());
-        retval.out.println("Table name: " + schema.getTableName());
+        retval.out.println("Mapping name: " + this.getMappingName());
+        retval.out.println("Table name: " + mapping.getTableName());
         retval.out.println("Columns:");
 
-        for (final String familyName : schema.getFamilySet()) {
-            for (final ColumnAttrib column : schema.getColumnAttribListByFamilyName(familyName))
+        for (final String familyName : mapping.getFamilySet()) {
+            for (final ColumnAttrib column : mapping.getColumnAttribListByFamilyName(familyName))
                 retval.out.println("\t" + column.asString());
         }
 

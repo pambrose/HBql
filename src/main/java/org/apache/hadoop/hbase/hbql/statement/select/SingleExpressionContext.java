@@ -32,8 +32,8 @@ import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
 import java.util.Collection;
@@ -144,9 +144,9 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
         return this.columnNameBytes;
     }
 
-    public void validate(final SchemaContext schemaContext, final HConnection connection) throws HBqlException {
+    public void validate(final MappingContext mappingContext, final HConnection connection) throws HBqlException {
 
-        this.setSchemaContext(schemaContext);
+        this.setSchemaContext(mappingContext);
 
         // TODO this needs to be done for expressions with col refs
 
@@ -242,11 +242,11 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
             return;
         }
 
-        final HBaseSchema schema = this.getHBaseSchema();
+        final HBaseMapping mapping = this.getHBaseSchema();
 
         // Column reference is not known to schema, so just assign byte[] value
         if (this.getColumnAttrib() == null) {
-            final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(this.getFamilyName());
+            final ColumnAttrib familyDefaultAttrib = mapping.getFamilyDefault(this.getFamilyName());
             if (familyDefaultAttrib != null) {
                 final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
                 familyDefaultAttrib.setFamilyDefaultCurrentValue(obj, this.getSelectName(), b);
@@ -275,7 +275,7 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
             final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
 
             if (this.getColumnAttrib() == null) {
-                final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(this.getFamilyName());
+                final ColumnAttrib familyDefaultAttrib = mapping.getFamilyDefault(this.getFamilyName());
                 if (familyDefaultAttrib != null)
                     familyDefaultAttrib.setFamilyDefaultVersionMap(obj, this.getSelectName(), timeStampMap);
             }

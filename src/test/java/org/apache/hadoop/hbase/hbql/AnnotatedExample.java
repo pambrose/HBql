@@ -21,13 +21,13 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.hbql.client.Column;
-import org.apache.hadoop.hbase.hbql.client.Schema;
+import org.apache.hadoop.hbase.hbql.client.TableMapping;
 
 import java.io.Serializable;
 
 // START SNIPPET: annotatedExample1
 
-@Schema(name = "demo2")
+@TableMapping(name = "demo2")
 public class AnnotatedExample implements Serializable {
 
     @Column

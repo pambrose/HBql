@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.Column;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.Schema;
+import org.apache.hadoop.hbase.hbql.client.TableMapping;
 import org.apache.hadoop.hbase.hbql.client.Util;
 
 import java.io.Serializable;
@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 
-@Schema(name = "alltypes2")
+@TableMapping(name = "alltypes2")
 public class AnnotatedAllTypes implements Serializable {
 
     @Column

@@ -18,26 +18,14 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.statement;
+package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HSchema;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+@java.lang.annotation.Target({java.lang.annotation.ElementType.TYPE})
+@java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 
-public class ShowSchemasStatement extends SimpleStatement implements ConnectionStatement {
+// START SNIPPET: doc
+public @interface TableMapping {
 
-    public ShowSchemasStatement() {
-    }
-
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
-
-        final ExecutionResults retval = new ExecutionResults();
-        retval.out.println("Schemas: ");
-        for (final HSchema schema : connection.getSchemas())
-            retval.out.println("\t" + schema.getSchemaName() + " mapped to table " + schema.getTableName());
-
-        retval.out.flush();
-        return retval;
-    }
+    java.lang.String name();
 }
+// END SNIPPET: doc

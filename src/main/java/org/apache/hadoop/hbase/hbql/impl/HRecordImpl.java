@@ -27,9 +27,9 @@ import org.apache.hadoop.hbase.hbql.client.FamilyDefaultValueMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.schema.Mapping;
-import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.schema.ResultMapping;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 
 import java.io.Serializable;
 import java.util.List;
@@ -39,7 +39,7 @@ import java.util.Set;
 
 public class HRecordImpl implements Serializable, HRecord {
 
-    private SchemaContext schemaContext;
+    private MappingContext mappingContext;
     private long timestamp = System.currentTimeMillis();
 
     private List<String> namePositionList = Lists.newArrayList();
@@ -47,16 +47,16 @@ public class HRecordImpl implements Serializable, HRecord {
     private volatile ElementMap<ColumnValue> columnValuesMap = null;
     private volatile ElementMap<FamilyDefaultValueMap> familyDefaultElementsMap = null;
 
-    public HRecordImpl(final SchemaContext schemaContext) {
-        this.setSchemaContext(schemaContext);
+    public HRecordImpl(final MappingContext mappingContext) {
+        this.setSchemaContext(mappingContext);
     }
 
-    public SchemaContext getSchemaContext() {
-        return schemaContext;
+    public MappingContext getSchemaContext() {
+        return mappingContext;
     }
 
-    public void setSchemaContext(final SchemaContext schemaContext) {
-        this.schemaContext = schemaContext;
+    public void setSchemaContext(final MappingContext mappingContext) {
+        this.mappingContext = mappingContext;
     }
 
     public String getAttribName(final int i) throws HBqlException {
@@ -77,11 +77,11 @@ public class HRecordImpl implements Serializable, HRecord {
         this.getNamePositionList().add(name);
     }
 
-    public HBaseSchema getHBaseSchema() throws HBqlException {
+    public HBaseMapping getHBaseSchema() throws HBqlException {
         return this.getSchemaContext().getHBaseSchema();
     }
 
-    public Mapping getMapping() throws HBqlException {
+    public ResultMapping getMapping() throws HBqlException {
         return this.getSchemaContext().getMapping();
     }
 

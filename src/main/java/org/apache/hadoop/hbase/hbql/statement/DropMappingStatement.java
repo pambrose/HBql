@@ -18,14 +18,23 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.hadoop.hbase.hbql.statement;
 
-@java.lang.annotation.Target({java.lang.annotation.ElementType.TYPE})
-@java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-// START SNIPPET: doc
-public @interface Schema {
+public class DropMappingStatement extends MappingContext implements ConnectionStatement {
 
-    java.lang.String name();
+    public DropMappingStatement(final String mappingName) {
+        super(mappingName);
+    }
+
+    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+
+        // this.validateMappingName(connection);
+
+        connection.dropSchema(this.getMappingName());
+        return new ExecutionResults("Mapping " + this.getMappingName() + " dropped.");
+    }
 }
-// END SNIPPET: doc

@@ -27,8 +27,8 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.HRecordMapping;
-import org.apache.hadoop.hbase.hbql.schema.Mapping;
+import org.apache.hadoop.hbase.hbql.schema.HRecordResultMapping;
+import org.apache.hadoop.hbase.hbql.schema.ResultMapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
@@ -53,9 +53,9 @@ public class Query<E> {
                                         final SelectStatement selectStatement,
                                         final Class clazz) throws HBqlException {
 
-        final Mapping mapping;
+        final ResultMapping mapping;
         if (clazz.equals(HRecord.class)) {
-            mapping = new HRecordMapping(selectStatement);
+            mapping = new HRecordResultMapping(selectStatement);
         }
         else {
             mapping = connection.getAnnotationMapping(clazz);

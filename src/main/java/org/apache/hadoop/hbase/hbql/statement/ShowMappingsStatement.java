@@ -22,19 +22,22 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class DropSchemaStatement extends SchemaContext implements ConnectionStatement {
+public class ShowMappingsStatement extends SimpleStatement implements ConnectionStatement {
 
-    public DropSchemaStatement(final String schemaName) {
-        super(schemaName);
+    public ShowMappingsStatement() {
     }
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        // this.validateSchemaName(connection);
+        final ExecutionResults retval = new ExecutionResults();
+        retval.out.println("Mappings: ");
+        for (final HSchema schema : connection.getSchemas())
+            retval.out.println("\t" + schema.getSchemaName() + " mapped to table " + schema.getTableName());
 
-        connection.dropSchema(this.getSchemaName());
-        return new ExecutionResults("Schema " + this.getSchemaName() + " dropped.");
+        retval.out.flush();
+        return retval;
     }
 }

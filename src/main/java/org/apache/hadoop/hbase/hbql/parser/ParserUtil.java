@@ -36,7 +36,7 @@ import org.apache.hadoop.hbase.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
-import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
@@ -59,9 +59,9 @@ public class ParserUtil {
     }
 
     public static ExpressionTree parseWhereExpression(final String sql,
-                                                      final SchemaContext schemaContext) throws HBqlException {
+                                                      final MappingContext mappingContext) throws HBqlException {
         try {
-            return schemaContext.getSchema().getExpressionTree(sql, schemaContext);
+            return mappingContext.getSchema().getExpressionTree(sql, mappingContext);
         }
         catch (RecognitionException e) {
             e.printStackTrace();

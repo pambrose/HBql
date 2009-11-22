@@ -30,10 +30,10 @@ import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
-import org.apache.hadoop.hbase.hbql.schema.Mapping;
+import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.schema.ResultMapping;
 import org.apache.hadoop.hbase.hbql.schema.SelectFamilyAttrib;
-import org.apache.hadoop.hbase.hbql.statement.SchemaContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
 import java.util.Collection;
@@ -48,7 +48,7 @@ public class FamilySelectElement implements SelectElement {
     private final List<ColumnAttrib> attribsUsedInExpr = Lists.newArrayList();
     private final String familyName;
 
-    private SchemaContext schemaContext;
+    private MappingContext mappingContext;
 
     public FamilySelectElement(final String familyName) {
 
@@ -85,20 +85,20 @@ public class FamilySelectElement implements SelectElement {
         return this.familyNameBytesList;
     }
 
-    private SchemaContext getSchemaContext() {
-        return this.schemaContext;
+    private MappingContext getSchemaContext() {
+        return this.mappingContext;
     }
 
-    protected HBaseSchema getHBaseSchema() throws HBqlException {
+    protected HBaseMapping getHBaseSchema() throws HBqlException {
         return this.getSchemaContext().getHBaseSchema();
     }
 
-    private Mapping getMapping() throws HBqlException {
+    private ResultMapping getMapping() throws HBqlException {
         return this.getSchemaContext().getMapping();
     }
 
-    private void setSchemaContext(final SchemaContext schemaContext) {
-        this.schemaContext = schemaContext;
+    private void setSchemaContext(final MappingContext mappingContext) {
+        this.mappingContext = mappingContext;
     }
 
     public String getAsName() {
@@ -138,9 +138,9 @@ public class FamilySelectElement implements SelectElement {
         return 0;
     }
 
-    public void validate(final SchemaContext schemaContext, final HConnection connection) throws HBqlException {
+    public void validate(final MappingContext mappingContext, final HConnection connection) throws HBqlException {
 
-        this.setSchemaContext(schemaContext);
+        this.setSchemaContext(mappingContext);
 
         this.getAttribsUsedInExpr().clear();
         final Collection<String> familyList = this.getHBaseSchema().getSchemaFamilyNames();
@@ -186,7 +186,7 @@ public class FamilySelectElement implements SelectElement {
                                   final int maxVersions,
                                   final Result result) throws HBqlException {
 
-        final HBaseSchema schema = this.getHBaseSchema();
+        final HBaseMapping mapping = this.getHBaseSchema();
 
         // Evaluate each of the families (select * will yield all families)
         for (int i = 0; i < this.getFamilyNameBytesList().size(); i++) {
@@ -208,7 +208,7 @@ public class FamilySelectElement implements SelectElement {
 
                 final ColumnAttrib attrib = this.getMapping().getAttribFromFamilyQualifiedName(familyName, columnName);
                 if (attrib == null) {
-                    final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
+                    final ColumnAttrib familyDefaultAttrib = mapping.getFamilyDefault(familyName);
                     if (familyDefaultAttrib != null)
                         familyDefaultAttrib.setFamilyDefaultCurrentValue(obj, columnName, valueBytes);
                 }
@@ -232,10 +232,10 @@ public class FamilySelectElement implements SelectElement {
                 final NavigableMap<Long, byte[]> timeStampMap = versionColumnMap.get(columnBytes);
                 final String columnName = IO.getSerialization().getStringFromBytes(columnBytes);
 
-                final ColumnAttrib attrib = schema.getVersionAttribMap(familyName, columnName);
+                final ColumnAttrib attrib = mapping.getVersionAttribMap(familyName, columnName);
 
                 if (attrib == null) {
-                    final ColumnAttrib familyDefaultAttrib = schema.getFamilyDefault(familyName);
+                    final ColumnAttrib familyDefaultAttrib = mapping.getFamilyDefault(familyName);
                     if (familyDefaultAttrib != null)
                         familyDefaultAttrib.setFamilyDefaultVersionMap(obj, columnName, timeStampMap);
                 }

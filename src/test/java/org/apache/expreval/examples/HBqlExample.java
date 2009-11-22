@@ -30,7 +30,7 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class HBqlExample {
 
         HSchema schema = connection.getSchema("testobjects");
 
-        final HBqlFilter filter = ((HBaseSchema)schema).newHBqlFilter("title LIKE '.*3.*' OR family1:author LIKE '.*4.*'");
+        final HBqlFilter filter = ((HBaseMapping)schema).newHBqlFilter("title LIKE '.*3.*' OR family1:author LIKE '.*4.*'");
 
         Scan scan = new Scan();
         scan.addColumn(family, author);

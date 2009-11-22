@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.schema.FamilyMapping;
-import org.apache.hadoop.hbase.hbql.schema.HBaseSchema;
+import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,7 @@ import java.util.Set;
 public class SchemaManager {
 
     private final HConnectionImpl connection;
-    private final Map<String, HBaseSchema> schemaMap = Maps.newConcurrentHashMap();
+    private final Map<String, HBaseMapping> schemaMap = Maps.newConcurrentHashMap();
 
     public SchemaManager(final HConnectionImpl connection) {
         this.connection = connection;
@@ -57,7 +57,7 @@ public class SchemaManager {
         return connection;
     }
 
-    private Map<String, HBaseSchema> getSchemaMap() {
+    private Map<String, HBaseMapping> getSchemaMap() {
         return this.schemaMap;
     }
 
@@ -70,7 +70,7 @@ public class SchemaManager {
         final List<HRecord> recs = this.getConnection().executeQueryAndFetch(sql);
 
         for (final HRecord rec : recs)
-            names.add((HBaseSchema)rec.getCurrentValue("schema_obj"));
+            names.add((HBaseMapping)rec.getCurrentValue("schema_obj"));
 
         return names;
     }
@@ -103,40 +103,40 @@ public class SchemaManager {
         }
     }
 
-    public synchronized HBaseSchema createSchema(final boolean tempSchema,
-                                                 final String schemaName,
-                                                 final String tableName,
-                                                 final String keyName,
-                                                 final List<FamilyMapping> familyMappingList) throws HBqlException {
+    public synchronized HBaseMapping createSchema(final boolean tempSchema,
+                                                  final String schemaName,
+                                                  final String tableName,
+                                                  final String keyName,
+                                                  final List<FamilyMapping> familyMappingList) throws HBqlException {
 
         if (!schemaName.equals("system_schemas") && this.schemaExists(schemaName))
             throw new HBqlException("Schema already defined: " + schemaName);
 
-        final HBaseSchema schema = new HBaseSchema(this.getConnection(),
-                                                   tempSchema,
-                                                   schemaName,
-                                                   tableName,
-                                                   keyName,
-                                                   familyMappingList);
+        final HBaseMapping mapping = new HBaseMapping(this.getConnection(),
+                                                      tempSchema,
+                                                      schemaName,
+                                                      tableName,
+                                                      keyName,
+                                                      familyMappingList);
 
-        if (schema.isTempSchema())
-            this.getSchemaMap().put(schemaName, schema);
+        if (mapping.isTempSchema())
+            this.getSchemaMap().put(schemaName, mapping);
         else
-            this.insertSchema(schema);
+            this.insertSchema(mapping);
 
-        return schema;
+        return mapping;
     }
 
-    private void insertSchema(final HBaseSchema schema) throws HBqlException {
+    private void insertSchema(final HBaseMapping mapping) throws HBqlException {
 
         final String sql = "INSERT INTO system_schemas (schema_name, schema_obj) VALUES (?, ?)";
         final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
-        stmt.setParameter(1, schema.getSchemaName());
-        stmt.setParameter(2, schema);
+        stmt.setParameter(1, mapping.getSchemaName());
+        stmt.setParameter(2, mapping);
         stmt.execute();
     }
 
-    public HBaseSchema getSchema(final String schemaName) throws HBqlException {
+    public HBaseMapping getSchema(final String schemaName) throws HBqlException {
 
         if (this.getSchemaMap().containsKey(schemaName)) {
             return this.getSchemaMap().get(schemaName);
@@ -150,7 +150,7 @@ public class SchemaManager {
             if (recs.size() == 0)
                 throw new HBqlException("Schema not found: " + schemaName);
 
-            return (HBaseSchema)recs.get(0).getCurrentValue("schema_obj");
+            return (HBaseMapping)recs.get(0).getCurrentValue("schema_obj");
         }
     }
 }
