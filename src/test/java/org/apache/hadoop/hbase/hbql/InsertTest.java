@@ -344,7 +344,7 @@ public class InsertTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
-                           + "f1:* alias f1default "
+                           + "f1 INCLUDE FAMILY DEFAULT "
                            + ")");
 
         final String query1 = "SELECT f1:val1, f1:val2 FROM tab2";
@@ -353,7 +353,7 @@ public class InsertTest extends TestSupport {
 
         int i = 0;
         for (final HRecord rec : recList1) {
-            Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
+            Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1");
             assertTrue(vals.size() == 2);
             String val1 = IO.getSerialization().getStringFromBytes(vals.get("f1:val1"));
             assertTrue(val1List.get(i).equals(val1));
@@ -369,7 +369,7 @@ public class InsertTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
-                           + "f1:* alias f1default "
+                           + "f1 INCLUDE FAMILY DEFAULT "
                            + ")");
 
         final String query1 = "SELECT f1:val1, f1:val2 FROM tab2 WITH VERSIONS 5";
@@ -378,7 +378,7 @@ public class InsertTest extends TestSupport {
 
         int i = 0;
         for (final HRecord rec : recList1) {
-            Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
+            Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1");
             assertTrue(vals.size() == 2);
             String val1 = IO.getSerialization().getStringFromBytes(vals.get("f1:val1"));
             assertTrue(val1List.get(i).equals(val1));
@@ -399,7 +399,7 @@ public class InsertTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
-                           + "f1:* alias f1default "
+                           + "f1 INCLUDE FAMILY DEFAULT "
                            + ")");
 
         final String query1 = "SELECT f1:valunknown FROM tab2";
@@ -408,7 +408,7 @@ public class InsertTest extends TestSupport {
 
         int i = 0;
         for (final HRecord rec : recList1) {
-            Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1default");
+            Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1");
             assertTrue(vals.size() == 1);
             String val1 = IO.getSerialization().getStringFromBytes(vals.get("f1:valunknown"));
             assertTrue(val1 == null);
@@ -424,7 +424,7 @@ public class InsertTest extends TestSupport {
         connection.execute("CREATE TEMP SCHEMA tab2 FOR TABLE table2"
                            + "("
                            + "keyval key, "
-                           + "f1:* alias f1default "
+                           + "f1 INCLUDE FAMILY DEFAULT "
                            + ")");
 
         final String query1 = "SELECT ('dd'+'ff') as val1 FROM tab2";

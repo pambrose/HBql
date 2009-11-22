@@ -478,7 +478,7 @@ public class SelectTest extends TestSupport {
         assertTrue(recList2.size() == 10);
 
         for (final HRecord rec : recList2) {
-            Map map1 = rec.getFamilyDefaultValueMap("f3:*");
+            Map map1 = rec.getFamilyDefaultValueMap("f3");
             assertTrue(map1.size() == 5);
         }
     }
