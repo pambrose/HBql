@@ -195,13 +195,13 @@ public class HRecordImpl implements Serializable, HRecord {
                                              final String name,
                                              final long timestamp,
                                              final byte[] val) throws HBqlException {
-        this.getFamilyDefaultValueMap(familyName + ":*", true).setCurrentValueMap(timestamp, name, val);
+        this.getFamilyDefaultValueMap(familyName, true).setCurrentValueMap(timestamp, name, val);
     }
 
     public void setFamilyDefaultVersionMap(final String familyName,
                                            final String name,
                                            final NavigableMap<Long, byte[]> val) throws HBqlException {
-        this.getFamilyDefaultValueMap(familyName + ":*", true).setVersionMap(name, val);
+        this.getFamilyDefaultValueMap(familyName, true).setVersionMap(name, val);
     }
 
     public void reset() {

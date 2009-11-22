@@ -51,24 +51,27 @@ public final class ColumnDefinition implements Serializable {
         this.familyDefault = false;
     }
 
-    private ColumnDefinition(final String name, final FieldType type, final boolean familyDefault) {
-        this.columnName = name;
-        this.aliasName = name;
+    private ColumnDefinition(final String familyName,
+                             final String columnName,
+                             final FieldType type,
+                             final boolean familyDefault) {
+        this.columnName = columnName;
+        this.aliasName = columnName.length() > 0 ? columnName : familyName;
         this.fieldType = type;
         this.isArray = false;
         this.defaultValue = null;
         this.familyDefault = familyDefault;
-        this.familyMapping = new FamilyMapping("", null, false);
+        this.familyMapping = new FamilyMapping(familyName, null, false);
     }
 
     // For KEY Attribs
     public static ColumnDefinition newKeyColumn(final String keyName) {
-        return new ColumnDefinition(keyName, FieldType.KeyType, false);
+        return new ColumnDefinition("", keyName, FieldType.KeyType, false);
     }
 
     // For Family Default Attribs
     public static ColumnDefinition newFamilyDefaultColumn(final String familyName) {
-        return new ColumnDefinition(familyName, null, true);
+        return new ColumnDefinition(familyName, "", null, true);
     }
 
     private FamilyMapping getFamilyMapping() {

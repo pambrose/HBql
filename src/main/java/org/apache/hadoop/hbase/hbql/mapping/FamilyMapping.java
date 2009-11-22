@@ -27,14 +27,14 @@ public class FamilyMapping implements Serializable {
 
     private final String familyName;
     private final List<ColumnDefinition> columnList;
-    private final boolean includeFamilyDefault;
+    private final boolean includeUnmapped;
 
     public FamilyMapping(final String familyName,
                          final List<ColumnDefinition> columnList,
-                         final boolean includeFamilyDefault) {
+                         final boolean includeUnmapped) {
         this.familyName = familyName;
         this.columnList = columnList;
-        this.includeFamilyDefault = includeFamilyDefault;
+        this.includeUnmapped = includeUnmapped;
 
         if (this.getColumnList() != null)
             for (final ColumnDefinition columnDefinition : this.getColumnList())
@@ -49,7 +49,7 @@ public class FamilyMapping implements Serializable {
         return columnList;
     }
 
-    public boolean includeFamilyDefault() {
-        return this.includeFamilyDefault;
+    public boolean includeUnmapped() {
+        return this.includeUnmapped;
     }
 }

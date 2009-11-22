@@ -74,9 +74,9 @@ public class HBaseMapping extends Mapping implements HMapping {
                         processColumn(columnDefinition);
 
             // Add Family Defaults
-            for (final FamilyMapping familyDefinition : familyMappingList) {
-                if (familyDefinition.includeFamilyDefault()) {
-                    final String familyName = familyDefinition.getFamilyName();
+            for (final FamilyMapping familyMapping : familyMappingList) {
+                if (familyMapping.includeUnmapped()) {
+                    final String familyName = familyMapping.getFamilyName();
                     final ColumnDefinition columnDefinition = ColumnDefinition.newFamilyDefaultColumn(familyName);
                     final HRecordAttrib attrib = new HRecordAttrib(columnDefinition);
                     this.addFamilyDefaultAttrib(attrib);
@@ -149,9 +149,6 @@ public class HBaseMapping extends Mapping implements HMapping {
     }
 
     private void addFamilyDefaultAttrib(final ColumnAttrib attrib) throws HBqlException {
-
-        if (!attrib.isFamilyDefaultAttrib())
-            return;
 
         final String familyName = attrib.getFamilyName();
         if (this.getFamilyDefaultMap().containsKey(familyName))

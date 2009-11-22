@@ -398,7 +398,7 @@ public class SelectTest extends TestSupport {
             String val1 = IO.getSerialization().getStringFromBytes(vals.get("f1:val1"));
             assertTrue(val1List.get(i).equals(val1));
 
-            Map<String, NavigableMap<Long, byte[]>> vers = rec.getFamilyDefaultVersionMap("f1default");
+            Map<String, NavigableMap<Long, byte[]>> vers = rec.getFamilyDefaultVersionMap("f1");
             assertTrue(vers.size() == 2);
             NavigableMap<Long, byte[]> v2 = vers.get("f1:val1");
             assertTrue(v2.size() == 3);
