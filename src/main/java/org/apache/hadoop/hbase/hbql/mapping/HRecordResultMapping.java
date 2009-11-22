@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema;
+package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -51,7 +51,7 @@ public class HRecordResultMapping extends ResultMapping {
                                     final Result result) throws HBqlException {
 
         // Set key value
-        this.getSchema().getKeyAttrib().setCurrentValue(record, 0, result.getRow());
+        this.getMapping().getKeyAttrib().setCurrentValue(record, 0, result.getRow());
 
         // Set the non-key values
         for (final SelectElement selectElement : selectElementList)
@@ -64,6 +64,6 @@ public class HRecordResultMapping extends ResultMapping {
     }
 
     public ColumnAttrib getAttribByVariableName(final String name) throws HBqlException {
-        return this.getSchema().getAttribByVariableName(name);
+        return this.getMapping().getAttribByVariableName(name);
     }
 }

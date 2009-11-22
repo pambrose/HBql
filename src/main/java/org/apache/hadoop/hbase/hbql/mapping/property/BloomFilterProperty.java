@@ -18,18 +18,18 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema.property;
+package org.apache.hadoop.hbase.hbql.mapping.property;
 
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class MapFileIndexIntervalProperty extends FamilyProperty {
+public class BloomFilterProperty extends FamilyProperty {
 
-    public MapFileIndexIntervalProperty(final GenericValue arg0) {
-        super(Type.MAPFILEINDEXINTERVAL, arg0);
+    public BloomFilterProperty(final GenericValue arg0) {
+        super(Type.BLOOMFILTER, arg0);
     }
 
-    public int getValue() throws HBqlException {
-        return ((Number)this.evaluateConstant(0, false, null)).intValue();
+    public boolean getValue() throws HBqlException {
+        return ((Boolean)this.evaluateConstant(0, false, null));
     }
 }

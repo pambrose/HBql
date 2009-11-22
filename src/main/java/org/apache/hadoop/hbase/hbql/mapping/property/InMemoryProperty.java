@@ -18,27 +18,18 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema.property;
+package org.apache.hadoop.hbase.hbql.mapping.property;
 
+import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.io.hfile.Compression;
 
-public class CompressionTypeProperty extends FamilyProperty {
+public class InMemoryProperty extends FamilyProperty {
 
-    final String type;
-
-    public CompressionTypeProperty(final String type) {
-        super(Type.COMPRESSIONTYPE);
-        this.type = type;
+    public InMemoryProperty(final GenericValue arg0) {
+        super(Type.INMEMORY, arg0);
     }
 
-    public Compression.Algorithm getValue() throws HBqlException {
-
-        try {
-            return Compression.Algorithm.valueOf(this.type);
-        }
-        catch (Exception e) {
-            throw new HBqlException("Invalid compression type: " + this.type);
-        }
+    public boolean getValue() throws HBqlException {
+        return ((Boolean)this.evaluateConstant(0, false, null));
     }
 }

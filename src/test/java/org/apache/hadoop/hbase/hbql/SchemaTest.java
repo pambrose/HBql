@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
-import org.apache.hadoop.hbase.hbql.client.HSchema;
+import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 
@@ -44,9 +44,9 @@ public class SchemaTest extends TestSupport {
         assertFalse(connection.schemaExists(schemaName));
         connection.execute("CREATE SCHEMA " + schemaName + " (keyval key, f1 (val2 object alias val3))");
         assertTrue(connection.schemaExists(schemaName));
-        HSchema schema = connection.getSchema(schemaName);
-        assertTrue(schema.getSchemaName().equals(schemaName) && schema.getTableName().equals(schemaName));
-        assertTrue(!schema.isTempSchema());
+        HMapping mapping = connection.getMapping(schemaName);
+        assertTrue(mapping.getMappingName().equals(schemaName) && mapping.getTableName().equals(schemaName));
+        assertTrue(!mapping.isTempMapping());
         connection.dropSchema(schemaName);
         assertFalse(connection.schemaExists(schemaName));
 
@@ -55,12 +55,12 @@ public class SchemaTest extends TestSupport {
         assertFalse(connection.schemaExists(schemaName));
         connection.execute("CREATE TEMP SCHEMA " + schemaName + " (keyval key, f1(val2 object alias val3))");
         assertTrue(connection.schemaExists(schemaName));
-        schema = connection.getSchema(schemaName);
-        assertTrue(schema.getSchemaName().equals(schemaName) && schema.getTableName().equals(schemaName));
-        assertTrue(schema.isTempSchema());
+        mapping = connection.getMapping(schemaName);
+        assertTrue(mapping.getMappingName().equals(schemaName) && mapping.getTableName().equals(schemaName));
+        assertTrue(mapping.isTempMapping());
         connection.dropSchema(schemaName);
         assertFalse(connection.schemaExists(schemaName));
 
-        Set<HSchema> schemas = connection.getSchemas();
+        Set<HMapping> mappings = connection.getSchemas();
     }
 }

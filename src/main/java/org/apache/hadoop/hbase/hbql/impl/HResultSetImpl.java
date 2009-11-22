@@ -31,7 +31,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
-import org.apache.hadoop.hbase.hbql.schema.ResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
@@ -123,7 +123,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         try {
             return new ResultsIterator<T>(this.getWithArgs().getLimit()) {
 
-                private final HTable table = getConnection().newHTable(getSelectStmt().getSchema().getTableName());
+                private final HTable table = getConnection().newHTable(getSelectStmt().getMapping().getTableName());
                 private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
                 private final Iterator<RowRequest> rowRequestIterator = getRowRequestList().iterator();
 
@@ -183,7 +183,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                 @SuppressWarnings("unchecked")
                 protected T fetchNextObject() throws HBqlException {
 
-                    final ResultMapping mapping = getQuery().getSelectStatement().getMapping();
+                    final ResultMapping mapping = getQuery().getSelectStatement().getResultMapping();
 
                     while (this.getCurrentResultIterator() != null || this.getRowRequestIterator().hasNext()) {
 

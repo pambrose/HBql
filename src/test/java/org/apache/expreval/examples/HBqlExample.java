@@ -28,9 +28,9 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
-import org.apache.hadoop.hbase.hbql.client.HSchema;
+import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
-import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
@@ -53,9 +53,9 @@ public class HBqlExample {
                            + "  title string  alias title"
                            + "))");
 
-        HSchema schema = connection.getSchema("testobjects");
+        HMapping mapping = connection.getMapping("testobjects");
 
-        final HBqlFilter filter = ((HBaseMapping)schema).newHBqlFilter("title LIKE '.*3.*' OR family1:author LIKE '.*4.*'");
+        final HBqlFilter filter = ((HBaseMapping)mapping).newHBqlFilter("title LIKE '.*3.*' OR family1:author LIKE '.*4.*'");
 
         Scan scan = new Scan();
         scan.addColumn(family, author);

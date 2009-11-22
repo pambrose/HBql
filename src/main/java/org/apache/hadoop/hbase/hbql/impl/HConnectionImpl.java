@@ -31,14 +31,14 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
-import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.schema.AnnotationResultMapping;
-import org.apache.hadoop.hbase.hbql.schema.FamilyMapping;
-import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
@@ -178,7 +178,7 @@ public class HConnectionImpl implements HConnection {
         return this.getSchemaManager().schemaExists(schemaName);
     }
 
-    public HBaseMapping getSchema(final String schemaName) throws HBqlException {
+    public HBaseMapping getMapping(final String schemaName) throws HBqlException {
         return this.getSchemaManager().getSchema(schemaName);
     }
 
@@ -186,7 +186,7 @@ public class HConnectionImpl implements HConnection {
         return this.getSchemaManager().dropSchema(schemaName);
     }
 
-    public Set<HSchema> getSchemas() throws HBqlException {
+    public Set<HMapping> getSchemas() throws HBqlException {
         return this.getSchemaManager().getSchemas();
     }
 

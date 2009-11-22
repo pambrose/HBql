@@ -31,11 +31,11 @@ import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
-import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
-import org.apache.hadoop.hbase.hbql.schema.HRecordResultMapping;
-import org.apache.hadoop.hbase.hbql.schema.ResultMapping;
-import org.apache.hadoop.hbase.hbql.schema.Schema;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HRecordResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.Mapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
 import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 
 import java.io.Serializable;
@@ -97,23 +97,23 @@ public abstract class MultipleExpressionContext implements Serializable {
         return this.mappingContext;
     }
 
-    public Schema getSchema() throws HBqlException {
-        return this.getSchemaContext().getSchema();
+    public Mapping getSchema() throws HBqlException {
+        return this.getSchemaContext().getMapping();
     }
 
     public HBaseMapping getHBaseSchema() throws HBqlException {
-        return this.getSchemaContext().getHBaseSchema();
+        return this.getSchemaContext().getHBaseMapping();
     }
 
     public ResultMapping getMapping() throws HBqlException {
-        return this.getSchemaContext().getMapping();
+        return this.getSchemaContext().getResultMapping();
     }
 
     public void setSchemaContext(final MappingContext mappingContext) {
         this.mappingContext = mappingContext;
 
-        if (this.getSchemaContext() != null && this.getSchemaContext().getMapping() == null)
-            this.getSchemaContext().setMapping(new HRecordResultMapping(mappingContext));
+        if (this.getSchemaContext() != null && this.getSchemaContext().getResultMapping() == null)
+            this.getSchemaContext().setResultMapping(new HRecordResultMapping(mappingContext));
 
         this.setContext();
     }

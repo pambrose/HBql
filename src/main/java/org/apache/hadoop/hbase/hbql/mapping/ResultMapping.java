@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema;
+package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -34,19 +34,19 @@ public abstract class ResultMapping implements Serializable {
 
     public ResultMapping(final MappingContext mappingContext) {
         this.mappingContext = mappingContext;
-        this.getMappingContext().setMapping(this);
+        this.getMappingContext().setResultMapping(this);
     }
 
     public MappingContext getMappingContext() {
         return this.mappingContext;
     }
 
-    public Schema getSchema() {
-        return this.getMappingContext().getSchema();
+    public Mapping getMapping() {
+        return this.getMappingContext().getMapping();
     }
 
     public HBaseMapping getHBaseSchema() throws HBqlException {
-        return (HBaseMapping)this.getSchema();
+        return (HBaseMapping)this.getMapping();
     }
 
     public abstract Object newObject(final MappingContext mappingContext,
@@ -55,7 +55,7 @@ public abstract class ResultMapping implements Serializable {
                                      final Result result) throws HBqlException;
 
     public ColumnAttrib getKeyAttrib() throws HBqlException {
-        return this.getSchema().getKeyAttrib();
+        return this.getMapping().getKeyAttrib();
     }
 
     public abstract ColumnAttrib getAttribByVariableName(String name) throws HBqlException;

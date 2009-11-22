@@ -22,8 +22,8 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
+import org.apache.hadoop.hbase.hbql.mapping.HRecordResultMapping;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.schema.HRecordResultMapping;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.DeleteStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
@@ -48,7 +48,7 @@ public class Util {
 
             if (stmt instanceof MappingContext) {
                 final MappingContext mappingContext = (MappingContext)stmt;
-                mappingContext.setMapping(new HRecordResultMapping(mappingContext));
+                mappingContext.setResultMapping(new HRecordResultMapping(mappingContext));
             }
 
             return stmt;

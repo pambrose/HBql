@@ -132,7 +132,7 @@ public class RecordAllTypes implements Serializable {
 
     public HRecord getHRecord(final HConnection connection) throws HBqlException {
 
-        HRecord rec = connection.getSchema("alltypes").newHRecord();
+        HRecord rec = connection.getMapping("alltypes").newHRecord();
 
         rec.setCurrentValue("keyval", this.keyval);
         rec.setCurrentValue("booleanValue", this.booleanValue);

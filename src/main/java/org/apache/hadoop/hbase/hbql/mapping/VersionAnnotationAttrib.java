@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema;
+package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;

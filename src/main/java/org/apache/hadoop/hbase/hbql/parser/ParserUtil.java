@@ -61,7 +61,7 @@ public class ParserUtil {
     public static ExpressionTree parseWhereExpression(final String sql,
                                                       final MappingContext mappingContext) throws HBqlException {
         try {
-            return mappingContext.getSchema().getExpressionTree(sql, mappingContext);
+            return mappingContext.getMapping().getExpressionTree(sql, mappingContext);
         }
         catch (RecognitionException e) {
             e.printStackTrace();

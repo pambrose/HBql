@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema;
+package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.antlr.runtime.RecognitionException;
 import org.apache.expreval.expr.ExpressionTree;
@@ -37,9 +37,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class Schema implements Serializable {
+public abstract class Mapping implements Serializable {
 
-    private String schemaName;
+    private String mappingName;
     private String tableName;
     private final Map<String, ColumnAttrib> columnAttribByVariableNameMap = Maps.newHashMap();
     private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
@@ -50,11 +50,11 @@ public abstract class Schema implements Serializable {
     private volatile Map<String, ExpressionTree> evalMap = null;
 
     // For serialization
-    protected Schema() {
+    protected Mapping() {
     }
 
-    protected Schema(final String schemaName, final String tableName) {
-        this.schemaName = schemaName;
+    protected Mapping(final String mappingName, final String tableName) {
+        this.mappingName = mappingName;
         this.tableName = tableName;
     }
 
@@ -109,8 +109,8 @@ public abstract class Schema implements Serializable {
         return this.evalMap;
     }
 
-    public String getSchemaName() {
-        return this.schemaName;
+    public String getMappingName() {
+        return this.mappingName;
     }
 
     private List<String> getEvalList() {
@@ -118,7 +118,7 @@ public abstract class Schema implements Serializable {
     }
 
     public String toString() {
-        return this.getSchemaName();
+        return this.getMappingName();
     }
 
     public int getEvalCacheSize() {

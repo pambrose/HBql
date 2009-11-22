@@ -64,8 +64,8 @@ import org.apache.hadoop.hbase.hbql.parser.*;
 import org.apache.hadoop.hbase.hbql.statement.*;
 import org.apache.hadoop.hbase.hbql.statement.args.*;
 import org.apache.hadoop.hbase.hbql.statement.select.*;
-import org.apache.hadoop.hbase.hbql.schema.*;
-import org.apache.hadoop.hbase.hbql.schema.property.*;
+import org.apache.hadoop.hbase.hbql.mapping.*;
+import org.apache.hadoop.hbase.hbql.mapping.property.*;
 
 import org.apache.expreval.expr.*;
 import org.apache.expreval.expr.node.*;
@@ -383,7 +383,7 @@ insertExpr returns [GenericValue retval]
 	| keyDEFAULT					{retval = new DefaultKeyword();}
 	;
 					
-mappingDesc returns [Schema retval]
+mappingDesc returns [Mapping retval]
 	: LCURLY a=attribList RCURLY			{retval = newHBaseMapping(input, $a.retval);};
 
 attribList returns [List<ColumnDefinition> retval] 

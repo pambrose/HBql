@@ -23,11 +23,11 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.expreval.util.Maps;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.HSchema;
-import org.apache.hadoop.hbase.hbql.schema.FamilyMapping;
-import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
 
 import java.util.List;
 import java.util.Map;
@@ -61,9 +61,9 @@ public class SchemaManager {
         return this.schemaMap;
     }
 
-    public Set<HSchema> getSchemas() throws HBqlException {
+    public Set<HMapping> getSchemas() throws HBqlException {
 
-        final Set<HSchema> names = Sets.newHashSet();
+        final Set<HMapping> names = Sets.newHashSet();
         names.addAll(getSchemaMap().values());
 
         final String sql = "SELECT schema_obj FROM system_schemas)";
@@ -119,7 +119,7 @@ public class SchemaManager {
                                                       keyName,
                                                       familyMappingList);
 
-        if (mapping.isTempSchema())
+        if (mapping.isTempMapping())
             this.getSchemaMap().put(schemaName, mapping);
         else
             this.insertSchema(mapping);
@@ -131,7 +131,7 @@ public class SchemaManager {
 
         final String sql = "INSERT INTO system_schemas (schema_name, schema_obj) VALUES (?, ?)";
         final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
-        stmt.setParameter(1, mapping.getSchemaName());
+        stmt.setParameter(1, mapping.getMappingName());
         stmt.setParameter(2, mapping);
         stmt.execute();
     }

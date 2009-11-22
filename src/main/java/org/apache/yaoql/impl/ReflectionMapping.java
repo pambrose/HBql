@@ -23,14 +23,14 @@ package org.apache.yaoql.impl;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.schema.Schema;
+import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
-public class ReflectionMapping extends Schema {
+public class ReflectionMapping extends Mapping {
 
     private final static Map<Class<?>, ReflectionMapping> reflectionMappingMap = Maps.newHashMap();
 

@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HSchema;
+import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class ShowMappingsStatement extends SimpleStatement implements ConnectionStatement {
@@ -34,8 +34,8 @@ public class ShowMappingsStatement extends SimpleStatement implements Connection
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Mappings: ");
-        for (final HSchema schema : connection.getSchemas())
-            retval.out.println("\t" + schema.getSchemaName() + " mapped to table " + schema.getTableName());
+        for (final HMapping mapping : connection.getSchemas())
+            retval.out.println("\t" + mapping.getMappingName() + " mapped to table " + mapping.getTableName());
 
         retval.out.flush();
         return retval;

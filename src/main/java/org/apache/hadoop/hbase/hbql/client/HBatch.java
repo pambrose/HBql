@@ -30,10 +30,10 @@ import org.apache.hadoop.hbase.hbql.impl.DeleteAction;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.impl.InsertAction;
-import org.apache.hadoop.hbase.hbql.schema.AnnotationResultMapping;
-import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
-import org.apache.hadoop.hbase.hbql.schema.ResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
 
 import java.io.IOException;
 import java.util.List;
@@ -50,11 +50,11 @@ public class HBatch {
     }
 
     public HConnection getConnection() {
-        return connection;
+        return this.connection;
     }
 
     private HConnectionImpl getConnectionImpl() {
-        return (HConnectionImpl)connection;
+        return (HConnectionImpl)this.getConnection();
     }
 
     public Map<String, List<BatchAction>> getActionList() {
@@ -73,7 +73,7 @@ public class HBatch {
     public void insert(final Object newrec) throws HBqlException {
         final AnnotationResultMapping mapping = this.getConnectionImpl().getAnnotationMapping(newrec);
         final Put put = this.createPut(mapping, newrec);
-        this.getActionList(mapping.getSchema().getTableName()).add(new InsertAction(put));
+        this.getActionList(mapping.getMapping().getTableName()).add(new InsertAction(put));
     }
 
     public void insert(final HRecord rec) throws HBqlException {

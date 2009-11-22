@@ -29,10 +29,10 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
-import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
-import org.apache.hadoop.hbase.hbql.schema.ResultMapping;
-import org.apache.hadoop.hbase.hbql.schema.SelectFamilyAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.SelectFamilyAttrib;
 import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
@@ -90,11 +90,11 @@ public class FamilySelectElement implements SelectElement {
     }
 
     protected HBaseMapping getHBaseSchema() throws HBqlException {
-        return this.getSchemaContext().getHBaseSchema();
+        return this.getSchemaContext().getHBaseMapping();
     }
 
     private ResultMapping getMapping() throws HBqlException {
-        return this.getSchemaContext().getMapping();
+        return this.getSchemaContext().getResultMapping();
     }
 
     private void setSchemaContext(final MappingContext mappingContext) {

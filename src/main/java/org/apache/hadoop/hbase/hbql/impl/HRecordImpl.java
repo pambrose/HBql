@@ -26,9 +26,9 @@ import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.FamilyDefaultValueMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
-import org.apache.hadoop.hbase.hbql.schema.ResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
 import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 
 import java.io.Serializable;
@@ -78,11 +78,11 @@ public class HRecordImpl implements Serializable, HRecord {
     }
 
     public HBaseMapping getHBaseSchema() throws HBqlException {
-        return this.getSchemaContext().getHBaseSchema();
+        return this.getSchemaContext().getHBaseMapping();
     }
 
     public ResultMapping getMapping() throws HBqlException {
-        return this.getSchemaContext().getMapping();
+        return this.getSchemaContext().getResultMapping();
     }
 
     protected ElementMap<ColumnValue> getColumnValuesMap() {
@@ -130,7 +130,7 @@ public class HRecordImpl implements Serializable, HRecord {
         }
         else {
             if (inSchema && !this.getHBaseSchema().containsVariableName(name))
-                throw new HBqlException("Invalid variable name " + this.getHBaseSchema().getSchemaName() + "." + name);
+                throw new HBqlException("Invalid variable name " + this.getHBaseSchema().getMappingName() + "." + name);
             final ColumnValue columnValue = new ColumnValue(name);
             this.addElement(columnValue);
             return columnValue;
@@ -225,7 +225,7 @@ public class HRecordImpl implements Serializable, HRecord {
         }
 
         // Return default value if it exists
-        final ColumnAttrib attrib = this.getSchemaContext().getMapping().getAttribByVariableName(name);
+        final ColumnAttrib attrib = this.getSchemaContext().getResultMapping().getAttribByVariableName(name);
         return (attrib != null) ? attrib.getDefaultValue() : null;
     }
 

@@ -18,62 +18,65 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema;
+package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.io.Serializable;
 
-public final class ColumnDescription implements Serializable {
 
+public final class ColumnDefinition implements Serializable {
+
+    private final String columnName;
     private final String aliasName;
-    private final String familyName, columnName;
-    private final boolean familyDefault;
     private final boolean isArray;
     private final FieldType fieldType;
+    private final boolean familyDefault;
     private final GenericValue defaultValue;
 
-    private ColumnDescription(final String familyQualifiedName,
-                              final String aliasName,
-                              final boolean familyDefault,
-                              final String typeName,
-                              final boolean isArray,
-                              final GenericValue defaultValue) {
+    private FamilyMapping familyMapping = null;
 
-        if (familyQualifiedName.indexOf(":") != -1) {
-            final String[] names = familyQualifiedName.split(":");
-            familyName = names[0];
-            columnName = names[1];
-        }
-        else {
-            familyName = "";
-            columnName = familyQualifiedName;
-        }
+    public ColumnDefinition(final String columnName,
+                            final String typeName,
+                            final boolean isArray,
+                            final String aliasName,
+                            final GenericValue defaultValue) {
 
+        this.columnName = columnName;
         this.aliasName = aliasName;
-        this.familyDefault = familyDefault;
         this.fieldType = getFieldType(typeName);
         this.isArray = isArray;
         this.defaultValue = defaultValue;
+        this.familyDefault = false;
     }
 
-    public static ColumnDescription newColumn(final String familyQualifiedName,
-                                              final String aliasName,
-                                              final boolean familyDefault,
-                                              final String typeName,
-                                              final boolean isArray,
-                                              final GenericValue defaultValue) {
-        return new ColumnDescription(familyQualifiedName,
-                                     aliasName,
-                                     familyDefault,
-                                     typeName,
-                                     isArray,
-                                     defaultValue);
+    private ColumnDefinition(final String name, final FieldType type, final boolean familyDefault) {
+        this.columnName = name;
+        this.aliasName = name;
+        this.fieldType = type;
+        this.isArray = false;
+        this.defaultValue = null;
+        this.familyDefault = familyDefault;
+        this.familyMapping = new FamilyMapping("", null, false);
     }
 
-    public static ColumnDescription newFamilyDefault(final String familyQualifiedName, final String aliasName) {
-        return new ColumnDescription(familyQualifiedName, aliasName, true, null, false, null);
+    // For KEY Attribs
+    public static ColumnDefinition newKeyColumn(final String keyName) {
+        return new ColumnDefinition(keyName, FieldType.KeyType, false);
+    }
+
+    // For Family Default Attribs
+    public static ColumnDefinition newFamilyDefaultColumn(final String familyName) {
+        return new ColumnDefinition(familyName, null, true);
+    }
+
+    private FamilyMapping getFamilyMapping() {
+        return this.familyMapping;
+    }
+
+    void setFamilyMapping(final FamilyMapping familyMapping) {
+        this.familyMapping = familyMapping;
     }
 
     private static FieldType getFieldType(final String typeName) {
@@ -86,7 +89,7 @@ public final class ColumnDescription implements Serializable {
     }
 
     public String getFamilyName() {
-        return this.familyName;
+        return this.getFamilyMapping().getFamilyName();
     }
 
     public String getColumnName() {
@@ -95,10 +98,6 @@ public final class ColumnDescription implements Serializable {
 
     public String getAliasName() {
         return this.aliasName;
-    }
-
-    public boolean isFamilyDefault() {
-        return this.familyDefault;
     }
 
     public FieldType getFieldType() {
@@ -113,5 +112,3 @@ public final class ColumnDescription implements Serializable {
         return this.defaultValue;
     }
 }
-
-

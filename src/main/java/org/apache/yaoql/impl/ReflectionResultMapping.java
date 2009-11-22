@@ -22,8 +22,8 @@ package org.apache.yaoql.impl;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.ResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
 import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.NoStatementMappingContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
@@ -44,7 +44,7 @@ public class ReflectionResultMapping extends ResultMapping {
     }
 
     public ColumnAttrib getAttribByVariableName(final String name) throws HBqlException {
-        return this.getSchema().getAttribByVariableName(name);
+        return this.getMapping().getAttribByVariableName(name);
     }
 
     public ColumnAttrib getAttribFromFamilyQualifiedName(final String familyName, final String columnName) throws HBqlException {

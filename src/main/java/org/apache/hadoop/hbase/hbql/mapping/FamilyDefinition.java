@@ -18,19 +18,19 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema;
+package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.schema.property.BlockCacheProperty;
-import org.apache.hadoop.hbase.hbql.schema.property.BlockSizeProperty;
-import org.apache.hadoop.hbase.hbql.schema.property.BloomFilterProperty;
-import org.apache.hadoop.hbase.hbql.schema.property.CompressionTypeProperty;
-import org.apache.hadoop.hbase.hbql.schema.property.FamilyProperty;
-import org.apache.hadoop.hbase.hbql.schema.property.InMemoryProperty;
-import org.apache.hadoop.hbase.hbql.schema.property.MapFileIndexIntervalProperty;
-import org.apache.hadoop.hbase.hbql.schema.property.MaxVersionsProperty;
-import org.apache.hadoop.hbase.hbql.schema.property.TtlProperty;
+import org.apache.hadoop.hbase.hbql.mapping.property.BlockCacheProperty;
+import org.apache.hadoop.hbase.hbql.mapping.property.BlockSizeProperty;
+import org.apache.hadoop.hbase.hbql.mapping.property.BloomFilterProperty;
+import org.apache.hadoop.hbase.hbql.mapping.property.CompressionTypeProperty;
+import org.apache.hadoop.hbase.hbql.mapping.property.FamilyProperty;
+import org.apache.hadoop.hbase.hbql.mapping.property.InMemoryProperty;
+import org.apache.hadoop.hbase.hbql.mapping.property.MapFileIndexIntervalProperty;
+import org.apache.hadoop.hbase.hbql.mapping.property.MaxVersionsProperty;
+import org.apache.hadoop.hbase.hbql.mapping.property.TtlProperty;
 
 import java.util.List;
 

@@ -24,7 +24,7 @@ import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.schema.FamilyDefinition;
+import org.apache.hadoop.hbase.hbql.mapping.FamilyDefinition;
 
 import java.util.List;
 

@@ -20,14 +20,14 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.schema.ResultMapping;
-import org.apache.hadoop.hbase.hbql.schema.Schema;
+import org.apache.hadoop.hbase.hbql.mapping.Mapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
 
 
 public class NoStatementMappingContext extends MappingContext {
 
-    public NoStatementMappingContext(final Schema schema, final ResultMapping mapping) {
-        super(schema);
-        this.setMapping(mapping);
+    public NoStatementMappingContext(final Mapping mapping, final ResultMapping resultMapping) {
+        super(mapping);
+        this.setResultMapping(resultMapping);
     }
 }

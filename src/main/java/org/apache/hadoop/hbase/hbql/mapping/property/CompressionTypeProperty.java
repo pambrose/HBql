@@ -18,17 +18,27 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.hadoop.hbase.hbql.mapping.property;
 
-public interface HSchema {
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.io.hfile.Compression;
 
-    HRecord newHRecord() throws HBqlException;
+public class CompressionTypeProperty extends FamilyProperty {
 
-    String getSchemaName();
+    final String type;
 
-    String getTableName();
+    public CompressionTypeProperty(final String type) {
+        super(Type.COMPRESSIONTYPE);
+        this.type = type;
+    }
 
-    void dropSchema() throws HBqlException;
+    public Compression.Algorithm getValue() throws HBqlException {
 
-    boolean isTempSchema();
+        try {
+            return Compression.Algorithm.valueOf(this.type);
+        }
+        catch (Exception e) {
+            throw new HBqlException("Invalid compression type: " + this.type);
+        }
+    }
 }

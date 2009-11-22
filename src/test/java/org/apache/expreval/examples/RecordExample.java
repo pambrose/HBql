@@ -59,7 +59,7 @@ public class RecordExample {
 
             final HBatch batch = new HBatch(connection);
             for (int i = 0; i < 10; i++) {
-                HRecord record = connection.getSchema("testobjects").newHRecord();
+                HRecord record = connection.getMapping("testobjects").newHRecord();
                 record.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
                 record.setCurrentValue("author", "A new author value: " + i);
                 record.setCurrentValue("title", "A very new title value: " + i);

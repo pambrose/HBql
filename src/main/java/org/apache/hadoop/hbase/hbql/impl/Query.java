@@ -26,9 +26,9 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
-import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.HRecordResultMapping;
-import org.apache.hadoop.hbase.hbql.schema.ResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.HRecordResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
@@ -64,7 +64,7 @@ public class Query<E> {
                 throw new HBqlException("Unknown class " + clazz.getName());
         }
 
-        selectStatement.setMapping(mapping);
+        selectStatement.setResultMapping(mapping);
 
         return new Query<T>(connection, selectStatement);
     }

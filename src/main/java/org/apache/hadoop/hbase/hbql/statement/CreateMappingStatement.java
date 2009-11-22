@@ -24,9 +24,9 @@ import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.schema.FamilyMapping;
-import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
 
 import java.util.List;
 import java.util.Set;
@@ -95,14 +95,14 @@ public class CreateMappingStatement extends MappingContext implements Connection
                                                               this.getKeyName(),
                                                               this.getFamilyMappingList());
 
-        this.setSchema(mapping);
+        this.setMapping(mapping);
 
         for (final ColumnAttrib attrib : mapping.getColumnAttribSet()) {
             if (attrib.getFieldType() == null && !attrib.isFamilyDefaultAttrib())
-                throw new HBqlException(mapping.getSchemaName() + " attribute "
+                throw new HBqlException(mapping.getMappingName() + " attribute "
                                         + attrib.getFamilyQualifiedName() + " has unknown type.");
         }
 
-        return new ExecutionResults("Mapping " + mapping.getSchemaName() + " defined.");
+        return new ExecutionResults("Mapping " + mapping.getMappingName() + " defined.");
     }
 }

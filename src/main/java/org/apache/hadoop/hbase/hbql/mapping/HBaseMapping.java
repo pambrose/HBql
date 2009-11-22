@@ -18,14 +18,14 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema;
+package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HBaseMapping extends Schema implements HSchema {
+public class HBaseMapping extends Mapping implements HMapping {
 
     private transient HConnectionImpl connection;
     private boolean tempSchema;
@@ -91,7 +91,7 @@ public class HBaseMapping extends Schema implements HSchema {
 
     public HRecord newHRecord() throws HBqlException {
         final MappingContext mappingContext = new NoStatementMappingContext(this, null);
-        mappingContext.setMapping(new HRecordResultMapping(mappingContext));
+        mappingContext.setResultMapping(new HRecordResultMapping(mappingContext));
         return new HRecordImpl(mappingContext);
     }
 
@@ -254,16 +254,16 @@ public class HBaseMapping extends Schema implements HSchema {
 
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
         final MappingContext mappingContext = new NoStatementMappingContext(this, null);
-        mappingContext.setMapping(new HRecordResultMapping(mappingContext));
+        mappingContext.setResultMapping(new HRecordResultMapping(mappingContext));
         final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(query, mappingContext);
         return new HBqlFilter(expressionTree);
     }
 
-    public boolean isTempSchema() {
+    public boolean isTempMapping() {
         return this.tempSchema;
     }
 
-    public void dropSchema() throws HBqlException {
-        this.getConnection().dropSchema(this.getSchemaName());
+    public void dropMapping() throws HBqlException {
+        this.getConnection().dropSchema(this.getMappingName());
     }
 }

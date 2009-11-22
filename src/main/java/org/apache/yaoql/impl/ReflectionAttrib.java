@@ -20,8 +20,8 @@
 
 package org.apache.yaoql.impl;
 
-import org.apache.hadoop.hbase.hbql.schema.FieldAttrib;
-import org.apache.hadoop.hbase.hbql.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.mapping.FieldAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 
 import java.lang.reflect.Field;
 

@@ -18,18 +18,18 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema.property;
+package org.apache.hadoop.hbase.hbql.mapping.property;
 
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class BloomFilterProperty extends FamilyProperty {
+public class MaxVersionsProperty extends FamilyProperty {
 
-    public BloomFilterProperty(final GenericValue arg0) {
-        super(Type.BLOOMFILTER, arg0);
+    public MaxVersionsProperty(final GenericValue arg0) {
+        super(Type.MAXVERSIONS, arg0);
     }
 
-    public boolean getValue() throws HBqlException {
-        return ((Boolean)this.evaluateConstant(0, false, null));
+    public int getValue() throws HBqlException {
+        return ((Number)this.evaluateConstant(0, false, null)).intValue();
     }
 }

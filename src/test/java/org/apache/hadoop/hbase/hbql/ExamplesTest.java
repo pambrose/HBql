@@ -24,10 +24,10 @@ import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
-import org.apache.hadoop.hbase.hbql.client.HSchema;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
@@ -63,9 +63,9 @@ public class ExamplesTest extends TestSupport {
         System.out.println(connection.execute("SHOW SCHEMAS"));
 
         // Or using the API
-        Set<HSchema> schemas = connection.getSchemas();
-        for (HSchema schema : schemas)
-            System.out.println(schema.getSchemaName());
+        Set<HMapping> mappings = connection.getSchemas();
+        for (HMapping mapping : mappings)
+            System.out.println(mapping.getMappingName());
 
         // END SNIPPET: show-schemas
     }
@@ -178,7 +178,7 @@ public class ExamplesTest extends TestSupport {
                                               + "VALUES (ZEROPAD(2, 10), 123, 'test val')"));
 
         // Or using the Record interface
-        HRecord rec = connection.getSchema("foo_schema").newHRecord();
+        HRecord rec = connection.getMapping("foo_schema").newHRecord();
         rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(2, 10));
         rec.setCurrentValue("val1", 123);
         rec.setCurrentValue("al2", "testval");
@@ -352,7 +352,7 @@ public class ExamplesTest extends TestSupport {
         // Add some other records using the Record interface
         final HBatch batch = new HBatch(connection);
         for (int i = 5; i < 10; i++) {
-            HRecord rec = connection.getSchema("demo1").newHRecord();
+            HRecord rec = connection.getMapping("demo1").newHRecord();
             rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
             rec.setCurrentValue("val1", "Value: " + i);
             rec.setCurrentValue("f1:val2", i);

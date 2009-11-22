@@ -34,9 +34,9 @@ import org.apache.expreval.expr.compare.BooleanCompare;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.schema.ColumnDefinition;
-import org.apache.hadoop.hbase.hbql.schema.FamilyMapping;
-import org.apache.hadoop.hbase.hbql.schema.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnDefinition;
+import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
 
 import java.util.List;
 

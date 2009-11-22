@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema;
+package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.client.Result;
@@ -46,7 +46,7 @@ public class AnnotationResultMapping extends ResultMapping {
 
         super(new NoStatementMappingContext(mapping, null));
 
-        getMappingContext().setMapping(this);
+        getMappingContext().setResultMapping(this);
 
         this.clazz = clazz;
 
@@ -66,9 +66,9 @@ public class AnnotationResultMapping extends ResultMapping {
                 this.processColumnVersionAnnotation(field);
         }
 
-        if (!this.getColumnMap().containsKey(this.getSchema().getKeyAttrib().getFamilyQualifiedName()))
+        if (!this.getColumnMap().containsKey(this.getMapping().getKeyAttrib().getFamilyQualifiedName()))
             throw new HBqlException(this.getClazz().getName() + " must contain a mapping to key attribute "
-                                    + this.getSchema().getKeyAttrib().getFamilyQualifiedName());
+                                    + this.getMapping().getKeyAttrib().getFamilyQualifiedName());
     }
 
     public static boolean isAnnotatedObject(final Class<?> clazz) {
@@ -86,7 +86,7 @@ public class AnnotationResultMapping extends ResultMapping {
         if (mappingAnnotation.name() == null || mappingAnnotation.name().length() == 0)
             throw new HBqlException("@Schema annotation for class " + clazz.getName() + " is missing a name");
 
-        HBaseMapping mapping = connection.getSchema(mappingAnnotation.name());
+        HBaseMapping mapping = connection.getMapping(mappingAnnotation.name());
         return new AnnotationResultMapping(mapping, clazz);
     }
 
@@ -94,10 +94,10 @@ public class AnnotationResultMapping extends ResultMapping {
 
         final Column columnAnno = field.getAnnotation(Column.class);
         final String attribName = columnAnno.name().length() == 0 ? field.getName() : columnAnno.name();
-        final HRecordAttrib columnAttrib = (HRecordAttrib)this.getSchema().getAttribByVariableName(attribName);
+        final HRecordAttrib columnAttrib = (HRecordAttrib)this.getMapping().getAttribByVariableName(attribName);
 
         if (columnAttrib == null)
-            throw new HBqlException("Unknown attribute " + this.getSchema() + "." + attribName
+            throw new HBqlException("Unknown attribute " + this.getMapping() + "." + attribName
                                     + " in " + this.getClazz().getName());
 
         if (this.getColumnMap().containsKey(columnAttrib.getFamilyQualifiedName()))
@@ -112,7 +112,7 @@ public class AnnotationResultMapping extends ResultMapping {
 
         final ColumnVersionMap versionAnno = field.getAnnotation(ColumnVersionMap.class);
         final String attribName = versionAnno.name().length() == 0 ? field.getName() : versionAnno.name();
-        final ColumnAttrib columnAttrib = this.getSchema().getAttribByVariableName(attribName);
+        final ColumnAttrib columnAttrib = this.getMapping().getAttribByVariableName(attribName);
 
         this.getColumnVersionMap().put(columnAttrib.getFamilyQualifiedName(),
                                        new VersionAnnotationAttrib(columnAttrib.getFamilyName(),
@@ -125,7 +125,7 @@ public class AnnotationResultMapping extends ResultMapping {
     }
 
     public ColumnAttrib getKeyAttrib() throws HBqlException {
-        final String valname = this.getSchema().getKeyAttrib().getFamilyQualifiedName();
+        final String valname = this.getMapping().getKeyAttrib().getFamilyQualifiedName();
         return this.getAttrib(valname);
     }
 
@@ -137,7 +137,7 @@ public class AnnotationResultMapping extends ResultMapping {
     }
 
     public ColumnAttrib getAttribByVariableName(final String name) throws HBqlException {
-        final String valname = this.getSchema().getAttribByVariableName(name).getFamilyQualifiedName();
+        final String valname = this.getMapping().getAttribByVariableName(name).getFamilyQualifiedName();
         return this.getAttrib(valname);
     }
 

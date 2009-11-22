@@ -30,7 +30,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.InsertValueSource;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
@@ -75,7 +75,7 @@ public class InsertStatement extends MappingContext implements ParameterStatemen
 
         this.connection = connection;
         this.validateMappingName(this.getConnection());
-        this.record = this.getConnection().getSchema(this.getMappingName()).newHRecord();
+        this.record = this.getConnection().getMapping(this.getMappingName()).newHRecord();
 
         for (final SingleExpressionContext element : this.getInsertColumnList()) {
 
@@ -109,7 +109,7 @@ public class InsertStatement extends MappingContext implements ParameterStatemen
             // Skip Default values
             if (type2 == DefaultKeyword.class) {
                 final String name = this.getInsertColumnList().get(i).asString();
-                final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
+                final ColumnAttrib attrib = this.getMapping().getAttribByVariableName(name);
                 if (!attrib.hasDefaultArg())
                     throw new HBqlException("No DEFAULT value specified for " + attrib.getNameToUseInExceptions()
                                             + " in " + this.asString());
@@ -191,7 +191,7 @@ public class InsertStatement extends MappingContext implements ParameterStatemen
                 final String name = this.getInsertColumnList().get(i).asString();
                 final Object val;
                 if (this.getInsertValuesSource().isDefaultValue(i)) {
-                    final ColumnAttrib attrib = this.getSchema().getAttribByVariableName(name);
+                    final ColumnAttrib attrib = this.getMapping().getAttribByVariableName(name);
                     val = attrib.getDefaultValue();
                 }
                 else {

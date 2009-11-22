@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.io.Serialization;
-import org.apache.hadoop.hbase.hbql.schema.FieldType;
+import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.Test;
 

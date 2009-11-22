@@ -18,18 +18,25 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema.property;
+package org.apache.hadoop.hbase.hbql.mapping;
 
-import org.apache.expreval.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class BlockCacheProperty extends FamilyProperty {
+import org.apache.expreval.util.Lists;
 
-    public BlockCacheProperty(final GenericValue arg0) {
-        super(Type.BLOCKCACHE, arg0);
+import java.util.Arrays;
+import java.util.List;
+
+public class EnvVars {
+
+    private static List<String> packagePath = Lists.newArrayList();
+
+    public static void setPackagePath(final String str) {
+        packagePath.clear();
+        packagePath.add("");      // Add an entry for the object as defined in statement
+        packagePath.addAll(Arrays.asList(str.split(":")));
     }
 
-    public boolean getValue() throws HBqlException {
-        return ((Boolean)this.evaluateConstant(0, false, null));
+    public static List<String> getPackagePath() {
+        return packagePath;
     }
 }

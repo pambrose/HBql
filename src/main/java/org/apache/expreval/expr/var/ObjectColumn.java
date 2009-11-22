@@ -25,7 +25,7 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 
 public class ObjectColumn extends GenericColumn<NumberValue> implements ObjectValue {
 

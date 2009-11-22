@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.schema.property;
+package org.apache.hadoop.hbase.hbql.mapping.property;
 
 import org.apache.expreval.expr.ArgumentListTypeSignature;
 import org.apache.expreval.expr.MultipleExpressionContext;

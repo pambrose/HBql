@@ -126,7 +126,7 @@ public class SelectTest extends TestSupport {
                 val8check[j] = intv1[j];
             }
 
-            final HRecord rec = connection.getSchema("tab8").newHRecord();
+            final HRecord rec = connection.getMapping("tab8").newHRecord();
             rec.setCurrentValue("keyval", keyval);
             rec.setCurrentValue("val1", s_val5);
             rec.setCurrentValue("val2", s_val5 + " " + msg);

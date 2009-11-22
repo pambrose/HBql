@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.schema.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 
@@ -93,7 +93,7 @@ public class DeleteStatement extends MappingContext implements ParameterStatemen
         this.validate(connection);
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWithArgs().getAllColumnsUsedInExprs();
-        final HTable table = connection.newHTable(this.getSchema().getTableName());
+        final HTable table = connection.newHTable(this.getMapping().getTableName());
 
         final List<RowRequest> rowRequestList = this.getWithArgs().getRowRequestList(allWhereAttribs);
 
