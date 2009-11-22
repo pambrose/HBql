@@ -15,14 +15,14 @@ family_description:
     family_name [ '(' family_property [, ...] ')' ]
 
 family_property:
-    MAX VERSIONS integer_value
-	| BLOOM FILTER boolean_value
-	| BLOCK SIZE integer_value
-	| BLOCK CACHE ENABLED boolean_value
-	| COMPRESSION TYPE ( GZ | LZO | NONE )	
-	| IN MEMORY boolean_value
-	| MAP FILE INDEX INTERVAL integer_value
-	| TTL integer_value
+    MAX_VERSIONS ':' integer_value
+	| BLOOM_FILTER ':' boolean_value
+	| BLOCK_SIZE ':' integer_value
+	| BLOCK_CACHE_ENABLED ':' boolean_value
+	| COMPRESSION_TYPE ':' ( GZ | LZO | NONE )	
+	| IN_MEMORY ':' boolean_value
+	| MAP_FILE_INDEX_INTERVAL ':' integer_value
+	| TTL ':' integer_value
 
 ---------------------------
 

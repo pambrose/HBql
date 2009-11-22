@@ -149,16 +149,15 @@ familyPropertyList returns [List<FamilyProperty> retval]
 	: a1=familyProperty {retval.add($a1.retval);} (COMMA a2=familyProperty {retval.add($a2.retval);})*;
 	
 familyProperty returns [FamilyProperty retval]
-options {backtrack=true;}	
-	: keyMAX keyVERSIONS v=exprValue		{retval = new MaxVersionsProperty($v.retval);}
-	| keyBLOOM keyFILTER v=exprValue		{retval = new BloomFilterProperty($v.retval);}
-	| keyBLOCK keySIZE v=exprValue			{retval = new BlockSizeProperty($v.retval);}
-	| keyBLOCK keyCACHE keyENABLED v=exprValue	{retval = new BlockCacheProperty($v.retval);}
-	| keyCOMPRESSION keyTYPE c=compressionType	{retval = new CompressionTypeProperty($c.text);}
-	| keyIN keyMEMORY v=exprValue			{retval = new InMemoryProperty($v.retval);}
-	| keyMAP keyFILE keyINDEX keyINTERVAL v=exprValue		
-							{retval = new MapFileIndexIntervalProperty($v.retval);}
-	| keyTTL v=exprValue				{retval = new TtlProperty($v.retval);}
+//options {backtrack=true;}	
+	: keyMAX_VERSIONS COLON v=exprValue		{retval = new MaxVersionsProperty($v.retval);}
+	| keyBLOOM_FILTER COLON v=exprValue		{retval = new BloomFilterProperty($v.retval);}
+	| keyBLOCK_SIZE COLON v=exprValue		{retval = new BlockSizeProperty($v.retval);}
+	| keyBLOCK_CACHE_ENABLED COLON v=exprValue	{retval = new BlockCacheProperty($v.retval);}
+	| keyCOMPRESSION_TYPE COLON c=compressionType	{retval = new CompressionTypeProperty($c.text);}
+	| keyIN_MEMORY COLON v=exprValue		{retval = new InMemoryProperty($v.retval);}
+	| keyMAP_FILE_INDEX_INTERVAL COLON v=exprValue	{retval = new MapFileIndexIntervalProperty($v.retval);}
+	| keyTTL COLON v=exprValue			{retval = new TtlProperty($v.retval);}
 	;
 
 compressionType
@@ -169,7 +168,7 @@ familyMappingList returns [List<FamilyMapping> retval]
 	: a1=familyMapping {retval.add($a1.retval);} (COMMA a2=familyMapping {retval.add($a2.retval);})*;
 
 familyMapping returns [FamilyMapping retval]
-	: f=simpleName (keyINCLUDE keyFAMILY d=keyDEFAULT)? (LPAREN c=columnDefinitionnList RPAREN)? 
+	: f=simpleName (keyINCLUDE d=keyUNMAPPED)? (LPAREN c=columnDefinitionnList RPAREN)? 
 							{retval = new FamilyMapping($f.text, $c.retval, $d.text!=null);};
 
 columnDefinitionnList returns [List<ColumnDefinition> retval]
@@ -547,22 +546,17 @@ keyPARSE	: {isKeyword(input, "PARSE")}? ID;
 keyEXPR		: {isKeyword(input, "EXPR")}? ID;
 keyIMPORT	: {isKeyword(input, "IMPORT")}? ID;
 keyTEMP		: {isKeyword(input, "TEMP")}? ID;
-keyBLOOM	: {isKeyword(input, "BLOOM")}? ID;
-keyBLOCK	: {isKeyword(input, "BLOCK")}? ID;
-keySIZE		: {isKeyword(input, "SIZE")}? ID;
-keyCACHE	: {isKeyword(input, "CACHE")}? ID;
-keyCOMPRESSION	: {isKeyword(input, "COMPRESSION")}? ID;
-keyTYPE		: {isKeyword(input, "TYPE")}? ID;
-keyMEMORY	: {isKeyword(input, "MEMORY")}? ID;
-keyMAP		: {isKeyword(input, "MAP")}? ID;
-keyFILE		: {isKeyword(input, "FILE")}? ID;
-keyINDEX	: {isKeyword(input, "INDEX")}? ID;
-keyINTERVAL	: {isKeyword(input, "INTERVAL")}? ID;
 keyTTL		: {isKeyword(input, "TTL")}? ID;
-keyENABLED	: {isKeyword(input, "ENABLED")}? ID;
 keyGZ		: {isKeyword(input, "GZ")}? ID;
 keyLZO		: {isKeyword(input, "LZO")}? ID;
 keyNONE		: {isKeyword(input, "NONE")}? ID;
 keyINCLUDE	: {isKeyword(input, "INCLUDE")}? ID;
-keyFAMILY	: {isKeyword(input, "FAMILY")}? ID;
+keyUNMAPPED	: {isKeyword(input, "UNMAPPED")}? ID;
 keyKEY		: {isKeyword(input, "KEY")}? ID;
+keyMAX_VERSIONS	: {isKeyword(input, "MAX_VERSIONS")}? ID;
+keyBLOOM_FILTER	: {isKeyword(input, "BLOOM_FILTER")}? ID;
+keyBLOCK_SIZE	: {isKeyword(input, "BLOCK_SIZE")}? ID;
+keyIN_MEMORY	: {isKeyword(input, "IN_MEMORY")}? ID;
+keyBLOCK_CACHE_ENABLED		: {isKeyword(input, "BLOCK_CACHE_ENABLED")}? ID;
+keyCOMPRESSION_TYPE		: {isKeyword(input, "COMPRESSION_TYPE")}? ID;
+keyMAP_FILE_INDEX_INTERVAL	: {isKeyword(input, "MAP_FILE_INDEX_INTERVAL")}? ID;

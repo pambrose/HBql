@@ -32,13 +32,13 @@ public abstract class FamilyProperty extends MultipleExpressionContext {
     public static enum Type {
 
         TTL(new ArgumentListTypeSignature(IntegerValue.class), "TTL"),
-        MAPFILEINDEXINTERVAL(new ArgumentListTypeSignature(IntegerValue.class), "INDEX INTERVAL"),
-        INMEMORY(new ArgumentListTypeSignature(BooleanValue.class), "IN MEMORY"),
-        COMPRESSIONTYPE(new ArgumentListTypeSignature(StringValue.class), "COMPRESSION TYPE"),
-        BLOCKCACHE(new ArgumentListTypeSignature(BooleanValue.class), "BLOCK CACHE"),
-        BLOCKSIZE(new ArgumentListTypeSignature(IntegerValue.class), "BLOCK SIZE"),
-        BLOOMFILTER(new ArgumentListTypeSignature(BooleanValue.class), "BLOOM FILTER"),
-        MAXVERSIONS(new ArgumentListTypeSignature(IntegerValue.class), "MAX VERSIONS");
+        MAPFILEINDEXINTERVAL(new ArgumentListTypeSignature(IntegerValue.class), "INDEX:INTERVAL"),
+        INMEMORY(new ArgumentListTypeSignature(BooleanValue.class), "IN_MEMORY"),
+        COMPRESSIONTYPE(new ArgumentListTypeSignature(StringValue.class), "COMPRESSION_TYPE"),
+        BLOCKCACHE(new ArgumentListTypeSignature(BooleanValue.class), "BLOCK_CACHE"),
+        BLOCKSIZE(new ArgumentListTypeSignature(IntegerValue.class), "BLOCK_SIZE"),
+        BLOOMFILTER(new ArgumentListTypeSignature(BooleanValue.class), "BLOOM_FILTER"),
+        MAXVERSIONS(new ArgumentListTypeSignature(IntegerValue.class), "MAX_VERSIONS");
 
         private final ArgumentListTypeSignature typeSignature;
         private final String description;
@@ -73,6 +73,6 @@ public abstract class FamilyProperty extends MultipleExpressionContext {
     }
 
     public String asString() {
-        return this.getPropertyType().getDescription() + " " + this.getGenericValue(0).asString();
+        return this.getPropertyType().getDescription() + ": " + this.getGenericValue(0).asString();
     }
 }

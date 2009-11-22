@@ -73,14 +73,14 @@ public class TableTest extends TestSupport {
         }
         assertFalse(connection.tableExists(tableName));
         connection.execute("CREATE TABLE " + tableName + " (family1 ("
-                           + "MAX VERSIONS  12, "
-                           + "BLOOM FILTER  TRUE, "
-                           + "BLOCK SIZE 123, "
-                           + "BLOCK CACHE ENABLED TRUE, "
-                           + "COMPRESSION TYPE GZ, "
-                           + "IN MEMORY TRUE, "
-                           + "MAP FILE INDEX INTERVAL  230, "
-                           + "TTL 440"
+                           + "MAX_VERSIONS:  12, "
+                           + "BLOOM_FILTER:  TRUE, "
+                           + "BLOCK_SIZE: 123, "
+                           + "BLOCK_CACHE_ENABLED: TRUE, "
+                           + "COMPRESSION_TYPE: GZ, "
+                           + "IN_MEMORY: TRUE, "
+                           + "MAP_FILE_INDEX_INTERVAL:  230, "
+                           + "TTL: 440"
                            + "))");
         assertTrue(connection.tableExists(tableName));
         HTableDescriptor table = connection.getTable(tableName);

@@ -140,7 +140,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: create-table
 
         HConnection connection = HConnectionManager.newConnection();
-        connection.execute("CREATE TABLE foo (family1 (MAX VERSIONS 10), family2, family3)");
+        connection.execute("CREATE TABLE foo (family1 (MAX_VERSIONS: 10), family2, family3)");
 
         // END SNIPPET: create-table
 
@@ -269,7 +269,7 @@ public class ExamplesTest extends TestSupport {
         connection.execute("CREATE TEMP MAPPING mapping1 FOR TABLE foo "
                            + "("
                            + "keyval key, "
-                           + "family1 INCLUDE FAMILY DEFAULT ("
+                           + "family1 INCLUDE UNMAPPED ("
                            + "  val1 STRING ALIAS val1, "
                            + "  val2 STRING ALIAS val3 "
                            + "))");
@@ -288,12 +288,12 @@ public class ExamplesTest extends TestSupport {
         connection.execute("CREATE TEMP MAPPING tab1 FOR TABLE table1"
                            + "("
                            + "keyval KEY, "
-                           + "f1 INCLUDE FAMILY DEFAULT ("
+                           + "f1 INCLUDE UNMAPPED ("
                            + "  val1 STRING ALIAS val1, "
                            + "  val1 INT ALIAS val5"
                            + "),  "
-                           + "f2 INCLUDE FAMILY DEFAULT, "
-                           + "f3 INCLUDE FAMILY DEFAULT ("
+                           + "f2 INCLUDE UNMAPPED, "
+                           + "f3 INCLUDE UNMAPPED ("
                            + "  val2 INT ALIAS val6, "
                            + "  val3 INT ALIAS val7 "
                            + "))");

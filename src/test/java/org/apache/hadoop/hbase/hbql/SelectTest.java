@@ -307,7 +307,7 @@ public class SelectTest extends TestSupport {
         connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
-                           + "f1 INCLUDE FAMILY DEFAULT ("
+                           + "f1 INCLUDE UNMAPPED ("
                            + "  val2 string alias val2 "
                            + "), "
                            + "f2 ("
@@ -358,7 +358,7 @@ public class SelectTest extends TestSupport {
         connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
-                           + "f1 INCLUDE FAMILY DEFAULT "
+                           + "f1 INCLUDE UNMAPPED "
                            + ")");
 
         final String query1 = "SELECT f1:val1, f1:val2 FROM tab8";
@@ -384,7 +384,7 @@ public class SelectTest extends TestSupport {
         connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
-                           + "f1 INCLUDE FAMILY DEFAULT "
+                           + "f1 INCLUDE UNMAPPED "
                            + ")");
 
         final String query1 = "SELECT f1:val1, f1:val2 FROM tab8 WITH VERSIONS 5";
@@ -414,7 +414,7 @@ public class SelectTest extends TestSupport {
         connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
-                           + "f1 INCLUDE FAMILY DEFAULT "
+                           + "f1 INCLUDE UNMAPPED "
                            + ")");
 
         final String query1 = "SELECT f1:unknown FROM tab8";
@@ -439,7 +439,7 @@ public class SelectTest extends TestSupport {
         connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
-                           + "f1 INCLUDE FAMILY DEFAULT "
+                           + "f1 INCLUDE UNMAPPED "
                            + ")");
 
         final String query1 = "SELECT ('dd'+'ff') as val1 FROM tab8";
@@ -466,7 +466,7 @@ public class SelectTest extends TestSupport {
         connection.execute("CREATE TEMP MAPPING table1"
                            + "("
                            + "keyval key, "
-                           + "f3 INCLUDE FAMILY DEFAULT "
+                           + "f3 INCLUDE UNMAPPED "
                            + ")");
 
         final String query1 = "SELECT f3:* FROM table1";
@@ -491,7 +491,7 @@ public class SelectTest extends TestSupport {
         connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
-                           + "f1 INCLUDE FAMILY DEFAULT ("
+                           + "f1 INCLUDE UNMAPPED ("
                            + "  val1 string alias val1, "
                            + "  val10 string alias val10 "
                            + "))");
@@ -522,7 +522,7 @@ public class SelectTest extends TestSupport {
         connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
-                           + "f1 INCLUDE FAMILY DEFAULT ("
+                           + "f1 INCLUDE UNMAPPED ("
                            + "  val1 string alias val1, "
                            + "  val10 string alias val10 "
                            + "))");
@@ -560,7 +560,7 @@ public class SelectTest extends TestSupport {
         connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("
                            + "keyval key, "
-                           + "f1 INCLUDE FAMILY DEFAULT ("
+                           + "f1 INCLUDE UNMAPPED ("
                            + "  val1 string alias val1, "
                            + "  val10 string alias val10 default 'test default', "
                            + "  val11 string alias val11  "
