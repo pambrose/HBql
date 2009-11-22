@@ -119,7 +119,7 @@ public class HBatch<T> {
 
         final Put put;
         final HBaseMapping mapping = resultMapping.getHBaseMapping();
-        final ColumnAttrib keyAttrib = mapping.getKeyAttrib();
+        final ColumnAttrib keyAttrib = resultMapping.getKeyAttrib();
 
         if (newrec instanceof HRecordImpl) {
             final HRecordImpl record = (HRecordImpl)newrec;
@@ -142,7 +142,7 @@ public class HBatch<T> {
                 for (final ColumnAttrib colattrib : mapping.getColumnAttribListByFamilyName(family)) {
 
                     // One extra lookup for annotations
-                    final ColumnAttrib attrib = mapping.getAttribByVariableName(colattrib.getFamilyQualifiedName());
+                    final ColumnAttrib attrib = resultMapping.getAttribByVariableName(colattrib.getFamilyQualifiedName());
                     final byte[] b = attrib.getValueAsBytes(newrec);
                     put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), b);
                 }
