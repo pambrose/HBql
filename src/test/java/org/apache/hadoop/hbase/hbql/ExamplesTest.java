@@ -183,7 +183,7 @@ public class ExamplesTest extends TestSupport {
         rec.setCurrentValue("val1", 123);
         rec.setCurrentValue("al2", "testval");
 
-        HBatch batch = new HBatch(connection);
+        HBatch<HRecord> batch = HBatch.newHBatch(connection);
         batch.insert(rec);
         batch.apply();
 
@@ -351,7 +351,7 @@ public class ExamplesTest extends TestSupport {
         }
 
         // Add some other records using the Record interface
-        final HBatch batch = new HBatch(connection);
+        final HBatch<HRecord> batch = HBatch.newHBatch(connection);
         for (int i = 5; i < 10; i++) {
             HRecord rec = connection.getMapping("demo1").newHRecord();
             rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
@@ -453,7 +453,7 @@ public class ExamplesTest extends TestSupport {
         }
 
         // Add some other records using an AnnotatedExample object
-        final HBatch batch = new HBatch(connection);
+        final HBatch<AnnotatedExample> batch = HBatch.newHBatch(connection);
         for (int i = 5; i < 10; i++) {
             AnnotatedExample obj = new AnnotatedExample();
             obj.keyval = Util.getZeroPaddedNumber(i, 10);

@@ -91,7 +91,7 @@ public class AnnotationAllTypesTest extends TestSupport {
     public static List<AnnotatedAllTypes> insertSomeData(int cnt, boolean noRandomData) throws HBqlException {
 
         List<AnnotatedAllTypes> retval = Lists.newArrayList();
-        final HBatch batch = new HBatch(connection);
+        final HBatch<AnnotatedAllTypes> batch = HBatch.newHBatch(connection);
 
         for (int i = 0; i < cnt; i++) {
 

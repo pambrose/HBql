@@ -185,7 +185,7 @@ public class InsertStatement extends MappingContext implements ParameterStatemen
 
         while (this.getInsertValuesSource().hasValues()) {
 
-            final HBatch batch = new HBatch(connection);
+            final HBatch<HRecord> batch = HBatch.newHBatch(connection);
 
             for (int i = 0; i < this.getInsertColumnList().size(); i++) {
                 final String name = this.getInsertColumnList().get(i).asString();

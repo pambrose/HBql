@@ -98,7 +98,7 @@ public class SelectTest extends TestSupport {
                                       final int cnt,
                                       final String msg) throws HBqlException {
 
-        final HBatch batch = new HBatch(connection);
+        final HBatch<HRecord> batch = HBatch.newHBatch(connection);
 
         for (int i = 0; i < cnt; i++) {
 

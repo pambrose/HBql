@@ -120,7 +120,7 @@ public class AnnotationExample {
 
         HConnection connection = HConnectionManager.newConnection();
 
-        final HBatch batch = new HBatch(connection);
+        final HBatch<TestObject> batch = HBatch.newHBatch(connection);
         for (int i = 0; i < 10; i++)
             batch.insert(new TestObject(i));
 

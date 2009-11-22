@@ -68,6 +68,7 @@ public class HBaseMapping extends Mapping implements HMapping {
             processColumn(ColumnDefinition.newKeyColumn(keyName));
 
         if (familyMappingList != null) {
+            // Add columns
             for (final FamilyMapping familyDefinition : familyMappingList)
                 if (familyDefinition.getColumnList() != null)
                     for (final ColumnDefinition columnDefinition : familyDefinition.getColumnList())

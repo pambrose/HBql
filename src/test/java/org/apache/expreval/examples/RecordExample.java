@@ -54,7 +54,7 @@ public class RecordExample {
 
         System.out.println(connection.execute("LIST TABLES"));
 
-        final HBatch batch = new HBatch(connection);
+        final HBatch<HRecord> batch = HBatch.newHBatch(connection);
         for (int i = 0; i < 10; i++) {
             HRecord record = connection.getMapping("testobjects").newHRecord();
             record.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));

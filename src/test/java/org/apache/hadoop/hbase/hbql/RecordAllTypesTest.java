@@ -86,7 +86,7 @@ public class RecordAllTypesTest extends TestSupport {
     public static List<RecordAllTypes> insertSomeData(int cnt, boolean noRandomData) throws HBqlException {
 
         List<RecordAllTypes> retval = Lists.newArrayList();
-        final HBatch batch = new HBatch(connection);
+        final HBatch<HRecord> batch = HBatch.newHBatch(connection);
 
         for (int i = 0; i < cnt; i++) {
 
