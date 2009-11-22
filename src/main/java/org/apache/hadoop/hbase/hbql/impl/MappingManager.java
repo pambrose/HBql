@@ -50,7 +50,7 @@ public class MappingManager {
         this.getConnection().execute(sql);
 
         if (!this.getConnection().tableExists("system_mappings"))
-            this.getConnection().execute("CREATE TABLE system_mappings (f1 (MAX_VERSIONS: 5)");
+            this.getConnection().execute("CREATE TABLE system_mappings (f1 (MAX_VERSIONS: 5))");
     }
 
     private HConnectionImpl getConnection() {

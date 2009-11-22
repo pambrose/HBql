@@ -54,20 +54,16 @@ public class RecordExample {
 
         System.out.println(connection.execute("LIST TABLES"));
 
-        if (!connection.tableExists("testobjects")) {
-            System.out.println(connection.execute("create table with mapping testobjects"));
-
-            final HBatch batch = new HBatch(connection);
-            for (int i = 0; i < 10; i++) {
-                HRecord record = connection.getMapping("testobjects").newHRecord();
-                record.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
-                record.setCurrentValue("author", "A new author value: " + i);
-                record.setCurrentValue("title", "A very new title value: " + i);
-                batch.insert(record);
-            }
-
-            batch.apply();
+        final HBatch batch = new HBatch(connection);
+        for (int i = 0; i < 10; i++) {
+            HRecord record = connection.getMapping("testobjects").newHRecord();
+            record.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
+            record.setCurrentValue("author", "A new author value: " + i);
+            record.setCurrentValue("title", "A very new title value: " + i);
+            batch.insert(record);
         }
+
+        batch.apply();
 
         if (connection.tableEnabled("testobjects2"))
             System.out.println(connection.execute("describe table testobjects2"));
