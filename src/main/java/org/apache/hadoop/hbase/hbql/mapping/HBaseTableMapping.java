@@ -131,9 +131,6 @@ public class HBaseTableMapping extends Mapping implements HMapping {
 
     protected void addAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HBqlException {
 
-        if (attrib.isUnMappedAttrib())
-            return;
-
         final String name = attrib.getFamilyQualifiedName();
         if (this.getAttribByFamilyQualifiedNameMap().containsKey(name))
             throw new HBqlException(name + " already declared");
@@ -218,7 +215,7 @@ public class HBaseTableMapping extends Mapping implements HMapping {
 
     public void addAttribToFamilyNameColumnListMap(ColumnAttrib attrib) throws HBqlException {
 
-        if (attrib.isAKeyAttrib() || attrib.isUnMappedAttrib())
+        if (attrib.isAKeyAttrib())
             return;
 
         final String familyName = attrib.getFamilyName();
@@ -263,5 +260,13 @@ public class HBaseTableMapping extends Mapping implements HMapping {
 
     public void dropMapping() throws HBqlException {
         this.getConnection().dropMapping(this.getMappingName());
+    }
+
+    public void validate(final String mappingName) throws HBqlException {
+        for (final ColumnAttrib attrib : this.getColumnAttribSet()) {
+            if (attrib.getFieldType() == null)
+                throw new HBqlException(mappingName + " attribute "
+                                        + attrib.getFamilyQualifiedName() + " has unknown type.");
+        }
     }
 }

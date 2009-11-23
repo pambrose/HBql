@@ -43,7 +43,6 @@ public abstract class ColumnAttrib implements Serializable {
     private volatile byte[] columnBytes = null;
     private final String getter;
     private final String setter;
-    private final boolean unMapped;
     private final boolean anArray;
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
@@ -53,7 +52,6 @@ public abstract class ColumnAttrib implements Serializable {
     protected ColumnAttrib(final String familyName,
                            final String columnName,
                            final String aliasName,
-                           final boolean unMapped,
                            final FieldType fieldType,
                            final boolean isArray,
                            final String getter,
@@ -62,7 +60,6 @@ public abstract class ColumnAttrib implements Serializable {
         this.familyName = familyName;
         this.columnName = columnName;
         this.aliasName = aliasName;
-        this.unMapped = unMapped;
         this.fieldType = fieldType;
         this.anArray = isArray;
         this.getter = getter;
@@ -310,10 +307,6 @@ public abstract class ColumnAttrib implements Serializable {
 
     protected Method getSetterMethod() {
         return this.setterMethod;
-    }
-
-    public boolean isUnMappedAttrib() {
-        return this.unMapped;
     }
 
     protected boolean hasGetter() {

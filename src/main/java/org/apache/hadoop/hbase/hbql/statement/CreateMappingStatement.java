@@ -24,7 +24,6 @@ import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 
@@ -97,11 +96,7 @@ public class CreateMappingStatement extends StatementContext implements Connecti
 
         this.setMapping(tableMapping);
 
-        for (final ColumnAttrib attrib : tableMapping.getColumnAttribSet()) {
-            if (attrib.getFieldType() == null && !attrib.isUnMappedAttrib())
-                throw new HBqlException(tableMapping.getMappingName() + " attribute "
-                                        + attrib.getFamilyQualifiedName() + " has unknown type.");
-        }
+        tableMapping.validate(tableMapping.getMappingName());
 
         return new ExecutionResults("Mapping " + tableMapping.getMappingName() + " defined.");
     }

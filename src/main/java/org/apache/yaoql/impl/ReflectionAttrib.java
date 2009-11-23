@@ -28,7 +28,7 @@ import java.lang.reflect.Field;
 public class ReflectionAttrib extends FieldAttrib {
 
     public ReflectionAttrib(final Field field) {
-        super(null, null, field, FieldType.getFieldType(field.getType()), false, null, null);
+        super(null, null, field, FieldType.getFieldType(field.getType()), null, null);
     }
 
     final String getVariableName() {

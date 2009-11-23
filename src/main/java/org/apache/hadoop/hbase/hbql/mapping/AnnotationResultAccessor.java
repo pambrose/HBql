@@ -119,7 +119,6 @@ public class AnnotationResultAccessor extends ResultAccessor {
                                                                    columnAttrib.getColumnName(),
                                                                    field,
                                                                    columnAttrib.getFieldType(),
-                                                                   columnAttrib.isUnMappedAttrib(),
                                                                    columnAttrib.getGetter(),
                                                                    columnAttrib.getSetter()));
     }

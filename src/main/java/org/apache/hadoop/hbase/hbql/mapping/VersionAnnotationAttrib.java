@@ -35,10 +35,9 @@ public class VersionAnnotationAttrib extends FieldAttrib {
                                    final String columnName,
                                    final Field field,
                                    final FieldType fieldType,
-                                   final boolean unMapped,
                                    final String getter,
                                    final String setter) throws HBqlException {
-        super(familyName, columnName, field, fieldType, unMapped, getter, setter);
+        super(familyName, columnName, field, fieldType, getter, setter);
 
         final ColumnVersionMap versionAnno = field.getAnnotation(ColumnVersionMap.class);
 

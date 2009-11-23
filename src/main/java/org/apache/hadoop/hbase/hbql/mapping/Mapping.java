@@ -85,8 +85,7 @@ public abstract class Mapping implements Serializable {
     protected void addAttribToVariableNameMap(final ColumnAttrib attrib,
                                               final String... attribNames) throws HBqlException {
 
-        if (!attrib.isUnMappedAttrib())
-            this.getColumnAttribSet().add(attrib);
+        this.getColumnAttribSet().add(attrib);
 
         for (final String attribName : attribNames) {
             if (this.getColumnAttribByVariableNameMap().containsKey(attribName))

@@ -37,13 +37,11 @@ public abstract class FieldAttrib extends ColumnAttrib {
                           final String columnName,
                           final Field field,
                           final FieldType fieldType,
-                          final boolean unMapped,
                           final String getter,
                           final String setter) {
         super(familyName,
               (columnName != null && columnName.length() > 0) ? columnName : field.getName(),
               field.getName(),
-              unMapped,
               fieldType,
               field.getType().isArray(),
               getter,
@@ -115,9 +113,6 @@ public abstract class FieldAttrib extends ColumnAttrib {
                                         final String name,
                                         final byte[] val) throws HBqlException {
 
-        if (!this.isUnMappedAttrib())
-            throw new HBqlException(this.getFamilyQualifiedName() + " not marked as INCLUDE UNMAPPED");
-
         Map<String, byte[]> mapVal = (Map<String, byte[]>)this.getCurrentValue(obj);
 
         if (mapVal == null) {
@@ -131,9 +126,6 @@ public abstract class FieldAttrib extends ColumnAttrib {
     public void setUnMappedVersionMap(final Object obj,
                                       final String name,
                                       final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
-
-        if (!this.isUnMappedAttrib())
-            throw new HBqlException(this.getFamilyQualifiedName() + " not marked as INCLUDE UNMAPPED");
 
         Map<String, NavigableMap<Long, byte[]>> mapVal = (Map<String, NavigableMap<Long, byte[]>>)this.getCurrentValue(obj);
 

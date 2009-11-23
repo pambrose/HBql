@@ -41,7 +41,6 @@ public class HRecordAttrib extends ColumnAttrib {
         super(columnDefinition.getFamilyName(),
               columnDefinition.getColumnName(),
               columnDefinition.getAliasName(),
-              false,
               columnDefinition.getFieldType(),
               columnDefinition.isArray(),
               null,
