@@ -22,7 +22,9 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public abstract class SimpleStatement {
+import java.io.Serializable;
+
+public abstract class SimpleStatement implements Serializable {
 
     public void validate() throws HBqlException {
 

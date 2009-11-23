@@ -48,7 +48,6 @@ public abstract class ColumnAttrib implements Serializable {
     private transient Method setterMethod = null;
     private final boolean embedded;
 
-
     protected ColumnAttrib(final String familyName,
                            final String columnName,
                            final String aliasName,

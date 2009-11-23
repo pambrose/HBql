@@ -45,7 +45,7 @@ public class HRecordImpl implements Serializable, HRecord {
     private List<String> namePositionList = Lists.newArrayList();
 
     private volatile ElementMap<ColumnValue> columnValuesMap = null;
-    private volatile ElementMap<UnMappedValueMap> unMappedElementsMap = null;
+    private volatile ElementMap<UnMappedValueMap> unMappedValuesMap = null;
 
     public HRecordImpl(final StatementContext statementContext) {
         this.setStatementContext(statementContext);
@@ -94,13 +94,13 @@ public class HRecordImpl implements Serializable, HRecord {
         return this.columnValuesMap;
     }
 
-    private ElementMap<UnMappedValueMap> getUnMappedElementsMap() {
-        if (this.unMappedElementsMap == null)
+    private ElementMap<UnMappedValueMap> getUnMappedValuesMap() {
+        if (this.unMappedValuesMap == null)
             synchronized (this) {
-                if (this.unMappedElementsMap == null)
-                    this.unMappedElementsMap = new ElementMap<UnMappedValueMap>(this);
+                if (this.unMappedValuesMap == null)
+                    this.unMappedValuesMap = new ElementMap<UnMappedValueMap>(this);
             }
-        return this.unMappedElementsMap;
+        return this.unMappedValuesMap;
     }
 
     public void addElement(final Value value) throws HBqlException {
@@ -108,7 +108,7 @@ public class HRecordImpl implements Serializable, HRecord {
         if (value instanceof ColumnValue)
             this.getColumnValuesMap().addElement((ColumnValue)value);
         else if (value instanceof UnMappedValueMap)
-            this.getUnMappedElementsMap().addElement((UnMappedValueMap)value);
+            this.getUnMappedValuesMap().addElement((UnMappedValueMap)value);
         else
             throw new InternalErrorException(value.getClass().getName());
     }
@@ -119,7 +119,7 @@ public class HRecordImpl implements Serializable, HRecord {
 
     public void clearValues() {
         this.getColumnValuesMap().clear();
-        this.getUnMappedElementsMap().clear();
+        this.getUnMappedValuesMap().clear();
     }
 
     // Simple get routines
@@ -140,7 +140,7 @@ public class HRecordImpl implements Serializable, HRecord {
 
     private UnMappedValueMap getUnMappedValueMap(final String name,
                                                  final boolean createNewIfMissing) throws HBqlException {
-        final UnMappedValueMap value = this.getUnMappedElementsMap().findElement(name);
+        final UnMappedValueMap value = this.getUnMappedValuesMap().findElement(name);
         if (value != null) {
             return value;
         }
@@ -207,7 +207,7 @@ public class HRecordImpl implements Serializable, HRecord {
 
     public void reset() {
         this.columnValuesMap = null;
-        this.unMappedElementsMap = null;
+        this.unMappedValuesMap = null;
     }
 
     public void setTimestamp(final long timestamp) {
