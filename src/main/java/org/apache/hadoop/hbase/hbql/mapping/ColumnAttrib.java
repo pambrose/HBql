@@ -24,6 +24,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.io.IO;
+import org.apache.hadoop.hbase.hbql.parser.ParserSupport;
 import org.apache.hadoop.hbase.hbql.statement.args.DefaultArg;
 
 import java.io.Serializable;
@@ -46,6 +47,7 @@ public abstract class ColumnAttrib implements Serializable {
     private final boolean anArray;
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
+    private final boolean embedded;
 
 
     protected ColumnAttrib(final String familyName,
@@ -65,10 +67,14 @@ public abstract class ColumnAttrib implements Serializable {
         this.anArray = isArray;
         this.getter = getter;
         this.setter = setter;
+        this.embedded = this.getFamilyName() != null && this.getFamilyName().equals(ParserSupport.EMBEDDED);
     }
 
     public abstract String asString() throws HBqlException;
 
+    private boolean isEmbedded() {
+        return this.embedded;
+    }
 
     public Object getDefaultValue() throws HBqlException {
         return (this.hasDefaultArg()) ? this.getDefaultArg().getValue() : null;
@@ -124,7 +130,7 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public String getFamilyQualifiedName() {
-        if (this.getFamilyName() != null && this.getFamilyName().length() > 0)
+        if (!this.isEmbedded() && this.getFamilyName() != null && this.getFamilyName().length() > 0)
             return this.getFamilyName() + ":" + this.getColumnName();
         else
             return this.getColumnName();

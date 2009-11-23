@@ -22,22 +22,22 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultMapping;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
-import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 
-public abstract class MappingContext extends SimpleStatement {
+public abstract class StatementContext extends SimpleStatement {
 
     private String mappingName = null;
     private Mapping mapping = null;
-    private ResultMapping resultMapping = null;
+    private ResultAccessor resultAccessor = null;
 
-    protected MappingContext(final String mappingName) {
+    protected StatementContext(final String mappingName) {
         this.mappingName = mappingName;
     }
 
-    protected MappingContext(final Mapping mapping) {
+    protected StatementContext(final Mapping mapping) {
         this.setMapping(mapping);
     }
 
@@ -52,7 +52,7 @@ public abstract class MappingContext extends SimpleStatement {
             }
         }
 
-        this.validateMatchingNames(this.getResultMapping());
+        this.validateMatchingNames(this.getResultAccessor());
     }
 
     protected String getMappingName() {
@@ -69,24 +69,24 @@ public abstract class MappingContext extends SimpleStatement {
         return this.mapping;
     }
 
-    public ResultMapping getResultMapping() {
-        return this.resultMapping;
+    public ResultAccessor getResultAccessor() {
+        return this.resultAccessor;
     }
 
-    public void setResultMapping(final ResultMapping resultMapping) {
-        this.resultMapping = resultMapping;
+    public void setResultAccessor(final ResultAccessor resultAccessor) {
+        this.resultAccessor = resultAccessor;
     }
 
-    private void validateMatchingNames(final ResultMapping mapping) throws HBqlException {
-        if (mapping != null && mapping instanceof AnnotationResultMapping) {
-            final String mappingName = mapping.getMapping().getMappingName();
+    private void validateMatchingNames(final ResultAccessor accessor) throws HBqlException {
+        if (accessor != null && accessor instanceof AnnotationResultAccessor) {
+            final String mappingName = accessor.getMapping().getMappingName();
             final String selectName = this.getMapping().getMappingName();
             if (!mappingName.equals(selectName))
                 throw new HBqlException("Class " + mappingName + " instead of " + selectName);
         }
     }
 
-    public HBaseMapping getHBaseMapping() throws HBqlException {
-        return (HBaseMapping)this.getMapping();
+    public HBaseTableMapping getHBaseTableMapping() throws HBqlException {
+        return (HBaseTableMapping)this.getMapping();
     }
 }

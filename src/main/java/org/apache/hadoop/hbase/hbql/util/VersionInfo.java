@@ -20,9 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.util;
 
-import org.apache.hadoop.hbase.hbql.VersionAnnotation;
-
-
 /**
  * This class finds the package info for hbase and the VersionAnnotation
  * information.  Taken from hadoop.  Only name of annotation is different.

@@ -39,7 +39,7 @@ public class ElementMap<T extends Value> extends HashMap<String, T> implements S
     }
 
     public void addElement(final T value) throws HBqlException {
-        final ColumnAttrib attrib = this.getRecord().getResultMapping().getColumnAttribByName(value.getName());
+        final ColumnAttrib attrib = this.getRecord().getResultAccessor().getColumnAttribByName(value.getName());
         final String name = (attrib == null) ? value.getName() : attrib.getFamilyQualifiedName();
         this.put(name, value);
     }
@@ -60,7 +60,7 @@ public class ElementMap<T extends Value> extends HashMap<String, T> implements S
             return this.getElement(name);
 
         // Look up by  alias name
-        final ColumnAttrib attrib = this.getRecord().getResultMapping().getColumnAttribByName(name);
+        final ColumnAttrib attrib = this.getRecord().getResultAccessor().getColumnAttribByName(name);
 
         if (attrib != null) {
             final String qualifiedName = attrib.getFamilyQualifiedName();

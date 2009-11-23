@@ -23,24 +23,24 @@ package org.apache.hadoop.hbase.hbql.mapping;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
 
-public class HRecordResultMapping extends ResultMapping {
+public class HRecordResultAccessor extends ResultAccessor {
 
-    public HRecordResultMapping(final MappingContext mappingContext) {
-        super(mappingContext);
+    public HRecordResultAccessor(final StatementContext statementContext) {
+        super(statementContext);
     }
 
-    public Object newObject(final MappingContext mappingContext,
+    public Object newObject(final StatementContext statementContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {
 
         // Create object and assign values
-        final HRecordImpl newrec = new HRecordImpl(mappingContext);
+        final HRecordImpl newrec = new HRecordImpl(statementContext);
         this.assignSelectValues(newrec, selectElementList, maxVersions, result);
         return newrec;
     }
@@ -60,7 +60,7 @@ public class HRecordResultMapping extends ResultMapping {
 
     public ColumnAttrib getColumnAttribByQualifiedName(final String familyName,
                                                        final String columnName) throws HBqlException {
-        return this.getHBaseMapping().getAttribFromFamilyQualifiedName(familyName + ":" + columnName);
+        return this.getHBaseTableMapping().getAttribFromFamilyQualifiedName(familyName + ":" + columnName);
     }
 
     public ColumnAttrib getColumnAttribByName(final String name) throws HBqlException {

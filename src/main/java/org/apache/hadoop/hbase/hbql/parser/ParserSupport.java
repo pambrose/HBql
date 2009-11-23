@@ -36,7 +36,7 @@ import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnDefinition;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 
 import java.util.List;
 
@@ -126,15 +126,17 @@ public class ParserSupport extends Parser {
         return root;
     }
 
-    // This keeps antlr code out of HBaseMapping, which is accessed server-side in HBase
-    public static HBaseMapping newHBaseMapping(final TokenStream input,
-                                               final List<ColumnDefinition> columnList) throws RecognitionException {
+    public final static String EMBEDDED = "embedded";
 
-        final FamilyMapping mapping = new FamilyMapping("embedded", columnList, false);
+    // This keeps antlr code out of HBaseTableMapping, which is accessed server-side in HBase
+    public static HBaseTableMapping newHBaseTableMapping(final TokenStream input,
+                                                         final List<ColumnDefinition> columnList) throws RecognitionException {
+
+        final FamilyMapping mapping = new FamilyMapping(EMBEDDED, columnList, false);
         final List<FamilyMapping> mappingList = Lists.newArrayList(mapping);
 
         try {
-            return new HBaseMapping(null, true, "embedded", "embedded", null, mappingList);
+            return new HBaseTableMapping(null, true, EMBEDDED, null, null, mappingList);
         }
         catch (HBqlException e) {
             e.printStackTrace();

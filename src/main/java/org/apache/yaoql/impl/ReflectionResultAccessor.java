@@ -23,20 +23,20 @@ package org.apache.yaoql.impl;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
-import org.apache.hadoop.hbase.hbql.statement.NoStatementMappingContext;
+import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
+import org.apache.hadoop.hbase.hbql.statement.NonStatement;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
 
-public class ReflectionResultMapping extends ResultMapping {
+public class ReflectionResultAccessor extends ResultAccessor {
 
-    public ReflectionResultMapping(final Object object) {
-        super(new NoStatementMappingContext(ReflectionMapping.getReflectionMapping(object), null));
+    public ReflectionResultAccessor(final Object object) {
+        super(new NonStatement(ReflectionMapping.getReflectionMapping(object), null));
     }
 
-    public Object newObject(final MappingContext mappingContext,
+    public Object newObject(final StatementContext statementContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {

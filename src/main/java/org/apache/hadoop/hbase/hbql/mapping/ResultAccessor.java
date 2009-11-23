@@ -22,34 +22,34 @@ package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class ResultMapping implements Serializable {
+public abstract class ResultAccessor implements Serializable {
 
-    private final MappingContext mappingContext;
+    private final StatementContext statementContext;
 
-    public ResultMapping(final MappingContext mappingContext) {
-        this.mappingContext = mappingContext;
-        this.getMappingContext().setResultMapping(this);
+    public ResultAccessor(final StatementContext statementContext) {
+        this.statementContext = statementContext;
+        this.getStatementContext().setResultAccessor(this);
     }
 
-    public MappingContext getMappingContext() {
-        return this.mappingContext;
+    public StatementContext getStatementContext() {
+        return this.statementContext;
     }
 
     public Mapping getMapping() {
-        return this.getMappingContext().getMapping();
+        return this.getStatementContext().getMapping();
     }
 
-    public HBaseMapping getHBaseMapping() throws HBqlException {
-        return (HBaseMapping)this.getMapping();
+    public HBaseTableMapping getHBaseTableMapping() throws HBqlException {
+        return (HBaseTableMapping)this.getMapping();
     }
 
-    public abstract Object newObject(final MappingContext mappingContext,
+    public abstract Object newObject(final StatementContext statementContext,
                                      final List<SelectElement> selectElementList,
                                      final int maxVersions,
                                      final Result result) throws HBqlException;

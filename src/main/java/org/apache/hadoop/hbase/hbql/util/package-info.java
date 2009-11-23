@@ -18,16 +18,9 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.statement;
+@VersionAnnotation(version = "0.9.6",
+                   date = "11/19/09",
+                   user = "pambrose",
+                   revision = "",
+                   url = "http://www.sudothought.com") package org.apache.hadoop.hbase.hbql.util;
 
-import org.apache.hadoop.hbase.hbql.mapping.Mapping;
-import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
-
-
-public class NoStatementMappingContext extends MappingContext {
-
-    public NoStatementMappingContext(final Mapping mapping, final ResultMapping resultMapping) {
-        super(mapping);
-        this.setResultMapping(resultMapping);
-    }
-}

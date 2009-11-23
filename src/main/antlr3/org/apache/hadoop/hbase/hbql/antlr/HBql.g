@@ -383,7 +383,7 @@ insertExpr returns [GenericValue retval]
 	;
 					
 mappingDesc returns [Mapping retval]
-	: LCURLY a=attribList RCURLY			{retval = newHBaseMapping(input, $a.retval);};
+	: LCURLY a=attribList RCURLY			{retval = newHBaseTableMapping(input, $a.retval);};
 
 attribList returns [List<ColumnDefinition> retval] 
 @init {retval = Lists.newArrayList();}

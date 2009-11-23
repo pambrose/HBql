@@ -30,11 +30,11 @@ import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
-import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.SelectFamilyAttrib;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,7 +48,7 @@ public class FamilySelectElement implements SelectElement {
     private final List<ColumnAttrib> attribsUsedInExpr = Lists.newArrayList();
     private final String familyName;
 
-    private MappingContext mappingContext;
+    private StatementContext statementContext;
 
     public FamilySelectElement(final String familyName) {
 
@@ -85,20 +85,20 @@ public class FamilySelectElement implements SelectElement {
         return this.familyNameBytesList;
     }
 
-    private MappingContext getMappingContext() {
-        return this.mappingContext;
+    private StatementContext getStatementContext() {
+        return this.statementContext;
     }
 
-    protected HBaseMapping getHBaseMapping() throws HBqlException {
-        return this.getMappingContext().getHBaseMapping();
+    protected HBaseTableMapping getHBaseTableMapping() throws HBqlException {
+        return this.getStatementContext().getHBaseTableMapping();
     }
 
-    private ResultMapping getResultMapping() throws HBqlException {
-        return this.getMappingContext().getResultMapping();
+    private ResultAccessor getResultAccessor() throws HBqlException {
+        return this.getStatementContext().getResultAccessor();
     }
 
-    private void setMappingContext(final MappingContext mappingContext) {
-        this.mappingContext = mappingContext;
+    private void setStatementContext(final StatementContext statementContext) {
+        this.statementContext = statementContext;
     }
 
     public String getAsName() {
@@ -138,12 +138,12 @@ public class FamilySelectElement implements SelectElement {
         return 0;
     }
 
-    public void validate(final MappingContext mappingContext, final HConnection connection) throws HBqlException {
+    public void validate(final StatementContext statementContext, final HConnection connection) throws HBqlException {
 
-        this.setMappingContext(mappingContext);
+        this.setStatementContext(statementContext);
 
         this.getAttribsUsedInExpr().clear();
-        final Collection<String> familyList = this.getHBaseMapping().getMappingFamilyNames();
+        final Collection<String> familyList = this.getHBaseTableMapping().getMappingFamilyNames();
 
         if (this.useAllFamilies) {
             // connction will be null from tests
@@ -186,7 +186,7 @@ public class FamilySelectElement implements SelectElement {
                                   final int maxVersions,
                                   final Result result) throws HBqlException {
 
-        final HBaseMapping mapping = this.getHBaseMapping();
+        final HBaseTableMapping tableMapping = this.getHBaseTableMapping();
 
         // Evaluate each of the families (select * will yield all families)
         for (int i = 0; i < this.getFamilyNameBytesList().size(); i++) {
@@ -206,10 +206,10 @@ public class FamilySelectElement implements SelectElement {
                     record.addNameToPositionList(familyName + ":" + columnName);
                 }
 
-                final ColumnAttrib attrib = this.getResultMapping()
+                final ColumnAttrib attrib = this.getResultAccessor()
                         .getColumnAttribByQualifiedName(familyName, columnName);
                 if (attrib == null) {
-                    final ColumnAttrib familyDefaultAttrib = mapping.getFamilyDefault(familyName);
+                    final ColumnAttrib familyDefaultAttrib = tableMapping.getFamilyDefault(familyName);
                     if (familyDefaultAttrib != null)
                         familyDefaultAttrib.setFamilyDefaultCurrentValue(obj, columnName, valueBytes);
                 }
@@ -233,10 +233,10 @@ public class FamilySelectElement implements SelectElement {
                 final NavigableMap<Long, byte[]> timeStampMap = versionColumnMap.get(columnBytes);
                 final String columnName = IO.getSerialization().getStringFromBytes(columnBytes);
 
-                final ColumnAttrib attrib = mapping.getVersionAttribMap(familyName, columnName);
+                final ColumnAttrib attrib = tableMapping.getVersionAttribMap(familyName, columnName);
 
                 if (attrib == null) {
-                    final ColumnAttrib familyDefaultAttrib = mapping.getFamilyDefault(familyName);
+                    final ColumnAttrib familyDefaultAttrib = tableMapping.getFamilyDefault(familyName);
                     if (familyDefaultAttrib != null)
                         familyDefaultAttrib.setFamilyDefaultVersionMap(obj, columnName, timeStampMap);
                 }

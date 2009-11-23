@@ -30,7 +30,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 import java.util.List;
 
@@ -59,7 +59,7 @@ public class BooleanFunction extends Function implements BooleanValue {
 
     public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
         super.setExpressionContext(context);
-        this.mapping = context.getHBaseMapping();
+        this.mapping = context.getHBaseTableMapping();
     }
 
     public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
@@ -82,8 +82,8 @@ public class BooleanFunction extends Function implements BooleanValue {
 
             case EVAL: {
                 final String exprStr = (String)this.getArg(0).getValue(object);
-                final MappingContext mappingContext = this.getExpressionContext().getMappingContext();
-                final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(exprStr, mappingContext);
+                final StatementContext statementContext = this.getExpressionContext().getStatementContext();
+                final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(exprStr, statementContext);
                 return expressionTree.evaluate(object);
             }
 

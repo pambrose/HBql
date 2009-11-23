@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql;
+package org.apache.hadoop.hbase.hbql.util;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

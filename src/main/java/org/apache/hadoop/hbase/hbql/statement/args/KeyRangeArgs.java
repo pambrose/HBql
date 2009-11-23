@@ -31,7 +31,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.GetRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.ScanRequest;
@@ -239,9 +239,9 @@ public class KeyRangeArgs implements Serializable {
         return this.rangeList;
     }
 
-    public void setMappingContext(final MappingContext mappingContext) {
+    public void setStatementContext(final StatementContext statementContext) {
         for (final Range range : this.getRangeList())
-            range.setMappingContext(mappingContext);
+            range.setStatementContext(statementContext);
 
         for (final Range range : this.getRangeList())
             this.getParameterList().addAll(range.getParameterList());

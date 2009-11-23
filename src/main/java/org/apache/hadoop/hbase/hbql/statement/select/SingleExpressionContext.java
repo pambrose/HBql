@@ -32,9 +32,9 @@ import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 import java.util.Collection;
 import java.util.Map;
@@ -144,16 +144,16 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
         return this.columnNameBytes;
     }
 
-    public void validate(final MappingContext mappingContext, final HConnection connection) throws HBqlException {
+    public void validate(final StatementContext statementContext, final HConnection connection) throws HBqlException {
 
-        this.setMappingContext(mappingContext);
+        this.setStatementContext(statementContext);
 
         // TODO this needs to be done for expressions with col refs
 
         // Look up stuff for simple column references
         if (this.isASimpleColumnReference()) {
             final String name = ((DelegateColumn)this.getGenericValue()).getVariableName();
-            this.columnAttrib = this.getResultMapping().getColumnAttribByName(name);
+            this.columnAttrib = this.getResultAccessor().getColumnAttribByName(name);
 
             if (this.getColumnAttrib() != null) {
                 this.familyName = this.getColumnAttrib().getFamilyName();
@@ -165,7 +165,7 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
                 final String[] strs = name.split(":");
                 this.familyName = strs[0];
                 this.columnName = strs[1];
-                final Collection<String> families = this.getHBaseMapping().getMappingFamilyNames();
+                final Collection<String> families = this.getHBaseTableMapping().getMappingFamilyNames();
                 if (!families.contains(this.getFamilyName()))
                     throw new HBqlException("Unknown family name: " + this.getFamilyName());
             }
@@ -207,7 +207,7 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
     private void assignCalculation(final Object obj, final Result result) throws HBqlException {
         // If it is a calculation, then assign according to the AS name
         final String name = this.getAsName();
-        final ColumnAttrib attrib = this.getResultMapping().getColumnAttribByName(name);
+        final ColumnAttrib attrib = this.getResultAccessor().getColumnAttribByName(name);
 
         final Object elementValue = this.getValue(result);
 
@@ -242,11 +242,11 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
             return;
         }
 
-        final HBaseMapping mapping = this.getHBaseMapping();
+        final HBaseTableMapping tableMapping = this.getHBaseTableMapping();
 
         // Column reference is not known to mapping, so just assign byte[] value
         if (this.getColumnAttrib() == null) {
-            final ColumnAttrib familyDefaultAttrib = mapping.getFamilyDefault(this.getFamilyName());
+            final ColumnAttrib familyDefaultAttrib = tableMapping.getFamilyDefault(this.getFamilyName());
             if (familyDefaultAttrib != null) {
                 final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
                 familyDefaultAttrib.setFamilyDefaultCurrentValue(obj, this.getSelectName(), b);
@@ -275,7 +275,7 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
             final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
 
             if (this.getColumnAttrib() == null) {
-                final ColumnAttrib familyDefaultAttrib = mapping.getFamilyDefault(this.getFamilyName());
+                final ColumnAttrib familyDefaultAttrib = tableMapping.getFamilyDefault(this.getFamilyName());
                 if (familyDefaultAttrib != null)
                     familyDefaultAttrib.setFamilyDefaultVersionMap(obj, this.getSelectName(), timeStampMap);
             }

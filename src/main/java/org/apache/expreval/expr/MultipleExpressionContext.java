@@ -32,11 +32,11 @@ import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
-import org.apache.hadoop.hbase.hbql.mapping.HRecordResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HRecordResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
-import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
+import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 import java.io.Serializable;
 import java.util.List;
@@ -53,7 +53,7 @@ public abstract class MultipleExpressionContext implements Serializable {
     private final List<NamedParameter> namedParamList = Lists.newArrayList();
     private final Map<String, List<NamedParameter>> namedParamMap = Maps.newHashMap();
 
-    private MappingContext mappingContext = null;
+    private StatementContext statementContext = null;
     private final TypeSignature typeSignature;
     private final List<GenericValue> expressions = Lists.newArrayList();
 
@@ -93,27 +93,27 @@ public abstract class MultipleExpressionContext implements Serializable {
         return this.typeSignature;
     }
 
-    public MappingContext getMappingContext() {
-        return this.mappingContext;
+    public StatementContext getStatementContext() {
+        return this.statementContext;
     }
 
     public Mapping getMapping() throws HBqlException {
-        return this.getMappingContext().getMapping();
+        return this.getStatementContext().getMapping();
     }
 
-    public HBaseMapping getHBaseMapping() throws HBqlException {
-        return this.getMappingContext().getHBaseMapping();
+    public HBaseTableMapping getHBaseTableMapping() throws HBqlException {
+        return this.getStatementContext().getHBaseTableMapping();
     }
 
-    public ResultMapping getResultMapping() throws HBqlException {
-        return this.getMappingContext().getResultMapping();
+    public ResultAccessor getResultAccessor() throws HBqlException {
+        return this.getStatementContext().getResultAccessor();
     }
 
-    public void setMappingContext(final MappingContext mappingContext) {
-        this.mappingContext = mappingContext;
+    public void setStatementContext(final StatementContext statementContext) {
+        this.statementContext = statementContext;
 
-        if (this.getMappingContext() != null && this.getMappingContext().getResultMapping() == null)
-            this.getMappingContext().setResultMapping(new HRecordResultMapping(mappingContext));
+        if (this.getStatementContext() != null && this.getStatementContext().getResultAccessor() == null)
+            this.getStatementContext().setResultAccessor(new HRecordResultAccessor(statementContext));
 
         this.setContext();
     }

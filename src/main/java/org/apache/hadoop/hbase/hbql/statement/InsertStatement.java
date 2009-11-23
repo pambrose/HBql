@@ -36,7 +36,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
 
 import java.util.List;
 
-public class InsertStatement extends MappingContext implements ParameterStatement, ConnectionStatement {
+public class InsertStatement extends StatementContext implements ParameterStatement, ConnectionStatement {
 
     private final List<SingleExpressionContext> columnList = Lists.newArrayList();
     private final InsertValueSource insertValuesSource;

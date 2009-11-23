@@ -31,7 +31,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
-import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
@@ -183,7 +183,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                 @SuppressWarnings("unchecked")
                 protected T fetchNextObject() throws HBqlException {
 
-                    final ResultMapping resultMapping = getQuery().getSelectStatement().getResultMapping();
+                    final ResultAccessor resultAccessor = getQuery().getSelectStatement().getResultAccessor();
 
                     while (this.getCurrentResultIterator() != null || this.getRowRequestIterator().hasNext()) {
 
@@ -208,10 +208,10 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                                 this.getAggregateRecord().applyValues(result);
                             }
                             else {
-                                final T val = (T)resultMapping.newObject(getSelectStmt(),
-                                                                         getSelectStmt().getSelectElementList(),
-                                                                         this.getMaxVersions(),
-                                                                         result);
+                                final T val = (T)resultAccessor.newObject(getSelectStmt(),
+                                                                          getSelectStmt().getSelectElementList(),
+                                                                          this.getMaxVersions(),
+                                                                          result);
 
                                 if (getListeners() != null)
                                     for (final QueryListener<T> listener : getListeners())

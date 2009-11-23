@@ -27,9 +27,9 @@ import org.apache.hadoop.hbase.hbql.client.FamilyDefaultValueMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
-import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 import java.io.Serializable;
 import java.util.List;
@@ -39,7 +39,7 @@ import java.util.Set;
 
 public class HRecordImpl implements Serializable, HRecord {
 
-    private MappingContext mappingContext;
+    private StatementContext statementContext;
     private long timestamp = System.currentTimeMillis();
 
     private List<String> namePositionList = Lists.newArrayList();
@@ -47,16 +47,16 @@ public class HRecordImpl implements Serializable, HRecord {
     private volatile ElementMap<ColumnValue> columnValuesMap = null;
     private volatile ElementMap<FamilyDefaultValueMap> familyDefaultElementsMap = null;
 
-    public HRecordImpl(final MappingContext mappingContext) {
-        this.setMappingContext(mappingContext);
+    public HRecordImpl(final StatementContext statementContext) {
+        this.setStatementContext(statementContext);
     }
 
-    public MappingContext getMappingContext() {
-        return mappingContext;
+    public StatementContext getStatementContext() {
+        return statementContext;
     }
 
-    public void setMappingContext(final MappingContext mappingContext) {
-        this.mappingContext = mappingContext;
+    public void setStatementContext(final StatementContext statementContext) {
+        this.statementContext = statementContext;
     }
 
     public String getAttribName(final int i) throws HBqlException {
@@ -77,12 +77,12 @@ public class HRecordImpl implements Serializable, HRecord {
         this.getNamePositionList().add(name);
     }
 
-    public HBaseMapping getHBaseMapping() throws HBqlException {
-        return this.getMappingContext().getHBaseMapping();
+    public HBaseTableMapping getHBaseTableMapping() throws HBqlException {
+        return this.getStatementContext().getHBaseTableMapping();
     }
 
-    public ResultMapping getResultMapping() throws HBqlException {
-        return this.getMappingContext().getResultMapping();
+    public ResultAccessor getResultAccessor() throws HBqlException {
+        return this.getStatementContext().getResultAccessor();
     }
 
     protected ElementMap<ColumnValue> getColumnValuesMap() {
@@ -129,8 +129,8 @@ public class HRecordImpl implements Serializable, HRecord {
             return value;
         }
         else {
-            if (inMapping && !this.getHBaseMapping().containsVariableName(name))
-                throw new HBqlException("Invalid variable name " + this.getHBaseMapping()
+            if (inMapping && !this.getHBaseTableMapping().containsVariableName(name))
+                throw new HBqlException("Invalid variable name " + this.getHBaseTableMapping()
                         .getMappingName() + "." + name);
             final ColumnValue columnValue = new ColumnValue(name);
             this.addElement(columnValue);
@@ -161,7 +161,7 @@ public class HRecordImpl implements Serializable, HRecord {
                                 final String column,
                                 final long timestamp,
                                 final Object val) throws HBqlException {
-        final ColumnAttrib attrib = this.getHBaseMapping().getAttribFromFamilyQualifiedName(family, column);
+        final ColumnAttrib attrib = this.getHBaseTableMapping().getAttribFromFamilyQualifiedName(family, column);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + family + ":" + column);
         this.setCurrentValue(attrib.getAliasName(), timestamp, val, true);
@@ -184,7 +184,8 @@ public class HRecordImpl implements Serializable, HRecord {
                                 final long timestamp,
                                 final Object val,
                                 final boolean inMapping) throws HBqlException {
-        final ColumnAttrib attrib = this.getHBaseMapping().getAttribFromFamilyQualifiedName(familyName, columnName);
+        final ColumnAttrib attrib = this.getHBaseTableMapping()
+                .getAttribFromFamilyQualifiedName(familyName, columnName);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + familyName + ":" + columnName);
 
@@ -226,7 +227,7 @@ public class HRecordImpl implements Serializable, HRecord {
         }
 
         // Return default value if it exists
-        final ColumnAttrib attrib = this.getMappingContext().getResultMapping().getColumnAttribByName(name);
+        final ColumnAttrib attrib = this.getStatementContext().getResultAccessor().getColumnAttribByName(name);
         return (attrib != null) ? attrib.getDefaultValue() : null;
     }
 

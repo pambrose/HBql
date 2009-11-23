@@ -31,8 +31,8 @@ import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.FieldType;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.ByteArrayInputStream;
@@ -49,23 +49,23 @@ public class HBqlFilter implements Filter {
     private static final Log LOG = LogFactory.getLog(HBqlFilter.class.getName());
 
     private ExpressionTree expressionTree;
-    public transient HRecordImpl record = new HRecordImpl((MappingContext)null);
+    public transient HRecordImpl record = new HRecordImpl((StatementContext)null);
 
     public HBqlFilter(final ExpressionTree expressionTree) {
         this.expressionTree = expressionTree;
-        this.getHRecord().setMappingContext(this.getExpressionTree().getMappingContext());
+        this.getHRecord().setStatementContext(this.getExpressionTree().getStatementContext());
     }
 
     public HBqlFilter() {
     }
 
-    public static HBqlFilter newHBqlFilter(final MappingContext mappingContext,
+    public static HBqlFilter newHBqlFilter(final StatementContext statementContext,
                                            final ExpressionTree origExpressionTree) {
 
         if (origExpressionTree == null)
             return null;
 
-        origExpressionTree.setMappingContext(mappingContext);
+        origExpressionTree.setStatementContext(statementContext);
         return new HBqlFilter(origExpressionTree);
     }
 
@@ -73,8 +73,8 @@ public class HBqlFilter implements Filter {
         return this.record;
     }
 
-    private HBaseMapping getMapping() throws HBqlException {
-        return this.getExpressionTree().getHBaseMapping();
+    private HBaseTableMapping getMapping() throws HBqlException {
+        return this.getExpressionTree().getHBaseTableMapping();
     }
 
     private ExpressionTree getExpressionTree() {
@@ -108,8 +108,8 @@ public class HBqlFilter implements Filter {
             try {
                 final String familyName = Bytes.toString(v.getFamily());
                 final String columnName = Bytes.toString(v.getQualifier());
-                final HBaseMapping mapping = this.getMapping();
-                final ColumnAttrib attrib = mapping.getAttribFromFamilyQualifiedName(familyName, columnName);
+                final HBaseTableMapping tableMapping = this.getMapping();
+                final ColumnAttrib attrib = tableMapping.getAttribFromFamilyQualifiedName(familyName, columnName);
 
                 // Do not bother setting value if it is not used in expression
                 if (this.getExpressionTree().getAttribsUsedInExpr().contains(attrib)) {
@@ -170,7 +170,7 @@ public class HBqlFilter implements Filter {
         try {
             this.expressionTree = (ExpressionTree)IO.getSerialization().getScalarFromBytes(FieldType.ObjectType,
                                                                                            Bytes.readByteArray(in));
-            this.getHRecord().setMappingContext(this.getExpressionTree().getMappingContext());
+            this.getHRecord().setStatementContext(this.getExpressionTree().getStatementContext());
 
             this.getMapping().resetDefaultValues();
         }

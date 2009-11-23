@@ -18,9 +18,16 @@
  * limitations under the License.
  */
 
-@VersionAnnotation(version = "0.9.6",
-                   date = "11/19/09",
-                   user = "pambrose",
-                   revision = "",
-                   url = "http://www.sudothought.com") package org.apache.hadoop.hbase.hbql;
+package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.mapping.Mapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
+
+
+public class NonStatement extends StatementContext {
+
+    public NonStatement(final Mapping mapping, final ResultAccessor resultAccessor) {
+        super(mapping);
+        this.setResultAccessor(resultAccessor);
+    }
+}

@@ -30,13 +30,13 @@ import org.apache.hadoop.hbase.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
-import org.apache.hadoop.hbase.hbql.statement.NoStatementMappingContext;
+import org.apache.hadoop.hbase.hbql.statement.NonStatement;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
-import org.apache.yaoql.impl.ReflectionResultMapping;
+import org.apache.yaoql.impl.ReflectionResultAccessor;
 
 import java.util.Date;
 import java.util.List;
@@ -179,42 +179,42 @@ public class TestSupport {
     public ExpressionTree parseAnnotationExpr(final HConnection connection,
                                               final Object recordObj,
                                               final String expr) throws HBqlException {
-        final MappingContext mappingContext = getAnnotationMappingContext(connection, recordObj);
-        return parseDescWhereExpr(expr, mappingContext);
+        final StatementContext statementContext = getAnnotationStatementContext(connection, recordObj);
+        return parseDescWhereExpr(expr, statementContext);
     }
 
     public ExpressionTree parseReflectionExpr(final Object recordObj, final String expr) throws HBqlException {
-        final MappingContext mappingContext = getReflectionMappingContext(recordObj);
-        return parseDescWhereExpr(expr, mappingContext);
+        final StatementContext statementContext = getReflectionStatementContext(recordObj);
+        return parseDescWhereExpr(expr, statementContext);
     }
 
     private static boolean evaluateAnnotationExpression(final HConnection connection,
                                                         final Object recordObj,
                                                         final String expr) throws HBqlException {
-        final MappingContext mappingContext = getAnnotationMappingContext(connection, recordObj);
-        final ExpressionTree tree = parseDescWhereExpr(expr, mappingContext);
+        final StatementContext statementContext = getAnnotationStatementContext(connection, recordObj);
+        final ExpressionTree tree = parseDescWhereExpr(expr, statementContext);
         return evaluateExprression(recordObj, tree);
     }
 
     private static boolean evaluateReflectionExpression(final Object recordObj, final String expr) throws HBqlException {
-        final MappingContext mappingContext = getReflectionMappingContext(recordObj);
-        final ExpressionTree tree = parseDescWhereExpr(expr, mappingContext);
+        final StatementContext statementContext = getReflectionStatementContext(recordObj);
+        final ExpressionTree tree = parseDescWhereExpr(expr, statementContext);
         return evaluateExprression(recordObj, tree);
     }
 
-    private static MappingContext getAnnotationMappingContext(final HConnection connection,
-                                                              final Object obj) throws HBqlException {
+    private static StatementContext getAnnotationStatementContext(final HConnection connection,
+                                                                  final Object obj) throws HBqlException {
         if (obj == null)
-            return new NoStatementMappingContext(null, null);
+            return new NonStatement(null, null);
         else
-            return getAnnotatedMapping(connection, obj).getMappingContext();
+            return getAnnotatedMapping(connection, obj).getStatementContext();
     }
 
-    private static MappingContext getReflectionMappingContext(final Object obj) throws HBqlException {
+    private static StatementContext getReflectionStatementContext(final Object obj) throws HBqlException {
         if (obj == null)
-            return new NoStatementMappingContext(null, null);
+            return new NonStatement(null, null);
         else
-            return getReflectionMapping(obj).getMappingContext();
+            return getReflectionMapping(obj).getStatementContext();
     }
 
 
@@ -262,14 +262,14 @@ public class TestSupport {
         }
     }
 
-    public static ExpressionTree parseDescWhereExpr(final String str, final MappingContext sc) throws HBqlException {
+    public static ExpressionTree parseDescWhereExpr(final String str, final StatementContext sc) throws HBqlException {
         try {
             final HBqlParser parser = ParserUtil.newHBqlParser(str);
             final ExpressionTree expressionTree = parser.descWhereExpr();
 
-            if (expressionTree.getMappingContext() == null) {
-                final MappingContext mappingContext = (sc == null) ? new NoStatementMappingContext(null, null) : sc;
-                expressionTree.setMappingContext(mappingContext);
+            if (expressionTree.getStatementContext() == null) {
+                final StatementContext statementContext = (sc == null) ? new NonStatement(null, null) : sc;
+                expressionTree.setStatementContext(statementContext);
             }
 
             return expressionTree;
@@ -299,8 +299,8 @@ public class TestSupport {
         }
     }
 
-    public static ResultMapping getAnnotatedMapping(final HConnection connection,
-                                                    final Object recordObj) throws HBqlException {
+    public static ResultAccessor getAnnotatedMapping(final HConnection connection,
+                                                     final Object recordObj) throws HBqlException {
 
         if (recordObj == null)
             return null;
@@ -308,11 +308,11 @@ public class TestSupport {
         return ((HConnectionImpl)connection).getAnnotationMapping(recordObj);
     }
 
-    public static ResultMapping getReflectionMapping(final Object recordObj) throws HBqlException {
+    public static ResultAccessor getReflectionMapping(final Object recordObj) throws HBqlException {
 
         if (recordObj == null)
             return null;
 
-        return new ReflectionResultMapping(recordObj);
+        return new ReflectionResultAccessor(recordObj);
     }
 }

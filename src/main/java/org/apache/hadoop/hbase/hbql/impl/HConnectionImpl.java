@@ -36,9 +36,9 @@ import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class HConnectionImpl implements HConnection {
     private HBaseAdmin hbaseAdmin = null;
 
     private final MappingManager mappingManager;
-    private final Map<Class, AnnotationResultMapping> annotationMappingMap = Maps.newHashMap();
+    private final Map<Class, AnnotationResultAccessor> annotationMappingMap = Maps.newHashMap();
 
     public HConnectionImpl(final String name, final HBaseConfiguration config) throws HBqlException {
         this.name = name;
@@ -77,26 +77,26 @@ public class HConnectionImpl implements HConnection {
         return this.mappingManager;
     }
 
-    private Map<Class, AnnotationResultMapping> getAnnotationMappingMap() {
+    private Map<Class, AnnotationResultAccessor> getAnnotationMappingMap() {
         return this.annotationMappingMap;
     }
 
-    public AnnotationResultMapping getAnnotationMapping(final Object obj) throws HBqlException {
+    public AnnotationResultAccessor getAnnotationMapping(final Object obj) throws HBqlException {
         return this.getAnnotationMapping(obj.getClass());
     }
 
-    public synchronized AnnotationResultMapping getAnnotationMapping(final Class<?> clazz) throws HBqlException {
+    public synchronized AnnotationResultAccessor getAnnotationMapping(final Class<?> clazz) throws HBqlException {
 
-        AnnotationResultMapping mapping = getAnnotationMappingMap().get(clazz);
+        AnnotationResultAccessor accessor = getAnnotationMappingMap().get(clazz);
 
-        if (mapping != null)
-            return mapping;
+        if (accessor != null)
+            return accessor;
 
-        mapping = AnnotationResultMapping.newAnnotationMapping(this, clazz);
+        accessor = AnnotationResultAccessor.newAnnotationMapping(this, clazz);
 
-        getAnnotationMappingMap().put(clazz, mapping);
+        getAnnotationMappingMap().put(clazz, accessor);
 
-        return mapping;
+        return accessor;
     }
 
     public synchronized HBaseAdmin newHBaseAdmin() throws HBqlException {
@@ -178,7 +178,7 @@ public class HConnectionImpl implements HConnection {
         return this.getMappingManager().mappingExists(mappingName);
     }
 
-    public HBaseMapping getMapping(final String mappingName) throws HBqlException {
+    public HBaseTableMapping getMapping(final String mappingName) throws HBqlException {
         return this.getMappingManager().getMapping(mappingName);
     }
 
@@ -190,11 +190,11 @@ public class HConnectionImpl implements HConnection {
         return this.getMappingManager().getMappings();
     }
 
-    public synchronized HBaseMapping createMapping(final boolean tempMapping,
-                                                   final String mappingName,
-                                                   final String tableName,
-                                                   final String keyName,
-                                                   final List<FamilyMapping> familyList) throws HBqlException {
+    public synchronized HBaseTableMapping createMapping(final boolean tempMapping,
+                                                        final String mappingName,
+                                                        final String tableName,
+                                                        final String keyName,
+                                                        final List<FamilyMapping> familyList) throws HBqlException {
         return this.getMappingManager().createMapping(tempMapping, mappingName, tableName, keyName, familyList);
     }
 

@@ -22,16 +22,16 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
-import org.apache.hadoop.hbase.hbql.mapping.HRecordResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HRecordResultAccessor;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.DeleteStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.InsertStatement;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.ParameterStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 
 public class Util {
@@ -46,9 +46,9 @@ public class Util {
                 && !(stmt instanceof NonConnectionStatement))
                 throw new HBqlException("Unsupported statement type: " + stmt.getClass().getSimpleName() + " - " + sql);
 
-            if (stmt instanceof MappingContext) {
-                final MappingContext mappingContext = (MappingContext)stmt;
-                mappingContext.setResultMapping(new HRecordResultMapping(mappingContext));
+            if (stmt instanceof StatementContext) {
+                final StatementContext statementContext = (StatementContext)stmt;
+                statementContext.setResultAccessor(new HRecordResultAccessor(statementContext));
             }
 
             return stmt;

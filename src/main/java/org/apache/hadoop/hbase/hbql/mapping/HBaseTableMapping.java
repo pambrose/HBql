@@ -31,14 +31,14 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
-import org.apache.hadoop.hbase.hbql.statement.NoStatementMappingContext;
+import org.apache.hadoop.hbase.hbql.statement.NonStatement;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HBaseMapping extends Mapping implements HMapping {
+public class HBaseTableMapping extends Mapping implements HMapping {
 
     private transient HConnectionImpl connection;
     private boolean isTemp;
@@ -50,15 +50,15 @@ public class HBaseMapping extends Mapping implements HMapping {
     private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
 
     // For serialization
-    public HBaseMapping() {
+    public HBaseTableMapping() {
     }
 
-    public HBaseMapping(final HConnectionImpl connection,
-                        final boolean isTemp,
-                        final String mappingName,
-                        final String tableName,
-                        final String keyName,
-                        final List<FamilyMapping> familyMappingList) throws HBqlException {
+    public HBaseTableMapping(final HConnectionImpl connection,
+                             final boolean isTemp,
+                             final String mappingName,
+                             final String tableName,
+                             final String keyName,
+                             final List<FamilyMapping> familyMappingList) throws HBqlException {
         super(mappingName, tableName);
         this.connection = connection;
         this.isTemp = isTemp;
@@ -91,9 +91,9 @@ public class HBaseMapping extends Mapping implements HMapping {
     }
 
     public HRecord newHRecord() throws HBqlException {
-        final MappingContext mappingContext = new NoStatementMappingContext(this, null);
-        mappingContext.setResultMapping(new HRecordResultMapping(mappingContext));
-        return new HRecordImpl(mappingContext);
+        final StatementContext statementContext = new NonStatement(this, null);
+        statementContext.setResultAccessor(new HRecordResultAccessor(statementContext));
+        return new HRecordImpl(statementContext);
     }
 
     private void processColumn(final ColumnDefinition columnDefinition) throws HBqlException {
@@ -251,9 +251,9 @@ public class HBaseMapping extends Mapping implements HMapping {
     }
 
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
-        final MappingContext mappingContext = new NoStatementMappingContext(this, null);
-        mappingContext.setResultMapping(new HRecordResultMapping(mappingContext));
-        final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(query, mappingContext);
+        final StatementContext statementContext = new NonStatement(this, null);
+        statementContext.setResultAccessor(new HRecordResultAccessor(statementContext));
+        final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(query, statementContext);
         return new HBqlFilter(expressionTree);
     }
 

@@ -27,26 +27,26 @@ import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Mapping;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
-import org.apache.hadoop.hbase.hbql.statement.NoStatementMappingContext;
+import org.apache.hadoop.hbase.hbql.statement.NonStatement;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
-public class AnnotationResultMapping extends ResultMapping {
+public class AnnotationResultAccessor extends ResultAccessor {
 
 
     private final Class<?> clazz;
     private final Map<String, CurrentValueAnnotationAttrib> columnMap = Maps.newHashMap();
     private final Map<String, VersionAnnotationAttrib> columnVersionMap = Maps.newHashMap();
 
-    private AnnotationResultMapping(final HBaseMapping mapping, final Class clazz) throws HBqlException {
+    private AnnotationResultAccessor(final HBaseTableMapping tableMapping, final Class clazz) throws HBqlException {
 
-        super(new NoStatementMappingContext(mapping, null));
+        super(new NonStatement(tableMapping, null));
 
-        getMappingContext().setResultMapping(this);
+        this.getStatementContext().setResultAccessor(this);
 
         this.clazz = clazz;
 
@@ -75,8 +75,8 @@ public class AnnotationResultMapping extends ResultMapping {
         return clazz.getAnnotation(org.apache.hadoop.hbase.hbql.client.Mapping.class) != null;
     }
 
-    public static AnnotationResultMapping newAnnotationMapping(final HConnectionImpl connection,
-                                                               final Class<?> clazz) throws HBqlException {
+    public static AnnotationResultAccessor newAnnotationMapping(final HConnectionImpl connection,
+                                                                final Class<?> clazz) throws HBqlException {
 
         Mapping mappingAnnotation = clazz.getAnnotation(Mapping.class);
 
@@ -86,8 +86,8 @@ public class AnnotationResultMapping extends ResultMapping {
         if (mappingAnnotation.name() == null || mappingAnnotation.name().length() == 0)
             throw new HBqlException("@Mapping annotation for class " + clazz.getName() + " is missing a name");
 
-        HBaseMapping mapping = connection.getMapping(mappingAnnotation.name());
-        return new AnnotationResultMapping(mapping, clazz);
+        HBaseTableMapping tableMapping = connection.getMapping(mappingAnnotation.name());
+        return new AnnotationResultAccessor(tableMapping, clazz);
     }
 
     private void processColumnAnnotation(final Field field) throws HBqlException {
@@ -131,8 +131,8 @@ public class AnnotationResultMapping extends ResultMapping {
 
     public ColumnAttrib getColumnAttribByQualifiedName(final String familyName,
                                                        final String columnName) throws HBqlException {
-        final ColumnAttrib attrib = this.getHBaseMapping().getAttribFromFamilyQualifiedName(familyName
-                                                                                            + ":" + columnName);
+        final ColumnAttrib attrib = this.getHBaseTableMapping().getAttribFromFamilyQualifiedName(familyName
+                                                                                                 + ":" + columnName);
         return this.getColumnAttribByName(attrib.getFamilyQualifiedName());
     }
 
@@ -165,7 +165,7 @@ public class AnnotationResultMapping extends ResultMapping {
         return this.getClazz().newInstance();
     }
 
-    public Object newObject(final MappingContext mappingContext,
+    public Object newObject(final StatementContext statementContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {

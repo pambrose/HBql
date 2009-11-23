@@ -26,15 +26,15 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 import java.io.Serializable;
 import java.util.List;
 
 public interface SelectElement extends Serializable {
 
-    void validate(MappingContext mappingContext, HConnection connection) throws HBqlException;
+    void validate(StatementContext statementContext, HConnection connection) throws HBqlException;
 
     List<ColumnAttrib> getAttribsUsedInExpr();
 

@@ -27,8 +27,8 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.mapping.HRecordResultMapping;
-import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HRecordResultAccessor;
+import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
@@ -53,18 +53,18 @@ public class Query<E> {
                                         final SelectStatement selectStatement,
                                         final Class clazz) throws HBqlException {
 
-        final ResultMapping mapping;
+        final ResultAccessor accessor;
         if (clazz.equals(HRecord.class)) {
-            mapping = new HRecordResultMapping(selectStatement);
+            accessor = new HRecordResultAccessor(selectStatement);
         }
         else {
-            mapping = connection.getAnnotationMapping(clazz);
+            accessor = connection.getAnnotationMapping(clazz);
 
-            if (mapping == null)
+            if (accessor == null)
                 throw new HBqlException("Unknown class " + clazz.getName());
         }
 
-        selectStatement.setResultMapping(mapping);
+        selectStatement.setResultAccessor(accessor);
 
         return new Query<T>(connection, selectStatement);
     }

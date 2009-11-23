@@ -26,12 +26,12 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 
 import java.util.List;
 import java.util.Set;
 
-public class CreateMappingStatement extends MappingContext implements ConnectionStatement {
+public class CreateMappingStatement extends StatementContext implements ConnectionStatement {
 
     private final boolean tempMapping;
     private final String mappingName;
@@ -89,20 +89,20 @@ public class CreateMappingStatement extends MappingContext implements Connection
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        final HBaseMapping mapping = connection.createMapping(this.isTempMapping(),
-                                                              this.getMappingName(),
-                                                              this.getTableName(),
-                                                              this.getKeyName(),
-                                                              this.getFamilyMappingList());
+        final HBaseTableMapping tableMapping = connection.createMapping(this.isTempMapping(),
+                                                                        this.getMappingName(),
+                                                                        this.getTableName(),
+                                                                        this.getKeyName(),
+                                                                        this.getFamilyMappingList());
 
-        this.setMapping(mapping);
+        this.setMapping(tableMapping);
 
-        for (final ColumnAttrib attrib : mapping.getColumnAttribSet()) {
+        for (final ColumnAttrib attrib : tableMapping.getColumnAttribSet()) {
             if (attrib.getFieldType() == null && !attrib.isFamilyDefaultAttrib())
-                throw new HBqlException(mapping.getMappingName() + " attribute "
+                throw new HBqlException(tableMapping.getMappingName() + " attribute "
                                         + attrib.getFamilyQualifiedName() + " has unknown type.");
         }
 
-        return new ExecutionResults("Mapping " + mapping.getMappingName() + " defined.");
+        return new ExecutionResults("Mapping " + tableMapping.getMappingName() + " defined.");
     }
 }

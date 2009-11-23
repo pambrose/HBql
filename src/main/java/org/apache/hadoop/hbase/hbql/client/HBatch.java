@@ -30,10 +30,10 @@ import org.apache.hadoop.hbase.hbql.impl.DeleteAction;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.impl.InsertAction;
-import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseMapping;
-import org.apache.hadoop.hbase.hbql.mapping.ResultMapping;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
+import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 
 import java.io.IOException;
 import java.util.List;
@@ -78,18 +78,18 @@ public class HBatch<T> {
 
         if (newrec instanceof HRecordImpl) {
             final HRecordImpl record = (HRecordImpl)newrec;
-            final HBaseMapping mapping = record.getHBaseMapping();
-            final ColumnAttrib keyAttrib = mapping.getKeyAttrib();
+            final HBaseTableMapping tableMapping = record.getHBaseTableMapping();
+            final ColumnAttrib keyAttrib = tableMapping.getKeyAttrib();
             if (!record.isCurrentValueSet(keyAttrib))
                 throw new HBqlException("Record key value must be assigned");
 
-            final Put put = this.createPut(record.getResultMapping(), record);
-            this.getActionList(mapping.getTableName()).add(new InsertAction(put));
+            final Put put = this.createPut(record.getResultAccessor(), record);
+            this.getActionList(tableMapping.getTableName()).add(new InsertAction(put));
         }
         else {
-            final AnnotationResultMapping mapping = this.getConnectionImpl().getAnnotationMapping(newrec);
-            final Put put = this.createPut(mapping, newrec);
-            this.getActionList(mapping.getMapping().getTableName()).add(new InsertAction(put));
+            final AnnotationResultAccessor accessor = this.getConnectionImpl().getAnnotationMapping(newrec);
+            final Put put = this.createPut(accessor, newrec);
+            this.getActionList(accessor.getMapping().getTableName()).add(new InsertAction(put));
         }
     }
 
@@ -97,37 +97,37 @@ public class HBatch<T> {
 
         if (newrec instanceof HRecordImpl) {
             final HRecordImpl record = (HRecordImpl)newrec;
-            final HBaseMapping mapping = record.getHBaseMapping();
-            final ColumnAttrib keyAttrib = mapping.getKeyAttrib();
+            final HBaseTableMapping tableMapping = record.getHBaseTableMapping();
+            final ColumnAttrib keyAttrib = tableMapping.getKeyAttrib();
             if (!record.isCurrentValueSet(keyAttrib))
                 throw new HBqlException("Record key value must be assigned");
-            this.delete(mapping, record);
+            this.delete(tableMapping, record);
         }
         else {
-            final AnnotationResultMapping mapping = this.getConnectionImpl().getAnnotationMapping(newrec);
-            this.delete(mapping.getHBaseMapping(), newrec);
+            final AnnotationResultAccessor accessor = this.getConnectionImpl().getAnnotationMapping(newrec);
+            this.delete(accessor.getHBaseTableMapping(), newrec);
         }
     }
 
-    private void delete(HBaseMapping mapping, final Object newrec) throws HBqlException {
-        final ColumnAttrib keyAttrib = mapping.getKeyAttrib();
+    private void delete(HBaseTableMapping tableMapping, final Object newrec) throws HBqlException {
+        final ColumnAttrib keyAttrib = tableMapping.getKeyAttrib();
         final byte[] keyval = keyAttrib.getValueAsBytes(newrec);
-        this.getActionList(mapping.getTableName()).add(new DeleteAction(new Delete(keyval)));
+        this.getActionList(tableMapping.getTableName()).add(new DeleteAction(new Delete(keyval)));
     }
 
-    private Put createPut(final ResultMapping resultMapping, final Object newrec) throws HBqlException {
+    private Put createPut(final ResultAccessor resultAccessor, final Object newrec) throws HBqlException {
 
         final Put put;
-        final HBaseMapping mapping = resultMapping.getHBaseMapping();
-        final ColumnAttrib keyAttrib = resultMapping.getKeyAttrib();
+        final HBaseTableMapping tableMapping = resultAccessor.getHBaseTableMapping();
+        final ColumnAttrib keyAttrib = resultAccessor.getKeyAttrib();
 
         if (newrec instanceof HRecordImpl) {
             final HRecordImpl record = (HRecordImpl)newrec;
             final byte[] keyval = keyAttrib.getValueAsBytes(record);
             put = new Put(keyval);
 
-            for (final String family : mapping.getFamilySet()) {
-                for (final ColumnAttrib attrib : mapping.getColumnAttribListByFamilyName(family)) {
+            for (final String family : tableMapping.getFamilySet()) {
+                for (final ColumnAttrib attrib : tableMapping.getColumnAttribListByFamilyName(family)) {
                     if (record.isCurrentValueSet(attrib)) {
                         final byte[] b = attrib.getValueAsBytes(record);
                         put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), b);
@@ -138,11 +138,11 @@ public class HBatch<T> {
         else {
             final byte[] keyval = keyAttrib.getValueAsBytes(newrec);
             put = new Put(keyval);
-            for (final String family : mapping.getFamilySet()) {
-                for (final ColumnAttrib colattrib : mapping.getColumnAttribListByFamilyName(family)) {
+            for (final String family : tableMapping.getFamilySet()) {
+                for (final ColumnAttrib colattrib : tableMapping.getColumnAttribListByFamilyName(family)) {
 
                     // One extra lookup for annotations
-                    final ColumnAttrib attrib = resultMapping.getColumnAttribByName(colattrib.getFamilyQualifiedName());
+                    final ColumnAttrib attrib = resultAccessor.getColumnAttribByName(colattrib.getFamilyQualifiedName());
                     final byte[] b = attrib.getValueAsBytes(newrec);
                     put.add(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes(), b);
                 }

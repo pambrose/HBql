@@ -42,11 +42,11 @@ public class FamilyMapping implements Serializable {
     }
 
     public String getFamilyName() {
-        return familyName;
+        return this.familyName;
     }
 
     public List<ColumnDefinition> getColumnList() {
-        return columnList;
+        return this.columnList;
     }
 
     public boolean includeUnmapped() {

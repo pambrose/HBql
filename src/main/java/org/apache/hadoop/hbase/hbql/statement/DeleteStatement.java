@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class DeleteStatement extends MappingContext implements ParameterStatement, ConnectionStatement {
+public class DeleteStatement extends StatementContext implements ParameterStatement, ConnectionStatement {
 
     private transient HConnectionImpl connection = null;
     private final WithArgs withArgs;
@@ -79,7 +79,7 @@ public class DeleteStatement extends MappingContext implements ParameterStatemen
 
         this.validateMappingName(connection);
 
-        this.getWithArgs().setMappingContext(this);
+        this.getWithArgs().setStatementContext(this);
 
         this.collectParameters();
     }

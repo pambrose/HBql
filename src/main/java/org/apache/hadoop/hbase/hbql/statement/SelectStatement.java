@@ -32,7 +32,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 import java.util.List;
 import java.util.Set;
 
-public class SelectStatement extends MappingContext implements ParameterStatement, HBqlStatement {
+public class SelectStatement extends StatementContext implements ParameterStatement, HBqlStatement {
 
     private final List<SelectElement> selectElementList;
     private final List<ColumnAttrib> selectColumnAttribList = Lists.newArrayList();
@@ -81,7 +81,7 @@ public class SelectStatement extends MappingContext implements ParameterStatemen
             this.getSelectAttribList().addAll(element.getAttribsUsedInExpr());
         }
 
-        this.getWithArgs().setMappingContext(this);
+        this.getWithArgs().setStatementContext(this);
 
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();
