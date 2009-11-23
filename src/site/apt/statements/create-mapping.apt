@@ -57,12 +57,12 @@ type:
 
     * The DEFAULT clause cannot be used with array values.
 
-    * Each family can have an optional "INCLUDE UNMAPPED" clause.
+    * Each family can have an optional INCLUDE UNMAPPED clause.
     If the clause is present for a given family, then all query result set values for that
     family that are *not* described in the mapping are put in a map.  The name of each
     unmapped value is the family qualified name, i.e., family:column, and
     the type of each unmapped value is byte[] (since no type information is known).
-    If an unmapped value is returned for a family that does not have the "INCLUDE UNMAPPED" clause,
+    If an unmapped value is returned for a family that does not have the INCLUDE UNMAPPED clause,
     then the value is ignored.
 
     * Column descriptions can have an alias name.

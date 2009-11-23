@@ -46,8 +46,9 @@ public class HBaseTableMapping extends Mapping implements HMapping {
 
     private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
     private final Map<String, ColumnAttrib> versionAttribMap = Maps.newHashMap();
-    private final Map<String, ColumnAttrib> unMappedMap = Maps.newHashMap();
     private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
+
+    private final Map<String, ColumnAttrib> unMappedAttribsMap = Maps.newHashMap();
 
     // For serialization
     public HBaseTableMapping() {
@@ -138,30 +139,30 @@ public class HBaseTableMapping extends Mapping implements HMapping {
     }
 
     // *** unMappedMap calls
-    private Map<String, ColumnAttrib> getUnMappedMap() {
-        return this.unMappedMap;
+    private Map<String, ColumnAttrib> getUnMappedAttribsMap() {
+        return this.unMappedAttribsMap;
     }
 
     public ColumnAttrib getUnMappedAttrib(final String familyName) {
-        return this.getUnMappedMap().get(familyName);
+        return this.getUnMappedAttribsMap().get(familyName);
     }
 
     private void addUnMappedAttrib(final ColumnAttrib attrib) throws HBqlException {
 
         final String familyName = attrib.getFamilyName();
-        if (this.getUnMappedMap().containsKey(familyName))
+        if (this.getUnMappedAttribsMap().containsKey(familyName))
             throw new HBqlException(familyName + " already declared");
 
-        this.getUnMappedMap().put(familyName, attrib);
+        this.getUnMappedAttribsMap().put(familyName, attrib);
 
         final String aliasName = attrib.getAliasName();
         if (aliasName == null || aliasName.length() == 0 || aliasName.equals(familyName))
             return;
 
-        if (this.getUnMappedMap().containsKey(aliasName))
+        if (this.getUnMappedAttribsMap().containsKey(aliasName))
             throw new HBqlException(aliasName + " already declared");
 
-        this.getUnMappedMap().put(aliasName, attrib);
+        this.getUnMappedAttribsMap().put(aliasName, attrib);
     }
 
     // *** versionAttribByFamilyQualifiedNameMap calls
