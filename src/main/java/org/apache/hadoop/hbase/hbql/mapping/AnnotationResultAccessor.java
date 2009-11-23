@@ -119,7 +119,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
                                                                    columnAttrib.getColumnName(),
                                                                    field,
                                                                    columnAttrib.getFieldType(),
-                                                                   columnAttrib.isFamilyDefaultAttrib(),
+                                                                   columnAttrib.isUnMappedAttrib(),
                                                                    columnAttrib.getGetter(),
                                                                    columnAttrib.getSetter()));
     }

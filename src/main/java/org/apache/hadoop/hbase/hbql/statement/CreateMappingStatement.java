@@ -98,7 +98,7 @@ public class CreateMappingStatement extends StatementContext implements Connecti
         this.setMapping(tableMapping);
 
         for (final ColumnAttrib attrib : tableMapping.getColumnAttribSet()) {
-            if (attrib.getFieldType() == null && !attrib.isFamilyDefaultAttrib())
+            if (attrib.getFieldType() == null && !attrib.isUnMappedAttrib())
                 throw new HBqlException(tableMapping.getMappingName() + " attribute "
                                         + attrib.getFamilyQualifiedName() + " has unknown type.");
         }

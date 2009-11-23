@@ -246,10 +246,10 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
 
         // Column reference is not known to mapping, so just assign byte[] value
         if (this.getColumnAttrib() == null) {
-            final ColumnAttrib familyDefaultAttrib = tableMapping.getFamilyDefault(this.getFamilyName());
-            if (familyDefaultAttrib != null) {
+            final ColumnAttrib unMappedAttrib = tableMapping.getUnMappedAttrib(this.getFamilyName());
+            if (unMappedAttrib != null) {
                 final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
-                familyDefaultAttrib.setFamilyDefaultCurrentValue(obj, this.getSelectName(), b);
+                unMappedAttrib.setUnMappedCurrentValue(obj, this.getSelectName(), b);
             }
         }
         else {
@@ -275,9 +275,9 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
             final NavigableMap<Long, byte[]> timeStampMap = columnMap.get(this.getColumnNameBytes());
 
             if (this.getColumnAttrib() == null) {
-                final ColumnAttrib familyDefaultAttrib = tableMapping.getFamilyDefault(this.getFamilyName());
-                if (familyDefaultAttrib != null)
-                    familyDefaultAttrib.setFamilyDefaultVersionMap(obj, this.getSelectName(), timeStampMap);
+                final ColumnAttrib unMappedAttrib = tableMapping.getUnMappedAttrib(this.getFamilyName());
+                if (unMappedAttrib != null)
+                    unMappedAttrib.setUnMappedVersionMap(obj, this.getSelectName(), timeStampMap);
             }
             else {
                 final Map<Long, Object> mapVal = this.getColumnAttrib().getVersionMap(obj);

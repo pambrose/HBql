@@ -23,9 +23,9 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.hbql.client.FamilyDefaultValueMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.UnMappedValueMap;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
@@ -45,7 +45,7 @@ public class HRecordImpl implements Serializable, HRecord {
     private List<String> namePositionList = Lists.newArrayList();
 
     private volatile ElementMap<ColumnValue> columnValuesMap = null;
-    private volatile ElementMap<FamilyDefaultValueMap> familyDefaultElementsMap = null;
+    private volatile ElementMap<UnMappedValueMap> unMappedElementsMap = null;
 
     public HRecordImpl(final StatementContext statementContext) {
         this.setStatementContext(statementContext);
@@ -94,21 +94,21 @@ public class HRecordImpl implements Serializable, HRecord {
         return this.columnValuesMap;
     }
 
-    private ElementMap<FamilyDefaultValueMap> getFamilyDefaultElementsMap() {
-        if (this.familyDefaultElementsMap == null)
+    private ElementMap<UnMappedValueMap> getUnMappedElementsMap() {
+        if (this.unMappedElementsMap == null)
             synchronized (this) {
-                if (this.familyDefaultElementsMap == null)
-                    this.familyDefaultElementsMap = new ElementMap<FamilyDefaultValueMap>(this);
+                if (this.unMappedElementsMap == null)
+                    this.unMappedElementsMap = new ElementMap<UnMappedValueMap>(this);
             }
-        return this.familyDefaultElementsMap;
+        return this.unMappedElementsMap;
     }
 
     public void addElement(final Value value) throws HBqlException {
 
         if (value instanceof ColumnValue)
             this.getColumnValuesMap().addElement((ColumnValue)value);
-        else if (value instanceof FamilyDefaultValueMap)
-            this.getFamilyDefaultElementsMap().addElement((FamilyDefaultValueMap)value);
+        else if (value instanceof UnMappedValueMap)
+            this.getUnMappedElementsMap().addElement((UnMappedValueMap)value);
         else
             throw new InternalErrorException(value.getClass().getName());
     }
@@ -119,7 +119,7 @@ public class HRecordImpl implements Serializable, HRecord {
 
     public void clearValues() {
         this.getColumnValuesMap().clear();
-        this.getFamilyDefaultElementsMap().clear();
+        this.getUnMappedElementsMap().clear();
     }
 
     // Simple get routines
@@ -138,15 +138,15 @@ public class HRecordImpl implements Serializable, HRecord {
         }
     }
 
-    private FamilyDefaultValueMap getFamilyDefaultValueMap(final String name,
-                                                           final boolean createNewIfMissing) throws HBqlException {
-        final FamilyDefaultValueMap value = this.getFamilyDefaultElementsMap().findElement(name);
+    private UnMappedValueMap getUnMappedValueMap(final String name,
+                                                 final boolean createNewIfMissing) throws HBqlException {
+        final UnMappedValueMap value = this.getUnMappedElementsMap().findElement(name);
         if (value != null) {
             return value;
         }
         else {
             if (createNewIfMissing) {
-                final FamilyDefaultValueMap val = new FamilyDefaultValueMap(name);
+                final UnMappedValueMap val = new UnMappedValueMap(name);
                 this.addElement(val);
                 return val;
             }
@@ -192,22 +192,22 @@ public class HRecordImpl implements Serializable, HRecord {
         this.getColumnValue(attrib.getColumnName(), inMapping).getVersionMap(true).put(timestamp, val);
     }
 
-    public void setFamilyDefaultCurrentValue(final String familyName,
-                                             final String name,
-                                             final long timestamp,
-                                             final byte[] val) throws HBqlException {
-        this.getFamilyDefaultValueMap(familyName, true).setCurrentValueMap(timestamp, name, val);
+    public void setUnMappedCurrentValue(final String familyName,
+                                        final String columnName,
+                                        final long timestamp,
+                                        final byte[] val) throws HBqlException {
+        this.getUnMappedValueMap(familyName, true).setCurrentValueMap(timestamp, columnName, val);
     }
 
-    public void setFamilyDefaultVersionMap(final String familyName,
-                                           final String name,
-                                           final NavigableMap<Long, byte[]> val) throws HBqlException {
-        this.getFamilyDefaultValueMap(familyName, true).setVersionMap(name, val);
+    public void setUnMappedVersionMap(final String familyName,
+                                      final String columnName,
+                                      final NavigableMap<Long, byte[]> val) throws HBqlException {
+        this.getUnMappedValueMap(familyName, true).setVersionMap(columnName, val);
     }
 
     public void reset() {
         this.columnValuesMap = null;
-        this.familyDefaultElementsMap = null;
+        this.unMappedElementsMap = null;
     }
 
     public void setTimestamp(final long timestamp) {
@@ -240,9 +240,9 @@ public class HRecordImpl implements Serializable, HRecord {
         return (value != null) ? value.getVersionMap(true) : null;
     }
 
-    public Map<String, byte[]> getFamilyDefaultValueMap(final String name) throws HBqlException {
+    public Map<String, byte[]> getUnMappedValueMap(final String name) throws HBqlException {
 
-        final FamilyDefaultValueMap value = this.getFamilyDefaultValueMap(name, false);
+        final UnMappedValueMap value = this.getUnMappedValueMap(name, false);
         if (value == null)
             return null;
 
@@ -252,9 +252,9 @@ public class HRecordImpl implements Serializable, HRecord {
         return retval;
     }
 
-    public Map<String, NavigableMap<Long, byte[]>> getFamilyDefaultVersionMap(final String name) throws HBqlException {
+    public Map<String, NavigableMap<Long, byte[]>> getUnMappedVersionMap(final String name) throws HBqlException {
 
-        final FamilyDefaultValueMap value = this.getFamilyDefaultValueMap(name, false);
+        final UnMappedValueMap value = this.getUnMappedValueMap(name, false);
         if (value == null)
             return null;
 

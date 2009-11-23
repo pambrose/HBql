@@ -140,7 +140,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: create-table
 
         HConnection connection = HConnectionManager.newConnection();
-        connection.execute("CREATE TABLE foo (family1 (MAX_VERSIONS: 10), family2, family3)");
+        connection.execute("CREATE TABLE foo (family1 (MAX_VERSIONS: 10), family2, family3 (MAX_VERSIONS: 15))");
 
         // END SNIPPET: create-table
 
@@ -265,7 +265,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: create-mapping4
 
-        // A Mapping with a family default attribute.
+        // A Mapping with a family default.
         connection.execute("CREATE TEMP MAPPING mapping1 FOR TABLE foo "
                            + "("
                            + "keyval key, "

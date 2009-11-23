@@ -65,15 +65,15 @@ public class SelectFamilyAttrib extends ColumnAttrib {
         throw new InternalErrorException();
     }
 
-    public void setFamilyDefaultCurrentValue(final Object obj,
-                                             final String name,
-                                             final byte[] value) throws HBqlException {
+    public void setUnMappedCurrentValue(final Object obj,
+                                        final String name,
+                                        final byte[] value) throws HBqlException {
         throw new InternalErrorException();
     }
 
-    public void setFamilyDefaultVersionMap(final Object obj,
-                                           final String name,
-                                           final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
+    public void setUnMappedVersionMap(final Object obj,
+                                      final String name,
+                                      final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
         throw new InternalErrorException();
     }
 

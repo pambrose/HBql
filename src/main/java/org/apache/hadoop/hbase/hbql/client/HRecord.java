@@ -39,7 +39,7 @@ public interface HRecord extends Serializable {
 
     Map<Long, Object> getVersionMap(String name) throws HBqlException;
 
-    Map<String, byte[]> getFamilyDefaultValueMap(String name) throws HBqlException;
+    Map<String, byte[]> getUnMappedValueMap(String familyName) throws HBqlException;
 
-    Map<String, NavigableMap<Long, byte[]>> getFamilyDefaultVersionMap(String name) throws HBqlException;
+    Map<String, NavigableMap<Long, byte[]>> getUnMappedVersionMap(String familyName) throws HBqlException;
 }

@@ -37,13 +37,13 @@ public abstract class FieldAttrib extends ColumnAttrib {
                           final String columnName,
                           final Field field,
                           final FieldType fieldType,
-                          final boolean familyDefault,
+                          final boolean unMapped,
                           final String getter,
                           final String setter) {
         super(familyName,
               (columnName != null && columnName.length() > 0) ? columnName : field.getName(),
               field.getName(),
-              familyDefault,
+              unMapped,
               fieldType,
               field.getType().isArray(),
               getter,
@@ -111,12 +111,12 @@ public abstract class FieldAttrib extends ColumnAttrib {
         }
     }
 
-    public void setFamilyDefaultCurrentValue(final Object obj,
-                                             final String name,
-                                             final byte[] val) throws HBqlException {
+    public void setUnMappedCurrentValue(final Object obj,
+                                        final String name,
+                                        final byte[] val) throws HBqlException {
 
-        if (!this.isFamilyDefaultAttrib())
-            throw new HBqlException(this.getFamilyQualifiedName() + " not marked as familyDefault");
+        if (!this.isUnMappedAttrib())
+            throw new HBqlException(this.getFamilyQualifiedName() + " not marked as INCLUDE UNMAPPED");
 
         Map<String, byte[]> mapVal = (Map<String, byte[]>)this.getCurrentValue(obj);
 
@@ -128,12 +128,12 @@ public abstract class FieldAttrib extends ColumnAttrib {
         mapVal.put(name, val);
     }
 
-    public void setFamilyDefaultVersionMap(final Object obj,
-                                           final String name,
-                                           final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
+    public void setUnMappedVersionMap(final Object obj,
+                                      final String name,
+                                      final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
 
-        if (!this.isFamilyDefaultAttrib())
-            throw new HBqlException(this.getFamilyQualifiedName() + " not marked as familyDefault");
+        if (!this.isUnMappedAttrib())
+            throw new HBqlException(this.getFamilyQualifiedName() + " not marked as INCLUDE UNMAPPED");
 
         Map<String, NavigableMap<Long, byte[]>> mapVal = (Map<String, NavigableMap<Long, byte[]>>)this.getCurrentValue(obj);
 

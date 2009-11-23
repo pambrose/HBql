@@ -206,12 +206,12 @@ public class FamilySelectElement implements SelectElement {
                     record.addNameToPositionList(familyName + ":" + columnName);
                 }
 
-                final ColumnAttrib attrib = this.getResultAccessor()
-                        .getColumnAttribByQualifiedName(familyName, columnName);
+                final ColumnAttrib attrib = this.getResultAccessor().getColumnAttribByQualifiedName(familyName,
+                                                                                                    columnName);
                 if (attrib == null) {
-                    final ColumnAttrib familyDefaultAttrib = tableMapping.getFamilyDefault(familyName);
-                    if (familyDefaultAttrib != null)
-                        familyDefaultAttrib.setFamilyDefaultCurrentValue(obj, columnName, valueBytes);
+                    final ColumnAttrib unMappedAttrib = tableMapping.getUnMappedAttrib(familyName);
+                    if (unMappedAttrib != null)
+                        unMappedAttrib.setUnMappedCurrentValue(obj, columnName, valueBytes);
                 }
                 else {
                     attrib.setCurrentValue(obj, 0, valueBytes);
@@ -236,9 +236,9 @@ public class FamilySelectElement implements SelectElement {
                 final ColumnAttrib attrib = tableMapping.getVersionAttribMap(familyName, columnName);
 
                 if (attrib == null) {
-                    final ColumnAttrib familyDefaultAttrib = tableMapping.getFamilyDefault(familyName);
-                    if (familyDefaultAttrib != null)
-                        familyDefaultAttrib.setFamilyDefaultVersionMap(obj, columnName, timeStampMap);
+                    final ColumnAttrib unMappedAttrib = tableMapping.getUnMappedAttrib(familyName);
+                    if (unMappedAttrib != null)
+                        unMappedAttrib.setUnMappedVersionMap(obj, columnName, timeStampMap);
                 }
                 else {
                     attrib.setVersionMap(obj, timeStampMap);

@@ -9,21 +9,13 @@ CREATE MAPPING
 *Syntax
 
 ---------------------------
-CREATE [TEMP] MAPPING mapping_name [FOR TABLE table_name] '(' attrib [, ...] ')'
+CREATE [TEMP] MAPPING mapping_name [ FOR TABLE table_name ] '(' key_description ',' [ family_mapping [, ...] ] ')'
 
-attrib:
-    key_description
-    | column_description
-    | family_default
-
-key_description:
-    key_name KEY
+family_mapping:
+    family_name [ INCLUDE UNMAPPED ] '(' column_description  [, ...] ')'
 
 column_description:
-    family_name ':' column_name type [ '['']' ] [ ALIAS alias_name ] [ DEFAULT constant_expression ]
-
-family_default:
-    family_name ':' '*' [ ALIAS alias_name ]
+    column_name type [ '['']' ] [ ALIAS alias_name ] [ DEFAULT constant_expression ]
 
 type:
     BOOLEAN   (BOOL)
@@ -65,15 +57,17 @@ type:
 
     * The DEFAULT clause cannot be used with array values.
 
-    * Each table family can have one family_default attribute.  A family_default atttribute is used when
-    a column value is found in the query results, and no corresponding attribute is present in the mapping.
-    Effectively it is a map with strings for keys (corresponding to the family qualified name) and byte[] values.
-    An example can be found {{{./src/site/examples/family_default.html}here}}.
+    * Each family can have an optional "INCLUDE UNMAPPED" clause.
+    If the clause is present for a given family, then all query result set values for that
+    family that are *not* described in the mapping are put in a map.  The name of each
+    unmapped value is the family qualified name, i.e., family:column, and
+    the type of each unmapped value is byte[] (since no type information is known).
+    If an unmapped value is returned for a family that does not have the "INCLUDE UNMAPPED" clause,
+    then the value is ignored.
 
-    * Both column descriptions and family defaults can have an alias name.
+    * Column descriptions can have an alias name.
     If present, it can be used interchangeably with the fully qualified column name.
-    Without an alias, column descriptions are referenced as "family:column" and family
-     defaults are referenced as "family:*" in the API.
+    Without an alias, column descriptions are referenced as "family:column".
 
 
 

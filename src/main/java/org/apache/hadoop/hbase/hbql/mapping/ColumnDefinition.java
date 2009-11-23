@@ -32,7 +32,7 @@ public final class ColumnDefinition implements Serializable {
     private final String aliasName;
     private final boolean isArray;
     private final FieldType fieldType;
-    private final boolean familyDefault;
+    private final boolean unMapped;
     private final GenericValue defaultValue;
 
     private FamilyMapping familyMapping = null;
@@ -48,19 +48,19 @@ public final class ColumnDefinition implements Serializable {
         this.fieldType = getFieldType(typeName);
         this.isArray = isArray;
         this.defaultValue = defaultValue;
-        this.familyDefault = false;
+        this.unMapped = false;
     }
 
     private ColumnDefinition(final String familyName,
                              final String columnName,
                              final FieldType type,
-                             final boolean familyDefault) {
+                             final boolean unMapped) {
         this.columnName = columnName;
         this.aliasName = columnName.length() > 0 ? columnName : familyName;
         this.fieldType = type;
         this.isArray = false;
         this.defaultValue = null;
-        this.familyDefault = familyDefault;
+        this.unMapped = unMapped;
         this.familyMapping = new FamilyMapping(familyName, null, false);
     }
 
@@ -70,7 +70,7 @@ public final class ColumnDefinition implements Serializable {
     }
 
     // For Family Default Attribs
-    public static ColumnDefinition newFamilyDefaultColumn(final String familyName) {
+    public static ColumnDefinition newUnMappedColumn(final String familyName) {
         return new ColumnDefinition(familyName, "", null, true);
     }
 

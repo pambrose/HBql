@@ -353,7 +353,7 @@ public class InsertTest extends TestSupport {
 
         int i = 0;
         for (final HRecord rec : recList1) {
-            Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1");
+            Map<String, byte[]> vals = rec.getUnMappedValueMap("f1");
             assertTrue(vals.size() == 2);
             String val1 = IO.getSerialization().getStringFromBytes(vals.get("f1:val1"));
             assertTrue(val1List.get(i).equals(val1));
@@ -378,12 +378,12 @@ public class InsertTest extends TestSupport {
 
         int i = 0;
         for (final HRecord rec : recList1) {
-            Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1");
+            Map<String, byte[]> vals = rec.getUnMappedValueMap("f1");
             assertTrue(vals.size() == 2);
             String val1 = IO.getSerialization().getStringFromBytes(vals.get("f1:val1"));
             assertTrue(val1List.get(i).equals(val1));
 
-            Map<String, NavigableMap<Long, byte[]>> vers = rec.getFamilyDefaultVersionMap("f1");
+            Map<String, NavigableMap<Long, byte[]>> vers = rec.getUnMappedVersionMap("f1");
             assertTrue(vers.size() == 2);
             NavigableMap<Long, byte[]> v2 = vers.get("f1:val1");
             assertTrue(v2.size() == 3);
@@ -408,7 +408,7 @@ public class InsertTest extends TestSupport {
 
         int i = 0;
         for (final HRecord rec : recList1) {
-            Map<String, byte[]> vals = rec.getFamilyDefaultValueMap("f1");
+            Map<String, byte[]> vals = rec.getUnMappedValueMap("f1");
             assertTrue(vals.size() == 1);
             String val1 = IO.getSerialization().getStringFromBytes(vals.get("f1:valunknown"));
             assertTrue(val1 == null);
@@ -462,7 +462,7 @@ public class InsertTest extends TestSupport {
         assertTrue(recList2.size() == 10);
 
         for (final HRecord rec : recList2) {
-            Map map1 = rec.getFamilyDefaultValueMap("f3");
+            Map map1 = rec.getUnMappedValueMap("f3");
 
             assertTrue(map1.size() == 5);
         }

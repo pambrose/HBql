@@ -22,13 +22,13 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.hbql.impl.ValueMap;
 
-public class FamilyDefaultValueMap extends ValueMap<byte[]> {
+public class UnMappedValueMap extends ValueMap<byte[]> {
 
-    public FamilyDefaultValueMap(final String name) throws HBqlException {
-        super(name, null);
+    public UnMappedValueMap(final String familyName) throws HBqlException {
+        super(familyName, null);
     }
 
     public String toString() {
-        return "Family default for: " + this.getName();
+        return "Unmapped values for family: " + this.getName();
     }
 }

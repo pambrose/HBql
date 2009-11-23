@@ -102,16 +102,16 @@ public class HRecordAttrib extends ColumnAttrib {
         return ((HRecordImpl)record).getColumnValue(this.getAliasName(), true).getVersionMap(true);
     }
 
-    public void setFamilyDefaultCurrentValue(final Object record,
-                                             final String name,
-                                             final byte[] value) throws HBqlException {
-        ((HRecordImpl)record).setFamilyDefaultCurrentValue(this.getFamilyName(), name, 0, value);
+    public void setUnMappedCurrentValue(final Object record,
+                                        final String name,
+                                        final byte[] value) throws HBqlException {
+        ((HRecordImpl)record).setUnMappedCurrentValue(this.getFamilyName(), name, 0, value);
     }
 
-    public void setFamilyDefaultVersionMap(final Object record,
-                                           final String name,
-                                           final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
-        ((HRecordImpl)record).setFamilyDefaultVersionMap(this.getFamilyName(), name, timeStampMap);
+    public void setUnMappedVersionMap(final Object record,
+                                      final String name,
+                                      final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException {
+        ((HRecordImpl)record).setUnMappedVersionMap(this.getFamilyName(), name, timeStampMap);
     }
 
     protected Method getMethod(final String methodName,

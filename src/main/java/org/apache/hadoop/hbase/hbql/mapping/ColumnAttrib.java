@@ -43,7 +43,7 @@ public abstract class ColumnAttrib implements Serializable {
     private volatile byte[] columnBytes = null;
     private final String getter;
     private final String setter;
-    private final boolean familyDefault;
+    private final boolean unMapped;
     private final boolean anArray;
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
@@ -53,7 +53,7 @@ public abstract class ColumnAttrib implements Serializable {
     protected ColumnAttrib(final String familyName,
                            final String columnName,
                            final String aliasName,
-                           final boolean familyDefault,
+                           final boolean unMapped,
                            final FieldType fieldType,
                            final boolean isArray,
                            final String getter,
@@ -62,7 +62,7 @@ public abstract class ColumnAttrib implements Serializable {
         this.familyName = familyName;
         this.columnName = columnName;
         this.aliasName = aliasName;
-        this.familyDefault = familyDefault;
+        this.unMapped = unMapped;
         this.fieldType = fieldType;
         this.anArray = isArray;
         this.getter = getter;
@@ -96,13 +96,13 @@ public abstract class ColumnAttrib implements Serializable {
 
     public abstract Map<Long, Object> getVersionMap(final Object obj) throws HBqlException;
 
-    public abstract void setFamilyDefaultCurrentValue(final Object obj,
-                                                      final String name,
-                                                      final byte[] value) throws HBqlException;
+    public abstract void setUnMappedCurrentValue(final Object obj,
+                                                 final String name,
+                                                 final byte[] value) throws HBqlException;
 
-    public abstract void setFamilyDefaultVersionMap(final Object obj,
-                                                    final String name,
-                                                    final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException;
+    public abstract void setUnMappedVersionMap(final Object obj,
+                                               final String name,
+                                               final NavigableMap<Long, byte[]> timeStampMap) throws HBqlException;
 
     protected abstract Method getMethod(final String methodName,
                                         final Class<?>... params) throws NoSuchMethodException, HBqlException;
@@ -312,8 +312,8 @@ public abstract class ColumnAttrib implements Serializable {
         return this.setterMethod;
     }
 
-    public boolean isFamilyDefaultAttrib() {
-        return this.familyDefault;
+    public boolean isUnMappedAttrib() {
+        return this.unMapped;
     }
 
     protected boolean hasGetter() {
