@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.impl.ValueMap;
 public class UnMappedValueMap extends ValueMap<byte[]> {
 
     public UnMappedValueMap(final String familyName) throws HBqlException {
-        super(familyName, null);
+        super(familyName);
     }
 
     public String toString() {

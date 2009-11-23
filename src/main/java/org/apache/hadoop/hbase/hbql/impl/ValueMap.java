@@ -20,7 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
@@ -30,47 +29,16 @@ import java.util.NavigableMap;
 public abstract class ValueMap<T> extends Value {
 
     private final Map<String, CurrentAndVersionValue<T>> currentAndVersionMap = Maps.newHashMap();
-    private final Class elementClazz;
 
-    protected ValueMap(final String name, final Class elementClazz) throws HBqlException {
+    protected ValueMap(final String name) throws HBqlException {
         super(name);
-        this.elementClazz = elementClazz;
     }
 
     public Map<String, CurrentAndVersionValue<T>> getCurrentAndVersionMap() {
         return this.currentAndVersionMap;
     }
 
-    private Class getElementClazz() {
-        return this.elementClazz;
-    }
-
-    public T getCurrentMapValue(final String name, final boolean createIfNull) throws HBqlException {
-
-        final T retval = this.getMapValue(name).getCurrentValue();
-
-        if (retval != null || !createIfNull)
-            return retval;
-
-        if (this.getElementClazz() == null)
-            throw new InternalErrorException();
-
-        final T newVal;
-        try {
-            newVal = (T)this.getElementClazz().newInstance();
-            this.setCurrentValueMap(0, name, newVal);
-        }
-        catch (InstantiationException e) {
-            throw new HBqlException(e.getMessage());
-        }
-        catch (IllegalAccessException e) {
-            throw new HBqlException(e.getMessage());
-        }
-
-        return newVal;
-    }
-
-    public CurrentAndVersionValue<T> getMapValue(final String mapKey) throws HBqlException {
+    private CurrentAndVersionValue<T> getMapValue(final String mapKey) throws HBqlException {
 
         CurrentAndVersionValue<T> hvalue = this.getCurrentAndVersionMap().get(mapKey);
         if (hvalue == null) {
