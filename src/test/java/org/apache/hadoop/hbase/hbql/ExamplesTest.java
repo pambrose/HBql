@@ -265,7 +265,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: create-mapping4
 
-        // A Mapping with a family default.
+        // A Mapping with a with an INCLUDE UNMAPPED clause.
         connection.execute("CREATE TEMP MAPPING mapping1 FOR TABLE foo "
                            + "("
                            + "keyval key, "

@@ -44,16 +44,16 @@ public class DescribeTableStatement extends TableStatement {
             retval.out.println("Table name: " + tableDesc.getNameAsString());
             retval.out.println("Families:");
             for (final HColumnDescriptor columnDesc : tableDesc.getFamilies()) {
-                retval.out.println("\t" + columnDesc.getNameAsString()
-                                   + " Max versions: " + columnDesc.getMaxVersions()
-                                   + " TTL: " + columnDesc.getTimeToLive()
-                                   + " Block size: " + columnDesc.getBlocksize()
-                                   + " Compression: " + columnDesc.getCompression().getName()
-                                   + " Compression type: " + columnDesc.getCompressionType().getName()
-                                   + " Block cache enabled: " + columnDesc.isBlockCacheEnabled()
-                                   + " Bloom filter: " + columnDesc.isBloomfilter()
-                                   + " In memory: " + columnDesc.isInMemory()
-                );
+                retval.out.println("  " + columnDesc.getNameAsString()
+                                   + "\n    Max versions: " + columnDesc.getMaxVersions()
+                                   + "\n    TTL: " + columnDesc.getTimeToLive()
+                                   + "\n    Block size: " + columnDesc.getBlocksize()
+                                   + "\n    Compression: " + columnDesc.getCompression().getName()
+                                   + "\n    Compression type: " + columnDesc.getCompressionType().getName()
+                                   + "\n    Block cache enabled: " + columnDesc.isBlockCacheEnabled()
+                                   + "\n    Bloom filter: " + columnDesc.isBloomfilter()
+                                   + "\n    In memory: " + columnDesc.isInMemory()
+                                   + "\n");
             }
 
             retval.out.flush();
