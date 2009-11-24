@@ -36,6 +36,7 @@ import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -123,7 +124,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         try {
             return new ResultsIterator<T>(this.getWithArgs().getLimit()) {
 
-                private final HTable table = getConnection().newHTable(getSelectStmt().getMapping().getTableName());
+                private HTable htable = getConnection().newHTable(getSelectStmt().getMapping().getTableName());
                 private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
                 private final Iterator<RowRequest> rowRequestIterator = getRowRequestList().iterator();
 
@@ -165,8 +166,8 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                     return this.nextObject;
                 }
 
-                private HTable getTable() {
-                    return this.table;
+                private HTable getHTable() {
+                    return this.htable;
                 }
 
                 private void setCurrentResultScanner(final ResultScanner currentResultScanner) {
@@ -239,7 +240,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                 private Iterator<Result> getNextResultIterator() throws HBqlException {
                     final RowRequest rowRequest = this.getRowRequestIterator().next();
                     this.setMaxVersions(rowRequest.getMaxVersions());
-                    this.setCurrentResultScanner(rowRequest.getResultScanner(this.getTable()));
+                    this.setCurrentResultScanner(rowRequest.getResultScanner(this.getHTable()));
                     return this.getCurrentResultScanner().iterator();
                 }
 
@@ -247,9 +248,24 @@ public class HResultSetImpl<T> implements HResultSet<T> {
 
                     this.nextObject = nextObject;
 
-                    if (nextObject == null && !fromExceptionCatch && getListeners() != null) {
-                        for (final QueryListener<T> listener : getListeners())
-                            listener.onQueryComplete();
+                    // If the query is finished then clean up.
+                    if (this.getNextObject() == null) {
+
+                        if (!fromExceptionCatch && getListeners() != null) {
+                            for (final QueryListener<T> listener : getListeners())
+                                listener.onQueryComplete();
+                        }
+
+                        if (this.getHTable() != null) {
+                            try {
+                                this.getHTable().close();
+                            }
+                            catch (IOException e) {
+                                // No op
+                                e.printStackTrace();
+                            }
+                            this.htable = null;
+                        }
                     }
                 }
 

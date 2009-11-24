@@ -122,11 +122,17 @@ options {backtrack=true;}
 	| keyCREATE keyTABLE t=simpleName LPAREN fd=familyDefinitionList RPAREN	
 							{retval = new CreateTableStatement($t.text, $fd.retval);}
 	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
-	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableStatement($t.text);}
+	| keyDROP fnl=familyNameList keyFROM keyTABLE t=simpleName 	
+							{retval = new DropFamilyFromTableStatement($t.text, $fnl.retval);}
 	| keyDROP keyTABLE t=simpleName 		{retval = new DropTableStatement($t.text);}
+	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableStatement($t.text);}
 	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableStatement($t.text);}
 	;
-	
+
+familyNameList returns [List<String> retval]
+@init {retval = Lists.newArrayList();}
+	: a1=simpleName {retval.add($a1.text);} (COMMA a2=simpleName {retval.add($a2.text);})*;
+
 insertValues returns [InsertValueSource retval]
 	: keyVALUES LPAREN e=insertExprList RPAREN	{retval = new InsertSingleRow($e.retval);}
 	| sel=selectStatement				{retval = new InsertSelectValues($sel.retval);}			

@@ -44,7 +44,7 @@ public interface HConnection {
     // Table Routines    
     boolean tableExists(String tableName) throws HBqlException;
 
-    HTableDescriptor getTable(final String tableName) throws HBqlException;
+    HTableDescriptor getHTableDescriptor(final String tableName) throws HBqlException;
 
     boolean tableEnabled(String tableName) throws HBqlException;
 
@@ -60,7 +60,6 @@ public interface HConnection {
     HStatement createStatement();
 
     HPreparedStatement prepareStatement(String str) throws HBqlException;
-
 
     // Execute Routines
     ExecutionResults execute(String sql) throws HBqlException;

@@ -102,6 +102,13 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         for (final RowRequest rowRequest : rowRequestList)
             cnt += this.delete(table, this.getWithArgs(), rowRequest);
 
+        try {
+            table.close();
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
+
         final ExecutionResults results = new ExecutionResults("Delete count: " + cnt);
         results.setCount(cnt);
         return results;

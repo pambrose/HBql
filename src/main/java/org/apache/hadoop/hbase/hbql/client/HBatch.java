@@ -158,6 +158,7 @@ public class HBatch<T> {
                 for (final BatchAction batchAction : this.getActionList(tableName))
                     batchAction.apply(table);
                 table.flushCommits();
+                table.close();
             }
         }
         catch (IOException e) {

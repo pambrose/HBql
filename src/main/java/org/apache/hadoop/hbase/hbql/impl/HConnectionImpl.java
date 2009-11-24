@@ -226,7 +226,7 @@ public class HConnectionImpl implements HConnection {
         }
     }
 
-    public HTableDescriptor getTable(final String tableName) throws HBqlException {
+    public HTableDescriptor getHTableDescriptor(final String tableName) throws HBqlException {
         try {
             return this.newHBaseAdmin().getTableDescriptor(tableName.getBytes());
         }
@@ -246,7 +246,10 @@ public class HConnectionImpl implements HConnection {
 
     public void dropTable(final String tableName) throws HBqlException {
         try {
-            this.newHBaseAdmin().deleteTable(tableName);
+            final byte[] tableNameBytes = tableName.getBytes();
+            if (this.newHBaseAdmin().isTableEnabled(tableNameBytes))
+                throw new HBqlException("Cannot drop enabled table: " + tableName);
+            this.newHBaseAdmin().deleteTable(tableNameBytes);
         }
         catch (IOException e) {
             throw new HBqlException(e);

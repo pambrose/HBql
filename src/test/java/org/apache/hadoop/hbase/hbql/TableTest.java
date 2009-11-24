@@ -46,7 +46,7 @@ public class TableTest extends TestSupport {
         assertFalse(connection.tableExists(tableName));
         connection.execute("CREATE TABLE " + tableName + " (family1, family2, family3)");
         assertTrue(connection.tableExists(tableName));
-        HTableDescriptor table = connection.getTable(tableName);
+        HTableDescriptor table = connection.getHTableDescriptor(tableName);
         HColumnDescriptor[] hcd = table.getColumnFamilies();
         assertTrue((hcd.length == 3));
         assertTrue(table.hasFamily("family1".getBytes()));
@@ -83,7 +83,7 @@ public class TableTest extends TestSupport {
                            + "TTL: 440"
                            + "))");
         assertTrue(connection.tableExists(tableName));
-        HTableDescriptor table = connection.getTable(tableName);
+        HTableDescriptor table = connection.getHTableDescriptor(tableName);
         HColumnDescriptor[] hcd = table.getColumnFamilies();
         assertTrue((hcd.length == 1));
         assertTrue(table.hasFamily("family1".getBytes()));
