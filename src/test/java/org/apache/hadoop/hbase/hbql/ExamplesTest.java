@@ -208,12 +208,11 @@ public class ExamplesTest extends TestSupport {
                            + "  val5 STRING ALIAS val15"
                            + "))");
 
-        System.out.println(connection.execute("DELETE FROM foo_mapping WITH CLIENT FILTER WHERE val1 > 4"));
+        connection.execute("DELETE FROM foo_mapping WITH CLIENT FILTER WHERE val1 > 4");
 
-        System.out
-                .println(connection.execute("DELETE family1:val1, val12 FROM foo_mapping WITH CLIENT FILTER WHERE val1 > 5"));
+        connection.execute("DELETE family1:val1, val12 FROM foo_mapping WITH CLIENT FILTER WHERE val1 > 5");
 
-        System.out.println(connection.execute("DELETE family1:* FROM foo_mapping WITH CLIENT FILTER WHERE val1 > 7"));
+        connection.execute("DELETE family1:* FROM foo_mapping WITH CLIENT FILTER WHERE val1 > 7");
 
         // END SNIPPET: delete1
 
