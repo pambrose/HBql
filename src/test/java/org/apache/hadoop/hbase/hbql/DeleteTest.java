@@ -135,7 +135,7 @@ public class DeleteTest extends TestSupport {
         long cnt = (Long)rec.getCurrentValue("cnt");
         assertTrue(cnt == count);
 
-        connection.executeUpdate("DELETE f1:val1 FROM delete_test");
+        connection.executeUpdate("DELETE val11, f2:val2 FROM delete_test");
 
         recs = connection.executeQueryAndFetch(sql);
         rec = recs.get(0);

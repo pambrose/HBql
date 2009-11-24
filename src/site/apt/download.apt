@@ -5,14 +5,14 @@
 
 Releases
 
-    *{{{./downloads/hbql-0.9.7-alpha.zip}0.9.7-alpha.zip}}
+    *{{{./downloads/hbql-0.9.8-alpha.zip}0.9.8-alpha.zip}}
     
-    *{{{./downloads/hbql-0.9.7-alpha.tar.gz}0.9.7-alpha.tar.gz}}
+    *{{{./downloads/hbql-0.9.8-alpha.tar.gz}0.9.8-alpha.tar.gz}}
 
 
 Javadocs
 
-    *{{{./downloads/javadocs-0.9.7-alpha.zip}javadocs-0.9.7-alpha.zip}}
+    *{{{./downloads/javadocs-0.9.8-alpha.zip}javadocs-0.9.8-alpha.zip}}
     
 
 Source
@@ -26,11 +26,15 @@ git clone git://github.com/pambrose/HBql.git
 
 Release Notes
 
+    0.9.8-alpha -- 11/23/09
+
+        * Added family and column arguments to {{{statements/delete.html}DELETE}} statement.
+
     0.9.7-alpha -- 11/22/09
 
         * Cleaned up syntax of CREATE MAPPING statement.
 
-        * Added family-specific configuration parameters in CREATE TABLE statement.
+        * Added family-specific configuration parameters in  {{{statements/create-table.html}CREATE TABLE}} statement.
 
     0.9.6-alpha -- 11/19/09
 

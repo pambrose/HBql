@@ -8,12 +8,22 @@ DELETE
 *Syntax
 
 ---------------------------
-DELETE FROM [ MAPPING ] mapping_name with_clause
+
+DELETE [ delete_item [, ...] ] FROM [ MAPPING ] mapping_name with_clause
+
+delete_item:
+    family_name ':*'
+    | family_name ':' column_name
+    | alias_name
+
 ---------------------------
 
 *Description
 
-    Delete records from the table referenced by mapping_name using the {{{./with-clause.html}WITH}} clause.
+    Delete data from the table referenced by mapping_name using the {{{./with-clause.html}WITH}} clause.
+    if no delete_items are specified, then the entire row is deleted.  If families and/or column names are
+    specified in delete_items, then just those elements are deleted from the row.
+   
 
 *Example
 

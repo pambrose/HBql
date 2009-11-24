@@ -31,6 +31,7 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 
@@ -44,19 +45,20 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
     private boolean validated = false;
     private final NamedParameters namedParameters = new NamedParameters();
     private final WithArgs withArgs;
-    private final List<String> deleteItemList;
+    private final List<String> deleteItemList = Lists.newArrayList();
+    private final List<String> originaltemList;
 
-    public DeleteStatement(final List<String> deleteItemList, final String mappingName, final WithArgs withArgs) {
+    public DeleteStatement(final List<String> originaltemList, final String mappingName, final WithArgs withArgs) {
         super(mappingName);
         if (withArgs == null)
             this.withArgs = new WithArgs();
         else
             this.withArgs = withArgs;
 
-        if (deleteItemList == null)
-            this.deleteItemList = Lists.newArrayList();
+        if (originaltemList == null)
+            this.originaltemList = Lists.newArrayList();
         else
-            this.deleteItemList = deleteItemList;
+            this.originaltemList = originaltemList;
     }
 
     private WithArgs getWithArgs() {
@@ -93,6 +95,22 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         this.getWithArgs().setStatementContext(this);
 
         this.collectParameters();
+
+        // Verify and lookup alias references
+        // Build list with family wildcar refs and family qualified column names
+        for (final String deleteItem : this.originaltemList) {
+            if (deleteItem.contains(":")) {
+                this.getDeleteItemList().add(deleteItem);
+            }
+            else {
+                final HBaseTableMapping mapping = this.getHBaseTableMapping();
+                final ColumnAttrib attrib = mapping.getAttribByVariableName(deleteItem);
+                if (attrib == null)
+                    throw new HBqlException("Invalid variable: " + deleteItem);
+                else
+                    this.getDeleteItemList().add(attrib.getFamilyQualifiedName());
+            }
+        }
     }
 
     public ExecutionResults execute() throws HBqlException {
@@ -135,6 +153,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
             for (final Result result : resultScaner) {
                 try {
                     if (clientExpressionTree == null || clientExpressionTree.evaluate(result)) {
+
                         final Delete rowDelete = new Delete(result.getRow());
 
                         for (final String deleteItem : this.getDeleteItemList()) {
@@ -152,7 +171,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
                     }
                 }
                 catch (ResultMissingColumnException e) {
-                    // Just skip and do nothing
+                    // Just skip and go to next record
                 }
             }
             if (cnt > 0)
@@ -183,7 +202,17 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
 
         final StringBuilder sbuf = new StringBuilder();
 
-        sbuf.append("DELETE FROM ");
+        sbuf.append("DELETE ");
+
+        boolean firsttime = true;
+        for (final String familyName : this.originaltemList) {
+            if (!firsttime)
+                sbuf.append(", ");
+            sbuf.append(familyName);
+            firsttime = false;
+        }
+
+        sbuf.append(" FROM ");
         sbuf.append(this.getMappingName());
         sbuf.append(" ");
         sbuf.append(this.getWithArgs().asString());

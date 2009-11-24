@@ -191,6 +191,34 @@ public class ExamplesTest extends TestSupport {
 
     }
 
+    public void delete1() throws HBqlException {
+
+        // START SNIPPET: delete1
+
+        HConnection connection = HConnectionManager.newConnection();
+
+        connection.execute("CREATE TEMP MAPPING foo_mapping FOR TABLE foo "
+                           + "("
+                           + "keyval KEY, "
+                           + "family1 ("
+                           + "  val1 INT ALIAS val11, "
+                           + "  val2 INT ALIAS val12, "
+                           + "  val3 INT ALIAS val13, "
+                           + "  val4 INT ALIAS val14, "
+                           + "  val5 STRING ALIAS val15"
+                           + "))");
+
+        System.out.println(connection.execute("DELETE FROM foo_mapping WITH CLIENT FILTER WHERE val1 > 4"));
+
+        System.out
+                .println(connection.execute("DELETE family1:val1, val12 FROM foo_mapping WITH CLIENT FILTER WHERE val1 > 5"));
+
+        System.out.println(connection.execute("DELETE family1:* FROM foo_mapping WITH CLIENT FILTER WHERE val1 > 7"));
+
+        // END SNIPPET: delete1
+
+    }
+
     public void insert2() throws HBqlException {
 
         // START SNIPPET: insert2
