@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
+import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
@@ -40,32 +41,42 @@ import java.util.Set;
 public class DeleteStatement extends StatementContext implements ParameterStatement, ConnectionStatement {
 
     private transient HConnectionImpl connection = null;
-    private final WithArgs withArgs;
     private boolean validated = false;
     private final NamedParameters namedParameters = new NamedParameters();
+    private final WithArgs withArgs;
+    private final List<String> deleteItemList;
 
-    public DeleteStatement(final String mappingName, final WithArgs withArgs) {
+    public DeleteStatement(final List<String> deleteItemList, final String mappingName, final WithArgs withArgs) {
         super(mappingName);
         if (withArgs == null)
             this.withArgs = new WithArgs();
         else
             this.withArgs = withArgs;
+
+        if (deleteItemList == null)
+            this.deleteItemList = Lists.newArrayList();
+        else
+            this.deleteItemList = deleteItemList;
     }
 
-    public WithArgs getWithArgs() {
+    private WithArgs getWithArgs() {
         return this.withArgs;
+    }
+
+    private List<String> getDeleteItemList() {
+        return this.deleteItemList;
     }
 
     private HConnectionImpl getConnection() {
         return this.connection;
     }
 
-    public NamedParameters getNamedParameters() {
-        return this.namedParameters;
+    private boolean isValidated() {
+        return this.validated;
     }
 
-    public boolean isValidated() {
-        return this.validated;
+    public NamedParameters getNamedParameters() {
+        return this.namedParameters;
     }
 
     public void validate(final HConnectionImpl connection) throws HBqlException {
@@ -124,7 +135,19 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
             for (final Result result : resultScaner) {
                 try {
                     if (clientExpressionTree == null || clientExpressionTree.evaluate(result)) {
-                        table.delete(new Delete(result.getRow()));
+                        final Delete rowDelete = new Delete(result.getRow());
+
+                        for (final String deleteItem : this.getDeleteItemList()) {
+                            if (deleteItem.endsWith(":*")) {
+                                final String familyName = deleteItem.substring(0, deleteItem.length() - 2);
+                                rowDelete.deleteFamily(familyName.getBytes());
+                            }
+                            else {
+                                rowDelete.deleteColumns(deleteItem.getBytes());
+                            }
+                        }
+
+                        table.delete(rowDelete);
                         cnt++;
                     }
                 }

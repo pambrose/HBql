@@ -34,6 +34,6 @@ public class HBqlException extends SQLException {
     }
 
     public HBqlException(final IOException e) {
-        super("IOException: " + e.getMessage(), e);
+        super(e.getMessage(), e);
     }
 }

@@ -27,11 +27,11 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.List;
 
-public class DropFamilyFromTableStatement extends TableStatement {
+public class DropFamilyStatement extends TableStatement {
 
     private final List<String> familyNameList;
 
-    public DropFamilyFromTableStatement(final String tableName, final List<String> familyNameList) {
+    public DropFamilyStatement(final String tableName, final List<String> familyNameList) {
         super(tableName);
         this.familyNameList = familyNameList;
     }

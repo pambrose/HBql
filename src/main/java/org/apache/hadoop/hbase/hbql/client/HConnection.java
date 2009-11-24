@@ -23,7 +23,6 @@ package org.apache.hadoop.hbase.hbql.client;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HTableDescriptor;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
@@ -72,7 +71,7 @@ public interface HConnection {
 
     <T> List<T> executeQueryAndFetch(String sql, Class clazz) throws HBqlException;
 
-    ExecutionResults executeUpdate(String sql) throws SQLException;
+    ExecutionResults executeUpdate(String sql) throws HBqlException;
 
     // Mapping Routines
     HMapping getMapping(final String mappingName) throws HBqlException;

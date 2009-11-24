@@ -42,7 +42,6 @@ import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -168,7 +167,7 @@ public class HConnectionImpl implements HConnection {
         return stmt.executeQueryAndFetch(sql, clazz);
     }
 
-    public ExecutionResults executeUpdate(final String sql) throws SQLException {
+    public ExecutionResults executeUpdate(final String sql) throws HBqlException {
         final HStatement stmt = this.createStatement();
         return stmt.executeUpdate(sql);
     }

@@ -91,8 +91,7 @@ import org.apache.hadoop.hbase.hbql.parser.*;
 
 consoleStatements returns [List<HBqlStatement> retval]
 @init {retval = Lists.newArrayList();}
-	: c1=consoleStatement SEMI {retval.add($c1.retval);} ((c2=consoleStatement {retval.add($c2.retval);})? SEMI )*
-	;
+	: c1=consoleStatement SEMI {retval.add($c1.retval);} ((c2=consoleStatement {retval.add($c2.retval);})? SEMI )*;
 	
 consoleStatement returns [HBqlStatement retval]
 options {backtrack=true;}	
@@ -109,8 +108,8 @@ options {backtrack=true;}
 
 jdbcStatement returns [HBqlStatement retval]
 options {backtrack=true;}	
-	: keyDELETE keyFROM keyMAPPING? t=simpleName w=withClause?	
-							{retval = new DeleteStatement($t.text, $w.retval);}
+	: keyDELETE di=deleteItemList? keyFROM keyMAPPING? t=simpleName w=withClause?	
+							{retval = new DeleteStatement($di.retval, $t.text, $w.retval);}
 	| keyINSERT keyINTO keyMAPPING? t=simpleName LPAREN e=exprList RPAREN ins=insertValues
 							{retval = new InsertStatement($t.text, $e.retval, $ins.retval);}
 	| sel=selectStatement				{retval = $sel.retval;}			
@@ -122,21 +121,22 @@ options {backtrack=true;}
 	| keyCREATE keyTABLE t=simpleName LPAREN fd=familyDefinitionList RPAREN	
 							{retval = new CreateTableStatement($t.text, $fd.retval);}
 	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
-	| keyDROP fnl=familyNameList keyFROM keyTABLE t=simpleName 	
-							{retval = new DropFamilyFromTableStatement($t.text, $fnl.retval);}
 	| keyDROP keyTABLE t=simpleName 		{retval = new DropTableStatement($t.text);}
 	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableStatement($t.text);}
 	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableStatement($t.text);}
 	;
 
-familyNameList returns [List<String> retval]
+deleteItemList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
-	: a1=simpleName {retval.add($a1.text);} (COMMA a2=simpleName {retval.add($a2.text);})*;
+	: a1=deleteItem {retval.add($a1.text);} (COMMA a2=deleteItem {retval.add($a2.text);})*;
 
+deleteItem 
+	: columnRef
+	| familyWildCard;
+	
 insertValues returns [InsertValueSource retval]
 	: keyVALUES LPAREN e=insertExprList RPAREN	{retval = new InsertSingleRow($e.retval);}
-	| sel=selectStatement				{retval = new InsertSelectValues($sel.retval);}			
-	;
+	| sel=selectStatement				{retval = new InsertSelectValues($sel.retval);};
 			
 selectStatement returns [SelectStatement retval]
 	: keySELECT c=selectElems keyFROM keyMAPPING? t=simpleName w=withClause?
@@ -303,7 +303,7 @@ atomExpr returns [GenericValue retval]
 	| b=booleanLiteral				{retval = $b.retval;}
 	| keyNULL					{retval = new StringNullLiteral();}
 	| p=paramRef					{retval = new NamedParameter($p.text);}
-	| v=varRef					{retval = new DelegateColumn($v.text);}
+	| v=columnRef					{retval = new DelegateColumn($v.text);}
 	;
 
 // Literals		
@@ -396,7 +396,7 @@ attribList returns [List<ColumnDefinition> retval]
 	: a1=attribDesc {retval.add($a1.retval);} (COMMA a2=attribDesc {retval.add($a2.retval);})*;
 
 attribDesc returns [ColumnDefinition retval]
-	: c=varRef type=simpleName (b=LBRACE RBRACE)? (keyALIAS a=simpleName)? (keyDEFAULT t=exprValue)?	
+	: c=columnRef type=simpleName (b=LBRACE RBRACE)? (keyALIAS a=simpleName)? (keyDEFAULT t=exprValue)?	
 							{retval = new ColumnDefinition($c.text, $type.text, $b.text!=null, $a.text, $t.retval);};
 		
 ltgtOp returns [Operator retval]
@@ -427,9 +427,9 @@ multDiv returns [Operator retval]
 simpleName
  	: ID;
  	
-varRef 
+columnRef 
 	: ID (COLON ID)?;
-	
+		
 familyWildCard 
 	: ID COLON STAR;
 	
