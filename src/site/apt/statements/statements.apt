@@ -14,11 +14,13 @@ HBql Statements
 
     **{{{./create-table.html}CREATE TABLE}}
 
+    **{{{./drop-table.html}DROP TABLE}}
+
+    **{{{./alter-table.html}ALTER TABLE}}
+
     **{{{./enable-table.html}ENABLE TABLE}}
 
     **{{{./disable-table.html}DISABLE TABLE}}
-
-    **{{{./drop-table.html}DROP TABLE}}
 
     **{{{./show-tables.html}SHOW TABLES}}
 

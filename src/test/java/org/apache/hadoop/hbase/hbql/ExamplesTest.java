@@ -146,6 +146,25 @@ public class ExamplesTest extends TestSupport {
 
     }
 
+    public void alterTable() throws HBqlException {
+
+        // START SNIPPET: alter-table
+
+        HConnection connection = HConnectionManager.newConnection();
+
+        // Drop family family1
+        connection.execute("ALTER TABLE foo DROP FAMILY family1");
+
+        // Add family family4
+        connection.execute("ALTER TABLE foo ADD FAMILY family4 (MAX_VERSIONS: 10)");
+
+        // Rename family family4 to family5
+        connection.execute("ALTER TABLE foo ALTER FAMILY family4 family5 (MAX_VERSIONS: 10)");
+
+        // END SNIPPET: alter-table
+
+    }
+
     public void dropTable() throws HBqlException {
 
         // START SNIPPET: drop-table
@@ -174,8 +193,8 @@ public class ExamplesTest extends TestSupport {
                            + "  val2 STRING ALIAS val2"
                            + "))");
 
-        System.out.println(connection.execute("INSERT INTO foo_mapping (keyval, val1, val2) "
-                                              + "VALUES (ZEROPAD(2, 10), 123, 'test val')"));
+        connection.execute("INSERT INTO foo_mapping (keyval, val1, val2) "
+                           + "VALUES (ZEROPAD(2, 10), 123, 'test val')");
 
         // Or using the Record interface
         HRecord rec = connection.getMapping("foo_mapping").newHRecord();
@@ -239,7 +258,7 @@ public class ExamplesTest extends TestSupport {
         ps.setParameter("key", Util.getZeroPaddedNumber(2, 10));
         ps.setParameter("val1", 123);
 
-        System.out.println(ps.execute());
+        ps.execute();
         // END SNIPPET: insert2
 
     }
@@ -258,8 +277,8 @@ public class ExamplesTest extends TestSupport {
                            + "  val3 STRING ALIAS val3, "
                            + "  val4 STRING ALIAS val4 "
                            + "))");
-        System.out.println(connection.execute("INSERT INTO foo_mapping (keyval, val1, val2) "
-                                              + "SELECT keyval, val3, val4 FROM foo2"));
+        connection.execute("INSERT INTO foo_mapping (keyval, val1, val2) "
+                           + "SELECT keyval, val3, val4 FROM foo2");
 
         // END SNIPPET: insert3
 
@@ -361,9 +380,9 @@ public class ExamplesTest extends TestSupport {
 
         // Clean up table
         if (!connection.tableExists("example1"))
-            System.out.println(connection.execute("CREATE TABLE example1 (f1) "));
+            connection.execute("CREATE TABLE example1 (f1) ");
         else
-            System.out.println(connection.execute("DELETE FROM demo1"));
+            connection.execute("DELETE FROM demo1");
 
         // Add some records using an INSERT stmt
         HPreparedStatement stmt = connection.prepareStatement("INSERT INTO demo1 " +
@@ -463,9 +482,9 @@ public class ExamplesTest extends TestSupport {
 
         // Clean up table
         if (!connection.tableExists("example2"))
-            System.out.println(connection.execute("CREATE TABLE example2 (f1)"));
+            connection.execute("CREATE TABLE example2 (f1)");
         else
-            System.out.println(connection.execute("DELETE FROM demo2"));
+            connection.execute("DELETE FROM demo2");
 
         // Add some records using an INSERT stmt
         HPreparedStatement stmt = connection.prepareStatement("INSERT INTO demo2 " +

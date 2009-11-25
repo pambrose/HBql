@@ -20,33 +20,31 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
+import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyDefinition;
 
-import java.util.List;
+import java.io.IOException;
 
-public class CreateTableStatement extends SimpleStatement implements ConnectionStatement {
+public class AddFamilyAction implements AlterTableAction {
+    private final FamilyDefinition familyDefinition;
 
-    private final String tableName;
-    private final List<FamilyDefinition> familyList;
-
-    public CreateTableStatement(final String tableName, List<FamilyDefinition> familyList) {
-        this.tableName = tableName;
-        this.familyList = familyList;
+    public AddFamilyAction(final FamilyDefinition familyDefinition) {
+        this.familyDefinition = familyDefinition;
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    private FamilyDefinition getFamilyDefinition() {
+        return this.familyDefinition;
+    }
 
-        final HTableDescriptor tableDesc = new HTableDescriptor(this.tableName);
-
-        for (final FamilyDefinition familyDefintion : this.familyList)
-            tableDesc.addFamily(familyDefintion.getHColumnDescriptor());
-
-        connection.createTable(tableDesc);
-
-        return new ExecutionResults("Table " + tableDesc.getNameAsString() + " created.");
+    public void execute(final HBaseAdmin admin, final String tableName) throws HBqlException {
+        try {
+            final HColumnDescriptor columnDescriptor = this.getFamilyDefinition().getHColumnDescriptor();
+            admin.addColumn(tableName, columnDescriptor);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 }

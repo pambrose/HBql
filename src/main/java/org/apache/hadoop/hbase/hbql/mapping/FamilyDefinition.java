@@ -61,7 +61,7 @@ public class FamilyDefinition {
         return this.familyPropertyList;
     }
 
-    public HColumnDescriptor getColumnDescriptor() throws HBqlException {
+    public HColumnDescriptor getHColumnDescriptor() throws HBqlException {
 
         this.validateFamilyPropertyList();
 

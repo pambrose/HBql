@@ -9,6 +9,7 @@ CREATE TABLE
 *Syntax
 
 ---------------------------
+
 CREATE TABLE table_name '(' family_description [, ...] ')'
 
 family_description:

@@ -122,10 +122,24 @@ options {backtrack=true;}
 							{retval = new CreateTableStatement($t.text, $fd.retval);}
 	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement($t.text);}
 	| keyDROP keyTABLE t=simpleName 		{retval = new DropTableStatement($t.text);}
+	| keyALTER keyTABLE t=simpleName aal=alterActionList	
+							{retval = new AlterTableStatement($t.text, $aal.retval);}
 	| keyDISABLE keyTABLE t=simpleName 		{retval = new DisableTableStatement($t.text);}
 	| keyENABLE keyTABLE t=simpleName 		{retval = new EnableTableStatement($t.text);}
 	;
 
+alterActionList returns [List<AlterTableAction> retval]
+@init {retval = Lists.newArrayList();}
+	: a1=alterAction {retval.add($a1.retval);} (COMMA a2=alterAction {retval.add($a2.retval);})*;
+
+alterAction returns [AlterTableAction retval]
+	: keyDROP keyFAMILY? t=simpleName		{retval = new DropFamilyAction($t.text);}
+	| keyADD keyFAMILY? def=familyDefinition	{retval = new AddFamilyAction($def.retval);}
+	| keyALTER keyFAMILY? t=simpleName def=familyDefinition	
+							{retval = new AlterFamilyAction($t.text, $def.retval);}
+	;
+	
+	
 deleteItemList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
 	: a1=deleteItem {retval.add($a1.text);} (COMMA a2=deleteItem {retval.add($a2.text);})*;
@@ -493,6 +507,9 @@ COMMENT
 
 WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();};
 
+keyALTER 	: {isKeyword(input, "ALTER")}? ID;
+keyADD	 	: {isKeyword(input, "ADD")}? ID;
+keyFAMILY 	: {isKeyword(input, "FAMILY")}? ID;
 keySELECT 	: {isKeyword(input, "SELECT")}? ID;
 keyDELETE 	: {isKeyword(input, "DELETE")}? ID;
 keyCREATE 	: {isKeyword(input, "CREATE")}? ID;

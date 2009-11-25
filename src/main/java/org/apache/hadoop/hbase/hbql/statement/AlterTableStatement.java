@@ -20,33 +20,34 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.mapping.FamilyDefinition;
 
 import java.util.List;
 
-public class CreateTableStatement extends SimpleStatement implements ConnectionStatement {
+public class AlterTableStatement extends SimpleStatement implements ConnectionStatement {
 
     private final String tableName;
-    private final List<FamilyDefinition> familyList;
+    private final List<AlterTableAction> alterTableActionList;
 
-    public CreateTableStatement(final String tableName, List<FamilyDefinition> familyList) {
+    public AlterTableStatement(final String tableName, List<AlterTableAction> alterTableActionList) {
         this.tableName = tableName;
-        this.familyList = familyList;
+        this.alterTableActionList = alterTableActionList;
+    }
+
+    private String getTableName() {
+        return this.tableName;
     }
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        final HTableDescriptor tableDesc = new HTableDescriptor(this.tableName);
+        final HBaseAdmin admin = connection.newHBaseAdmin();
 
-        for (final FamilyDefinition familyDefintion : this.familyList)
-            tableDesc.addFamily(familyDefintion.getHColumnDescriptor());
+        for (final AlterTableAction alterTableAction : this.alterTableActionList)
+            alterTableAction.execute(admin, this.getTableName());
 
-        connection.createTable(tableDesc);
-
-        return new ExecutionResults("Table " + tableDesc.getNameAsString() + " created.");
+        return new ExecutionResults("Table " + this.getTableName() + " altered.");
     }
 }

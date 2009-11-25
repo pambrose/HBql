@@ -1,0 +1,29 @@
+    -----
+    ALTER TABLE
+    -----
+    -----
+
+
+ALTER TABLE
+
+*Syntax
+
+---------------------------
+ALTER TABLE table_name alter_action [, ...]
+
+alter_action:
+    DROP [ FAMILY ] family_name
+    | ADD [ FAMILY ] family_description
+    | ALTER [ FAMILY ] family_name family_description
+
+
+---------------------------
+
+*Description
+
+    Alter named table as specified in alter_action (requires {{{./disable-table.html}disabling}} the table first).
+    See {{{./create-table.html}CREATE TABLE}} for family_description syntax.  HBase performs the request asynchronously. 
+
+*Example
+
+%{snippet|id=alter-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
