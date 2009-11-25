@@ -24,11 +24,12 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.mapping.EnvVars;
 
-public class SetStatement extends SimpleStatement implements NonConnectionStatement {
+public class SetStatement extends BasicStatement implements NonConnectionStatement {
 
     private final String variable, value;
 
     public SetStatement(final String variable, final String value) {
+        super(null);
         this.variable = variable;
         this.value = value;
     }
@@ -40,7 +41,6 @@ public class SetStatement extends SimpleStatement implements NonConnectionStatem
     public String getValue() {
         return value;
     }
-
 
     public ExecutionResults execute() throws HBqlException {
 

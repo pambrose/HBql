@@ -153,13 +153,13 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = HConnectionManager.newConnection();
 
         // Drop family family1
-        connection.execute("ALTER TABLE foo DROP FAMILY family1");
+        connection.execute("ALTER TABLE foo DROP FAMILY family1, DROP FAMILY family2");
 
         // Add family family4
-        connection.execute("ALTER TABLE foo ADD FAMILY family4 (MAX_VERSIONS: 10)");
+        connection.execute("ALTER TABLE foo ADD FAMILY family4 (MAX_VERSIONS: 10), ADD FAMILY family6");
 
         // Rename family family4 to family5
-        connection.execute("ALTER TABLE foo ALTER FAMILY family4 family5 (MAX_VERSIONS: 10)");
+        connection.execute("ALTER TABLE foo ALTER FAMILY family4 TO family5 (MAX_VERSIONS: 10)");
 
         // END SNIPPET: alter-table
 

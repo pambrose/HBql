@@ -26,8 +26,8 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class DropMappingStatement extends StatementContext implements ConnectionStatement {
 
-    public DropMappingStatement(final String mappingName) {
-        super(mappingName);
+    public DropMappingStatement(final StatementPredicate predicate, final String mappingName) {
+        super(predicate, mappingName);
     }
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {

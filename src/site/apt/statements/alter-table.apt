@@ -14,7 +14,7 @@ ALTER TABLE table_name alter_action [, ...]
 alter_action:
     DROP [ FAMILY ] family_name
     | ADD [ FAMILY ] family_description
-    | ALTER [ FAMILY ] family_name family_description
+    | ALTER [ FAMILY ] family_name TO family_description
 
 
 ---------------------------

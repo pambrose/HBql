@@ -26,8 +26,8 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class DropTableStatement extends TableStatement {
 
-    public DropTableStatement(final String tableName) {
-        super(tableName);
+    public DropTableStatement(final StatementPredicate predicate, final String tableName) {
+        super(predicate, tableName);
     }
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {

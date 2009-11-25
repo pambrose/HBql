@@ -27,17 +27,19 @@ import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 
-public abstract class StatementContext extends SimpleStatement {
+public abstract class StatementContext extends BasicStatement {
 
     private String mappingName = null;
     private Mapping mapping = null;
     private ResultAccessor resultAccessor = null;
 
-    protected StatementContext(final String mappingName) {
+    protected StatementContext(final StatementPredicate predicate, final String mappingName) {
+        super(predicate);
         this.mappingName = mappingName;
     }
 
-    protected StatementContext(final Mapping mapping) {
+    protected StatementContext(final StatementPredicate predicate, final Mapping mapping) {
+        super(predicate);
         this.setMapping(mapping);
     }
 

@@ -46,10 +46,11 @@ public class InsertStatement extends StatementContext implements ParameterStatem
     private HRecord record = null;
     private boolean validated = false;
 
-    public InsertStatement(final String mappingName,
+    public InsertStatement(final StatementPredicate predicate,
+                           final String mappingName,
                            final List<GenericValue> columnList,
                            final InsertValueSource insertValuesSource) {
-        super(mappingName);
+        super(predicate, mappingName);
 
         for (final GenericValue val : columnList)
             this.getInsertColumnList().add(SingleExpressionContext.newSingleExpression(val, null));
@@ -209,10 +210,6 @@ public class InsertStatement extends StatementContext implements ParameterStatem
         final ExecutionResults results = new ExecutionResults(cnt + " record" + ((cnt > 1) ? "s" : "") + " inserted");
         results.setCount(cnt);
         return results;
-    }
-
-    public ExecutionResults execute() throws HBqlException {
-        return this.execute(this.getConnection());
     }
 
     public String asString() {

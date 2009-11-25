@@ -39,7 +39,6 @@ public class SelectStatement extends StatementContext implements ParameterStatem
     private final WithArgs withArgs;
     private final NamedParameters namedParameters = new NamedParameters();
 
-
     private volatile int expressionCounter = 0;
     private boolean validated = false;
     private boolean aggregateQuery = false;
@@ -47,9 +46,15 @@ public class SelectStatement extends StatementContext implements ParameterStatem
     public SelectStatement(final List<SelectElement> selectElementList,
                            final String mappingName,
                            final WithArgs withArgs) {
-        super(mappingName);
+        super(null, mappingName);
         this.selectElementList = selectElementList;
         this.withArgs = withArgs != null ? withArgs : new WithArgs();
+    }
+
+    public SelectStatement(final StatementPredicate predicate, final SelectStatement selectStatement) {
+        super(predicate, selectStatement.getMappingName());
+        this.selectElementList = selectStatement.getSelectElementList();
+        this.withArgs = selectStatement.getWithArgs();
     }
 
     public synchronized String getNextExpressionName() {
@@ -62,6 +67,18 @@ public class SelectStatement extends StatementContext implements ParameterStatem
 
     private boolean isValidated() {
         return this.validated;
+    }
+
+    public List<SelectElement> getSelectElementList() {
+        return this.selectElementList;
+    }
+
+    public List<ColumnAttrib> getSelectAttribList() {
+        return this.selectColumnAttribList;
+    }
+
+    public WithArgs getWithArgs() {
+        return this.withArgs;
     }
 
     public synchronized void validate(final HConnectionImpl connection) throws HBqlException {
@@ -136,18 +153,6 @@ public class SelectStatement extends StatementContext implements ParameterStatem
             if (selectElement.hasAsName() && selectElement.getAsName().equals(name))
                 return true;
         return false;
-    }
-
-    public List<SelectElement> getSelectElementList() {
-        return this.selectElementList;
-    }
-
-    public List<ColumnAttrib> getSelectAttribList() {
-        return this.selectColumnAttribList;
-    }
-
-    public WithArgs getWithArgs() {
-        return this.withArgs;
     }
 
     private void collectParameters() {

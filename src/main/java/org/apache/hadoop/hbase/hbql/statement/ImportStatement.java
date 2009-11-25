@@ -36,11 +36,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-public class ImportStatement extends SimpleStatement implements ConnectionStatement {
+public class ImportStatement extends BasicStatement implements ConnectionStatement {
 
     private final String filename;
 
     public ImportStatement(final String filename) {
+        super(null);
         this.filename = filename;
     }
 

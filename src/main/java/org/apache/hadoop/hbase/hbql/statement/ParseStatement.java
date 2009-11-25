@@ -25,17 +25,19 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class ParseStatement extends SimpleStatement implements NonConnectionStatement {
+public class ParseStatement extends BasicStatement implements NonConnectionStatement {
 
     private final HBqlStatement stmt;
     private final GenericValue value;
 
     public ParseStatement(final HBqlStatement stmt) {
+        super(null);
         this.stmt = stmt;
         this.value = null;
     }
 
     public ParseStatement(final GenericValue value) {
+        super(null);
         this.stmt = null;
         this.value = value;
     }
@@ -44,25 +46,27 @@ public class ParseStatement extends SimpleStatement implements NonConnectionStat
         return this.stmt;
     }
 
-    private GenericValue getValue() {
+    private GenericValue getGenericValue() {
         return this.value;
     }
 
     public ExecutionResults execute() throws HBqlException {
+
         final ExecutionResults retval = new ExecutionResults("Parsed successfully");
+
         if (this.getStmt() != null)
             retval.out.println(this.getStmt().getClass().getSimpleName());
 
-        if (this.getValue() != null) {
+        if (this.getGenericValue() != null) {
             Object val = null;
             try {
-                this.getValue().validateTypes(null, false);
-                val = this.getValue().getValue(null);
+                this.getGenericValue().validateTypes(null, false);
+                val = this.getGenericValue().getValue(null);
             }
             catch (ResultMissingColumnException e) {
                 val = "ResultMissingColumnException()";
             }
-            retval.out.println(this.getValue().asString() + " = " + val);
+            retval.out.println(this.getGenericValue().asString() + " = " + val);
         }
 
         return retval;

@@ -30,8 +30,8 @@ import java.io.IOException;
 
 public class DescribeTableStatement extends TableStatement {
 
-    public DescribeTableStatement(final String tableName) {
-        super(tableName);
+    public DescribeTableStatement(final StatementPredicate predicate, final String tableName) {
+        super(predicate, tableName);
     }
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {

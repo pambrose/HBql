@@ -48,8 +48,11 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
     private final List<String> deleteItemList = Lists.newArrayList();
     private final List<String> originaltemList;
 
-    public DeleteStatement(final List<String> originaltemList, final String mappingName, final WithArgs withArgs) {
-        super(mappingName);
+    public DeleteStatement(final StatementPredicate predicate,
+                           final List<String> originaltemList,
+                           final String mappingName,
+                           final WithArgs withArgs) {
+        super(predicate, mappingName);
         if (withArgs == null)
             this.withArgs = new WithArgs();
         else
@@ -111,10 +114,6 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
                     this.getDeleteItemList().add(attrib.getFamilyQualifiedName());
             }
         }
-    }
-
-    public ExecutionResults execute() throws HBqlException {
-        return this.execute(this.getConnection());
     }
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {

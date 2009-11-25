@@ -28,8 +28,8 @@ import java.io.IOException;
 
 public class DisableTableStatement extends TableStatement {
 
-    public DisableTableStatement(final String tableName) {
-        super(tableName);
+    public DisableTableStatement(final StatementPredicate predicate, final String tableName) {
+        super(predicate, tableName);
     }
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {

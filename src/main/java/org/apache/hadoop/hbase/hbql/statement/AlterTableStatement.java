@@ -27,12 +27,15 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.List;
 
-public class AlterTableStatement extends SimpleStatement implements ConnectionStatement {
+public class AlterTableStatement extends BasicStatement implements ConnectionStatement {
 
     private final String tableName;
     private final List<AlterTableAction> alterTableActionList;
 
-    public AlterTableStatement(final String tableName, List<AlterTableAction> alterTableActionList) {
+    public AlterTableStatement(final StatementPredicate predicate,
+                               final String tableName,
+                               final List<AlterTableAction> alterTableActionList) {
+        super(predicate);
         this.tableName = tableName;
         this.alterTableActionList = alterTableActionList;
     }

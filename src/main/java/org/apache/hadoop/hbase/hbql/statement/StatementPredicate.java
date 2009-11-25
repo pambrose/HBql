@@ -20,27 +20,36 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
+import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.ResultMissingColumnException;
+import org.apache.expreval.expr.ArgumentListTypeSignature;
+import org.apache.expreval.expr.MultipleExpressionContext;
+import org.apache.expreval.expr.node.BooleanValue;
+import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-import java.io.IOException;
+public class StatementPredicate extends MultipleExpressionContext {
 
-public class EnableTableStatement extends TableStatement {
+    private final static ArgumentListTypeSignature typesig = new ArgumentListTypeSignature(BooleanValue.class);
 
-    public EnableTableStatement(final StatementPredicate predicate, final String tableName) {
-        super(predicate, tableName);
+    public StatementPredicate(final GenericValue... exprs) {
+        super(typesig, exprs);
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    public boolean useResultData() {
+        return false;
+    }
 
+    public boolean evaluate() throws HBqlException {
         try {
-            connection.newHBaseAdmin().enableTable(this.getTableName());
+            return (Boolean)this.evaluate(0, false, false, null);
         }
-        catch (IOException e) {
-            throw new HBqlException(e);
+        catch (ResultMissingColumnException e) {
+            throw new InternalErrorException("Illegal state");
         }
+    }
 
-        return new ExecutionResults("Table " + this.getTableName() + " enabled.");
+    public String asString() {
+        return "[ " + this.getGenericValue(0).asString() + " ]";
     }
 }

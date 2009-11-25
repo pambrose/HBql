@@ -20,11 +20,35 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.expreval.client.InternalErrorException;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.io.Serializable;
 
-public abstract class SimpleStatement implements Serializable {
+public abstract class BasicStatement implements Serializable {
+
+    private final StatementPredicate predicate;
+
+    protected BasicStatement(final StatementPredicate predicate) {
+        this.predicate = predicate;
+    }
+
+    private StatementPredicate getPredicate() {
+        return predicate;
+    }
+
+    public ExecutionResults checkPredicateAndExecute(HConnectionImpl connection) throws HBqlException {
+        if (this.getPredicate() == null || this.getPredicate().evaluate())
+            return this.execute(connection);
+        else
+            return new ExecutionResults("Predicate not true");
+    }
+
+    public ExecutionResults execute(HConnectionImpl connection) throws HBqlException {
+        throw new InternalErrorException("Illegal state");
+    }
 
     public void validate() throws HBqlException {
 

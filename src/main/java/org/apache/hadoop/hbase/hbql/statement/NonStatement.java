@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 public class NonStatement extends StatementContext {
 
     public NonStatement(final Mapping mapping, final ResultAccessor resultAccessor) {
-        super(mapping);
+        super(null, mapping);
         this.setResultAccessor(resultAccessor);
     }
 }

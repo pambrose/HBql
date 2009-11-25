@@ -38,12 +38,13 @@ public class CreateMappingStatement extends StatementContext implements Connecti
     private final String keyName;
     private final List<FamilyMapping> familyMappingList;
 
-    public CreateMappingStatement(final boolean tempMapping,
+    public CreateMappingStatement(final StatementPredicate predicate,
+                                  final boolean tempMapping,
                                   final String mappingName,
                                   final String tableName,
                                   final String keyName,
                                   final List<FamilyMapping> familyMappingList) {
-        super(mappingName);
+        super(predicate, mappingName);
         this.tempMapping = tempMapping;
         this.mappingName = mappingName;
         this.tableName = (tableName == null || tableName.length() == 0) ? mappingName : tableName;

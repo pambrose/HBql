@@ -25,9 +25,10 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class ShowMappingsStatement extends SimpleStatement implements ConnectionStatement {
+public class ShowMappingsStatement extends BasicStatement implements ConnectionStatement {
 
     public ShowMappingsStatement() {
+        super(null);
     }
 
     public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {

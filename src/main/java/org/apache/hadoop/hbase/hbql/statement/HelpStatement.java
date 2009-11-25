@@ -22,7 +22,11 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 
-public class HelpStatement extends SimpleStatement implements NonConnectionStatement {
+public class HelpStatement extends BasicStatement implements NonConnectionStatement {
+
+    public HelpStatement() {
+        super(null);
+    }
 
     public ExecutionResults execute() {
 

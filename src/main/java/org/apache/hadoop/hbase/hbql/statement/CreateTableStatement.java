@@ -28,12 +28,15 @@ import org.apache.hadoop.hbase.hbql.mapping.FamilyDefinition;
 
 import java.util.List;
 
-public class CreateTableStatement extends SimpleStatement implements ConnectionStatement {
+public class CreateTableStatement extends BasicStatement implements ConnectionStatement {
 
     private final String tableName;
     private final List<FamilyDefinition> familyList;
 
-    public CreateTableStatement(final String tableName, List<FamilyDefinition> familyList) {
+    public CreateTableStatement(final StatementPredicate predicate,
+                                final String tableName,
+                                final List<FamilyDefinition> familyList) {
+        super(predicate);
         this.tableName = tableName;
         this.familyList = familyList;
     }

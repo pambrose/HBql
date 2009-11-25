@@ -22,11 +22,12 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public abstract class TableStatement implements ConnectionStatement {
+public abstract class TableStatement extends BasicStatement implements ConnectionStatement {
 
     private final String tableName;
 
-    protected TableStatement(final String tableName) {
+    protected TableStatement(final StatementPredicate predicate, final String tableName) {
+        super(predicate);
         this.tableName = tableName;
     }
 
