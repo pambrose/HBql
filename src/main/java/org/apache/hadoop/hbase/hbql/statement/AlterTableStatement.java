@@ -44,7 +44,7 @@ public class AlterTableStatement extends BasicStatement implements ConnectionSta
         return this.tableName;
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         final HBaseAdmin admin = connection.newHBaseAdmin();
 

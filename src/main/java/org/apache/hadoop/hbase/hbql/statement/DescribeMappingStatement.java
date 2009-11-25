@@ -32,7 +32,7 @@ public class DescribeMappingStatement extends StatementContext implements Connec
         super(predicate, mappingName);
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         this.validateMappingName(connection);
 

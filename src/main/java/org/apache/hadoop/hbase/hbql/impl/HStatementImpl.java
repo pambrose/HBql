@@ -58,11 +58,8 @@ public class HStatementImpl implements HStatement {
         if (Util.isSelectStatement(statement)) {
             throw new HBqlException("executeUpdate() requires a non-SELECT statement");
         }
-        else if (Util.isDMLStatement(statement)) {
-            return ((ConnectionStatement)statement).execute(this.getConnection());
-        }
         else if (Util.isConnectionStatemet(statement)) {
-            return ((ConnectionStatement)statement).execute(this.getConnection());
+            return ((ConnectionStatement)statement).evaluatePredicateAndExecute(this.getConnection());
         }
         else if (Util.isNonConectionStatemet(statement)) {
             return ((NonConnectionStatement)statement).execute();

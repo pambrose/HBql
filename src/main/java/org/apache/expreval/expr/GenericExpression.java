@@ -138,9 +138,14 @@ public abstract class GenericExpression implements GenericValue {
     }
 
     public boolean isAConstant() {
+
+        if (this.getArgList().size() == 0)
+            return false;
+
         for (final GenericValue val : this.getArgList())
             if (!val.isAConstant())
                 return false;
+
         return true;
     }
 
@@ -267,7 +272,6 @@ public abstract class GenericExpression implements GenericValue {
             throw new InternalErrorException(this.getTypeSignature().getReturnType().getSimpleName());
         }
         catch (ResultMissingColumnException e) {
-            // This should never be hit 
             throw new InternalErrorException();
         }
     }

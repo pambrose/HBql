@@ -108,29 +108,28 @@ options {backtrack=true;}
 
 jdbcStatement returns [HBqlStatement retval]
 options {backtrack=true;}	
-	: p=pred? keyDELETE di=deleteItemList? keyFROM keyMAPPING? t=simpleName w=withClause?	
+	: keyDELETE di=deleteItemList? keyFROM keyMAPPING? t=simpleName w=withClause? p=pred?	
 							{retval = new DeleteStatement($p.retval, $di.retval, $t.text, $w.retval);}
-	| p=pred? keyINSERT keyINTO keyMAPPING? t=simpleName LPAREN e=exprList RPAREN ins=insertValues
+	| keyINSERT keyINTO keyMAPPING? t=simpleName LPAREN e=exprList RPAREN ins=insertValues p=pred?
 							{retval = new InsertStatement($p.retval, $t.text, $e.retval, $ins.retval);}
-	| p=pred? sel=selectStatement			{retval = new SelectStatement($p.retval, $sel.retval);}			
-	| p=pred?  keyCREATE (tmp=keyTEMP)? keyMAPPING t=simpleName 
-	  (keyFOR keyTABLE a=simpleName)? LPAREN (key=simpleName keyKEY COMMA fm=familyMappingList)? RPAREN
-							{retval = new CreateMappingStatement($p.retval, ($tmp.text != null),$t.text, $a.text, $key.text, $fm.retval);}
-	| p=pred? keyDROP keyMAPPING t=simpleName 	{retval = new DropMappingStatement($p.retval, $t.text);}
-	| p=pred? keyDESCRIBE keyMAPPING t=simpleName 		
-							{retval = new DescribeMappingStatement($p.retval, $t.text);}
-	| p=pred? keyCREATE keyTABLE t=simpleName LPAREN fd=familyDefinitionList RPAREN	
+	| sel=selectStatement				{retval = $sel.retval;}			
+	| keyCREATE (tmp=keyTEMP)? keyMAPPING t=simpleName 
+	  (keyFOR keyTABLE a=simpleName)? LPAREN (key=simpleName keyKEY COMMA fm=familyMappingList)? RPAREN p=pred? 
+							{retval = new CreateMappingStatement($p.retval, $tmp.text != null,$t.text, $a.text, $key.text, $fm.retval);}
+	| keyDROP keyMAPPING t=simpleName p=pred?	{retval = new DropMappingStatement($p.retval, $t.text);}
+	| keyDESCRIBE keyMAPPING t=simpleName 		{retval = new DescribeMappingStatement(null, $t.text);}
+	| keyCREATE keyTABLE t=simpleName LPAREN fd=familyDefinitionList RPAREN	p=pred?
 							{retval = new CreateTableStatement($p.retval, $t.text, $fd.retval);}
-	| p=pred? keyDESCRIBE keyTABLE t=simpleName 	{retval = new DescribeTableStatement($p.retval, $t.text);}
-	| p=pred? keyDROP keyTABLE t=simpleName 	{retval = new DropTableStatement($p.retval, $t.text);}
-	| p=pred? keyALTER keyTABLE t=simpleName aal=alterActionList	
+	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement(null, $t.text);}
+	| keyDROP keyTABLE t=simpleName p=pred? 	{retval = new DropTableStatement($p.retval, $t.text);}
+	| keyALTER keyTABLE t=simpleName aal=alterActionList p=pred?	
 							{retval = new AlterTableStatement($p.retval, $t.text, $aal.retval);}
-	| p=pred? keyDISABLE keyTABLE t=simpleName 	{retval = new DisableTableStatement($p.retval, $t.text);}
-	| p=pred? keyENABLE keyTABLE t=simpleName 	{retval = new EnableTableStatement($p.retval, $t.text);}
+	| keyDISABLE keyTABLE t=simpleName p=pred?	{retval = new DisableTableStatement($p.retval, $t.text);}
+	| keyENABLE keyTABLE t=simpleName p=pred?	{retval = new EnableTableStatement($p.retval, $t.text);}
 	;
 
 pred returns [StatementPredicate retval]
-	: LBRACE b=exprValue RBRACE			{retval = new StatementPredicate($b.retval);};
+	: keyIF LPAREN b=exprValue RPAREN		{retval = new StatementPredicate($b.retval);};
 	
 alterActionList returns [List<AlterTableAction> retval]
 @init {retval = Lists.newArrayList();}
@@ -389,7 +388,7 @@ selectElemList returns [List<SelectElement> retval]
 
 selectElem returns [SelectElement retval]
 options {backtrack=true; memoize=true;}	
-	: b=exprValue (keyAS i2=simpleName)?		{retval = SingleExpressionContext.newSingleExpression($b.retval, $i2.text);}
+	: b=exprValue (keyAS i2=simpleName)?		{retval = SelectExpressionContext.newExpression($b.retval, $i2.text);}
 	| f=familyWildCard				{retval = FamilySelectElement.newFamilyElement($f.text);}
 	;
 

@@ -74,15 +74,18 @@ public class StatementImpl implements Statement {
             throw new HBqlException("executeUpdate() requires a non-SELECT statement");
         }
         else if (Util.isDMLStatement(statement)) {
-            final ExecutionResults results = ((ConnectionStatement)statement).execute(this.getHConnectionImpl());
+            final ConnectionStatement stmt = ((ConnectionStatement)statement);
+            final ExecutionResults results = stmt.evaluatePredicateAndExecute(this.getHConnectionImpl());
             return results.getCount();
         }
         else if (Util.isConnectionStatemet(statement)) {
-            ((ConnectionStatement)statement).execute(this.getHConnectionImpl());
+            final ConnectionStatement stmt = ((ConnectionStatement)statement);
+            stmt.evaluatePredicateAndExecute(this.getHConnectionImpl());
             return 0;
         }
         else if (Util.isNonConectionStatemet(statement)) {
-            ((NonConnectionStatement)statement).execute();
+            final NonConnectionStatement stmt = ((NonConnectionStatement)statement);
+            stmt.execute();
             return 0;
         }
         else {

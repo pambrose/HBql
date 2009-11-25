@@ -35,7 +35,7 @@ import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.NonStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
-import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
+import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
 import org.apache.yaoql.impl.ReflectionResultAccessor;
 
 import java.util.Date;
@@ -87,11 +87,11 @@ public class TestSupport {
         assertTrue(evaluateReflectionExpression(recordObj, expr));
     }
 
-    public static SingleExpressionContext parseSelectElement(final String str) throws HBqlException {
+    public static SelectExpressionContext parseSelectElement(final String str) throws HBqlException {
         return ParserUtil.parseSelectElement(str);
     }
 
-    public static void assertTypeAndValue(final SingleExpressionContext expr,
+    public static void assertTypeAndValue(final SelectExpressionContext expr,
                                           final Class clazz,
                                           final Object val) throws HBqlException {
         final Object obj = ParserUtil.evaluateSelectElement(expr);
@@ -103,7 +103,7 @@ public class TestSupport {
     }
 
     public static void assertTypeAndValue(final String str, final Class clazz, final Object val) throws HBqlException {
-        SingleExpressionContext expr = parseSelectElement(str);
+        SelectExpressionContext expr = parseSelectElement(str);
         assertTypeAndValue(expr, clazz, val);
     }
 

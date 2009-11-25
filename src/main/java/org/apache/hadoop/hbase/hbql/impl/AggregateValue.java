@@ -23,19 +23,19 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
+import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
 
 public class AggregateValue extends ColumnValue {
 
-    final SingleExpressionContext context;
+    final SelectExpressionContext context;
     boolean valueSet = false;
 
-    public AggregateValue(final String name, final SingleExpressionContext context) {
+    public AggregateValue(final String name, final SelectExpressionContext context) {
         super(name);
         this.context = context;
     }
 
-    private SingleExpressionContext getContext() {
+    private SelectExpressionContext getContext() {
         return this.context;
     }
 

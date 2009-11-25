@@ -20,26 +20,27 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.statement.select.SimpleExpressionContext;
 
-public class ParseStatement extends BasicStatement implements NonConnectionStatement {
+public class ParseStatement extends BasicStatement implements ConnectionStatement {
 
     private final HBqlStatement stmt;
-    private final GenericValue value;
+    private final GenericValue genericValue;
 
     public ParseStatement(final HBqlStatement stmt) {
         super(null);
         this.stmt = stmt;
-        this.value = null;
+        this.genericValue = null;
     }
 
-    public ParseStatement(final GenericValue value) {
+    public ParseStatement(final GenericValue genericValue) {
         super(null);
         this.stmt = null;
-        this.value = value;
+        this.genericValue = genericValue;
     }
 
     private HBqlStatement getStmt() {
@@ -47,10 +48,10 @@ public class ParseStatement extends BasicStatement implements NonConnectionState
     }
 
     private GenericValue getGenericValue() {
-        return this.value;
+        return this.genericValue;
     }
 
-    public ExecutionResults execute() throws HBqlException {
+    public ExecutionResults execute(HConnectionImpl connection) throws HBqlException {
 
         final ExecutionResults retval = new ExecutionResults("Parsed successfully");
 
@@ -58,14 +59,8 @@ public class ParseStatement extends BasicStatement implements NonConnectionState
             retval.out.println(this.getStmt().getClass().getSimpleName());
 
         if (this.getGenericValue() != null) {
-            Object val = null;
-            try {
-                this.getGenericValue().validateTypes(null, false);
-                val = this.getGenericValue().getValue(null);
-            }
-            catch (ResultMissingColumnException e) {
-                val = "ResultMissingColumnException()";
-            }
+            final SimpleExpressionContext expr = new SimpleExpressionContext(this.getGenericValue());
+            final Object val = expr.getValue(connection);
             retval.out.println(this.getGenericValue().asString() + " = " + val);
         }
 

@@ -87,7 +87,7 @@ public class CreateMappingStatement extends StatementContext implements Connecti
         }
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         final HBaseTableMapping tableMapping = connection.createMapping(this.isTempMapping(),
                                                                         this.getMappingName(),

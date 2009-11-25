@@ -38,7 +38,7 @@ import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
-import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
+import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
 
 import java.util.List;
 
@@ -77,7 +77,7 @@ public class ParserUtil {
             return valueExpr.getValue(null);
         }
         catch (ResultMissingColumnException e) {
-            // No column refes to be missing
+            // No column refs should be missing
             throw new InternalErrorException(e.getMessage());
         }
         catch (RecognitionException e) {
@@ -86,10 +86,10 @@ public class ParserUtil {
         }
     }
 
-    public static SingleExpressionContext parseSelectElement(final String sql) throws HBqlException {
+    public static SelectExpressionContext parseSelectElement(final String sql) throws HBqlException {
         try {
             final HBqlParser parser = ParserUtil.newHBqlParser(sql);
-            final SingleExpressionContext elem = (SingleExpressionContext)parser.selectElem();
+            final SelectExpressionContext elem = (SelectExpressionContext)parser.selectElem();
             elem.setStatementContext(null);
             return elem;
         }
@@ -99,7 +99,7 @@ public class ParserUtil {
         }
     }
 
-    public static Object evaluateSelectElement(final SingleExpressionContext elem) throws HBqlException {
+    public static Object evaluateSelectElement(final SelectExpressionContext elem) throws HBqlException {
         return elem.getValue(null);
     }
 

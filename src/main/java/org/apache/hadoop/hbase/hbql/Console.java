@@ -90,7 +90,7 @@ public class Console {
 
         if (!option.startsWith("-")) {
             final ImportStatement importStmt = new ImportStatement(option);
-            final ExecutionResults results = importStmt.execute(getConnection());
+            final ExecutionResults results = importStmt.evaluatePredicateAndExecute(getConnection());
             System.out.print(results);
             return results.hadSuccess();
         }

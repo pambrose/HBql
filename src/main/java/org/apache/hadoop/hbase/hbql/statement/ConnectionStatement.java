@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public interface ConnectionStatement extends HBqlStatement {
 
-    public ExecutionResults checkPredicateAndExecute(HConnectionImpl connection) throws HBqlException;
+    public ExecutionResults evaluatePredicateAndExecute(HConnectionImpl connection) throws HBqlException;
 
-    public ExecutionResults execute(HConnectionImpl connection) throws HBqlException;
+    //public ExecutionResults execute(HConnectionImpl connection) throws HBqlException;
 }

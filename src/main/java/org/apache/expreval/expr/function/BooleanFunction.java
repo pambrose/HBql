@@ -28,6 +28,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
@@ -85,6 +86,51 @@ public class BooleanFunction extends Function implements BooleanValue {
                 final StatementContext statementContext = this.getExpressionContext().getStatementContext();
                 final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(exprStr, statementContext);
                 return expressionTree.evaluate(object);
+            }
+
+            case MAPPINGEXISTS: {
+                if (object == null) {
+                    return false;
+                }
+                else {
+                    final String mappingName = (String)this.getArg(0).getValue(null);
+                    final HConnectionImpl conn = (HConnectionImpl)object;
+                    return conn.mappingExists(mappingName);
+                }
+            }
+
+            case TABLEEXISTS: {
+                if (object == null) {
+                    return false;
+                }
+                else {
+                    final String tableName = (String)this.getArg(0).getValue(null);
+                    final HConnectionImpl conn = (HConnectionImpl)object;
+                    return conn.tableExists(tableName);
+                }
+            }
+
+            case TABLEENABLED: {
+                if (object == null) {
+                    return false;
+                }
+                else {
+                    final String tableName = (String)this.getArg(0).getValue(null);
+                    final HConnectionImpl conn = (HConnectionImpl)object;
+                    return conn.tableEnabled(tableName);
+                }
+            }
+
+            case FAMILYEXISTS: {
+                if (object == null) {
+                    return false;
+                }
+                else {
+                    final String tableName = (String)this.getArg(0).getValue(null);
+                    final String familyName = (String)this.getArg(1).getValue(null);
+                    final HConnectionImpl conn = (HConnectionImpl)object;
+                    return conn.familyExists(tableName, familyName);
+                }
             }
 
             default:

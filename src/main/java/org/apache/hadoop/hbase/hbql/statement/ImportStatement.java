@@ -96,7 +96,7 @@ public class ImportStatement extends BasicStatement implements ConnectionStateme
                 if (stmt instanceof SelectStatement)
                     processSelect(out, connection, (SelectStatement)stmt);
                 else if (stmt instanceof ConnectionStatement)
-                    out.println(((ConnectionStatement)stmt).execute(connection));
+                    out.println(((ConnectionStatement)stmt).evaluatePredicateAndExecute(connection));
                 else if (stmt instanceof NonConnectionStatement)
                     out.println(((NonConnectionStatement)stmt).execute());
                 else

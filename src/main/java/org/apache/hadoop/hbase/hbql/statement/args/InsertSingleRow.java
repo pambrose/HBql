@@ -25,21 +25,21 @@ import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
+import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
 
 import java.util.List;
 
 public class InsertSingleRow extends InsertValueSource {
 
-    private final List<SingleExpressionContext> valueList = Lists.newArrayList();
+    private final List<SelectExpressionContext> valueList = Lists.newArrayList();
     private boolean calledForValues = false;
 
     public InsertSingleRow(final List<GenericValue> valueList) {
         for (final GenericValue val : valueList)
-            this.getValueList().add(SingleExpressionContext.newSingleExpression(val, null));
+            this.getValueList().add(SelectExpressionContext.newExpression(val, null));
     }
 
-    private List<SingleExpressionContext> getValueList() {
+    private List<SelectExpressionContext> getValueList() {
         return this.valueList;
     }
 
@@ -47,7 +47,7 @@ public class InsertSingleRow extends InsertValueSource {
 
         final List<NamedParameter> parameterList = Lists.newArrayList();
 
-        for (final SingleExpressionContext expr : this.getValueList())
+        for (final SelectExpressionContext expr : this.getValueList())
             parameterList.addAll(expr.getParameterList());
 
         return parameterList;
@@ -57,7 +57,7 @@ public class InsertSingleRow extends InsertValueSource {
 
         int cnt = 0;
 
-        for (final SingleExpressionContext expr : this.getValueList())
+        for (final SelectExpressionContext expr : this.getValueList())
             cnt += expr.setParameter(name, val);
 
         return cnt;
@@ -67,7 +67,7 @@ public class InsertSingleRow extends InsertValueSource {
 
         final HConnectionImpl connection = this.getInsertStatement().getConnection();
 
-        for (final SingleExpressionContext element : this.getValueList()) {
+        for (final SelectExpressionContext element : this.getValueList()) {
             element.validate(this.getInsertStatement(), connection);
 
             // Make sure values do not have column references
@@ -82,7 +82,7 @@ public class InsertSingleRow extends InsertValueSource {
 
     public void reset() {
         this.calledForValues = false;
-        for (final SingleExpressionContext expr : this.getValueList())
+        for (final SelectExpressionContext expr : this.getValueList())
             expr.reset();
     }
 
@@ -93,7 +93,7 @@ public class InsertSingleRow extends InsertValueSource {
         sbuf.append("VALUES (");
 
         boolean firstTime = true;
-        for (final SingleExpressionContext val : this.getValueList()) {
+        for (final SelectExpressionContext val : this.getValueList()) {
             if (!firstTime)
                 sbuf.append(", ");
             firstTime = false;
@@ -116,7 +116,7 @@ public class InsertSingleRow extends InsertValueSource {
 
     public List<Class<? extends GenericValue>> getValuesTypeList() throws HBqlException {
         final List<Class<? extends GenericValue>> typeList = Lists.newArrayList();
-        for (final SingleExpressionContext element : this.getValueList()) {
+        for (final SelectExpressionContext element : this.getValueList()) {
             final Class<? extends GenericValue> type = element.getExpressionType();
             typeList.add(type);
         }

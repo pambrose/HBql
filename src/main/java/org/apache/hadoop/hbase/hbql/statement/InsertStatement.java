@@ -32,13 +32,13 @@ import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.InsertValueSource;
-import org.apache.hadoop.hbase.hbql.statement.select.SingleExpressionContext;
+import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
 
 import java.util.List;
 
 public class InsertStatement extends StatementContext implements ParameterStatement, ConnectionStatement {
 
-    private final List<SingleExpressionContext> columnList = Lists.newArrayList();
+    private final List<SelectExpressionContext> columnList = Lists.newArrayList();
     private final InsertValueSource insertValuesSource;
     private final NamedParameters namedParameters = new NamedParameters();
 
@@ -53,7 +53,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
         super(predicate, mappingName);
 
         for (final GenericValue val : columnList)
-            this.getInsertColumnList().add(SingleExpressionContext.newSingleExpression(val, null));
+            this.getInsertColumnList().add(SelectExpressionContext.newExpression(val, null));
 
         this.insertValuesSource = insertValuesSource;
         this.getInsertValuesSource().setInsertStatement(this);
@@ -78,7 +78,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
         this.validateMappingName(this.getConnection());
         this.record = this.getConnection().getMapping(this.getMappingName()).newHRecord();
 
-        for (final SingleExpressionContext element : this.getInsertColumnList()) {
+        for (final SelectExpressionContext element : this.getInsertColumnList()) {
 
             element.validate(this, this.getConnection());
 
@@ -127,7 +127,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
 
     private List<Class<? extends GenericValue>> getColumnsTypeList() throws HBqlException {
         final List<Class<? extends GenericValue>> typeList = Lists.newArrayList();
-        for (final SingleExpressionContext element : this.getInsertColumnList()) {
+        for (final SelectExpressionContext element : this.getInsertColumnList()) {
             final Class<? extends GenericValue> type = element.getExpressionType();
             typeList.add(type);
         }
@@ -135,7 +135,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
     }
 
     private boolean hasAKeyValue() {
-        for (final SingleExpressionContext element : this.getInsertColumnList()) {
+        for (final SelectExpressionContext element : this.getInsertColumnList()) {
             if (element.isAKeyValue())
                 return true;
         }
@@ -166,7 +166,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
         return this.connection;
     }
 
-    private List<SingleExpressionContext> getInsertColumnList() {
+    private List<SelectExpressionContext> getInsertColumnList() {
         return this.columnList;
     }
 
@@ -174,7 +174,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
         return this.insertValuesSource;
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         this.validate(connection);
 
@@ -221,7 +221,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
         sbuf.append(" (");
 
         boolean firstTime = true;
-        for (final SingleExpressionContext val : this.getInsertColumnList()) {
+        for (final SelectExpressionContext val : this.getInsertColumnList()) {
             if (!firstTime)
                 sbuf.append(", ");
             firstTime = false;

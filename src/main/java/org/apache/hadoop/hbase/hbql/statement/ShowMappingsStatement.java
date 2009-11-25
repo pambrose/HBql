@@ -31,7 +31,7 @@ public class ShowMappingsStatement extends BasicStatement implements ConnectionS
         super(null);
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Mappings: ");

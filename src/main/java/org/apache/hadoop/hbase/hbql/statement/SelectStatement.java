@@ -51,12 +51,6 @@ public class SelectStatement extends StatementContext implements ParameterStatem
         this.withArgs = withArgs != null ? withArgs : new WithArgs();
     }
 
-    public SelectStatement(final StatementPredicate predicate, final SelectStatement selectStatement) {
-        super(predicate, selectStatement.getMappingName());
-        this.selectElementList = selectStatement.getSelectElementList();
-        this.withArgs = selectStatement.getWithArgs();
-    }
-
     public synchronized String getNextExpressionName() {
         return "expr-" + this.expressionCounter++;
     }

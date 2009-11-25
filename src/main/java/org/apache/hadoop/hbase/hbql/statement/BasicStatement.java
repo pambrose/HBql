@@ -39,15 +39,15 @@ public abstract class BasicStatement implements Serializable {
         return predicate;
     }
 
-    public ExecutionResults checkPredicateAndExecute(HConnectionImpl connection) throws HBqlException {
-        if (this.getPredicate() == null || this.getPredicate().evaluate())
+    public ExecutionResults evaluatePredicateAndExecute(final HConnectionImpl connection) throws HBqlException {
+        if (this.getPredicate() == null || this.getPredicate().evaluate(connection))
             return this.execute(connection);
         else
-            return new ExecutionResults("Predicate not true");
+            return new ExecutionResults("False predicate");
     }
 
-    public ExecutionResults execute(HConnectionImpl connection) throws HBqlException {
-        throw new InternalErrorException("Illegal state");
+    protected ExecutionResults execute(HConnectionImpl connection) throws HBqlException {
+        throw new InternalErrorException();
     }
 
     public void validate() throws HBqlException {

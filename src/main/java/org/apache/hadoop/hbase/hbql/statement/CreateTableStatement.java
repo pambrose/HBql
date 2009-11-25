@@ -41,7 +41,7 @@ public class CreateTableStatement extends BasicStatement implements ConnectionSt
         this.familyList = familyList;
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         final HTableDescriptor tableDesc = new HTableDescriptor(this.tableName);
 

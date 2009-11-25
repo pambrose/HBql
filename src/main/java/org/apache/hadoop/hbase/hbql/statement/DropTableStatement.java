@@ -30,7 +30,7 @@ public class DropTableStatement extends TableStatement {
         super(predicate, tableName);
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
         connection.dropTable(this.getTableName());
         return new ExecutionResults("Table " + this.getTableName() + " dropped.");
     }

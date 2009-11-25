@@ -113,17 +113,16 @@ public class HConnectionImpl implements HConnection {
     }
 
     public Set<String> getFamilyNames(final String tableName) throws HBqlException {
-        try {
-            final HTableDescriptor table = this.newHBaseAdmin().getTableDescriptor(Bytes.toBytes(tableName));
-            final Set<String> familySet = Sets.newHashSet();
-            for (final HColumnDescriptor descriptor : table.getColumnFamilies())
-                familySet.add(Bytes.toString(descriptor.getName()));
-            return familySet;
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            throw new HBqlException(e.getMessage());
-        }
+        final HTableDescriptor table = this.getHTableDescriptor(tableName);
+        final Set<String> familySet = Sets.newHashSet();
+        for (final HColumnDescriptor descriptor : table.getColumnFamilies())
+            familySet.add(Bytes.toString(descriptor.getName()));
+        return familySet;
+    }
+
+    public boolean familyExists(final String tableName, final String familyName) throws HBqlException {
+        final Set<String> names = this.getFamilyNames(tableName);
+        return names.contains(familyName);
     }
 
     public HStatement createStatement() {

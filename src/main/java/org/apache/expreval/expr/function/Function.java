@@ -48,64 +48,68 @@ public abstract class Function extends GenericExpression {
     public static enum FunctionType {
 
         // Dealt with in DateFunction
-        DATEINTERVAL(new FunctionTypeSignature(DateValue.class, LongValue.class)),
-        DATECONSTANT(new FunctionTypeSignature(DateValue.class)),
+        DATEINTERVAL(new FunctionTypeSignature(DateValue.class, LongValue.class), false, true),
+        DATECONSTANT(new FunctionTypeSignature(DateValue.class), false, true),
 
         // Date functions
-        DATE(new FunctionTypeSignature(DateValue.class, StringValue.class, StringValue.class)),
-        LONGTODATE(new FunctionTypeSignature(DateValue.class, LongValue.class)),
-        RANDOMDATE(new FunctionTypeSignature(DateValue.class)),
+        DATE(new FunctionTypeSignature(DateValue.class, StringValue.class, StringValue.class), false, true),
+        LONGTODATE(new FunctionTypeSignature(DateValue.class, LongValue.class), false, true),
+        RANDOMDATE(new FunctionTypeSignature(DateValue.class), false, true),
 
         // String functions
-        TRIM(new FunctionTypeSignature(StringValue.class, StringValue.class)),
-        LOWER(new FunctionTypeSignature(StringValue.class, StringValue.class)),
-        UPPER(new FunctionTypeSignature(StringValue.class, StringValue.class)),
-        CONCAT(new FunctionTypeSignature(StringValue.class, StringValue.class, StringValue.class)),
-        REPLACE(new FunctionTypeSignature(StringValue.class, StringValue.class, StringValue.class, StringValue.class)),
-        SUBSTRING(new FunctionTypeSignature(StringValue.class, StringValue.class, IntegerValue.class, IntegerValue.class)),
-        ZEROPAD(new FunctionTypeSignature(StringValue.class, LongValue.class, IntegerValue.class)),
-        REPEAT(new FunctionTypeSignature(StringValue.class, StringValue.class, IntegerValue.class)),
+        TRIM(new FunctionTypeSignature(StringValue.class, StringValue.class), false, true),
+        LOWER(new FunctionTypeSignature(StringValue.class, StringValue.class), false, true),
+        UPPER(new FunctionTypeSignature(StringValue.class, StringValue.class), false, true),
+        CONCAT(new FunctionTypeSignature(StringValue.class, StringValue.class, StringValue.class), false, true),
+        REPLACE(new FunctionTypeSignature(StringValue.class, StringValue.class, StringValue.class, StringValue.class), false, true),
+        SUBSTRING(new FunctionTypeSignature(StringValue.class, StringValue.class, IntegerValue.class, IntegerValue.class), false, true),
+        ZEROPAD(new FunctionTypeSignature(StringValue.class, LongValue.class, IntegerValue.class), false, true),
+        REPEAT(new FunctionTypeSignature(StringValue.class, StringValue.class, IntegerValue.class), false, true),
 
         // Number functions
-        LENGTH(new FunctionTypeSignature(IntegerValue.class, StringValue.class)),
-        INDEXOF(new FunctionTypeSignature(IntegerValue.class, StringValue.class, StringValue.class)),
+        LENGTH(new FunctionTypeSignature(IntegerValue.class, StringValue.class), false, true),
+        INDEXOF(new FunctionTypeSignature(IntegerValue.class, StringValue.class, StringValue.class), false, true),
 
-        DATETOLONG(new FunctionTypeSignature(LongValue.class, DateValue.class)),
+        DATETOLONG(new FunctionTypeSignature(LongValue.class, DateValue.class), false, true),
 
-        SHORT(new FunctionTypeSignature(ShortValue.class, StringValue.class)),
-        INTEGER(new FunctionTypeSignature(IntegerValue.class, StringValue.class)),
-        LONG(new FunctionTypeSignature(LongValue.class, StringValue.class)),
-        FLOAT(new FunctionTypeSignature(FloatValue.class, StringValue.class)),
-        DOUBLE(new FunctionTypeSignature(DoubleValue.class, StringValue.class)),
+        SHORT(new FunctionTypeSignature(ShortValue.class, StringValue.class), false, true),
+        INTEGER(new FunctionTypeSignature(IntegerValue.class, StringValue.class), false, true),
+        LONG(new FunctionTypeSignature(LongValue.class, StringValue.class), false, true),
+        FLOAT(new FunctionTypeSignature(FloatValue.class, StringValue.class), false, true),
+        DOUBLE(new FunctionTypeSignature(DoubleValue.class, StringValue.class), false, true),
 
-        COUNT(new FunctionTypeSignature(LongValue.class), true),
-        MIN(new FunctionTypeSignature(NumberValue.class, NumberValue.class), true),
-        MAX(new FunctionTypeSignature(NumberValue.class, NumberValue.class), true),
+        COUNT(new FunctionTypeSignature(LongValue.class), true, false),
+        MIN(new FunctionTypeSignature(NumberValue.class, NumberValue.class), true, false),
+        MAX(new FunctionTypeSignature(NumberValue.class, NumberValue.class), true, false),
 
-        ABS(new FunctionTypeSignature(NumberValue.class, NumberValue.class)),
-        LESSER(new FunctionTypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
-        GREATER(new FunctionTypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
+        ABS(new FunctionTypeSignature(NumberValue.class, NumberValue.class), false, true),
+        LESSER(new FunctionTypeSignature(NumberValue.class, NumberValue.class, NumberValue.class), false, true),
+        GREATER(new FunctionTypeSignature(NumberValue.class, NumberValue.class, NumberValue.class), false, true),
 
-        RANDOMINTEGER(new FunctionTypeSignature(IntegerValue.class)),
-        RANDOMLONG(new FunctionTypeSignature(LongValue.class)),
-        RANDOMFLOAT(new FunctionTypeSignature(FloatValue.class)),
-        RANDOMDOUBLE(new FunctionTypeSignature(DoubleValue.class)),
+        RANDOMINTEGER(new FunctionTypeSignature(IntegerValue.class), false, false),
+        RANDOMLONG(new FunctionTypeSignature(LongValue.class), false, false),
+        RANDOMFLOAT(new FunctionTypeSignature(FloatValue.class), false, false),
+        RANDOMDOUBLE(new FunctionTypeSignature(DoubleValue.class), false, false),
 
         // Boolean functions
-        RANDOMBOOLEAN(new FunctionTypeSignature(BooleanValue.class)),
-        DEFINEDINROW(new FunctionTypeSignature(BooleanValue.class, GenericValue.class)),
-        EVAL(new FunctionTypeSignature(BooleanValue.class, StringValue.class));
+        RANDOMBOOLEAN(new FunctionTypeSignature(BooleanValue.class), false, false),
+        DEFINEDINROW(new FunctionTypeSignature(BooleanValue.class, GenericValue.class), false, false),
+        EVAL(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false),
+
+        MAPPINGEXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false),
+        FAMILYEXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class, StringValue.class), false, false),
+        TABLEEXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false),
+        TABLEENABLED(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false);
+
 
         private final FunctionTypeSignature typeSignature;
         private final boolean anAggregateValue;
+        private final boolean optimiziable;
 
-        FunctionType(final FunctionTypeSignature typeSignature) {
-            this(typeSignature, false);
-        }
-
-        FunctionType(final FunctionTypeSignature typeSignature, final boolean anAggregateValue) {
+        private FunctionType(final FunctionTypeSignature typeSignature, final boolean anAggregateValue, final boolean optimiziable) {
             this.typeSignature = typeSignature;
             this.anAggregateValue = anAggregateValue;
+            this.optimiziable = optimiziable;
         }
 
         private FunctionTypeSignature getTypeSignature() {
@@ -114,6 +118,10 @@ public abstract class Function extends GenericExpression {
 
         public boolean isAnAggregateValue() {
             return this.anAggregateValue;
+        }
+
+        public boolean isOptimiziable() {
+            return this.optimiziable;
         }
 
         public static Function getFunction(final String functionName, final List<GenericValue> exprList) {
@@ -168,6 +176,14 @@ public abstract class Function extends GenericExpression {
     protected boolean isConstantDate() {
         return this.getFunctionType() == FunctionType.DATECONSTANT;
     }
+
+    public boolean isAConstant() {
+        if (!this.getFunctionType().isOptimiziable())
+            return false;
+
+        return super.isAConstant();
+    }
+
 
     protected void checkForNull(final String... vals) throws HBqlException {
         for (final Object val : vals) {

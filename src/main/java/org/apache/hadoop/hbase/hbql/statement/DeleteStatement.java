@@ -116,7 +116,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         }
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         this.validate(connection);
 

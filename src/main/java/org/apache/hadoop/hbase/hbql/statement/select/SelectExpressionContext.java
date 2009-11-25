@@ -40,7 +40,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.NavigableMap;
 
-public class SingleExpressionContext extends MultipleExpressionContext implements SelectElement {
+public class SelectExpressionContext extends MultipleExpressionContext implements SelectElement {
 
     private String asName;
 
@@ -50,13 +50,13 @@ public class SingleExpressionContext extends MultipleExpressionContext implement
     private byte[] familyNameBytes = null;
     private byte[] columnNameBytes = null;
 
-    private SingleExpressionContext(final GenericValue genericValue, final String asName) {
+    private SelectExpressionContext(final GenericValue genericValue, final String asName) {
         super(null, genericValue);
         this.asName = asName;
     }
 
-    public static SingleExpressionContext newSingleExpression(final GenericValue expr, final String as) {
-        return new SingleExpressionContext(expr, as);
+    public static SelectExpressionContext newExpression(final GenericValue expr, final String as) {
+        return new SelectExpressionContext(expr, as);
     }
 
     public String getAsName() {

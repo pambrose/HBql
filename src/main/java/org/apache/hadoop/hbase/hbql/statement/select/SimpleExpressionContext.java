@@ -18,33 +18,34 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.statement;
+package org.apache.hadoop.hbase.hbql.statement.select;
 
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.ArgumentListTypeSignature;
 import org.apache.expreval.expr.MultipleExpressionContext;
-import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.statement.NonStatement;
 
-public class StatementPredicate extends MultipleExpressionContext {
+public class SimpleExpressionContext extends MultipleExpressionContext {
 
-    private final static ArgumentListTypeSignature typesig = new ArgumentListTypeSignature(BooleanValue.class);
-
-    public StatementPredicate(final GenericValue... exprs) {
-        super(typesig, exprs);
-        this.setStatementContext(new NonStatement(null, null));
+    public SimpleExpressionContext(final GenericValue genericValue) {
+        super(null, genericValue);
     }
 
-    public boolean useResultData() {
-        return false;
+    private GenericValue getGenericValue() {
+        return this.getGenericValue(0);
     }
 
-    public boolean evaluate(final HConnectionImpl connection) throws HBqlException {
+    public boolean isAConstant() {
+        return this.getGenericValue().isAConstant();
+    }
+
+    public Object getValue(final HConnectionImpl connection) throws HBqlException {
         try {
-            return (Boolean)this.evaluate(0, false, false, connection);
+            this.setStatementContext(new NonStatement(null, null));
+            return this.evaluate(0, true, false, connection);
         }
         catch (ResultMissingColumnException e) {
             throw new InternalErrorException();
@@ -52,6 +53,10 @@ public class StatementPredicate extends MultipleExpressionContext {
     }
 
     public String asString() {
-        return "[ " + this.getGenericValue(0).asString() + " ]";
+        return this.getGenericValue().asString();
+    }
+
+    public boolean useResultData() {
+        return true;
     }
 }

@@ -30,7 +30,7 @@ public class DropMappingStatement extends StatementContext implements Connection
         super(predicate, mappingName);
     }
 
-    public ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         // this.validateMappingName(connection);
 
