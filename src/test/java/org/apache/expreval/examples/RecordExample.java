@@ -86,7 +86,7 @@ public class RecordExample {
                                + " - " + val1.getCurrentValue("comp1")
             );
 
-            System.out.println("Historicals");
+            System.out.println("Versions");
 
             if (val1.getVersionMap("author") != null) {
                 Map<Long, Object> versioned = val1.getVersionMap("family1:author");

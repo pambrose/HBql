@@ -30,6 +30,7 @@ public class ExecutionResults {
 
     private boolean success = true;
     private int count = -1;
+    private boolean predicate = true;
 
     public ExecutionResults() {
         baos = new ByteArrayOutputStream();
@@ -55,10 +56,18 @@ public class ExecutionResults {
     }
 
     public int getCount() {
-        return count;
+        return this.count;
     }
 
     public void setCount(final int count) {
         this.count = count;
+    }
+
+    public boolean getPredicate() {
+        return this.predicate;
+    }
+
+    public void setPredicate(final boolean predicate) {
+        this.predicate = predicate;
     }
 }

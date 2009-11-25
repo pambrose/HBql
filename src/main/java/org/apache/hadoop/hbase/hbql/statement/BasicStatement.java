@@ -36,14 +36,18 @@ public abstract class BasicStatement implements Serializable {
     }
 
     private StatementPredicate getPredicate() {
-        return predicate;
+        return this.predicate;
     }
 
     public ExecutionResults evaluatePredicateAndExecute(final HConnectionImpl connection) throws HBqlException {
-        if (this.getPredicate() == null || this.getPredicate().evaluate(connection))
+        if (this.getPredicate() == null || this.getPredicate().evaluate(connection)) {
             return this.execute(connection);
-        else
-            return new ExecutionResults("False predicate");
+        }
+        else {
+            final ExecutionResults results = new ExecutionResults("False predicate");
+            results.setPredicate(false);
+            return results;
+        }
     }
 
     protected ExecutionResults execute(HConnectionImpl connection) throws HBqlException {

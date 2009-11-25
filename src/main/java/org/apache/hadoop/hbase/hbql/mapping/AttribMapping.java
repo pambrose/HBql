@@ -18,22 +18,25 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.hadoop.hbase.hbql.mapping;
 
-import java.io.IOException;
-import java.sql.SQLException;
+import java.util.List;
 
-public class HBqlException extends SQLException {
+public class AttribMapping {
 
-    public HBqlException(final String s) {
-        super(s);
+    private final String keyName;
+    private final List<FamilyMapping> familyMappingList;
+
+    public AttribMapping(final String keyName, final List<FamilyMapping> familyMappingList) {
+        this.keyName = keyName;
+        this.familyMappingList = familyMappingList;
     }
 
-    public HBqlException(final String s, final Throwable throwable) {
-        super(s, throwable);
+    public String getKeyName() {
+        return this.keyName;
     }
 
-    public HBqlException(final IOException e) {
-        super(e.getClass().getSimpleName() + ": " + e.getMessage());
+    public List<FamilyMapping> getFamilyMappingList() {
+        return this.familyMappingList;
     }
 }

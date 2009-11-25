@@ -113,23 +113,26 @@ options {backtrack=true;}
 	| keyINSERT keyINTO keyMAPPING? t=simpleName LPAREN e=exprList RPAREN ins=insertValues p=pred?
 							{retval = new InsertStatement($p.retval, $t.text, $e.retval, $ins.retval);}
 	| sel=selectStatement				{retval = $sel.retval;}			
-	| keyCREATE (tmp=keyTEMP)? keyMAPPING t=simpleName 
-	  (keyFOR keyTABLE a=simpleName)? LPAREN (key=simpleName keyKEY COMMA fm=familyMappingList)? RPAREN p=pred? 
-							{retval = new CreateMappingStatement($p.retval, $tmp.text != null,$t.text, $a.text, $key.text, $fm.retval);}
+	| keyCREATE (tmp=keyTEMP)? keyMAPPING t=simpleName (keyFOR keyTABLE a=simpleName)? (am=attribMapping)? p=pred? 
+							{retval = new CreateMappingStatement($p.retval, $tmp.text != null,$t.text, $a.text, $am.retval);}
 	| keyDROP keyMAPPING t=simpleName p=pred?	{retval = new DropMappingStatement($p.retval, $t.text);}
 	| keyDESCRIBE keyMAPPING t=simpleName 		{retval = new DescribeMappingStatement(null, $t.text);}
 	| keyCREATE keyTABLE t=simpleName LPAREN fd=familyDefinitionList RPAREN	p=pred?
 							{retval = new CreateTableStatement($p.retval, $t.text, $fd.retval);}
 	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement(null, $t.text);}
 	| keyDROP keyTABLE t=simpleName p=pred? 	{retval = new DropTableStatement($p.retval, $t.text);}
-	| keyALTER keyTABLE t=simpleName aal=alterActionList p=pred?	
+	| keyALTER keyTABLE? t=simpleName aal=alterActionList p=pred?	
 							{retval = new AlterTableStatement($p.retval, $t.text, $aal.retval);}
-	| keyDISABLE keyTABLE t=simpleName p=pred?	{retval = new DisableTableStatement($p.retval, $t.text);}
-	| keyENABLE keyTABLE t=simpleName p=pred?	{retval = new EnableTableStatement($p.retval, $t.text);}
+	| keyDISABLE keyTABLE? t=simpleName p=pred?	{retval = new DisableTableStatement($p.retval, $t.text);}
+	| keyENABLE keyTABLE? t=simpleName p=pred?	{retval = new EnableTableStatement($p.retval, $t.text);}
 	;
 
+attribMapping returns [AttribMapping retval]
+	: LPAREN key=simpleName keyKEY (COMMA fm=familyMappingList)? RPAREN
+							{retval = new AttribMapping($key.text, $fm.retval);};
+	
 pred returns [StatementPredicate retval]
-	: keyIF LPAREN b=exprValue RPAREN		{retval = new StatementPredicate($b.retval);};
+	: keyIF  b=exprValue 		{retval = new StatementPredicate($b.retval);};
 	
 alterActionList returns [List<AlterTableAction> retval]
 @init {retval = Lists.newArrayList();}
@@ -139,10 +142,8 @@ alterAction returns [AlterTableAction retval]
 	: keyDROP keyFAMILY? t=simpleName		{retval = new DropFamilyAction($t.text);}
 	| keyADD keyFAMILY? def=familyDefinition	{retval = new AddFamilyAction($def.retval);}
 	| keyALTER keyFAMILY? t=simpleName keyTO def=familyDefinition	
-							{retval = new AlterFamilyAction($t.text, $def.retval);}
-	;
-	
-	
+							{retval = new AlterFamilyAction($t.text, $def.retval);};
+		
 deleteItemList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
 	: a1=deleteItem {retval.add($a1.text);} (COMMA a2=deleteItem {retval.add($a2.text);})*;

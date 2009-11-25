@@ -24,6 +24,7 @@ import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.mapping.AttribMapping;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 
@@ -42,14 +43,13 @@ public class CreateMappingStatement extends StatementContext implements Connecti
                                   final boolean tempMapping,
                                   final String mappingName,
                                   final String tableName,
-                                  final String keyName,
-                                  final List<FamilyMapping> familyMappingList) {
+                                  final AttribMapping attribMapping) {
         super(predicate, mappingName);
         this.tempMapping = tempMapping;
         this.mappingName = mappingName;
         this.tableName = (tableName == null || tableName.length() == 0) ? mappingName : tableName;
-        this.keyName = keyName;
-        this.familyMappingList = familyMappingList;
+        this.keyName = attribMapping != null ? attribMapping.getKeyName() : null;
+        this.familyMappingList = attribMapping != null ? attribMapping.getFamilyMappingList() : null;
     }
 
     private boolean isTempMapping() {

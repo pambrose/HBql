@@ -60,7 +60,9 @@ public class HBaseTableMapping extends Mapping implements HMapping {
                              final String tableName,
                              final String keyName,
                              final List<FamilyMapping> familyMappingList) throws HBqlException {
+
         super(mappingName, tableName);
+
         this.connection = connection;
         this.tempMapping = tempMapping;
 
