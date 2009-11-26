@@ -100,7 +100,7 @@ options {backtrack=true;}
 	| keyIMPORT val=QSTRING				{retval = new ImportStatement($val.text);}
 	| keyPARSE c=consoleStatement			{retval = new ParseStatement($c.retval);}
 	| keyPARSE keyEXPR te=exprValue			{retval = new ParseStatement($te.retval);}
-	| keySET t=simpleName EQ? val=QSTRING	 	{retval = new SetStatement($t.text, $val.text);}
+	| keySET t=simpleId EQ? val=QSTRING	 	{retval = new SetStatement($t.text, $val.text);}
 	| keyVERSION					{retval = new VersionStatement();}
 	| keyHELP					{retval = new HelpStatement();}
 	| jdbc=jdbcStatement				{retval = $jdbc.retval;}
@@ -108,41 +108,43 @@ options {backtrack=true;}
 
 jdbcStatement returns [HBqlStatement retval]
 options {backtrack=true;}	
-	: keyDELETE di=deleteItemList? keyFROM keyMAPPING? t=simpleName w=withClause? p=pred?	
+	: sel=selectStatement				{retval = $sel.retval;}			
+	| keyDELETE di=deleteItemList? keyFROM keyMAPPING? t=simpleId w=withClause? p=pred?	
 							{retval = new DeleteStatement($p.retval, $di.retval, $t.text, $w.retval);}
-	| keyINSERT keyINTO keyMAPPING? t=simpleName LPAREN e=exprList RPAREN ins=insertValues p=pred?
+	| keyINSERT keyINTO keyMAPPING? t=simpleId LPAREN e=exprList RPAREN ins=insertValues p=pred?
 							{retval = new InsertStatement($p.retval, $t.text, $e.retval, $ins.retval);}
-	| sel=selectStatement				{retval = $sel.retval;}			
-	| keyCREATE (tmp=keyTEMP)? keyMAPPING t=simpleName (keyFOR keyTABLE a=simpleName)? (am=attribMapping)? p=pred? 
+	| keyCREATE (tmp=keyTEMP)? keyMAPPING t=simpleId (keyFOR keyTABLE a=simpleId)? (am=attribMapping)? p=pred? 
 							{retval = new CreateMappingStatement($p.retval, $tmp.text != null,$t.text, $a.text, $am.retval);}
-	| keyDROP keyMAPPING t=simpleName p=pred?	{retval = new DropMappingStatement($p.retval, $t.text);}
-	| keyDESCRIBE keyMAPPING t=simpleName 		{retval = new DescribeMappingStatement(null, $t.text);}
-	| keyCREATE keyTABLE t=simpleName LPAREN fd=familyDefinitionList RPAREN	p=pred?
+	| keyDROP keyMAPPING t=simpleId p=pred?		{retval = new DropMappingStatement($p.retval, $t.text);}
+	| keyDESCRIBE keyMAPPING t=simpleId 		{retval = new DescribeMappingStatement(null, $t.text);}
+	| keyCREATE keyTABLE t=simpleId LPAREN fd=familyDefinitionList RPAREN p=pred?
 							{retval = new CreateTableStatement($p.retval, $t.text, $fd.retval);}
-	| keyDESCRIBE keyTABLE t=simpleName 		{retval = new DescribeTableStatement(null, $t.text);}
-	| keyDROP keyTABLE t=simpleName p=pred? 	{retval = new DropTableStatement($p.retval, $t.text);}
-	| keyALTER keyTABLE? t=simpleName aal=alterActionList p=pred?	
+	| keyDESCRIBE keyTABLE t=simpleId 		{retval = new DescribeTableStatement(null, $t.text);}
+	| keyDROP keyTABLE t=simpleId p=pred? 		{retval = new DropTableStatement($p.retval, $t.text);}
+	| keyALTER keyTABLE t=simpleId aal=alterActionList p=pred?	
 							{retval = new AlterTableStatement($p.retval, $t.text, $aal.retval);}
-	| keyDISABLE keyTABLE? t=simpleName p=pred?	{retval = new DisableTableStatement($p.retval, $t.text);}
-	| keyENABLE keyTABLE? t=simpleName p=pred?	{retval = new EnableTableStatement($p.retval, $t.text);}
+	| keyDISABLE keyTABLE t=simpleId p=pred?	{retval = new DisableTableStatement($p.retval, $t.text);}
+	| keyENABLE keyTABLE t=simpleId p=pred?		{retval = new EnableTableStatement($p.retval, $t.text);}
 	;
-
+	
 attribMapping returns [AttribMapping retval]
-	: LPAREN key=simpleName keyKEY (COMMA fm=familyMappingList)? RPAREN
+	: LPAREN key=simpleId keyKEY (COMMA fm=familyMappingList)? RPAREN
 							{retval = new AttribMapping($key.text, $fm.retval);};
 	
 pred returns [StatementPredicate retval]
-	: keyIF  b=exprValue 		{retval = new StatementPredicate($b.retval);};
+	: keyIF  b=exprValue 				{retval = new StatementPredicate($b.retval);};
 	
 alterActionList returns [List<AlterTableAction> retval]
 @init {retval = Lists.newArrayList();}
 	: a1=alterAction {retval.add($a1.retval);} (COMMA a2=alterAction {retval.add($a2.retval);})*;
 
 alterAction returns [AlterTableAction retval]
-	: keyDROP keyFAMILY? t=simpleName		{retval = new DropFamilyAction($t.text);}
-	| keyADD keyFAMILY? def=familyDefinition	{retval = new AddFamilyAction($def.retval);}
-	| keyALTER keyFAMILY? t=simpleName keyTO def=familyDefinition	
-							{retval = new AlterFamilyAction($t.text, $def.retval);};
+options {backtrack=true;}	
+	: keyALTER keyFAMILY t=simpleId  keyTO fd=familyDefinition	
+							{retval = new AlterFamilyAction($t.text, $fd.retval);}
+	| keyDROP keyFAMILY t=simpleId			{retval = new DropFamilyAction($t.text);}
+	| keyADD keyFAMILY  fd=familyDefinition 	{retval = new AddFamilyAction($fd.retval);}
+	;
 		
 deleteItemList returns [List<String> retval]
 @init {retval = Lists.newArrayList();}
@@ -157,7 +159,7 @@ insertValues returns [InsertValueSource retval]
 	| sel=selectStatement				{retval = new InsertSelectValues($sel.retval);};
 			
 selectStatement returns [SelectStatement retval]
-	: keySELECT c=selectElems keyFROM keyMAPPING? t=simpleName w=withClause?
+	: keySELECT c=selectElems keyFROM keyMAPPING? t=simpleId w=withClause?
 							{retval = new SelectStatement($c.retval, $t.text, $w.retval);};
 							
 familyDefinitionList returns [List<FamilyDefinition> retval]
@@ -165,15 +167,14 @@ familyDefinitionList returns [List<FamilyDefinition> retval]
 	: a1=familyDefinition {retval.add($a1.retval);} (COMMA a2=familyDefinition {retval.add($a2.retval);})*;
 
 familyDefinition returns [FamilyDefinition retval]
-	: f=simpleName (LPAREN p=familyPropertyList RPAREN)?	
-							{retval = new FamilyDefinition($f.text, $p.retval);};
+	: t=simpleId LPAREN p=familyPropertyList? RPAREN	
+							{retval = new FamilyDefinition($t.text, $p.retval);};
 
 familyPropertyList returns [List<FamilyProperty> retval]							
 @init {retval = Lists.newArrayList();}
 	: a1=familyProperty {retval.add($a1.retval);} (COMMA a2=familyProperty {retval.add($a2.retval);})*;
 	
 familyProperty returns [FamilyProperty retval]
-//options {backtrack=true;}	
 	: keyMAX_VERSIONS COLON v=exprValue		{retval = new MaxVersionsProperty($v.retval);}
 	| keyBLOOM_FILTER COLON v=exprValue		{retval = new BloomFilterProperty($v.retval);}
 	| keyBLOCK_SIZE COLON v=exprValue		{retval = new BlockSizeProperty($v.retval);}
@@ -192,7 +193,7 @@ familyMappingList returns [List<FamilyMapping> retval]
 	: a1=familyMapping {retval.add($a1.retval);} (COMMA a2=familyMapping {retval.add($a2.retval);})*;
 
 familyMapping returns [FamilyMapping retval]
-	: f=simpleName (keyINCLUDE d=keyUNMAPPED)? (LPAREN c=columnDefinitionnList RPAREN)? 
+	: f=simpleId (keyINCLUDE d=keyUNMAPPED)? (LPAREN c=columnDefinitionnList RPAREN)? 
 							{retval = new FamilyMapping($f.text, $c.retval, $d.text!=null);};
 
 columnDefinitionnList returns [List<ColumnDefinition> retval]
@@ -200,7 +201,7 @@ columnDefinitionnList returns [List<ColumnDefinition> retval]
 	: a1=columnDefinition {retval.add($a1.retval);} (COMMA a2=columnDefinition {retval.add($a2.retval);})*;
 							
 columnDefinition returns [ColumnDefinition retval]
-	: s=simpleName type=simpleName (b=LBRACE RBRACE)? (keyALIAS a=simpleName)? (keyDEFAULT def=exprValue)?
+	: s=simpleId type=simpleId (b=LBRACE RBRACE)? (keyALIAS a=simpleId)? (keyDEFAULT def=exprValue)?
 							{retval = new ColumnDefinition($s.text, $type.text, $b.text!=null, $a.text, $def.retval);};
 								 
 withClause returns [WithArgs retval]
@@ -365,7 +366,7 @@ options {backtrack=true; memoize=true;}
 	
 	| c=caseStmt					{retval = $c.retval;} 						
 
-	| t=simpleName LPAREN a=exprList? RPAREN	{retval = new DelegateFunction($t.text, $a.retval);}
+	| t=simpleId LPAREN a=exprList? RPAREN		{retval = new DelegateFunction($t.text, $a.retval);}
 	;
 
 caseStmt returns [DelegateCase retval]
@@ -389,7 +390,7 @@ selectElemList returns [List<SelectElement> retval]
 
 selectElem returns [SelectElement retval]
 options {backtrack=true; memoize=true;}	
-	: b=exprValue (keyAS i2=simpleName)?		{retval = SelectExpressionContext.newExpression($b.retval, $i2.text);}
+	: b=exprValue (keyAS i2=simpleId)?		{retval = SelectExpressionContext.newExpression($b.retval, $i2.text);}
 	| f=familyWildCard				{retval = FamilySelectElement.newFamilyElement($f.text);}
 	;
 
@@ -414,7 +415,7 @@ attribList returns [List<ColumnDefinition> retval]
 	: a1=attribDesc {retval.add($a1.retval);} (COMMA a2=attribDesc {retval.add($a2.retval);})*;
 
 attribDesc returns [ColumnDefinition retval]
-	: c=columnRef type=simpleName (b=LBRACE RBRACE)? (keyALIAS a=simpleName)? (keyDEFAULT t=exprValue)?	
+	: c=columnRef type=simpleId (b=LBRACE RBRACE)? (keyALIAS a=simpleId)? (keyDEFAULT t=exprValue)?	
 							{retval = new ColumnDefinition($c.text, $type.text, $b.text!=null, $a.text, $t.retval);};
 		
 ltgtOp returns [Operator retval]
@@ -442,7 +443,7 @@ multDiv returns [Operator retval]
 	| MOD						{retval = Operator.MOD;}
 	;
 
-simpleName
+simpleId
  	: ID;
  	
 columnRef 

@@ -57,7 +57,7 @@ public class InsertWithSelectTest extends TestSupport {
                            + "))");
 
         if (!connection.tableExists("table3"))
-            System.out.println(connection.execute("create table table3 (f1)"));
+            System.out.println(connection.execute("create table table3 (f1())"));
         else {
             System.out.println(connection.execute("delete from tab3"));
         }

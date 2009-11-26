@@ -198,6 +198,11 @@ public class HConnectionImpl implements HConnection {
 
     // Table Routines
     public void createTable(final HTableDescriptor tableDesc) throws HBqlException {
+
+        final String tableName = tableDesc.getNameAsString();
+        if (this.tableExists(tableName))
+            throw new HBqlException("Table already exists: " + tableName);
+
         try {
             this.newHBaseAdmin().createTable(tableDesc);
         }
@@ -226,6 +231,7 @@ public class HConnectionImpl implements HConnection {
 
     public HTableDescriptor getHTableDescriptor(final String tableName) throws HBqlException {
         try {
+            this.validateTableName(tableName);
             return this.newHBaseAdmin().getTableDescriptor(tableName.getBytes());
         }
         catch (IOException e) {
@@ -235,6 +241,7 @@ public class HConnectionImpl implements HConnection {
 
     public boolean tableEnabled(final String tableName) throws HBqlException {
         try {
+            this.validateTableName(tableName);
             return this.newHBaseAdmin().isTableEnabled(tableName);
         }
         catch (IOException e) {
@@ -244,9 +251,8 @@ public class HConnectionImpl implements HConnection {
 
     public void dropTable(final String tableName) throws HBqlException {
         try {
+            validateTableDisabled("drop", tableName);
             final byte[] tableNameBytes = tableName.getBytes();
-            if (this.newHBaseAdmin().isTableEnabled(tableNameBytes))
-                throw new HBqlException("Cannot drop enabled table: " + tableName);
             this.newHBaseAdmin().deleteTable(tableNameBytes);
         }
         catch (IOException e) {
@@ -256,6 +262,8 @@ public class HConnectionImpl implements HConnection {
 
     public void disableTable(final String tableName) throws HBqlException {
         try {
+            if (!this.tableEnabled(tableName))
+                throw new HBqlException("Cannot disable disabled table: " + tableName);
             this.newHBaseAdmin().disableTable(tableName);
         }
         catch (IOException e) {
@@ -265,6 +273,7 @@ public class HConnectionImpl implements HConnection {
 
     public void enableTable(final String tableName) throws HBqlException {
         try {
+            validateTableDisabled("enable", tableName);
             this.newHBaseAdmin().enableTable(tableName);
         }
         catch (IOException e) {
@@ -283,5 +292,20 @@ public class HConnectionImpl implements HConnection {
         catch (IOException e) {
             throw new HBqlException(e);
         }
+    }
+
+    public void validateTableName(final String tableName) throws HBqlException {
+        if (!this.tableExists(tableName))
+            throw new HBqlException("Table not found: " + tableName);
+    }
+
+    public void validateTableDisabled(final String action, final String tableName) throws HBqlException {
+        if (this.tableEnabled(tableName))
+            throw new HBqlException("Cannot " + action + " enabled table: " + tableName);
+    }
+
+    public void validateFamilyExists(final String tableName, final String familyName) throws HBqlException {
+        if (!this.familyExists(tableName, familyName))
+            throw new HBqlException("Family " + familyName + " not present in table " + tableName);
     }
 }

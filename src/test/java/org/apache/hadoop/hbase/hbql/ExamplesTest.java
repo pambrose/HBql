@@ -140,7 +140,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: create-table
 
         HConnection connection = HConnectionManager.newConnection();
-        connection.execute("CREATE TABLE foo (family1 (MAX_VERSIONS: 10), family2, family3 (MAX_VERSIONS: 15))");
+        connection.execute("CREATE TABLE foo (family1 (MAX_VERSIONS: 10), family2(), family3 (MAX_VERSIONS: 15))");
 
         // END SNIPPET: create-table
 
@@ -156,7 +156,7 @@ public class ExamplesTest extends TestSupport {
         connection.execute("ALTER TABLE foo DROP FAMILY family1, DROP FAMILY family2");
 
         // Add family family4
-        connection.execute("ALTER TABLE foo ADD FAMILY family4 (MAX_VERSIONS: 10), ADD FAMILY family6");
+        connection.execute("ALTER TABLE foo ADD FAMILY family4 (MAX_VERSIONS: 10), ADD FAMILY family6()");
 
         // Rename family family4 to family5
         connection.execute("ALTER TABLE foo ALTER FAMILY family4 TO family5 (MAX_VERSIONS: 10)");
@@ -380,7 +380,7 @@ public class ExamplesTest extends TestSupport {
 
         // Clean up table
         if (!connection.tableExists("example1"))
-            connection.execute("CREATE TABLE example1 (f1) ");
+            connection.execute("CREATE TABLE example1 (f1()) ");
         else
             connection.execute("DELETE FROM demo1");
 
@@ -429,7 +429,7 @@ public class ExamplesTest extends TestSupport {
         Connection connection = DriverManager.getConnection("jdbc:hbql");
 
         Statement stmt = connection.createStatement();
-        stmt.execute("CREATE TABLE table12 (f1, f3)");
+        stmt.execute("CREATE TABLE table12 (f1(), f3()) IF NOT tableexists('table12')");
 
         stmt.execute("CREATE TEMP MAPPING sch9 FOR TABLE table12"
                      + "("
@@ -482,7 +482,7 @@ public class ExamplesTest extends TestSupport {
 
         // Clean up table
         if (!connection.tableExists("example2"))
-            connection.execute("CREATE TABLE example2 (f1)");
+            connection.execute("CREATE TABLE example2 (f1())");
         else
             connection.execute("DELETE FROM demo2");
 

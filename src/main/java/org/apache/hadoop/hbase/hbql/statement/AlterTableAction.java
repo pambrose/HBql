@@ -22,8 +22,9 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public interface AlterTableAction {
 
-    void execute(HBaseAdmin admin, String tableName) throws HBqlException;
+    void execute(HConnectionImpl connection, HBaseAdmin admin, String tableName) throws HBqlException;
 }

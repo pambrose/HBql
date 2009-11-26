@@ -77,7 +77,7 @@ public class InsertTest extends TestSupport {
                            + "))");
 
         if (!connection.tableExists("table2"))
-            System.out.println(connection.execute("create table table2 (f1, f2, f3)"));
+            System.out.println(connection.execute("create table table2 (f1(), f2(), f3())"));
         else
             System.out.println(connection.execute("delete from tab2"));
 
@@ -96,9 +96,10 @@ public class InsertTest extends TestSupport {
                                      final int cnt,
                                      final String msg) throws HBqlException {
 
-        HPreparedStatement stmt = connection.prepareStatement("insert into tab2 " +
-                                                              "(keyval, val1, val2, val5, val6, f3mapval1, f3mapval2, val8) values " +
-                                                              "(:key, :val1, :val2, :val5, :val6, :f3mapval1, :f3mapval2, :val8)");
+        HPreparedStatement stmt = connection.prepareStatement(
+                "insert into tab2 "
+                + "(keyval, val1, val2, val5, val6, f3mapval1, f3mapval2, val8) values "
+                + "(:key, :val1, :val2, :val5, :val6, :f3mapval1, :f3mapval2, :val8)");
 
         for (int i = 0; i < cnt; i++) {
 

@@ -32,7 +32,7 @@ public class HelpStatement extends BasicStatement implements NonConnectionStatem
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("VERSION");
-        retval.out.println("LIST TABLES");
+        retval.out.println("SHOW TABLES");
         retval.out.println("DESCRIBE TABLE table_name");
         retval.out.flush();
 

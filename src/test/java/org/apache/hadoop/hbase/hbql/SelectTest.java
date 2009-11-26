@@ -79,7 +79,7 @@ public class SelectTest extends TestSupport {
                            + "))");
 
         if (!connection.tableExists("table1"))
-            System.out.println(connection.execute("create table table1 (f1, f2, f3)"));
+            System.out.println(connection.execute("create table table1 (f1(), f2(), f3())"));
         else
             System.out.println(connection.execute("delete from tab8"));
 

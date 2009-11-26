@@ -26,8 +26,6 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-import java.io.IOException;
-
 public class DescribeTableStatement extends TableStatement {
 
     public DescribeTableStatement(final StatementPredicate predicate, final String tableName) {
@@ -36,31 +34,25 @@ public class DescribeTableStatement extends TableStatement {
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        try {
-            final byte[] bytes = this.getTableName().getBytes();
-            final HTableDescriptor tableDesc = connection.newHBaseAdmin().getTableDescriptor(bytes);
+        final HTableDescriptor tableDesc = connection.getHTableDescriptor(this.getTableName());
 
-            final ExecutionResults retval = new ExecutionResults();
-            retval.out.println("Table name: " + tableDesc.getNameAsString());
-            retval.out.println("Families:");
-            for (final HColumnDescriptor columnDesc : tableDesc.getFamilies()) {
-                retval.out.println("  " + columnDesc.getNameAsString()
-                                   + "\n    Max versions: " + columnDesc.getMaxVersions()
-                                   + "\n    TTL: " + columnDesc.getTimeToLive()
-                                   + "\n    Block size: " + columnDesc.getBlocksize()
-                                   + "\n    Compression: " + columnDesc.getCompression().getName()
-                                   + "\n    Compression type: " + columnDesc.getCompressionType().getName()
-                                   + "\n    Block cache enabled: " + columnDesc.isBlockCacheEnabled()
-                                   + "\n    Bloom filter: " + columnDesc.isBloomfilter()
-                                   + "\n    In memory: " + columnDesc.isInMemory()
-                                   + "\n");
-            }
+        final ExecutionResults retval = new ExecutionResults();
+        retval.out.println("Table name: " + tableDesc.getNameAsString());
+        retval.out.println("Families:");
+        for (final HColumnDescriptor columnDesc : tableDesc.getFamilies()) {
+            retval.out.println("  " + columnDesc.getNameAsString()
+                               + "\n    Max versions: " + columnDesc.getMaxVersions()
+                               + "\n    TTL: " + columnDesc.getTimeToLive()
+                               + "\n    Block size: " + columnDesc.getBlocksize()
+                               + "\n    Compression: " + columnDesc.getCompression().getName()
+                               + "\n    Compression type: " + columnDesc.getCompressionType().getName()
+                               + "\n    Block cache enabled: " + columnDesc.isBlockCacheEnabled()
+                               + "\n    Bloom filter: " + columnDesc.isBloomfilter()
+                               + "\n    In memory: " + columnDesc.isInMemory()
+                               + "\n");
+        }
 
-            retval.out.flush();
-            return retval;
-        }
-        catch (IOException e) {
-            throw new HBqlException(e);
-        }
+        retval.out.flush();
+        return retval;
     }
 }

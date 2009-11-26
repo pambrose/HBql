@@ -46,14 +46,15 @@ public class PredicateTest extends TestSupport {
         results = connection.execute("DROP TABLE nosuchtable IF tableexists('nosuchtable')");
         assertTrue(!results.getPredicate());
 
-        results = connection.execute("CREATE TABLE nosuchtable (f1) IF tableexists('nosuchtable')");
+        results = connection.execute("CREATE TABLE nosuchtable (f1()) IF tableexists('nosuchtable')");
         assertTrue(!results.getPredicate());
 
         results = connection.execute("CREATE TEMP MAPPING nosuchmapping IF tableexists('nosuchtable')");
         assertTrue(!results.getPredicate());
 
-        //results = connection.execute("ALTER TABLE nosuchtable DROP FAMILY foo IF tableexists('nosuchtable')");
-        //    results = connection.execute("ALTER TABLE foggo ADD FAMILY family4 (MAX_VERSIONS: 10), ADD FAMILY family6 ");
-        //    assertTrue(!results.getPredicate());
+        //results = connection.execute("ALTER TABLE TABLE nosuchtable DROP FAMILY foo IF tableexists('nosuchtable')");
+        results = connection.execute("ALTER TABLE nosuchtable DROP FAMILY foo IF tableexists('nosuchtable')");
+        // results = connection.execute("ALTER TABLE TABLE foggo DROP FAMILY foo ");
+        assertTrue(!results.getPredicate());
     }
 }

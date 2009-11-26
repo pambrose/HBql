@@ -46,10 +46,12 @@ public class AlterTableStatement extends BasicStatement implements ConnectionSta
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
+        connection.validateTableDisabled("alter", this.getTableName());
+
         final HBaseAdmin admin = connection.newHBaseAdmin();
 
         for (final AlterTableAction alterTableAction : this.alterTableActionList)
-            alterTableAction.execute(admin, this.getTableName());
+            alterTableAction.execute(connection, admin, this.getTableName());
 
         return new ExecutionResults("Table " + this.getTableName() + " altered.");
     }

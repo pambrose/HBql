@@ -51,7 +51,7 @@ public class DeleteTest extends TestSupport {
             System.out.println(connection.execute("drop table delete_test"));
         }
 
-        System.out.println(connection.execute("create table delete_test (f1, f2, f3)"));
+        System.out.println(connection.execute("create table delete_test (f1(), f2(), f3())"));
 
         connection.execute("CREATE TEMP MAPPING delete_test "
                            + "("

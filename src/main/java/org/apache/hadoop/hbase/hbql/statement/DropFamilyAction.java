@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.io.IOException;
 
@@ -33,9 +34,16 @@ public class DropFamilyAction implements AlterTableAction {
         this.familyName = familyName;
     }
 
-    public void execute(final HBaseAdmin admin, final String tableName) throws HBqlException {
+    private String getFamilyName() {
+        return this.familyName;
+    }
+
+    public void execute(final HConnectionImpl connection,
+                        final HBaseAdmin admin,
+                        final String tableName) throws HBqlException {
         try {
-            admin.deleteColumn(tableName, this.familyName);
+            connection.validateFamilyExists(tableName, this.getFamilyName());
+            admin.deleteColumn(tableName, this.getFamilyName());
         }
         catch (IOException e) {
             throw new HBqlException(e);

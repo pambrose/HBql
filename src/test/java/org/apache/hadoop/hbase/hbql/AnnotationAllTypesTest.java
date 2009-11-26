@@ -82,7 +82,7 @@ public class AnnotationAllTypesTest extends TestSupport {
                            + "))");
 
         if (!connection.tableExists("example2"))
-            System.out.println(connection.execute("create table example2 (f1)"));
+            System.out.println(connection.execute("create table example2 (f1())"));
         else {
             System.out.println(connection.execute("delete from alltypes2"));
         }

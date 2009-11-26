@@ -76,7 +76,7 @@ public class AggregateTest extends TestSupport {
                            + "))");
 
         if (!connection.tableExists("aggtable"))
-            System.out.println(connection.execute("create table aggtable (f1, f2, f3)"));
+            System.out.println(connection.execute("create table aggtable (f1(), f2(), f3())"));
         else
             System.out.println(connection.execute("delete from aggmapping"));
 

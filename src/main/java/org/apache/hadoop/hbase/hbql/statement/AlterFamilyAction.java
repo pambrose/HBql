@@ -23,6 +23,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyDefinition;
 
 import java.io.IOException;
@@ -45,9 +46,14 @@ public class AlterFamilyAction implements AlterTableAction {
         return this.familyDefinition;
     }
 
-    public void execute(final HBaseAdmin admin, final String tableName) throws HBqlException {
+    public void execute(final HConnectionImpl connection,
+                        final HBaseAdmin admin,
+                        final String tableName) throws HBqlException {
+
+        connection.validateFamilyExists(tableName, this.getFamilyName());
+        final HColumnDescriptor columnDescriptor = this.getFamilyDefinition().getHColumnDescriptor();
+
         try {
-            final HColumnDescriptor columnDescriptor = this.getFamilyDefinition().getHColumnDescriptor();
             admin.modifyColumn(tableName, this.getFamilyName(), columnDescriptor);
         }
         catch (IOException e) {

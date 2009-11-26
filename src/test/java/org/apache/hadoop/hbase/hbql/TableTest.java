@@ -44,7 +44,7 @@ public class TableTest extends TestSupport {
             connection.dropTable(tableName);
         }
         assertFalse(connection.tableExists(tableName));
-        connection.execute("CREATE TABLE " + tableName + " (family1, family2, family3)");
+        connection.execute("CREATE TABLE " + tableName + " (family1(), family2(), family3())");
         assertTrue(connection.tableExists(tableName));
         HTableDescriptor table = connection.getHTableDescriptor(tableName);
         HColumnDescriptor[] hcd = table.getColumnFamilies();
