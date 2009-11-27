@@ -196,7 +196,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
                     val = attrib.getDefaultValue();
                 }
                 else {
-                    val = this.getInsertValuesSource().getValue(i);
+                    val = this.getInsertValuesSource().getValue(connection, i);
                 }
                 this.getHRecord().setCurrentValue(name, val);
             }

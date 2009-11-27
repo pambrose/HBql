@@ -28,15 +28,15 @@ public interface HPreparedStatement extends HStatement {
 
     HResultSet<HRecord> executeQuery() throws HBqlException;
 
-    <T> HResultSet<T> executeQuery(final Class clazz) throws HBqlException;
+    <T> HResultSet<T> executeQuery(Class clazz) throws HBqlException;
 
     List<HRecord> executeQueryAndFetch() throws HBqlException;
 
-    <T> List<T> executeQueryAndFetch(final Class clazz) throws HBqlException;
+    <T> List<T> executeQueryAndFetch(Class clazz) throws HBqlException;
 
     ExecutionResults executeUpdate() throws HBqlException;
 
     int setParameter(String name, Object val) throws HBqlException;
 
-    void setParameter(final int i, final Object obj) throws HBqlException;
+    void setParameter(int i, Object obj) throws HBqlException;
 }

@@ -24,6 +24,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.List;
 
@@ -33,7 +34,8 @@ public class BooleanCase extends GenericCase implements BooleanValue {
         super(ExpressionType.BOOLEANCASE, whenExprList, elseExpr);
     }
 
-    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        return (Boolean)super.getValue(object);
+    public Boolean getValue(final HConnectionImpl connection,
+                            final Object object) throws HBqlException, ResultMissingColumnException {
+        return (Boolean)super.getValue(connection, object);
     }
 }

@@ -29,6 +29,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
@@ -204,12 +205,13 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
             return columnMap.get(this.getColumnNameBytes());
     }
 
-    private void assignCalculation(final Object obj, final Result result) throws HBqlException {
+    private void assignCalculation(final HConnectionImpl connection,
+                                   final Object obj, final Result result) throws HBqlException {
         // If it is a calculation, then assign according to the AS name
         final String name = this.getAsName();
         final ColumnAttrib attrib = this.getResultAccessor().getColumnAttribByName(name);
 
-        final Object elementValue = this.getValue(result);
+        final Object elementValue = this.getValue(connection, result);
 
         if (attrib == null) {
             // Find value in results and assign the byte[] value to Record, but bail on Annotated object because
@@ -224,7 +226,7 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
         }
     }
 
-    public void assignSelectValue(final Object obj,
+    public void assignSelectValue(final HConnectionImpl connection, final Object obj,
                                   final int maxVerions,
                                   final Result result) throws HBqlException {
 
@@ -238,7 +240,7 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
 
         // If it is a calculation, take care of it and then bail since calculations have no history
         if (!this.isASimpleColumnReference()) {
-            this.assignCalculation(obj, result);
+            this.assignCalculation(connection, obj, result);
             return;
         }
 
@@ -294,9 +296,9 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
         return new AggregateValue(this.getSelectName(), this);
     }
 
-    public Object getValue(final Result result) throws HBqlException {
+    public Object getValue(final HConnectionImpl connection, final Result result) throws HBqlException {
         try {
-            return this.evaluate(0, true, false, result);
+            return this.evaluate(connection, 0, true, false, result);
         }
         catch (ResultMissingColumnException e) {
             return null;

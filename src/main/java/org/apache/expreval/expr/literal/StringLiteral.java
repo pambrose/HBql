@@ -34,6 +34,6 @@ public class StringLiteral extends GenericLiteral<String> implements StringValue
     }
 
     public String asString() {
-        return "\"" + this.getValue(null) + "\"";
+        return "\"" + this.getValue(null, null) + "\"";
     }
 }

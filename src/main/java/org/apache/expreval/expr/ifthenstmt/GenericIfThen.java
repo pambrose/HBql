@@ -25,6 +25,7 @@ import org.apache.expreval.expr.DelegateStmt;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public abstract class GenericIfThen extends DelegateStmt<GenericIfThen> {
 
@@ -35,11 +36,12 @@ public abstract class GenericIfThen extends DelegateStmt<GenericIfThen> {
         super(type, arg0, arg1, arg2);
     }
 
-    public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        if ((Boolean)this.getArg(0).getValue(object))
-            return this.getArg(1).getValue(object);
+    public Object getValue(final HConnectionImpl connection,
+                           final Object object) throws HBqlException, ResultMissingColumnException {
+        if ((Boolean)this.getArg(0).getValue(connection, object))
+            return this.getArg(1).getValue(connection, object);
         else
-            return this.getArg(2).getValue(object);
+            return this.getArg(2).getValue(connection, object);
     }
 
     public String asString() {

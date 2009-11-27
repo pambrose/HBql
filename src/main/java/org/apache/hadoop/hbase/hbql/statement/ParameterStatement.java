@@ -25,11 +25,11 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public interface ParameterStatement {
 
-    int setParameter(final String name, final Object val) throws HBqlException;
+    int setParameter(String name, Object val) throws HBqlException;
 
     NamedParameters getNamedParameters();
 
-    void validate(final HConnectionImpl connection) throws HBqlException;
+    void validate(HConnectionImpl connection) throws HBqlException;
 
     void reset();
 }

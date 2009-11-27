@@ -24,6 +24,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.DelegateStmt;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.List;
 
@@ -38,16 +39,17 @@ public abstract class GenericCase extends DelegateStmt<GenericCase> {
         this.elseExpr = elseExpr;
     }
 
-    public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Object getValue(final HConnectionImpl connection,
+                           final Object object) throws HBqlException, ResultMissingColumnException {
 
         for (final GenericCaseWhen when : this.getWhenExprList()) {
-            final boolean predicate = when.getPredicateValue(object);
+            final boolean predicate = when.getPredicateValue(connection, object);
             if (predicate)
-                return when.getValue(object);
+                return when.getValue(connection, object);
         }
 
         if (this.getElseExpr() != null)
-            return this.getElseExpr().getValue(object);
+            return this.getElseExpr().getValue(connection, object);
 
         return null;
     }

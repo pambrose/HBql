@@ -43,7 +43,7 @@ public interface HConnection {
     // Table Routines    
     boolean tableExists(String tableName) throws HBqlException;
 
-    HTableDescriptor getHTableDescriptor(final String tableName) throws HBqlException;
+    HTableDescriptor getHTableDescriptor(String tableName) throws HBqlException;
 
     boolean tableEnabled(String tableName) throws HBqlException;
 
@@ -74,11 +74,11 @@ public interface HConnection {
     ExecutionResults executeUpdate(String sql) throws HBqlException;
 
     // Mapping Routines
-    HMapping getMapping(final String mappingName) throws HBqlException;
+    HMapping getMapping(String mappingName) throws HBqlException;
 
     boolean mappingExists(String mappingName) throws HBqlException;
 
-    boolean dropMapping(final String mappingName) throws HBqlException;
+    boolean dropMapping(String mappingName) throws HBqlException;
 
     Set<HMapping> getMappings() throws HBqlException;
 }

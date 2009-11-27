@@ -42,11 +42,11 @@ public class TimestampArgs extends SelectArgs {
     }
 
     private long getLower() throws HBqlException {
-        return (Long)this.evaluateConstant(0, false, null);
+        return (Long)this.evaluateConstant(null, 0, false, null);
     }
 
     private long getUpper() throws HBqlException {
-        return (Long)this.evaluateConstant(1, false, null);
+        return (Long)this.evaluateConstant(null, 1, false, null);
     }
 
     private boolean isASingleValue() {

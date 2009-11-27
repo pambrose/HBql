@@ -26,6 +26,7 @@ import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class BooleanNot extends GenericExpression implements BooleanValue {
 
@@ -48,15 +49,16 @@ public class BooleanNot extends GenericExpression implements BooleanValue {
             return this;
         else
             try {
-                return new BooleanLiteral(this.getValue(null));
+                return new BooleanLiteral(this.getValue(null, null));
             }
             catch (ResultMissingColumnException e) {
                 throw new InternalErrorException();
             }
     }
 
-    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        final boolean retval = (Boolean)this.getArg(0).getValue(object);
+    public Boolean getValue(final HConnectionImpl connection,
+                            final Object object) throws HBqlException, ResultMissingColumnException {
+        final boolean retval = (Boolean)this.getArg(0).getValue(connection, object);
         return (this.not) ? !retval : retval;
     }
 

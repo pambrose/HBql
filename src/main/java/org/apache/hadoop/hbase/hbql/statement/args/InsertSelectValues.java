@@ -27,6 +27,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.Query;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
@@ -112,7 +113,7 @@ public class InsertSelectValues extends InsertValueSource {
         return this.getSelectStatement().asString();
     }
 
-    public Object getValue(final int i) throws HBqlException {
+    public Object getValue(final HConnectionImpl connection, final int i) throws HBqlException {
         final SelectElement element = this.getSelectStatement().getSelectElementList().get(i);
         final String name = element.getElementName();
         return this.getCurrentRecord().getCurrentValue(name);

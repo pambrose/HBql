@@ -28,5 +28,5 @@ public interface RowRequest {
 
     int getMaxVersions();
 
-    ResultScanner getResultScanner(final HTable table) throws HBqlException;
+    ResultScanner getResultScanner(HTable table) throws HBqlException;
 }

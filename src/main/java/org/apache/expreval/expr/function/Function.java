@@ -227,7 +227,7 @@ public abstract class Function extends GenericExpression {
             return this;
         else
             try {
-                return this.getFunctionType().getTypeSignature().newLiteral(this.getValue(null));
+                return this.getFunctionType().getTypeSignature().newLiteral(this.getValue(null, null));
             }
             catch (ResultMissingColumnException e) {
                 throw new InternalErrorException();

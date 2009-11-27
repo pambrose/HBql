@@ -25,6 +25,7 @@ import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class StringCalculation extends GenericCalculation {
 
@@ -32,10 +33,11 @@ public class StringCalculation extends GenericCalculation {
         super(ExpressionType.STRINGCALCULATION, arg0, operator, arg1);
     }
 
-    public String getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public String getValue(final HConnectionImpl connection,
+                           final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final String val1 = (String)this.getArg(0).getValue(object);
-        final String val2 = (String)this.getArg(1).getValue(object);
+        final String val1 = (String)this.getArg(0).getValue(connection, object);
+        final String val2 = (String)this.getArg(1).getValue(connection, object);
 
         switch (this.getOperator()) {
             case PLUS:

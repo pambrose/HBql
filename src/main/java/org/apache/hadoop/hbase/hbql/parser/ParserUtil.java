@@ -74,7 +74,7 @@ public class ParserUtil {
             final HBqlParser parser = ParserUtil.newHBqlParser(sql);
             final GenericValue valueExpr = parser.exprValue();
             valueExpr.validateTypes(null, false);
-            return valueExpr.getValue(null);
+            return valueExpr.getValue(null, null);
         }
         catch (ResultMissingColumnException e) {
             // No column refs should be missing
@@ -100,7 +100,7 @@ public class ParserUtil {
     }
 
     public static Object evaluateSelectElement(final SelectExpressionContext elem) throws HBqlException {
-        return elem.getValue(null);
+        return elem.getValue(null, null);
     }
 
     public static WithArgs parseWithClause(final String sql) throws ParseException {

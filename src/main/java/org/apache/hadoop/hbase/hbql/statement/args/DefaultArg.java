@@ -51,7 +51,7 @@ public class DefaultArg extends MultipleExpressionContext implements Serializabl
             synchronized (this) {
                 if (!computed) {
                     // Type checking happens in this call, so we force it above in the constructor
-                    this.value = this.evaluateConstant(0, false, null);
+                    this.value = this.evaluateConstant(null, 0, false, null);
                     this.computed = true;
                 }
             }

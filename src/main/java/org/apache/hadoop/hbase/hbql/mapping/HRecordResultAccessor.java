@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
@@ -34,18 +35,19 @@ public class HRecordResultAccessor extends ResultAccessor {
         super(statementContext);
     }
 
-    public Object newObject(final StatementContext statementContext,
+    public Object newObject(final HConnectionImpl connection,
+                            final StatementContext statementContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {
 
         // Create object and assign values
         final HRecordImpl newrec = new HRecordImpl(statementContext);
-        this.assignSelectValues(newrec, selectElementList, maxVersions, result);
+        this.assignSelectValues(connection, newrec, selectElementList, maxVersions, result);
         return newrec;
     }
 
-    private void assignSelectValues(final HRecordImpl record,
+    private void assignSelectValues(final HConnectionImpl connection, final HRecordImpl record,
                                     final List<SelectElement> selectElementList,
                                     final int maxVersions,
                                     final Result result) throws HBqlException {
@@ -55,7 +57,7 @@ public class HRecordResultAccessor extends ResultAccessor {
 
         // Set the non-key values
         for (final SelectElement selectElement : selectElementList)
-            selectElement.assignSelectValue(record, maxVersions, result);
+            selectElement.assignSelectValue(connection, record, maxVersions, result);
     }
 
     public ColumnAttrib getColumnAttribByQualifiedName(final String familyName,

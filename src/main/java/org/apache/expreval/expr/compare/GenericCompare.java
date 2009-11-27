@@ -49,7 +49,7 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
             return this;
         else
             try {
-                return new BooleanLiteral(this.getValue(null));
+                return new BooleanLiteral(this.getValue(null, null));
             }
             catch (ResultMissingColumnException e) {
                 throw new InternalErrorException();

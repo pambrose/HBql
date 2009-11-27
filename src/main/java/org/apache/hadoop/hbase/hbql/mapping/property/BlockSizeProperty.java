@@ -30,6 +30,6 @@ public class BlockSizeProperty extends FamilyProperty {
     }
 
     public int getValue() throws HBqlException {
-        return ((Number)this.evaluateConstant(0, false, null)).intValue();
+        return ((Number)this.evaluateConstant(null, 0, false, null)).intValue();
     }
 }

@@ -26,6 +26,7 @@ import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidVariableException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 
 public class DelegateColumn extends GenericColumn<GenericValue> {
@@ -51,12 +52,13 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
         return this.variableName;
     }
 
-    public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Object getValue(final HConnectionImpl connection,
+                           final Object object) throws HBqlException, ResultMissingColumnException {
 
         if (!this.isVariableDefinedInMapping())
             throw new InvalidVariableException(this.getVariableName());
 
-        return this.getTypedColumn().getValue(object);
+        return this.getTypedColumn().getValue(connection, object);
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,

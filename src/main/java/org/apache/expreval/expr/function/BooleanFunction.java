@@ -63,7 +63,8 @@ public class BooleanFunction extends Function implements BooleanValue {
         this.mapping = context.getHBaseTableMapping();
     }
 
-    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Boolean getValue(final HConnectionImpl connection,
+                            final Object object) throws HBqlException, ResultMissingColumnException {
 
         switch (this.getFunctionType()) {
 
@@ -73,7 +74,7 @@ public class BooleanFunction extends Function implements BooleanValue {
 
             case DEFINEDINROW: {
                 try {
-                    this.getArg(0).getValue(object);
+                    this.getArg(0).getValue(connection, object);
                     return true;
                 }
                 catch (ResultMissingColumnException e) {
@@ -82,55 +83,51 @@ public class BooleanFunction extends Function implements BooleanValue {
             }
 
             case EVAL: {
-                final String exprStr = (String)this.getArg(0).getValue(object);
+                final String exprStr = (String)this.getArg(0).getValue(connection, object);
                 final StatementContext statementContext = this.getExpressionContext().getStatementContext();
                 final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(exprStr, statementContext);
-                return expressionTree.evaluate(object);
+                return expressionTree.evaluate(connection, object);
             }
 
             case MAPPINGEXISTS: {
-                if (object == null) {
+                if (connection == null) {
                     return false;
                 }
                 else {
-                    final String mappingName = (String)this.getArg(0).getValue(null);
-                    final HConnectionImpl conn = (HConnectionImpl)object;
-                    return conn.mappingExists(mappingName);
+                    final String mappingName = (String)this.getArg(0).getValue(connection, null);
+                    return connection.mappingExists(mappingName);
                 }
             }
 
             case TABLEEXISTS: {
-                if (object == null) {
+                if (connection == null) {
                     return false;
                 }
                 else {
-                    final String tableName = (String)this.getArg(0).getValue(null);
-                    final HConnectionImpl conn = (HConnectionImpl)object;
-                    return conn.tableExists(tableName);
+                    final String tableName = (String)this.getArg(0).getValue(connection, null);
+                    return connection.tableExists(tableName);
                 }
             }
 
             case TABLEENABLED: {
-                if (object == null) {
+                if (connection == null) {
                     return false;
                 }
                 else {
-                    final String tableName = (String)this.getArg(0).getValue(null);
-                    final HConnectionImpl conn = (HConnectionImpl)object;
-                    return conn.tableEnabled(tableName);
+                    final String tableName = (String)this.getArg(0).getValue(connection, null);
+                    return connection.tableEnabled(tableName);
                 }
             }
 
             case FAMILYEXISTS: {
-                if (object == null) {
+                if (connection == null) {
                     return false;
                 }
                 else {
-                    final String tableName = (String)this.getArg(0).getValue(null);
-                    final String familyName = (String)this.getArg(1).getValue(null);
-                    final HConnectionImpl conn = (HConnectionImpl)object;
+                    final String tableName = (String)this.getArg(0).getValue(connection, null);
+                    final String familyName = (String)this.getArg(1).getValue(connection, null);
                     try {
-                        return conn.familyExists(tableName, familyName);
+                        return connection.familyExists(tableName, familyName);
                     }
                     catch (HBqlException e) {
                         // return false if table doesn't exist

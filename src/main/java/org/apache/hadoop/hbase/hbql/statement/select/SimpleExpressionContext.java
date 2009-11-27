@@ -45,7 +45,7 @@ public class SimpleExpressionContext extends MultipleExpressionContext {
     public Object getValue(final HConnectionImpl connection) throws HBqlException {
         try {
             this.setStatementContext(new NonStatement(null, null));
-            return this.evaluate(0, true, false, connection);
+            return this.evaluate(connection, 0, true, false, connection);
         }
         catch (ResultMissingColumnException e) {
             throw new InternalErrorException();

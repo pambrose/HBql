@@ -26,6 +26,7 @@ import org.apache.expreval.expr.NotValue;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.List;
 
@@ -41,7 +42,8 @@ public abstract class GenericInStmt extends NotValue<GenericInStmt> implements B
         return this.getSubArgs(1);
     }
 
-    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Boolean getValue(final HConnectionImpl connection,
+                            final Object object) throws HBqlException, ResultMissingColumnException {
         final boolean retval = this.evaluateInList(object);
         return (this.isNot()) ? !retval : retval;
     }

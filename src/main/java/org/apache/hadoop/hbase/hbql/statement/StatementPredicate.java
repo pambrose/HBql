@@ -44,7 +44,7 @@ public class StatementPredicate extends MultipleExpressionContext {
 
     public boolean evaluate(final HConnectionImpl connection) throws HBqlException {
         try {
-            return (Boolean)this.evaluate(0, false, false, connection);
+            return (Boolean)this.evaluate(connection, 0, false, false, connection);
         }
         catch (ResultMissingColumnException e) {
             throw new InternalErrorException();

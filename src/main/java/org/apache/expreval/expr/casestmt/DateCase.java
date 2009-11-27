@@ -24,6 +24,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.List;
 
@@ -33,7 +34,8 @@ public class DateCase extends GenericCase implements DateValue {
         super(ExpressionType.DATECASE, whenExprList, elseExpr);
     }
 
-    public Long getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        return (Long)super.getValue(object);
+    public Long getValue(final HConnectionImpl connection,
+                         final Object object) throws HBqlException, ResultMissingColumnException {
+        return (Long)super.getValue(connection, object);
     }
 }

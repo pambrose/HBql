@@ -164,7 +164,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
         return this.getClazz().newInstance();
     }
 
-    public Object newObject(final StatementContext statementContext,
+    public Object newObject(final HConnectionImpl connection, final StatementContext statementContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {
@@ -172,7 +172,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
         try {
             // Create object and assign values
             final Object newobj = this.createNewObject();
-            this.assignSelectValues(newobj, selectElementList, maxVersions, result);
+            this.assignSelectValues(connection, newobj, selectElementList, maxVersions, result);
             return newobj;
         }
         catch (Exception e) {
@@ -181,7 +181,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
         }
     }
 
-    private void assignSelectValues(final Object newobj,
+    private void assignSelectValues(final HConnectionImpl connection, final Object newobj,
                                     final List<SelectElement> selectElementList,
                                     final int maxVersions,
                                     final Result result) throws HBqlException {
@@ -191,7 +191,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
 
         // Set the non-key values
         for (final SelectElement selectElement : selectElementList)
-            selectElement.assignSelectValue(newobj, maxVersions, result);
+            selectElement.assignSelectValue(connection, newobj, maxVersions, result);
     }
 
     private Object createNewObject() throws HBqlException {

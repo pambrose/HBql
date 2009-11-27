@@ -137,7 +137,7 @@ public class HBqlFilter implements Filter {
         }
         else {
             try {
-                final boolean filterRecord = !this.getExpressionTree().evaluate(this.getHRecord());
+                final boolean filterRecord = !this.getExpressionTree().evaluate(null, this.getHRecord());
                 return filterRecord;
             }
             catch (ResultMissingColumnException e) {

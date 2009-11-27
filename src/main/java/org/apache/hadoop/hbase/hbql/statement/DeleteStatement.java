@@ -151,7 +151,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
             final ResultScanner resultScaner = rowRequest.getResultScanner(table);
             for (final Result result : resultScaner) {
                 try {
-                    if (clientExpressionTree == null || clientExpressionTree.evaluate(result)) {
+                    if (clientExpressionTree == null || clientExpressionTree.evaluate(connection, result)) {
 
                         final Delete rowDelete = new Delete(result.getRow());
 

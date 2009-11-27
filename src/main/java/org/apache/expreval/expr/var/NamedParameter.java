@@ -40,6 +40,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -144,9 +145,10 @@ public class NamedParameter implements GenericValue {
         }
     }
 
-    public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Object getValue(final HConnectionImpl connection,
+                           final Object object) throws HBqlException, ResultMissingColumnException {
         if (this.isScalarValueSet())
-            return this.getTypedExpr().getValue(object);
+            return this.getTypedExpr().getValue(connection, object);
         else
             return this.getTypedExprList();
     }

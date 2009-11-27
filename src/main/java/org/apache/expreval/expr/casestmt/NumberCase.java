@@ -24,6 +24,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.List;
 
@@ -33,7 +34,8 @@ public class NumberCase extends GenericCase implements NumberValue {
         super(ExpressionType.NUMBERCASE, whenExprList, elseExpr);
     }
 
-    public Number getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        return (Number)super.getValue(object);
+    public Number getValue(final HConnectionImpl connection,
+                           final Object object) throws HBqlException, ResultMissingColumnException {
+        return (Number)super.getValue(connection, object);
     }
 }

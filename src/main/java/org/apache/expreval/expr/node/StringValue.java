@@ -22,8 +22,9 @@ package org.apache.expreval.expr.node;
 
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public interface StringValue extends GenericValue {
 
-    String getValue(final Object object) throws HBqlException, ResultMissingColumnException;
+    String getValue(HConnectionImpl connection, Object object) throws HBqlException, ResultMissingColumnException;
 }

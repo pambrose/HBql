@@ -35,6 +35,6 @@ public class ObjectLiteral extends GenericLiteral<Object> implements ObjectValue
     }
 
     public String asString() {
-        return "\"" + this.getValue(null).toString() + "\"";
+        return "\"" + this.getValue(null, null).toString() + "\"";
     }
 }

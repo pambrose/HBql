@@ -22,6 +22,7 @@ package org.apache.yaoql.impl;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.statement.NonStatement;
@@ -36,7 +37,8 @@ public class ReflectionResultAccessor extends ResultAccessor {
         super(new NonStatement(ReflectionMapping.getReflectionMapping(object), null));
     }
 
-    public Object newObject(final StatementContext statementContext,
+    public Object newObject(final HConnectionImpl connection,
+                            final StatementContext statementContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {

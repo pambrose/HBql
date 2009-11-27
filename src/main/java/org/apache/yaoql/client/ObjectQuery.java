@@ -37,5 +37,5 @@ public interface ObjectQuery<T> {
 
     ObjectResultSet<T> getResults(Collection<T> objs) throws HBqlException;
 
-    List<T> getResultList(final Collection<T> objs) throws HBqlException;
+    List<T> getResultList(Collection<T> objs) throws HBqlException;
 }

@@ -59,7 +59,7 @@ public class ObjectQueryPredicate<T> extends ParameterBinding implements Predica
                 initialized = true;
             }
 
-            return expressionTree.evaluate(obj);
+            return expressionTree.evaluate(null, obj);
         }
         catch (ResultMissingColumnException e) {
             // Not possible

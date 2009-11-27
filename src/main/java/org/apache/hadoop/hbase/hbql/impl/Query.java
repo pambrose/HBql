@@ -46,7 +46,7 @@ public class Query<E> {
         this.connection = connection;
         this.selectStatement = selectStatement;
 
-        this.getSelectStatement().validate(this.getHConnection());
+        this.getSelectStatement().validate(this.getHConnectionImpl());
     }
 
     public static <T> Query<T> newQuery(final HConnectionImpl connection,
@@ -77,7 +77,7 @@ public class Query<E> {
         this.getListeners().add(listener);
     }
 
-    public HConnectionImpl getHConnection() {
+    public HConnectionImpl getHConnectionImpl() {
         return this.connection;
     }
 

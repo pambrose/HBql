@@ -245,7 +245,7 @@ public abstract class GenericExpression implements GenericValue {
             return this;
 
         try {
-            final Object obj = this.getValue(null);
+            final Object obj = this.getValue(null, null);
 
             if (this.getTypeSignature().getReturnType() == BooleanValue.class
                 || this.getTypeSignature().getReturnType() == StringValue.class

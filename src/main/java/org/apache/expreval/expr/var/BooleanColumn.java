@@ -25,6 +25,7 @@ import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 
 public class BooleanColumn extends GenericColumn<NumberValue> implements BooleanValue {
@@ -33,7 +34,8 @@ public class BooleanColumn extends GenericColumn<NumberValue> implements Boolean
         super(attrib);
     }
 
-    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Boolean getValue(final HConnectionImpl connection,
+                            final Object object) throws HBqlException, ResultMissingColumnException {
         if (this.getExprContext().useResultData())
             return (Boolean)this.getColumnAttrib().getValueFromBytes((Result)object);
         else

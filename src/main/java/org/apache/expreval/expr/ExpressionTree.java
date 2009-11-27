@@ -25,6 +25,7 @@ import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.NonStatement;
 
@@ -44,8 +45,9 @@ public class ExpressionTree extends MultipleExpressionContext {
         return tree;
     }
 
-    public Boolean evaluate(final Object object) throws HBqlException, ResultMissingColumnException {
-        return (Boolean)this.evaluate(0, true, false, object);
+    public Boolean evaluate(final HConnectionImpl connection,
+                            final Object object) throws HBqlException, ResultMissingColumnException {
+        return (Boolean)this.evaluate(connection, 0, true, false, object);
     }
 
     private GenericValue getGenericValue() {

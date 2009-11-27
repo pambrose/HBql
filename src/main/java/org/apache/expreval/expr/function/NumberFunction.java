@@ -27,6 +27,7 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class NumberFunction extends Function implements NumberValue {
             }
 
             case MIN: {
-                final Number v1 = (Number)this.getArg(0).getValue(result);
+                final Number v1 = (Number)this.getArg(0).getValue(null, result);
 
                 if (v1 instanceof Short) {
                     final short val = v1.shortValue();
@@ -93,7 +94,7 @@ public class NumberFunction extends Function implements NumberValue {
             }
 
             case MAX: {
-                final Number v1 = (Number)this.getArg(0).getValue(result);
+                final Number v1 = (Number)this.getArg(0).getValue(null, result);
 
                 if (v1 instanceof Short) {
                     final short val = v1.shortValue();
@@ -123,54 +124,55 @@ public class NumberFunction extends Function implements NumberValue {
         }
     }
 
-    public Number getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Number getValue(final HConnectionImpl connection,
+                           final Object object) throws HBqlException, ResultMissingColumnException {
 
         switch (this.getFunctionType()) {
 
             case LENGTH: {
-                final String val = (String)this.getArg(0).getValue(object);
+                final String val = (String)this.getArg(0).getValue(connection, object);
                 this.checkForNull(val);
                 return val.length();
             }
 
             case INDEXOF: {
-                final String v1 = (String)this.getArg(0).getValue(object);
-                final String v2 = (String)this.getArg(1).getValue(object);
+                final String v1 = (String)this.getArg(0).getValue(connection, object);
+                final String v2 = (String)this.getArg(1).getValue(connection, object);
                 this.checkForNull(v1, v2);
                 return v1.indexOf(v2);
             }
 
             case DATETOLONG: {
-                return (Long)this.getArg(0).getValue(object);
+                return (Long)this.getArg(0).getValue(connection, object);
             }
 
             case SHORT: {
-                final String v1 = (String)this.getArg(0).getValue(object);
+                final String v1 = (String)this.getArg(0).getValue(connection, object);
                 return Short.valueOf(v1);
             }
 
             case INTEGER: {
-                final String v1 = (String)this.getArg(0).getValue(object);
+                final String v1 = (String)this.getArg(0).getValue(connection, object);
                 return Integer.valueOf(v1);
             }
 
             case LONG: {
-                final String v1 = (String)this.getArg(0).getValue(object);
+                final String v1 = (String)this.getArg(0).getValue(connection, object);
                 return Long.valueOf(v1);
             }
 
             case FLOAT: {
-                final String v1 = (String)this.getArg(0).getValue(object);
+                final String v1 = (String)this.getArg(0).getValue(connection, object);
                 return Float.valueOf(v1);
             }
 
             case DOUBLE: {
-                final String v1 = (String)this.getArg(0).getValue(object);
+                final String v1 = (String)this.getArg(0).getValue(connection, object);
                 return Double.valueOf(v1);
             }
 
             case ABS: {
-                final Number v1 = (Number)this.getArg(0).getValue(object);
+                final Number v1 = (Number)this.getArg(0).getValue(connection, object);
 
                 if (v1 instanceof Short)
                     return Math.abs(v1.shortValue());
@@ -185,8 +187,8 @@ public class NumberFunction extends Function implements NumberValue {
             }
 
             case LESSER: {
-                final Number v1 = (Number)this.getArg(0).getValue(object);
-                final Number v2 = (Number)this.getArg(1).getValue(object);
+                final Number v1 = (Number)this.getArg(0).getValue(connection, object);
+                final Number v2 = (Number)this.getArg(1).getValue(connection, object);
 
                 if (v1 instanceof Short)
                     return Math.min(v1.shortValue(), v2.shortValue());
@@ -201,8 +203,8 @@ public class NumberFunction extends Function implements NumberValue {
             }
 
             case GREATER: {
-                final Number v1 = (Number)this.getArg(0).getValue(object);
-                final Number v2 = (Number)this.getArg(1).getValue(object);
+                final Number v1 = (Number)this.getArg(0).getValue(connection, object);
+                final Number v2 = (Number)this.getArg(1).getValue(connection, object);
 
                 if (v1 instanceof Short)
                     return Math.max(v1.shortValue(), v2.shortValue());

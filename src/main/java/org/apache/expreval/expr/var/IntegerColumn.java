@@ -24,6 +24,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 
 public class IntegerColumn extends GenericColumn<NumberValue> implements NumberValue {
@@ -32,7 +33,8 @@ public class IntegerColumn extends GenericColumn<NumberValue> implements NumberV
         super(attrib);
     }
 
-    public Integer getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Integer getValue(final HConnectionImpl connection,
+                            final Object object) throws HBqlException, ResultMissingColumnException {
         if (this.getExprContext().useResultData())
             return (Integer)this.getColumnAttrib().getValueFromBytes((Result)object);
         else

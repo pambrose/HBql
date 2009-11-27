@@ -25,19 +25,20 @@ import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.io.Serializable;
 
 public interface GenericValue extends Serializable {
 
-    void setExpressionContext(final MultipleExpressionContext context) throws HBqlException;
+    void setExpressionContext(MultipleExpressionContext context) throws HBqlException;
 
-    Object getValue(final Object object) throws HBqlException, ResultMissingColumnException;
+    Object getValue(HConnectionImpl connection, Object object) throws HBqlException, ResultMissingColumnException;
 
     GenericValue getOptimizedValue() throws HBqlException;
 
-    Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                final boolean allowCollections) throws HBqlException;
+    Class<? extends GenericValue> validateTypes(GenericValue parentExpr,
+                                                boolean allowCollections) throws HBqlException;
 
     boolean isAConstant();
 
@@ -45,9 +46,9 @@ public interface GenericValue extends Serializable {
 
     boolean isAnAggregateValue();
 
-    void initAggregateValue(final AggregateValue aggregateValue) throws HBqlException;
+    void initAggregateValue(AggregateValue aggregateValue) throws HBqlException;
 
-    void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException, ResultMissingColumnException;
+    void applyResultToAggregateValue(AggregateValue aggregateValue, Result result) throws HBqlException, ResultMissingColumnException;
 
     boolean hasAColumnReference();
 

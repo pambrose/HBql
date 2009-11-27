@@ -25,6 +25,7 @@ import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class NumberCompare extends GenericCompare {
 
@@ -37,10 +38,11 @@ public class NumberCompare extends GenericCompare {
         return this.validateType(NumberValue.class);
     }
 
-    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Boolean getValue(final HConnectionImpl connection,
+                            final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final Object obj0 = this.getArg(0).getValue(object);
-        final Object obj1 = this.getArg(1).getValue(object);
+        final Object obj0 = this.getArg(0).getValue(connection, object);
+        final Object obj1 = this.getArg(1).getValue(connection, object);
 
         this.validateNumericArgTypes(obj0, obj1);
 

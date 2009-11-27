@@ -25,6 +25,7 @@ import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class StringIfThen extends GenericIfThen implements StringValue {
 
@@ -32,7 +33,8 @@ public class StringIfThen extends GenericIfThen implements StringValue {
         super(ExpressionType.STRINGIFTHEN, arg0, arg1, arg2);
     }
 
-    public String getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        return (String)super.getValue(object);
+    public String getValue(final HConnectionImpl connection,
+                           final Object object) throws HBqlException, ResultMissingColumnException {
+        return (String)super.getValue(connection, object);
     }
 }

@@ -24,6 +24,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 
 import java.util.Date;
@@ -34,7 +35,8 @@ public class DateColumn extends GenericColumn<DateValue> implements DateValue {
         super(attrib);
     }
 
-    public Long getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Long getValue(final HConnectionImpl connection,
+                         final Object object) throws HBqlException, ResultMissingColumnException {
 
         final Date val;
 

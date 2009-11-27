@@ -23,6 +23,7 @@ package org.apache.expreval.expr.stringpattern;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,9 +44,10 @@ public class LikeStmt extends GenericStringPatternStmt {
         return "LIKE";
     }
 
-    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Boolean getValue(final HConnectionImpl connection,
+                            final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final String val = (String)this.getArg(0).getValue(object);
+        final String val = (String)this.getArg(0).getValue(connection, object);
 
         if (val == null)
             throw new HBqlException("Null string for value in " + this.asString());
@@ -54,7 +56,7 @@ public class LikeStmt extends GenericStringPatternStmt {
 
         if (!patternConstant || this.getPattern() == null) {
 
-            final String pvalue = (String)this.getArg(1).getValue(object);
+            final String pvalue = (String)this.getArg(1).getValue(connection, object);
 
             if (pvalue == null)
                 throw new HBqlException("Null string for pattern in " + this.asString());

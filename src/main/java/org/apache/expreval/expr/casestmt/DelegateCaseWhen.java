@@ -28,6 +28,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class DelegateCaseWhen extends GenericCaseWhen {
 
@@ -60,7 +61,8 @@ public class DelegateCaseWhen extends GenericCaseWhen {
         return this;
     }
 
-    public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        return this.getTypedExpr().getValue(object);
+    public Object getValue(final HConnectionImpl connection,
+                           final Object object) throws HBqlException, ResultMissingColumnException {
+        return this.getTypedExpr().getValue(connection, object);
     }
 }

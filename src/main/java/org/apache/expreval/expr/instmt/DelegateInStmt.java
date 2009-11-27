@@ -29,6 +29,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.List;
 
@@ -72,7 +73,8 @@ public class DelegateInStmt extends GenericInStmt {
         return !this.isAConstant() ? this : this.getTypedExpr().getOptimizedValue();
     }
 
-    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
-        return this.getTypedExpr().getValue(object);
+    public Boolean getValue(final HConnectionImpl connection,
+                            final Object object) throws HBqlException, ResultMissingColumnException {
+        return this.getTypedExpr().getValue(connection, object);
     }
 }

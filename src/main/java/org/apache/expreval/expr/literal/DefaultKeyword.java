@@ -27,6 +27,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class DefaultKeyword implements GenericValue {
 
@@ -34,7 +35,8 @@ public class DefaultKeyword implements GenericValue {
 
     }
 
-    public Object getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Object getValue(final HConnectionImpl connection,
+                           final Object object) throws HBqlException, ResultMissingColumnException {
         return null;
     }
 
@@ -42,7 +44,8 @@ public class DefaultKeyword implements GenericValue {
         return null;
     }
 
-    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr, final boolean allowCollections) throws HBqlException {
+    public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
+                                                       final boolean allowCollections) throws HBqlException {
         return DefaultKeyword.class;
     }
 
@@ -62,7 +65,8 @@ public class DefaultKeyword implements GenericValue {
         throw new InternalErrorException("Not applicable");
     }
 
-    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException {
+    public void applyResultToAggregateValue(final AggregateValue aggregateValue,
+                                            final Result result) throws HBqlException {
         throw new InternalErrorException("Not applicable");
     }
 

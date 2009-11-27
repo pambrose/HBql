@@ -21,8 +21,9 @@
 package org.apache.expreval.expr.node;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public interface LongValue extends NumberValue {
 
-    Long getValue(final Object object) throws HBqlException;
+    Long getValue(HConnectionImpl connection, Object object) throws HBqlException;
 }

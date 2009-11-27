@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
@@ -49,7 +50,7 @@ public abstract class ResultAccessor implements Serializable {
         return (HBaseTableMapping)this.getMapping();
     }
 
-    public abstract Object newObject(final StatementContext statementContext,
+    public abstract Object newObject(final HConnectionImpl connection, final StatementContext statementContext,
                                      final List<SelectElement> selectElementList,
                                      final int maxVersions,
                                      final Result result) throws HBqlException;

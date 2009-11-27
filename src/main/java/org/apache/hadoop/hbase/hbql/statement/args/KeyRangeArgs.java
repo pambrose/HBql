@@ -69,11 +69,11 @@ public class KeyRangeArgs implements Serializable {
 
         // This is an object because it might be a collection in the case of a param
         private Object getFirstArg(final boolean allowCollections) throws HBqlException {
-            return this.evaluateConstant(0, allowCollections, null);
+            return this.evaluateConstant(null, 0, allowCollections, null);
         }
 
         private String getSecondArg() throws HBqlException {
-            return (String)this.evaluateConstant(1, false, null);
+            return (String)this.evaluateConstant(null, 1, false, null);
         }
 
         private KeyRangeArgs.Type getType() {
@@ -147,7 +147,7 @@ public class KeyRangeArgs implements Serializable {
             if (TypeSupport.isACollection(objval)) {
                 for (final GenericValue val : (Collection<GenericValue>)objval) {
                     try {
-                        final String lower = (String)val.getValue(null);
+                        final String lower = (String)val.getValue(null, null);
                         retval.add(this.newGet(withArgs, columnAttribSet, lower));
                     }
                     catch (ResultMissingColumnException e) {

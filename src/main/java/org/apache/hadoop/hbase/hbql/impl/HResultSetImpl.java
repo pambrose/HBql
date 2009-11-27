@@ -28,7 +28,6 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
@@ -60,8 +59,8 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         this.getQuery().getSelectStatement().determineIfAggregateQuery();
     }
 
-    private HConnection getConnection() {
-        return this.getQuery().getHConnection();
+    private HConnectionImpl getHConnectionImpl() {
+        return this.getQuery().getHConnectionImpl();
     }
 
     private Query<T> getQuery() {
@@ -124,7 +123,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         try {
             return new ResultsIterator<T>(this.getWithArgs().getLimit()) {
 
-                private HTable htable = getConnection().newHTable(getSelectStmt().getMapping().getTableName());
+                private HTable htable = getHConnectionImpl().newHTable(getSelectStmt().getMapping().getTableName());
                 private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
                 private final Iterator<RowRequest> rowRequestIterator = getRowRequestList().iterator();
 
@@ -196,7 +195,8 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                             final Result result = this.getCurrentResultIterator().next();
 
                             try {
-                                if (getClientExpressionTree() != null && !getClientExpressionTree().evaluate(result))
+                                if (getClientExpressionTree() != null
+                                    && !getClientExpressionTree().evaluate(getHConnectionImpl(), result))
                                     continue;
                             }
                             catch (ResultMissingColumnException e) {
@@ -209,7 +209,8 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                                 this.getAggregateRecord().applyValues(result);
                             }
                             else {
-                                final T val = (T)resultAccessor.newObject(getSelectStmt(),
+                                final T val = (T)resultAccessor.newObject(getHConnectionImpl(),
+                                                                          getSelectStmt(),
                                                                           getSelectStmt().getSelectElementList(),
                                                                           this.getMaxVersions(),
                                                                           result);
@@ -298,3 +299,5 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         };
     }
 }
+
+

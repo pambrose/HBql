@@ -24,6 +24,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class StringBetweenStmt extends GenericBetweenStmt {
 
@@ -34,11 +35,12 @@ public class StringBetweenStmt extends GenericBetweenStmt {
         super(ExpressionType.STRINGBETWEEN, not, arg0, arg1, arg2);
     }
 
-    public Boolean getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Boolean getValue(final HConnectionImpl connection,
+                            final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final String strval = (String)this.getArg(0).getValue(object);
-        final boolean retval = strval.compareTo((String)this.getArg(1).getValue(object)) >= 0
-                               && strval.compareTo((String)this.getArg(2).getValue(object)) <= 0;
+        final String strval = (String)this.getArg(0).getValue(connection, object);
+        final boolean retval = strval.compareTo((String)this.getArg(1).getValue(connection, object)) >= 0
+                               && strval.compareTo((String)this.getArg(2).getValue(connection, object)) <= 0;
 
         return (this.isNot()) ? !retval : retval;
     }

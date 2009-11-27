@@ -26,6 +26,7 @@ import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class DateCalculation extends GenericCalculation implements DateValue {
 
@@ -33,10 +34,11 @@ public class DateCalculation extends GenericCalculation implements DateValue {
         super(ExpressionType.DATECALCULATION, arg0, operator, arg1);
     }
 
-    public Long getValue(final Object object) throws HBqlException, ResultMissingColumnException {
+    public Long getValue(final HConnectionImpl connection,
+                         final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final long val1 = (Long)this.getArg(0).getValue(object);
-        final long val2 = (Long)this.getArg(1).getValue(object);
+        final long val1 = (Long)this.getArg(0).getValue(connection, object);
+        final long val2 = (Long)this.getArg(1).getValue(connection, object);
 
         switch (this.getOperator()) {
             case PLUS:

@@ -36,7 +36,7 @@ public class NumberInStmt extends GenericInStmt {
 
     protected boolean evaluateInList(final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final Object obj0 = this.getArg(0).getValue(object);
+        final Object obj0 = this.getArg(0).getValue(null, object);
 
         this.validateNumericArgTypes(obj0);
 
@@ -47,10 +47,10 @@ public class NumberInStmt extends GenericInStmt {
             for (final GenericValue obj : this.getInList()) {
 
                 // Check if the value returned is a collection
-                final Object objval = obj.getValue(object);
+                final Object objval = obj.getValue(null, object);
                 if (TypeSupport.isACollection(objval)) {
                     for (final GenericValue genericValue : (Collection<GenericValue>)objval) {
-                        if (val0 == ((Number)genericValue.getValue(object)).longValue())
+                        if (val0 == ((Number)genericValue.getValue(null, object)).longValue())
                             return true;
                     }
                 }
@@ -68,10 +68,10 @@ public class NumberInStmt extends GenericInStmt {
             for (final GenericValue obj : this.getInList()) {
 
                 // Check if the value returned is a collection
-                final Object objval = obj.getValue(object);
+                final Object objval = obj.getValue(null, object);
                 if (TypeSupport.isACollection(objval)) {
                     for (final GenericValue genericValue : (Collection<GenericValue>)objval) {
-                        if (val0 == ((Number)genericValue.getValue(object)).doubleValue())
+                        if (val0 == ((Number)genericValue.getValue(null, object)).doubleValue())
                             return true;
                     }
                 }

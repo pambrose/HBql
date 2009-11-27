@@ -26,6 +26,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public abstract class GenericLiteral<T> implements GenericValue {
 
@@ -35,7 +36,7 @@ public abstract class GenericLiteral<T> implements GenericValue {
         this.value = value;
     }
 
-    public T getValue(final Object object) {
+    public T getValue(final HConnectionImpl connection, final Object object) {
         return this.value;
     }
 
@@ -83,6 +84,6 @@ public abstract class GenericLiteral<T> implements GenericValue {
     protected abstract Class<? extends GenericValue> getReturnType();
 
     public String asString() {
-        return "" + this.getValue(null);
+        return "" + this.getValue(null, null);
     }
 }

@@ -110,8 +110,8 @@ public class InsertSingleRow extends InsertValueSource {
         return this.getValueList().get(i).isDefaultKeyword();
     }
 
-    public Object getValue(final int i) throws HBqlException {
-        return this.getValueList().get(i).evaluateConstant(0, false, null);
+    public Object getValue(final HConnectionImpl connection, final int i) throws HBqlException {
+        return this.getValueList().get(i).evaluateConstant(connection, 0, false, null);
     }
 
     public List<Class<? extends GenericValue>> getValuesTypeList() throws HBqlException {

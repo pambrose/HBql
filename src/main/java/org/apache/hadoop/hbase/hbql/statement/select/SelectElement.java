@@ -25,6 +25,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
@@ -40,7 +41,7 @@ public interface SelectElement extends Serializable {
 
     void assignAsNamesForExpressions(SelectStatement selectStatement);
 
-    void assignSelectValue(Object newobj, int maxVerions, Result result) throws HBqlException;
+    void assignSelectValue(HConnectionImpl connection, Object newobj, int maxVerions, Result result) throws HBqlException;
 
     int setParameter(String name, Object val) throws HBqlException;
 

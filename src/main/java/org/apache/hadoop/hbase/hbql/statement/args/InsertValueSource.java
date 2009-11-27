@@ -23,6 +23,7 @@ package org.apache.hadoop.hbase.hbql.statement.args;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.InsertStatement;
 
 import java.io.Serializable;
@@ -50,7 +51,7 @@ public abstract class InsertValueSource implements Serializable {
 
     public abstract String asString();
 
-    public abstract Object getValue(int i) throws HBqlException;
+    public abstract Object getValue(final HConnectionImpl connection, int i) throws HBqlException;
 
     public abstract boolean isDefaultValue(int i) throws HBqlException;
 

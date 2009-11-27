@@ -27,6 +27,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
@@ -182,7 +183,8 @@ public class FamilySelectElement implements SelectElement {
         // No op;
     }
 
-    public void assignSelectValue(final Object obj,
+    public void assignSelectValue(final HConnectionImpl connection,
+                                  final Object obj,
                                   final int maxVersions,
                                   final Result result) throws HBqlException {
 

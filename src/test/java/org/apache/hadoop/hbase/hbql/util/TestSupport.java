@@ -221,7 +221,7 @@ public class TestSupport {
     private static boolean evaluateExprression(final Object recordObj, final ExpressionTree tree) throws HBqlException {
         System.out.println("Evaluating: " + tree.asString());
         try {
-            return tree.evaluate(recordObj);
+            return tree.evaluate(null, recordObj);
         }
         catch (ResultMissingColumnException e) {
             throw new InternalErrorException();

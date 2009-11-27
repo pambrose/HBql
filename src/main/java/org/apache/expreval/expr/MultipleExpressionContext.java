@@ -31,6 +31,7 @@ import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.hbql.mapping.HRecordResultAccessor;
@@ -136,20 +137,22 @@ public abstract class MultipleExpressionContext implements Serializable {
         return this.getExpressionList().get(i);
     }
 
-    public Object evaluate(final int i,
+    public Object evaluate(final HConnectionImpl connection,
+                           final int i,
                            final boolean allowColumns,
                            final boolean allowCollections,
                            final Object object) throws HBqlException, ResultMissingColumnException {
         this.validateTypes(allowColumns, allowCollections);
         this.optimize();
-        return this.getGenericValue(i).getValue(object);
+        return this.getGenericValue(i).getValue(connection, object);
     }
 
-    public Object evaluateConstant(final int i,
+    public Object evaluateConstant(final HConnectionImpl connection,
+                                   final int i,
                                    final boolean allowCollections,
                                    final Object object) throws HBqlException {
         try {
-            return this.evaluate(i, false, allowCollections, object);
+            return this.evaluate(connection, i, false, allowCollections, object);
         }
         catch (ResultMissingColumnException e) {
             throw new InternalErrorException();

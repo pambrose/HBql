@@ -50,6 +50,6 @@ public class DateLiteral extends GenericLiteral<Long> implements DateValue {
     }
 
     public String asString() {
-        return "\"" + String.format("%1$ta %1$tb %1$td %1$tT %1$tZ %1$tY", new Date(this.getValue(null))) + "\"";
+        return "\"" + String.format("%1$ta %1$tb %1$td %1$tT %1$tZ %1$tY", new Date(this.getValue(null, null))) + "\"";
     }
 }
