@@ -129,7 +129,13 @@ public class BooleanFunction extends Function implements BooleanValue {
                     final String tableName = (String)this.getArg(0).getValue(null);
                     final String familyName = (String)this.getArg(1).getValue(null);
                     final HConnectionImpl conn = (HConnectionImpl)object;
-                    return conn.familyExists(tableName, familyName);
+                    try {
+                        return conn.familyExists(tableName, familyName);
+                    }
+                    catch (HBqlException e) {
+                        // return false if table doesn't exist
+                        return false;
+                    }
                 }
             }
 

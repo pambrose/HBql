@@ -10,7 +10,7 @@ CREATE TABLE
 
 ---------------------------
 
-CREATE TABLE table_name '(' family_description [, ...] ')'
+CREATE TABLE table_name '(' family_description [, ...] ')'  [ IF boolean_condition ]
 
 family_description:
     family_name '(' [ family_property [, ...] ] ')'

@@ -70,6 +70,14 @@ Boolean Functions
 *--+--+--+--+
 | eval(string) | boolean  | Returns the evaluation of string | eval('34 = 34') | true  |
 *--+--+--+--+
+| mappingexists(string) | boolean  | Returns true if mapping exists | mappingexists('foo') | true if mapping foo exists  |
+*--+--+--+--+
+| tableexists(string) | boolean  | Returns true if table exists | tableexists('foo') | true if table foo exists |
+*--+--+--+--+
+| tableenabled(string) | boolean  | Returns true if table is enabled | tableenabled('foo') | true if table foo is enabled |
+*--+--+--+--+
+| familyexists(string, string) | boolean  | Returns true if table has family | familyexists('foo', 'f1') | true if table foo has family f1 |
+*--+--+--+--+
 
 Date Functions
 

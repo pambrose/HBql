@@ -9,7 +9,7 @@ DROP MAPPING
 *Syntax
 
 ---------------------------
-DROP MAPPING mapping_name    
+DROP MAPPING mapping_name [ IF boolean_condition ]  
 ---------------------------
 
 *Description

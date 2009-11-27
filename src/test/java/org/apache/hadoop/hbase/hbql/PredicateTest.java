@@ -52,9 +52,25 @@ public class PredicateTest extends TestSupport {
         results = connection.execute("CREATE TEMP MAPPING nosuchmapping IF tableexists('nosuchtable')");
         assertTrue(!results.getPredicate());
 
-        //results = connection.execute("ALTER TABLE TABLE nosuchtable DROP FAMILY foo IF tableexists('nosuchtable')");
         results = connection.execute("ALTER TABLE nosuchtable DROP FAMILY foo IF tableexists('nosuchtable')");
-        // results = connection.execute("ALTER TABLE TABLE foggo DROP FAMILY foo ");
         assertTrue(!results.getPredicate());
+
+        results = connection.execute("DISABLE TABLE testtable IF tableexists('testtable')");
+        results = connection.execute("DROP TABLE testtable IF tableexists('testtable')");
+
+        results = connection.execute("CREATE TABLE testtable (f1()) IF NOT tableexists('testtable')");
+
+        results = connection.execute("ALTER TABLE testtable ADD FAMILY f1() IF not familyexists('testtable', 'f1')");
+        assertTrue(!results.getPredicate());
+
+        results = connection.execute("DISABLE TABLE testtable");
+
+        results = connection.execute("ALTER TABLE testtable ADD FAMILY f2() IF not familyexists('testtable', 'f2')");
+        assertTrue(results.getPredicate());
+
+        results = connection.execute("ALTER TABLE testtable ALTER FAMILY f1 TO f3() IF not familyexists('testtable', 'f3')");
+        assertTrue(results.getPredicate());
+
+        results = connection.execute("ENABLE TABLE testtable");
     }
 }
