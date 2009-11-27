@@ -37,11 +37,17 @@ import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
 import org.apache.yaoql.impl.ReflectionResultAccessor;
+import org.junit.Test;
 
 import java.util.Date;
 import java.util.List;
 
 public class TestSupport {
+
+    @Test
+    public void something() throws HBqlException {
+        assertTrue(1 == 1);
+    }
 
     public final static int keywidth = 10;
 
