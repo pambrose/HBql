@@ -28,6 +28,8 @@ Release Notes
 
     0.9.9-alpha -- 11/26/09
 
+        * Added predicates to statements (with functions tableexists(), mappingexists(), tableenabled(), and familyexists()).
+
         * Added {{{statements/alter-table.html}ALTER TABLE}} statement.
 
     0.9.8-alpha -- 11/23/09
