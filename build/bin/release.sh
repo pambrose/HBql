@@ -23,17 +23,21 @@ cp -r ${HBQL}/src/main ${RELEASE}/src
 cp -r ${HBQL}/src/test ${RELEASE}/src
 rm -rf ${RELEASE}/src/main/antlr3/org/apache/hadoop/hbase/hbql/antlr/output
 
-
 mvn antlr3:antlr
 mvn compiler:compile
 mvn javadoc:javadoc
 mvn site:site
+
+rm -rf ${SITE}/testapidocs
+rm -rf ${SITE}/xref-test
 
 cd ${HBQL}/target/classes
 jar cf ${RELEASE}/${DIST}.jar *
 
 mkdir ${SITE}/downloads
 cp -r ${SITE}/* ${RELEASE}/docs/
+
+rm -rf ${RELEASE}/docs/cobertura
 
 cd ${SITE}
 zip -q -r ${SITE}/downloads/${DOCS}.zip apidocs
@@ -44,4 +48,4 @@ tar cf ${SITE}/downloads/${DIST}.tar ${DIST}
 gzip --quiet ${SITE}/downloads/${DIST}.tar
 
 cd ${HBQL}
-mvn site-deploy
+mvn site:deploy

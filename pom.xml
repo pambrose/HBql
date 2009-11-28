@@ -319,19 +319,19 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
                 <configuration>
                     <linkJavadoc>true</linkJavadoc>
-                    <javadocDir>../apidocs</javadocDir>
+                    <javadocDir>target/site/apidocs</javadocDir>
                 </configuration>
             </plugin>
 
             <!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+            </plugin>
+
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-checkstyle-plugin</artifactId>
@@ -358,11 +358,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>dashboard-maven-plugin</artifactId>
             </plugin>
-
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-jxr-plugin</artifactId>
-          </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
