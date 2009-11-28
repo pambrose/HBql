@@ -56,7 +56,7 @@ public class DelegateCaseElse extends GenericCaseElse {
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {
-        this.optimizeArgs();
+        this.optimizeAllArgs();
         return !this.isAConstant() ? this : this.getTypedExpr().getOptimizedValue();
     }
 

@@ -72,7 +72,7 @@ public class DelegateFunction extends DelegateStmt<Function> {
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {
-        this.optimizeArgs();
+        this.optimizeAllArgs();
         return !this.isAConstant() ? this : this.getTypedExpr().getOptimizedValue();
     }
 

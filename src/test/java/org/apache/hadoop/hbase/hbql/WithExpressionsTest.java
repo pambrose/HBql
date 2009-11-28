@@ -31,6 +31,7 @@ public class WithExpressionsTest extends TestSupport {
         assertValidInput("WITH KEYS 'aaa' TO 'bbb'");
         assertValidInput("WITH KEYS 'sss' TO LAST");
         assertValidInput("WITH KEYS 'fff' TO 'ggg', 'sss'TO LAST, 'sssd' TO LAST");
+        assertValidInput("WITH KEYS zzz TO 'bbb'");
     }
 
     @Test

@@ -58,7 +58,7 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {
-        this.optimizeArgs();
+        this.optimizeAllArgs();
         return !this.isAConstant() ? this : this.getTypedExpr().getOptimizedValue();
     }
 

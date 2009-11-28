@@ -53,9 +53,10 @@ public abstract class GenericExpression implements GenericValue {
     private boolean useFloat = false;
     private boolean useDouble = false;
 
-    private MultipleExpressionContext expressionContext = null;
     private final ExpressionType type;
     private final List<GenericValue> exprList = Lists.newArrayList();
+    private MultipleExpressionContext expressionContext = null;
+    private volatile boolean allArgsOptimized = false;
 
     protected GenericExpression(final ExpressionType type, final GenericValue... exprs) {
         this(type, Arrays.asList(exprs));
@@ -189,10 +190,24 @@ public abstract class GenericExpression implements GenericValue {
         return this.expressionContext;
     }
 
-    public void optimizeArgs() throws HBqlException {
-        // TODO May want to keep track if this has already been called
-        for (int i = 0; i < this.getArgList().size(); i++)
-            this.setArg(i, this.getArg(i).getOptimizedValue());
+    private boolean areAllArgsOptimized() {
+        return allArgsOptimized;
+    }
+
+    protected void optimizeAllArgs() throws HBqlException {
+
+        if (this.areAllArgsOptimized())
+            return;
+
+        synchronized (this) {
+            if (this.areAllArgsOptimized())
+                return;
+
+            for (int i = 0; i < this.getArgList().size(); i++)
+                this.setArg(i, this.getArg(i).getOptimizedValue());
+
+            this.allArgsOptimized = true;
+        }
     }
 
     public GenericValue getArg(final int i) {
@@ -239,7 +254,7 @@ public abstract class GenericExpression implements GenericValue {
 
     public GenericValue getOptimizedValue() throws HBqlException {
 
-        this.optimizeArgs();
+        this.optimizeAllArgs();
 
         if (!this.isAConstant())
             return this;

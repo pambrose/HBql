@@ -57,7 +57,7 @@ public class DelegateCaseWhen extends GenericCaseWhen {
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {
-        this.optimizeArgs();
+        this.optimizeAllArgs();
         return this;
     }
 

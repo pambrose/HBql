@@ -45,9 +45,9 @@ import java.util.Map;
 
 public abstract class MultipleExpressionContext implements Serializable {
 
-    private boolean inNeedOfTypeValidation = true;
-    private boolean inNeedOfOptimization = true;
-    private boolean inNeedOfSettingContext = true;
+    private boolean needsTypeValidation = true;
+    private boolean needsOptimization = true;
+    private boolean needsContextSetting = true;
 
     private final List<GenericColumn> columnsUsedInExpr = Lists.newArrayList();
     private final List<ColumnAttrib> attribsUsedInExpr = Lists.newArrayList();
@@ -120,7 +120,7 @@ public abstract class MultipleExpressionContext implements Serializable {
     }
 
     private void setContext() {
-        if (this.isInNeedOfSettingContext()) {
+        if (this.needsContextSetting()) {
             try {
                 for (final GenericValue val : this.getExpressionList())
                     val.setExpressionContext(this);
@@ -129,7 +129,7 @@ public abstract class MultipleExpressionContext implements Serializable {
                 //  TODO This needs addressing
                 e.printStackTrace();
             }
-            this.setInNeedOfSettingContext(false);
+            this.setNeedsContextSetting(false);
         }
     }
 
@@ -161,8 +161,8 @@ public abstract class MultipleExpressionContext implements Serializable {
 
     public void reset() {
 
-        this.setInNeedOfTypeValidation(true);
-        this.setInNeedOfOptimization(true);
+        this.setNeedsTypeValidation(true);
+        this.setNeedsOptimization(true);
 
         for (final GenericValue val : this.getExpressionList())
             val.reset();
@@ -173,16 +173,16 @@ public abstract class MultipleExpressionContext implements Serializable {
     }
 
     private void optimize() throws HBqlException {
-        if (this.isInNeedOfOptimization()) {
+        if (this.needsOptimization()) {
             for (int i = 0; i < this.getExpressionList().size(); i++)
                 this.setGenericValue(i, this.getGenericValue(i).getOptimizedValue());
-            this.setInNeedOfOptimization(false);
+            this.setNeedsOptimization(false);
         }
     }
 
     public void validateTypes(final boolean allowColumns, final boolean allowCollections) throws HBqlException {
 
-        if (this.isInNeedOfTypeValidation()) {
+        if (this.needsTypeValidation()) {
 
             if (!allowColumns && this.getColumnsUsedInExpression().size() > 0)
                 throw new TypeException("Invalid column reference"
@@ -226,7 +226,7 @@ public abstract class MultipleExpressionContext implements Serializable {
                 }
             }
 
-            this.setInNeedOfTypeValidation(false);
+            this.setNeedsTypeValidation(false);
         }
     }
 
@@ -264,7 +264,7 @@ public abstract class MultipleExpressionContext implements Serializable {
         for (final NamedParameter param : paramList)
             param.setParameter(val);
 
-        this.setInNeedOfTypeValidation(true);
+        this.setNeedsTypeValidation(true);
 
         return paramList.size();
     }
@@ -274,27 +274,27 @@ public abstract class MultipleExpressionContext implements Serializable {
         this.getAttribsUsedInExpr().add(column.getColumnAttrib());
     }
 
-    private boolean isInNeedOfTypeValidation() {
-        return inNeedOfTypeValidation;
+    private boolean needsTypeValidation() {
+        return needsTypeValidation;
     }
 
-    private void setInNeedOfTypeValidation(final boolean inNeedOfTypeValidation) {
-        this.inNeedOfTypeValidation = inNeedOfTypeValidation;
+    private void setNeedsTypeValidation(final boolean inNeedOfTypeValidation) {
+        this.needsTypeValidation = inNeedOfTypeValidation;
     }
 
-    private boolean isInNeedOfOptimization() {
-        return inNeedOfOptimization;
+    private boolean needsOptimization() {
+        return needsOptimization;
     }
 
-    private void setInNeedOfOptimization(final boolean inNeedOfOptimization) {
-        this.inNeedOfOptimization = inNeedOfOptimization;
+    private void setNeedsOptimization(final boolean inNeedOfOptimization) {
+        this.needsOptimization = inNeedOfOptimization;
     }
 
-    private boolean isInNeedOfSettingContext() {
-        return inNeedOfSettingContext;
+    private boolean needsContextSetting() {
+        return needsContextSetting;
     }
 
-    private void setInNeedOfSettingContext(final boolean inNeedOfSettingContext) {
-        this.inNeedOfSettingContext = inNeedOfSettingContext;
+    private void setNeedsContextSetting(final boolean needsContextSetting) {
+        this.needsContextSetting = needsContextSetting;
     }
 }

@@ -222,7 +222,7 @@ public abstract class Function extends GenericExpression {
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {
-        this.optimizeArgs();
+        this.optimizeAllArgs();
         if (!this.isAConstant())
             return this;
         else

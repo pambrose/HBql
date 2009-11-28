@@ -44,7 +44,7 @@ public class BooleanNot extends GenericExpression implements BooleanValue {
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {
-        this.optimizeArgs();
+        this.optimizeAllArgs();
         if (!this.isAConstant())
             return this;
         else

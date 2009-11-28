@@ -44,7 +44,7 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {
-        this.optimizeArgs();
+        this.optimizeAllArgs();
         if (!this.isAConstant())
             return this;
         else
