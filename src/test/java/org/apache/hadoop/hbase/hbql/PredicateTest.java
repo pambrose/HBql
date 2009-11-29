@@ -25,6 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -76,15 +77,30 @@ public class PredicateTest extends TestSupport {
     }
 
     @Test
-    public void testInvalidPredicate() throws HBqlException {
+    public void testInvalidPredicate1() throws HBqlException {
 
         HBqlException hBqlException = null;
         try {
             connection.execute("DROP TABLE nosuchtable IF tableexists(nosuchtable)");
         }
         catch (HBqlException e) {
+            e.printStackTrace();
             hBqlException = e;
         }
         assertTrue(hBqlException != null && hBqlException instanceof ColumnNotAllowedException);
+    }
+
+    @Test
+    public void testInvalidPredicate2() throws HBqlException {
+
+        HBqlException hBqlException = null;
+        try {
+            connection.execute("DROP TABLE nosuchtable IF tableexists(3)");
+        }
+        catch (HBqlException e) {
+            e.printStackTrace();
+            hBqlException = e;
+        }
+        assertTrue(hBqlException != null && hBqlException instanceof TypeException);
     }
 }

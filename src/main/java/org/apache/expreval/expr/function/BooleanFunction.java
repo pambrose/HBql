@@ -43,6 +43,8 @@ public class BooleanFunction extends Function implements BooleanValue {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
+        super.validateTypes(parentExpr, allowCollections);
+
         switch (this.getFunctionType()) {
 
             case DEFINEDINROW: {

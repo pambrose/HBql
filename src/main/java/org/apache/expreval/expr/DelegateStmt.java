@@ -42,7 +42,7 @@ public abstract class DelegateStmt<T extends GenericExpression> extends GenericE
     }
 
     protected T getTypedExpr() {
-        return typedExpr;
+        return this.typedExpr;
     }
 
     protected void setTypedExpr(final T typedExpr) throws HBqlException {
