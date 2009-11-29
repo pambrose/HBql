@@ -42,10 +42,14 @@ public class SimpleExpressionContext extends MultipleExpressionContext {
         return this.getGenericValue().isAConstant();
     }
 
+    public void validate() throws HBqlException {
+        this.validateTypes(true, false);
+    }
+
     public Object getValue(final HConnectionImpl connection) throws HBqlException {
         try {
             this.setStatementContext(new NonStatement(null, null));
-            return this.evaluate(connection, 0, true, false, connection);
+            return this.evaluate(connection, 0, this.allowColumns(), false, connection);
         }
         catch (ResultMissingColumnException e) {
             throw new InternalErrorException();
@@ -57,6 +61,10 @@ public class SimpleExpressionContext extends MultipleExpressionContext {
     }
 
     public boolean useResultData() {
+        return true;
+    }
+
+    public boolean allowColumns() {
         return true;
     }
 }

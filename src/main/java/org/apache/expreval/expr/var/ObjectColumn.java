@@ -36,7 +36,7 @@ public class ObjectColumn extends GenericColumn<NumberValue> implements ObjectVa
 
     public Object getValue(final HConnectionImpl connection,
                            final Object object) throws HBqlException, ResultMissingColumnException {
-        if (this.getExprContext().useResultData())
+        if (this.getExpressionContext().useResultData())
             return this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             return this.getColumnAttrib().getCurrentValue(object);

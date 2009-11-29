@@ -273,10 +273,12 @@ public class TestSupport {
             final HBqlParser parser = ParserUtil.newHBqlParser(str);
             final ExpressionTree expressionTree = parser.descWhereExpr();
 
-            if (expressionTree.getStatementContext() == null) {
-                final StatementContext statementContext = (sc == null) ? new NonStatement(null, null) : sc;
-                expressionTree.setStatementContext(statementContext);
-            }
+            expressionTree.setEmbeddedMapping();
+
+            if (expressionTree.getStatementContext() == null)
+                expressionTree.setStatementContext((sc == null) ? new NonStatement(null, null) : sc);
+
+            expressionTree.validate();
 
             return expressionTree;
         }
@@ -298,9 +300,12 @@ public class TestSupport {
         try {
             final WithArgs args = ParserUtil.parseWithClause(expr);
             System.out.println("Evaluating: " + args.asString());
+            args.setStatementContext(new NonStatement(null, null));
+            args.validate();
             return true;
         }
         catch (HBqlException e) {
+            e.printStackTrace();
             return false;
         }
     }

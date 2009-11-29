@@ -33,6 +33,9 @@ public class ExpressionTree extends MultipleExpressionContext {
 
     private static FunctionTypeSignature exprSignature = new FunctionTypeSignature(BooleanValue.class, BooleanValue.class);
     private boolean useResultData = false;
+    private boolean allowColumns = true;
+
+    private Mapping embeddedMapping = null;
 
     private ExpressionTree(final GenericValue rootValue) {
         super(exprSignature, rootValue);
@@ -40,14 +43,24 @@ public class ExpressionTree extends MultipleExpressionContext {
 
     public static ExpressionTree newExpressionTree(final Mapping mapping, final GenericValue booleanValue) {
         final ExpressionTree tree = new ExpressionTree(booleanValue == null ? new BooleanLiteral(true) : booleanValue);
-        if (mapping != null)
-            tree.setStatementContext(new NonStatement(mapping, null));
+        // This is just stashed until validate() is called.  This avoids throwing HBqlException in parser
+        tree.embeddedMapping = mapping;
         return tree;
+    }
+
+    public void validate() throws HBqlException {
+    }
+
+    // This is not done in newExpressionTree() because that is called from parser
+    public void setEmbeddedMapping() throws HBqlException {
+        if (this.embeddedMapping != null)
+            this.setStatementContext(new NonStatement(this.embeddedMapping, null));
     }
 
     public Boolean evaluate(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
-        return (Boolean)this.evaluate(connection, 0, true, false, object);
+
+        return (Boolean)this.evaluate(connection, 0, this.allowColumns(), false, object);
     }
 
     private GenericValue getGenericValue() {
@@ -64,5 +77,13 @@ public class ExpressionTree extends MultipleExpressionContext {
 
     public boolean useResultData() {
         return this.useResultData;
+    }
+
+    public boolean allowColumns() {
+        return this.allowColumns;
+    }
+
+    public void setAllowColumns(final boolean allowColumns) {
+        this.allowColumns = allowColumns;
     }
 }

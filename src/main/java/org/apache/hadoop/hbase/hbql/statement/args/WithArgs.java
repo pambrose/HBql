@@ -60,16 +60,19 @@ public class WithArgs implements Serializable {
         if (this.getKeyRangeArgs() == null)
             this.setKeyRangeArgs(new KeyRangeArgs());    // Default to ALL records
 
-        this.getKeyRangeArgs().setStatementContext(null);
+        this.getKeyRangeArgs().setStatementContext(this.getStatementContext());
 
-        if (this.getTimestampArgs() != null)
-            this.getTimestampArgs().setStatementContext(null);
+        if (this.getTimestampArgs() != null) {
+            this.getTimestampArgs().setStatementContext(this.getStatementContext());
+        }
 
-        if (this.getVersionArgs() != null)
-            this.getVersionArgs().setStatementContext(null);
+        if (this.getVersionArgs() != null) {
+            this.getVersionArgs().setStatementContext(this.getStatementContext());
+        }
 
-        if (this.getLimitArgs() != null)
-            this.getLimitArgs().setStatementContext(null);
+        if (this.getLimitArgs() != null) {
+            this.getLimitArgs().setStatementContext(this.getStatementContext());
+        }
 
         if (this.getServerExpressionTree() != null) {
             this.getServerExpressionTree().setStatementContext(this.getStatementContext());
@@ -81,6 +84,30 @@ public class WithArgs implements Serializable {
             this.getClientExpressionTree().setUseResultData(true);
         }
     }
+
+    public void validate() throws HBqlException {
+
+        this.validateWithArgs();
+
+        if (this.getKeyRangeArgs() != null)
+            this.getKeyRangeArgs().validate();
+
+        if (this.getTimestampArgs() != null)
+            this.getTimestampArgs().validate();
+
+        if (this.getVersionArgs() != null)
+            this.getVersionArgs().validate();
+
+        if (this.getLimitArgs() != null)
+            this.getLimitArgs().validate();
+
+        if (this.getServerExpressionTree() != null)
+            this.getServerExpressionTree().validate();
+
+        if (this.getClientExpressionTree() != null)
+            this.getClientExpressionTree().validate();
+    }
+
 
     private void validateWithArgs() throws HBqlException {
         if (this.multipleSetValues.size() > 0) {

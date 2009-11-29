@@ -103,6 +103,8 @@ public class FamilyDefinition {
 
         for (final FamilyProperty familyProperty : this.getFamilyPropertyList()) {
 
+            familyProperty.validate();
+
             switch (familyProperty.getPropertyType()) {
 
                 case BLOCKCACHE:

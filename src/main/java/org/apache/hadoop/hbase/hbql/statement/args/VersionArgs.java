@@ -27,10 +27,10 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.io.IOException;
 
-public class VersionArgs extends SelectArgs {
+public class VersionArgs extends SelectStatementArgs {
 
     public VersionArgs(final GenericValue val) {
-        super(SelectArgs.Type.VERSION, val);
+        super(SelectStatementArgs.Type.VERSION, val);
     }
 
     private int getValue() throws HBqlException {

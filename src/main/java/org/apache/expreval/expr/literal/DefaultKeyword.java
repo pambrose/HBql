@@ -21,7 +21,6 @@
 package org.apache.expreval.expr.literal;
 
 import org.apache.expreval.client.InternalErrorException;
-import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.client.Result;
@@ -31,21 +30,21 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class DefaultKeyword implements GenericValue {
 
-    public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
+    public void setExpressionContext(final MultipleExpressionContext context) {
 
     }
 
     public Object getValue(final HConnectionImpl connection,
-                           final Object object) throws HBqlException, ResultMissingColumnException {
+                           final Object object) {
         return null;
     }
 
-    public GenericValue getOptimizedValue() throws HBqlException {
+    public GenericValue getOptimizedValue() {
         return null;
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
-                                                       final boolean allowCollections) throws HBqlException {
+                                                       final boolean allowCollections) {
         return DefaultKeyword.class;
     }
 

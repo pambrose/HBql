@@ -72,7 +72,8 @@ public class TableTest extends TestSupport {
             connection.dropTable(tableName);
         }
         assertFalse(connection.tableExists(tableName));
-        connection.execute("CREATE TABLE " + tableName + " (family1 ("
+        connection.execute("CREATE TABLE " + tableName
+                           + " (family1 ("
                            + "MAX_VERSIONS:  12, "
                            + "BLOOM_FILTER:  TRUE, "
                            + "BLOCK_SIZE: 123, "

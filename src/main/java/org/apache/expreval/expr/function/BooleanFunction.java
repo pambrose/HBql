@@ -22,14 +22,12 @@ package org.apache.expreval.expr.function;
 
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
@@ -37,7 +35,6 @@ import java.util.List;
 
 public class BooleanFunction extends Function implements BooleanValue {
 
-    private Mapping mapping = null;
 
     public BooleanFunction(final FunctionType functionType, final List<GenericValue> exprs) {
         super(functionType, exprs);
@@ -56,11 +53,6 @@ public class BooleanFunction extends Function implements BooleanValue {
 
         return BooleanValue.class;
         //return super.validateTypes(parentExpr, allowCollections);
-    }
-
-    public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
-        super.setExpressionContext(context);
-        this.mapping = context.getHBaseTableMapping();
     }
 
     public Boolean getValue(final HConnectionImpl connection,

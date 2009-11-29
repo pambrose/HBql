@@ -145,6 +145,9 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
         return this.columnNameBytes;
     }
 
+    public void validate() throws HBqlException {
+    }
+
     public void validate(final StatementContext statementContext, final HConnection connection) throws HBqlException {
 
         this.setStatementContext(statementContext);
@@ -298,7 +301,7 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
 
     public Object getValue(final HConnectionImpl connection, final Result result) throws HBqlException {
         try {
-            return this.evaluate(connection, 0, true, false, result);
+            return this.evaluate(connection, 0, this.allowColumns(), false, result);
         }
         catch (ResultMissingColumnException e) {
             return null;
@@ -310,6 +313,10 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
     }
 
     public boolean useResultData() {
+        return true;
+    }
+
+    public boolean allowColumns() {
         return true;
     }
 }

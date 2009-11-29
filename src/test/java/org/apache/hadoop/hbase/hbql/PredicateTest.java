@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql;
 
+import org.apache.hadoop.hbase.hbql.client.ColumnNotAllowedException;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -72,5 +73,18 @@ public class PredicateTest extends TestSupport {
         assertTrue(results.getPredicate());
 
         results = connection.execute("ENABLE TABLE testtable");
+    }
+
+    @Test
+    public void testInvalidPredicate() throws HBqlException {
+
+        HBqlException hBqlException = null;
+        try {
+            connection.execute("DROP TABLE nosuchtable IF tableexists(nosuchtable)");
+        }
+        catch (HBqlException e) {
+            hBqlException = e;
+        }
+        assertTrue(hBqlException != null && hBqlException instanceof ColumnNotAllowedException);
     }
 }

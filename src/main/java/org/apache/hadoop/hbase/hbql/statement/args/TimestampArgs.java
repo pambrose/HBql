@@ -27,17 +27,17 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.io.IOException;
 
-public class TimestampArgs extends SelectArgs {
+public class TimestampArgs extends SelectStatementArgs {
 
     final boolean aSingleValue;
 
     public TimestampArgs(final GenericValue arg0) {
-        super(SelectArgs.Type.TIMESTAMPRANGE, arg0, arg0);
+        super(SelectStatementArgs.Type.TIMESTAMPRANGE, arg0, arg0);
         this.aSingleValue = true;
     }
 
     public TimestampArgs(final GenericValue arg0, final GenericValue arg1) {
-        super(SelectArgs.Type.TIMESTAMPRANGE, arg0, arg1);
+        super(SelectStatementArgs.Type.TIMESTAMPRANGE, arg0, arg1);
         this.aSingleValue = false;
     }
 

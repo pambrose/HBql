@@ -88,7 +88,7 @@ public abstract class StatementContext extends BasicStatement {
         }
     }
 
-    public HBaseTableMapping getHBaseTableMapping() throws HBqlException {
+    public HBaseTableMapping getHBaseTableMapping() {
         return (HBaseTableMapping)this.getMapping();
     }
 }

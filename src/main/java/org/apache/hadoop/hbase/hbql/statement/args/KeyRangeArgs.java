@@ -49,21 +49,21 @@ public class KeyRangeArgs implements Serializable {
         SINGLE, RANGE, FIRST, LAST, ALL
     }
 
-    public static class Range extends SelectArgs {
+    public static class Range extends SelectStatementArgs {
         private final KeyRangeArgs.Type type;
 
         private Range() {
-            super(SelectArgs.Type.NOARGSKEY);
+            super(SelectStatementArgs.Type.NOARGSKEY);
             this.type = KeyRangeArgs.Type.ALL;
         }
 
         private Range(final KeyRangeArgs.Type type, final GenericValue arg0) {
-            super(SelectArgs.Type.SINGLEKEY, arg0);
+            super(SelectStatementArgs.Type.SINGLEKEY, arg0);
             this.type = type;
         }
 
         private Range(final GenericValue arg0, final GenericValue arg1) {
-            super(SelectArgs.Type.KEYRANGE, arg0, arg1);
+            super(SelectStatementArgs.Type.KEYRANGE, arg0, arg1);
             this.type = KeyRangeArgs.Type.RANGE;
         }
 
@@ -109,21 +109,21 @@ public class KeyRangeArgs implements Serializable {
             final StringBuilder sbuf = new StringBuilder();
 
             if (this.isAllRows()) {
-                sbuf.append("ALL");
+                sbuf.append("KEYS ALL");
             }
             else if (this.isSingleKey()) {
-                sbuf.append("'" + this.getGenericValue(0).asString() + "'");
+                sbuf.append("KEY " + this.getGenericValue(0).asString());
             }
             else if (this.isFirstRange()) {
-                sbuf.append("FIRST TO '" + this.getGenericValue(0).asString());
+                sbuf.append("KEYS FIRST TO " + this.getGenericValue(0).asString());
             }
             else if (this.isLastRange()) {
-                sbuf.append("'" + this.getGenericValue(0).asString() + "' TO LAST");
+                sbuf.append("KEYS " + this.getGenericValue(0).asString() + "' TO LAST");
             }
             else {
-                sbuf.append("'" + this.getGenericValue(0).asString() + "'");
+                sbuf.append("KEYS " + this.getGenericValue(0).asString());
                 sbuf.append(" TO ");
-                sbuf.append("'" + this.getGenericValue(1).asString() + "'");
+                sbuf.append(this.getGenericValue(1).asString());
             }
             return sbuf.toString();
         }
@@ -239,12 +239,17 @@ public class KeyRangeArgs implements Serializable {
         return this.rangeList;
     }
 
-    public void setStatementContext(final StatementContext statementContext) {
+    public void setStatementContext(final StatementContext statementContext) throws HBqlException {
         for (final Range range : this.getRangeList())
             range.setStatementContext(statementContext);
 
         for (final Range range : this.getRangeList())
             this.getParameterList().addAll(range.getParameterList());
+    }
+
+    public void validate() throws HBqlException {
+        for (final Range range : this.getRangeList())
+            range.validate();
     }
 
     public String asString() {

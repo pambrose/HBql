@@ -80,16 +80,16 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
     }
 
     public void reset() {
-        if (this.getExprContext() != null)
-            this.getExprContext().reset();
+        if (this.getExpressionContext() != null)
+            this.getExpressionContext().reset();
     }
 
     public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
         this.expressionContext = context;
-        this.getExprContext().addColumnToUsedList(this);
+        this.getExpressionContext().addColumnToUsedList(this);
     }
 
-    protected MultipleExpressionContext getExprContext() {
+    protected MultipleExpressionContext getExpressionContext() {
         return this.expressionContext;
     }
 

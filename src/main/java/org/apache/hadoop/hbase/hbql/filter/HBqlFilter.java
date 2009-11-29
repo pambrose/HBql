@@ -60,7 +60,7 @@ public class HBqlFilter implements Filter {
     }
 
     public static HBqlFilter newHBqlFilter(final StatementContext statementContext,
-                                           final ExpressionTree origExpressionTree) {
+                                           final ExpressionTree origExpressionTree) throws HBqlException {
 
         if (origExpressionTree == null)
             return null;

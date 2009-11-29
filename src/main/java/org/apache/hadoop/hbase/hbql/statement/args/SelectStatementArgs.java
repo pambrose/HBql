@@ -26,8 +26,9 @@ import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.LongValue;
 import org.apache.expreval.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public abstract class SelectArgs extends MultipleExpressionContext {
+public abstract class SelectStatementArgs extends MultipleExpressionContext {
 
     public static enum Type {
 
@@ -49,11 +50,19 @@ public abstract class SelectArgs extends MultipleExpressionContext {
         }
     }
 
-    protected SelectArgs(final Type type, final GenericValue... exprs) {
+    public void validate() throws HBqlException {
+        this.validateTypes(false, false);
+    }
+
+    protected SelectStatementArgs(final Type type, final GenericValue... exprs) {
         super(type.getTypeSignature(), exprs);
     }
 
     public boolean useResultData() {
+        return false;
+    }
+
+    public boolean allowColumns() {
         return false;
     }
 }

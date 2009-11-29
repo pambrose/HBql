@@ -196,7 +196,7 @@ public abstract class Function extends GenericExpression {
                                                        final boolean allowCollections) throws HBqlException {
 
         int i = 0;
-        if (this.getArgList().size() != this.getTypeSignature().getArgCount())
+        if (this.getGenericValueList().size() != this.getTypeSignature().getArgCount())
             throw new TypeException("Incorrect number of arguments in function " + this.getFunctionType().name()
                                     + " in " + this.asString());
 

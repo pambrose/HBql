@@ -31,7 +31,7 @@ public class WithExpressionsTest extends TestSupport {
         assertValidInput("WITH KEYS 'aaa' TO 'bbb'");
         assertValidInput("WITH KEYS 'sss' TO LAST");
         assertValidInput("WITH KEYS 'fff' TO 'ggg', 'sss'TO LAST, 'sssd' TO LAST");
-        assertValidInput("WITH KEYS zzz TO 'bbb'");
+        assertInvalidInput("WITH KEYS zzz TO 'bbb'");
     }
 
     @Test
@@ -55,14 +55,16 @@ public class WithExpressionsTest extends TestSupport {
     @Test
     public void clientFilterExpressions() throws HBqlException {
         assertValidInput("WITH CLIENT FILTER WHERE TRUE");
-        assertValidInput("WITH CLIENT FILTER WHERE col1 < 4");
-        assertValidInput("WITH CLIENT FILTER WHERE fam1:col1 < 4");
+        assertValidInput("WITH CLIENT FILTER WHERE 3 < 4");
+        //assertValidInput("WITH CLIENT FILTER WHERE col1 < 4");
+        //assertValidInput("WITH CLIENT FILTER WHERE fam1:col1 < 4");
     }
 
     @Test
     public void serverFilterExpressions() throws HBqlException {
         assertValidInput("WITH SERVER FILTER WHERE TRUE");
-        assertValidInput("WITH SERVER FILTER WHERE col1 < 4");
-        assertValidInput("WITH SERVER FILTER WHERE fam1:col1 < 4 OR d > 3");
+        assertValidInput("WITH SERVER FILTER WHERE 3 < 4");
+        //assertValidInput("WITH SERVER FILTER WHERE col1 < 4");
+        //assertValidInput("WITH SERVER FILTER WHERE fam1:col1 < 4 OR d > 3");
     }
 }

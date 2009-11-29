@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.InvalidVariableException;
+import org.apache.hadoop.hbase.hbql.client.InvalidColumnException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
@@ -108,7 +108,7 @@ public class SelectStatement extends StatementContext implements ParameterStatem
             try {
                 element.validateTypes(true, false);
             }
-            catch (InvalidVariableException e) {
+            catch (InvalidColumnException e) {
                 // No op
             }
         }

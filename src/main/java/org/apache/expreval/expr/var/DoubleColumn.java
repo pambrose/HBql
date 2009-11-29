@@ -35,7 +35,7 @@ public class DoubleColumn extends GenericColumn<NumberValue> implements NumberVa
 
     public Double getValue(final HConnectionImpl connection,
                            final Object object) throws HBqlException, ResultMissingColumnException {
-        if (this.getExprContext().useResultData())
+        if (this.getExpressionContext().useResultData())
             return (Double)this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             return (Double)this.getColumnAttrib().getCurrentValue(object);

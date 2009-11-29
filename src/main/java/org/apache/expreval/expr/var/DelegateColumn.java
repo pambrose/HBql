@@ -24,8 +24,9 @@ import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.client.ColumnNotAllowedException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.InvalidVariableException;
+import org.apache.hadoop.hbase.hbql.client.InvalidColumnException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 
@@ -56,7 +57,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
                            final Object object) throws HBqlException, ResultMissingColumnException {
 
         if (!this.isVariableDefinedInMapping())
-            throw new InvalidVariableException(this.getVariableName());
+            throw new InvalidColumnException(this.getVariableName());
 
         return this.getTypedColumn().getValue(connection, object);
     }
@@ -64,7 +65,7 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
         if (!this.isVariableDefinedInMapping())
-            throw new InvalidVariableException(this.getVariableName());
+            throw new InvalidColumnException(this.getVariableName());
 
         return this.getTypedColumn().validateTypes(parentExpr, allowCollections);
     }
@@ -75,8 +76,12 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
 
     public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
 
+        if (!context.allowColumns())
+            throw new ColumnNotAllowedException("Column " + this.getVariableName()
+                                                + " not allowed in: " + context.asString());
+
         if (context.getMapping() == null)
-            throw new InternalErrorException("Null mapping for: " + this.asString());
+            throw new InternalErrorException("Null mapping for: " + context.asString());
 
         // See if referenced var is in mapping
         final String variableName = this.getVariableName();

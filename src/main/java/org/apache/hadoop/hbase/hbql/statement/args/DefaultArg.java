@@ -37,12 +37,30 @@ public class DefaultArg extends MultipleExpressionContext implements Serializabl
     public DefaultArg(final Class<? extends GenericValue> exprType, final GenericValue expr) throws HBqlException {
         super(new ArgumentListTypeSignature(exprType), expr);
 
+        this.validate();
+
         // This will force the type checking to happen
         this.getValue();
     }
 
     public void reset() {
         this.computed = false;
+    }
+
+    public String asString() {
+        return this.getGenericValue(0).asString();
+    }
+
+    public boolean useResultData() {
+        return false;
+    }
+
+    public boolean allowColumns() {
+        return false;
+    }
+
+    public void validate() throws HBqlException {
+        this.validateTypes(false, false);
     }
 
     public Object getValue() throws HBqlException {
@@ -58,13 +76,5 @@ public class DefaultArg extends MultipleExpressionContext implements Serializabl
         }
 
         return this.value;
-    }
-
-    public String asString() {
-        return this.getGenericValue(0).asString();
-    }
-
-    public boolean useResultData() {
-        return false;
     }
 }

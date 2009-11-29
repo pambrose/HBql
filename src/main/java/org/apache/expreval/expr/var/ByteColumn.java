@@ -35,7 +35,7 @@ public class ByteColumn extends GenericColumn<NumberValue> implements NumberValu
 
     public Byte getValue(final HConnectionImpl connection,
                          final Object object) throws HBqlException, ResultMissingColumnException {
-        if (this.getExprContext().useResultData())
+        if (this.getExpressionContext().useResultData())
             return (Byte)this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             return (Byte)this.getColumnAttrib().getCurrentValue(object);

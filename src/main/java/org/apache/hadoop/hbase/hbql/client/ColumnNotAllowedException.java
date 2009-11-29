@@ -18,22 +18,11 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.statement.args;
+package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.expreval.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
+public class ColumnNotAllowedException extends HBqlException {
 
-public class LimitArgs extends SelectStatementArgs {
-
-    public LimitArgs(final GenericValue arg0) {
-        super(SelectStatementArgs.Type.LIMIT, arg0);
-    }
-
-    public long getValue() throws HBqlException {
-        return ((Number)this.evaluateConstant(null, 0, false, null)).longValue();
-    }
-
-    public String asString() {
-        return "LIMIT " + this.getGenericValue(0).asString();
+    public ColumnNotAllowedException(final String s) {
+        super(s);
     }
 }

@@ -35,16 +35,23 @@ public class StatementPredicate extends MultipleExpressionContext {
 
     public StatementPredicate(final GenericValue... exprs) {
         super(typesig, exprs);
-        this.setStatementContext(new NonStatement(null, null));
     }
 
     public boolean useResultData() {
         return false;
     }
 
+    public void validate() throws HBqlException {
+        this.setStatementContext(new NonStatement(null, null));
+        this.validateTypes(false, false);
+    }
+
     public boolean evaluate(final HConnectionImpl connection) throws HBqlException {
+
+        this.validate();
+
         try {
-            return (Boolean)this.evaluate(connection, 0, false, false, connection);
+            return (Boolean)this.evaluate(connection, 0, this.allowColumns(), false, connection);
         }
         catch (ResultMissingColumnException e) {
             throw new InternalErrorException();
@@ -53,5 +60,9 @@ public class StatementPredicate extends MultipleExpressionContext {
 
     public String asString() {
         return "[ " + this.getGenericValue(0).asString() + " ]";
+    }
+
+    public boolean allowColumns() {
+        return false;
     }
 }

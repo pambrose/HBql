@@ -35,7 +35,7 @@ public class CharColumn extends GenericColumn<NumberValue> implements NumberValu
 
     public Short getValue(final HConnectionImpl connection,
                           final Object object) throws HBqlException, ResultMissingColumnException {
-        if (this.getExprContext().useResultData())
+        if (this.getExpressionContext().useResultData())
             return (Short)this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             return (Short)this.getColumnAttrib().getCurrentValue(object);

@@ -70,6 +70,10 @@ public abstract class MultipleExpressionContext implements Serializable {
 
     public abstract boolean useResultData();
 
+    public abstract boolean allowColumns();
+
+    public abstract void validate() throws HBqlException;
+
     public List<GenericColumn> getColumnsUsedInExpression() {
         return this.columnsUsedInExpr;
     }
@@ -102,7 +106,7 @@ public abstract class MultipleExpressionContext implements Serializable {
         return this.getStatementContext().getMapping();
     }
 
-    public HBaseTableMapping getHBaseTableMapping() throws HBqlException {
+    public HBaseTableMapping getHBaseTableMapping() {
         return this.getStatementContext().getHBaseTableMapping();
     }
 
@@ -110,25 +114,19 @@ public abstract class MultipleExpressionContext implements Serializable {
         return this.getStatementContext().getResultAccessor();
     }
 
-    public void setStatementContext(final StatementContext statementContext) {
+    public void setStatementContext(final StatementContext statementContext) throws HBqlException {
         this.statementContext = statementContext;
 
         if (this.getStatementContext() != null && this.getStatementContext().getResultAccessor() == null)
             this.getStatementContext().setResultAccessor(new HRecordResultAccessor(statementContext));
 
-        this.setContext();
+        this.setExpressionListContext();
     }
 
-    private void setContext() {
+    private synchronized void setExpressionListContext() throws HBqlException {
         if (this.needsContextSetting()) {
-            try {
-                for (final GenericValue val : this.getExpressionList())
-                    val.setExpressionContext(this);
-            }
-            catch (HBqlException e) {
-                //  TODO This needs addressing
-                e.printStackTrace();
-            }
+            for (final GenericValue val : this.getExpressionList())
+                val.setExpressionContext(this);
             this.setNeedsContextSetting(false);
         }
     }
@@ -180,7 +178,8 @@ public abstract class MultipleExpressionContext implements Serializable {
         }
     }
 
-    public void validateTypes(final boolean allowColumns, final boolean allowCollections) throws HBqlException {
+    public void validateTypes(final boolean allowColumns,
+                              final boolean allowCollections) throws HBqlException {
 
         if (this.needsTypeValidation()) {
 
@@ -190,9 +189,12 @@ public abstract class MultipleExpressionContext implements Serializable {
                                         + " in " + this.asString());
 
             // Collect return types of all args
+            // This is run even if TypeSignature is null because it calls validateTypes()
             final List<Class<? extends GenericValue>> clazzList = Lists.newArrayList();
-            for (final GenericValue val : this.getExpressionList())
-                clazzList.add(val.validateTypes(null, allowCollections));
+            for (final GenericValue val : this.getExpressionList()) {
+                final Class<? extends GenericValue> returnType = val.validateTypes(null, allowCollections);
+                clazzList.add(returnType);
+            }
 
             // Check against signature if there is one
             if (this.getTypeSignature() != null) {

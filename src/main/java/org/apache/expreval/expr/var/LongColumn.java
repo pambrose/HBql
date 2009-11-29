@@ -35,7 +35,7 @@ public class LongColumn extends GenericColumn<NumberValue> implements NumberValu
 
     public Long getValue(final HConnectionImpl connection,
                          final Object object) throws HBqlException, ResultMissingColumnException {
-        if (this.getExprContext().useResultData())
+        if (this.getExpressionContext().useResultData())
             return (Long)this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             return (Long)this.getColumnAttrib().getCurrentValue(object);

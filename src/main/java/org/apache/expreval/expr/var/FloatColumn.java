@@ -35,7 +35,7 @@ public class FloatColumn extends GenericColumn<NumberValue> implements NumberVal
 
     public Float getValue(final HConnectionImpl connection,
                           final Object object) throws HBqlException, ResultMissingColumnException {
-        if (this.getExprContext().useResultData())
+        if (this.getExpressionContext().useResultData())
             return (Float)this.getColumnAttrib().getValueFromBytes((Result)object);
         else
             return (Float)this.getColumnAttrib().getCurrentValue(object);

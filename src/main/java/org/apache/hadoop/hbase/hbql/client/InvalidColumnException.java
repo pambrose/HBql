@@ -20,9 +20,9 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-public class InvalidVariableException extends HBqlException {
+public class InvalidColumnException extends HBqlException {
 
-    public InvalidVariableException(final String s) {
+    public InvalidColumnException(final String s) {
         super(s);
     }
 }

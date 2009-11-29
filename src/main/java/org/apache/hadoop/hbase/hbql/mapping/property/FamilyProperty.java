@@ -72,6 +72,10 @@ public abstract class FamilyProperty extends MultipleExpressionContext {
         return false;
     }
 
+    public boolean allowColumns() {
+        return false;
+    }
+
     public void validate() throws HBqlException {
         this.validateTypes(false, false);
     }

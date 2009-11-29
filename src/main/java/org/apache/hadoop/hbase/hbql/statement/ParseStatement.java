@@ -60,6 +60,7 @@ public class ParseStatement extends BasicStatement implements ConnectionStatemen
 
         if (this.getGenericValue() != null) {
             final SimpleExpressionContext expr = new SimpleExpressionContext(this.getGenericValue());
+            expr.validate();
             final Object val = expr.getValue(connection);
             retval.out.println(this.getGenericValue().asString() + " = " + val);
         }

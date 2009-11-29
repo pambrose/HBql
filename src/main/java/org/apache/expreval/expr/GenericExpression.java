@@ -54,7 +54,7 @@ public abstract class GenericExpression implements GenericValue {
     private boolean useDouble = false;
 
     private final ExpressionType type;
-    private final List<GenericValue> exprList = Lists.newArrayList();
+    private final List<GenericValue> genericValueList = Lists.newArrayList();
     private MultipleExpressionContext expressionContext = null;
     private volatile boolean allArgsOptimized = false;
 
@@ -62,29 +62,31 @@ public abstract class GenericExpression implements GenericValue {
         this(type, Arrays.asList(exprs));
     }
 
-    protected GenericExpression(final ExpressionType type, final List<GenericValue> exprList) {
+    protected GenericExpression(final ExpressionType type, final List<GenericValue> genericValueList) {
         this.type = type;
-        if (exprList != null)
-            this.getArgList().addAll(exprList);
+        if (genericValueList != null)
+            this.getGenericValueList().addAll(genericValueList);
     }
 
-    protected GenericExpression(final ExpressionType type, final GenericValue expr, final List<GenericValue> exprList) {
+    protected GenericExpression(final ExpressionType type,
+                                final GenericValue expr,
+                                final List<GenericValue> genericValueList) {
         this.type = type;
-        this.getArgList().add(expr);
-        if (exprList != null)
-            this.getArgList().addAll(exprList);
+        this.getGenericValueList().add(expr);
+        if (genericValueList != null)
+            this.getGenericValueList().addAll(genericValueList);
     }
 
     protected FunctionTypeSignature getTypeSignature() {
         return this.type.getTypeSignature();
     }
 
-    protected List<GenericValue> getArgList() {
-        return this.exprList;
+    protected List<GenericValue> getGenericValueList() {
+        return this.genericValueList;
     }
 
     protected List<GenericValue> getSubArgs(final int i) {
-        return this.getArgList().subList(i, this.getArgList().size());
+        return this.getGenericValueList().subList(i, this.getGenericValueList().size());
     }
 
     private Class<? extends GenericValue> getHighestRankingNumericArgFoundInValidate() {
@@ -140,10 +142,10 @@ public abstract class GenericExpression implements GenericValue {
 
     public boolean isAConstant() {
 
-        if (this.getArgList().size() == 0)
+        if (this.getGenericValueList().size() == 0)
             return false;
 
-        for (final GenericValue val : this.getArgList())
+        for (final GenericValue val : this.getGenericValueList())
             if (!val.isAConstant())
                 return false;
 
@@ -167,23 +169,23 @@ public abstract class GenericExpression implements GenericValue {
     }
 
     public boolean hasAColumnReference() {
-        for (final GenericValue val : this.getArgList())
+        for (final GenericValue val : this.getGenericValueList())
             if (val.hasAColumnReference())
                 return true;
         return false;
     }
 
     public void reset() {
-        for (final GenericValue val : this.getArgList())
+        for (final GenericValue val : this.getGenericValueList())
             val.reset();
     }
 
-    public void setExpressionContext(final MultipleExpressionContext context) throws HBqlException {
+    public void setExpressionContext(final MultipleExpressionContext expressionContext) throws HBqlException {
 
-        this.expressionContext = context;
+        this.expressionContext = expressionContext;
 
-        for (final GenericValue val : this.getArgList())
-            val.setExpressionContext(context);
+        for (final GenericValue val : this.getGenericValueList())
+            val.setExpressionContext(expressionContext);
     }
 
     protected MultipleExpressionContext getExpressionContext() {
@@ -203,7 +205,7 @@ public abstract class GenericExpression implements GenericValue {
             if (this.areAllArgsOptimized())
                 return;
 
-            for (int i = 0; i < this.getArgList().size(); i++)
+            for (int i = 0; i < this.getGenericValueList().size(); i++)
                 this.setArg(i, this.getArg(i).getOptimizedValue());
 
             this.allArgsOptimized = true;
@@ -211,17 +213,17 @@ public abstract class GenericExpression implements GenericValue {
     }
 
     public GenericValue getArg(final int i) {
-        return this.getArgList().get(i);
+        return this.getGenericValueList().get(i);
     }
 
     public void setArg(final int i, final GenericValue val) {
-        this.getArgList().set(i, val);
+        this.getGenericValueList().set(i, val);
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
-        if (this.getArgList().size() != this.getTypeSignature().getArgCount())
+        if (this.getGenericValueList().size() != this.getTypeSignature().getArgCount())
             throw new TypeException("Incorrect number of arguments in " + this.asString());
 
         for (int i = 0; i < this.getTypeSignature().getArgCount(); i++)
@@ -232,7 +234,7 @@ public abstract class GenericExpression implements GenericValue {
 
     protected Class<? extends GenericValue> validateNumericTypes() throws HBqlException {
 
-        if (this.getArgList().size() != this.getTypeSignature().getArgCount())
+        if (this.getGenericValueList().size() != this.getTypeSignature().getArgCount())
             throw new TypeException("Incorrect number of arguments in " + this.asString());
 
         // Return the type of the highest ranking numeric arg
@@ -296,7 +298,7 @@ public abstract class GenericExpression implements GenericValue {
         final StringBuilder sbuf = new StringBuilder("(");
 
         boolean first = true;
-        for (final GenericValue val : this.getArgList()) {
+        for (final GenericValue val : this.getGenericValueList()) {
             if (!first)
                 sbuf.append(", ");
             sbuf.append(val.asString());

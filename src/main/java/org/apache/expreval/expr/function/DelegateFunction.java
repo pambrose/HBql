@@ -43,7 +43,7 @@ public class DelegateFunction extends DelegateStmt<Function> {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
-        final Function function = getFunction(this.getFunctionName(), this.getArgList(), parentExpr);
+        final Function function = getFunction(this.getFunctionName(), this.getGenericValueList(), parentExpr);
         this.setTypedExpr(function);
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }

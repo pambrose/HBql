@@ -27,7 +27,6 @@ import org.apache.expreval.util.Maps;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
@@ -150,7 +149,8 @@ public abstract class Mapping implements Serializable {
     }
 
     public ExpressionTree getExpressionTree(final String str,
-                                            final StatementContext statementContext) throws ParseException, RecognitionException {
+                                            final StatementContext statementContext) throws HBqlException,
+                                                                                            RecognitionException {
 
         final Map<String, ExpressionTree> map = this.getEvalMap();
         ExpressionTree expressionTree = map.get(str);
