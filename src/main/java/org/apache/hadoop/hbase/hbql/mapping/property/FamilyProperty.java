@@ -25,7 +25,7 @@ import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.IntegerValue;
-import org.apache.expreval.expr.node.StringValue;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public abstract class FamilyProperty extends MultipleExpressionContext {
 
@@ -34,7 +34,7 @@ public abstract class FamilyProperty extends MultipleExpressionContext {
         TTL(new ArgumentListTypeSignature(IntegerValue.class), "TTL"),
         MAPFILEINDEXINTERVAL(new ArgumentListTypeSignature(IntegerValue.class), "INDEX:INTERVAL"),
         INMEMORY(new ArgumentListTypeSignature(BooleanValue.class), "IN_MEMORY"),
-        COMPRESSIONTYPE(new ArgumentListTypeSignature(StringValue.class), "COMPRESSION_TYPE"),
+        COMPRESSIONTYPE(new ArgumentListTypeSignature(), "COMPRESSION_TYPE"),
         BLOCKCACHE(new ArgumentListTypeSignature(BooleanValue.class), "BLOCK_CACHE"),
         BLOCKSIZE(new ArgumentListTypeSignature(IntegerValue.class), "BLOCK_SIZE"),
         BLOOMFILTER(new ArgumentListTypeSignature(BooleanValue.class), "BLOOM_FILTER"),
@@ -70,6 +70,10 @@ public abstract class FamilyProperty extends MultipleExpressionContext {
 
     public boolean useResultData() {
         return false;
+    }
+
+    public void validate() throws HBqlException {
+        this.validateTypes(false, false);
     }
 
     public String asString() {
