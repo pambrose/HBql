@@ -100,12 +100,6 @@ public class WithArgs implements Serializable {
 
         if (this.getLimitArgs() != null)
             this.getLimitArgs().validate();
-
-        if (this.getServerExpressionTree() != null)
-            this.getServerExpressionTree().validate();
-
-        if (this.getClientExpressionTree() != null)
-            this.getClientExpressionTree().validate();
     }
 
 

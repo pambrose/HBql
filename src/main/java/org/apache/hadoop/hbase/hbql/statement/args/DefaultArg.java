@@ -59,8 +59,8 @@ public class DefaultArg extends MultipleExpressionContext implements Serializabl
         return false;
     }
 
-    public void validate() throws HBqlException {
-        this.validateTypes(false, false);
+    private void validate() throws HBqlException {
+        this.validateTypes(this.allowColumns(), false);
     }
 
     public Object getValue() throws HBqlException {

@@ -41,9 +41,9 @@ public class StatementPredicate extends MultipleExpressionContext {
         return false;
     }
 
-    public void validate() throws HBqlException {
+    private void validate() throws HBqlException {
         this.setStatementContext(new NonStatement(null, null));
-        this.validateTypes(false, false);
+        this.validateTypes(this.allowColumns(), false);
     }
 
     public boolean evaluate(final HConnectionImpl connection) throws HBqlException {

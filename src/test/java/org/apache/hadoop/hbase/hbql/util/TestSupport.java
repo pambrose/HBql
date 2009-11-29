@@ -278,8 +278,6 @@ public class TestSupport {
             if (expressionTree.getStatementContext() == null)
                 expressionTree.setStatementContext((sc == null) ? new NonStatement(null, null) : sc);
 
-            expressionTree.validate();
-
             return expressionTree;
         }
         catch (RecognitionException e) {

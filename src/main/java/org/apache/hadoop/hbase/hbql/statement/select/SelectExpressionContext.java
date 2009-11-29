@@ -145,9 +145,6 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
         return this.columnNameBytes;
     }
 
-    public void validate() throws HBqlException {
-    }
-
     public void validate(final StatementContext statementContext, final HConnection connection) throws HBqlException {
 
         this.setStatementContext(statementContext);

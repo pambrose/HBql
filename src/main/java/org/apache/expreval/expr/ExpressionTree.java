@@ -48,9 +48,6 @@ public class ExpressionTree extends MultipleExpressionContext {
         return tree;
     }
 
-    public void validate() throws HBqlException {
-    }
-
     // This is not done in newExpressionTree() because that is called from parser
     public void setEmbeddedMapping() throws HBqlException {
         if (this.embeddedMapping != null)

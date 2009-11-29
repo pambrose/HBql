@@ -72,8 +72,6 @@ public abstract class MultipleExpressionContext implements Serializable {
 
     public abstract boolean allowColumns();
 
-    public abstract void validate() throws HBqlException;
-
     public List<GenericColumn> getColumnsUsedInExpression() {
         return this.columnsUsedInExpr;
     }

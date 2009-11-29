@@ -43,7 +43,7 @@ public class SimpleExpressionContext extends MultipleExpressionContext {
     }
 
     public void validate() throws HBqlException {
-        this.validateTypes(true, false);
+        this.validateTypes(this.allowColumns(), false);
     }
 
     public Object getValue(final HConnectionImpl connection) throws HBqlException {
