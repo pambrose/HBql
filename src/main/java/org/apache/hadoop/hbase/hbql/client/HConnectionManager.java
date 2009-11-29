@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class HConnectionManager {
 
-    private static Map<String, HConnection> connectionMap = Maps.newHashMap();
+    private static Map<String, HConnection> connectionMap = Maps.newConcurrentHashMap();
 
     public static HConnection newConnection() throws HBqlException {
         return newConnection(null, null);

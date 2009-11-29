@@ -99,6 +99,15 @@ public class HBaseTableMapping extends Mapping implements HMapping {
         return new HRecordImpl(statementContext);
     }
 
+    public HRecord newHRecord(final Map<String, Object> initMap) throws HBqlException {
+        final HRecord newrec = this.newHRecord();
+
+        for (final String name : initMap.keySet())
+            newrec.setCurrentValue(name, initMap.get(name));
+
+        return newrec;
+    }
+
     private void processColumnDefintion(final ColumnDefinition columnDefinition) throws HBqlException {
 
         final HRecordAttrib attrib = new HRecordAttrib(columnDefinition);

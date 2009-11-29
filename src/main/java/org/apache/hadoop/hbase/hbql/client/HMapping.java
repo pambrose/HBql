@@ -20,9 +20,13 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
+import java.util.Map;
+
 public interface HMapping {
 
     HRecord newHRecord() throws HBqlException;
+
+    HRecord newHRecord(Map<String, Object> initMap) throws HBqlException;
 
     String getMappingName();
 
