@@ -32,7 +32,7 @@ Documentation
 
     * {{{./apidocs/org/apache/hadoop/hbase/hbql/client/package-summary.html}HBql Client API}}
 
-    * {{{./apidocs/index.html}Javadocs}}
+    * {{{./apidocs/index.html}Javadocs}} ({{{./xref/index.html}cross-reference}})
 
     * {{{./faq.html}FAQ}}
 

@@ -5,14 +5,14 @@
 
 Releases
 
-    *{{{./downloads/hbql-0.9.9-alpha.zip}0.9.9-alpha.zip}}
+    *{{{./downloads/hbql-0.9.10-alpha.zip}0.9.10-alpha.zip}}
     
-    *{{{./downloads/hbql-0.9.9-alpha.tar.gz}0.9.9-alpha.tar.gz}}
+    *{{{./downloads/hbql-0.9.10-alpha.tar.gz}0.9.10-alpha.tar.gz}}
 
 
 Javadocs
 
-    *{{{./downloads/javadocs-0.9.9-alpha.zip}javadocs-0.9.9-alpha.zip}}
+    *{{{./downloads/javadocs-0.9.10-alpha.zip}javadocs-0.9.10-alpha.zip}}
     
 
 Source
@@ -25,6 +25,10 @@ git clone git://github.com/pambrose/HBql.git
 
 
 Release Notes
+
+    0.9.10-alpha -- 11/28/09
+
+        * Fixed a problem in type signature validation
 
     0.9.9-alpha -- 11/26/09
 
