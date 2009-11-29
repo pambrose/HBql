@@ -284,6 +284,27 @@ public class ExamplesTest extends TestSupport {
 
     }
 
+    public void insert4() throws HBqlException {
+
+        HConnection connection = HConnectionManager.newConnection();
+
+        // START SNIPPET: insert4
+        connection.execute("CREATE MAPPING foo_mapping FOR TABLE foo_table "
+                           + "("
+                           + "keyval KEY, "
+                           + "family1 ("
+                           + "  val1 STRING, "
+                           + "  val2 STRING, "
+                           + "  val3 STRING ALIAS val3, "
+                           + "  val4 STRING ALIAS val4 "
+                           + "))");
+        connection.execute("INSERT INTO foo_mapping (keyval, family1(val1, val2)) "
+                           + "SELECT keyval, val3, val4 FROM foo2");
+
+        // END SNIPPET: insert4
+
+    }
+
 
     public void createMapping() throws HBqlException {
 

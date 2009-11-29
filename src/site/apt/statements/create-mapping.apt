@@ -57,6 +57,8 @@ type:
 
     * The DEFAULT clause cannot be used with array values.
 
+    * The scope of an ALIAS name is across all families in a table.
+
     * Each family can have an optional INCLUDE UNMAPPED clause.
     If the clause is present for a given family, then all query result set values for that
     family that are *not* described in the mapping are put in a map.  The name of each

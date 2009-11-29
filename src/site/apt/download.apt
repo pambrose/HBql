@@ -5,14 +5,14 @@
 
 Releases
 
-    *{{{./downloads/hbql-0.9.10-alpha.zip}0.9.10-alpha.zip}}
+    *{{{./downloads/hbql-0.9.11-alpha.zip}0.9.11-alpha.zip}}
     
-    *{{{./downloads/hbql-0.9.10-alpha.tar.gz}0.9.10-alpha.tar.gz}}
+    *{{{./downloads/hbql-0.9.11-alpha.tar.gz}0.9.11-alpha.tar.gz}}
 
 
 Javadocs
 
-    *{{{./downloads/javadocs-0.9.10-alpha.zip}javadocs-0.9.10-alpha.zip}}
+    *{{{./downloads/javadocs-0.9.11-alpha.zip}javadocs-0.9.11-alpha.zip}}
     
 
 Source
@@ -25,6 +25,10 @@ git clone git://github.com/pambrose/HBql.git
 
 
 Release Notes
+
+    0.9.11-alpha -- 11/29/09
+
+        * Added support for family(column1, column2) as shorthand in {{{statements/insert.html}INSERT}} statement.
 
     0.9.10-alpha -- 11/28/09
 
