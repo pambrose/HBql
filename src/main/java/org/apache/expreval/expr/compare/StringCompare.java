@@ -41,8 +41,8 @@ public class StringCompare extends GenericCompare {
     public Boolean getValue(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final String val1 = (String)this.getArg(0).getValue(connection, object);
-        final String val2 = (String)this.getArg(1).getValue(connection, object);
+        final String val1 = (String)this.getValue(0, connection, object);
+        final String val2 = (String)this.getValue(1, connection, object);
 
         switch (this.getOperator()) {
             case EQ:

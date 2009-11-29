@@ -29,6 +29,7 @@ import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public abstract class GenericCompare extends GenericExpression implements BooleanValue {
 
@@ -41,6 +42,12 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
 
     protected Operator getOperator() {
         return this.operator;
+    }
+
+    protected Object getValue(final int pos,
+                              final HConnectionImpl connection,
+                              final Object object) throws HBqlException, ResultMissingColumnException {
+        return this.getArg(pos).getValue(connection, object);
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {

@@ -134,7 +134,7 @@ public class InsertWithSelectTest extends TestSupport {
     public void insertWithSelect2() throws HBqlException {
 
         final String q1 = "insert into tab3 " +
-                          "(keyval, f1(val1, 2)) " +
+                          "(keyval, f1(val1, val2)) " +
                           "select keyval, val1+val1, val2+1 FROM tab3 ";
         showValues();
 

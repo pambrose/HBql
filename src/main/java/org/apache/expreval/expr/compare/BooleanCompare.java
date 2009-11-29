@@ -41,18 +41,21 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
     public Boolean getValue(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final boolean v1 = (Boolean)this.getArg(0).getValue(connection, object);
-        final boolean v2 = (Boolean)this.getArg(1).getValue(connection, object);
-
         switch (this.getOperator()) {
             case OR:
-                return v1 || v2;
+                return (Boolean)this.getValue(0, connection, object) || (Boolean)this.getValue(1, connection, object);
             case AND:
-                return v1 && v2;
-            case EQ:
-                return v1 == v2;
-            case NOTEQ:
-                return v1 != v2;
+                return (Boolean)this.getValue(0, connection, object) && (Boolean)this.getValue(1, connection, object);
+            case EQ: {
+                boolean val1 = (Boolean)this.getValue(0, connection, object);
+                boolean val2 = (Boolean)this.getValue(1, connection, object);
+                return val1 == val2;
+            }
+            case NOTEQ: {
+                boolean val1 = (Boolean)this.getValue(0, connection, object);
+                boolean val2 = (Boolean)this.getValue(1, connection, object);
+                return val1 != val2;
+            }
             default:
                 throw new HBqlException("Invalid operator: " + this.getOperator());
         }

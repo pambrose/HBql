@@ -73,6 +73,9 @@ public class PredicateTest extends TestSupport {
         results = connection.execute("ALTER TABLE testtable ALTER FAMILY f1 TO f3() IF not familyexists('testtable', 'f3')");
         assertTrue(results.getPredicate());
 
+        results = connection.execute("DISABLE TABLE nosuchtable IF tableexists('nosuchtable') AND tableenabled('nosuchtable')");
+        assertFalse(results.getPredicate());
+
         results = connection.execute("ENABLE TABLE testtable");
     }
 

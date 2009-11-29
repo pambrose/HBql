@@ -41,8 +41,8 @@ public class NumberCompare extends GenericCompare {
     public Boolean getValue(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final Object obj0 = this.getArg(0).getValue(connection, object);
-        final Object obj1 = this.getArg(1).getValue(connection, object);
+        final Object obj0 = this.getValue(0, connection, object);
+        final Object obj1 = this.getValue(1, connection, object);
 
         this.validateNumericArgTypes(obj0, obj1);
 
