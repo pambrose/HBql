@@ -21,8 +21,10 @@
 package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.expreval.expr.TypeSupport;
+import org.apache.expreval.expr.function.DelegateFunction;
 import org.apache.expreval.expr.literal.DefaultKeyword;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.expr.var.DelegateColumn;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBatch;
@@ -45,6 +47,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
     private transient HConnectionImpl connection = null;
     private HRecord record = null;
     private boolean validated = false;
+    private String invalidInsertColumn = null;
 
     public InsertStatement(final StatementPredicate predicate,
                            final String mappingName,
@@ -52,8 +55,28 @@ public class InsertStatement extends StatementContext implements ParameterStatem
                            final InsertValueSource insertValuesSource) {
         super(predicate, mappingName);
 
-        for (final GenericValue val : columnList)
-            this.getInsertColumnList().add(SelectExpressionContext.newExpression(val, null));
+        for (final GenericValue val : columnList) {
+            // See if a group of columns are indicated with family(col1, col2), which looks like a function call
+            if (val instanceof DelegateFunction) {
+                final DelegateFunction function = (DelegateFunction)val;
+                final String familyName = function.getFunctionName();
+                for (final GenericValue columnarg : function.getGenericValueList()) {
+                    if (columnarg instanceof DelegateColumn) {
+                        final String columnName = ((DelegateColumn)columnarg).getVariableName();
+                        final DelegateColumn col = new DelegateColumn(familyName + ":" + columnName);
+                        this.getInsertColumnList().add(SelectExpressionContext.newExpression(col, null));
+                    }
+                    else {
+                        // Throw exception in validate()
+                        if (invalidInsertColumn == null)
+                            invalidInsertColumn = columnarg.asString();
+                    }
+                }
+            }
+            else {
+                this.getInsertColumnList().add(SelectExpressionContext.newExpression(val, null));
+            }
+        }
 
         this.insertValuesSource = insertValuesSource;
         this.getInsertValuesSource().setInsertStatement(this);
@@ -74,6 +97,9 @@ public class InsertStatement extends StatementContext implements ParameterStatem
         else
             this.validated = true;
 
+        if (this.invalidInsertColumn != null)
+            throw new TypeException(this.invalidInsertColumn + " is not a column reference in " + this.asString());
+
         this.connection = connection;
         this.validateMappingName(this.getConnection());
         this.record = this.getConnection().getMapping(this.getMappingName()).newHRecord();
@@ -82,7 +108,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
 
             element.validate(this, this.getConnection());
 
-            if (!element.isASimpleColumnReference())
+            if (!element.isADelegateColumnReference())
                 throw new TypeException(element.asString() + " is not a column reference in " + this.asString());
         }
 

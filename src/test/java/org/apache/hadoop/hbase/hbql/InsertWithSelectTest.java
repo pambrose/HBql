@@ -130,6 +130,29 @@ public class InsertWithSelectTest extends TestSupport {
         showValues();
     }
 
+    @Test
+    public void insertWithSelect2() throws HBqlException {
+
+        final String q1 = "insert into tab3 " +
+                          "(keyval, f1(val1, 2)) " +
+                          "select keyval, val1+val1, val2+1 FROM tab3 ";
+        showValues();
+
+        HPreparedStatement stmt = connection.prepareStatement(q1);
+
+        ExecutionResults executionResults = stmt.execute();
+
+        System.out.println(executionResults);
+
+        showValues();
+
+        executionResults = connection.execute(q1);
+
+        System.out.println(executionResults);
+
+        showValues();
+    }
+
 
     private Class<? extends Exception> execute(final String str) {
 

@@ -95,7 +95,7 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
         return this.getAsName() != null && this.getAsName().length() > 0;
     }
 
-    public boolean isASimpleColumnReference() {
+    public boolean isADelegateColumnReference() {
         return this.getGenericValue() instanceof DelegateColumn;
     }
 
@@ -112,7 +112,7 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
     }
 
     public boolean isAKeyValue() {
-        if (!this.isASimpleColumnReference())
+        if (!this.isADelegateColumnReference())
             return false;
 
         if (this.getColumnAttrib() != null)
@@ -155,7 +155,7 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
         // TODO this needs to be done for expressions with col refs
 
         // Look up stuff for simple column references
-        if (this.isASimpleColumnReference()) {
+        if (this.isADelegateColumnReference()) {
             final String name = ((DelegateColumn)this.getGenericValue()).getVariableName();
             this.columnAttrib = this.getResultAccessor().getColumnAttribByName(name);
 
@@ -181,7 +181,7 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
 
     public void assignAsNamesForExpressions(final SelectStatement selectStatement) {
 
-        if (!this.isASimpleColumnReference() && !this.hasAsName()) {
+        if (!this.isADelegateColumnReference() && !this.hasAsName()) {
             while (true) {
                 // Assign a name that is not in use
                 final String newAsName = selectStatement.getNextExpressionName();
@@ -242,7 +242,7 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
             return;
 
         // If it is a calculation, take care of it and then bail since calculations have no history
-        if (!this.isASimpleColumnReference()) {
+        if (!this.isADelegateColumnReference()) {
             this.assignCalculation(connection, obj, result);
             return;
         }
