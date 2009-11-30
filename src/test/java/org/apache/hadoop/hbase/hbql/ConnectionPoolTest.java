@@ -23,6 +23,8 @@ package org.apache.hadoop.hbase.hbql;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.HConnectionPool;
+import org.apache.hadoop.hbase.hbql.client.HConnectionPoolManager;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.Util;
@@ -32,25 +34,36 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class DeleteTest extends TestSupport {
+public class ConnectionPoolTest extends TestSupport {
 
     static HConnection connection = null;
+
+    static HConnectionPool connectionPool = null;
+    static ExecutorService exec = null;
 
     static Random randomVal = new Random();
 
     static int count = 10;
+    static int workerCount = 10;
 
     @BeforeClass
     public static void beforeClass() throws HBqlException {
 
+        exec = Executors.newFixedThreadPool(workerCount);
+
+        connectionPool = HConnectionPoolManager.newConnectionPool(5);
+
         connection = HConnectionManager.newConnection();
 
-        System.out.println(connection.execute("disable table delete_test if tableexists('delete_test')"));
-        System.out.println(connection.execute("drop table delete_test if tableexists('delete_test')"));
-        System.out.println(connection.execute("create table delete_test (f1(), f2(), f3())"));
+        System.out.println(connection.execute("disable table pool_test if tableExists('pool_test')"));
+        System.out.println(connection.execute("drop table pool_test if tableExists('pool_test')"));
 
-        connection.execute("CREATE TEMP MAPPING delete_test "
+        System.out.println(connection.execute("create table pool_test (f1(), f2(), f3())"));
+
+        connection.execute("CREATE TEMP MAPPING pool_test "
                            + "("
                            + "keyval key, "
                            + "f1 ("
@@ -71,7 +84,6 @@ public class DeleteTest extends TestSupport {
 
         insertRecords(connection, count, "Batch 1");
         insertRecords(connection, count, "Batch 2");
-
         insertRecords(connection, count, "Batch 3");
     }
 
@@ -80,7 +92,7 @@ public class DeleteTest extends TestSupport {
                                       final String msg) throws HBqlException {
 
         HPreparedStatement stmt = connection.prepareStatement(
-                "insert into delete_test " +
+                "insert into pool_test " +
                 "(keyval, val1, val2, val3, val11, val12, val13, val21, val22, val23 ) values " +
                 "(:key, :val1, :val2, :val3, :val11, :val12, :val13, :val21, :val22, :val23)");
 
@@ -105,38 +117,24 @@ public class DeleteTest extends TestSupport {
         }
     }
 
-    @Test
-    public void deleteColumn() throws HBqlException {
-
-        String sql = "SELECT count() as cnt FROM delete_test WITH CLIENT FILTER WHERE definedinrow(f1:val1)";
+    void doQuery(HConnection connection) throws HBqlException {
+        String sql = "SELECT count() as cnt FROM pool_test WITH CLIENT FILTER WHERE definedinrow(f1:val1)";
         List<HRecord> recs = connection.executeQueryAndFetch(sql);
         HRecord rec = recs.get(0);
         long cnt = (Long)rec.getCurrentValue("cnt");
         assertTrue(cnt == count);
-
-        connection.executeUpdate("DELETE f1:val1 FROM delete_test");
-
-        recs = connection.executeQueryAndFetch(sql);
-        rec = recs.get(0);
-        cnt = (Long)rec.getCurrentValue("cnt");
-        assertTrue(cnt == 0);
     }
 
     @Test
-    public void deleteColumns() throws HBqlException {
+    public void threadExercise() throws HBqlException {
 
-        String sql = "SELECT count() as cnt FROM delete_test " +
-                     "WITH CLIENT FILTER WHERE definedinrow(val11) AND definedinrow(val12)";
-        List<HRecord> recs = connection.executeQueryAndFetch(sql);
-        HRecord rec = recs.get(0);
-        long cnt = (Long)rec.getCurrentValue("cnt");
-        assertTrue(cnt == count);
+        for (int i = 0; i < workerCount; i++) {
 
-        connection.executeUpdate("DELETE val11, f2:val2 FROM delete_test");
+            exec.execute(new Runnable() {
+                public void run() {
 
-        recs = connection.executeQueryAndFetch(sql);
-        rec = recs.get(0);
-        cnt = (Long)rec.getCurrentValue("cnt");
-        assertTrue(cnt == 0);
+                }
+            });
+        }
     }
 }

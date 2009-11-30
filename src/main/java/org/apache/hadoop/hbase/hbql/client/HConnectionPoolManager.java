@@ -30,7 +30,7 @@ public class HConnectionPoolManager {
 
     private static Map<String, HConnectionPool> connectionPoolMap = Maps.newConcurrentHashMap();
 
-    public static HConnectionPool getConnectionPool(final int poolSize) throws HBqlException {
+    public static HConnectionPool newConnectionPool(final int poolSize) throws HBqlException {
         return HConnectionPoolManager.newConnectionPool(poolSize, null, null);
     }
 
