@@ -37,7 +37,7 @@ public class PredicateTest extends TestSupport {
     @BeforeClass
     public static void beforeClass() throws HBqlException {
 
-        connection = HConnectionManager.newHConnection();
+        connection = HConnectionManager.newConnection();
     }
 
     @Test

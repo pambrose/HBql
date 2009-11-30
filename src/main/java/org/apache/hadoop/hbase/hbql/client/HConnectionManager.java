@@ -25,11 +25,11 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class HConnectionManager {
 
-    public static HConnection newHConnection() throws HBqlException {
-        return HConnectionManager.newHConnection(null);
+    public static HConnection newConnection() throws HBqlException {
+        return HConnectionManager.newConnection(null);
     }
 
-    public static synchronized HConnection newHConnection(final HBaseConfiguration config) throws HBqlException {
+    public static synchronized HConnection newConnection(final HBaseConfiguration config) throws HBqlException {
         return new HConnectionImpl(config, null);
     }
 }

@@ -48,7 +48,7 @@ public class ConnectionImpl implements Connection {
 
     private final HConnectionImpl hConnection;
 
-    public ConnectionImpl(final String name, final HBaseConfiguration config) throws HBqlException {
+    public ConnectionImpl(final HBaseConfiguration config) throws HBqlException {
         this.hConnection = new HConnectionImpl(config, null);
     }
 

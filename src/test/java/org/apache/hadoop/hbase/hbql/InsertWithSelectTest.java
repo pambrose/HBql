@@ -45,7 +45,7 @@ public class InsertWithSelectTest extends TestSupport {
     @BeforeClass
     public static void beforeClass() throws HBqlException {
 
-        connection = HConnectionManager.newHConnection();
+        connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP MAPPING tab3 FOR TABLE table3"
                            + "("

@@ -55,7 +55,7 @@ public class SelectTest extends TestSupport {
     @BeforeClass
     public static void beforeClass() throws HBqlException {
 
-        connection = HConnectionManager.newHConnection();
+        connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP MAPPING tab8 FOR TABLE table1"
                            + "("

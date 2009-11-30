@@ -53,7 +53,7 @@ public class InsertTest extends TestSupport {
     @BeforeClass
     public static void beforeClass() throws HBqlException {
 
-        connection = HConnectionManager.newHConnection();
+        connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP MAPPING tab2 FOR TABLE table2"
                            + "("

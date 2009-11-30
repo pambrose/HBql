@@ -44,7 +44,7 @@ public class RecordAllTypesTest extends TestSupport {
     @BeforeClass
     public static void beforeClass() throws HBqlException {
 
-        connection = HConnectionManager.newHConnection();
+        connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP MAPPING alltypes FOR TABLE example2"
                            + "("

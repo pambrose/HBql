@@ -44,7 +44,7 @@ public class DeleteTest extends TestSupport {
     @BeforeClass
     public static void beforeClass() throws HBqlException {
 
-        connection = HConnectionManager.newHConnection();
+        connection = HConnectionManager.newConnection();
 
         if (connection.tableExists("delete_test")) {
             System.out.println(connection.execute("disable table delete_test"));

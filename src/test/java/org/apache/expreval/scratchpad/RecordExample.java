@@ -35,7 +35,7 @@ public class RecordExample {
 
     public static void main(String[] args) throws HBqlException {
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP MAPPING testobjects alias testobjects2"
                            + "("

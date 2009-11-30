@@ -118,7 +118,7 @@ public class AnnotationExample {
 
     public static void main(String[] args) throws HBqlException {
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         final HBatch<TestObject> batch = HBatch.newHBatch(connection);
         for (int i = 0; i < 10; i++)

@@ -65,7 +65,7 @@ public class HConnectionPoolImpl implements HConnectionPool {
         return this.count;
     }
 
-    public synchronized HConnection getHConnection() throws HBqlException {
+    public synchronized HConnection getConnection() throws HBqlException {
 
         //  Grow the pool as necessary, rather than front-loading it.
         if (this.getConnectionQueue().size() == 0 && this.getCount() < this.getPoolSize()) {

@@ -45,7 +45,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: show-tables
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
         System.out.println(connection.execute("SHOW TABLES"));
 
         // Or using the API
@@ -58,7 +58,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: show-mappings
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         System.out.println(connection.execute("SHOW MAPPINGS"));
 
@@ -74,7 +74,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: describe-table
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
         System.out.println(connection.execute("DESCRIBE TABLE foo"));
 
         // END SNIPPET: describe-table
@@ -85,7 +85,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: describe-mapping
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
         System.out.println(connection.execute("DESCRIBE MAPPING foo_mapping"));
 
         // END SNIPPET: describe-mapping
@@ -96,7 +96,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: enable-table
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
         System.out.println(connection.execute("ENABLE TABLE foo"));
 
         // Or using the API
@@ -110,7 +110,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: disable-table
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
         connection.execute("DISABLE TABLE foo");
 
         // Or using the API
@@ -124,7 +124,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: drop-mapping
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("DROP MAPPING foo_mapping");
 
@@ -139,7 +139,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: create-table
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
         connection.execute("CREATE TABLE foo (family1 (MAX_VERSIONS: 10), family2(), family3 (MAX_VERSIONS: 15))");
 
         // END SNIPPET: create-table
@@ -150,7 +150,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: alter-table
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         // Drop family family1
         connection.execute("ALTER TABLE foo DROP FAMILY family1, DROP FAMILY family2");
@@ -169,7 +169,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: drop-table
 
-        HConnection conection = HConnectionManager.newHConnection();
+        HConnection conection = HConnectionManager.newConnection();
         conection.execute("DROP TABLE foo");
 
         // Or using the API
@@ -183,7 +183,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: insert1
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP MAPPING foo_mapping FOR TABLE foo "
                            + "("
@@ -214,7 +214,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: delete1
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP MAPPING foo_mapping FOR TABLE foo "
                            + "("
@@ -241,7 +241,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: insert2
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         // A column with a default value.
         connection.execute("CREATE TEMP MAPPING foo_mapping FOR TABLE foo "
@@ -265,7 +265,7 @@ public class ExamplesTest extends TestSupport {
 
     public void insert3() throws HBqlException {
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         // START SNIPPET: insert3
         connection.execute("CREATE MAPPING foo_mapping FOR TABLE foo_table "
@@ -286,7 +286,7 @@ public class ExamplesTest extends TestSupport {
 
     public void insert4() throws HBqlException {
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         // START SNIPPET: insert4
         connection.execute("CREATE MAPPING foo_mapping FOR TABLE foo_table "
@@ -310,7 +310,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: create-mapping1
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         // Mapping named foo that corresponds to table foo.
         connection.execute("CREATE TEMP MAPPING foo (keyval key, family1 (val1 STRING))");
@@ -350,7 +350,7 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: select1
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP MAPPING tab1 FOR TABLE table1"
                            + "("
@@ -387,7 +387,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: definedExample1
 
         // Get a connection to HBase
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         // CREATE TEMP MAPPING
         connection.execute("CREATE TEMP MAPPING demo1 FOR TABLE example1"
@@ -490,7 +490,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: annotatedExample2
 
         // Get a connection to HBase
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP MAPPING demo2 FOR TABLE example2"
                            + "("

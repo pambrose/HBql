@@ -43,7 +43,7 @@ public class HBqlExample {
         final byte[] author = Bytes.toBytes("author");
         final byte[] title = Bytes.toBytes("title");
 
-        HConnection connection = HConnectionManager.newHConnection();
+        HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP MAPPING testobjects alias testobjects2"
                            + "("
