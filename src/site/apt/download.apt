@@ -28,7 +28,8 @@ Release Notes
 
     0.9.11-alpha -- 11/29/09
 
-        * Added support for family(column1, column2) as shorthand in {{{statements/insert.html}INSERT}} statement.
+        * Added support for family(column1, column2) column references in {{{statements/insert.html}INSERT}}
+        statement.
 
     0.9.10-alpha -- 11/28/09
 

@@ -8,7 +8,7 @@ INSERT
 *Syntax
 
 ---------------------------
-INSERT INTO [ MAPPING ] mapping_name ( column_reference [, ...] )
+INSERT INTO [ MAPPING ] mapping_name '(' column_reference [, ...] ')'
     { VALUES ( { expression | DEFAULT } [, ...] ) | query }  [ IF boolean_condition ]
 
 column_reference:
@@ -25,7 +25,7 @@ column_reference:
 
     * Inserts can also done using annotated objects or the HRecord interface, as seen below.
 
-    * "family1(column1, column2)" is shorthand for "family1:column1, family1:column2"
+    * "family1(column1, column2)" is a column reference for "family1:column1, family1:column2"
 
     
 *Example
