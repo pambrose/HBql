@@ -42,7 +42,7 @@ public class AnnotationAllTypesTest extends TestSupport {
 
     @BeforeClass
     public static void beforeClass() throws HBqlException {
-        connection = HConnectionManager.newConnection();
+        connection = HConnectionManager.newHConnection();
         setupMapping(connection);
     }
 

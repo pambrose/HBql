@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.examples;
+package org.apache.expreval.scratchpad;
 
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.Column;
@@ -118,7 +118,7 @@ public class AnnotationExample {
 
     public static void main(String[] args) throws HBqlException {
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newHConnection();
 
         final HBatch<TestObject> batch = HBatch.newHBatch(connection);
         for (int i = 0; i < 10; i++)

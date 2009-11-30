@@ -56,7 +56,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                 listener.onQueryInit();
         }
 
-        this.getQuery().getSelectStatement().determineIfAggregateQuery();
+        this.getQuery().getSelectStmt().determineIfAggregateQuery();
     }
 
     private HConnectionImpl getHConnectionImpl() {
@@ -80,7 +80,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
     }
 
     private SelectStatement getSelectStmt() {
-        return this.getQuery().getSelectStatement();
+        return this.getQuery().getSelectStmt();
     }
 
     private WithArgs getWithArgs() {
@@ -131,7 +131,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                 private ResultScanner currentResultScanner = null;
                 private Iterator<Result> currentResultIterator = null;
 
-                private AggregateRecord aggregateRecord = AggregateRecord.newAggregateRecord(getQuery().getSelectStatement(),
+                private AggregateRecord aggregateRecord = AggregateRecord.newAggregateRecord(getQuery().getSelectStmt(),
                                                                                              getSelectStmt());
 
                 // Prime the iterator with the first value
@@ -183,7 +183,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                 @SuppressWarnings("unchecked")
                 protected T fetchNextObject() throws HBqlException {
 
-                    final ResultAccessor resultAccessor = getQuery().getSelectStatement().getResultAccessor();
+                    final ResultAccessor resultAccessor = getQuery().getSelectStmt().getResultAccessor();
 
                     while (this.getCurrentResultIterator() != null || this.getRowRequestIterator().hasNext()) {
 

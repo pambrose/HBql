@@ -28,7 +28,7 @@ $HBQL_HOME/bin/console.sh [filename...]
 
     * The command line mode has keyword completion for most of the statement keywords.
 
-    * The console requires the hbql, jline, haddop, hbase, log4j jar files. You can see the specific jars
+    * The console requires the hbql, jline, hadoop, zookeeper, hbase, log4j jar files. You can see the specific jars
     in bin/console.sh.
 
     * The bin/console.sh script requires two shell vars to be defined: HBQL_HOME and HBASE_HOME.

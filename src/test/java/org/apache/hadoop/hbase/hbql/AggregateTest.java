@@ -52,7 +52,7 @@ public class AggregateTest extends TestSupport {
     @BeforeClass
     public static void beforeClass() throws HBqlException {
 
-        connection = HConnectionManager.newConnection();
+        connection = HConnectionManager.newHConnection();
 
         connection.execute("CREATE TEMP MAPPING aggmapping FOR TABLE aggtable"
                            + "("

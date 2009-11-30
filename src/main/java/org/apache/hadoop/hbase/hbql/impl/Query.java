@@ -46,7 +46,7 @@ public class Query<E> {
         this.connection = connection;
         this.selectStatement = selectStatement;
 
-        this.getSelectStatement().validate(this.getHConnectionImpl());
+        this.getSelectStmt().validate(this.getHConnectionImpl());
     }
 
     public static <T> Query<T> newQuery(final HConnectionImpl connection,
@@ -81,17 +81,17 @@ public class Query<E> {
         return this.connection;
     }
 
-    public SelectStatement getSelectStatement() {
+    public SelectStatement getSelectStmt() {
         return this.selectStatement;
     }
 
     public List<RowRequest> getRowRequestList() throws HBqlException {
 
-        final WithArgs withArgs = this.getSelectStatement().getWithArgs();
+        final WithArgs withArgs = this.getSelectStmt().getWithArgs();
 
         // Get list of all columns that are used in select list and expr tree
         final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
-        allAttribs.addAll(this.getSelectStatement().getSelectAttribList());
+        allAttribs.addAll(this.getSelectStmt().getSelectAttribList());
         allAttribs.addAll(withArgs.getAllColumnsUsedInExprs());
 
         return withArgs.getRowRequestList(allAttribs);

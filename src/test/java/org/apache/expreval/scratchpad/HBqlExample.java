@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.examples;
+package org.apache.expreval.scratchpad;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
@@ -43,7 +43,7 @@ public class HBqlExample {
         final byte[] author = Bytes.toBytes("author");
         final byte[] title = Bytes.toBytes("title");
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newHConnection();
 
         connection.execute("CREATE TEMP MAPPING testobjects alias testobjects2"
                            + "("

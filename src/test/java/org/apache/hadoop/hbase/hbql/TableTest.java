@@ -34,7 +34,7 @@ public class TableTest extends TestSupport {
     @Test
     public void simpleTable() throws HBqlException {
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newHConnection();
 
         assertFalse(connection.tableExists("zzz"));
 
@@ -64,7 +64,7 @@ public class TableTest extends TestSupport {
     @Test
     public void fullTable() throws HBqlException {
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newHConnection();
 
         String tableName = "tabletest1";
         if (connection.tableExists(tableName)) {

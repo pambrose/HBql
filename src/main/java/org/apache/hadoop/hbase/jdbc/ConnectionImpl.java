@@ -49,7 +49,7 @@ public class ConnectionImpl implements Connection {
     private final HConnectionImpl hConnection;
 
     public ConnectionImpl(final String name, final HBaseConfiguration config) throws HBqlException {
-        this.hConnection = new HConnectionImpl(name, config);
+        this.hConnection = new HConnectionImpl(config, null);
     }
 
     private HConnectionImpl getHConnectionImpl() {

@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.examples;
+package org.apache.expreval.scratchpad;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;

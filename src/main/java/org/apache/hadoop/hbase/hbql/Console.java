@@ -101,7 +101,7 @@ public class Console {
     private static HConnectionImpl getConnection() throws HBqlException {
 
         if (conn == null)
-            conn = (HConnectionImpl)HConnectionManager.newConnection();
+            conn = (HConnectionImpl)HConnectionManager.newHConnection();
 
         return conn;
     }
@@ -120,7 +120,7 @@ public class Console {
 
         final PrintWriter out = new PrintWriter(System.out);
 
-        final HConnectionImpl conn = (HConnectionImpl)HConnectionManager.newConnection();
+        final HConnectionImpl conn = (HConnectionImpl)HConnectionManager.newHConnection();
 
         StringBuilder stmtBuffer = new StringBuilder();
         boolean continuation = false;

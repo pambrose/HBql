@@ -21,15 +21,14 @@
 package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class HConnectionManager {
+public interface HConnectionPool {
 
-    public static HConnection newHConnection() throws HBqlException {
-        return HConnectionManager.newHConnection(null);
-    }
+    String getName();
 
-    public static synchronized HConnection newHConnection(final HBaseConfiguration config) throws HBqlException {
-        return new HConnectionImpl(config, null);
-    }
+    HBaseConfiguration getConfig();
+
+    HConnection getHConnection() throws HBqlException;
+
+    void release(final HConnection connection);
 }

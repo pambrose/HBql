@@ -28,8 +28,6 @@ import java.util.Set;
 
 public interface HConnection {
 
-    String getName();
-
     HBaseConfiguration getConfig();
 
     org.apache.hadoop.hbase.client.HTable newHTable(String tableName) throws HBqlException;
@@ -40,7 +38,9 @@ public interface HConnection {
 
     boolean isClosed() throws HBqlException;
 
-    // Table Routines    
+    boolean isPooled();
+
+    // Table Routines
     boolean tableExists(String tableName) throws HBqlException;
 
     HTableDescriptor getHTableDescriptor(String tableName) throws HBqlException;
@@ -56,7 +56,7 @@ public interface HConnection {
     Set<String> getTableNames() throws HBqlException;
 
     // Statement Routines
-    HStatement createStatement();
+    HStatement createStatement() throws HBqlException;
 
     HPreparedStatement prepareStatement(String str) throws HBqlException;
 

@@ -34,7 +34,7 @@ public class MappingTest extends TestSupport {
     @Test
     public void createMapping() throws HBqlException {
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newHConnection();
 
         assertFalse(connection.mappingExists("zzz"));
         assertTrue(connection.mappingExists("system_mappings"));

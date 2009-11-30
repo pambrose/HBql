@@ -48,31 +48,37 @@ import java.util.Set;
 
 public class HConnectionImpl implements HConnection {
 
-    private final String name;
     private final HBaseConfiguration config;
+    private final HConnectionPoolImpl connectionPool;
     private boolean closed = false;
-    private HBaseAdmin hbaseAdmin = null;
+    private volatile HBaseAdmin hbaseAdmin = null;
 
     private final MappingManager mappingManager;
     private final Map<Class, AnnotationResultAccessor> annotationMappingMap = Maps.newHashMap();
 
-    public HConnectionImpl(final String name, final HBaseConfiguration config) throws HBqlException {
-        this.name = name;
+    public HConnectionImpl(final HBaseConfiguration config,
+                           final HConnectionPoolImpl connectionPool) throws HBqlException {
         this.config = (config == null) ? new HBaseConfiguration() : config;
+        this.connectionPool = connectionPool;
         this.mappingManager = new MappingManager(this);
 
         this.getMappingManager().validatePersistentMetadata();
     }
 
-    public String getName() {
-        return this.name;
+    public boolean isPooled() {
+        return this.getConnectionPool() != null;
+    }
+
+    private HConnectionPoolImpl getConnectionPool() {
+        return this.connectionPool;
     }
 
     public HBaseConfiguration getConfig() {
         return this.config;
     }
 
-    private MappingManager getMappingManager() {
+    private MappingManager getMappingManager() throws HBqlException {
+        this.checkIfClosed();
         return this.mappingManager;
     }
 
@@ -92,13 +98,13 @@ public class HConnectionImpl implements HConnection {
             return accessor;
 
         accessor = AnnotationResultAccessor.newAnnotationMapping(this, clazz);
-
         getAnnotationMappingMap().put(clazz, accessor);
-
         return accessor;
     }
 
     public synchronized HBaseAdmin newHBaseAdmin() throws HBqlException {
+
+        this.checkIfClosed();
 
         if (this.hbaseAdmin == null) {
             try {
@@ -113,6 +119,7 @@ public class HConnectionImpl implements HConnection {
     }
 
     public Set<String> getFamilyNames(final String tableName) throws HBqlException {
+        this.checkIfClosed();
         final HTableDescriptor table = this.getHTableDescriptor(tableName);
         final Set<String> familySet = Sets.newHashSet();
         for (final HColumnDescriptor descriptor : table.getColumnFamilies())
@@ -125,20 +132,30 @@ public class HConnectionImpl implements HConnection {
         return names.contains(familyName);
     }
 
-    public HStatement createStatement() {
+    public HStatement createStatement() throws HBqlException {
+        this.checkIfClosed();
         return new HStatementImpl(this);
     }
 
     public HPreparedStatement prepareStatement(final String sql) throws HBqlException {
+        this.checkIfClosed();
         return new HPreparedStatementImpl(this, sql);
     }
 
     public void close() throws HBqlException {
-        this.closed = true;
+        if (this.isPooled())
+            this.getConnectionPool().release(this);
+        else
+            this.closed = true;
     }
 
-    public boolean isClosed() throws HBqlException {
+    public boolean isClosed() {
         return this.closed;
+    }
+
+    private void checkIfClosed() throws HBqlException {
+        if (this.isClosed())
+            throw new HBqlException("Connection is closed");
     }
 
     public ExecutionResults execute(final String sql) throws HBqlException {
@@ -198,7 +215,7 @@ public class HConnectionImpl implements HConnection {
 
     // Table Routines
     public void createTable(final HTableDescriptor tableDesc) throws HBqlException {
-
+        this.checkIfClosed();
         final String tableName = tableDesc.getNameAsString();
         if (this.tableExists(tableName))
             throw new HBqlException("Table already exists: " + tableName);
@@ -212,6 +229,7 @@ public class HConnectionImpl implements HConnection {
     }
 
     public HTable newHTable(final String tableName) throws HBqlException {
+        this.checkIfClosed();
         try {
             return new HTable(this.getConfig(), tableName);
         }

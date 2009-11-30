@@ -364,7 +364,7 @@ public class WhereExpressionsTest extends TestSupport {
         assertEvalFalse("'a' IN ('d', 'b')");
         assertEvalTrue("'a' NOT IN ('d', 'b')");
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newHConnection();
         final ObjectAllTypes obj = new ObjectAllTypes("aaabbb", 3, "aaab");
 
         assertReflectionEvalTrue(obj, "keyval CONTAINS 'ab'");
@@ -394,7 +394,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void booleanParamFunctions() throws HBqlException {
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newHConnection();
         ExpressionTree tree;
 
         tree = parseExpr(":a CONTAINS :b");
@@ -517,7 +517,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void regexFunctions() throws HBqlException {
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newHConnection();
         AnnotationAllTypesTest.setupMapping(connection);
         final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "aaab");
 
@@ -533,7 +533,7 @@ public class WhereExpressionsTest extends TestSupport {
     @Test
     public void objectFunctions() throws HBqlException {
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection connection = HConnectionManager.newHConnection();
         AnnotationAllTypesTest.setupMapping(connection);
         final AnnotatedAllTypes obj = new AnnotatedAllTypes("aaa", 3, "bbb");
 
