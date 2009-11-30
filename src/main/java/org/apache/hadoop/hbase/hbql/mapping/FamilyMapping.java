@@ -25,19 +25,21 @@ import java.util.List;
 
 public class FamilyMapping implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final String familyName;
-    private final List<ColumnDefinition> columnList;
+    private final List<ColumnDefinition> columnDefinitionList;
     private final boolean includeUnmapped;
 
     public FamilyMapping(final String familyName,
-                         final List<ColumnDefinition> columnList,
-                         final boolean includeUnmapped) {
+                         final boolean includeUnmapped,
+                         final List<ColumnDefinition> columnDefinitionList) {
         this.familyName = familyName;
-        this.columnList = columnList;
         this.includeUnmapped = includeUnmapped;
+        this.columnDefinitionList = columnDefinitionList;
 
-        if (this.getColumnList() != null)
-            for (final ColumnDefinition columnDefinition : this.getColumnList())
+        if (this.getColumnDefinitionList() != null)
+            for (final ColumnDefinition columnDefinition : this.getColumnDefinitionList())
                 columnDefinition.setFamilyMapping(this);
     }
 
@@ -45,11 +47,11 @@ public class FamilyMapping implements Serializable {
         return this.familyName;
     }
 
-    public List<ColumnDefinition> getColumnList() {
-        return this.columnList;
-    }
-
     public boolean includeUnmapped() {
         return this.includeUnmapped;
+    }
+
+    public List<ColumnDefinition> getColumnDefinitionList() {
+        return this.columnDefinitionList;
     }
 }

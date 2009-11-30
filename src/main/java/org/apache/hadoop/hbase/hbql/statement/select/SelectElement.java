@@ -35,6 +35,8 @@ import java.util.List;
 
 public interface SelectElement extends Serializable {
 
+    static final long serialVersionUID = 1L;
+
     void validate(StatementContext statementContext, HConnection connection) throws HBqlException;
 
     List<ColumnAttrib> getAttribsUsedInExpr();

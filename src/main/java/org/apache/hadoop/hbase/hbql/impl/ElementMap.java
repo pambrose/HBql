@@ -28,6 +28,8 @@ import java.util.HashMap;
 
 public class ElementMap<T extends Value> extends HashMap<String, T> implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final HRecordImpl record;
 
     public ElementMap(final HRecordImpl record) {

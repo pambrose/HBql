@@ -39,6 +39,8 @@ import java.util.Set;
 
 public class WithArgs implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private KeyRangeArgs keyRangeArgs = null;
     private TimestampArgs timestampArgs = null;
     private VersionArgs versionArgs = null;

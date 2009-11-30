@@ -29,6 +29,8 @@ import java.io.Serializable;
 
 public class DefaultArg extends MultipleExpressionContext implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     // We have to make value transient because Object is not serializable for hbqlfilter
     // We will compute it again on the server after reset is called
     private transient Object value = null;

@@ -45,6 +45,8 @@ import java.util.Map;
 
 public abstract class MultipleExpressionContext implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private boolean needsTypeValidation = true;
     private boolean needsOptimization = true;
     private boolean needsContextSetting = true;

@@ -35,4 +35,6 @@ public interface HMapping {
     void dropMapping() throws HBqlException;
 
     boolean isTempMapping();
+
+    String asString() throws HBqlException;
 }

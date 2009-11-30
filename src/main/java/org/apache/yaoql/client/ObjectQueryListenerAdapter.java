@@ -26,6 +26,8 @@ import java.io.Serializable;
 
 public abstract class ObjectQueryListenerAdapter<T> implements ObjectQueryListener<T>, Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     public void onQueryInit() {
     }
 

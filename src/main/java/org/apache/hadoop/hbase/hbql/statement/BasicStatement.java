@@ -29,6 +29,8 @@ import java.io.Serializable;
 
 public abstract class BasicStatement implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final StatementPredicate predicate;
 
     protected BasicStatement(final StatementPredicate predicate) {

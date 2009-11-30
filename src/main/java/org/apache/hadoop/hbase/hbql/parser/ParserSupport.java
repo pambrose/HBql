@@ -132,7 +132,7 @@ public class ParserSupport extends Parser {
     public static HBaseTableMapping newHBaseTableMapping(final TokenStream input,
                                                          final List<ColumnDefinition> columnList) throws RecognitionException {
 
-        final FamilyMapping mapping = new FamilyMapping(EMBEDDED, columnList, false);
+        final FamilyMapping mapping = new FamilyMapping(EMBEDDED, false, columnList);
         final List<FamilyMapping> mappingList = Lists.newArrayList(mapping);
 
         try {

@@ -44,13 +44,11 @@ public class MappingManager {
 
     public void validatePersistentMetadata() throws HBqlException {
 
-        final String sql = "CREATE TEMP MAPPING system_mappings (" +
-                           "mapping_name KEY, " +
-                           "f1 (mapping_obj object alias mapping_obj))";
+        String sql = "CREATE TEMP MAPPING system_mappings(mapping_name KEY, f1(mapping_obj object alias mapping_obj))";
         this.getConnection().execute(sql);
 
-        if (!this.getConnection().tableExists("system_mappings"))
-            this.getConnection().execute("CREATE TABLE system_mappings (f1 (MAX_VERSIONS: 5))");
+        sql = "CREATE TABLE system_mappings (f1(MAX_VERSIONS: 5)) IF NOT tableexists('system_mappings')";
+        this.getConnection().execute(sql);
     }
 
     private HConnectionImpl getConnection() {
@@ -95,7 +93,7 @@ public class MappingManager {
             return true;
         }
         else {
-            final String sql = "DELETE FROM system_mappings WITH KEYS ?)";
+            final String sql = "DELETE FROM system_mappings WITH KEYS ?";
             final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
             stmt.setParameter(1, mappingName);
             final int cnt = stmt.executeUpdate().getCount();
@@ -142,7 +140,7 @@ public class MappingManager {
             return this.getMappingMap().get(mappingName);
         }
         else {
-            final String sql = "SELECT mapping_obj FROM system_mappings WITH KEYS ?)";
+            final String sql = "SELECT mapping_obj FROM system_mappings WITH KEYS ?";
             final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
             stmt.setParameter(1, mappingName);
             List<HRecord> recs = stmt.executeQueryAndFetch();

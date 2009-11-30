@@ -39,6 +39,8 @@ import java.util.Set;
 
 public class HRecordImpl implements Serializable, HRecord {
 
+    private static final long serialVersionUID = 1L;
+
     private StatementContext statementContext;
     private long timestamp = System.currentTimeMillis();
 

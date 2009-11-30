@@ -194,7 +194,7 @@ familyMappingList returns [List<FamilyMapping> retval]
 
 familyMapping returns [FamilyMapping retval]
 	: f=simpleId (keyINCLUDE d=keyUNMAPPED)? (LPAREN c=columnDefinitionnList RPAREN)? 
-							{retval = new FamilyMapping($f.text, $c.retval, $d.text!=null);};
+							{retval = new FamilyMapping($f.text,  $d.text!=null, $c.retval);};
 
 columnDefinitionnList returns [List<ColumnDefinition> retval]
 @init {retval = Lists.newArrayList();}
@@ -202,7 +202,7 @@ columnDefinitionnList returns [List<ColumnDefinition> retval]
 							
 columnDefinition returns [ColumnDefinition retval]
 	: s=simpleId type=simpleId (b=LBRACE RBRACE)? (keyALIAS a=simpleId)? (keyDEFAULT def=exprValue)?
-							{retval = new ColumnDefinition($s.text, $type.text, $b.text!=null, $a.text, $def.retval);};
+							{retval = ColumnDefinition.newMappedColumn($s.text, $type.text, $b.text!=null, $a.text, $def.retval);};
 								 
 withClause returns [WithArgs retval]
 @init {retval = new WithArgs();}
@@ -416,7 +416,7 @@ attribList returns [List<ColumnDefinition> retval]
 
 attribDesc returns [ColumnDefinition retval]
 	: c=columnRef type=simpleId (b=LBRACE RBRACE)? (keyALIAS a=simpleId)? (keyDEFAULT t=exprValue)?	
-							{retval = new ColumnDefinition($c.text, $type.text, $b.text!=null, $a.text, $t.retval);};
+							{retval = ColumnDefinition.newMappedColumn($c.text, $type.text,  $b.text!=null, $a.text, $t.retval);};
 		
 ltgtOp returns [Operator retval]
 	: GT 						{retval = Operator.GT;}

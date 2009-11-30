@@ -31,6 +31,8 @@ import java.util.List;
 
 public abstract class InsertValueSource implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private InsertStatement insertStatement = null;
 
     public void setInsertStatement(final InsertStatement insertStatement) {

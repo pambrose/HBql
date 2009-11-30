@@ -51,6 +51,8 @@ import java.util.List;
 
 public abstract class TypeSignature implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final Class<? extends GenericValue> returnType;
     private final List<Class<? extends GenericValue>> typeSig = Lists.newArrayList();
     private final transient Constructor literalConstructor;

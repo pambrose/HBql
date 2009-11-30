@@ -28,50 +28,50 @@ import java.io.Serializable;
 
 public final class ColumnDefinition implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final String columnName;
     private final String aliasName;
     private final boolean isArray;
     private final FieldType fieldType;
-    private final boolean unMapped;
     private final GenericValue defaultValue;
 
     private FamilyMapping familyMapping = null;
 
-    public ColumnDefinition(final String columnName,
-                            final String typeName,
-                            final boolean isArray,
-                            final String aliasName,
-                            final GenericValue defaultValue) {
+    private ColumnDefinition(final String columnName,
+                             final FieldType fieldType,
+                             final boolean isArray,
+                             final String aliasName,
+                             final GenericValue defaultValue) {
 
         this.columnName = columnName;
-        this.aliasName = aliasName;
-        this.fieldType = getFieldType(typeName);
+        this.fieldType = fieldType;
         this.isArray = isArray;
+        this.aliasName = aliasName;
         this.defaultValue = defaultValue;
-        this.unMapped = false;
     }
 
-    private ColumnDefinition(final String familyName,
-                             final String columnName,
-                             final FieldType type,
-                             final boolean unMapped) {
-        this.columnName = columnName;
-        this.aliasName = columnName.length() > 0 ? columnName : familyName;
-        this.fieldType = type;
-        this.isArray = false;
-        this.defaultValue = null;
-        this.unMapped = unMapped;
-        this.familyMapping = new FamilyMapping(familyName, null, false);
-    }
-
-    // For KEY Attribs
+    // For KEY attribs
     public static ColumnDefinition newKeyColumn(final String keyName) {
-        return new ColumnDefinition("", keyName, FieldType.KeyType, false);
+        final ColumnDefinition column = new ColumnDefinition(keyName, FieldType.KeyType, false, keyName, null);
+        column.setFamilyMapping(new FamilyMapping("", false, null));
+        return column;
     }
 
-    // For Family Default Attribs
+    // For Family Default attribs
     public static ColumnDefinition newUnMappedColumn(final String familyName) {
-        return new ColumnDefinition(familyName, "", null, true);
+        final ColumnDefinition column = new ColumnDefinition("", null, false, familyName, null);
+        column.setFamilyMapping(new FamilyMapping(familyName, false, null));
+        return column;
+    }
+
+    // For regular attribs
+    public static ColumnDefinition newMappedColumn(final String columnName,
+                                                   final String typeName,
+                                                   final boolean isArray,
+                                                   final String aliasName,
+                                                   final GenericValue defaultValue) {
+        return new ColumnDefinition(columnName, getFieldType(typeName), isArray, aliasName, defaultValue);
     }
 
     private FamilyMapping getFamilyMapping() {

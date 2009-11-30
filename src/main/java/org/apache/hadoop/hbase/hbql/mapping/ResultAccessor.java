@@ -31,6 +31,8 @@ import java.util.List;
 
 public abstract class ResultAccessor implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final StatementContext statementContext;
 
     public ResultAccessor(final StatementContext statementContext) {

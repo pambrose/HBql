@@ -31,6 +31,8 @@ import java.io.Serializable;
 
 public interface GenericValue extends Serializable {
 
+    static final long serialVersionUID = 1L;
+
     void setExpressionContext(MultipleExpressionContext context) throws HBqlException;
 
     Object getValue(HConnectionImpl connection, Object object) throws HBqlException, ResultMissingColumnException;

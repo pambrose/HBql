@@ -42,6 +42,8 @@ import java.util.List;
 
 public class KeyRangeArgs implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final List<Range> rangeList;
     private final List<NamedParameter> namedParamList = Lists.newArrayList();
 

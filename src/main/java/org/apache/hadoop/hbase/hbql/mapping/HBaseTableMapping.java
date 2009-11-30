@@ -71,14 +71,15 @@ public class HBaseTableMapping extends Mapping implements HMapping {
             processColumnDefintion(ColumnDefinition.newKeyColumn(keyName));
 
         if (familyMappingList != null) {
-            // Add columns
-            for (final FamilyMapping familyDefinition : familyMappingList)
-                if (familyDefinition.getColumnList() != null)
-                    for (final ColumnDefinition columnDefinition : familyDefinition.getColumnList())
+
+            for (final FamilyMapping familyMapping : familyMappingList) {
+
+                // Add columns
+                if (familyMapping.getColumnDefinitionList() != null)
+                    for (final ColumnDefinition columnDefinition : familyMapping.getColumnDefinitionList())
                         processColumnDefintion(columnDefinition);
 
-            // Add Family Defaults
-            for (final FamilyMapping familyMapping : familyMappingList) {
+                // Add Family Defaults
                 if (familyMapping.includeUnmapped()) {
                     final String familyName = familyMapping.getFamilyName();
                     final ColumnDefinition columnDefinition = ColumnDefinition.newUnMappedColumn(familyName);
@@ -156,6 +157,10 @@ public class HBaseTableMapping extends Mapping implements HMapping {
 
     public ColumnAttrib getUnMappedAttrib(final String familyName) {
         return this.getUnMappedAttribsMap().get(familyName);
+    }
+
+    private boolean includeUnMappedForFamiily(final String familyName) {
+        return this.getUnMappedAttribsMap().containsKey(familyName);
     }
 
     private void addUnMappedAttrib(final ColumnAttrib attrib) throws HBqlException {
@@ -280,5 +285,51 @@ public class HBaseTableMapping extends Mapping implements HMapping {
                 throw new HBqlException(mappingName + " attribute "
                                         + attrib.getFamilyQualifiedName() + " has unknown type.");
         }
+    }
+
+    public String asString() throws HBqlException {
+
+        final StringBuilder sbuf = new StringBuilder();
+
+        sbuf.append("CREATE ")
+                .append(this.isTempMapping() ? "TEMP " : "")
+                .append("MAPPING ")
+                .append(this.getMappingName());
+
+        if (!(this.getMappingName().equals(this.getTableName())))
+            sbuf.append(" FOR TABLE ").append(this.getTableName());
+
+        sbuf.append(" (\n  ")
+                .append(this.getKeyAttrib().getColumnName())
+                .append(" KEY");
+
+        for (final String familyName : this.getColumnAttribListByFamilyNameMap().keySet()) {
+
+            sbuf.append(",\n  ").append(familyName);
+
+            if (this.includeUnMappedForFamiily(familyName))
+                sbuf.append(" INCLUDE UNMAPPED");
+
+            sbuf.append(" (");
+
+            boolean first = true;
+            for (final ColumnAttrib column : this.getColumnAttribListByFamilyNameMap().get(familyName)) {
+                if (!first)
+                    sbuf.append(",");
+                else
+                    first = false;
+
+                sbuf.append("\n    ").append(column.asString());
+            }
+
+            sbuf.append("\n  )");
+        }
+
+        if (this.getColumnAttribListByFamilyNameMap().size() > 0)
+            sbuf.append("\n");
+
+        sbuf.append(")");
+
+        return sbuf.toString();
     }
 }

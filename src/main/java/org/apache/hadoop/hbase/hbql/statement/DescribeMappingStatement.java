@@ -23,7 +23,6 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 
 public class DescribeMappingStatement extends StatementContext implements ConnectionStatement {
@@ -40,19 +39,7 @@ public class DescribeMappingStatement extends StatementContext implements Connec
 
         if (tableMapping == null)
             return new ExecutionResults("Unknown mapping: " + this.getMappingName());
-
-        final ExecutionResults retval = new ExecutionResults();
-
-        retval.out.println("Mapping name: " + this.getMappingName());
-        retval.out.println("Table name: " + tableMapping.getTableName());
-        retval.out.println("Columns:");
-
-        for (final String familyName : tableMapping.getFamilySet()) {
-            for (final ColumnAttrib column : tableMapping.getColumnAttribListByFamilyName(familyName))
-                retval.out.println("\t" + column.asString());
-        }
-
-        retval.out.flush();
-        return retval;
+        else
+            return new ExecutionResults(tableMapping.asString());
     }
 }

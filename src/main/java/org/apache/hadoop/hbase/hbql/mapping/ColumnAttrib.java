@@ -35,6 +35,8 @@ import java.util.NavigableMap;
 
 public abstract class ColumnAttrib implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final String familyName;
     private final String columnName;
     private final String aliasName;

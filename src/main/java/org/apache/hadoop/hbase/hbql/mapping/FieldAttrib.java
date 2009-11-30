@@ -158,9 +158,10 @@ public abstract class FieldAttrib extends ColumnAttrib {
     }
 
     public String asString() throws HBqlException {
+
         final StringBuilder sbuf = new StringBuilder();
 
-        sbuf.append(this.getFamilyQualifiedName());
+        sbuf.append(this.getColumnName());
 
         sbuf.append(" " + this.getFieldType().getFirstSynonym());
 

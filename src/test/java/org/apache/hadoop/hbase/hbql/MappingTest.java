@@ -61,6 +61,24 @@ public class MappingTest extends TestSupport {
         connection.dropMapping(mappingName);
         assertFalse(connection.mappingExists(mappingName));
 
+        mappingName = "test3";
+        connection.dropMapping(mappingName);
+        assertFalse(connection.mappingExists(mappingName));
+        connection.execute("CREATE TEMP MAPPING " + mappingName + " for table  " + mappingName
+                           + " (keyval key, "
+                           + "f1 (val1 int[] , val2 object[] alias val3),"
+                           + "f2 include unmapped(val1 int[] , val2 string alias val4 default 'test val'))");
+        assertTrue(connection.mappingExists(mappingName));
+        mapping = connection.getMapping(mappingName);
+        assertTrue(mapping.getMappingName().equals(mappingName) && mapping.getTableName().equals(mappingName));
+        assertTrue(mapping.isTempMapping());
+
+        mapping = connection.getMapping(mappingName);
+        System.out.print(mapping.asString());
+
+        connection.dropMapping(mappingName);
+        assertFalse(connection.mappingExists(mappingName));
+
         Set<HMapping> mappings = connection.getMappings();
     }
 }

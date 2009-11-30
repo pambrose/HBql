@@ -32,6 +32,8 @@ import java.util.TreeSet;
 
 public class NamedParameters implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private volatile List<NamedParameter> paramList = null;
     private final SortedSet<NamedParameter> paramSet = new TreeSet<NamedParameter>(NamedParameter.getComparator());
 
