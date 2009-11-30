@@ -157,26 +157,6 @@ public abstract class FieldAttrib extends ColumnAttrib {
             field.setAccessible(true);
     }
 
-    public String asString() throws HBqlException {
-
-        final StringBuilder sbuf = new StringBuilder();
-
-        sbuf.append(this.getColumnName());
-
-        sbuf.append(" " + this.getFieldType().getFirstSynonym());
-
-        if (this.isAnArray())
-            sbuf.append("[]");
-
-        if (this.hasAlias())
-            sbuf.append(" ALIAS " + this.getAliasName());
-
-        if (this.hasDefaultArg())
-            sbuf.append(" DEFAULT " + this.getDefaultValue());
-
-        return sbuf.toString();
-    }
-
     public void resetDefaultValue() {
         // No op
     }

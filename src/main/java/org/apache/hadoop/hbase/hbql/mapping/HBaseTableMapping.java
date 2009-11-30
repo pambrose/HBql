@@ -44,11 +44,11 @@ public class HBaseTableMapping extends Mapping implements HMapping {
     private boolean tempMapping;
     private Set<String> familyNameSet = null;
 
-    private final Map<String, ColumnAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
-    private final Map<String, ColumnAttrib> versionAttribMap = Maps.newHashMap();
-    private final Map<String, List<ColumnAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
+    private final Map<String, HRecordAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
+    private final Map<String, HRecordAttrib> versionAttribMap = Maps.newHashMap();
+    private final Map<String, List<HRecordAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
 
-    private final Map<String, ColumnAttrib> unMappedAttribsMap = Maps.newHashMap();
+    private final Map<String, HRecordAttrib> unMappedAttribsMap = Maps.newHashMap();
 
     // For serialization
     public HBaseTableMapping() {
@@ -130,7 +130,7 @@ public class HBaseTableMapping extends Mapping implements HMapping {
     }
 
     // *** columnAttribByFamilyQualifiedNameMap calls
-    protected Map<String, ColumnAttrib> getAttribByFamilyQualifiedNameMap() {
+    protected Map<String, HRecordAttrib> getAttribByFamilyQualifiedNameMap() {
         return this.columnAttribByFamilyQualifiedNameMap;
     }
 
@@ -142,7 +142,7 @@ public class HBaseTableMapping extends Mapping implements HMapping {
         return this.getAttribByFamilyQualifiedNameMap().get(familyQualifiedName);
     }
 
-    protected void addAttribToFamilyQualifiedNameMap(final ColumnAttrib attrib) throws HBqlException {
+    protected void addAttribToFamilyQualifiedNameMap(final HRecordAttrib attrib) throws HBqlException {
 
         final String name = attrib.getFamilyQualifiedName();
         if (this.getAttribByFamilyQualifiedNameMap().containsKey(name))
@@ -151,7 +151,7 @@ public class HBaseTableMapping extends Mapping implements HMapping {
     }
 
     // *** unMappedMap calls
-    private Map<String, ColumnAttrib> getUnMappedAttribsMap() {
+    private Map<String, HRecordAttrib> getUnMappedAttribsMap() {
         return this.unMappedAttribsMap;
     }
 
@@ -163,7 +163,7 @@ public class HBaseTableMapping extends Mapping implements HMapping {
         return this.getUnMappedAttribsMap().containsKey(familyName);
     }
 
-    private void addUnMappedAttrib(final ColumnAttrib attrib) throws HBqlException {
+    private void addUnMappedAttrib(final HRecordAttrib attrib) throws HBqlException {
 
         final String familyName = attrib.getFamilyName();
         if (this.getUnMappedAttribsMap().containsKey(familyName))
@@ -182,7 +182,7 @@ public class HBaseTableMapping extends Mapping implements HMapping {
     }
 
     // *** versionAttribByFamilyQualifiedNameMap calls
-    private Map<String, ColumnAttrib> getVersionAttribMap() {
+    private Map<String, HRecordAttrib> getVersionAttribMap() {
         return this.versionAttribMap;
     }
 
@@ -194,7 +194,7 @@ public class HBaseTableMapping extends Mapping implements HMapping {
         return this.getVersionAttrib(familyName + ":" + columnName);
     }
 
-    protected void addVersionAttrib(final ColumnAttrib attrib) throws HBqlException {
+    protected void addVersionAttrib(final HRecordAttrib attrib) throws HBqlException {
 
         if (!attrib.isAVersionValue())
             return;
@@ -207,7 +207,7 @@ public class HBaseTableMapping extends Mapping implements HMapping {
     }
 
     // *** columnAttribListByFamilyNameMap
-    private Map<String, List<ColumnAttrib>> getColumnAttribListByFamilyNameMap() {
+    private Map<String, List<HRecordAttrib>> getColumnAttribListByFamilyNameMap() {
         return this.columnAttribListByFamilyNameMap;
     }
 
@@ -215,7 +215,7 @@ public class HBaseTableMapping extends Mapping implements HMapping {
         return this.getColumnAttribListByFamilyNameMap().keySet();
     }
 
-    public List<ColumnAttrib> getColumnAttribListByFamilyName(final String familyName) {
+    public List<HRecordAttrib> getColumnAttribListByFamilyName(final String familyName) {
         return this.getColumnAttribListByFamilyNameMap().get(familyName);
     }
 
@@ -224,13 +224,13 @@ public class HBaseTableMapping extends Mapping implements HMapping {
     }
 
     public void addAttribToFamilyNameColumnListMap(final String familyName,
-                                                   final List<ColumnAttrib> attribList) throws HBqlException {
+                                                   final List<HRecordAttrib> attribList) throws HBqlException {
         if (this.containsFamilyNameInFamilyNameMap(familyName))
             throw new HBqlException(familyName + " already declared");
         this.getColumnAttribListByFamilyNameMap().put(familyName, attribList);
     }
 
-    public void addAttribToFamilyNameColumnListMap(ColumnAttrib attrib) throws HBqlException {
+    public void addAttribToFamilyNameColumnListMap(HRecordAttrib attrib) throws HBqlException {
 
         if (attrib.isAKeyAttrib())
             return;
@@ -240,7 +240,7 @@ public class HBaseTableMapping extends Mapping implements HMapping {
         if (familyName == null || familyName.length() == 0)
             return;
 
-        final List<ColumnAttrib> attribList;
+        final List<HRecordAttrib> attribList;
         if (!this.containsFamilyNameInFamilyNameMap(familyName)) {
             attribList = Lists.newArrayList();
             this.addAttribToFamilyNameColumnListMap(familyName, attribList);
@@ -313,7 +313,7 @@ public class HBaseTableMapping extends Mapping implements HMapping {
             sbuf.append(" (");
 
             boolean first = true;
-            for (final ColumnAttrib column : this.getColumnAttribListByFamilyNameMap().get(familyName)) {
+            for (final HRecordAttrib column : this.getColumnAttribListByFamilyNameMap().get(familyName)) {
                 if (!first)
                     sbuf.append(",");
                 else

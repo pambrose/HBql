@@ -68,8 +68,6 @@ public abstract class ColumnAttrib implements Serializable {
         this.embedded = this.getFamilyName() != null && this.getFamilyName().equals(ParserSupport.EMBEDDED);
     }
 
-    public abstract String asString() throws HBqlException;
-
     private boolean isEmbedded() {
         return this.embedded;
     }

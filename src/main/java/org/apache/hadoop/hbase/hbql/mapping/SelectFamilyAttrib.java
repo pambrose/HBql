@@ -77,10 +77,6 @@ public class SelectFamilyAttrib extends ColumnAttrib {
         throw new InternalErrorException();
     }
 
-    public String asString() {
-        return "";
-    }
-
     public void resetDefaultValue() {
         // No op
     }

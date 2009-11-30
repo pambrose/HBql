@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-@VersionAnnotation(version = "0.9.11-alpha",
+@VersionAnnotation(version = "0.9.12-alpha",
                    date = "11/29/09",
                    user = "pambrose",
                    revision = "",
