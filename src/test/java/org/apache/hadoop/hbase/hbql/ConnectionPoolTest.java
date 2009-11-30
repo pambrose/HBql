@@ -55,14 +55,13 @@ public class ConnectionPoolTest extends TestSupport {
         exec = Executors.newFixedThreadPool(workerCount);
 
         connectionPool = HConnectionPoolManager.newConnectionPool(5);
-
         connection = HConnectionManager.newConnection();
 
+        /*
         System.out.println(connection.execute("disable table pool_test if tableExists('pool_test')"));
         System.out.println(connection.execute("drop table pool_test if tableExists('pool_test')"));
-
         System.out.println(connection.execute("create table pool_test (f1(), f2(), f3())"));
-
+         */
         connection.execute("CREATE TEMP MAPPING pool_test "
                            + "("
                            + "keyval key, "
@@ -118,6 +117,17 @@ public class ConnectionPoolTest extends TestSupport {
     }
 
     void doQuery(HConnection connection) throws HBqlException {
+
+        connection.execute("CREATE TEMP MAPPING pool_test "
+                           + "("
+                           + "keyval key, "
+                           + "f1 ("
+                           + "  val1 string alias val1, "
+                           + "  val2 string alias val2, "
+                           + "  val3 string alias val3 "
+                           + ") "
+                           + ") if not mappingexists('pool_test_mapping')");
+
         String sql = "SELECT count() as cnt FROM pool_test WITH CLIENT FILTER WHERE definedinrow(f1:val1)";
         List<HRecord> recs = connection.executeQueryAndFetch(sql);
         HRecord rec = recs.get(0);
@@ -126,15 +136,24 @@ public class ConnectionPoolTest extends TestSupport {
     }
 
     @Test
-    public void threadExercise() throws HBqlException {
+    public void exercise1() throws HBqlException {
 
-        for (int i = 0; i < workerCount; i++) {
-
-            exec.execute(new Runnable() {
-                public void run() {
-
+        Runnable job = new Runnable() {
+            public void run() {
+                try {
+                    HConnection connection = connectionPool.getConnection();
+                    doQuery(connection);
+                    connection.close();
                 }
-            });
+                catch (HBqlException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        for (int i = 0; i < 1000; i++) {
+            System.out.println("Created: " + i);
+            exec.execute(job);
         }
     }
 }

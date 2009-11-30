@@ -54,7 +54,7 @@ public class HConnectionImpl implements HConnection {
     private volatile HBaseAdmin hbaseAdmin = null;
 
     private final MappingManager mappingManager;
-    private final Map<Class, AnnotationResultAccessor> annotationMappingMap = Maps.newHashMap();
+    private final Map<Class, AnnotationResultAccessor> annotationMappingMap = Maps.newConcurrentHashMap();
 
     public HConnectionImpl(final HBaseConfiguration config,
                            final HConnectionPoolImpl connectionPool) throws HBqlException {

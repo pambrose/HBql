@@ -50,6 +50,7 @@ public abstract class StatementContext extends BasicStatement {
                 this.setMapping(connection.getMapping(this.getMappingName()));
             }
             catch (HBqlException e) {
+                e.printStackTrace();
                 throw new HBqlException("Unknown mapping name: " + this.getMappingName());
             }
         }

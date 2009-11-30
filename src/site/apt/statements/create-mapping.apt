@@ -37,7 +37,7 @@ type:
     Defines a mapping. A mapping is required to select, insert and delete records. 
 
     * If TEMP is omitted, then the mapping is persisted in HBase.  If it is included, then
-    the mapping will go away when the connection is closed.
+    the mapping is specific to the connection and will go away when the connection is closed.
 
     * If the table name clause is omitted, then the table name defaults
     to the mapping name.
