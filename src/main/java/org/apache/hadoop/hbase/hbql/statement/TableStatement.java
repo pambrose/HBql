@@ -20,8 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-
 public abstract class TableStatement extends BasicStatement implements ConnectionStatement {
 
     private final String tableName;
@@ -33,9 +31,5 @@ public abstract class TableStatement extends BasicStatement implements Connectio
 
     protected String getTableName() {
         return tableName;
-    }
-
-    public void validate() throws HBqlException {
-
     }
 }

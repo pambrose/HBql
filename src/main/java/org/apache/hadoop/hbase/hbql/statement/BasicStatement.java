@@ -55,6 +55,6 @@ public abstract class BasicStatement implements Serializable {
     }
 
     public void validate() throws HBqlException {
-
+        // Default
     }
 }
