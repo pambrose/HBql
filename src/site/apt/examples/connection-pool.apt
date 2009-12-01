@@ -1,0 +1,10 @@
+    -----
+    Using a Connection Pool
+    -----
+    -----
+
+Using a Connection Pool
+
+*Example
+
+%{snippet|id=connectionPool1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

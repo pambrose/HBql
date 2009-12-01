@@ -9,6 +9,8 @@ HBql Examples
 
     {{{./annotated-mapping.html}Inserting records using an annotated object}}
 
+    {{{./connection-pool.html}Using a connection pool}}
+
     {{{./jdbc.html}Using the JDBC driver}}
 
 
