@@ -5,14 +5,14 @@
 
 Releases
 
-    *{{{./downloads/hbql-0.9.12-alpha.zip}0.9.12-alpha.zip}}
+    *{{{./downloads/hbql-0.9.13-alpha.zip}0.9.13-alpha.zip}}
     
-    *{{{./downloads/hbql-0.9.12-alpha.tar.gz}0.9.12-alpha.tar.gz}}
+    *{{{./downloads/hbql-0.9.13-alpha.tar.gz}0.9.13-alpha.tar.gz}}
 
 
 Javadocs
 
-    *{{{./downloads/javadocs-0.9.12-alpha.zip}javadocs-0.9.12-alpha.zip}}
+    *{{{./downloads/javadocs-0.9.13-alpha.zip}javadocs-0.9.13-alpha.zip}}
     
 
 Source
@@ -25,6 +25,10 @@ git clone git://github.com/pambrose/HBql.git
 
 
 Release Notes
+
+    0.9.13-alpha -- 12/2/09
+
+        * Added jdbc url option for hbase.mater value
 
     0.9.12-alpha -- 12/1/09
 
