@@ -25,6 +25,9 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
+import javax.sql.ConnectionEventListener;
+import javax.sql.PooledConnection;
+import javax.sql.StatementEventListener;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -44,7 +47,7 @@ import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
 
-public class ConnectionImpl implements Connection {
+public class ConnectionImpl implements Connection, PooledConnection {
 
     private final HConnectionImpl hConnection;
 
@@ -58,6 +61,10 @@ public class ConnectionImpl implements Connection {
 
     private HConnectionImpl getHConnectionImpl() {
         return this.hConnection;
+    }
+
+    public Connection getConnection() throws SQLException {
+        return this;
     }
 
     public HConnection getHConnection() {
@@ -258,5 +265,21 @@ public class ConnectionImpl implements Connection {
 
     public boolean isWrapperFor(final Class<?> aClass) throws SQLException {
         return false;
+    }
+
+    public void addConnectionEventListener(final ConnectionEventListener connectionEventListener) {
+        this.getHConnectionImpl().addConnectionEventListener(connectionEventListener);
+    }
+
+    public void removeConnectionEventListener(final ConnectionEventListener connectionEventListener) {
+        this.getHConnectionImpl().removeConnectionEventListener(connectionEventListener);
+    }
+
+    public void addStatementEventListener(final StatementEventListener statementEventListener) {
+        this.getHConnectionImpl().addStatementEventListener(statementEventListener);
+    }
+
+    public void removeStatementEventListener(final StatementEventListener statementEventListener) {
+        this.getHConnectionImpl().removeStatementEventListener(statementEventListener);
     }
 }

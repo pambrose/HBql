@@ -23,6 +23,8 @@ package org.apache.hadoop.hbase.hbql.client;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HTableDescriptor;
 
+import javax.sql.ConnectionEventListener;
+import javax.sql.StatementEventListener;
 import java.util.List;
 import java.util.Set;
 
@@ -81,4 +83,12 @@ public interface HConnection {
     boolean dropMapping(String mappingName) throws HBqlException;
 
     Set<HMapping> getMappings() throws HBqlException;
+
+    void addConnectionEventListener(ConnectionEventListener connectionEventListener);
+
+    void removeConnectionEventListener(ConnectionEventListener connectionEventListener);
+
+    void addStatementEventListener(StatementEventListener statementEventListener);
+
+    void removeStatementEventListener(StatementEventListener statementEventListener);
 }

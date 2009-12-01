@@ -61,7 +61,7 @@ public class ConnectionPoolTest extends TestSupport {
 
         exec = Executors.newFixedThreadPool(workerCount);
 
-        connectionPool = HConnectionPoolManager.newConnectionPool(5);
+        connectionPool = HConnectionPoolManager.newConnectionPool(2, 5);
         connection = HConnectionManager.newConnection();
 
         /*

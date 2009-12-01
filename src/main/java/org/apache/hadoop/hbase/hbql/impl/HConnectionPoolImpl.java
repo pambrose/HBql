@@ -36,13 +36,17 @@ public class HConnectionPoolImpl implements HConnectionPool {
     private final int poolSize;
     private volatile int count = 0;
 
-    public HConnectionPoolImpl(final int poolSize,
+    public HConnectionPoolImpl(final int initSize,
+                               final int poolSize,
                                final String name,
                                final HBaseConfiguration config) throws HBqlException {
         this.name = name;
         this.config = (config == null) ? new HBaseConfiguration() : config;
         this.poolSize = poolSize;
         this.connectionQueue = new ArrayBlockingQueue<HConnection>(poolSize);
+
+        for (int i = 0; i < initSize; i++)
+            this.addConnectionToPool();
     }
 
     public String getName() {
@@ -65,14 +69,19 @@ public class HConnectionPoolImpl implements HConnectionPool {
         return this.count;
     }
 
-    public synchronized HConnection getConnection() throws HBqlException {
-
-        //  Grow the pool as necessary, rather than front-loading it.
-        if (this.getConnectionQueue().size() == 0 && this.getCount() < this.getPoolSize()) {
+    private void addConnectionToPool() throws HBqlException {
+        if (this.getCount() < this.getPoolSize()) {
             final HConnectionImpl connection = new HConnectionImpl(this.getConfig(), this);
             this.getConnectionQueue().add(connection);
             this.count++;
         }
+    }
+
+    public synchronized HConnection getConnection() throws HBqlException {
+
+        //  Grow the pool as necessary, rather than front-loading it.
+        if (this.getConnectionQueue().size() == 0)
+            this.addConnectionToPool();
 
         try {
             return this.getConnectionQueue().take();

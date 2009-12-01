@@ -25,7 +25,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnectionPool;
 import org.apache.hadoop.hbase.hbql.client.HConnectionPoolManager;
 import org.apache.hadoop.hbase.jdbc.impl.ConnectionImpl;
-import org.apache.hadoop.hbase.jdbc.impl.PooledConnectionImpl;
 
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
@@ -36,22 +35,27 @@ public class HConnectionPoolDataSource implements ConnectionPoolDataSource {
 
     private final HConnectionPool connectionPool;
 
-    public HConnectionPoolDataSource(final int poolSize) throws HBqlException {
-        this(poolSize, null, null);
+    public HConnectionPoolDataSource(final int initSize, final int maxSize) throws HBqlException {
+        this(initSize, maxSize, null, null);
     }
 
-    public HConnectionPoolDataSource(final int poolSize, final String poolName) throws HBqlException {
-        this(poolSize, poolName, null);
+    public HConnectionPoolDataSource(final int initSize,
+                                     final int maxSize,
+                                     final String poolName) throws HBqlException {
+        this(initSize, maxSize, poolName, null);
     }
 
-    public HConnectionPoolDataSource(final int poolSize, final HBaseConfiguration config) throws HBqlException {
-        this(poolSize, null, config);
+    public HConnectionPoolDataSource(final int initSize,
+                                     final int maxSize,
+                                     final HBaseConfiguration config) throws HBqlException {
+        this(initSize, maxSize, null, config);
     }
 
-    public HConnectionPoolDataSource(final int poolSize,
+    public HConnectionPoolDataSource(final int initSize,
+                                     final int maxSize,
                                      final String poolName,
                                      final HBaseConfiguration config) throws HBqlException {
-        connectionPool = HConnectionPoolManager.newConnectionPool(poolSize, poolName, config);
+        connectionPool = HConnectionPoolManager.newConnectionPool(initSize, maxSize, poolName, config);
     }
 
     private HConnectionPool getConnectionPool() {
@@ -59,7 +63,7 @@ public class HConnectionPoolDataSource implements ConnectionPoolDataSource {
     }
 
     public PooledConnection getPooledConnection() throws SQLException {
-        return new PooledConnectionImpl(new ConnectionImpl(this.getConnectionPool().getConnection()));
+        return new ConnectionImpl(this.getConnectionPool().getConnection());
     }
 
     public PooledConnection getPooledConnection(final String s, final String s1) throws SQLException {

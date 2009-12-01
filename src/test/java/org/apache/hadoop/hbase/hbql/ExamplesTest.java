@@ -388,8 +388,8 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: connectionPool1
 
-        // Create pool with max of 5 connections
-        HConnectionPool connectionPool = HConnectionPoolManager.newConnectionPool(5);
+        // Create pool with max of 15 connections and prime it with 5 connections
+        HConnectionPool connectionPool = HConnectionPoolManager.newConnectionPool(5, 15);
 
         HConnection connection = connectionPool.getConnection();
 

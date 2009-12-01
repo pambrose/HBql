@@ -32,21 +32,23 @@ import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
+import javax.sql.ConnectionEvent;
+import javax.sql.ConnectionEventListener;
 import java.util.List;
 
 
 public class HStatementImpl implements HStatement {
 
-    private final HConnectionImpl connection;
+    private final HConnectionImpl connectionImpl;
     private HResultSetImpl resultSet = null;
     private volatile boolean closed = false;
 
-    public HStatementImpl(final HConnectionImpl connection) {
-        this.connection = connection;
+    public HStatementImpl(final HConnectionImpl connectionImpl) {
+        this.connectionImpl = connectionImpl;
     }
 
-    protected HConnectionImpl getConnection() {
-        return this.connection;
+    protected HConnectionImpl getHConnectionImpl() {
+        return this.connectionImpl;
     }
 
     public <T> HResultSet<T> getResultSet() {
@@ -59,7 +61,7 @@ public class HStatementImpl implements HStatement {
             throw new HBqlException("executeUpdate() requires a non-SELECT statement");
         }
         else if (Util.isConnectionStatemet(statement)) {
-            return ((ConnectionStatement)statement).evaluatePredicateAndExecute(this.getConnection());
+            return ((ConnectionStatement)statement).evaluatePredicateAndExecute(this.getHConnectionImpl());
         }
         else if (Util.isNonConectionStatemet(statement)) {
             return ((NonConnectionStatement)statement).execute();
@@ -74,7 +76,7 @@ public class HStatementImpl implements HStatement {
         if (!Util.isSelectStatement(statement))
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
-        final Query<T> query = Query.newQuery(this.getConnection(), (SelectStatement)statement, clazz);
+        final Query<T> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)statement, clazz);
         final HResultSetImpl<T> resultSetImpl = new HResultSetImpl<T>(query);
 
         this.resultSet = resultSetImpl;
@@ -136,9 +138,17 @@ public class HStatementImpl implements HStatement {
     }
 
     public synchronized void close() throws HBqlException {
-        if (!isClosed() && this.getResultSet() != null) {
+
+        if (!isClosed()) {
             this.closed = true;
-            this.getResultSet().close();
+
+            if (this.getResultSet() != null)
+                this.getResultSet().close();
+        }
+
+        if (this.getHConnectionImpl().getRawConnectionEventListenerList() != null) {
+            for (final ConnectionEventListener listener : this.getHConnectionImpl().getConnectionEventListenerList())
+                listener.connectionClosed(new ConnectionEvent(this.getHConnectionImpl()));
         }
     }
 

@@ -30,24 +30,27 @@ public class HConnectionPoolManager {
 
     private static Map<String, HConnectionPool> connectionPoolMap = Maps.newConcurrentHashMap();
 
-    public static HConnectionPool newConnectionPool(final int poolSize) throws HBqlException {
-        return HConnectionPoolManager.newConnectionPool(poolSize, null, null);
+    public static HConnectionPool newConnectionPool(final int initSize, final int maxSize) throws HBqlException {
+        return HConnectionPoolManager.newConnectionPool(initSize, maxSize, null, null);
     }
 
-    public static HConnectionPool newConnectionPool(final int poolSize,
+    public static HConnectionPool newConnectionPool(final int initSize,
+                                                    final int maxSize,
                                                     final HBaseConfiguration config) throws HBqlException {
-        return HConnectionPoolManager.newConnectionPool(poolSize, null, config);
+        return HConnectionPoolManager.newConnectionPool(initSize, maxSize, null, config);
     }
 
-    public static synchronized HConnectionPool newConnectionPool(final int poolSize,
+    public static synchronized HConnectionPool newConnectionPool(final int initSize,
+                                                                 final int maxSize,
                                                                  final String name) throws HBqlException {
-        return HConnectionPoolManager.newConnectionPool(poolSize, name, null);
+        return HConnectionPoolManager.newConnectionPool(initSize, maxSize, name, null);
     }
 
-    public static synchronized HConnectionPool newConnectionPool(final int poolSize,
+    public static synchronized HConnectionPool newConnectionPool(final int initSize,
+                                                                 final int maxSize,
                                                                  final String poolName,
                                                                  final HBaseConfiguration config) throws HBqlException {
-        final HConnectionPoolImpl connectionPool = new HConnectionPoolImpl(poolSize, poolName, config);
+        final HConnectionPoolImpl connectionPool = new HConnectionPoolImpl(initSize, maxSize, poolName, config);
 
         if (connectionPool.getName() != null)
             HConnectionPoolManager.getConnectionPoolMap().put(connectionPool.getName(), connectionPool);
