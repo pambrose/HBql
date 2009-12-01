@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql;
 
+import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
@@ -34,8 +35,10 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class ConnectionPoolTest extends TestSupport {
 
@@ -48,6 +51,10 @@ public class ConnectionPoolTest extends TestSupport {
 
     static int count = 10;
     static int workerCount = 10;
+    final static int clients = 100;
+    final static int iterations = 100;
+
+    List<Exception> exceptionList = Lists.newArrayList();
 
     @BeforeClass
     public static void beforeClass() throws HBqlException {
@@ -116,8 +123,9 @@ public class ConnectionPoolTest extends TestSupport {
         }
     }
 
-    void doQuery(HConnection connection) throws HBqlException {
+    void doQuery(final String id, final int iteration) throws HBqlException {
 
+        HConnection connection = connectionPool.getConnection();
         connection.execute("CREATE TEMP MAPPING pool_test "
                            + "("
                            + "keyval key, "
@@ -126,34 +134,58 @@ public class ConnectionPoolTest extends TestSupport {
                            + "  val2 string alias val2, "
                            + "  val3 string alias val3 "
                            + ") "
-                           + ") if not mappingexists('pool_test_mapping')");
+                           + ") if not mappingexists('pool_test')");
 
         String sql = "SELECT count() as cnt FROM pool_test WITH CLIENT FILTER WHERE definedinrow(f1:val1)";
         List<HRecord> recs = connection.executeQueryAndFetch(sql);
         HRecord rec = recs.get(0);
         long cnt = (Long)rec.getCurrentValue("cnt");
         assertTrue(cnt == count);
+
+        connection.close();
+
+        System.out.println("Completed: " + id + " - " + iteration);
+        try {
+            Thread.sleep(10);
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+            exceptionList.add(e);
+        }
     }
 
     @Test
-    public void exercise1() throws HBqlException {
+    public void simpleTest() throws HBqlException, ExecutionException, InterruptedException {
 
-        Runnable job = new Runnable() {
-            public void run() {
-                try {
-                    HConnection connection = connectionPool.getConnection();
-                    doQuery(connection);
-                    connection.close();
-                }
-                catch (HBqlException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        for (int i = 0; i < 1000; i++) {
+        List<Future> futureList = Lists.newArrayList();
+        for (int i = 0; i < clients; i++) {
+            final String id = "" + i;
             System.out.println("Created: " + i);
-            exec.execute(job);
+            Future future = exec.submit(new Runnable() {
+                public void run() {
+                    try {
+                        for (int i = 0; i < iterations; i++)
+                            doQuery(id, i);
+
+                        try {
+                            Thread.sleep(10);
+                        }
+                        catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    catch (HBqlException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            futureList.add(future);
         }
+
+        for (final Future future : futureList) {
+            future.get();
+        }
+
+        assertTrue(exceptionList.size() == 0);
     }
 }
