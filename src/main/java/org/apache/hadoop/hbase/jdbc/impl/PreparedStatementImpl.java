@@ -26,8 +26,6 @@ import org.apache.hadoop.hbase.hbql.impl.Util;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.ParameterStatement;
 
-import javax.sql.StatementEvent;
-import javax.sql.StatementEventListener;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -83,11 +81,7 @@ public class PreparedStatementImpl extends StatementImpl implements PreparedStat
     }
 
     public void close() throws SQLException {
-
-        if (this.getConnectionImpl().getRawStatementEventListenerList() != null) {
-            for (final StatementEventListener listener : this.getConnectionImpl().getStatementEventListenerList())
-                listener.statementClosed(new StatementEvent(this.getConnectionImpl(), this));
-        }
+        this.getConnectionImpl().fireStatementClosed(this);
     }
 
     public ResultSetMetaData getMetaData() throws SQLException {

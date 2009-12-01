@@ -110,7 +110,7 @@ public class Console {
 
         final List<SimpleCompletor> completors = Lists.newArrayList();
         completors.add(new SimpleCompletor(new String[]{"select", "insert", "create", "table", "mapping",
-                                                        "describe", "drop", "enable", "disable", "list"}));
+                                                        "describe", "drop", "enable", "disable", "show"}));
 
         final ConsoleReader reader = new ConsoleReader();
         reader.setBellEnabled(false);

@@ -54,6 +54,7 @@ public class HConnectionImpl implements HConnection {
     private final HBaseConfiguration hbaseConfig;
     private final HTablePool tablePool;
     private final HConnectionPoolImpl connectionPool;
+    private final int maxTablePoolReferencesPerTable;
 
     private final MappingManager mappingManager;
     private volatile Map<Class, AnnotationResultAccessor> annotationMappingMap = null;
@@ -66,6 +67,7 @@ public class HConnectionImpl implements HConnection {
                            final int maxTablePoolReferencesPerTable) throws HBqlException {
         this.hbaseConfig = (hbaseConfig == null) ? new HBaseConfiguration() : hbaseConfig;
         this.connectionPool = connectionPool;
+        this.maxTablePoolReferencesPerTable = maxTablePoolReferencesPerTable;
         this.tablePool = new HTablePool(this.getHBaseConfig(), maxTablePoolReferencesPerTable);
         this.mappingManager = new MappingManager(this);
 
@@ -95,6 +97,10 @@ public class HConnectionImpl implements HConnection {
     private MappingManager getMappingManager() throws HBqlException {
         this.checkIfClosed();
         return this.mappingManager;
+    }
+
+    public int getMaxTablePoolReferencesPerTable() {
+        return this.maxTablePoolReferencesPerTable;
     }
 
     private Map<Class, AnnotationResultAccessor> getAnnotationMappingMap() {

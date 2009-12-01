@@ -29,6 +29,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 import javax.sql.PooledConnection;
+import javax.sql.StatementEvent;
 import javax.sql.StatementEventListener;
 import java.sql.Array;
 import java.sql.Blob;
@@ -65,7 +66,7 @@ public class ConnectionImpl implements Connection, PooledConnection {
         this.hconnectionImpl = (HConnectionImpl)hconnectionImpl;
     }
 
-    private HConnectionImpl getHConnectionImpl() {
+    public HConnectionImpl getHConnectionImpl() {
         return this.hconnectionImpl;
     }
 
@@ -110,11 +111,11 @@ public class ConnectionImpl implements Connection, PooledConnection {
     }
 
     public void close() throws SQLException {
-        this.getHConnectionImpl().close();
-
-        if (this.getRawConnectionEventListenerList() != null) {
-            for (final ConnectionEventListener listener : this.getConnectionEventListenerList())
-                listener.connectionClosed(new ConnectionEvent(this));
+        try {
+            this.getHConnectionImpl().close();
+        }
+        finally {
+            this.fireConnectionClosed();
         }
     }
 
@@ -278,6 +279,20 @@ public class ConnectionImpl implements Connection, PooledConnection {
         return false;
     }
 
+    private void fireConnectionClosed() {
+        if (this.getRawConnectionEventListenerList() != null) {
+            for (final ConnectionEventListener listener : this.getConnectionEventListenerList())
+                listener.connectionClosed(new ConnectionEvent(this));
+        }
+    }
+
+    void fireStatementClosed(final PreparedStatement pstmt) {
+        if (this.getRawStatementEventListenerList() != null) {
+            for (final StatementEventListener listener : this.getStatementEventListenerList())
+                listener.statementClosed(new StatementEvent(this, pstmt));
+        }
+    }
+
     private List<ConnectionEventListener> getRawConnectionEventListenerList() {
         return this.connectionEventListenerList;
     }
@@ -292,11 +307,11 @@ public class ConnectionImpl implements Connection, PooledConnection {
         return this.getRawConnectionEventListenerList();
     }
 
-    List<StatementEventListener> getRawStatementEventListenerList() {
+    private List<StatementEventListener> getRawStatementEventListenerList() {
         return this.statementEventListenerList;
     }
 
-    List<StatementEventListener> getStatementEventListenerList() {
+    private List<StatementEventListener> getStatementEventListenerList() {
         if (this.getRawStatementEventListenerList() == null)
             synchronized (this) {
                 if (this.getRawStatementEventListenerList() == null)

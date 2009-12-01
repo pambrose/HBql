@@ -31,31 +31,31 @@ import javax.sql.PooledConnection;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class HConnectionPoolDataSource implements ConnectionPoolDataSource {
+public class ConnectionPool implements ConnectionPoolDataSource {
 
     private final HConnectionPool connectionPool;
 
-    public HConnectionPoolDataSource(final int initConnectionPoolSize,
-                                     final int maxConnectionPoolSize) throws HBqlException {
+    public ConnectionPool(final int initConnectionPoolSize,
+                          final int maxConnectionPoolSize) throws HBqlException {
         this(initConnectionPoolSize, maxConnectionPoolSize, null, null);
     }
 
-    public HConnectionPoolDataSource(final int initConnectionPoolSize,
-                                     final int maxConnectionPoolSize,
-                                     final String connectionPoolName) throws HBqlException {
+    public ConnectionPool(final int initConnectionPoolSize,
+                          final int maxConnectionPoolSize,
+                          final String connectionPoolName) throws HBqlException {
         this(initConnectionPoolSize, maxConnectionPoolSize, connectionPoolName, null);
     }
 
-    public HConnectionPoolDataSource(final int initConnectionPoolSize,
-                                     final int maxConnectionPoolSize,
-                                     final HBaseConfiguration config) throws HBqlException {
+    public ConnectionPool(final int initConnectionPoolSize,
+                          final int maxConnectionPoolSize,
+                          final HBaseConfiguration config) throws HBqlException {
         this(initConnectionPoolSize, maxConnectionPoolSize, null, config);
     }
 
-    public HConnectionPoolDataSource(final int initConnectionPoolSize,
-                                     final int maxConnectionPoolSize,
-                                     final String poolName,
-                                     final HBaseConfiguration config) throws HBqlException {
+    public ConnectionPool(final int initConnectionPoolSize,
+                          final int maxConnectionPoolSize,
+                          final String poolName,
+                          final HBaseConfiguration config) throws HBqlException {
         this.connectionPool = HConnectionPoolManager.newConnectionPool(initConnectionPoolSize,
                                                                        maxConnectionPoolSize,
                                                                        poolName,

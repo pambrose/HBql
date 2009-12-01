@@ -20,6 +20,8 @@
 
 package org.apache.hadoop.hbase.jdbc;
 
+import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.apache.hadoop.hbase.jdbc.impl.ConnectionImpl;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,7 +33,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class BasicTest {
+public class BasicTest extends TestSupport {
 
     static Connection connection = null;
 
@@ -64,12 +66,10 @@ public class BasicTest {
                      + "    mapval2 object alias f3mapval2 "
                      + "))");
 
-        if (!((ConnectionImpl)connection).getHConnection().tableExists("table2"))
-            ((ConnectionImpl)connection).getHConnection().execute("create table table2 (f1(), f2(), f3())");
-        else
-            ((ConnectionImpl)connection).getHConnection().execute("delete from tab4");
+        HConnection conn = ((ConnectionImpl)connection).getHConnection();
 
-        Class.forName("org.apache.hadoop.hbase.jdbc.Driver");
+        conn.execute("create table table2 (f1(), f2(), f3()) if not tableexists('table2')");
+        conn.execute("delete from tab4");
     }
 
 
@@ -135,5 +135,57 @@ public class BasicTest {
 
         stmt.clearParameters();
         ResultSet rs2 = stmt.executeQuery();
+    }
+
+    @Test
+    public void urlTest1() throws SQLException {
+
+        SQLException exception = null;
+
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:hbql;unknown=44");
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            exception = e;
+        }
+
+        assertTrue(exception != null);
+    }
+
+    @Test
+    public void urlTest2() throws SQLException {
+
+        Exception exception = null;
+
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:hbql;maxtablerefs=dd");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            exception = e;
+        }
+
+        assertTrue(exception != null);
+    }
+
+    @Test
+    public void urlTest3() throws SQLException {
+
+        SQLException exception = null;
+        int maxrefs = 0;
+
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:hbql;maxtablerefs=44");
+            ConnectionImpl connimpl = (ConnectionImpl)conn;
+            maxrefs = connimpl.getHConnectionImpl().getMaxTablePoolReferencesPerTable();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            exception = e;
+        }
+
+        assertTrue(exception == null);
+        assertTrue(maxrefs == 44);
     }
 }
