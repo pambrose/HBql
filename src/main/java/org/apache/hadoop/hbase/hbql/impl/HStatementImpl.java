@@ -32,8 +32,6 @@ import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
-import javax.sql.ConnectionEvent;
-import javax.sql.ConnectionEventListener;
 import java.util.List;
 
 
@@ -144,11 +142,6 @@ public class HStatementImpl implements HStatement {
 
             if (this.getResultSet() != null)
                 this.getResultSet().close();
-        }
-
-        if (this.getHConnectionImpl().getRawConnectionEventListenerList() != null) {
-            for (final ConnectionEventListener listener : this.getHConnectionImpl().getConnectionEventListenerList())
-                listener.connectionClosed(new ConnectionEvent(this.getHConnectionImpl()));
         }
     }
 

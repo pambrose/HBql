@@ -42,22 +42,20 @@ import java.sql.Statement;
 
 public class StatementImpl implements Statement {
 
-    private final ConnectionImpl jdbcConnection;
-    private final HConnectionImpl hConnection;
+    private final ConnectionImpl connectionImpl;
 
     private ResultSet resultSet = null;
 
-    public StatementImpl(final ConnectionImpl jdbcConnection, final HConnectionImpl hConnection) {
-        this.jdbcConnection = jdbcConnection;
-        this.hConnection = hConnection;
+    public StatementImpl(final ConnectionImpl connectionImpl) {
+        this.connectionImpl = connectionImpl;
     }
 
-    protected ConnectionImpl getJdbcConnection() {
-        return this.jdbcConnection;
+    protected ConnectionImpl getConnectionImpl() {
+        return this.connectionImpl;
     }
 
     protected HConnectionImpl getHConnectionImpl() {
-        return this.hConnection;
+        return (HConnectionImpl)this.getConnectionImpl().getHConnection();
     }
 
     public HConnection getHConnection() {
@@ -65,10 +63,10 @@ public class StatementImpl implements Statement {
     }
 
     public Connection getConnection() {
-        return this.getJdbcConnection();
+        return this.getConnectionImpl();
     }
 
-    public int executeUpdate(final HBqlStatement statement) throws HBqlException {
+    public int executeUpdate(final HBqlStatement statement) throws SQLException {
 
         if (Util.isSelectStatement(statement)) {
             throw new HBqlException("executeUpdate() requires a non-SELECT statement");
@@ -93,7 +91,7 @@ public class StatementImpl implements Statement {
         }
     }
 
-    protected ResultSet executeQuery(final HBqlStatement statement) throws HBqlException {
+    protected ResultSet executeQuery(final HBqlStatement statement) throws SQLException {
 
         if (!Util.isSelectStatement(statement))
             throw new HBqlException("executeQuery() requires a SELECT statement");
@@ -105,7 +103,7 @@ public class StatementImpl implements Statement {
         return this.getResultSet();
     }
 
-    protected boolean execute(final HBqlStatement statement) throws HBqlException {
+    protected boolean execute(final HBqlStatement statement) throws SQLException {
         if (Util.isSelectStatement(statement)) {
             this.executeQuery(statement);
             return true;
@@ -116,11 +114,11 @@ public class StatementImpl implements Statement {
         }
     }
 
-    public boolean execute(final String sql) throws HBqlException {
+    public boolean execute(final String sql) throws SQLException {
         return execute(Util.parseJdbcStatement(sql));
     }
 
-    public ResultSet executeQuery(final String sql) throws HBqlException {
+    public ResultSet executeQuery(final String sql) throws SQLException {
         return this.executeQuery(Util.parseJdbcStatement(sql));
     }
 
@@ -129,7 +127,6 @@ public class StatementImpl implements Statement {
     }
 
     public void close() throws SQLException {
-
     }
 
     public int getMaxFieldSize() throws SQLException {

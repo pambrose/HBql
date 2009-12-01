@@ -42,33 +42,29 @@ import java.util.concurrent.Future;
 
 public class ConnectionPoolTest extends TestSupport {
 
-    static HConnection connection = null;
-
-    static HConnectionPool connectionPool = null;
-    static ExecutorService exec = null;
-
-    static Random randomVal = new Random();
-
     static int count = 10;
     static int workerCount = 10;
     final static int clients = 100;
     final static int iterations = 100;
+
+    static HConnection connection = null;
+
+    static HConnectionPool connectionPool = null;
+    static ExecutorService exec = Executors.newFixedThreadPool(workerCount);
+
+    static Random randomVal = new Random();
 
     List<Exception> exceptionList = Lists.newArrayList();
 
     @BeforeClass
     public static void beforeClass() throws HBqlException {
 
-        exec = Executors.newFixedThreadPool(workerCount);
-
         connectionPool = HConnectionPoolManager.newConnectionPool(2, 5);
         connection = HConnectionManager.newConnection();
 
-        /*
-        System.out.println(connection.execute("disable table pool_test if tableExists('pool_test')"));
-        System.out.println(connection.execute("drop table pool_test if tableExists('pool_test')"));
-        System.out.println(connection.execute("create table pool_test (f1(), f2(), f3())"));
-         */
+        System.out
+                .println(connection.execute("create table pool_test (f1(), f2(), f3()) if not tableexists('pool_test')"));
+
         connection.execute("CREATE TEMP MAPPING pool_test "
                            + "("
                            + "keyval key, "

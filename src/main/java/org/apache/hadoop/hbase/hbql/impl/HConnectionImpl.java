@@ -20,7 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -43,10 +42,6 @@ import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.jdbc.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.util.Bytes;
 
-import javax.sql.ConnectionEvent;
-import javax.sql.ConnectionEventListener;
-import javax.sql.PooledConnection;
-import javax.sql.StatementEventListener;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -54,7 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HConnectionImpl implements HConnection, PooledConnection {
+public class HConnectionImpl implements HConnection {
 
     private final HBaseConfiguration config;
     private final HConnectionPoolImpl connectionPool;
@@ -63,9 +58,6 @@ public class HConnectionImpl implements HConnection, PooledConnection {
 
     private final MappingManager mappingManager;
     private final Map<Class, AnnotationResultAccessor> annotationMappingMap = Maps.newConcurrentHashMap();
-
-    private volatile List<ConnectionEventListener> connectionEventListenerList = null;
-    private volatile List<StatementEventListener> statementEventListenerList = null;
 
     public HConnectionImpl(final HBaseConfiguration config,
                            final HConnectionPoolImpl connectionPool) throws HBqlException {
@@ -166,11 +158,6 @@ public class HConnectionImpl implements HConnection, PooledConnection {
             this.getConnectionPool().release(this);
         else
             this.closed = true;
-
-        if (this.getRawConnectionEventListenerList() != null) {
-            for (final ConnectionEventListener listener : this.getConnectionEventListenerList())
-                listener.connectionClosed(new ConnectionEvent(this));
-        }
     }
 
     public boolean isClosed() {
@@ -349,49 +336,5 @@ public class HConnectionImpl implements HConnection, PooledConnection {
     public void validateFamilyExists(final String tableName, final String familyName) throws HBqlException {
         if (!this.familyExists(tableName, familyName))
             throw new HBqlException("Family " + familyName + " not present in table " + tableName);
-    }
-
-    List<ConnectionEventListener> getRawConnectionEventListenerList() {
-        return this.connectionEventListenerList;
-    }
-
-    List<ConnectionEventListener> getConnectionEventListenerList() {
-        if (this.getRawConnectionEventListenerList() == null)
-            synchronized (this) {
-                if (this.getRawConnectionEventListenerList() == null)
-                    this.connectionEventListenerList = Lists.newArrayList();
-            }
-
-        return this.getRawConnectionEventListenerList();
-    }
-
-    List<StatementEventListener> getRawStatementEventListenerList() {
-        return this.statementEventListenerList;
-    }
-
-    List<StatementEventListener> getStatementEventListenerList() {
-        if (this.getRawStatementEventListenerList() == null)
-            synchronized (this) {
-                if (this.getRawStatementEventListenerList() == null)
-                    this.statementEventListenerList = Lists.newArrayList();
-            }
-
-        return this.getRawStatementEventListenerList();
-    }
-
-    public void addConnectionEventListener(final ConnectionEventListener connectionEventListener) {
-        this.getConnectionEventListenerList().add(connectionEventListener);
-    }
-
-    public void removeConnectionEventListener(final ConnectionEventListener connectionEventListener) {
-        this.getConnectionEventListenerList().remove(connectionEventListener);
-    }
-
-    public void addStatementEventListener(final StatementEventListener statementEventListener) {
-        this.getStatementEventListenerList().add(statementEventListener);
-    }
-
-    public void removeStatementEventListener(final StatementEventListener statementEventListener) {
-        this.getStatementEventListenerList().remove(statementEventListener);
     }
 }

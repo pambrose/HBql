@@ -22,11 +22,12 @@ package org.apache.hadoop.hbase.jdbc.impl;
 
 import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.Util;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.ParameterStatement;
 
+import javax.sql.StatementEvent;
+import javax.sql.StatementEventListener;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -53,10 +54,8 @@ public class PreparedStatementImpl extends StatementImpl implements PreparedStat
 
     private final HBqlStatement statement;
 
-    public PreparedStatementImpl(final ConnectionImpl jdbcConnection,
-                                 final HConnectionImpl hbqlConnection,
-                                 final String sql) throws HBqlException {
-        super(jdbcConnection, hbqlConnection);
+    public PreparedStatementImpl(final ConnectionImpl connectionImpl, final String sql) throws HBqlException {
+        super(connectionImpl);
 
         this.statement = Util.parseJdbcStatement(sql);
 
@@ -81,6 +80,14 @@ public class PreparedStatementImpl extends StatementImpl implements PreparedStat
 
     public boolean execute() throws SQLException {
         return this.execute(this.getStatement());
+    }
+
+    public void close() throws SQLException {
+
+        if (this.getConnectionImpl().getRawStatementEventListenerList() != null) {
+            for (final StatementEventListener listener : this.getConnectionImpl().getStatementEventListenerList())
+                listener.statementClosed(new StatementEvent(this.getConnectionImpl(), this));
+        }
     }
 
     public ResultSetMetaData getMetaData() throws SQLException {

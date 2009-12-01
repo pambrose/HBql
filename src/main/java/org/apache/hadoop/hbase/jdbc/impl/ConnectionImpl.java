@@ -20,11 +20,13 @@
 
 package org.apache.hadoop.hbase.jdbc.impl;
 
+import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
+import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 import javax.sql.PooledConnection;
 import javax.sql.StatementEventListener;
@@ -44,23 +46,27 @@ import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 public class ConnectionImpl implements Connection, PooledConnection {
 
-    private final HConnectionImpl hConnection;
+    private final HConnectionImpl hconnectionImpl;
+
+    private volatile List<ConnectionEventListener> connectionEventListenerList = null;
+    private volatile List<StatementEventListener> statementEventListenerList = null;
 
     public ConnectionImpl(final HBaseConfiguration config) throws HBqlException {
-        this.hConnection = new HConnectionImpl(config, null);
+        this.hconnectionImpl = new HConnectionImpl(config, null);
     }
 
-    public ConnectionImpl(final HConnection hConnection) {
-        this.hConnection = (HConnectionImpl)hConnection;
+    public ConnectionImpl(final HConnection hconnectionImpl) {
+        this.hconnectionImpl = (HConnectionImpl)hconnectionImpl;
     }
 
     private HConnectionImpl getHConnectionImpl() {
-        return this.hConnection;
+        return this.hconnectionImpl;
     }
 
     public Connection getConnection() throws SQLException {
@@ -72,11 +78,11 @@ public class ConnectionImpl implements Connection, PooledConnection {
     }
 
     public Statement createStatement() throws SQLException {
-        return new StatementImpl(this, this.getHConnectionImpl());
+        return new StatementImpl(this);
     }
 
     public PreparedStatement prepareStatement(final String sql) throws SQLException {
-        return new PreparedStatementImpl(this, this.getHConnectionImpl(), sql);
+        return new PreparedStatementImpl(this, sql);
     }
 
     public CallableStatement prepareCall(final String s) throws SQLException {
@@ -105,6 +111,11 @@ public class ConnectionImpl implements Connection, PooledConnection {
 
     public void close() throws SQLException {
         this.getHConnectionImpl().close();
+
+        if (this.getRawConnectionEventListenerList() != null) {
+            for (final ConnectionEventListener listener : this.getConnectionEventListenerList())
+                listener.connectionClosed(new ConnectionEvent(this));
+        }
     }
 
     public boolean isClosed() throws SQLException {
@@ -267,19 +278,47 @@ public class ConnectionImpl implements Connection, PooledConnection {
         return false;
     }
 
+    private List<ConnectionEventListener> getRawConnectionEventListenerList() {
+        return this.connectionEventListenerList;
+    }
+
+    private List<ConnectionEventListener> getConnectionEventListenerList() {
+        if (this.getRawConnectionEventListenerList() == null)
+            synchronized (this) {
+                if (this.getRawConnectionEventListenerList() == null)
+                    this.connectionEventListenerList = Lists.newArrayList();
+            }
+
+        return this.getRawConnectionEventListenerList();
+    }
+
+    List<StatementEventListener> getRawStatementEventListenerList() {
+        return this.statementEventListenerList;
+    }
+
+    List<StatementEventListener> getStatementEventListenerList() {
+        if (this.getRawStatementEventListenerList() == null)
+            synchronized (this) {
+                if (this.getRawStatementEventListenerList() == null)
+                    this.statementEventListenerList = Lists.newArrayList();
+            }
+
+        return this.getRawStatementEventListenerList();
+    }
+
     public void addConnectionEventListener(final ConnectionEventListener connectionEventListener) {
-        this.getHConnectionImpl().addConnectionEventListener(connectionEventListener);
+        this.getConnectionEventListenerList().add(connectionEventListener);
     }
 
     public void removeConnectionEventListener(final ConnectionEventListener connectionEventListener) {
-        this.getHConnectionImpl().removeConnectionEventListener(connectionEventListener);
+        this.getConnectionEventListenerList().remove(connectionEventListener);
     }
 
     public void addStatementEventListener(final StatementEventListener statementEventListener) {
-        this.getHConnectionImpl().addStatementEventListener(statementEventListener);
+        this.getStatementEventListenerList().add(statementEventListener);
     }
 
     public void removeStatementEventListener(final StatementEventListener statementEventListener) {
-        this.getHConnectionImpl().removeStatementEventListener(statementEventListener);
+        this.getStatementEventListenerList().remove(statementEventListener);
     }
 }
