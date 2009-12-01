@@ -20,16 +20,19 @@
 
 package org.apache.hadoop.hbase.jdbc;
 
-import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.jdbc.impl.ConnectionImpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Properties;
 
 public class Driver implements java.sql.Driver {
+
+    private final static String MAXTABLEREFS = "maxtablerefs";
 
     static {
         try {
@@ -40,11 +43,31 @@ public class Driver implements java.sql.Driver {
         }
     }
 
+    private Map<String, String> getArgMap(final String str) throws SQLException {
+        final Map<String, String> retval = Maps.newHashMap();
+
+        for (final String arg : str.split(";")) {
+            if (arg.contains("=")) {
+                final String[] vals = arg.split("=");
+                final String var = vals[0].toLowerCase();
+
+                if (!var.equals(MAXTABLEREFS))
+                    throw new SQLException("Unknown JDBC URL option: " + var);
+
+                retval.put(var, vals[1]);
+            }
+        }
+        return retval;
+    }
+
     public Connection connect(final String str, final Properties properties) throws SQLException {
-        if (this.acceptsURL(str))
-            return new ConnectionImpl((HBaseConfiguration)null);
-        else
+        if (!this.acceptsURL(str))
             return null;
+
+        final Map<String, String> argMap = this.getArgMap(str);
+
+        final int maxtablerefs = argMap.containsKey(MAXTABLEREFS) ? Integer.parseInt(argMap.get(MAXTABLEREFS)) : Integer.MAX_VALUE;
+        return new ConnectionImpl(null, maxtablerefs);
     }
 
     public boolean acceptsURL(final String url) throws SQLException {

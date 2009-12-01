@@ -62,8 +62,7 @@ public class ConnectionPoolTest extends TestSupport {
         connectionPool = HConnectionPoolManager.newConnectionPool(2, 5);
         connection = HConnectionManager.newConnection();
 
-        System.out
-                .println(connection.execute("create table pool_test (f1(), f2(), f3()) if not tableexists('pool_test')"));
+        connection.execute("create table pool_test (f1(), f2(), f3()) if not tableexists('pool_test')");
 
         connection.execute("CREATE TEMP MAPPING pool_test "
                            + "("
@@ -83,6 +82,8 @@ public class ConnectionPoolTest extends TestSupport {
                            + "  val2 string alias val22, "
                            + "  val3 string alias val23 "
                            + "))");
+
+        connection.execute("delete from pool_test if tableexists('pool_test')");
 
         insertRecords(connection, count, "Batch 1");
         insertRecords(connection, count, "Batch 2");

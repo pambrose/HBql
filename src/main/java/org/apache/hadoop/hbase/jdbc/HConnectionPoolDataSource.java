@@ -35,27 +35,39 @@ public class HConnectionPoolDataSource implements ConnectionPoolDataSource {
 
     private final HConnectionPool connectionPool;
 
-    public HConnectionPoolDataSource(final int initSize, final int maxSize) throws HBqlException {
-        this(initSize, maxSize, null, null);
+    public HConnectionPoolDataSource(final int initConnectionPoolSize,
+                                     final int maxConnectionPoolSize) throws HBqlException {
+        this(initConnectionPoolSize, maxConnectionPoolSize, null, null);
     }
 
-    public HConnectionPoolDataSource(final int initSize,
-                                     final int maxSize,
-                                     final String poolName) throws HBqlException {
-        this(initSize, maxSize, poolName, null);
+    public HConnectionPoolDataSource(final int initConnectionPoolSize,
+                                     final int maxConnectionPoolSize,
+                                     final String connectionPoolName) throws HBqlException {
+        this(initConnectionPoolSize, maxConnectionPoolSize, connectionPoolName, null);
     }
 
-    public HConnectionPoolDataSource(final int initSize,
-                                     final int maxSize,
+    public HConnectionPoolDataSource(final int initConnectionPoolSize,
+                                     final int maxConnectionPoolSize,
                                      final HBaseConfiguration config) throws HBqlException {
-        this(initSize, maxSize, null, config);
+        this(initConnectionPoolSize, maxConnectionPoolSize, null, config);
     }
 
-    public HConnectionPoolDataSource(final int initSize,
-                                     final int maxSize,
+    public HConnectionPoolDataSource(final int initConnectionPoolSize,
+                                     final int maxConnectionPoolSize,
                                      final String poolName,
                                      final HBaseConfiguration config) throws HBqlException {
-        connectionPool = HConnectionPoolManager.newConnectionPool(initSize, maxSize, poolName, config);
+        this.connectionPool = HConnectionPoolManager.newConnectionPool(initConnectionPoolSize,
+                                                                       maxConnectionPoolSize,
+                                                                       poolName,
+                                                                       config);
+    }
+
+    public static int getMaxPoolReferencesPerTablePerConnection() {
+        return HConnectionPoolManager.getMaxPoolReferencesPerTablePerConnection();
+    }
+
+    public static void setMaxPoolReferencesPerTablePerConnection(final int maxPoolReferencesPerTablePerConnection) {
+        HConnectionPoolManager.setMaxPoolReferencesPerTablePerConnection(maxPoolReferencesPerTablePerConnection);
     }
 
     private HConnectionPool getConnectionPool() {

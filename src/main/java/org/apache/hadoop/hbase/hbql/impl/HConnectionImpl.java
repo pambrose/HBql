@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTablePool;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -51,18 +51,22 @@ import java.util.Set;
 
 public class HConnectionImpl implements HConnection {
 
-    private final HBaseConfiguration config;
+    private final HBaseConfiguration hbaseConfig;
+    private final HTablePool tablePool;
     private final HConnectionPoolImpl connectionPool;
-    private boolean closed = false;
-    private volatile HBaseAdmin hbaseAdmin = null;
 
     private final MappingManager mappingManager;
-    private final Map<Class, AnnotationResultAccessor> annotationMappingMap = Maps.newConcurrentHashMap();
+    private volatile Map<Class, AnnotationResultAccessor> annotationMappingMap = null;
 
-    public HConnectionImpl(final HBaseConfiguration config,
-                           final HConnectionPoolImpl connectionPool) throws HBqlException {
-        this.config = (config == null) ? new HBaseConfiguration() : config;
+    private volatile HBaseAdmin hbaseAdmin = null;
+    private volatile boolean closed = false;
+
+    public HConnectionImpl(final HBaseConfiguration hbaseConfig,
+                           final HConnectionPoolImpl connectionPool,
+                           final int maxTablePoolReferencesPerTable) throws HBqlException {
+        this.hbaseConfig = (hbaseConfig == null) ? new HBaseConfiguration() : hbaseConfig;
         this.connectionPool = connectionPool;
+        this.tablePool = new HTablePool(this.getHBaseConfig(), maxTablePoolReferencesPerTable);
         this.mappingManager = new MappingManager(this);
 
         this.getMappingManager().validatePersistentMetadata();
@@ -76,8 +80,12 @@ public class HConnectionImpl implements HConnection {
         return this.connectionPool;
     }
 
-    public HBaseConfiguration getConfig() {
-        return this.config;
+    public HBaseConfiguration getHBaseConfig() {
+        return this.hbaseConfig;
+    }
+
+    private HTablePool getTablePool() {
+        return this.tablePool;
     }
 
     public Connection getConnection() throws SQLException {
@@ -90,6 +98,12 @@ public class HConnectionImpl implements HConnection {
     }
 
     private Map<Class, AnnotationResultAccessor> getAnnotationMappingMap() {
+        if (this.annotationMappingMap == null) {
+            synchronized (this) {
+                if (this.annotationMappingMap == null)
+                    this.annotationMappingMap = Maps.newConcurrentHashMap();
+            }
+        }
         return this.annotationMappingMap;
     }
 
@@ -117,7 +131,7 @@ public class HConnectionImpl implements HConnection {
             synchronized (this) {
                 if (this.hbaseAdmin == null)
                     try {
-                        this.hbaseAdmin = new HBaseAdmin(this.getConfig());
+                        this.hbaseAdmin = new HBaseAdmin(this.getHBaseConfig());
                     }
                     catch (MasterNotRunningException e) {
                         throw new HBqlException(e);
@@ -239,12 +253,13 @@ public class HConnectionImpl implements HConnection {
         }
     }
 
-    public HTable newHTable(final String tableName) throws HBqlException {
+    public HTableReference getHTableReference(final String tableName) throws HBqlException {
         this.checkIfClosed();
         try {
-            return new HTable(this.getConfig(), tableName);
+            return new HTableReference(this.getTablePool().getTable(tableName), this.getTablePool());
+            //return new HTable(this.getHBaseConfig(), tableName);
         }
-        catch (IOException e) {
+        catch (RuntimeException e) {
             throw new HBqlException("Invalid table name: " + tableName);
         }
     }

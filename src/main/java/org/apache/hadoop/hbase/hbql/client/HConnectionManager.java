@@ -25,11 +25,21 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class HConnectionManager {
 
+    private static int maxPoolReferencesPerTablePerConnection = Integer.MAX_VALUE;
+
     public static HConnection newConnection() throws HBqlException {
         return HConnectionManager.newConnection(null);
     }
 
     public static synchronized HConnection newConnection(final HBaseConfiguration config) throws HBqlException {
-        return new HConnectionImpl(config, null);
+        return new HConnectionImpl(config, null, getMaxPoolReferencesPerTablePerConnection());
+    }
+
+    public static int getMaxPoolReferencesPerTablePerConnection() {
+        return maxPoolReferencesPerTablePerConnection;
+    }
+
+    public static void setMaxPoolReferencesPerTablePerConnection(final int maxPoolReferencesPerTablePerConnection) {
+        HConnectionManager.maxPoolReferencesPerTablePerConnection = maxPoolReferencesPerTablePerConnection;
     }
 }

@@ -30,32 +30,57 @@ public class HConnectionPoolManager {
 
     private static Map<String, HConnectionPool> connectionPoolMap = Maps.newConcurrentHashMap();
 
-    public static HConnectionPool newConnectionPool(final int initSize, final int maxSize) throws HBqlException {
-        return HConnectionPoolManager.newConnectionPool(initSize, maxSize, null, null);
+    private static int maxPoolReferencesPerTablePerConnection = Integer.MAX_VALUE;
+
+    public static HConnectionPool newConnectionPool(final int initConnectionPoolSize,
+                                                    final int maxConnectionPoolSize) throws HBqlException {
+        return HConnectionPoolManager.newConnectionPool(initConnectionPoolSize,
+                                                        maxConnectionPoolSize,
+                                                        null,
+                                                        null);
     }
 
-    public static HConnectionPool newConnectionPool(final int initSize,
-                                                    final int maxSize,
+    public static HConnectionPool newConnectionPool(final int initConnectionPoolSize,
+                                                    final int maxConnectionPoolSize,
                                                     final HBaseConfiguration config) throws HBqlException {
-        return HConnectionPoolManager.newConnectionPool(initSize, maxSize, null, config);
+        return HConnectionPoolManager.newConnectionPool(initConnectionPoolSize,
+                                                        maxConnectionPoolSize,
+                                                        null,
+                                                        config);
     }
 
-    public static synchronized HConnectionPool newConnectionPool(final int initSize,
-                                                                 final int maxSize,
-                                                                 final String name) throws HBqlException {
-        return HConnectionPoolManager.newConnectionPool(initSize, maxSize, name, null);
+    public static HConnectionPool newConnectionPool(final int initConnectionPoolSize,
+                                                    final int maxConnectionPoolSize,
+                                                    final String connectionPoolName) throws HBqlException {
+        return HConnectionPoolManager.newConnectionPool(initConnectionPoolSize,
+                                                        maxConnectionPoolSize,
+                                                        connectionPoolName,
+                                                        null);
     }
 
-    public static synchronized HConnectionPool newConnectionPool(final int initSize,
-                                                                 final int maxSize,
-                                                                 final String poolName,
-                                                                 final HBaseConfiguration config) throws HBqlException {
-        final HConnectionPoolImpl connectionPool = new HConnectionPoolImpl(initSize, maxSize, poolName, config);
+    public static HConnectionPool newConnectionPool(final int initConnectionPoolSize,
+                                                    final int maxConnectionPoolSize,
+                                                    final String connectiionPoolName,
+                                                    final HBaseConfiguration config) throws HBqlException {
+        final HConnectionPoolImpl connectionPool = new HConnectionPoolImpl(initConnectionPoolSize,
+                                                                           maxConnectionPoolSize,
+                                                                           connectiionPoolName,
+                                                                           config,
+                                                                           getMaxPoolReferencesPerTablePerConnection());
 
         if (connectionPool.getName() != null)
             HConnectionPoolManager.getConnectionPoolMap().put(connectionPool.getName(), connectionPool);
 
         return connectionPool;
+    }
+
+
+    public static int getMaxPoolReferencesPerTablePerConnection() {
+        return maxPoolReferencesPerTablePerConnection;
+    }
+
+    public static void setMaxPoolReferencesPerTablePerConnection(final int maxPoolReferencesPerTablePerConnection) {
+        HConnectionPoolManager.maxPoolReferencesPerTablePerConnection = maxPoolReferencesPerTablePerConnection;
     }
 
     public static HConnectionPool getConnectionPool(final String name) {

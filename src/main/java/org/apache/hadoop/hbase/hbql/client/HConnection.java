@@ -28,9 +28,9 @@ import java.util.Set;
 
 public interface HConnection {
 
-    HBaseConfiguration getConfig();
+    HBaseConfiguration getHBaseConfig();
 
-    org.apache.hadoop.hbase.client.HTable newHTable(String tableName) throws HBqlException;
+    // org.apache.hadoop.hbase.client.HTable newHTable(String tableName) throws HBqlException;
 
     Set<String> getFamilyNames(String tableName) throws HBqlException;
 

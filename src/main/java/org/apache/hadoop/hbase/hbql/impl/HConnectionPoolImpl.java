@@ -30,39 +30,47 @@ import java.util.concurrent.BlockingQueue;
 
 public class HConnectionPoolImpl implements HConnectionPool {
 
-    private final String name;
+    private final String connectionPoolName;
     private final HBaseConfiguration config;
-    private final BlockingQueue<HConnection> connectionQueue;
-    private final int poolSize;
+    private final BlockingQueue<HConnection> connectionPool;
+    private final int maxConnectionPoolSize;
+    private final int maxReferencesPerTable;
     private volatile int count = 0;
 
-    public HConnectionPoolImpl(final int initSize,
-                               final int poolSize,
-                               final String name,
-                               final HBaseConfiguration config) throws HBqlException {
-        this.name = name;
-        this.config = (config == null) ? new HBaseConfiguration() : config;
-        this.poolSize = poolSize;
-        this.connectionQueue = new ArrayBlockingQueue<HConnection>(poolSize);
 
-        for (int i = 0; i < initSize; i++)
+    public HConnectionPoolImpl(final int initConnectionPoolSize,
+                               final int maxConnectionPoolSize,
+                               final String connectionPoolName,
+                               final HBaseConfiguration config,
+                               final int maxPoolReferencesPerTablePerConnection) throws HBqlException {
+        this.connectionPoolName = connectionPoolName;
+        this.config = (config == null) ? new HBaseConfiguration() : config;
+        this.maxConnectionPoolSize = maxConnectionPoolSize;
+        this.maxReferencesPerTable = maxPoolReferencesPerTablePerConnection;
+        this.connectionPool = new ArrayBlockingQueue<HConnection>(this.getMaxConnectionPoolSize());
+
+        for (int i = 0; i < initConnectionPoolSize; i++)
             this.addConnectionToPool();
     }
 
     public String getName() {
-        return this.name;
+        return this.connectionPoolName;
     }
 
     public HBaseConfiguration getConfig() {
         return this.config;
     }
 
-    private BlockingQueue<HConnection> getConnectionQueue() {
-        return this.connectionQueue;
+    private BlockingQueue<HConnection> getConnectionPool() {
+        return this.connectionPool;
     }
 
-    private int getPoolSize() {
-        return this.poolSize;
+    private int getMaxConnectionPoolSize() {
+        return this.maxConnectionPoolSize;
+    }
+
+    public int getMaxReferencesPerTable() {
+        return this.maxReferencesPerTable;
     }
 
     private int getCount() {
@@ -70,9 +78,11 @@ public class HConnectionPoolImpl implements HConnectionPool {
     }
 
     private void addConnectionToPool() throws HBqlException {
-        if (this.getCount() < this.getPoolSize()) {
-            final HConnectionImpl connection = new HConnectionImpl(this.getConfig(), this);
-            this.getConnectionQueue().add(connection);
+        if (this.getCount() < this.getMaxConnectionPoolSize()) {
+            final HConnectionImpl connection = new HConnectionImpl(this.getConfig(),
+                                                                   this,
+                                                                   this.getMaxReferencesPerTable());
+            this.getConnectionPool().add(connection);
             this.count++;
         }
     }
@@ -80,11 +90,11 @@ public class HConnectionPoolImpl implements HConnectionPool {
     public synchronized HConnection getConnection() throws HBqlException {
 
         //  Grow the pool as necessary, rather than front-loading it.
-        if (this.getConnectionQueue().size() == 0)
+        if (this.getConnectionPool().size() == 0)
             this.addConnectionToPool();
 
         try {
-            return this.getConnectionQueue().take();
+            return this.getConnectionPool().take();
         }
         catch (InterruptedException e) {
             throw new HBqlException("InterruptedException: " + e.getMessage());
@@ -92,6 +102,6 @@ public class HConnectionPoolImpl implements HConnectionPool {
     }
 
     public void release(final HConnection connection) {
-        this.getConnectionQueue().add(connection);
+        this.getConnectionPool().add(connection);
     }
 }

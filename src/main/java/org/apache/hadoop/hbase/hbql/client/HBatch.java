@@ -23,12 +23,12 @@ package org.apache.hadoop.hbase.hbql.client;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.client.Delete;
-import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.hbql.impl.BatchAction;
 import org.apache.hadoop.hbase.hbql.impl.DeleteAction;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.hbql.impl.HTableReference;
 import org.apache.hadoop.hbase.hbql.impl.InsertAction;
 import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
@@ -57,7 +57,7 @@ public class HBatch<T> {
         return this.connection;
     }
 
-    private HConnectionImpl getConnectionImpl() {
+    private HConnectionImpl getHConnectionImpl() {
         return (HConnectionImpl)this.getConnection();
     }
 
@@ -87,7 +87,7 @@ public class HBatch<T> {
             this.getActionList(tableMapping.getTableName()).add(new InsertAction(put));
         }
         else {
-            final AnnotationResultAccessor accessor = this.getConnectionImpl().getAnnotationMapping(newrec);
+            final AnnotationResultAccessor accessor = this.getHConnectionImpl().getAnnotationMapping(newrec);
             final Put put = this.createPut(accessor, newrec);
             this.getActionList(accessor.getMapping().getTableName()).add(new InsertAction(put));
         }
@@ -104,7 +104,7 @@ public class HBatch<T> {
             this.delete(tableMapping, record);
         }
         else {
-            final AnnotationResultAccessor accessor = this.getConnectionImpl().getAnnotationMapping(newrec);
+            final AnnotationResultAccessor accessor = this.getHConnectionImpl().getAnnotationMapping(newrec);
             this.delete(accessor.getHBaseTableMapping(), newrec);
         }
     }
@@ -154,11 +154,19 @@ public class HBatch<T> {
     public void apply() throws HBqlException {
         try {
             for (final String tableName : this.getActionList().keySet()) {
-                final HTable table = this.getConnection().newHTable(tableName);
-                for (final BatchAction batchAction : this.getActionList(tableName))
-                    batchAction.apply(table);
-                table.flushCommits();
-                table.close();
+                HTableReference tableref = null;
+                try {
+                    tableref = this.getHConnectionImpl().getHTableReference(tableName);
+                    for (final BatchAction batchAction : this.getActionList(tableName))
+                        batchAction.apply(tableref.getHTable());
+                    tableref.getHTable().flushCommits();
+                    tableref.getHTable().close();
+                }
+                finally {
+                    // release to table pool
+                    if (tableref != null)
+                        tableref.release();
+                }
             }
         }
         catch (IOException e) {

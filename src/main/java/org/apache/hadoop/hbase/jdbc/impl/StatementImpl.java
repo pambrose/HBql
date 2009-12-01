@@ -91,14 +91,12 @@ public class StatementImpl implements Statement {
         }
     }
 
-    protected ResultSet executeQuery(final HBqlStatement statement) throws SQLException {
+    protected ResultSet executeQuery(final HBqlStatement stmt) throws SQLException {
 
-        if (!Util.isSelectStatement(statement))
+        if (!Util.isSelectStatement(stmt))
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
-        final Query<HRecord> query = Query.newQuery(this.getHConnectionImpl(),
-                                                    (SelectStatement)statement,
-                                                    HRecord.class);
+        final Query<HRecord> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)stmt, HRecord.class);
         this.setResultSet(new ResultSetImpl(this, query.getResults()));
         return this.getResultSet();
     }
@@ -109,13 +107,13 @@ public class StatementImpl implements Statement {
             return true;
         }
         else {
-            executeUpdate(statement);
+            this.executeUpdate(statement);
             return false;
         }
     }
 
     public boolean execute(final String sql) throws SQLException {
-        return execute(Util.parseJdbcStatement(sql));
+        return this.execute(Util.parseJdbcStatement(sql));
     }
 
     public ResultSet executeQuery(final String sql) throws SQLException {

@@ -57,8 +57,8 @@ public class ConnectionImpl implements Connection, PooledConnection {
     private volatile List<ConnectionEventListener> connectionEventListenerList = null;
     private volatile List<StatementEventListener> statementEventListenerList = null;
 
-    public ConnectionImpl(final HBaseConfiguration config) throws HBqlException {
-        this.hconnectionImpl = new HConnectionImpl(config, null);
+    public ConnectionImpl(final HBaseConfiguration config, final int maxPoolReferencesPerTable) throws HBqlException {
+        this.hconnectionImpl = new HConnectionImpl(config, null, maxPoolReferencesPerTable);
     }
 
     public ConnectionImpl(final HConnection hconnectionImpl) {

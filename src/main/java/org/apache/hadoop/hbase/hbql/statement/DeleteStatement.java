@@ -30,6 +30,7 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.HTableReference;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
@@ -116,30 +117,40 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         }
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl hconnectionImpl) throws HBqlException {
 
-        this.validate(connection);
+        this.validate(hconnectionImpl);
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWithArgs().getAllColumnsUsedInExprs();
-        final HTable table = connection.newHTable(this.getMapping().getTableName());
-
-        final List<RowRequest> rowRequestList = this.getWithArgs().getRowRequestList(allWhereAttribs);
-
-        int cnt = 0;
-
-        for (final RowRequest rowRequest : rowRequestList)
-            cnt += this.delete(table, this.getWithArgs(), rowRequest);
+        HTableReference tableref = null;
 
         try {
-            table.close();
-        }
-        catch (IOException e) {
-            throw new HBqlException(e);
-        }
+            tableref = hconnectionImpl.getHTableReference(this.getMapping().getTableName());
 
-        final ExecutionResults results = new ExecutionResults("Delete count: " + cnt);
-        results.setCount(cnt);
-        return results;
+            final List<RowRequest> rowRequestList = this.getWithArgs().getRowRequestList(allWhereAttribs);
+
+            int cnt = 0;
+
+            for (final RowRequest rowRequest : rowRequestList)
+                cnt += this.delete(tableref.getHTable(), this.getWithArgs(), rowRequest);
+
+            try {
+                tableref.getHTable().flushCommits();
+                tableref.getHTable().close();
+            }
+            catch (IOException e) {
+                throw new HBqlException(e);
+            }
+
+            final ExecutionResults results = new ExecutionResults("Delete count: " + cnt);
+            results.setCount(cnt);
+            return results;
+        }
+        finally {
+            // release to table pool
+            if (tableref != null)
+                tableref.release();
+        }
     }
 
     private int delete(final HTable table, final WithArgs with, final RowRequest rowRequest) throws HBqlException {
