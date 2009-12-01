@@ -8,11 +8,22 @@ JDBC Support
     * The driver is not yet 100% comlete. The Driver, Connection, Statement, PreparedStatement, and
      ResultSet implementations are reasonable, but the metadata calls are still in progress.
 
+
     * You can access non-relational features of HBase not supported in JDBC, e.g., value versions and
     columns in the family default map, by casting A ResultSet to a ResulSetImpl and
     then calling ResultSetImpl.getCurrentHRecord().
 
+
     * HBql supports both named parameters and parameters indicated with "?" character.
 
-    * A simple example can be seen {{{../examples/jdbc.html}here}}.
+
+    * JDBC examples can be seen {{{../examples/jdbc.html}here}}.
+
+
+    * Each connection makes use of an HTablePool.  For a connection returned by Driver.getConnection(),
+    the size of the HTablePool is specified in the jdbc url using the parameter
+    maxtablerefs, e.g., "jdbc:hbql;maxtablerefs=10".
+    For a connection pool, the size of the HTablePool is indicated with
+    ConnectionPool.setMaxPoolReferencesPerTablePerConnection(10)
+    prior to calling the ConnectionPool constructor.
     

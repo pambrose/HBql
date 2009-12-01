@@ -60,16 +60,20 @@ public class HConnectionPoolManager {
 
     public static HConnectionPool newConnectionPool(final int initConnectionPoolSize,
                                                     final int maxConnectionPoolSize,
-                                                    final String connectiionPoolName,
+                                                    final String connectionPoolName,
                                                     final HBaseConfiguration config) throws HBqlException {
         final HConnectionPoolImpl connectionPool = new HConnectionPoolImpl(initConnectionPoolSize,
                                                                            maxConnectionPoolSize,
-                                                                           connectiionPoolName,
+                                                                           connectionPoolName,
                                                                            config,
                                                                            getMaxPoolReferencesPerTablePerConnection());
 
-        if (connectionPool.getName() != null)
-            HConnectionPoolManager.getConnectionPoolMap().put(connectionPool.getName(), connectionPool);
+        if (connectionPool.getName() != null && connectionPool.getName().length() > 0) {
+            if (getConnectionPoolMap().containsKey(connectionPool.getName()))
+                throw new HBqlException("Connection pool name already exists: " + connectionPool.getName());
+            else
+                getConnectionPoolMap().put(connectionPool.getName(), connectionPool);
+        }
 
         return connectionPool;
     }

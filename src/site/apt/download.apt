@@ -26,9 +26,11 @@ git clone git://github.com/pambrose/HBql.git
 
 Release Notes
 
-    0.9.12-alpha -- 11/29/09
+    0.9.12-alpha -- 12/1/09
 
-        * Misc bug fixes 
+        * Added ConnectionPool for JDBC API and HConnectionPoolManager for HBql API
+
+        * Added HTablePool support.
 
     0.9.11-alpha -- 11/29/09
 
@@ -37,7 +39,7 @@ Release Notes
 
     0.9.10-alpha -- 11/28/09
 
-        * Fixed a problem in type signature validation
+        * Fixed a problem in type signature validation.
 
     0.9.9-alpha -- 11/26/09
 
@@ -59,7 +61,7 @@ Release Notes
 
         * Made HBase-specific values available through the JDBC driver via ResultSetImpl.getCurrentHRecord() method.
 
-        * Added build support for HBase 020.2
+        * Added build support for HBase 0.20.2
 
     0.9.5-alpha -- 11/18/09
 

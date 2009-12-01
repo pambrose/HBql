@@ -32,8 +32,10 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
+import org.apache.hadoop.hbase.jdbc.ConnectionPool;
 import org.junit.Test;
 
+import javax.sql.PooledConnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -388,6 +390,9 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: connectionPool1
 
+        // For each connection in a connection pool, assign an HTablePool max size of 25 references per table
+        HConnectionPoolManager.setMaxPoolReferencesPerTablePerConnection(25);
+
         // Create pool with max of 15 connections and prime it with 5 connections
         HConnectionPool connectionPool = HConnectionPoolManager.newConnectionPool(5, 15);
 
@@ -467,7 +472,9 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: jdbc1
 
         Class.forName("org.apache.hadoop.hbase.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:hbql");
+
+        // Get a connection with an HTablePool size of 10
+        Connection connection = DriverManager.getConnection("jdbc:hbql;maxtablerefs=10");
 
         Statement stmt = connection.createStatement();
         stmt.execute("CREATE TABLE table12 (f1(), f3()) IF NOT tableexists('table12')");
@@ -500,6 +507,9 @@ public class ExamplesTest extends TestSupport {
 
         stmt.execute("DISABLE TABLE table12");
         stmt.execute("DROP TABLE table12");
+        stmt.close();
+
+        connection.close();
 
         // END SNIPPET: jdbc1
     }
@@ -509,40 +519,16 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: jdbc2
 
-        Class.forName("org.apache.hadoop.hbase.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:hbql");
+        // Create connection pool with 5 initial connections and a maximum of 25 connection
+        ConnectionPool pool = new ConnectionPool(5, 25);
 
-        Statement stmt = connection.createStatement();
-        stmt.execute("CREATE TABLE table12 (f1(), f3()) IF NOT tableexists('table12')");
+        PooledConnection pooledConnection = pool.getPooledConnection();
+        Connection connection = pooledConnection.getConnection();
 
-        stmt.execute("CREATE TEMP MAPPING sch9 FOR TABLE table12"
-                     + "("
-                     + "keyval key, "
-                     + "f1 ("
-                     + "    val1 string alias val1, "
-                     + "    val2 string alias val2 "
-                     + "), "
-                     + "f3 ("
-                     + "    val1 int alias val5, "
-                     + "    val2 int alias val6 "
-                     + "))");
+        // Do some work with connection
 
-        ResultSet rs = stmt.executeQuery("select * from sch9");
-
-        while (rs.next()) {
-            int val5 = rs.getInt("val5");
-            int val6 = rs.getInt("val6");
-            String val1 = rs.getString("val1");
-            String val2 = rs.getString("val2");
-
-            System.out.print("val5: " + val5);
-            System.out.print(", val6: " + val6);
-            System.out.print(", val1: " + val1);
-            System.out.println(", val2: " + val2);
-        }
-
-        stmt.execute("DISABLE TABLE table12");
-        stmt.execute("DROP TABLE table12");
+        // Release connection back to pool
+        connection.close();
 
         // END SNIPPET: jdbc2
     }
