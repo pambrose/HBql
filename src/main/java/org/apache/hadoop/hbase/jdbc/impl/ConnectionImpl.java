@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.jdbc;
+package org.apache.hadoop.hbase.jdbc.impl;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -50,6 +50,10 @@ public class ConnectionImpl implements Connection {
 
     public ConnectionImpl(final HBaseConfiguration config) throws HBqlException {
         this.hConnection = new HConnectionImpl(config, null);
+    }
+
+    public ConnectionImpl(final HConnection hConnection) {
+        this.hConnection = (HConnectionImpl)hConnection;
     }
 
     private HConnectionImpl getHConnectionImpl() {

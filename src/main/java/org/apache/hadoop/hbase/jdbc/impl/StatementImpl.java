@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.jdbc;
+package org.apache.hadoop.hbase.jdbc.impl;
 
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;

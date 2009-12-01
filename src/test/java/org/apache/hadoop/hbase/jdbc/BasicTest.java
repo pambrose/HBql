@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.jdbc;
 
+import org.apache.hadoop.hbase.jdbc.impl.ConnectionImpl;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

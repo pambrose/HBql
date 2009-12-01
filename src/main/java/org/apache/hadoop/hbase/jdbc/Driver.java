@@ -20,6 +20,9 @@
 
 package org.apache.hadoop.hbase.jdbc;
 
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.jdbc.impl.ConnectionImpl;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
@@ -39,7 +42,7 @@ public class Driver implements java.sql.Driver {
 
     public Connection connect(final String str, final Properties properties) throws SQLException {
         if (this.acceptsURL(str))
-            return new ConnectionImpl(null);
+            return new ConnectionImpl((HBaseConfiguration)null);
         else
             return null;
     }

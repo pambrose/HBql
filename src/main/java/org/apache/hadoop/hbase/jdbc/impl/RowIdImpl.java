@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.jdbc;
+package org.apache.hadoop.hbase.jdbc.impl;
 
 import java.sql.RowId;
 

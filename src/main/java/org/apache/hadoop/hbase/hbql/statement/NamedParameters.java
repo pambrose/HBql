@@ -52,19 +52,17 @@ public class NamedParameters implements Serializable {
 
     public List<NamedParameter> getParameterList() {
 
-        if (this.getParamList() != null)
-            return this.getParamList();
-
-        synchronized (this) {
-            if (this.getParamList() != null)
-                return this.getParamList();
-
-            // This takes the ordered set and converts to a list
-            // The order is determined by when the param was created.
-            final int size = this.getParamSet().size();
-            this.paramList = Lists.newArrayList(this.getParamSet().toArray(new NamedParameter[size]));
-            return this.getParamList();
+        if (this.getParamList() == null) {
+            synchronized (this) {
+                if (this.getParamList() == null) {
+                    // This takes the ordered set and converts to a list
+                    // The order is determined by when the param was created.
+                    final int size = this.getParamSet().size();
+                    this.paramList = Lists.newArrayList(this.getParamSet().toArray(new NamedParameter[size]));
+                }
+            }
         }
+        return this.getParamList();
     }
 
     public NamedParameter getParameter(final int i) throws HBqlException {
