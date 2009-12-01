@@ -42,4 +42,8 @@ public class DisableTableStatement extends TableStatement {
 
         return new ExecutionResults("Table " + this.getTableName() + " disabled.");
     }
+
+    public static String usage() {
+        return "DISABLE TABLE table_name [IF boolean_expression]";
+    }
 }

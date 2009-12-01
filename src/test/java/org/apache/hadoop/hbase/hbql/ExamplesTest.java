@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql;
 
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -523,6 +524,13 @@ public class ExamplesTest extends TestSupport {
 
         // Get a connection with an HTablePool size of 10
         Connection connection = DriverManager.getConnection("jdbc:hbql;maxtablerefs=10");
+
+        // or
+        Connection connection2 = DriverManager.getConnection("jdbc:hbql;maxtablerefs=10;hbase.master=192.168.1.90:60000");
+
+        // or if you want to connect with a HBaseConfiguration object, then you would call:
+        HBaseConfiguration config = new HBaseConfiguration();
+        Connection connection3 = org.apache.hadoop.hbase.jdbc.Driver.getConnection("jdbc:hbql;maxtablerefs=10", config);
 
         Statement stmt = connection.createStatement();
         stmt.execute("CREATE TABLE table12 (f1(), f3()) IF NOT tableexists('table12')");

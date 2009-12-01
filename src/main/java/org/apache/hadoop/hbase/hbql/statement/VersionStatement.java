@@ -39,4 +39,8 @@ public class VersionStatement extends BasicStatement implements NonConnectionSta
 
         return retval;
     }
+
+    public static String usage() {
+        return "VERSION";
+    }
 }

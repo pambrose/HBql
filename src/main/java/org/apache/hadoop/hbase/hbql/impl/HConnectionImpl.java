@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.util.Maps;
 import org.apache.expreval.util.Sets;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -39,17 +40,17 @@ import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
-import org.apache.hadoop.hbase.jdbc.impl.ConnectionImpl;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class HConnectionImpl implements HConnection {
+
+    public final static String MAXTABLEREFS = "maxtablerefs";
+    public final static String MASTER = "hbase.master";
 
     private final HBaseConfiguration hbaseConfig;
     private final HTablePool tablePool;
@@ -74,6 +75,12 @@ public class HConnectionImpl implements HConnection {
         this.getMappingManager().validatePersistentMetadata();
     }
 
+    public static HBaseConfiguration getHBaseConfiguration(final String master) {
+        final Configuration c = new Configuration();
+        c.set(HConnectionImpl.MASTER, master);
+        return new HBaseConfiguration(c);
+    }
+
     public boolean isPooled() {
         return this.getConnectionPool() != null;
     }
@@ -88,10 +95,6 @@ public class HConnectionImpl implements HConnection {
 
     private HTablePool getTablePool() {
         return this.tablePool;
-    }
-
-    public Connection getConnection() throws SQLException {
-        return new ConnectionImpl(this);
     }
 
     private MappingManager getMappingManager() throws HBqlException {
@@ -121,18 +124,18 @@ public class HConnectionImpl implements HConnection {
 
         AnnotationResultAccessor accessor = getAnnotationMappingMap().get(clazz);
 
-        if (accessor != null)
+        if (accessor != null) {
             return accessor;
-
-        accessor = AnnotationResultAccessor.newAnnotationMapping(this, clazz);
-        getAnnotationMappingMap().put(clazz, accessor);
-        return accessor;
+        }
+        else {
+            accessor = AnnotationResultAccessor.newAnnotationMapping(this, clazz);
+            getAnnotationMappingMap().put(clazz, accessor);
+            return accessor;
+        }
     }
 
     public HBaseAdmin newHBaseAdmin() throws HBqlException {
-
         this.checkIfClosed();
-
         if (this.hbaseAdmin == null) {
             synchronized (this) {
                 if (this.hbaseAdmin == null)
@@ -144,7 +147,6 @@ public class HConnectionImpl implements HConnection {
                     }
             }
         }
-
         return this.hbaseAdmin;
     }
 
@@ -173,7 +175,6 @@ public class HConnectionImpl implements HConnection {
     }
 
     public void close() throws HBqlException {
-
         if (this.isPooled())
             this.getConnectionPool().release(this);
         else
@@ -263,7 +264,6 @@ public class HConnectionImpl implements HConnection {
         this.checkIfClosed();
         try {
             return new HTableReference(this.getTablePool().getTable(tableName), this.getTablePool());
-            //return new HTable(this.getHBaseConfig(), tableName);
         }
         catch (RuntimeException e) {
             throw new HBqlException("Invalid table name: " + tableName);

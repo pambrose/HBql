@@ -101,4 +101,8 @@ public class CreateMappingStatement extends StatementContext implements Connecti
 
         return new ExecutionResults("Mapping " + tableMapping.getMappingName() + " defined.");
     }
+
+    public static String usage() {
+        return "CREATE [TEMP] MAPPING mapping_name [FOR TABLE table_name] [(key_name KEY, family_mapping_list)] [IF boolean_expression]";
+    }
 }

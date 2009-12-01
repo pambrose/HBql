@@ -26,4 +26,11 @@ JDBC Support
     For a connection pool, the size of the HTablePool is indicated with
     ConnectionPool.setMaxPoolReferencesPerTablePerConnection(10)
     prior to calling the ConnectionPool constructor.
+
+
+    * To create a non-pooled JDBC connection using a HBaseConfiguration object, you must call
+    org.apache.hadoop.hbase.jdbc.Driver.getConnection(url, config).
+
+    * The JDBC connection url for HBase is "jdbc:hbql".  There are two optional parameters:
+    "maxtablerefs" and "hbase.master".
     

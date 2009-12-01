@@ -55,4 +55,8 @@ public class DescribeTableStatement extends TableStatement {
         retval.out.flush();
         return retval;
     }
+
+    public static String usage() {
+        return "DESCRIBE TABLE table_name";
+    }
 }

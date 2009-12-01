@@ -52,4 +52,8 @@ public class CreateTableStatement extends BasicStatement implements ConnectionSt
 
         return new ExecutionResults("Table " + tableDesc.getNameAsString() + " created.");
     }
+
+    public static String usage() {
+        return "CREATE TABLE table_name (family_definition_list) [IF boolean_expression]";
+    }
 }

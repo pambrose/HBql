@@ -35,4 +35,8 @@ public class DropTableStatement extends TableStatement {
         connection.dropTable(this.getTableName());
         return new ExecutionResults("Table " + this.getTableName() + " dropped.");
     }
+
+    public static String usage() {
+        return "DROP TABLE table_name [IF boolean_expression]";
+    }
 }

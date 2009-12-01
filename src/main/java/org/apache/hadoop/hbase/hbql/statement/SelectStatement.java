@@ -190,4 +190,8 @@ public class SelectStatement extends StatementContext implements ParameterStatem
         sbuf.append(this.getWithArgs().asString());
         return sbuf.toString();
     }
+
+    public static String usage() {
+        return "SELECT select_element_list FROM [MAPPING] mapping_name with_clause";
+    }
 }

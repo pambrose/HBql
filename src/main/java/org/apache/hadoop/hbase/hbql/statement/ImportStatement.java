@@ -133,4 +133,8 @@ public class ImportStatement extends BasicStatement implements ConnectionStateme
             }
         }
     }
+
+    public static String usage() {
+        return "IMPORT file_name";
+    }
 }

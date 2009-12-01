@@ -51,4 +51,8 @@ public class ShowTablesStatement extends BasicStatement implements ConnectionSta
             throw new HBqlException(e);
         }
     }
+
+    public static String usage() {
+        return "SHOW TABLES";
+    }
 }

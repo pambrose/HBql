@@ -25,6 +25,7 @@ import jline.ConsoleReader;
 import jline.SimpleCompletor;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
@@ -42,23 +43,24 @@ import java.util.Map;
 public class Console {
 
     private static HConnectionImpl conn = null;
+    private static boolean processCommandLine = true;
+    private static HBaseConfiguration config = null;
 
     public static void main(String[] args) throws HBqlException, IOException {
 
         if (args != null && args.length > 0) {
+
             final List<String> argList = new LinkedList<String>();
             argList.addAll(Arrays.asList(args));
 
             while (argList.size() > 0) {
-                if (!processArg(argList)) {
-                    usage();
+                if (!processArg(argList))
                     break;
-                }
             }
         }
-        else {
+
+        if (processCommandLine)
             processCommandLineInput();
-        }
     }
 
     private static void usage() {
@@ -68,8 +70,9 @@ public class Console {
         System.out.println("   or  java " + Console.class.getName() + " [-options] [file_names]");
         System.out.println("\t\t(executes the statements in the space-separated file names)");
         System.out.println("\nwhere options include:");
-        System.out.println("\t-usage        print this message");
-        System.out.println("\t-version      print version info and exit");
+        System.out.println("\t-usage                print this message");
+        System.out.println("\t-version              print version info and exit");
+        System.out.println("\t-" + HConnectionImpl.MASTER + "=value   set " + HConnectionImpl.MASTER + " value");
     }
 
     private static boolean processArg(final List<String> argList) throws HBqlException {
@@ -77,31 +80,53 @@ public class Console {
         final String option = argList.remove(0);
 
         if (option.equals("-usage")) {
+            processCommandLine = false;
             usage();
             return true;
         }
 
         if (option.equals("-version")) {
+            processCommandLine = false;
             final VersionStatement version = new VersionStatement();
             final ExecutionResults results = version.execute();
             System.out.print(results);
             return true;
         }
 
-        if (!option.startsWith("-")) {
+        if (option.startsWith("-" + HConnectionImpl.MASTER)) {
+            final String[] vals = option.split("=");
+            if (vals.length != 2) {
+                processCommandLine = false;
+                System.out.println("Incorrect syntax: " + option);
+                usage();
+                return false;
+            }
+            else {
+                config = HConnectionImpl.getHBaseConfiguration(vals[1]);
+                return true;
+            }
+        }
+
+        if (option.startsWith("-")) {
+            processCommandLine = false;
+            System.out.println("Unknown option: " + option);
+            usage();
+            return false;
+        }
+        else {
+            // Assume that an arg without "-" prefix is a filename
+            processCommandLine = false;
             final ImportStatement importStmt = new ImportStatement(option);
             final ExecutionResults results = importStmt.evaluatePredicateAndExecute(getConnection());
             System.out.print(results);
             return results.hadSuccess();
         }
-
-        return false;
     }
 
-    private static HConnectionImpl getConnection() throws HBqlException {
+    private synchronized static HConnectionImpl getConnection() throws HBqlException {
 
         if (conn == null)
-            conn = (HConnectionImpl)HConnectionManager.newConnection();
+            conn = (HConnectionImpl)HConnectionManager.newConnection(config);
 
         return conn;
     }
@@ -119,8 +144,6 @@ public class Console {
         reader.addCompletor(new ArgumentCompletor(completors));
 
         final PrintWriter out = new PrintWriter(System.out);
-
-        final HConnectionImpl conn = (HConnectionImpl)HConnectionManager.newConnection();
 
         StringBuilder stmtBuffer = new StringBuilder();
         boolean continuation = false;
@@ -143,7 +166,7 @@ public class Console {
                 if (!continuation) {
                     final String sql = stmtBuffer.toString();
                     stmtBuffer = new StringBuilder();
-                    ImportStatement.processInput(out, conn, sql);
+                    ImportStatement.processInput(out, getConnection(), sql);
                 }
             }
         }

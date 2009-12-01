@@ -12,3 +12,4 @@ Using the JDBC API
 *Using a JDBC Connection Pool
 
 %{snippet|id=jdbc2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+

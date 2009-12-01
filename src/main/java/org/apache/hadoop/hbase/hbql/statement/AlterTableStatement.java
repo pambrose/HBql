@@ -55,4 +55,8 @@ public class AlterTableStatement extends BasicStatement implements ConnectionSta
 
         return new ExecutionResults("Table " + this.getTableName() + " altered.");
     }
+
+    public static String usage() {
+        return "ALTER TABLE table_name alter_action_list [IF boolean_expression]";
+    }
 }

@@ -37,4 +37,8 @@ public class DropMappingStatement extends StatementContext implements Connection
         connection.dropMapping(this.getMappingName());
         return new ExecutionResults("Mapping " + this.getMappingName() + " dropped.");
     }
+
+    public static String usage() {
+        return "DROP MAPPING mapping_name [IF boolean_expression]";
+    }
 }

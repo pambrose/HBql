@@ -42,4 +42,8 @@ public class DescribeMappingStatement extends StatementContext implements Connec
         else
             return new ExecutionResults(tableMapping.asString());
     }
+
+    public static String usage() {
+        return "DESCRIBE MAPPING mapping_name";
+    }
 }

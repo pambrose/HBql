@@ -31,9 +31,22 @@ public class HelpStatement extends BasicStatement implements NonConnectionStatem
     public ExecutionResults execute() {
 
         final ExecutionResults retval = new ExecutionResults();
-        retval.out.println("VERSION");
-        retval.out.println("SHOW TABLES");
-        retval.out.println("DESCRIBE TABLE table_name");
+        retval.out.println(VersionStatement.usage());
+        retval.out.println(ShowTablesStatement.usage());
+        retval.out.println(ShowMappingsStatement.usage());
+        retval.out.println(DescribeMappingStatement.usage());
+        retval.out.println(DescribeTableStatement.usage());
+        retval.out.println(AlterTableStatement.usage());
+        retval.out.println(CreateMappingStatement.usage());
+        retval.out.println(CreateTableStatement.usage());
+        retval.out.println(DeleteStatement.usage());
+        retval.out.println(InsertStatement.usage());
+        retval.out.println(SelectStatement.usage());
+        retval.out.println(DisableTableStatement.usage());
+        retval.out.println(EnableTableStatement.usage());
+        retval.out.println(DropTableStatement.usage());
+        retval.out.println(DropMappingStatement.usage());
+        retval.out.println(ImportStatement.usage());
         retval.out.flush();
 
         return retval;

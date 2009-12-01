@@ -43,4 +43,8 @@ public class EnableTableStatement extends TableStatement {
 
         return new ExecutionResults("Table " + this.getTableName() + " enabled.");
     }
+
+    public static String usage() {
+        return "ENABLE TABLE table_name [IF boolean_expression]";
+    }
 }

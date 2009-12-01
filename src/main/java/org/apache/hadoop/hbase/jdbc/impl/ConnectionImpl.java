@@ -204,43 +204,43 @@ public class ConnectionImpl implements Connection, PooledConnection {
     }
 
     public Statement createStatement(final int i, final int i1, final int i2) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public PreparedStatement prepareStatement(final String s, final int i, final int i1, final int i2) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public CallableStatement prepareCall(final String s, final int i, final int i1, final int i2) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public PreparedStatement prepareStatement(final String s, final int i) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public PreparedStatement prepareStatement(final String s, final int[] ints) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public PreparedStatement prepareStatement(final String s, final String[] strings) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public Clob createClob() throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public Blob createBlob() throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public NClob createNClob() throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public SQLXML createSQLXML() throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException();
     }
 
     public boolean isValid(final int i) throws SQLException {

@@ -21,6 +21,8 @@
 package org.apache.hadoop.hbase.jdbc;
 
 import org.apache.expreval.util.Maps;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.jdbc.impl.ConnectionImpl;
 
 import java.sql.Connection;
@@ -32,8 +34,6 @@ import java.util.Properties;
 
 public class Driver implements java.sql.Driver {
 
-    private final static String MAXTABLEREFS = "maxtablerefs";
-
     static {
         try {
             DriverManager.registerDriver(new Driver());
@@ -43,7 +43,7 @@ public class Driver implements java.sql.Driver {
         }
     }
 
-    private Map<String, String> getArgMap(final String str) throws SQLException {
+    private static Map<String, String> getArgMap(final String str) throws SQLException {
         final Map<String, String> retval = Maps.newHashMap();
 
         for (final String arg : str.split(";")) {
@@ -51,7 +51,8 @@ public class Driver implements java.sql.Driver {
                 final String[] vals = arg.split("=");
                 final String var = vals[0].toLowerCase();
 
-                if (!var.equals(MAXTABLEREFS))
+                if (!var.equals(HConnectionImpl.MAXTABLEREFS)
+                    && !var.equals(HConnectionImpl.MASTER))
                     throw new SQLException("Unknown JDBC URL option: " + var);
 
                 retval.put(var, vals[1]);
@@ -60,17 +61,35 @@ public class Driver implements java.sql.Driver {
         return retval;
     }
 
-    public Connection connect(final String str, final Properties properties) throws SQLException {
-        if (!this.acceptsURL(str))
+    public Connection connect(final String url, final Properties properties) throws SQLException {
+
+        final Map<String, String> argMap = getArgMap(url);
+
+        final HBaseConfiguration config;
+        if (argMap.containsKey(HConnectionImpl.MASTER))
+            config = HConnectionImpl.getHBaseConfiguration(argMap.get(HConnectionImpl.MASTER));
+        else
+            config = null;
+
+        return getConnection(url, config);
+    }
+
+    public static Connection getConnection(final String url, final HBaseConfiguration config) throws SQLException {
+        if (!validURL(url))
             return null;
 
-        final Map<String, String> argMap = this.getArgMap(str);
+        final Map<String, String> argMap = getArgMap(url);
 
-        final int maxtablerefs = argMap.containsKey(MAXTABLEREFS) ? Integer.parseInt(argMap.get(MAXTABLEREFS)) : Integer.MAX_VALUE;
-        return new ConnectionImpl(null, maxtablerefs);
+        final int maxtablerefs = argMap.containsKey(HConnectionImpl.MAXTABLEREFS)
+                                 ? Integer.parseInt(argMap.get(HConnectionImpl.MAXTABLEREFS)) : Integer.MAX_VALUE;
+        return new ConnectionImpl(config, maxtablerefs);
     }
 
     public boolean acceptsURL(final String url) throws SQLException {
+        return validURL(url);
+    }
+
+    private static boolean validURL(final String url) throws SQLException {
         return (url != null && url.toLowerCase().startsWith("jdbc:hbql"));
     }
 

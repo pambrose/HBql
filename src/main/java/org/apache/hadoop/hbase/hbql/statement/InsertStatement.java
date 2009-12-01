@@ -259,4 +259,8 @@ public class InsertStatement extends StatementContext implements ParameterStatem
         sbuf.append(this.getInsertValuesSource().asString());
         return sbuf.toString();
     }
+
+    public static String usage() {
+        return "INSERT INTO [MAPPING] mapping_name (column_name_list) insert_values [IF boolean_expression]";
+    }
 }

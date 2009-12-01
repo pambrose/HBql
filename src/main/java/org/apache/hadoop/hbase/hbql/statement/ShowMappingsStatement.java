@@ -41,4 +41,8 @@ public class ShowMappingsStatement extends BasicStatement implements ConnectionS
         retval.out.flush();
         return retval;
     }
+
+    public static String usage() {
+        return "SHOW MAPPINGS";
+    }
 }
