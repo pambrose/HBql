@@ -30,6 +30,7 @@ import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
+import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.apache.hadoop.hbase.jdbc.ConnectionPool;
@@ -386,27 +387,6 @@ public class ExamplesTest extends TestSupport {
     }
 
     @Test
-    public void connectionPool1() throws HBqlException {
-
-        // START SNIPPET: connectionPool1
-
-        // For each connection in a connection pool, assign an HTablePool max size of 25 references per table
-        HConnectionPoolManager.setMaxPoolReferencesPerTablePerConnection(25);
-
-        // Create pool with max of 15 connections and prime it with 5 connections
-        HConnectionPool connectionPool = HConnectionPoolManager.newConnectionPool(5, 15);
-
-        HConnection connection = connectionPool.getConnection();
-
-        // Do something with the connection
-
-        // Close the connection to release it back to the connection pool
-        connection.close();
-
-        // END SNIPPET: connectionPool1
-    }
-
-    @Test
     public void definedSelect() throws HBqlException {
 
         // START SNIPPET: definedExample1
@@ -467,6 +447,74 @@ public class ExamplesTest extends TestSupport {
     }
 
     @Test
+    public void hbqlapi1() throws HBqlException {
+
+        // START SNIPPET: hbqlapi1
+
+        // Get a connection with an HTablePool size of 10
+        HConnectionManager.setMaxPoolReferencesPerTablePerConnection(10);
+        HConnection connection = HConnectionManager.newConnection();
+
+        HStatement stmt = connection.createStatement();
+        stmt.execute("CREATE TABLE table12 (f1(), f3()) IF NOT tableexists('table12')");
+
+        stmt.execute("CREATE TEMP MAPPING sch9 FOR TABLE table12"
+                     + "("
+                     + "keyval key, "
+                     + "f1 ("
+                     + "    val1 string alias val1, "
+                     + "    val2 string alias val2 "
+                     + "), "
+                     + "f3 ("
+                     + "    val1 int alias val5, "
+                     + "    val2 int alias val6 "
+                     + "))");
+
+        HResultSet<HRecord> rs = stmt.executeQuery("select * from sch9");
+
+        for (HRecord rec : rs) {
+            int val5 = (Integer)rec.getCurrentValue("val5");
+            int val6 = (Integer)rec.getCurrentValue("val6");
+            String val1 = (String)rec.getCurrentValue("val1");
+            String val2 = (String)rec.getCurrentValue("val2");
+
+            System.out.print("val5: " + val5);
+            System.out.print(", val6: " + val6);
+            System.out.print(", val1: " + val1);
+            System.out.println(", val2: " + val2);
+        }
+
+        stmt.execute("DISABLE TABLE table12");
+        stmt.execute("DROP TABLE table12");
+        stmt.close();
+
+        connection.close();
+
+        // END SNIPPET: hbqlapi1
+    }
+
+    @Test
+    public void hbqlapi2() throws HBqlException {
+
+        // START SNIPPET: hbqlapi2
+
+        // For each connection in a connection pool, assign an HTablePool max size of 25 references per table
+        HConnectionPoolManager.setMaxPoolReferencesPerTablePerConnection(25);
+
+        // Create connection pool with max of 25 connections and prime it with 5 initial connections
+        HConnectionPool connectionPool = HConnectionPoolManager.newConnectionPool(5, 25);
+
+        HConnection connection = connectionPool.getConnection();
+
+        // Do something with the connection
+
+        // Close the connection to release it back to the connection pool
+        connection.close();
+
+        // END SNIPPET: hbqlapi2
+    }
+
+    @Test
     public void jdbc1() throws SQLException, ClassNotFoundException {
 
         // START SNIPPET: jdbc1
@@ -519,7 +567,10 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: jdbc2
 
-        // Create connection pool with 5 initial connections and a maximum of 25 connection
+        // For each connection in a connection pool, assign an HTablePool max size of 25 references per table
+        ConnectionPool.setMaxPoolReferencesPerTablePerConnection(25);
+
+        // Create connection pool with max of 25 connections and prime it with 5 initial connections
         ConnectionPool pool = new ConnectionPool(5, 25);
 
         PooledConnection pooledConnection = pool.getPooledConnection();

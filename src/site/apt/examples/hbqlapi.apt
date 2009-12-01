@@ -1,0 +1,14 @@
+    -----
+    Using the HBql API
+    -----
+    -----
+
+Using the HBql API
+
+*Simple Query
+
+%{snippet|id=hbqlapi1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+
+*Using a Connection Pool
+
+%{snippet|id=hbqlapi2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

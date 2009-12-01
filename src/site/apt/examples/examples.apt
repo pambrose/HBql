@@ -5,13 +5,13 @@ HBql Examples
 
 HBql Examples
 
+    {{{./hbqlapi.html}Using the HBql API}}
+
+    {{{./jdbc.html}Using the JDBC API}}
+
     {{{./defined-mapping.html}Inserting records using an HRecord}}
 
     {{{./annotated-mapping.html}Inserting records using an annotated object}}
-
-    {{{./connection-pool.html}Using a connection pool}}
-
-    {{{./jdbc.html}Using the JDBC driver}}
 
 
 

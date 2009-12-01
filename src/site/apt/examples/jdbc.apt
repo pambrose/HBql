@@ -1,16 +1,14 @@
     -----
-    Using JDBC Driver
+    Using the JDBC API
     -----
     -----
 
-Using JDBC Driver
-
-*Example
+Using the JDBC API
 
 *Simple Query
 
 %{snippet|id=jdbc1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
 
-*Using a Connection Pool
+*Using a JDBC Connection Pool
 
 %{snippet|id=jdbc2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
