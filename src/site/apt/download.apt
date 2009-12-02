@@ -28,6 +28,8 @@ Release Notes
 
     0.9.13-alpha -- 12/2/09
 
+        * Added SCANNER_CACHE_SIZE option to {{{statements/with-clause.html}WITH}} clause
+
         * Added jdbc url option for hbase.mater value
 
     0.9.12-alpha -- 12/1/09

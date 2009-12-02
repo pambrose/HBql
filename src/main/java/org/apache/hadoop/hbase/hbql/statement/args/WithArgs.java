@@ -44,6 +44,7 @@ public class WithArgs implements Serializable {
     private KeyRangeArgs keyRangeArgs = null;
     private TimestampArgs timestampArgs = null;
     private VersionArgs versionArgs = null;
+    private ScannerCacheArgs scannerCacheArgs = null;
     private LimitArgs limitArgs = null;
     private ExpressionTree clientExpressionTree = null;
     private ExpressionTree serverExpressionTree = null;
@@ -64,17 +65,14 @@ public class WithArgs implements Serializable {
 
         this.getKeyRangeArgs().setStatementContext(this.getStatementContext());
 
-        if (this.getTimestampArgs() != null) {
+        if (this.getTimestampArgs() != null)
             this.getTimestampArgs().setStatementContext(this.getStatementContext());
-        }
 
-        if (this.getVersionArgs() != null) {
+        if (this.getVersionArgs() != null)
             this.getVersionArgs().setStatementContext(this.getStatementContext());
-        }
 
-        if (this.getLimitArgs() != null) {
+        if (this.getLimitArgs() != null)
             this.getLimitArgs().setStatementContext(this.getStatementContext());
-        }
 
         if (this.getServerExpressionTree() != null) {
             this.getServerExpressionTree().setStatementContext(this.getStatementContext());
@@ -157,6 +155,16 @@ public class WithArgs implements Serializable {
         this.versionArgs = versionArgs;
     }
 
+    private ScannerCacheArgs getScannerCacheArgs() {
+        return this.scannerCacheArgs;
+    }
+
+    public void setScannerCacheArgs(final ScannerCacheArgs scannerCacheArgs) {
+        if (this.getVersionArgs() != null)
+            this.addError("Scanner_Cache_Size");
+        this.scannerCacheArgs = scannerCacheArgs;
+    }
+
     public LimitArgs getLimitArgs() {
         return this.limitArgs;
     }
@@ -204,6 +212,9 @@ public class WithArgs implements Serializable {
         if (this.getVersionArgs() != null)
             sbuf.append(this.getVersionArgs().asString() + "\n");
 
+        if (this.getScannerCacheArgs() != null)
+            sbuf.append(this.getScannerCacheArgs().asString() + "\n");
+
         if (this.getLimitArgs() != null)
             sbuf.append(this.getLimitArgs().asString() + "\n");
 
@@ -229,6 +240,9 @@ public class WithArgs implements Serializable {
         if (this.getVersionArgs() != null)
             parameterList.addAll(this.getVersionArgs().getParameterList());
 
+        if (this.getScannerCacheArgs() != null)
+            parameterList.addAll(this.getScannerCacheArgs().getParameterList());
+
         if (this.getLimitArgs() != null)
             parameterList.addAll(this.getLimitArgs().getParameterList());
 
@@ -252,6 +266,9 @@ public class WithArgs implements Serializable {
         if (this.getVersionArgs() != null)
             this.getVersionArgs().reset();
 
+        if (this.getScannerCacheArgs() != null)
+            this.getScannerCacheArgs().reset();
+
         if (this.getLimitArgs() != null)
             this.getLimitArgs().reset();
 
@@ -274,6 +291,9 @@ public class WithArgs implements Serializable {
 
         if (this.getVersionArgs() != null)
             cnt += this.getVersionArgs().setParameter(name, val);
+
+        if (this.getScannerCacheArgs() != null)
+            cnt += this.getScannerCacheArgs().setParameter(name, val);
 
         if (this.getLimitArgs() != null)
             cnt += this.getLimitArgs().setParameter(name, val);
@@ -328,6 +348,8 @@ public class WithArgs implements Serializable {
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(get);
 
+        // Do not call scanner cache args call for get
+
         final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
                                                                  this.getServerExpressionTree());
         if (serverFilter != null)
@@ -354,6 +376,9 @@ public class WithArgs implements Serializable {
 
         if (this.getVersionArgs() != null)
             this.getVersionArgs().setMaxVersions(scan);
+
+        if (this.getScannerCacheArgs() != null)
+            this.getScannerCacheArgs().setScannerCacheSize(scan);
 
         final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
                                                                  this.getServerExpressionTree());

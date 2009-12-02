@@ -8,7 +8,7 @@ WITH Clause
 *Syntax
 
 ---------------------------
-WITH { keys | timestamp | versions | query_limit | server_filer | client_filter }+
+WITH { keys | timestamp | versions | scanner_cache_size | query_limit | server_filer | client_filter }+
 
 keys:
     KEYS key_range [, ...]
@@ -27,6 +27,9 @@ timestamp:
 versions:
     VERSIONS version_value
     | VERSIONS MAX
+
+scanner_cache_size:
+    SCANNER_CACHE_SIZE cache_size
 
 query_limit:
     LIMIT limit_value

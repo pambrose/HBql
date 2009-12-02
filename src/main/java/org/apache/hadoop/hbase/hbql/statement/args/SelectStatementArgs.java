@@ -24,7 +24,7 @@ import org.apache.expreval.expr.ArgumentListTypeSignature;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.expr.node.LongValue;
+import org.apache.expreval.expr.node.IntegerValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
@@ -36,8 +36,9 @@ public abstract class SelectStatementArgs extends MultipleExpressionContext {
         SINGLEKEY(new ArgumentListTypeSignature(StringValue.class)),
         KEYRANGE(new ArgumentListTypeSignature(StringValue.class, StringValue.class)),
         TIMESTAMPRANGE(new ArgumentListTypeSignature(DateValue.class, DateValue.class)),
-        LIMIT(new ArgumentListTypeSignature(LongValue.class)),
-        VERSION(new ArgumentListTypeSignature(LongValue.class));
+        LIMIT(new ArgumentListTypeSignature(IntegerValue.class)),
+        SCANNERCACHE(new ArgumentListTypeSignature(IntegerValue.class)),
+        VERSION(new ArgumentListTypeSignature(IntegerValue.class));
 
         private final ArgumentListTypeSignature typeSignature;
 

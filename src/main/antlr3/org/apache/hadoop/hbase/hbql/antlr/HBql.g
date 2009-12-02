@@ -212,6 +212,7 @@ withElements[WithArgs withArgs]
 	: k=keysRangeArgs				{withArgs.setKeyRangeArgs($k.retval);}
 	| t=timestampArgs				{withArgs.setTimestampArgs($t.retval);}	
 	| v=versionArgs					{withArgs.setVersionArgs($v.retval);}
+	| sc=scannerCacheArgs				{withArgs.setScannerCacheArgs($sc.retval);}
 	| l=limitArgs					{withArgs.setLimitArgs($l.retval);}
 	| s=serverFilter				{withArgs.setServerExpressionTree($s.retval);}
 	| c=clientFilter				{withArgs.setClientExpressionTree($c.retval);}
@@ -243,6 +244,10 @@ timestampArgs returns [TimestampArgs retval]
 versionArgs returns [VersionArgs retval]
 	: keyVERSIONS v=exprValue			{retval = new VersionArgs($v.retval);}
 	| keyVERSIONS keyMAX				{retval = new VersionArgs(new IntegerLiteral(Integer.MAX_VALUE));}
+	;
+	
+scannerCacheArgs returns [ScannerCacheArgs retval]
+	: keySCANNER_CACHE_SIZE v=exprValue		{retval = new ScannerCacheArgs($v.retval);}
 	;
 	
 limitArgs returns [LimitArgs retval]
@@ -585,6 +590,7 @@ keyMAX_VERSIONS	: {isKeyword(input, "MAX_VERSIONS")}? ID;
 keyBLOOM_FILTER	: {isKeyword(input, "BLOOM_FILTER")}? ID;
 keyBLOCK_SIZE	: {isKeyword(input, "BLOCK_SIZE")}? ID;
 keyIN_MEMORY	: {isKeyword(input, "IN_MEMORY")}? ID;
+keySCANNER_CACHE_SIZE		: {isKeyword(input, "SCANNER_CACHE_SIZE")}? ID;
 keyBLOCK_CACHE_ENABLED		: {isKeyword(input, "BLOCK_CACHE_ENABLED")}? ID;
 keyCOMPRESSION_TYPE		: {isKeyword(input, "COMPRESSION_TYPE")}? ID;
 keyMAP_FILE_INDEX_INTERVAL	: {isKeyword(input, "MAP_FILE_INDEX_INTERVAL")}? ID;

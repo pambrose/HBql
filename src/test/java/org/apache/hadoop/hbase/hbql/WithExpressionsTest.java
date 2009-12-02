@@ -46,6 +46,11 @@ public class WithExpressionsTest extends TestSupport {
     }
 
     @Test
+    public void scannerExpressions() throws HBqlException {
+        assertValidInput("WITH SCANNER_CACHE_SIZE 12");
+    }
+
+    @Test
     public void timerangeExpressions() throws HBqlException {
         assertValidInput("WITH TIMESTAMP RANGE NOW() TO NOW()+DAY(1)");
         assertValidInput("WITH TIMESTAMP RANGE NOW() - DAY(1) TO NOW() + DAY(1) + DAY(2)");
