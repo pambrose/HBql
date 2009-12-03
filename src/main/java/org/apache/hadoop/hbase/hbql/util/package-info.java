@@ -22,5 +22,5 @@
                    date = "12/01/09",
                    user = "pambrose",
                    revision = "",
-                   url = "http://www.sudothought.com") package org.apache.hadoop.hbase.hbql.util;
+                   url = "http://www.hbql.com") package org.apache.hadoop.hbase.hbql.util;
 

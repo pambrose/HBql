@@ -30,7 +30,7 @@ Release Notes
 
         * Added SCANNER_CACHE_SIZE option to {{{statements/with-clause.html}WITH}} clause
 
-        * Added jdbc url option for hbase.mater value
+        * Added jdbc url option for hbase.master value
 
     0.9.12-alpha -- 12/1/09
 

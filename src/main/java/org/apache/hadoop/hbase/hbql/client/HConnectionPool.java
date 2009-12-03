@@ -29,6 +29,4 @@ public interface HConnectionPool {
     HBaseConfiguration getConfig();
 
     HConnection getConnection() throws HBqlException;
-
-    void release(final HConnection connection);
 }

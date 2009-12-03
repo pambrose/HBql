@@ -23,7 +23,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.sudothought</groupId>
+    <groupId>com.hbql</groupId>
     <artifactId>HBql</artifactId>
     <name>HBql</name>
     <version>0.9.13-alpha</version>
@@ -47,7 +47,7 @@
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>scp://sudothought@www.sudothought.com/home/sudothought/public_html/</url>
+            <url>scp://hbql@www.hbql.com/home/hbql/public_html/</url>
         </site>
 
         <!--
