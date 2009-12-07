@@ -24,6 +24,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
+import org.apache.expreval.expr.var.DelegateColumn;
 import org.apache.expreval.expr.var.GenericColumn;
 import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.Filter;
@@ -32,7 +33,6 @@ import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
-import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -103,7 +103,7 @@ public class NumberCompare extends GenericCompare {
         }
     }
 
-    public Filter getFilter() throws HBqlException {
+    public Filter getFilter() throws HBqlException, ResultMissingColumnException {
 
         // One of these values must be a single column reference and the other a constant
         this.validateArgsForFilter();
@@ -114,13 +114,13 @@ public class NumberCompare extends GenericCompare {
         final WritableByteArrayComparable comparator;
 
         if (this.getExprArg(0).isAColumnReference()) {
-            columnRef = (GenericColumn)this.getExprArg(0);
-            constant = this.getExprArg(1).getOptimizedValue();
+            columnRef = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
+            constant = this.getValue(1, null, null);
             compareOp = this.getOperator().getCompareOpLeft();
         }
         else {
-            columnRef = (GenericColumn)this.getExprArg(1);
-            constant = this.getExprArg(0).getOptimizedValue();
+            columnRef = ((DelegateColumn)this.getExprArg(1)).getTypedColumn();
+            constant = this.getValue(0, null, null);
             compareOp = this.getOperator().getCompareOpRight();
         }
 
@@ -157,7 +157,7 @@ public class NumberCompare extends GenericCompare {
 
         public int compareTo(final byte[] bytes) {
             try {
-                long columnValue = (Long)IO.getSerialization().getScalarFromBytes(FieldType.LongType, bytes);
+                long columnValue = IO.getSerialization().getLongFromBytes(bytes);
                 if (columnValue == this.value)
                     return 0;
                 else
@@ -191,7 +191,7 @@ public class NumberCompare extends GenericCompare {
 
         public int compareTo(final byte[] bytes) {
             try {
-                double columnValue = (Double)IO.getSerialization().getScalarFromBytes(FieldType.DoubleType, bytes);
+                double columnValue = IO.getSerialization().getDoubleFromBytes(bytes);
                 if (columnValue == this.value)
                     return 0;
                 else

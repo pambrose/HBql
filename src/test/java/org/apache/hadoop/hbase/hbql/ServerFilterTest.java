@@ -100,7 +100,7 @@ public class ServerFilterTest extends TestSupport {
             rec_cnt++;
         }
 
-        assertTrue(rec_cnt == 10);
+        assertTrue(rec_cnt == 1);
     }
 
     @Test

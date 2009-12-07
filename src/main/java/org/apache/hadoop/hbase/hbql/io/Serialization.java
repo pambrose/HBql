@@ -44,6 +44,14 @@ public abstract class Serialization {
         return null;
     }
 
+    public Long getLongFromBytes(byte[] b) throws HBqlException {
+        return (Long)IO.getSerialization().getScalarFromBytes(FieldType.LongType, b);
+    }
+
+    public Double getDoubleFromBytes(byte[] b) throws HBqlException {
+        return (Double)IO.getSerialization().getScalarFromBytes(FieldType.DoubleType, b);
+    }
+
     abstract public Object getScalarFromBytes(FieldType fieldType, byte[] b) throws HBqlException;
 
     abstract public byte[] getScalarAsBytes(FieldType fieldType, Object obj) throws HBqlException;

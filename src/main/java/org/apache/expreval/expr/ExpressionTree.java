@@ -70,6 +70,10 @@ public class ExpressionTree extends MultipleExpressionContext {
         try {
             return this.getGenericValue().getFilter();
         }
+        catch (ResultMissingColumnException e) {
+            e.printStackTrace();
+            return null;
+        }
         catch (HBqlException e) {
             e.printStackTrace();
             return null;
