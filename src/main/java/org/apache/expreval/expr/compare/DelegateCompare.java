@@ -28,6 +28,7 @@ import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
@@ -46,17 +47,17 @@ public class DelegateCompare extends GenericCompare {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
-        final Class<? extends GenericValue> type0 = this.getArg(0).validateTypes(this, false);
-        final Class<? extends GenericValue> type1 = this.getArg(1).validateTypes(this, false);
+        final Class<? extends GenericValue> type0 = this.getExprArg(0).validateTypes(this, false);
+        final Class<? extends GenericValue> type1 = this.getExprArg(1).validateTypes(this, false);
 
         if (TypeSupport.isParentClass(StringValue.class, type0, type1))
-            typedExpr = new StringCompare(this.getArg(0), this.getOperator(), this.getArg(1));
+            typedExpr = new StringCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
         else if (TypeSupport.isParentClass(NumberValue.class, type0, type1))
-            typedExpr = new NumberCompare(this.getArg(0), this.getOperator(), this.getArg(1));
+            typedExpr = new NumberCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
         else if (TypeSupport.isParentClass(DateValue.class, type0, type1))
-            typedExpr = new DateCompare(this.getArg(0), this.getOperator(), this.getArg(1));
+            typedExpr = new DateCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
         else if (TypeSupport.isParentClass(BooleanValue.class, type0, type1))
-            typedExpr = new BooleanCompare(this.getArg(0), this.getOperator(), this.getArg(1));
+            typedExpr = new BooleanCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
         else
             this.throwInvalidTypeException(type0, type1);
 
@@ -71,5 +72,9 @@ public class DelegateCompare extends GenericCompare {
     public Boolean getValue(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
         return this.getTypedExpr().getValue(connection, object);
+    }
+
+    public Filter getFilter() throws HBqlException {
+        return this.getTypedExpr().getFilter();
     }
 }

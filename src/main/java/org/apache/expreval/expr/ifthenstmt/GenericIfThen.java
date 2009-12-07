@@ -38,14 +38,14 @@ public abstract class GenericIfThen extends DelegateStmt<GenericIfThen> {
 
     public Object getValue(final HConnectionImpl connection,
                            final Object object) throws HBqlException, ResultMissingColumnException {
-        if ((Boolean)this.getArg(0).getValue(connection, object))
-            return this.getArg(1).getValue(connection, object);
+        if ((Boolean)this.getExprArg(0).getValue(connection, object))
+            return this.getExprArg(1).getValue(connection, object);
         else
-            return this.getArg(2).getValue(connection, object);
+            return this.getExprArg(2).getValue(connection, object);
     }
 
     public String asString() {
-        return "IF " + this.getArg(0).asString() + " THEN " + this.getArg(1).asString()
-               + " ELSE " + this.getArg(2).asString() + " END";
+        return "IF " + this.getExprArg(0).asString() + " THEN " + this.getExprArg(1).asString()
+               + " ELSE " + this.getExprArg(2).asString() + " END";
     }
 }

@@ -20,31 +20,45 @@
 
 package org.apache.expreval.expr;
 
+import org.apache.hadoop.hbase.filter.CompareFilter;
+
 public enum Operator {
-    PLUS("+"),
-    MINUS("-"),
-    MULT("*"),
-    DIV("/"),
-    MOD("%"),
-    NEGATIVE("-"),
+    PLUS("+", null, null),
+    MINUS("-", null, null),
+    MULT("*", null, null),
+    DIV("/", null, null),
+    MOD("%", null, null),
+    NEGATIVE("-", null, null),
 
-    EQ("=="),
-    GT("<"),
-    GTEQ(">="),
-    LT("<"),
-    LTEQ("<="),
-    NOTEQ("!="),
+    EQ("==", CompareFilter.CompareOp.EQUAL, CompareFilter.CompareOp.EQUAL),
+    GT("<", CompareFilter.CompareOp.GREATER, CompareFilter.CompareOp.LESS_OR_EQUAL),
+    GTEQ(">=", CompareFilter.CompareOp.GREATER_OR_EQUAL, CompareFilter.CompareOp.LESS),
+    LT("<", CompareFilter.CompareOp.LESS, CompareFilter.CompareOp.GREATER_OR_EQUAL),
+    LTEQ("<=", CompareFilter.CompareOp.LESS_OR_EQUAL, CompareFilter.CompareOp.GREATER),
+    NOTEQ("!=", CompareFilter.CompareOp.NOT_EQUAL, CompareFilter.CompareOp.NOT_EQUAL),
 
-    AND("AND"),
-    OR("OR");
+    AND("AND", null, null),
+    OR("OR", null, null);
 
     final String opStr;
+    final CompareFilter.CompareOp compareOpLeft;
+    final CompareFilter.CompareOp compareOpRight;
 
-    Operator(final String opStr) {
+    Operator(final String opStr, final CompareFilter.CompareOp compareOpLeft, final CompareFilter.CompareOp compareOpRight) {
         this.opStr = opStr;
+        this.compareOpLeft = compareOpLeft;
+        this.compareOpRight = compareOpRight;
     }
 
     public String toString() {
         return this.opStr;
+    }
+
+    public CompareFilter.CompareOp getCompareOpLeft() {
+        return this.compareOpLeft;
+    }
+
+    public CompareFilter.CompareOp getCompareOpRight() {
+        return this.compareOpRight;
     }
 }

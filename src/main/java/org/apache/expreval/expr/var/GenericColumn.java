@@ -25,7 +25,9 @@ import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.FieldType;
@@ -79,6 +81,10 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
         return true;
     }
 
+    public boolean isAColumnReference() {
+        return true;
+    }
+
     public void reset() {
         if (this.getExpressionContext() != null)
             this.getExpressionContext().reset();
@@ -104,5 +110,9 @@ public abstract class GenericColumn<T extends GenericValue> implements GenericVa
 
     public String asString() {
         return this.getVariableName();
+    }
+
+    public Filter getFilter() throws HBqlException {
+        throw new InvalidServerFilterExpressionException();
     }
 }

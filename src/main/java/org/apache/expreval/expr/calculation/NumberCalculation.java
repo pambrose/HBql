@@ -42,8 +42,8 @@ public class NumberCalculation extends GenericCalculation implements NumberValue
     public Number getValue(final HConnectionImpl connection,
                            final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final Object obj0 = this.getArg(0).getValue(connection, object);
-        final Object obj1 = this.getArg(1).getValue(connection, object);
+        final Object obj0 = this.getExprArg(0).getValue(connection, object);
+        final Object obj1 = this.getExprArg(1).getValue(connection, object);
 
         this.validateNumericArgTypes(obj0, obj1);
 

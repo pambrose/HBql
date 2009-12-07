@@ -34,8 +34,10 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 
 import java.util.Arrays;
@@ -175,6 +177,10 @@ public abstract class GenericExpression implements GenericValue {
         return false;
     }
 
+    public boolean isAColumnReference() {
+        return false;
+    }
+
     public void reset() {
         for (final GenericValue val : this.getGenericValueList())
             val.reset();
@@ -206,13 +212,13 @@ public abstract class GenericExpression implements GenericValue {
                 return;
 
             for (int i = 0; i < this.getGenericValueList().size(); i++)
-                this.setArg(i, this.getArg(i).getOptimizedValue());
+                this.setArg(i, this.getExprArg(i).getOptimizedValue());
 
             this.allArgsOptimized = true;
         }
     }
 
-    public GenericValue getArg(final int i) {
+    public GenericValue getExprArg(final int i) {
         return this.getGenericValueList().get(i);
     }
 
@@ -224,10 +230,10 @@ public abstract class GenericExpression implements GenericValue {
                                                        final boolean allowCollections) throws HBqlException {
 
         if (this.getGenericValueList().size() != this.getTypeSignature().getArgCount())
-            throw new TypeException("Incorrect number of arguments in " + this.asString());
+            throw new InvalidTypeException("Incorrect number of arguments in " + this.asString());
 
         for (int i = 0; i < this.getTypeSignature().getArgCount(); i++)
-            this.validateParentClass(this.getTypeSignature().getArg(i), this.getArg(i).validateTypes(this, false));
+            this.validateParentClass(this.getTypeSignature().getArg(i), this.getExprArg(i).validateTypes(this, false));
 
         return this.getTypeSignature().getReturnType();
     }
@@ -235,13 +241,13 @@ public abstract class GenericExpression implements GenericValue {
     protected Class<? extends GenericValue> validateNumericTypes() throws HBqlException {
 
         if (this.getGenericValueList().size() != this.getTypeSignature().getArgCount())
-            throw new TypeException("Incorrect number of arguments in " + this.asString());
+            throw new InvalidTypeException("Incorrect number of arguments in " + this.asString());
 
         // Return the type of the highest ranking numeric arg
         int highestRank = -1;
         for (int i = 0; i < this.getTypeSignature().getArgCount(); i++) {
 
-            final Class<? extends GenericValue> clazz = this.getArg(i).validateTypes(this, false);
+            final Class<? extends GenericValue> clazz = this.getExprArg(i).validateTypes(this, false);
             this.validateParentClass(this.getTypeSignature().getArg(i), clazz);
 
             final int rank = NumericType.getTypeRanking(clazz);
@@ -311,7 +317,7 @@ public abstract class GenericExpression implements GenericValue {
     }
 
     public void validateParentClass(final Class<? extends GenericValue> parentClazz,
-                                    final Class<? extends GenericValue>... clazzes) throws TypeException {
+                                    final Class<? extends GenericValue>... clazzes) throws InvalidTypeException {
 
         List<Class<? extends GenericValue>> classList = Lists.newArrayList();
 
@@ -348,11 +354,11 @@ public abstract class GenericExpression implements GenericValue {
 
             sbuf.append(" in expression: " + this.asString());
 
-            throw new TypeException(sbuf.toString());
+            throw new InvalidTypeException(sbuf.toString());
         }
     }
 
-    public void throwInvalidTypeException(final Class<? extends GenericValue>... clazzes) throws TypeException {
+    public void throwInvalidTypeException(final Class<? extends GenericValue>... clazzes) throws InvalidTypeException {
 
         final List<Class> classList = Lists.newArrayList();
 
@@ -372,10 +378,10 @@ public abstract class GenericExpression implements GenericValue {
         }
         sbuf.append(" in expression " + this.asString());
 
-        throw new TypeException(sbuf.toString());
+        throw new InvalidTypeException(sbuf.toString());
     }
 
-    protected Class<? extends GenericValue> determineGenericValueClass(final Class<? extends GenericValue> clazz) throws TypeException {
+    protected Class<? extends GenericValue> determineGenericValueClass(final Class<? extends GenericValue> clazz) throws InvalidTypeException {
 
         final List<Class<? extends GenericValue>> types = Arrays.asList(StringValue.class,
                                                                         NumberValue.class,
@@ -388,5 +394,9 @@ public abstract class GenericExpression implements GenericValue {
 
         this.throwInvalidTypeException(clazz);
         return null;
+    }
+
+    public Filter getFilter() throws HBqlException {
+        throw new InvalidServerFilterExpressionException();
     }
 }

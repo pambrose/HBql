@@ -39,7 +39,7 @@ public class BooleanNot extends GenericExpression implements BooleanValue {
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
-        this.validateParentClass(BooleanValue.class, this.getArg(0).validateTypes(this, false));
+        this.validateParentClass(BooleanValue.class, this.getExprArg(0).validateTypes(this, false));
         return BooleanValue.class;
     }
 
@@ -58,11 +58,11 @@ public class BooleanNot extends GenericExpression implements BooleanValue {
 
     public Boolean getValue(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
-        final boolean retval = (Boolean)this.getArg(0).getValue(connection, object);
+        final boolean retval = (Boolean)this.getExprArg(0).getValue(connection, object);
         return (this.not) ? !retval : retval;
     }
 
     public String asString() {
-        return (this.not ? "NOT " : "") + this.getArg(0).asString();
+        return (this.not ? "NOT " : "") + this.getExprArg(0).asString();
     }
 }

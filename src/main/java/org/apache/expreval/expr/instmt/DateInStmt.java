@@ -36,7 +36,7 @@ public class DateInStmt extends GenericInStmt {
 
     protected boolean evaluateInList(final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final long attribVal = (Long)this.getArg(0).getValue(null, object);
+        final long attribVal = (Long)this.getExprArg(0).getValue(null, object);
 
         for (final GenericValue obj : this.getInList()) {
             // Check if the value returned is a collection

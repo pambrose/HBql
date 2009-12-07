@@ -36,7 +36,7 @@ public abstract class GenericBetweenStmt extends NotValue<GenericBetweenStmt> im
     }
 
     public String asString() {
-        return this.getArg(0).asString() + notAsString() + " BETWEEN "
-               + this.getArg(1).asString() + " AND " + this.getArg(2).asString();
+        return this.getExprArg(0).asString() + notAsString() + " BETWEEN "
+               + this.getExprArg(1).asString() + " AND " + this.getExprArg(2).asString();
     }
 }

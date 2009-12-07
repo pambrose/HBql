@@ -26,7 +26,7 @@ import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.Query;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
@@ -63,7 +63,7 @@ public class InsertSelectValues extends InsertValueSource {
 
         for (final SelectElement element : this.getSelectStatement().getSelectElementList()) {
             if (element.isAFamilySelect())
-                throw new TypeException("Family select items are not valid in INSERT statement");
+                throw new InvalidTypeException("Family select items are not valid in INSERT statement");
         }
 
         this.getSelectStatement().validate(this.getInsertStatement().getConnection());

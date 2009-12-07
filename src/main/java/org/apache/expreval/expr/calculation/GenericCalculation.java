@@ -43,8 +43,8 @@ public abstract class GenericCalculation extends DelegateStmt<GenericCalculation
 
     public String asString() {
         if (this.getOperator() == Operator.NEGATIVE)
-            return "-" + this.getArg(0).asString();
+            return "-" + this.getExprArg(0).asString();
         else
-            return this.getArg(0).asString() + " " + this.getOperator() + " " + this.getArg(1).asString();
+            return this.getExprArg(0).asString() + " " + this.getOperator() + " " + this.getExprArg(1).asString();
     }
 }

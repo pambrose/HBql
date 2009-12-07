@@ -34,7 +34,7 @@ public class StringNullCompare extends GenericNullCompare {
 
     public Boolean getValue(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
-        final String val = (String)this.getArg(0).getValue(connection, object);
+        final String val = (String)this.getExprArg(0).getValue(connection, object);
         final boolean retval = (val == null);
         return (this.isNot()) ? !retval : retval;
     }

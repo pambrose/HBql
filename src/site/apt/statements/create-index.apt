@@ -1,0 +1,23 @@
+    -----
+    CREATE INDEX
+    -----
+    -----
+
+
+CREATE INDEX
+
+*Syntax
+
+---------------------------
+
+CREATE INDEX index_name '(' family_description [, ...] ')'  [ IF boolean_condition ]
+
+---------------------------
+
+*Description
+
+    Creates index index_name with the declared families.
+
+*Example
+
+%{snippet|id=create-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

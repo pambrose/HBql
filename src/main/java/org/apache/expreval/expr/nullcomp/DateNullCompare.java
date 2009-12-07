@@ -34,7 +34,7 @@ public class DateNullCompare extends GenericNullCompare {
 
     public Boolean getValue(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
-        final Long val = (Long)this.getArg(0).getValue(connection, object);
+        final Long val = (Long)this.getExprArg(0).getValue(connection, object);
         final boolean retval = (val == null);
         return (this.isNot()) ? !retval : retval;
     }

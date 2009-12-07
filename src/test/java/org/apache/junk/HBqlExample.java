@@ -18,20 +18,24 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.scratchpad;
+package org.apache.junk;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.HMapping;
+import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
+import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 
-public class RawAccess1 {
+public class HBqlExample {
 
     public static void main(String[] args) throws HBqlException, IOException {
 
@@ -39,17 +43,26 @@ public class RawAccess1 {
         final byte[] author = Bytes.toBytes("author");
         final byte[] title = Bytes.toBytes("title");
 
-        HTable table = new HTable(new HBaseConfiguration(), "testobjects");
+        HConnection connection = HConnectionManager.newConnection();
 
-        for (int i = 0; i < 0; i++) {
-            Put put = new Put(Bytes.toBytes("00000000" + i));
-            put.add(family, author, Bytes.toBytes("A value for author"));
-            table.put(put);
-            table.flushCommits();
-        }
+        connection.execute("CREATE TEMP MAPPING testobjects alias testobjects2"
+                           + "("
+                           + "keyval key, "
+                           + "family1 ("
+                           + "  author string alias author, "
+                           + "  title string  alias title"
+                           + "))");
+
+        HMapping mapping = connection.getMapping("testobjects");
+
+        final HBqlFilter filter = ((HBaseTableMapping)mapping).newHBqlFilter("title LIKE '.*3.*' OR family1:author LIKE '.*4.*'");
 
         Scan scan = new Scan();
         scan.addColumn(family, author);
+        scan.addColumn(family, title);
+        scan.setFilter(filter);
+
+        HTable table = new HTable(new HBaseConfiguration(), "testobjects");
         ResultScanner scanner = table.getScanner(scan);
 
         for (Result result : scanner) {

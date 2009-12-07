@@ -30,7 +30,7 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.InsertValueSource;
@@ -98,7 +98,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
             this.validated = true;
 
         if (this.invalidInsertColumn != null)
-            throw new TypeException(this.invalidInsertColumn + " is not a column reference in " + this.asString());
+            throw new InvalidTypeException(this.invalidInsertColumn + " is not a column reference in " + this.asString());
 
         this.connection = connection;
         this.validateMappingName(this.getConnection());
@@ -109,11 +109,11 @@ public class InsertStatement extends StatementContext implements ParameterStatem
             element.validate(this, this.getConnection());
 
             if (!element.isADelegateColumnReference())
-                throw new TypeException(element.asString() + " is not a column reference in " + this.asString());
+                throw new InvalidTypeException(element.asString() + " is not a column reference in " + this.asString());
         }
 
         if (!this.hasAKeyValue())
-            throw new TypeException("Missing a key value in attribute list in " + this.asString());
+            throw new InvalidTypeException("Missing a key value in attribute list in " + this.asString());
 
         this.getInsertValuesSource().validate();
 
@@ -144,10 +144,10 @@ public class InsertStatement extends StatementContext implements ParameterStatem
             }
 
             if (!TypeSupport.isParentClass(type1, type2))
-                throw new TypeException("Type mismatch in argument " + i
-                                        + " expecting " + type1.getSimpleName()
-                                        + " but found " + type2.getSimpleName()
-                                        + " in " + this.asString());
+                throw new InvalidTypeException("Type mismatch in argument " + i
+                                               + " expecting " + type1.getSimpleName()
+                                               + " but found " + type2.getSimpleName()
+                                               + " in " + this.asString());
         }
     }
 

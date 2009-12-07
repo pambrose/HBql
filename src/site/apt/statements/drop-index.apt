@@ -1,0 +1,21 @@
+    -----
+    DROP INDEX
+    -----
+    -----
+
+
+DROP INDEX
+
+*Syntax
+
+---------------------------
+DROP INDEX index_name [ IF boolean_condition ]
+---------------------------
+
+*Description
+
+    Drops named index (requires {{{./disable-table.html}disabling}} the table first).
+
+*Example
+
+%{snippet|id=drop-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

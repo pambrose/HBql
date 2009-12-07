@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
@@ -174,12 +174,12 @@ public class InsertWithSelectTest extends TestSupport {
         caught = this.execute("insert into tab3 " +
                               "(keyval, val1, val2) " +
                               "select keyval, DOUBLE(val1+val1), val2+1 FROM tab3 ");
-        assertTrue(caught != null && caught == TypeException.class);
+        assertTrue(caught != null && caught == InvalidTypeException.class);
 
         caught = this.execute("insert into tab3 " +
                               "(keyval, val1, val2) " +
                               "select keyval, val2, val1 FROM tab3 ");
-        assertTrue(caught != null && caught == TypeException.class);
+        assertTrue(caught != null && caught == InvalidTypeException.class);
 
         caught = this.execute("insert into tab3 " +
                               "(keyval, val1, val2) " +
@@ -189,22 +189,22 @@ public class InsertWithSelectTest extends TestSupport {
         caught = this.execute("insert into tab3 " +
                               "(keyval, val1, val2) " +
                               "values ('123', 'aaa', 'ss') ");
-        assertTrue(caught != null && caught == TypeException.class);
+        assertTrue(caught != null && caught == InvalidTypeException.class);
 
         caught = this.execute("insert into tab3 " +
                               "(keyval, val1, val2) " +
                               "values (4, 'aaa', 5) ");
-        assertTrue(caught != null && caught == TypeException.class);
+        assertTrue(caught != null && caught == InvalidTypeException.class);
 
         caught = this.execute("insert into tab3 " +
                               "(val1, val2) " +
                               "values ('aaa', 5) ");
-        assertTrue(caught != null && caught == TypeException.class);
+        assertTrue(caught != null && caught == InvalidTypeException.class);
 
         caught = this.execute("insert into tab3 " +
                               "(keyval, 'd', val2) " +
                               "values (4, 'aaa', 5) ");
-        assertTrue(caught != null && caught == TypeException.class);
+        assertTrue(caught != null && caught == InvalidTypeException.class);
 
         caught = this.execute("insert into tab3 " +
                               "(keyval, val1, val2) " +

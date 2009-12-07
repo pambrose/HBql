@@ -32,6 +32,6 @@ public abstract class GenericNullCompare extends NotValue<GenericNullCompare> im
     }
 
     public String asString() {
-        return this.getArg(0).asString() + " IS" + notAsString() + " NULL";
+        return this.getExprArg(0).asString() + " IS" + notAsString() + " NULL";
     }
 }

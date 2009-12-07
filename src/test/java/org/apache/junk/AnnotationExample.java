@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.scratchpad;
+package org.apache.junk;
 
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.Column;

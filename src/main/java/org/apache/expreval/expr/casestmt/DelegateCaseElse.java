@@ -39,16 +39,16 @@ public class DelegateCaseElse extends GenericCaseElse {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
-        final Class<? extends GenericValue> valueType = this.getArg(0).validateTypes(this, false);
+        final Class<? extends GenericValue> valueType = this.getExprArg(0).validateTypes(this, false);
 
         if (TypeSupport.isParentClass(StringValue.class, valueType))
-            this.setTypedExpr(new StringCaseElse(this.getArg(0)));
+            this.setTypedExpr(new StringCaseElse(this.getExprArg(0)));
         else if (TypeSupport.isParentClass(NumberValue.class, valueType))
-            this.setTypedExpr(new NumberCaseElse(this.getArg(0)));
+            this.setTypedExpr(new NumberCaseElse(this.getExprArg(0)));
         else if (TypeSupport.isParentClass(DateValue.class, valueType))
-            this.setTypedExpr(new DateCaseElse(this.getArg(0)));
+            this.setTypedExpr(new DateCaseElse(this.getExprArg(0)));
         else if (TypeSupport.isParentClass(BooleanValue.class, valueType))
-            this.setTypedExpr(new BooleanCaseElse(this.getArg(0)));
+            this.setTypedExpr(new BooleanCaseElse(this.getExprArg(0)));
         else
             this.throwInvalidTypeException(valueType);
 

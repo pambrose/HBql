@@ -35,9 +35,9 @@ public class DateBetweenStmt extends GenericBetweenStmt {
     public Boolean getValue(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final long dateval = (Long)this.getArg(0).getValue(connection, object);
-        final boolean retval = dateval >= (Long)this.getArg(1).getValue(connection, object)
-                               && dateval <= (Long)this.getArg(2).getValue(connection, object);
+        final long dateval = (Long)this.getExprArg(0).getValue(connection, object);
+        final boolean retval = dateval >= (Long)this.getExprArg(1).getValue(connection, object)
+                               && dateval <= (Long)this.getExprArg(2).getValue(connection, object);
 
         return (this.isNot()) ? !retval : retval;
     }

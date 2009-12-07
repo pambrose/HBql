@@ -26,14 +26,14 @@ import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 import java.util.List;
 
-public class BooleanFunction extends Function implements BooleanValue {
+public class BooleanFunction extends GenericFunction implements BooleanValue {
 
 
     public BooleanFunction(final FunctionType functionType, final List<GenericValue> exprs) {
@@ -48,13 +48,12 @@ public class BooleanFunction extends Function implements BooleanValue {
         switch (this.getFunctionType()) {
 
             case DEFINEDINROW: {
-                if (!(this.getArg(0) instanceof DelegateColumn))
-                    throw new TypeException("Argument should be a column reference in: " + this.asString());
+                if (!(this.getExprArg(0) instanceof DelegateColumn))
+                    throw new InvalidTypeException("Argument should be a column reference in: " + this.asString());
             }
         }
 
         return BooleanValue.class;
-        //return super.validateTypes(parentExpr, allowCollections);
     }
 
     public Boolean getValue(final HConnectionImpl connection,
@@ -63,12 +62,12 @@ public class BooleanFunction extends Function implements BooleanValue {
         switch (this.getFunctionType()) {
 
             case RANDOMBOOLEAN: {
-                return Function.randomVal.nextBoolean();
+                return GenericFunction.randomVal.nextBoolean();
             }
 
             case DEFINEDINROW: {
                 try {
-                    this.getArg(0).getValue(connection, object);
+                    this.getExprArg(0).getValue(connection, object);
                     return true;
                 }
                 catch (ResultMissingColumnException e) {
@@ -77,7 +76,7 @@ public class BooleanFunction extends Function implements BooleanValue {
             }
 
             case EVAL: {
-                final String exprStr = (String)this.getArg(0).getValue(connection, object);
+                final String exprStr = (String)this.getExprArg(0).getValue(connection, object);
                 final StatementContext statementContext = this.getExpressionContext().getStatementContext();
                 final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(exprStr, statementContext);
                 return expressionTree.evaluate(connection, object);
@@ -88,7 +87,7 @@ public class BooleanFunction extends Function implements BooleanValue {
                     return false;
                 }
                 else {
-                    final String mappingName = (String)this.getArg(0).getValue(connection, null);
+                    final String mappingName = (String)this.getExprArg(0).getValue(connection, null);
                     return connection.mappingExists(mappingName);
                 }
             }
@@ -98,7 +97,7 @@ public class BooleanFunction extends Function implements BooleanValue {
                     return false;
                 }
                 else {
-                    final String tableName = (String)this.getArg(0).getValue(connection, null);
+                    final String tableName = (String)this.getExprArg(0).getValue(connection, null);
                     return connection.tableExists(tableName);
                 }
             }
@@ -108,7 +107,7 @@ public class BooleanFunction extends Function implements BooleanValue {
                     return false;
                 }
                 else {
-                    final String tableName = (String)this.getArg(0).getValue(connection, null);
+                    final String tableName = (String)this.getExprArg(0).getValue(connection, null);
                     return connection.tableEnabled(tableName);
                 }
             }
@@ -118,8 +117,8 @@ public class BooleanFunction extends Function implements BooleanValue {
                     return false;
                 }
                 else {
-                    final String tableName = (String)this.getArg(0).getValue(connection, null);
-                    final String familyName = (String)this.getArg(1).getValue(connection, null);
+                    final String tableName = (String)this.getExprArg(0).getValue(connection, null);
+                    final String familyName = (String)this.getExprArg(1).getValue(connection, null);
                     try {
                         return connection.familyExists(tableName, familyName);
                     }

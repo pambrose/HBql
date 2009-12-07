@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
@@ -583,7 +583,7 @@ public class InsertTest extends TestSupport {
             caughtException = e;
         }
 
-        assertTrue(caughtException instanceof TypeException);
+        assertTrue(caughtException instanceof InvalidTypeException);
     }
 
     @Test

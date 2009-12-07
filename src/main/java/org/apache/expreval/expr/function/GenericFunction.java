@@ -35,13 +35,15 @@ import org.apache.expreval.expr.node.LongValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.ShortValue;
 import org.apache.expreval.expr.node.StringValue;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 
 import java.util.List;
 import java.util.Random;
 
-public abstract class Function extends GenericExpression {
+public abstract class GenericFunction extends GenericExpression {
 
     static Random randomVal = new Random();
 
@@ -124,7 +126,7 @@ public abstract class Function extends GenericExpression {
             return this.optimiziable;
         }
 
-        public static Function getFunction(final String functionName, final List<GenericValue> exprList) {
+        public static GenericFunction getFunction(final String functionName, final List<GenericValue> exprList) {
 
             final FunctionType type;
 
@@ -152,7 +154,7 @@ public abstract class Function extends GenericExpression {
 
     private final FunctionType functionType;
 
-    public Function(final FunctionType functionType, final List<GenericValue> exprs) {
+    public GenericFunction(final FunctionType functionType, final List<GenericValue> exprs) {
         super(null, exprs);
         this.functionType = functionType;
     }
@@ -197,19 +199,19 @@ public abstract class Function extends GenericExpression {
 
         int i = 0;
         if (this.getGenericValueList().size() != this.getTypeSignature().getArgCount())
-            throw new TypeException("Incorrect number of arguments in function " + this.getFunctionType().name()
-                                    + " in " + this.asString());
+            throw new InvalidTypeException("Incorrect number of arguments in function " + this.getFunctionType().name()
+                                           + " in " + this.asString());
 
         for (final Class<? extends GenericValue> clazz : this.getTypeSignature().getArgs()) {
-            final Class<? extends GenericValue> type = this.getArg(i).validateTypes(this, false);
+            final Class<? extends GenericValue> type = this.getExprArg(i).validateTypes(this, false);
             try {
                 this.validateParentClass(clazz, type);
             }
-            catch (TypeException e) {
+            catch (InvalidTypeException e) {
                 // Catch the exception and improve message
-                throw new TypeException("Invalid type " + type.getSimpleName() + " for arg " + i + " in function "
-                                        + this.getFunctionName() + " in "
-                                        + this.asString() + ".  Expecting type " + clazz.getSimpleName() + ".");
+                throw new InvalidTypeException("Invalid type " + type.getSimpleName() + " for arg " + i + " in function "
+                                               + this.getFunctionName() + " in "
+                                               + this.asString() + ".  Expecting type " + clazz.getSimpleName() + ".");
             }
             i++;
         }
@@ -236,5 +238,9 @@ public abstract class Function extends GenericExpression {
 
     public String asString() {
         return this.getFunctionName() + super.asString();
+    }
+
+    public Filter getFilter() throws HBqlException {
+        throw new InvalidServerFilterExpressionException();
     }
 }

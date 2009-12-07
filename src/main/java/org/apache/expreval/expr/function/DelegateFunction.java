@@ -31,7 +31,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.List;
 
-public class DelegateFunction extends DelegateStmt<Function> {
+public class DelegateFunction extends DelegateStmt<GenericFunction> {
 
     private final String functionName;
 
@@ -43,8 +43,8 @@ public class DelegateFunction extends DelegateStmt<Function> {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
-        final Function function = this.getFunction(this.getFunctionName(), this.getGenericValueList(), parentExpr);
-        this.setTypedExpr(function);
+        final GenericFunction genericFunction = this.getFunction(this.getFunctionName(), this.getGenericValueList(), parentExpr);
+        this.setTypedExpr(genericFunction);
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }
 
@@ -52,23 +52,23 @@ public class DelegateFunction extends DelegateStmt<Function> {
         return this.getTypedExpr().isAnAggregateValue();
     }
 
-    private Function getFunction(final String functionName,
-                                 final List<GenericValue> exprList,
-                                 final GenericValue parentExpr) throws InvalidFunctionException {
+    private GenericFunction getFunction(final String functionName,
+                                        final List<GenericValue> exprList,
+                                        final GenericValue parentExpr) throws InvalidFunctionException {
 
-        Function function;
+        GenericFunction genericFunction;
 
-        function = Function.FunctionType.getFunction(functionName, exprList);
-        if (function != null)
-            return function;
+        genericFunction = GenericFunction.FunctionType.getFunction(functionName, exprList);
+        if (genericFunction != null)
+            return genericFunction;
 
-        function = DateFunction.IntervalType.getFunction(functionName, exprList);
-        if (function != null)
-            return function;
+        genericFunction = DateFunction.IntervalType.getFunction(functionName, exprList);
+        if (genericFunction != null)
+            return genericFunction;
 
-        function = DateFunction.ConstantType.getFunction(functionName);
-        if (function != null)
-            return function;
+        genericFunction = DateFunction.ConstantType.getFunction(functionName);
+        if (genericFunction != null)
+            return genericFunction;
 
         throw new InvalidFunctionException(functionName + " in " + parentExpr.asString());
     }

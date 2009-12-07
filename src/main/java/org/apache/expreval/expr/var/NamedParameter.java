@@ -37,8 +37,10 @@ import org.apache.expreval.expr.literal.StringNullLiteral;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
@@ -105,7 +107,7 @@ public class NamedParameter implements GenericValue {
                                                        final boolean allowCollections) throws HBqlException {
 
         if (this.getTypedExpr() == null && this.getTypedExprList() == null)
-            throw new TypeException("Parameter \"" + this.getParamName() + "\" not assigned a value");
+            throw new InvalidTypeException("Parameter \"" + this.getParamName() + "\" not assigned a value");
 
         if (this.isScalarValueSet()) {
             return this.getTypedExpr().getClass();
@@ -113,13 +115,13 @@ public class NamedParameter implements GenericValue {
         else {
             // Make sure a list is legal in this expr
             if (!allowCollections)
-                throw new TypeException("Parameter " + this.getParamName()
-                                        + " is assigned a collection which is not allowed in the context "
-                                        + parentExpr.asString());
+                throw new InvalidTypeException("Parameter " + this.getParamName()
+                                               + " is assigned a collection which is not allowed in the context "
+                                               + parentExpr.asString());
 
             // if it is a list, then ensure that all the types in list are valid and consistent
             if (this.getTypedExprList().size() == 0)
-                throw new TypeException("Parameter " + this.getParamName() + " is assigned a collection with no values");
+                throw new InvalidTypeException("Parameter " + this.getParamName() + " is assigned a collection with no values");
 
             // Look at the type of the first item and then make sure the rest match that one
             final GenericValue firstval = this.getTypedExprList().get(0);
@@ -130,15 +132,15 @@ public class NamedParameter implements GenericValue {
                 final Class<? extends GenericValue> clazz = TypeSupport.getGenericExprType(val);
 
                 if (clazz == null)
-                    throw new TypeException("Parameter " + this.getParamName()
-                                            + " assigned a collection value with invalid type "
-                                            + firstval.getClass().getSimpleName());
+                    throw new InvalidTypeException("Parameter " + this.getParamName()
+                                                   + " assigned a collection value with invalid type "
+                                                   + firstval.getClass().getSimpleName());
 
                 if (!clazz.equals(clazzToMatch))
-                    throw new TypeException("Parameter " + this.getParamName()
-                                            + " assigned a collection value with type "
-                                            + firstval.getClass().getSimpleName()
-                                            + " which is inconsistent with the type of the first element");
+                    throw new InvalidTypeException("Parameter " + this.getParamName()
+                                                   + " assigned a collection value with type "
+                                                   + firstval.getClass().getSimpleName()
+                                                   + " which is inconsistent with the type of the first element");
             }
 
             return clazzToMatch;
@@ -174,6 +176,10 @@ public class NamedParameter implements GenericValue {
         return false;
     }
 
+    public boolean isAColumnReference() {
+        return false;
+    }
+
     public boolean isDefaultKeyword() {
         return false;
     }
@@ -205,7 +211,7 @@ public class NamedParameter implements GenericValue {
         }
     }
 
-    private GenericValue getValueExpr(final Object val) throws TypeException {
+    private GenericValue getValueExpr(final Object val) throws InvalidTypeException {
 
         if (val == null)
             return new StringNullLiteral();
@@ -240,8 +246,8 @@ public class NamedParameter implements GenericValue {
         if (val instanceof Object)
             return new ObjectLiteral(val);
 
-        throw new TypeException("Parameter " + this.getParamName()
-                                + " assigned an unsupported type " + val.getClass().getSimpleName());
+        throw new InvalidTypeException("Parameter " + this.getParamName()
+                                       + " assigned an unsupported type " + val.getClass().getSimpleName());
     }
 
     public String asString() {
@@ -259,5 +265,9 @@ public class NamedParameter implements GenericValue {
                     return 0;
             }
         };
+    }
+
+    public Filter getFilter() throws HBqlException {
+        throw new InvalidServerFilterExpressionException();
     }
 }

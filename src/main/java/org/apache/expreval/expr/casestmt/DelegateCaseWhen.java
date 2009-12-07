@@ -39,17 +39,17 @@ public class DelegateCaseWhen extends GenericCaseWhen {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
-        this.validateParentClass(BooleanValue.class, this.getArg(0).validateTypes(this, false));
-        final Class<? extends GenericValue> valueType = this.getArg(1).validateTypes(this, false);
+        this.validateParentClass(BooleanValue.class, this.getExprArg(0).validateTypes(this, false));
+        final Class<? extends GenericValue> valueType = this.getExprArg(1).validateTypes(this, false);
 
         if (TypeSupport.isParentClass(StringValue.class, valueType))
-            this.setTypedExpr(new StringCaseWhen(this.getArg(0), this.getArg(1)));
+            this.setTypedExpr(new StringCaseWhen(this.getExprArg(0), this.getExprArg(1)));
         else if (TypeSupport.isParentClass(NumberValue.class, valueType))
-            this.setTypedExpr(new NumberCaseWhen(this.getArg(0), this.getArg(1)));
+            this.setTypedExpr(new NumberCaseWhen(this.getExprArg(0), this.getExprArg(1)));
         else if (TypeSupport.isParentClass(DateValue.class, valueType))
-            this.setTypedExpr(new DateCaseWhen(this.getArg(0), this.getArg(1)));
+            this.setTypedExpr(new DateCaseWhen(this.getExprArg(0), this.getExprArg(1)));
         else if (TypeSupport.isParentClass(BooleanValue.class, valueType))
-            this.setTypedExpr(new BooleanCaseWhen(this.getArg(0), this.getArg(1)));
+            this.setTypedExpr(new BooleanCaseWhen(this.getExprArg(0), this.getExprArg(1)));
         else
             this.throwInvalidTypeException(valueType);
 

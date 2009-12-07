@@ -26,8 +26,8 @@ import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
@@ -350,10 +350,17 @@ public class WithArgs implements Serializable {
 
         // Do not call scanner cache args call for get
 
-        final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
-                                                                 this.getServerExpressionTree());
-        if (serverFilter != null)
-            get.setFilter(serverFilter);
+        //final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
+        //                                                         this.getServerExpressionTree());
+
+        if (this.getServerExpressionTree() != null) {
+            this.getServerExpressionTree().validateTypes(true, true);
+            this.getServerExpressionTree().optimize();
+            final Filter serverFilter = this.getServerExpressionTree().getFilter();
+
+            if (serverFilter != null)
+                get.setFilter(serverFilter);
+        }
     }
 
     public void setScanArgs(final Scan scan, final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
@@ -380,9 +387,16 @@ public class WithArgs implements Serializable {
         if (this.getScannerCacheArgs() != null)
             this.getScannerCacheArgs().setScannerCacheSize(scan);
 
-        final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
-                                                                 this.getServerExpressionTree());
-        if (serverFilter != null)
-            scan.setFilter(serverFilter);
+        // final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
+        //                                                          this.getServerExpressionTree());
+
+        if (this.getServerExpressionTree() != null) {
+            this.getServerExpressionTree().validateTypes(true, true);
+            this.getServerExpressionTree().optimize();
+            final Filter serverFilter = this.getServerExpressionTree().getFilter();
+
+            if (serverFilter != null)
+                scan.setFilter(serverFilter);
+        }
     }
 }

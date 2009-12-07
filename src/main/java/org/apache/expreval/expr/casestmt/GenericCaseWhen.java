@@ -37,15 +37,15 @@ public abstract class GenericCaseWhen extends DelegateStmt<GenericCaseWhen> {
 
     public boolean getPredicateValue(final HConnectionImpl connection,
                                      final Object object) throws HBqlException, ResultMissingColumnException {
-        return (Boolean)this.getArg(0).getValue(connection, object);
+        return (Boolean)this.getExprArg(0).getValue(connection, object);
     }
 
     public Object getValue(final HConnectionImpl connection,
                            final Object object) throws HBqlException, ResultMissingColumnException {
-        return this.getArg(1).getValue(connection, object);
+        return this.getExprArg(1).getValue(connection, object);
     }
 
     public String asString() {
-        return "WHEN " + this.getArg(0).asString() + " THEN " + this.getArg(1).asString() + " ";
+        return "WHEN " + this.getExprArg(0).asString() + " THEN " + this.getExprArg(1).asString() + " ";
     }
 }

@@ -125,6 +125,11 @@ options {backtrack=true;}
 							{retval = new AlterTableStatement($p.retval, $t.text, $aal.retval);}
 	| keyDISABLE keyTABLE t=simpleId p=pred?	{retval = new DisableTableStatement($p.retval, $t.text);}
 	| keyENABLE keyTABLE t=simpleId p=pred?		{retval = new EnableTableStatement($p.retval, $t.text);}
+	/*
+	| keyCREATE keyINDEX t=simpleId p=pred?		
+							{retval = new CreateIndexStatement($p.retval, $t.text);}
+	| keyDROP keyINDEX t=simpleId p=pred?		{retval = new DropIndexStatement($p.retval, $t.text);}
+	*/
 	;
 	
 attribMapping returns [AttribMapping retval]
@@ -356,7 +361,7 @@ booleanFunctions returns [BooleanValue retval]
 options {backtrack=true; memoize=true;}	
 	: s1=calcExpr n=keyNOT? keyCONTAINS s2=calcExpr		
 							{retval = new ContainsStmt($s1.retval, ($n.text != null), $s2.retval);}
-	| s1=calcExpr n=keyNOT? keyLIKE s2=calcExpr {retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);}
+	| s1=calcExpr n=keyNOT? keyLIKE s2=calcExpr 	{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);}
 	| s1=calcExpr n=keyNOT? keyBETWEEN s2=calcExpr keyAND s3=calcExpr		
 							{retval = new DelegateBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
 	| s1=calcExpr n=keyNOT? keyIN LPAREN l=exprList RPAREN			
@@ -518,6 +523,7 @@ COMMENT
 WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();};
 
 keyALTER 	: {isKeyword(input, "ALTER")}? ID;
+keyINDEX 	: {isKeyword(input, "INDEX")}? ID;
 keyADD	 	: {isKeyword(input, "ADD")}? ID;
 keyFAMILY 	: {isKeyword(input, "FAMILY")}? ID;
 keySELECT 	: {isKeyword(input, "SELECT")}? ID;

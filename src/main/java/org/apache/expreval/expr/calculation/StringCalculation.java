@@ -36,8 +36,8 @@ public class StringCalculation extends GenericCalculation {
     public String getValue(final HConnectionImpl connection,
                            final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final String val1 = (String)this.getArg(0).getValue(connection, object);
-        final String val2 = (String)this.getArg(1).getValue(connection, object);
+        final String val1 = (String)this.getExprArg(0).getValue(connection, object);
+        final String val2 = (String)this.getExprArg(1).getValue(connection, object);
 
         switch (this.getOperator()) {
             case PLUS:

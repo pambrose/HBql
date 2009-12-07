@@ -18,24 +18,11 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.expr.nullcomp;
+package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.ExpressionType;
-import org.apache.expreval.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+public class InvalidTypeException extends HBqlException {
 
-public class BooleanNullCompare extends GenericNullCompare {
-
-    public BooleanNullCompare(final boolean not, final GenericValue arg0) {
-        super(ExpressionType.BOOLEANNULL, not, arg0);
-    }
-
-    public Boolean getValue(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
-        final Boolean val = (Boolean)this.getExprArg(0).getValue(connection, object);
-        final boolean retval = (val == null);
-        return (this.isNot()) ? !retval : retval;
+    public InvalidTypeException(final String s) {
+        super(s);
     }
 }

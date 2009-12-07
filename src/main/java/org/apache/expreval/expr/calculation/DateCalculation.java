@@ -37,8 +37,8 @@ public class DateCalculation extends GenericCalculation implements DateValue {
     public Long getValue(final HConnectionImpl connection,
                          final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final long val1 = (Long)this.getArg(0).getValue(connection, object);
-        final long val2 = (Long)this.getArg(1).getValue(connection, object);
+        final long val1 = (Long)this.getExprArg(0).getValue(connection, object);
+        final long val2 = (Long)this.getExprArg(1).getValue(connection, object);
 
         switch (this.getOperator()) {
             case PLUS:

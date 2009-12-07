@@ -24,7 +24,9 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.NonStatement;
@@ -43,12 +45,12 @@ public class ExpressionTree extends MultipleExpressionContext {
 
     public static ExpressionTree newExpressionTree(final Mapping mapping, final GenericValue booleanValue) {
         final ExpressionTree tree = new ExpressionTree(booleanValue == null ? new BooleanLiteral(true) : booleanValue);
-        // This is just stashed until validate() is called.  This avoids throwing HBqlException in parser
+        // This is stashed until validate() is called.  This avoids throwing HBqlException in parser
         tree.embeddedMapping = mapping;
         return tree;
     }
 
-    // This is not done in newExpressionTree() because that is called from parser
+    // This is not done in newExpressionTree() because that is called from the parser
     public void setEmbeddedMapping() throws HBqlException {
         if (this.embeddedMapping != null)
             this.setStatementContext(new NonStatement(this.embeddedMapping, null));
@@ -62,6 +64,16 @@ public class ExpressionTree extends MultipleExpressionContext {
 
     private GenericValue getGenericValue() {
         return this.getGenericValue(0);
+    }
+
+    public Filter getFilter() throws InvalidServerFilterExpressionException {
+        try {
+            return this.getGenericValue().getFilter();
+        }
+        catch (HBqlException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String asString() {

@@ -24,8 +24,19 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
+import org.apache.expreval.expr.var.GenericColumn;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
+import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.io.IO;
+import org.apache.hadoop.hbase.hbql.mapping.FieldType;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
 public class NumberCompare extends GenericCompare {
 
@@ -89,6 +100,115 @@ public class NumberCompare extends GenericCompare {
                 default:
                     throw new HBqlException("Invalid operator: " + this.getOperator());
             }
+        }
+    }
+
+    public Filter getFilter() throws HBqlException {
+
+        // One of these values must be a single column reference and the other a constant
+        this.validateArgsForFilter();
+
+        final GenericColumn columnRef;
+        final Object constant;
+        final CompareFilter.CompareOp compareOp;
+        final WritableByteArrayComparable comparator;
+
+        if (this.getExprArg(0).isAColumnReference()) {
+            columnRef = (GenericColumn)this.getExprArg(0);
+            constant = this.getExprArg(1).getOptimizedValue();
+            compareOp = this.getOperator().getCompareOpLeft();
+        }
+        else {
+            columnRef = (GenericColumn)this.getExprArg(1);
+            constant = this.getExprArg(0).getOptimizedValue();
+            compareOp = this.getOperator().getCompareOpRight();
+        }
+
+        if (compareOp == null)
+            throw new HBqlException("Invalid operator: " + this.getOperator());
+
+        this.validateNumericArgTypes(constant);
+
+        if (!this.useDecimal()) {
+            final long val = ((Number)constant).longValue();
+            comparator = new LongComparable(val);
+        }
+        else {
+            final double val = ((Number)constant).doubleValue();
+            comparator = new DoubleComparable(val);
+        }
+
+        return new SingleColumnValueFilter(columnRef.getColumnAttrib().getFamilyNameAsBytes(),
+                                           columnRef.getColumnAttrib().getColumnNameAsBytes(),
+                                           compareOp,
+                                           comparator);
+    }
+
+    public static class LongComparable implements WritableByteArrayComparable {
+
+        long value;
+
+        public LongComparable() {
+        }
+
+        public LongComparable(final long value) {
+            this.value = value;
+        }
+
+        public int compareTo(final byte[] bytes) {
+            try {
+                long columnValue = (Long)IO.getSerialization().getScalarFromBytes(FieldType.LongType, bytes);
+                if (columnValue == this.value)
+                    return 0;
+                else
+                    return (columnValue < this.value) ? -1 : 1;
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+
+        public void write(final DataOutput dataOutput) throws IOException {
+            dataOutput.writeLong(this.value);
+        }
+
+        public void readFields(final DataInput dataInput) throws IOException {
+            this.value = dataInput.readLong();
+        }
+    }
+
+    public static class DoubleComparable implements WritableByteArrayComparable {
+
+        double value;
+
+        public DoubleComparable() {
+        }
+
+        public DoubleComparable(final double value) {
+            this.value = value;
+        }
+
+        public int compareTo(final byte[] bytes) {
+            try {
+                double columnValue = (Double)IO.getSerialization().getScalarFromBytes(FieldType.DoubleType, bytes);
+                if (columnValue == this.value)
+                    return 0;
+                else
+                    return (columnValue < this.value) ? -1 : 1;
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+
+        public void write(final DataOutput dataOutput) throws IOException {
+            dataOutput.writeDouble(this.value);
+        }
+
+        public void readFields(final DataInput dataInput) throws IOException {
+            this.value = dataInput.readDouble();
         }
     }
 }

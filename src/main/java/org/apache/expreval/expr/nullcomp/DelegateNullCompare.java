@@ -39,17 +39,17 @@ public class DelegateNullCompare extends GenericNullCompare {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
-        final Class<? extends GenericValue> type = this.determineGenericValueClass(this.getArg(0).validateTypes(this,
-                                                                                                                false));
+        final Class<? extends GenericValue> type = this.determineGenericValueClass(this.getExprArg(0).validateTypes(this,
+                                                                                                                    false));
 
         if (TypeSupport.isParentClass(StringValue.class, type))
-            this.setTypedExpr(new StringNullCompare(this.isNot(), this.getArg(0)));
+            this.setTypedExpr(new StringNullCompare(this.isNot(), this.getExprArg(0)));
         else if (TypeSupport.isParentClass(NumberValue.class, type))
-            this.setTypedExpr(new NumberNullCompare(this.isNot(), this.getArg(0)));
+            this.setTypedExpr(new NumberNullCompare(this.isNot(), this.getExprArg(0)));
         else if (TypeSupport.isParentClass(DateValue.class, type))
-            this.setTypedExpr(new DateNullCompare(this.isNot(), this.getArg(0)));
+            this.setTypedExpr(new DateNullCompare(this.isNot(), this.getExprArg(0)));
         else if (TypeSupport.isParentClass(BooleanValue.class, type))
-            this.setTypedExpr(new BooleanNullCompare(this.isNot(), this.getArg(0)));
+            this.setTypedExpr(new BooleanNullCompare(this.isNot(), this.getExprArg(0)));
         else
             this.throwInvalidTypeException(type);
 

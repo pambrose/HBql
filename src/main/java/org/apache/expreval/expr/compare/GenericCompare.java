@@ -28,7 +28,8 @@ import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public abstract class GenericCompare extends GenericExpression implements BooleanValue {
@@ -47,7 +48,15 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
     protected Object getValue(final int pos,
                               final HConnectionImpl connection,
                               final Object object) throws HBqlException, ResultMissingColumnException {
-        return this.getArg(pos).getValue(connection, object);
+        return this.getExprArg(pos).getValue(connection, object);
+    }
+
+    protected void validateArgsForFilter() throws InvalidServerFilterExpressionException {
+        if ((this.getExprArg(0).isAColumnReference() && this.getExprArg(1).isAConstant())
+            || (this.getExprArg(0).isAConstant() && this.getExprArg(1).isAColumnReference()))
+            return;
+
+        throw new InvalidServerFilterExpressionException("Filter comparison requires a column reference and a constant expression");
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {
@@ -63,11 +72,11 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
             }
     }
 
-    protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws TypeException {
+    protected Class<? extends GenericValue> validateType(final Class<? extends GenericValue> clazz) throws InvalidTypeException {
         try {
             this.validateParentClass(clazz,
-                                     this.getArg(0).validateTypes(this, false),
-                                     this.getArg(1).validateTypes(this, false));
+                                     this.getExprArg(0).validateTypes(this, false),
+                                     this.getExprArg(1).validateTypes(this, false));
         }
         catch (HBqlException e) {
             e.printStackTrace();
@@ -78,9 +87,9 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
 
     public String asString() {
         final StringBuilder sbuf = new StringBuilder();
-        sbuf.append(this.getArg(0).asString());
+        sbuf.append(this.getExprArg(0).asString());
         sbuf.append(" " + this.getOperator() + " ");
-        sbuf.append(this.getArg(1).asString());
+        sbuf.append(this.getExprArg(1).asString());
         return sbuf.toString();
     }
 }

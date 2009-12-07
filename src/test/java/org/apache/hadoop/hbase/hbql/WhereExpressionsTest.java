@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.InvalidFunctionException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.apache.yaoql.ObjectAllTypes;
@@ -88,7 +88,7 @@ public class WhereExpressionsTest extends TestSupport {
         assertExpressionEvalFalse(tree);
 
         tree = parseExpr(":test1");
-        assertHasException(tree, TypeException.class);
+        assertHasException(tree, InvalidTypeException.class);
 
         tree = parseExpr(":b1 == :b2");
         tree.setParameter("b1", Boolean.TRUE);
@@ -247,7 +247,7 @@ public class WhereExpressionsTest extends TestSupport {
 
         tree = parseExpr("'aaa' = 'a'+:s1");
         tree.setParameter("s1", 1);
-        assertHasException(tree, TypeException.class);
+        assertHasException(tree, InvalidTypeException.class);
     }
 
     @Test
@@ -426,7 +426,7 @@ public class WhereExpressionsTest extends TestSupport {
 
         // Test for list where scalar is required
         tree.setParameter("a", Arrays.asList("a", "b", "c"));
-        assertHasException(tree, TypeException.class);
+        assertHasException(tree, InvalidTypeException.class);
     }
 
     @Test
@@ -450,7 +450,7 @@ public class WhereExpressionsTest extends TestSupport {
                        "WHEN 3=3 THEN TRUE " +
                        "ELSE TRUE END");
 
-        assertHasException("CASE WHEN 3 THEN TRUE END", TypeException.class);
+        assertHasException("CASE WHEN 3 THEN TRUE END", InvalidTypeException.class);
 
         assertEvalTrue("4 = CASE WHEN TRUE THEN 4 END");
         assertEvalTrue("'4' = CASE WHEN TRUE THEN '4' END");

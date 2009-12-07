@@ -42,7 +42,7 @@ public class DelegateInStmt extends GenericInStmt {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
-        final Class<? extends GenericValue> type = this.getArg(0).validateTypes(this, false);
+        final Class<? extends GenericValue> type = this.getExprArg(0).validateTypes(this, false);
 
         final Class<? extends GenericValue> inType = this.determineGenericValueClass(type);
 
@@ -51,13 +51,13 @@ public class DelegateInStmt extends GenericInStmt {
             this.validateParentClass(inType, val.validateTypes(this, true));
 
         if (TypeSupport.isParentClass(StringValue.class, type))
-            this.setTypedExpr(new StringInStmt(this.getArg(0), this.isNot(), this.getInList()));
+            this.setTypedExpr(new StringInStmt(this.getExprArg(0), this.isNot(), this.getInList()));
         else if (TypeSupport.isParentClass(NumberValue.class, type))
-            this.setTypedExpr(new NumberInStmt(this.getArg(0), this.isNot(), this.getInList()));
+            this.setTypedExpr(new NumberInStmt(this.getExprArg(0), this.isNot(), this.getInList()));
         else if (TypeSupport.isParentClass(DateValue.class, type))
-            this.setTypedExpr(new DateInStmt(this.getArg(0), this.isNot(), this.getInList()));
+            this.setTypedExpr(new DateInStmt(this.getExprArg(0), this.isNot(), this.getInList()));
         else if (TypeSupport.isParentClass(BooleanValue.class, type))
-            this.setTypedExpr(new BooleanInStmt(this.getArg(0), this.isNot(), this.getInList()));
+            this.setTypedExpr(new BooleanInStmt(this.getExprArg(0), this.isNot(), this.getInList()));
         else
             this.throwInvalidTypeException(type);
 

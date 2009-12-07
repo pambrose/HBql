@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.List;
 
-public class StringFunction extends Function implements StringValue {
+public class StringFunction extends GenericFunction implements StringValue {
 
     public StringFunction(final FunctionType functionType, final List<GenericValue> exprs) {
         super(functionType, exprs);
@@ -41,55 +41,55 @@ public class StringFunction extends Function implements StringValue {
         switch (this.getFunctionType()) {
 
             case TRIM: {
-                final String val = (String)this.getArg(0).getValue(connection, object);
+                final String val = (String)this.getExprArg(0).getValue(connection, object);
                 this.checkForNull(val);
                 return val.trim();
             }
 
             case LOWER: {
-                final String val = (String)this.getArg(0).getValue(connection, object);
+                final String val = (String)this.getExprArg(0).getValue(connection, object);
                 this.checkForNull(val);
                 return val.toLowerCase();
             }
 
             case UPPER: {
-                final String val = (String)this.getArg(0).getValue(connection, object);
+                final String val = (String)this.getExprArg(0).getValue(connection, object);
                 this.checkForNull(val);
                 return val.toUpperCase();
             }
 
             case CONCAT: {
-                final String v1 = (String)this.getArg(0).getValue(connection, object);
-                final String v2 = (String)this.getArg(1).getValue(connection, object);
+                final String v1 = (String)this.getExprArg(0).getValue(connection, object);
+                final String v2 = (String)this.getExprArg(1).getValue(connection, object);
                 this.checkForNull(v1, v2);
                 return v1 + v2;
             }
 
             case REPLACE: {
-                final String v1 = (String)this.getArg(0).getValue(connection, object);
-                final String v2 = (String)this.getArg(1).getValue(connection, object);
-                final String v3 = (String)this.getArg(2).getValue(connection, object);
+                final String v1 = (String)this.getExprArg(0).getValue(connection, object);
+                final String v2 = (String)this.getExprArg(1).getValue(connection, object);
+                final String v3 = (String)this.getExprArg(2).getValue(connection, object);
                 this.checkForNull(v1, v2, v3);
                 return v1.replace(v2, v3);
             }
 
             case SUBSTRING: {
-                final String val = (String)this.getArg(0).getValue(connection, object);
-                final int begin = ((Number)this.getArg(1).getValue(connection, object)).intValue();
-                final int length = ((Number)this.getArg(2).getValue(connection, object)).intValue();
+                final String val = (String)this.getExprArg(0).getValue(connection, object);
+                final int begin = ((Number)this.getExprArg(1).getValue(connection, object)).intValue();
+                final int length = ((Number)this.getExprArg(2).getValue(connection, object)).intValue();
                 this.checkForNull(val);
                 return val.substring(begin, begin + length);
             }
 
             case ZEROPAD: {
-                final int num = ((Number)this.getArg(0).getValue(connection, object)).intValue();
-                final int width = ((Number)this.getArg(1).getValue(connection, object)).intValue();
+                final int num = ((Number)this.getExprArg(0).getValue(connection, object)).intValue();
+                final int width = ((Number)this.getExprArg(1).getValue(connection, object)).intValue();
                 return Util.getZeroPaddedNumber(num, width);
             }
 
             case REPEAT: {
-                final String val = (String)this.getArg(0).getValue(connection, object);
-                final int cnt = ((Number)this.getArg(1).getValue(connection, object)).intValue();
+                final String val = (String)this.getExprArg(0).getValue(connection, object);
+                final int cnt = ((Number)this.getExprArg(1).getValue(connection, object)).intValue();
                 final StringBuilder sbuf = new StringBuilder();
                 for (int i = 0; i < cnt; i++)
                     sbuf.append(val);

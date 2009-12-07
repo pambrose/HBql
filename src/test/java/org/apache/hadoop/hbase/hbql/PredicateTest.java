@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -104,6 +104,6 @@ public class PredicateTest extends TestSupport {
             e.printStackTrace();
             hBqlException = e;
         }
-        assertTrue(hBqlException != null && hBqlException instanceof TypeException);
+        assertTrue(hBqlException != null && hBqlException instanceof InvalidTypeException);
     }
 }

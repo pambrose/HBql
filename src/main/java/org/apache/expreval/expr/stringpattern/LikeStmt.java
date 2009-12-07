@@ -47,16 +47,16 @@ public class LikeStmt extends GenericStringPatternStmt {
     public Boolean getValue(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final String val = (String)this.getArg(0).getValue(connection, object);
+        final String val = (String)this.getExprArg(0).getValue(connection, object);
 
         if (val == null)
             throw new HBqlException("Null string for value in " + this.asString());
 
-        final boolean patternConstant = this.getArg(1).isAConstant();
+        final boolean patternConstant = this.getExprArg(1).isAConstant();
 
         if (!patternConstant || this.getPattern() == null) {
 
-            final String pvalue = (String)this.getArg(1).getValue(connection, object);
+            final String pvalue = (String)this.getExprArg(1).getValue(connection, object);
 
             if (pvalue == null)
                 throw new HBqlException("Null string for pattern in " + this.asString());

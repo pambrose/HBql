@@ -30,7 +30,7 @@ import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.TypeException;
+import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
@@ -170,7 +170,7 @@ public abstract class MultipleExpressionContext implements Serializable {
         this.getExpressionList().set(i, treeRoot);
     }
 
-    private void optimize() throws HBqlException {
+    public void optimize() throws HBqlException {
         if (this.needsOptimization()) {
             for (int i = 0; i < this.getExpressionList().size(); i++)
                 this.setGenericValue(i, this.getGenericValue(i).getOptimizedValue());
@@ -184,9 +184,9 @@ public abstract class MultipleExpressionContext implements Serializable {
         if (this.needsTypeValidation()) {
 
             if (!allowColumns && this.getColumnsUsedInExpression().size() > 0)
-                throw new TypeException("Invalid column reference"
-                                        + (this.getColumnsUsedInExpression().size() > 1 ? "s" : "")
-                                        + " in " + this.asString());
+                throw new InvalidTypeException("Invalid column reference"
+                                               + (this.getColumnsUsedInExpression().size() > 1 ? "s" : "")
+                                               + " in " + this.asString());
 
             // Collect return types of all args
             // This is run even if TypeSignature is null because it calls validateTypes()
@@ -200,7 +200,7 @@ public abstract class MultipleExpressionContext implements Serializable {
             if (this.getTypeSignature() != null) {
 
                 if (this.getExpressionList().size() != this.getTypeSignature().getArgCount())
-                    throw new TypeException("Incorrect number of variables in " + this.asString());
+                    throw new InvalidTypeException("Incorrect number of variables in " + this.asString());
 
                 for (int i = 0; i < this.getTypeSignature().getArgCount(); i++) {
 
@@ -212,18 +212,18 @@ public abstract class MultipleExpressionContext implements Serializable {
                         final int parentRank = NumericType.getTypeRanking(parentClazz);
                         final int clazzRank = NumericType.getTypeRanking(clazz);
                         if (clazzRank > parentRank)
-                            throw new TypeException("Cannot assign a " + clazz.getSimpleName()
-                                                    + " value to a " + parentClazz.getSimpleName()
-                                                    + " value in " + this.asString());
+                            throw new InvalidTypeException("Cannot assign a " + clazz.getSimpleName()
+                                                           + " value to a " + parentClazz.getSimpleName()
+                                                           + " value in " + this.asString());
                     }
                     else if (parentClazz == ObjectValue.class) {
                         // Do nothing
                     }
                     else {
                         if (!parentClazz.isAssignableFrom(clazz))
-                            throw new TypeException("Expecting type " + parentClazz.getSimpleName()
-                                                    + " but found type " + clazz.getSimpleName()
-                                                    + " in " + this.asString());
+                            throw new InvalidTypeException("Expecting type " + parentClazz.getSimpleName()
+                                                           + " but found type " + clazz.getSimpleName()
+                                                           + " in " + this.asString());
                     }
                 }
             }

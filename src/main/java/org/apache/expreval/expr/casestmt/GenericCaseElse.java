@@ -35,10 +35,10 @@ public abstract class GenericCaseElse extends DelegateStmt<GenericCaseElse> {
 
     public Object getValue(final HConnectionImpl connection,
                            final Object object) throws HBqlException, ResultMissingColumnException {
-        return this.getArg(0).getValue(connection, object);
+        return this.getExprArg(0).getValue(connection, object);
     }
 
     public String asString() {
-        return "ELSE " + this.getArg(0).asString() + " ";
+        return "ELSE " + this.getExprArg(0).asString() + " ";
     }
 }

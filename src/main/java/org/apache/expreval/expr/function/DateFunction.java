@@ -31,7 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class DateFunction extends Function implements DateValue {
+public class DateFunction extends GenericFunction implements DateValue {
 
     public enum ConstantType {
         NOW(0),
@@ -48,7 +48,7 @@ public class DateFunction extends Function implements DateValue {
             return this.value;
         }
 
-        public static Function getFunction(final String functionName) {
+        public static GenericFunction getFunction(final String functionName) {
 
             try {
                 final ConstantType type = ConstantType.valueOf(functionName.toUpperCase());
@@ -79,7 +79,7 @@ public class DateFunction extends Function implements DateValue {
             return intervalMillis;
         }
 
-        public static Function getFunction(final String functionName, final List<GenericValue> exprList) {
+        public static GenericFunction getFunction(final String functionName, final List<GenericValue> exprList) {
 
             try {
                 final IntervalType type = IntervalType.valueOf(functionName.toUpperCase());
@@ -132,8 +132,8 @@ public class DateFunction extends Function implements DateValue {
         switch (this.getFunctionType()) {
 
             case DATE: {
-                final String datestr = (String)this.getArg(0).getValue(connection, object);
-                final String pattern = (String)this.getArg(1).getValue(connection, object);
+                final String datestr = (String)this.getExprArg(0).getValue(connection, object);
+                final String pattern = (String)this.getExprArg(1).getValue(connection, object);
                 final SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 
                 try {
@@ -145,7 +145,7 @@ public class DateFunction extends Function implements DateValue {
             }
 
             case DATEINTERVAL: {
-                final Number num = (Number)this.getArg(0).getValue(connection, object);
+                final Number num = (Number)this.getExprArg(0).getValue(connection, object);
                 final long val = num.longValue();
                 return val * this.getIntervalType().getIntervalMillis();
             }
@@ -155,11 +155,11 @@ public class DateFunction extends Function implements DateValue {
             }
 
             case RANDOMDATE: {
-                return Math.abs(Function.randomVal.nextLong());
+                return Math.abs(GenericFunction.randomVal.nextLong());
             }
 
             case LONGTODATE: {
-                final Number num = (Number)this.getArg(0).getValue(connection, object);
+                final Number num = (Number)this.getExprArg(0).getValue(connection, object);
                 final long val = num.longValue();
                 this.dateValue = new DateLiteral(val);
                 return this.dateValue.getValue(connection, object);
@@ -182,7 +182,7 @@ public class DateFunction extends Function implements DateValue {
 
     public String asString() {
         if (this.isIntervalDate())
-            return this.getIntervalType().name() + "(" + this.getArg(0).asString() + ")";
+            return this.getIntervalType().name() + "(" + this.getExprArg(0).asString() + ")";
         else if (this.isConstantDate())
             return this.getConstantType().name() + "()";
         else

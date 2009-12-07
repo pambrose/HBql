@@ -54,7 +54,7 @@ public abstract class GenericInStmt extends NotValue<GenericInStmt> implements B
     }
 
     public String asString() {
-        final StringBuilder sbuf = new StringBuilder(this.getArg(0).asString() + notAsString() + " IN (");
+        final StringBuilder sbuf = new StringBuilder(this.getExprArg(0).asString() + notAsString() + " IN (");
 
         boolean first = true;
         for (final GenericValue valueExpr : this.getInList()) {

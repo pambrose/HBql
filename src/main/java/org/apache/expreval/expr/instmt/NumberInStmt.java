@@ -36,7 +36,7 @@ public class NumberInStmt extends GenericInStmt {
 
     protected boolean evaluateInList(final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final Object obj0 = this.getArg(0).getValue(null, object);
+        final Object obj0 = this.getExprArg(0).getValue(null, object);
 
         this.validateNumericArgTypes(obj0);
 

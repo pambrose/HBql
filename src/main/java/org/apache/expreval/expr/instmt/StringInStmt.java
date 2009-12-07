@@ -36,7 +36,7 @@ public class StringInStmt extends GenericInStmt {
 
     protected boolean evaluateInList(final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final String attribVal = (String)this.getArg(0).getValue(null, object);
+        final String attribVal = (String)this.getExprArg(0).getValue(null, object);
 
         for (final GenericValue obj : this.getInList()) {
 
