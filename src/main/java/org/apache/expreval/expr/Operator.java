@@ -21,6 +21,7 @@
 package org.apache.expreval.expr;
 
 import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public enum Operator {
     PLUS("+", null, null),
@@ -54,11 +55,15 @@ public enum Operator {
         return this.opStr;
     }
 
-    public CompareFilter.CompareOp getCompareOpLeft() {
+    public CompareFilter.CompareOp getCompareOpLeft() throws HBqlException {
+        if (this.compareOpRight == null)
+            throw new HBqlException("Invalid operator: " + this);
         return this.compareOpLeft;
     }
 
-    public CompareFilter.CompareOp getCompareOpRight() {
+    public CompareFilter.CompareOp getCompareOpRight() throws HBqlException {
+        if (this.compareOpRight == null)
+            throw new HBqlException("Invalid operator: " + this);
         return this.compareOpRight;
     }
 }

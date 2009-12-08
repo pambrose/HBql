@@ -28,7 +28,6 @@ import org.apache.expreval.expr.var.DelegateColumn;
 import org.apache.expreval.expr.var.GenericColumn;
 import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -38,7 +37,6 @@ import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class NumberCompare extends GenericCompare {
 
@@ -107,86 +105,69 @@ public class NumberCompare extends GenericCompare {
 
     public Filter getFilter() throws HBqlException, ResultMissingColumnException {
 
-        // One of these values must be a single column reference and the other a constant
-        this.validateArgsForFilter();
-
-        final GenericColumn columnRef;
+        final GenericColumn column;
         final Object constant;
         final CompareFilter.CompareOp compareOp;
         final WritableByteArrayComparable comparator;
 
+        this.validateArgsForFilter();
+
         if (this.getExprArg(0).isAColumnReference()) {
-            columnRef = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
+            column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
             constant = this.getValue(1, null, null);
             compareOp = this.getOperator().getCompareOpLeft();
         }
         else {
-            columnRef = ((DelegateColumn)this.getExprArg(1)).getTypedColumn();
+            column = ((DelegateColumn)this.getExprArg(1)).getTypedColumn();
             constant = this.getValue(0, null, null);
             compareOp = this.getOperator().getCompareOpRight();
         }
-
-        if (compareOp == null)
-            throw new HBqlException("Invalid operator: " + this.getOperator());
 
         this.validateNumericArgTypes(constant);
 
         if (!this.useDecimal()) {
             final long val = ((Number)constant).longValue();
-            comparator = new LongComparable(columnRef.getColumnAttrib().getFieldType(), val);
+            comparator = new LongComparable(column.getColumnAttrib().getFieldType(), val);
         }
         else {
             final double val = ((Number)constant).doubleValue();
-            comparator = new DoubleComparable(columnRef.getColumnAttrib().getFieldType(), val);
+            comparator = new DoubleComparable(column.getColumnAttrib().getFieldType(), val);
         }
 
-        return new SingleColumnValueFilter(columnRef.getColumnAttrib().getFamilyNameAsBytes(),
-                                           columnRef.getColumnAttrib().getColumnNameAsBytes(),
-                                           compareOp,
-                                           comparator);
+        return this.newSingleColumnValueFilter(column, compareOp, comparator);
     }
 
-    public static abstract class NumberComparable {
+    public static abstract class NumberComparable<T> extends GenericComparable<T> {
 
-        protected FieldType fieldType;
-        private byte[] valueInBytes = null;
+        private FieldType fieldType;
+
+        protected void setFieldType(final FieldType fieldType) {
+            this.fieldType = fieldType;
+        }
 
         protected FieldType getFieldType() {
             return this.fieldType;
         }
 
-        private byte[] getValueInBytes() {
-            return this.valueInBytes;
-        }
-
         protected void setValueInBytes(final Number val) throws IOException {
             try {
-                this.valueInBytes = IO.getSerialization().getNumbeEqualityBytes(this.getFieldType(), val);
+                this.setValueInBytes(IO.getSerialization().getNumbeEqualityBytes(this.getFieldType(), val));
             }
             catch (HBqlException e) {
                 throw new IOException(e.getMessage());
             }
         }
-
-        protected boolean equalValues(final byte[] bytes) {
-            return Arrays.equals(bytes, this.getValueInBytes());
-        }
     }
 
-    public static class LongComparable extends NumberComparable implements WritableByteArrayComparable {
+    public static class LongComparable extends NumberComparable<Long> {
 
-        long value;
 
         public LongComparable() {
         }
 
         public LongComparable(final FieldType fieldType, final long value) {
-            this.fieldType = fieldType;
-            this.value = value;
-        }
-
-        private long getValue() {
-            return this.value;
+            this.setFieldType(fieldType);
+            this.setValue(value);
         }
 
         public int compareTo(final byte[] bytes) {
@@ -210,27 +191,21 @@ public class NumberCompare extends GenericCompare {
         }
 
         public void readFields(final DataInput dataInput) throws IOException {
-            this.fieldType = FieldType.valueOf(dataInput.readUTF());
-            this.value = dataInput.readLong();
+            this.setFieldType(FieldType.valueOf(dataInput.readUTF()));
+            this.setValue(dataInput.readLong());
 
             this.setValueInBytes(this.getValue());
         }
     }
 
-    public static class DoubleComparable extends NumberComparable implements WritableByteArrayComparable {
-
-        double value;
+    public static class DoubleComparable extends NumberComparable<Double> {
 
         public DoubleComparable() {
         }
 
         public DoubleComparable(final FieldType fieldType, final double value) {
-            this.fieldType = fieldType;
-            this.value = value;
-        }
-
-        private double getValue() {
-            return this.value;
+            this.setFieldType(fieldType);
+            this.setValue(value);
         }
 
         public int compareTo(final byte[] bytes) {
@@ -254,8 +229,8 @@ public class NumberCompare extends GenericCompare {
         }
 
         public void readFields(final DataInput dataInput) throws IOException {
-            this.fieldType = FieldType.valueOf(dataInput.readUTF());
-            this.value = dataInput.readDouble();
+            this.setFieldType(FieldType.valueOf(dataInput.readUTF()));
+            this.setValue(dataInput.readDouble());
 
             this.setValueInBytes(this.getValue());
         }

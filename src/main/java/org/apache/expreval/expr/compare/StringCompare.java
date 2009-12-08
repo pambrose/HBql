@@ -24,8 +24,18 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.StringValue;
+import org.apache.expreval.expr.var.DelegateColumn;
+import org.apache.expreval.expr.var.GenericColumn;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.io.IO;
+import org.apache.hadoop.hbase.hbql.mapping.FieldType;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
 public class StringCompare extends GenericCompare {
 
@@ -59,6 +69,63 @@ public class StringCompare extends GenericCompare {
                 return val1.compareTo(val2) <= 0;
             default:
                 throw new HBqlException("Invalid operator: " + this.getOperator());
+        }
+    }
+
+    public Filter getFilter() throws HBqlException, ResultMissingColumnException {
+
+        final GenericColumn column;
+        final Object constant;
+        final CompareFilter.CompareOp compareOp;
+
+        this.validateArgsForFilter();
+
+        if (this.getExprArg(0).isAColumnReference()) {
+            column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
+            constant = this.getValue(1, null, null);
+            compareOp = this.getOperator().getCompareOpLeft();
+        }
+        else {
+            column = ((DelegateColumn)this.getExprArg(1)).getTypedColumn();
+            constant = this.getValue(0, null, null);
+            compareOp = this.getOperator().getCompareOpRight();
+        }
+
+        return this.newSingleColumnValueFilter(column, compareOp, new StringComparable((String)constant));
+    }
+
+    public static class StringComparable extends GenericComparable<String> {
+
+        public StringComparable() {
+        }
+
+        public StringComparable(final String value) {
+            this.setValue(value);
+        }
+
+        public int compareTo(final byte[] bytes) {
+
+            if (this.equalValues(bytes))
+                return 0;
+
+            try {
+                String columnValue = (String)IO.getSerialization().getScalarFromBytes(FieldType.StringType, bytes);
+                return (this.getValue().compareTo(columnValue));
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+
+        public void write(final DataOutput dataOutput) throws IOException {
+            dataOutput.writeUTF(this.getValue());
+        }
+
+        public void readFields(final DataInput dataInput) throws IOException {
+            this.setValue(dataInput.readUTF());
+
+            this.setValueInBytes(FieldType.StringType, this.getValue());
         }
     }
 }

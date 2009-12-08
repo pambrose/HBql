@@ -27,6 +27,11 @@ import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.expr.var.GenericColumn;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
+import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
 import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
@@ -52,6 +57,7 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
     }
 
     protected void validateArgsForFilter() throws InvalidServerFilterExpressionException {
+        // One of the values must be a single column reference and the other a constant
         if ((this.getExprArg(0).isAColumnReference() && this.getExprArg(1).isAConstant())
             || (this.getExprArg(0).isAConstant() && this.getExprArg(1).isAColumnReference()))
             return;
@@ -83,6 +89,16 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
         }
 
         return BooleanValue.class;
+    }
+
+    protected Filter newSingleColumnValueFilter(final GenericColumn column,
+                                                final CompareFilter.CompareOp compareOp,
+                                                final WritableByteArrayComparable comparator) throws HBqlException {
+
+        return new SingleColumnValueFilter(column.getColumnAttrib().getFamilyNameAsBytes(),
+                                           column.getColumnAttrib().getColumnNameAsBytes(),
+                                           compareOp,
+                                           comparator);
     }
 
     public String asString() {
