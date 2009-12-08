@@ -36,6 +36,11 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
 import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.io.IO;
+import org.apache.hadoop.hbase.hbql.mapping.FieldType;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 public abstract class GenericCompare extends GenericExpression implements BooleanValue {
 
@@ -107,5 +112,40 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
         sbuf.append(" " + this.getOperator() + " ");
         sbuf.append(this.getExprArg(1).asString());
         return sbuf.toString();
+    }
+
+    public abstract static class GenericComparable<T> implements WritableByteArrayComparable {
+
+        private T value;
+        private byte[] valueInBytes = null;
+
+        protected T getValue() {
+            return this.value;
+        }
+
+        protected void setValue(final T value) {
+            this.value = value;
+        }
+
+        private byte[] getValueInBytes() {
+            return this.valueInBytes;
+        }
+
+        protected void setValueInBytes(final byte[] b) {
+            this.valueInBytes = b;
+        }
+
+        protected void setValueInBytes(final FieldType fieldType, final Object val) throws IOException {
+            try {
+                this.setValueInBytes(IO.getSerialization().getScalarAsBytes(fieldType, val));
+            }
+            catch (HBqlException e) {
+                throw new IOException(e.getMessage());
+            }
+        }
+
+        protected boolean equalValues(final byte[] bytes) {
+            return Arrays.equals(bytes, this.getValueInBytes());
+        }
     }
 }
