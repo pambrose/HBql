@@ -38,6 +38,7 @@ import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class NumberCompare extends GenericCompare {
 
@@ -148,6 +149,7 @@ public class NumberCompare extends GenericCompare {
     public static class LongComparable implements WritableByteArrayComparable {
 
         long value;
+        byte[] valueInBytes = null;
         FieldType fieldType;
 
         public LongComparable() {
@@ -159,17 +161,19 @@ public class NumberCompare extends GenericCompare {
         }
 
         public int compareTo(final byte[] bytes) {
-            try {
-                long columnValue = IO.getSerialization().getNumberFromBytes(this.fieldType, bytes).longValue();
-                System.out.println("ZZZ7 comparing " + columnValue + " and " + this.value);
-                if (columnValue == this.value)
-                    return 0;
-                else
-                    return (columnValue > this.value) ? -1 : 1;
-            }
-            catch (HBqlException e) {
-                e.printStackTrace();
+
+            if (Arrays.equals(bytes, this.valueInBytes)) {
                 return 0;
+            }
+            else {
+                try {
+                    long columnValue = IO.getSerialization().getNumberFromBytes(this.fieldType, bytes).longValue();
+                    return (columnValue > this.value) ? -1 : 1;
+                }
+                catch (HBqlException e) {
+                    e.printStackTrace();
+                    return 0;
+                }
             }
         }
 
@@ -181,6 +185,13 @@ public class NumberCompare extends GenericCompare {
         public void readFields(final DataInput dataInput) throws IOException {
             this.value = dataInput.readLong();
             this.fieldType = FieldType.valueOf(dataInput.readUTF());
+
+            try {
+                this.valueInBytes = IO.getSerialization().getNumbeEqualityBytes(this.fieldType, this.value);
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -213,10 +224,12 @@ public class NumberCompare extends GenericCompare {
 
         public void write(final DataOutput dataOutput) throws IOException {
             dataOutput.writeDouble(this.value);
+            dataOutput.writeUTF(this.fieldType.name());
         }
 
         public void readFields(final DataInput dataInput) throws IOException {
             this.value = dataInput.readDouble();
+            this.fieldType = FieldType.valueOf(dataInput.readUTF());
         }
     }
 }

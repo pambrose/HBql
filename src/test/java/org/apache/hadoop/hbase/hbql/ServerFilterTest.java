@@ -111,7 +111,7 @@ public class ServerFilterTest extends TestSupport {
 
     @Test
     public void simpleSelect2() throws HBqlException {
-        final String q1 = "select * from tab3 WITH SERVER FILTER where f1:val2 <= 12 ";
+        final String q1 = "select * from tab3 WITH SERVER FILTER where f1:val2 = 12 ";
         showValues(q1, 1);
     }
 }

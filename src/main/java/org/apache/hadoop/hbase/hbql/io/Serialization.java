@@ -68,6 +68,30 @@ public abstract class Serialization {
         return this.getScalarAsBytes(FieldType.StringType, obj);
     }
 
+    public byte[] getNumbeEqualityBytes(FieldType fieldType, final Number val) throws HBqlException {
+
+        switch (fieldType) {
+
+            case ShortType:
+                return this.getScalarAsBytes(fieldType, val.shortValue());
+
+            case IntegerType:
+                return this.getScalarAsBytes(fieldType, val.intValue());
+
+            case LongType:
+                return this.getScalarAsBytes(fieldType, val.longValue());
+
+            case FloatType:
+                return this.getScalarAsBytes(fieldType, val.floatValue());
+
+            case DoubleType:
+                return this.getScalarAsBytes(fieldType, val.doubleValue());
+
+            default:
+                throw new HBqlException("Unknown type in getNumbeEqualityBytes() - " + fieldType);
+        }
+    }
+
     abstract public Object getScalarFromBytes(FieldType fieldType, byte[] b) throws HBqlException;
 
     abstract public byte[] getScalarAsBytes(FieldType fieldType, Object obj) throws HBqlException;
