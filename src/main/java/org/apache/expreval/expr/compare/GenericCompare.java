@@ -61,7 +61,7 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
         return this.getExprArg(pos).getValue(connection, object);
     }
 
-    protected void validateArgsForFilter() throws InvalidServerFilterExpressionException {
+    protected void validateArgsForColumnConstant() throws InvalidServerFilterExpressionException {
         // One of the values must be a single column reference and the other a constant
         if ((this.getExprArg(0).isAColumnReference() && this.getExprArg(1).isAConstant())
             || (this.getExprArg(0).isAConstant() && this.getExprArg(1).isAColumnReference()))

@@ -75,11 +75,11 @@ public class DateCompare extends GenericCompare {
 
     public Filter getFilter() throws HBqlException, ResultMissingColumnException {
 
-        final GenericColumn column;
+        final GenericColumn<? extends GenericValue> column;
         final Object constant;
         final CompareFilter.CompareOp compareOp;
 
-        this.validateArgsForFilter();
+        this.validateArgsForColumnConstant();
 
         if (this.getExprArg(0).isAColumnReference()) {
             column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();

@@ -24,8 +24,14 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.util.Lists;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+
+import java.util.List;
 
 public class BooleanCompare extends GenericCompare implements BooleanValue {
 
@@ -56,6 +62,32 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
                 boolean val0 = (Boolean)this.getValue(0, connection, object);
                 boolean val1 = (Boolean)this.getValue(1, connection, object);
                 return val0 != val1;
+            }
+            default:
+                throw new HBqlException("Invalid operator: " + this.getOperator());
+        }
+    }
+
+    public Filter getFilter() throws HBqlException, ResultMissingColumnException {
+
+        final List<Filter> filterList = Lists.newArrayList();
+        filterList.add(this.getExprArg(0).getFilter());
+        filterList.add(this.getExprArg(1).getFilter());
+
+        this.validateArgsForColumnConstant();
+
+        switch (this.getOperator()) {
+            case OR: {
+                return new FilterList(FilterList.Operator.MUST_PASS_ONE, filterList);
+            }
+            case AND: {
+                return new FilterList(FilterList.Operator.MUST_PASS_ALL, filterList);
+            }
+            case EQ: {
+                throw new InvalidServerFilterExpressionException();
+            }
+            case NOTEQ: {
+                throw new InvalidServerFilterExpressionException();
             }
             default:
                 throw new HBqlException("Invalid operator: " + this.getOperator());
