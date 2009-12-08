@@ -72,6 +72,11 @@ public abstract class Serialization {
 
         switch (fieldType) {
 
+            case ByteType: {
+                final byte[] retval = {val.byteValue()};
+                return retval;
+            }
+
             case ShortType:
                 return this.getScalarAsBytes(fieldType, val.shortValue());
 

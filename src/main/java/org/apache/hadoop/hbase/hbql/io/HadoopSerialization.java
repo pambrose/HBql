@@ -110,8 +110,7 @@ public class HadoopSerialization extends Serialization {
                     return Bytes.toBytes((Boolean)obj);
 
                 case ByteType: {
-                    final byte[] retval = new byte[1];
-                    retval[0] = ((Byte)obj).byteValue();
+                    final byte[] retval = {((Byte)obj).byteValue()};
                     return retval;
                 }
 

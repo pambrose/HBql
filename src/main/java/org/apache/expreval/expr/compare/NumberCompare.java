@@ -133,11 +133,11 @@ public class NumberCompare extends GenericCompare {
 
         if (!this.useDecimal()) {
             final long val = ((Number)constant).longValue();
-            comparator = new LongComparable(val, columnRef.getColumnAttrib().getFieldType());
+            comparator = new LongComparable(columnRef.getColumnAttrib().getFieldType(), val);
         }
         else {
             final double val = ((Number)constant).doubleValue();
-            comparator = new DoubleComparable(val, columnRef.getColumnAttrib().getFieldType());
+            comparator = new DoubleComparable(columnRef.getColumnAttrib().getFieldType(), val);
         }
 
         return new SingleColumnValueFilter(columnRef.getColumnAttrib().getFamilyNameAsBytes(),
@@ -148,43 +148,41 @@ public class NumberCompare extends GenericCompare {
 
     public static class LongComparable implements WritableByteArrayComparable {
 
+        FieldType fieldType;
         long value;
         byte[] valueInBytes = null;
-        FieldType fieldType;
 
         public LongComparable() {
         }
 
-        public LongComparable(final long value, final FieldType fieldType) {
-            this.value = value;
+        public LongComparable(final FieldType fieldType, final long value) {
             this.fieldType = fieldType;
+            this.value = value;
         }
 
         public int compareTo(final byte[] bytes) {
 
-            if (Arrays.equals(bytes, this.valueInBytes)) {
+            if (Arrays.equals(bytes, this.valueInBytes))
                 return 0;
+
+            try {
+                long columnValue = IO.getSerialization().getNumberFromBytes(this.fieldType, bytes).longValue();
+                return (columnValue > this.value) ? -1 : 1;
             }
-            else {
-                try {
-                    long columnValue = IO.getSerialization().getNumberFromBytes(this.fieldType, bytes).longValue();
-                    return (columnValue > this.value) ? -1 : 1;
-                }
-                catch (HBqlException e) {
-                    e.printStackTrace();
-                    return 0;
-                }
+            catch (HBqlException e) {
+                e.printStackTrace();
+                return 0;
             }
         }
 
         public void write(final DataOutput dataOutput) throws IOException {
-            dataOutput.writeLong(this.value);
             dataOutput.writeUTF(this.fieldType.name());
+            dataOutput.writeLong(this.value);
         }
 
         public void readFields(final DataInput dataInput) throws IOException {
-            this.value = dataInput.readLong();
             this.fieldType = FieldType.valueOf(dataInput.readUTF());
+            this.value = dataInput.readLong();
 
             try {
                 this.valueInBytes = IO.getSerialization().getNumbeEqualityBytes(this.fieldType, this.value);
@@ -199,22 +197,24 @@ public class NumberCompare extends GenericCompare {
 
         double value;
         FieldType fieldType;
+        byte[] valueInBytes = null;
 
         public DoubleComparable() {
         }
 
-        public DoubleComparable(final double value, final FieldType fieldType) {
-            this.value = value;
+        public DoubleComparable(final FieldType fieldType, final double value) {
             this.fieldType = fieldType;
+            this.value = value;
         }
 
         public int compareTo(final byte[] bytes) {
+
+            if (Arrays.equals(bytes, this.valueInBytes))
+                return 0;
+
             try {
                 double columnValue = IO.getSerialization().getNumberFromBytes(this.fieldType, bytes).doubleValue();
-                if (columnValue == this.value)
-                    return 0;
-                else
-                    return (columnValue > this.value) ? -1 : 1;
+                return (columnValue > this.value) ? -1 : 1;
             }
             catch (HBqlException e) {
                 e.printStackTrace();
@@ -223,13 +223,20 @@ public class NumberCompare extends GenericCompare {
         }
 
         public void write(final DataOutput dataOutput) throws IOException {
-            dataOutput.writeDouble(this.value);
             dataOutput.writeUTF(this.fieldType.name());
+            dataOutput.writeDouble(this.value);
         }
 
         public void readFields(final DataInput dataInput) throws IOException {
-            this.value = dataInput.readDouble();
             this.fieldType = FieldType.valueOf(dataInput.readUTF());
+            this.value = dataInput.readDouble();
+
+            try {
+                this.valueInBytes = IO.getSerialization().getNumbeEqualityBytes(this.fieldType, this.value);
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
