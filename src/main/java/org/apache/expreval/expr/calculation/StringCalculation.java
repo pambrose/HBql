@@ -36,12 +36,12 @@ public class StringCalculation extends GenericCalculation {
     public String getValue(final HConnectionImpl connection,
                            final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final String val1 = (String)this.getExprArg(0).getValue(connection, object);
-        final String val2 = (String)this.getExprArg(1).getValue(connection, object);
+        final String val0 = (String)this.getExprArg(0).getValue(connection, object);
+        final String val1 = (String)this.getExprArg(1).getValue(connection, object);
 
         switch (this.getOperator()) {
             case PLUS:
-                return val1 + val2;
+                return val0 + val1;
             default:
                 throw new HBqlException("Invalid operator: " + this.getOperator());
         }

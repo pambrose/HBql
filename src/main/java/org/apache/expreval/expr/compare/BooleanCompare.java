@@ -41,6 +41,7 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
     public Boolean getValue(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
 
+        // Do not pre-evalute the OR or AND values. Should evaluate them in place
         switch (this.getOperator()) {
             case OR:
                 return (Boolean)this.getValue(0, connection, object) || (Boolean)this.getValue(1, connection, object);

@@ -38,16 +38,16 @@ public class ContainsStmt extends GenericStringPatternStmt {
     public Boolean getValue(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final String val1 = (String)this.getExprArg(0).getValue(connection, object);
-        final String val2 = (String)this.getExprArg(1).getValue(connection, object);
+        final String val0 = (String)this.getExprArg(0).getValue(connection, object);
+        final String val1 = (String)this.getExprArg(1).getValue(connection, object);
 
-        if (val1 == null)
+        if (val0 == null)
             throw new HBqlException("Null string for value in " + this.asString());
 
-        if (val2 == null)
+        if (val1 == null)
             throw new HBqlException("Null string for pattern in " + this.asString());
 
-        final boolean retval = val1.contains(val2);
+        final boolean retval = val0.contains(val1);
 
         return (this.isNot()) ? !retval : retval;
     }

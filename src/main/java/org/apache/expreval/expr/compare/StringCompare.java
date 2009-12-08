@@ -51,22 +51,22 @@ public class StringCompare extends GenericCompare {
     public Boolean getValue(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final String val1 = (String)this.getValue(0, connection, object);
-        final String val2 = (String)this.getValue(1, connection, object);
+        final String val0 = (String)this.getValue(0, connection, object);
+        final String val1 = (String)this.getValue(1, connection, object);
 
         switch (this.getOperator()) {
             case EQ:
-                return val1.equals(val2);
+                return val0.equals(val1);
             case NOTEQ:
-                return !val1.equals(val2);
+                return !val0.equals(val1);
             case GT:
-                return val1.compareTo(val2) > 0;
+                return val0.compareTo(val1) > 0;
             case GTEQ:
-                return val1.compareTo(val2) >= 0;
+                return val0.compareTo(val1) >= 0;
             case LT:
-                return val1.compareTo(val2) < 0;
+                return val0.compareTo(val1) < 0;
             case LTEQ:
-                return val1.compareTo(val2) <= 0;
+                return val0.compareTo(val1) <= 0;
             default:
                 throw new HBqlException("Invalid operator: " + this.getOperator());
         }
