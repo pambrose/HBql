@@ -47,14 +47,14 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
             case AND:
                 return (Boolean)this.getValue(0, connection, object) && (Boolean)this.getValue(1, connection, object);
             case EQ: {
-                boolean val1 = (Boolean)this.getValue(0, connection, object);
-                boolean val2 = (Boolean)this.getValue(1, connection, object);
-                return val1 == val2;
+                boolean val0 = (Boolean)this.getValue(0, connection, object);
+                boolean val1 = (Boolean)this.getValue(1, connection, object);
+                return val0 == val1;
             }
             case NOTEQ: {
-                boolean val1 = (Boolean)this.getValue(0, connection, object);
-                boolean val2 = (Boolean)this.getValue(1, connection, object);
-                return val1 != val2;
+                boolean val0 = (Boolean)this.getValue(0, connection, object);
+                boolean val1 = (Boolean)this.getValue(1, connection, object);
+                return val0 != val1;
             }
             default:
                 throw new HBqlException("Invalid operator: " + this.getOperator());
