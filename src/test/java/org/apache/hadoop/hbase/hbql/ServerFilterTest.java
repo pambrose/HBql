@@ -83,7 +83,7 @@ public class ServerFilterTest extends TestSupport {
         }
     }
 
-    private static void showValues(final String sql) throws HBqlException {
+    private static void showValues(final String sql, final int cnt) throws HBqlException {
 
         HStatement stmt = connection.createStatement();
         HResultSet<HRecord> results = stmt.executeQuery(sql);
@@ -93,26 +93,25 @@ public class ServerFilterTest extends TestSupport {
 
             String keyval = (String)rec.getCurrentValue("keyval");
             String val1 = (String)rec.getCurrentValue("val1");
-            int val2 = (Integer)rec.getCurrentValue("val2");
+            int val2 = (Integer)rec.getCurrentValue("f1:val2");
             int val3 = (Integer)rec.getCurrentValue("val3");
 
             System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
             rec_cnt++;
         }
 
-        assertTrue(rec_cnt == 1);
+        assertTrue(rec_cnt == cnt);
     }
 
     @Test
     public void simpleSelect1() throws HBqlException {
         final String q1 = "select * from tab3";
-        showValues(q1);
+        showValues(q1, 10);
     }
 
     @Test
     public void simpleSelect2() throws HBqlException {
-
-        final String q1 = "select * from tab3 WITH SERVER FILTER where val2 = 12 ";
-        showValues(q1);
+        final String q1 = "select * from tab3 WITH SERVER FILTER where f1:val2 <= 12 ";
+        showValues(q1, 1);
     }
 }

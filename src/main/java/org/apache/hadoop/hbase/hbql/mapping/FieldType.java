@@ -36,12 +36,13 @@ import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.util.Bytes;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public enum FieldType {
+public enum FieldType implements Serializable {
 
     KeyType(String.class, StringValue.class, -1, -1),  // No type synonyms for KEY
 
