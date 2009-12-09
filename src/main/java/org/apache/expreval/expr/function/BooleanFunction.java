@@ -129,6 +129,23 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
                 }
             }
 
+            case INDEXEXISTS: {
+                if (connection == null) {
+                    return false;
+                }
+                else {
+                    final String tableName = (String)this.getExprArg(0).getValue(connection, null);
+                    final String indexName = (String)this.getExprArg(1).getValue(connection, null);
+                    try {
+                        return connection.indexExists(tableName, indexName);
+                    }
+                    catch (HBqlException e) {
+                        // return false if index doesn't exist
+                        return false;
+                    }
+                }
+            }
+
             default:
                 throw new HBqlException("Invalid function: " + this.getFunctionType());
         }

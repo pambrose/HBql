@@ -1,0 +1,21 @@
+    -----
+    EVAL
+    -----
+    -----
+
+EVAL
+
+*Syntax
+
+---------------------------
+
+EVAL expression
+
+---------------------------
+
+*Description
+
+    ** The EVAL statement is used only in the console
+
+    ** The given expression is evaluated and the value is displayed.
+

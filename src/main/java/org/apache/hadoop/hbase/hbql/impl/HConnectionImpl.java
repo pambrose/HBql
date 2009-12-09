@@ -29,7 +29,9 @@ import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTablePool;
+import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
+import org.apache.hadoop.hbase.client.tableindexed.IndexedTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -181,6 +183,18 @@ public class HConnectionImpl implements HConnection {
     public boolean familyExists(final String tableName, final String familyName) throws HBqlException {
         final Set<String> names = this.getFamilyNames(tableName);
         return names.contains(familyName);
+    }
+
+    public boolean indexExists(final String tableName, final String indexName) throws HBqlException {
+        try {
+            final HTableDescriptor tableDesc = this.getHTableDescriptor(tableName);
+            final IndexedTableDescriptor itd = new IndexedTableDescriptor(tableDesc);
+            final IndexSpecification index = itd.getIndex(indexName);
+            return index != null;
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 
     public HStatement createStatement() throws HBqlException {

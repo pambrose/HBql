@@ -101,7 +101,8 @@ public abstract class GenericFunction extends GenericExpression {
         MAPPINGEXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false),
         FAMILYEXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class, StringValue.class), false, false),
         TABLEEXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false),
-        TABLEENABLED(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false);
+        TABLEENABLED(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false),
+        INDEXEXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class, StringValue.class), false, false);
 
 
         private final FunctionTypeSignature typeSignature;

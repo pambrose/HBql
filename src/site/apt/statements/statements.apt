@@ -58,13 +58,15 @@ HBql Statements
     **{{{./expressions.html}Expressions}}
 
 
-* System
+* Console
 
     **{{{./version.html}VERSION}}
 
     **{{{./import.html}IMPORT}}
 
     **{{{./parse.html}PARSE}}
+
+    **{{{./eval.html}PARSE}}
 
 
 

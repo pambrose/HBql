@@ -20,28 +20,35 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.statement.select.SimpleExpressionContext;
 
-public class ParseStatement extends BasicStatement implements ConnectionStatement {
+public class EvalStatement extends BasicStatement implements ConnectionStatement {
 
-    private final HBqlStatement stmt;
+    private final GenericValue genericValue;
 
-    public ParseStatement(final HBqlStatement stmt) {
+    public EvalStatement(final GenericValue genericValue) {
         super(null);
-        this.stmt = stmt;
+        this.genericValue = genericValue;
     }
 
-    private HBqlStatement getStmt() {
-        return this.stmt;
+    private GenericValue getGenericValue() {
+        return this.genericValue;
     }
 
     public ExecutionResults execute(HConnectionImpl connection) throws HBqlException {
 
         final ExecutionResults retval = new ExecutionResults("Parsed successfully");
 
-        retval.out.println(this.getStmt().getClass().getSimpleName());
+        if (this.getGenericValue() != null) {
+            final SimpleExpressionContext expr = new SimpleExpressionContext(this.getGenericValue());
+            expr.validate();
+            final Object val = expr.getValue(connection);
+            retval.out.println(this.getGenericValue().asString() + " = " + val);
+        }
 
         return retval;
     }

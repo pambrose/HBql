@@ -99,7 +99,7 @@ options {backtrack=true;}
 	| keySHOW keyMAPPINGS 		 		{retval = new ShowMappingsStatement();}
 	| keyIMPORT val=QSTRING				{retval = new ImportStatement($val.text);}
 	| keyPARSE c=consoleStatement			{retval = new ParseStatement($c.retval);}
-	| keyPARSE keyEXPR te=exprValue			{retval = new ParseStatement($te.retval);}
+	| keyEVAL te=exprValue				{retval = new ParseStatement($te.retval);}
 	| keySET t=simpleId EQ? val=QSTRING	 	{retval = new SetStatement($t.text, $val.text);}
 	| keyVERSION					{retval = new VersionStatement();}
 	| keyHELP					{retval = new HelpStatement();}
@@ -582,7 +582,7 @@ keyINTO		: {isKeyword(input, "INTO")}? ID;
 keyVALUES	: {isKeyword(input, "VALUES")}? ID;
 keyHELP		: {isKeyword(input, "HELP")}? ID;
 keyPARSE	: {isKeyword(input, "PARSE")}? ID;
-keyEXPR		: {isKeyword(input, "EXPR")}? ID;
+keyEVAL		: {isKeyword(input, "EVAL")}? ID;
 keyIMPORT	: {isKeyword(input, "IMPORT")}? ID;
 keyTEMP		: {isKeyword(input, "TEMP")}? ID;
 keyTTL		: {isKeyword(input, "TTL")}? ID;
