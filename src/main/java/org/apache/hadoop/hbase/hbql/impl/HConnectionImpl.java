@@ -29,6 +29,7 @@ import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTablePool;
+import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -57,10 +58,12 @@ public class HConnectionImpl implements HConnection {
     private final HConnectionPoolImpl connectionPool;
     private final int maxTablePoolReferencesPerTable;
 
+
     private final MappingManager mappingManager;
     private volatile Map<Class, AnnotationResultAccessor> annotationMappingMap = null;
 
     private volatile HBaseAdmin hbaseAdmin = null;
+    private volatile IndexedTableAdmin indexTableAdmin = null;
     private volatile boolean closed = false;
 
     public HConnectionImpl(final HBaseConfiguration hbaseConfig,
@@ -69,7 +72,7 @@ public class HConnectionImpl implements HConnection {
         this.hbaseConfig = (hbaseConfig == null) ? new HBaseConfiguration() : hbaseConfig;
         this.connectionPool = connectionPool;
         this.maxTablePoolReferencesPerTable = maxTablePoolReferencesPerTable;
-        this.tablePool = new HTablePool(this.getHBaseConfig(), maxTablePoolReferencesPerTable);
+        this.tablePool = new HTablePool(this.getHBaseConfiguration(), maxTablePoolReferencesPerTable);
         this.mappingManager = new MappingManager(this);
 
         this.getMappingManager().validatePersistentMetadata();
@@ -89,7 +92,7 @@ public class HConnectionImpl implements HConnection {
         return this.connectionPool;
     }
 
-    public HBaseConfiguration getHBaseConfig() {
+    public HBaseConfiguration getHBaseConfiguration() {
         return this.hbaseConfig;
     }
 
@@ -134,13 +137,13 @@ public class HConnectionImpl implements HConnection {
         }
     }
 
-    public HBaseAdmin newHBaseAdmin() throws HBqlException {
+    public HBaseAdmin getHBaseAdmin() throws HBqlException {
         this.checkIfClosed();
         if (this.hbaseAdmin == null) {
             synchronized (this) {
                 if (this.hbaseAdmin == null)
                     try {
-                        this.hbaseAdmin = new HBaseAdmin(this.getHBaseConfig());
+                        this.hbaseAdmin = new HBaseAdmin(this.getHBaseConfiguration());
                     }
                     catch (MasterNotRunningException e) {
                         throw new HBqlException(e);
@@ -148,6 +151,22 @@ public class HConnectionImpl implements HConnection {
             }
         }
         return this.hbaseAdmin;
+    }
+
+    public IndexedTableAdmin getIndexTableAdmin() throws HBqlException {
+        this.checkIfClosed();
+        if (this.indexTableAdmin == null) {
+            synchronized (this) {
+                if (this.indexTableAdmin == null)
+                    try {
+                        this.indexTableAdmin = new IndexedTableAdmin(this.getHBaseConfiguration());
+                    }
+                    catch (MasterNotRunningException e) {
+                        throw new HBqlException(e);
+                    }
+            }
+        }
+        return this.indexTableAdmin;
     }
 
     public Set<String> getFamilyNames(final String tableName) throws HBqlException {
@@ -253,7 +272,7 @@ public class HConnectionImpl implements HConnection {
             throw new HBqlException("Table already exists: " + tableName);
 
         try {
-            this.newHBaseAdmin().createTable(tableDesc);
+            this.getHBaseAdmin().createTable(tableDesc);
         }
         catch (IOException e) {
             throw new HBqlException(e);
@@ -272,7 +291,7 @@ public class HConnectionImpl implements HConnection {
 
     public boolean tableExists(final String tableName) throws HBqlException {
         try {
-            return this.newHBaseAdmin().tableExists(tableName);
+            return this.getHBaseAdmin().tableExists(tableName);
         }
         catch (MasterNotRunningException e) {
             throw new HBqlException(e);
@@ -282,7 +301,7 @@ public class HConnectionImpl implements HConnection {
     public HTableDescriptor getHTableDescriptor(final String tableName) throws HBqlException {
         try {
             this.validateTableName(tableName);
-            return this.newHBaseAdmin().getTableDescriptor(tableName.getBytes());
+            return this.getHBaseAdmin().getTableDescriptor(tableName.getBytes());
         }
         catch (IOException e) {
             throw new HBqlException(e);
@@ -292,7 +311,7 @@ public class HConnectionImpl implements HConnection {
     public boolean tableEnabled(final String tableName) throws HBqlException {
         try {
             this.validateTableName(tableName);
-            return this.newHBaseAdmin().isTableEnabled(tableName);
+            return this.getHBaseAdmin().isTableEnabled(tableName);
         }
         catch (IOException e) {
             throw new HBqlException(e);
@@ -303,7 +322,7 @@ public class HConnectionImpl implements HConnection {
         try {
             validateTableDisabled("drop", tableName);
             final byte[] tableNameBytes = tableName.getBytes();
-            this.newHBaseAdmin().deleteTable(tableNameBytes);
+            this.getHBaseAdmin().deleteTable(tableNameBytes);
         }
         catch (IOException e) {
             throw new HBqlException(e);
@@ -314,7 +333,7 @@ public class HConnectionImpl implements HConnection {
         try {
             if (!this.tableEnabled(tableName))
                 throw new HBqlException("Cannot disable disabled table: " + tableName);
-            this.newHBaseAdmin().disableTable(tableName);
+            this.getHBaseAdmin().disableTable(tableName);
         }
         catch (IOException e) {
             throw new HBqlException(e);
@@ -324,7 +343,7 @@ public class HConnectionImpl implements HConnection {
     public void enableTable(final String tableName) throws HBqlException {
         try {
             validateTableDisabled("enable", tableName);
-            this.newHBaseAdmin().enableTable(tableName);
+            this.getHBaseAdmin().enableTable(tableName);
         }
         catch (IOException e) {
             throw new HBqlException(e);
@@ -333,7 +352,7 @@ public class HConnectionImpl implements HConnection {
 
     public Set<String> getTableNames() throws HBqlException {
         try {
-            final HBaseAdmin admin = this.newHBaseAdmin();
+            final HBaseAdmin admin = this.getHBaseAdmin();
             final Set<String> tableSet = Sets.newHashSet();
             for (final HTableDescriptor table : admin.listTables())
                 tableSet.add(table.getNameAsString());

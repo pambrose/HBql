@@ -32,7 +32,7 @@ import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ServerFilterTest extends TestSupport {
+public class IndexTest extends TestSupport {
 
     static HConnection connection = null;
 
@@ -41,7 +41,7 @@ public class ServerFilterTest extends TestSupport {
 
         connection = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP MAPPING tab3 FOR TABLE table20"
+        connection.execute("CREATE TEMP MAPPING tab4 FOR TABLE table21"
                            + "("
                            + "keyval key, "
                            + "f1 ("
@@ -50,8 +50,8 @@ public class ServerFilterTest extends TestSupport {
                            + "  val3 int alias val3 DEFAULT 12 "
                            + "))");
 
-        if (!connection.tableExists("table20"))
-            System.out.println(connection.execute("create table table20 (f1())"));
+        if (!connection.tableExists("table21"))
+            System.out.println(connection.execute("create table table21 (f1())"));
         else {
             System.out.println(connection.execute("delete from tab3"));
         }
@@ -101,20 +101,11 @@ public class ServerFilterTest extends TestSupport {
 
     @Test
     public void simpleSelect1() throws HBqlException {
+
+        HStatement stmt = connection.createStatement();
+        stmt.execute("CREATE INDEX foo1 ON table21 (f1)");
+
         final String q1 = "select * from tab3";
         showValues(q1, 10);
-    }
-
-    @Test
-    public void simpleSelect2() throws HBqlException {
-        final String q1 = "select * from tab3 WITH SERVER FILTER " +
-                          "where val1 = '11' OR val1 = '14' OR  val1 = '12'";
-        showValues(q1, 1);
-    }
-
-    @Test
-    public void simpleSelect3() throws HBqlException {
-        final String q1 = "select * from tab3 WITH SERVER FILTER where val1 <= '12' ";
-        showValues(q1, 1);
     }
 }

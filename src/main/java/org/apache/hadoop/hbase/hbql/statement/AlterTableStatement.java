@@ -48,7 +48,7 @@ public class AlterTableStatement extends BasicStatement implements ConnectionSta
 
         connection.validateTableDisabled("alter", this.getTableName());
 
-        final HBaseAdmin admin = connection.newHBaseAdmin();
+        final HBaseAdmin admin = connection.getHBaseAdmin();
 
         for (final AlterTableAction alterTableAction : this.alterTableActionList)
             alterTableAction.execute(connection, admin, this.getTableName());

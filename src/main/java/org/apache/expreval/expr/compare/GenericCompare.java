@@ -37,6 +37,7 @@ import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionExceptio
 import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 
 import java.io.IOException;
@@ -100,10 +101,13 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
                                                 final CompareFilter.CompareOp compareOp,
                                                 final WritableByteArrayComparable comparator) throws HBqlException {
 
-        return new SingleColumnValueFilter(column.getColumnAttrib().getFamilyNameAsBytes(),
-                                           column.getColumnAttrib().getColumnNameAsBytes(),
-                                           compareOp,
-                                           comparator);
+        final ColumnAttrib attrib = column.getColumnAttrib();
+        final SingleColumnValueFilter filter = new SingleColumnValueFilter(attrib.getFamilyNameAsBytes(),
+                                                                           attrib.getColumnNameAsBytes(),
+                                                                           compareOp,
+                                                                           comparator);
+        filter.setFilterIfMissing(true);
+        return filter;
     }
 
     public String asString() {

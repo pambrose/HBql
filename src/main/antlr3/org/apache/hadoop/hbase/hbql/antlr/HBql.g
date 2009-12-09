@@ -125,11 +125,10 @@ options {backtrack=true;}
 							{retval = new AlterTableStatement($p.retval, $t.text, $aal.retval);}
 	| keyDISABLE keyTABLE t=simpleId p=pred?	{retval = new DisableTableStatement($p.retval, $t.text);}
 	| keyENABLE keyTABLE t=simpleId p=pred?		{retval = new EnableTableStatement($p.retval, $t.text);}
-	/*
-	| keyCREATE keyINDEX t=simpleId p=pred?		
-							{retval = new CreateIndexStatement($p.retval, $t.text);}
-	| keyDROP keyINDEX t=simpleId p=pred?		{retval = new DropIndexStatement($p.retval, $t.text);}
-	*/
+	| keyCREATE keyINDEX t=simpleId keyON t2=simpleId LPAREN t3=columnRef RPAREN p=pred?		
+							{retval = new CreateIndexStatement($p.retval, $t.text, $t2.text, $t3.text);}
+	| keyDROP keyINDEX t=simpleId keyON t2=simpleId p=pred?		
+							{retval = new DropIndexStatement($p.retval, $t.text, $t2.text);}
 	;
 	
 attribMapping returns [AttribMapping retval]
@@ -524,6 +523,7 @@ WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();};
 
 keyALTER 	: {isKeyword(input, "ALTER")}? ID;
 keyINDEX 	: {isKeyword(input, "INDEX")}? ID;
+keyON	 	: {isKeyword(input, "ON")}? ID;
 keyADD	 	: {isKeyword(input, "ADD")}? ID;
 keyFAMILY 	: {isKeyword(input, "FAMILY")}? ID;
 keySELECT 	: {isKeyword(input, "SELECT")}? ID;

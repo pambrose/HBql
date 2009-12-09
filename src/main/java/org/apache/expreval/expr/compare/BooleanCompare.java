@@ -70,17 +70,30 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
 
     public Filter getFilter() throws HBqlException, ResultMissingColumnException {
 
-        final List<Filter> filterList = Lists.newArrayList();
-        filterList.add(this.getExprArg(0).getFilter());
-        filterList.add(this.getExprArg(1).getFilter());
-
-        this.validateArgsForColumnConstant();
+        final Filter filter0 = this.getExprArg(0).getFilter();
+        final Filter filter1 = this.getExprArg(1).getFilter();
 
         switch (this.getOperator()) {
             case OR: {
+                if (filter0 instanceof FilterList) {
+                    if (((FilterList)filter0).getOperator() == FilterList.Operator.MUST_PASS_ONE) {
+                        ((FilterList)filter0).addFilter(filter1);
+                        return filter0;
+                    }
+                }
+
+                final List<Filter> filterList = Lists.newArrayList(filter0, filter1);
                 return new FilterList(FilterList.Operator.MUST_PASS_ONE, filterList);
             }
             case AND: {
+                if (filter0 instanceof FilterList) {
+                    if (((FilterList)filter0).getOperator() == FilterList.Operator.MUST_PASS_ALL) {
+                        ((FilterList)filter0).addFilter(filter1);
+                        return filter0;
+                    }
+                }
+
+                final List<Filter> filterList = Lists.newArrayList(filter0, filter1);
                 return new FilterList(FilterList.Operator.MUST_PASS_ALL, filterList);
             }
             case EQ: {

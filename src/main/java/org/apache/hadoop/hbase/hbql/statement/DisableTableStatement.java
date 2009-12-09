@@ -34,7 +34,7 @@ public class DisableTableStatement extends TableStatement {
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
         try {
-            connection.newHBaseAdmin().disableTable(this.getTableName());
+            connection.getHBaseAdmin().disableTable(this.getTableName());
         }
         catch (IOException e) {
             throw new HBqlException(e);

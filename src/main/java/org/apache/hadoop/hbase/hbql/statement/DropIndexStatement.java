@@ -20,31 +20,35 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.io.IOException;
 
-public class EnableTableStatement extends TableStatement {
+public class DropIndexStatement extends TableStatement {
 
-    public EnableTableStatement(final StatementPredicate predicate, final String tableName) {
+    private final String indexName;
+
+    public DropIndexStatement(final StatementPredicate predicate, final String indexName, final String tableName) {
         super(predicate, tableName);
+        this.indexName = indexName;
     }
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
-
         try {
-            connection.getHBaseAdmin().enableTable(this.getTableName());
+            final IndexedTableAdmin ita = connection.getIndexTableAdmin();
+            ita.removeIndex(this.getTableName().getBytes(), this.indexName);
+
+            return new ExecutionResults("Index " + this.getTableName() + " dropped for " + this.getTableName());
         }
         catch (IOException e) {
             throw new HBqlException(e);
         }
-
-        return new ExecutionResults("Table " + this.getTableName() + " enabled.");
     }
 
     public static String usage() {
-        return "ENABLE TABLE table_name [IF boolean_expression]";
+        return "DROP INDEX index_name ON table_name [IF boolean_expression]";
     }
 }

@@ -20,31 +20,46 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
+import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.io.IOException;
 
-public class EnableTableStatement extends TableStatement {
+public class CreateIndexStatement extends BasicStatement implements ConnectionStatement {
 
-    public EnableTableStatement(final StatementPredicate predicate, final String tableName) {
-        super(predicate, tableName);
+    private final String indexName;
+    private final String tableName;
+    private final String indexColumn;
+
+    public CreateIndexStatement(final StatementPredicate predicate,
+                                final String indexName,
+                                final String tableName,
+                                final String indexColumn) {
+        super(predicate);
+        this.indexName = indexName;
+        this.tableName = tableName;
+        this.indexColumn = indexColumn;
     }
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         try {
-            connection.getHBaseAdmin().enableTable(this.getTableName());
+            final IndexSpecification spec = new IndexSpecification(this.indexName, this.indexColumn.getBytes());
+            final IndexedTableAdmin ita = connection.getIndexTableAdmin();
+            ita.addIndex(this.tableName.getBytes(), spec);
+
+            return new ExecutionResults("Index " + this.indexName + " created for "
+                                        + this.tableName + " (" + this.indexColumn + ")");
         }
         catch (IOException e) {
             throw new HBqlException(e);
         }
-
-        return new ExecutionResults("Table " + this.getTableName() + " enabled.");
     }
 
     public static String usage() {
-        return "ENABLE TABLE table_name [IF boolean_expression]";
+        return "CREATE INDEX index_name ON table_name (index_column) [IF boolean_expression]";
     }
 }
