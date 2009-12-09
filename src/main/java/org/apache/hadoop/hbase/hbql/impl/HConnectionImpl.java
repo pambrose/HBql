@@ -197,6 +197,17 @@ public class HConnectionImpl implements HConnection {
         }
     }
 
+    public void dropIndex(final String tableName, final String indexName) throws HBqlException {
+        this.validateIndexExists(tableName, indexName);
+        try {
+            final IndexedTableAdmin ita = this.getIndexTableAdmin();
+            ita.removeIndex(tableName.getBytes(), indexName);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
+    }
+
     public HStatement createStatement() throws HBqlException {
         this.checkIfClosed();
         return new HStatementImpl(this);
@@ -313,8 +324,8 @@ public class HConnectionImpl implements HConnection {
     }
 
     public HTableDescriptor getHTableDescriptor(final String tableName) throws HBqlException {
+        this.validateTableName(tableName);
         try {
-            this.validateTableName(tableName);
             return this.getHBaseAdmin().getTableDescriptor(tableName.getBytes());
         }
         catch (IOException e) {
@@ -323,8 +334,8 @@ public class HConnectionImpl implements HConnection {
     }
 
     public boolean tableEnabled(final String tableName) throws HBqlException {
+        this.validateTableName(tableName);
         try {
-            this.validateTableName(tableName);
             return this.getHBaseAdmin().isTableEnabled(tableName);
         }
         catch (IOException e) {
@@ -333,8 +344,8 @@ public class HConnectionImpl implements HConnection {
     }
 
     public void dropTable(final String tableName) throws HBqlException {
+        validateTableDisabled("drop", tableName);
         try {
-            validateTableDisabled("drop", tableName);
             final byte[] tableNameBytes = tableName.getBytes();
             this.getHBaseAdmin().deleteTable(tableNameBytes);
         }
@@ -355,8 +366,8 @@ public class HConnectionImpl implements HConnection {
     }
 
     public void enableTable(final String tableName) throws HBqlException {
+        validateTableDisabled("enable", tableName);
         try {
-            validateTableDisabled("enable", tableName);
             this.getHBaseAdmin().enableTable(tableName);
         }
         catch (IOException e) {
@@ -390,5 +401,10 @@ public class HConnectionImpl implements HConnection {
     public void validateFamilyExists(final String tableName, final String familyName) throws HBqlException {
         if (!this.familyExists(tableName, familyName))
             throw new HBqlException("Family " + familyName + " not present in table " + tableName);
+    }
+
+    public void validateIndexExists(final String tableName, final String indexName) throws HBqlException {
+        if (!this.indexExists(tableName, indexName))
+            throw new HBqlException("Index " + indexName + " not present on table " + tableName);
     }
 }

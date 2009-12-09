@@ -20,12 +20,9 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-
-import java.io.IOException;
 
 public class DropIndexStatement extends TableStatement {
 
@@ -37,15 +34,8 @@ public class DropIndexStatement extends TableStatement {
     }
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
-        try {
-            final IndexedTableAdmin ita = connection.getIndexTableAdmin();
-            ita.removeIndex(this.getTableName().getBytes(), this.indexName);
-
-            return new ExecutionResults("Index " + this.getTableName() + " dropped for " + this.getTableName());
-        }
-        catch (IOException e) {
-            throw new HBqlException(e);
-        }
+        connection.dropIndex(this.getTableName(), this.indexName);
+        return new ExecutionResults("Index " + this.getTableName() + " dropped for " + this.getTableName());
     }
 
     public static String usage() {
