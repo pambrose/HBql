@@ -185,16 +185,20 @@ public class HConnectionImpl implements HConnection {
         return names.contains(familyName);
     }
 
-    public boolean indexExists(final String tableName, final String indexName) throws HBqlException {
+    public IndexedTableDescriptor newIndexedTableDescriptor(final String tableName) throws HBqlException {
         try {
             final HTableDescriptor tableDesc = this.getHTableDescriptor(tableName);
-            final IndexedTableDescriptor itd = new IndexedTableDescriptor(tableDesc);
-            final IndexSpecification index = itd.getIndex(indexName);
-            return index != null;
+            return new IndexedTableDescriptor(tableDesc);
         }
         catch (IOException e) {
             throw new HBqlException(e);
         }
+    }
+
+    public boolean indexExists(final String tableName, final String indexName) throws HBqlException {
+        final IndexedTableDescriptor itd = this.newIndexedTableDescriptor(tableName);
+        final IndexSpecification index = itd.getIndex(indexName);
+        return index != null;
     }
 
     public void dropIndex(final String tableName, final String indexName) throws HBqlException {

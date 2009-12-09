@@ -45,4 +45,8 @@ public class ParseStatement extends BasicStatement implements ConnectionStatemen
 
         return retval;
     }
+
+    public static String usage() {
+        return "PARSE statement";
+    }
 }

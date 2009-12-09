@@ -52,4 +52,8 @@ public class EvalStatement extends BasicStatement implements ConnectionStatement
 
         return retval;
     }
+
+    public static String usage() {
+        return "EVAL expression";
+    }
 }

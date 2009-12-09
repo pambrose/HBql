@@ -49,6 +49,8 @@ public class HelpStatement extends BasicStatement implements NonConnectionStatem
         retval.out.println(DropTableStatement.usage());
         retval.out.println(DropMappingStatement.usage());
         retval.out.println(ImportStatement.usage());
+        retval.out.println(ParseStatement.usage());
+        retval.out.println(EvalStatement.usage());
         retval.out.flush();
 
         return retval;

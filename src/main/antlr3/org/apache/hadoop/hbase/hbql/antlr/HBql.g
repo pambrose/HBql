@@ -116,10 +116,10 @@ options {backtrack=true;}
 	| keyCREATE (tmp=keyTEMP)? keyMAPPING t=simpleId (keyFOR keyTABLE a=simpleId)? (am=attribMapping)? p=pred? 
 							{retval = new CreateMappingStatement($p.retval, $tmp.text != null,$t.text, $a.text, $am.retval);}
 	| keyDROP keyMAPPING t=simpleId p=pred?		{retval = new DropMappingStatement($p.retval, $t.text);}
-	| keyDESCRIBE keyMAPPING t=simpleId 		{retval = new DescribeMappingStatement(null, $t.text);}
+	| keyDESCRIBE keyMAPPING t=simpleId 		{retval = new DescribeMappingStatement($t.text);}
 	| keyCREATE keyTABLE t=simpleId LPAREN fd=familyDefinitionList RPAREN p=pred?
 							{retval = new CreateTableStatement($p.retval, $t.text, $fd.retval);}
-	| keyDESCRIBE keyTABLE t=simpleId 		{retval = new DescribeTableStatement(null, $t.text);}
+	| keyDESCRIBE keyTABLE t=simpleId 		{retval = new DescribeTableStatement($t.text);}
 	| keyDROP keyTABLE t=simpleId p=pred? 		{retval = new DropTableStatement($p.retval, $t.text);}
 	| keyALTER keyTABLE t=simpleId aal=alterActionList p=pred?	
 							{retval = new AlterTableStatement($p.retval, $t.text, $aal.retval);}

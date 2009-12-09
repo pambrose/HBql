@@ -27,8 +27,8 @@ import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 
 public class DescribeMappingStatement extends StatementContext implements ConnectionStatement {
 
-    public DescribeMappingStatement(final StatementPredicate predicate, final String mappingName) {
-        super(predicate, mappingName);
+    public DescribeMappingStatement(final String mappingName) {
+        super(null, mappingName);
     }
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
