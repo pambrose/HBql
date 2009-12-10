@@ -26,6 +26,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.statement.args.KeyRange;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 
 import java.io.IOException;
@@ -34,10 +35,12 @@ import java.util.Collection;
 public class IndexScanRequest implements RowRequest {
 
     final Scan scanValue;
+    final KeyRange keyRange;
     final Collection<ColumnAttrib> columnAttribs;
 
-    public IndexScanRequest(final Scan scanValue, final Collection<ColumnAttrib> columnAttribs) {
+    public IndexScanRequest(final Scan scanValue, final KeyRange keyRange, final Collection<ColumnAttrib> columnAttribs) {
         this.scanValue = scanValue;
+        this.keyRange = keyRange;
         this.columnAttribs = columnAttribs;
     }
 
@@ -47,6 +50,10 @@ public class IndexScanRequest implements RowRequest {
 
     private Collection<ColumnAttrib> getColumnAttribs() {
         return this.columnAttribs;
+    }
+
+    private KeyRange getKeyRange() {
+        return this.keyRange;
     }
 
     public int getMaxVersions() {
@@ -72,6 +79,7 @@ public class IndexScanRequest implements RowRequest {
     public ResultScanner getResultScanner(final WithArgs withArgs, final HTable table) throws HBqlException {
         try {
             final IndexedTable index = (IndexedTable)table;
+
             return index.getIndexedScanner(withArgs.getIndexName(), null, null, null, null, getColumns());
         }
         catch (IOException e) {

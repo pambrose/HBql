@@ -164,12 +164,12 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
 
         final HTable table = tableWrapper.getHTable();
         final ExpressionTree clientExpressionTree = withArgs.getClientExpressionTree();
-        final ResultScanner resultScaner = rowRequest.getResultScanner(withArgs, table);
+        final ResultScanner resultScanner = rowRequest.getResultScanner(withArgs, table);
 
         int cnt = 0;
 
         try {
-            for (final Result result : resultScaner) {
+            for (final Result result : resultScanner) {
                 try {
                     if (clientExpressionTree == null || clientExpressionTree.evaluate(connection, result)) {
 

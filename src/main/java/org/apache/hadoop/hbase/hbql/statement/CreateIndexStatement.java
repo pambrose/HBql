@@ -22,7 +22,6 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
-import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -58,19 +57,16 @@ public class CreateIndexStatement extends BasicStatement implements ConnectionSt
 
         final List<String> indexList = this.getQualifiedNameList(mapping, indexColumns);
         final List<String> includeList = this.getQualifiedNameList(mapping, includeColumns);
+        final IndexSpecification spec = SingleColumnIndex.newIndex(this.indexName, indexList, includeList);
 
         try {
-            final IndexSpecification spec = SingleColumnIndex.newTypedColumnIndex(this.indexName,
-                                                                                  indexList,
-                                                                                  includeList);
-            final IndexedTableAdmin ita = connection.getIndexTableAdmin();
-            ita.addIndex(this.mappingName.getBytes(), spec);
-
-            return new ExecutionResults(this.getCreateMsg(indexList, includeList));
+            connection.getIndexTableAdmin().addIndex(this.mappingName.getBytes(), spec);
         }
         catch (IOException e) {
             throw new HBqlException(e);
         }
+
+        return new ExecutionResults(this.getCreateIndexMsg(indexList, includeList));
     }
 
     public static String usage() {
@@ -109,7 +105,7 @@ public class CreateIndexStatement extends BasicStatement implements ConnectionSt
         return retval;
     }
 
-    private String getCreateMsg(final List<String> indexList, final List<String> includeList) {
+    private String getCreateIndexMsg(final List<String> indexList, final List<String> includeList) {
 
         final StringBuilder sbuf = new StringBuilder("Index " + this.indexName
                                                      + " created for " + this.mappingName);

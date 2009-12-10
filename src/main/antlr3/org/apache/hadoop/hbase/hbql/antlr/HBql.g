@@ -237,16 +237,16 @@ keysRangeArgs returns [KeyRangeArgs retval]
 	| keyKEYS keyALL				{retval = new KeyRangeArgs();}	
 	;
 
-rangeList returns [List<KeyRangeArgs.Range> retval]
+rangeList returns [List<KeyRange> retval]
 @init {retval = Lists.newArrayList();}
 	: k1=keyRange {retval.add($k1.retval);} (COMMA k2=keyRange {retval.add($k2.retval);})*;
 	
-keyRange returns [KeyRangeArgs.Range retval]
+keyRange returns [KeyRange retval]
 options {backtrack=true;}	
-	: q1=exprValue keyTO keyLAST			{retval = KeyRangeArgs.newLastRange($q1.retval);}
-	| keyFIRST keyTO q1=exprValue			{retval = KeyRangeArgs.newFirstRange($q1.retval);}
-	| q1=exprValue keyTO q2=exprValue		{retval = KeyRangeArgs.newRange($q1.retval, $q2.retval);}
-	| q1=exprValue 					{retval = KeyRangeArgs.newSingleKey($q1.retval);}
+	: q1=exprValue keyTO keyLAST			{retval = KeyRange.newLastRange($q1.retval);}
+	| keyFIRST keyTO q1=exprValue			{retval = KeyRange.newFirstRange($q1.retval);}
+	| q1=exprValue keyTO q2=exprValue		{retval = KeyRange.newRange($q1.retval, $q2.retval);}
+	| q1=exprValue 					{retval = KeyRange.newSingleKey($q1.retval);}
 	;
 		
 timestampArgs returns [TimestampArgs retval]

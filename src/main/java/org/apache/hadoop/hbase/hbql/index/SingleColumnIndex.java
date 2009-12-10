@@ -36,9 +36,9 @@ public class SingleColumnIndex extends IndexSpecification {
         super(indexName, indexedColumns, additionalColumns, new SimpleIndexKeyGenerator(indexedColumns[0]));
     }
 
-    public static SingleColumnIndex newTypedColumnIndex(final String indexName,
-                                                        final List<String> indexList,
-                                                        final List<String> includeList) throws HBqlException {
+    public static SingleColumnIndex newIndex(final String indexName,
+                                             final List<String> indexList,
+                                             final List<String> includeList) throws HBqlException {
 
         if (indexList.size() != 1)
             throw new HBqlException("Invalid index " + indexName + ". For now, only single column indexes allowed.");

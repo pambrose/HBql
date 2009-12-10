@@ -338,8 +338,8 @@ public class WithArgs implements Serializable {
     public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
 
         final List<RowRequest> rowRequestList = Lists.newArrayList();
-        for (final KeyRangeArgs.Range range : this.getKeyRangeArgs().getRangeList())
-            range.process(this, rowRequestList, columnAttribSet);
+        for (final KeyRange keyRange : this.getKeyRangeArgs().getKeyRangeList())
+            keyRange.process(this, rowRequestList, columnAttribSet);
 
         return rowRequestList;
     }
