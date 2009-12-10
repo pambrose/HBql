@@ -94,19 +94,19 @@ public class WithArgs implements Serializable {
         }
     }
 
-    public void validateArgs() throws HBqlException {
+    public void validateArgTypes() throws HBqlException {
 
         if (this.getKeyRangeArgs() != null)
             this.getKeyRangeArgs().validate();
 
         if (this.getTimestampArgs() != null)
-            this.getTimestampArgs().validate();
+            this.getTimestampArgs().validateArgTypes();
 
         if (this.getVersionArgs() != null)
-            this.getVersionArgs().validate();
+            this.getVersionArgs().validateArgTypes();
 
         if (this.getLimitArgs() != null)
-            this.getLimitArgs().validate();
+            this.getLimitArgs().validateArgTypes();
     }
 
 

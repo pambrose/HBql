@@ -256,7 +256,7 @@ public class KeyRangeArgs implements Serializable {
 
     public void validate() throws HBqlException {
         for (final Range range : this.getRangeList())
-            range.validate();
+            range.validateArgTypes();
     }
 
     public String asString() {

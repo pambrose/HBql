@@ -103,7 +103,7 @@ public class SelectStatement extends StatementContext implements ParameterStatem
     }
 
     public void validateTypes() throws HBqlException {
-        this.getWithArgs().validateArgs();
+        this.getWithArgs().validateArgTypes();
     }
 
     public void determineIfAggregateQuery() throws HBqlException {

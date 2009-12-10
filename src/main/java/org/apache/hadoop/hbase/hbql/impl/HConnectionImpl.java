@@ -416,11 +416,11 @@ public class HConnectionImpl implements HConnection {
 
     public void validateFamilyExists(final String tableName, final String familyName) throws HBqlException {
         if (!this.familyExists(tableName, familyName))
-            throw new HBqlException("Family " + familyName + " not present in table " + tableName);
+            throw new HBqlException("Family " + familyName + " not defined for table " + tableName);
     }
 
     public void validateIndexExists(final String tableName, final String indexName) throws HBqlException {
         if (!this.indexExists(tableName, indexName))
-            throw new HBqlException("Index " + indexName + " not present on table " + tableName);
+            throw new HBqlException("Index " + indexName + " not defined for table " + tableName);
     }
 }

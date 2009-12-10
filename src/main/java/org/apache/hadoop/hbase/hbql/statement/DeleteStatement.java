@@ -118,7 +118,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
     }
 
     public void validateTypes() throws HBqlException {
-        this.getWithArgs().validateArgs();
+        this.getWithArgs().validateArgTypes();
     }
 
     protected ExecutionResults execute(final HConnectionImpl hconnectionImpl) throws HBqlException {

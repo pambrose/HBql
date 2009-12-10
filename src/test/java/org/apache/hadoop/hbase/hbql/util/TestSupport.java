@@ -299,7 +299,7 @@ public class TestSupport {
             final WithArgs args = ParserUtil.parseWithClause(expr);
             System.out.println("Evaluating: " + args.asString());
             args.setStatementContext(new NonStatement(null, null));
-            args.validateArgs();
+            args.validateArgTypes();
             return true;
         }
         catch (HBqlException e) {

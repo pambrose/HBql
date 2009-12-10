@@ -29,6 +29,7 @@ import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Random;
@@ -39,7 +40,7 @@ public class IndexTest extends TestSupport {
 
     static Random randomVal = new Random();
 
-    //@BeforeClass
+    @BeforeClass
     public static void beforeClass() throws HBqlException {
 
         connection = HConnectionManager.newConnection();
@@ -106,7 +107,6 @@ public class IndexTest extends TestSupport {
     @Test
     public void simpleSelect1() throws HBqlException {
 
-        beforeClass();
         HStatement stmt = connection.createStatement();
         //stmt.execute("DROP INDEX foo1 ON table21 if indexexists('table21', 'foo1')");
         //stmt.execute("CREATE INDEX foo1 ON table21 (f1:val3)");
@@ -118,7 +118,7 @@ public class IndexTest extends TestSupport {
     @Test
     public void simpleSelect2() throws HBqlException {
 
-        final String q1 = "select * from tab4 WITH INDEX foo2";
+        final String q1 = "select * from tab4 WITH INDEX foo1";
         showValues(q1, 10);
     }
 }

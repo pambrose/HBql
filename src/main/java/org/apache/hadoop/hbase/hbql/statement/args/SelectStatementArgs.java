@@ -51,7 +51,7 @@ public abstract class SelectStatementArgs extends MultipleExpressionContext {
         }
     }
 
-    public void validate() throws HBqlException {
+    public void validateArgTypes() throws HBqlException {
         this.validateTypes(this.allowColumns(), false);
     }
 
