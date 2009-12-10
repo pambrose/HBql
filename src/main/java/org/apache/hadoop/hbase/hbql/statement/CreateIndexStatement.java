@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.index.TypedColumnIndex;
+import org.apache.hadoop.hbase.hbql.index.SingleColumnIndex;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
@@ -60,9 +60,9 @@ public class CreateIndexStatement extends BasicStatement implements ConnectionSt
         final List<String> includeList = this.getQualifiedNameList(mapping, includeColumns);
 
         try {
-            final IndexSpecification spec = TypedColumnIndex.newTypedColumnIndex(this.indexName,
-                                                                                 indexList,
-                                                                                 includeList);
+            final IndexSpecification spec = SingleColumnIndex.newTypedColumnIndex(this.indexName,
+                                                                                  indexList,
+                                                                                  includeList);
             final IndexedTableAdmin ita = connection.getIndexTableAdmin();
             ita.addIndex(this.mappingName.getBytes(), spec);
 
@@ -74,7 +74,7 @@ public class CreateIndexStatement extends BasicStatement implements ConnectionSt
     }
 
     public static String usage() {
-        return "CREATE INDEX index_name ON [MAPPING] mapping_name (column_list) INCLUDE (column_list) [IF boolean_expression]";
+        return "CREATE INDEX index_name ON [MAPPING] mapping_name (column) INCLUDE (column_list) [IF boolean_expression]";
     }
 
     private List<String> getQualifiedNameList(final TableMapping mapping,

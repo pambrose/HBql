@@ -20,6 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
+import java.util.List;
+
 public class Util {
 
     public static String getZeroPaddedNumber(final long val, final int width) throws HBqlException {
@@ -35,5 +37,22 @@ public class Util {
 
         sbuf.append(strval);
         return sbuf.toString();
+    }
+
+    public static byte[][] getStringListAsBytes(final List<String> vals) {
+
+        final byte[][] retval;
+
+        if (vals == null) {
+            retval = null;
+        }
+        else {
+            retval = new byte[vals.size()][];
+            int cnt = 0;
+            for (final String val : vals)
+                retval[cnt++] = val.getBytes();
+        }
+
+        return retval;
     }
 }
