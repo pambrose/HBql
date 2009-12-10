@@ -102,6 +102,10 @@ public class SelectStatement extends StatementContext implements ParameterStatem
         this.collectParameters();
     }
 
+    public void validateTypes() throws HBqlException {
+        this.getWithArgs().validateArgs();
+    }
+
     public void determineIfAggregateQuery() throws HBqlException {
 
         // This is required before the checkIfAggregateQuery() call.

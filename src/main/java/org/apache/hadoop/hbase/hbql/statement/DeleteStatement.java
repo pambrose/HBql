@@ -89,9 +89,8 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
 
         if (this.isValidated())
             return;
-        else
-            this.validated = true;
 
+        this.validated = true;
         this.connection = connection;
 
         this.validateMappingName(connection);
@@ -118,9 +117,15 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         }
     }
 
+    public void validateTypes() throws HBqlException {
+        this.getWithArgs().validateArgs();
+    }
+
     protected ExecutionResults execute(final HConnectionImpl hconnectionImpl) throws HBqlException {
 
         this.validate(hconnectionImpl);
+
+        this.validateTypes();
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWithArgs().getAllColumnsUsedInExprs();
 

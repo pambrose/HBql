@@ -47,6 +47,7 @@ public class Query<E> {
         this.selectStatement = selectStatement;
 
         this.getSelectStmt().validate(this.getHConnectionImpl());
+        this.getSelectStmt().validateTypes();
     }
 
     public static <T> Query<T> newQuery(final HConnectionImpl connection,

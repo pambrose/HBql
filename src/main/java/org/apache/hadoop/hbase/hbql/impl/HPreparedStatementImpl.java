@@ -44,6 +44,7 @@ public class HPreparedStatementImpl extends HStatementImpl implements HPreparedS
 
         if ((this.getStatement() instanceof ParameterStatement)) {
             final ParameterStatement paramStmt = (ParameterStatement)this.getStatement();
+
             // Need to call this here to enable setParameters
             paramStmt.validate(this.getHConnectionImpl());
         }

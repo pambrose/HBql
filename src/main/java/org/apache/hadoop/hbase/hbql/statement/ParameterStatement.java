@@ -31,5 +31,7 @@ public interface ParameterStatement {
 
     void validate(HConnectionImpl connection) throws HBqlException;
 
+    void validateTypes() throws HBqlException;
+
     void reset();
 }

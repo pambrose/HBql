@@ -88,6 +88,13 @@ public class WithArgs implements Serializable {
     }
 
     public void validate(final HConnectionImpl connection, final String tableName) throws HBqlException {
+        if (connection != null) {
+            if (this.hasAnIndex())
+                connection.validateIndexExists(tableName, this.getIndexName());
+        }
+    }
+
+    public void validateArgs() throws HBqlException {
 
         if (this.getKeyRangeArgs() != null)
             this.getKeyRangeArgs().validate();
@@ -100,11 +107,6 @@ public class WithArgs implements Serializable {
 
         if (this.getLimitArgs() != null)
             this.getLimitArgs().validate();
-
-        if (connection != null) {
-            if (this.hasAnIndex())
-                connection.validateIndexExists(tableName, this.getIndexName());
-        }
     }
 
 

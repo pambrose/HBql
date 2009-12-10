@@ -123,7 +123,7 @@ public class ImportStatement extends BasicStatement implements ConnectionStateme
                                       final HConnectionImpl connection,
                                       final SelectStatement selectStatement) throws HBqlException {
 
-        selectStatement.validate(connection);
+        // selectStatement.validate(connection);
 
         final Query<HRecord> query = Query.newQuery(connection, selectStatement, HRecord.class);
         final HResultSet<HRecord> results = query.getResults();
