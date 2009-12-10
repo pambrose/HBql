@@ -23,9 +23,9 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
 public abstract class StatementContext extends BasicStatement {
 
@@ -89,7 +89,7 @@ public abstract class StatementContext extends BasicStatement {
         }
     }
 
-    public HBaseTableMapping getHBaseTableMapping() {
-        return (HBaseTableMapping)this.getMapping();
+    public TableMapping getTableMapping() {
+        return (TableMapping)this.getMapping();
     }
 }

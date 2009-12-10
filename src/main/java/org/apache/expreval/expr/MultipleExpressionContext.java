@@ -33,10 +33,10 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.hbql.mapping.HRecordResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 import java.io.Serializable;
@@ -106,8 +106,8 @@ public abstract class MultipleExpressionContext implements Serializable {
         return this.getStatementContext().getMapping();
     }
 
-    public HBaseTableMapping getHBaseTableMapping() {
-        return this.getStatementContext().getHBaseTableMapping();
+    public TableMapping getTableMapping() {
+        return this.getStatementContext().getTableMapping();
     }
 
     public ResultAccessor getResultAccessor() throws HBqlException {

@@ -33,7 +33,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
@@ -166,7 +166,7 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
                 final String[] strs = name.split(":");
                 this.familyName = strs[0];
                 this.columnName = strs[1];
-                final Collection<String> families = this.getHBaseTableMapping().getMappingFamilyNames();
+                final Collection<String> families = this.getTableMapping().getMappingFamilyNames();
                 if (!families.contains(this.getFamilyName()))
                     throw new HBqlException("Unknown family name: " + this.getFamilyName());
             }
@@ -244,7 +244,7 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
             return;
         }
 
-        final HBaseTableMapping tableMapping = this.getHBaseTableMapping();
+        final TableMapping tableMapping = this.getTableMapping();
 
         // Column reference is not known to mapping, so just assign byte[] value
         if (this.getColumnAttrib() == null) {

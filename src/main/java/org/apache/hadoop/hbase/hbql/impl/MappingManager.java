@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,7 @@ import java.util.Set;
 public class MappingManager {
 
     private final HConnectionImpl connection;
-    private final Map<String, HBaseTableMapping> mappingMap = Maps.newConcurrentHashMap();
+    private final Map<String, TableMapping> mappingMap = Maps.newConcurrentHashMap();
 
     public MappingManager(final HConnectionImpl connection) {
         this.connection = connection;
@@ -55,7 +55,7 @@ public class MappingManager {
         return connection;
     }
 
-    private Map<String, HBaseTableMapping> getMappingMap() {
+    private Map<String, TableMapping> getMappingMap() {
         return this.mappingMap;
     }
 
@@ -68,7 +68,7 @@ public class MappingManager {
         final List<HRecord> recs = this.getConnection().executeQueryAndFetch(sql);
 
         for (final HRecord rec : recs)
-            names.add((HBaseTableMapping)rec.getCurrentValue("mapping_obj"));
+            names.add((TableMapping)rec.getCurrentValue("mapping_obj"));
 
         return names;
     }
@@ -101,21 +101,21 @@ public class MappingManager {
         }
     }
 
-    public synchronized HBaseTableMapping createMapping(final boolean isTemp,
-                                                        final String mappingName,
-                                                        final String tableName,
-                                                        final String keyName,
-                                                        final List<FamilyMapping> familyMappingList) throws HBqlException {
+    public synchronized TableMapping createMapping(final boolean isTemp,
+                                                   final String mappingName,
+                                                   final String tableName,
+                                                   final String keyName,
+                                                   final List<FamilyMapping> familyMappingList) throws HBqlException {
 
         if (!mappingName.equals("system_mappings") && this.mappingExists(mappingName))
             throw new HBqlException("Mapping already defined: " + mappingName);
 
-        final HBaseTableMapping tableMapping = new HBaseTableMapping(this.getConnection(),
-                                                                     isTemp,
-                                                                     mappingName,
-                                                                     tableName,
-                                                                     keyName,
-                                                                     familyMappingList);
+        final TableMapping tableMapping = new TableMapping(this.getConnection(),
+                                                           isTemp,
+                                                           mappingName,
+                                                           tableName,
+                                                           keyName,
+                                                           familyMappingList);
 
         if (tableMapping.isTempMapping())
             this.getMappingMap().put(mappingName, tableMapping);
@@ -125,7 +125,7 @@ public class MappingManager {
         return tableMapping;
     }
 
-    private void insertMapping(final HBaseTableMapping tableMapping) throws HBqlException {
+    private void insertMapping(final TableMapping tableMapping) throws HBqlException {
 
         final String sql = "INSERT INTO system_mappings (mapping_name, mapping_obj) VALUES (?, ?)";
         final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
@@ -134,7 +134,7 @@ public class MappingManager {
         stmt.execute();
     }
 
-    public HBaseTableMapping getMapping(final String mappingName) throws HBqlException {
+    public TableMapping getMapping(final String mappingName) throws HBqlException {
 
         if (this.getMappingMap().containsKey(mappingName)) {
             return this.getMappingMap().get(mappingName);
@@ -148,7 +148,7 @@ public class MappingManager {
             if (recs.size() == 0)
                 throw new HBqlException("Mapping not found: " + mappingName);
 
-            return (HBaseTableMapping)recs.get(0).getCurrentValue("mapping_obj");
+            return (TableMapping)recs.get(0).getCurrentValue("mapping_obj");
         }
     }
 }

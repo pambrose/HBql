@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
@@ -50,7 +51,7 @@ public class WithArgs implements Serializable {
     private ExpressionTree clientExpressionTree = null;
     private ExpressionTree serverExpressionTree = null;
 
-    private StatementContext statementContext;
+    private StatementContext statementContext = null;
 
     // Keep track of args set multiple times
     private final Set<String> multipleSetValues = Sets.newHashSet();
@@ -59,7 +60,7 @@ public class WithArgs implements Serializable {
 
         this.statementContext = statementContext;
 
-        this.validateWithArgs();
+        this.validateNoDuplicateWithArgs();
 
         if (this.getKeyRangeArgs() == null)
             this.setKeyRangeArgs(new KeyRangeArgs());    // Default to ALL records
@@ -86,9 +87,7 @@ public class WithArgs implements Serializable {
         }
     }
 
-    public void validate() throws HBqlException {
-
-        this.validateWithArgs();
+    public void validate(final HConnectionImpl connection, final String tableName) throws HBqlException {
 
         if (this.getKeyRangeArgs() != null)
             this.getKeyRangeArgs().validate();
@@ -101,10 +100,15 @@ public class WithArgs implements Serializable {
 
         if (this.getLimitArgs() != null)
             this.getLimitArgs().validate();
+
+        if (connection != null) {
+            if (this.hasAnIndex())
+                connection.validateIndexExists(tableName, this.getIndexName());
+        }
     }
 
 
-    private void validateWithArgs() throws HBqlException {
+    private void validateNoDuplicateWithArgs() throws HBqlException {
         if (this.multipleSetValues.size() > 0) {
             final StringBuilder sbuf = new StringBuilder();
             boolean firstTime = true;

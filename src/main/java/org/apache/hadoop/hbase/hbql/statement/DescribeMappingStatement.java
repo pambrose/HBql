@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
 public class DescribeMappingStatement extends StatementContext implements ConnectionStatement {
 
@@ -35,7 +35,7 @@ public class DescribeMappingStatement extends StatementContext implements Connec
 
         this.validateMappingName(connection);
 
-        final HBaseTableMapping tableMapping = this.getHBaseTableMapping();
+        final TableMapping tableMapping = this.getTableMapping();
 
         if (tableMapping == null)
             return new ExecutionResults("Unknown mapping: " + this.getMappingName());

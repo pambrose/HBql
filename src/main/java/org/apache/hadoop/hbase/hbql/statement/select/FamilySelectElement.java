@@ -31,9 +31,9 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.SelectFamilyAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
@@ -90,8 +90,8 @@ public class FamilySelectElement implements SelectElement {
         return this.statementContext;
     }
 
-    protected HBaseTableMapping getHBaseTableMapping() throws HBqlException {
-        return this.getStatementContext().getHBaseTableMapping();
+    protected TableMapping getTableMapping() throws HBqlException {
+        return this.getStatementContext().getTableMapping();
     }
 
     private ResultAccessor getResultAccessor() throws HBqlException {
@@ -144,7 +144,7 @@ public class FamilySelectElement implements SelectElement {
         this.setStatementContext(statementContext);
 
         this.getAttribsUsedInExpr().clear();
-        final Collection<String> familyList = this.getHBaseTableMapping().getMappingFamilyNames();
+        final Collection<String> familyList = this.getTableMapping().getMappingFamilyNames();
 
         if (this.useAllFamilies) {
             // connction will be null from tests
@@ -188,7 +188,7 @@ public class FamilySelectElement implements SelectElement {
                                   final int maxVersions,
                                   final Result result) throws HBqlException {
 
-        final HBaseTableMapping tableMapping = this.getHBaseTableMapping();
+        final TableMapping tableMapping = this.getTableMapping();
 
         // Evaluate each of the families (select * will yield all families)
         for (int i = 0; i < this.getFamilyNameBytesList().size(); i++) {

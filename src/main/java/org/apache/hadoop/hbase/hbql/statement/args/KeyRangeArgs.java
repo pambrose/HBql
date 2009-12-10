@@ -33,6 +33,7 @@ import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.GetRequest;
+import org.apache.hadoop.hbase.hbql.statement.select.IndexScanRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.ScanRequest;
 
@@ -190,7 +191,10 @@ public class KeyRangeArgs implements Serializable {
 
             withArgs.setScanArgs(scan, columnAttribs);
 
-            return new ScanRequest(scan, columnAttribs);
+            if (withArgs.hasAnIndex())
+                return new IndexScanRequest(scan, columnAttribs);
+            else
+                return new ScanRequest(scan);
         }
 
         public void process(final WithArgs withArgs,

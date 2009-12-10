@@ -32,7 +32,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HTableWrapper;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 
@@ -97,6 +97,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         this.validateMappingName(connection);
 
         this.getWithArgs().setStatementContext(this);
+        this.getWithArgs().validate(connection, this.getTableMapping().getTableName());
 
         this.collectParameters();
 
@@ -107,7 +108,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
                 this.getDeleteItemList().add(deleteItem);
             }
             else {
-                final HBaseTableMapping mapping = this.getHBaseTableMapping();
+                final TableMapping mapping = this.getTableMapping();
                 final ColumnAttrib attrib = mapping.getAttribByVariableName(deleteItem);
                 if (attrib == null)
                     throw new HBqlException("Invalid variable: " + deleteItem);

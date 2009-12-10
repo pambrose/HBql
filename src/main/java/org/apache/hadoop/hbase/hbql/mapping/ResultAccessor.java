@@ -48,8 +48,8 @@ public abstract class ResultAccessor implements Serializable {
         return this.getStatementContext().getMapping();
     }
 
-    public HBaseTableMapping getHBaseTableMapping() throws HBqlException {
-        return (HBaseTableMapping)this.getMapping();
+    public TableMapping getTableMapping() throws HBqlException {
+        return (TableMapping)this.getMapping();
     }
 
     public abstract Object newObject(final HConnectionImpl connection, final StatementContext statementContext,

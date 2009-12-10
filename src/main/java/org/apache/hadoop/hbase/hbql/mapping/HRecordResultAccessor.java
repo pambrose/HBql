@@ -62,7 +62,7 @@ public class HRecordResultAccessor extends ResultAccessor {
 
     public ColumnAttrib getColumnAttribByQualifiedName(final String familyName,
                                                        final String columnName) throws HBqlException {
-        return this.getHBaseTableMapping().getAttribFromFamilyQualifiedName(familyName + ":" + columnName);
+        return this.getTableMapping().getAttribFromFamilyQualifiedName(familyName + ":" + columnName);
     }
 
     public ColumnAttrib getColumnAttribByName(final String name) throws HBqlException {

@@ -32,8 +32,8 @@ import org.apache.hadoop.hbase.hbql.impl.HTableWrapper;
 import org.apache.hadoop.hbase.hbql.impl.InsertAction;
 import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
 import java.io.IOException;
 import java.util.List;
@@ -78,7 +78,7 @@ public class HBatch<T> {
 
         if (newrec instanceof HRecordImpl) {
             final HRecordImpl record = (HRecordImpl)newrec;
-            final HBaseTableMapping tableMapping = record.getHBaseTableMapping();
+            final TableMapping tableMapping = record.getTableMapping();
             final ColumnAttrib keyAttrib = tableMapping.getKeyAttrib();
             if (!record.isCurrentValueSet(keyAttrib))
                 throw new HBqlException("Record key value must be assigned");
@@ -97,7 +97,7 @@ public class HBatch<T> {
 
         if (newrec instanceof HRecordImpl) {
             final HRecordImpl record = (HRecordImpl)newrec;
-            final HBaseTableMapping tableMapping = record.getHBaseTableMapping();
+            final TableMapping tableMapping = record.getTableMapping();
             final ColumnAttrib keyAttrib = tableMapping.getKeyAttrib();
             if (!record.isCurrentValueSet(keyAttrib))
                 throw new HBqlException("Record key value must be assigned");
@@ -105,11 +105,11 @@ public class HBatch<T> {
         }
         else {
             final AnnotationResultAccessor accessor = this.getHConnectionImpl().getAnnotationMapping(newrec);
-            this.delete(accessor.getHBaseTableMapping(), newrec);
+            this.delete(accessor.getTableMapping(), newrec);
         }
     }
 
-    private void delete(HBaseTableMapping tableMapping, final Object newrec) throws HBqlException {
+    private void delete(TableMapping tableMapping, final Object newrec) throws HBqlException {
         final ColumnAttrib keyAttrib = tableMapping.getKeyAttrib();
         final byte[] keyval = keyAttrib.getValueAsBytes(newrec);
         this.getActionList(tableMapping.getTableName()).add(new DeleteAction(new Delete(keyval)));
@@ -118,7 +118,7 @@ public class HBatch<T> {
     private Put createPut(final ResultAccessor resultAccessor, final Object newrec) throws HBqlException {
 
         final Put put;
-        final HBaseTableMapping tableMapping = resultAccessor.getHBaseTableMapping();
+        final TableMapping tableMapping = resultAccessor.getTableMapping();
         final ColumnAttrib keyAttrib = resultAccessor.getKeyAttrib();
 
         if (newrec instanceof HRecordImpl) {

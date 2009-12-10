@@ -43,7 +43,7 @@ import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -277,7 +277,7 @@ public class HConnectionImpl implements HConnection {
         return this.getMappingManager().mappingExists(mappingName);
     }
 
-    public HBaseTableMapping getMapping(final String mappingName) throws HBqlException {
+    public TableMapping getMapping(final String mappingName) throws HBqlException {
         return this.getMappingManager().getMapping(mappingName);
     }
 
@@ -289,11 +289,11 @@ public class HConnectionImpl implements HConnection {
         return this.getMappingManager().getMappings();
     }
 
-    public synchronized HBaseTableMapping createMapping(final boolean tempMapping,
-                                                        final String mappingName,
-                                                        final String tableName,
-                                                        final String keyName,
-                                                        final List<FamilyMapping> familyList) throws HBqlException {
+    public synchronized TableMapping createMapping(final boolean tempMapping,
+                                                   final String mappingName,
+                                                   final String tableName,
+                                                   final String keyName,
+                                                   final List<FamilyMapping> familyList) throws HBqlException {
         return this.getMappingManager().createMapping(tempMapping, mappingName, tableName, keyName, familyList);
     }
 

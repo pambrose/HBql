@@ -40,7 +40,7 @@ public class AggregateRecord extends HRecordImpl {
         this.selectElementList = selectElementList;
 
         // Set key value
-        this.getHBaseTableMapping().getKeyAttrib().setCurrentValue(this, 0, "");
+        this.getTableMapping().getKeyAttrib().setCurrentValue(this, 0, "");
 
         for (final SelectElement selectElement : this.getSelectElementList()) {
             final AggregateValue val = selectElement.newAggregateValue();

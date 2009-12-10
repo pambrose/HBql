@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HBaseTableMapping extends Mapping implements HMapping {
+public class TableMapping extends Mapping implements HMapping {
 
     private transient HConnectionImpl connection;
     private boolean tempMapping;
@@ -51,15 +51,15 @@ public class HBaseTableMapping extends Mapping implements HMapping {
     private final Map<String, HRecordAttrib> unMappedAttribsMap = Maps.newHashMap();
 
     // For serialization
-    public HBaseTableMapping() {
+    public TableMapping() {
     }
 
-    public HBaseTableMapping(final HConnectionImpl connection,
-                             final boolean tempMapping,
-                             final String mappingName,
-                             final String tableName,
-                             final String keyName,
-                             final List<FamilyMapping> familyMappingList) throws HBqlException {
+    public TableMapping(final HConnectionImpl connection,
+                        final boolean tempMapping,
+                        final String mappingName,
+                        final String tableName,
+                        final String keyName,
+                        final List<FamilyMapping> familyMappingList) throws HBqlException {
 
         super(mappingName, tableName);
 

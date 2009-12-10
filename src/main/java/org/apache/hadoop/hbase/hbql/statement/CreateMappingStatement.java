@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.AttribMapping;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
 import java.util.List;
 import java.util.Set;
@@ -89,11 +89,11 @@ public class CreateMappingStatement extends StatementContext implements Connecti
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        final HBaseTableMapping tableMapping = connection.createMapping(this.isTempMapping(),
-                                                                        this.getMappingName(),
-                                                                        this.getTableName(),
-                                                                        this.getKeyName(),
-                                                                        this.getFamilyMappingList());
+        final TableMapping tableMapping = connection.createMapping(this.isTempMapping(),
+                                                                   this.getMappingName(),
+                                                                   this.getTableName(),
+                                                                   this.getKeyName(),
+                                                                   this.getFamilyMappingList());
 
         this.setMapping(tableMapping);
 

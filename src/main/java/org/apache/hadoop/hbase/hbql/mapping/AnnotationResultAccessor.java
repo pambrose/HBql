@@ -42,7 +42,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
     private final Map<String, CurrentValueAnnotationAttrib> columnMap = Maps.newHashMap();
     private final Map<String, VersionAnnotationAttrib> columnVersionMap = Maps.newHashMap();
 
-    private AnnotationResultAccessor(final HBaseTableMapping tableMapping, final Class clazz) throws HBqlException {
+    private AnnotationResultAccessor(final TableMapping tableMapping, final Class clazz) throws HBqlException {
 
         super(new NonStatement(tableMapping, null));
 
@@ -86,7 +86,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
         if (mappingAnnotation.name() == null || mappingAnnotation.name().length() == 0)
             throw new HBqlException("@Mapping annotation for class " + clazz.getName() + " is missing a name");
 
-        HBaseTableMapping tableMapping = connection.getMapping(mappingAnnotation.name());
+        TableMapping tableMapping = connection.getMapping(mappingAnnotation.name());
         return new AnnotationResultAccessor(tableMapping, clazz);
     }
 
@@ -130,8 +130,8 @@ public class AnnotationResultAccessor extends ResultAccessor {
 
     public ColumnAttrib getColumnAttribByQualifiedName(final String familyName,
                                                        final String columnName) throws HBqlException {
-        final ColumnAttrib attrib = this.getHBaseTableMapping().getAttribFromFamilyQualifiedName(familyName
-                                                                                                 + ":" + columnName);
+        final ColumnAttrib attrib = this.getTableMapping().getAttribFromFamilyQualifiedName(familyName
+                                                                                            + ":" + columnName);
         return this.getColumnAttribByName(attrib.getFamilyQualifiedName());
     }
 

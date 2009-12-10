@@ -118,7 +118,7 @@ public class IndexTest extends TestSupport {
     @Test
     public void simpleSelect2() throws HBqlException {
 
-        final String q1 = "select * from tab4";
+        final String q1 = "select * from tab4 WITH INDEX foo2";
         showValues(q1, 10);
     }
 }

@@ -31,7 +31,7 @@ import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.FieldType;
-import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -73,8 +73,8 @@ public class HBqlFilter implements Filter {
         return this.record;
     }
 
-    private HBaseTableMapping getMapping() throws HBqlException {
-        return this.getExpressionTree().getHBaseTableMapping();
+    private TableMapping getMapping() throws HBqlException {
+        return this.getExpressionTree().getTableMapping();
     }
 
     private ExpressionTree getExpressionTree() {
@@ -108,7 +108,7 @@ public class HBqlFilter implements Filter {
             try {
                 final String familyName = Bytes.toString(v.getFamily());
                 final String columnName = Bytes.toString(v.getQualifier());
-                final HBaseTableMapping tableMapping = this.getMapping();
+                final TableMapping tableMapping = this.getMapping();
                 final ColumnAttrib attrib = tableMapping.getAttribFromFamilyQualifiedName(familyName, columnName);
 
                 // Do not bother setting value if it is not used in expression
