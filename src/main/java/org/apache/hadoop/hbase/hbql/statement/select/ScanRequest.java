@@ -25,24 +25,48 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 
 import java.io.IOException;
+import java.util.Collection;
 
 public class ScanRequest implements RowRequest {
 
     final Scan scanValue;
+    final Collection<ColumnAttrib> columnAttribs;
 
-    public ScanRequest(final Scan scanValue) {
+    public ScanRequest(final Scan scanValue, final Collection<ColumnAttrib> columnAttribs) {
         this.scanValue = scanValue;
+        this.columnAttribs = columnAttribs;
     }
 
     private Scan getScanValue() {
         return this.scanValue;
     }
 
+    private Collection<ColumnAttrib> getColumnAttribs() {
+        return this.columnAttribs;
+    }
+
     public int getMaxVersions() {
         return this.getScanValue().getMaxVersions();
+    }
+
+    private byte[][] getColumns() throws HBqlException {
+
+        final byte[][] attribs;
+
+        if (this.getColumnAttribs() == null) {
+            attribs = null;
+        }
+        else {
+            attribs = new byte[this.getColumnAttribs().size()][];
+            int cnt = 0;
+            for (final ColumnAttrib columnAttrib : this.getColumnAttribs())
+                attribs[cnt++] = columnAttrib.getFamilyQualifiedNameAsBytes();
+        }
+        return attribs;
     }
 
     public ResultScanner getResultScanner(final WithArgs withArgs, final HTable table) throws HBqlException {
@@ -50,7 +74,7 @@ public class ScanRequest implements RowRequest {
 
             if (withArgs.hasAnIndex()) {
                 final IndexedTable index = (IndexedTable)table;
-                return index.getIndexedScanner(withArgs.getIndexName(), null, null, null, null, null);
+                return index.getIndexedScanner(withArgs.getIndexName(), null, null, null, null, getColumns());
             }
             else {
                 return table.getScanner(this.getScanValue());

@@ -139,8 +139,8 @@ public class KeyRangeArgs implements Serializable {
             return new GetRequest(get);
         }
 
-        private List<RowRequest> getRowRequestFromGet(final WithArgs withArgs,
-                                                      final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
+        private List<RowRequest> getRowRequestForGet(final WithArgs withArgs,
+                                                     final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
 
             final List<RowRequest> retval = Lists.newArrayList();
 
@@ -165,8 +165,8 @@ public class KeyRangeArgs implements Serializable {
             return retval;
         }
 
-        private RowRequest getRowRequestFromScan(final WithArgs withArgs,
-                                                 final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
+        private RowRequest getRowRequestForScan(final WithArgs withArgs,
+                                                final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
 
             final Scan scan = new Scan();
 
@@ -190,7 +190,7 @@ public class KeyRangeArgs implements Serializable {
 
             withArgs.setScanArgs(scan, columnAttribs);
 
-            return new ScanRequest(scan);
+            return new ScanRequest(scan, columnAttribs);
         }
 
         public void process(final WithArgs withArgs,
@@ -198,9 +198,9 @@ public class KeyRangeArgs implements Serializable {
                             final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
 
             if (this.isSingleKey())
-                rowRequestList.addAll(this.getRowRequestFromGet(withArgs, columnAttribSet));
+                rowRequestList.addAll(this.getRowRequestForGet(withArgs, columnAttribSet));
             else
-                rowRequestList.add(this.getRowRequestFromScan(withArgs, columnAttribSet));
+                rowRequestList.add(this.getRowRequestForScan(withArgs, columnAttribSet));
         }
     }
 

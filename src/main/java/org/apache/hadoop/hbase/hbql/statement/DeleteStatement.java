@@ -122,6 +122,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         this.validate(hconnectionImpl);
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWithArgs().getAllColumnsUsedInExprs();
+
         HTableWrapper tableWrapper = null;
 
         try {

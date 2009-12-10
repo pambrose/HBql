@@ -41,6 +41,7 @@ public abstract class ColumnAttrib implements Serializable {
     private final String columnName;
     private final String aliasName;
     private final FieldType fieldType;
+    private volatile byte[] familyQualifiedBytes = null;
     private volatile byte[] familyBytes = null;
     private volatile byte[] columnBytes = null;
     private final String getter;
@@ -132,7 +133,16 @@ public abstract class ColumnAttrib implements Serializable {
             return this.getColumnName();
     }
 
-    public byte[] getFamilyNameBytes() throws HBqlException {
+    public byte[] getFamilyQualifiedNameAsBytes() throws HBqlException {
+        if (this.familyQualifiedBytes == null)
+            synchronized (this) {
+                if (this.familyQualifiedBytes == null)
+                    this.familyQualifiedBytes = IO.getSerialization().getStringAsBytes(this.getFamilyQualifiedName());
+            }
+        return this.familyQualifiedBytes;
+    }
+
+    public byte[] getFamilyNameAsBytes() throws HBqlException {
         if (this.familyBytes == null)
             synchronized (this) {
                 if (this.familyBytes == null)
@@ -141,7 +151,7 @@ public abstract class ColumnAttrib implements Serializable {
         return this.familyBytes;
     }
 
-    public byte[] getColumnNameBytes() throws HBqlException {
+    public byte[] getColumnNameAsBytes() throws HBqlException {
         if (this.columnBytes == null)
             synchronized (this) {
                 if (this.columnBytes == null)
@@ -260,7 +270,7 @@ public abstract class ColumnAttrib implements Serializable {
             return IO.getSerialization().getStringFromBytes(result.getRow());
         }
         else {
-            if (!result.containsColumn(this.getFamilyNameBytes(), this.getColumnNameBytes())) {
+            if (!result.containsColumn(this.getFamilyNameAsBytes(), this.getColumnNameAsBytes())) {
                 // See if a default value is present
                 if (!this.hasDefaultArg())
                     throw new ResultMissingColumnException(this.getFamilyQualifiedName());
@@ -268,7 +278,7 @@ public abstract class ColumnAttrib implements Serializable {
                 return this.getDefaultValue();
             }
 
-            final byte[] b = result.getValue(this.getFamilyNameBytes(), this.getColumnNameBytes());
+            final byte[] b = result.getValue(this.getFamilyNameAsBytes(), this.getColumnNameAsBytes());
 
             if (this.isAnArray())
                 return IO.getSerialization().getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
@@ -280,14 +290,6 @@ public abstract class ColumnAttrib implements Serializable {
     public void setCurrentValue(final Object obj, final long timestamp, final byte[] b) throws HBqlException {
         final Object val = this.getValueFromBytes(obj, b);
         this.setCurrentValue(obj, timestamp, val);
-    }
-
-    public byte[] getFamilyNameAsBytes() throws HBqlException {
-        return IO.getSerialization().getStringAsBytes(this.getFamilyName());
-    }
-
-    public byte[] getColumnNameAsBytes() throws HBqlException {
-        return IO.getSerialization().getStringAsBytes(this.getColumnName());
     }
 
     protected String getGetter() {
