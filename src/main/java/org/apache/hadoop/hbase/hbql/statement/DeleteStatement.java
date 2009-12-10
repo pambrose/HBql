@@ -30,7 +30,7 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.impl.HTableReference;
+import org.apache.hadoop.hbase.hbql.impl.HTableWrapper;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
@@ -122,21 +122,21 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         this.validate(hconnectionImpl);
 
         final Set<ColumnAttrib> allWhereAttribs = this.getWithArgs().getAllColumnsUsedInExprs();
-        HTableReference tableref = null;
+        HTableWrapper tableWrapper = null;
 
         try {
-            tableref = hconnectionImpl.getHTableReference(this.getMapping().getTableName());
+            tableWrapper = hconnectionImpl.newHTableWrapper(this.getWithArgs(), this.getMapping().getTableName());
 
             final List<RowRequest> rowRequestList = this.getWithArgs().getRowRequestList(allWhereAttribs);
 
             int cnt = 0;
 
             for (final RowRequest rowRequest : rowRequestList)
-                cnt += this.delete(tableref.getHTable(), this.getWithArgs(), rowRequest);
+                cnt += this.delete(tableWrapper.getHTable(), this.getWithArgs(), rowRequest);
 
             try {
-                tableref.getHTable().flushCommits();
-                tableref.getHTable().close();
+                tableWrapper.getHTable().flushCommits();
+                tableWrapper.getHTable().close();
             }
             catch (IOException e) {
                 throw new HBqlException(e);
@@ -148,8 +148,8 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         }
         finally {
             // release to table pool
-            if (tableref != null)
-                tableref.release();
+            if (tableWrapper != null)
+                tableWrapper.releaseHTable();
         }
     }
 

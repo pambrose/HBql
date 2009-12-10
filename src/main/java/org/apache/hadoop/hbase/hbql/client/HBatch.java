@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.impl.BatchAction;
 import org.apache.hadoop.hbase.hbql.impl.DeleteAction;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
-import org.apache.hadoop.hbase.hbql.impl.HTableReference;
+import org.apache.hadoop.hbase.hbql.impl.HTableWrapper;
 import org.apache.hadoop.hbase.hbql.impl.InsertAction;
 import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
@@ -154,9 +154,9 @@ public class HBatch<T> {
     public void apply() throws HBqlException {
         try {
             for (final String tableName : this.getActionList().keySet()) {
-                HTableReference tableref = null;
+                HTableWrapper tableref = null;
                 try {
-                    tableref = this.getHConnectionImpl().getHTableReference(tableName);
+                    tableref = this.getHConnectionImpl().newHTableWrapper(null, tableName);
                     for (final BatchAction batchAction : this.getActionList(tableName))
                         batchAction.apply(tableref.getHTable());
                     tableref.getHTable().flushCommits();
@@ -165,7 +165,7 @@ public class HBatch<T> {
                 finally {
                     // release to table pool
                     if (tableref != null)
-                        tableref.release();
+                        tableref.releaseHTable();
                 }
             }
         }

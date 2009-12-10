@@ -41,6 +41,7 @@ public class WithArgs implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private String indexName = null;
     private KeyRangeArgs keyRangeArgs = null;
     private TimestampArgs timestampArgs = null;
     private VersionArgs versionArgs = null;
@@ -127,6 +128,18 @@ public class WithArgs implements Serializable {
 
     private KeyRangeArgs getKeyRangeArgs() {
         return this.keyRangeArgs;
+    }
+
+    public void setIndexName(final String indexName) {
+        this.indexName = indexName;
+    }
+
+    public String getIndexName() {
+        return this.indexName;
+    }
+
+    public boolean hasAnIndex() {
+        return this.getIndexName() != null && this.getIndexName().length() > 0;
     }
 
     public void setKeyRangeArgs(final KeyRangeArgs keyRangeArgs) {

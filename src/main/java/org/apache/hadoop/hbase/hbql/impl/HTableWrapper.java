@@ -23,12 +23,12 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.HTablePool;
 
-public class HTableReference {
+public class HTableWrapper {
 
     private final HTable htable;
     private final HTablePool tablePool;
 
-    public HTableReference(final HTable htable, final HTablePool tablePool) {
+    public HTableWrapper(final HTable htable, final HTablePool tablePool) {
         this.htable = htable;
         this.tablePool = tablePool;
     }
@@ -41,7 +41,8 @@ public class HTableReference {
         return this.tablePool;
     }
 
-    public void release() {
-        this.getTablePool().putTable(this.getHTable());
+    public void releaseHTable() {
+        if (this.getTablePool() != null)
+            this.getTablePool().putTable(this.getHTable());
     }
 }

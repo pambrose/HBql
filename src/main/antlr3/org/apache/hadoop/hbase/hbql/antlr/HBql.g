@@ -214,6 +214,7 @@ withClause returns [WithArgs retval]
 
 withElements[WithArgs withArgs] 
 	: k=keysRangeArgs				{withArgs.setKeyRangeArgs($k.retval);}
+	| keyINDEX idx=simpleId				{withArgs.setIndexName($idx.text);}	
 	| t=timestampArgs				{withArgs.setTimestampArgs($t.retval);}	
 	| v=versionArgs					{withArgs.setVersionArgs($v.retval);}
 	| sc=scannerCacheArgs				{withArgs.setScannerCacheArgs($sc.retval);}

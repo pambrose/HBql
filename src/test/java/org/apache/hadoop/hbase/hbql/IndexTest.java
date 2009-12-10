@@ -32,9 +32,13 @@ import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Random;
+
 public class IndexTest extends TestSupport {
 
     static HConnection connection = null;
+
+    static Random randomVal = new Random();
 
     @BeforeClass
     public static void beforeClass() throws HBqlException {
@@ -47,13 +51,13 @@ public class IndexTest extends TestSupport {
                            + "f1 ("
                            + "  val1 string alias val1, "
                            + "  val2 int alias val2, "
-                           + "  val3 int alias val3 DEFAULT 12 "
+                           + "  val3 int alias val3 "
                            + "))");
 
         if (!connection.tableExists("table21"))
             System.out.println(connection.execute("create table table21 (f1())"));
         else {
-            System.out.println(connection.execute("delete from tab3"));
+            System.out.println(connection.execute("delete from tab4"));
         }
 
         insertRecords(connection, 10);
@@ -62,9 +66,9 @@ public class IndexTest extends TestSupport {
     private static void insertRecords(final HConnection connection,
                                       final int cnt) throws HBqlException {
 
-        HPreparedStatement stmt = connection.prepareStatement("insert into tab3 " +
+        HPreparedStatement stmt = connection.prepareStatement("insert into tab4 " +
                                                               "(keyval, val1, val2, val3) values " +
-                                                              "(:key, :val1, :val2, DEFAULT)");
+                                                              "(:key, :val1, :val2, :val3)");
 
         for (int i = 0; i < cnt; i++) {
 
@@ -75,6 +79,7 @@ public class IndexTest extends TestSupport {
             stmt.setParameter("key", keyval);
             stmt.setParameter("val1", "" + val);
             stmt.setParameter("val2", val);
+            stmt.setParameter("val3", randomVal.nextInt());
             stmt.execute();
         }
     }
@@ -90,7 +95,7 @@ public class IndexTest extends TestSupport {
             String keyval = (String)rec.getCurrentValue("keyval");
             String val1 = (String)rec.getCurrentValue("val1");
             int val2 = (Integer)rec.getCurrentValue("f1:val2");
-            int val3 = (Integer)rec.getCurrentValue("val3");
+            int val3 = (Integer)rec.getCurrentValue("f1:val3");
 
             System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
             rec_cnt++;
@@ -103,9 +108,17 @@ public class IndexTest extends TestSupport {
     public void simpleSelect1() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
-        stmt.execute("CREATE INDEX foo1 ON table21 (f1)");
+        //stmt.execute("DROP INDEX foo1 ON table21 if indexexists('table21', 'foo1')");
+        //stmt.execute("CREATE INDEX foo1 ON table21 (f1:val3)");
 
-        final String q1 = "select * from tab3";
+        final String q1 = "select * from tab4";
+        showValues(q1, 10);
+    }
+
+    @Test
+    public void simpleSelect2() throws HBqlException {
+
+        final String q1 = "select * from tab4";
         showValues(q1, 10);
     }
 }

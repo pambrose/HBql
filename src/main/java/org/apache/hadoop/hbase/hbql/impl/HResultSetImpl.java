@@ -82,6 +82,10 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         return this.getQuery().getSelectStmt();
     }
 
+    private String getTableName() {
+        return this.getSelectStmt().getMapping().getTableName();
+    }
+
     private WithArgs getWithArgs() {
         return this.getSelectStmt().getWithArgs();
     }
@@ -122,7 +126,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         try {
             return new ResultsIterator<T>(this.getWithArgs().getLimit()) {
 
-                private HTableReference tableref = getHConnectionImpl().getHTableReference(getSelectStmt().getMapping().getTableName());
+                private HTableWrapper tableWrapper = getHConnectionImpl().newHTableWrapper(getWithArgs(), getTableName());
                 private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
                 private final Iterator<RowRequest> rowRequestIterator = getRowRequestList().iterator();
 
@@ -130,8 +134,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                 private ResultScanner currentResultScanner = null;
                 private Iterator<Result> currentResultIterator = null;
 
-                private AggregateRecord aggregateRecord = AggregateRecord.newAggregateRecord(getQuery().getSelectStmt(),
-                                                                                             getSelectStmt());
+                private AggregateRecord aggregateRecord = AggregateRecord.newAggregateRecord(getSelectStmt());
 
                 // Prime the iterator with the first value
                 private T nextObject = fetchNextObject();
@@ -142,6 +145,10 @@ public class HResultSetImpl<T> implements HResultSet<T> {
 
                 private Iterator<RowRequest> getRowRequestIterator() {
                     return this.rowRequestIterator;
+                }
+
+                private HTableWrapper getHTableWrapper() {
+                    return this.tableWrapper;
                 }
 
                 private int getMaxVersions() {
@@ -236,7 +243,7 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                 private Iterator<Result> getNextResultIterator() throws HBqlException {
                     final RowRequest rowRequest = this.getRowRequestIterator().next();
                     this.setMaxVersions(rowRequest.getMaxVersions());
-                    this.setCurrentResultScanner(rowRequest.getResultScanner(this.tableref.getHTable()));
+                    this.setCurrentResultScanner(rowRequest.getResultScanner(this.getHTableWrapper().getHTable()));
                     return this.getCurrentResultScanner().iterator();
                 }
 
@@ -253,8 +260,8 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                             }
 
                             try {
-                                if (this.tableref != null)
-                                    this.tableref.getHTable().close();
+                                if (this.getHTableWrapper() != null)
+                                    this.getHTableWrapper().getHTable().close();
                             }
                             catch (IOException e) {
                                 // No op
@@ -263,9 +270,9 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                         }
                         finally {
                             // release to table pool
-                            if (this.tableref != null)
-                                this.tableref.release();
-                            this.tableref = null;
+                            if (this.getHTableWrapper() != null)
+                                this.getHTableWrapper().releaseHTable();
+                            this.tableWrapper = null;
                         }
                     }
                 }

@@ -30,6 +30,7 @@ import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTablePool;
 import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
+import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
@@ -43,6 +44,7 @@ import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.HBaseTableMapping;
+import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
@@ -186,6 +188,7 @@ public class HConnectionImpl implements HConnection {
     }
 
     public IndexedTableDescriptor newIndexedTableDescriptor(final String tableName) throws HBqlException {
+        this.checkIfClosed();
         try {
             final HTableDescriptor tableDesc = this.getHTableDescriptor(tableName);
             return new IndexedTableDescriptor(tableDesc);
@@ -196,6 +199,7 @@ public class HConnectionImpl implements HConnection {
     }
 
     public boolean indexExists(final String tableName, final String indexName) throws HBqlException {
+        this.checkIfClosed();
         final IndexedTableDescriptor itd = this.newIndexedTableDescriptor(tableName);
         final IndexSpecification index = itd.getIndex(indexName);
         return index != null;
@@ -308,10 +312,18 @@ public class HConnectionImpl implements HConnection {
         }
     }
 
-    public HTableReference getHTableReference(final String tableName) throws HBqlException {
+    public HTableWrapper newHTableWrapper(final WithArgs withArgs, final String tableName) throws HBqlException {
+
         this.checkIfClosed();
+
         try {
-            return new HTableReference(this.getTablePool().getTable(tableName), this.getTablePool());
+            if (withArgs != null && withArgs.hasAnIndex())
+                return new HTableWrapper(new IndexedTable(this.getHBaseConfiguration(), tableName.getBytes()), null);
+            else
+                return new HTableWrapper(this.getTablePool().getTable(tableName), this.getTablePool());
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
         }
         catch (RuntimeException e) {
             throw new HBqlException("Invalid table name: " + tableName);
