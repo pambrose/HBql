@@ -125,18 +125,27 @@ options {backtrack=true;}
 							{retval = new AlterTableStatement($p.retval, $t.text, $aal.retval);}
 	| keyDISABLE keyTABLE t=simpleId p=pred?	{retval = new DisableTableStatement($p.retval, $t.text);}
 	| keyENABLE keyTABLE t=simpleId p=pred?		{retval = new EnableTableStatement($p.retval, $t.text);}
-	| keyCREATE keyINDEX t=simpleId keyON t2=simpleId LPAREN t3=columnRef RPAREN p=pred?		
-							{retval = new CreateIndexStatement($p.retval, $t.text, $t2.text, $t3.text);}
+	| keyCREATE keyINDEX t=simpleId keyON keyMAPPING? t2=simpleId LPAREN t3=indexColumnList RPAREN (keyINCLUDE LPAREN t4=indexColumnList RPAREN)? p=pred?		
+							{retval = new CreateIndexStatement($p.retval, $t.text, $t2.text, $t3.retval, $t4.retval);}
 	| keyDROP keyINDEX t=simpleId keyON t2=simpleId p=pred?		
 							{retval = new DropIndexStatement($p.retval, $t.text, $t2.text);}
 	;
-	
+
+indexColumnList returns [List<String> retval]
+@init {retval = Lists.newArrayList();}
+	: a1=indexColumn {retval.add($a1.text);} (COMMA a2=indexColumn {retval.add($a2.text);})*;
+
+indexColumn 
+	: columnRef
+	| familyWildCard;
+		
 attribMapping returns [AttribMapping retval]
 	: LPAREN key=simpleId keyKEY (COMMA fm=familyMappingList)? RPAREN
 							{retval = new AttribMapping($key.text, $fm.retval);};
 	
 pred returns [StatementPredicate retval]
 	: keyIF  b=exprValue 				{retval = new StatementPredicate($b.retval);};
+
 	
 alterActionList returns [List<AlterTableAction> retval]
 @init {retval = Lists.newArrayList();}

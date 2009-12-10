@@ -147,8 +147,8 @@ public class MappingManager {
 
             if (recs.size() == 0)
                 throw new HBqlException("Mapping not found: " + mappingName);
-
-            return (TableMapping)recs.get(0).getCurrentValue("mapping_obj");
+            else
+                return (TableMapping)recs.get(0).getCurrentValue("mapping_obj");
         }
     }
 }

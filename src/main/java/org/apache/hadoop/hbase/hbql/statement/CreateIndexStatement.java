@@ -20,39 +20,53 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.index.TypedColumnIndex;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
 import java.io.IOException;
+import java.util.List;
 
 public class CreateIndexStatement extends BasicStatement implements ConnectionStatement {
 
     private final String indexName;
-    private final String tableName;
-    private final String indexColumn;
+    private final String mappingName;
+    private final List<String> indexColumns;
+    private final List<String> includeColumns;
 
     public CreateIndexStatement(final StatementPredicate predicate,
                                 final String indexName,
-                                final String tableName,
-                                final String indexColumn) {
+                                final String mappingName,
+                                final List<String> indexColumns,
+                                final List<String> includeColumns) {
         super(predicate);
         this.indexName = indexName;
-        this.tableName = tableName;
-        this.indexColumn = indexColumn;
+        this.mappingName = mappingName;
+        this.indexColumns = indexColumns;
+        this.includeColumns = includeColumns;
     }
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        try {
-            final IndexSpecification spec = new IndexSpecification(this.indexName, this.indexColumn.getBytes());
-            final IndexedTableAdmin ita = connection.getIndexTableAdmin();
-            ita.addIndex(this.tableName.getBytes(), spec);
+        final TableMapping mapping = connection.getMapping(this.mappingName);
 
-            return new ExecutionResults("Index " + this.indexName + " created for "
-                                        + this.tableName + " (" + this.indexColumn + ")");
+        final List<String> indexList = this.getQualifiedNameList(mapping, indexColumns);
+        final List<String> includeList = this.getQualifiedNameList(mapping, includeColumns);
+
+        try {
+            final IndexSpecification spec = TypedColumnIndex.newTypedColumnIndex(this.indexName,
+                                                                                 indexList,
+                                                                                 includeList);
+            final IndexedTableAdmin ita = connection.getIndexTableAdmin();
+            ita.addIndex(this.mappingName.getBytes(), spec);
+
+            return new ExecutionResults(this.getCreateMsg(indexList, includeList));
         }
         catch (IOException e) {
             throw new HBqlException(e);
@@ -60,6 +74,74 @@ public class CreateIndexStatement extends BasicStatement implements ConnectionSt
     }
 
     public static String usage() {
-        return "CREATE INDEX index_name ON table_name (index_column) [IF boolean_expression]";
+        return "CREATE INDEX index_name ON [MAPPING] mapping_name (column_list) INCLUDE (column_list) [IF boolean_expression]";
+    }
+
+    private List<String> getQualifiedNameList(final TableMapping mapping,
+                                              final List<String> columnList) throws HBqlException {
+
+        final List<String> retval;
+
+        if (columnList == null) {
+            retval = null;
+        }
+        else {
+
+            retval = Lists.newArrayList();
+
+            for (final String column : columnList) {
+                if (column.endsWith(":*")) {
+                    final String familyName = column.substring(0, column.length() - 2);
+                    retval.add(familyName);
+                }
+                else {
+                    final ColumnAttrib columnAttrib = mapping.getAttribByVariableName(column);
+                    if (columnAttrib == null)
+                        throw new HBqlException("Unknown " +
+                                                ((!column.contains(":")) ? "alias" : "column")
+                                                + " " + column + " in mapping " + mappingName);
+                    else
+                        retval.add(columnAttrib.getFamilyQualifiedName());
+                }
+            }
+        }
+
+        return retval;
+    }
+
+    private String getCreateMsg(final List<String> indexList, final List<String> includeList) {
+
+        final StringBuilder sbuf = new StringBuilder("Index " + this.indexName
+                                                     + " created for " + this.mappingName);
+
+        sbuf.append(" (");
+
+        boolean first = true;
+        for (final String val : indexList) {
+            if (!first)
+                sbuf.append(", ");
+            else
+                first = false;
+
+            sbuf.append(val);
+        }
+
+        sbuf.append(")");
+
+        if (includeList != null) {
+            sbuf.append(" INCLUDE (");
+            first = true;
+            for (final String val : includeList) {
+                if (!first)
+                    sbuf.append(", ");
+                else
+                    first = false;
+
+                sbuf.append(val);
+            }
+            sbuf.append(")");
+        }
+
+        return sbuf.toString();
     }
 }
