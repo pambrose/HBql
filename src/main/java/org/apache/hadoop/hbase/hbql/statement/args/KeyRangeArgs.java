@@ -139,8 +139,8 @@ public class KeyRangeArgs implements Serializable {
             return new GetRequest(get);
         }
 
-        private List<RowRequest> getGet(final WithArgs withArgs,
-                                        final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
+        private List<RowRequest> getRowRequestFromGet(final WithArgs withArgs,
+                                                      final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
 
             final List<RowRequest> retval = Lists.newArrayList();
 
@@ -150,7 +150,7 @@ public class KeyRangeArgs implements Serializable {
                 for (final GenericValue val : (Collection<GenericValue>)objval) {
                     try {
                         final String lower = (String)val.getValue(null, null);
-                        retval.add(this.newGet(withArgs, columnAttribSet, lower));
+                        retval.add(this.newGet(withArgs, columnAttribs, lower));
                     }
                     catch (ResultMissingColumnException e) {
                         throw new InternalErrorException(val.asString());
@@ -159,14 +159,14 @@ public class KeyRangeArgs implements Serializable {
             }
             else {
                 final String lower = (String)objval;
-                retval.add(this.newGet(withArgs, columnAttribSet, lower));
+                retval.add(this.newGet(withArgs, columnAttribs, lower));
             }
 
             return retval;
         }
 
-        private RowRequest getScan(final WithArgs withArgs,
-                                   final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
+        private RowRequest getRowRequestFromScan(final WithArgs withArgs,
+                                                 final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
 
             final Scan scan = new Scan();
 
@@ -188,7 +188,8 @@ public class KeyRangeArgs implements Serializable {
                 scan.setStopRow(upperBytes);
             }
 
-            withArgs.setScanArgs(scan, columnAttribSet);
+            withArgs.setScanArgs(scan, columnAttribs);
+
             return new ScanRequest(scan);
         }
 
@@ -197,9 +198,9 @@ public class KeyRangeArgs implements Serializable {
                             final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
 
             if (this.isSingleKey())
-                rowRequestList.addAll(this.getGet(withArgs, columnAttribSet));
+                rowRequestList.addAll(this.getRowRequestFromGet(withArgs, columnAttribSet));
             else
-                rowRequestList.add(this.getScan(withArgs, columnAttribSet));
+                rowRequestList.add(this.getRowRequestFromScan(withArgs, columnAttribSet));
         }
     }
 

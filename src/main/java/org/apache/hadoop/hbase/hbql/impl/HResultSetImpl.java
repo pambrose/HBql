@@ -243,7 +243,8 @@ public class HResultSetImpl<T> implements HResultSet<T> {
                 private Iterator<Result> getNextResultIterator() throws HBqlException {
                     final RowRequest rowRequest = this.getRowRequestIterator().next();
                     this.setMaxVersions(rowRequest.getMaxVersions());
-                    this.setCurrentResultScanner(rowRequest.getResultScanner(this.getHTableWrapper().getHTable()));
+                    this.setCurrentResultScanner(rowRequest.getResultScanner(getWithArgs(),
+                                                                             this.getHTableWrapper().getHTable()));
                     return this.getCurrentResultScanner().iterator();
                 }
 

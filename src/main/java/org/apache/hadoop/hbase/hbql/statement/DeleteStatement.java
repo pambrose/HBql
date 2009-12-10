@@ -132,7 +132,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
             int cnt = 0;
 
             for (final RowRequest rowRequest : rowRequestList)
-                cnt += this.delete(tableWrapper.getHTable(), this.getWithArgs(), rowRequest);
+                cnt += this.delete(tableWrapper, this.getWithArgs(), rowRequest);
 
             try {
                 tableWrapper.getHTable().flushCommits();
@@ -153,13 +153,15 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         }
     }
 
-    private int delete(final HTable table, final WithArgs with, final RowRequest rowRequest) throws HBqlException {
+    private int delete(final HTableWrapper tableWrapper, final WithArgs withArgs, final RowRequest rowRequest) throws HBqlException {
+
+        final HTable table = tableWrapper.getHTable();
+        final ExpressionTree clientExpressionTree = withArgs.getClientExpressionTree();
+        final ResultScanner resultScaner = rowRequest.getResultScanner(withArgs, table);
+
+        int cnt = 0;
 
         try {
-            final ExpressionTree clientExpressionTree = with.getClientExpressionTree();
-
-            int cnt = 0;
-            final ResultScanner resultScaner = rowRequest.getResultScanner(table);
             for (final Result result : resultScaner) {
                 try {
                     if (clientExpressionTree == null || clientExpressionTree.evaluate(connection, result)) {
