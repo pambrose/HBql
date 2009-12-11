@@ -166,7 +166,7 @@ public class RecordAllTypes implements Serializable {
 
     public void setSomeValues(int val, boolean noRandomData, int cnt) throws HBqlException {
 
-        this.keyval = Util.getZeroPaddedNumber(val, 10);
+        this.keyval = Util.getZeroPaddedNonNegativeNumber(val, 10);
 
         if (noRandomData || random.nextBoolean()) {
             this.booleanValue = random.nextBoolean();

@@ -204,7 +204,7 @@ public class ExamplesTest extends TestSupport {
 
         // Or using the Record interface
         HRecord rec = connection.getMapping("foo_mapping").newHRecord();
-        rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(2, 10));
+        rec.setCurrentValue("keyval", Util.getZeroPaddedNonNegativeNumber(2, 10));
         rec.setCurrentValue("val1", 123);
         rec.setCurrentValue("al2", "testval");
 
@@ -261,7 +261,7 @@ public class ExamplesTest extends TestSupport {
         HPreparedStatement ps = connection.prepareStatement("INSERT INTO foo_mapping (keyval, val1, val2) "
                                                             + "VALUES (:key, :val1, DEFAULT)");
 
-        ps.setParameter("key", Util.getZeroPaddedNumber(2, 10));
+        ps.setParameter("key", Util.getZeroPaddedNonNegativeNumber(2, 10));
         ps.setParameter("val1", 123);
 
         ps.execute();
@@ -376,7 +376,7 @@ public class ExamplesTest extends TestSupport {
                                                                + "VERSIONS 4 "
                                                                + "CLIENT FILTER WHERE val6 > 4");
 
-        pstmt.setParameter("endkey", Util.getZeroPaddedNumber(34, 10));
+        pstmt.setParameter("endkey", Util.getZeroPaddedNonNegativeNumber(34, 10));
 
         HResultSet<HRecord> records = pstmt.executeQuery();
 
@@ -427,7 +427,7 @@ public class ExamplesTest extends TestSupport {
         final HBatch<HRecord> batch = HBatch.newHBatch(connection);
         for (int i = 5; i < 10; i++) {
             HRecord rec = connection.getMapping("demo1").newHRecord();
-            rec.setCurrentValue("keyval", Util.getZeroPaddedNumber(i, 10));
+            rec.setCurrentValue("keyval", Util.getZeroPaddedNonNegativeNumber(i, 10));
             rec.setCurrentValue("val1", "Value: " + i);
             rec.setCurrentValue("f1:val2", i);
             batch.insert(rec);
@@ -631,7 +631,7 @@ public class ExamplesTest extends TestSupport {
         final HBatch<AnnotatedExample> batch = HBatch.newHBatch(connection);
         for (int i = 5; i < 10; i++) {
             AnnotatedExample obj = new AnnotatedExample();
-            obj.keyval = Util.getZeroPaddedNumber(i, 10);
+            obj.keyval = Util.getZeroPaddedNonNegativeNumber(i, 10);
             obj.val1 = "Value: " + i;
             obj.val2 = i;
             batch.insert(obj);

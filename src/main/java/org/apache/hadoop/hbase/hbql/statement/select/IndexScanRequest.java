@@ -20,14 +20,17 @@
 
 package org.apache.hadoop.hbase.hbql.statement.select;
 
+import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.KeyRange;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
+import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -78,9 +81,24 @@ public class IndexScanRequest implements RowRequest {
 
     public ResultScanner getResultScanner(final WithArgs withArgs, final HTable table) throws HBqlException {
         try {
+
+            final byte[] startRow = this.getScanValue().getStartRow();
+            final byte[] stopRow = this.getScanValue().getStopRow();
+
+            final byte[] startKey = (startRow == HConstants.EMPTY_START_ROW)
+                                    ? null : Bytes.add(startRow, Util.getFixedWidthString(Character.MIN_VALUE, 10));
+
+            final byte[] stopKey = (stopRow == HConstants.EMPTY_END_ROW)
+                                   ? null : Bytes.add(stopRow, Util.getFixedWidthString(Character.MAX_VALUE, 10));
+
             final IndexedTable index = (IndexedTable)table;
 
-            return index.getIndexedScanner(withArgs.getIndexName(), null, null, null, null, getColumns());
+            return index.getIndexedScanner(withArgs.getIndexName(),
+                                           startKey,
+                                           stopKey,
+                                           null,
+                                           null,
+                                           getColumns());
         }
         catch (IOException e) {
             throw new HBqlException(e);

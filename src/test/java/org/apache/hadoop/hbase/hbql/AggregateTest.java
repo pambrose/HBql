@@ -109,7 +109,7 @@ public class AggregateTest extends TestSupport {
 
         for (int i = 0; i < cnt; i++) {
 
-            final String keyval = Util.getZeroPaddedNumber(i, TestSupport.keywidth);
+            final String keyval = Util.getZeroPaddedNonNegativeNumber(i, TestSupport.keywidth);
             keyList.add(keyval);
 
             int val5 = randomVal.nextInt();

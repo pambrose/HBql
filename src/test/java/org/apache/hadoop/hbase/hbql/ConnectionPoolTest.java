@@ -101,7 +101,7 @@ public class ConnectionPoolTest extends TestSupport {
 
         for (int i = 0; i < cnt; i++) {
 
-            final String keyval = Util.getZeroPaddedNumber(i, TestSupport.keywidth);
+            final String keyval = Util.getZeroPaddedNonNegativeNumber(i, TestSupport.keywidth);
 
             int randomNum = randomVal.nextInt();
             String randomStr = "" + randomNum;

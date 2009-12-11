@@ -24,7 +24,10 @@ import java.util.List;
 
 public class Util {
 
-    public static String getZeroPaddedNumber(final long val, final int width) throws HBqlException {
+    public static String getZeroPaddedNonNegativeNumber(final long val, final int width) throws HBqlException {
+
+        if (val < 0)
+            throw new HBqlException("Value " + val + " must be non-negative");
 
         final String strval = "" + val;
         final int padsize = width - strval.length();
@@ -54,5 +57,12 @@ public class Util {
         }
 
         return retval;
+    }
+
+    public static byte[] getFixedWidthString(final char c, final int len) {
+        final StringBuilder sbuf = new StringBuilder(len);
+        for (int i = 0; i < len; i++)
+            sbuf.append(c);
+        return sbuf.toString().getBytes();
     }
 }

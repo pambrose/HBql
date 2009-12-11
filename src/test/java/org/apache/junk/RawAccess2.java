@@ -43,7 +43,7 @@ public class RawAccess2 {
         final HTable table = new HTable(new HBaseConfiguration(), "table1");
 
         for (int i = 40; i < 45; i++) {
-            final Put put = new Put(Bytes.toBytes(Util.getZeroPaddedNumber(i, 10)));
+            final Put put = new Put(Bytes.toBytes(Util.getZeroPaddedNonNegativeNumber(i, 10)));
             put.add(family, col1, Bytes.toBytes(341));
             put.add(family, col2, Bytes.toBytes(682));
             table.put(put);

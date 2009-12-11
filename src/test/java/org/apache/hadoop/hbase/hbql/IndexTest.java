@@ -74,7 +74,7 @@ public class IndexTest extends TestSupport {
 
             int val = 10 + i;
 
-            final String keyval = Util.getZeroPaddedNumber(i, TestSupport.keywidth);
+            final String keyval = Util.getZeroPaddedNonNegativeNumber(i, TestSupport.keywidth);
 
             stmt.setParameter("key", keyval);
             stmt.setParameter("val1", "" + val);

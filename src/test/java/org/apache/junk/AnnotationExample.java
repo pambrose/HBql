@@ -90,7 +90,7 @@ public class AnnotationExample {
         }
 
         public TestObject(int val) throws HBqlException {
-            this.keyval = Util.getZeroPaddedNumber(val, 6);
+            this.keyval = Util.getZeroPaddedNonNegativeNumber(val, 6);
 
             this.title = "A title value";
             this.author = "An author value";

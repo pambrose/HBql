@@ -138,11 +138,11 @@ public class KeyRange extends SelectStatementArgs {
     }
 
     private RowRequest newGet(final WithArgs withArgs,
-                              final Collection<ColumnAttrib> columnAttribSet,
+                              final Collection<ColumnAttrib> columnAttribs,
                               final String lower) throws HBqlException {
         final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(lower);
         final Get get = new Get(lowerBytes);
-        withArgs.setGetArgs(get, columnAttribSet);
+        withArgs.setGetArgs(get, columnAttribs);
         return new GetRequest(get);
     }
 
@@ -168,6 +168,8 @@ public class KeyRange extends SelectStatementArgs {
             final String lower = (String)objval;
             retval.add(this.newGet(withArgs, columnAttribs, lower));
         }
+
+        // TODO Add index support
 
         return retval;
     }

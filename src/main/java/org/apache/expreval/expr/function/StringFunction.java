@@ -84,7 +84,7 @@ public class StringFunction extends GenericFunction implements StringValue {
             case ZEROPAD: {
                 final int num = ((Number)this.getExprArg(0).getValue(connection, object)).intValue();
                 final int width = ((Number)this.getExprArg(1).getValue(connection, object)).intValue();
-                return Util.getZeroPaddedNumber(num, width);
+                return Util.getZeroPaddedNonNegativeNumber(num, width);
             }
 
             case REPEAT: {
