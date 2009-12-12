@@ -26,7 +26,6 @@ import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.NonStatement;
@@ -66,15 +65,15 @@ public class ExpressionTree extends MultipleExpressionContext {
         return this.getGenericValue(0);
     }
 
-    public Filter getFilter() throws InvalidServerFilterExpressionException {
+    public Filter getFilter() throws HBqlException {
+
+        this.validateTypes(true, true);
+        this.optimize();
+
         try {
             return this.getGenericValue().getFilter();
         }
         catch (ResultMissingColumnException e) {
-            e.printStackTrace();
-            return null;
-        }
-        catch (HBqlException e) {
             e.printStackTrace();
             return null;
         }

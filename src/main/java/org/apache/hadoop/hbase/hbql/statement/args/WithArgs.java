@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
@@ -325,15 +326,34 @@ public class WithArgs implements Serializable {
         return cnt;
     }
 
+    public byte[][] getColumnsUsedInIndexWhereExpr() {
+        final byte[][] indexColumns;
+        final Set<ColumnAttrib> columnAttribs = this.getColumnsUsedInServerWhereExpr();
+        if (columnAttribs.size() == 0) {
+            indexColumns = null;
+        }
+        else {
+            final List<String> columnList = Lists.newArrayList();
+            for (final ColumnAttrib columnAttrib : columnAttribs) {
+                // Ignore keys
+                if (!columnAttrib.isAKeyAttrib())
+                    columnList.add(columnAttrib.isASelectFamilyAttrib() ? columnAttrib.getFamilyName()
+                                                                        : columnAttrib.getFamilyQualifiedName());
+            }
 
-    public Set<ColumnAttrib> getColumnsUsedInServerWhereExpr() {
+            indexColumns = Util.getStringsAsBytes(columnList);
+        }
+        return indexColumns;
+    }
+
+    private Set<ColumnAttrib> getColumnsUsedInServerWhereExpr() {
         final Set<ColumnAttrib> serverAttribs = Sets.newHashSet();
         if (this.getServerExpressionTree() != null)
             serverAttribs.addAll(this.getServerExpressionTree().getAttribsUsedInExpr());
         return serverAttribs;
     }
 
-    public Set<ColumnAttrib> getColumnsUsedInClientWhereExpr() {
+    private Set<ColumnAttrib> getColumnsUsedInClientWhereExpr() {
         final Set<ColumnAttrib> clientAttribs = Sets.newHashSet();
         if (this.getClientExpressionTree() != null)
             clientAttribs.addAll(this.getClientExpressionTree().getAttribsUsedInExpr());
@@ -363,7 +383,7 @@ public class WithArgs implements Serializable {
         // Set column names
         for (final ColumnAttrib attrib : columnAttribSet) {
 
-            // Do not bother to request because it will always be delivered
+            // Do not bother to request because it will always be returned
             if (attrib.isAKeyAttrib())
                 continue;
 
@@ -386,8 +406,6 @@ public class WithArgs implements Serializable {
         //                                                         this.getServerExpressionTree());
 
         if (this.getServerExpressionTree() != null) {
-            this.getServerExpressionTree().validateTypes(true, true);
-            this.getServerExpressionTree().optimize();
             final Filter serverFilter = this.getServerExpressionTree().getFilter();
 
             if (serverFilter != null)
@@ -423,8 +441,6 @@ public class WithArgs implements Serializable {
         //                                                          this.getServerExpressionTree());
 
         if (this.getServerExpressionTree() != null) {
-            this.getServerExpressionTree().validateTypes(true, true);
-            this.getServerExpressionTree().optimize();
             final Filter serverFilter = this.getServerExpressionTree().getFilter();
 
             if (serverFilter != null)

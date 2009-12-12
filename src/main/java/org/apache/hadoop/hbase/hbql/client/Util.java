@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import java.util.List;
+import java.util.Collection;
 
 public class Util {
 
@@ -42,7 +42,7 @@ public class Util {
         return sbuf.toString();
     }
 
-    public static byte[][] getStringListAsBytes(final List<String> vals) {
+    public static byte[][] getStringsAsBytes(final Collection<String> vals) {
 
         final byte[][] retval;
 

@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement.select;
 
+import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -33,6 +34,7 @@ import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 public class IndexRequest implements RowRequest {
@@ -71,10 +73,11 @@ public class IndexRequest implements RowRequest {
             attribs = null;
         }
         else {
-            attribs = new byte[this.getColumnAttribs().size()][];
-            int cnt = 0;
+            final List<String> columnList = Lists.newArrayList();
             for (final ColumnAttrib columnAttrib : this.getColumnAttribs())
-                attribs[cnt++] = columnAttrib.getFamilyQualifiedNameAsBytes();
+                columnList.add(columnAttrib.isASelectFamilyAttrib() ? columnAttrib.getFamilyName()
+                                                                    : columnAttrib.getFamilyQualifiedName());
+            attribs = Util.getStringsAsBytes(columnList);
         }
         return attribs;
     }
@@ -106,7 +109,7 @@ public class IndexRequest implements RowRequest {
             return index.getIndexedScanner(withArgs.getIndexName(),
                                            startKey,
                                            stopKey,
-                                           null,
+                                           withArgs.getColumnsUsedInIndexWhereExpr(),
                                            null,
                                            getColumns());
         }
