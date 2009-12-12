@@ -127,7 +127,7 @@ options {backtrack=true;}
 	| keyENABLE keyTABLE t=simpleId p=pred?		{retval = new EnableTableStatement($p.retval, $t.text);}
 	| keyCREATE keyINDEX t=simpleId keyON keyMAPPING? t2=simpleId LPAREN t3=indexColumnList RPAREN (keyINCLUDE LPAREN t4=indexColumnList RPAREN)? p=pred?		
 							{retval = new CreateIndexStatement($p.retval, $t.text, $t2.text, $t3.retval, $t4.retval);}
-	| keyDROP keyINDEX t=simpleId keyON t2=simpleId p=pred?		
+	| keyDROP keyINDEX t=simpleId keyON keyMAPPING? t2=simpleId p=pred?		
 							{retval = new DropIndexStatement($p.retval, $t.text, $t2.text);}
 	;
 
@@ -222,19 +222,19 @@ withClause returns [WithArgs retval]
 	: keyWITH withElements[retval]+;
 
 withElements[WithArgs withArgs] 
-	: k=keysRangeArgs				{withArgs.setKeyRangeArgs($k.retval);}
+	: keyKEYS k=keysRangeArgs			{withArgs.setKeyRangeArgs($k.retval);}
 	| keyINDEX idx=simpleId				{withArgs.setIndexName($idx.text);}	
-	| t=timestampArgs				{withArgs.setTimestampArgs($t.retval);}	
-	| v=versionArgs					{withArgs.setVersionArgs($v.retval);}
-	| sc=scannerCacheArgs				{withArgs.setScannerCacheArgs($sc.retval);}
-	| l=limitArgs					{withArgs.setLimitArgs($l.retval);}
-	| s=serverFilter				{withArgs.setServerExpressionTree($s.retval);}
-	| c=clientFilter				{withArgs.setClientExpressionTree($c.retval);}
+	| keyTIMESTAMP t=timestampArgs			{withArgs.setTimestampArgs($t.retval);}	
+	| keyVERSIONS v=versionArgs			{withArgs.setVersionArgs($v.retval);}
+	| keySCANNER_CACHE_SIZE sc=scannerCacheArgs	{withArgs.setScannerCacheArgs($sc.retval);}
+	| keyLIMIT l=limitArgs				{withArgs.setLimitArgs($l.retval);}
+	| keySERVER keyFILTER keyWHERE s=serverFilter	{withArgs.setServerExpressionTree($s.retval);}
+	| keyCLIENT keyFILTER keyWHERE c=clientFilter	{withArgs.setClientExpressionTree($c.retval);}
 	;
 	
 keysRangeArgs returns [KeyRangeArgs retval]
-	: keyKEYS k=rangeList				{retval = new KeyRangeArgs($k.retval);}	
-	| keyKEYS keyALL				{retval = new KeyRangeArgs();}	
+	: k=rangeList					{retval = new KeyRangeArgs($k.retval);}	
+	| keyALL					{retval = new KeyRangeArgs();}	
 	;
 
 rangeList returns [List<KeyRange> retval]
@@ -250,33 +250,30 @@ options {backtrack=true;}
 	;
 		
 timestampArgs returns [TimestampArgs retval]
-	: keyTIMESTAMP keyRANGE d1=exprValue keyTO d2=exprValue	
-							{retval = new TimestampArgs($d1.retval, $d2.retval);}
-	| keyTIMESTAMP d1=exprValue			{retval = new TimestampArgs($d1.retval);}
+	: keyRANGE d1=exprValue keyTO d2=exprValue	{retval = new TimestampArgs($d1.retval, $d2.retval);}
+	| d1=exprValue					{retval = new TimestampArgs($d1.retval);}
 	;
 		
 versionArgs returns [VersionArgs retval]
-	: keyVERSIONS v=exprValue			{retval = new VersionArgs($v.retval);}
-	| keyVERSIONS keyMAX				{retval = new VersionArgs(new IntegerLiteral(Integer.MAX_VALUE));}
+	: v=exprValue					{retval = new VersionArgs($v.retval);}
+	| keyMAX					{retval = new VersionArgs(new IntegerLiteral(Integer.MAX_VALUE));}
 	;
 	
 scannerCacheArgs returns [ScannerCacheArgs retval]
-	: keySCANNER_CACHE_SIZE v=exprValue		{retval = new ScannerCacheArgs($v.retval);}
+	: v=exprValue					{retval = new ScannerCacheArgs($v.retval);}
 	;
 	
 limitArgs returns [LimitArgs retval]
-	: keyLIMIT v=exprValue				{retval = new LimitArgs($v.retval);};
+	: v=exprValue					{retval = new LimitArgs($v.retval);};
 		
 clientFilter returns [ExpressionTree retval]
-	: keyCLIENT keyFILTER keyWHERE w=nodescWhereExpr	
-							{retval = $w.retval;};
+	: w=nodescWhereExpr				{retval = $w.retval;};
 	
 serverFilter returns [ExpressionTree retval]
-	: keySERVER keyFILTER keyWHERE w=nodescWhereExpr	
-							{retval = $w.retval;};
+	: w=nodescWhereExpr				{retval = $w.retval;};
 	
 nodescWhereExpr returns [ExpressionTree retval]
-	 : e=exprValue					{retval = ExpressionTree.newExpressionTree(null, $e.retval);};
+	: e=exprValue					{retval = ExpressionTree.newExpressionTree(null, $e.retval);};
 
 descWhereExpr returns [ExpressionTree retval]
 	: s=mappingDesc? e=exprValue			{retval = ExpressionTree.newExpressionTree($s.retval, $e.retval);};

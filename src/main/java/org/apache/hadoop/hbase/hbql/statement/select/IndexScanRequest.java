@@ -86,10 +86,10 @@ public class IndexScanRequest implements RowRequest {
             final byte[] stopRow = this.getScanValue().getStopRow();
 
             final byte[] startKey = (startRow == HConstants.EMPTY_START_ROW)
-                                    ? null : Bytes.add(startRow, Util.getFixedWidthString(Character.MIN_VALUE, 10));
+                                    ? null : Bytes.add(startRow, Util.getFixedWidthString(Character.MIN_VALUE, 15));
 
             final byte[] stopKey = (stopRow == HConstants.EMPTY_END_ROW)
-                                   ? null : Bytes.add(stopRow, Util.getFixedWidthString(Character.MAX_VALUE, 10));
+                                   ? null : Bytes.add(stopRow, Util.getFixedWidthString(Character.MAX_VALUE, 15));
 
             final IndexedTable index = (IndexedTable)table;
 

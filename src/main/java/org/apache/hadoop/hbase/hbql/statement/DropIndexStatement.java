@@ -23,22 +23,26 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
-public class DropIndexStatement extends TableStatement {
+public class DropIndexStatement extends BasicStatement implements ConnectionStatement {
 
     private final String indexName;
+    private final String mappingName;
 
-    public DropIndexStatement(final StatementPredicate predicate, final String indexName, final String tableName) {
-        super(predicate, tableName);
+    public DropIndexStatement(final StatementPredicate predicate, final String indexName, final String mappingName) {
+        super(predicate);
         this.indexName = indexName;
+        this.mappingName = mappingName;
     }
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
-        connection.dropIndex(this.getTableName(), this.indexName);
-        return new ExecutionResults("Index " + this.getTableName() + " dropped for " + this.getTableName());
+        final TableMapping mapping = connection.getMapping(this.mappingName);
+        connection.dropIndex(mapping.getTableName(), this.indexName);
+        return new ExecutionResults("Index " + this.indexName + " dropped for table " + mapping.getTableName());
     }
 
     public static String usage() {
-        return "DROP INDEX index_name ON table_name [IF boolean_expression]";
+        return "DROP INDEX index_name ON [MAPPING] mapping_name [IF boolean_expression]";
     }
 }

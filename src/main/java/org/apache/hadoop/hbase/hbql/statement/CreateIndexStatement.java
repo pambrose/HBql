@@ -60,7 +60,7 @@ public class CreateIndexStatement extends BasicStatement implements ConnectionSt
         final IndexSpecification spec = SingleColumnIndex.newIndex(this.indexName, indexList, includeList);
 
         try {
-            connection.getIndexTableAdmin().addIndex(this.mappingName.getBytes(), spec);
+            connection.getIndexTableAdmin().addIndex(mapping.getTableNameAsBytes(), spec);
         }
         catch (IOException e) {
             throw new HBqlException(e);
