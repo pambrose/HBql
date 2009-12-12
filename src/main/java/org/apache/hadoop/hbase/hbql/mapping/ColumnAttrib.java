@@ -42,18 +42,12 @@ public abstract class ColumnAttrib implements Serializable {
     private volatile byte[] familyQualifiedBytes = null;
     private volatile byte[] familyBytes = null;
     private volatile byte[] columnBytes = null;
-    private final String getter;
-    private final String setter;
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
     private final boolean embedded;
 
-    protected ColumnAttrib(final ColumnDefinition columnDefinition, final String getter, final String setter) {
-
+    protected ColumnAttrib(final ColumnDefinition columnDefinition) {
         this.columnDefinition = columnDefinition;
-
-        this.getter = getter;
-        this.setter = setter;
         this.embedded = this.getFamilyName() != null && this.getFamilyName().equals(ParserSupport.EMBEDDED);
     }
 
@@ -281,11 +275,11 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     protected String getGetter() {
-        return this.getter;
+        return this.getColumnDefinition().getGetter();
     }
 
     protected String getSetter() {
-        return this.setter;
+        return this.getColumnDefinition().getSetter();
     }
 
     protected Method getGetterMethod() {

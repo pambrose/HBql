@@ -38,7 +38,7 @@ public class HRecordAttrib extends ColumnAttrib {
 
     public HRecordAttrib(final ColumnDefinition columnDefinition) throws HBqlException {
 
-        super(columnDefinition, null, null);
+        super(columnDefinition);
 
         this.defaultArg = this.evaluateDefaultValue(columnDefinition.getDefaultValue());
 

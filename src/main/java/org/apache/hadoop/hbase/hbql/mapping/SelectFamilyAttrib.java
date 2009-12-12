@@ -30,7 +30,7 @@ import java.util.NavigableMap;
 public class SelectFamilyAttrib extends ColumnAttrib {
 
     public SelectFamilyAttrib(final String familyName) throws HBqlException {
-        super(ColumnDefinition.newSelectFamilyAttribColumn(familyName), null, null);
+        super(ColumnDefinition.newSelectFamilyAttribColumn(familyName));
     }
 
     public boolean isASelectFamilyAttrib() {

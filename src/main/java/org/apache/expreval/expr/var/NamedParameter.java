@@ -114,10 +114,11 @@ public class NamedParameter implements GenericValue {
         }
         else {
             // Make sure a list is legal in this expr
-            if (!allowCollections)
+            if (!allowCollections) {
+                final String context = parentExpr == null ? "" : " in the context " + parentExpr.asString();
                 throw new InvalidTypeException("Parameter " + this.getParamName()
-                                               + " is assigned a collection which is not allowed in the context "
-                                               + parentExpr.asString());
+                                               + " is assigned a collection which is not allowed" + context);
+            }
 
             // if it is a list, then ensure that all the types in list are valid and consistent
             if (this.getTypedExprList().size() == 0)

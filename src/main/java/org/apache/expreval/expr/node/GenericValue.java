@@ -42,8 +42,7 @@ public interface GenericValue extends Serializable {
 
     GenericValue getOptimizedValue() throws HBqlException;
 
-    Class<? extends GenericValue> validateTypes(GenericValue parentExpr,
-                                                boolean allowCollections) throws HBqlException;
+    Class<? extends GenericValue> validateTypes(GenericValue parentExpr, boolean allowCollections) throws HBqlException;
 
     boolean isAConstant();
 

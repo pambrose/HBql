@@ -114,6 +114,14 @@ public class KeyRange extends SelectStatementArgs {
         return this.getType() == KeyRangeArgs.Type.ALL;
     }
 
+    public void validateArgTypes() throws HBqlException {
+        if (this.isSingleKey())
+            this.validateTypes(this.allowColumns(), true);
+        else
+            this.validateTypes(this.allowColumns(), false);
+    }
+
+
     public String asString() {
         final StringBuilder sbuf = new StringBuilder();
 
