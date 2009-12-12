@@ -44,6 +44,7 @@ import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
+import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -292,9 +293,9 @@ public class HConnectionImpl implements HConnection {
     public synchronized TableMapping createMapping(final boolean tempMapping,
                                                    final String mappingName,
                                                    final String tableName,
-                                                   final String keyName,
+                                                   final KeyInfo keyInfo,
                                                    final List<FamilyMapping> familyList) throws HBqlException {
-        return this.getMappingManager().createMapping(tempMapping, mappingName, tableName, keyName, familyList);
+        return this.getMappingManager().createMapping(tempMapping, mappingName, tableName, keyInfo, familyList);
     }
 
     // Table Routines

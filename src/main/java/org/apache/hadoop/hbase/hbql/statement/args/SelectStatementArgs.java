@@ -38,7 +38,8 @@ public abstract class SelectStatementArgs extends MultipleExpressionContext {
         TIMESTAMPRANGE(new ArgumentListTypeSignature(DateValue.class, DateValue.class)),
         LIMIT(new ArgumentListTypeSignature(IntegerValue.class)),
         SCANNERCACHE(new ArgumentListTypeSignature(IntegerValue.class)),
-        VERSION(new ArgumentListTypeSignature(IntegerValue.class));
+        VERSION(new ArgumentListTypeSignature(IntegerValue.class)),
+        WIDTH(new ArgumentListTypeSignature(IntegerValue.class));
 
         private final ArgumentListTypeSignature typeSignature;
 

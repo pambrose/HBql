@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
+import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -104,7 +105,7 @@ public class MappingManager {
     public synchronized TableMapping createMapping(final boolean isTemp,
                                                    final String mappingName,
                                                    final String tableName,
-                                                   final String keyName,
+                                                   final KeyInfo keyInfo,
                                                    final List<FamilyMapping> familyMappingList) throws HBqlException {
 
         if (!mappingName.equals("system_mappings") && this.mappingExists(mappingName))
@@ -114,7 +115,7 @@ public class MappingManager {
                                                            isTemp,
                                                            mappingName,
                                                            tableName,
-                                                           keyName,
+                                                           keyInfo,
                                                            familyMappingList);
 
         if (tableMapping.isTempMapping())

@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.statement.args.KeyRange;
+import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -38,12 +38,10 @@ import java.util.Collection;
 public class IndexScanRequest implements RowRequest {
 
     final Scan scanValue;
-    final KeyRange keyRange;
     final Collection<ColumnAttrib> columnAttribs;
 
-    public IndexScanRequest(final Scan scanValue, final KeyRange keyRange, final Collection<ColumnAttrib> columnAttribs) {
+    public IndexScanRequest(final Scan scanValue, final Collection<ColumnAttrib> columnAttribs) {
         this.scanValue = scanValue;
-        this.keyRange = keyRange;
         this.columnAttribs = columnAttribs;
     }
 
@@ -53,10 +51,6 @@ public class IndexScanRequest implements RowRequest {
 
     private Collection<ColumnAttrib> getColumnAttribs() {
         return this.columnAttribs;
-    }
-
-    private KeyRange getKeyRange() {
-        return this.keyRange;
     }
 
     public int getMaxVersions() {
@@ -79,17 +73,26 @@ public class IndexScanRequest implements RowRequest {
         return attribs;
     }
 
-    public ResultScanner getResultScanner(final WithArgs withArgs, final HTable table) throws HBqlException {
+    public ResultScanner getResultScanner(final Mapping mapping,
+                                          final WithArgs withArgs,
+                                          final HTable table) throws HBqlException {
         try {
 
             final byte[] startRow = this.getScanValue().getStartRow();
             final byte[] stopRow = this.getScanValue().getStopRow();
 
-            final byte[] startKey = (startRow == HConstants.EMPTY_START_ROW)
-                                    ? null : Bytes.add(startRow, Util.getFixedWidthString(Character.MIN_VALUE, 15));
+            byte[] startKey = null;
+            byte[] stopKey = null;
 
-            final byte[] stopKey = (stopRow == HConstants.EMPTY_END_ROW)
-                                   ? null : Bytes.add(stopRow, Util.getFixedWidthString(Character.MAX_VALUE, 15));
+            if (startRow != HConstants.EMPTY_START_ROW) {
+                final int width = mapping.getKeyInfo().getKeyWidth();
+                startKey = Bytes.add(startRow, Util.getFixedWidthString(Character.MIN_VALUE, width));
+            }
+
+            if (stopRow != HConstants.EMPTY_END_ROW) {
+                final int width = mapping.getKeyInfo().getKeyWidth();
+                stopKey = Bytes.add(stopRow, Util.getFixedWidthString(Character.MAX_VALUE, width));
+            }
 
             final IndexedTable index = (IndexedTable)table;
 

@@ -136,12 +136,11 @@ indexColumnList returns [List<String> retval]
 	: a1=indexColumn {retval.add($a1.text);} (COMMA a2=indexColumn {retval.add($a2.text);})*;
 
 indexColumn 
-	: columnRef
-	| familyWildCard;
+	: columnRef | familyWildCard;
 		
 attribMapping returns [AttribMapping retval]
-	: LPAREN key=simpleId keyKEY (COMMA fm=familyMappingList)? RPAREN
-							{retval = new AttribMapping($key.text, $fm.retval);};
+	: LPAREN key=simpleId keyKEY (keyWIDTH w=exprValue)? (COMMA fm=familyMappingList)? RPAREN
+							{retval = new AttribMapping(new KeyInfo($key.text, $w.retval), $fm.retval);};
 	
 pred returns [StatementPredicate retval]
 	: keyIF  b=exprValue 				{retval = new StatementPredicate($b.retval);};
@@ -164,8 +163,7 @@ deleteItemList returns [List<String> retval]
 	: a1=deleteItem {retval.add($a1.text);} (COMMA a2=deleteItem {retval.add($a2.text);})*;
 
 deleteItem 
-	: columnRef
-	| familyWildCard;
+	: columnRef | familyWildCard;
 	
 insertValues returns [InsertValueSource retval]
 	: keyVALUES LPAREN e=insertExprList RPAREN	{retval = new InsertSingleRow($e.retval);}
@@ -222,7 +220,7 @@ withClause returns [WithArgs retval]
 	: keyWITH withElements[retval]+;
 
 withElements[WithArgs withArgs] 
-	: keyKEYS k=keysRangeArgs			{withArgs.setKeyRangeArgs($k.retval);}
+	: (keyKEYS | keyKEY) k=keysRangeArgs		{withArgs.setKeyRangeArgs($k.retval);}
 	| keyINDEX idx=simpleId				{withArgs.setIndexName($idx.text);}	
 	| keyTIMESTAMP t=timestampArgs			{withArgs.setTimestampArgs($t.retval);}	
 	| keyVERSIONS v=versionArgs			{withArgs.setVersionArgs($v.retval);}
@@ -528,82 +526,83 @@ COMMENT
 
 WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();};
 
-keyALTER 	: {isKeyword(input, "ALTER")}? ID;
-keyINDEX 	: {isKeyword(input, "INDEX")}? ID;
-keyON	 	: {isKeyword(input, "ON")}? ID;
-keyADD	 	: {isKeyword(input, "ADD")}? ID;
-keyFAMILY 	: {isKeyword(input, "FAMILY")}? ID;
-keySELECT 	: {isKeyword(input, "SELECT")}? ID;
-keyDELETE 	: {isKeyword(input, "DELETE")}? ID;
-keyCREATE 	: {isKeyword(input, "CREATE")}? ID;
-keyDESCRIBE 	: {isKeyword(input, "DESCRIBE")}? ID;
-keySHOW 	: {isKeyword(input, "SHOW")}? ID;
-keyENABLE 	: {isKeyword(input, "ENABLE")}? ID;
-keyDISABLE 	: {isKeyword(input, "DISABLE")}? ID;
-keyDROP 	: {isKeyword(input, "DROP")}? ID;
-keyTABLE 	: {isKeyword(input, "TABLE")}? ID;
-keyMAPPING 	: {isKeyword(input, "MAPPING")}? ID;
-keyMAPPINGS 	: {isKeyword(input, "MAPPINGS")}? ID;
-keyTABLES 	: {isKeyword(input, "TABLES")}? ID;
-keyWHERE	: {isKeyword(input, "WHERE")}? ID;
-keyWITH		: {isKeyword(input, "WITH")}? ID;
-keyFILTER	: {isKeyword(input, "FILTER")}? ID;
-keyFROM 	: {isKeyword(input, "FROM")}? ID;
-keySET 		: {isKeyword(input, "SET")}? ID;
-keyIN 		: {isKeyword(input, "IN")}? ID;
-keyIS 		: {isKeyword(input, "IS")}? ID;
-keyIF 		: {isKeyword(input, "IF")}? ID;
-keyALIAS	: {isKeyword(input, "ALIAS")}? ID;
-keyAS		: {isKeyword(input, "AS")}? ID;
-keyTHEN 	: {isKeyword(input, "THEN")}? ID;
-keyELSE 	: {isKeyword(input, "ELSE")}? ID;
-keyEND 		: {isKeyword(input, "END")}? ID;
-keyFIRST	: {isKeyword(input, "FIRST")}? ID;
-keyLAST		: {isKeyword(input, "LAST")}? ID;
-keyLIMIT 	: {isKeyword(input, "LIMIT")}? ID;
-keyLIKE		: {isKeyword(input, "LIKE")}? ID;
-keyTO 		: {isKeyword(input, "TO")}? ID;
-keyOR 		: {isKeyword(input, "OR")}? ID;
-keyAND 		: {isKeyword(input, "AND")}? ID;
-keyNOT 		: {isKeyword(input, "NOT")}? ID;
-keyTRUE 	: {isKeyword(input, "TRUE")}? ID;
-keyFALSE 	: {isKeyword(input, "FALSE")}? ID;
-keyBETWEEN 	: {isKeyword(input, "BETWEEN")}? ID;
-keyNULL 	: {isKeyword(input, "NULL")}? ID;
-keyFOR	 	: {isKeyword(input, "FOR")}? ID;
-keyCLIENT	: {isKeyword(input, "CLIENT")}? ID;
-keySERVER	: {isKeyword(input, "SERVER")}? ID;
-keyVERSIONS	: {isKeyword(input, "VERSIONS")}? ID;
-keyVERSION	: {isKeyword(input, "VERSION")}? ID;
-keyTIMESTAMP	: {isKeyword(input, "TIMESTAMP")}? ID;
-keyRANGE	: {isKeyword(input, "RANGE")}? ID;
-keyMAX		: {isKeyword(input, "MAX")}? ID;
-keyKEYS		: {isKeyword(input, "KEYS")}? ID;
-keyALL		: {isKeyword(input, "ALL")}? ID;
-keyCONTAINS	: {isKeyword(input, "CONTAINS")}? ID;
-keyDEFAULT	: {isKeyword(input, "DEFAULT")}? ID;
-keyCASE		: {isKeyword(input, "CASE")}? ID;
-keyWHEN		: {isKeyword(input, "WHEN")}? ID;
-keyINSERT	: {isKeyword(input, "INSERT")}? ID;
-keyINTO		: {isKeyword(input, "INTO")}? ID;
-keyVALUES	: {isKeyword(input, "VALUES")}? ID;
-keyHELP		: {isKeyword(input, "HELP")}? ID;
-keyPARSE	: {isKeyword(input, "PARSE")}? ID;
-keyEVAL		: {isKeyword(input, "EVAL")}? ID;
-keyIMPORT	: {isKeyword(input, "IMPORT")}? ID;
-keyTEMP		: {isKeyword(input, "TEMP")}? ID;
-keyTTL		: {isKeyword(input, "TTL")}? ID;
-keyGZ		: {isKeyword(input, "GZ")}? ID;
-keyLZO		: {isKeyword(input, "LZO")}? ID;
-keyNONE		: {isKeyword(input, "NONE")}? ID;
-keyINCLUDE	: {isKeyword(input, "INCLUDE")}? ID;
-keyUNMAPPED	: {isKeyword(input, "UNMAPPED")}? ID;
-keyKEY		: {isKeyword(input, "KEY")}? ID;
-keyMAX_VERSIONS	: {isKeyword(input, "MAX_VERSIONS")}? ID;
-keyBLOOM_FILTER	: {isKeyword(input, "BLOOM_FILTER")}? ID;
-keyBLOCK_SIZE	: {isKeyword(input, "BLOCK_SIZE")}? ID;
-keyIN_MEMORY	: {isKeyword(input, "IN_MEMORY")}? ID;
-keySCANNER_CACHE_SIZE		: {isKeyword(input, "SCANNER_CACHE_SIZE")}? ID;
-keyBLOCK_CACHE_ENABLED		: {isKeyword(input, "BLOCK_CACHE_ENABLED")}? ID;
-keyCOMPRESSION_TYPE		: {isKeyword(input, "COMPRESSION_TYPE")}? ID;
-keyMAP_FILE_INDEX_INTERVAL	: {isKeyword(input, "MAP_FILE_INDEX_INTERVAL")}? ID;
+keyADD                          : {isKeyword(input, "ADD")}? ID;
+keyALIAS                        : {isKeyword(input, "ALIAS")}? ID;
+keyALL                          : {isKeyword(input, "ALL")}? ID;
+keyALTER                        : {isKeyword(input, "ALTER")}? ID;
+keyAND                          : {isKeyword(input, "AND")}? ID;
+keyAS                           : {isKeyword(input, "AS")}? ID;
+keyBETWEEN                      : {isKeyword(input, "BETWEEN")}? ID;
+keyBLOCK_CACHE_ENABLED          : {isKeyword(input, "BLOCK_CACHE_ENABLED")}? ID;
+keyBLOCK_SIZE                   : {isKeyword(input, "BLOCK_SIZE")}? ID;
+keyBLOOM_FILTER                 : {isKeyword(input, "BLOOM_FILTER")}? ID;
+keyCASE                         : {isKeyword(input, "CASE")}? ID;
+keyCLIENT                       : {isKeyword(input, "CLIENT")}? ID;
+keyCOMPRESSION_TYPE             : {isKeyword(input, "COMPRESSION_TYPE")}? ID;
+keyCONTAINS                     : {isKeyword(input, "CONTAINS")}? ID;
+keyCREATE                       : {isKeyword(input, "CREATE")}? ID;
+keyDEFAULT                      : {isKeyword(input, "DEFAULT")}? ID;
+keyDELETE                       : {isKeyword(input, "DELETE")}? ID;
+keyDESCRIBE                     : {isKeyword(input, "DESCRIBE")}? ID;
+keyDISABLE                      : {isKeyword(input, "DISABLE")}? ID;
+keyDROP                         : {isKeyword(input, "DROP")}? ID;
+keyELSE                         : {isKeyword(input, "ELSE")}? ID;
+keyENABLE                       : {isKeyword(input, "ENABLE")}? ID;
+keyEND                          : {isKeyword(input, "END")}? ID;
+keyEVAL                         : {isKeyword(input, "EVAL")}? ID;
+keyFALSE                        : {isKeyword(input, "FALSE")}? ID;
+keyFAMILY                       : {isKeyword(input, "FAMILY")}? ID;
+keyFILTER                       : {isKeyword(input, "FILTER")}? ID;
+keyFIRST                        : {isKeyword(input, "FIRST")}? ID;
+keyFOR                          : {isKeyword(input, "FOR")}? ID;
+keyFROM                         : {isKeyword(input, "FROM")}? ID;
+keyGZ                           : {isKeyword(input, "GZ")}? ID;
+keyHELP                         : {isKeyword(input, "HELP")}? ID;
+keyIF                           : {isKeyword(input, "IF")}? ID;
+keyIMPORT                       : {isKeyword(input, "IMPORT")}? ID;
+keyIN                           : {isKeyword(input, "IN")}? ID;
+keyINCLUDE                      : {isKeyword(input, "INCLUDE")}? ID;
+keyINDEX                        : {isKeyword(input, "INDEX")}? ID;
+keyINSERT                       : {isKeyword(input, "INSERT")}? ID;
+keyINTO                         : {isKeyword(input, "INTO")}? ID;
+keyIN_MEMORY                    : {isKeyword(input, "IN_MEMORY")}? ID;
+keyIS                           : {isKeyword(input, "IS")}? ID;
+keyKEY                          : {isKeyword(input, "KEY")}? ID;
+keyKEYS                         : {isKeyword(input, "KEYS")}? ID;
+keyLAST                         : {isKeyword(input, "LAST")}? ID;
+keyLIKE                         : {isKeyword(input, "LIKE")}? ID;
+keyLIMIT                        : {isKeyword(input, "LIMIT")}? ID;
+keyLZO                          : {isKeyword(input, "LZO")}? ID;
+keyMAPPING                      : {isKeyword(input, "MAPPING")}? ID;
+keyMAPPINGS                     : {isKeyword(input, "MAPPINGS")}? ID;
+keyMAP_FILE_INDEX_INTERVAL      : {isKeyword(input, "MAP_FILE_INDEX_INTERVAL")}? ID;
+keyMAX                          : {isKeyword(input, "MAX")}? ID;
+keyMAX_VERSIONS                 : {isKeyword(input, "MAX_VERSIONS")}? ID;
+keyNONE                         : {isKeyword(input, "NONE")}? ID;
+keyNOT                          : {isKeyword(input, "NOT")}? ID;
+keyNULL                         : {isKeyword(input, "NULL")}? ID;
+keyON                           : {isKeyword(input, "ON")}? ID;
+keyOR                           : {isKeyword(input, "OR")}? ID;
+keyPARSE                        : {isKeyword(input, "PARSE")}? ID;
+keyRANGE                        : {isKeyword(input, "RANGE")}? ID;
+keySCANNER_CACHE_SIZE           : {isKeyword(input, "SCANNER_CACHE_SIZE")}? ID;
+keySELECT                       : {isKeyword(input, "SELECT")}? ID;
+keySERVER                       : {isKeyword(input, "SERVER")}? ID;
+keySET                          : {isKeyword(input, "SET")}? ID;
+keySHOW                         : {isKeyword(input, "SHOW")}? ID;
+keyTABLE                        : {isKeyword(input, "TABLE")}? ID;
+keyTABLES                       : {isKeyword(input, "TABLES")}? ID;
+keyTEMP                         : {isKeyword(input, "TEMP")}? ID;
+keyTHEN                         : {isKeyword(input, "THEN")}? ID;
+keyTIMESTAMP                    : {isKeyword(input, "TIMESTAMP")}? ID;
+keyTO                           : {isKeyword(input, "TO")}? ID;
+keyTRUE                         : {isKeyword(input, "TRUE")}? ID;
+keyTTL                          : {isKeyword(input, "TTL")}? ID;
+keyUNMAPPED                     : {isKeyword(input, "UNMAPPED")}? ID;
+keyVALUES                       : {isKeyword(input, "VALUES")}? ID;
+keyVERSION                      : {isKeyword(input, "VERSION")}? ID;
+keyVERSIONS                     : {isKeyword(input, "VERSIONS")}? ID;
+keyWHEN                         : {isKeyword(input, "WHEN")}? ID;
+keyWHERE                        : {isKeyword(input, "WHERE")}? ID;
+keyWIDTH                        : {isKeyword(input, "WIDTH")}? ID;
+keyWITH                         : {isKeyword(input, "WITH")}? ID;

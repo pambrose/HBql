@@ -20,20 +20,23 @@
 
 package org.apache.hadoop.hbase.hbql.mapping;
 
+import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
+
 import java.util.List;
 
 public class AttribMapping {
 
-    private final String keyName;
+    private final
+    KeyInfo keyInfo;
     private final List<FamilyMapping> familyMappingList;
 
-    public AttribMapping(final String keyName, final List<FamilyMapping> familyMappingList) {
-        this.keyName = keyName;
+    public AttribMapping(final KeyInfo keyInfo, final List<FamilyMapping> familyMappingList) {
+        this.keyInfo = keyInfo;
         this.familyMappingList = familyMappingList;
     }
 
-    public String getKeyName() {
-        return this.keyName;
+    public KeyInfo getKeyInfo() {
+        return this.keyInfo;
     }
 
     public List<FamilyMapping> getFamilyMappingList() {

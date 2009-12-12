@@ -160,11 +160,13 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         }
     }
 
-    private int delete(final HTableWrapper tableWrapper, final WithArgs withArgs, final RowRequest rowRequest) throws HBqlException {
+    private int delete(final HTableWrapper tableWrapper,
+                       final WithArgs withArgs,
+                       final RowRequest rowRequest) throws HBqlException {
 
         final HTable table = tableWrapper.getHTable();
         final ExpressionTree clientExpressionTree = withArgs.getClientExpressionTree();
-        final ResultScanner resultScanner = rowRequest.getResultScanner(withArgs, table);
+        final ResultScanner resultScanner = rowRequest.getResultScanner(this.getMapping(), withArgs, table);
 
         int cnt = 0;
 

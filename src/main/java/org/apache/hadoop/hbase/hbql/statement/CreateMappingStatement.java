@@ -27,6 +27,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.AttribMapping;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
+import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 
 import java.util.List;
 import java.util.Set;
@@ -36,7 +37,7 @@ public class CreateMappingStatement extends StatementContext implements Connecti
     private final boolean tempMapping;
     private final String mappingName;
     private final String tableName;
-    private final String keyName;
+    private final KeyInfo keyInfo;
     private final List<FamilyMapping> familyMappingList;
 
     public CreateMappingStatement(final StatementPredicate predicate,
@@ -48,7 +49,7 @@ public class CreateMappingStatement extends StatementContext implements Connecti
         this.tempMapping = tempMapping;
         this.mappingName = mappingName;
         this.tableName = (tableName == null || tableName.length() == 0) ? mappingName : tableName;
-        this.keyName = attribMapping != null ? attribMapping.getKeyName() : null;
+        this.keyInfo = attribMapping != null ? attribMapping.getKeyInfo() : null;
         this.familyMappingList = attribMapping != null ? attribMapping.getFamilyMappingList() : null;
     }
 
@@ -64,8 +65,8 @@ public class CreateMappingStatement extends StatementContext implements Connecti
         return this.mappingName;
     }
 
-    public String getKeyName() {
-        return this.keyName;
+    public KeyInfo getKeyInfo() {
+        return this.keyInfo;
     }
 
     private List<FamilyMapping> getFamilyMappingList() {
@@ -73,6 +74,9 @@ public class CreateMappingStatement extends StatementContext implements Connecti
     }
 
     public void validate() throws HBqlException {
+
+        if (this.getKeyInfo() != null)
+            this.getKeyInfo().validate();
 
         // Make sure family names are unique
         if (this.getFamilyMappingList() != null) {
@@ -92,7 +96,7 @@ public class CreateMappingStatement extends StatementContext implements Connecti
         final TableMapping tableMapping = connection.createMapping(this.isTempMapping(),
                                                                    this.getMappingName(),
                                                                    this.getTableName(),
-                                                                   this.getKeyName(),
+                                                                   this.getKeyInfo(),
                                                                    this.getFamilyMappingList());
 
         this.setMapping(tableMapping);

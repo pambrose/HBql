@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 
 import java.io.Serializable;
 
@@ -52,8 +53,12 @@ public final class ColumnDefinition implements Serializable {
     }
 
     // For KEY attribs
-    public static ColumnDefinition newKeyColumn(final String keyName) {
-        final ColumnDefinition column = new ColumnDefinition(keyName, FieldType.KeyType, false, keyName, null);
+    public static ColumnDefinition newKeyColumn(final KeyInfo keyInfo) {
+        final ColumnDefinition column = new ColumnDefinition(keyInfo.getKeyName(),
+                                                             FieldType.KeyType,
+                                                             false,
+                                                             keyInfo.getKeyName(),
+                                                             null);
         column.setFamilyMapping(new FamilyMapping("", false, null));
         return column;
     }

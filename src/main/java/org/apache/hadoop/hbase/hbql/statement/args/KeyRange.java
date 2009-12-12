@@ -200,7 +200,7 @@ public class KeyRange extends SelectStatementArgs {
         withArgs.setScanArgs(scan, columnAttribs);
 
         if (withArgs.hasAnIndex())
-            return new IndexScanRequest(scan, this, columnAttribs);
+            return new IndexScanRequest(scan, columnAttribs);
         else
             return new ScanRequest(scan);
     }

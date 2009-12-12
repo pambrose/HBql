@@ -33,6 +33,7 @@ import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.NonStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class TableMapping extends Mapping implements HMapping {
     private transient HConnectionImpl connection;
     private boolean tempMapping;
     private Set<String> familyNameSet = null;
+    private KeyInfo keyInfo = null;
 
     private final Map<String, HRecordAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
     private final Map<String, HRecordAttrib> versionAttribMap = Maps.newHashMap();
@@ -58,17 +60,18 @@ public class TableMapping extends Mapping implements HMapping {
                         final boolean tempMapping,
                         final String mappingName,
                         final String tableName,
-                        final String keyName,
+                        final KeyInfo keyInfo,
                         final List<FamilyMapping> familyMappingList) throws HBqlException {
 
         super(mappingName, tableName);
 
         this.connection = connection;
         this.tempMapping = tempMapping;
+        this.keyInfo = keyInfo;
 
         // Add KEY column
-        if (keyName != null)
-            processColumnDefintion(ColumnDefinition.newKeyColumn(keyName));
+        if (keyInfo != null)
+            processColumnDefintion(ColumnDefinition.newKeyColumn(keyInfo));
 
         if (familyMappingList != null) {
 
@@ -92,6 +95,10 @@ public class TableMapping extends Mapping implements HMapping {
 
     private HConnectionImpl getConnection() {
         return this.connection;
+    }
+
+    public KeyInfo getKeyInfo() {
+        return this.keyInfo;
     }
 
     public HRecord newHRecord() throws HBqlException {

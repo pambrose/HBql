@@ -47,7 +47,7 @@ public class IndexTest extends TestSupport {
 
         connection.execute("CREATE TEMP MAPPING tab4 FOR TABLE table21"
                            + "("
-                           + "keyval key, "
+                           + "keyval key width 15, "
                            + "f1 ("
                            + "  val1 string alias val1, "
                            + "  val2 int alias val2, "
@@ -74,7 +74,7 @@ public class IndexTest extends TestSupport {
 
             int val = 10 + i;
 
-            final String keyval = Util.getZeroPaddedNonNegativeNumber(i, TestSupport.keywidth);
+            final String keyval = Util.getZeroPaddedNonNegativeNumber(i, 15);
 
             stmt.setParameter("key", keyval);
             stmt.setParameter("val1", Util.getZeroPaddedNonNegativeNumber(val * 100, 15));
@@ -108,8 +108,8 @@ public class IndexTest extends TestSupport {
     public void simpleSelect1() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
-        stmt.execute("DROP INDEX foo1 ON MAPPING tab4 if indexexists('table21', 'foo1')");
-        stmt.execute("CREATE INDEX foo1 ON MAPPING tab4 (f1:val1)");
+        //stmt.execute("DROP INDEX foo1 ON MAPPING tab4 if indexexists('table21', 'foo1')");
+        //stmt.execute("CREATE INDEX foo1 ON MAPPING tab4 (f1:val1)");
 
         final String q1 = "select * from tab4";
         showValues(q1, 10);
@@ -117,22 +117,31 @@ public class IndexTest extends TestSupport {
 
     @Test
     public void simpleSelect2() throws HBqlException {
-
         final String q1 = "select * from tab4 WITH INDEX foo1";
         showValues(q1, 10);
     }
 
     @Test
     public void simpleSelect3() throws HBqlException {
-
         final String q1 = "select * from tab4 WITH KEYS ALL INDEX foo1";
         showValues(q1, 10);
     }
 
     @Test
     public void simpleSelect4() throws HBqlException {
+        final String q1 = "select * from tab4 WITH KEYS '000000000001200' TO '000000000001600' INDEX foo1";
+        showValues(q1, 5);
+    }
 
-        final String q1 = "select * from tab4 WITH KEYS '0000000001' INDEX foo1";
-        showValues(q1, 10);
+    @Test
+    public void simpleSelect5() throws HBqlException {
+        final String q1 = "select * from tab4 WITH KEYS FIRST TO '000000000001400' INDEX foo1";
+        showValues(q1, 5);
+    }
+
+    @Test
+    public void simpleSelect6() throws HBqlException {
+        final String q1 = "select * from tab4 WITH KEYS '000000000001500' TO LAST INDEX foo1";
+        showValues(q1, 5);
     }
 }

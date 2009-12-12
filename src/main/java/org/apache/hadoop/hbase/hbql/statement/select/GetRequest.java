@@ -26,6 +26,7 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 
 import java.io.IOException;
@@ -48,7 +49,9 @@ public class GetRequest implements RowRequest {
         return this.getGetValue().getMaxVersions();
     }
 
-    public ResultScanner getResultScanner(final WithArgs withArgs, final HTable table) throws HBqlException {
+    public ResultScanner getResultScanner(final Mapping mapping,
+                                          final WithArgs withArgs,
+                                          final HTable table) throws HBqlException {
         try {
             // We need to fake a ResultScanner with the Get result
             final Result result = table.get(this.getGetValue());
