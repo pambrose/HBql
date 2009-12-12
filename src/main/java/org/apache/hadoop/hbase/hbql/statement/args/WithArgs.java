@@ -327,26 +327,34 @@ public class WithArgs implements Serializable {
     }
 
 
-    public Set<ColumnAttrib> getAllColumnsUsedInServerExprs() {
+    public Set<ColumnAttrib> getColumnsUsedInServerExpr() {
         final Set<ColumnAttrib> serverAttribs = Sets.newHashSet();
         if (this.getServerExpressionTree() != null)
             serverAttribs.addAll(this.getServerExpressionTree().getAttribsUsedInExprs());
         return serverAttribs;
     }
 
-    public Set<ColumnAttrib> getAllColumnsUsedInClientExprs() {
+    public Set<ColumnAttrib> getColumnsUsedInClientExpr() {
         final Set<ColumnAttrib> clientAttribs = Sets.newHashSet();
         if (this.getClientExpressionTree() != null)
             clientAttribs.addAll(this.getClientExpressionTree().getAttribsUsedInExprs());
         return clientAttribs;
     }
 
-    public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
+    public Set<ColumnAttrib> getColumnsUsedInAllExprs() {
+        final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
+        allAttribs.addAll(this.getColumnsUsedInServerExpr());
+        allAttribs.addAll(this.getColumnsUsedInClientExpr());
+        return allAttribs;
+    }
+
+
+    public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
 
         final List<RowRequest> rowRequestList = Lists.newArrayList();
 
         for (final KeyRange keyRange : this.getKeyRangeArgs().getKeyRangeList())
-            rowRequestList.addAll(keyRange.getRowRequestList(this, columnAttribSet));
+            rowRequestList.addAll(keyRange.getRowRequestList(this, columnAttribs));
 
         return rowRequestList;
     }
@@ -389,12 +397,12 @@ public class WithArgs implements Serializable {
         }
     }
 
-    public void setScanArgs(final Scan scan, final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
+    public void setScanArgs(final Scan scan, final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
 
         // Set column names
-        for (final ColumnAttrib attrib : columnAttribSet) {
+        for (final ColumnAttrib attrib : columnAttribs) {
 
-            // Do not bother to request because it will always be delivered
+            // Do not bother to request because it will always be returned
             if (attrib.isAKeyAttrib())
                 continue;
 
