@@ -108,8 +108,8 @@ public class IndexTest extends TestSupport {
     public void simpleSelect1() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
-        //stmt.execute("DROP INDEX foo1 ON MAPPING tab4 if indexexists('table21', 'foo1')");
-        //stmt.execute("CREATE INDEX foo1 ON MAPPING tab4 (f1:val1)");
+        stmt.execute("DROP INDEX foo1 ON MAPPING tab4 if indexexists('table21', 'foo1')");
+        stmt.execute("CREATE INDEX foo1 ON MAPPING tab4 (f1:val1)");
 
         final String q1 = "select * from tab4";
         showValues(q1, 10);

@@ -29,6 +29,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -85,12 +86,16 @@ public class IndexScanRequest implements RowRequest {
             byte[] stopKey = null;
 
             if (startRow != HConstants.EMPTY_START_ROW) {
-                final int width = mapping.getKeyInfo().getKeyWidth();
+                final TableMapping tableMapping = (TableMapping)mapping;
+                tableMapping.validateKeyInfo(withArgs.getIndexName());
+                final int width = tableMapping.getKeyInfo().getKeyWidth();
                 startKey = Bytes.add(startRow, Util.getFixedWidthString(Character.MIN_VALUE, width));
             }
 
             if (stopRow != HConstants.EMPTY_END_ROW) {
-                final int width = mapping.getKeyInfo().getKeyWidth();
+                final TableMapping tableMapping = (TableMapping)mapping;
+                tableMapping.validateKeyInfo(withArgs.getIndexName());
+                final int width = tableMapping.getKeyInfo().getKeyWidth();
                 stopKey = Bytes.add(stopRow, Util.getFixedWidthString(Character.MAX_VALUE, width));
             }
 

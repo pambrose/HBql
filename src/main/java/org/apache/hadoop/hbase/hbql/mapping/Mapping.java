@@ -29,7 +29,6 @@ import org.apache.hadoop.hbase.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
-import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -58,10 +57,6 @@ public abstract class Mapping implements Serializable {
     protected Mapping(final String mappingName, final String tableName) {
         this.mappingName = mappingName;
         this.tableName = tableName;
-    }
-
-    public KeyInfo getKeyInfo() {
-        return null;
     }
 
     public abstract Collection<String> getMappingFamilyNames() throws HBqlException;

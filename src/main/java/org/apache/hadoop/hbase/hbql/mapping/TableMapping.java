@@ -101,6 +101,12 @@ public class TableMapping extends Mapping implements HMapping {
         return this.keyInfo;
     }
 
+    public void validateKeyInfo(final String indexName) throws HBqlException {
+        if (!this.getKeyInfo().isKeyWidthSpecified())
+            throw new HBqlException("Cannot use index " + indexName + " without a width value for KEY "
+                                    + this.getKeyInfo().getKeyName() + " in mapping " + this.getMappingName());
+    }
+
     public HRecord newHRecord() throws HBqlException {
         final StatementContext statementContext = new NonStatement(this, null);
         statementContext.setResultAccessor(new HRecordResultAccessor(statementContext));
