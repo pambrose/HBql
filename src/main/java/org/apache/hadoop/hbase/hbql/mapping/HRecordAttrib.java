@@ -38,13 +38,7 @@ public class HRecordAttrib extends ColumnAttrib {
 
     public HRecordAttrib(final ColumnDefinition columnDefinition) throws HBqlException {
 
-        super(columnDefinition.getFamilyName(),
-              columnDefinition.getColumnName(),
-              columnDefinition.getAliasName(),
-              columnDefinition.getFieldType(),
-              columnDefinition.isArray(),
-              null,
-              null);
+        super(columnDefinition, null, null);
 
         this.defaultArg = this.evaluateDefaultValue(columnDefinition.getDefaultValue());
 

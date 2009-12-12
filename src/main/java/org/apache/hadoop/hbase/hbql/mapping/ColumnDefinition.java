@@ -25,6 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 
 public final class ColumnDefinition implements Serializable {
@@ -39,10 +40,11 @@ public final class ColumnDefinition implements Serializable {
 
     private FamilyMapping familyMapping = null;
 
-    private ColumnDefinition(final String columnName,
+    private ColumnDefinition(final String familyName,
+                             final String columnName,
+                             final String aliasName,
                              final FieldType fieldType,
                              final boolean isArray,
-                             final String aliasName,
                              final GenericValue defaultValue) {
 
         this.columnName = columnName;
@@ -50,24 +52,24 @@ public final class ColumnDefinition implements Serializable {
         this.isArray = isArray;
         this.aliasName = aliasName;
         this.defaultValue = defaultValue;
+
+        if (familyName != null)
+            this.setFamilyMapping(new FamilyMapping(familyName, false, null));
     }
 
     // For KEY attribs
     public static ColumnDefinition newKeyColumn(final KeyInfo keyInfo) {
-        final ColumnDefinition column = new ColumnDefinition(keyInfo.getKeyName(),
-                                                             FieldType.KeyType,
-                                                             false,
-                                                             keyInfo.getKeyName(),
-                                                             null);
-        column.setFamilyMapping(new FamilyMapping("", false, null));
-        return column;
+        return new ColumnDefinition("",
+                                    keyInfo.getKeyName(),
+                                    keyInfo.getKeyName(),
+                                    FieldType.KeyType,
+                                    false,
+                                    null);
     }
 
     // For Family Default attribs
     public static ColumnDefinition newUnMappedColumn(final String familyName) {
-        final ColumnDefinition column = new ColumnDefinition("", null, false, familyName, null);
-        column.setFamilyMapping(new FamilyMapping(familyName, false, null));
-        return column;
+        return new ColumnDefinition(familyName, "", familyName, null, false, null);
     }
 
     // For regular attribs
@@ -76,7 +78,25 @@ public final class ColumnDefinition implements Serializable {
                                                    final boolean isArray,
                                                    final String aliasName,
                                                    final GenericValue defaultValue) {
-        return new ColumnDefinition(columnName, getFieldType(typeName), isArray, aliasName, defaultValue);
+        return new ColumnDefinition(null, columnName, aliasName, getFieldType(typeName), isArray, defaultValue);
+    }
+
+    // For FieldAttrib columns
+    public static ColumnDefinition newFieldAttribColumn(final String familyName,
+                                                        final String columnName,
+                                                        final Field field,
+                                                        final FieldType fieldType) {
+        return new ColumnDefinition(familyName,
+                                    (columnName != null && columnName.length() > 0) ? columnName : field.getName(),
+                                    field.getName(),
+                                    fieldType,
+                                    field.getType().isArray(),
+                                    null);
+    }
+
+    // For SelectFamilyAttrib columns
+    public static ColumnDefinition newSelectFamilyAttribColumn(final String familyName) {
+        return new ColumnDefinition(familyName, "", "", null, false, null);
     }
 
     private FamilyMapping getFamilyMapping() {
@@ -112,7 +132,7 @@ public final class ColumnDefinition implements Serializable {
         return this.fieldType;
     }
 
-    public boolean isArray() {
+    public boolean isAnArray() {
         return this.isArray;
     }
 

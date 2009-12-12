@@ -37,33 +37,21 @@ public abstract class ColumnAttrib implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final String familyName;
-    private final String columnName;
-    private final String aliasName;
-    private final FieldType fieldType;
+    private final ColumnDefinition columnDefinition;
+
     private volatile byte[] familyQualifiedBytes = null;
     private volatile byte[] familyBytes = null;
     private volatile byte[] columnBytes = null;
     private final String getter;
     private final String setter;
-    private final boolean anArray;
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
     private final boolean embedded;
 
-    protected ColumnAttrib(final String familyName,
-                           final String columnName,
-                           final String aliasName,
-                           final FieldType fieldType,
-                           final boolean isArray,
-                           final String getter,
-                           final String setter) {
+    protected ColumnAttrib(final ColumnDefinition columnDefinition, final String getter, final String setter) {
 
-        this.familyName = familyName;
-        this.columnName = columnName;
-        this.aliasName = aliasName;
-        this.fieldType = fieldType;
-        this.anArray = isArray;
+        this.columnDefinition = columnDefinition;
+
         this.getter = getter;
         this.setter = setter;
         this.embedded = this.getFamilyName() != null && this.getFamilyName().equals(ParserSupport.EMBEDDED);
@@ -324,12 +312,17 @@ public abstract class ColumnAttrib implements Serializable {
         return false;
     }
 
+    private ColumnDefinition getColumnDefinition() {
+        return this.columnDefinition;
+    }
+
     public boolean hasAlias() {
-        return this.aliasName != null && this.aliasName.length() > 0;
+        return this.getColumnDefinition().getAliasName() != null
+               && this.getColumnDefinition().getAliasName().length() > 0;
     }
 
     public String getAliasName() {
-        return (this.hasAlias()) ? this.aliasName : this.getFamilyQualifiedName();
+        return (this.hasAlias()) ? this.getColumnDefinition().getAliasName() : this.getFamilyQualifiedName();
     }
 
     public boolean isASelectFamilyAttrib() {
@@ -337,19 +330,19 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public boolean isAnArray() {
-        return this.anArray;
+        return this.getColumnDefinition().isAnArray();
     }
 
     public String getFamilyName() {
-        return this.familyName;
+        return this.getColumnDefinition().getFamilyName();
     }
 
     public String getColumnName() {
-        return this.columnName;
+        return this.getColumnDefinition().getColumnName();
     }
 
     public FieldType getFieldType() {
-        return this.fieldType;
+        return this.getColumnDefinition().getFieldType();
     }
 
     public boolean isAKeyAttrib() {
