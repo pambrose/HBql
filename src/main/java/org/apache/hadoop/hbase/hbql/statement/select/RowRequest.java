@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 
 public interface RowRequest {
 
-    int getMaxVersions();
-
     ResultScanner getResultScanner(Mapping mapping, WithArgs withArgs, HTable table) throws HBqlException;
+
+    int getMaxVersions();
 }

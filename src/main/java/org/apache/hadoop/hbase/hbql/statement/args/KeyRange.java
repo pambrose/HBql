@@ -31,7 +31,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.select.GetRequest;
-import org.apache.hadoop.hbase.hbql.statement.select.IndexScanRequest;
+import org.apache.hadoop.hbase.hbql.statement.select.IndexRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.ScanRequest;
 
@@ -148,16 +148,23 @@ public class KeyRange extends SelectStatementArgs {
     private RowRequest newGet(final WithArgs withArgs,
                               final Collection<ColumnAttrib> columnAttribs,
                               final String lower) throws HBqlException {
+
         final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(lower);
-        final Get get = new Get(lowerBytes);
-        withArgs.setGetArgs(get, columnAttribs);
-        return new GetRequest(get);
+
+        if (withArgs.hasAnIndex()) {
+            return new IndexRequest(lowerBytes, lowerBytes, columnAttribs);
+        }
+        else {
+            final Get get = new Get(lowerBytes);
+            withArgs.setGetArgs(get, columnAttribs);
+            return new GetRequest(get);
+        }
     }
 
     private List<RowRequest> getRowRequestForGet(final WithArgs withArgs,
                                                  final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
 
-        final List<RowRequest> retval = Lists.newArrayList();
+        final List<RowRequest> rowRequestList = Lists.newArrayList();
 
         // Check if the value returned is a collection
         final Object objval = this.getFirstArg(true);
@@ -165,7 +172,7 @@ public class KeyRange extends SelectStatementArgs {
             for (final GenericValue val : (Collection<GenericValue>)objval) {
                 try {
                     final String lower = (String)val.getValue(null, null);
-                    retval.add(this.newGet(withArgs, columnAttribs, lower));
+                    rowRequestList.add(this.newGet(withArgs, columnAttribs, lower));
                 }
                 catch (ResultMissingColumnException e) {
                     throw new InternalErrorException(val.asString());
@@ -174,12 +181,10 @@ public class KeyRange extends SelectStatementArgs {
         }
         else {
             final String lower = (String)objval;
-            retval.add(this.newGet(withArgs, columnAttribs, lower));
+            rowRequestList.add(this.newGet(withArgs, columnAttribs, lower));
         }
 
-        // TODO Add index support
-
-        return retval;
+        return rowRequestList;
     }
 
     private RowRequest getRowRequestForScan(final WithArgs withArgs,
@@ -208,7 +213,7 @@ public class KeyRange extends SelectStatementArgs {
         withArgs.setScanArgs(scan, columnAttribs);
 
         if (withArgs.hasAnIndex())
-            return new IndexScanRequest(scan, columnAttribs);
+            return new IndexRequest(scan.getStartRow(), scan.getStopRow(), columnAttribs);
         else
             return new ScanRequest(scan);
     }

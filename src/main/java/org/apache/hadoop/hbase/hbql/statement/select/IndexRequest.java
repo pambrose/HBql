@@ -23,7 +23,6 @@ package org.apache.hadoop.hbase.hbql.statement.select;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Util;
@@ -36,26 +35,32 @@ import org.apache.hadoop.hbase.util.Bytes;
 import java.io.IOException;
 import java.util.Collection;
 
-public class IndexScanRequest implements RowRequest {
+public class IndexRequest implements RowRequest {
 
-    final Scan scanValue;
-    final Collection<ColumnAttrib> columnAttribs;
+    private final byte[] startRow;
+    private final byte[] stopRow;
+    private final Collection<ColumnAttrib> columnAttribs;
 
-    public IndexScanRequest(final Scan scanValue, final Collection<ColumnAttrib> columnAttribs) {
-        this.scanValue = scanValue;
+    public IndexRequest(final byte[] startRow, final byte[] stopRow, final Collection<ColumnAttrib> columnAttribs) {
+        this.startRow = startRow;
+        this.stopRow = stopRow;
         this.columnAttribs = columnAttribs;
-    }
-
-    private Scan getScanValue() {
-        return this.scanValue;
     }
 
     private Collection<ColumnAttrib> getColumnAttribs() {
         return this.columnAttribs;
     }
 
+    private byte[] getStartRow() {
+        return this.startRow;
+    }
+
+    private byte[] getStopRow() {
+        return this.stopRow;
+    }
+
     public int getMaxVersions() {
-        return this.getScanValue().getMaxVersions();
+        return Integer.MAX_VALUE;
     }
 
     private byte[][] getColumns() throws HBqlException {
@@ -77,30 +82,27 @@ public class IndexScanRequest implements RowRequest {
     public ResultScanner getResultScanner(final Mapping mapping,
                                           final WithArgs withArgs,
                                           final HTable table) throws HBqlException {
+
+        final IndexedTable index = (IndexedTable)table;
+
+        byte[] startKey = null;
+        byte[] stopKey = null;
+
+        if (this.getStartRow() != HConstants.EMPTY_START_ROW) {
+            final TableMapping tableMapping = (TableMapping)mapping;
+            tableMapping.validateKeyInfo(withArgs.getIndexName());
+            final int width = tableMapping.getKeyInfo().getKeyWidth();
+            startKey = Bytes.add(this.getStartRow(), Util.getFixedWidthString(Character.MIN_VALUE, width));
+        }
+
+        if (this.getStopRow() != HConstants.EMPTY_END_ROW) {
+            final TableMapping tableMapping = (TableMapping)mapping;
+            tableMapping.validateKeyInfo(withArgs.getIndexName());
+            final int width = tableMapping.getKeyInfo().getKeyWidth();
+            stopKey = Bytes.add(this.getStopRow(), Util.getFixedWidthString(Character.MAX_VALUE, width));
+        }
+
         try {
-
-            final byte[] startRow = this.getScanValue().getStartRow();
-            final byte[] stopRow = this.getScanValue().getStopRow();
-
-            byte[] startKey = null;
-            byte[] stopKey = null;
-
-            if (startRow != HConstants.EMPTY_START_ROW) {
-                final TableMapping tableMapping = (TableMapping)mapping;
-                tableMapping.validateKeyInfo(withArgs.getIndexName());
-                final int width = tableMapping.getKeyInfo().getKeyWidth();
-                startKey = Bytes.add(startRow, Util.getFixedWidthString(Character.MIN_VALUE, width));
-            }
-
-            if (stopRow != HConstants.EMPTY_END_ROW) {
-                final TableMapping tableMapping = (TableMapping)mapping;
-                tableMapping.validateKeyInfo(withArgs.getIndexName());
-                final int width = tableMapping.getKeyInfo().getKeyWidth();
-                stopKey = Bytes.add(stopRow, Util.getFixedWidthString(Character.MAX_VALUE, width));
-            }
-
-            final IndexedTable index = (IndexedTable)table;
-
             return index.getIndexedScanner(withArgs.getIndexName(),
                                            startKey,
                                            stopKey,

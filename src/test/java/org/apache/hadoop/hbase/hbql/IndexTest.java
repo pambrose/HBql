@@ -144,4 +144,10 @@ public class IndexTest extends TestSupport {
         final String q1 = "select * from tab4 WITH KEYS '000000000001500' TO LAST INDEX foo1";
         showValues(q1, 5);
     }
+
+    @Test
+    public void simpleSelect7() throws HBqlException {
+        final String q1 = "select * from tab4 WITH KEY '000000000001500' INDEX foo1";
+        showValues(q1, 1);
+    }
 }

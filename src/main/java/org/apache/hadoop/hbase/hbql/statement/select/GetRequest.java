@@ -54,8 +54,9 @@ public class GetRequest implements RowRequest {
                                           final HTable table) throws HBqlException {
         try {
             // We need to fake a ResultScanner with the Get result
-            final Result result = table.get(this.getGetValue());
             final List<Result> resultList = Lists.newArrayList();
+            final Result result = table.get(this.getGetValue());
+
             if (result != null && !result.isEmpty())
                 resultList.add(result);
 
