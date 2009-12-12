@@ -62,6 +62,15 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
         return this.getExprArg(pos).getValue(connection, object);
     }
 
+    protected Object getConstantValue(final int pos) throws HBqlException {
+        try {
+            return this.getExprArg(pos).getValue(null, null);
+        }
+        catch (ResultMissingColumnException e) {
+            throw new InternalErrorException("Invalid column present in constant");
+        }
+    }
+
     protected void validateArgsForColumnConstant() throws InvalidServerFilterExpressionException {
         // One of the values must be a single column reference and the other a constant
         if ((this.getExprArg(0).isAColumnReference() && this.getExprArg(1).isAConstant())

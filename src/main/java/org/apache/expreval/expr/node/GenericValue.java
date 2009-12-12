@@ -38,7 +38,7 @@ public interface GenericValue extends Serializable {
 
     Object getValue(HConnectionImpl connection, Object object) throws HBqlException, ResultMissingColumnException;
 
-    Filter getFilter() throws HBqlException, ResultMissingColumnException;
+    Filter getFilter() throws HBqlException;
 
     GenericValue getOptimizedValue() throws HBqlException;
 

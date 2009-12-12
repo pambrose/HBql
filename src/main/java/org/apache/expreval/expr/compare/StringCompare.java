@@ -72,7 +72,7 @@ public class StringCompare extends GenericCompare {
         }
     }
 
-    public Filter getFilter() throws HBqlException, ResultMissingColumnException {
+    public Filter getFilter() throws HBqlException {
 
         final GenericColumn<? extends GenericValue> column;
         final Object constant;
@@ -82,12 +82,12 @@ public class StringCompare extends GenericCompare {
 
         if (this.getExprArg(0).isAColumnReference()) {
             column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
-            constant = this.getValue(1, null, null);
+            constant = this.getConstantValue(1);
             compareOp = this.getOperator().getCompareOpLeft();
         }
         else {
             column = ((DelegateColumn)this.getExprArg(1)).getTypedColumn();
-            constant = this.getValue(0, null, null);
+            constant = this.getConstantValue(0);
             compareOp = this.getOperator().getCompareOpRight();
         }
 

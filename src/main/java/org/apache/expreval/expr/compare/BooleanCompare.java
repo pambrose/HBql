@@ -68,7 +68,7 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
         }
     }
 
-    public Filter getFilter() throws HBqlException, ResultMissingColumnException {
+    public Filter getFilter() throws HBqlException {
 
         final Filter filter0 = this.getExprArg(0).getFilter();
         final Filter filter1 = this.getExprArg(1).getFilter();

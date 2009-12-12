@@ -110,7 +110,7 @@ public class IndexRequest implements RowRequest {
                                            startKey,
                                            stopKey,
                                            withArgs.getColumnsUsedInIndexWhereExpr(),
-                                           null,
+                                           withArgs.getFilterForIndex(),
                                            getColumns());
         }
         catch (IOException e) {

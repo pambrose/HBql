@@ -396,7 +396,7 @@ public abstract class GenericExpression implements GenericValue {
         return null;
     }
 
-    public Filter getFilter() throws HBqlException, ResultMissingColumnException {
+    public Filter getFilter() throws HBqlException {
         throw new InvalidServerFilterExpressionException();
     }
 }

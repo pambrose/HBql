@@ -74,7 +74,7 @@ public class DelegateCompare extends GenericCompare {
         return this.getTypedExpr().getValue(connection, object);
     }
 
-    public Filter getFilter() throws HBqlException, ResultMissingColumnException {
+    public Filter getFilter() throws HBqlException {
         return this.getTypedExpr().getFilter();
     }
 }

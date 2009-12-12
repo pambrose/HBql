@@ -108,8 +108,8 @@ public class IndexTest extends TestSupport {
     public void simpleSelect1() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
-        stmt.execute("DROP INDEX foo1 ON MAPPING tab4 if indexexists('table21', 'foo1')");
-        stmt.execute("CREATE INDEX foo1 ON MAPPING tab4 (f1:val1)");
+        //stmt.execute("DROP INDEX foo1 ON MAPPING tab4 if indexexists('table21', 'foo1')");
+        //stmt.execute("CREATE INDEX foo1 ON MAPPING tab4 (f1:val1)");
 
         final String q1 = "select * from tab4";
         showValues(q1, 10);
@@ -123,31 +123,41 @@ public class IndexTest extends TestSupport {
 
     @Test
     public void simpleSelect3() throws HBqlException {
-        final String q1 = "select * from tab4 WITH KEYS ALL INDEX foo1";
+        final String q1 = "select * from tab4 WITH INDEX foo1 KEYS ALL";
         showValues(q1, 10);
     }
 
     @Test
     public void simpleSelect4() throws HBqlException {
-        final String q1 = "select * from tab4 WITH KEYS '000000000001200' TO '000000000001600' INDEX foo1";
+        final String q1 = "select * from tab4 WITH INDEX foo1 KEYS '000000000001200' TO '000000000001600'";
         showValues(q1, 5);
     }
 
     @Test
     public void simpleSelect5() throws HBqlException {
-        final String q1 = "select * from tab4 WITH KEYS FIRST TO '000000000001400' INDEX foo1";
+        final String q1 = "select * from tab4 WITH INDEX foo1 KEYS FIRST TO '000000000001400'";
         showValues(q1, 5);
     }
 
     @Test
     public void simpleSelect6() throws HBqlException {
-        final String q1 = "select * from tab4 WITH KEYS '000000000001500' TO LAST INDEX foo1";
+        final String q1 = "select * from tab4 WITH INDEX foo1 KEYS '000000000001500' TO LAST";
         showValues(q1, 5);
     }
 
     @Test
     public void simpleSelect7() throws HBqlException {
-        final String q1 = "select * from tab4 WITH KEY '000000000001500' INDEX foo1";
+        final String q1 = "select * from tab4 WITH INDEX foo1 KEY '000000000001500' ";
+        showValues(q1, 1);
+    }
+
+    @Test
+    public void simpleSelect8() throws HBqlException {
+        final String q1 = "select * from tab4 WITH " +
+                          "INDEX foo1 " +
+                          "KEYS '000000000001500' TO LAST " +
+                          "INDEX FILTER WHERE val1 = '000000000001700' " +
+                          "CLIENT FILTER WHERE val1 = '000000000001700'";
         showValues(q1, 1);
     }
 }

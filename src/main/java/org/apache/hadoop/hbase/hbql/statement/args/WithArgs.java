@@ -326,6 +326,13 @@ public class WithArgs implements Serializable {
         return cnt;
     }
 
+    public Filter getFilterForIndex() throws HBqlException {
+        if (this.getServerExpressionTree() != null)
+            return this.getServerExpressionTree().getFilter();
+        else
+            return null;
+    }
+
     public byte[][] getColumnsUsedInIndexWhereExpr() {
         final byte[][] indexColumns;
         final Set<ColumnAttrib> columnAttribs = this.getColumnsUsedInServerWhereExpr();

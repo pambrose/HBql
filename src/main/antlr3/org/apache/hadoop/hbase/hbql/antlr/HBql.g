@@ -109,7 +109,7 @@ options {backtrack=true;}
 jdbcStatement returns [HBqlStatement retval]
 options {backtrack=true;}	
 	: sel=selectStatement				{retval = $sel.retval;}			
-	| keyDELETE di=deleteItemList? keyFROM keyMAPPING? t=simpleId w=withClause? p=pred?	
+	| keyDELETE di=deleteItemList? keyFROM keyMAPPING? t=simpleId (keyWITH w=withClause)? p=pred?	
 							{retval = new DeleteStatement($p.retval, $di.retval, $t.text, $w.retval);}
 	| keyINSERT keyINTO keyMAPPING? t=simpleId LPAREN e=exprList RPAREN ins=insertValues p=pred?
 							{retval = new InsertStatement($p.retval, $t.text, $e.retval, $ins.retval);}
@@ -170,7 +170,7 @@ insertValues returns [InsertValueSource retval]
 	| sel=selectStatement				{retval = new InsertSelectValues($sel.retval);};
 			
 selectStatement returns [SelectStatement retval]
-	: keySELECT c=selectElems keyFROM keyMAPPING? t=simpleId w=withClause?
+	: keySELECT c=selectElems keyFROM keyMAPPING? t=simpleId (keyWITH w=withClause)?
 							{retval = new SelectStatement($c.retval, $t.text, $w.retval);};
 							
 familyDefinitionList returns [List<FamilyDefinition> retval]
@@ -217,11 +217,11 @@ columnDefinition returns [ColumnDefinition retval]
 								 
 withClause returns [WithArgs retval]
 @init {retval = new WithArgs();}
-	: keyWITH withElements[retval]+;
+	: withElements[retval]+
+	| keyINDEX idx=simpleId {retval.setIndexName($idx.text);} indexElements[retval]* ;
 
 withElements[WithArgs withArgs] 
 	: (keyKEYS | keyKEY) k=keysRangeArgs		{withArgs.setKeyRangeArgs($k.retval);}
-	| keyINDEX idx=simpleId				{withArgs.setIndexName($idx.text);}	
 	| keyTIMESTAMP t=timestampArgs			{withArgs.setTimestampArgs($t.retval);}	
 	| keyVERSIONS v=versionArgs			{withArgs.setVersionArgs($v.retval);}
 	| keySCANNER_CACHE_SIZE sc=scannerCacheArgs	{withArgs.setScannerCacheArgs($sc.retval);}
@@ -230,6 +230,13 @@ withElements[WithArgs withArgs]
 	| keyCLIENT keyFILTER keyWHERE c=clientFilter	{withArgs.setClientExpressionTree($c.retval);}
 	;
 	
+indexElements[WithArgs withArgs] 
+	: (keyKEYS | keyKEY) k=keysRangeArgs		{withArgs.setKeyRangeArgs($k.retval);}
+	| keyINDEX keyFILTER keyWHERE s=serverFilter	{withArgs.setServerExpressionTree($s.retval);}
+	| keyCLIENT keyFILTER keyWHERE c=clientFilter	{withArgs.setClientExpressionTree($c.retval);}
+	;
+	
+
 keysRangeArgs returns [KeyRangeArgs retval]
 	: k=rangeList					{retval = new KeyRangeArgs($k.retval);}	
 	| keyALL					{retval = new KeyRangeArgs();}	

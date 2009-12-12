@@ -70,13 +70,7 @@ public class ExpressionTree extends MultipleExpressionContext {
         this.validateTypes(true, true);
         this.optimize();
 
-        try {
-            return this.getGenericValue().getFilter();
-        }
-        catch (ResultMissingColumnException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return this.getGenericValue().getFilter();
     }
 
     public String asString() {
