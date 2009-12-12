@@ -161,8 +161,8 @@ public class KeyRange extends SelectStatementArgs {
         }
     }
 
-    private List<RowRequest> getRowRequestForGet(final WithArgs withArgs,
-                                                 final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
+    private List<RowRequest> getGetRequest(final WithArgs withArgs,
+                                           final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
 
         final List<RowRequest> rowRequestList = Lists.newArrayList();
 
@@ -187,7 +187,7 @@ public class KeyRange extends SelectStatementArgs {
         return rowRequestList;
     }
 
-    private RowRequest getRowRequestForScan(final WithArgs withArgs,
+    private List<RowRequest> getScanRequest(final WithArgs withArgs,
                                             final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
 
         final Scan scan = new Scan();
@@ -212,19 +212,17 @@ public class KeyRange extends SelectStatementArgs {
 
         withArgs.setScanArgs(scan, columnAttribs);
 
-        if (withArgs.hasAnIndex())
-            return new IndexRequest(scan.getStartRow(), scan.getStopRow(), columnAttribs);
-        else
-            return new ScanRequest(scan);
+        final RowRequest rowRequest = withArgs.hasAnIndex()
+                                      ? new IndexRequest(scan.getStartRow(), scan.getStopRow(), columnAttribs)
+                                      : new ScanRequest(scan);
+
+        return Lists.newArrayList(rowRequest);
     }
 
-    public void process(final WithArgs withArgs,
-                        final List<RowRequest> rowRequestList,
-                        final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
+    public List<RowRequest> getRowRequestList(final WithArgs withArgs,
+                                              final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
 
-        if (this.isSingleKey())
-            rowRequestList.addAll(this.getRowRequestForGet(withArgs, columnAttribSet));
-        else
-            rowRequestList.add(this.getRowRequestForScan(withArgs, columnAttribSet));
+        return this.isSingleKey() ? this.getGetRequest(withArgs, columnAttribSet)
+                                  : this.getScanRequest(withArgs, columnAttribSet);
     }
 }

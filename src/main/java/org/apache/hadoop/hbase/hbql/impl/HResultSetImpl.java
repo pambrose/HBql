@@ -94,10 +94,6 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         return this.getQuery().getListeners();
     }
 
-    private List<RowRequest> getRowRequestList() throws HBqlException {
-        return this.getQuery().getRowRequestList();
-    }
-
     public void close() {
 
         for (final ResultScanner scanner : this.getResultScannerList())
@@ -126,9 +122,10 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         try {
             return new ResultsIterator<T>(this.getWithArgs().getLimit()) {
 
-                private HTableWrapper tableWrapper = getHConnectionImpl().newHTableWrapper(getWithArgs(), getTableName());
+                private HTableWrapper tableWrapper = getHConnectionImpl().newHTableWrapper(getWithArgs(),
+                                                                                           getTableName());
                 private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
-                private final Iterator<RowRequest> rowRequestIterator = getRowRequestList().iterator();
+                private final Iterator<RowRequest> rowRequestIterator = getQuery().getRowRequestList().iterator();
 
                 private int maxVersions = 0;
                 private ResultScanner currentResultScanner = null;

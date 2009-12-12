@@ -88,12 +88,13 @@ public class Query<E> {
 
     public List<RowRequest> getRowRequestList() throws HBqlException {
 
-        final WithArgs withArgs = this.getSelectStmt().getWithArgs();
-
         // Get list of all columns that are used in select list and expr tree
         final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
         allAttribs.addAll(this.getSelectStmt().getSelectAttribList());
-        allAttribs.addAll(withArgs.getAllColumnsUsedInExprs());
+
+        final WithArgs withArgs = this.getSelectStmt().getWithArgs();
+        allAttribs.addAll(withArgs.getAllColumnsUsedInServerExprs());
+        allAttribs.addAll(withArgs.getAllColumnsUsedInClientExprs());
 
         return withArgs.getRowRequestList(allAttribs);
     }

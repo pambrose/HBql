@@ -51,8 +51,8 @@ public abstract class MultipleExpressionContext implements Serializable {
     private boolean needsOptimization = true;
     private boolean needsContextSetting = true;
 
-    private final List<GenericColumn> columnsUsedInExpr = Lists.newArrayList();
-    private final List<ColumnAttrib> attribsUsedInExpr = Lists.newArrayList();
+    private final List<GenericColumn> columnsUsedInExprs = Lists.newArrayList();
+    private final List<ColumnAttrib> attribsUsedInExprs = Lists.newArrayList();
     private final List<NamedParameter> namedParamList = Lists.newArrayList();
     private final Map<String, List<NamedParameter>> namedParamMap = Maps.newHashMap();
 
@@ -74,12 +74,12 @@ public abstract class MultipleExpressionContext implements Serializable {
 
     public abstract boolean allowColumns();
 
-    public List<GenericColumn> getColumnsUsedInExpression() {
-        return this.columnsUsedInExpr;
+    public List<GenericColumn> getColumnsUsedInExprs() {
+        return this.columnsUsedInExprs;
     }
 
-    public List<ColumnAttrib> getAttribsUsedInExpr() {
-        return this.attribsUsedInExpr;
+    public List<ColumnAttrib> getAttribsUsedInExprs() {
+        return this.attribsUsedInExprs;
     }
 
     public void addExpression(final GenericValue genericValue) {
@@ -183,9 +183,9 @@ public abstract class MultipleExpressionContext implements Serializable {
 
         if (this.needsTypeValidation()) {
 
-            if (!allowColumns && this.getColumnsUsedInExpression().size() > 0)
+            if (!allowColumns && this.getColumnsUsedInExprs().size() > 0)
                 throw new InvalidTypeException("Invalid column reference"
-                                               + (this.getColumnsUsedInExpression().size() > 1 ? "s" : "")
+                                               + (this.getColumnsUsedInExprs().size() > 1 ? "s" : "")
                                                + " in " + this.asString());
 
             // Collect return types of all args
@@ -272,8 +272,8 @@ public abstract class MultipleExpressionContext implements Serializable {
     }
 
     public void addColumnToUsedList(final GenericColumn column) {
-        this.getColumnsUsedInExpression().add(column);
-        this.getAttribsUsedInExpr().add(column.getColumnAttrib());
+        this.getColumnsUsedInExprs().add(column);
+        this.getAttribsUsedInExprs().add(column.getColumnAttrib());
     }
 
     private boolean needsTypeValidation() {

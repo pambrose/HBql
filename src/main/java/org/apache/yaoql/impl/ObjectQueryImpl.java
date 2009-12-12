@@ -68,6 +68,7 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
         if (objects == null || objects.size() == 0) {
             final ExpressionTree expressionTree = ExpressionTree.newExpressionTree(null, new BooleanLiteral(true));
             expressionTree.setStatementContext(null);
+            expressionTree.setAllowColumns(false);
             return expressionTree;
         }
 

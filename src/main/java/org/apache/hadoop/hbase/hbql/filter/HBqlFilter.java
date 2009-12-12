@@ -112,7 +112,7 @@ public class HBqlFilter implements Filter {
                 final ColumnAttrib attrib = tableMapping.getAttribFromFamilyQualifiedName(familyName, columnName);
 
                 // Do not bother setting value if it is not used in expression
-                if (this.getExpressionTree().getAttribsUsedInExpr().contains(attrib)) {
+                if (this.getExpressionTree().getAttribsUsedInExprs().contains(attrib)) {
                     LOG.info("In in filterKeyValue() setting value for: " + familyName + ":" + columnName);
                     final Object val = attrib.getValueFromBytes(null, v.getValue());
                     this.getHRecord().setCurrentValue(familyName, columnName, v.getTimestamp(), val);

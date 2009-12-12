@@ -242,7 +242,7 @@ public class TestSupport {
             final List<String> valList = Lists.newArrayList(vals);
 
             final List<String> attribList = Lists.newArrayList();
-            for (final GenericColumn column : expressionTree.getColumnsUsedInExpression())
+            for (final GenericColumn column : expressionTree.getColumnsUsedInExprs())
                 attribList.add(column.getVariableName());
 
             boolean retval = true;

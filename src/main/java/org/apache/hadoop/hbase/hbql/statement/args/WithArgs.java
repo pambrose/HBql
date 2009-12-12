@@ -326,20 +326,27 @@ public class WithArgs implements Serializable {
         return cnt;
     }
 
-    public Set<ColumnAttrib> getAllColumnsUsedInExprs() {
-        final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
+
+    public Set<ColumnAttrib> getAllColumnsUsedInServerExprs() {
+        final Set<ColumnAttrib> serverAttribs = Sets.newHashSet();
         if (this.getServerExpressionTree() != null)
-            allAttribs.addAll(this.getServerExpressionTree().getAttribsUsedInExpr());
+            serverAttribs.addAll(this.getServerExpressionTree().getAttribsUsedInExprs());
+        return serverAttribs;
+    }
+
+    public Set<ColumnAttrib> getAllColumnsUsedInClientExprs() {
+        final Set<ColumnAttrib> clientAttribs = Sets.newHashSet();
         if (this.getClientExpressionTree() != null)
-            allAttribs.addAll(this.getClientExpressionTree().getAttribsUsedInExpr());
-        return allAttribs;
+            clientAttribs.addAll(this.getClientExpressionTree().getAttribsUsedInExprs());
+        return clientAttribs;
     }
 
     public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
 
         final List<RowRequest> rowRequestList = Lists.newArrayList();
+
         for (final KeyRange keyRange : this.getKeyRangeArgs().getKeyRangeList())
-            keyRange.process(this, rowRequestList, columnAttribSet);
+            rowRequestList.addAll(keyRange.getRowRequestList(this, columnAttribSet));
 
         return rowRequestList;
     }
