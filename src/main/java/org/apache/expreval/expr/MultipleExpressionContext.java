@@ -74,11 +74,11 @@ public abstract class MultipleExpressionContext implements Serializable {
 
     public abstract boolean allowColumns();
 
-    public List<GenericColumn> getColumnsUsedInExprs() {
+    public List<GenericColumn> getColumnsUsedInExpr() {
         return this.columnsUsedInExprs;
     }
 
-    public List<ColumnAttrib> getAttribsUsedInExprs() {
+    public List<ColumnAttrib> getAttribsUsedInExpr() {
         return this.attribsUsedInExprs;
     }
 
@@ -183,9 +183,9 @@ public abstract class MultipleExpressionContext implements Serializable {
 
         if (this.needsTypeValidation()) {
 
-            if (!allowColumns && this.getColumnsUsedInExprs().size() > 0)
+            if (!allowColumns && this.getColumnsUsedInExpr().size() > 0)
                 throw new InvalidTypeException("Invalid column reference"
-                                               + (this.getColumnsUsedInExprs().size() > 1 ? "s" : "")
+                                               + (this.getColumnsUsedInExpr().size() > 1 ? "s" : "")
                                                + " in " + this.asString());
 
             // Collect return types of all args
@@ -272,8 +272,8 @@ public abstract class MultipleExpressionContext implements Serializable {
     }
 
     public void addColumnToUsedList(final GenericColumn column) {
-        this.getColumnsUsedInExprs().add(column);
-        this.getAttribsUsedInExprs().add(column.getColumnAttrib());
+        this.getColumnsUsedInExpr().add(column);
+        this.getAttribsUsedInExpr().add(column.getColumnAttrib());
     }
 
     private boolean needsTypeValidation() {

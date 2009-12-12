@@ -127,7 +127,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
 
         this.validateTypes();
 
-        final Set<ColumnAttrib> allWhereAttribs = this.getWithArgs().getColumnsUsedInAllExprs();
+        final Set<ColumnAttrib> allWhereAttribs = this.getWithArgs().getColumnsUsedInAllWhereExprs();
 
         HTableWrapper tableWrapper = null;
 

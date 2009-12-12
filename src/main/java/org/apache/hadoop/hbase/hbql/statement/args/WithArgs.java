@@ -34,7 +34,6 @@ import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -327,29 +326,29 @@ public class WithArgs implements Serializable {
     }
 
 
-    public Set<ColumnAttrib> getColumnsUsedInServerExpr() {
+    public Set<ColumnAttrib> getColumnsUsedInServerWhereExpr() {
         final Set<ColumnAttrib> serverAttribs = Sets.newHashSet();
         if (this.getServerExpressionTree() != null)
-            serverAttribs.addAll(this.getServerExpressionTree().getAttribsUsedInExprs());
+            serverAttribs.addAll(this.getServerExpressionTree().getAttribsUsedInExpr());
         return serverAttribs;
     }
 
-    public Set<ColumnAttrib> getColumnsUsedInClientExpr() {
+    public Set<ColumnAttrib> getColumnsUsedInClientWhereExpr() {
         final Set<ColumnAttrib> clientAttribs = Sets.newHashSet();
         if (this.getClientExpressionTree() != null)
-            clientAttribs.addAll(this.getClientExpressionTree().getAttribsUsedInExprs());
+            clientAttribs.addAll(this.getClientExpressionTree().getAttribsUsedInExpr());
         return clientAttribs;
     }
 
-    public Set<ColumnAttrib> getColumnsUsedInAllExprs() {
+    public Set<ColumnAttrib> getColumnsUsedInAllWhereExprs() {
         final Set<ColumnAttrib> allAttribs = Sets.newHashSet();
-        allAttribs.addAll(this.getColumnsUsedInServerExpr());
-        allAttribs.addAll(this.getColumnsUsedInClientExpr());
+        allAttribs.addAll(this.getColumnsUsedInServerWhereExpr());
+        allAttribs.addAll(this.getColumnsUsedInClientWhereExpr());
         return allAttribs;
     }
 
 
-    public List<RowRequest> getRowRequestList(final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
+    public List<RowRequest> getRowRequestList(final Set<ColumnAttrib> columnAttribs) throws HBqlException {
 
         final List<RowRequest> rowRequestList = Lists.newArrayList();
 
@@ -359,8 +358,7 @@ public class WithArgs implements Serializable {
         return rowRequestList;
     }
 
-    public void setGetArgs(final Get get,
-                           final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
+    public void setGetArgs(final Get get, final Set<ColumnAttrib> columnAttribSet) throws HBqlException {
 
         // Set column names
         for (final ColumnAttrib attrib : columnAttribSet) {
@@ -397,7 +395,7 @@ public class WithArgs implements Serializable {
         }
     }
 
-    public void setScanArgs(final Scan scan, final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
+    public void setScanArgs(final Scan scan, final Set<ColumnAttrib> columnAttribs) throws HBqlException {
 
         // Set column names
         for (final ColumnAttrib attrib : columnAttribs) {

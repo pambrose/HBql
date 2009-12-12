@@ -33,21 +33,21 @@ import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.Set;
 
 public class IndexRequest implements RowRequest {
 
     private final byte[] startRow;
     private final byte[] stopRow;
-    private final Collection<ColumnAttrib> columnAttribs;
+    private final Set<ColumnAttrib> columnAttribs;
 
-    public IndexRequest(final byte[] startRow, final byte[] stopRow, final Collection<ColumnAttrib> columnAttribs) {
+    public IndexRequest(final byte[] startRow, final byte[] stopRow, final Set<ColumnAttrib> columnAttribs) {
         this.startRow = startRow;
         this.stopRow = stopRow;
         this.columnAttribs = columnAttribs;
     }
 
-    private Collection<ColumnAttrib> getColumnAttribs() {
+    private Set<ColumnAttrib> getColumnAttribs() {
         return this.columnAttribs;
     }
 

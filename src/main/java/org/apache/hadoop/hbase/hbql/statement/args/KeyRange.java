@@ -37,6 +37,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.ScanRequest;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class KeyRange extends SelectStatementArgs {
     private final KeyRangeArgs.Type type;
@@ -146,7 +147,7 @@ public class KeyRange extends SelectStatementArgs {
     }
 
     private RowRequest newGet(final WithArgs withArgs,
-                              final Collection<ColumnAttrib> columnAttribs,
+                              final Set<ColumnAttrib> columnAttribs,
                               final String lower) throws HBqlException {
 
         final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(lower);
@@ -162,7 +163,7 @@ public class KeyRange extends SelectStatementArgs {
     }
 
     private List<RowRequest> getGetRequest(final WithArgs withArgs,
-                                           final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
+                                           final Set<ColumnAttrib> columnAttribs) throws HBqlException {
 
         final List<RowRequest> rowRequestList = Lists.newArrayList();
 
@@ -188,7 +189,7 @@ public class KeyRange extends SelectStatementArgs {
     }
 
     private List<RowRequest> getScanRequest(final WithArgs withArgs,
-                                            final Collection<ColumnAttrib> columnAttribs) throws HBqlException {
+                                            final Set<ColumnAttrib> columnAttribs) throws HBqlException {
 
         final Scan scan = new Scan();
 
@@ -220,7 +221,7 @@ public class KeyRange extends SelectStatementArgs {
     }
 
     public List<RowRequest> getRowRequestList(final WithArgs withArgs,
-                                              final Collection<ColumnAttrib> columnAttribSet) throws HBqlException {
+                                              final Set<ColumnAttrib> columnAttribSet) throws HBqlException {
 
         return this.isSingleKey() ? this.getGetRequest(withArgs, columnAttribSet)
                                   : this.getScanRequest(withArgs, columnAttribSet);
