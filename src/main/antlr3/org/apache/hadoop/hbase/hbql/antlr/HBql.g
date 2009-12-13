@@ -109,7 +109,7 @@ options {backtrack=true;}
 jdbcStatement returns [HBqlStatement retval]
 options {backtrack=true;}	
 	: sel=selectStatement				{retval = $sel.retval;}			
-	| keyDELETE di=deleteItemList? keyFROM keyMAPPING? t=simpleId (keyWITH w=withClause)? p=pred?	
+	| keyDELETE di=deleteItemList? keyFROM keyMAPPING? t=simpleId w=withClause? p=pred?	
 							{retval = new DeleteStatement($p.retval, $di.retval, $t.text, $w.retval);}
 	| keyINSERT keyINTO keyMAPPING? t=simpleId LPAREN e=exprList RPAREN ins=insertValues p=pred?
 							{retval = new InsertStatement($p.retval, $t.text, $e.retval, $ins.retval);}
@@ -143,6 +143,7 @@ attribMapping returns [AttribMapping retval]
 							{retval = new AttribMapping(new KeyInfo($key.text, $w.retval), $fm.retval);};
 	
 pred returns [StatementPredicate retval]
+options {memoize=true;}	
 	: keyIF  b=exprValue 				{retval = new StatementPredicate($b.retval);};
 
 	
@@ -170,7 +171,7 @@ insertValues returns [InsertValueSource retval]
 	| sel=selectStatement				{retval = new InsertSelectValues($sel.retval);};
 			
 selectStatement returns [SelectStatement retval]
-	: keySELECT c=selectElems keyFROM keyMAPPING? t=simpleId (keyWITH w=withClause)?
+	: keySELECT c=selectElems keyFROM keyMAPPING? t=simpleId w=withClause?
 							{retval = new SelectStatement($c.retval, $t.text, $w.retval);};
 							
 familyDefinitionList returns [List<FamilyDefinition> retval]
@@ -186,6 +187,7 @@ familyPropertyList returns [List<FamilyProperty> retval]
 	: a1=familyProperty {retval.add($a1.retval);} (COMMA a2=familyProperty {retval.add($a2.retval);})*;
 	
 familyProperty returns [FamilyProperty retval]
+options {memoize=true;}	
 	: keyMAX_VERSIONS COLON v=exprValue		{retval = new MaxVersionsProperty($v.retval);}
 	| keyBLOOM_FILTER COLON v=exprValue		{retval = new BloomFilterProperty($v.retval);}
 	| keyBLOCK_SIZE COLON v=exprValue		{retval = new BlockSizeProperty($v.retval);}
@@ -214,13 +216,17 @@ columnDefinitionnList returns [List<ColumnDefinition> retval]
 columnDefinition returns [ColumnDefinition retval]
 	: s=simpleId type=simpleId (b=LBRACE RBRACE)? (keyALIAS a=simpleId)? (keyDEFAULT def=exprValue)?
 							{retval = ColumnDefinition.newMappedColumn($s.text, $type.text, $b.text!=null, $a.text, $def.retval);};
-								 
+
 withClause returns [WithArgs retval]
+	: keyWITH w=withStmt				{retval = $w.retval;};	
+								 
+withStmt  returns [WithArgs retval]
 @init {retval = new WithArgs();}
 	: withElements[retval]+
 	| keyINDEX idx=simpleId {retval.setIndexName($idx.text);} indexElements[retval]* ;
 
 withElements[WithArgs withArgs] 
+options {memoize=true;}	
 	: (keyKEYS | keyKEY) k=keysRangeArgs		{withArgs.setKeyRangeArgs($k.retval);}
 	| keyTIMESTAMP t=timestampArgs			{withArgs.setTimestampArgs($t.retval);}	
 	| keyVERSIONS v=versionArgs			{withArgs.setVersionArgs($v.retval);}
@@ -231,6 +237,7 @@ withElements[WithArgs withArgs]
 	;
 	
 indexElements[WithArgs withArgs] 
+options {memoize=true;}	
 	: (keyKEYS | keyKEY) k=keysRangeArgs		{withArgs.setKeyRangeArgs($k.retval);}
 	| keyINDEX keyFILTER keyWHERE s=serverFilter	{withArgs.setServerExpressionTree($s.retval);}
 	| keyCLIENT keyFILTER keyWHERE c=clientFilter	{withArgs.setClientExpressionTree($c.retval);}
