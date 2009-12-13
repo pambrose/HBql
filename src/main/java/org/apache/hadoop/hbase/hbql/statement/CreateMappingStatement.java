@@ -75,6 +75,7 @@ public class CreateMappingStatement extends StatementContext implements Connecti
 
     public void validate() throws HBqlException {
 
+        // Compute keywidth expression if present
         if (this.getKeyInfo() != null)
             this.getKeyInfo().validate();
 
@@ -98,15 +99,12 @@ public class CreateMappingStatement extends StatementContext implements Connecti
                                                                    this.getTableName(),
                                                                    this.getKeyInfo(),
                                                                    this.getFamilyMappingList());
-
         this.setMapping(tableMapping);
-
         tableMapping.validate(tableMapping.getMappingName());
-
         return new ExecutionResults("Mapping " + tableMapping.getMappingName() + " defined.");
     }
 
     public static String usage() {
-        return "CREATE [TEMP] MAPPING mapping_name [FOR TABLE table_name] [(key_name KEY, family_mapping_list)] [IF boolean_expression]";
+        return "CREATE [TEMP] MAPPING mapping_name [FOR TABLE table_name] [(key_name KEY [WIDTH int_expression], family_mapping_list)] [IF boolean_expression]";
     }
 }

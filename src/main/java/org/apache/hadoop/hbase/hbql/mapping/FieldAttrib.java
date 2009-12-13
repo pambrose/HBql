@@ -40,7 +40,6 @@ public abstract class FieldAttrib extends ColumnAttrib {
                           final String getter,
                           final String setter) {
         super(ColumnDefinition.newFieldAttribColumn(familyName, columnName, field, fieldType, getter, setter));
-
         this.field = field;
         setAccessible(this.getField());
     }

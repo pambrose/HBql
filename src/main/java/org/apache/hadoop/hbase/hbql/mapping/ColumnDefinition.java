@@ -37,6 +37,7 @@ public final class ColumnDefinition implements Serializable {
     private final boolean isArray;
     private final FieldType fieldType;
     private final GenericValue defaultValue;
+    private final KeyInfo keyInfo;
     private final String getter;
     private final String setter;
 
@@ -47,6 +48,7 @@ public final class ColumnDefinition implements Serializable {
                              final String aliasName,
                              final FieldType fieldType,
                              final boolean isArray,
+                             final KeyInfo keyInfo,
                              final GenericValue defaultValue,
                              final String getter,
                              final String setter) {
@@ -54,6 +56,7 @@ public final class ColumnDefinition implements Serializable {
         this.columnName = columnName;
         this.fieldType = fieldType;
         this.isArray = isArray;
+        this.keyInfo = keyInfo;
         this.aliasName = aliasName;
         this.defaultValue = defaultValue;
         this.getter = getter;
@@ -70,12 +73,13 @@ public final class ColumnDefinition implements Serializable {
                                     keyInfo.getKeyName(),
                                     FieldType.KeyType,
                                     false,
+                                    keyInfo,
                                     null, null, null);
     }
 
     // For Family Default attribs
     public static ColumnDefinition newUnMappedColumn(final String familyName) {
-        return new ColumnDefinition(familyName, "", familyName, null, false, null, null, null);
+        return new ColumnDefinition(familyName, "", familyName, null, false, null, null, null, null);
     }
 
     // For regular attribs
@@ -85,7 +89,7 @@ public final class ColumnDefinition implements Serializable {
                                                    final String aliasName,
                                                    final GenericValue defaultValue) {
         final FieldType fieldType = getFieldType(typeName);
-        return new ColumnDefinition(null, columnName, aliasName, fieldType, isArray, defaultValue, null, null);
+        return new ColumnDefinition(null, columnName, aliasName, fieldType, isArray, null, defaultValue, null, null);
     }
 
     // For FieldAttrib columns
@@ -101,13 +105,14 @@ public final class ColumnDefinition implements Serializable {
                                     fieldType,
                                     field.getType().isArray(),
                                     null,
+                                    null,
                                     getter,
                                     setter);
     }
 
     // For SelectFamilyAttrib columns
     public static ColumnDefinition newSelectFamilyAttribColumn(final String familyName) {
-        return new ColumnDefinition(familyName, "", "", null, false, null, null, null);
+        return new ColumnDefinition(familyName, "", "", null, false, null, null, null, null);
     }
 
     private FamilyMapping getFamilyMapping() {
@@ -129,6 +134,11 @@ public final class ColumnDefinition implements Serializable {
 
     public String getFamilyName() {
         return (this.getFamilyMapping() != null) ? this.getFamilyMapping().getFamilyName() : null;
+    }
+
+    public KeyInfo getKeyInfo() {
+        // This is used for validating width of key values
+        return this.keyInfo;
     }
 
     public String getColumnName() {

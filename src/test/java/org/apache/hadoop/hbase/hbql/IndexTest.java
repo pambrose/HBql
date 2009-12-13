@@ -160,4 +160,22 @@ public class IndexTest extends TestSupport {
                           "CLIENT FILTER WHERE val1 = '000000000001700'";
         showValues(q1, 1);
     }
+
+    @Test
+    public void simpleSelect9() throws HBqlException {
+        final String q1 = "select * from tab4 WITH " +
+                          "INDEX foo1 " +
+                          "KEYS '000000000001500', '000000000001600', '000000000001700' " +
+                          "INDEX FILTER WHERE val1 = '000000000001700' " +
+                          "CLIENT FILTER WHERE val1 = '000000000001700'";
+        showValues(q1, 1);
+    }
+
+    @Test
+    public void simpleSelect10() throws HBqlException {
+        final String q1 = "select * from tab4 WITH " +
+                          "INDEX foo1 " +
+                          "KEYS '000000000001500', '000000000001600', '000000000001700' ";
+        showValues(q1, 3);
+    }
 }

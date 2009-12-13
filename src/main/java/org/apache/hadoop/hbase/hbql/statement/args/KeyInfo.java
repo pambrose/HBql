@@ -47,7 +47,7 @@ public class KeyInfo extends MultipleExpressionContext implements Serializable {
         return this.keyWidthSpecified;
     }
 
-    public int getKeyWidth() throws HBqlException {
+    public int getKeyWidth() {
         return this.keyWidth;
     }
 

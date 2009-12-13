@@ -229,6 +229,19 @@ public abstract class ColumnAttrib implements Serializable {
 
         final Object value = this.getCurrentValue(obj);
 
+        if (this.isAKeyAttrib() && this.getColumnDefinition().getKeyInfo() != null) {
+            final int width = this.getColumnDefinition().getKeyInfo().getKeyWidth();
+            if (width >= 0) {
+                if (value instanceof String) {
+                    final String str = (String)value;
+                    if (str.length() != width)
+                        throw new HBqlException("Invalid key length in " + this.getNameToUseInExceptions()
+                                                + " expecting " + width + " but found " + str.length()
+                                                + " with \"" + str + "\"");
+                }
+            }
+        }
+
         if (this.isAnArray())
             return IO.getSerialization().getArrayAsBytes(this.getFieldType(), value);
         else
