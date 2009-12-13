@@ -109,12 +109,25 @@ public class ServerFilterTest extends TestSupport {
     public void simpleSelect2() throws HBqlException {
         final String q1 = "select * from tab3 WITH SERVER FILTER " +
                           "where val1 = '11' OR val1 = '14' OR  val1 = '12'";
-        showValues(q1, 1);
+        showValues(q1, 3);
     }
 
     @Test
     public void simpleSelect3() throws HBqlException {
         final String q1 = "select * from tab3 WITH SERVER FILTER where val1 <= '12' ";
-        showValues(q1, 1);
+        showValues(q1, 3);
+    }
+
+    @Test
+    public void simpleSelect4() throws HBqlException {
+        final String q1 = "select * from tab3 WITH SERVER FILTER " +
+                          //"where val1 = '12' OR val1 = '14' OR val2 = 15";
+                          //"where val1 = '11' OR val2 = 14 OR  val1 = '12'";
+                          //"where val1 = '11' OR val1 = '14' OR  val1 = '12'";
+                          //"where val2 = 14 OR val1 = '11' OR  val1 = '12'";
+                          //"where val1 = '11' OR val2 = 14  ";
+                          "where  val2 = 14 OR val1 = '11' ";
+        //"where val2 = 14   ";
+        showValues(q1, 2);
     }
 }

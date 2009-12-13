@@ -161,7 +161,6 @@ public class NumberCompare extends GenericCompare {
 
     public static class LongComparable extends NumberComparable<Long> {
 
-
         public LongComparable() {
         }
 
@@ -177,7 +176,12 @@ public class NumberCompare extends GenericCompare {
 
             try {
                 long columnValue = IO.getSerialization().getNumberFromBytes(this.getFieldType(), bytes).longValue();
-                return (columnValue > this.getValue()) ? -1 : 1;
+                // Test for equality again in case the byte[] lengths were different above
+                final long val = this.getValue();
+                if (columnValue == val)
+                    return 0;
+                else
+                    return (columnValue > val) ? -1 : 1;
             }
             catch (HBqlException e) {
                 e.printStackTrace();
@@ -215,7 +219,12 @@ public class NumberCompare extends GenericCompare {
 
             try {
                 double columnValue = IO.getSerialization().getNumberFromBytes(this.getFieldType(), bytes).doubleValue();
-                return (columnValue > this.getValue()) ? -1 : 1;
+                // Test for equality again in case the byte[] lengths were different above
+                final double val = this.getValue();
+                if (columnValue == val)
+                    return 0;
+                else
+                    return (columnValue > val) ? -1 : 1;
             }
             catch (HBqlException e) {
                 e.printStackTrace();

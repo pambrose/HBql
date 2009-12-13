@@ -109,7 +109,7 @@ public class StringCompare extends GenericCompare {
                 return 0;
 
             try {
-                String columnValue = (String)IO.getSerialization().getScalarFromBytes(FieldType.StringType, bytes);
+                final String columnValue = IO.getSerialization().getStringFromBytes(bytes);
                 return (this.getValue().compareTo(columnValue));
             }
             catch (HBqlException e) {

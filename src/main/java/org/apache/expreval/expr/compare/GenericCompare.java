@@ -39,9 +39,9 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.FieldType;
+import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public abstract class GenericCompare extends GenericExpression implements BooleanValue {
 
@@ -158,7 +158,7 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
         }
 
         protected boolean equalValues(final byte[] bytes) {
-            return Arrays.equals(bytes, this.getValueInBytes());
+            return Bytes.equals(bytes, this.getValueInBytes());
         }
     }
 }
