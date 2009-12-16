@@ -23,7 +23,6 @@ package org.apache.junk;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.Filter;
@@ -36,18 +35,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RawAccess3 {
+public class SimpleFilter {
 
     static byte[] family = Bytes.toBytes("f1");
     static byte[] val1 = Bytes.toBytes("val1");
     static byte[] val2 = Bytes.toBytes("val2");
 
     public static void main(String[] args) throws HBqlException, IOException {
-
-        final SingleColumnValueFilter val1Filter10 = new SingleColumnValueFilter(family,
-                                                                                 val1,
-                                                                                 CompareFilter.CompareOp.EQUAL,
-                                                                                 Bytes.toBytes("10"));
 
         final SingleColumnValueFilter val1Filter11 = new SingleColumnValueFilter(family,
                                                                                  val1,
@@ -59,39 +53,7 @@ public class RawAccess3 {
                                                                                  CompareFilter.CompareOp.EQUAL,
                                                                                  Bytes.toBytes(10));
 
-        final SingleColumnValueFilter val2Filter11 = new SingleColumnValueFilter(family,
-                                                                                 val2,
-                                                                                 CompareFilter.CompareOp.EQUAL,
-                                                                                 Bytes.toBytes(11));
-
-        final SingleColumnValueFilter val2Filter12 = new SingleColumnValueFilter(family,
-                                                                                 val2,
-                                                                                 CompareFilter.CompareOp.EQUAL,
-                                                                                 Bytes.toBytes(12));
-
-        doQuery("Results for va1l = '10'", val1Filter10);
-
-        doQuery("Results for val2 = 11", val2Filter11);
-
-        doQuery("Results for val2 = 11 || val2 = 10", val2Filter11, val2Filter10);
-
-        doQuery("Results for val2 = 10 || val2 = 11", val2Filter10, val2Filter11);
-
-        doQuery("Results for va1l = '11' ||  val1 = '10'", val1Filter11, val1Filter10);
-
-        doQuery("Results for va1l = '10' ||  val1 = '11'", val1Filter10, val1Filter11);
-
-        doQuery("Results for va1l = '10' ||  val2 = 11", val1Filter10, val2Filter11);
-
-        doQuery("Results for va1l = '11' ||  val2 = 10", val1Filter11, val2Filter10);
-
-        doQuery("Results for va1l = '10' || val2 = 11 ", val1Filter10, val2Filter11);
-
-        doQuery("Results for val2 = 11 || va1l = '10'", val2Filter11, val1Filter10);
-
         doQuery("Results for val2 = 10 || va1l = '11'", val2Filter10, val1Filter11);
-
-        doQuery("Results for val2 = 10 || va1l = '11' || val2 = 12", val2Filter10, val1Filter11, val2Filter12);
     }
 
     static void doQuery(String msg, Filter... filters) throws IOException {
@@ -102,24 +64,13 @@ public class RawAccess3 {
         scan.addColumn(family, val1);
         scan.addColumn(family, val2);
 
-        final Filter filter;
-        if (filters.length == 1) {
-            filter = filters[0];
-        }
-        else {
-            List<Filter> filterList = new ArrayList<Filter>();
-            for (Filter f : filters) {
-                filterList.add(f);
-            }
-            filter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filterList);
-        }
-        scan.setFilter(filter);
+        List<Filter> filterList = new ArrayList<Filter>();
+        for (Filter f : filters)
+            filterList.add(f);
 
-        ResultScanner scanner = table.getScanner(scan);
+        scan.setFilter(new FilterList(FilterList.Operator.MUST_PASS_ONE, filterList));
 
-        System.out.println("\n" + msg);
-
-        for (Result result : scanner)
+        for (Result result : table.getScanner(scan))
             System.out.println(Bytes.toString(result.getRow()) + " - "
                                + Bytes.toString(result.getValue(family, val1)) + " - "
                                + Bytes.toInt(result.getValue(family, val2)));

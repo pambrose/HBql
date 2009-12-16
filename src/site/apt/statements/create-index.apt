@@ -10,14 +10,14 @@ CREATE INDEX
 
 ---------------------------
 
-CREATE INDEX index_name '(' family_description [, ...] ')'  [ IF boolean_condition ]
+CREATE INDEX index_name '(' column_name [ , ... ] ')' keyON [ keyMAPPING ] mapping_name [ INCLUDE '(' column_name [ , ... ] ')' ] [ IF boolean_condition ]
 
 ---------------------------
 
 *Description
 
-    Creates index index_name with the declared families.
+    Creates index index_name with the declared columns.
 
 *Example
 
-%{snippet|id=create-table|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-index|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

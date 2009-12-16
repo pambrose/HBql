@@ -152,6 +152,17 @@ public class ExamplesTest extends TestSupport {
 
     }
 
+    public void createIndex() throws HBqlException {
+
+        // START SNIPPET: create-index
+
+        HConnection connection = HConnectionManager.newConnection();
+        connection.execute("CREATE INDEX foo (family1 (MAX_VERSIONS: 10), family2(), family3 (MAX_VERSIONS: 15))");
+
+        // END SNIPPET: create-index
+
+    }
+
     public void alterTable() throws HBqlException {
 
         // START SNIPPET: alter-table
