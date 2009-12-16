@@ -150,6 +150,13 @@
             <version>0.20.2</version>
         </dependency>
 
+        <!-- This is a hack - in order to get this to work, I renamed hbase-0.20.2-transactional.jar to hbase-transactional-0.20.2.jar -->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-transactional</artifactId>
+            <version>0.20.2</version>
+        </dependency>
+
         <dependency>
             <groupId>com.google.collections</groupId>
             <artifactId>google-collections</artifactId>
@@ -198,19 +205,6 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <!--
-
-                        Specify that we want the resulting jar to be executable
-                        via java -jar, which we do by modifying the manifest
-                        of course.
-                    <archive>
-
-                        <manifest>
-                            <mainClass>org.apache.hadoop.hbase.hbql.antlr.Main</mainClass>
-                        </manifest>
-                    </archive>
-                      -->
-
                 </configuration>
 
                 <executions>

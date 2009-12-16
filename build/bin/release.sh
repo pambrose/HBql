@@ -1,6 +1,6 @@
 #! /bin/bash
 
-export MAVEN_OPTS="-Xms1024m -Xmx1024m"
+export MAVEN_OPTS="-Xms2048m -Xmx2048m"
 
 export VERSION="0.9.14-alpha"
 export DIST="hbql-"${VERSION}
