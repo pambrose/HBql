@@ -8,9 +8,9 @@ SELECT
 *Syntax
 
 ---------------------------
-SELECT { '*' | select_element [, ...] } FROM [ MAPPING ] mapping_name with_clause
+SELECT { '*' | select_element [, ...] } FROM [MAPPING] mapping_name with_clause
 
-select_element : expression [ AS alias_name ] | family_name ':' '*'
+select_element : expression [AS alias_name] | family_name ':' '*'
 
 ---------------------------
 

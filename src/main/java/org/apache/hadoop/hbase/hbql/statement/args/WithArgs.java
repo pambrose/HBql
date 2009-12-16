@@ -31,6 +31,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 
@@ -87,10 +88,10 @@ public class WithArgs implements Serializable {
         }
     }
 
-    public void validate(final HConnectionImpl connection, final String tableName) throws HBqlException {
+    public void validate(final HConnectionImpl connection, final TableMapping mapping) throws HBqlException {
         if (connection != null) {
             if (this.hasAnIndex())
-                connection.validateIndexExists(tableName, this.getIndexName());
+                connection.validateIndexExistsOnTable(mapping.getTableName(), this.getIndexName());
         }
     }
 

@@ -7,21 +7,21 @@ Expressions
 
 * Boolean expressions
 
-    ** string_value [ NOT ] CONTAINS string_value
+    ** string_value [NOT] CONTAINS string_value
 
-    ** string_value [ NOT ] LIKE string_value
+    ** string_value [NOT] LIKE string_value
 
-    ** string_value IS [ NOT ] NULL
+    ** string_value IS [NOT] NULL
 
-    ** value [ NOT ] BETWEEN value AND value
+    ** value [NOT] BETWEEN value AND value
 
-    ** value [ NOT ] IN ( value [ , ... ] )
+    ** value [NOT] IN ( value [, ...] )
 
 * Value expressions
 
     ** IF boolean_value THEN value ELSE value END
 
-    ** CASE ( WHEN boolean_value THEN value [ , ... ] ) ELSE value END
+    ** CASE ( WHEN boolean_value THEN value [, ...] ) ELSE value END
 
     ** A built-in {{{./functions.html}function}}
 

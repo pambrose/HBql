@@ -78,7 +78,9 @@ Boolean Functions
 *--+--+--+--+
 | familyexists(string, string) | boolean  | Returns true if table has family | familyexists('foo', 'f1') | true if table foo has family f1 |
 *--+--+--+--+
-| indexexists(string, string) | boolean  | Returns true if table has index | indexexists('foo', 'idx1') | true if table foo has index idx1 |
+| indexexistsontable(string, string) | boolean  | Returns true if table has index | indexexistsontable('foo', 'idx1') | true if table foo has index idx1 |
+*--+--+--+--+
+| indexexistsonmapping(string, string) | boolean  | Returns true if table referenced by mapping has index | indexexistsonmapping('foomap', 'idx1') | true if table foo has index idx1 |
 *--+--+--+--+
 
 Date Functions

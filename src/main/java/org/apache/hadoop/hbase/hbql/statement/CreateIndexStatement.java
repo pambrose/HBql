@@ -51,13 +51,21 @@ public class CreateIndexStatement extends BasicStatement implements ConnectionSt
         this.includeColumns = includeColumns;
     }
 
+    private String getIndexName() {
+        return this.indexName;
+    }
+
+    private String getMappingName() {
+        return this.mappingName;
+    }
+
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        final TableMapping mapping = connection.getMapping(this.mappingName);
+        final TableMapping mapping = connection.getMapping(this.getMappingName());
 
-        final List<String> indexList = this.getQualifiedNameList(mapping, indexColumns);
-        final List<String> includeList = this.getQualifiedNameList(mapping, includeColumns);
-        final IndexSpecification spec = SingleColumnIndex.newIndex(this.indexName, indexList, includeList);
+        final List<String> indexList = this.getQualifiedNameList(mapping, this.indexColumns);
+        final List<String> includeList = this.getQualifiedNameList(mapping, this.includeColumns);
+        final IndexSpecification spec = SingleColumnIndex.newIndex(this.getIndexName(), indexList, includeList);
 
         try {
             connection.getIndexTableAdmin().addIndex(mapping.getTableNameAsBytes(), spec);
@@ -95,7 +103,7 @@ public class CreateIndexStatement extends BasicStatement implements ConnectionSt
                     if (columnAttrib == null)
                         throw new HBqlException("Unknown " +
                                                 ((!column.contains(":")) ? "alias" : "column")
-                                                + " " + column + " in mapping " + mappingName);
+                                                + " " + column + " in mapping " + this.getMappingName());
                     else
                         retval.add(columnAttrib.getFamilyQualifiedName());
                 }
@@ -107,8 +115,8 @@ public class CreateIndexStatement extends BasicStatement implements ConnectionSt
 
     private String getCreateIndexMsg(final List<String> indexList, final List<String> includeList) {
 
-        final StringBuilder sbuf = new StringBuilder("Index " + this.indexName
-                                                     + " created for " + this.mappingName);
+        final StringBuilder sbuf = new StringBuilder("Index " + this.getIndexName()
+                                                     + " created for " + this.getMappingName());
 
         sbuf.append(" (");
 

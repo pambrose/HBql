@@ -8,7 +8,7 @@ ENABLE TABLE
 *Syntax
 
 ---------------------------
-ENABLE TABLE table_name [ IF boolean_condition ]
+ENABLE TABLE table_name [IF boolean_condition]
 ---------------------------
 
 *Description

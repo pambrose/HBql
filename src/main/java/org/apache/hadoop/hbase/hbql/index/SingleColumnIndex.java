@@ -41,7 +41,7 @@ public class SingleColumnIndex extends IndexSpecification {
                                              final List<String> includeList) throws HBqlException {
 
         if (indexList.size() != 1)
-            throw new HBqlException("Invalid index " + indexName + ". For now, only single column indexes allowed.");
+            throw new HBqlException("Invalid index " + indexName + ". Only single column indexes allowed.");
 
         return new SingleColumnIndex(indexName,
                                      Util.getStringsAsBytes(indexList),

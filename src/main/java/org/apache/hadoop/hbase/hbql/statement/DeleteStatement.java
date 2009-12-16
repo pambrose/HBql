@@ -96,7 +96,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         this.validateMappingName(connection);
 
         this.getWithArgs().setStatementContext(this);
-        this.getWithArgs().validate(connection, this.getTableMapping().getTableName());
+        this.getWithArgs().validate(connection, this.getTableMapping());
 
         this.collectParameters();
 

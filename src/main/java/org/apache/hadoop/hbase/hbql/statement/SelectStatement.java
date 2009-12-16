@@ -93,7 +93,7 @@ public class SelectStatement extends StatementContext implements ParameterStatem
         }
 
         this.getWithArgs().setStatementContext(this);
-        this.getWithArgs().validate(connection, this.getTableMapping().getTableName());
+        this.getWithArgs().validate(connection, this.getTableMapping());
 
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();

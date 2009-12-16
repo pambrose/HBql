@@ -92,7 +92,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: describe-mapping
 
         HConnection connection = HConnectionManager.newConnection();
-        System.out.println(connection.execute("DESCRIBE MAPPING foo_mapping"));
+        System.out.println(connection.execute("DESCRIBE MAPPING fooMapping"));
 
         // END SNIPPET: describe-mapping
 
@@ -132,10 +132,10 @@ public class ExamplesTest extends TestSupport {
 
         HConnection connection = HConnectionManager.newConnection();
 
-        connection.execute("DROP MAPPING foo_mapping");
+        connection.execute("DROP MAPPING fooMapping");
 
         // Or using the API
-        connection.dropMapping("foo_mapping");
+        connection.dropMapping("fooMapping");
 
         // END SNIPPET: drop-mapping
 
@@ -157,7 +157,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: create-index
 
         HConnection connection = HConnectionManager.newConnection();
-        connection.execute("CREATE INDEX foo (family1 (MAX_VERSIONS: 10), family2(), family3 (MAX_VERSIONS: 15))");
+        connection.execute("CREATE INDEX fooidx ON fooMapping (family1:col1) INCLUDE (family1:col2, family1:col3");
 
         // END SNIPPET: create-index
 
@@ -196,13 +196,28 @@ public class ExamplesTest extends TestSupport {
 
     }
 
+    public void dropIndex() throws HBqlException {
+
+        // START SNIPPET: drop-table
+
+        HConnection conection = HConnectionManager.newConnection();
+        conection.execute("DROP INDEX fooidx");
+
+        // Or using the API
+        conection.dropIndexOnMapping("fooMapping", "fooidx");
+        // or
+        conection.dropIndexOnTable("foo", "fooidx");
+
+        // END SNIPPET: drop-table
+    }
+
     public void insert1() throws HBqlException {
 
         // START SNIPPET: insert1
 
         HConnection connection = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP MAPPING foo_mapping FOR TABLE foo "
+        connection.execute("CREATE TEMP MAPPING fooMapping FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
                            + "family1 ("
@@ -210,11 +225,11 @@ public class ExamplesTest extends TestSupport {
                            + "  val2 STRING ALIAS val2"
                            + "))");
 
-        connection.execute("INSERT INTO foo_mapping (keyval, val1, val2) "
+        connection.execute("INSERT INTO fooMapping (keyval, val1, val2) "
                            + "VALUES (ZEROPAD(2, 10), 123, 'test val')");
 
         // Or using the Record interface
-        HRecord rec = connection.getMapping("foo_mapping").newHRecord();
+        HRecord rec = connection.getMapping("fooMapping").newHRecord();
         rec.setCurrentValue("keyval", Util.getZeroPaddedNonNegativeNumber(2, 10));
         rec.setCurrentValue("val1", 123);
         rec.setCurrentValue("al2", "testval");
@@ -233,7 +248,7 @@ public class ExamplesTest extends TestSupport {
 
         HConnection connection = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP MAPPING foo_mapping FOR TABLE foo "
+        connection.execute("CREATE TEMP MAPPING fooMapping FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
                            + "family1 ("
@@ -244,11 +259,11 @@ public class ExamplesTest extends TestSupport {
                            + "  val5 STRING ALIAS val15"
                            + "))");
 
-        connection.execute("DELETE FROM foo_mapping WITH CLIENT FILTER WHERE val1 > 4");
+        connection.execute("DELETE FROM fooMapping WITH CLIENT FILTER WHERE val1 > 4");
 
-        connection.execute("DELETE family1:val1, val12 FROM foo_mapping WITH CLIENT FILTER WHERE val1 > 5");
+        connection.execute("DELETE family1:val1, val12 FROM fooMapping WITH CLIENT FILTER WHERE val1 > 5");
 
-        connection.execute("DELETE family1:* FROM foo_mapping WITH CLIENT FILTER WHERE val1 > 7");
+        connection.execute("DELETE family1:* FROM fooMapping WITH CLIENT FILTER WHERE val1 > 7");
 
         // END SNIPPET: delete1
 
@@ -261,7 +276,7 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = HConnectionManager.newConnection();
 
         // A column with a default value.
-        connection.execute("CREATE TEMP MAPPING foo_mapping FOR TABLE foo "
+        connection.execute("CREATE TEMP MAPPING fooMapping FOR TABLE foo "
                            + "("
                            + "keyval KEY, "
                            + "family1 ("
@@ -269,7 +284,7 @@ public class ExamplesTest extends TestSupport {
                            + "  val2 STRING ALIAS val2 DEFAULT 'this is a default value'"
                            + "))");
 
-        HPreparedStatement ps = connection.prepareStatement("INSERT INTO foo_mapping (keyval, val1, val2) "
+        HPreparedStatement ps = connection.prepareStatement("INSERT INTO fooMapping (keyval, val1, val2) "
                                                             + "VALUES (:key, :val1, DEFAULT)");
 
         ps.setParameter("key", Util.getZeroPaddedNonNegativeNumber(2, 10));
@@ -285,7 +300,7 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = HConnectionManager.newConnection();
 
         // START SNIPPET: insert3
-        connection.execute("CREATE MAPPING foo_mapping FOR TABLE foo_table "
+        connection.execute("CREATE MAPPING fooMapping FOR TABLE foo_table "
                            + "("
                            + "keyval KEY, "
                            + "family1 ("
@@ -294,7 +309,7 @@ public class ExamplesTest extends TestSupport {
                            + "  val3 STRING ALIAS val3, "
                            + "  val4 STRING ALIAS val4 "
                            + "))");
-        connection.execute("INSERT INTO foo_mapping (keyval, val1, val2) "
+        connection.execute("INSERT INTO fooMapping (keyval, val1, val2) "
                            + "SELECT keyval, val3, val4 FROM foo2");
 
         // END SNIPPET: insert3
@@ -306,7 +321,7 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = HConnectionManager.newConnection();
 
         // START SNIPPET: insert4
-        connection.execute("CREATE MAPPING foo_mapping FOR TABLE foo_table "
+        connection.execute("CREATE MAPPING fooMapping FOR TABLE foo_table "
                            + "("
                            + "keyval KEY, "
                            + "family1 ("
@@ -315,7 +330,7 @@ public class ExamplesTest extends TestSupport {
                            + "  val3 STRING ALIAS val3, "
                            + "  val4 STRING ALIAS val4 "
                            + "))");
-        connection.execute("INSERT INTO foo_mapping (keyval, family1(val1, val2)) "
+        connection.execute("INSERT INTO fooMapping (keyval, family1(val1, val2)) "
                            + "SELECT keyval, val3, val4 FROM foo2");
 
         // END SNIPPET: insert4

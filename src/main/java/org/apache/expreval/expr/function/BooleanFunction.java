@@ -129,7 +129,7 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
                 }
             }
 
-            case INDEXEXISTS: {
+            case INDEXEXISTSONTABLE: {
                 if (connection == null) {
                     return false;
                 }
@@ -137,7 +137,24 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
                     final String tableName = (String)this.getExprArg(0).getValue(connection, null);
                     final String indexName = (String)this.getExprArg(1).getValue(connection, null);
                     try {
-                        return connection.indexExists(tableName, indexName);
+                        return connection.indexExistsOnTable(tableName, indexName);
+                    }
+                    catch (HBqlException e) {
+                        // return false if index doesn't exist
+                        return false;
+                    }
+                }
+            }
+
+            case INDEXEXISTSONMAPPING: {
+                if (connection == null) {
+                    return false;
+                }
+                else {
+                    final String mappingName = (String)this.getExprArg(0).getValue(connection, null);
+                    final String indexName = (String)this.getExprArg(1).getValue(connection, null);
+                    try {
+                        return connection.indexExistsOnMapping(mappingName, indexName);
                     }
                     catch (HBqlException e) {
                         // return false if index doesn't exist

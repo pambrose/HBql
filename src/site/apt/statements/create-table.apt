@@ -10,10 +10,10 @@ CREATE TABLE
 
 ---------------------------
 
-CREATE TABLE table_name '(' family_description [, ...] ')'  [ IF boolean_condition ]
+CREATE TABLE table_name '(' family_description [, ...] ')'  [IF boolean_condition]
 
 family_description:
-    family_name '(' [ family_property [, ...] ] ')'
+    family_name '(' [family_property [, ...]] ')'
 
 family_property:
     MAX_VERSIONS ':' integer_value

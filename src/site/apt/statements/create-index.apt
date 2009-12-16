@@ -10,13 +10,16 @@ CREATE INDEX
 
 ---------------------------
 
-CREATE INDEX index_name '(' column_name [ , ... ] ')' keyON [ keyMAPPING ] mapping_name [ INCLUDE '(' column_name [ , ... ] ')' ] [ IF boolean_condition ]
+CREATE INDEX index_name '(' column_name ')' keyON [MAPPING] mapping_name [includeColumns] [IF boolean_condition]
+
+includeColumns : INCLUDE '(' column_name [, ...] ')'
 
 ---------------------------
 
 *Description
 
-    Creates index index_name with the declared columns.
+    Creates named index on column_name in table referenced my mapping_name.  Additional columns can be 
+    included in the index table (for use in server side filter on index) using the includeColumns clause.
 
 *Example
 

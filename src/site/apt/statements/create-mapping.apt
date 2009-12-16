@@ -9,13 +9,13 @@ CREATE MAPPING
 *Syntax
 
 ---------------------------
-CREATE [TEMP] MAPPING mapping_name [ FOR TABLE table_name ] '(' key_description ',' [ family_mapping [, ...] ] ')'
+CREATE [TEMP] MAPPING mapping_name [FOR TABLE table_name] '(' key_description ',' [family_mapping [, ...]] ')'
 
 family_mapping:
-    family_name [ INCLUDE UNMAPPED ] '(' column_description  [, ...] ')'
+    family_name [INCLUDE UNMAPPED] '(' column_description  [, ...] ')'
 
 column_description:
-    column_name type [ '['']' ] [ ALIAS alias_name ] [ DEFAULT constant_expression ]
+    column_name type ['['']'] [ALIAS alias_name] [DEFAULT constant_expression]
 
 type:
     BOOLEAN   (BOOL)

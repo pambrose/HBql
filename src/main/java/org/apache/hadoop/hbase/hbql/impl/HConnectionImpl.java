@@ -199,15 +199,25 @@ public class HConnectionImpl implements HConnection {
         }
     }
 
-    public boolean indexExists(final String tableName, final String indexName) throws HBqlException {
+    public boolean indexExistsOnMapping(final String mappingName, final String indexName) throws HBqlException {
+        final TableMapping mapping = this.getMapping(mappingName);
+        return this.indexExistsOnTable(mapping.getTableName(), indexName);
+    }
+
+    public boolean indexExistsOnTable(final String tableName, final String indexName) throws HBqlException {
         this.checkIfClosed();
         final IndexedTableDescriptor itd = this.newIndexedTableDescriptor(tableName);
         final IndexSpecification index = itd.getIndex(indexName);
         return index != null;
     }
 
-    public void dropIndex(final String tableName, final String indexName) throws HBqlException {
-        this.validateIndexExists(tableName, indexName);
+    public void dropIndexOnMapping(final String mappingName, final String indexName) throws HBqlException {
+        final TableMapping mapping = this.getMapping(mappingName);
+        this.dropIndexOnTable(mapping.getTableName(), indexName);
+    }
+
+    public void dropIndexOnTable(final String tableName, final String indexName) throws HBqlException {
+        this.validateIndexExistsOnTable(tableName, indexName);
         try {
             final IndexedTableAdmin ita = this.getIndexTableAdmin();
             ita.removeIndex(tableName.getBytes(), indexName);
@@ -361,7 +371,7 @@ public class HConnectionImpl implements HConnection {
     }
 
     public void dropTable(final String tableName) throws HBqlException {
-        validateTableDisabled("drop", tableName);
+        validateTableDisabled(tableName, "drop");
         try {
             final byte[] tableNameBytes = tableName.getBytes();
             this.getHBaseAdmin().deleteTable(tableNameBytes);
@@ -383,7 +393,7 @@ public class HConnectionImpl implements HConnection {
     }
 
     public void enableTable(final String tableName) throws HBqlException {
-        validateTableDisabled("enable", tableName);
+        validateTableDisabled(tableName, "enable");
         try {
             this.getHBaseAdmin().enableTable(tableName);
         }
@@ -410,7 +420,7 @@ public class HConnectionImpl implements HConnection {
             throw new HBqlException("Table not found: " + tableName);
     }
 
-    public void validateTableDisabled(final String action, final String tableName) throws HBqlException {
+    public void validateTableDisabled(final String tableName, final String action) throws HBqlException {
         if (this.tableEnabled(tableName))
             throw new HBqlException("Cannot " + action + " enabled table: " + tableName);
     }
@@ -420,8 +430,8 @@ public class HConnectionImpl implements HConnection {
             throw new HBqlException("Family " + familyName + " not defined for table " + tableName);
     }
 
-    public void validateIndexExists(final String tableName, final String indexName) throws HBqlException {
-        if (!this.indexExists(tableName, indexName))
+    public void validateIndexExistsOnTable(final String tableName, final String indexName) throws HBqlException {
+        if (!this.indexExistsOnTable(tableName, indexName))
             throw new HBqlException("Index " + indexName + " not defined for table " + tableName);
     }
 }

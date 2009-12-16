@@ -36,10 +36,18 @@ public class DropIndexStatement extends BasicStatement implements ConnectionStat
         this.mappingName = mappingName;
     }
 
+    private String getIndexName() {
+        return this.indexName;
+    }
+
+    private String getMappingName() {
+        return this.mappingName;
+    }
+
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
-        final TableMapping mapping = connection.getMapping(this.mappingName);
-        connection.dropIndex(mapping.getTableName(), this.indexName);
-        return new ExecutionResults("Index " + this.indexName + " dropped for table " + mapping.getTableName());
+        connection.dropIndexOnMapping(this.getMappingName(), this.getIndexName());
+        final TableMapping mapping = connection.getMapping(this.getMappingName());
+        return new ExecutionResults("Index " + this.getIndexName() + " dropped for table " + mapping.getTableName());
     }
 
     public static String usage() {

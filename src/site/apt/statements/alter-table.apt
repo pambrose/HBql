@@ -9,12 +9,12 @@ ALTER TABLE
 *Syntax
 
 ---------------------------
-ALTER TABLE table_name alter_action [, ...] [ IF boolean_condition ]
+ALTER TABLE table_name alter_action [, ...] [IF boolean_condition]
 
 alter_action:
-    DROP [ FAMILY ] family_name
-    | ADD [ FAMILY ] family_description
-    | ALTER [ FAMILY ] family_name TO family_description
+    DROP [FAMILY] family_name
+    | ADD [FAMILY] family_description
+    | ALTER [FAMILY] family_name TO family_description
 
 
 ---------------------------
