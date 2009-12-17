@@ -66,9 +66,9 @@ public class AnnotationResultAccessor extends ResultAccessor {
                 this.processColumnVersionAnnotation(field);
         }
 
-        if (!this.getColumnMap().containsKey(this.getMapping().getKeyAttrib().getFamilyQualifiedName()))
+        if (!this.getColumnMap().containsKey(this.getKeyAttrib().getFamilyQualifiedName()))
             throw new HBqlException(this.getClazz().getName() + " must contain a mapping to key attribute "
-                                    + this.getMapping().getKeyAttrib().getFamilyQualifiedName());
+                                    + this.getKeyAttrib().getFamilyQualifiedName());
     }
 
     public static boolean isAnnotatedObject(final Class<?> clazz) {
@@ -124,8 +124,8 @@ public class AnnotationResultAccessor extends ResultAccessor {
     }
 
     public ColumnAttrib getKeyAttrib() throws HBqlException {
-        final String valname = this.getMapping().getKeyAttrib().getFamilyQualifiedName();
-        return this.getAttrib(valname);
+        final String name = this.getMapping().getKeyAttrib().getFamilyQualifiedName();
+        return this.getAttrib(name);
     }
 
     public ColumnAttrib getColumnAttribByQualifiedName(final String familyName,
@@ -188,7 +188,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
                                     final Result result) throws HBqlException {
 
         // Set key value
-        final ColumnAttrib keyAttrib = this.getMapping().getKeyAttrib();
+        final ColumnAttrib keyAttrib = this.getKeyAttrib();
         this.getAttrib(keyAttrib.getFamilyQualifiedName()).setCurrentValue(newobj, 0, result.getRow());
 
         // Set the non-key values

@@ -118,7 +118,8 @@ public class HBatch<T> {
     private Put createPut(final ResultAccessor resultAccessor, final Object newrec) throws HBqlException {
 
         final TableMapping tableMapping = resultAccessor.getTableMapping();
-        final ColumnAttrib keyAttrib = tableMapping.getKeyAttrib();
+        final ColumnAttrib keyAttrib = resultAccessor.getKeyAttrib();
+
         final Put put;
 
         if (newrec instanceof HRecordImpl) {
