@@ -8,6 +8,7 @@ INSERT
 *Syntax
 
 ---------------------------
+
 INSERT INTO [MAPPING] mapping_name '(' column_reference [, ...] ')'
     { VALUES ( { expression | DEFAULT } [, ...] ) | query }  [IF boolean_condition]
 
@@ -15,6 +16,7 @@ column_reference:
     family_name ':' column_name
     | alias_name
     | family_name '(' column_name [,...] ')'
+
 ---------------------------
 
 *Description

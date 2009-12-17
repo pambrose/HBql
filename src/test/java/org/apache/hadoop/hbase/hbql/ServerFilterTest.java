@@ -126,8 +126,9 @@ public class ServerFilterTest extends TestSupport {
                           //"where val1 = '11' OR val1 = '14' OR  val1 = '12'";
                           //"where val2 = 14 OR val1 = '11' OR  val1 = '12'";
                           //"where val1 = '11' OR val2 = 14  ";
-                          "where  val2 = 14 OR val1 = '11' ";
+                          //"where  val2 = 14 OR val1 = '11' ";
+                          "where  val2 = 14 ";
         //"where val2 = 14   ";
-        showValues(q1, 2);
+        showValues(q1, 1);
     }
 }

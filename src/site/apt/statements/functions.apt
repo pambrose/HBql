@@ -8,25 +8,25 @@ String Functions
 *-------------------+--------------+--------------------------+----------------------------------+---------------------+
 || Function         || Return Type || Description             ||Example                          ||Result              |
 *--+--+--+--+
-| trim(string)      | string       | Returns string with leading and trailing whitespace omitted | trim(' val ') |  'val'   |
+| Trim(string)      | string       | Returns string with leading and trailing whitespace omitted | trim(' val ') |  'val'   |
 *--+--+--+--+
-| upper(string)     | string       | Returns the uppercase version of string | upper('val') |  'VAL'   |
+| Upper(string)     | string       | Returns the uppercase version of string | upper('val') |  'VAL'   |
 *--+--+--+--+
-| lower(string)     | string       | Returns the lowercase version of string | lower('VAL') |  'val'   |
+| Lower(string)     | string       | Returns the lowercase version of string | lower('VAL') |  'val'   |
 *--+--+--+--+
-| concat(string1, string2) | string  | Returns the concatenation of string 1 and string2 | concat('VAL', 'val') |  'VALval'   |
+| Concat(string1, string2) | string  | Returns the concatenation of string 1 and string2 | concat('VAL', 'val') |  'VALval'   |
 *--+--+--+--+
-| replace(string1, string2, string3) | string  | Returns all occurences of string2 with string3 in string1 | replace('val', 'v', 'l') |  'lal'   |
+| Replace(string1, string2, string3) | string  | Returns all occurences of string2 with string3 in string1 | replace('val', 'v', 'l') |  'lal'   |
 *--+--+--+--+
-| substring(string, int1, int2) | string  | Returns the string from 0-based index int1 with length int2 | substring('val', '0', '2') |  'va'   |
+| Substring(string, int1, int2) | string  | Returns the string from 0-based index int1 with length int2 | substring('val', '0', '2') |  'va'   |
 *--+--+--+--+
-| zeropad(int1, int2) | string | Returns the zero-padded string of int1 with int2 width | zeropad(4, 5) |  '00004'   |
+| Zeropad(int1, int2) | string | Returns the zero-padded string of int1 with int2 width | zeropad(4, 5) |  '00004'   |
 *--+--+--+--+
-| length(string) | int | Returns the length of string | length('val') |  3   |
+| Length(string) | int | Returns the length of string | length('val') |  3   |
 *--+--+--+--+
-| indexof(string1, string2) | int | Returns the 0-based index of string2 in string1 (-1 if not found)| indexof('val', 'v') |  0   |
+| Indexof(string1, string2) | int | Returns the 0-based index of string2 in string1 (-1 if not found)| indexof('val', 'v') |  0   |
 *--+--+--+--+
-| repeat(string, int) | string | Returns the string repeated int times | repeat('abc', 3) |  'abcabcabc'   |
+| Repeat(string, int) | string | Returns the string repeated int times | repeat('abc', 3) |  'abcabcabc'   |
 *--+--+--+--+
 
 Numeric Functions
@@ -34,29 +34,29 @@ Numeric Functions
 *-------------------+--------------+--------------------------+----------------------------------+---------------------+
 || Function         || Return Type || Description             ||Example                          ||Result              |
 *--+--+--+--+
-| abs(number)     | number     | Returns absolute value of number   | abs(-34)    |  34      |
+| Abs(number)     | number     | Returns absolute value of number   | abs(-34)    |  34      |
 *--+--+--+--+
-| lesser(number1, number2) | number | Returns the smaller of number1 and number2   | min(2, 3)    |  2      |
+| Lesser(number1, number2) | number | Returns the smaller of number1 and number2   | lesser(2, 3)    |  2      |
 *--+--+--+--+
-| greater(number1, number2) | number | Returns the greater of number1 and number2   | abs(2, 3)    |  3      |
+| Greater(number1, number2) | number | Returns the greater of number1 and number2   | greater(2, 3)    |  3      |
 *--+--+--+--+
-| short(string)     | short     | Returns short value of string   | short('34')    |  34      |
+| Short(string)     | short     | Returns short value of string   | short('34')    |  34      |
 *--+--+--+--+
-| integer(string)   | int       | Returns integer value of string | integer('34')  |  34      |
+| Integer(string)   | int       | Returns integer value of string | integer('34')  |  34      |
 *--+--+--+--+
-| long(string)      | long      | Returns long value of string    | long('34')     |  34L     |
+| Long(string)      | long      | Returns long value of string    | long('34')     |  34L     |
 *--+--+--+--+
-| float(string)     | float     | Returns float value of string   | float('34.0')  |  34.0F   |
+| Float(string)     | float     | Returns float value of string   | float('34.0')  |  34.0F   |
 *--+--+--+--+
-| double(string)    | double    | Returns double value of string  | double('34.0') |  34.0D   |
+| Double(string)    | double    | Returns double value of string  | double('34.0') |  34.0D   |
 *--+--+--+--+
-| randominteger()   | int       | Returns random int value        | randominteger() |  random int value     |
+| RandomInteger()   | int       | Returns random int value        | randomInteger() |  random int value     |
 *--+--+--+--+
-| randomlong()      | long      | Returns random long value       | randomlong()    |  random long value    |
+| RandomLong()      | long      | Returns random long value       | randomLong()    |  random long value    |
 *--+--+--+--+
-| randomfloat()     | float     | Returns random float value      | randomfloat()   |  random float value   |
+| RandomFloat()     | float     | Returns random float value      | randomFloat()   |  random float value   |
 *--+--+--+--+
-| randomdouble()    | double    | Returns random double value     | randomdouble()  |  random double value  |
+| RandomDouble()    | double    | Returns random double value     | randomDouble()  |  random double value  |
 *--+--+--+--+
 
 Boolean Functions
@@ -64,23 +64,23 @@ Boolean Functions
 *-------------------+--------------+--------------------------+----------------------------------+---------------------+
 || Function         || Return Type || Description             ||Example                          ||Result              |
 *--+--+--+--+
-| definedinrow(column)| boolean | Returns true if column is defined in current row| definedinrow(f1:val1) |  true if f1:val1 is defined in current row |
+| DefinedInRow(column)| boolean | Returns true if column is defined in current row| definedinRow(f1:val1) |  true if f1:val1 is defined in current row |
 *--+--+--+--+
-| randomboolean()| boolean | Returns random boolean value| randomboolean() |  random boolean value |
+| RandomBoolean()| boolean | Returns random boolean value| randomBoolean() |  random boolean value |
 *--+--+--+--+
-| eval(string) | boolean  | Returns the evaluation of string | eval('34 = 34') | true  |
+| Eval(string) | boolean  | Returns the evaluation of string | eval('34 = 34') | true  |
 *--+--+--+--+
-| mappingexists(string) | boolean  | Returns true if mapping exists | mappingexists('foo') | true if mapping foo exists  |
+| MappingExists(string) | boolean  | Returns true if mapping exists | mappingExists('foo') | true if mapping foo exists  |
 *--+--+--+--+
-| tableexists(string) | boolean  | Returns true if table exists | tableexists('foo') | true if table foo exists |
+| TableExists(string) | boolean  | Returns true if table exists | tableExists('foo') | true if table foo exists |
 *--+--+--+--+
-| tableenabled(string) | boolean  | Returns true if table is enabled | tableenabled('foo') | true if table foo is enabled |
+| Tableenabled(string) | boolean  | Returns true if table is enabled | tablEnabled('foo') | true if table foo is enabled |
 *--+--+--+--+
-| familyexists(string, string) | boolean  | Returns true if table has family | familyexists('foo', 'f1') | true if table foo has family f1 |
+| FamilyExists(string, string) | boolean  | Returns true if table has family | familyExists('foo', 'f1') | true if table foo has family f1 |
 *--+--+--+--+
-| indexexistsontable(string, string) | boolean  | Returns true if table has index | indexexistsontable('foo', 'idx1') | true if table foo has index idx1 |
+| IndexExistsForTable(string, string) | boolean  | Returns true if table has index | indexExistsForTable('foo', 'idx1') | true if table foo has index idx1 |
 *--+--+--+--+
-| indexexistsonmapping(string, string) | boolean  | Returns true if table referenced by mapping has index | indexexistsonmapping('foomap', 'idx1') | true if table foo has index idx1 |
+| IndexExistsForMapping(string, string) | boolean  | Returns true if table referenced by mapping has index | indexExistsForMapping('foomap', 'idx1') | true if table foo has index idx1 |
 *--+--+--+--+
 
 Date Functions
@@ -88,19 +88,19 @@ Date Functions
 *-------------------+--------------+--------------------------+----------------------------------+---------------------+
 || Function         || Return Type || Description             ||Example                          ||Result              |
 *--+--+--+--+
-| now()| date | Returns date value of current time| now() |  date value of current time |
+| Now()| date | Returns date value of current time| now() |  date value of current time |
 *--+--+--+--+
-| date(string1, string2)| date | Returns date value of string1 using string2 format| date('12/10/94', 'mm/dd/yy') |  date value '12/10/94' |
+| Date(string1, string2)| date | Returns date value of string1 using string2 format| date('12/10/94', 'mm/dd/yy') |  date value '12/10/94' |
 *--+--+--+--+
-| longtodate(long) | date  | Returns date value of long ms since 1/1/70 | longtodate(758189520000L) |  date value '12/10/94' |
+| LongToDate(long) | date  | Returns date value of long ms since 1/1/70 | longToDate(758189520000L) |  date value '12/10/94' |
 *--+--+--+--+
-| datetolong(date) | long  | Returns date value of long ms since 1/1/70 | datetolong(date('12/10/94', 'mm/dd/yy')) |  758189520000L |
+| DateToLong(date) | long  | Returns date value of long ms since 1/1/70 | dateToLong(date('12/10/94', 'mm/dd/yy')) |  758189520000L |
 *--+--+--+--+
-| randomdate()     | date  | Returns random date value | randomdate()    |  random date value  |
+| RandomDate()     | date  | Returns random date value | randomDate()    |  random date value  |
 *--+--+--+--+
-| mindate()| date | Returns minimum date value| mindate() |  longtodate(0) |
+| MinDate()| date | Returns minimum date value| MinDate() |  longToDate(0) |
 *--+--+--+--+
-| maxdate()| date | Returns maximum date value| maxdate() |  longtodate(Long.MAX_VALUE) |
+| MaxDate()| date | Returns maximum date value| MaxDate() |  longToDate(Long.MAX_VALUE) |
 *--+--+--+--+
 
 Interval Functions
@@ -108,17 +108,17 @@ Interval Functions
 *-------------------+--------------+--------------------------+----------------------------------+---------------------+
 || Function         || Return Type || Description             ||Example                          ||Result              |
 *--+--+--+--+
-| milli(long)| interval | Returns interval equal to long milliseconds| milli(3) |  3 millisecond interval |
+| Milli(long)| interval | Returns interval equal to long milliseconds| milli(3) |  3 millisecond interval |
 *--+--+--+--+
-| second(long)| interval | Returns interval equal to long seconds | second(3) |  3 second interval |
+| Second(long)| interval | Returns interval equal to long seconds | second(3) |  3 second interval |
 *--+--+--+--+
-| hour(long)| interval | Returns interval equal to long hours | hour(3) |  3 hour interval |
+| Hour(long)| interval | Returns interval equal to long hours | hour(3) |  3 hour interval |
 *--+--+--+--+
-| day(long)| interval | Returns interval equal to long days | day(3) |  3 day interval |
+| Day(long)| interval | Returns interval equal to long days | day(3) |  3 day interval |
 *--+--+--+--+
-| week(long)| interval | Returns interval equal to long weeks | week(3) |  3 week interval |
+| Eeek(long)| interval | Returns interval equal to long weeks | week(3) |  3 week interval |
 *--+--+--+--+
-| year(long)| interval | Returns interval equal to long years | year(3) |  3 year interval |
+| Year(long)| interval | Returns interval equal to long years | year(3) |  3 year interval |
 *--+--+--+--+
 
 Aggregate Functions
@@ -126,11 +126,11 @@ Aggregate Functions
 *-------------------+--------------+--------------------------+----------------------------------+---------------------+
 || Function         || Return Type || Description             ||Example                          ||Result              |
 *--+--+--+--+
-| min(expression)| type of expression  | Returns minimum value of expression across all values| min(f2:val1) |  minimum f2:val1 |
+| Min(expression)| type of expression  | Returns minimum value of expression across all values| min(f2:val1) |  minimum f2:val1 |
 *--+--+--+--+
-| max(expression)| type of expression | Returns maximum value of expression across all values | max(val2) |  maximum val2 |
+| Max(expression)| type of expression | Returns maximum value of expression across all values | max(val2) |  maximum val2 |
 *--+--+--+--+
-| count()| long | Returns number of values | count() | Number of values |
+| Count()| long | Returns number of values | count() | Number of values |
 *--+--+--+--+
 
 

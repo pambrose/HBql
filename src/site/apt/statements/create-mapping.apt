@@ -9,6 +9,7 @@ CREATE MAPPING
 *Syntax
 
 ---------------------------
+
 CREATE [TEMP] MAPPING mapping_name [FOR TABLE table_name] '(' key_description ',' [family_mapping [, ...]] ')'
 
 family_mapping:

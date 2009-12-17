@@ -150,7 +150,10 @@
             <version>0.20.2</version>
         </dependency>
 
-        <!-- This is a hack - in order to get this to work, I renamed hbase-0.20.2-transactional.jar to hbase-transactional-0.20.2.jar -->
+        <!--
+        This is a hack.
+        In order to get this to work, I renamed hbase-0.20.2-transactional.jar to hbase-transactional-0.20.2.jar
+        -->
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-transactional</artifactId>

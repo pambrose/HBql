@@ -56,13 +56,13 @@ public interface HConnection {
     Set<String> getTableNames() throws HBqlException;
 
     // Index Routines
-    boolean indexExistsOnMapping(final String mappingName, final String indexName) throws HBqlException;
+    boolean indexExistsForMapping(final String mappingName, final String indexName) throws HBqlException;
 
-    void dropIndexOnMapping(final String mappingName, final String indexName) throws HBqlException;
+    void dropIndexForMapping(final String mappingName, final String indexName) throws HBqlException;
 
-    boolean indexExistsOnTable(final String tableName, final String indexName) throws HBqlException;
+    boolean indexExistsForTable(final String tableName, final String indexName) throws HBqlException;
 
-    void dropIndexOnTable(final String tableName, final String indexName) throws HBqlException;
+    void dropIndexForTable(final String tableName, final String indexName) throws HBqlException;
 
     // Statement Routines
     HStatement createStatement() throws HBqlException;

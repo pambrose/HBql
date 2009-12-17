@@ -9,7 +9,9 @@ DROP INDEX
 *Syntax
 
 ---------------------------
+
 DROP INDEX index_name ON [MAPPING] mapping_name [IF boolean_condition]
+
 ---------------------------
 
 *Description
