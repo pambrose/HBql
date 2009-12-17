@@ -27,19 +27,17 @@ import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
-public abstract class StatementContext extends BasicStatement {
+public abstract class StatementContext extends MappingStatement {
 
-    private String mappingName = null;
     private Mapping mapping = null;
     private ResultAccessor resultAccessor = null;
 
     protected StatementContext(final StatementPredicate predicate, final String mappingName) {
-        super(predicate);
-        this.mappingName = mappingName;
+        super(predicate, mappingName);
     }
 
     protected StatementContext(final StatementPredicate predicate, final Mapping mapping) {
-        super(predicate);
+        super(predicate, null);
         this.setMapping(mapping);
     }
 
@@ -58,14 +56,10 @@ public abstract class StatementContext extends BasicStatement {
         this.validateMatchingNames(this.getResultAccessor());
     }
 
-    protected String getMappingName() {
-        return this.mappingName;
-    }
-
     public void setMapping(final Mapping mapping) {
         this.mapping = mapping;
         if (this.getMapping() != null)
-            this.mappingName = this.getMapping().getMappingName();
+            this.setMappingName(this.getMapping().getMappingName());
     }
 
     public Mapping getMapping() {

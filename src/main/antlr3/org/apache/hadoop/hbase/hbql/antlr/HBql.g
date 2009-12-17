@@ -128,9 +128,13 @@ options {backtrack=true;}
 	| keyCREATE keyINDEX t=simpleId keyON keyMAPPING? t2=simpleId LPAREN t3=indexColumnList RPAREN (keyINCLUDE LPAREN t4=indexColumnList RPAREN)? p=pred?		
 							{retval = new CreateIndexStatement($p.retval, $t.text, $t2.text, $t3.retval, $t4.retval);}
 	| keyDROP keyINDEX t=simpleId keyON keyMAPPING? t2=simpleId p=pred?		
-							{retval = new DropIndexStatement($p.retval, $t.text, $t2.text);}
+							{retval = new DropIndexForMappingStatement($p.retval, $t.text, $t2.text);}
+	| keyDROP keyINDEX t=simpleId keyON keyTABLE t2=simpleId p=pred?		
+							{retval = new DropIndexForTableStatement($p.retval, $t.text, $t2.text);}
 	| keyDESCRIBE keyINDEX t=simpleId keyON keyMAPPING? t2=simpleId
-					 		{retval = new DescribeIndexStatement($t.text, $t2.text);}
+					 		{retval = new DescribeIndexForMappingStatement($t.text, $t2.text);}
+	| keyDESCRIBE keyINDEX t=simpleId keyON keyTABLE t2=simpleId
+					 		{retval = new DescribeIndexForTableStatement($t.text, $t2.text);}
 	;
 
 indexColumnList returns [List<String> retval]

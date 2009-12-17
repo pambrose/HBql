@@ -23,34 +23,28 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
-public class DropIndexStatement extends BasicStatement implements ConnectionStatement {
+public class DropIndexForTableStatement extends TableStatement implements ConnectionStatement {
 
     private final String indexName;
-    private final String mappingName;
 
-    public DropIndexStatement(final StatementPredicate predicate, final String indexName, final String mappingName) {
-        super(predicate);
+    public DropIndexForTableStatement(final StatementPredicate predicate,
+                                      final String indexName,
+                                      final String tableName) {
+        super(predicate, tableName);
         this.indexName = indexName;
-        this.mappingName = mappingName;
     }
 
     private String getIndexName() {
         return this.indexName;
     }
 
-    private String getMappingName() {
-        return this.mappingName;
-    }
-
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
-        connection.dropIndexForMapping(this.getMappingName(), this.getIndexName());
-        final TableMapping mapping = connection.getMapping(this.getMappingName());
-        return new ExecutionResults("Index " + this.getIndexName() + " dropped for table " + mapping.getTableName());
+        connection.dropIndexForTable(this.getTableName(), this.getIndexName());
+        return new ExecutionResults("Index " + this.getIndexName() + " dropped for table " + this.getTableName());
     }
 
     public static String usage() {
-        return "DROP INDEX index_name ON [MAPPING] mapping_name [IF boolean_expression]";
+        return "DROP INDEX index_name ON TABLE table_name [IF boolean_expression]";
     }
 }

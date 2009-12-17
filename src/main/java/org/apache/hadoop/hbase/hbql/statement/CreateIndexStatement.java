@@ -32,10 +32,9 @@ import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import java.io.IOException;
 import java.util.List;
 
-public class CreateIndexStatement extends BasicStatement implements ConnectionStatement {
+public class CreateIndexStatement extends MappingStatement implements ConnectionStatement {
 
     private final String indexName;
-    private final String mappingName;
     private final List<String> indexColumns;
     private final List<String> includeColumns;
 
@@ -44,19 +43,14 @@ public class CreateIndexStatement extends BasicStatement implements ConnectionSt
                                 final String mappingName,
                                 final List<String> indexColumns,
                                 final List<String> includeColumns) {
-        super(predicate);
+        super(predicate, mappingName);
         this.indexName = indexName;
-        this.mappingName = mappingName;
         this.indexColumns = indexColumns;
         this.includeColumns = includeColumns;
     }
 
     private String getIndexName() {
         return this.indexName;
-    }
-
-    private String getMappingName() {
-        return this.mappingName;
     }
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
@@ -75,10 +69,6 @@ public class CreateIndexStatement extends BasicStatement implements ConnectionSt
         }
 
         return new ExecutionResults(this.getCreateIndexMsg(indexList, includeList));
-    }
-
-    public static String usage() {
-        return "CREATE INDEX index_name ON [MAPPING] mapping_name (column) INCLUDE (column_list) [IF boolean_expression]";
     }
 
     private List<String> getQualifiedNameList(final TableMapping mapping,
@@ -147,5 +137,9 @@ public class CreateIndexStatement extends BasicStatement implements ConnectionSt
         }
 
         return sbuf.toString();
+    }
+
+    public static String usage() {
+        return "CREATE INDEX index_name ON [MAPPING] mapping_name (column) INCLUDE (column_list) [IF boolean_expression]";
     }
 }

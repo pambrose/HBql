@@ -35,7 +35,6 @@ import java.util.Set;
 public class CreateMappingStatement extends StatementContext implements ConnectionStatement {
 
     private final boolean tempMapping;
-    private final String mappingName;
     private final String tableName;
     private final KeyInfo keyInfo;
     private final List<FamilyMapping> familyMappingList;
@@ -47,7 +46,6 @@ public class CreateMappingStatement extends StatementContext implements Connecti
                                   final AttribMapping attribMapping) {
         super(predicate, mappingName);
         this.tempMapping = tempMapping;
-        this.mappingName = mappingName;
         this.tableName = (tableName == null || tableName.length() == 0) ? mappingName : tableName;
         this.keyInfo = attribMapping != null ? attribMapping.getKeyInfo() : null;
         this.familyMappingList = attribMapping != null ? attribMapping.getFamilyMappingList() : null;
@@ -59,10 +57,6 @@ public class CreateMappingStatement extends StatementContext implements Connecti
 
     private String getTableName() {
         return this.tableName;
-    }
-
-    public String getMappingName() {
-        return this.mappingName;
     }
 
     public KeyInfo getKeyInfo() {
