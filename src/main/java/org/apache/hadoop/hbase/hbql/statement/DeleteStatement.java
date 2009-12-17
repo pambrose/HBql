@@ -127,20 +127,20 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
 
         this.validateTypes();
 
-        final Set<ColumnAttrib> allWhereAttribs = this.getWithArgs().getColumnsUsedInAllWhereExprs();
+        final WithArgs withArgs = this.getWithArgs();
+        final Set<ColumnAttrib> allWhereAttribs = withArgs.getColumnsUsedInAllWhereExprs();
 
         HTableWrapper tableWrapper = null;
 
         try {
-            tableWrapper = hconnectionImpl.newHTableWrapper(this.getWithArgs(), this.getMapping().getTableName());
+            tableWrapper = hconnectionImpl.newHTableWrapper(withArgs, this.getMapping().getTableName());
 
-            final List<RowRequest> rowRequestList = this.getWithArgs().getRowRequestList(this.getMapping(),
-                                                                                         allWhereAttribs);
+            final List<RowRequest> rowRequests = withArgs.getRowRequestList(this.getMapping(), allWhereAttribs);
 
             int cnt = 0;
 
-            for (final RowRequest rowRequest : rowRequestList)
-                cnt += this.delete(tableWrapper, this.getWithArgs(), rowRequest);
+            for (final RowRequest rowRequest : rowRequests)
+                cnt += this.delete(tableWrapper, withArgs, rowRequest);
 
             try {
                 tableWrapper.getHTable().flushCommits();

@@ -94,14 +94,14 @@ public class IndexRequest implements RowRequest {
         if (this.getStartRow() != HConstants.EMPTY_START_ROW) {
             final TableMapping tableMapping = (TableMapping)mapping;
             tableMapping.validateKeyInfo(withArgs.getIndexName());
-            final int width = tableMapping.getKeyInfo().getKeyWidth();
+            final int width = tableMapping.getKeyInfo().getWidth();
             startKey = Bytes.add(this.getStartRow(), Util.getFixedWidthString(Character.MIN_VALUE, width));
         }
 
         if (this.getStopRow() != HConstants.EMPTY_END_ROW) {
             final TableMapping tableMapping = (TableMapping)mapping;
             tableMapping.validateKeyInfo(withArgs.getIndexName());
-            final int width = tableMapping.getKeyInfo().getKeyWidth();
+            final int width = tableMapping.getKeyInfo().getWidth();
             stopKey = Bytes.add(this.getStopRow(), Util.getFixedWidthString(Character.MAX_VALUE, width));
         }
 

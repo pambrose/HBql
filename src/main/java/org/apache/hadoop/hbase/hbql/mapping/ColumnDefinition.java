@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.statement.args.ColumnWidth;
 import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 
 import java.io.Serializable;
@@ -37,7 +38,7 @@ public final class ColumnDefinition implements Serializable {
     private final boolean isArray;
     private final FieldType fieldType;
     private final GenericValue defaultValue;
-    private final KeyInfo keyInfo;
+    private final ColumnWidth columnWidth;
     private final String getter;
     private final String setter;
 
@@ -48,7 +49,7 @@ public final class ColumnDefinition implements Serializable {
                              final String aliasName,
                              final FieldType fieldType,
                              final boolean isArray,
-                             final KeyInfo keyInfo,
+                             final ColumnWidth columnWidth,
                              final GenericValue defaultValue,
                              final String getter,
                              final String setter) {
@@ -56,7 +57,7 @@ public final class ColumnDefinition implements Serializable {
         this.columnName = columnName;
         this.fieldType = fieldType;
         this.isArray = isArray;
-        this.keyInfo = keyInfo;
+        this.columnWidth = columnWidth != null ? columnWidth : new ColumnWidth();
         this.aliasName = aliasName;
         this.defaultValue = defaultValue;
         this.getter = getter;
@@ -74,7 +75,9 @@ public final class ColumnDefinition implements Serializable {
                                     FieldType.KeyType,
                                     false,
                                     keyInfo,
-                                    null, null, null);
+                                    null,
+                                    null,
+                                    null);
     }
 
     // For Family Default attribs
@@ -86,10 +89,19 @@ public final class ColumnDefinition implements Serializable {
     public static ColumnDefinition newMappedColumn(final String columnName,
                                                    final String typeName,
                                                    final boolean isArray,
+                                                   final ColumnWidth columnWidth,
                                                    final String aliasName,
                                                    final GenericValue defaultValue) {
         final FieldType fieldType = getFieldType(typeName);
-        return new ColumnDefinition(null, columnName, aliasName, fieldType, isArray, null, defaultValue, null, null);
+        return new ColumnDefinition(null,
+                                    columnName,
+                                    aliasName,
+                                    fieldType,
+                                    isArray,
+                                    columnWidth,
+                                    defaultValue,
+                                    null,
+                                    null);
     }
 
     // For FieldAttrib columns
@@ -136,9 +148,9 @@ public final class ColumnDefinition implements Serializable {
         return (this.getFamilyMapping() != null) ? this.getFamilyMapping().getFamilyName() : null;
     }
 
-    public KeyInfo getKeyInfo() {
-        // This is used for validating width of key values
-        return this.keyInfo;
+    // This is used for validating width of values
+    public ColumnWidth getColumnWidth() {
+        return this.columnWidth;
     }
 
     public String getColumnName() {

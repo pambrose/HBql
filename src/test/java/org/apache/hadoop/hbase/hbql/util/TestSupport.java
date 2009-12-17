@@ -45,11 +45,11 @@ public class TestSupport {
 
     public final static int keywidth = 10;
 
-    public static void assertTrue(final boolean val) throws HBqlException {
+    public static void assertTrue(final boolean val) {
         org.junit.Assert.assertTrue(val);
     }
 
-    public static void assertFalse(final boolean val) throws HBqlException {
+    public static void assertFalse(final boolean val) {
         org.junit.Assert.assertFalse(val);
     }
 

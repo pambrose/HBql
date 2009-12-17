@@ -84,72 +84,100 @@ public class IndexTest extends TestSupport {
         }
     }
 
-    private static void showValues(final String sql, final int cnt) throws HBqlException {
+    private int showValues(final String sql, final boolean expectException) {
 
-        HStatement stmt = connection.createStatement();
-        HResultSet<HRecord> results = stmt.executeQuery(sql);
+        Exception ex = null;
+        try {
+            HStatement stmt = connection.createStatement();
+            HResultSet<HRecord> results = stmt.executeQuery(sql);
 
-        int rec_cnt = 0;
-        System.out.println("Results:");
-        for (HRecord rec : results) {
+            int rec_cnt = 0;
+            System.out.println("Results:");
 
-            String keyval = (String)rec.getCurrentValue("keyval");
-            String val1 = (String)rec.getCurrentValue("val1");
-            int val2 = (Integer)rec.getCurrentValue("f1:val2");
-            int val3 = (Integer)rec.getCurrentValue("f1:val3");
+            for (HRecord rec : results) {
 
-            System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
-            rec_cnt++;
+                String keyval = (String)rec.getCurrentValue("keyval");
+                String val1 = (String)rec.getCurrentValue("val1");
+                int val2 = (Integer)rec.getCurrentValue("f1:val2");
+                int val3 = (Integer)rec.getCurrentValue("f1:val3");
+
+                System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
+                rec_cnt++;
+            }
+
+            return rec_cnt;
+        }
+        catch (HBqlException e) {
+            e.printStackTrace();
+            ex = e;
         }
 
-        assertTrue(rec_cnt == cnt);
+        if (expectException)
+            assertTrue(ex != null);
+
+        return 0;
+    }
+
+    @Test
+    public void nonindexSelect1() {
+        // Use a key with a bad width
+        final String q1 = "select * from tab4 WITH KEY '00000000000001'";
+        final int rec_cnt = showValues(q1, true);
+        assertTrue(rec_cnt == 0);
     }
 
     @Test
     public void simpleSelect1() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
-        stmt.execute("DROP INDEX foo1 ON MAPPING tab4 if indexexistsfortable('table21', 'foo1')");
-        stmt.execute("CREATE INDEX foo1 ON MAPPING tab4 (f1:val1)");
+        // stmt.execute("DROP INDEX foo1 ON MAPPING tab4 if indexexistsfortable('table21', 'foo1')");
+        stmt.execute("CREATE INDEX foo1 ON MAPPING tab4 (f1:val1) if not indexexistsformapping('tab4', 'foo1')");
 
         final String q1 = "select * from tab4";
-        showValues(q1, 10);
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 10);
     }
 
     @Test
     public void simpleSelect2() throws HBqlException {
         final String q1 = "select * from tab4 WITH INDEX foo1";
-        showValues(q1, 10);
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 10);
     }
 
     @Test
     public void simpleSelect3() throws HBqlException {
         final String q1 = "select * from tab4 WITH INDEX foo1 KEYS ALL";
-        showValues(q1, 10);
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 10);
     }
 
     @Test
     public void simpleSelect4() throws HBqlException {
         final String q1 = "select * from tab4 WITH INDEX foo1 KEYS '000000000001200' TO '000000000001600'";
-        showValues(q1, 5);
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 5);
     }
 
     @Test
     public void simpleSelect5() throws HBqlException {
         final String q1 = "select * from tab4 WITH INDEX foo1 KEYS FIRST TO '000000000001400'";
-        showValues(q1, 5);
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 5);
     }
 
     @Test
     public void simpleSelect6() throws HBqlException {
         final String q1 = "select * from tab4 WITH INDEX foo1 KEYS '000000000001500' TO LAST";
-        showValues(q1, 5);
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 5);
     }
 
     @Test
     public void simpleSelect7() throws HBqlException {
         final String q1 = "select * from tab4 WITH INDEX foo1 KEY '000000000001500' ";
-        showValues(q1, 1);
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 1);
     }
 
     @Test
@@ -159,7 +187,8 @@ public class IndexTest extends TestSupport {
                           "KEYS '000000000001500' TO LAST " +
                           "INDEX FILTER WHERE val1 = '000000000001700' " +
                           "CLIENT FILTER WHERE val1 = '000000000001700'";
-        showValues(q1, 1);
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 1);
     }
 
     @Test
@@ -169,7 +198,8 @@ public class IndexTest extends TestSupport {
                           "KEYS '000000000001500', '000000000001600', '000000000001700' " +
                           "INDEX FILTER WHERE val1 = '000000000001700' " +
                           "CLIENT FILTER WHERE val1 = '000000000001700'";
-        showValues(q1, 1);
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 1);
     }
 
     @Test
@@ -177,6 +207,7 @@ public class IndexTest extends TestSupport {
         final String q1 = "select * from tab4 WITH " +
                           "INDEX foo1 " +
                           "KEYS '000000000001500', '000000000001600', '000000000001700' ";
-        showValues(q1, 3);
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 3);
     }
 }

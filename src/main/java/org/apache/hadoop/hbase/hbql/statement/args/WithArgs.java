@@ -91,7 +91,7 @@ public class WithArgs implements Serializable {
 
     public void validate(final HConnectionImpl connection, final TableMapping mapping) throws HBqlException {
         if (connection != null) {
-            if (this.hasAnIndex())
+            if (this.usesAnIndex())
                 connection.validateIndexExistsOnTable(mapping.getTableName(), this.getIndexName());
         }
     }
@@ -146,7 +146,7 @@ public class WithArgs implements Serializable {
         return this.indexName;
     }
 
-    public boolean hasAnIndex() {
+    public boolean usesAnIndex() {
         return this.getIndexName() != null && this.getIndexName().length() > 0;
     }
 

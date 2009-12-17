@@ -129,6 +129,8 @@ options {backtrack=true;}
 							{retval = new CreateIndexStatement($p.retval, $t.text, $t2.text, $t3.retval, $t4.retval);}
 	| keyDROP keyINDEX t=simpleId keyON keyMAPPING? t2=simpleId p=pred?		
 							{retval = new DropIndexStatement($p.retval, $t.text, $t2.text);}
+	| keyDESCRIBE keyINDEX t=simpleId keyON keyMAPPING? t2=simpleId
+					 		{retval = new DescribeIndexStatement($t.text, $t2.text);}
 	;
 
 indexColumnList returns [List<String> retval]
@@ -214,8 +216,11 @@ columnDefinitionnList returns [List<ColumnDefinition> retval]
 	: a1=columnDefinition {retval.add($a1.retval);} (COMMA a2=columnDefinition {retval.add($a2.retval);})*;
 							
 columnDefinition returns [ColumnDefinition retval]
-	: s=simpleId type=simpleId (b=LBRACE RBRACE)? (keyALIAS a=simpleId)? (keyDEFAULT def=exprValue)?
-							{retval = ColumnDefinition.newMappedColumn($s.text, $type.text, $b.text!=null, $a.text, $def.retval);};
+	: s=simpleId type=simpleId (b=LBRACE RBRACE)? w=widthExpr? (keyALIAS a=simpleId)? (keyDEFAULT def=exprValue)?
+							{retval = ColumnDefinition.newMappedColumn($s.text, $type.text, $b.text!=null, $w.retval, $a.text, $def.retval);};
+
+widthExpr returns [ColumnWidth retval]
+	: keyWIDTH w=exprValue				{retval = new ColumnWidth($w.retval);};
 
 withClause returns [WithArgs retval]
 	: keyWITH w=withStmt				{retval = $w.retval;};	
@@ -444,7 +449,7 @@ attribList returns [List<ColumnDefinition> retval]
 
 attribDesc returns [ColumnDefinition retval]
 	: c=columnRef type=simpleId (b=LBRACE RBRACE)? (keyALIAS a=simpleId)? (keyDEFAULT t=exprValue)?	
-							{retval = ColumnDefinition.newMappedColumn($c.text, $type.text,  $b.text!=null, $a.text, $t.retval);};
+							{retval = ColumnDefinition.newMappedColumn($c.text, $type.text,  $b.text!=null, null, $a.text, $t.retval);};
 		
 ltgtOp returns [Operator retval]
 	: GT 						{retval = Operator.GT;}

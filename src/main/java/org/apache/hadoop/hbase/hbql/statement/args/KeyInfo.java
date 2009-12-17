@@ -20,22 +20,14 @@
 
 package org.apache.hadoop.hbase.hbql.statement.args;
 
-import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-import java.io.Serializable;
-
-public class KeyInfo extends MultipleExpressionContext implements Serializable {
+public class KeyInfo extends ColumnWidth {
 
     final String keyName;
-    final boolean keyWidthSpecified;
-
-    int keyWidth = -1;
 
     public KeyInfo(final String keyName, final GenericValue val) {
-        super(SelectStatementArgs.Type.WIDTH.getTypeSignature(), val);
-        this.keyWidthSpecified = val != null;
+        super(val);
         this.keyName = keyName;
     }
 
@@ -43,32 +35,7 @@ public class KeyInfo extends MultipleExpressionContext implements Serializable {
         return this.keyName;
     }
 
-    public boolean isKeyWidthSpecified() {
-        return this.keyWidthSpecified;
-    }
-
-    public int getKeyWidth() {
-        return this.keyWidth;
-    }
-
     public String asString() {
-        return this.getKeyName() + " KEY "
-               + (this.isKeyWidthSpecified() ? "WIDTH " + this.getGenericValue(0).asString() : "");
-    }
-
-    public boolean useResultData() {
-        return false;
-    }
-
-    public boolean allowColumns() {
-        return false;
-    }
-
-    public void validate() throws HBqlException {
-        if (this.isKeyWidthSpecified()) {
-            this.keyWidth = ((Number)this.evaluateConstant(null, 0, false, null)).intValue();
-            if (this.getKeyWidth() <= 0)
-                throw new HBqlException("Invalid key width: " + this.getKeyWidth() + " for key " + this.getKeyName());
-        }
+        return this.getKeyName() + " KEY " + (this.isWidthSpecified() ? super.asString() : "");
     }
 }

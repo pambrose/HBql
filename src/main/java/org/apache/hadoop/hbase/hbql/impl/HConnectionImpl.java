@@ -328,7 +328,7 @@ public class HConnectionImpl implements HConnection {
         this.checkIfClosed();
 
         try {
-            if (withArgs != null && withArgs.hasAnIndex())
+            if (withArgs != null && withArgs.usesAnIndex())
                 return new HTableWrapper(new IndexedTable(this.getHBaseConfiguration(), tableName.getBytes()), null);
             else
                 return new HTableWrapper(this.getTablePool().getTable(tableName), this.getTablePool());

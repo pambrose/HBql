@@ -184,7 +184,7 @@ public class KeyRange extends SelectStatementArgs {
 
         final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(rangeValue);
 
-        if (withArgs.hasAnIndex()) {
+        if (withArgs.usesAnIndex()) {
             return new IndexRequest(lowerBytes, lowerBytes, columnAttribs);
         }
         else {
@@ -227,7 +227,7 @@ public class KeyRange extends SelectStatementArgs {
 
         withArgs.setScanArgs(scan, columnAttribs);
 
-        final RowRequest rowRequest = withArgs.hasAnIndex()
+        final RowRequest rowRequest = withArgs.usesAnIndex()
                                       ? new IndexRequest(scan.getStartRow(), scan.getStopRow(), columnAttribs)
                                       : new ScanRequest(scan);
 
@@ -236,10 +236,10 @@ public class KeyRange extends SelectStatementArgs {
 
     private void verifyRangeValueWidth(final ColumnAttrib keyAttrib, final String... rangeValues) throws HBqlException {
 
-        final KeyInfo keyInfo = keyAttrib.getColumnDefinition().getKeyInfo();
-        if (keyInfo != null) {
+        final ColumnWidth columnWidth = keyAttrib.getColumnDefinition().getColumnWidth();
+        if (columnWidth.isWidthSpecified()) {
             for (final String rangeValue : rangeValues) {
-                final int width = keyInfo.getKeyWidth();
+                final int width = columnWidth.getWidth();
                 if (width > 0 && rangeValue.length() != width)
                     throw new HBqlException("Invalid key range length in " + this.asString()
                                             + " expecting width " + width + " but found " + rangeValue.length()

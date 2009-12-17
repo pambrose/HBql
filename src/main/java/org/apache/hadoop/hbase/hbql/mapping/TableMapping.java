@@ -102,7 +102,7 @@ public class TableMapping extends Mapping implements HMapping {
     }
 
     public void validateKeyInfo(final String indexName) throws HBqlException {
-        if (!this.getKeyInfo().isKeyWidthSpecified())
+        if (!this.getKeyInfo().isWidthSpecified())
             throw new HBqlException("Cannot use index " + indexName + " without a width value for KEY "
                                     + this.getKeyInfo().getKeyName() + " in mapping " + this.getMappingName());
     }

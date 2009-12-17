@@ -25,8 +25,8 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserSupport;
+import org.apache.hadoop.hbase.hbql.statement.args.ColumnWidth;
 import org.apache.hadoop.hbase.hbql.statement.args.DefaultArg;
-import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -242,9 +242,9 @@ public abstract class ColumnAttrib implements Serializable {
     public void validateKeyWidth(final Object value) throws HBqlException {
 
         if (this.isAKeyAttrib()) {
-            final KeyInfo keyInfo = this.getColumnDefinition().getKeyInfo();
-            if (keyInfo != null) {
-                final int width = keyInfo.getKeyWidth();
+            final ColumnWidth columnWidth = this.getColumnDefinition().getColumnWidth();
+            if (columnWidth.isWidthSpecified()) {
+                final int width = columnWidth.getWidth();
                 if (width > 0 && value instanceof String) {
                     final String str = (String)value;
                     if (str.length() != width)
