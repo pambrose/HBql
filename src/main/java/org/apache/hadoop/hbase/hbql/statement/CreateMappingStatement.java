@@ -77,11 +77,14 @@ public class CreateMappingStatement extends StatementContext implements Connecti
         if (this.getFamilyMappingList() != null) {
             final Set<String> nameSet = Sets.newHashSet();
             for (final FamilyMapping familyMapping : this.getFamilyMappingList()) {
+
+                familyMapping.validate();
+
                 final String familyName = familyMapping.getFamilyName();
                 if (nameSet.contains(familyName))
                     throw new HBqlException("Family name already mapped: " + familyName);
-                else
-                    nameSet.add(familyName);
+
+                nameSet.add(familyName);
             }
         }
     }

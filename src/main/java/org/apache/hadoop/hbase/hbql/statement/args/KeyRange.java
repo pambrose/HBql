@@ -77,56 +77,32 @@ public class KeyRange extends SelectStatementArgs {
         return new KeyRange();
     }
 
-    private KeyRangeArgs.Type getType() {
+    private KeyRangeArgs.Type getKeyRangeType() {
         return this.type;
     }
 
     private boolean isFirstRange() {
-        return this.getType() == KeyRangeArgs.Type.FIRST;
+        return this.getKeyRangeType() == KeyRangeArgs.Type.FIRST;
     }
 
     private boolean isLastRange() {
-        return this.getType() == KeyRangeArgs.Type.LAST;
+        return this.getKeyRangeType() == KeyRangeArgs.Type.LAST;
     }
 
     public boolean isSingleKey() {
-        return this.getType() == KeyRangeArgs.Type.SINGLE;
+        return this.getKeyRangeType() == KeyRangeArgs.Type.SINGLE;
     }
 
     private boolean isRowRange() {
-        return this.getType() == KeyRangeArgs.Type.RANGE;
+        return this.getKeyRangeType() == KeyRangeArgs.Type.RANGE;
     }
 
     public boolean isAllRows() {
-        return this.getType() == KeyRangeArgs.Type.ALL;
+        return this.getKeyRangeType() == KeyRangeArgs.Type.ALL;
     }
 
     public void validateArgTypes() throws HBqlException {
         this.validateTypes(this.allowColumns(), this.isSingleKey());
-    }
-
-    public String asString() {
-
-        final StringBuilder sbuf = new StringBuilder();
-
-        if (this.isAllRows()) {
-            sbuf.append("KEYS ALL");
-        }
-        else if (this.isSingleKey()) {
-            sbuf.append("KEY " + this.getGenericValue(0).asString());
-        }
-        else if (this.isFirstRange()) {
-            sbuf.append("KEYS FIRST TO " + this.getGenericValue(0).asString());
-        }
-        else if (this.isLastRange()) {
-            sbuf.append("KEYS " + this.getGenericValue(0).asString() + "' TO LAST");
-        }
-        else {
-            sbuf.append("KEYS " + this.getGenericValue(0).asString());
-            sbuf.append(" TO ");
-            sbuf.append(this.getGenericValue(1).asString());
-        }
-        return sbuf.toString();
     }
 
     // This returns an object because it might be a collection in the case of a param
@@ -200,29 +176,37 @@ public class KeyRange extends SelectStatementArgs {
 
         final Scan scan = new Scan();
 
-        if (this.isAllRows()) {
-            // Scan will default to all rows
-        }
-        else if (this.isFirstRange()) {
-            final String rangeValue = (String)this.getFirstArg(false);
-            this.verifyRangeValueWidth(keyAttrib, rangeValue);
-            final byte[] upperBytes = IO.getSerialization().getStringAsBytes(rangeValue);
-            scan.setStopRow(upperBytes);
-        }
-        else if (this.isLastRange()) {
-            final String rangeValue = (String)this.getFirstArg(false);
-            this.verifyRangeValueWidth(keyAttrib, rangeValue);
-            final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(rangeValue);
-            scan.setStartRow(lowerBytes);
-        }
-        else {
-            final String firstRangeValue = (String)this.getFirstArg(false);
-            final String secondRangeValue = this.getSecondArg();
-            this.verifyRangeValueWidth(keyAttrib, firstRangeValue, secondRangeValue);
-            final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(firstRangeValue);
-            final byte[] upperBytes = IO.getSerialization().getStringAsBytes(secondRangeValue);
-            scan.setStartRow(lowerBytes);
-            scan.setStopRow(upperBytes);
+        switch (this.getKeyRangeType()) {
+            case ALL: {
+                // Scan will default to all rows
+                break;
+            }
+            case FIRST: {
+                final String rangeValue = (String)this.getFirstArg(false);
+                this.verifyRangeValueWidth(keyAttrib, rangeValue);
+                final byte[] upperBytes = IO.getSerialization().getStringAsBytes(rangeValue);
+                scan.setStopRow(upperBytes);
+                break;
+            }
+            case LAST: {
+                final String rangeValue = (String)this.getFirstArg(false);
+                this.verifyRangeValueWidth(keyAttrib, rangeValue);
+                final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(rangeValue);
+                scan.setStartRow(lowerBytes);
+                break;
+            }
+            case RANGE: {
+                final String firstRangeValue = (String)this.getFirstArg(false);
+                final String secondRangeValue = this.getSecondArg();
+                this.verifyRangeValueWidth(keyAttrib, firstRangeValue, secondRangeValue);
+                final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(firstRangeValue);
+                final byte[] upperBytes = IO.getSerialization().getStringAsBytes(secondRangeValue);
+                scan.setStartRow(lowerBytes);
+                scan.setStopRow(upperBytes);
+                break;
+            }
+            default:
+                throw new InternalErrorException("Invalid range value: " + this.getKeyRangeType().name());
         }
 
         withArgs.setScanArgs(scan, columnAttribs);
@@ -246,5 +230,39 @@ public class KeyRange extends SelectStatementArgs {
                                             + " with key \"" + rangeValue + "\"");
             }
         }
+    }
+
+    public String asString() {
+
+        final StringBuilder sbuf = new StringBuilder();
+
+        switch (this.getKeyRangeType()) {
+            case ALL: {
+                sbuf.append("KEYS ALL");
+                break;
+            }
+            case SINGLE: {
+                sbuf.append("KEY " + this.getGenericValue(0).asString());
+                break;
+            }
+            case FIRST: {
+                sbuf.append("KEYS FIRST TO " + this.getGenericValue(0).asString());
+                break;
+            }
+            case LAST: {
+                sbuf.append("KEYS " + this.getGenericValue(0).asString() + "' TO LAST");
+                break;
+            }
+            case RANGE: {
+                sbuf.append("KEYS " + this.getGenericValue(0).asString());
+                sbuf.append(" TO ");
+                sbuf.append(this.getGenericValue(1).asString());
+                break;
+            }
+            default:
+                throw new InternalErrorException("Invalid range value: " + this.getKeyRangeType().name());
+        }
+
+        return sbuf.toString();
     }
 }

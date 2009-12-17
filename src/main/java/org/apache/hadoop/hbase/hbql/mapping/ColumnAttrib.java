@@ -225,33 +225,37 @@ public abstract class ColumnAttrib implements Serializable {
 
     public byte[] getValueAsBytes(final Object obj) throws HBqlException {
 
-        if (this.hasGetter())
-            return this.invokeGetterMethod(obj);
+        final byte[] retval;
 
-        final Object value = this.getCurrentValue(obj);
+        if (this.hasGetter()) {
+            retval = this.invokeGetterMethod(obj);
+        }
+        else {
+            final Object value = this.getCurrentValue(obj);
 
-        if (this.isAKeyAttrib())
-            this.validateKeyWidth(value);
+            if (this.isAnArray()) {
+                retval = IO.getSerialization().getArrayAsBytes(this.getFieldType(), value);
+            }
+            else {
+                this.validateValueWidth(value);
+                retval = IO.getSerialization().getScalarAsBytes(this.getFieldType(), value);
+            }
+        }
 
-        if (this.isAnArray())
-            return IO.getSerialization().getArrayAsBytes(this.getFieldType(), value);
-        else
-            return IO.getSerialization().getScalarAsBytes(this.getFieldType(), value);
+        return retval;
     }
 
-    public void validateKeyWidth(final Object value) throws HBqlException {
+    public void validateValueWidth(final Object value) throws HBqlException {
 
-        if (this.isAKeyAttrib()) {
-            final ColumnWidth columnWidth = this.getColumnDefinition().getColumnWidth();
-            if (columnWidth.isWidthSpecified()) {
-                final int width = columnWidth.getWidth();
-                if (width > 0 && value instanceof String) {
-                    final String str = (String)value;
-                    if (str.length() != width)
-                        throw new HBqlException("Invalid key length in " + this.getNameToUseInExceptions()
-                                                + " expecting width " + width + " but found " + str.length()
-                                                + " with string \"" + str + "\"");
-                }
+        final ColumnWidth columnWidth = this.getColumnDefinition().getColumnWidth();
+        if (columnWidth.isWidthSpecified()) {
+            final int width = columnWidth.getWidth();
+            if (width > 0 && value instanceof String) {
+                final String str = (String)value;
+                if (str.length() != width)
+                    throw new HBqlException("Invalid length in " + this.getNameToUseInExceptions()
+                                            + " expecting width " + width + " but found " + str.length()
+                                            + " with string \"" + str + "\"");
             }
         }
     }

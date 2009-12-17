@@ -20,6 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.mapping;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -53,5 +55,11 @@ public class FamilyMapping implements Serializable {
 
     public List<ColumnDefinition> getColumnDefinitionList() {
         return this.columnDefinitionList;
+    }
+
+    public void validate() throws HBqlException {
+        if (this.getColumnDefinitionList() != null)
+            for (final ColumnDefinition columnDefinition : this.getColumnDefinitionList())
+                columnDefinition.getColumnWidth().validate();
     }
 }
