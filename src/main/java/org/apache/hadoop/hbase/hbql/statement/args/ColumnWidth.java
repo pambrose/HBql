@@ -36,7 +36,7 @@ public class ColumnWidth extends MultipleExpressionContext implements Serializab
     }
 
     public ColumnWidth(final GenericValue val) {
-        super(SelectStatementArgs.Type.WIDTH.getTypeSignature(), val);
+        super(SelectStatementArgs.ArgType.WIDTH.getTypeSignature(), val);
         this.widthSpecified = val != null;
     }
 

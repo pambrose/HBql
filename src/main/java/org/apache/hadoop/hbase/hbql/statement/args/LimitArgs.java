@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 public class LimitArgs extends SelectStatementArgs {
 
     public LimitArgs(final GenericValue arg0) {
-        super(SelectStatementArgs.Type.LIMIT, arg0);
+        super(ArgType.LIMIT, arg0);
     }
 
     public long getValue() throws HBqlException {

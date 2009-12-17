@@ -30,7 +30,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public abstract class SelectStatementArgs extends MultipleExpressionContext {
 
-    public static enum Type {
+    public static enum ArgType {
 
         NOARGSKEY(new ArgumentListTypeSignature()),
         SINGLEKEY(new ArgumentListTypeSignature(StringValue.class)),
@@ -43,7 +43,7 @@ public abstract class SelectStatementArgs extends MultipleExpressionContext {
 
         private final ArgumentListTypeSignature typeSignature;
 
-        Type(final ArgumentListTypeSignature typeSignature) {
+        ArgType(final ArgumentListTypeSignature typeSignature) {
             this.typeSignature = typeSignature;
         }
 
@@ -56,8 +56,8 @@ public abstract class SelectStatementArgs extends MultipleExpressionContext {
         this.validateTypes(this.allowColumns(), false);
     }
 
-    protected SelectStatementArgs(final Type type, final GenericValue... exprs) {
-        super(type.getTypeSignature(), exprs);
+    protected SelectStatementArgs(final ArgType argType, final GenericValue... exprs) {
+        super(argType.getTypeSignature(), exprs);
     }
 
     public boolean useResultData() {

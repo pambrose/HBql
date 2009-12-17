@@ -40,21 +40,26 @@ import java.util.List;
 import java.util.Set;
 
 public class KeyRange extends SelectStatementArgs {
-    private final KeyRangeArgs.Type type;
 
-    private KeyRange() {
-        super(Type.NOARGSKEY);
-        this.type = KeyRangeArgs.Type.ALL;
+    private enum RangeType {
+        SINGLE, RANGE, FIRST, LAST, ALL
     }
 
-    private KeyRange(final KeyRangeArgs.Type type, final GenericValue arg0) {
-        super(Type.SINGLEKEY, arg0);
-        this.type = type;
+    private final RangeType rangeType;
+
+    private KeyRange() {
+        super(ArgType.NOARGSKEY);
+        this.rangeType = RangeType.ALL;
+    }
+
+    private KeyRange(final RangeType rangeType, final GenericValue arg0) {
+        super(ArgType.SINGLEKEY, arg0);
+        this.rangeType = rangeType;
     }
 
     private KeyRange(final GenericValue arg0, final GenericValue arg1) {
-        super(Type.KEYRANGE, arg0, arg1);
-        this.type = KeyRangeArgs.Type.RANGE;
+        super(ArgType.KEYRANGE, arg0, arg1);
+        this.rangeType = RangeType.RANGE;
     }
 
     public static KeyRange newRange(final GenericValue arg0, final GenericValue arg1) {
@@ -62,43 +67,27 @@ public class KeyRange extends SelectStatementArgs {
     }
 
     public static KeyRange newSingleKey(final GenericValue arg0) {
-        return new KeyRange(KeyRangeArgs.Type.SINGLE, arg0);
+        return new KeyRange(RangeType.SINGLE, arg0);
     }
 
     public static KeyRange newFirstRange(final GenericValue arg0) {
-        return new KeyRange(KeyRangeArgs.Type.FIRST, arg0);
+        return new KeyRange(RangeType.FIRST, arg0);
     }
 
     public static KeyRange newLastRange(final GenericValue arg0) {
-        return new KeyRange(KeyRangeArgs.Type.LAST, arg0);
+        return new KeyRange(RangeType.LAST, arg0);
     }
 
     public static KeyRange newAllRange() {
         return new KeyRange();
     }
 
-    private KeyRangeArgs.Type getKeyRangeType() {
-        return this.type;
-    }
-
-    private boolean isFirstRange() {
-        return this.getKeyRangeType() == KeyRangeArgs.Type.FIRST;
-    }
-
-    private boolean isLastRange() {
-        return this.getKeyRangeType() == KeyRangeArgs.Type.LAST;
+    private RangeType getKeyRangeType() {
+        return this.rangeType;
     }
 
     public boolean isSingleKey() {
-        return this.getKeyRangeType() == KeyRangeArgs.Type.SINGLE;
-    }
-
-    private boolean isRowRange() {
-        return this.getKeyRangeType() == KeyRangeArgs.Type.RANGE;
-    }
-
-    public boolean isAllRows() {
-        return this.getKeyRangeType() == KeyRangeArgs.Type.ALL;
+        return this.getKeyRangeType() == RangeType.SINGLE;
     }
 
     public void validateArgTypes() throws HBqlException {
@@ -206,7 +195,7 @@ public class KeyRange extends SelectStatementArgs {
                 break;
             }
             default:
-                throw new InternalErrorException("Invalid range value: " + this.getKeyRangeType().name());
+                throw new InternalErrorException("Invalid range type: " + this.getKeyRangeType().name());
         }
 
         withArgs.setScanArgs(scan, columnAttribs);
@@ -260,7 +249,7 @@ public class KeyRange extends SelectStatementArgs {
                 break;
             }
             default:
-                throw new InternalErrorException("Invalid range value: " + this.getKeyRangeType().name());
+                throw new RuntimeException("Invalid range type: " + this.getKeyRangeType().name());
         }
 
         return sbuf.toString();

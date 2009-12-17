@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 public class ScannerCacheArgs extends SelectStatementArgs {
 
     public ScannerCacheArgs(final GenericValue val) {
-        super(Type.SCANNERCACHE, val);
+        super(ArgType.SCANNERCACHE, val);
     }
 
     private int getValue() throws HBqlException {

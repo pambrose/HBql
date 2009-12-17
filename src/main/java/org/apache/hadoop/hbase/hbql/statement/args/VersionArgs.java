@@ -30,7 +30,7 @@ import java.io.IOException;
 public class VersionArgs extends SelectStatementArgs {
 
     public VersionArgs(final GenericValue val) {
-        super(SelectStatementArgs.Type.VERSION, val);
+        super(ArgType.VERSION, val);
     }
 
     private int getValue() throws HBqlException {

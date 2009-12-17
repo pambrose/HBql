@@ -35,10 +35,6 @@ public class KeyRangeArgs implements Serializable {
     private final List<KeyRange> keyRangeList;
     private final List<NamedParameter> namedParamList = Lists.newArrayList();
 
-    public enum Type {
-        SINGLE, RANGE, FIRST, LAST, ALL
-    }
-
     public KeyRangeArgs() {
         this(null);
     }
