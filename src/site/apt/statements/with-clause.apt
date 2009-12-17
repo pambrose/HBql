@@ -8,6 +8,7 @@ WITH Clause
 *Syntax
 
 ---------------------------
+
 WITH { keys | timestamp | versions | scanner_cache_size | query_limit | server_filer | client_filter }+
 
 keys:

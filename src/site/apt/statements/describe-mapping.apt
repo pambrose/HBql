@@ -9,7 +9,9 @@ DESCRIBE MAPPING
 *Syntax
 
 ---------------------------
+
 DESCRIBE MAPPING mapping_name
+
 ---------------------------
 
 *Description

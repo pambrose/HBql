@@ -8,7 +8,9 @@ IMPORT
 *Syntax
 
 ---------------------------
-IMPORT "file_name"
+
+IMPORT '"' file_name '"'
+
 ---------------------------
 
 *Description

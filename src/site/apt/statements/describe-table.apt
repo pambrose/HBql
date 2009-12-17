@@ -9,7 +9,9 @@ DESCRIBE TABLE
 *Syntax
 
 ---------------------------
+
 DESCRIBE TABLE table_name
+
 ---------------------------
 
 *Description

@@ -9,6 +9,7 @@ ALTER TABLE
 *Syntax
 
 ---------------------------
+
 ALTER TABLE table_name alter_action [, ...] [IF boolean_condition]
 
 alter_action:

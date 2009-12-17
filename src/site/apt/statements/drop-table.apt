@@ -9,7 +9,9 @@ DROP TABLE
 *Syntax
 
 ---------------------------
-DROP TABLE table_name [IF boolean_condition]   
+
+DROP TABLE table_name [IF boolean_condition]
+
 ---------------------------
 
 *Description
