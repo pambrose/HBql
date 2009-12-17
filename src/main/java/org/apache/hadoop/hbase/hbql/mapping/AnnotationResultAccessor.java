@@ -181,13 +181,15 @@ public class AnnotationResultAccessor extends ResultAccessor {
         }
     }
 
-    private void assignSelectValues(final HConnectionImpl connection, final Object newobj,
+    private void assignSelectValues(final HConnectionImpl connection,
+                                    final Object newobj,
                                     final List<SelectElement> selectElementList,
                                     final int maxVersions,
                                     final Result result) throws HBqlException {
 
         // Set key value
-        this.getAttrib(this.getKeyAttrib().getFamilyQualifiedName()).setCurrentValue(newobj, 0, result.getRow());
+        final ColumnAttrib keyAttrib = this.getMapping().getKeyAttrib();
+        this.getAttrib(keyAttrib.getFamilyQualifiedName()).setCurrentValue(newobj, 0, result.getRow());
 
         // Set the non-key values
         for (final SelectElement selectElement : selectElementList)

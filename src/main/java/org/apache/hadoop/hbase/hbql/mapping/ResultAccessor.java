@@ -57,10 +57,6 @@ public abstract class ResultAccessor implements Serializable {
                                      final int maxVersions,
                                      final Result result) throws HBqlException;
 
-    public ColumnAttrib getKeyAttrib() throws HBqlException {
-        return this.getMapping().getKeyAttrib();
-    }
-
     public abstract ColumnAttrib getColumnAttribByName(String name) throws HBqlException;
 
     public abstract ColumnAttrib getColumnAttribByQualifiedName(String familyName,

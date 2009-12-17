@@ -66,16 +66,16 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         return this.query;
     }
 
+    private List<ResultScanner> getResultScannerList() {
+        return this.resultScannerList;
+    }
+
     public void addQueryListener(QueryListener<T> listener) {
         this.getQuery().addListener(listener);
     }
 
     public void clearQueryListeners() {
         this.getQuery().clearListeners();
-    }
-
-    private List<ResultScanner> getResultScannerList() {
-        return this.resultScannerList;
     }
 
     private SelectStatement getSelectStmt() {

@@ -26,6 +26,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserSupport;
 import org.apache.hadoop.hbase.hbql.statement.args.DefaultArg;
+import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -229,23 +230,30 @@ public abstract class ColumnAttrib implements Serializable {
 
         final Object value = this.getCurrentValue(obj);
 
-        if (this.isAKeyAttrib() && this.getColumnDefinition().getKeyInfo() != null) {
-            final int width = this.getColumnDefinition().getKeyInfo().getKeyWidth();
-            if (width >= 0) {
-                if (value instanceof String) {
-                    final String str = (String)value;
-                    if (str.length() != width)
-                        throw new HBqlException("Invalid key length in " + this.getNameToUseInExceptions()
-                                                + " expecting " + width + " but found " + str.length()
-                                                + " with \"" + str + "\"");
-                }
-            }
-        }
+        if (this.isAKeyAttrib())
+            this.validateKeyWidth(value);
 
         if (this.isAnArray())
             return IO.getSerialization().getArrayAsBytes(this.getFieldType(), value);
         else
             return IO.getSerialization().getScalarAsBytes(this.getFieldType(), value);
+    }
+
+    public void validateKeyWidth(final Object value) throws HBqlException {
+
+        if (this.isAKeyAttrib()) {
+            final KeyInfo keyInfo = this.getColumnDefinition().getKeyInfo();
+            if (keyInfo != null) {
+                final int width = keyInfo.getKeyWidth();
+                if (width > 0 && value instanceof String) {
+                    final String str = (String)value;
+                    if (str.length() != width)
+                        throw new HBqlException("Invalid key length in " + this.getNameToUseInExceptions()
+                                                + " expecting width " + width + " but found " + str.length()
+                                                + " with string \"" + str + "\"");
+                }
+            }
+        }
     }
 
     public Object getValueFromBytes(final Object obj, final byte[] b) throws HBqlException {
@@ -319,7 +327,7 @@ public abstract class ColumnAttrib implements Serializable {
         return false;
     }
 
-    private ColumnDefinition getColumnDefinition() {
+    public ColumnDefinition getColumnDefinition() {
         return this.columnDefinition;
     }
 

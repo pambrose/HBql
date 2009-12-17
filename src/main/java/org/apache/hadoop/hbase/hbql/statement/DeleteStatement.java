@@ -111,8 +111,8 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
                 final ColumnAttrib attrib = mapping.getAttribByVariableName(deleteItem);
                 if (attrib == null)
                     throw new HBqlException("Invalid variable: " + deleteItem);
-                else
-                    this.getDeleteItemList().add(attrib.getFamilyQualifiedName());
+
+                this.getDeleteItemList().add(attrib.getFamilyQualifiedName());
             }
         }
     }
@@ -134,7 +134,8 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         try {
             tableWrapper = hconnectionImpl.newHTableWrapper(this.getWithArgs(), this.getMapping().getTableName());
 
-            final List<RowRequest> rowRequestList = this.getWithArgs().getRowRequestList(allWhereAttribs);
+            final List<RowRequest> rowRequestList = this.getWithArgs().getRowRequestList(this.getMapping(),
+                                                                                         allWhereAttribs);
 
             int cnt = 0;
 

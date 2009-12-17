@@ -31,6 +31,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
@@ -376,14 +377,18 @@ public class WithArgs implements Serializable {
     }
 
 
-    public List<RowRequest> getRowRequestList(final Set<ColumnAttrib> columnAttribs) throws HBqlException {
+    public List<RowRequest> getRowRequestList(final Mapping mapping,
+                                              final Set<ColumnAttrib> columnAttribs) throws HBqlException {
 
-        final List<RowRequest> rowRequestList = Lists.newArrayList();
+        final ColumnAttrib keyAttrib = mapping.getKeyAttrib();
+        final List<RowRequest> retval = Lists.newArrayList();
 
-        for (final KeyRange keyRange : this.getKeyRangeArgs().getKeyRangeList())
-            rowRequestList.addAll(keyRange.getRowRequestList(this, columnAttribs));
+        for (final KeyRange keyRange : this.getKeyRangeArgs().getKeyRangeList()) {
+            final List<RowRequest> rowRequestList = keyRange.getRowRequestList(this, keyAttrib, columnAttribs);
+            retval.addAll(rowRequestList);
+        }
 
-        return rowRequestList;
+        return retval;
     }
 
     public void setGetArgs(final Get get, final Set<ColumnAttrib> columnAttribSet) throws HBqlException {

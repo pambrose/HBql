@@ -60,7 +60,6 @@ public class Query<E> {
         }
         else {
             accessor = connection.getAnnotationMapping(clazz);
-
             if (accessor == null)
                 throw new HBqlException("Unknown class " + clazz.getName());
         }
@@ -69,7 +68,6 @@ public class Query<E> {
 
         return new Query<T>(connection, selectStatement);
     }
-
 
     public synchronized void addListener(final QueryListener<E> listener) {
         if (this.getListeners() == null)
@@ -95,7 +93,7 @@ public class Query<E> {
         final WithArgs withArgs = this.getSelectStmt().getWithArgs();
         allAttribs.addAll(withArgs.getColumnsUsedInAllWhereExprs());
 
-        return withArgs.getRowRequestList(allAttribs);
+        return withArgs.getRowRequestList(this.getSelectStmt().getMapping(), allAttribs);
     }
 
     public List<QueryListener<E>> getListeners() {

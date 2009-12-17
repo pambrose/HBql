@@ -77,22 +77,8 @@ public class KeyRange extends SelectStatementArgs {
         return new KeyRange();
     }
 
-    // This is an object because it might be a collection in the case of a param
-    private Object getFirstArg(final boolean allowCollections) throws HBqlException {
-        return this.evaluateConstant(null, 0, allowCollections, null);
-    }
-
-    private String getSecondArg() throws HBqlException {
-        return (String)this.evaluateConstant(null, 1, false, null);
-    }
-
     private KeyRangeArgs.Type getType() {
         return this.type;
-    }
-
-    private byte[] getUpperAsBytes() throws HBqlException {
-        final String upper = this.getSecondArg();
-        return IO.getSerialization().getStringAsBytes(upper);
     }
 
     private boolean isFirstRange() {
@@ -116,14 +102,11 @@ public class KeyRange extends SelectStatementArgs {
     }
 
     public void validateArgTypes() throws HBqlException {
-        if (this.isSingleKey())
-            this.validateTypes(this.allowColumns(), true);
-        else
-            this.validateTypes(this.allowColumns(), false);
+        this.validateTypes(this.allowColumns(), this.isSingleKey());
     }
 
-
     public String asString() {
+
         final StringBuilder sbuf = new StringBuilder();
 
         if (this.isAllRows()) {
@@ -146,11 +129,60 @@ public class KeyRange extends SelectStatementArgs {
         return sbuf.toString();
     }
 
+    // This returns an object because it might be a collection in the case of a param
+    private Object getFirstArg(final boolean allowCollections) throws HBqlException {
+        return this.evaluateConstant(null, 0, allowCollections, null);
+    }
+
+    private String getSecondArg() throws HBqlException {
+        return (String)this.evaluateConstant(null, 1, false, null);
+    }
+
+    public List<RowRequest> getRowRequestList(final WithArgs withArgs,
+                                              final ColumnAttrib keyAttrib,
+                                              final Set<ColumnAttrib> columnAttribs) throws HBqlException {
+
+        return this.isSingleKey() ? this.getGetRequest(withArgs, keyAttrib, columnAttribs)
+                                  : this.getScanRequest(withArgs, keyAttrib, columnAttribs);
+    }
+
+    private List<RowRequest> getGetRequest(final WithArgs withArgs,
+                                           final ColumnAttrib keyAttrib,
+                                           final Set<ColumnAttrib> columnAttribs) throws HBqlException {
+
+        final List<RowRequest> rowRequestList = Lists.newArrayList();
+
+        // Check if the value returned is a collection
+        final Object objval = this.getFirstArg(true);
+        if (TypeSupport.isACollection(objval)) {
+            for (final GenericValue val : (Collection<GenericValue>)objval) {
+                try {
+                    final String rangeValue = (String)val.getValue(null, null);
+                    final RowRequest rowRequest = this.newGet(withArgs, columnAttribs, keyAttrib, rangeValue);
+                    rowRequestList.add(rowRequest);
+                }
+                catch (ResultMissingColumnException e) {
+                    throw new InternalErrorException(val.asString());
+                }
+            }
+        }
+        else {
+            final String rangeValue = (String)objval;
+            final RowRequest rowRequest = this.newGet(withArgs, columnAttribs, keyAttrib, rangeValue);
+            rowRequestList.add(rowRequest);
+        }
+
+        return rowRequestList;
+    }
+
     private RowRequest newGet(final WithArgs withArgs,
                               final Set<ColumnAttrib> columnAttribs,
-                              final String lower) throws HBqlException {
+                              final ColumnAttrib keyAttrib,
+                              final String rangeValue) throws HBqlException {
 
-        final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(lower);
+        this.verifyRangeValueWidth(keyAttrib, rangeValue);
+
+        final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(rangeValue);
 
         if (withArgs.hasAnIndex()) {
             return new IndexRequest(lowerBytes, lowerBytes, columnAttribs);
@@ -162,51 +194,33 @@ public class KeyRange extends SelectStatementArgs {
         }
     }
 
-    private List<RowRequest> getGetRequest(final WithArgs withArgs,
-                                           final Set<ColumnAttrib> columnAttribs) throws HBqlException {
-
-        final List<RowRequest> rowRequestList = Lists.newArrayList();
-
-        // Check if the value returned is a collection
-        final Object objval = this.getFirstArg(true);
-        if (TypeSupport.isACollection(objval)) {
-            for (final GenericValue val : (Collection<GenericValue>)objval) {
-                try {
-                    final String lower = (String)val.getValue(null, null);
-                    rowRequestList.add(this.newGet(withArgs, columnAttribs, lower));
-                }
-                catch (ResultMissingColumnException e) {
-                    throw new InternalErrorException(val.asString());
-                }
-            }
-        }
-        else {
-            final String lower = (String)objval;
-            rowRequestList.add(this.newGet(withArgs, columnAttribs, lower));
-        }
-
-        return rowRequestList;
-    }
-
     private List<RowRequest> getScanRequest(final WithArgs withArgs,
+                                            final ColumnAttrib keyAttrib,
                                             final Set<ColumnAttrib> columnAttribs) throws HBqlException {
 
         final Scan scan = new Scan();
 
         if (this.isAllRows()) {
-            // Let scan default to all rows
+            // Scan will default to all rows
         }
         else if (this.isFirstRange()) {
-            final byte[] upperBytes = IO.getSerialization().getStringAsBytes((String)this.getFirstArg(false));
+            final String rangeValue = (String)this.getFirstArg(false);
+            this.verifyRangeValueWidth(keyAttrib, rangeValue);
+            final byte[] upperBytes = IO.getSerialization().getStringAsBytes(rangeValue);
             scan.setStopRow(upperBytes);
         }
         else if (this.isLastRange()) {
-            final byte[] lowerBytes = IO.getSerialization().getStringAsBytes((String)this.getFirstArg(false));
+            final String rangeValue = (String)this.getFirstArg(false);
+            this.verifyRangeValueWidth(keyAttrib, rangeValue);
+            final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(rangeValue);
             scan.setStartRow(lowerBytes);
         }
         else {
-            final byte[] lowerBytes = IO.getSerialization().getStringAsBytes((String)this.getFirstArg(false));
-            final byte[] upperBytes = IO.getSerialization().getStringAsBytes(this.getSecondArg());
+            final String firstRangeValue = (String)this.getFirstArg(false);
+            final String secondRangeValue = this.getSecondArg();
+            this.verifyRangeValueWidth(keyAttrib, firstRangeValue, secondRangeValue);
+            final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(firstRangeValue);
+            final byte[] upperBytes = IO.getSerialization().getStringAsBytes(secondRangeValue);
             scan.setStartRow(lowerBytes);
             scan.setStopRow(upperBytes);
         }
@@ -220,10 +234,17 @@ public class KeyRange extends SelectStatementArgs {
         return Lists.newArrayList(rowRequest);
     }
 
-    public List<RowRequest> getRowRequestList(final WithArgs withArgs,
-                                              final Set<ColumnAttrib> columnAttribSet) throws HBqlException {
+    private void verifyRangeValueWidth(final ColumnAttrib keyAttrib, final String... rangeValues) throws HBqlException {
 
-        return this.isSingleKey() ? this.getGetRequest(withArgs, columnAttribSet)
-                                  : this.getScanRequest(withArgs, columnAttribSet);
+        final KeyInfo keyInfo = keyAttrib.getColumnDefinition().getKeyInfo();
+        if (keyInfo != null) {
+            for (final String rangeValue : rangeValues) {
+                final int width = keyInfo.getKeyWidth();
+                if (width > 0 && rangeValue.length() != width)
+                    throw new HBqlException("Invalid key range length in " + this.asString()
+                                            + " expecting width " + width + " but found " + rangeValue.length()
+                                            + " with key \"" + rangeValue + "\"");
+            }
+        }
     }
 }
