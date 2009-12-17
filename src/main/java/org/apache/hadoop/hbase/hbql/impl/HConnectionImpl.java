@@ -201,23 +201,27 @@ public class HConnectionImpl implements HConnection {
 
     public boolean indexExistsForMapping(final String mappingName, final String indexName) throws HBqlException {
         final TableMapping mapping = this.getMapping(mappingName);
-        return this.indexExistsForTable(mapping.getTableName(), indexName);
+        return this.indexExistsForTable(indexName, mapping.getTableName());
     }
 
-    public boolean indexExistsForTable(final String tableName, final String indexName) throws HBqlException {
+    public IndexSpecification getIndexForTable(final String indexName, final String tableName) throws HBqlException {
+        final IndexedTableDescriptor indexDesc = this.newIndexedTableDescriptor(tableName);
+        return indexDesc.getIndex(indexName);
+    }
+
+    public boolean indexExistsForTable(final String indexName, final String tableName) throws HBqlException {
         this.checkIfClosed();
-        final IndexedTableDescriptor itd = this.newIndexedTableDescriptor(tableName);
-        final IndexSpecification index = itd.getIndex(indexName);
+        final IndexSpecification index = this.getIndexForTable(indexName, tableName);
         return index != null;
     }
 
-    public void dropIndexForMapping(final String mappingName, final String indexName) throws HBqlException {
+    public void dropIndexForMapping(final String indexName, final String mappingName) throws HBqlException {
         final TableMapping mapping = this.getMapping(mappingName);
         this.dropIndexForTable(mapping.getTableName(), indexName);
     }
 
     public void dropIndexForTable(final String tableName, final String indexName) throws HBqlException {
-        this.validateIndexExistsOnTable(tableName, indexName);
+        this.validateIndexExistsForTable(indexName, tableName);
         try {
             final IndexedTableAdmin ita = this.getIndexTableAdmin();
             ita.removeIndex(tableName.getBytes(), indexName);
@@ -430,8 +434,8 @@ public class HConnectionImpl implements HConnection {
             throw new HBqlException("Family " + familyName + " not defined for table " + tableName);
     }
 
-    public void validateIndexExistsOnTable(final String tableName, final String indexName) throws HBqlException {
-        if (!this.indexExistsForTable(tableName, indexName))
+    public void validateIndexExistsForTable(final String indexName, final String tableName) throws HBqlException {
+        if (!this.indexExistsForTable(indexName, tableName))
             throw new HBqlException("Index " + indexName + " not defined for table " + tableName);
     }
 }

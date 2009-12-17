@@ -26,6 +26,7 @@ import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Util;
@@ -92,7 +93,7 @@ public class WithArgs implements Serializable {
     public void validate(final HConnectionImpl connection, final TableMapping mapping) throws HBqlException {
         if (connection != null) {
             if (this.usesAnIndex())
-                connection.validateIndexExistsOnTable(mapping.getTableName(), this.getIndexName());
+                connection.validateIndexExistsForTable(this.getIndexName(), mapping.getTableName());
         }
     }
 
@@ -377,10 +378,23 @@ public class WithArgs implements Serializable {
     }
 
 
-    public List<RowRequest> getRowRequestList(final Mapping mapping,
+    public List<RowRequest> getRowRequestList(final HConnectionImpl connection,
+                                              final Mapping mapping,
                                               final Set<ColumnAttrib> columnAttribs) throws HBqlException {
 
-        final ColumnAttrib keyAttrib = mapping.getKeyAttrib();
+        final ColumnAttrib keyAttrib;
+
+        if (this.usesAnIndex()) {
+            // Need to look up the index
+            final IndexSpecification index = connection.getIndexForTable(this.getIndexName(), mapping.getTableName());
+            final byte[][] cols = index.getIndexedColumns();
+            final String indexedColumName = new String(cols[0]);
+            keyAttrib = mapping.getAttribByVariableName(indexedColumName);
+        }
+        else {
+            keyAttrib = mapping.getKeyAttrib();
+        }
+
         final List<RowRequest> retval = Lists.newArrayList();
 
         for (final KeyRange keyRange : this.getKeyRangeArgs().getKeyRangeList()) {

@@ -58,9 +58,9 @@ public interface HConnection {
     // Index Routines
     boolean indexExistsForMapping(final String mappingName, final String indexName) throws HBqlException;
 
-    void dropIndexForMapping(final String mappingName, final String indexName) throws HBqlException;
+    void dropIndexForMapping(final String indexName, final String mappingName) throws HBqlException;
 
-    boolean indexExistsForTable(final String tableName, final String indexName) throws HBqlException;
+    boolean indexExistsForTable(final String indexName, final String tableName) throws HBqlException;
 
     void dropIndexForTable(final String tableName, final String indexName) throws HBqlException;
 

@@ -93,7 +93,7 @@ public class Query<E> {
         final WithArgs withArgs = this.getSelectStmt().getWithArgs();
         allAttribs.addAll(withArgs.getColumnsUsedInAllWhereExprs());
 
-        return withArgs.getRowRequestList(this.getSelectStmt().getMapping(), allAttribs);
+        return withArgs.getRowRequestList(this.getHConnectionImpl(), this.getSelectStmt().getMapping(), allAttribs);
     }
 
     public List<QueryListener<E>> getListeners() {

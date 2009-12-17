@@ -135,7 +135,9 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         try {
             tableWrapper = hconnectionImpl.newHTableWrapper(withArgs, this.getMapping().getTableName());
 
-            final List<RowRequest> rowRequests = withArgs.getRowRequestList(this.getMapping(), allWhereAttribs);
+            final List<RowRequest> rowRequests = withArgs.getRowRequestList(hconnectionImpl,
+                                                                            this.getMapping(),
+                                                                            allWhereAttribs);
 
             int cnt = 0;
 

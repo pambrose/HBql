@@ -204,7 +204,7 @@ public class ExamplesTest extends TestSupport {
         conection.execute("DROP INDEX fooidx");
 
         // Or using the API
-        conection.dropIndexForMapping("fooMapping", "fooidx");
+        conection.dropIndexForMapping("fooidx", "fooMapping");
         // or
         conection.dropIndexForTable("foo", "fooidx");
 

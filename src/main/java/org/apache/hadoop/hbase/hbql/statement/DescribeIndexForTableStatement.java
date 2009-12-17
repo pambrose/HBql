@@ -21,7 +21,6 @@
 package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
-import org.apache.hadoop.hbase.client.tableindexed.IndexedTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -49,26 +48,32 @@ public class DescribeIndexForTableStatement extends TableStatement implements Co
                                     final String tableName) throws HBqlException {
 
         final ExecutionResults retval = new ExecutionResults();
-        final IndexedTableDescriptor indexDesc = connection.newIndexedTableDescriptor(tableName);
-        final IndexSpecification index = indexDesc.getIndex(indexName);
 
-        if (index == null) {
-            retval.out.println("Index " + indexName + " not found for table " + tableName);
+        if (!connection.tableExists(tableName)) {
+            retval.out.println("Table not found: " + tableName);
         }
         else {
-            retval.out.println("Index: " + index.getIndexId());
-            final byte[][] columns = index.getIndexedColumns();
-            for (final byte[] column : columns)
-                retval.out.println("Index key: " + Bytes.toString(column));
 
-            final byte[][] otherColumns = index.getAdditionalColumns();
-            if (otherColumns.length > 0) {
-                retval.out.println("Additional columns in index: ");
-                for (final byte[] column : otherColumns)
-                    retval.out.println("    " + Bytes.toString(column));
+            final IndexSpecification index = connection.getIndexForTable(indexName, tableName);
+
+            if (index == null) {
+                retval.out.println("Index " + indexName + " not found for table " + tableName);
             }
             else {
-                retval.out.println("No additional columns in index.");
+                retval.out.println("Index: " + index.getIndexId());
+                final byte[][] columns = index.getIndexedColumns();
+                for (final byte[] column : columns)
+                    retval.out.println("Index key: " + Bytes.toString(column));
+
+                final byte[][] otherColumns = index.getAdditionalColumns();
+                if (otherColumns.length > 0) {
+                    retval.out.println("Additional columns in index: ");
+                    for (final byte[] column : otherColumns)
+                        retval.out.println("    " + Bytes.toString(column));
+                }
+                else {
+                    retval.out.println("No additional columns in index.");
+                }
             }
         }
         retval.out.flush();

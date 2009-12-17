@@ -137,7 +137,7 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
                     final String tableName = (String)this.getExprArg(0).getValue(connection, null);
                     final String indexName = (String)this.getExprArg(1).getValue(connection, null);
                     try {
-                        return connection.indexExistsForTable(tableName, indexName);
+                        return connection.indexExistsForTable(indexName, tableName);
                     }
                     catch (HBqlException e) {
                         // return false if index doesn't exist
