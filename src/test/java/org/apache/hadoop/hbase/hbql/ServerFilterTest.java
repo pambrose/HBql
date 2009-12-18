@@ -137,4 +137,10 @@ public class ServerFilterTest extends TestSupport {
         final String q1 = "select * from tab3 WITH SERVER FILTER where val2 BETWEEN 12 AND 14 ";
         showValues(q1, 3);
     }
+
+    @Test
+    public void simpleSelect56() throws HBqlException {
+        final String q1 = "select * from tab3 WITH SERVER FILTER where val1 BETWEEN '12' AND '14' ";
+        showValues(q1, 3);
+    }
 }

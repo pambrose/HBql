@@ -23,8 +23,17 @@ package org.apache.expreval.expr.betweenstmt;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.expr.var.DelegateColumn;
+import org.apache.expreval.expr.var.GenericColumn;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.io.IO;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
 public class StringBetweenStmt extends GenericBetweenStmt {
 
@@ -43,5 +52,53 @@ public class StringBetweenStmt extends GenericBetweenStmt {
                                && strval.compareTo((String)this.getExprArg(2).getValue(connection, object)) <= 0;
 
         return (this.isNot()) ? !retval : retval;
+    }
+
+    public Filter getFilter() throws HBqlException {
+
+        this.validateArgsForBetween();
+
+        final GenericColumn<? extends GenericValue> column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
+        final String lowerVal = (String)this.getConstantValue(1);
+        final String upperVal = (String)this.getConstantValue(2);
+
+        return this.newSingleColumnValueFilter(column.getColumnAttrib(),
+                                               CompareFilter.CompareOp.EQUAL,
+                                               new StringComparable(lowerVal, upperVal));
+    }
+
+    private static class StringComparable extends GenericComparable<String> {
+
+        public StringComparable() {
+        }
+
+        public StringComparable(final String lowerValue, final String upperValue) {
+            this.setLowerValue(lowerValue);
+            this.setUpperValue(upperValue);
+        }
+
+        public int compareTo(final byte[] bytes) {
+
+            try {
+                final String val = IO.getSerialization().getStringFromBytes(bytes);
+                final String lowerVal = this.getLowerValue();
+                final String upperVal = this.getUpperValue();
+                return (val.compareTo(lowerVal) >= 0 && val.compareTo(upperVal) <= 0) ? 0 : 1;
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+
+        public void write(final DataOutput dataOutput) throws IOException {
+            dataOutput.writeUTF(this.getLowerValue());
+            dataOutput.writeUTF(this.getUpperValue());
+        }
+
+        public void readFields(final DataInput dataInput) throws IOException {
+            this.setLowerValue(dataInput.readUTF());
+            this.setUpperValue(dataInput.readUTF());
+        }
     }
 }
