@@ -41,7 +41,7 @@ import org.apache.yaoql.impl.ReflectionResultAccessor;
 import java.util.Date;
 import java.util.List;
 
-public class TestSupport {
+public abstract class TestSupport {
 
     public final static int keywidth = 10;
 

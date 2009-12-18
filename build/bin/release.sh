@@ -31,6 +31,13 @@ mvn site:site
 rm -rf ${SITE}/testapidocs
 rm -rf ${SITE}/xref-test
 
+# build jar of sources
+cd ${RELEASE}/src
+jar cf ${RELEASE}/${DIST}-src.jar *
+cd ..
+rm -rf src
+
+# build jar of classes
 cd ${HBQL}/target/classes
 jar cf ${RELEASE}/${DIST}.jar *
 
@@ -42,6 +49,7 @@ rm -rf ${RELEASE}/docs/cobertura
 cd ${SITE}
 zip -q -r ${SITE}/downloads/${DOCS}.zip apidocs
 
+# Create downloads
 cd ${RELEASE}/..
 zip -q -r ${SITE}/downloads/${DIST}.zip ${DIST}
 tar cf ${SITE}/downloads/${DIST}.tar ${DIST}

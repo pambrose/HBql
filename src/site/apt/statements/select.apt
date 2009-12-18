@@ -9,7 +9,7 @@ SELECT
 
 ---------------------------
 
-SELECT { '*' | select_element [, ...] } FROM [MAPPING] mapping_name with_clause
+SELECT { '*' | select_element [, ...] } FROM [MAPPING] mapping_name [with_clause | with_index_clause]
 
 select_element:
     expression [AS alias_name] | family_name ':' '*'
@@ -18,7 +18,8 @@ select_element:
 
 *Description
 
-    Returns the requested values for the given {{{./with-clause.html}WITH}} clause
+    Returns the requested values for the given {{{./with-clause.html}WITH}} or
+    {{{./with-index-clause.html}WITH INDEX}} clause
 
     * <<Server side filter queries are currently limited to simple expressions.>>  This will be improved
     with the release of hbase 0.20.3.

@@ -1,0 +1,54 @@
+    -----
+    WITH INDEX Clause
+    -----
+    -----
+
+WITH INDEX Clause
+
+*Syntax
+
+---------------------------
+
+WITH INDEX index_name {keys | index_filer | client_filter }*
+
+keys:
+    KEYS key_range [, ...]
+    | KEYS ALL
+
+key_range:
+    FIRST TO key_value
+    | key_value TO LAST
+    | key_value TO key_value
+    | key_value
+
+index_filter:
+    INDEX FILTER WHERE where_clause
+
+client_filter:
+    CLIENT FILTER WHERE where_clause
+
+---------------------------
+
+*Description
+
+    The WITH INDEX clause is used in the {{{./insert.html}insert}}, {{{select.html}select}}
+    and {{{delete.html}delete}} statements.
+
+    * Named parameters can be applied to any of the values above.
+
+    * key_value is any valid string {{{./expressions.html}expression}} (cannot reference columns).
+
+        Indicates key values for query.  A key_value can be bound to a Collection of strings with a named
+        parameter.
+       
+    * where_clause is any valid boolean {{{./expressions.html}expression}} (can reference columns).
+
+        The SERVER FILTER where_clause is evaluated on the HBase server (as an HBase filter)
+        while the CLIENT FILTER where_clause is evaluated on the HBase client.
+        (At present, <<server side filter queries are not supported>> (work in progress))
+
+
+
+*Example
+
+%{snippet|id=select1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
