@@ -27,9 +27,9 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.filter.HBqlFilterList;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
@@ -111,7 +111,7 @@ public class RawAccess3 {
             for (Filter f : filters) {
                 filterList.add(f);
             }
-            filter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filterList);
+            filter = new HBqlFilterList(HBqlFilterList.Operator.MUST_PASS_ONE, filterList);
         }
         scan.setFilter(filter);
 

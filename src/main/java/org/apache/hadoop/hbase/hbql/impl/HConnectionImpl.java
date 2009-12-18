@@ -63,7 +63,6 @@ public class HConnectionImpl implements HConnection {
     private final HConnectionPoolImpl connectionPool;
     private final int maxTablePoolReferencesPerTable;
 
-
     private final MappingManager mappingManager;
     private volatile Map<Class, AnnotationResultAccessor> annotationMappingMap = null;
 
