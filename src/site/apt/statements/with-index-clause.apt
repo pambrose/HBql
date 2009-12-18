@@ -9,7 +9,7 @@ WITH INDEX Clause
 
 ---------------------------
 
-WITH INDEX index_name {keys | index_filer | client_filter}*
+WITH INDEX index_name {keys | index_filter | client_filter}*
 
 keys:
     KEYS key_range [, ...]

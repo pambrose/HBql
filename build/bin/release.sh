@@ -41,8 +41,8 @@ rm -rf src
 cd ${HBQL}/target/classes
 jar cf ${RELEASE}/${DIST}.jar *
 
-mkdir ${SITE}/downloads
 cp -r ${SITE}/* ${RELEASE}/docs/
+mkdir ${SITE}/downloads
 
 rm -rf ${RELEASE}/docs/cobertura
 
