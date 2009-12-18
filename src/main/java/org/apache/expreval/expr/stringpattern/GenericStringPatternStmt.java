@@ -25,7 +25,7 @@ import org.apache.expreval.expr.NotValue;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 
-abstract class GenericStringPatternStmt extends NotValue<GenericStringPatternStmt> implements BooleanValue {
+public abstract class GenericStringPatternStmt extends NotValue<GenericStringPatternStmt> implements BooleanValue {
 
     protected GenericStringPatternStmt(final GenericValue arg0, final boolean not, final GenericValue arg1) {
         super(ExpressionType.STRINGPATTERN, not, arg0, arg1);

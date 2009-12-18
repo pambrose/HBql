@@ -105,12 +105,12 @@ public class NumberCompare extends GenericCompare {
 
     public Filter getFilter() throws HBqlException {
 
+        this.validateArgsForCompare();
+
         final GenericColumn<? extends GenericValue> column;
         final Object constant;
         final CompareFilter.CompareOp compareOp;
         final WritableByteArrayComparable comparator;
-
-        this.validateArgsForColumnConstant();
 
         if (this.getExprArg(0).isAColumnReference()) {
             column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
@@ -134,10 +134,10 @@ public class NumberCompare extends GenericCompare {
             comparator = new DoubleComparable(column.getColumnAttrib().getFieldType(), val);
         }
 
-        return this.newSingleColumnValueFilter(column, compareOp, comparator);
+        return this.newSingleColumnValueFilter(column.getColumnAttrib(), compareOp, comparator);
     }
 
-    public static abstract class NumberComparable<T> extends GenericComparable<T> {
+    private static abstract class NumberComparable<T> extends GenericComparable<T> {
 
         private FieldType fieldType;
 
@@ -151,7 +151,7 @@ public class NumberCompare extends GenericCompare {
 
         protected void setValueInBytes(final Number val) throws IOException {
             try {
-                this.setValueInBytes(IO.getSerialization().getNumbeEqualityBytes(this.getFieldType(), val));
+                this.setValueInBytes(IO.getSerialization().getNumberEqualityBytes(this.getFieldType(), val));
             }
             catch (HBqlException e) {
                 throw new IOException(e.getMessage());
@@ -159,7 +159,7 @@ public class NumberCompare extends GenericCompare {
         }
     }
 
-    public static class LongComparable extends NumberComparable<Long> {
+    private static class LongComparable extends NumberComparable<Long> {
 
         public LongComparable() {
         }
@@ -202,7 +202,7 @@ public class NumberCompare extends GenericCompare {
         }
     }
 
-    public static class DoubleComparable extends NumberComparable<Double> {
+    private static class DoubleComparable extends NumberComparable<Double> {
 
         public DoubleComparable() {
         }

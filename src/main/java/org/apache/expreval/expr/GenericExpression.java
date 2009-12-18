@@ -34,11 +34,15 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
+import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
 import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
+import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 
 import java.util.Arrays;
 import java.util.List;
@@ -215,6 +219,27 @@ public abstract class GenericExpression implements GenericValue {
                 this.setArg(i, this.getExprArg(i).getOptimizedValue());
 
             this.allArgsOptimized = true;
+        }
+    }
+
+    protected Filter newSingleColumnValueFilter(final ColumnAttrib attrib,
+                                                final CompareFilter.CompareOp compareOp,
+                                                final WritableByteArrayComparable comparator) throws HBqlException {
+
+        final SingleColumnValueFilter filter = new SingleColumnValueFilter(attrib.getFamilyNameAsBytes(),
+                                                                           attrib.getColumnNameAsBytes(),
+                                                                           compareOp,
+                                                                           comparator);
+        filter.setFilterIfMissing(true);
+        return filter;
+    }
+
+    protected Object getConstantValue(final int pos) throws HBqlException {
+        try {
+            return this.getExprArg(pos).getValue(null, null);
+        }
+        catch (ResultMissingColumnException e) {
+            throw new InternalErrorException("Invalid column present in constant");
         }
     }
 

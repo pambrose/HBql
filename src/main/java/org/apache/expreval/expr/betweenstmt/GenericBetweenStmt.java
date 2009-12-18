@@ -24,6 +24,8 @@ import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.NotValue;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
+import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
 
 public abstract class GenericBetweenStmt extends NotValue<GenericBetweenStmt> implements BooleanValue {
 
@@ -38,5 +40,37 @@ public abstract class GenericBetweenStmt extends NotValue<GenericBetweenStmt> im
     public String asString() {
         return this.getExprArg(0).asString() + notAsString() + " BETWEEN "
                + this.getExprArg(1).asString() + " AND " + this.getExprArg(2).asString();
+    }
+
+    protected abstract static class GenericComparable<T> implements WritableByteArrayComparable {
+
+        private T lowerValue;
+        private T upperValue;
+
+        protected T getLowerValue() {
+            return this.lowerValue;
+        }
+
+        protected T getUpperValue() {
+            return this.upperValue;
+        }
+
+        protected void setLowerValue(final T lowerValue) {
+            this.lowerValue = lowerValue;
+        }
+
+        protected void setUpperValue(final T upperValue) {
+            this.upperValue = upperValue;
+        }
+    }
+
+    protected void validateArgsForBetween() throws InvalidServerFilterExpressionException {
+
+        if (this.getExprArg(0).isAColumnReference()
+            && this.getExprArg(1).isAConstant()
+            && this.getExprArg(2).isAConstant())
+            return;
+
+        throw new InvalidServerFilterExpressionException("Filter comparisons require a column reference and a constant expression");
     }
 }

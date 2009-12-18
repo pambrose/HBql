@@ -74,11 +74,11 @@ public class StringCompare extends GenericCompare {
 
     public Filter getFilter() throws HBqlException {
 
+        this.validateArgsForCompare();
+
         final GenericColumn<? extends GenericValue> column;
         final Object constant;
         final CompareFilter.CompareOp compareOp;
-
-        this.validateArgsForColumnConstant();
 
         if (this.getExprArg(0).isAColumnReference()) {
             column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
@@ -91,10 +91,12 @@ public class StringCompare extends GenericCompare {
             compareOp = this.getOperator().getCompareOpRight();
         }
 
-        return this.newSingleColumnValueFilter(column, compareOp, new StringComparable((String)constant));
+        return this.newSingleColumnValueFilter(column.getColumnAttrib(),
+                                               compareOp,
+                                               new StringComparable((String)constant));
     }
 
-    public static class StringComparable extends GenericComparable<String> {
+    private static class StringComparable extends GenericComparable<String> {
 
         public StringComparable() {
         }

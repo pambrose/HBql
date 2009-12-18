@@ -27,17 +27,12 @@ import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.expr.var.GenericColumn;
-import org.apache.hadoop.hbase.filter.CompareFilter;
-import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
 import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
-import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -62,22 +57,13 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
         return this.getExprArg(pos).getValue(connection, object);
     }
 
-    protected Object getConstantValue(final int pos) throws HBqlException {
-        try {
-            return this.getExprArg(pos).getValue(null, null);
-        }
-        catch (ResultMissingColumnException e) {
-            throw new InternalErrorException("Invalid column present in constant");
-        }
-    }
-
-    protected void validateArgsForColumnConstant() throws InvalidServerFilterExpressionException {
+    protected void validateArgsForCompare() throws InvalidServerFilterExpressionException {
         // One of the values must be a single column reference and the other a constant
         if ((this.getExprArg(0).isAColumnReference() && this.getExprArg(1).isAConstant())
-            || (this.getExprArg(0).isAConstant() && this.getExprArg(1).isAColumnReference()))
+            || this.getExprArg(1).isAColumnReference() && (this.getExprArg(0).isAConstant()))
             return;
 
-        throw new InvalidServerFilterExpressionException("Filter comparison requires a column reference and a constant expression");
+        throw new InvalidServerFilterExpressionException("Filter comparisons require a column reference and a constant expression");
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {
@@ -106,19 +92,6 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
         return BooleanValue.class;
     }
 
-    protected Filter newSingleColumnValueFilter(final GenericColumn column,
-                                                final CompareFilter.CompareOp compareOp,
-                                                final WritableByteArrayComparable comparator) throws HBqlException {
-
-        final ColumnAttrib attrib = column.getColumnAttrib();
-        final SingleColumnValueFilter filter = new SingleColumnValueFilter(attrib.getFamilyNameAsBytes(),
-                                                                           attrib.getColumnNameAsBytes(),
-                                                                           compareOp,
-                                                                           comparator);
-        filter.setFilterIfMissing(true);
-        return filter;
-    }
-
     public String asString() {
         final StringBuilder sbuf = new StringBuilder();
         sbuf.append(this.getExprArg(0).asString());
@@ -127,7 +100,7 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
         return sbuf.toString();
     }
 
-    public abstract static class GenericComparable<T> implements WritableByteArrayComparable {
+    protected abstract static class GenericComparable<T> implements WritableByteArrayComparable {
 
         private T value;
         private byte[] valueInBytes = null;

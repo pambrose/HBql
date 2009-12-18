@@ -75,11 +75,11 @@ public class DateCompare extends GenericCompare {
 
     public Filter getFilter() throws HBqlException {
 
+        this.validateArgsForCompare();
+
         final GenericColumn<? extends GenericValue> column;
         final Object constant;
         final CompareFilter.CompareOp compareOp;
-
-        this.validateArgsForColumnConstant();
 
         if (this.getExprArg(0).isAColumnReference()) {
             column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
@@ -92,11 +92,12 @@ public class DateCompare extends GenericCompare {
             compareOp = this.getOperator().getCompareOpRight();
         }
 
-        return this.newSingleColumnValueFilter(column, compareOp, new DateComparable((Long)constant));
+        return this.newSingleColumnValueFilter(column.getColumnAttrib(),
+                                               compareOp,
+                                               new DateComparable((Long)constant));
     }
 
-
-    public static class DateComparable extends GenericComparable<Long> {
+    private static class DateComparable extends GenericComparable<Long> {
 
         public DateComparable() {
         }

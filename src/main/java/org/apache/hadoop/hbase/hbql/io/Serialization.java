@@ -68,7 +68,7 @@ public abstract class Serialization {
         return this.getScalarAsBytes(FieldType.StringType, obj);
     }
 
-    public byte[] getNumbeEqualityBytes(FieldType fieldType, final Number val) throws HBqlException {
+    public byte[] getNumberEqualityBytes(FieldType fieldType, final Number val) throws HBqlException {
 
         switch (fieldType) {
 
