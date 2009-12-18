@@ -26,11 +26,15 @@ git clone git://github.com/pambrose/HBql.git
 
 Release Notes
 
-    0.9.16-alpha -- 12/16/09
+    0.9.14-alpha -- 12/17/09
+
+        * Added support for INDEX {{{statements/with-index-clause.html}queries}}.
 
         * Added {{{statements/create-index.html}CREATE INDEX}} statement
 
         * Added {{{statements/drop-index.html}DROP INDEX}} statement
+
+        * Added {{{statements/describe-index.html}DESCRIBE INDEX}} statement
 
 
     0.9.13-alpha -- 12/1/09
