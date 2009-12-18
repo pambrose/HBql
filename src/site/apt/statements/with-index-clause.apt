@@ -9,7 +9,7 @@ WITH INDEX Clause
 
 ---------------------------
 
-WITH INDEX index_name {keys | index_filer | client_filter }*
+WITH INDEX index_name {keys | index_filer | client_filter}*
 
 keys:
     KEYS key_range [, ...]
@@ -43,12 +43,15 @@ client_filter:
        
     * where_clause is any valid boolean {{{./expressions.html}expression}} (can reference columns).
 
-        The SERVER FILTER where_clause is evaluated on the HBase server (as an HBase filter)
+        The INDEX FILTER where_clause is evaluated on the HBase server (as an HBase filter)
         while the CLIENT FILTER where_clause is evaluated on the HBase client.
-        (At present, <<server side filter queries are not supported>> (work in progress))
+        <<Server side filter queries are currently limited to simple expressions.>>  This will be improved
+         with the release of hbase 0.20.3.
 
+    * The INDEX FILTER where_clause is restricted to referencing columns declared
+        in the {{{create-index.html}CREATE INDEX}}.
 
 
 *Example
 
-%{snippet|id=select1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=index1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

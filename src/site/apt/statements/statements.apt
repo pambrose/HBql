@@ -55,6 +55,8 @@ HBql Statements
 
     **{{{./with-clause.html}WITH Clause}}
 
+    **{{{./with-index-clause.html}WITH INDEX Clause}}
+
     **{{{./expressions.html}Expressions}}
 
 

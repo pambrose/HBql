@@ -12,11 +12,14 @@ CREATE MAPPING
 
 CREATE [TEMP] MAPPING mapping_name [FOR TABLE table_name] '(' key_description ',' [family_mapping [, ...]] ')'
 
+key_description:
+    key_name KEY [WIDTH integer_expression]
+
 family_mapping:
     family_name [INCLUDE UNMAPPED] '(' column_description  [, ...] ')'
 
 column_description:
-    column_name type ['['']'] [ALIAS alias_name] [DEFAULT constant_expression]
+    column_name type ['['']'] [WIDTH integer_expression] [ALIAS alias_name] [DEFAULT constant_expression]
 
 type:
     BOOLEAN   (BOOL)
@@ -48,6 +51,12 @@ type:
     * A single KEY attribute is required for a mapping.
 
     * [] indicates an array type.
+
+    * A WIDTH value on a KEY column is required if a secondary index is present.
+
+    * If a WIDTH value is specified (for KEY columns or indexed columns), then
+    the corresponding range values and INSERT values are validated against the
+    specified width value.
 
     * Column_definitions require a family qualified column name and a type.
 

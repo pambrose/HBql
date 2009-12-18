@@ -157,7 +157,7 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: create-index
 
         HConnection connection = HConnectionManager.newConnection();
-        connection.execute("CREATE INDEX fooidx ON fooMapping (family1:col1) INCLUDE (family1:col2, family1:col3");
+        connection.execute("CREATE INDEX fooidx ON fooMapping (family1:col1) INCLUDE (family1:col2, family1:col3)");
 
         // END SNIPPET: create-index
 
@@ -375,6 +375,43 @@ public class ExamplesTest extends TestSupport {
 
         // END SNIPPET: create-mapping4
 
+    }
+
+    public void index1() throws HBqlException {
+
+        // START SNIPPET: index1
+
+        HConnection connection = HConnectionManager.newConnection();
+
+        connection.execute("CREATE TEMP MAPPING tab1 FOR TABLE table1"
+                           + "("
+                           + "keyval KEY WIDTH 15, "
+                           + "f1 INCLUDE UNMAPPED ("
+                           + "  val1 STRING WIDTH 10 ALIAS val1, "
+                           + "  val2 INT ALIAS val5"
+                           + "),  "
+                           + "f2 INCLUDE UNMAPPED, "
+                           + "f3 INCLUDE UNMAPPED ("
+                           + "  val2 INT ALIAS val6, "
+                           + "  val3 INT ALIAS val7 "
+                           + "))");
+
+        connection.execute("CREATE INDEX val1idx ON tab1 (val1) INCLUDE (val5, val6) IF NOT indexExistsForTable('val1idx', 'tab1')");
+
+        HPreparedStatement pstmt = connection.prepareStatement("SELECT keyval, f1:val1, val5 FROM tab1 "
+                                                               + "WITH INDEX val1idx KEYS FIRST TO :endkey "
+                                                               + "INDEX FILTER WHERE val5 < 8 "
+                                                               + "CLIENT FILTER WHERE val6 > 4");
+
+        pstmt.setParameter("endkey", Util.getZeroPaddedNonNegativeNumber(34, 10));
+
+        HResultSet<HRecord> records = pstmt.executeQuery();
+
+        for (HRecord record : records) {
+            System.out.println("Key = " + record.getCurrentValue("keyval"));
+        }
+
+        // END SNIPPET: index1
     }
 
     @Test

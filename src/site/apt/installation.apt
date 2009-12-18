@@ -7,7 +7,6 @@ Installation
 
     * Define the environment variables $HBQL_HOME and unzip the distribution to $HBQL_HOME.
 
-
     * Add the following jars to your client classpath.
 
         ** $HBQL_HOME/hbql-0.9.14-alpha.jar
@@ -15,7 +14,14 @@ Installation
         ** The jars in $HBQL_HOME/lib directory
 
 
-    * In order to use INDEX statements, you need to enable hbase indexing:
+    * To verify your installation, run the {{{./console/console.html}console}}
+      and enter the {{{./statements/version.html}VERSION}}
+      and {{{statements/show-tables.html}SHOW TABLES}} commands.
+
+
+INDEX Support
+
+    * In order to use any of the INDEX statements, you need to enable hbase indexing:
 
         **  As described in the org.apache.hadoop.hbase.client.tableindexed package description:
         "modify hbase-site.xml to turn on the IndexedRegionServer.
@@ -40,16 +46,14 @@ Installation
 
             *** $HBASE_HOME/contrib/transactional/hbase-0.20.2-transactional.jar
 
+
+
         ** Add the following jars to HBASE_CLASSPATH in $HBASE_HOME/conf/hbase-env.sh and restart hbase.
 
             *** $HBQL_HOME/hbql-0.9.14-alpha.jar
 
             *** $HBASE_HOME/contrib/transactional/hbase-0.20.2-transactional.jar
 
-
-    * To verify your installation, run the {{{./console/console.html}console}}
-      and enter the {{{./statements/version.html}VERSION}}
-      and {{{statements/show-tables.html}SHOW TABLES}} commands.
 
 
 

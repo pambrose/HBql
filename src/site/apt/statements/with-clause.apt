@@ -9,7 +9,7 @@ WITH Clause
 
 ---------------------------
 
-WITH { keys | timestamp | versions | scanner_cache_size | query_limit | server_filer | client_filter }+
+WITH {keys | timestamp | versions | scanner_cache_size | query_limit | server_filer | client_filter}+
 
 keys:
     KEYS key_range [, ...]
@@ -71,7 +71,8 @@ client_filter:
 
         The SERVER FILTER where_clause is evaluated on the HBase server (as an HBase filter)
         while the CLIENT FILTER where_clause is evaluated on the HBase client.
-        (At present, <<server side filter queries are not supported>> (work in progress))
+        <<Server side filter queries are currently limited to simple expressions.>>  This will be improved
+        with the release of hbase 0.20.3.
 
 
 
