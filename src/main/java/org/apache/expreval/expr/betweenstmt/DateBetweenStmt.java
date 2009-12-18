@@ -23,8 +23,19 @@ package org.apache.expreval.expr.betweenstmt;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.expr.var.DelegateColumn;
+import org.apache.expreval.expr.var.GenericColumn;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.io.IO;
+import org.apache.hadoop.hbase.hbql.mapping.FieldType;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.util.Date;
 
 public class DateBetweenStmt extends GenericBetweenStmt {
 
@@ -40,5 +51,53 @@ public class DateBetweenStmt extends GenericBetweenStmt {
                                && dateval <= (Long)this.getExprArg(2).getValue(connection, object);
 
         return (this.isNot()) ? !retval : retval;
+    }
+
+    public Filter getFilter() throws HBqlException {
+
+        this.validateArgsForBetween();
+
+        final GenericColumn<? extends GenericValue> column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
+        final Long lowerVal = (Long)this.getConstantValue(1);
+        final Long upperVal = (Long)this.getConstantValue(2);
+
+        return this.newSingleColumnValueFilter(column.getColumnAttrib(),
+                                               CompareFilter.CompareOp.EQUAL,
+                                               new DateComparable(lowerVal, upperVal));
+    }
+
+    private static class DateComparable extends GenericComparable<Long> {
+
+        public DateComparable() {
+        }
+
+        public DateComparable(final Long lowerValue, final Long upperValue) {
+            this.setLowerValue(lowerValue);
+            this.setUpperValue(upperValue);
+        }
+
+        public int compareTo(final byte[] bytes) {
+            try {
+                Date dateValue = (Date)IO.getSerialization().getScalarFromBytes(FieldType.DateType, bytes);
+                long val = dateValue.getTime();
+                final long lowerVal = this.getLowerValue();
+                final long upperVal = this.getUpperValue();
+                return (val >= lowerVal && val <= upperVal) ? 0 : 1;
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+
+        public void write(final DataOutput dataOutput) throws IOException {
+            dataOutput.writeLong(this.getLowerValue());
+            dataOutput.writeLong(this.getUpperValue());
+        }
+
+        public void readFields(final DataInput dataInput) throws IOException {
+            this.setLowerValue(dataInput.readLong());
+            this.setUpperValue(dataInput.readLong());
+        }
     }
 }
