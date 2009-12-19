@@ -38,7 +38,7 @@ import java.util.List;
 public class HStatementImpl implements HStatement {
 
     private final HConnectionImpl connectionImpl;
-    private HResultSetImpl resultSet = null;
+    private HResultSet resultSet = null;
     private volatile boolean closed = false;
 
     public HStatementImpl(final HConnectionImpl connectionImpl) {
@@ -75,10 +75,9 @@ public class HStatementImpl implements HStatement {
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
         final Query<T> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)statement, clazz);
-        final HResultSetImpl<T> resultSetImpl = new HResultSetImpl<T>(query);
-
-        this.resultSet = resultSetImpl;
-        return resultSetImpl;
+        final HResultSet<T> rs = query.newResultSet();
+        this.resultSet = rs;
+        return rs;
     }
 
     protected <T> List<T> executeQueryAndFetch(final HBqlStatement statement, final Class clazz) throws HBqlException {

@@ -150,4 +150,25 @@ public class ServerFilterTest extends TestSupport {
         final String q1 = "select * from tab3 WITH SERVER FILTER where val1+'ss' BETWEEN '12ss' AND '14ss' ";
         showValues(q1, 3);
     }
+
+    @Test
+    public void simpleSelect8() throws HBqlException {
+        final String q1 = "select * from tab3 WITH "
+                          + "KEYS '0000000001', '0000000002', '0000000003' ";
+        //+ "SERVER FILTER where val1+'ss' BETWEEN '12ss' AND '14ss' ";
+        showValues(q1, 3);
+    }
+
+    @Test
+
+    public void simpleSelect9() throws HBqlException {
+
+        HStatement stmt = connection.createStatement();
+        System.out.println(stmt.execute("CREATE THREAD POOL threadpool1 (size: 5, threads: 10)"));
+
+        final String q1 = "select * from tab3 WITH "
+                          + "KEYS '0000000001', '0000000002', '0000000003' POOL threadPool1 ";
+        //+ "SERVER FILTER where val1+'ss' BETWEEN '12ss' AND '14ss' ";
+        showValues(q1, 3);
+    }
 }

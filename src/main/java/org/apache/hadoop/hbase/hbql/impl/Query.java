@@ -53,7 +53,6 @@ public class Query<E> {
     public static <T> Query<T> newQuery(final HConnectionImpl connection,
                                         final SelectStatement selectStatement,
                                         final Class clazz) throws HBqlException {
-
         final ResultAccessor accessor;
         if (clazz.equals(HRecord.class)) {
             accessor = new HRecordResultAccessor(selectStatement);
@@ -105,7 +104,7 @@ public class Query<E> {
             this.getListeners().clear();
     }
 
-    public HResultSet<E> getResults() throws HBqlException {
+    public HResultSet<E> newResultSet() throws HBqlException {
         return new HResultSetImpl<E>(this);
     }
 }

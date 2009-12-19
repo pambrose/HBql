@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export MAVEN_OPTS="-Xms2048m -Xmx2048m -Dmaven.test.skip=true"
+export MAVEN_OPTS="-Xms2048m -Xmx2048m -DskipTests=true"
 
 export VERSION="0.9.14-alpha"
 export DIST="hbql-"${VERSION}

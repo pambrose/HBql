@@ -89,7 +89,7 @@ public class InsertSelectValues extends InsertValueSource {
         final Query<HRecord> query = Query.newQuery(this.getInsertStatement().getConnection(),
                                                     this.getSelectStatement(),
                                                     HRecord.class);
-        final HResultSet<HRecord> results = query.getResults();
+        final HResultSet<HRecord> results = query.newResultSet();
         this.setResultsIterator(results.iterator());
     }
 

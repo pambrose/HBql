@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mvn -Dmaven.test.skip=true site
+mvn -DskipTests=true site

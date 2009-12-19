@@ -70,9 +70,9 @@ public class HConnectionPoolManager {
 
         if (connectionPool.getName() != null && connectionPool.getName().length() > 0) {
             if (getConnectionPoolMap().containsKey(connectionPool.getName()))
-                throw new HBqlException("Connection pool name already exists: " + connectionPool.getName());
-            else
-                getConnectionPoolMap().put(connectionPool.getName(), connectionPool);
+                throw new HBqlException("Connection pool already exists: " + connectionPool.getName());
+
+            getConnectionPoolMap().put(connectionPool.getName(), connectionPool);
         }
 
         return connectionPool;
