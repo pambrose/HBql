@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 export MAVEN_OPTS="-Xms2048m -Xmx2048m -Dmaven.test.skip=true"
 

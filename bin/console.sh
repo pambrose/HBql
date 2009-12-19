@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 #HBQL_HOME=/Users/pambrose/git/hbql
 #HBASE_HOME=/Users/pambrose/src/hbase-0.20.2
