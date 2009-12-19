@@ -55,7 +55,7 @@ public class ExamplesTest extends TestSupport {
         System.out.println(connection.execute("SHOW TABLES"));
 
         // Or using the API
-        Set<String> tableNamess = connection.getTableNames();
+        Set<String> tableNames = connection.getTableNames();
 
         // END SNIPPET: show-tables
     }
@@ -349,11 +349,13 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: create-mapping1
 
         // START SNIPPET: create-mapping2
+
         // Mapping named mapping1 that corresponds to table foo.
         connection.execute("CREATE MAPPING mapping1 FOR TABLE foo (keyval key, family1 (val1 STRING ALIAS val2))");
         // END SNIPPET: create-mapping2
 
         // START SNIPPET: create-mapping3
+
         // A column with a default value.
         connection.execute("CREATE MAPPING mapping1 FOR TABLE foo "
                            + "("

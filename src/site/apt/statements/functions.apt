@@ -18,13 +18,13 @@ String Functions
 *--+--+--+--+
 | Replace(string1, string2, string3) | string  | Returns all occurences of string2 with string3 in string1 | replace('val', 'v', 'l') |  'lal'   |
 *--+--+--+--+
-| Substring(string, int1, int2) | string  | Returns the string from 0-based index int1 with length int2 | substring('val', '0', '2') |  'va'   |
+| Substring(string, int1, int2) | string  | Returns the string from 0-based index int1 with length int2 | subString('val', '0', '2') |  'va'   |
 *--+--+--+--+
-| Zeropad(int1, int2) | string | Returns the zero-padded string of int1 with int2 width | zeropad(4, 5) |  '00004'   |
+| ZeroPad(int1, int2) | string | Returns the zero-padded string of int1 with int2 width | zeroPad(4, 5) |  '00004'   |
 *--+--+--+--+
 | Length(string) | int | Returns the length of string | length('val') |  3   |
 *--+--+--+--+
-| Indexof(string1, string2) | int | Returns the 0-based index of string2 in string1 (-1 if not found)| indexof('val', 'v') |  0   |
+| IndexOf(string1, string2) | int | Returns the 0-based index of string2 in string1 (-1 if not found)| indexOf('val', 'v') |  0   |
 *--+--+--+--+
 | Repeat(string, int) | string | Returns the string repeated int times | repeat('abc', 3) |  'abcabcabc'   |
 *--+--+--+--+
@@ -64,7 +64,7 @@ Boolean Functions
 *-------------------+--------------+--------------------------+----------------------------------+---------------------+
 || Function         || Return Type || Description             ||Example                          ||Result              |
 *--+--+--+--+
-| DefinedInRow(column)| boolean | Returns true if column is defined in current row| definedinRow(f1:val1) |  true if f1:val1 is defined in current row |
+| DefinedInRow(column)| boolean | Returns true if column is defined in current row| definedInRow(f1:val1) |  true if f1:val1 is defined in current row |
 *--+--+--+--+
 | RandomBoolean()| boolean | Returns random boolean value| randomBoolean() |  random boolean value |
 *--+--+--+--+
@@ -74,7 +74,7 @@ Boolean Functions
 *--+--+--+--+
 | TableExists(string) | boolean  | Returns true if table exists | tableExists('foo') | true if table foo exists |
 *--+--+--+--+
-| Tableenabled(string) | boolean  | Returns true if table is enabled | tablEnabled('foo') | true if table foo is enabled |
+| TableEnabled(string) | boolean  | Returns true if table is enabled | tablEnabled('foo') | true if table foo is enabled |
 *--+--+--+--+
 | FamilyExistsForTable(string, string) | boolean  | Returns true if table has family | familyExistsForTable('f1', 'foo') | true if table foo has family f1 |
 *--+--+--+--+

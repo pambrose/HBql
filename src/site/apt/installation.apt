@@ -24,20 +24,22 @@ Installation
       and {{{statements/show-tables.html}SHOW TABLES}} commands.
 
 
-INDEX Support
+* INDEX Support
 
-    * In order to use the INDEX statements, you need to enable hbase indexing:
+    **In order to use the INDEX statements, you need to enable hbase indexing:
 
-        ** Add the following jar to your client classpath.
+        ***Add the following jar to your client classpath.
 
-            *** $HBASE_HOME/contrib/transactional/hbase-0.20.2-transactional.jar
+            ****$HBASE_HOME/contrib/transactional/hbase-0.20.2-transactional.jar
 
 
-        ** Add the following jar to HBASE_CLASSPATH in $HBASE_HOME/conf/hbase-env.sh and restart hbase.
+        ***Add the following jar to HBASE_CLASSPATH in $HBASE_HOME/conf/hbase-env.sh and restart hbase.
 
-            *** $HBASE_HOME/contrib/transactional/hbase-0.20.2-transactional.jar
+            ****$HBASE_HOME/contrib/transactional/hbase-0.20.2-transactional.jar
+            
 
-        **  As described in the org.apache.hadoop.hbase.client.tableindexed package description:
+
+        ***As described in the org.apache.hadoop.hbase.client.tableindexed package description:
         "Modify hbase-site.xml to turn on the IndexedRegionServer.
         This is done by setting hbase.regionserver.class to org.apache.hadoop.hbase.ipc.IndexedRegionInterface
         and hbase.regionserver.impl to org.apache.hadoop.hbase.regionserver.tableindexed.IndexedRegionServer".

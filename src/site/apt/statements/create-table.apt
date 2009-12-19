@@ -29,7 +29,7 @@ family_property:
 
 *Description
 
-    Creates table table_name with the declared families.
+    Creates table table_name with the declared families and properties.
 
 *Example
 
