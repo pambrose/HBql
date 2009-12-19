@@ -13,6 +13,9 @@ Installation
 
         ** The jars in $HBQL_HOME/lib directory
 
+    * Add the following jar to HBASE_CLASSPATH in $HBASE_HOME/conf/hbase-env.sh and restart hbase.
+
+        ** $HBQL_HOME/hbql-0.9.14-alpha.jar
 
     * To verify your installation, run the {{{./console/console.html}console}}
       and enter the {{{./statements/version.html}VERSION}}
@@ -21,10 +24,19 @@ Installation
 
 INDEX Support
 
-    * In order to use any of the INDEX statements, you need to enable hbase indexing:
+    * In order to use the INDEX statements, you need to enable hbase indexing:
+
+        ** Add the following jar to your client classpath.
+
+            *** $HBASE_HOME/contrib/transactional/hbase-0.20.2-transactional.jar
+
+
+        ** Add the following jar to HBASE_CLASSPATH in $HBASE_HOME/conf/hbase-env.sh and restart hbase.
+
+            *** $HBASE_HOME/contrib/transactional/hbase-0.20.2-transactional.jar
 
         **  As described in the org.apache.hadoop.hbase.client.tableindexed package description:
-        "modify hbase-site.xml to turn on the IndexedRegionServer.
+        "Modify hbase-site.xml to turn on the IndexedRegionServer.
         This is done by setting hbase.regionserver.class to org.apache.hadoop.hbase.ipc.IndexedRegionInterface
         and hbase.regionserver.impl to org.apache.hadoop.hbase.regionserver.tableindexed.IndexedRegionServer".
 
@@ -42,17 +54,6 @@ INDEX Support
 
 ---------------------------
 
-        ** Add the following jars to your client classpath.
-
-            *** $HBASE_HOME/contrib/transactional/hbase-0.20.2-transactional.jar
-
-
-
-        ** Add the following jars to HBASE_CLASSPATH in $HBASE_HOME/conf/hbase-env.sh and restart hbase.
-
-            *** $HBQL_HOME/hbql-0.9.14-alpha.jar
-
-            *** $HBASE_HOME/contrib/transactional/hbase-0.20.2-transactional.jar
 
 
 

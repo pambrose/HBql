@@ -71,9 +71,6 @@ client_filter:
 
         The SERVER FILTER where_clause is evaluated on the HBase server (as an HBase filter)
         while the CLIENT FILTER where_clause is evaluated on the HBase client.
-        <<Server side filter queries are currently limited to simple expressions.>>  This will be improved
-        with the release of hbase 0.20.3.
-
 
 
 *Example

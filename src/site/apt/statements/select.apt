@@ -21,9 +21,6 @@ select_element:
     Returns the requested values for the given {{{./with-clause.html}WITH}} or
     {{{./with-index-clause.html}WITH INDEX}} clause
 
-    * <<Server side filter queries are currently limited to simple expressions.>>  This will be improved
-    with the release of hbase 0.20.3.
-
 *Example
 
 %{snippet|id=select1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
