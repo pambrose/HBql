@@ -32,6 +32,8 @@ HBql Statements
 
     **{{{./drop-index.html}DROP INDEX}}
 
+    **{{{./describe-index.html}DESCRIBE INDEX}}
+
 * Mapping Management
 
     **{{{./create-mapping.html}CREATE MAPPING}}

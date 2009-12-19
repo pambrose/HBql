@@ -1,0 +1,20 @@
+    -----
+    DESCRIBE INDEX
+    -----
+    -----
+
+
+DESCRIBE INDEX
+
+*Syntax
+
+---------------------------
+
+DESCRIBE INDEX index_name {ON [MAPPING] mapping_name | ON TABLE table_name}
+
+---------------------------
+
+*Description
+
+    Describes named index.
+

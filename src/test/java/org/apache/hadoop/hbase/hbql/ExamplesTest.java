@@ -198,17 +198,19 @@ public class ExamplesTest extends TestSupport {
 
     public void dropIndex() throws HBqlException {
 
-        // START SNIPPET: drop-table
+        // START SNIPPET: drop-index
 
         HConnection conection = HConnectionManager.newConnection();
-        conection.execute("DROP INDEX fooidx");
+        conection.execute("DROP INDEX fooidx ON MAPPING fooMapping");
+        // OR
+        conection.execute("DROP INDEX fooidx ON TABLE foo");
 
         // Or using the API
         conection.dropIndexForMapping("fooidx", "fooMapping");
         // or
-        conection.dropIndexForTable("foo", "fooidx");
+        conection.dropIndexForTable("fooidx", "foo");
 
-        // END SNIPPET: drop-table
+        // END SNIPPET: drop-index
     }
 
     public void insert1() throws HBqlException {
