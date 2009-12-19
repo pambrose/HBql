@@ -112,15 +112,32 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
                 }
             }
 
-            case FAMILYEXISTS: {
+            case FAMILYEXISTSFORTABLE: {
                 if (connection == null) {
                     return false;
                 }
                 else {
-                    final String tableName = (String)this.getExprArg(0).getValue(connection, null);
-                    final String familyName = (String)this.getExprArg(1).getValue(connection, null);
+                    final String familyName = (String)this.getExprArg(0).getValue(connection, null);
+                    final String tableName = (String)this.getExprArg(1).getValue(connection, null);
                     try {
-                        return connection.familyExists(tableName, familyName);
+                        return connection.familyExistsForTable(familyName, tableName);
+                    }
+                    catch (HBqlException e) {
+                        // return false if table doesn't exist
+                        return false;
+                    }
+                }
+            }
+
+            case FAMILYEXISTSFORMAPPING: {
+                if (connection == null) {
+                    return false;
+                }
+                else {
+                    final String familyName = (String)this.getExprArg(0).getValue(connection, null);
+                    final String mappingName = (String)this.getExprArg(1).getValue(connection, null);
+                    try {
+                        return connection.familyExistsForMapping(familyName, mappingName);
                     }
                     catch (HBqlException e) {
                         // return false if table doesn't exist
@@ -134,8 +151,8 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
                     return false;
                 }
                 else {
-                    final String tableName = (String)this.getExprArg(0).getValue(connection, null);
-                    final String indexName = (String)this.getExprArg(1).getValue(connection, null);
+                    final String indexName = (String)this.getExprArg(0).getValue(connection, null);
+                    final String tableName = (String)this.getExprArg(1).getValue(connection, null);
                     try {
                         return connection.indexExistsForTable(indexName, tableName);
                     }
@@ -151,10 +168,10 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
                     return false;
                 }
                 else {
-                    final String mappingName = (String)this.getExprArg(0).getValue(connection, null);
-                    final String indexName = (String)this.getExprArg(1).getValue(connection, null);
+                    final String indexName = (String)this.getExprArg(0).getValue(connection, null);
+                    final String mappingName = (String)this.getExprArg(1).getValue(connection, null);
                     try {
-                        return connection.indexExistsForMapping(mappingName, indexName);
+                        return connection.indexExistsForMapping(indexName, mappingName);
                     }
                     catch (HBqlException e) {
                         // return false if index doesn't exist

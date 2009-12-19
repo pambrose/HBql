@@ -182,9 +182,14 @@ public class HConnectionImpl implements HConnection {
         return familySet;
     }
 
-    public boolean familyExists(final String tableName, final String familyName) throws HBqlException {
+    public boolean familyExistsForTable(final String familyName, final String tableName) throws HBqlException {
         final Set<String> names = this.getFamilyNames(tableName);
         return names.contains(familyName);
+    }
+
+    public boolean familyExistsForMapping(final String familyName, final String mappingName) throws HBqlException {
+        final TableMapping mapping = this.getMapping(mappingName);
+        return mapping.containsFamily(familyName);
     }
 
     public IndexedTableDescriptor newIndexedTableDescriptor(final String tableName) throws HBqlException {
@@ -198,7 +203,7 @@ public class HConnectionImpl implements HConnection {
         }
     }
 
-    public boolean indexExistsForMapping(final String mappingName, final String indexName) throws HBqlException {
+    public boolean indexExistsForMapping(final String indexName, final String mappingName) throws HBqlException {
         final TableMapping mapping = this.getMapping(mappingName);
         return this.indexExistsForTable(indexName, mapping.getTableName());
     }
@@ -428,8 +433,8 @@ public class HConnectionImpl implements HConnection {
             throw new HBqlException("Cannot " + action + " enabled table: " + tableName);
     }
 
-    public void validateFamilyExists(final String tableName, final String familyName) throws HBqlException {
-        if (!this.familyExists(tableName, familyName))
+    public void validateFamilyExistsForTable(final String familyName, final String tableName) throws HBqlException {
+        if (!this.familyExistsForTable(familyName, tableName))
             throw new HBqlException("Family " + familyName + " not defined for table " + tableName);
     }
 

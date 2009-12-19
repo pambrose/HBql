@@ -228,6 +228,10 @@ public class TableMapping extends Mapping implements HMapping {
         return this.getColumnAttribListByFamilyNameMap().keySet();
     }
 
+    public boolean containsFamily(final String familyName) {
+        return this.getFamilySet().contains(familyName);
+    }
+
     public List<HRecordAttrib> getColumnAttribListByFamilyName(final String familyName) {
         return this.getColumnAttribListByFamilyNameMap().get(familyName);
     }

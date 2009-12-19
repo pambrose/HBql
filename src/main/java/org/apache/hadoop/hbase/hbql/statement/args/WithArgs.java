@@ -29,6 +29,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -431,9 +432,15 @@ public class WithArgs implements Serializable {
         // Do not call scanner cache args call for get
 
         if (this.getServerExpressionTree() != null) {
-            //final Filter serverFilter = this.getServerExpressionTree().getFilter();
-            final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
-                                                                     this.getServerExpressionTree());
+            Filter serverFilter;
+
+            try {
+                serverFilter = this.getServerExpressionTree().getFilter();
+            }
+            catch (InvalidServerFilterExpressionException e) {
+                serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
+                                                        this.getServerExpressionTree());
+            }
 
             if (serverFilter != null)
                 get.setFilter(serverFilter);
@@ -465,9 +472,16 @@ public class WithArgs implements Serializable {
             this.getScannerCacheArgs().setScannerCacheSize(scan);
 
         if (this.getServerExpressionTree() != null) {
-            //final Filter serverFilter = this.getServerExpressionTree().getFilter();
-            final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
-                                                                     this.getServerExpressionTree());
+
+            Filter serverFilter;
+
+            try {
+                serverFilter = this.getServerExpressionTree().getFilter();
+            }
+            catch (InvalidServerFilterExpressionException e) {
+                serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
+                                                        this.getServerExpressionTree());
+            }
 
             if (serverFilter != null)
                 scan.setFilter(serverFilter);

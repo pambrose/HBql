@@ -62,15 +62,15 @@ public class PredicateTest extends TestSupport {
 
         results = connection.execute("CREATE TABLE testtable (f1()) IF NOT tableexists('testtable')");
 
-        results = connection.execute("ALTER TABLE testtable ADD FAMILY f1() IF not familyexists('testtable', 'f1')");
+        results = connection.execute("ALTER TABLE testtable ADD FAMILY f1() IF not familyexistsfortable('f1', 'testtable')");
         assertTrue(!results.getPredicate());
 
         results = connection.execute("DISABLE TABLE testtable");
 
-        results = connection.execute("ALTER TABLE testtable ADD FAMILY f2() IF not familyexists('testtable', 'f2')");
+        results = connection.execute("ALTER TABLE testtable ADD FAMILY f2() IF not familyexistsfortable('f2', 'testtable')");
         assertTrue(results.getPredicate());
 
-        results = connection.execute("ALTER TABLE testtable ALTER FAMILY f1 TO f3() IF not familyexists('testtable', 'f3')");
+        results = connection.execute("ALTER TABLE testtable ALTER FAMILY f1 TO f3() IF not familyexistsfortable('f3', 'testtable')");
         assertTrue(results.getPredicate());
 
         results = connection.execute("DISABLE TABLE nosuchtable IF tableexists('nosuchtable') AND tableenabled('nosuchtable')");

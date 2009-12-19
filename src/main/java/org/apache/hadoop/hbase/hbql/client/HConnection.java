@@ -56,7 +56,7 @@ public interface HConnection {
     Set<String> getTableNames() throws HBqlException;
 
     // Index Routines
-    boolean indexExistsForMapping(final String mappingName, final String indexName) throws HBqlException;
+    boolean indexExistsForMapping(final String indexName, final String mappingName) throws HBqlException;
 
     void dropIndexForMapping(final String indexName, final String mappingName) throws HBqlException;
 

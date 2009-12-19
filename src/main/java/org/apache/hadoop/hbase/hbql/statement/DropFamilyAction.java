@@ -42,7 +42,7 @@ public class DropFamilyAction implements AlterTableAction {
                         final HBaseAdmin admin,
                         final String tableName) throws HBqlException {
         try {
-            connection.validateFamilyExists(tableName, this.getFamilyName());
+            connection.validateFamilyExistsForTable(this.getFamilyName(), tableName);
             admin.deleteColumn(tableName, this.getFamilyName());
         }
         catch (IOException e) {

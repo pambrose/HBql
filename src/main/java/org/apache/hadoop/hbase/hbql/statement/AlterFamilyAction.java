@@ -50,7 +50,7 @@ public class AlterFamilyAction implements AlterTableAction {
                         final HBaseAdmin admin,
                         final String tableName) throws HBqlException {
 
-        connection.validateFamilyExists(tableName, this.getFamilyName());
+        connection.validateFamilyExistsForTable(this.getFamilyName(), tableName);
         final HColumnDescriptor columnDescriptor = this.getFamilyDefinition().getHColumnDescriptor();
 
         try {

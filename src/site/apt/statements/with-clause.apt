@@ -69,8 +69,8 @@ client_filter:
 
     * where_clause is any valid boolean {{{./expressions.html}expression}} (can reference columns).
 
-        The SERVER FILTER where_clause is evaluated on the HBase server (as an HBase filter)
-        while the CLIENT FILTER where_clause is evaluated on the HBase client.
+        The SERVER FILTER where_clause is evaluated on the server,
+        while the CLIENT FILTER where_clause is evaluated on the client.
 
 
 *Example

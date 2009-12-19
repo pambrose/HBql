@@ -131,7 +131,7 @@ public class IndexTest extends TestSupport {
 
         HStatement stmt = connection.createStatement();
         // stmt.execute("DROP INDEX foo1 ON MAPPING tab4 if indexexistsfortable('table21', 'foo1')");
-        stmt.execute("CREATE INDEX foo1 ON MAPPING tab4 (f1:val1) if not indexexistsformapping('tab4', 'foo1')");
+        stmt.execute("CREATE INDEX foo1 ON MAPPING tab4 (f1:val1) if not indexexistsformapping('foo1', 'tab4')");
 
         final String q1 = "select * from tab4";
         final int rec_cnt = showValues(q1, false);

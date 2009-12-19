@@ -76,11 +76,13 @@ Boolean Functions
 *--+--+--+--+
 | Tableenabled(string) | boolean  | Returns true if table is enabled | tablEnabled('foo') | true if table foo is enabled |
 *--+--+--+--+
-| FamilyExists(string, string) | boolean  | Returns true if table has family | familyExists('foo', 'f1') | true if table foo has family f1 |
+| FamilyExistsForTable(string, string) | boolean  | Returns true if table has family | familyExistsForTable('f1', 'foo') | true if table foo has family f1 |
 *--+--+--+--+
-| IndexExistsForTable(string, string) | boolean  | Returns true if table has index | indexExistsForTable('foo', 'idx1') | true if table foo has index idx1 |
+| FamilyExistsForMapping(string, string) | boolean  | Returns true if table referenced by mapping has family | familyExistsForMapping('f1', 'foomap') | true if mapping foomap has family f1 |
 *--+--+--+--+
-| IndexExistsForMapping(string, string) | boolean  | Returns true if table referenced by mapping has index | indexExistsForMapping('foomap', 'idx1') | true if table foo has index idx1 |
+| IndexExistsForTable(string, string) | boolean  | Returns true if table has index | indexExistsForTable('idx1', 'foo') | true if table foo has index idx1 |
+*--+--+--+--+
+| IndexExistsForMapping(string, string) | boolean  | Returns true if table referenced by mapping has index | indexExistsForMapping('idx1', 'foomap') | true if table foo has index idx1 |
 *--+--+--+--+
 
 Date Functions
