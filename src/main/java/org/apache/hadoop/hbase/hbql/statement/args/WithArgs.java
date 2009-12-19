@@ -30,6 +30,7 @@ import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Util;
+import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
@@ -429,11 +430,10 @@ public class WithArgs implements Serializable {
 
         // Do not call scanner cache args call for get
 
-        //final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
-        //                                                         this.getServerExpressionTree());
-
         if (this.getServerExpressionTree() != null) {
-            final Filter serverFilter = this.getServerExpressionTree().getFilter();
+            //final Filter serverFilter = this.getServerExpressionTree().getFilter();
+            final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
+                                                                     this.getServerExpressionTree());
 
             if (serverFilter != null)
                 get.setFilter(serverFilter);
@@ -464,11 +464,10 @@ public class WithArgs implements Serializable {
         if (this.getScannerCacheArgs() != null)
             this.getScannerCacheArgs().setScannerCacheSize(scan);
 
-        // final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
-        //                                                          this.getServerExpressionTree());
-
         if (this.getServerExpressionTree() != null) {
-            final Filter serverFilter = this.getServerExpressionTree().getFilter();
+            //final Filter serverFilter = this.getServerExpressionTree().getFilter();
+            final HBqlFilter serverFilter = HBqlFilter.newHBqlFilter(this.getStatementContext(),
+                                                                     this.getServerExpressionTree());
 
             if (serverFilter != null)
                 scan.setFilter(serverFilter);

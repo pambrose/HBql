@@ -32,14 +32,18 @@ import org.apache.hadoop.hbase.hbql.statement.NonStatement;
 
 public class ExpressionTree extends MultipleExpressionContext {
 
-    private static FunctionTypeSignature exprSignature = new FunctionTypeSignature(BooleanValue.class, BooleanValue.class);
+    private static FunctionTypeSignature exprSig = new FunctionTypeSignature(BooleanValue.class, BooleanValue.class);
+
     private boolean useResultData = false;
     private boolean allowColumns = true;
 
     private Mapping embeddedMapping = null;
 
+    public ExpressionTree() {
+    }
+
     private ExpressionTree(final GenericValue rootValue) {
-        super(exprSignature, rootValue);
+        super(exprSig, rootValue);
     }
 
     public static ExpressionTree newExpressionTree(final Mapping mapping, final GenericValue booleanValue) {

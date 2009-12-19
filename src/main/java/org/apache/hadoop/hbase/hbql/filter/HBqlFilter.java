@@ -46,9 +46,10 @@ import java.io.PrintWriter;
 
 public class HBqlFilter implements Filter {
 
-    private static final Log LOG = LogFactory.getLog(HBqlFilter.class.getName());
+    static final Log LOG = LogFactory.getLog(HBqlFilter.class);
 
     private ExpressionTree expressionTree;
+
     public transient HRecordImpl record = new HRecordImpl((StatementContext)null);
 
     public HBqlFilter(final ExpressionTree expressionTree) {
@@ -86,12 +87,12 @@ public class HBqlFilter implements Filter {
     }
 
     public void reset() {
-        LOG.info("In reset()");
+        // LOG.debug("In reset()");
         this.getHRecord().clearValues();
     }
 
     public boolean filterRowKey(byte[] buffer, int offset, int length) {
-        LOG.info("In filterRowKey()");
+        // LOG.debug("In filterRowKey()");
         return false;
     }
 
@@ -101,7 +102,7 @@ public class HBqlFilter implements Filter {
 
     public ReturnCode filterKeyValue(KeyValue v) {
 
-        LOG.info("In filterKeyValue()");
+        // LOG.debug("In filterKeyValue()");
 
         if (this.hasValidExpressionTree()) {
 
@@ -113,7 +114,7 @@ public class HBqlFilter implements Filter {
 
                 // Do not bother setting value if it is not used in expression
                 if (this.getExpressionTree().getAttribsUsedInExpr().contains(attrib)) {
-                    LOG.info("In in filterKeyValue() setting value for: " + familyName + ":" + columnName);
+                    LOG.debug("In in filterKeyValue() setting value for: " + familyName + ":" + columnName);
                     final Object val = attrib.getValueFromBytes(null, v.getValue());
                     this.getHRecord().setCurrentValue(familyName, columnName, v.getTimestamp(), val);
                     this.getHRecord().setVersionValue(familyName, columnName, v.getTimestamp(), val, true);
@@ -121,7 +122,7 @@ public class HBqlFilter implements Filter {
             }
             catch (Exception e) {
                 logException(LOG, e);
-                LOG.info("Had exception in filterKeyValue(): " + e.getClass().getName() + " - " + e.getMessage());
+                LOG.debug("Had exception in filterKeyValue(): " + e.getClass().getName() + " - " + e.getMessage());
             }
         }
 
@@ -130,7 +131,7 @@ public class HBqlFilter implements Filter {
 
     public boolean filterRow() {
 
-        LOG.info("In filterRow()");
+        // LOG.debug("In filterRow()");
 
         if (!this.hasValidExpressionTree()) {
             return false;
@@ -146,7 +147,7 @@ public class HBqlFilter implements Filter {
             catch (HBqlException e) {
                 e.printStackTrace();
                 logException(LOG, e);
-                LOG.info("In filterRow() had exception: " + e.getMessage());
+                LOG.debug("In filterRow() had exception: " + e.getMessage());
                 return true;
             }
         }
@@ -154,7 +155,8 @@ public class HBqlFilter implements Filter {
 
     public void write(DataOutput out) throws IOException {
         try {
-            Bytes.writeByteArray(out, IO.getSerialization().getScalarAsBytes(this.getExpressionTree()));
+            final byte[] b = IO.getSerialization().getScalarAsBytes(this.getExpressionTree());
+            Bytes.writeByteArray(out, b);
         }
         catch (HBqlException e) {
             e.printStackTrace();
@@ -165,18 +167,15 @@ public class HBqlFilter implements Filter {
 
     public void readFields(DataInput in) throws IOException {
 
-        LOG.info("In readFields()");
-
         try {
-            this.expressionTree = (ExpressionTree)IO.getSerialization().getScalarFromBytes(FieldType.ObjectType,
-                                                                                           Bytes.readByteArray(in));
+            final byte[] b = Bytes.readByteArray(in);
+            this.expressionTree = (ExpressionTree)IO.getSerialization().getScalarFromBytes(FieldType.ObjectType, b);
             this.getHRecord().setStatementContext(this.getExpressionTree().getStatementContext());
-
             this.getMapping().resetDefaultValues();
         }
         catch (HBqlException e) {
             e.printStackTrace();
-            LOG.info("In read(): " + e.getCause());
+            LOG.debug("In read(): " + e.getCause());
             throw new IOException("HPersistException: " + e.getCause());
         }
     }
@@ -224,6 +223,6 @@ public class HBqlFilter implements Filter {
         oos.flush();
         oos.close();
 
-        log.info(baos.toString());
+        log.debug(baos.toString());
     }
 }

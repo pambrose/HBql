@@ -33,16 +33,19 @@ public final class ColumnDefinition implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final String columnName;
-    private final String aliasName;
-    private final boolean isArray;
-    private final FieldType fieldType;
-    private final GenericValue defaultValue;
-    private final ColumnWidth columnWidth;
-    private final String getter;
-    private final String setter;
+    private String columnName;
+    private String aliasName;
+    private boolean isArray;
+    private FieldType fieldType;
+    private GenericValue defaultValue;
+    private ColumnWidth columnWidth;
+    private String getter;
+    private String setter;
 
     private FamilyMapping familyMapping = null;
+
+    public ColumnDefinition() {
+    }
 
     private ColumnDefinition(final String familyName,
                              final String columnName,

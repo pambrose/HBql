@@ -33,7 +33,10 @@ public abstract class ResultAccessor implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final StatementContext statementContext;
+    private StatementContext statementContext;
+
+    public ResultAccessor() {
+    }
 
     public ResultAccessor(final StatementContext statementContext) {
         this.statementContext = statementContext;

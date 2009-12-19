@@ -31,7 +31,10 @@ public abstract class BasicStatement implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final StatementPredicate predicate;
+    private StatementPredicate predicate;
+
+    public BasicStatement() {
+    }
 
     protected BasicStatement(final StatementPredicate predicate) {
         this.predicate = predicate;

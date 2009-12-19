@@ -20,15 +20,11 @@
 
 package org.apache.hadoop.hbase.hbql.mapping;
 
-import org.antlr.runtime.RecognitionException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Maps;
 import org.apache.expreval.util.Sets;
-import org.apache.hadoop.hbase.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -48,10 +44,11 @@ public abstract class Mapping implements Serializable {
     private ColumnAttrib keyAttrib = null;
     private List<String> evalList = null;
     private int expressionTreeCacheSize = 25;
-    private volatile Map<String, ExpressionTree> evalMap = null;
+
+    private transient volatile Map<String, ExpressionTree> evalMap = null;
 
     // For serialization
-    protected Mapping() {
+    public Mapping() {
     }
 
     protected Mapping(final String mappingName, final String tableName) {
@@ -96,7 +93,7 @@ public abstract class Mapping implements Serializable {
         }
     }
 
-    private Map<String, ExpressionTree> getEvalMap() {
+    public Map<String, ExpressionTree> getEvalMap() {
 
         if (this.evalMap == null) {
             synchronized (this) {
@@ -150,26 +147,7 @@ public abstract class Mapping implements Serializable {
         }
     }
 
-    public ExpressionTree getExpressionTree(final String str,
-                                            final StatementContext statementContext) throws HBqlException,
-                                                                                            RecognitionException {
-
-        final Map<String, ExpressionTree> map = this.getEvalMap();
-        ExpressionTree expressionTree = map.get(str);
-
-        if (expressionTree == null) {
-            final HBqlParser parser = ParserUtil.newHBqlParser(str);
-            expressionTree = parser.nodescWhereExpr();
-            expressionTree.setStatementContext(statementContext);
-            this.addToExpressionTreeCache(str, expressionTree);
-        }
-        else {
-            expressionTree.reset();
-        }
-        return expressionTree;
-    }
-
-    private synchronized void addToExpressionTreeCache(final String exprStr, final ExpressionTree expressionTree) {
+    public synchronized void addToExpressionTreeCache(final String exprStr, final ExpressionTree expressionTree) {
 
         final Map<String, ExpressionTree> map = this.getEvalMap();
 

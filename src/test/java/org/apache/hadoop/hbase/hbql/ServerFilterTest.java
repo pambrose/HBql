@@ -120,6 +120,9 @@ public class ServerFilterTest extends TestSupport {
 
     @Test
     public void simpleSelect4() throws HBqlException {
+
+        // org.apache.hadoop.hbase.hbql.impl.Util.checkForDefaultConstructors(HBqlFilter.class);
+
         final String q1 = "select * from tab3 WITH SERVER FILTER " +
                           //"where val1 = '12' OR val1 = '14' OR val2 = 15";
                           //"where val1 = '11' OR val2 = 14 OR  val1 = '12'";

@@ -24,6 +24,9 @@ public abstract class MappingStatement extends BasicStatement implements Connect
 
     private String mappingName;
 
+    public MappingStatement() {
+    }
+
     protected MappingStatement(final StatementPredicate predicate, final String mappingName) {
         super(predicate);
         this.mappingName = mappingName;

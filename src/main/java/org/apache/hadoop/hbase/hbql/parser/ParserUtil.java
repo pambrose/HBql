@@ -35,12 +35,14 @@ import org.apache.hadoop.hbase.hbql.antlr.HBqlLexer;
 import org.apache.hadoop.hbase.hbql.antlr.HBqlParser;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
+import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
 
 import java.util.List;
+import java.util.Map;
 
 public class ParserUtil {
 
@@ -61,13 +63,34 @@ public class ParserUtil {
     public static ExpressionTree parseWhereExpression(final String sql,
                                                       final StatementContext statementContext) throws HBqlException {
         try {
-            return statementContext.getMapping().getExpressionTree(sql, statementContext);
+            return getExpressionTree(sql, statementContext);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
             throw new HBqlException("Error parsing: " + sql);
         }
     }
+
+    public static ExpressionTree getExpressionTree(final String str,
+                                                   final StatementContext statementContext) throws HBqlException,
+                                                                                                   RecognitionException {
+        final Mapping mapping = statementContext.getMapping();
+
+        final Map<String, ExpressionTree> map = mapping.getEvalMap();
+        ExpressionTree expressionTree = map.get(str);
+
+        if (expressionTree == null) {
+            final HBqlParser parser = ParserUtil.newHBqlParser(str);
+            expressionTree = parser.nodescWhereExpr();
+            expressionTree.setStatementContext(statementContext);
+            mapping.addToExpressionTreeCache(str, expressionTree);
+        }
+        else {
+            expressionTree.reset();
+        }
+        return expressionTree;
+    }
+
 
     public static Object parseExpression(final String sql) throws HBqlException {
         try {

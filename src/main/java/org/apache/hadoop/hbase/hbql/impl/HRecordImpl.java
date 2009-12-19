@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
 
-public class HRecordImpl implements Serializable, HRecord {
+public class HRecordImpl implements HRecord, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -48,6 +48,9 @@ public class HRecordImpl implements Serializable, HRecord {
 
     private volatile ElementMap<ColumnValue> columnValuesMap = null;
     private volatile ElementMap<UnMappedValueMap> unMappedValuesMap = null;
+
+    public HRecordImpl() {
+    }
 
     public HRecordImpl(final StatementContext statementContext) {
         this.setStatementContext(statementContext);

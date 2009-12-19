@@ -44,6 +44,7 @@ import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
@@ -53,13 +54,15 @@ public class NamedParameter implements GenericValue {
 
     private static long counter = Long.MIN_VALUE;
 
-
     private MultipleExpressionContext context = null;
     private GenericValue typedExpr = null;
     private List<GenericValue> typedExprList = null;
 
-    private final String paramName;
-    private final long position;
+    private String paramName;
+    private long position;
+
+    public NamedParameter() {
+    }
 
     public NamedParameter(final String paramName) {
         if (paramName.equals("?"))
@@ -256,19 +259,21 @@ public class NamedParameter implements GenericValue {
     }
 
     public static Comparator<? super NamedParameter> getComparator() {
-        return new Comparator<NamedParameter>() {
-            public int compare(final NamedParameter param1, final NamedParameter param2) {
-                if (param1.getPosition() < param2.getPosition())
-                    return -1;
-                else if (param1.getPosition() > param2.getPosition())
-                    return +1;
-                else
-                    return 0;
-            }
-        };
+        return new NamedParameterComparator();
     }
 
     public Filter getFilter() throws HBqlException {
         throw new InvalidServerFilterExpressionException();
+    }
+
+    public static class NamedParameterComparator implements Comparator<NamedParameter>, Serializable {
+        public int compare(final NamedParameter param1, final NamedParameter param2) {
+            if (param1.getPosition() < param2.getPosition())
+                return -1;
+            else if (param1.getPosition() > param2.getPosition())
+                return +1;
+            else
+                return 0;
+        }
     }
 }

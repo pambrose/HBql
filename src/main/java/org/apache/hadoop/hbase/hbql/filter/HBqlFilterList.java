@@ -180,7 +180,7 @@ public class HBqlFilterList implements Filter {
                     case INCLUDE:
                         continue;
                     case NEXT_ROW:
-                        return ReturnCode.NEXT_ROW;
+                        return ReturnCode.NEXT_ROW;  /* DIFF */
                     case SKIP:
                         return ReturnCode.SKIP;
                 }
@@ -192,15 +192,14 @@ public class HBqlFilterList implements Filter {
 
                 switch (filter.filterKeyValue(v)) {
                     case INCLUDE:
-                        // return ReturnCode.INCLUDE;
+                        /* DIFF return ReturnCode.INCLUDE; */
                     case NEXT_ROW:
                     case SKIP:
                         continue;
                 }
             }
         }
-        //return operator == Operator.MUST_PASS_ONE ? ReturnCode.SKIP : ReturnCode.INCLUDE;
-        return ReturnCode.INCLUDE;
+        return /* DIFF operator == Operator.MUST_PASS_ONE ? ReturnCode.SKIP :*/ ReturnCode.INCLUDE;
     }
 
     public boolean filterRow() {

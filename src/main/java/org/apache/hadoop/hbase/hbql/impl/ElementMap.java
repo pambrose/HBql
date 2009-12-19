@@ -30,7 +30,10 @@ public class ElementMap<T extends Value> extends HashMap<String, T> implements S
 
     private static final long serialVersionUID = 1L;
 
-    private final HRecordImpl record;
+    private HRecordImpl record;
+
+    public ElementMap() {
+    }
 
     public ElementMap(final HRecordImpl record) {
         this.record = record;

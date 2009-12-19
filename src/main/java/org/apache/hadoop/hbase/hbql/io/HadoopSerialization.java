@@ -156,6 +156,7 @@ public class HadoopSerialization extends Serialization {
             }
         }
         catch (IOException e) {
+            // e.printStackTrace();
             throw new HBqlException(getExceptionMessage("getScalarAsBytes()", e));
         }
     }

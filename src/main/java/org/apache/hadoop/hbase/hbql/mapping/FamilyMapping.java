@@ -29,9 +29,12 @@ public class FamilyMapping implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final String familyName;
-    private final List<ColumnDefinition> columnDefinitionList;
-    private final boolean includeUnmapped;
+    private String familyName;
+    private List<ColumnDefinition> columnDefinitionList;
+    private boolean includeUnmapped;
+
+    public FamilyMapping() {
+    }
 
     public FamilyMapping(final String familyName,
                          final boolean includeUnmapped,

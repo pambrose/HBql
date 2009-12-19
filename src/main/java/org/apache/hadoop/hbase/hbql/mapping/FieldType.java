@@ -60,11 +60,14 @@ public enum FieldType implements Serializable {
     DateType(Date.class, DateValue.class, -1, -1, "DATE", "DATETIME"),
     ObjectType(Object.class, ObjectValue.class, -1, -1, "OBJECT", "OBJ");
 
-    private final Class componentType;
-    private final Class<? extends GenericValue> exprType;
-    private final int typeRanking;
-    private final int size;
-    private final List<String> synonymList;
+    private Class componentType;
+    private Class<? extends GenericValue> exprType;
+    private int typeRanking;
+    private int size;
+    private List<String> synonymList;
+
+    FieldType() {
+    }
 
     FieldType(final Class componentType,
               final Class<? extends GenericValue> exprType,

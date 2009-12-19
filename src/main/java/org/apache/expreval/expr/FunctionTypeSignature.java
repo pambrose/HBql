@@ -24,6 +24,9 @@ import org.apache.expreval.expr.node.GenericValue;
 
 public class FunctionTypeSignature extends TypeSignature {
 
+    public FunctionTypeSignature() {
+    }
+
     public FunctionTypeSignature(final Class<? extends GenericValue> returnType,
                                  final Class<? extends GenericValue>... typeSig) {
         super(returnType, typeSig);

@@ -32,6 +32,9 @@ public abstract class StatementContext extends MappingStatement {
     private Mapping mapping = null;
     private ResultAccessor resultAccessor = null;
 
+    public StatementContext() {
+    }
+
     protected StatementContext(final StatementPredicate predicate, final String mappingName) {
         super(predicate, mappingName);
     }

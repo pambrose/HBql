@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.mapping.HRecordResultAccessor;
@@ -32,6 +33,10 @@ import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.ParameterStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.List;
 
 
 public class Util {
@@ -82,5 +87,48 @@ public class Util {
         }
 
         return (ParameterStatement)statement;
+    }
+
+    static List<Class> classList = Lists.newArrayList();
+
+    public static void checkForDefaultConstructors(final Class clazz) {
+
+        if (!clazz.getName().contains("hadoop"))
+            return;
+
+        if (Modifier.isStatic(clazz.getModifiers()))
+            return;
+
+        if (classList.contains(clazz))
+            return;
+        else
+            classList.add(clazz);
+
+        if (!hasDefaultConstructor(clazz))
+            System.out.println(clazz.getName() + " is missing null constructor");
+
+        Field[] fields = clazz.getDeclaredFields();
+
+        for (final Field field : fields) {
+            Class dclazz = field.getType();
+            checkForDefaultConstructors(dclazz);
+        }
+
+        fields = clazz.getFields();
+
+        for (final Field field : fields) {
+            Class dclazz = field.getType();
+            checkForDefaultConstructors(dclazz);
+        }
+    }
+
+    public static boolean hasDefaultConstructor(final Class clazz) {
+        try {
+            clazz.getConstructor();
+        }
+        catch (NoSuchMethodException e) {
+            return false;
+        }
+        return true;
     }
 }

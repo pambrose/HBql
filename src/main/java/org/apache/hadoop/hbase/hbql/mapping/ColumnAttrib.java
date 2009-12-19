@@ -38,14 +38,17 @@ public abstract class ColumnAttrib implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final ColumnDefinition columnDefinition;
+    private ColumnDefinition columnDefinition;
 
     private volatile byte[] familyQualifiedBytes = null;
     private volatile byte[] familyBytes = null;
     private volatile byte[] columnBytes = null;
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
-    private final boolean embedded;
+    private boolean embedded;
+
+    public ColumnAttrib() {
+    }
 
     protected ColumnAttrib(final ColumnDefinition columnDefinition) {
         this.columnDefinition = columnDefinition;

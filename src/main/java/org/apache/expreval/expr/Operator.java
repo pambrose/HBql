@@ -45,7 +45,9 @@ public enum Operator {
     final CompareFilter.CompareOp compareOpLeft;
     final CompareFilter.CompareOp compareOpRight;
 
-    Operator(final String opStr, final CompareFilter.CompareOp compareOpLeft, final CompareFilter.CompareOp compareOpRight) {
+    Operator(final String opStr,
+             final CompareFilter.CompareOp compareOpLeft,
+             final CompareFilter.CompareOp compareOpRight) {
         this.opStr = opStr;
         this.compareOpLeft = compareOpLeft;
         this.compareOpRight = compareOpRight;

@@ -57,8 +57,11 @@ public abstract class MultipleExpressionContext implements Serializable {
     private final Map<String, List<NamedParameter>> namedParamMap = Maps.newHashMap();
 
     private StatementContext statementContext = null;
-    private final TypeSignature typeSignature;
+    private TypeSignature typeSignature;
     private final List<GenericValue> expressions = Lists.newArrayList();
+
+    protected MultipleExpressionContext() {
+    }
 
     protected MultipleExpressionContext(final TypeSignature typeSignature, final GenericValue... vals) {
         this.typeSignature = typeSignature;
