@@ -28,7 +28,7 @@ Release Notes
 
     0.9.14-alpha -- 12/18/09
 
-        * Added support for server side filters
+        * Added support for server-side filters
         
         * Added support for INDEX {{{statements/with-index-clause.html}queries}}.
 
@@ -38,7 +38,7 @@ Release Notes
 
         * Added {{{statements/describe-index.html}DESCRIBE INDEX}} statement
 
-        * Added functions indexExistsForTable(), indexExistsForMapping()
+        * Added functions indexExistsForTable() and indexExistsForMapping()
 
     0.9.13-alpha -- 12/1/09
 
