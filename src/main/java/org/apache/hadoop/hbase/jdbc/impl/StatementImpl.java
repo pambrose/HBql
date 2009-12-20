@@ -25,6 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.Query;
 import org.apache.hadoop.hbase.hbql.impl.Util;
@@ -97,7 +98,9 @@ public class StatementImpl implements Statement {
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
         final Query<HRecord> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)stmt, HRecord.class);
-        this.setResultSet(new ResultSetImpl(this, query.newResultSet()));
+        final HResultSet<HRecord> hResultSet = query.newResultSet();
+        final ResultSet resultSet = new ResultSetImpl(this, hResultSet);
+        this.setResultSet(resultSet);
         return this.getResultSet();
     }
 

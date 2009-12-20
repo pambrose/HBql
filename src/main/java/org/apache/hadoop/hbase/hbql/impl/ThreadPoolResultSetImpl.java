@@ -21,7 +21,6 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -39,6 +38,8 @@ import java.util.NoSuchElementException;
 public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
 
     private final List<ResultScanner> resultScannerList = Lists.newArrayList();
+    private ResultScanner currentResultScanner = null;
+    private Iterator<Result> currentResultIterator = null;
 
     ThreadPoolResultSetImpl(final Query<T> query) throws HBqlException {
         super(query);
@@ -46,6 +47,25 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
 
     private List<ResultScanner> getResultScannerList() {
         return this.resultScannerList;
+    }
+
+    protected ResultScanner getCurrentResultScanner() {
+        return this.currentResultScanner;
+    }
+
+    protected Iterator<Result> getCurrentResultIterator() {
+        return this.currentResultIterator;
+    }
+
+    protected void setCurrentResultScanner(final ResultScanner currentResultScanner) {
+        // First close previous ResultScanner before reassigning
+        closeResultScanner(getCurrentResultScanner(), true);
+        this.currentResultScanner = currentResultScanner;
+        getResultScannerList().add(this.getCurrentResultScanner());
+    }
+
+    protected void setCurrentResultIterator(final Iterator<Result> currentResultIterator) {
+        this.currentResultIterator = currentResultIterator;
     }
 
     public void close() {
@@ -74,60 +94,17 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
         try {
             return new ResultsIterator<T>(this.getWithArgs().getLimit()) {
 
-                private int maxVersions = 0;
-                private ResultScanner currentResultScanner = null;
-                private Iterator<Result> currentResultIterator = null;
-
-                private HTableWrapper tableWrapper = getHConnectionImpl().newHTableWrapper(getWithArgs(),
-                                                                                           getTableName());
-                private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
                 private final Iterator<RowRequest> rowRequestIterator = getQuery().getRowRequestList().iterator();
-                private AggregateRecord aggregateRecord = AggregateRecord.newAggregateRecord(getSelectStmt());
 
                 // Prime the iterator with the first value
                 private T nextObject = this.fetchNextObject();
-
-                private ExpressionTree getClientExpressionTree() {
-                    return this.clientExpressionTree;
-                }
 
                 private Iterator<RowRequest> getRowRequestIterator() {
                     return this.rowRequestIterator;
                 }
 
-                private HTableWrapper getHTableWrapper() {
-                    return this.tableWrapper;
-                }
-
-                private int getMaxVersions() {
-                    return this.maxVersions;
-                }
-
-                private void setMaxVersions(final int maxVersions) {
-                    this.maxVersions = maxVersions;
-                }
-
-                private ResultScanner getCurrentResultScanner() {
-                    return this.currentResultScanner;
-                }
-
-                private Iterator<Result> getCurrentResultIterator() {
-                    return this.currentResultIterator;
-                }
-
                 protected T getNextObject() {
                     return this.nextObject;
-                }
-
-                private void setCurrentResultScanner(final ResultScanner currentResultScanner) {
-                    // First close previous ResultScanner before reassigning
-                    closeResultScanner(this.getCurrentResultScanner(), true);
-                    this.currentResultScanner = currentResultScanner;
-                    getResultScannerList().add(this.getCurrentResultScanner());
-                }
-
-                private void setCurrentResultIterator(final Iterator<Result> currentResultIterator) {
-                    this.currentResultIterator = currentResultIterator;
                 }
 
                 @SuppressWarnings("unchecked")
@@ -135,14 +112,14 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
 
                     final ResultAccessor resultAccessor = getQuery().getSelectStmt().getResultAccessor();
 
-                    while (this.getCurrentResultIterator() != null || this.getRowRequestIterator().hasNext()) {
+                    while (getCurrentResultIterator() != null || this.getRowRequestIterator().hasNext()) {
 
-                        if (this.getCurrentResultIterator() == null)
-                            this.setCurrentResultIterator(getNextResultIterator());
+                        if (getCurrentResultIterator() == null)
+                            setCurrentResultIterator(getNextResultIterator());
 
-                        while (this.getCurrentResultIterator().hasNext()) {
+                        while (getCurrentResultIterator().hasNext()) {
 
-                            final Result result = this.getCurrentResultIterator().next();
+                            final Result result = getCurrentResultIterator().next();
 
                             try {
                                 if (getClientExpressionTree() != null
@@ -156,13 +133,13 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
                             incrementReturnedRecordCount();
 
                             if (getSelectStmt().isAnAggregateQuery()) {
-                                this.getAggregateRecord().applyValues(result);
+                                getAggregateRecord().applyValues(result);
                             }
                             else {
                                 final T val = (T)resultAccessor.newObject(getHConnectionImpl(),
                                                                           getSelectStmt(),
                                                                           getSelectStmt().getSelectElementList(),
-                                                                          this.getMaxVersions(),
+                                                                          getMaxVersions(),
                                                                           result);
 
                                 if (getListeners() != null)
@@ -173,15 +150,15 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
                             }
                         }
 
-                        this.setCurrentResultIterator(null);
+                        setCurrentResultIterator(null);
 
-                        closeResultScanner(this.getCurrentResultScanner(), true);
+                        closeResultScanner(getCurrentResultScanner(), true);
                     }
 
-                    if (getSelectStmt().isAnAggregateQuery() && this.getAggregateRecord() != null) {
+                    if (getSelectStmt().isAnAggregateQuery() && getAggregateRecord() != null) {
                         // Stash the value and then null it out for next time through
-                        final AggregateRecord retval = this.getAggregateRecord();
-                        this.setAggregateRecord(null);
+                        final AggregateRecord retval = getAggregateRecord();
+                        setAggregateRecord(null);
                         return (T)retval;
                     }
 
@@ -190,11 +167,11 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
 
                 private Iterator<Result> getNextResultIterator() throws HBqlException {
                     final RowRequest rowRequest = this.getRowRequestIterator().next();
-                    this.setMaxVersions(rowRequest.getMaxVersions());
-                    this.setCurrentResultScanner(rowRequest.getResultScanner(getSelectStmt().getMapping(),
-                                                                             getWithArgs(),
-                                                                             this.getHTableWrapper().getHTable()));
-                    return this.getCurrentResultScanner().iterator();
+                    setMaxVersions(rowRequest.getMaxVersions());
+                    setCurrentResultScanner(rowRequest.getResultScanner(getSelectStmt().getMapping(),
+                                                                        getWithArgs(),
+                                                                        getHTableWrapper().getHTable()));
+                    return getCurrentResultScanner().iterator();
                 }
 
                 protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
@@ -210,8 +187,8 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
                             }
 
                             try {
-                                if (this.getHTableWrapper() != null)
-                                    this.getHTableWrapper().getHTable().close();
+                                if (getHTableWrapper() != null)
+                                    getHTableWrapper().getHTable().close();
                             }
                             catch (IOException e) {
                                 // No op
@@ -220,19 +197,11 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
                         }
                         finally {
                             // release to table pool
-                            if (this.getHTableWrapper() != null)
-                                this.getHTableWrapper().releaseHTable();
-                            this.tableWrapper = null;
+                            if (getHTableWrapper() != null)
+                                getHTableWrapper().releaseHTable();
+                            setTableWrapper(null);
                         }
                     }
-                }
-
-                private void setAggregateRecord(final AggregateRecord aggregateRecord) {
-                    this.aggregateRecord = aggregateRecord;
-                }
-
-                private AggregateRecord getAggregateRecord() throws HBqlException {
-                    return this.aggregateRecord;
                 }
             };
         }

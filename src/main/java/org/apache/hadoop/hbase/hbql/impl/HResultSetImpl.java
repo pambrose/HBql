@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
@@ -31,7 +32,12 @@ import java.util.List;
 
 public abstract class HResultSetImpl<T> implements HResultSet<T> {
 
+    protected int maxVersions = 0;
+
     private final Query<T> query;
+    private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
+    private HTableWrapper tableWrapper = getHConnectionImpl().newHTableWrapper(getWithArgs(), getTableName());
+    private AggregateRecord aggregateRecord = AggregateRecord.newAggregateRecord(getSelectStmt());
 
     protected HResultSetImpl(final Query<T> query) throws HBqlException {
         this.query = query;
@@ -47,8 +53,36 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
         this.getQuery().getSelectStmt().determineIfAggregateQuery();
     }
 
+    protected void setAggregateRecord(final AggregateRecord aggregateRecord) {
+        this.aggregateRecord = aggregateRecord;
+    }
+
+    protected AggregateRecord getAggregateRecord() throws HBqlException {
+        return this.aggregateRecord;
+    }
+
+    protected int getMaxVersions() {
+        return this.maxVersions;
+    }
+
+    protected void setMaxVersions(final int maxVersions) {
+        this.maxVersions = maxVersions;
+    }
+
     protected Query<T> getQuery() {
         return this.query;
+    }
+
+    protected ExpressionTree getClientExpressionTree() {
+        return this.clientExpressionTree;
+    }
+
+    protected HTableWrapper getHTableWrapper() {
+        return this.tableWrapper;
+    }
+
+    protected void setTableWrapper(final HTableWrapper tableWrapper) {
+        this.tableWrapper = tableWrapper;
     }
 
     public void addQueryListener(QueryListener<T> listener) {
