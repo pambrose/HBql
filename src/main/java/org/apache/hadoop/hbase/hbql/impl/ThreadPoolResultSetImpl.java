@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.util.Lists;
+import org.apache.expreval.util.NullIterator;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -32,39 +33,44 @@ import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 
 public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
 
     private final List<ResultScanner> resultScannerList = Lists.newArrayList();
+    private final Iterator<RowRequest> rowRequestIterator;
     private ResultScanner currentResultScanner = null;
     private Iterator<Result> currentResultIterator = null;
 
     ThreadPoolResultSetImpl(final Query<T> query) throws HBqlException {
         super(query);
+        this.rowRequestIterator = getQuery().getRowRequestList().iterator();
+    }
+
+    protected Iterator<RowRequest> getRowRequestIterator() {
+        return this.rowRequestIterator;
     }
 
     private List<ResultScanner> getResultScannerList() {
         return this.resultScannerList;
     }
 
-    protected ResultScanner getCurrentResultScanner() {
+    private ResultScanner getCurrentResultScanner() {
         return this.currentResultScanner;
     }
 
-    protected Iterator<Result> getCurrentResultIterator() {
+    private Iterator<Result> getCurrentResultIterator() {
         return this.currentResultIterator;
     }
 
-    protected void setCurrentResultScanner(final ResultScanner currentResultScanner) {
+    private void setCurrentResultScanner(final ResultScanner currentResultScanner) {
         // First close previous ResultScanner before reassigning
         closeResultScanner(getCurrentResultScanner(), true);
         this.currentResultScanner = currentResultScanner;
         getResultScannerList().add(this.getCurrentResultScanner());
     }
 
-    protected void setCurrentResultIterator(final Iterator<Result> currentResultIterator) {
+    private void setCurrentResultIterator(final Iterator<Result> currentResultIterator) {
         this.currentResultIterator = currentResultIterator;
     }
 
@@ -94,25 +100,12 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
         try {
             return new ResultsIterator<T>(this.getWithArgs().getLimit()) {
 
-                private final Iterator<RowRequest> rowRequestIterator = getQuery().getRowRequestList().iterator();
-
-                // Prime the iterator with the first value
-                private T nextObject = this.fetchNextObject();
-
-                private Iterator<RowRequest> getRowRequestIterator() {
-                    return this.rowRequestIterator;
-                }
-
-                protected T getNextObject() {
-                    return this.nextObject;
-                }
-
                 @SuppressWarnings("unchecked")
                 protected T fetchNextObject() throws HBqlException {
 
                     final ResultAccessor resultAccessor = getQuery().getSelectStmt().getResultAccessor();
 
-                    while (getCurrentResultIterator() != null || this.getRowRequestIterator().hasNext()) {
+                    while (getCurrentResultIterator() != null || getRowRequestIterator().hasNext()) {
 
                         if (getCurrentResultIterator() == null)
                             setCurrentResultIterator(getNextResultIterator());
@@ -166,7 +159,7 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
                 }
 
                 private Iterator<Result> getNextResultIterator() throws HBqlException {
-                    final RowRequest rowRequest = this.getRowRequestIterator().next();
+                    final RowRequest rowRequest = getRowRequestIterator().next();
                     setMaxVersions(rowRequest.getMaxVersions());
                     setCurrentResultScanner(rowRequest.getResultScanner(getSelectStmt().getMapping(),
                                                                         getWithArgs(),
@@ -176,7 +169,7 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
 
                 protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
 
-                    this.nextObject = nextObject;
+                    this.setNextObject(nextObject);
 
                     // If the query is finished then clean up.
                     if (this.getNextObject() == null) {
@@ -207,21 +200,7 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
         }
         catch (HBqlException e) {
             e.printStackTrace();
+            return new NullIterator<T>();
         }
-
-        return new Iterator<T>() {
-
-            public boolean hasNext() {
-                return false;
-            }
-
-            public T next() {
-                throw new NoSuchElementException();
-            }
-
-            public void remove() {
-
-            }
-        };
     }
 }

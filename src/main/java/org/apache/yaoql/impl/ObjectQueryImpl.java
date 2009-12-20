@@ -65,19 +65,22 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
 
     public ExpressionTree getExpressionTree(final Collection<T> objects) throws HBqlException {
 
+        final ExpressionTree expressionTree;
+
         if (objects == null || objects.size() == 0) {
-            final ExpressionTree expressionTree = ExpressionTree.newExpressionTree(null, new BooleanLiteral(true));
+            expressionTree = ExpressionTree.newExpressionTree(null, new BooleanLiteral(true));
             expressionTree.setStatementContext(null);
             expressionTree.setAllowColumns(false);
-            return expressionTree;
+        }
+        else {
+            // Grab the first object to derive the mapping
+            final Object obj = objects.iterator().next();
+            final ReflectionMapping mapping = ReflectionMapping.getReflectionMapping(obj);
+            final StatementContext statementContext = new NonStatement(mapping, null);
+            expressionTree = ParserUtil.parseWhereExpression(this.getQuery(), statementContext);
+            this.applyParameters(expressionTree);
         }
 
-        // Grab the first object to derive the mapping
-        final Object obj = objects.iterator().next();
-        final ReflectionMapping mapping = ReflectionMapping.getReflectionMapping(obj);
-        final StatementContext statementContext = new NonStatement(mapping, null);
-        final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(this.getQuery(), statementContext);
-        this.applyParameters(expressionTree);
         return expressionTree;
     }
 

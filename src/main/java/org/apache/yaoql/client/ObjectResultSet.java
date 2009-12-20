@@ -22,22 +22,28 @@ package org.apache.yaoql.client;
 
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
+import org.apache.expreval.util.NullIterator;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.ResultsIterator;
 import org.apache.yaoql.impl.ObjectQueryImpl;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 public class ObjectResultSet<T> implements Iterable<T> {
 
-    final ObjectQueryImpl<T> objectQuery;
-    final Collection<T> objects;
+    private final ObjectQueryImpl<T> objectQuery;
+    private final Collection<T> objects;
+    private final ExpressionTree expressionTree;
+    private Iterator<T> objectIter = null;
 
-    public ObjectResultSet(final ObjectQueryImpl<T> objectQuery, final Collection<T> objects) {
+    public ObjectResultSet(final ObjectQueryImpl<T> objectQuery, final Collection<T> objects) throws HBqlException {
         this.objectQuery = objectQuery;
         this.objects = objects;
+
+        // In theory, this should be done only once and in ObjectQuery, but
+        // since it requires the objects to get the mapping, I do it here
+        this.expressionTree = getObjectQuery().getExpressionTree(getObjects());
     }
 
     private ObjectQueryImpl<T> getObjectQuery() {
@@ -48,41 +54,32 @@ public class ObjectResultSet<T> implements Iterable<T> {
         return this.objects;
     }
 
+    private Iterator<T> getObjectIter() {
+        return this.objectIter;
+    }
+
+    private void setObjectIter(final Iterator<T> objectIter) {
+        this.objectIter = objectIter;
+    }
+
+    private ExpressionTree getExpressionTree() {
+        return this.expressionTree;
+    }
+
     public Iterator<T> iterator() {
 
         try {
             return new ResultsIterator<T>(-1L) {
-
-                // In theory, this should be done only once and in ObjectQuery, but
-                // since it requires the objects to get the mapping, I do it here
-                final ExpressionTree expressionTree = getObjectQuery().getExpressionTree(getObjects());
-
-                private Iterator<T> objectIter = null;
-
-                // Prime the iterator with the first value
-                private T nextObject = fetchNextObject();
-
-                private Iterator<T> getObjectIter() {
-                    return this.objectIter;
-                }
-
-                private void setObjectIter(final Iterator<T> objectIter) {
-                    this.objectIter = objectIter;
-                }
-
-                private ExpressionTree getExpressionTree() {
-                    return this.expressionTree;
-                }
 
                 protected T fetchNextObject() throws HBqlException {
 
                     if (getObjectIter() == null)
                         setObjectIter(getObjects().iterator());
 
-                    while (this.getObjectIter().hasNext()) {
-                        final T val = this.getObjectIter().next();
+                    while (getObjectIter().hasNext()) {
+                        final T val = getObjectIter().next();
                         try {
-                            if (this.getExpressionTree() == null || this.getExpressionTree().evaluate(null, val))
+                            if (getExpressionTree() == null || getExpressionTree().evaluate(null, val))
                                 return val;
                         }
                         catch (ResultMissingColumnException e) {
@@ -93,32 +90,14 @@ public class ObjectResultSet<T> implements Iterable<T> {
                     return null;
                 }
 
-                protected T getNextObject() {
-                    return this.nextObject;
-                }
-
                 protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
-                    this.nextObject = nextObject;
+                    this.setNextObject(nextObject);
                 }
             };
         }
         catch (HBqlException e) {
             e.printStackTrace();
+            return new NullIterator<T>();
         }
-
-        return new Iterator<T>() {
-
-            public boolean hasNext() {
-                return false;
-            }
-
-            public T next() {
-                throw new NoSuchElementException();
-            }
-
-            public void remove() {
-
-            }
-        };
     }
 }

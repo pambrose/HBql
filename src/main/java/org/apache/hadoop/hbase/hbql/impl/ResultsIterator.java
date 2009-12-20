@@ -30,16 +30,26 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
     private long returnedRecordCount = 0L;
 
     private final long returnedRecordLimit;
+    private T nextObject = null;
 
-    protected ResultsIterator(final long returnedRecordLimit) {
+    protected ResultsIterator(final long returnedRecordLimit) throws HBqlException {
         this.returnedRecordLimit = returnedRecordLimit;
+
+        // Prime the iterator with the first value
+        this.nextObject = this.fetchNextObject();
     }
 
     protected abstract T fetchNextObject() throws HBqlException;
 
-    protected abstract T getNextObject();
-
     protected abstract void setNextObject(final T nextObject, final boolean fromExceptionCatch);
+
+    protected T getNextObject() {
+        return this.nextObject;
+    }
+
+    protected void setNextObject(final T nextObject) {
+        this.nextObject = nextObject;
+    }
 
     public T next() {
 

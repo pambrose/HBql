@@ -35,12 +35,18 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
     protected int maxVersions = 0;
 
     private final Query<T> query;
-    private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
-    private HTableWrapper tableWrapper = getHConnectionImpl().newHTableWrapper(getWithArgs(), getTableName());
-    private AggregateRecord aggregateRecord = AggregateRecord.newAggregateRecord(getSelectStmt());
+    private final ExpressionTree clientExpressionTree;
+    private HTableWrapper tableWrapper;
+    private AggregateRecord aggregateRecord;
 
     protected HResultSetImpl(final Query<T> query) throws HBqlException {
         this.query = query;
+
+        this.clientExpressionTree = getWithArgs().getClientExpressionTree();
+        this.tableWrapper = getHConnectionImpl().newHTableWrapper(getWithArgs(), getTableName());
+
+        this.getQuery().getSelectStmt().determineIfAggregateQuery();
+        this.aggregateRecord = AggregateRecord.newAggregateRecord(getSelectStmt());
 
         // Set it once per evaluation
         DateLiteral.resetNow();
@@ -49,8 +55,6 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
             for (final QueryListener<T> listener : this.getListeners())
                 listener.onQueryInit();
         }
-
-        this.getQuery().getSelectStmt().determineIfAggregateQuery();
     }
 
     protected void setAggregateRecord(final AggregateRecord aggregateRecord) {
