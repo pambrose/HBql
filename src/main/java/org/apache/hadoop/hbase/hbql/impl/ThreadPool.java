@@ -22,72 +22,32 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ThreadPool {
+public class ThreadPool extends GenericElementPool<ExecutorService> {
 
-    private final String name;
-    private final int maxThreadPoolSize;
     private final int numberOfThreads;
-    private volatile int count = 0;
-
-    private final BlockingQueue<ExecutorService> executorPool;
 
     public ThreadPool(final String name, final int maxThreadPoolSize, final int numberOfThreads) {
-        this.name = name;
-        this.maxThreadPoolSize = maxThreadPoolSize;
+        super(name, maxThreadPoolSize);
         this.numberOfThreads = numberOfThreads;
-
-        this.executorPool = new ArrayBlockingQueue<ExecutorService>(this.getMaxThreadPoolSize());
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    private BlockingQueue<ExecutorService> getExecutorPool() {
-        return this.executorPool;
-    }
-
-    private int getMaxThreadPoolSize() {
-        return maxThreadPoolSize;
     }
 
     private int getNumberOfThreads() {
         return numberOfThreads;
     }
 
-    private int getCount() {
-        return this.count;
+    protected ExecutorService getNewElement() throws HBqlException {
+        return Executors.newFixedThreadPool(this.getNumberOfThreads());
     }
 
-    private void addExecutorToPool() throws HBqlException {
-        if (this.getCount() < this.getMaxThreadPoolSize()) {
-            final ExecutorService executor = Executors.newFixedThreadPool(this.getNumberOfThreads());
-            this.getExecutorPool().add(executor);
-            this.count++;
-        }
+    public Executor getExecutorService() throws HBqlException {
+        return this.getElement();
     }
 
-    public synchronized Executor getExecutor() throws HBqlException {
-
-        //  Grow the pool as necessary, rather than front-loading it.
-        if (this.getExecutorPool().size() == 0)
-            this.addExecutorToPool();
-
-        try {
-            return this.getExecutorPool().take();
-        }
-        catch (InterruptedException e) {
-            throw new HBqlException("InterruptedException: " + e.getMessage());
-        }
-    }
-
-    public void release(final ExecutorService executor) {
-        this.getExecutorPool().add(executor);
+    public void releaseExecutorService(final ExecutorService executor) {
+        this.release(executor);
     }
 }

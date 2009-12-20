@@ -247,7 +247,7 @@ public class HConnectionImpl implements HConnection {
 
     public void close() throws HBqlException {
         if (this.isPooled())
-            this.getConnectionPool().release(this);
+            this.getConnectionPool().releaseConnection(this);
         else
             this.closed = true;
     }

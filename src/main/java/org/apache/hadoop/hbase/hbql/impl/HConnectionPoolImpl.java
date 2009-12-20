@@ -25,83 +25,41 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionPool;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+public class HConnectionPoolImpl extends GenericElementPool<HConnection> implements HConnectionPool {
 
-public class HConnectionPoolImpl implements HConnectionPool {
-
-    private final String connectionPoolName;
     private final HBaseConfiguration config;
-    private final BlockingQueue<HConnection> connectionPool;
-    private final int maxConnectionPoolSize;
     private final int maxReferencesPerTable;
-    private volatile int count = 0;
-
 
     public HConnectionPoolImpl(final int initConnectionPoolSize,
                                final int maxConnectionPoolSize,
                                final String connectionPoolName,
                                final HBaseConfiguration config,
                                final int maxPoolReferencesPerTablePerConnection) throws HBqlException {
-        this.connectionPoolName = connectionPoolName;
+        super(connectionPoolName, maxConnectionPoolSize);
         this.config = (config == null) ? new HBaseConfiguration() : config;
-        this.maxConnectionPoolSize = maxConnectionPoolSize;
         this.maxReferencesPerTable = maxPoolReferencesPerTablePerConnection;
-        this.connectionPool = new ArrayBlockingQueue<HConnection>(this.getMaxConnectionPoolSize());
 
         for (int i = 0; i < initConnectionPoolSize; i++)
-            this.addConnectionToPool();
-    }
-
-    public String getName() {
-        return this.connectionPoolName;
+            this.addElementToPool();
     }
 
     public HBaseConfiguration getConfig() {
         return this.config;
     }
 
-    private BlockingQueue<HConnection> getConnectionPool() {
-        return this.connectionPool;
-    }
-
-    private int getMaxConnectionPoolSize() {
-        return this.maxConnectionPoolSize;
-    }
-
     public int getMaxReferencesPerTable() {
         return this.maxReferencesPerTable;
     }
 
-    private int getCount() {
-        return this.count;
+    protected HConnection getNewElement() throws HBqlException {
+        return new HConnectionImpl(this.getConfig(), this, this.getMaxReferencesPerTable());
     }
 
-    private void addConnectionToPool() throws HBqlException {
-        if (this.getCount() < this.getMaxConnectionPoolSize()) {
-            final HConnectionImpl connection = new HConnectionImpl(this.getConfig(),
-                                                                   this,
-                                                                   this.getMaxReferencesPerTable());
-            this.getConnectionPool().add(connection);
-            this.count++;
-        }
+    public HConnection getConnection() throws HBqlException {
+        return this.getElement();
     }
 
-    public synchronized HConnection getConnection() throws HBqlException {
-
-        //  Grow the pool as necessary, rather than front-loading it.
-        if (this.getConnectionPool().size() == 0)
-            this.addConnectionToPool();
-
-        try {
-            return this.getConnectionPool().take();
-        }
-        catch (InterruptedException e) {
-            throw new HBqlException("InterruptedException: " + e.getMessage());
-        }
-    }
-
-    public void release(final HConnection connection) {
-        this.getConnectionPool().add(connection);
+    public void releaseConnection(final HConnection connection) {
+        this.release(connection);
     }
 }
