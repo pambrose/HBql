@@ -45,6 +45,18 @@ public class ThreadPoolManager {
         return threadPool;
     }
 
+    public static boolean dropThreadPool(final String name) {
+
+        if (name != null && name.length() > 0) {
+            if (getThreadPoolMap().containsKey(name)) {
+                getThreadPoolMap().remove(name);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static ThreadPool getThreadPool(final String name) {
         return ThreadPoolManager.getThreadPoolMap().get(name);
     }

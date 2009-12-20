@@ -20,31 +20,20 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.literal.DateLiteral;
-import org.apache.expreval.util.Lists;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
-import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
-import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
-public class HResultSetImpl<T> implements HResultSet<T> {
+public abstract class HResultSetImpl<T> implements HResultSet<T> {
 
-    private final List<ResultScanner> resultScannerList = Lists.newArrayList();
     private final Query<T> query;
 
-    HResultSetImpl(final Query<T> query) throws HBqlException {
+    protected HResultSetImpl(final Query<T> query) throws HBqlException {
         this.query = query;
 
         // Set it once per evaluation
@@ -58,16 +47,8 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         this.getQuery().getSelectStmt().determineIfAggregateQuery();
     }
 
-    private HConnectionImpl getHConnectionImpl() {
-        return this.getQuery().getHConnectionImpl();
-    }
-
-    private Query<T> getQuery() {
+    protected Query<T> getQuery() {
         return this.query;
-    }
-
-    private List<ResultScanner> getResultScannerList() {
-        return this.resultScannerList;
     }
 
     public void addQueryListener(QueryListener<T> listener) {
@@ -78,232 +59,23 @@ public class HResultSetImpl<T> implements HResultSet<T> {
         this.getQuery().clearListeners();
     }
 
-    private SelectStatement getSelectStmt() {
+    protected HConnectionImpl getHConnectionImpl() {
+        return this.getQuery().getHConnectionImpl();
+    }
+
+    protected SelectStatement getSelectStmt() {
         return this.getQuery().getSelectStmt();
     }
 
-    private String getTableName() {
+    protected String getTableName() {
         return this.getSelectStmt().getMapping().getTableName();
     }
 
-    private WithArgs getWithArgs() {
+    protected WithArgs getWithArgs() {
         return this.getSelectStmt().getWithArgs();
     }
 
-    private List<QueryListener<T>> getListeners() {
+    protected List<QueryListener<T>> getListeners() {
         return this.getQuery().getListeners();
     }
-
-    public void close() {
-
-        for (final ResultScanner scanner : this.getResultScannerList())
-            closeResultScanner(scanner, false);
-
-        this.getResultScannerList().clear();
-    }
-
-    private void closeResultScanner(final ResultScanner scanner, final boolean removeFromList) {
-
-        if (scanner != null) {
-            try {
-                scanner.close();
-            }
-            catch (Exception e) {
-                // Do nothing
-            }
-
-            if (removeFromList)
-                getResultScannerList().remove(scanner);
-        }
-    }
-
-    public Iterator<T> iterator() {
-
-        try {
-            return new ResultsIterator<T>(this.getWithArgs().getLimit()) {
-
-                private HTableWrapper tableWrapper = getHConnectionImpl().newHTableWrapper(getWithArgs(),
-                                                                                           getTableName());
-                private final ExpressionTree clientExpressionTree = getWithArgs().getClientExpressionTree();
-                private final Iterator<RowRequest> rowRequestIterator = getQuery().getRowRequestList().iterator();
-
-                private int maxVersions = 0;
-                private ResultScanner currentResultScanner = null;
-                private Iterator<Result> currentResultIterator = null;
-
-                private AggregateRecord aggregateRecord = AggregateRecord.newAggregateRecord(getSelectStmt());
-
-                // Prime the iterator with the first value
-                private T nextObject = fetchNextObject();
-
-                private ExpressionTree getClientExpressionTree() {
-                    return this.clientExpressionTree;
-                }
-
-                private Iterator<RowRequest> getRowRequestIterator() {
-                    return this.rowRequestIterator;
-                }
-
-                private HTableWrapper getHTableWrapper() {
-                    return this.tableWrapper;
-                }
-
-                private int getMaxVersions() {
-                    return this.maxVersions;
-                }
-
-                private void setMaxVersions(final int maxVersions) {
-                    this.maxVersions = maxVersions;
-                }
-
-                private ResultScanner getCurrentResultScanner() {
-                    return this.currentResultScanner;
-                }
-
-                private Iterator<Result> getCurrentResultIterator() {
-                    return this.currentResultIterator;
-                }
-
-                protected T getNextObject() {
-                    return this.nextObject;
-                }
-
-                private void setCurrentResultScanner(final ResultScanner currentResultScanner) {
-                    // First close previous ResultScanner before reassigning
-                    closeResultScanner(this.getCurrentResultScanner(), true);
-                    this.currentResultScanner = currentResultScanner;
-                    getResultScannerList().add(this.getCurrentResultScanner());
-                }
-
-                private void setCurrentResultIterator(final Iterator<Result> currentResultIterator) {
-                    this.currentResultIterator = currentResultIterator;
-                }
-
-                @SuppressWarnings("unchecked")
-                protected T fetchNextObject() throws HBqlException {
-
-                    final ResultAccessor resultAccessor = getQuery().getSelectStmt().getResultAccessor();
-
-                    while (this.getCurrentResultIterator() != null || this.getRowRequestIterator().hasNext()) {
-
-                        if (this.getCurrentResultIterator() == null)
-                            this.setCurrentResultIterator(getNextResultIterator());
-
-                        while (this.getCurrentResultIterator().hasNext()) {
-
-                            final Result result = this.getCurrentResultIterator().next();
-
-                            try {
-                                if (getClientExpressionTree() != null
-                                    && !getClientExpressionTree().evaluate(getHConnectionImpl(), result))
-                                    continue;
-                            }
-                            catch (ResultMissingColumnException e) {
-                                continue;
-                            }
-
-                            incrementReturnedRecordCount();
-
-                            if (getSelectStmt().isAnAggregateQuery()) {
-                                this.getAggregateRecord().applyValues(result);
-                            }
-                            else {
-                                final T val = (T)resultAccessor.newObject(getHConnectionImpl(),
-                                                                          getSelectStmt(),
-                                                                          getSelectStmt().getSelectElementList(),
-                                                                          this.getMaxVersions(),
-                                                                          result);
-
-                                if (getListeners() != null)
-                                    for (final QueryListener<T> listener : getListeners())
-                                        listener.onEachRow(val);
-
-                                return val;
-                            }
-                        }
-
-                        this.setCurrentResultIterator(null);
-
-                        closeResultScanner(this.getCurrentResultScanner(), true);
-                    }
-
-                    if (getSelectStmt().isAnAggregateQuery() && this.getAggregateRecord() != null) {
-                        // Stash the value and then null it out for next time through
-                        final AggregateRecord retval = this.getAggregateRecord();
-                        this.setAggregateRecord(null);
-                        return (T)retval;
-                    }
-
-                    return null;
-                }
-
-                private Iterator<Result> getNextResultIterator() throws HBqlException {
-                    final RowRequest rowRequest = this.getRowRequestIterator().next();
-                    this.setMaxVersions(rowRequest.getMaxVersions());
-                    this.setCurrentResultScanner(rowRequest.getResultScanner(getSelectStmt().getMapping(),
-                                                                             getWithArgs(),
-                                                                             this.getHTableWrapper().getHTable()));
-                    return this.getCurrentResultScanner().iterator();
-                }
-
-                protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
-
-                    this.nextObject = nextObject;
-
-                    // If the query is finished then clean up.
-                    if (this.getNextObject() == null) {
-                        try {
-                            if (!fromExceptionCatch && getListeners() != null) {
-                                for (final QueryListener<T> listener : getListeners())
-                                    listener.onQueryComplete();
-                            }
-
-                            try {
-                                if (this.getHTableWrapper() != null)
-                                    this.getHTableWrapper().getHTable().close();
-                            }
-                            catch (IOException e) {
-                                // No op
-                                e.printStackTrace();
-                            }
-                        }
-                        finally {
-                            // release to table pool
-                            if (this.getHTableWrapper() != null)
-                                this.getHTableWrapper().releaseHTable();
-                            this.tableWrapper = null;
-                        }
-                    }
-                }
-
-                private void setAggregateRecord(final AggregateRecord aggregateRecord) {
-                    this.aggregateRecord = aggregateRecord;
-                }
-
-                private AggregateRecord getAggregateRecord() throws HBqlException {
-                    return this.aggregateRecord;
-                }
-            };
-        }
-        catch (HBqlException e) {
-            e.printStackTrace();
-        }
-
-        return new Iterator<T>() {
-
-            public boolean hasNext() {
-                return false;
-            }
-
-            public T next() {
-                throw new NoSuchElementException();
-            }
-
-            public void remove() {
-
-            }
-        };
-    }
 }
-
-

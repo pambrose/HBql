@@ -32,25 +32,29 @@ public class KeyRangeArgs implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private final String poolName;
     private final List<KeyRange> keyRangeList;
     private final List<NamedParameter> namedParamList = Lists.newArrayList();
 
     public KeyRangeArgs() {
-        this(null);
+        this(null, null);
     }
 
-    public KeyRangeArgs(final List<KeyRange> keyRangeList) {
-        if (keyRangeList == null) {
-            this.keyRangeList = Lists.newArrayList();
-            this.getKeyRangeList().add(KeyRange.newAllRange());
-        }
-        else {
-            this.keyRangeList = keyRangeList;
-        }
+    public KeyRangeArgs(final List<KeyRange> keyRangeList, final String poolName) {
+        this.poolName = poolName;
+        this.keyRangeList = (keyRangeList == null) ? Lists.newArrayList(KeyRange.newAllRange()) : keyRangeList;
     }
 
     public List<KeyRange> getKeyRangeList() {
         return this.keyRangeList;
+    }
+
+    public String getThreadPoolName() {
+        return this.poolName;
+    }
+
+    public boolean useThreadPool() {
+        return this.getThreadPoolName() != null && this.getThreadPoolName().length() > 0;
     }
 
     public void setStatementContext(final StatementContext statementContext) throws HBqlException {

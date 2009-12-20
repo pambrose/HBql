@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.Util;
+import org.apache.hadoop.hbase.hbql.impl.ThreadPoolManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -159,15 +160,16 @@ public class ServerFilterTest extends TestSupport {
         showValues(q1, 3);
     }
 
-    @Test
-
+    //@Test
     public void simpleSelect9() throws HBqlException {
 
-        HStatement stmt = connection.createStatement();
-        System.out.println(stmt.execute("CREATE THREAD POOL threadpool1 (size: 5, threads: 10)"));
+        // HStatement stmt = connection.createStatement();
+        // System.out.println(stmt.execute("CREATE THREAD POOL threadpool1 (size: 5, threads: 10)"));
+
+        ThreadPoolManager.newThreadPool("test", 2, 10);
 
         final String q1 = "select * from tab3 WITH "
-                          + "KEYS '0000000001', '0000000002', '0000000003' POOL threadPool1 ";
+                          + "KEYS '0000000001', '0000000002', '0000000003' THREAD POOL threadPool1 ";
         //+ "SERVER FILTER where val1+'ss' BETWEEN '12ss' AND '14ss' ";
         showValues(q1, 3);
     }

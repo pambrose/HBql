@@ -136,7 +136,7 @@ public class WithArgs implements Serializable {
         this.multipleSetValues.add(str);
     }
 
-    private KeyRangeArgs getKeyRangeArgs() {
+    public KeyRangeArgs getKeyRangeArgs() {
         return this.keyRangeArgs;
     }
 

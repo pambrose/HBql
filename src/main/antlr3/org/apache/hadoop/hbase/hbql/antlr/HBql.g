@@ -135,6 +135,8 @@ options {backtrack=true;}
 					 		{retval = new DescribeIndexForMappingStatement($t.text, $t2.text);}
 	| keyDESCRIBE keyINDEX t=simpleId keyON keyTABLE t2=simpleId
 					 		{retval = new DescribeIndexForTableStatement($t.text, $t2.text);}
+	//| keyCREATE keyTHREAD keyPOOL t=simpleId LPAREN fd=familyDefinitionList RPAREN p=pred?
+	//						{retval = new CreateTableStatement($p.retval, $t.text, $fd.retval);}
 	;
 
 indexColumnList returns [List<String> retval]
@@ -251,10 +253,9 @@ options {memoize=true;}
 	| keyINDEX keyFILTER keyWHERE s=serverFilter	{withArgs.setServerExpressionTree($s.retval);}
 	| keyCLIENT keyFILTER keyWHERE c=clientFilter	{withArgs.setClientExpressionTree($c.retval);}
 	;
-	
 
 keysRangeArgs returns [KeyRangeArgs retval]
-	: k=rangeList					{retval = new KeyRangeArgs($k.retval);}	
+	: k=rangeList (keyTHREAD? keyPOOL p=simpleId)?	{retval = new KeyRangeArgs($k.retval, $p.text);}	
 	| keyALL					{retval = new KeyRangeArgs();}	
 	;
 
@@ -607,6 +608,7 @@ keyNULL                         : {isKeyword(input, "NULL")}? ID;
 keyON                           : {isKeyword(input, "ON")}? ID;
 keyOR                           : {isKeyword(input, "OR")}? ID;
 keyPARSE                        : {isKeyword(input, "PARSE")}? ID;
+keyPOOL                         : {isKeyword(input, "POOL")}? ID;
 keyRANGE                        : {isKeyword(input, "RANGE")}? ID;
 keySCANNER_CACHE_SIZE           : {isKeyword(input, "SCANNER_CACHE_SIZE")}? ID;
 keySELECT                       : {isKeyword(input, "SELECT")}? ID;
@@ -617,6 +619,7 @@ keyTABLE                        : {isKeyword(input, "TABLE")}? ID;
 keyTABLES                       : {isKeyword(input, "TABLES")}? ID;
 keyTEMP                         : {isKeyword(input, "TEMP")}? ID;
 keyTHEN                         : {isKeyword(input, "THEN")}? ID;
+keyTHREAD                       : {isKeyword(input, "THREAD")}? ID;
 keyTIMESTAMP                    : {isKeyword(input, "TIMESTAMP")}? ID;
 keyTO                           : {isKeyword(input, "TO")}? ID;
 keyTRUE                         : {isKeyword(input, "TRUE")}? ID;

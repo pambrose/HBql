@@ -70,6 +70,10 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
         return this.getReturnedRecordLimit() > 0 && this.getReturnedRecordCount() >= this.getReturnedRecordLimit();
     }
 
+    private long getReturnedRecordLimit() {
+        return this.returnedRecordLimit;
+    }
+
     private long getReturnedRecordCount() {
         return this.returnedRecordCount;
     }
@@ -83,9 +87,5 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
                 this.next();
             }
         }
-    }
-
-    private long getReturnedRecordLimit() {
-        return this.returnedRecordLimit;
     }
 }
