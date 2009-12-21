@@ -160,13 +160,13 @@ public class ServerFilterTest extends TestSupport {
         showValues(q1, 3);
     }
 
-    //@Test
+    @Test
     public void simpleSelect9() throws HBqlException {
 
         // HStatement stmt = connection.createStatement();
         // System.out.println(stmt.execute("CREATE THREAD POOL threadpool1 (size: 5, threads: 10)"));
 
-        ThreadPoolManager.newThreadPool("test", 2, 10);
+        ThreadPoolManager.newThreadPool("threadPool1", 2, 10);
 
         final String q1 = "select * from tab3 WITH "
                           + "KEYS '0000000001', '0000000002', '0000000003' THREAD POOL threadPool1 ";

@@ -36,12 +36,14 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
         this.returnedRecordLimit = returnedRecordLimit;
 
         // Prime the iterator with the first value
-        this.nextObject = this.fetchNextObject();
+        this.setNextObject(this.fetchNextObject());
     }
 
     protected abstract T fetchNextObject() throws HBqlException;
 
     protected abstract void setNextObject(final T nextObject, final boolean fromExceptionCatch);
+
+    protected abstract boolean moreResultsPending();
 
     protected T getNextObject() {
         return this.nextObject;

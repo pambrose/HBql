@@ -36,4 +36,8 @@ public class HBqlException extends SQLException {
     public HBqlException(final IOException e) {
         super(e.getClass().getSimpleName() + ": " + e.getMessage());
     }
+
+    public HBqlException(final Exception e) {
+        super(e.getClass().getSimpleName() + ": " + e.getMessage());
+    }
 }

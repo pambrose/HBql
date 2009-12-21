@@ -25,14 +25,14 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public abstract class GenericElementPool<T> {
+public abstract class ElementPool<T> {
 
     private final String name;
     private final int maxPoolSize;
     private final BlockingQueue<T> elementPool;
     private volatile int count = 0;
 
-    public GenericElementPool(final String name, final int maxPoolSize) {
+    public ElementPool(final String name, final int maxPoolSize) {
         this.name = name;
         this.maxPoolSize = maxPoolSize;
         this.elementPool = new ArrayBlockingQueue<T>(this.getMaxPoolSize());
@@ -54,11 +54,11 @@ public abstract class GenericElementPool<T> {
         return this.count;
     }
 
-    protected abstract T getNewElement() throws HBqlException;
+    protected abstract T newElement() throws HBqlException;
 
     protected void addElementToPool() throws HBqlException {
         if (this.getCount() < this.getMaxPoolSize()) {
-            final T connection = this.getNewElement();
+            final T connection = this.newElement();
             this.getElementPool().add(connection);
             this.count++;
         }

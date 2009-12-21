@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionPool;
 
-public class HConnectionPoolImpl extends GenericElementPool<HConnection> implements HConnectionPool {
+public class HConnectionPoolImpl extends ElementPool<HConnection> implements HConnectionPool {
 
     private final HBaseConfiguration config;
     private final int maxReferencesPerTable;
@@ -51,7 +51,7 @@ public class HConnectionPoolImpl extends GenericElementPool<HConnection> impleme
         return this.maxReferencesPerTable;
     }
 
-    protected HConnection getNewElement() throws HBqlException {
+    protected HConnection newElement() throws HBqlException {
         return new HConnectionImpl(this.getConfig(), this, this.getMaxReferencesPerTable());
     }
 

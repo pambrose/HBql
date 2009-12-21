@@ -76,7 +76,6 @@ public class SingleThreadedResultSetImpl<T> extends HResultSetImpl<T> {
     public void close() {
         for (final ResultScanner scanner : this.getResultScannerList())
             closeResultScanner(scanner, false);
-
         this.getResultScannerList().clear();
     }
 
@@ -104,7 +103,7 @@ public class SingleThreadedResultSetImpl<T> extends HResultSetImpl<T> {
 
                     final ResultAccessor resultAccessor = getQuery().getSelectStmt().getResultAccessor();
 
-                    while (getCurrentResultIterator() != null || getRowRequestIterator().hasNext()) {
+                    while (getCurrentResultIterator() != null || moreResultsPending()) {
 
                         if (getCurrentResultIterator() == null)
                             setCurrentResultIterator(getNextResultIterator());
@@ -155,6 +154,10 @@ public class SingleThreadedResultSetImpl<T> extends HResultSetImpl<T> {
                     }
 
                     return null;
+                }
+
+                protected boolean moreResultsPending() {
+                    return getRowRequestIterator().hasNext();
                 }
 
                 private Iterator<Result> getNextResultIterator() throws HBqlException {

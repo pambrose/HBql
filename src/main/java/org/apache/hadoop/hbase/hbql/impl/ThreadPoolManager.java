@@ -57,8 +57,11 @@ public class ThreadPoolManager {
         return false;
     }
 
-    public static ThreadPool getThreadPool(final String name) {
-        return ThreadPoolManager.getThreadPoolMap().get(name);
+    public static ThreadPool getThreadPool(final String poolName) throws HBqlException {
+        if (!ThreadPoolManager.getThreadPoolMap().containsKey(poolName))
+            throw new HBqlException("Missing thread pool: " + poolName);
+
+        return ThreadPoolManager.getThreadPoolMap().get(poolName);
     }
 
     private static Map<String, ThreadPool> getThreadPoolMap() {

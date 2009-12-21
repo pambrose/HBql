@@ -93,6 +93,10 @@ public class ObjectResultSet<T> implements Iterable<T> {
                 protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
                     this.setNextObject(nextObject);
                 }
+
+                protected boolean moreResultsPending() {
+                    return false;
+                }
             };
         }
         catch (HBqlException e) {

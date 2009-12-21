@@ -33,26 +33,74 @@ import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
 
+    private final BlockingQueue<Future<ResultScanner>> futureQueue = new LinkedBlockingQueue<Future<ResultScanner>>();
+    private final ExecutorCompletionService<ResultScanner> execCompletionService;
     private final List<ResultScanner> resultScannerList = Lists.newArrayList();
-    private final Iterator<RowRequest> rowRequestIterator;
+    private final ThreadPool threadPool;
+
     private ResultScanner currentResultScanner = null;
     private Iterator<Result> currentResultIterator = null;
 
+    private final List<Future<ResultScanner>> futureList = Lists.newArrayList();
+
     ThreadPoolResultSetImpl(final Query<T> query) throws HBqlException {
         super(query);
-        this.rowRequestIterator = getQuery().getRowRequestList().iterator();
+
+        // This may block waiting for a ThreadPool to become available
+        this.threadPool = ThreadPoolManager.getThreadPool(getThreadPoolName());
+
+        final ExecutorService executorService = this.getThreadPool().getExecutorService();
+        this.execCompletionService = new ExecutorCompletionService<ResultScanner>(executorService, futureQueue);
+
+        // Submit work to executor completion service
+        for (final RowRequest rowRequest : this.getQuery().getRowRequestList()) {
+            final Callable<ResultScanner> job = new Callable<ResultScanner>() {
+                public ResultScanner call() {
+                    try {
+                        setMaxVersions(rowRequest.getMaxVersions());
+                        return rowRequest.getResultScanner(getSelectStmt().getMapping(),
+                                                           getWithArgs(),
+                                                           getHTableWrapper().getHTable());
+                    }
+                    catch (HBqlException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+            };
+
+            this.getFutureList().add(this.getExecCompletionService().submit(job));
+        }
     }
 
-    protected Iterator<RowRequest> getRowRequestIterator() {
-        return this.rowRequestIterator;
+    private ExecutorCompletionService<ResultScanner> getExecCompletionService() {
+        return this.execCompletionService;
+    }
+
+    private List<Future<ResultScanner>> getFutureList() {
+        return this.futureList;
+    }
+
+    private ThreadPool getThreadPool() {
+        return this.threadPool;
     }
 
     private List<ResultScanner> getResultScannerList() {
         return this.resultScannerList;
+    }
+
+    private String getThreadPoolName() {
+        return this.getQuery().getSelectStmt().getWithArgs().getKeyRangeArgs().getThreadPoolName();
     }
 
     private ResultScanner getCurrentResultScanner() {
@@ -65,9 +113,9 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
 
     private void setCurrentResultScanner(final ResultScanner currentResultScanner) {
         // First close previous ResultScanner before reassigning
-        closeResultScanner(getCurrentResultScanner(), true);
+        closeResultScanner(this.getCurrentResultScanner(), true);
         this.currentResultScanner = currentResultScanner;
-        getResultScannerList().add(this.getCurrentResultScanner());
+        this.getResultScannerList().add(this.getCurrentResultScanner());
     }
 
     private void setCurrentResultIterator(final Iterator<Result> currentResultIterator) {
@@ -77,7 +125,6 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
     public void close() {
         for (final ResultScanner scanner : this.getResultScannerList())
             closeResultScanner(scanner, false);
-
         this.getResultScannerList().clear();
     }
 
@@ -105,7 +152,7 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
 
                     final ResultAccessor resultAccessor = getQuery().getSelectStmt().getResultAccessor();
 
-                    while (getCurrentResultIterator() != null || getRowRequestIterator().hasNext()) {
+                    while (getCurrentResultIterator() != null || moreResultsPending()) {
 
                         if (getCurrentResultIterator() == null)
                             setCurrentResultIterator(getNextResultIterator());
@@ -144,7 +191,6 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
                         }
 
                         setCurrentResultIterator(null);
-
                         closeResultScanner(getCurrentResultScanner(), true);
                     }
 
@@ -158,13 +204,33 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
                     return null;
                 }
 
+                protected boolean moreResultsPending() {
+
+                    // See if results are waiting to be processed
+                    if (futureQueue.size() > 0)
+                        return true;
+
+                    // See if work is still taking place.
+                    for (final Future<ResultScanner> future : getFutureList())
+                        if (!future.isDone())
+                            return true;
+
+                    return false;
+                }
+
                 private Iterator<Result> getNextResultIterator() throws HBqlException {
-                    final RowRequest rowRequest = getRowRequestIterator().next();
-                    setMaxVersions(rowRequest.getMaxVersions());
-                    setCurrentResultScanner(rowRequest.getResultScanner(getSelectStmt().getMapping(),
-                                                                        getWithArgs(),
-                                                                        getHTableWrapper().getHTable()));
-                    return getCurrentResultScanner().iterator();
+                    try {
+                        final Future<ResultScanner> future = getExecCompletionService().take();
+                        final ResultScanner resultScanner = future.get();
+                        setCurrentResultScanner(resultScanner);
+                        return getCurrentResultScanner().iterator();
+                    }
+                    catch (InterruptedException e) {
+                        throw new HBqlException(e);
+                    }
+                    catch (java.util.concurrent.ExecutionException e) {
+                        throw new HBqlException(e);
+                    }
                 }
 
                 protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
