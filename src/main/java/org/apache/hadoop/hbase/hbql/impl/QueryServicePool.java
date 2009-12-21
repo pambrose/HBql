@@ -22,11 +22,11 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class ThreadPool extends ElementPool<QueryService> {
+public class QueryServicePool extends ElementPool<QueryService> {
 
     private final int numberOfThreads;
 
-    public ThreadPool(final String name, final int maxThreadPoolSize, final int numberOfThreads) {
+    public QueryServicePool(final String name, final int maxThreadPoolSize, final int numberOfThreads) {
         super(name, maxThreadPoolSize);
         this.numberOfThreads = numberOfThreads;
     }

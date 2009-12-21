@@ -77,7 +77,7 @@ public class HStatementImpl implements HStatement {
         final Query<T> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)statement, clazz);
         final HResultSet<T> rs = query.newResultSet();
         this.resultSet = rs;
-        return rs;
+        return this.resultSet;
     }
 
     protected <T> List<T> executeQueryAndFetch(final HBqlStatement statement, final Class clazz) throws HBqlException {

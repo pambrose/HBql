@@ -27,22 +27,22 @@ import java.util.Map;
 
 public class ThreadPoolManager {
 
-    private static Map<String, ThreadPool> threadPoolMap = Maps.newConcurrentHashMap();
+    private static Map<String, QueryServicePool> threadPoolMap = Maps.newConcurrentHashMap();
 
-    public static ThreadPool newThreadPool(final String threadPoolName,
-                                           final int maxThreadPoolSize,
-                                           final int numberOfThreads) throws HBqlException {
+    public static QueryServicePool newThreadPool(final String threadPoolName,
+                                                 final int maxPoolSize,
+                                                 final int numberOfThreads) throws HBqlException {
 
-        final ThreadPool threadPool = new ThreadPool(threadPoolName, maxThreadPoolSize, numberOfThreads);
+        final QueryServicePool queryServicePool = new QueryServicePool(threadPoolName, maxPoolSize, numberOfThreads);
 
-        if (threadPool.getName() != null && threadPool.getName().length() > 0) {
-            if (getThreadPoolMap().containsKey(threadPool.getName()))
-                throw new HBqlException("Thread pool already exists: " + threadPool.getName());
+        if (queryServicePool.getName() != null && queryServicePool.getName().length() > 0) {
+            if (getThreadPoolMap().containsKey(queryServicePool.getName()))
+                throw new HBqlException("Thread pool already exists: " + queryServicePool.getName());
 
-            getThreadPoolMap().put(threadPool.getName(), threadPool);
+            getThreadPoolMap().put(queryServicePool.getName(), queryServicePool);
         }
 
-        return threadPool;
+        return queryServicePool;
     }
 
     public static boolean dropThreadPool(final String name) {
@@ -57,11 +57,11 @@ public class ThreadPoolManager {
         return false;
     }
 
-    private static Map<String, ThreadPool> getThreadPoolMap() {
+    private static Map<String, QueryServicePool> getThreadPoolMap() {
         return ThreadPoolManager.threadPoolMap;
     }
 
-    public static ThreadPool getThreadPool(final String poolName) throws HBqlException {
+    public static QueryServicePool getThreadPool(final String poolName) throws HBqlException {
         if (!ThreadPoolManager.getThreadPoolMap().containsKey(poolName))
             throw new HBqlException("Missing thread pool: " + poolName);
 

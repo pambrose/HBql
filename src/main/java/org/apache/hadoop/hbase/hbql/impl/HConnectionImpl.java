@@ -76,7 +76,7 @@ public class HConnectionImpl implements HConnection {
         this.hbaseConfig = (hbaseConfig == null) ? new HBaseConfiguration() : hbaseConfig;
         this.connectionPool = connectionPool;
         this.maxTablePoolReferencesPerTable = maxTablePoolReferencesPerTable;
-        this.tablePool = new HTablePool(this.getHBaseConfiguration(), maxTablePoolReferencesPerTable);
+        this.tablePool = new HTablePool(this.getHBaseConfiguration(), this.getMaxTablePoolReferencesPerTable());
         this.mappingManager = new MappingManager(this);
 
         this.getMappingManager().validatePersistentMetadata();

@@ -52,7 +52,8 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
         this.queryService = ThreadPoolManager.getThreadPool(getThreadPoolName()).take();
 
         // Submit work to executor completion service
-        for (final RowRequest rowRequest : this.getQuery().getRowRequestList()) {
+        final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
+        for (final RowRequest rowRequest : rowRequestList) {
             final Callable<ResultScanner> job = new Callable<ResultScanner>() {
                 public ResultScanner call() {
                     try {
@@ -136,7 +137,7 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
 
                     final ResultAccessor resultAccessor = getQuery().getSelectStmt().getResultAccessor();
 
-                    while (getCurrentResultIterator() != null || moreResultsPending()) {
+                    while (getCurrentResultIterator() != null || getQueryService().moreResultsPending()) {
 
                         if (getCurrentResultIterator() == null)
                             setCurrentResultIterator(getNextResultIterator());
@@ -188,11 +189,6 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
                     return null;
                 }
 
-                protected boolean moreResultsPending() {
-                    // See if results are waiting to be processed
-                    return getQueryService().moreResultsPending();
-                }
-
                 private Iterator<Result> getNextResultIterator() throws HBqlException {
                     try {
                         final Future<ResultScanner> future = getQueryService().take();
@@ -213,7 +209,7 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
                     this.setNextObject(nextObject);
 
                     // If the query is finished then clean up.
-                    if (this.getNextObject() == null) {
+                    if (!this.hasNext()) {
                         try {
                             if (!fromExceptionCatch && getListeners() != null) {
                                 for (final QueryListener<T> listener : getListeners())
@@ -234,6 +230,8 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
                             if (getHTableWrapper() != null)
                                 getHTableWrapper().releaseHTable();
                             setTableWrapper(null);
+
+                            close();
                         }
                     }
                 }

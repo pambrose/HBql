@@ -43,8 +43,6 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
 
     protected abstract void setNextObject(final T nextObject, final boolean fromExceptionCatch);
 
-    protected abstract boolean moreResultsPending();
-
     protected T getNextObject() {
         return this.nextObject;
     }

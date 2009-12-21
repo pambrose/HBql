@@ -80,7 +80,7 @@ public class ServerFilterTest extends TestSupport {
         }
     }
 
-    private static void showValues(final String sql, final int cnt) throws HBqlException {
+    private static void showValues(final String sql, final int cnt, final boolean printValues) throws HBqlException {
 
         HStatement stmt = connection.createStatement();
         HResultSet<HRecord> results = stmt.executeQuery(sql);
@@ -92,8 +92,8 @@ public class ServerFilterTest extends TestSupport {
             String val1 = (String)rec.getCurrentValue("val1");
             int val2 = (Integer)rec.getCurrentValue("f1:val2");
             int val3 = (Integer)rec.getCurrentValue("val3");
-
-            System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
+            if (printValues)
+                System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
             rec_cnt++;
         }
 
@@ -103,20 +103,20 @@ public class ServerFilterTest extends TestSupport {
     @Test
     public void simpleSelect1() throws HBqlException {
         final String q1 = "select * from tab3";
-        showValues(q1, 10);
+        showValues(q1, 10, true);
     }
 
     @Test
     public void simpleSelect2() throws HBqlException {
         final String q1 = "select * from tab3 WITH SERVER FILTER " +
                           "where val1 = '11' OR val1 = '14' OR  val1 = '12'";
-        showValues(q1, 3);
+        showValues(q1, 3, true);
     }
 
     @Test
     public void simpleSelect3() throws HBqlException {
         final String q1 = "select * from tab3 WITH SERVER FILTER where val1 <= '12' ";
-        showValues(q1, 3);
+        showValues(q1, 3, true);
     }
 
     @Test
@@ -131,25 +131,25 @@ public class ServerFilterTest extends TestSupport {
                           //"where  val2 = 14 OR val1 = '11' ";
                           "where  val2 = 14 ";
         //"where val2 = 14   ";
-        showValues(q1, 1);
+        showValues(q1, 1, true);
     }
 
     @Test
     public void simpleSelect5() throws HBqlException {
         final String q1 = "select * from tab3 WITH SERVER FILTER where val2 BETWEEN 12 AND 14 ";
-        showValues(q1, 3);
+        showValues(q1, 3, true);
     }
 
     @Test
     public void simpleSelect6() throws HBqlException {
         final String q1 = "select * from tab3 WITH SERVER FILTER where val1 BETWEEN '12' AND '14' ";
-        showValues(q1, 3);
+        showValues(q1, 3, true);
     }
 
     @Test
     public void simpleSelect7() throws HBqlException {
         final String q1 = "select * from tab3 WITH SERVER FILTER where val1+'ss' BETWEEN '12ss' AND '14ss' ";
-        showValues(q1, 3);
+        showValues(q1, 3, true);
     }
 
     @Test
@@ -157,7 +157,7 @@ public class ServerFilterTest extends TestSupport {
         final String q1 = "select * from tab3 WITH "
                           + "KEYS '0000000001', '0000000002', '0000000003' ";
         //+ "SERVER FILTER where val1+'ss' BETWEEN '12ss' AND '14ss' ";
-        showValues(q1, 3);
+        showValues(q1, 3, true);
     }
 
     @Test
@@ -171,7 +171,7 @@ public class ServerFilterTest extends TestSupport {
         final String q1 = "select * from tab3 WITH "
                           + "KEYS '0000000001', '0000000002', '0000000003', '0000000003', '0000000004' THREAD POOL threadPool1 "
                           + "SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ";
-        showValues(q1, 4);
+        showValues(q1, 4, true);
     }
 
     @Test
@@ -182,11 +182,43 @@ public class ServerFilterTest extends TestSupport {
 
         ThreadPoolManager.newThreadPool("threadPool1", 2, 10);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10000; i++) {
             final String q1 = "select * from tab3 WITH "
-                              + "KEYS '0000000001'TO '0000000009', '0000000001'TO '0000000009' THREAD POOL threadPool1 "
+                              + "KEYS " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009', " +
+                              "'0000000001'TO '0000000009' THREAD POOL threadPool1 "
                               + "SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ";
-            showValues(q1, 6);
+            // + "CLIENT FILTER where val1 BETWEEN '11' AND '13' ";
+            System.out.println("Values for iteration:" + i);
+            showValues(q1, 90, false);
         }
     }
 }

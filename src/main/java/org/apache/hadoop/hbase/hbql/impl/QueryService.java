@@ -36,19 +36,19 @@ public class QueryService implements PoolableElement {
 
     private final BlockingQueue<Future<ResultScanner>> futureQueue = new LinkedBlockingQueue<Future<ResultScanner>>();
     private final List<Future<ResultScanner>> futureList = Lists.newArrayList();
-    private final ThreadPool threadPool;
+    private final QueryServicePool queryServicePool;
     private final ExecutorService executorService;
     private final ExecutorCompletionService<ResultScanner> executorCompletionService;
 
-    public QueryService(final ThreadPool threadPool, final int numberOfThreads) {
-        this.threadPool = threadPool;
+    public QueryService(final QueryServicePool queryServicePool, final int numberOfThreads) {
+        this.queryServicePool = queryServicePool;
         this.executorService = Executors.newFixedThreadPool(numberOfThreads);
         this.executorCompletionService = new ExecutorCompletionService<ResultScanner>(this.getExecutorService(),
                                                                                       this.getFutureQueue());
     }
 
-    private ThreadPool getThreadPool() {
-        return this.threadPool;
+    private QueryServicePool getThreadPool() {
+        return this.queryServicePool;
     }
 
     private ExecutorService getExecutorService() {
