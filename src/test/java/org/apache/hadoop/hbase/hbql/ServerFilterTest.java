@@ -169,8 +169,24 @@ public class ServerFilterTest extends TestSupport {
         ThreadPoolManager.newThreadPool("threadPool1", 2, 10);
 
         final String q1 = "select * from tab3 WITH "
-                          + "KEYS '0000000001', '0000000002', '0000000003' THREAD POOL threadPool1 ";
-        //+ "SERVER FILTER where val1+'ss' BETWEEN '12ss' AND '14ss' ";
-        showValues(q1, 3);
+                          + "KEYS '0000000001', '0000000002', '0000000003', '0000000003', '0000000004' THREAD POOL threadPool1 "
+                          + "SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ";
+        showValues(q1, 4);
+    }
+
+    @Test
+    public void simpleSelect10() throws HBqlException {
+
+        // HStatement stmt = connection.createStatement();
+        // System.out.println(stmt.execute("CREATE THREAD POOL threadpool1 (size: 5, threads: 10)"));
+
+        ThreadPoolManager.newThreadPool("threadPool1", 2, 10);
+
+        for (int i = 0; i < 10; i++) {
+            final String q1 = "select * from tab3 WITH "
+                              + "KEYS '0000000001'TO '0000000009', '0000000001'TO '0000000009' THREAD POOL threadPool1 "
+                              + "SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ";
+            showValues(q1, 6);
+        }
     }
 }

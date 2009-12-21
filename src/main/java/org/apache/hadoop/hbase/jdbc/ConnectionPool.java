@@ -75,7 +75,7 @@ public class ConnectionPool implements ConnectionPoolDataSource {
     }
 
     public PooledConnection getPooledConnection() throws SQLException {
-        return new ConnectionImpl(this.getConnectionPool().getConnection());
+        return new ConnectionImpl(this.getConnectionPool().takeConnection());
     }
 
     public PooledConnection getPooledConnection(final String s, final String s1) throws SQLException {

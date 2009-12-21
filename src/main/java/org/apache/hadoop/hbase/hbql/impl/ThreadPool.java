@@ -22,10 +22,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-public class ThreadPool extends ElementPool<ExecutorService> {
+public class ThreadPool extends ElementPool<QueryService> {
 
     private final int numberOfThreads;
 
@@ -38,15 +35,7 @@ public class ThreadPool extends ElementPool<ExecutorService> {
         return numberOfThreads;
     }
 
-    protected ExecutorService newElement() throws HBqlException {
-        return Executors.newFixedThreadPool(this.getNumberOfThreads());
-    }
-
-    public ExecutorService getExecutorService() throws HBqlException {
-        return this.getElement();
-    }
-
-    public void releaseExecutorService(final ExecutorService executor) {
-        this.release(executor);
+    protected QueryService newElement() throws HBqlException {
+        return new QueryService(this, this.getNumberOfThreads());
     }
 }

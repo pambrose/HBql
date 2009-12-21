@@ -18,15 +18,9 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.hadoop.hbase.HBaseConfiguration;
+public interface PoolableElement {
 
-public interface HConnectionPool {
-
-    String getName();
-
-    HBaseConfiguration getConfig();
-
-    HConnection takeConnection() throws HBqlException;
+    void reset();
 }

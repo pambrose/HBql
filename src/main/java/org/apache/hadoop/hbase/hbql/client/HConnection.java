@@ -22,11 +22,12 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.hbql.impl.PoolableElement;
 
 import java.util.List;
 import java.util.Set;
 
-public interface HConnection {
+public interface HConnection extends PoolableElement {
 
     HBaseConfiguration getHBaseConfiguration();
 
@@ -90,4 +91,6 @@ public interface HConnection {
     boolean dropMapping(String mappingName) throws HBqlException;
 
     Set<HMapping> getMappings() throws HBqlException;
+
+    void reset();
 }

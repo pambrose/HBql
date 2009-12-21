@@ -122,7 +122,7 @@ public class ConnectionPoolTest extends TestSupport {
 
     void doQuery(final String id, final int iteration) throws HBqlException {
 
-        HConnection connection = connectionPool.getConnection();
+        HConnection connection = connectionPool.takeConnection();
         connection.execute("CREATE TEMP MAPPING pool_test "
                            + "("
                            + "keyval key, "

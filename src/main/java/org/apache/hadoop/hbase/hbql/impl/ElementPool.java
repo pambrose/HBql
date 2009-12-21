@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public abstract class ElementPool<T> {
+public abstract class ElementPool<T extends PoolableElement> {
 
     private final String name;
     private final int maxPoolSize;
@@ -64,7 +64,7 @@ public abstract class ElementPool<T> {
         }
     }
 
-    protected synchronized T getElement() throws HBqlException {
+    protected synchronized T take() throws HBqlException {
 
         //  Grow the pool as necessary, rather than front-loading it.
         if (this.getElementPool().size() == 0)
@@ -79,7 +79,8 @@ public abstract class ElementPool<T> {
     }
 
 
-    protected void release(final T connection) {
-        this.getElementPool().add(connection);
+    protected void release(final T element) {
+        element.reset();
+        this.getElementPool().add(element);
     }
 }

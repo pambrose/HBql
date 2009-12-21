@@ -55,11 +55,11 @@ public class HConnectionPoolImpl extends ElementPool<HConnection> implements HCo
         return new HConnectionImpl(this.getConfig(), this, this.getMaxReferencesPerTable());
     }
 
-    public HConnection getConnection() throws HBqlException {
-        return this.getElement();
+    public HConnection takeConnection() throws HBqlException {
+        return super.take();
     }
 
-    public void releaseConnection(final HConnection connection) {
-        this.release(connection);
+    protected void releaseConnection(final HConnection element) {
+        super.release(element);
     }
 }

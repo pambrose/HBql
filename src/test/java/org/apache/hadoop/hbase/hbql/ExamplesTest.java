@@ -572,7 +572,7 @@ public class ExamplesTest extends TestSupport {
         // Create connection pool with max of 25 connections and prime it with 5 initial connections
         HConnectionPool connectionPool = HConnectionPoolManager.newConnectionPool(5, 25);
 
-        HConnection connection = connectionPool.getConnection();
+        HConnection connection = connectionPool.takeConnection();
 
         // Do something with the connection
 

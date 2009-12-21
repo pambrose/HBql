@@ -88,6 +88,10 @@ public class HConnectionImpl implements HConnection {
         return new HBaseConfiguration(c);
     }
 
+    public void reset() {
+
+    }
+
     public boolean isPooled() {
         return this.getConnectionPool() != null;
     }

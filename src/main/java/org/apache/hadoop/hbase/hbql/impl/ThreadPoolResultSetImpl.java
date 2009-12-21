@@ -33,34 +33,23 @@ import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
 
-    private final BlockingQueue<Future<ResultScanner>> futureQueue = new LinkedBlockingQueue<Future<ResultScanner>>();
-    private final ExecutorCompletionService<ResultScanner> execCompletionService;
+    private final QueryService queryService;
     private final List<ResultScanner> resultScannerList = Lists.newArrayList();
-    private final ThreadPool threadPool;
 
     private ResultScanner currentResultScanner = null;
     private Iterator<Result> currentResultIterator = null;
 
-    private final List<Future<ResultScanner>> futureList = Lists.newArrayList();
-
     ThreadPoolResultSetImpl(final Query<T> query) throws HBqlException {
         super(query);
 
-        // This may block waiting for a ThreadPool to become available
-        this.threadPool = ThreadPoolManager.getThreadPool(getThreadPoolName());
-
-        final ExecutorService executorService = this.getThreadPool().getExecutorService();
-        this.execCompletionService = new ExecutorCompletionService<ResultScanner>(executorService, futureQueue);
+        // This may block waiting for a ExecutorService to become available
+        this.queryService = ThreadPoolManager.getThreadPool(getThreadPoolName()).take();
 
         // Submit work to executor completion service
         for (final RowRequest rowRequest : this.getQuery().getRowRequestList()) {
@@ -79,20 +68,12 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
                 }
             };
 
-            this.getFutureList().add(this.getExecCompletionService().submit(job));
+            this.getQueryService().submit(job);
         }
     }
 
-    private ExecutorCompletionService<ResultScanner> getExecCompletionService() {
-        return this.execCompletionService;
-    }
-
-    private List<Future<ResultScanner>> getFutureList() {
-        return this.futureList;
-    }
-
-    private ThreadPool getThreadPool() {
-        return this.threadPool;
+    private QueryService getQueryService() {
+        return this.queryService;
     }
 
     private List<ResultScanner> getResultScannerList() {
@@ -125,7 +106,10 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
     public void close() {
         for (final ResultScanner scanner : this.getResultScannerList())
             closeResultScanner(scanner, false);
+
         this.getResultScannerList().clear();
+
+        this.getQueryService().release();
     }
 
     private void closeResultScanner(final ResultScanner scanner, final boolean removeFromList) {
@@ -205,22 +189,13 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
                 }
 
                 protected boolean moreResultsPending() {
-
                     // See if results are waiting to be processed
-                    if (futureQueue.size() > 0)
-                        return true;
-
-                    // See if work is still taking place.
-                    for (final Future<ResultScanner> future : getFutureList())
-                        if (!future.isDone())
-                            return true;
-
-                    return false;
+                    return getQueryService().moreResultsPending();
                 }
 
                 private Iterator<Result> getNextResultIterator() throws HBqlException {
                     try {
-                        final Future<ResultScanner> future = getExecCompletionService().take();
+                        final Future<ResultScanner> future = getQueryService().take();
                         final ResultScanner resultScanner = future.get();
                         setCurrentResultScanner(resultScanner);
                         return getCurrentResultScanner().iterator();
