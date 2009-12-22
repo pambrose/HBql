@@ -23,4 +23,4 @@ CREATE EXECUTOR POOL pool_name '(' MAX_POOL_SIZE ':' integer_value ',' THREAD_CO
 
 *Example
 
-%{snippet|id=create-index|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-executor-pool|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

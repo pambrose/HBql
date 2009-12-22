@@ -69,6 +69,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     private volatile HBaseAdmin hbaseAdmin = null;
     private volatile IndexedTableAdmin indexTableAdmin = null;
     private volatile boolean closed = false;
+
     private String executorPoolName = null;
     private Executor executor = null;
 
@@ -91,7 +92,8 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void reset() {
-
+        this.setExecutorPoolName(null);
+        this.setExecutor(null);
     }
 
     public boolean isPooled() {

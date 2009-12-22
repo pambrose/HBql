@@ -33,6 +33,7 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.Util;
+import org.apache.hadoop.hbase.hbql.impl.ExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.apache.hadoop.hbase.jdbc.ConnectionPool;
 
@@ -377,6 +378,46 @@ public class ExamplesTest extends TestSupport {
                            + "))");
 
         // END SNIPPET: create-mapping4
+
+    }
+
+    public void createExecutorPool() throws HBqlException {
+
+        // START SNIPPET: create-executor-pool
+
+        HConnection connection = HConnectionManager.newConnection();
+
+        // Mapping named foo that corresponds to table foo.
+        connection.execute("CREATE EXECUTOR POOL execPool (MAX_POOL_SIZE: 5, THREAD_COUNT: 10) IF NOT executorPoolExists('execPool')");
+
+        // or
+        if (!ExecutorPoolManager.executorPoolExists("execPool"))
+            ExecutorPoolManager.newExecutorPool("execPool", 5, 10);
+
+        // Then assign the connection a pool name to use for queries
+        connection.setExecutorPoolName("execPool");
+
+        // END SNIPPET: create-executor-pool
+
+    }
+
+    public void dropExecutorPool() throws HBqlException {
+
+        // START SNIPPET: drop-executor-pool
+
+        HConnection connection = HConnectionManager.newConnection();
+
+        // Mapping named foo that corresponds to table foo.
+        connection.execute("DROP EXECUTOR POOL execPool IF executorPoolExists('execPool')");
+
+        // or
+        if (ExecutorPoolManager.executorPoolExists("execPool"))
+            ExecutorPoolManager.dropExecutorPool("execPool");
+
+        // Then assign the connection a pool name to use for queries
+        connection.setExecutorPoolName("execPool");
+
+        // END SNIPPET: drop-executor-pool
 
     }
 

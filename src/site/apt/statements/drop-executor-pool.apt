@@ -1,23 +1,23 @@
     -----
-    DROP INDEX
+    DROP EXECUTOR POOL
     -----
     -----
 
 
-DROP INDEX
+DROP EXECUTOR POOL
 
 *Syntax
 
 ---------------------------
 
-DROP INDEX index_name {ON [MAPPING] mapping_name | ON TABLE table_name} [IF boolean_condition]
+DROP EXECUTOR POOL pool_name [IF boolean_condition]
 
 ---------------------------
 
 *Description
 
-    Drops named index.
+    Drops named executor pool.
 
 *Example
 
-%{snippet|id=drop-index|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=drop-executor-pool|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
