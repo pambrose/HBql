@@ -467,7 +467,7 @@ public class HConnectionImpl implements HConnection {
     }
 
     public void validateExecutorPoolNameExists(final String poolName) throws HBqlException {
-        if (!ExecutorPoolManager.executorPoolNameExists(poolName))
-            throw new HBqlException("Query executor pool name " + poolName + " not defined.");
+        if (!ExecutorPoolManager.executorPoolExists(poolName))
+            throw new HBqlException("Executor pool " + poolName + " does not exist.");
     }
 }

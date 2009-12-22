@@ -183,11 +183,15 @@ public class ServerFilterTest extends TestSupport {
     public void simpleSelect10() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
+        System.out
+                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2) if not executorPoolExists('threadPool1')"));
+        System.out
+                .println(stmt.execute("DROP EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2) if executorPoolExists('threadPool1')"));
         System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2)"));
 
         connection.setExecutorPoolName("threadPool1");
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             final String q1 = "select * from tab3 WITH "
                               + "KEYS " +
                               "'0000000001'TO '0000000009', " +

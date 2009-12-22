@@ -38,7 +38,7 @@ public class ExecutorPoolManager {
                                                final int numberOfThreads) throws HBqlException {
 
         if (poolName != null && poolName.length() > 0 && getExecutorPoolMap().containsKey(poolName))
-            throw new HBqlException("Query executor pool already exists: " + poolName);
+            throw new HBqlException("Executor pool already exists: " + poolName);
 
         final ExecutorPool executorPool = new ExecutorPool(poolName, maxPoolSize, numberOfThreads);
         getExecutorPoolMap().put(executorPool.getName(), executorPool);
@@ -58,7 +58,7 @@ public class ExecutorPoolManager {
         return false;
     }
 
-    public static boolean executorPoolNameExists(final String name) {
+    public static boolean executorPoolExists(final String name) {
         return name != null && name.length() > 0 && getExecutorPoolMap().containsKey(name);
     }
 

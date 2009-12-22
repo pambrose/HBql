@@ -24,36 +24,31 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.ExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.statement.args.ExecutorPoolArgs;
 
-public class CreateExecutorPoolStatement extends BasicStatement implements ConnectionStatement {
+public class DropExecutorPoolStatement extends BasicStatement implements ConnectionStatement {
 
     private final String poolName;
-    private final ExecutorPoolArgs args;
 
-    public CreateExecutorPoolStatement(final StatementPredicate predicate,
-                                       final String poolName,
-                                       final ExecutorPoolArgs args) {
+    public DropExecutorPoolStatement(final StatementPredicate predicate, final String poolName) {
         super(predicate);
         this.poolName = poolName;
-        this.args = args;
     }
 
     private String getPoolName() {
         return this.poolName;
     }
 
-    private ExecutorPoolArgs getArgs() {
-        return this.args;
-    }
-
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        ExecutorPoolManager.newExecutorPool(this.getPoolName(),
-                                            this.getArgs().getMaxPoolSize(),
-                                            this.getArgs().getThreadCount());
-
-        return new ExecutionResults("Executor pool " + this.getPoolName() + " created.");
+        final String msg;
+        if (!ExecutorPoolManager.executorPoolExists(this.getPoolName())) {
+            msg = "Executor pool " + this.getPoolName() + " does not exist";
+        }
+        else {
+            ExecutorPoolManager.dropExecutorPool(this.getPoolName());
+            msg = "Executor pool " + this.getPoolName() + " dropped.";
+        }
+        return new ExecutionResults(msg);
     }
 
 

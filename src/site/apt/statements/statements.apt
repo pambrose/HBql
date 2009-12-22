@@ -61,6 +61,15 @@ HBql Statements
 
     **{{{./expressions.html}Expressions}}
 
+* Executor Pools
+
+    **{{{./create-executor.html}CREATE EXECUTOR POOL}}
+
+    **{{{./drop-executor.html}DROP EXECUTOR POOL}}
+
+    **{{{./show-executors.html}SHOW EXECUTOR POOLS}}
+
+    **{{{./describe-executor.html}DESCRIBE EXECUTOR POOL}}
 
 * Console
 

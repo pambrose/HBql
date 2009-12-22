@@ -137,6 +137,8 @@ options {backtrack=true;}
 					 		{retval = new DescribeIndexForTableStatement($t.text, $t2.text);}
 	| keyCREATE keyEXECUTOR keyPOOL t=simpleId LPAREN keyMAX_POOL_SIZE COLON ps=exprValue COMMA keyTHREAD_COUNT COLON tc=exprValue RPAREN p=pred?
 							{retval = new CreateExecutorPoolStatement($p.retval, $t.text, new ExecutorPoolArgs($ps.retval, $tc.retval));}
+	| keyDROP keyEXECUTOR keyPOOL t=simpleId p=pred?
+							{retval = new DropExecutorPoolStatement($p.retval, $t.text);}
 	;
 
 indexColumnList returns [List<String> retval]

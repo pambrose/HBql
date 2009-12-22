@@ -66,7 +66,7 @@ public abstract class ElementPool<T extends PoolableElement> {
 
     protected synchronized T take() throws HBqlException {
 
-        //  Grow the pool as necessary, rather than front-loading it.
+        // Grow the pool as necessary, rather than front-loading it.
         if (this.getElementPool().size() == 0)
             this.addElementToPool();
 
