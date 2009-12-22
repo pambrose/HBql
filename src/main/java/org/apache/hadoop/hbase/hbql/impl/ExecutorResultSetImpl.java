@@ -35,7 +35,7 @@ import java.util.concurrent.Callable;
 
 public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
 
-    private final Executor executor;
+    private final ExecutorImpl executor;
     private volatile boolean closed = false;
 
     ExecutorResultSetImpl(final Query<T> query) throws HBqlException {
@@ -46,8 +46,29 @@ public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
         this.submitWork();
     }
 
-    private Executor getExecutor() {
+    private ExecutorImpl getExecutor() {
         return this.executor;
+    }
+
+    private void submitWork() throws HBqlException {
+        final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
+        for (final RowRequest rowRequest : rowRequestList) {
+            this.getExecutor().submit(
+                    new Callable<ResultScanner>() {
+                        public ResultScanner call() {
+                            try {
+                                setMaxVersions(rowRequest.getMaxVersions());
+                                return rowRequest.getResultScanner(getSelectStmt().getMapping(),
+                                                                   getWithArgs(),
+                                                                   getHTableWrapper().getHTable());
+                            }
+                            catch (HBqlException e) {
+                                e.printStackTrace();
+                                return null;
+                            }
+                        }
+                    });
+        }
     }
 
     public void close() {
@@ -59,27 +80,6 @@ public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
                     this.closed = true;
                 }
             }
-        }
-    }
-
-    private void submitWork() throws HBqlException {
-        final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
-        for (final RowRequest rowRequest : rowRequestList) {
-            final Callable<ResultScanner> job = new Callable<ResultScanner>() {
-                public ResultScanner call() {
-                    try {
-                        setMaxVersions(rowRequest.getMaxVersions());
-                        return rowRequest.getResultScanner(getSelectStmt().getMapping(),
-                                                           getWithArgs(),
-                                                           getHTableWrapper().getHTable());
-                    }
-                    catch (HBqlException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                }
-            };
-            this.getExecutor().submit(job);
         }
     }
 

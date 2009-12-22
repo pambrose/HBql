@@ -18,24 +18,13 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.impl;
+package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.ExecutorImpl;
 
-public class ExecutorPool extends ElementPool<ExecutorImpl> {
+public class Executor {
 
-    private final int threadCount;
-
-    public ExecutorPool(final String name, final int maxPoolSize, final int threadCount) {
-        super(name, maxPoolSize);
-        this.threadCount = threadCount;
-    }
-
-    public int getThreadCount() {
-        return this.threadCount;
-    }
-
-    protected ExecutorImpl newElement() throws HBqlException {
-        return ExecutorImpl.newExecutorForPool(this, this.getThreadCount());
+    public static Executor newExecutor(final int threadCount) {
+        return new ExecutorImpl(null, threadCount);
     }
 }

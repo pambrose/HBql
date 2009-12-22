@@ -54,10 +54,8 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
                            final String mappingName,
                            final WithArgs withArgs) {
         super(predicate, mappingName);
-        if (withArgs == null)
-            this.withArgs = new WithArgs();
-        else
-            this.withArgs = withArgs;
+
+        this.withArgs = (withArgs == null) ? new WithArgs() : withArgs;
 
         if (originaltemList == null)
             this.originaltemList = Lists.newArrayList();
@@ -121,9 +119,9 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         this.getWithArgs().validateArgTypes();
     }
 
-    protected ExecutionResults execute(final HConnectionImpl hconnectionImpl) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        this.validate(hconnectionImpl);
+        this.validate(connection);
 
         this.validateTypes();
 
@@ -133,9 +131,9 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         HTableWrapper tableWrapper = null;
 
         try {
-            tableWrapper = hconnectionImpl.newHTableWrapper(withArgs, this.getMapping().getTableName());
+            tableWrapper = connection.newHTableWrapper(withArgs, this.getMapping().getTableName());
 
-            final List<RowRequest> rowRequests = withArgs.getRowRequestList(hconnectionImpl,
+            final List<RowRequest> rowRequests = withArgs.getRowRequestList(connection,
                                                                             this.getMapping(),
                                                                             allWhereAttribs);
 
@@ -176,7 +174,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         try {
             for (final Result result : resultScanner) {
                 try {
-                    if (clientExpressionTree == null || clientExpressionTree.evaluate(connection, result)) {
+                    if (clientExpressionTree == null || clientExpressionTree.evaluate(this.getConnection(), result)) {
 
                         final Delete rowDelete = new Delete(result.getRow());
 

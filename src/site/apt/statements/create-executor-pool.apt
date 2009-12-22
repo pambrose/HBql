@@ -16,10 +16,16 @@ CREATE EXECUTOR POOL pool_name '(' MAX_POOL_SIZE ':' integer_value ',' THREAD_CO
 
 *Description
 
-    Creates named index on column_name in table referenced my mapping_name.
+    Creates named executor pool.
 
-    * Additional columns can be included in the index table (for use in server-side filter on index table)
-    using the includeColumns clause.
+    * An HConnection can be assigned an Executor from a ExecutorPool using HConncetion.setExecutorPoolName(),
+    or a dedicated Executor with HConncetion.setExecutor().
+
+    * An ExecutorPool has a maximum size and each Executor in the pool has a fixed number of threads.
+    Requests for Executors will block if all elements of the pool have been taken.  Executors are released
+    back into the pool when ResultSets are closed.
+
+    * Executors are used in queries such that each 
 
 *Example
 

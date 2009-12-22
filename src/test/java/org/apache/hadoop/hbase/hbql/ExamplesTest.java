@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.hbql.client.Executor;
 import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -390,12 +391,16 @@ public class ExamplesTest extends TestSupport {
         // Mapping named foo that corresponds to table foo.
         connection.execute("CREATE EXECUTOR POOL execPool (MAX_POOL_SIZE: 5, THREAD_COUNT: 10) IF NOT executorPoolExists('execPool')");
 
-        // or
+        // Or, using the API
         if (!ExecutorPoolManager.executorPoolExists("execPool"))
             ExecutorPoolManager.newExecutorPool("execPool", 5, 10);
 
         // Then assign the connection a pool name to use for queries
         connection.setExecutorPoolName("execPool");
+
+        // If a dedicated Executor, rather than one from a pool, is desired:
+        Executor executor = Executor.newExecutor(10);
+        connection.setExecutor(executor);
 
         // END SNIPPET: create-executor-pool
 
@@ -410,7 +415,7 @@ public class ExamplesTest extends TestSupport {
         // Mapping named foo that corresponds to table foo.
         connection.execute("DROP EXECUTOR POOL execPool IF executorPoolExists('execPool')");
 
-        // or
+        // Or, using the API
         if (ExecutorPoolManager.executorPoolExists("execPool"))
             ExecutorPoolManager.dropExecutorPool("execPool");
 

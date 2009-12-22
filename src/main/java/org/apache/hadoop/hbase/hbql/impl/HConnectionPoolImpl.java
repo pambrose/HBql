@@ -30,16 +30,16 @@ public class HConnectionPoolImpl extends ElementPool<HConnectionImpl> implements
     private final HBaseConfiguration config;
     private final int maxReferencesPerTable;
 
-    public HConnectionPoolImpl(final int initConnectionPoolSize,
-                               final int maxConnectionPoolSize,
-                               final String connectionPoolName,
+    public HConnectionPoolImpl(final int initPoolSize,
+                               final int maxPoolSize,
+                               final String poolName,
                                final HBaseConfiguration config,
                                final int maxPoolReferencesPerTablePerConnection) throws HBqlException {
-        super(connectionPoolName, maxConnectionPoolSize);
+        super(poolName, maxPoolSize);
         this.config = (config == null) ? new HBaseConfiguration() : config;
         this.maxReferencesPerTable = maxPoolReferencesPerTablePerConnection;
 
-        for (int i = 0; i < initConnectionPoolSize; i++)
+        for (int i = 0; i < initPoolSize; i++)
             this.addElementToPool();
     }
 

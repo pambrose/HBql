@@ -34,6 +34,7 @@ import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
+import org.apache.hadoop.hbase.hbql.client.Executor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HMapping;
@@ -432,12 +433,12 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         }
     }
 
-    public Executor getExecutorForConnection() throws HBqlException {
+    public ExecutorImpl getExecutorForConnection() throws HBqlException {
         // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
-        return (this.getExecutor() != null) ? this.getExecutor() : this.takeExecutorFromPool();
+        return (this.getExecutor() != null) ? this.getExecutorImpl() : this.takeExecutorFromPool();
     }
 
-    private Executor takeExecutorFromPool() throws HBqlException {
+    private ExecutorImpl takeExecutorFromPool() throws HBqlException {
         this.validateExecutorPoolNameExists(this.getExecutorPoolName());
         final ExecutorPool pool = ExecutorPoolManager.getExecutorPool(this.getExecutorPoolName());
         return pool.take();
@@ -457,6 +458,10 @@ public class HConnectionImpl implements HConnection, PoolableElement {
 
     public void setExecutor(final Executor executor) {
         this.executor = executor;
+    }
+
+    private ExecutorImpl getExecutorImpl() {
+        return (ExecutorImpl)this.executor;
     }
 
     public Executor getExecutor() {

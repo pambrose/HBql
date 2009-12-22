@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.hbql.client.Executor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class Executor implements PoolableElement {
+public class ExecutorImpl extends Executor implements PoolableElement {
 
     private final BlockingQueue<Future<ResultScanner>> futureQueue = new LinkedBlockingQueue<Future<ResultScanner>>();
     private final List<Future<ResultScanner>> futureList = Lists.newArrayList();
@@ -41,19 +42,15 @@ public class Executor implements PoolableElement {
     private final ExecutorService executorService;
     private final ExecutorCompletionService<ResultScanner> executorCompletionService;
 
-    private Executor(final ExecutorPool executorPool, final int threadCount) {
+    public ExecutorImpl(final ExecutorPool executorPool, final int threadCount) {
         this.executorPool = executorPool;
         this.executorService = Executors.newFixedThreadPool(threadCount);
         this.executorCompletionService = new ExecutorCompletionService<ResultScanner>(this.getExecutorService(),
                                                                                       this.getExecutorBackingQueue());
     }
 
-    public static Executor newExecutorForPool(final ExecutorPool executorPool, final int threadCount) {
-        return new Executor(executorPool, threadCount);
-    }
-
-    public static Executor newExecutor(final int threadCount) {
-        return Executor.newExecutorForPool(null, threadCount);
+    public static ExecutorImpl newExecutorForPool(final ExecutorPool executorPool, final int threadCount) {
+        return new ExecutorImpl(executorPool, threadCount);
     }
 
     private ExecutorPool getExecutorPool() {

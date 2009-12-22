@@ -22,7 +22,6 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.hbql.impl.Executor;
 
 import java.util.List;
 import java.util.Set;

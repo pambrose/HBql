@@ -33,43 +33,43 @@ public class HConnectionPoolManager {
 
     private static int maxPoolReferencesPerTablePerConnection = Integer.MAX_VALUE;
 
-    public static HConnectionPool newConnectionPool(final int initConnectionPoolSize,
-                                                    final int maxConnectionPoolSize) throws HBqlException {
-        return HConnectionPoolManager.newConnectionPool(initConnectionPoolSize,
-                                                        maxConnectionPoolSize,
+    public static HConnectionPool newConnectionPool(final int initPoolSize,
+                                                    final int maxPoolSize) throws HBqlException {
+        return HConnectionPoolManager.newConnectionPool(initPoolSize,
+                                                        maxPoolSize,
                                                         null,
                                                         null);
     }
 
     public static HConnectionPool newConnectionPool(final int initConnectionPoolSize,
-                                                    final int maxConnectionPoolSize,
+                                                    final int maxPoolSize,
                                                     final HBaseConfiguration config) throws HBqlException {
         return HConnectionPoolManager.newConnectionPool(initConnectionPoolSize,
-                                                        maxConnectionPoolSize,
+                                                        maxPoolSize,
                                                         null,
                                                         config);
     }
 
     public static HConnectionPool newConnectionPool(final int initConnectionPoolSize,
-                                                    final int maxConnectionPoolSize,
-                                                    final String connectionPoolName) throws HBqlException {
+                                                    final int maxPoolSize,
+                                                    final String poolName) throws HBqlException {
         return HConnectionPoolManager.newConnectionPool(initConnectionPoolSize,
-                                                        maxConnectionPoolSize,
-                                                        connectionPoolName,
+                                                        maxPoolSize,
+                                                        poolName,
                                                         null);
     }
 
-    public static HConnectionPool newConnectionPool(final int initConnectionPoolSize,
-                                                    final int maxConnectionPoolSize,
-                                                    final String connectionPoolName,
+    public static HConnectionPool newConnectionPool(final int initPoolSize,
+                                                    final int maxPoolSize,
+                                                    final String poolName,
                                                     final HBaseConfiguration config) throws HBqlException {
 
-        if (Utils.isValidString(connectionPoolName) && getConnectionPoolMap().containsKey(connectionPoolName))
-            throw new HBqlException("Connection pool already exists: " + connectionPoolName);
+        if (Utils.isValidString(poolName) && getConnectionPoolMap().containsKey(poolName))
+            throw new HBqlException("Connection pool already exists: " + poolName);
 
-        final HConnectionPoolImpl connectionPool = new HConnectionPoolImpl(initConnectionPoolSize,
-                                                                           maxConnectionPoolSize,
-                                                                           connectionPoolName,
+        final HConnectionPoolImpl connectionPool = new HConnectionPoolImpl(initPoolSize,
+                                                                           maxPoolSize,
+                                                                           poolName,
                                                                            config,
                                                                            getMaxPoolReferencesPerTablePerConnection());
         // Add to map if it has valid name

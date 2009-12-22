@@ -35,15 +35,15 @@ public class ConnectionPool implements ConnectionPoolDataSource {
 
     private final HConnectionPool connectionPool;
 
-    public ConnectionPool(final int initConnectionPoolSize,
+    public ConnectionPool(final int initPoolSize,
                           final int maxConnectionPoolSize) throws HBqlException {
-        this(initConnectionPoolSize, maxConnectionPoolSize, null, null);
+        this(initPoolSize, maxConnectionPoolSize, null, null);
     }
 
-    public ConnectionPool(final int initConnectionPoolSize,
+    public ConnectionPool(final int initPoolSize,
                           final int maxConnectionPoolSize,
                           final String connectionPoolName) throws HBqlException {
-        this(initConnectionPoolSize, maxConnectionPoolSize, connectionPoolName, null);
+        this(initPoolSize, maxConnectionPoolSize, connectionPoolName, null);
     }
 
     public ConnectionPool(final int initConnectionPoolSize,
@@ -52,11 +52,11 @@ public class ConnectionPool implements ConnectionPoolDataSource {
         this(initConnectionPoolSize, maxConnectionPoolSize, null, config);
     }
 
-    public ConnectionPool(final int initConnectionPoolSize,
+    public ConnectionPool(final int initPoolSize,
                           final int maxConnectionPoolSize,
                           final String poolName,
                           final HBaseConfiguration config) throws HBqlException {
-        this.connectionPool = HConnectionPoolManager.newConnectionPool(initConnectionPoolSize,
+        this.connectionPool = HConnectionPoolManager.newConnectionPool(initPoolSize,
                                                                        maxConnectionPoolSize,
                                                                        poolName,
                                                                        config);
