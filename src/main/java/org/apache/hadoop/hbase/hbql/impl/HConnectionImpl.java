@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HConnectionImpl implements HConnection {
+public class HConnectionImpl implements HConnection, PoolableElement {
 
     public final static String MAXTABLEREFS = "maxtablerefs";
     public final static String MASTER = "hbase.master";
@@ -252,6 +252,7 @@ public class HConnectionImpl implements HConnection {
     }
 
     public void close() throws HBqlException {
+        // If it is a pool conection, just give it back to pool
         if (this.isPooled())
             this.getConnectionPool().releaseConnection(this);
         else
@@ -429,7 +430,8 @@ public class HConnectionImpl implements HConnection {
         }
     }
 
-    public Executor getCurrentExecutor() throws HBqlException {
+    public Executor getExecutorForConnection() throws HBqlException {
+        // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
         return (this.getExecutor() != null) ? this.getExecutor() : this.takeExecutorFromPool();
     }
 

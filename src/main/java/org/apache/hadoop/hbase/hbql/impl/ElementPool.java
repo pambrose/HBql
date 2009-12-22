@@ -71,7 +71,8 @@ public abstract class ElementPool<T extends PoolableElement> {
             this.addElementToPool();
 
         try {
-            return this.getElementPool().take();
+            final T element = this.getElementPool().take();
+            return element;
         }
         catch (InterruptedException e) {
             throw new HBqlException("InterruptedException: " + e.getMessage());

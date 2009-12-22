@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -81,8 +82,17 @@ public class Executor implements PoolableElement {
         return future;
     }
 
-    public Future<ResultScanner> take() throws InterruptedException {
-        return this.getExecutorCompletionService().take();
+    public ResultScanner takeResultScanner() throws HBqlException {
+        try {
+            final Future<ResultScanner> future = this.getExecutorCompletionService().take();
+            return future.get();
+        }
+        catch (InterruptedException e) {
+            throw new HBqlException(e);
+        }
+        catch (java.util.concurrent.ExecutionException e) {
+            throw new HBqlException(e);
+        }
     }
 
     public boolean moreResultsPending() {
@@ -112,6 +122,7 @@ public class Executor implements PoolableElement {
     }
 
     public void release() {
+        // Release if it is a pool element
         if (this.getExecutorPool() != null)
             this.getExecutorPool().release(this);
     }

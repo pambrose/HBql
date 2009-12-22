@@ -42,6 +42,7 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
     private final Query<T> query;
     private final ExpressionTree clientExpressionTree;
     private HTableWrapper tableWrapper;
+    private volatile boolean closed = false;
 
     protected HResultSetImpl(final Query<T> query) throws HBqlException {
         this.query = query;
@@ -90,9 +91,16 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
     }
 
     public void close() {
-        for (final ResultScanner scanner : this.getResultScannerList())
-            closeResultScanner(scanner, false);
-        this.getResultScannerList().clear();
+        if (!this.closed) {
+            synchronized (this) {
+                if (!this.closed) {
+                    for (final ResultScanner scanner : this.getResultScannerList())
+                        closeResultScanner(scanner, false);
+                    this.getResultScannerList().clear();
+                    this.closed = true;
+                }
+            }
+        }
     }
 
     protected int getMaxVersions() {
