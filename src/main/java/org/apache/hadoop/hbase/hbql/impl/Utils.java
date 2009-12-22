@@ -39,14 +39,14 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 
-public class Util {
+public class Utils {
 
     public static HBqlStatement parseJdbcStatement(final String sql) throws HBqlException {
 
         try {
             final HBqlStatement stmt = ParserUtil.parseJdbcStatement(sql);
 
-            if (!Util.isSelectStatement(stmt)
+            if (!Utils.isSelectStatement(stmt)
                 && !(stmt instanceof ConnectionStatement)
                 && !(stmt instanceof NonConnectionStatement))
                 throw new HBqlException("Unsupported statement type: " + stmt.getClass().getSimpleName() + " - " + sql);
@@ -130,5 +130,14 @@ public class Util {
             return false;
         }
         return true;
+    }
+
+    public static void checkForNullParameterValue(final Object val) throws HBqlException {
+        if (val == null)
+            throw new HBqlException("Parameter value cannot be NULL");
+    }
+
+    public static boolean isValidString(final String val) {
+        return val != null && val.trim().length() > 0;
     }
 }

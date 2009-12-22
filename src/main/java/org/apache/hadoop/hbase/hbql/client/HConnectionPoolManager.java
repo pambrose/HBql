@@ -23,6 +23,7 @@ package org.apache.hadoop.hbase.hbql.client;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionPoolImpl;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 
 import java.util.Map;
 
@@ -63,9 +64,7 @@ public class HConnectionPoolManager {
                                                     final String connectionPoolName,
                                                     final HBaseConfiguration config) throws HBqlException {
 
-        if (connectionPoolName != null
-            && connectionPoolName.length() > 0
-            && getConnectionPoolMap().containsKey(connectionPoolName))
+        if (Utils.isValidString(connectionPoolName) && getConnectionPoolMap().containsKey(connectionPoolName))
             throw new HBqlException("Connection pool already exists: " + connectionPoolName);
 
         final HConnectionPoolImpl connectionPool = new HConnectionPoolImpl(initConnectionPoolSize,
@@ -73,7 +72,9 @@ public class HConnectionPoolManager {
                                                                            connectionPoolName,
                                                                            config,
                                                                            getMaxPoolReferencesPerTablePerConnection());
-        getConnectionPoolMap().put(connectionPool.getName(), connectionPool);
+        // Add to map if it has valid name
+        if (Utils.isValidString(connectionPool.getName()))
+            getConnectionPoolMap().put(connectionPool.getName(), connectionPool);
 
         return connectionPool;
     }

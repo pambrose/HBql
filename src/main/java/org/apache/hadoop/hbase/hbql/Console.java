@@ -30,6 +30,7 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.statement.ImportStatement;
 import org.apache.hadoop.hbase.hbql.statement.VersionStatement;
 
@@ -160,7 +161,7 @@ public class Console {
             if (line == null || line.toLowerCase().startsWith("quit") || line.toLowerCase().startsWith("exit"))
                 break;
 
-            if (line.trim().length() > 0) {
+            if (Utils.isValidString(line)) {
                 stmtBuffer.append(line);
 
                 continuation = !line.trim().endsWith(";");

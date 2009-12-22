@@ -29,6 +29,7 @@ import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.Query;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
@@ -56,6 +57,7 @@ public class InsertSelectValues extends InsertValueSource {
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
+        Utils.checkForNullParameterValue(val);
         return this.getSelectStatement().setParameter(name, val);
     }
 

@@ -23,6 +23,7 @@ package org.apache.hadoop.hbase.hbql.mapping;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserSupport;
 import org.apache.hadoop.hbase.hbql.statement.args.ColumnWidth;
@@ -113,7 +114,7 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public String getFamilyQualifiedName() {
-        if (!this.isEmbedded() && this.getFamilyName() != null && this.getFamilyName().length() > 0)
+        if (!this.isEmbedded() && Utils.isValidString(this.getFamilyName()))
             return this.getFamilyName() + ":" + this.getColumnName();
         else
             return this.getColumnName();
@@ -163,7 +164,7 @@ public abstract class ColumnAttrib implements Serializable {
 
     protected void defineAccessors() throws HBqlException {
         try {
-            if (this.getGetter() != null && this.getGetter().length() > 0) {
+            if (Utils.isValidString(this.getGetter())) {
                 this.getterMethod = this.getMethod(this.getGetter());
 
                 // Check return type of getter
@@ -180,7 +181,7 @@ public abstract class ColumnAttrib implements Serializable {
         }
 
         try {
-            if (this.getSetter() != null && this.getSetter().length() > 0) {
+            if (Utils.isValidString(this.getSetter())) {
                 this.setterMethod = this.getMethod(this.getSetter(), Class.forName("[B"));
 
                 // Check if it takes single byte[] arg
@@ -339,8 +340,7 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public boolean hasAlias() {
-        return this.getColumnDefinition().getAliasName() != null
-               && this.getColumnDefinition().getAliasName().length() > 0;
+        return Utils.isValidString(this.getColumnDefinition().getAliasName());
     }
 
     public String getAliasName() {

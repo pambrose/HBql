@@ -40,7 +40,7 @@ public class HPreparedStatementImpl extends HStatementImpl implements HPreparedS
         super(hbqlConnection);
         this.sql = sql;
 
-        this.statement = Util.parseJdbcStatement(sql);
+        this.statement = Utils.parseJdbcStatement(sql);
 
         if ((this.getStatement() instanceof ParameterStatement)) {
             final ParameterStatement paramStmt = (ParameterStatement)this.getStatement();
@@ -79,13 +79,15 @@ public class HPreparedStatementImpl extends HStatementImpl implements HPreparedS
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
-        final ParameterStatement paramStmt = Util.getParameterStatement(this.getStatement());
+        Utils.checkForNullParameterValue(val);
+        final ParameterStatement paramStmt = Utils.getParameterStatement(this.getStatement());
         return paramStmt.setParameter(name, val);
     }
 
-    public void setParameter(final int i, final Object obj) throws HBqlException {
-        final ParameterStatement paramStmt = Util.getParameterStatement(this.getStatement());
+    public void setParameter(final int i, final Object val) throws HBqlException {
+        Utils.checkForNullParameterValue(val);
+        final ParameterStatement paramStmt = Utils.getParameterStatement(this.getStatement());
         final NamedParameter param = paramStmt.getNamedParameters().getParameter(i);
-        param.setParameter(obj);
+        param.setParameter(val);
     }
 }

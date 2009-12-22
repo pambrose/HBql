@@ -32,6 +32,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
@@ -149,7 +150,7 @@ public class WithArgs implements Serializable {
     }
 
     public boolean hasAnIndex() {
-        return this.getIndexName() != null && this.getIndexName().length() > 0;
+        return Utils.isValidString(this.getIndexName());
     }
 
     public void setKeyRangeArgs(final KeyRangeArgs keyRangeArgs) {

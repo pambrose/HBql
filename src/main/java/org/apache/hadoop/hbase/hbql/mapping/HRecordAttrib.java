@@ -25,6 +25,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.statement.args.DefaultArg;
 
 import java.lang.reflect.Method;
@@ -42,7 +43,7 @@ public class HRecordAttrib extends ColumnAttrib {
 
         this.defaultArg = this.evaluateDefaultValue(columnDefinition.getDefaultValue());
 
-        if (this.isAKeyAttrib() && this.getFamilyName().length() > 0)
+        if (this.isAKeyAttrib() && Utils.isValidString(this.getFamilyName()))
             throw new HBqlException("Key value " + this.getNameToUseInExceptions() + " cannot have a family name");
     }
 

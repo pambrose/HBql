@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.jdbc.impl;
 
 import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.Util;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.ParameterStatement;
 
@@ -55,7 +55,7 @@ public class PreparedStatementImpl extends StatementImpl implements PreparedStat
     public PreparedStatementImpl(final ConnectionImpl connectionImpl, final String sql) throws HBqlException {
         super(connectionImpl);
 
-        this.statement = Util.parseJdbcStatement(sql);
+        this.statement = Utils.parseJdbcStatement(sql);
 
         if ((this.getStatement() instanceof ParameterStatement)) {
             final ParameterStatement paramStmt = (ParameterStatement)this.getStatement();
@@ -92,10 +92,11 @@ public class PreparedStatementImpl extends StatementImpl implements PreparedStat
         return null;
     }
 
-    private void setParameter(final int i, final Object obj) throws HBqlException {
-        final ParameterStatement paramStmt = Util.getParameterStatement(this.getStatement());
+    private void setParameter(final int i, final Object val) throws HBqlException {
+        Utils.checkForNullParameterValue(val);
+        final ParameterStatement paramStmt = Utils.getParameterStatement(this.getStatement());
         final NamedParameter param = paramStmt.getNamedParameters().getParameter(i);
-        param.setParameter(obj);
+        param.setParameter(val);
     }
 
     public void setNull(final int i, final int i1) throws HBqlException {

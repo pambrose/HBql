@@ -31,6 +31,7 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
@@ -92,7 +93,7 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
     }
 
     public boolean hasAsName() {
-        return this.getAsName() != null && this.getAsName().length() > 0;
+        return Utils.isValidString(this.getAsName());
     }
 
     public boolean isADelegateColumnReference() {

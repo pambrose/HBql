@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.statement.args.ColumnWidth;
 import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 
@@ -115,7 +116,7 @@ public final class ColumnDefinition implements Serializable {
                                                         final String getter,
                                                         final String setter) {
         return new ColumnDefinition(familyName,
-                                    (columnName != null && columnName.length() > 0) ? columnName : field.getName(),
+                                    Utils.isValidString(columnName) ? columnName : field.getName(),
                                     field.getName(),
                                     fieldType,
                                     field.getType().isArray(),

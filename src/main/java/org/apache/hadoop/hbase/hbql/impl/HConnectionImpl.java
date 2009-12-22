@@ -440,8 +440,7 @@ public class HConnectionImpl implements HConnection {
     }
 
     public boolean usesAnExecutor() {
-        return this.getExecutor() != null
-               || (this.getExecutorPoolName() != null && this.getExecutorPoolName().length() > 0);
+        return this.getExecutor() != null || Utils.isValidString(this.getExecutorPoolName());
     }
 
     public String getExecutorPoolName() {

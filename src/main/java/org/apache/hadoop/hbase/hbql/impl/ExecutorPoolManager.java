@@ -38,7 +38,7 @@ public class ExecutorPoolManager {
                                                final int maxPoolSize,
                                                final int numberOfThreads) throws HBqlException {
 
-        if (poolName != null && poolName.length() > 0 && getExecutorPoolMap().containsKey(poolName))
+        if (Utils.isValidString(poolName) && getExecutorPoolMap().containsKey(poolName))
             throw new HBqlException("Executor pool already exists: " + poolName);
 
         final ExecutorPool executorPool = new ExecutorPool(poolName, maxPoolSize, numberOfThreads);
@@ -49,18 +49,16 @@ public class ExecutorPoolManager {
 
     public static boolean dropExecutorPool(final String name) {
 
-        if (name != null && name.length() > 0) {
-            if (getExecutorPoolMap().containsKey(name)) {
-                getExecutorPoolMap().remove(name);
-                return true;
-            }
+        if (Utils.isValidString(name) && getExecutorPoolMap().containsKey(name)) {
+            getExecutorPoolMap().remove(name);
+            return true;
         }
 
         return false;
     }
 
     public static boolean executorPoolExists(final String name) {
-        return name != null && name.length() > 0 && getExecutorPoolMap().containsKey(name);
+        return Utils.isValidString(name) && getExecutorPoolMap().containsKey(name);
     }
 
     public static ExecutorPool getExecutorPool(final String poolName) throws HBqlException {
