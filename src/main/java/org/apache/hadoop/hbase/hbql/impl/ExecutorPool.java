@@ -22,20 +22,20 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class QueryServicePool extends ElementPool<QueryService> {
+public class ExecutorPool extends ElementPool<Executor> {
 
-    private final int numberOfThreads;
+    private final int threadCount;
 
-    public QueryServicePool(final String name, final int maxThreadPoolSize, final int numberOfThreads) {
-        super(name, maxThreadPoolSize);
-        this.numberOfThreads = numberOfThreads;
+    public ExecutorPool(final String name, final int maxPoolSize, final int threadCount) {
+        super(name, maxPoolSize);
+        this.threadCount = threadCount;
     }
 
-    private int getNumberOfThreads() {
-        return numberOfThreads;
+    public int getThreadCount() {
+        return this.threadCount;
     }
 
-    protected QueryService newElement() throws HBqlException {
-        return new QueryService(this, this.getNumberOfThreads());
+    protected Executor newElement() throws HBqlException {
+        return new Executor(this, this.getThreadCount());
     }
 }

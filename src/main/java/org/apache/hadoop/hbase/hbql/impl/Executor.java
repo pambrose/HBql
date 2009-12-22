@@ -32,23 +32,23 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class QueryService implements PoolableElement {
+public class Executor implements PoolableElement {
 
     private final BlockingQueue<Future<ResultScanner>> futureQueue = new LinkedBlockingQueue<Future<ResultScanner>>();
     private final List<Future<ResultScanner>> futureList = Lists.newArrayList();
-    private final QueryServicePool queryServicePool;
+    private final ExecutorPool executorPool;
     private final ExecutorService executorService;
     private final ExecutorCompletionService<ResultScanner> executorCompletionService;
 
-    public QueryService(final QueryServicePool queryServicePool, final int numberOfThreads) {
-        this.queryServicePool = queryServicePool;
+    public Executor(final ExecutorPool executorPool, final int numberOfThreads) {
+        this.executorPool = executorPool;
         this.executorService = Executors.newFixedThreadPool(numberOfThreads);
         this.executorCompletionService = new ExecutorCompletionService<ResultScanner>(this.getExecutorService(),
                                                                                       this.getExecutorBackingQueue());
     }
 
-    private QueryServicePool getThreadPool() {
-        return this.queryServicePool;
+    private ExecutorPool getExecutorPool() {
+        return this.executorPool;
     }
 
     private ExecutorService getExecutorService() {
@@ -104,6 +104,6 @@ public class QueryService implements PoolableElement {
     }
 
     public void release() {
-        this.getThreadPool().release(this);
+        this.getExecutorPool().release(this);
     }
 }

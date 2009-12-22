@@ -135,8 +135,8 @@ options {backtrack=true;}
 					 		{retval = new DescribeIndexForMappingStatement($t.text, $t2.text);}
 	| keyDESCRIBE keyINDEX t=simpleId keyON keyTABLE t2=simpleId
 					 		{retval = new DescribeIndexForTableStatement($t.text, $t2.text);}
-	//| keyCREATE keyTHREAD keyPOOL t=simpleId LPAREN fd=familyDefinitionList RPAREN p=pred?
-	//						{retval = new CreateTableStatement($p.retval, $t.text, $fd.retval);}
+	| keyCREATE keyEXECUTOR keyPOOL t=simpleId LPAREN keyMAX_POOL_SIZE COLON ps=exprValue COMMA keyTHREAD_COUNT COLON tc=exprValue RPAREN p=pred?
+							{retval = new CreateExecutorPoolStatement($p.retval, $t.text, new ExecutorPoolArgs($ps.retval, $tc.retval));}
 	;
 
 indexColumnList returns [List<String> retval]
@@ -255,7 +255,7 @@ options {memoize=true;}
 	;
 
 keysRangeArgs returns [KeyRangeArgs retval]
-	: k=rangeList (keyTHREAD? keyPOOL p=simpleId)?	{retval = new KeyRangeArgs($k.retval, $p.text);}	
+	: k=rangeList 					{retval = new KeyRangeArgs($k.retval);}	
 	| keyALL					{retval = new KeyRangeArgs();}	
 	;
 
@@ -574,6 +574,7 @@ keyELSE                         : {isKeyword(input, "ELSE")}? ID;
 keyENABLE                       : {isKeyword(input, "ENABLE")}? ID;
 keyEND                          : {isKeyword(input, "END")}? ID;
 keyEVAL                         : {isKeyword(input, "EVAL")}? ID;
+keyEXECUTOR                     : {isKeyword(input, "EXECUTOR")}? ID;
 keyFALSE                        : {isKeyword(input, "FALSE")}? ID;
 keyFAMILY                       : {isKeyword(input, "FAMILY")}? ID;
 keyFILTER                       : {isKeyword(input, "FILTER")}? ID;
@@ -601,6 +602,7 @@ keyMAPPING                      : {isKeyword(input, "MAPPING")}? ID;
 keyMAPPINGS                     : {isKeyword(input, "MAPPINGS")}? ID;
 keyMAP_FILE_INDEX_INTERVAL      : {isKeyword(input, "MAP_FILE_INDEX_INTERVAL")}? ID;
 keyMAX                          : {isKeyword(input, "MAX")}? ID;
+keyMAX_POOL_SIZE                : {isKeyword(input, "MAX_POOL_SIZE")}? ID;
 keyMAX_VERSIONS                 : {isKeyword(input, "MAX_VERSIONS")}? ID;
 keyNONE                         : {isKeyword(input, "NONE")}? ID;
 keyNOT                          : {isKeyword(input, "NOT")}? ID;
@@ -619,7 +621,7 @@ keyTABLE                        : {isKeyword(input, "TABLE")}? ID;
 keyTABLES                       : {isKeyword(input, "TABLES")}? ID;
 keyTEMP                         : {isKeyword(input, "TEMP")}? ID;
 keyTHEN                         : {isKeyword(input, "THEN")}? ID;
-keyTHREAD                       : {isKeyword(input, "THREAD")}? ID;
+keyTHREAD_COUNT                 : {isKeyword(input, "THREAD_COUNT")}? ID;
 keyTIMESTAMP                    : {isKeyword(input, "TIMESTAMP")}? ID;
 keyTO                           : {isKeyword(input, "TO")}? ID;
 keyTRUE                         : {isKeyword(input, "TRUE")}? ID;

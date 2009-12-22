@@ -69,6 +69,7 @@ public class HConnectionImpl implements HConnection {
     private volatile HBaseAdmin hbaseAdmin = null;
     private volatile IndexedTableAdmin indexTableAdmin = null;
     private volatile boolean closed = false;
+    private String executorPoolName = null;
 
     public HConnectionImpl(final HBaseConfiguration hbaseConfig,
                            final HConnectionPoolImpl connectionPool,
@@ -427,6 +428,24 @@ public class HConnectionImpl implements HConnection {
         }
     }
 
+    public Executor takeExecutor() throws HBqlException {
+        this.validateExecutorPoolNameExists(this.getExecutorPoolName());
+        final ExecutorPool pool = ExecutorPoolManager.getExecutorPool(this.getExecutorPoolName());
+        return pool.take();
+    }
+
+    public boolean usesExecutorPool() {
+        return this.getExecutorPoolName() != null && this.getExecutorPoolName().length() > 0;
+    }
+
+    public String getExecutorPoolName() {
+        return this.executorPoolName;
+    }
+
+    public void setExecutorPoolName(final String poolName) {
+        this.executorPoolName = poolName;
+    }
+
     public void validateTableName(final String tableName) throws HBqlException {
         if (!this.tableExists(tableName))
             throw new HBqlException("Table not found: " + tableName);
@@ -445,5 +464,10 @@ public class HConnectionImpl implements HConnection {
     public void validateIndexExistsForTable(final String indexName, final String tableName) throws HBqlException {
         if (!this.indexExistsForTable(indexName, tableName))
             throw new HBqlException("Index " + indexName + " not defined for table " + tableName);
+    }
+
+    public void validateExecutorPoolNameExists(final String poolName) throws HBqlException {
+        if (!ExecutorPoolManager.executorPoolNameExists(poolName))
+            throw new HBqlException("Query executor pool name " + poolName + " not defined.");
     }
 }

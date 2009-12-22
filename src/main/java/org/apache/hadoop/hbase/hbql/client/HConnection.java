@@ -93,4 +93,10 @@ public interface HConnection extends PoolableElement {
     Set<HMapping> getMappings() throws HBqlException;
 
     void reset();
+
+    void setExecutorPoolName(String name);
+
+    String getExecutorPoolName();
+
+    boolean usesExecutorPool();
 }

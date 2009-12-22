@@ -38,7 +38,7 @@ public abstract class ElementPool<T extends PoolableElement> {
         this.elementPool = new ArrayBlockingQueue<T>(this.getMaxPoolSize());
     }
 
-    protected int getMaxPoolSize() {
+    public int getMaxPoolSize() {
         return this.maxPoolSize;
     }
 

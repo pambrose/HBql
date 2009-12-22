@@ -34,16 +34,16 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 
-public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
+public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
 
-    private final QueryService queryService;
+    private final Executor executor;
 
 
-    ThreadPoolResultSetImpl(final Query<T> query) throws HBqlException {
+    ExecutorResultSetImpl(final Query<T> query) throws HBqlException {
         super(query);
 
         // This may block waiting for a ExecutorService to become available
-        this.queryService = ThreadPoolManager.getThreadPool(getThreadPoolName()).take();
+        this.executor = this.getQuery().getHConnectionImpl().takeExecutor();
 
         // Submit work to executor completion service
         final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
@@ -67,12 +67,8 @@ public class ThreadPoolResultSetImpl<T> extends HResultSetImpl<T> {
         }
     }
 
-    private QueryService getQueryService() {
-        return this.queryService;
-    }
-
-    private String getThreadPoolName() {
-        return this.getQuery().getSelectStmt().getWithArgs().getKeyRangeArgs().getThreadPoolName();
+    private Executor getQueryService() {
+        return this.executor;
     }
 
     public void close() {

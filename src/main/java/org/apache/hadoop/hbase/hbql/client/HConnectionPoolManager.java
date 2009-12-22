@@ -62,18 +62,18 @@ public class HConnectionPoolManager {
                                                     final int maxConnectionPoolSize,
                                                     final String connectionPoolName,
                                                     final HBaseConfiguration config) throws HBqlException {
+
+        if (connectionPoolName != null
+            && connectionPoolName.length() > 0
+            && getConnectionPoolMap().containsKey(connectionPoolName))
+            throw new HBqlException("Connection pool already exists: " + connectionPoolName);
+
         final HConnectionPoolImpl connectionPool = new HConnectionPoolImpl(initConnectionPoolSize,
                                                                            maxConnectionPoolSize,
                                                                            connectionPoolName,
                                                                            config,
                                                                            getMaxPoolReferencesPerTablePerConnection());
-
-        if (connectionPool.getName() != null && connectionPool.getName().length() > 0) {
-            if (getConnectionPoolMap().containsKey(connectionPool.getName()))
-                throw new HBqlException("Connection pool already exists: " + connectionPool.getName());
-
-            getConnectionPoolMap().put(connectionPool.getName(), connectionPool);
-        }
+        getConnectionPoolMap().put(connectionPool.getName(), connectionPool);
 
         return connectionPool;
     }

@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.Util;
-import org.apache.hadoop.hbase.hbql.impl.ThreadPoolManager;
+import org.apache.hadoop.hbase.hbql.impl.ExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -166,7 +166,7 @@ public class ServerFilterTest extends TestSupport {
         // HStatement stmt = connection.createStatement();
         // System.out.println(stmt.execute("CREATE THREAD POOL threadpool1 (size: 5, threads: 10)"));
 
-        ThreadPoolManager.newThreadPool("threadPool1", 2, 10);
+        ExecutorPoolManager.newExecutorPool("threadPool1", 2, 10);
 
         final String q1 = "select * from tab3 WITH "
                           //+ "KEYS '0000000001', '0000000002', '0000000003', '0000000003', '0000000004', '0000000005' THREAD POOL threadPool1 "
@@ -182,10 +182,10 @@ public class ServerFilterTest extends TestSupport {
     @Test
     public void simpleSelect10() throws HBqlException {
 
-        // HStatement stmt = connection.createStatement();
-        // System.out.println(stmt.execute("CREATE THREAD POOL threadpool1 (size: 5, threads: 10)"));
+        HStatement stmt = connection.createStatement();
+        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2)"));
 
-        ThreadPoolManager.newThreadPool("threadPool1", 2, 10);
+        connection.setExecutorPoolName("threadPool1");
 
         for (int i = 0; i < 100; i++) {
             final String q1 = "select * from tab3 WITH "
@@ -219,7 +219,7 @@ public class ServerFilterTest extends TestSupport {
                               "'0000000001'TO '0000000009', " +
                               "'0000000001'TO '0000000009', " +
                               "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009' THREAD POOL threadPool1 "
+                              "'0000000001'TO '0000000009' "
                               + "SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ";
             // + "CLIENT FILTER where val1 BETWEEN '11' AND '13' ";
             System.out.println("Values for iteration:" + i);
