@@ -25,7 +25,7 @@ CREATE EXECUTOR POOL pool_name '(' MAX_POOL_SIZE ':' integer_value ',' THREAD_CO
     Requests for Executors will block if all elements of the pool have been taken.  Executors are released
     back into the pool when ResultSets are closed.
 
-    * Executors are used in queries such that each 
+    * Executors are used in queries such that each KeyRange is processed by a different thread in the Executor.
 
 *Example
 

@@ -25,7 +25,7 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.NullIterator;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.ResultsIterator;
+import org.apache.hadoop.hbase.hbql.impl.ResultSetIterator;
 import org.apache.yaoql.impl.ObjectQueryImpl;
 
 import java.util.Collection;
@@ -70,7 +70,7 @@ public class ObjectResultSet<T> implements Iterable<T> {
     public Iterator<T> iterator() {
 
         try {
-            return new ResultsIterator<T>(null) {
+            return new ResultSetIterator<T>(null) {
 
                 protected T fetchNextObject() throws HBqlException {
 

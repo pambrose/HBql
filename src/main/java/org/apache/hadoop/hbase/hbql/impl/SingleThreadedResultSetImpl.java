@@ -45,7 +45,7 @@ public class SingleThreadedResultSetImpl<T> extends HResultSetImpl<T> {
     public Iterator<T> iterator() {
 
         try {
-            return new ResultsIterator<T>(this) {
+            return new ResultSetIterator<T>(this) {
 
                 protected boolean moreResultsPending() {
                     return getRowRequestIterator().hasNext();

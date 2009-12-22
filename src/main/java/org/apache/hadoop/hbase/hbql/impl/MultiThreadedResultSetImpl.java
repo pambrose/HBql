@@ -33,14 +33,14 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 
-public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
+public class MultiThreadedResultSetImpl<T> extends HResultSetImpl<T> {
 
     private final ExecutorImpl executor;
     private volatile boolean closed = false;
 
-    ExecutorResultSetImpl(final Query<T> query) throws HBqlException {
+    MultiThreadedResultSetImpl(final Query<T> query) throws HBqlException {
         super(query);
-        // This may block waiting for a ExecutorPool to become available
+        // This may block waiting for a Executor to become available from the ExecutorPool
         this.executor = this.getQuery().getHConnectionImpl().getExecutorForConnection();
         // Submit work to executor
         this.submitWork();
@@ -86,7 +86,7 @@ public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
     public Iterator<T> iterator() {
 
         try {
-            return new ResultsIterator<T>(this) {
+            return new ResultSetIterator<T>(this) {
 
                 protected boolean moreResultsPending() {
                     return getExecutor().moreResultsPending();

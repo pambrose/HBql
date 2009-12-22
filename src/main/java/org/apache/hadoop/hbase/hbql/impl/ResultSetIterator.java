@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 
 import java.util.Iterator;
 
-public abstract class ResultsIterator<T> implements Iterator<T> {
+public abstract class ResultSetIterator<T> implements Iterator<T> {
 
     // Record count keeps track of values that have evaluated as true and returned to user
     private long returnedRecordCount = 0L;
@@ -39,7 +39,7 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
     private T nextObject = null;
     private AggregateRecord aggregateRecord;
 
-    protected ResultsIterator(final HResultSetImpl<T> resultSet) throws HBqlException {
+    protected ResultSetIterator(final HResultSetImpl<T> resultSet) throws HBqlException {
         this.resultSet = resultSet;
 
         if (this.getResultSet() != null) {
@@ -70,23 +70,6 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
 
     protected void setNextObject(final T nextObject) {
         this.nextObject = nextObject;
-    }
-
-    public T next() {
-
-        // Save value to return;
-        final T retval = this.getNextObject();
-
-        // Now prefetch next value so that hasNext() will be correct
-        try {
-            this.setNextObject(this.fetchNextObject(), false);
-        }
-        catch (HBqlException e) {
-            e.printStackTrace();
-            this.setNextObject(null, true);
-        }
-
-        return retval;
     }
 
     public boolean hasNext() {
@@ -144,6 +127,23 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
         // If the query is finished then clean up.
         if (!this.hasNext())
             this.cleanUp(fromExceptionCatch);
+    }
+
+    public T next() {
+
+        // Save value to return;
+        final T retval = this.getNextObject();
+
+        // Now prefetch next value so that hasNext() will be correct
+        try {
+            this.setNextObject(this.fetchNextObject(), false);
+        }
+        catch (HBqlException e) {
+            e.printStackTrace();
+            this.setNextObject(null, true);
+        }
+
+        return retval;
     }
 
     @SuppressWarnings("unchecked")
