@@ -469,7 +469,9 @@ public class WithArgs implements Serializable {
         }
         catch (HBqlException e) {
             // Try HBqlFilter instead
-            return HBqlFilter.newHBqlFilter(this.getStatementContext(), this.getServerExpressionTree());
+            if (this.getServerExpressionTree() != null)
+                this.getServerExpressionTree().setStatementContext(this.getStatementContext());
+            return HBqlFilter.newHBqlFilter(this.getServerExpressionTree());
         }
     }
 }

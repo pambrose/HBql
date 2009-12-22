@@ -169,7 +169,12 @@ public class ServerFilterTest extends TestSupport {
         ThreadPoolManager.newThreadPool("threadPool1", 2, 10);
 
         final String q1 = "select * from tab3 WITH "
-                          + "KEYS '0000000001', '0000000002', '0000000003', '0000000003', '0000000004' THREAD POOL threadPool1 "
+                          //+ "KEYS '0000000001', '0000000002', '0000000003', '0000000003', '0000000004', '0000000005' THREAD POOL threadPool1 "
+                          + "KEYS '0000000001', '0000000002', '0000000003', '0000000003', '0000000004', '0000000005'  "
+                          //+ "KEYS '0000000001'TO '0000000005' THREAD POOL threadPool1 "
+                          //+ "KEYS  '0000000005' THREAD POOL threadPool1 "
+                          //+ "KEYS  '0000000005' "
+                          //+ "SERVER FILTER where val1 BETWEEN '0000000001' AND '0000000003' ";
                           + "SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ";
         showValues(q1, 4, true);
     }
@@ -182,7 +187,7 @@ public class ServerFilterTest extends TestSupport {
 
         ThreadPoolManager.newThreadPool("threadPool1", 2, 10);
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100; i++) {
             final String q1 = "select * from tab3 WITH "
                               + "KEYS " +
                               "'0000000001'TO '0000000009', " +

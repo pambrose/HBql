@@ -23,6 +23,7 @@ package org.apache.yaoql.client;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.NullIterator;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.ResultsIterator;
 import org.apache.yaoql.impl.ObjectQueryImpl;
@@ -69,7 +70,7 @@ public class ObjectResultSet<T> implements Iterable<T> {
     public Iterator<T> iterator() {
 
         try {
-            return new ResultsIterator<T>(-1L) {
+            return new ResultsIterator<T>(null) {
 
                 protected T fetchNextObject() throws HBqlException {
 
@@ -96,6 +97,14 @@ public class ObjectResultSet<T> implements Iterable<T> {
 
                 protected boolean moreResultsPending() {
                     return false;
+                }
+
+                protected Iterator<Result> getNextResultIterator() throws HBqlException {
+                    return null;
+                }
+
+                protected void cleanUp(final boolean fromExceptionCatch) {
+                    // No op
                 }
             };
         }

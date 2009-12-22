@@ -20,7 +20,11 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.client.ResultMissingColumnException;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.QueryListener;
+import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 
 import java.util.Iterator;
 
@@ -29,19 +33,36 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
     // Record count keeps track of values that have evaluated as true and returned to user
     private long returnedRecordCount = 0L;
 
+    private final HResultSetImpl<T> resultSet;
     private final long returnedRecordLimit;
+    private Iterator<Result> currentResultIterator = null;
     private T nextObject = null;
+    private AggregateRecord aggregateRecord;
 
-    protected ResultsIterator(final long returnedRecordLimit) throws HBqlException {
-        this.returnedRecordLimit = returnedRecordLimit;
+    protected ResultsIterator(final HResultSetImpl<T> resultSet) throws HBqlException {
+        this.resultSet = resultSet;
+
+        if (this.getResultSet() != null) {
+            this.returnedRecordLimit = this.getResultSet().getWithArgs().getLimit();
+            this.setAggregateRecord(AggregateRecord.newAggregateRecord(resultSet.getQuery().getSelectStmt()));
+        }
+        else {
+            this.returnedRecordLimit = -1L;
+        }
 
         // Prime the iterator with the first value
         this.setNextObject(this.fetchNextObject());
     }
 
-    protected abstract T fetchNextObject() throws HBqlException;
+    protected abstract void cleanUp(final boolean fromExceptionCatch);
 
-    protected abstract void setNextObject(final T nextObject, final boolean fromExceptionCatch);
+    protected abstract boolean moreResultsPending();
+
+    protected abstract Iterator<Result> getNextResultIterator() throws HBqlException;
+
+    private HResultSetImpl<T> getResultSet() {
+        return this.resultSet;
+    }
 
     protected T getNextObject() {
         return this.nextObject;
@@ -77,7 +98,8 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
     }
 
     private boolean returnedRecordLimitMet() {
-        return this.getReturnedRecordLimit() > 0 && this.getReturnedRecordCount() >= this.getReturnedRecordLimit();
+        return this.getReturnedRecordLimit() > 0
+               && this.getReturnedRecordCount() >= this.getReturnedRecordLimit();
     }
 
     private long getReturnedRecordLimit() {
@@ -86,6 +108,22 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
 
     private long getReturnedRecordCount() {
         return this.returnedRecordCount;
+    }
+
+    private Iterator<Result> getCurrentResultIterator() {
+        return this.currentResultIterator;
+    }
+
+    private void setCurrentResultIterator(final Iterator<Result> currentResultIterator) {
+        this.currentResultIterator = currentResultIterator;
+    }
+
+    private void setAggregateRecord(final AggregateRecord aggregateRecord) {
+        this.aggregateRecord = aggregateRecord;
+    }
+
+    private AggregateRecord getAggregateRecord() throws HBqlException {
+        return this.aggregateRecord;
     }
 
     protected void incrementReturnedRecordCount() {
@@ -97,5 +135,75 @@ public abstract class ResultsIterator<T> implements Iterator<T> {
                 this.next();
             }
         }
+    }
+
+    protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
+
+        this.setNextObject(nextObject);
+
+        // If the query is finished then clean up.
+        if (!this.hasNext())
+            this.cleanUp(fromExceptionCatch);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected T fetchNextObject() throws HBqlException {
+
+        final ResultAccessor resultAccessor = this.getResultSet().getQuery().getSelectStmt().getResultAccessor();
+
+        while (this.getCurrentResultIterator() != null || moreResultsPending()) {
+
+            if (this.getCurrentResultIterator() == null)
+                this.setCurrentResultIterator(getNextResultIterator());
+
+            while (this.getCurrentResultIterator().hasNext()) {
+
+                final Result result = this.getCurrentResultIterator().next();
+
+                try {
+                    if (this.getResultSet().getClientExpressionTree() != null
+                        && !this.getResultSet()
+                            .getClientExpressionTree()
+                            .evaluate(this.getResultSet().getHConnectionImpl(), result))
+                        continue;
+                }
+                catch (ResultMissingColumnException e) {
+                    continue;
+                }
+
+                incrementReturnedRecordCount();
+
+                if (this.getResultSet().getSelectStmt().isAnAggregateQuery()) {
+                    this.getAggregateRecord().applyValues(result);
+                }
+                else {
+                    final T val = (T)resultAccessor.newObject(this.getResultSet().getHConnectionImpl(),
+                                                              this.getResultSet().getSelectStmt(),
+                                                              this.getResultSet()
+                                                                      .getSelectStmt().getSelectElementList(),
+                                                              this.getResultSet().getMaxVersions(),
+                                                              result);
+
+                    if (this.getResultSet().getListeners() != null)
+                        for (final QueryListener<T> listener : this.getResultSet().getListeners())
+                            listener.onEachRow(val);
+
+                    return val;
+                }
+            }
+
+            this.setCurrentResultIterator(null);
+            this.getResultSet().closeResultScanner(this.getResultSet().getCurrentResultScanner(), true);
+        }
+
+        if (this.getResultSet().getSelectStmt().isAnAggregateQuery()
+            && this.getAggregateRecord() != null) {
+            // Stash the value and then null it out for next time through
+            final AggregateRecord retval = this.getAggregateRecord();
+            this.setAggregateRecord(null);
+            return (T)retval;
+        }
+
+        return null;
     }
 }

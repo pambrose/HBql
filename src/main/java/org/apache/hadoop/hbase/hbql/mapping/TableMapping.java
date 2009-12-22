@@ -285,7 +285,7 @@ public class TableMapping extends Mapping implements HMapping {
         final StatementContext statementContext = new NonStatement(this, null);
         statementContext.setResultAccessor(new HRecordResultAccessor(statementContext));
         final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(query, statementContext);
-        return new HBqlFilter(expressionTree);
+        return HBqlFilter.newHBqlFilter(expressionTree);
     }
 
     public boolean isTempMapping() {

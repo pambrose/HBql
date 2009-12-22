@@ -44,7 +44,7 @@ public class QueryService implements PoolableElement {
         this.queryServicePool = queryServicePool;
         this.executorService = Executors.newFixedThreadPool(numberOfThreads);
         this.executorCompletionService = new ExecutorCompletionService<ResultScanner>(this.getExecutorService(),
-                                                                                      this.getFutureQueue());
+                                                                                      this.getExecutorBackingQueue());
     }
 
     private QueryServicePool getThreadPool() {
@@ -59,7 +59,7 @@ public class QueryService implements PoolableElement {
         return this.futureList;
     }
 
-    private BlockingQueue<Future<ResultScanner>> getFutureQueue() {
+    private BlockingQueue<Future<ResultScanner>> getExecutorBackingQueue() {
         return this.futureQueue;
     }
 
@@ -68,7 +68,7 @@ public class QueryService implements PoolableElement {
     }
 
     public Future<ResultScanner> submit(final Callable<ResultScanner> job) {
-        final Future<ResultScanner> future = this.executorCompletionService.submit(job);
+        final Future<ResultScanner> future = this.getExecutorCompletionService().submit(job);
         this.getFutureList().add(future);
         return future;
     }
@@ -80,13 +80,15 @@ public class QueryService implements PoolableElement {
     public boolean moreResultsPending() {
 
         // See if results are waiting to be processed
-        if (this.getFutureQueue().size() > 0)
+        if (this.getExecutorBackingQueue().size() > 0) {
             return true;
+        }
 
         // See if work is still taking place.
         for (final Future<ResultScanner> future : this.getFutureList())
-            if (!future.isDone())
+            if (!future.isDone()) {
                 return true;
+            }
 
         return false;
     }
@@ -98,7 +100,7 @@ public class QueryService implements PoolableElement {
         }
 
         this.getFutureList().clear();
-        this.getFutureQueue().clear();
+        this.getExecutorBackingQueue().clear();
     }
 
     public void release() {

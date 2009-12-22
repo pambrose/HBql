@@ -22,6 +22,8 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.literal.DateLiteral;
+import org.apache.expreval.util.Lists;
+import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
@@ -34,10 +36,12 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
 
     protected int maxVersions = 0;
 
+    private final List<ResultScanner> resultScannerList = Lists.newArrayList();
+    private ResultScanner currentResultScanner = null;
+
     private final Query<T> query;
     private final ExpressionTree clientExpressionTree;
     private HTableWrapper tableWrapper;
-    private AggregateRecord aggregateRecord;
 
     protected HResultSetImpl(final Query<T> query) throws HBqlException {
         this.query = query;
@@ -46,7 +50,6 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
         this.tableWrapper = getHConnectionImpl().newHTableWrapper(getWithArgs(), getTableName());
 
         this.getQuery().getSelectStmt().determineIfAggregateQuery();
-        this.aggregateRecord = AggregateRecord.newAggregateRecord(getSelectStmt());
 
         // Set it once per evaluation
         DateLiteral.resetNow();
@@ -57,12 +60,39 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
         }
     }
 
-    protected void setAggregateRecord(final AggregateRecord aggregateRecord) {
-        this.aggregateRecord = aggregateRecord;
+    protected List<ResultScanner> getResultScannerList() {
+        return this.resultScannerList;
     }
 
-    protected AggregateRecord getAggregateRecord() throws HBqlException {
-        return this.aggregateRecord;
+    protected ResultScanner getCurrentResultScanner() {
+        return this.currentResultScanner;
+    }
+
+    protected void setCurrentResultScanner(final ResultScanner currentResultScanner) {
+        // First close previous ResultScanner before reassigning
+        closeResultScanner(getCurrentResultScanner(), true);
+        this.currentResultScanner = currentResultScanner;
+        getResultScannerList().add(getCurrentResultScanner());
+    }
+
+    protected void closeResultScanner(final ResultScanner scanner, final boolean removeFromList) {
+        if (scanner != null) {
+            try {
+                scanner.close();
+            }
+            catch (Exception e) {
+                // Do nothing
+            }
+
+            if (removeFromList)
+                getResultScannerList().remove(scanner);
+        }
+    }
+
+    public void close() {
+        for (final ResultScanner scanner : this.getResultScannerList())
+            closeResultScanner(scanner, false);
+        this.getResultScannerList().clear();
     }
 
     protected int getMaxVersions() {

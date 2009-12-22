@@ -105,9 +105,8 @@ public class Query<E> {
     }
 
     public HResultSet<E> newResultSet() throws HBqlException {
-        if (this.getSelectStmt().getWithArgs().getKeyRangeArgs().useThreadPool())
-            return new ThreadPoolResultSetImpl<E>(this);
-        else
-            return new SingleThreadedResultSetImpl<E>(this);
+        return (this.getSelectStmt().getWithArgs().getKeyRangeArgs().useThreadPool())
+               ? new ThreadPoolResultSetImpl<E>(this)
+               : new SingleThreadedResultSetImpl<E>(this);
     }
 }

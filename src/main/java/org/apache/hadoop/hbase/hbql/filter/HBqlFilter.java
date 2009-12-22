@@ -52,22 +52,16 @@ public class HBqlFilter implements Filter {
 
     public transient HRecordImpl record = new HRecordImpl((StatementContext)null);
 
-    public HBqlFilter(final ExpressionTree expressionTree) {
+    public HBqlFilter() {
+    }
+
+    private HBqlFilter(final ExpressionTree expressionTree) {
         this.expressionTree = expressionTree;
         this.getHRecord().setStatementContext(this.getExpressionTree().getStatementContext());
     }
 
-    public HBqlFilter() {
-    }
-
-    public static HBqlFilter newHBqlFilter(final StatementContext statementContext,
-                                           final ExpressionTree origExpressionTree) throws HBqlException {
-
-        if (origExpressionTree == null)
-            return null;
-
-        origExpressionTree.setStatementContext(statementContext);
-        return new HBqlFilter(origExpressionTree);
+    public static HBqlFilter newHBqlFilter(final ExpressionTree expressionTree) throws HBqlException {
+        return (expressionTree == null) ? null : new HBqlFilter(expressionTree);
     }
 
     private HRecordImpl getHRecord() {
@@ -131,26 +125,32 @@ public class HBqlFilter implements Filter {
 
     public boolean filterRow() {
 
-        // LOG.debug("In filterRow()");
+        LOG.debug("In filterRow()");
 
+        boolean filterRow;
         if (!this.hasValidExpressionTree()) {
-            return false;
+            LOG.debug("In filterRow() had invalid hasValidExpressionTree(): ");
+            filterRow = false;
         }
         else {
             try {
-                final boolean filterRecord = !this.getExpressionTree().evaluate(null, this.getHRecord());
-                return filterRecord;
+                filterRow = !this.getExpressionTree().evaluate(null, this.getHRecord());
+                LOG.debug("In filterRow() filtering record: " + filterRow);
             }
             catch (ResultMissingColumnException e) {
-                return true;
+                LOG.debug("In filterRow() had ResultMissingColumnException exception: " + e.getMessage());
+                filterRow = true;
             }
             catch (HBqlException e) {
                 e.printStackTrace();
                 logException(LOG, e);
                 LOG.debug("In filterRow() had exception: " + e.getMessage());
-                return true;
+                filterRow = true;
             }
         }
+
+        LOG.debug("In filterRow() returning: " + filterRow);
+        return filterRow;
     }
 
     public void write(DataOutput out) throws IOException {
@@ -178,6 +178,18 @@ public class HBqlFilter implements Filter {
             LOG.debug("In read(): " + e.getCause());
             throw new IOException("HPersistException: " + e.getCause());
         }
+    }
+
+    public static void logException(final Log log, final Exception e) {
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final PrintWriter oos = new PrintWriter(baos);
+
+        e.printStackTrace(oos);
+        oos.flush();
+        oos.close();
+
+        log.debug(baos.toString());
     }
 
     public static void testFilter(final HBqlFilter origFilter) throws HBqlException, IOException {
@@ -212,17 +224,5 @@ public class HBqlFilter implements Filter {
         }
 
         boolean v = filter.filterRow();
-    }
-
-    public static void logException(final Log log, final Exception e) {
-
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final PrintWriter oos = new PrintWriter(baos);
-
-        e.printStackTrace(oos);
-        oos.flush();
-        oos.close();
-
-        log.debug(baos.toString());
     }
 }
