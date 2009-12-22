@@ -23,6 +23,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class ExecutorPoolManager {
@@ -67,5 +68,9 @@ public class ExecutorPoolManager {
             throw new HBqlException("Missing executor pool: " + poolName);
 
         return ExecutorPoolManager.getExecutorPoolMap().get(poolName);
+    }
+
+    public static Collection<ExecutorPool> getExecutorPools() {
+        return getExecutorPoolMap().values();
     }
 }

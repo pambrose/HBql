@@ -47,9 +47,14 @@ public class StringBetweenStmt extends GenericBetweenStmt {
     public Boolean getValue(final HConnectionImpl connection,
                             final Object object) throws HBqlException, ResultMissingColumnException {
 
-        final String strval = (String)this.getExprArg(0).getValue(connection, object);
-        final boolean retval = strval.compareTo((String)this.getExprArg(1).getValue(connection, object)) >= 0
-                               && strval.compareTo((String)this.getExprArg(2).getValue(connection, object)) <= 0;
+        final String val = (String)this.getExprArg(0).getValue(connection, object);
+        final String lowerVal = (String)this.getExprArg(1).getValue(connection, object);
+        final String upperVal = (String)this.getExprArg(2).getValue(connection, object);
+
+        if (val == null || lowerVal == null || upperVal == null)
+            return false;
+
+        final boolean retval = val.compareTo(lowerVal) >= 0 && val.compareTo(upperVal) <= 0;
 
         return (this.isNot()) ? !retval : retval;
     }

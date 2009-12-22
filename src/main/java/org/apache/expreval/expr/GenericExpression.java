@@ -226,6 +226,9 @@ public abstract class GenericExpression implements GenericValue {
                                                 final CompareFilter.CompareOp compareOp,
                                                 final WritableByteArrayComparable comparator) throws HBqlException {
 
+        if (attrib.isAKeyAttrib())
+            throw new InvalidServerFilterExpressionException("Cannot use a key attribute");
+
         final SingleColumnValueFilter filter = new SingleColumnValueFilter(attrib.getFamilyNameAsBytes(),
                                                                            attrib.getColumnNameAsBytes(),
                                                                            compareOp,

@@ -51,6 +51,7 @@ HBql Statements
 
     **{{{./delete.html}DELETE}}
 
+
 * Queries
 
     **{{{./select.html}SELECT}}
@@ -61,6 +62,7 @@ HBql Statements
 
     **{{{./expressions.html}Expressions}}
 
+
 * Executor Pools
 
     **{{{./create-executor.html}CREATE EXECUTOR POOL}}
@@ -69,7 +71,6 @@ HBql Statements
 
     **{{{./show-executors.html}SHOW EXECUTOR POOLS}}
 
-    **{{{./describe-executor.html}DESCRIBE EXECUTOR POOL}}
 
 * Console
 

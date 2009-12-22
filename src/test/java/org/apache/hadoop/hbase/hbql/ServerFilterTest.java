@@ -28,7 +28,6 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.Util;
-import org.apache.hadoop.hbase.hbql.impl.ExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -97,6 +96,8 @@ public class ServerFilterTest extends TestSupport {
             rec_cnt++;
         }
 
+        results.close();
+
         assertTrue(rec_cnt == cnt);
     }
 
@@ -163,19 +164,21 @@ public class ServerFilterTest extends TestSupport {
     @Test
     public void simpleSelect9() throws HBqlException {
 
-        // HStatement stmt = connection.createStatement();
-        // System.out.println(stmt.execute("CREATE THREAD POOL threadpool1 (size: 5, threads: 10)"));
+        HStatement stmt = connection.createStatement();
+        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2) " +
+                                        "if not executorPoolExists('threadPool1')"));
 
-        ExecutorPoolManager.newExecutorPool("threadPool1", 2, 10);
+        // ExecutorPoolManager.newExecutorPool("threadPool1", 2, 10);
 
-        final String q1 = "select * from tab3 WITH "
-                          //+ "KEYS '0000000001', '0000000002', '0000000003', '0000000003', '0000000004', '0000000005' THREAD POOL threadPool1 "
+        final String q1 = "select * from tab3 "
+                          + "WITH "
                           + "KEYS '0000000001', '0000000002', '0000000003', '0000000003', '0000000004', '0000000005'  "
-                          //+ "KEYS '0000000001'TO '0000000005' THREAD POOL threadPool1 "
-                          //+ "KEYS  '0000000005' THREAD POOL threadPool1 "
+                          //+ "KEYS '0000000001'TO '0000000005' "
                           //+ "KEYS  '0000000005' "
-                          //+ "SERVER FILTER where val1 BETWEEN '0000000001' AND '0000000003' ";
+                          //+ "SERVER FILTER where keyval BETWEEN '0000000001' AND '0000000003' ";
+                          // + "SERVER FILTER where keyval = '0000000001' ";
                           + "SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ";
+
         showValues(q1, 4, true);
     }
 
@@ -183,10 +186,10 @@ public class ServerFilterTest extends TestSupport {
     public void simpleSelect10() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
-        System.out
-                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2) if not executorPoolExists('threadPool1')"));
-        System.out
-                .println(stmt.execute("DROP EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2) if executorPoolExists('threadPool1')"));
+        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2) " +
+                                        "if not executorPoolExists('threadPool1')"));
+        System.out.println(stmt.execute("DROP EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2) " +
+                                        "if executorPoolExists('threadPool1')"));
         System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2)"));
 
         connection.setExecutorPoolName("threadPool1");

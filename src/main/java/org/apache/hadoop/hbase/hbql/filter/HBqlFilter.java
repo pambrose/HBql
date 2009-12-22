@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 public class HBqlFilter implements Filter {
 
@@ -68,7 +69,7 @@ public class HBqlFilter implements Filter {
         return this.record;
     }
 
-    private TableMapping getMapping() throws HBqlException {
+    private TableMapping getMapping() {
         return this.getExpressionTree().getTableMapping();
     }
 
@@ -87,6 +88,14 @@ public class HBqlFilter implements Filter {
 
     public boolean filterRowKey(byte[] buffer, int offset, int length) {
         // LOG.debug("In filterRowKey()");
+        //final String rowKey = new String(buffer, offset, length);
+        final byte[] rowKey = Arrays.copyOfRange(buffer, offset, length);
+        try {
+            this.getMapping().getKeyAttrib().setCurrentValue(record, 0, rowKey);
+        }
+        catch (HBqlException e) {
+            logException(LOG, e);
+        }
         return false;
     }
 
@@ -135,7 +144,7 @@ public class HBqlFilter implements Filter {
         else {
             try {
                 filterRow = !this.getExpressionTree().evaluate(null, this.getHRecord());
-                LOG.debug("In filterRow() filtering record: " + filterRow);
+                //LOG.debug("In filterRow() filtering record: " + filterRow);
             }
             catch (ResultMissingColumnException e) {
                 LOG.debug("In filterRow() had ResultMissingColumnException exception: " + e.getMessage());
@@ -149,7 +158,7 @@ public class HBqlFilter implements Filter {
             }
         }
 
-        LOG.debug("In filterRow() returning: " + filterRow);
+        //LOG.debug("In filterRow() returning: " + filterRow);
         return filterRow;
     }
 

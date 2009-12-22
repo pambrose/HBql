@@ -97,6 +97,7 @@ consoleStatement returns [HBqlStatement retval]
 options {backtrack=true;}	
 	: keySHOW keyTABLES 		 		{retval = new ShowTablesStatement();}
 	| keySHOW keyMAPPINGS 		 		{retval = new ShowMappingsStatement();}
+	| keySHOW keyEXECUTOR keyPOOLS 		 	{retval = new ShowExecutorPoolsStatement();}
 	| keyIMPORT val=QSTRING				{retval = new ImportStatement($val.text);}
 	| keyPARSE c=consoleStatement			{retval = new ParseStatement($c.retval);}
 	| keyEVAL te=exprValue				{retval = new EvalStatement($te.retval);}
@@ -613,6 +614,7 @@ keyON                           : {isKeyword(input, "ON")}? ID;
 keyOR                           : {isKeyword(input, "OR")}? ID;
 keyPARSE                        : {isKeyword(input, "PARSE")}? ID;
 keyPOOL                         : {isKeyword(input, "POOL")}? ID;
+keyPOOLS                        : {isKeyword(input, "POOLS")}? ID;
 keyRANGE                        : {isKeyword(input, "RANGE")}? ID;
 keySCANNER_CACHE_SIZE           : {isKeyword(input, "SCANNER_CACHE_SIZE")}? ID;
 keySELECT                       : {isKeyword(input, "SELECT")}? ID;

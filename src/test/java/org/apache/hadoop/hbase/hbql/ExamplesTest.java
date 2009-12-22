@@ -411,9 +411,11 @@ public class ExamplesTest extends TestSupport {
 
         HResultSet<HRecord> records = pstmt.executeQuery();
 
-        for (HRecord record : records) {
+        for (HRecord record : records)
             System.out.println("Key = " + record.getCurrentValue("keyval"));
-        }
+
+        records.close();
+        pstmt.close();
 
         // END SNIPPET: index1
     }
@@ -450,6 +452,9 @@ public class ExamplesTest extends TestSupport {
         for (HRecord record : records) {
             System.out.println("Key = " + record.getCurrentValue("keyval"));
         }
+
+        records.close();
+        pstmt.close();
 
         // END SNIPPET: select1
     }
@@ -511,6 +516,9 @@ public class ExamplesTest extends TestSupport {
             System.out.println("f1:val3 = " + rec.getCurrentValue("f1:val3"));
         }
 
+        records.close();
+        stmt.close();
+
         // END SNIPPET: definedExample1
     }
 
@@ -551,6 +559,8 @@ public class ExamplesTest extends TestSupport {
             System.out.print(", val1: " + val1);
             System.out.println(", val2: " + val2);
         }
+
+        rs.close();
 
         stmt.execute("DISABLE TABLE table12");
         stmt.execute("DROP TABLE table12");
@@ -627,6 +637,8 @@ public class ExamplesTest extends TestSupport {
             System.out.print(", val1: " + val1);
             System.out.println(", val2: " + val2);
         }
+
+        rs.close();
 
         stmt.execute("DISABLE TABLE table12");
         stmt.execute("DROP TABLE table12");
@@ -714,6 +726,8 @@ public class ExamplesTest extends TestSupport {
             System.out.println("f1:val2 = " + rec.val2);
             System.out.println("f1:val3 = " + rec.val3);
         }
+
+        records.close();
 
         // END SNIPPET: annotatedExample2
     }

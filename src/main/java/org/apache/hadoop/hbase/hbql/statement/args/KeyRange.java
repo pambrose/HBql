@@ -35,6 +35,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.IndexRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.ScanRequest;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -150,12 +151,32 @@ public class KeyRange extends SelectStatementArgs {
         final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(rangeValue);
 
         if (withArgs.usesAnIndex()) {
-            return new IndexRequest(lowerBytes, lowerBytes, columnAttribs);
+            final byte[] upperBytes = Arrays.copyOf(lowerBytes, lowerBytes.length);
+            // Increment final byte because the range in index is inclusive/exclusive
+            upperBytes[lowerBytes.length - 1]++;
+            return new IndexRequest(lowerBytes, upperBytes, columnAttribs);
         }
         else {
-            final Get get = new Get(lowerBytes);
-            withArgs.setGetArgs(get, columnAttribs);
-            return new GetRequest(get);
+            // Use Get if no server filter is used
+            if (withArgs.getServerExpressionTree() == null) {
+                final Get get = new Get(lowerBytes);
+                withArgs.setGetArgs(get, columnAttribs);
+                return new GetRequest(get);
+            }
+            else {
+                // TODO This is temp until Get is fixed for Filters
+                final Scan scan = new Scan();
+
+                scan.setStartRow(lowerBytes);
+
+                final byte[] upperBytes = Arrays.copyOf(lowerBytes, lowerBytes.length);
+                // Increment final byte because the range in index is inclusive/exclusive
+                upperBytes[lowerBytes.length - 1]++;
+                scan.setStopRow(upperBytes);
+
+                withArgs.setScanArgs(scan, columnAttribs);
+                return new ScanRequest(scan);
+            }
         }
     }
 

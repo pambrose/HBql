@@ -65,7 +65,6 @@ public class HRecordImpl implements HRecord, Serializable {
     }
 
     public String getAttribName(final int i) throws HBqlException {
-
         try {
             return this.getNamePositionList().get(i - 1);
         }

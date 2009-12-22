@@ -22,37 +22,29 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.ExecutorPool;
 import org.apache.hadoop.hbase.hbql.impl.ExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class DropExecutorPoolStatement extends BasicStatement implements ConnectionStatement {
+public class ShowExecutorPoolsStatement extends BasicStatement implements ConnectionStatement {
 
-    private final String poolName;
-
-    public DropExecutorPoolStatement(final StatementPredicate predicate, final String poolName) {
-        super(predicate);
-        this.poolName = poolName;
-    }
-
-    private String getPoolName() {
-        return this.poolName;
+    public ShowExecutorPoolsStatement() {
+        super(null);
     }
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        final String msg;
-        if (!ExecutorPoolManager.executorPoolExists(this.getPoolName())) {
-            msg = "Executor pool " + this.getPoolName() + " does not exist";
-        }
-        else {
-            ExecutorPoolManager.dropExecutorPool(this.getPoolName());
-            msg = "Executor pool " + this.getPoolName() + " dropped.";
-        }
-        return new ExecutionResults(msg);
+        final ExecutionResults retval = new ExecutionResults();
+        retval.out.println("Executor Pools: ");
+        for (final ExecutorPool executorPool : ExecutorPoolManager.getExecutorPools())
+            retval.out.println("\t" + executorPool.getName() + "( max_pool_size: " + executorPool.getMaxPoolSize()
+                               + ", thread_count: " + executorPool.getThreadCount() + ")");
+
+        retval.out.flush();
+        return retval;
     }
 
-
     public static String usage() {
-        return "CREATE EXECUTOR POOL pool_name [IF boolean_expression]";
+        return "SHOW EXECUTOR POOLS";
     }
 }
