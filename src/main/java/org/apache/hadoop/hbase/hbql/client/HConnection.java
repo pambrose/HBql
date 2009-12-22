@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.hbql.impl.Executor;
 import org.apache.hadoop.hbase.hbql.impl.PoolableElement;
 
 import java.util.List;
@@ -98,5 +99,9 @@ public interface HConnection extends PoolableElement {
 
     String getExecutorPoolName();
 
-    boolean usesExecutorPool();
+    void setExecutor(Executor executor);
+
+    Executor getExecutor();
+
+    boolean usesAnExecutor();
 }

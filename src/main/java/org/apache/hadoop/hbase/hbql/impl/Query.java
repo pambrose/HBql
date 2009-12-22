@@ -105,7 +105,7 @@ public class Query<E> {
     }
 
     public HResultSet<E> newResultSet() throws HBqlException {
-        return (this.getHConnectionImpl().usesExecutorPool())
+        return (this.getHConnectionImpl().usesAnExecutor())
                ? new ExecutorResultSetImpl<E>(this)
                : new SingleThreadedResultSetImpl<E>(this);
     }

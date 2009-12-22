@@ -169,6 +169,7 @@ public class ServerFilterTest extends TestSupport {
                                         "if not executorPoolExists('threadPool1')"));
 
         // ExecutorPoolManager.newExecutorPool("threadPool1", 2, 10);
+        connection.setExecutorPoolName("threadPool1");
 
         final String q1 = "select * from tab3 "
                           + "WITH "

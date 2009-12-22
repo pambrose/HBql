@@ -45,6 +45,15 @@ HBql Statements
     **{{{./describe-mapping.html}DESCRIBE MAPPING}}
 
 
+* Executor Pools
+
+    **{{{./create-executor-pool.html}CREATE EXECUTOR POOL}}
+
+    **{{{./drop-executor-pool.html}DROP EXECUTOR POOL}}
+
+    **{{{./show-executor-pools.html}SHOW EXECUTOR POOLS}}
+
+
 * Data Manipulation
 
     **{{{./insert.html}INSERT}}
@@ -61,15 +70,6 @@ HBql Statements
     **{{{./with-index-clause.html}WITH INDEX Clause}}
 
     **{{{./expressions.html}Expressions}}
-
-
-* Executor Pools
-
-    **{{{./create-executor.html}CREATE EXECUTOR POOL}}
-
-    **{{{./drop-executor.html}DROP EXECUTOR POOL}}
-
-    **{{{./show-executors.html}SHOW EXECUTOR POOLS}}
 
 
 * Console

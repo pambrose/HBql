@@ -1,0 +1,19 @@
+    -----
+    SHOW EXECUTOR POOLS
+    -----
+    -----
+
+SHOW EXECUTOR POOLS
+
+*Syntax
+
+---------------------------
+
+SHOW EXECUTOR POOLS
+
+---------------------------
+
+*Description
+
+    Displays all executor pools. 
+

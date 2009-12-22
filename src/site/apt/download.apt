@@ -30,11 +30,11 @@ Release Notes
 
         * Added support for executor pools
 
-        * Added {{{statements/create-executor.html}CREATE EXECUTOR POOL}} statement
+        * Added {{{statements/create-executor-pool.html}CREATE EXECUTOR POOL}} statement
 
-        * Added {{{statements/drop-executor.html}DROP EXECUTOR POOL}} statement
+        * Added {{{statements/drop-executor-pool.html}DROP EXECUTOR POOL}} statement
 
-        * Added {{{statements/show-executors.html}SHOW EXECUTOR POOLS}} statement
+        * Added {{{statements/show-executor-pools.html}SHOW EXECUTOR POOLS}} statement
 
         * Added function executorPoolExsits()
 

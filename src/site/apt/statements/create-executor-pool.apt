@@ -1,0 +1,26 @@
+    -----
+    CREATE EXECUTOR POOL
+    -----
+    -----
+
+
+CREATE EXECUTOR POOL
+
+*Syntax
+
+---------------------------
+
+CREATE EXECUTOR POOL pool_name '(' MAX_POOL_SIZE ':' integer_value ',' THREAD_COUNT ':' integer_value ')' [IF boolean_condition]
+
+---------------------------
+
+*Description
+
+    Creates named index on column_name in table referenced my mapping_name.
+
+    * Additional columns can be included in the index table (for use in server-side filter on index table)
+    using the includeColumns clause.
+
+*Example
+
+%{snippet|id=create-index|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

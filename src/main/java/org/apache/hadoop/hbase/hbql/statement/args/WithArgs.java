@@ -93,7 +93,7 @@ public class WithArgs implements Serializable {
 
     public void validate(final HConnectionImpl connection, final TableMapping mapping) throws HBqlException {
         if (connection != null) {
-            if (this.usesAnIndex())
+            if (this.hasAnIndex())
                 connection.validateIndexExistsForTable(this.getIndexName(), mapping.getTableName());
         }
     }
@@ -148,7 +148,7 @@ public class WithArgs implements Serializable {
         return this.indexName;
     }
 
-    public boolean usesAnIndex() {
+    public boolean hasAnIndex() {
         return this.getIndexName() != null && this.getIndexName().length() > 0;
     }
 
@@ -385,7 +385,7 @@ public class WithArgs implements Serializable {
 
         final ColumnAttrib keyAttrib;
 
-        if (this.usesAnIndex()) {
+        if (this.hasAnIndex()) {
             // Need to look up the index
             final IndexSpecification index = connection.getIndexForTable(this.getIndexName(), mapping.getTableName());
             final byte[][] cols = index.getIndexedColumns();

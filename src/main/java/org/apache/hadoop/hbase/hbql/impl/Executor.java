@@ -40,11 +40,19 @@ public class Executor implements PoolableElement {
     private final ExecutorService executorService;
     private final ExecutorCompletionService<ResultScanner> executorCompletionService;
 
-    public Executor(final ExecutorPool executorPool, final int numberOfThreads) {
+    private Executor(final ExecutorPool executorPool, final int threadCount) {
         this.executorPool = executorPool;
-        this.executorService = Executors.newFixedThreadPool(numberOfThreads);
+        this.executorService = Executors.newFixedThreadPool(threadCount);
         this.executorCompletionService = new ExecutorCompletionService<ResultScanner>(this.getExecutorService(),
                                                                                       this.getExecutorBackingQueue());
+    }
+
+    public static Executor newExecutorForPool(final ExecutorPool executorPool, final int threadCount) {
+        return new Executor(executorPool, threadCount);
+    }
+
+    public static Executor newExecutor(final int threadCount) {
+        return Executor.newExecutorForPool(null, threadCount);
     }
 
     private ExecutorPool getExecutorPool() {
@@ -104,6 +112,7 @@ public class Executor implements PoolableElement {
     }
 
     public void release() {
-        this.getExecutorPool().release(this);
+        if (this.getExecutorPool() != null)
+            this.getExecutorPool().release(this);
     }
 }

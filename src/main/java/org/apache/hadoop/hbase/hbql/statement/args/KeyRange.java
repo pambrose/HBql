@@ -150,7 +150,7 @@ public class KeyRange extends SelectStatementArgs {
 
         final byte[] lowerBytes = IO.getSerialization().getStringAsBytes(rangeValue);
 
-        if (withArgs.usesAnIndex()) {
+        if (withArgs.hasAnIndex()) {
             final byte[] upperBytes = Arrays.copyOf(lowerBytes, lowerBytes.length);
             // Increment final byte because the range in index is inclusive/exclusive
             upperBytes[lowerBytes.length - 1]++;
@@ -221,7 +221,7 @@ public class KeyRange extends SelectStatementArgs {
 
         withArgs.setScanArgs(scan, columnAttribs);
 
-        final RowRequest rowRequest = withArgs.usesAnIndex()
+        final RowRequest rowRequest = withArgs.hasAnIndex()
                                       ? new IndexRequest(scan.getStartRow(), scan.getStopRow(), columnAttribs)
                                       : new ScanRequest(scan);
 

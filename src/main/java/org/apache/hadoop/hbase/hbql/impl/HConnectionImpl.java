@@ -70,6 +70,7 @@ public class HConnectionImpl implements HConnection {
     private volatile IndexedTableAdmin indexTableAdmin = null;
     private volatile boolean closed = false;
     private String executorPoolName = null;
+    private Executor executor = null;
 
     public HConnectionImpl(final HBaseConfiguration hbaseConfig,
                            final HConnectionPoolImpl connectionPool,
@@ -341,7 +342,7 @@ public class HConnectionImpl implements HConnection {
         this.checkIfClosed();
 
         try {
-            if (withArgs != null && withArgs.usesAnIndex())
+            if (withArgs != null && withArgs.hasAnIndex())
                 return new HTableWrapper(new IndexedTable(this.getHBaseConfiguration(), tableName.getBytes()), null);
             else
                 return new HTableWrapper(this.getTablePool().getTable(tableName), this.getTablePool());
@@ -428,14 +429,19 @@ public class HConnectionImpl implements HConnection {
         }
     }
 
-    public Executor takeExecutor() throws HBqlException {
+    public Executor getCurrentExecutor() throws HBqlException {
+        return (this.getExecutor() != null) ? this.getExecutor() : this.takeExecutorFromPool();
+    }
+
+    private Executor takeExecutorFromPool() throws HBqlException {
         this.validateExecutorPoolNameExists(this.getExecutorPoolName());
         final ExecutorPool pool = ExecutorPoolManager.getExecutorPool(this.getExecutorPoolName());
         return pool.take();
     }
 
-    public boolean usesExecutorPool() {
-        return this.getExecutorPoolName() != null && this.getExecutorPoolName().length() > 0;
+    public boolean usesAnExecutor() {
+        return this.getExecutor() != null
+               || (this.getExecutorPoolName() != null && this.getExecutorPoolName().length() > 0);
     }
 
     public String getExecutorPoolName() {
@@ -444,6 +450,14 @@ public class HConnectionImpl implements HConnection {
 
     public void setExecutorPoolName(final String poolName) {
         this.executorPoolName = poolName;
+    }
+
+    public void setExecutor(final Executor executor) {
+        this.executor = executor;
+    }
+
+    public Executor getExecutor() {
+        return this.executor;
     }
 
     public void validateTableName(final String tableName) throws HBqlException {

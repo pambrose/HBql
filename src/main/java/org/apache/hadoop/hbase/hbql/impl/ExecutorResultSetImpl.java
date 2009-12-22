@@ -38,14 +38,24 @@ public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
 
     private final Executor executor;
 
-
     ExecutorResultSetImpl(final Query<T> query) throws HBqlException {
         super(query);
+        // This may block waiting for a ExecutorPool to become available
+        this.executor = this.getQuery().getHConnectionImpl().getCurrentExecutor();
+        // Submit work to executor
+        this.submitWork();
+    }
 
-        // This may block waiting for a ExecutorService to become available
-        this.executor = this.getQuery().getHConnectionImpl().takeExecutor();
+    private Executor getExecutor() {
+        return this.executor;
+    }
 
-        // Submit work to executor completion service
+    public void close() {
+        super.close();
+        this.getExecutor().release();
+    }
+
+    private void submitWork() throws HBqlException {
         final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
         for (final RowRequest rowRequest : rowRequestList) {
             final Callable<ResultScanner> job = new Callable<ResultScanner>() {
@@ -62,18 +72,8 @@ public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
                     }
                 }
             };
-
-            this.getQueryService().submit(job);
+            this.getExecutor().submit(job);
         }
-    }
-
-    private Executor getQueryService() {
-        return this.executor;
-    }
-
-    public void close() {
-        super.close();
-        this.getQueryService().release();
     }
 
     public Iterator<T> iterator() {
@@ -82,12 +82,12 @@ public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
             return new ResultsIterator<T>(this) {
 
                 protected boolean moreResultsPending() {
-                    return getQueryService().moreResultsPending();
+                    return getExecutor().moreResultsPending();
                 }
 
                 protected Iterator<Result> getNextResultIterator() throws HBqlException {
                     try {
-                        final Future<ResultScanner> future = getQueryService().take();
+                        final Future<ResultScanner> future = getExecutor().take();
                         final ResultScanner resultScanner = future.get();
                         setCurrentResultScanner(resultScanner);
                         return getCurrentResultScanner().iterator();

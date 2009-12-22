@@ -36,6 +36,6 @@ public class ExecutorPool extends ElementPool<Executor> {
     }
 
     protected Executor newElement() throws HBqlException {
-        return new Executor(this, this.getThreadCount());
+        return Executor.newExecutorForPool(this, this.getThreadCount());
     }
 }
