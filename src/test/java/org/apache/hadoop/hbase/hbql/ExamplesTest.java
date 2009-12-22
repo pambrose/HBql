@@ -35,7 +35,6 @@ import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.apache.hadoop.hbase.jdbc.ConnectionPool;
-import org.junit.Test;
 
 import javax.sql.PooledConnection;
 import java.sql.Connection;
@@ -420,7 +419,6 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: index1
     }
 
-    @Test
     public void selectAll() throws HBqlException {
 
         // START SNIPPET: select1
@@ -459,7 +457,6 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: select1
     }
 
-    @Test
     public void definedSelect() throws HBqlException {
 
         // START SNIPPET: definedExample1
@@ -522,7 +519,6 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: definedExample1
     }
 
-    @Test
     public void hbqlapi1() throws HBqlException {
 
         // START SNIPPET: hbqlapi1
@@ -571,7 +567,6 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: hbqlapi1
     }
 
-    @Test
     public void hbqlapi2() throws HBqlException {
 
         // START SNIPPET: hbqlapi2
@@ -592,7 +587,6 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: hbqlapi2
     }
 
-    @Test
     public void jdbc1() throws SQLException, ClassNotFoundException {
 
         // START SNIPPET: jdbc1
@@ -649,7 +643,6 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: jdbc1
     }
 
-    @Test
     public void jdbc2() throws SQLException, ClassNotFoundException {
 
         // START SNIPPET: jdbc2
@@ -671,7 +664,6 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: jdbc2
     }
 
-    @Test
     public void annotatedSelect() throws HBqlException {
 
         // START SNIPPET: annotatedExample2

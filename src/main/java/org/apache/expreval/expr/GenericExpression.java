@@ -226,6 +226,7 @@ public abstract class GenericExpression implements GenericValue {
                                                 final CompareFilter.CompareOp compareOp,
                                                 final WritableByteArrayComparable comparator) throws HBqlException {
 
+        // Bail if expression uses a row key.
         if (attrib.isAKeyAttrib())
             throw new InvalidServerFilterExpressionException("Cannot use a key attribute");
 

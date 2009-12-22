@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.Util;
+import org.apache.hadoop.hbase.hbql.impl.Executor;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -162,7 +163,7 @@ public class ServerFilterTest extends TestSupport {
     }
 
     @Test
-    public void simpleSelect9() throws HBqlException {
+    public void simpleSelect9a() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
         System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2) " +
@@ -171,16 +172,38 @@ public class ServerFilterTest extends TestSupport {
         // ExecutorPoolManager.newExecutorPool("threadPool1", 2, 10);
         connection.setExecutorPoolName("threadPool1");
 
-        final String q1 = "select * from tab3 "
-                          + "WITH "
-                          + "KEYS '0000000001', '0000000002', '0000000003', '0000000003', '0000000004', '0000000005'  "
-                          //+ "KEYS '0000000001'TO '0000000005' "
-                          //+ "KEYS  '0000000005' "
-                          //+ "SERVER FILTER where keyval BETWEEN '0000000001' AND '0000000003' ";
-                          // + "SERVER FILTER where keyval = '0000000001' ";
-                          + "SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ";
+        for (int i = 0; i < 100; i++) {
+            final String q1 = "select * from tab3 "
+                              + "WITH "
+                              + "KEYS '0000000001', '0000000002', '0000000003', '0000000003', '0000000004', '0000000005'  "
+                              //+ "KEYS '0000000001'TO '0000000005' "
+                              //+ "KEYS  '0000000005' "
+                              //+ "SERVER FILTER where keyval BETWEEN '0000000001' AND '0000000003' ";
+                              // + "SERVER FILTER where keyval = '0000000001' ";
+                              + "SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ";
 
-        showValues(q1, 4, true);
+            showValues(q1, 4, false);
+        }
+    }
+
+    @Test
+    public void simpleSelect9b() throws HBqlException {
+
+        Executor executor = Executor.newExecutor(2);
+        connection.setExecutor(executor);
+
+        for (int i = 0; i < 100; i++) {
+            final String q1 = "select * from tab3 "
+                              + "WITH "
+                              + "KEYS '0000000001', '0000000002', '0000000003', '0000000003', '0000000004', '0000000005'  "
+                              //+ "KEYS '0000000001'TO '0000000005' "
+                              //+ "KEYS  '0000000005' "
+                              //+ "SERVER FILTER where keyval BETWEEN '0000000001' AND '0000000003' ";
+                              // + "SERVER FILTER where keyval = '0000000001' ";
+                              + "SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ";
+
+            showValues(q1, 4, false);
+        }
     }
 
     @Test
@@ -195,7 +218,7 @@ public class ServerFilterTest extends TestSupport {
 
         connection.setExecutorPoolName("threadPool1");
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             final String q1 = "select * from tab3 WITH "
                               + "KEYS " +
                               "'0000000001'TO '0000000009', " +

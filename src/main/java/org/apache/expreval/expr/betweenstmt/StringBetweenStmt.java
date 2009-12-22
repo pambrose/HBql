@@ -51,8 +51,8 @@ public class StringBetweenStmt extends GenericBetweenStmt {
         final String lowerVal = (String)this.getExprArg(1).getValue(connection, object);
         final String upperVal = (String)this.getExprArg(2).getValue(connection, object);
 
-        if (val == null || lowerVal == null || upperVal == null)
-            return false;
+        //if (val == null || lowerVal == null || upperVal == null)
+        //    return false;
 
         final boolean retval = val.compareTo(lowerVal) >= 0 && val.compareTo(upperVal) <= 0;
 
