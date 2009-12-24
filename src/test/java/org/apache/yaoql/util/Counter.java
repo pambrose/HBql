@@ -20,19 +20,21 @@
 
 package org.apache.yaoql.util;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Counter {
-    int count = 0;
+    private final AtomicInteger count = new AtomicInteger(0);
 
     public void increment() {
-        count++;
+        count.incrementAndGet();
     }
 
     public int getCount() {
-        return this.count;
+        return this.count.get();
     }
 
     public void reset() {
-        this.count = 0;
+        this.count.set(0);
     }
 }
 

@@ -433,12 +433,17 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         }
     }
 
-    public ExecutorImpl getExecutorForConnection() throws HBqlException {
+    public HExecutor getExecutorForConnection() throws HBqlException {
         // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
-        return (this.getExecutor() != null) ? this.getExecutorImpl() : this.takeExecutorFromPool();
+        final HExecutor retval = (this.getExecutor() != null)
+                                 ? this.getExecutorImpl()
+                                 : this.takeExecutorFromPool();
+        // Reset it prior to handing it out
+        retval.reset();
+        return retval;
     }
 
-    private ExecutorImpl takeExecutorFromPool() throws HBqlException {
+    private HExecutor takeExecutorFromPool() throws HBqlException {
         this.validateExecutorPoolNameExists(this.getExecutorPoolName());
         final ExecutorPool pool = ExecutorPoolManager.getExecutorPool(this.getExecutorPoolName());
         return pool.take();
@@ -460,8 +465,8 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         this.executor = executor;
     }
 
-    private ExecutorImpl getExecutorImpl() {
-        return (ExecutorImpl)this.executor;
+    private ExecutorImpl2 getExecutorImpl() {
+        return (ExecutorImpl2)this.executor;
     }
 
     public Executor getExecutor() {

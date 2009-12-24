@@ -25,30 +25,18 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
+import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
 import java.util.Iterator;
 
 public abstract class ResultSetIterator<T> implements Iterator<T> {
 
-    // Record count keeps track of values that have evaluated as true and returned to user
-    private long returnedRecordCount = 0L;
-
     private final HResultSetImpl<T> resultSet;
-    private final long returnedRecordLimit;
     private Iterator<Result> currentResultIterator = null;
     private T nextObject = null;
-    private AggregateRecord aggregateRecord;
 
     protected ResultSetIterator(final HResultSetImpl<T> resultSet) throws HBqlException {
         this.resultSet = resultSet;
-
-        if (this.getResultSet() != null) {
-            this.returnedRecordLimit = this.getResultSet().getWithArgs().getLimit();
-            this.setAggregateRecord(AggregateRecord.newAggregateRecord(resultSet.getQuery().getSelectStmt()));
-        }
-        else {
-            this.returnedRecordLimit = -1L;
-        }
 
         // Prime the iterator with the first value
         this.setNextObject(this.fetchNextObject());
@@ -80,19 +68,6 @@ public abstract class ResultSetIterator<T> implements Iterator<T> {
 
     }
 
-    private boolean returnedRecordLimitMet() {
-        return this.getReturnedRecordLimit() > 0
-               && this.getReturnedRecordCount() >= this.getReturnedRecordLimit();
-    }
-
-    private long getReturnedRecordLimit() {
-        return this.returnedRecordLimit;
-    }
-
-    private long getReturnedRecordCount() {
-        return this.returnedRecordCount;
-    }
-
     private Iterator<Result> getCurrentResultIterator() {
         return this.currentResultIterator;
     }
@@ -101,19 +76,15 @@ public abstract class ResultSetIterator<T> implements Iterator<T> {
         this.currentResultIterator = currentResultIterator;
     }
 
-    private void setAggregateRecord(final AggregateRecord aggregateRecord) {
-        this.aggregateRecord = aggregateRecord;
-    }
-
-    private AggregateRecord getAggregateRecord() throws HBqlException {
-        return this.aggregateRecord;
-    }
-
     protected void incrementReturnedRecordCount() {
-        this.returnedRecordCount++;
+
+        if (this.getResultSet() == null)
+            return;
+
+        this.getResultSet().incrementRecordCount();
 
         // See if the limit has been met.  If so, then advance through the rest of the results
-        if (this.returnedRecordLimitMet()) {
+        if (this.getResultSet().returnedRecordLimitMet()) {
             while (this.hasNext()) {
                 this.next();
             }
@@ -149,22 +120,22 @@ public abstract class ResultSetIterator<T> implements Iterator<T> {
     @SuppressWarnings("unchecked")
     protected T fetchNextObject() throws HBqlException {
 
-        final ResultAccessor resultAccessor = this.getResultSet().getQuery().getSelectStmt().getResultAccessor();
+        final HResultSetImpl<T> rs = this.getResultSet();
+        final SelectStatement selectStatement = rs.getSelectStmt();
+        final ResultAccessor resultAccessor = selectStatement.getResultAccessor();
 
         while (this.getCurrentResultIterator() != null || moreResultsPending()) {
 
             if (this.getCurrentResultIterator() == null)
-                this.setCurrentResultIterator(getNextResultIterator());
+                this.setCurrentResultIterator(this.getNextResultIterator());
 
             while (this.getCurrentResultIterator().hasNext()) {
 
                 final Result result = this.getCurrentResultIterator().next();
 
                 try {
-                    if (this.getResultSet().getClientExpressionTree() != null
-                        && !this.getResultSet()
-                            .getClientExpressionTree()
-                            .evaluate(this.getResultSet().getHConnectionImpl(), result))
+                    if (rs.getClientExpressionTree() != null
+                        && !rs.getClientExpressionTree().evaluate(rs.getHConnectionImpl(), result))
                         continue;
                 }
                 catch (ResultMissingColumnException e) {
@@ -173,19 +144,18 @@ public abstract class ResultSetIterator<T> implements Iterator<T> {
 
                 incrementReturnedRecordCount();
 
-                if (this.getResultSet().getSelectStmt().isAnAggregateQuery()) {
-                    this.getAggregateRecord().applyValues(result);
+                if (selectStatement.isAnAggregateQuery()) {
+                    this.getResultSet().getAggregateRecord().applyValues(result);
                 }
                 else {
-                    final T val = (T)resultAccessor.newObject(this.getResultSet().getHConnectionImpl(),
-                                                              this.getResultSet().getSelectStmt(),
-                                                              this.getResultSet()
-                                                                      .getSelectStmt().getSelectElementList(),
-                                                              this.getResultSet().getMaxVersions(),
+                    final T val = (T)resultAccessor.newObject(rs.getHConnectionImpl(),
+                                                              selectStatement,
+                                                              selectStatement.getSelectElementList(),
+                                                              rs.getMaxVersions(),
                                                               result);
 
-                    if (this.getResultSet().getListeners() != null)
-                        for (final QueryListener<T> listener : this.getResultSet().getListeners())
+                    if (rs.getListeners() != null)
+                        for (final QueryListener<T> listener : rs.getListeners())
                             listener.onEachRow(val);
 
                     return val;
@@ -197,10 +167,10 @@ public abstract class ResultSetIterator<T> implements Iterator<T> {
         }
 
         if (this.getResultSet().getSelectStmt().isAnAggregateQuery()
-            && this.getAggregateRecord() != null) {
+            && this.getResultSet().getAggregateRecord() != null) {
             // Stash the value and then null it out for next time through
-            final AggregateRecord retval = this.getAggregateRecord();
-            this.setAggregateRecord(null);
+            final AggregateRecord retval = this.getResultSet().getAggregateRecord();
+            this.getResultSet().setAggregateRecord(null);
             return (T)retval;
         }
 

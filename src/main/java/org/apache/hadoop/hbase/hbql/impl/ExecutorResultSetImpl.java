@@ -33,20 +33,21 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 
-public class MultiThreadedResultSetImpl<T> extends HResultSetImpl<T> {
+public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
 
-    private final ExecutorImpl executor;
+    private final ExecutorImpl<ResultScanner> executor;
     private volatile boolean closed = false;
 
-    MultiThreadedResultSetImpl(final Query<T> query) throws HBqlException {
+    ExecutorResultSetImpl(final Query<T> query) throws HBqlException {
         super(query);
         // This may block waiting for a Executor to become available from the ExecutorPool
-        this.executor = this.getQuery().getHConnectionImpl().getExecutorForConnection();
+        //ZZZZ TODO
+        this.executor = null;//this.getQuery().getHConnectionImpl().getExecutorForConnection();
         // Submit work to executor
         this.submitWork();
     }
 
-    private ExecutorImpl getExecutor() {
+    private ExecutorImpl<ResultScanner> getExecutor() {
         return this.executor;
     }
 

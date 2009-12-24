@@ -31,13 +31,18 @@ import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class HResultSetImpl<T> implements HResultSet<T> {
 
-    protected int maxVersions = 0;
+    // Record count keeps track of values that have evaluated as true and returned to user
+    private final AtomicLong returnedRecordCount = new AtomicLong(0L);
+    private final long returnedRecordLimit;
 
     private final List<ResultScanner> resultScannerList = Lists.newArrayList();
+    private int maxVersions = 0;
     private ResultScanner currentResultScanner = null;
+    private AggregateRecord aggregateRecord;
 
     private final Query<T> query;
     private final ExpressionTree clientExpressionTree;
@@ -46,11 +51,13 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
 
     protected HResultSetImpl(final Query<T> query) throws HBqlException {
         this.query = query;
-
-        this.clientExpressionTree = getWithArgs().getClientExpressionTree();
-        this.tableWrapper = getHConnectionImpl().newHTableWrapper(getWithArgs(), getTableName());
+        this.clientExpressionTree = this.getWithArgs().getClientExpressionTree();
+        this.returnedRecordLimit = this.getWithArgs().getLimit();
+        this.tableWrapper = this.getHConnectionImpl().newHTableWrapper(this.getWithArgs(), this.getTableName());
 
         this.getQuery().getSelectStmt().determineIfAggregateQuery();
+
+        this.setAggregateRecord(AggregateRecord.newAggregateRecord(this.getQuery().getSelectStmt()));
 
         // Set it once per evaluation
         DateLiteral.resetNow();
@@ -59,6 +66,14 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
             for (final QueryListener<T> listener : this.getListeners())
                 listener.onQueryInit();
         }
+    }
+
+    protected void setAggregateRecord(final AggregateRecord aggregateRecord) {
+        this.aggregateRecord = aggregateRecord;
+    }
+
+    protected AggregateRecord getAggregateRecord() {
+        return this.aggregateRecord;
     }
 
     protected List<ResultScanner> getResultScannerList() {
@@ -101,6 +116,22 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
                 }
             }
         }
+    }
+
+    protected long getReturnedRecordCount() {
+        return this.returnedRecordCount.get();
+    }
+
+    protected void incrementRecordCount() {
+        this.returnedRecordCount.incrementAndGet();
+    }
+
+    protected boolean returnedRecordLimitMet() {
+        return this.getReturnedRecordLimit() > 0 && this.getReturnedRecordCount() >= this.getReturnedRecordLimit();
+    }
+
+    protected long getReturnedRecordLimit() {
+        return this.returnedRecordLimit;
     }
 
     protected int getMaxVersions() {

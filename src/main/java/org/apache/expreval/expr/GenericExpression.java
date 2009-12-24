@@ -208,17 +208,15 @@ public abstract class GenericExpression implements GenericValue {
 
     protected void optimizeAllArgs() throws HBqlException {
 
-        if (this.areAllArgsOptimized())
-            return;
+        if (!this.areAllArgsOptimized()) {
+            synchronized (this) {
+                if (!this.areAllArgsOptimized()) {
+                    for (int i = 0; i < this.getGenericValueList().size(); i++)
+                        this.setArg(i, this.getExprArg(i).getOptimizedValue());
 
-        synchronized (this) {
-            if (this.areAllArgsOptimized())
-                return;
-
-            for (int i = 0; i < this.getGenericValueList().size(); i++)
-                this.setArg(i, this.getExprArg(i).getOptimizedValue());
-
-            this.allArgsOptimized = true;
+                    this.allArgsOptimized = true;
+                }
+            }
         }
     }
 

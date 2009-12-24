@@ -20,22 +20,5 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-
-public class ExecutorPool extends ElementPool<HExecutor> {
-
-    private final int threadCount;
-
-    public ExecutorPool(final String name, final int maxPoolSize, final int threadCount) {
-        super(name, maxPoolSize);
-        this.threadCount = threadCount;
-    }
-
-    public int getThreadCount() {
-        return this.threadCount;
-    }
-
-    protected HExecutor newElement() throws HBqlException {
-        return ExecutorImpl2.newExecutorForPool(this, this.getThreadCount());
-    }
+public interface HExecutor extends PoolableElement {
 }
