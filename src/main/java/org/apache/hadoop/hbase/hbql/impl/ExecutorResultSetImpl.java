@@ -35,26 +35,27 @@ import java.util.concurrent.Callable;
 
 public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
 
-    private final ResultScannerExecutor executor;
     private volatile boolean closed = false;
+    private final ResultScannerExecutor resultSetExecutor;
 
     ExecutorResultSetImpl(final Query<T> query) throws HBqlException {
         super(query);
+
         // This may block waiting for a Executor to become available from the ExecutorPool
-        //ZZZZ TODO
-        this.executor = null;//this.getQuery().getHConnectionImpl().getExecutorForConnection();
+        this.resultSetExecutor = (ResultScannerExecutor)this.getQuery().getHConnectionImpl().getExecutorForConnection();
+
         // Submit work to executor
         this.submitWork();
     }
 
-    private ResultScannerExecutor getExecutor() {
-        return this.executor;
+    private ResultScannerExecutor getResultSetExecutor() {
+        return this.resultSetExecutor;
     }
 
     private void submitWork() throws HBqlException {
         final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
         for (final RowRequest rowRequest : rowRequestList) {
-            this.getExecutor().submit(
+            this.getResultSetExecutor().submit(
                     new Callable<ResultScanner>() {
                         public ResultScanner call() {
                             try {
@@ -77,7 +78,7 @@ public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
             synchronized (this) {
                 if (!this.closed) {
                     super.close();
-                    this.getExecutor().release();
+                    this.getResultSetExecutor().release();
                     this.closed = true;
                 }
             }
@@ -90,11 +91,11 @@ public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
             return new ResultSetIterator<T>(this) {
 
                 protected boolean moreResultsPending() {
-                    return getExecutor().moreResultsPending();
+                    return getResultSetExecutor().moreResultsPending();
                 }
 
                 protected Iterator<Result> getNextResultIterator() throws HBqlException {
-                    final ResultScanner resultScanner = getExecutor().takeResultScanner();
+                    final ResultScanner resultScanner = getResultSetExecutor().takeResultScanner();
                     setCurrentResultScanner(resultScanner);
                     return getCurrentResultScanner().iterator();
                 }

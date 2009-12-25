@@ -393,17 +393,16 @@ public class ExamplesTest extends TestSupport {
 
         // Or, using the API
         if (!ExecutorPoolManager.executorPoolExists("execPool"))
-            ExecutorPoolManager.newExecutorPool("execPool", 5, 10);
+            ExecutorPoolManager.newExecutorPool("execPool", 5, 10, true);
 
         // Then assign the connection a pool name to use for queries
         connection.setExecutorPoolName("execPool");
 
         // If a dedicated Executor, rather than one from a pool, is desired:
-        Executor executor = Executor.newExecutor(10);
+        Executor executor = Executor.newExecutor(10, true);
         connection.setExecutor(executor);
 
         // END SNIPPET: create-executor-pool
-
     }
 
     public void dropExecutorPool() throws HBqlException {
@@ -423,7 +422,6 @@ public class ExamplesTest extends TestSupport {
         connection.setExecutorPoolName("execPool");
 
         // END SNIPPET: drop-executor-pool
-
     }
 
     public void index1() throws HBqlException {

@@ -23,56 +23,41 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.hadoop.hbase.hbql.client.Executor;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ResultExecutor extends Executor implements HExecutor {
 
-    private final ExecutorPool executorPool;
-    private final ExecutorService executorService;
-
-    private final AtomicInteger workCount = new AtomicInteger(0);
+    private final AtomicInteger workSubmittedCount = new AtomicInteger(0);
 
     private ResultExecutor(final ExecutorPool executorPool, final int threadCount) {
-        this.executorPool = executorPool;
-        this.executorService = Executors.newFixedThreadPool(threadCount);
+        super(executorPool, threadCount);
     }
 
-    public static ResultExecutor newExecutorForPool(final ExecutorPool executorPool, final int threadCount) {
+    public static ResultExecutor newResultExecutorForPool(final ExecutorPool executorPool, final int threadCount) {
         return new ResultExecutor(executorPool, threadCount);
     }
 
-    public static ResultExecutor newExecutorNotForPool(final int threadCount) {
+    public static ResultExecutor newResultExecutor(final int threadCount) {
         return new ResultExecutor(null, threadCount);
     }
 
-    private ExecutorPool getExecutorPool() {
-        return this.executorPool;
-    }
-
-    private AtomicInteger getWorkCount() {
-        return this.workCount;
-    }
-
-    public ExecutorService getExecutorService() {
-        return this.executorService;
+    private AtomicInteger getWorkSubmittedCount() {
+        return this.workSubmittedCount;
     }
 
     public Future<String> submit(final Callable<String> job) {
         final Future<String> future = this.getExecutorService().submit(job);
-        this.getWorkCount().incrementAndGet();
+        this.getWorkSubmittedCount().incrementAndGet();
         return future;
     }
 
     public boolean moreResultsPending(final int val) {
-        // System.out.println("Comparing: " + val + " and " + this.workCount);
-        return val < this.getWorkCount().get();
+        return val < this.getWorkSubmittedCount().get();
     }
 
     public void reset() {
-        this.getWorkCount().set(0);
+        this.getWorkSubmittedCount().set(0);
     }
 
     public void release() {

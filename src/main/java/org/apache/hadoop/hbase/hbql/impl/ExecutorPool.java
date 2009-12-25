@@ -25,17 +25,28 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 public class ExecutorPool extends ElementPool<HExecutor> {
 
     private final int threadCount;
+    private final boolean threadsReadResults;
 
-    public ExecutorPool(final String name, final int maxPoolSize, final int threadCount) {
+    public ExecutorPool(final String name,
+                        final int maxPoolSize,
+                        final int threadCount,
+                        final boolean threadsReadResults) {
         super(name, maxPoolSize);
         this.threadCount = threadCount;
+        this.threadsReadResults = threadsReadResults;
     }
 
     public int getThreadCount() {
         return this.threadCount;
     }
 
+    private boolean threadsReadResults() {
+        return this.threadsReadResults;
+    }
+
     protected HExecutor newElement() throws HBqlException {
-        return ResultExecutor.newExecutorForPool(this, this.getThreadCount());
+        return this.threadsReadResults()
+               ? ResultExecutor.newResultExecutorForPool(this, this.getThreadCount())
+               : ResultScannerExecutor.newResultScannerExecutorForPool(this, this.getThreadCount());
     }
 }

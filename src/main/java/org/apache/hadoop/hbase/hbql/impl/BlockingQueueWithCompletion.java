@@ -41,32 +41,6 @@ public class BlockingQueueWithCompletion<T> {
         return this.completionCount;
     }
 
-    public static class QueueElement<T> {
-        private final T element;
-        private final boolean completeToken;
-
-        private QueueElement(final T element, boolean completeToken) {
-            this.element = element;
-            this.completeToken = completeToken;
-        }
-
-        public static <T> QueueElement<T> newResult(final T result) {
-            return new QueueElement<T>(result, false);
-        }
-
-        public static <T> QueueElement<T> newComplete() {
-            return new QueueElement<T>(null, true);
-        }
-
-        public T getElement() {
-            return this.element;
-        }
-
-        public boolean isCompleteToken() {
-            return this.completeToken;
-        }
-    }
-
     public void putElement(final T val) throws InterruptedException {
         final QueueElement<T> element = QueueElement.newResult(val);
         this.getResultQueue().put(element);
@@ -77,15 +51,12 @@ public class BlockingQueueWithCompletion<T> {
         this.getResultQueue().put(element);
     }
 
-    public T take() throws InterruptedException {
+    public QueueElement<T> takeElement() throws InterruptedException {
         final QueueElement<T> queueElement = this.getResultQueue().take();
-        if (queueElement.isCompleteToken()) {
+        if (queueElement.isCompleteToken())
             this.getCounter().incrementAndGet();
-            return null;
-        }
-        else {
-            return queueElement.getElement();
-        }
+
+        return queueElement;
     }
 
     public int getCompletionCount() {

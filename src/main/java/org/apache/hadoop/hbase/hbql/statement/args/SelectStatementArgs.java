@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.statement.args;
 
 import org.apache.expreval.expr.ArgumentListTypeSignature;
 import org.apache.expreval.expr.MultipleExpressionContext;
+import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.IntegerValue;
@@ -39,7 +40,7 @@ public abstract class SelectStatementArgs extends MultipleExpressionContext {
         LIMIT(new ArgumentListTypeSignature(IntegerValue.class)),
         SCANNERCACHE(new ArgumentListTypeSignature(IntegerValue.class)),
         VERSION(new ArgumentListTypeSignature(IntegerValue.class)),
-        POOL(new ArgumentListTypeSignature(IntegerValue.class, IntegerValue.class)),
+        EXECUTORPOOL(new ArgumentListTypeSignature(IntegerValue.class, IntegerValue.class, BooleanValue.class)),
         WIDTH(new ArgumentListTypeSignature(IntegerValue.class));
 
         private final ArgumentListTypeSignature typeSignature;

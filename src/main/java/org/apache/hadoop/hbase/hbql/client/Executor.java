@@ -20,11 +20,34 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
+import org.apache.hadoop.hbase.hbql.impl.ExecutorPool;
 import org.apache.hadoop.hbase.hbql.impl.ResultExecutor;
+import org.apache.hadoop.hbase.hbql.impl.ResultScannerExecutor;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Executor {
 
-    public static Executor newExecutor(final int threadCount) {
-        return ResultExecutor.newExecutorNotForPool(threadCount);
+    private final ExecutorPool executorPool;
+    private final ExecutorService executorService;
+
+    protected Executor(final ExecutorPool executorPool, final int threadCount) {
+        this.executorPool = executorPool;
+        this.executorService = Executors.newFixedThreadPool(threadCount);
+    }
+
+    public static Executor newExecutor(final int threadCount, final boolean threadsReadResults) {
+        return threadsReadResults
+               ? ResultExecutor.newResultExecutor(threadCount)
+               : ResultScannerExecutor.newResultScannerExecutor(threadCount);
+    }
+
+    protected ExecutorPool getExecutorPool() {
+        return this.executorPool;
+    }
+
+    protected ExecutorService getExecutorService() {
+        return this.executorService;
     }
 }

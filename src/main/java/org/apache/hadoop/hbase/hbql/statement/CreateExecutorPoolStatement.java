@@ -51,7 +51,8 @@ public class CreateExecutorPoolStatement extends BasicStatement implements Conne
 
         ExecutorPoolManager.newExecutorPool(this.getPoolName(),
                                             this.getArgs().getMaxPoolSize(),
-                                            this.getArgs().getThreadCount());
+                                            this.getArgs().getThreadCount(),
+                                            this.getArgs().getThreadsReadResults());
 
         return new ExecutionResults("Executor pool " + this.getPoolName() + " created.");
     }

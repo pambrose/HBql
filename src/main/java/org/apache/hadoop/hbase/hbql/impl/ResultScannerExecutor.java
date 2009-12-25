@@ -29,36 +29,26 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ResultScannerExecutor extends Executor implements HExecutor {
-
-    private final ExecutorPool executorPool;
-    private final ExecutorService executorService;
 
     private final BlockingQueue<Future<ResultScanner>> backingQueue = new LinkedBlockingQueue<Future<ResultScanner>>();
     private final List<Future<ResultScanner>> futureList = Lists.newArrayList();
     private final ExecutorCompletionService<ResultScanner> completionService;
 
     public ResultScannerExecutor(final ExecutorPool executorPool, final int threadCount) {
-        this.executorPool = executorPool;
-        this.executorService = Executors.newFixedThreadPool(threadCount);
+        super(executorPool, threadCount);
         this.completionService = new ExecutorCompletionService<ResultScanner>(this.getExecutorService(), this.getBackingQueue());
     }
 
-    public static ResultScannerExecutor newExecutorForPool(final ExecutorPool executorPool, final int threadCount) {
+    public static ResultScannerExecutor newResultScannerExecutorForPool(final ExecutorPool executorPool, final int threadCount) {
         return new ResultScannerExecutor(executorPool, threadCount);
     }
 
-    private ExecutorPool getExecutorPool() {
-        return this.executorPool;
-    }
-
-    public ExecutorService getExecutorService() {
-        return this.executorService;
+    public static ResultScannerExecutor newResultScannerExecutor(final int threadCount) {
+        return new ResultScannerExecutor(null, threadCount);
     }
 
     private List<Future<ResultScanner>> getFutureList() {

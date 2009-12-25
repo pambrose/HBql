@@ -37,8 +37,8 @@ import java.util.concurrent.Callable;
 
 public class ExecutorResultSetImpl2<T> extends HResultSetImpl<T> {
 
-    private final ResultExecutor resultExecutor;
     private volatile boolean closed = false;
+    private final ResultExecutor resultExecutor;
     private final BlockingQueueWithCompletion<Result> resultQueue;
 
     ExecutorResultSetImpl2(final Query<T> query) throws HBqlException {
@@ -160,13 +160,16 @@ public class ExecutorResultSetImpl2<T> extends HResultSetImpl<T> {
                     while (true) {
                         final Result result;
                         try {
-                            result = getResultQueue().take();
+                            final QueueElement<Result> queueElement = getResultQueue().takeElement();
                             // Completion values return null values
-                            if (result == null) {
+                            if (queueElement.isCompleteToken()) {
                                 if (!moreResultsPending())
                                     break;
                                 else
                                     continue;
+                            }
+                            else {
+                                result = queueElement.getElement();
                             }
                         }
                         catch (InterruptedException e) {

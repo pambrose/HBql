@@ -136,8 +136,9 @@ options {backtrack=true;}
 					 		{retval = new DescribeIndexForMappingStatement($t.text, $t2.text);}
 	| keyDESCRIBE keyINDEX t=simpleId keyON keyTABLE t2=simpleId
 					 		{retval = new DescribeIndexForTableStatement($t.text, $t2.text);}
-	| keyCREATE keyEXECUTOR keyPOOL t=simpleId LPAREN keyMAX_POOL_SIZE COLON ps=exprValue COMMA keyTHREAD_COUNT COLON tc=exprValue RPAREN p=pred?
-							{retval = new CreateExecutorPoolStatement($p.retval, $t.text, new ExecutorPoolArgs($ps.retval, $tc.retval));}
+	| keyCREATE keyEXECUTOR keyPOOL t=simpleId 
+	  LPAREN keyMAX_POOL_SIZE COLON ps=exprValue COMMA keyTHREAD_COUNT COLON tc=exprValue COMMA keyTHREADS_READ_RESULTS COLON trc=exprValue RPAREN p=pred?
+							{retval = new CreateExecutorPoolStatement($p.retval, $t.text, new ExecutorPoolArgs($ps.retval, $tc.retval, $trc.retval));}
 	| keyDROP keyEXECUTOR keyPOOL t=simpleId p=pred?
 							{retval = new DropExecutorPoolStatement($p.retval, $t.text);}
 	;
@@ -626,6 +627,7 @@ keyTABLES                       : {isKeyword(input, "TABLES")}? ID;
 keyTEMP                         : {isKeyword(input, "TEMP")}? ID;
 keyTHEN                         : {isKeyword(input, "THEN")}? ID;
 keyTHREAD_COUNT                 : {isKeyword(input, "THREAD_COUNT")}? ID;
+keyTHREADS_READ_RESULTS         : {isKeyword(input, "THREADS_READ_RESULTS")}? ID;
 keyTIMESTAMP                    : {isKeyword(input, "TIMESTAMP")}? ID;
 keyTO                           : {isKeyword(input, "TO")}? ID;
 keyTRUE                         : {isKeyword(input, "TRUE")}? ID;
