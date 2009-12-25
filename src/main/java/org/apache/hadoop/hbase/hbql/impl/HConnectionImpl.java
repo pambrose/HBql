@@ -465,8 +465,8 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         this.executor = executor;
     }
 
-    private ExecutorImpl2 getExecutorImpl() {
-        return (ExecutorImpl2)this.executor;
+    private ResultExecutor getExecutorImpl() {
+        return (ResultExecutor)this.executor;
     }
 
     public Executor getExecutor() {

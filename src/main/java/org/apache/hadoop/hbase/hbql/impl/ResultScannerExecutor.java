@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.util.Lists;
+import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.Executor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
@@ -33,22 +34,23 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class ExecutorImpl<T> extends Executor implements HExecutor {
+public class ResultScannerExecutor extends Executor implements HExecutor {
 
-    private final BlockingQueue<Future<T>> backingQueue = new LinkedBlockingQueue<Future<T>>();
-    private final List<Future<T>> futureList = Lists.newArrayList();
     private final ExecutorPool executorPool;
     private final ExecutorService executorService;
-    private final ExecutorCompletionService<T> completionService;
 
-    public ExecutorImpl(final ExecutorPool executorPool, final int threadCount) {
+    private final BlockingQueue<Future<ResultScanner>> backingQueue = new LinkedBlockingQueue<Future<ResultScanner>>();
+    private final List<Future<ResultScanner>> futureList = Lists.newArrayList();
+    private final ExecutorCompletionService<ResultScanner> completionService;
+
+    public ResultScannerExecutor(final ExecutorPool executorPool, final int threadCount) {
         this.executorPool = executorPool;
         this.executorService = Executors.newFixedThreadPool(threadCount);
-        this.completionService = new ExecutorCompletionService<T>(this.getExecutorService(), this.getBackingQueue());
+        this.completionService = new ExecutorCompletionService<ResultScanner>(this.getExecutorService(), this.getBackingQueue());
     }
 
-    public static ExecutorImpl newExecutorForPool(final ExecutorPool executorPool, final int threadCount) {
-        return new ExecutorImpl(executorPool, threadCount);
+    public static ResultScannerExecutor newExecutorForPool(final ExecutorPool executorPool, final int threadCount) {
+        return new ResultScannerExecutor(executorPool, threadCount);
     }
 
     private ExecutorPool getExecutorPool() {
@@ -59,27 +61,27 @@ public class ExecutorImpl<T> extends Executor implements HExecutor {
         return this.executorService;
     }
 
-    private List<Future<T>> getFutureList() {
+    private List<Future<ResultScanner>> getFutureList() {
         return this.futureList;
     }
 
-    private BlockingQueue<Future<T>> getBackingQueue() {
+    private BlockingQueue<Future<ResultScanner>> getBackingQueue() {
         return this.backingQueue;
     }
 
-    private ExecutorCompletionService<T> getCompletionService() {
+    private ExecutorCompletionService<ResultScanner> getCompletionService() {
         return this.completionService;
     }
 
-    public Future<T> submit(final Callable<T> job) {
-        final Future<T> future = this.getCompletionService().submit(job);
+    public Future<ResultScanner> submit(final Callable<ResultScanner> job) {
+        final Future<ResultScanner> future = this.getCompletionService().submit(job);
         this.getFutureList().add(future);
         return future;
     }
 
-    public T takeResultScanner() throws HBqlException {
+    public ResultScanner takeResultScanner() throws HBqlException {
         try {
-            final Future<T> future = this.getCompletionService().take();
+            final Future<ResultScanner> future = this.getCompletionService().take();
             return future.get();
         }
         catch (InterruptedException e) {
@@ -93,27 +95,24 @@ public class ExecutorImpl<T> extends Executor implements HExecutor {
     public boolean moreResultsPending() {
         // See if results are waiting to be processed
         if (this.getBackingQueue().size() > 0) {
-            System.out.println("Backing queue size:  " + this.getBackingQueue().size());
             return true;
         }
 
         // See if work is still taking place.
-        return this.hasThreadsStillRunning();
+        return this.hasJobStillRunning();
     }
 
-    public boolean hasThreadsStillRunning() {
-        for (final Future<T> future : this.getFutureList())
+    public boolean hasJobStillRunning() {
+        for (final Future<ResultScanner> future : this.getFutureList())
             if (!future.isDone()) {
-                System.out.println("a thread is not done");
                 return true;
             }
 
-        System.out.println("all threads done");
         return false;
     }
 
     public void reset() {
-        for (final Future<T> future : getFutureList()) {
+        for (final Future<ResultScanner> future : getFutureList()) {
             if (!future.isDone())
                 future.cancel(true);
         }

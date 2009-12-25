@@ -32,54 +32,33 @@ import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class ExecutorResultSetImpl2<T> extends HResultSetImpl<T> {
 
-    private final ExecutorImpl2<String> executor;
+    private final ResultExecutor resultExecutor;
     private volatile boolean closed = false;
-    private final BlockingQueue<ResultElement> resultQueue = new ArrayBlockingQueue<ResultElement>(100, true);
-    private final AtomicInteger count = new AtomicInteger(0);
+    private final BlockingQueueWithCompletion<Result> resultQueue;
 
     ExecutorResultSetImpl2(final Query<T> query) throws HBqlException {
         super(query);
+
+        // TODO need the user to specify buffer size
+        this.resultQueue = new BlockingQueueWithCompletion<Result>(100);
+
         // This may block waiting for a Executor to become available from the ExecutorPool
-        this.executor = (ExecutorImpl2<String>)this.getQuery().getHConnectionImpl().getExecutorForConnection();
+        this.resultExecutor = (ResultExecutor)this.getQuery().getHConnectionImpl().getExecutorForConnection();
+
         // Submit work to executor
         this.submitWork();
     }
 
-    public static class ResultElement {
-        private final Result result;
-        private final boolean scanComplete;
-
-        private ResultElement(final Result result, boolean scanComplete) {
-            this.result = result;
-            this.scanComplete = scanComplete;
-        }
-
-        public static ResultElement newResult(final Result result) {
-            return new ResultElement(result, false);
-        }
-
-        public static ResultElement newScanComplete() {
-            return new ResultElement(null, true);
-        }
-
-        public boolean isScanComplete() {
-            return this.scanComplete;
-        }
+    private ResultExecutor getExecutor() {
+        return this.resultExecutor;
     }
 
-    private ExecutorImpl2<String> getExecutor() {
-        return this.executor;
-    }
-
-    private BlockingQueue<ResultElement> getResultQueue() {
+    private BlockingQueueWithCompletion<Result> getResultQueue() {
         return this.resultQueue;
     }
 
@@ -87,8 +66,8 @@ public class ExecutorResultSetImpl2<T> extends HResultSetImpl<T> {
     private void submitWork() throws HBqlException {
         final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
         for (final RowRequest rowRequest : rowRequestList) {
-            this.getExecutor().submit(new Callable<String>() {
-                public String call() {
+            final Callable<String> job = new Callable<String>() {
+                public String call() throws HBqlException, InterruptedException {
                     try {
                         setMaxVersions(rowRequest.getMaxVersions());
                         final ResultScanner scanner = rowRequest.getResultScanner(getSelectStmt().getMapping(),
@@ -105,35 +84,18 @@ public class ExecutorResultSetImpl2<T> extends HResultSetImpl<T> {
                                 continue;
                             }
 
-                            try {
-                                getResultQueue().put(ResultElement.newResult(result));
-                            }
-                            catch (InterruptedException e) {
-                                e.printStackTrace();
-                                System.out.println("bailing 1");
-                                return (new HBqlException(e)).getMessage();
-                            }
+                            getResultQueue().putElement(result);
                         }
 
                         scanner.close();
                     }
-                    catch (HBqlException e) {
-                        e.printStackTrace();
-                        return e.getMessage();
-                    }
-
                     finally {
-                        try {
-                            getResultQueue().put(ResultElement.newScanComplete());
-                        }
-                        catch (InterruptedException e) {
-                            System.out.println("bailing 2");
-                            e.printStackTrace();
-                        }
+                        getResultQueue().putCompletion();
                     }
                     return "OK";
                 }
-            });
+            };
+            this.getExecutor().submit(job);
         }
     }
 
@@ -178,6 +140,7 @@ public class ExecutorResultSetImpl2<T> extends HResultSetImpl<T> {
                         // release to table pool
                         if (getHTableWrapper() != null)
                             getHTableWrapper().releaseHTable();
+
                         setTableWrapper(null);
 
                         close();
@@ -185,7 +148,7 @@ public class ExecutorResultSetImpl2<T> extends HResultSetImpl<T> {
                 }
 
                 protected boolean moreResultsPending() {
-                    return getExecutor().moreResultsPending(count.get());
+                    return getExecutor().moreResultsPending(getResultQueue().getCompletionCount());
                 }
 
                 @SuppressWarnings("unchecked")
@@ -193,22 +156,17 @@ public class ExecutorResultSetImpl2<T> extends HResultSetImpl<T> {
 
                     final ResultAccessor resultAccessor = getSelectStmt().getResultAccessor();
 
-                    Result result;
-
                     // Read data until all jobs have sent DONE tokens
                     while (true) {
+                        final Result result;
                         try {
-                            ResultElement val = getResultQueue().take();
-                            if (val.scanComplete) {
-                                count.incrementAndGet();
-                                //System.out.println("Read EOF for " + val.jobId);
+                            result = getResultQueue().take();
+                            // Completion values return null values
+                            if (result == null) {
                                 if (!moreResultsPending())
                                     break;
                                 else
                                     continue;
-                            }
-                            else {
-                                result = val.result;
                             }
                         }
                         catch (InterruptedException e) {

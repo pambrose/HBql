@@ -20,11 +20,11 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.hbql.impl.ExecutorImpl2;
+import org.apache.hadoop.hbase.hbql.impl.ResultExecutor;
 
 public class Executor {
 
     public static Executor newExecutor(final int threadCount) {
-        return ExecutorImpl2.newExecutorNotForPool(threadCount);
+        return ResultExecutor.newExecutorNotForPool(threadCount);
     }
 }

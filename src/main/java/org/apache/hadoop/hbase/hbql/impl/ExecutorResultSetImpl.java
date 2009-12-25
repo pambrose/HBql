@@ -35,7 +35,7 @@ import java.util.concurrent.Callable;
 
 public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
 
-    private final ExecutorImpl<ResultScanner> executor;
+    private final ResultScannerExecutor executor;
     private volatile boolean closed = false;
 
     ExecutorResultSetImpl(final Query<T> query) throws HBqlException {
@@ -47,7 +47,7 @@ public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
         this.submitWork();
     }
 
-    private ExecutorImpl<ResultScanner> getExecutor() {
+    private ResultScannerExecutor getExecutor() {
         return this.executor;
     }
 

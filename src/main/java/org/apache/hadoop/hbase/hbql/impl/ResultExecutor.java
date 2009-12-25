@@ -28,46 +28,51 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ExecutorImpl2<T> extends Executor implements HExecutor {
+public class ResultExecutor extends Executor implements HExecutor {
 
     private final ExecutorPool executorPool;
     private final ExecutorService executorService;
+
     private final AtomicInteger workCount = new AtomicInteger(0);
 
-    private ExecutorImpl2(final ExecutorPool executorPool, final int threadCount) {
+    private ResultExecutor(final ExecutorPool executorPool, final int threadCount) {
         this.executorPool = executorPool;
         this.executorService = Executors.newFixedThreadPool(threadCount);
     }
 
-    public static ExecutorImpl2 newExecutorForPool(final ExecutorPool executorPool, final int threadCount) {
-        return new ExecutorImpl2(executorPool, threadCount);
+    public static ResultExecutor newExecutorForPool(final ExecutorPool executorPool, final int threadCount) {
+        return new ResultExecutor(executorPool, threadCount);
     }
 
-    public static ExecutorImpl2 newExecutorNotForPool(final int threadCount) {
-        return new ExecutorImpl2(null, threadCount);
+    public static ResultExecutor newExecutorNotForPool(final int threadCount) {
+        return new ResultExecutor(null, threadCount);
     }
 
     private ExecutorPool getExecutorPool() {
         return this.executorPool;
     }
 
+    private AtomicInteger getWorkCount() {
+        return this.workCount;
+    }
+
     public ExecutorService getExecutorService() {
         return this.executorService;
     }
 
-    public Future<T> submit(final Callable<T> job) {
-        final Future<T> future = this.getExecutorService().submit(job);
-        this.workCount.incrementAndGet();
+    public Future<String> submit(final Callable<String> job) {
+        final Future<String> future = this.getExecutorService().submit(job);
+        this.getWorkCount().incrementAndGet();
         return future;
     }
 
     public boolean moreResultsPending(final int val) {
         // System.out.println("Comparing: " + val + " and " + this.workCount);
-        return val < this.workCount.get();
+        return val < this.getWorkCount().get();
     }
 
     public void reset() {
-        this.workCount.set(0);
+        this.getWorkCount().set(0);
     }
 
     public void release() {
