@@ -20,6 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.util.BlockingQueueWithCompletion;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Executor;
 
 import java.util.concurrent.Callable;
@@ -29,17 +31,31 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ResultExecutor extends Executor implements HExecutor {
 
     private final AtomicInteger workSubmittedCount = new AtomicInteger(0);
+    private final BlockingQueueWithCompletion<Result> resultQueue;
 
-    private ResultExecutor(final ExecutorPool executorPool, final int threadCount) {
+    private ResultExecutor(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
         super(executorPool, threadCount);
+
+        // TODO need the user to specify buffer size
+        this.resultQueue = new BlockingQueueWithCompletion<Result>(queueSize);
     }
 
-    public static ResultExecutor newResultExecutorForPool(final ExecutorPool executorPool, final int threadCount) {
-        return new ResultExecutor(executorPool, threadCount);
+    public static ResultExecutor newPooledResultExecutor(final ExecutorPool executorPool,
+                                                         final int threadCount,
+                                                         final int queueSize) {
+        return new ResultExecutor(executorPool, threadCount, queueSize);
     }
 
-    public static ResultExecutor newResultExecutor(final int threadCount) {
-        return new ResultExecutor(null, threadCount);
+    public static ResultExecutor newResultExecutor(final int threadCount, final int queueSize) {
+        return new ResultExecutor(null, threadCount, queueSize);
+    }
+
+    public boolean threadsReadResults() {
+        return true;
+    }
+
+    public BlockingQueueWithCompletion<Result> getResultQueue() {
+        return this.resultQueue;
     }
 
     private AtomicInteger getWorkSubmittedCount() {
@@ -58,6 +74,7 @@ public class ResultExecutor extends Executor implements HExecutor {
 
     public void reset() {
         this.getWorkSubmittedCount().set(0);
+        this.getResultQueue().reset();
     }
 
     public void release() {

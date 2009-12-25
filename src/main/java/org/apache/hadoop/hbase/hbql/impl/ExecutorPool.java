@@ -26,14 +26,17 @@ public class ExecutorPool extends ElementPool<HExecutor> {
 
     private final int threadCount;
     private final boolean threadsReadResults;
+    private final int queueSize;
 
     public ExecutorPool(final String name,
                         final int maxPoolSize,
                         final int threadCount,
-                        final boolean threadsReadResults) {
+                        final boolean threadsReadResults,
+                        final int queueSize) {
         super(name, maxPoolSize);
         this.threadCount = threadCount;
         this.threadsReadResults = threadsReadResults;
+        this.queueSize = queueSize;
     }
 
     public int getThreadCount() {
@@ -44,9 +47,13 @@ public class ExecutorPool extends ElementPool<HExecutor> {
         return this.threadsReadResults;
     }
 
+    private int getQueueSize() {
+        return this.queueSize;
+    }
+
     protected HExecutor newElement() throws HBqlException {
         return this.threadsReadResults()
-               ? ResultExecutor.newResultExecutorForPool(this, this.getThreadCount())
-               : ResultScannerExecutor.newResultScannerExecutorForPool(this, this.getThreadCount());
+               ? ResultExecutor.newPooledResultExecutor(this, this.getThreadCount(), this.getQueueSize())
+               : ResultScannerExecutor.newPooledResultScannerExecutor(this, this.getThreadCount(), this.getQueueSize());
     }
 }

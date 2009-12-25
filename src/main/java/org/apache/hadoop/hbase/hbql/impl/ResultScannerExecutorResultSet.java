@@ -33,55 +33,41 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 
-public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
+public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T> {
 
-    private volatile boolean closed = false;
     private final ResultScannerExecutor resultSetExecutor;
 
-    ExecutorResultSetImpl(final Query<T> query) throws HBqlException {
+    ResultScannerExecutorResultSet(final Query<T> query, final ResultScannerExecutor resultScannerExecutor) throws HBqlException {
         super(query);
 
-        // This may block waiting for a Executor to become available from the ExecutorPool
-        this.resultSetExecutor = (ResultScannerExecutor)this.getQuery().getHConnectionImpl().getExecutorForConnection();
+        this.resultSetExecutor = resultScannerExecutor;
 
         // Submit work to executor
         this.submitWork();
     }
 
-    private ResultScannerExecutor getResultSetExecutor() {
+    protected ResultScannerExecutor getExecutor() {
         return this.resultSetExecutor;
     }
 
     private void submitWork() throws HBqlException {
         final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
         for (final RowRequest rowRequest : rowRequestList) {
-            this.getResultSetExecutor().submit(
-                    new Callable<ResultScanner>() {
-                        public ResultScanner call() {
-                            try {
-                                setMaxVersions(rowRequest.getMaxVersions());
-                                return rowRequest.getResultScanner(getSelectStmt().getMapping(),
-                                                                   getWithArgs(),
-                                                                   getHTableWrapper().getHTable());
-                            }
-                            catch (HBqlException e) {
-                                e.printStackTrace();
-                                return null;
-                            }
-                        }
-                    });
-        }
-    }
-
-    public void close() {
-        if (!this.closed) {
-            synchronized (this) {
-                if (!this.closed) {
-                    super.close();
-                    this.getResultSetExecutor().release();
-                    this.closed = true;
+            final Callable<ResultScanner> job = new Callable<ResultScanner>() {
+                public ResultScanner call() {
+                    try {
+                        setMaxVersions(rowRequest.getMaxVersions());
+                        return rowRequest.getResultScanner(getSelectStmt().getMapping(),
+                                                           getWithArgs(),
+                                                           getHTableWrapper().getHTable());
+                    }
+                    catch (HBqlException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
                 }
-            }
+            };
+            this.getExecutor().submit(job);
         }
     }
 
@@ -91,11 +77,11 @@ public class ExecutorResultSetImpl<T> extends HResultSetImpl<T> {
             return new ResultSetIterator<T>(this) {
 
                 protected boolean moreResultsPending() {
-                    return getResultSetExecutor().moreResultsPending();
+                    return getExecutor().moreResultsPending();
                 }
 
                 protected Iterator<Result> getNextResultIterator() throws HBqlException {
-                    final ResultScanner resultScanner = getResultSetExecutor().takeResultScanner();
+                    final ResultScanner resultScanner = getExecutor().takeResultScanner();
                     setCurrentResultScanner(resultScanner);
                     return getCurrentResultScanner().iterator();
                 }

@@ -47,6 +47,7 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
     private final Query<T> query;
     private final ExpressionTree clientExpressionTree;
     private HTableWrapper tableWrapper;
+
     private volatile boolean closed = false;
 
     protected HResultSetImpl(final Query<T> query) throws HBqlException {
@@ -67,6 +68,8 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
                 listener.onQueryInit();
         }
     }
+
+    protected abstract HExecutor getExecutor();
 
     protected void setAggregateRecord(final AggregateRecord aggregateRecord) {
         this.aggregateRecord = aggregateRecord;
@@ -99,7 +102,6 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
             catch (Exception e) {
                 // Do nothing
             }
-
             if (removeFromList)
                 getResultScannerList().remove(scanner);
         }
@@ -112,6 +114,8 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
                     for (final ResultScanner scanner : this.getResultScannerList())
                         closeResultScanner(scanner, false);
                     this.getResultScannerList().clear();
+                    if (this.getExecutor() != null)
+                        this.getExecutor().release();
                     this.closed = true;
                 }
             }

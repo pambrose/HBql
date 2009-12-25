@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.util.Maps;
+import org.apache.expreval.util.PoolableElement;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -254,10 +255,14 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         return new HPreparedStatementImpl(this, sql);
     }
 
+    public void release() {
+        this.getConnectionPool().releaseConnection(this);
+    }
+
     public void close() throws HBqlException {
         // If it is a pool conection, just give it back to pool
         if (this.isPooled())
-            this.getConnectionPool().releaseConnection(this);
+            this.release();
         else
             this.closed = true;
     }

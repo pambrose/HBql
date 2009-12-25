@@ -52,13 +52,14 @@ public class CreateExecutorPoolStatement extends BasicStatement implements Conne
         ExecutorPoolManager.newExecutorPool(this.getPoolName(),
                                             this.getArgs().getMaxPoolSize(),
                                             this.getArgs().getThreadCount(),
-                                            this.getArgs().getThreadsReadResults());
+                                            this.getArgs().getThreadsReadResults(),
+                                            this.getArgs().getQueueSize());
 
         return new ExecutionResults("Executor pool " + this.getPoolName() + " created.");
     }
 
 
     public static String usage() {
-        return "CREATE EXECUTOR POOL pool_name (MAX_POOL_SIZE : integer_expression , THREAD_COUNT : integer_expression) [IF boolean_expression]";
+        return "CREATE EXECUTOR POOL pool_name (MAX_POOL_SIZE: integer_expression, THREAD_COUNT: integer_expression, THREADS_READ_RESULTS: boolean_expression, QUEUE_SIZE: integer_expression) [IF boolean_expression]";
     }
 }

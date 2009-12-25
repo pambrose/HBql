@@ -40,8 +40,11 @@ public abstract class SelectStatementArgs extends MultipleExpressionContext {
         LIMIT(new ArgumentListTypeSignature(IntegerValue.class)),
         SCANNERCACHE(new ArgumentListTypeSignature(IntegerValue.class)),
         VERSION(new ArgumentListTypeSignature(IntegerValue.class)),
-        EXECUTORPOOL(new ArgumentListTypeSignature(IntegerValue.class, IntegerValue.class, BooleanValue.class)),
-        WIDTH(new ArgumentListTypeSignature(IntegerValue.class));
+        WIDTH(new ArgumentListTypeSignature(IntegerValue.class)),
+        EXECUTORPOOL(new ArgumentListTypeSignature(IntegerValue.class,
+                                                   IntegerValue.class,
+                                                   BooleanValue.class,
+                                                   IntegerValue.class));
 
         private final ArgumentListTypeSignature typeSignature;
 

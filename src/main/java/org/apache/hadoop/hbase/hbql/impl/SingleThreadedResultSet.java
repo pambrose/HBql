@@ -29,17 +29,21 @@ import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class SingleThreadedResultSetImpl<T> extends HResultSetImpl<T> {
+public class SingleThreadedResultSet<T> extends HResultSetImpl<T> {
 
     private final Iterator<RowRequest> rowRequestIterator;
 
-    SingleThreadedResultSetImpl(final Query<T> query) throws HBqlException {
+    SingleThreadedResultSet(final Query<T> query) throws HBqlException {
         super(query);
         this.rowRequestIterator = getQuery().getRowRequestList().iterator();
     }
 
     private Iterator<RowRequest> getRowRequestIterator() {
         return this.rowRequestIterator;
+    }
+
+    protected HExecutor getExecutor() {
+        return null;
     }
 
     public Iterator<T> iterator() {

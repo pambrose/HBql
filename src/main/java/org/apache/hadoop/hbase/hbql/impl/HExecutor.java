@@ -20,5 +20,10 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.util.PoolableElement;
+
+// The only reason for this interface is to keep PoolableElement out of the public API
 public interface HExecutor extends PoolableElement {
+
+    boolean threadsReadResults();
 }

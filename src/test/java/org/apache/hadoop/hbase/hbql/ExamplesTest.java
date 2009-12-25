@@ -393,13 +393,13 @@ public class ExamplesTest extends TestSupport {
 
         // Or, using the API
         if (!ExecutorPoolManager.executorPoolExists("execPool"))
-            ExecutorPoolManager.newExecutorPool("execPool", 5, 10, true);
+            ExecutorPoolManager.newExecutorPool("execPool", 5, 10, true, 100);
 
         // Then assign the connection a pool name to use for queries
         connection.setExecutorPoolName("execPool");
 
         // If a dedicated Executor, rather than one from a pool, is desired:
-        Executor executor = Executor.newExecutor(10, true);
+        Executor executor = Executor.newExecutor(10, true, 100);
         connection.setExecutor(executor);
 
         // END SNIPPET: create-executor-pool

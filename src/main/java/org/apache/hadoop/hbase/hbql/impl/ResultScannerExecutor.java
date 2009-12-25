@@ -26,29 +26,37 @@ import org.apache.hadoop.hbase.hbql.client.Executor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class ResultScannerExecutor extends Executor implements HExecutor {
 
-    private final BlockingQueue<Future<ResultScanner>> backingQueue = new LinkedBlockingQueue<Future<ResultScanner>>();
+    private final BlockingQueue<Future<ResultScanner>> backingQueue;
     private final List<Future<ResultScanner>> futureList = Lists.newArrayList();
     private final ExecutorCompletionService<ResultScanner> completionService;
 
-    public ResultScannerExecutor(final ExecutorPool executorPool, final int threadCount) {
+    public ResultScannerExecutor(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
         super(executorPool, threadCount);
-        this.completionService = new ExecutorCompletionService<ResultScanner>(this.getExecutorService(), this.getBackingQueue());
+        backingQueue = new ArrayBlockingQueue<Future<ResultScanner>>(queueSize);
+        this.completionService = new ExecutorCompletionService<ResultScanner>(this.getExecutorService(),
+                                                                              this.getBackingQueue());
     }
 
-    public static ResultScannerExecutor newResultScannerExecutorForPool(final ExecutorPool executorPool, final int threadCount) {
-        return new ResultScannerExecutor(executorPool, threadCount);
+    public static ResultScannerExecutor newPooledResultScannerExecutor(final ExecutorPool executorPool,
+                                                                       final int threadCount,
+                                                                       final int queueSize) {
+        return new ResultScannerExecutor(executorPool, threadCount, queueSize);
     }
 
-    public static ResultScannerExecutor newResultScannerExecutor(final int threadCount) {
-        return new ResultScannerExecutor(null, threadCount);
+    public static ResultScannerExecutor newResultScannerExecutor(final int threadCount, final int queueSize) {
+        return new ResultScannerExecutor(null, threadCount, queueSize);
+    }
+
+    public boolean threadsReadResults() {
+        return false;
     }
 
     private List<Future<ResultScanner>> getFutureList() {

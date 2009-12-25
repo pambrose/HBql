@@ -18,7 +18,9 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.impl;
+package org.apache.expreval.util;
+
+import org.apache.hadoop.hbase.hbql.impl.QueueElement;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -61,5 +63,10 @@ public class BlockingQueueWithCompletion<T> {
 
     public int getCompletionCount() {
         return this.getCounter().get();
+    }
+
+    public void reset() {
+        this.getCounter().set(0);
+        this.getResultQueue().clear();
     }
 }

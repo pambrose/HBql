@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.util.PoolableElement;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.util.concurrent.ArrayBlockingQueue;

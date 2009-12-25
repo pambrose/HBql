@@ -37,10 +37,12 @@ public class Executor {
         this.executorService = Executors.newFixedThreadPool(threadCount);
     }
 
-    public static Executor newExecutor(final int threadCount, final boolean threadsReadResults) {
+    public static Executor newExecutor(final int threadCount,
+                                       final boolean threadsReadResults,
+                                       final int queueSize) {
         return threadsReadResults
-               ? ResultExecutor.newResultExecutor(threadCount)
-               : ResultScannerExecutor.newResultScannerExecutor(threadCount);
+               ? ResultExecutor.newResultExecutor(threadCount, queueSize)
+               : ResultScannerExecutor.newResultScannerExecutor(threadCount, queueSize);
     }
 
     protected ExecutorPool getExecutorPool() {

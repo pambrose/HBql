@@ -36,11 +36,11 @@ import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import java.util.List;
 import java.util.Set;
 
-public class Query<E> {
+public class Query<T> {
 
     private final HConnectionImpl connection;
     private final SelectStatement selectStatement;
-    private List<QueryListener<E>> listeners = null;
+    private List<QueryListener<T>> listeners = null;
 
     private Query(final HConnectionImpl connection, final SelectStatement selectStatement) throws HBqlException {
         this.connection = connection;
@@ -50,7 +50,7 @@ public class Query<E> {
         this.getSelectStmt().validateTypes();
     }
 
-    public static <T> Query<T> newQuery(final HConnectionImpl connection,
+    public static <E> Query<E> newQuery(final HConnectionImpl connection,
                                         final SelectStatement selectStatement,
                                         final Class clazz) throws HBqlException {
         final ResultAccessor accessor;
@@ -65,10 +65,10 @@ public class Query<E> {
 
         selectStatement.setResultAccessor(accessor);
 
-        return new Query<T>(connection, selectStatement);
+        return new Query<E>(connection, selectStatement);
     }
 
-    public synchronized void addListener(final QueryListener<E> listener) {
+    public synchronized void addListener(final QueryListener<T> listener) {
         if (this.getListeners() == null)
             this.listeners = Lists.newArrayList();
 
@@ -95,7 +95,7 @@ public class Query<E> {
         return withArgs.getRowRequestList(this.getHConnectionImpl(), this.getSelectStmt().getMapping(), allAttribs);
     }
 
-    public List<QueryListener<E>> getListeners() {
+    public List<QueryListener<T>> getListeners() {
         return this.listeners;
     }
 
@@ -104,9 +104,17 @@ public class Query<E> {
             this.getListeners().clear();
     }
 
-    public HResultSet<E> newResultSet() throws HBqlException {
-        return (this.getHConnectionImpl().usesAnExecutor())
-               ? new ExecutorResultSetImpl2<E>(this)
-               : new SingleThreadedResultSetImpl<E>(this);
+    public HResultSet<T> newResultSet() throws HBqlException {
+        if (this.getHConnectionImpl().usesAnExecutor()) {
+            // This may block waiting for a Executor to become available from the ExecutorPool
+            final HExecutor executor = this.getHConnectionImpl().getExecutorForConnection();
+            if (executor.threadsReadResults())
+                return new ResultExecutorResultSet<T>(this, (ResultExecutor)executor);
+            else
+                return new ResultScannerExecutorResultSet<T>(this, (ResultScannerExecutor)executor);
+        }
+        else {
+            return new SingleThreadedResultSet<T>(this);
+        }
     }
 }

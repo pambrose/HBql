@@ -26,8 +26,11 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 public class ExecutorPoolArgs extends SelectStatementArgs {
 
 
-    public ExecutorPoolArgs(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
-        super(ArgType.EXECUTORPOOL, arg0, arg1, arg2);
+    public ExecutorPoolArgs(final GenericValue arg0,
+                            final GenericValue arg1,
+                            final GenericValue arg2,
+                            final GenericValue arg3) {
+        super(ArgType.EXECUTORPOOL, arg0, arg1, arg2, arg3);
     }
 
     public int getMaxPoolSize() throws HBqlException {
@@ -42,12 +45,16 @@ public class ExecutorPoolArgs extends SelectStatementArgs {
         return (Boolean)this.evaluateConstant(null, 2, false, null);
     }
 
+    public int getQueueSize() throws HBqlException {
+        return (Integer)this.evaluateConstant(null, 3, false, null);
+    }
 
     public String asString() {
         try {
             return "MAX_POOL_SIZE : " + this.getMaxPoolSize()
                    + ", THREAD_COUNT : " + this.getThreadCount()
-                   + ", THREADS_READ_RESULTS : " + this.getThreadsReadResults();
+                   + ", THREADS_READ_RESULTS : " + this.getThreadsReadResults()
+                   + ", QUEUE_SIZE : " + this.getQueueSize();
         }
         catch (HBqlException e) {
             return "Invalid expression";

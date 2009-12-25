@@ -35,34 +35,23 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 
-public class ExecutorResultSetImpl2<T> extends HResultSetImpl<T> {
+public class ResultExecutorResultSet<T> extends HResultSetImpl<T> {
 
-    private volatile boolean closed = false;
     private final ResultExecutor resultExecutor;
-    private final BlockingQueueWithCompletion<Result> resultQueue;
 
-    ExecutorResultSetImpl2(final Query<T> query) throws HBqlException {
+    ResultExecutorResultSet(final Query<T> query, final ResultExecutor resultExecutor) throws HBqlException {
         super(query);
 
-        // TODO need the user to specify buffer size
-        this.resultQueue = new BlockingQueueWithCompletion<Result>(100);
-
-        // This may block waiting for a Executor to become available from the ExecutorPool
-        this.resultExecutor = (ResultExecutor)this.getQuery().getHConnectionImpl().getExecutorForConnection();
+        this.resultExecutor = resultExecutor;
 
         // Submit work to executor
         this.submitWork();
     }
 
-    private ResultExecutor getExecutor() {
+    protected ResultExecutor getExecutor() {
         return this.resultExecutor;
     }
 
-    private BlockingQueueWithCompletion<Result> getResultQueue() {
-        return this.resultQueue;
-    }
-
-    @SuppressWarnings("unchecked")
     private void submitWork() throws HBqlException {
         final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
         for (final RowRequest rowRequest : rowRequestList) {
@@ -84,30 +73,18 @@ public class ExecutorResultSetImpl2<T> extends HResultSetImpl<T> {
                                 continue;
                             }
 
-                            getResultQueue().putElement(result);
+                            getExecutor().getResultQueue().putElement(result);
                         }
 
                         scanner.close();
                     }
                     finally {
-                        getResultQueue().putCompletion();
+                        getExecutor().getResultQueue().putCompletion();
                     }
                     return "OK";
                 }
             };
             this.getExecutor().submit(job);
-        }
-    }
-
-    public void close() {
-        if (!this.closed) {
-            synchronized (this) {
-                if (!this.closed) {
-                    super.close();
-                    this.getExecutor().release();
-                    this.closed = true;
-                }
-            }
         }
     }
 
@@ -148,7 +125,7 @@ public class ExecutorResultSetImpl2<T> extends HResultSetImpl<T> {
                 }
 
                 protected boolean moreResultsPending() {
-                    return getExecutor().moreResultsPending(getResultQueue().getCompletionCount());
+                    return getExecutor().moreResultsPending(getExecutor().getResultQueue().getCompletionCount());
                 }
 
                 @SuppressWarnings("unchecked")
@@ -160,7 +137,7 @@ public class ExecutorResultSetImpl2<T> extends HResultSetImpl<T> {
                     while (true) {
                         final Result result;
                         try {
-                            final QueueElement<Result> queueElement = getResultQueue().takeElement();
+                            final QueueElement<Result> queueElement = getExecutor().getResultQueue().takeElement();
                             // Completion values return null values
                             if (queueElement.isCompleteToken()) {
                                 if (!moreResultsPending())

@@ -37,12 +37,17 @@ public class ExecutorPoolManager {
     public static ExecutorPool newExecutorPool(final String poolName,
                                                final int maxPoolSize,
                                                final int threadCount,
-                                               final boolean threadsReadResults) throws HBqlException {
+                                               final boolean threadsReadResults,
+                                               final int queueSize) throws HBqlException {
 
         if (Utils.isValidString(poolName) && getExecutorPoolMap().containsKey(poolName))
             throw new HBqlException("Executor pool already exists: " + poolName);
 
-        final ExecutorPool executorPool = new ExecutorPool(poolName, maxPoolSize, threadCount, threadsReadResults);
+        final ExecutorPool executorPool = new ExecutorPool(poolName,
+                                                           maxPoolSize,
+                                                           threadCount,
+                                                           threadsReadResults,
+                                                           queueSize);
         getExecutorPoolMap().put(executorPool.getName(), executorPool);
 
         return executorPool;

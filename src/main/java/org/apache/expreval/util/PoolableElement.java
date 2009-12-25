@@ -18,9 +18,11 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.impl;
+package org.apache.expreval.util;
 
 public interface PoolableElement {
 
     void reset();
+
+    void release();
 }
