@@ -24,6 +24,7 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.hbql.client.Executor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
@@ -33,7 +34,7 @@ import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-public abstract class HResultSetImpl<T> implements HResultSet<T> {
+public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
 
     // Record count keeps track of values that have evaluated as true and returned to user
     private final AtomicLong returnedRecordCount = new AtomicLong(0L);
@@ -47,11 +48,14 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
     private final Query<T> query;
     private final ExpressionTree clientExpressionTree;
     private HTableWrapper tableWrapper;
+    private final Executor<R> executor;
 
     private volatile boolean closed = false;
 
-    protected HResultSetImpl(final Query<T> query) throws HBqlException {
+    protected HResultSetImpl(final Query<T> query, final Executor<R> executor) throws HBqlException {
         this.query = query;
+        this.executor = executor;
+
         this.clientExpressionTree = this.getWithArgs().getClientExpressionTree();
         this.returnedRecordLimit = this.getWithArgs().getLimit();
         this.tableWrapper = this.getHConnectionImpl().newHTableWrapper(this.getWithArgs(), this.getTableName());
@@ -67,9 +71,16 @@ public abstract class HResultSetImpl<T> implements HResultSet<T> {
             for (final QueryListener<T> listener : this.getListeners())
                 listener.onQueryInit();
         }
+
+        // Submit work to executor
+        this.submitWork();
     }
 
-    protected abstract HExecutor getExecutor();
+    protected abstract void submitWork() throws HBqlException;
+
+    protected Executor<R> getExecutor() {
+        return this.executor;
+    }
 
     protected void setAggregateRecord(final AggregateRecord aggregateRecord) {
         this.aggregateRecord = aggregateRecord;

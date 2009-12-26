@@ -114,7 +114,7 @@ public class Query<T> {
                 return new ResultScannerExecutorResultSet<T>(this, (ResultScannerExecutor)executor);
         }
         else {
-            return new SingleThreadedResultSet<T>(this);
+            return new NonExecutorResultSet<T>(this);
         }
     }
 }

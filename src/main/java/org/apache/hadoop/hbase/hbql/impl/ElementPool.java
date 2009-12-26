@@ -82,7 +82,7 @@ public abstract class ElementPool<T extends PoolableElement> {
     }
 
 
-    protected void release(final T element) {
+    public void release(final T element) {
         element.reset();
         this.getElementPool().add(element);
     }

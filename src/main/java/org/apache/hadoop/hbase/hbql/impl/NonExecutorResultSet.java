@@ -29,12 +29,12 @@ import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class SingleThreadedResultSet<T> extends HResultSetImpl<T> {
+public class NonExecutorResultSet<T> extends HResultSetImpl<T, Object> {
 
     private final Iterator<RowRequest> rowRequestIterator;
 
-    SingleThreadedResultSet(final Query<T> query) throws HBqlException {
-        super(query);
+    NonExecutorResultSet(final Query<T> query) throws HBqlException {
+        super(query, null);
         this.rowRequestIterator = getQuery().getRowRequestList().iterator();
     }
 
@@ -42,14 +42,14 @@ public class SingleThreadedResultSet<T> extends HResultSetImpl<T> {
         return this.rowRequestIterator;
     }
 
-    protected HExecutor getExecutor() {
-        return null;
+    protected void submitWork() throws HBqlException {
+        // No op
     }
 
     public Iterator<T> iterator() {
 
         try {
-            return new ResultSetIterator<T>(this) {
+            return new ResultSetIterator<T, Object>(this) {
 
                 protected boolean moreResultsPending() {
                     return getRowRequestIterator().hasNext();
@@ -62,15 +62,6 @@ public class SingleThreadedResultSet<T> extends HResultSetImpl<T> {
                                                                         getWithArgs(),
                                                                         getHTableWrapper().getHTable()));
                     return getCurrentResultScanner().iterator();
-                }
-
-                protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
-
-                    this.setNextObject(nextObject);
-
-                    // If the query is finished then clean up.
-                    if (!this.hasNext())
-                        this.cleanUp(fromExceptionCatch);
                 }
 
                 protected void cleanUp(final boolean fromExceptionCatch) {

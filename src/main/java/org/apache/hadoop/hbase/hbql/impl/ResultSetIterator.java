@@ -29,13 +29,13 @@ import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
 import java.util.Iterator;
 
-public abstract class ResultSetIterator<T> implements Iterator<T> {
+public abstract class ResultSetIterator<T, R> implements Iterator<T> {
 
-    private final HResultSetImpl<T> resultSet;
+    private final HResultSetImpl<T, R> resultSet;
     private Iterator<Result> currentResultIterator = null;
     private T nextObject = null;
 
-    protected ResultSetIterator(final HResultSetImpl<T> resultSet) throws HBqlException {
+    protected ResultSetIterator(final HResultSetImpl<T, R> resultSet) throws HBqlException {
         this.resultSet = resultSet;
 
         // Prime the iterator with the first value
@@ -48,7 +48,7 @@ public abstract class ResultSetIterator<T> implements Iterator<T> {
 
     protected abstract Iterator<Result> getNextResultIterator() throws HBqlException;
 
-    private HResultSetImpl<T> getResultSet() {
+    private HResultSetImpl<T, R> getResultSet() {
         return this.resultSet;
     }
 
@@ -120,7 +120,7 @@ public abstract class ResultSetIterator<T> implements Iterator<T> {
     @SuppressWarnings("unchecked")
     protected T fetchNextObject() throws HBqlException {
 
-        final HResultSetImpl<T> rs = this.getResultSet();
+        final HResultSetImpl<T, R> rs = this.getResultSet();
         final SelectStatement selectStatement = rs.getSelectStmt();
         final ResultAccessor resultAccessor = selectStatement.getResultAccessor();
 
@@ -129,7 +129,8 @@ public abstract class ResultSetIterator<T> implements Iterator<T> {
             if (this.getCurrentResultIterator() == null)
                 this.setCurrentResultIterator(this.getNextResultIterator());
 
-            while (this.getCurrentResultIterator().hasNext()) {
+            while (this.getCurrentResultIterator() != null
+                   && this.getCurrentResultIterator().hasNext()) {
 
                 final Result result = this.getCurrentResultIterator().next();
 

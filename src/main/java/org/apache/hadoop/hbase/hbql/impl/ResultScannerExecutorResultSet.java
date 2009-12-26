@@ -33,38 +33,29 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 
-public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T> {
+public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultScanner> {
 
-    private final ResultScannerExecutor resultSetExecutor;
 
-    ResultScannerExecutorResultSet(final Query<T> query, final ResultScannerExecutor resultScannerExecutor) throws HBqlException {
-        super(query);
-
-        this.resultSetExecutor = resultScannerExecutor;
-
-        // Submit work to executor
-        this.submitWork();
+    ResultScannerExecutorResultSet(final Query<T> query, final ResultScannerExecutor executor) throws HBqlException {
+        super(query, executor);
     }
 
-    protected ResultScannerExecutor getExecutor() {
-        return this.resultSetExecutor;
-    }
-
-    private void submitWork() throws HBqlException {
+    protected void submitWork() throws HBqlException {
         final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
         for (final RowRequest rowRequest : rowRequestList) {
-            final Callable<ResultScanner> job = new Callable<ResultScanner>() {
-                public ResultScanner call() {
+            final Callable<String> job = new Callable<String>() {
+                public String call() throws HBqlException, InterruptedException {
                     try {
                         setMaxVersions(rowRequest.getMaxVersions());
-                        return rowRequest.getResultScanner(getSelectStmt().getMapping(),
-                                                           getWithArgs(),
-                                                           getHTableWrapper().getHTable());
+                        final ResultScanner resultScanner = rowRequest.getResultScanner(getSelectStmt().getMapping(),
+                                                                                        getWithArgs(),
+                                                                                        getHTableWrapper().getHTable());
+                        getExecutor().getQueue().putElement(resultScanner);
                     }
-                    catch (HBqlException e) {
-                        e.printStackTrace();
-                        return null;
+                    finally {
+                        getExecutor().getQueue().putCompletion();
                     }
+                    return "OK";
                 }
             };
             this.getExecutor().submit(job);
@@ -74,14 +65,33 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T> {
     public Iterator<T> iterator() {
 
         try {
-            return new ResultSetIterator<T>(this) {
+            return new ResultSetIterator<T, ResultScanner>(this) {
 
                 protected boolean moreResultsPending() {
-                    return getExecutor().moreResultsPending();
+                    return getExecutor().moreResultsPending(getExecutor().getQueue().getCompletionCount());
                 }
 
                 protected Iterator<Result> getNextResultIterator() throws HBqlException {
-                    final ResultScanner resultScanner = getExecutor().takeResultScanner();
+                    final ResultScanner resultScanner;
+                    while (true) {
+                        try {
+                            final QueueElement<ResultScanner> queueElement = getExecutor().getQueue().takeElement();
+                            if (queueElement.isCompleteToken()) {
+                                if (!moreResultsPending()) {
+                                    resultScanner = null;
+                                    break;
+                                }
+                            }
+                            else {
+                                resultScanner = queueElement.getElement();
+                                break;
+                            }
+                        }
+                        catch (InterruptedException e) {
+                            throw new HBqlException(e);
+                        }
+                    }
+
                     setCurrentResultScanner(resultScanner);
                     return getCurrentResultScanner().iterator();
                 }

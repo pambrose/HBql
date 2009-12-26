@@ -159,7 +159,7 @@ attribMapping returns [AttribMapping retval]
 							{retval = new AttribMapping(new KeyInfo($key.text, $w.retval), $fm.retval);};
 	
 pred returns [StatementPredicate retval]
-options {memoize=true;}	
+//options {memoize=true;}	
 	: keyIF  b=exprValue 				{retval = new StatementPredicate($b.retval);};
 
 	

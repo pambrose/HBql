@@ -35,24 +35,13 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 
-public class ResultExecutorResultSet<T> extends HResultSetImpl<T> {
+public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
 
-    private final ResultExecutor resultExecutor;
-
-    ResultExecutorResultSet(final Query<T> query, final ResultExecutor resultExecutor) throws HBqlException {
-        super(query);
-
-        this.resultExecutor = resultExecutor;
-
-        // Submit work to executor
-        this.submitWork();
+    ResultExecutorResultSet(final Query<T> query, final ResultExecutor executor) throws HBqlException {
+        super(query, executor);
     }
 
-    protected ResultExecutor getExecutor() {
-        return this.resultExecutor;
-    }
-
-    private void submitWork() throws HBqlException {
+    protected void submitWork() throws HBqlException {
         final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
         for (final RowRequest rowRequest : rowRequestList) {
             final Callable<String> job = new Callable<String>() {
@@ -73,13 +62,13 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T> {
                                 continue;
                             }
 
-                            getExecutor().getResultQueue().putElement(result);
+                            getExecutor().getQueue().putElement(result);
                         }
 
                         scanner.close();
                     }
                     finally {
-                        getExecutor().getResultQueue().putCompletion();
+                        getExecutor().getQueue().putCompletion();
                     }
                     return "OK";
                 }
@@ -91,7 +80,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T> {
     public Iterator<T> iterator() {
 
         try {
-            return new ResultSetIterator<T>(this) {
+            return new ResultSetIterator<T, Result>(this) {
 
                 protected Iterator<Result> getNextResultIterator() throws HBqlException {
                     return null;
@@ -125,7 +114,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T> {
                 }
 
                 protected boolean moreResultsPending() {
-                    return getExecutor().moreResultsPending(getExecutor().getResultQueue().getCompletionCount());
+                    return getExecutor().moreResultsPending(getExecutor().getQueue().getCompletionCount());
                 }
 
                 @SuppressWarnings("unchecked")
@@ -137,8 +126,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T> {
                     while (true) {
                         final Result result;
                         try {
-                            final QueueElement<Result> queueElement = getExecutor().getResultQueue().takeElement();
-                            // Completion values return null values
+                            final QueueElement<Result> queueElement = getExecutor().getQueue().takeElement();
                             if (queueElement.isCompleteToken()) {
                                 if (!moreResultsPending())
                                     break;
@@ -150,8 +138,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T> {
                             }
                         }
                         catch (InterruptedException e) {
-                            e.printStackTrace();
-                            continue;
+                            throw new HBqlException(e);
                         }
 
                         incrementReturnedRecordCount();

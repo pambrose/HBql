@@ -20,24 +20,13 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.expreval.util.BlockingQueueWithCompletion;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Executor;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
-
-public class ResultExecutor extends Executor implements HExecutor {
-
-    private final AtomicInteger workSubmittedCount = new AtomicInteger(0);
-    private final BlockingQueueWithCompletion<Result> resultQueue;
+public class ResultExecutor extends Executor<Result> implements HExecutor {
 
     private ResultExecutor(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
-        super(executorPool, threadCount);
-
-        // TODO need the user to specify buffer size
-        this.resultQueue = new BlockingQueueWithCompletion<Result>(queueSize);
+        super(executorPool, threadCount, queueSize);
     }
 
     public static ResultExecutor newPooledResultExecutor(final ExecutorPool executorPool,
@@ -52,34 +41,5 @@ public class ResultExecutor extends Executor implements HExecutor {
 
     public boolean threadsReadResults() {
         return true;
-    }
-
-    public BlockingQueueWithCompletion<Result> getResultQueue() {
-        return this.resultQueue;
-    }
-
-    private AtomicInteger getWorkSubmittedCount() {
-        return this.workSubmittedCount;
-    }
-
-    public Future<String> submit(final Callable<String> job) {
-        final Future<String> future = this.getExecutorService().submit(job);
-        this.getWorkSubmittedCount().incrementAndGet();
-        return future;
-    }
-
-    public boolean moreResultsPending(final int val) {
-        return val < this.getWorkSubmittedCount().get();
-    }
-
-    public void reset() {
-        this.getWorkSubmittedCount().set(0);
-        this.getResultQueue().reset();
-    }
-
-    public void release() {
-        // Release if it is a pool element
-        if (this.getExecutorPool() != null)
-            this.getExecutorPool().release(this);
     }
 }

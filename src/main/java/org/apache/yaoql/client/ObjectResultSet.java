@@ -70,7 +70,7 @@ public class ObjectResultSet<T> implements Iterable<T> {
     public Iterator<T> iterator() {
 
         try {
-            return new ResultSetIterator<T>(null) {
+            return new ResultSetIterator<T, Object>(null) {
 
                 protected T fetchNextObject() throws HBqlException {
 
