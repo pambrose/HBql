@@ -47,11 +47,11 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     private final Query<T> query;
     private final ExpressionTree clientExpressionTree;
     private HTableWrapper tableWrapper;
-    private final ExecutorImpl<R> executor;
+    private final GenericExecutor<R> executor;
 
     private volatile boolean closed = false;
 
-    protected HResultSetImpl(final Query<T> query, final ExecutorImpl<R> executor) throws HBqlException {
+    protected HResultSetImpl(final Query<T> query, final GenericExecutor<R> executor) throws HBqlException {
         this.query = query;
         this.executor = executor;
 
@@ -77,7 +77,7 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
 
     protected abstract void submitWork() throws HBqlException;
 
-    protected ExecutorImpl<R> getExecutor() {
+    protected GenericExecutor<R> getExecutor() {
         return this.executor;
     }
 

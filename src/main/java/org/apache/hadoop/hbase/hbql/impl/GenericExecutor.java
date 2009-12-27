@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.util.BlockingQueueWithCompletion;
+import org.apache.expreval.util.PoolableElement;
 import org.apache.hadoop.hbase.hbql.client.Executor;
 
 import java.util.concurrent.Callable;
@@ -29,18 +30,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ExecutorImpl<R> extends Executor {
+public abstract class GenericExecutor<T> extends Executor implements PoolableElement {
 
     private final ExecutorPool executorPool;
     private final ExecutorService threadPool;
+    private final BlockingQueueWithCompletion<T> queue;
     private final AtomicInteger workSubmittedCount = new AtomicInteger(0);
-    private final BlockingQueueWithCompletion<R> elementQueue;
 
-    protected ExecutorImpl(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
+    protected GenericExecutor(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
         this.executorPool = executorPool;
         this.threadPool = Executors.newFixedThreadPool(threadCount);
-        this.elementQueue = new BlockingQueueWithCompletion<R>(queueSize);
+        this.queue = new BlockingQueueWithCompletion<T>(queueSize);
     }
+
+    abstract boolean threadsReadResults();
 
     protected ExecutorPool getExecutorPool() {
         return this.executorPool;
@@ -50,8 +53,8 @@ public class ExecutorImpl<R> extends Executor {
         return this.threadPool;
     }
 
-    public BlockingQueueWithCompletion<R> getQueue() {
-        return this.elementQueue;
+    public BlockingQueueWithCompletion<T> getQueue() {
+        return this.queue;
     }
 
     protected AtomicInteger getWorkSubmittedCount() {
@@ -76,6 +79,6 @@ public class ExecutorImpl<R> extends Executor {
     public void release() {
         // Release if it is a pool element
         if (this.getExecutorPool() != null)
-            this.getExecutorPool().release((HExecutor)this);
+            this.getExecutorPool().release(this);
     }
 }

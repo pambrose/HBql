@@ -73,7 +73,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     private volatile boolean closed = false;
 
     private String executorPoolName = null;
-    private Executor executor = null;
+    private GenericExecutor executor = null;
 
     public HConnectionImpl(final HBaseConfiguration hbaseConfig,
                            final HConnectionPoolImpl connectionPool,
@@ -438,17 +438,18 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         }
     }
 
-    public HExecutor getExecutorForConnection() throws HBqlException {
+    // The value returned from this call must be eventually released.
+    public GenericExecutor getExecutorForConnection() throws HBqlException {
         // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
-        final HExecutor retval = (this.getExecutor() != null)
-                                 ? this.getExecutorImpl()
-                                 : this.takeExecutorFromPool();
+        final GenericExecutor retval = this.getExecutor() != null
+                                       ? this.getExecutor()
+                                       : this.takeExecutorFromPool();
         // Reset it prior to handing it out
         retval.reset();
         return retval;
     }
 
-    private HExecutor takeExecutorFromPool() throws HBqlException {
+    private GenericExecutor takeExecutorFromPool() throws HBqlException {
         this.validateExecutorPoolNameExists(this.getExecutorPoolName());
         final ExecutorPool pool = ExecutorPoolManager.getExecutorPool(this.getExecutorPoolName());
         return pool.take();
@@ -467,14 +468,10 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void setExecutor(final Executor executor) {
-        this.executor = executor;
+        this.executor = (GenericExecutor)executor;
     }
 
-    private ResultExecutor getExecutorImpl() {
-        return (ResultExecutor)this.executor;
-    }
-
-    public Executor getExecutor() {
+    public GenericExecutor getExecutor() {
         return this.executor;
     }
 

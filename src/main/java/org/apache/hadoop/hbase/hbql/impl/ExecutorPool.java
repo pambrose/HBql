@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class ExecutorPool extends ElementPool<HExecutor> {
+public class ExecutorPool extends ElementPool<GenericExecutor> {
 
     private final int threadCount;
     private final boolean threadsReadResults;
@@ -51,7 +51,7 @@ public class ExecutorPool extends ElementPool<HExecutor> {
         return this.queueSize;
     }
 
-    protected HExecutor newElement() throws HBqlException {
+    protected GenericExecutor newElement() throws HBqlException {
         return this.threadsReadResults()
                ? ResultExecutor.newPooledResultExecutor(this, this.getThreadCount(), this.getQueueSize())
                : ResultScannerExecutor.newPooledResultScannerExecutor(this, this.getThreadCount(), this.getQueueSize());

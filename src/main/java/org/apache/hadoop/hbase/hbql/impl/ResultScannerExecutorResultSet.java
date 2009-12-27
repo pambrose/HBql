@@ -35,7 +35,6 @@ import java.util.concurrent.Callable;
 
 public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultScanner> {
 
-
     ResultScannerExecutorResultSet(final Query<T> query, final ResultScannerExecutor executor) throws HBqlException {
         super(query, executor);
     }
