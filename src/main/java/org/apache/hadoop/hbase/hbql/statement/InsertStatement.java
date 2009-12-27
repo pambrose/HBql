@@ -40,6 +40,8 @@ import java.util.List;
 
 public class InsertStatement extends StatementContext implements ParameterStatement, ConnectionStatement {
 
+    private static final long serialVersionUID = 1L;
+
     private final List<SelectExpressionContext> columnList = Lists.newArrayList();
     private final InsertValueSource insertValuesSource;
     private final NamedParameters namedParameters = new NamedParameters();

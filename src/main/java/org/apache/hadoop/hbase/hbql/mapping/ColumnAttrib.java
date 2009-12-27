@@ -61,7 +61,7 @@ public abstract class ColumnAttrib implements Serializable {
     }
 
     public Object getDefaultValue() throws HBqlException {
-        return (this.hasDefaultArg()) ? this.getDefaultArg().getValue() : null;
+        return (this.hasDefaultArg()) ? this.getDefaultArg().getDefaultValue() : null;
     }
 
     public boolean hasDefaultArg() throws HBqlException {

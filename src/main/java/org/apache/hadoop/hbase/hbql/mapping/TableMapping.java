@@ -41,6 +41,8 @@ import java.util.Set;
 
 public class TableMapping extends Mapping implements HMapping {
 
+    private static final long serialVersionUID = 1L;
+
     private transient HConnectionImpl connection;
     private boolean tempMapping;
     private Set<String> familyNameSet = null;

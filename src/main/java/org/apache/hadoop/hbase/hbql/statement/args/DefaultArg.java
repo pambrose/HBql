@@ -42,11 +42,12 @@ public class DefaultArg extends MultipleExpressionContext implements Serializabl
         this.validate();
 
         // This will force the type checking to happen
-        this.getValue();
+        this.getDefaultValue();
     }
 
     public void reset() {
         this.computed = false;
+        this.value = null;
     }
 
     public String asString() {
@@ -65,18 +66,17 @@ public class DefaultArg extends MultipleExpressionContext implements Serializabl
         this.validateTypes(this.allowColumns(), false);
     }
 
-    public Object getValue() throws HBqlException {
+    public Object getDefaultValue() throws HBqlException {
 
-        if (!computed) {
+        if (!this.computed) {
             synchronized (this) {
-                if (!computed) {
+                if (!this.computed) {
                     // Type checking happens in this call, so we force it above in the constructor
                     this.value = this.evaluateConstant(null, 0, false, null);
                     this.computed = true;
                 }
             }
         }
-
         return this.value;
     }
 }

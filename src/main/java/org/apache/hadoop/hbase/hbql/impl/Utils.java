@@ -150,8 +150,6 @@ public class Utils {
     }
 
     public static int getRandomPositiveInt(final int upper) {
-        int val = Math.abs(randomVal.nextInt());
-        int remainder = val % upper;
-        return remainder + 1;
+        return (Math.abs(randomVal.nextInt()) % upper) + 1;
     }
 }

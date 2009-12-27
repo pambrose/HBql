@@ -42,6 +42,8 @@ import java.util.Set;
 
 public class DeleteStatement extends StatementContext implements ParameterStatement, ConnectionStatement {
 
+    private static final long serialVersionUID = 1L;
+
     private transient HConnectionImpl connection = null;
     private boolean validated = false;
     private final NamedParameters namedParameters = new NamedParameters();
