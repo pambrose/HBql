@@ -20,6 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.util.ExecutorPool;
+import org.apache.expreval.util.GenericExecutor;
 import org.apache.expreval.util.Maps;
 import org.apache.expreval.util.PoolableElement;
 import org.apache.expreval.util.Sets;
@@ -35,9 +37,10 @@ import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
-import org.apache.hadoop.hbase.hbql.client.Executor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HExecutor;
+import org.apache.hadoop.hbase.hbql.client.HExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
@@ -451,7 +454,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
 
     private GenericExecutor takeExecutorFromPool() throws HBqlException {
         this.validateExecutorPoolNameExists(this.getExecutorPoolName());
-        final ExecutorPool pool = ExecutorPoolManager.getExecutorPool(this.getExecutorPoolName());
+        final ExecutorPool pool = HExecutorPoolManager.getExecutorPool(this.getExecutorPoolName());
         return pool.take();
     }
 
@@ -467,7 +470,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         this.executorPoolName = poolName;
     }
 
-    public void setExecutor(final Executor executor) {
+    public void setExecutor(final HExecutor executor) {
         this.executor = (GenericExecutor)executor;
     }
 
@@ -496,7 +499,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void validateExecutorPoolNameExists(final String poolName) throws HBqlException {
-        if (!ExecutorPoolManager.executorPoolExists(poolName))
+        if (!HExecutorPoolManager.executorPoolExists(poolName))
             throw new HBqlException("Executor pool " + poolName + " does not exist.");
     }
 }

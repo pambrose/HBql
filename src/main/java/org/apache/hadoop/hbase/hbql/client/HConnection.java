@@ -95,9 +95,9 @@ public interface HConnection {
 
     String getExecutorPoolName();
 
-    void setExecutor(Executor executor);
+    void setExecutor(HExecutor executor);
 
-    Executor getExecutor();
+    HExecutor getExecutor();
 
     boolean usesAnExecutor();
 }

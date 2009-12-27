@@ -20,10 +20,10 @@
 
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.Executor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.HExecutor;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
@@ -192,7 +192,7 @@ public class ServerFilterTest extends TestSupport {
     @Test
     public void simpleSelect9b() throws HBqlException {
 
-        Executor executor = Executor.newExecutor(4, true, 100);
+        HExecutor executor = HExecutor.newExecutor(4, true, 100);
         connection.setExecutor(executor);
 
         for (int i = 0; i < 100; i++) {

@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.util.NullIterator;
+import org.apache.expreval.util.QueueElement;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;

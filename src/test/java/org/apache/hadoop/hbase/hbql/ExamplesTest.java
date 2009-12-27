@@ -21,20 +21,20 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.hbql.client.Executor;
 import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.client.HConnectionPool;
 import org.apache.hadoop.hbase.hbql.client.HConnectionPoolManager;
+import org.apache.hadoop.hbase.hbql.client.HExecutor;
+import org.apache.hadoop.hbase.hbql.client.HExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.Util;
-import org.apache.hadoop.hbase.hbql.impl.ExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.apache.hadoop.hbase.jdbc.ConnectionPool;
 
@@ -392,14 +392,14 @@ public class ExamplesTest extends TestSupport {
         connection.execute("CREATE EXECUTOR POOL execPool (MAX_POOL_SIZE: 5, THREAD_COUNT: 10) IF NOT executorPoolExists('execPool')");
 
         // Or, using the API
-        if (!ExecutorPoolManager.executorPoolExists("execPool"))
-            ExecutorPoolManager.newExecutorPool("execPool", 5, 10, true, 100);
+        if (!HExecutorPoolManager.executorPoolExists("execPool"))
+            HExecutorPoolManager.newExecutorPool("execPool", 5, 10, true, 100);
 
         // Then assign the connection a pool name to use for queries
         connection.setExecutorPoolName("execPool");
 
         // Or could use a dedicated Executor, rather than one from a pool, if appropriate:
-        Executor executor = Executor.newExecutor(10, true, 100);
+        HExecutor executor = HExecutor.newExecutor(10, true, 100);
         connection.setExecutor(executor);
 
         // END SNIPPET: create-executor-pool
@@ -415,8 +415,8 @@ public class ExamplesTest extends TestSupport {
         connection.execute("DROP EXECUTOR POOL execPool IF executorPoolExists('execPool')");
 
         // Or, using the API
-        if (ExecutorPoolManager.executorPoolExists("execPool"))
-            ExecutorPoolManager.dropExecutorPool("execPool");
+        if (HExecutorPoolManager.executorPoolExists("execPool"))
+            HExecutorPoolManager.dropExecutorPool("execPool");
 
         // Then assign the connection a pool name to use for queries
         connection.setExecutorPoolName("execPool");

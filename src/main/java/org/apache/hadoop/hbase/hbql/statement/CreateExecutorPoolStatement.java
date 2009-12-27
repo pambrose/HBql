@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.ExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.HExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.args.ExecutorPoolArgs;
 
@@ -49,11 +49,11 @@ public class CreateExecutorPoolStatement extends BasicStatement implements Conne
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        ExecutorPoolManager.newExecutorPool(this.getPoolName(),
-                                            this.getArgs().getMaxPoolSize(),
-                                            this.getArgs().getThreadCount(),
-                                            this.getArgs().getThreadsReadResults(),
-                                            this.getArgs().getQueueSize());
+        HExecutorPoolManager.newExecutorPool(this.getPoolName(),
+                                             this.getArgs().getMaxPoolSize(),
+                                             this.getArgs().getThreadCount(),
+                                             this.getArgs().getThreadsReadResults(),
+                                             this.getArgs().getQueueSize());
 
         return new ExecutionResults("Executor pool " + this.getPoolName() + " created.");
     }

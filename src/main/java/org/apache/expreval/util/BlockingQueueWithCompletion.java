@@ -20,8 +20,6 @@
 
 package org.apache.expreval.util;
 
-import org.apache.hadoop.hbase.hbql.impl.QueueElement;
-
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,7 +42,7 @@ public class BlockingQueueWithCompletion<T> {
     }
 
     public void putElement(final T val) throws InterruptedException {
-        final QueueElement<T> element = QueueElement.newResult(val);
+        final QueueElement<T> element = QueueElement.newElement(val);
         this.getResultQueue().put(element);
     }
 

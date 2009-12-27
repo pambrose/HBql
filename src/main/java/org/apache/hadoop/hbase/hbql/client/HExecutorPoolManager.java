@@ -18,20 +18,21 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.impl;
+package org.apache.hadoop.hbase.hbql.client;
 
+import org.apache.expreval.util.ExecutorPool;
 import org.apache.expreval.util.Maps;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 
 import java.util.Collection;
 import java.util.Map;
 
-public class ExecutorPoolManager {
+public class HExecutorPoolManager {
 
     private static Map<String, ExecutorPool> executorPoolMap = Maps.newConcurrentHashMap();
 
     private static Map<String, ExecutorPool> getExecutorPoolMap() {
-        return ExecutorPoolManager.executorPoolMap;
+        return HExecutorPoolManager.executorPoolMap;
     }
 
     public static ExecutorPool newExecutorPool(final String poolName,
@@ -68,10 +69,10 @@ public class ExecutorPoolManager {
     }
 
     public static ExecutorPool getExecutorPool(final String poolName) throws HBqlException {
-        if (!ExecutorPoolManager.getExecutorPoolMap().containsKey(poolName))
+        if (!HExecutorPoolManager.getExecutorPoolMap().containsKey(poolName))
             throw new HBqlException("Missing executor pool: " + poolName);
 
-        return ExecutorPoolManager.getExecutorPoolMap().get(poolName);
+        return HExecutorPoolManager.getExecutorPoolMap().get(poolName);
     }
 
     public static Collection<ExecutorPool> getExecutorPools() {

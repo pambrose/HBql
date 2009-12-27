@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.util.GenericExecutor;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;

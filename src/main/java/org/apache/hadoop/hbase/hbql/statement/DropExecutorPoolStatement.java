@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.ExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.HExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class DropExecutorPoolStatement extends BasicStatement implements ConnectionStatement {
@@ -41,11 +41,11 @@ public class DropExecutorPoolStatement extends BasicStatement implements Connect
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         final String msg;
-        if (!ExecutorPoolManager.executorPoolExists(this.getPoolName())) {
+        if (!HExecutorPoolManager.executorPoolExists(this.getPoolName())) {
             msg = "Executor pool " + this.getPoolName() + " does not exist";
         }
         else {
-            ExecutorPoolManager.dropExecutorPool(this.getPoolName());
+            HExecutorPoolManager.dropExecutorPool(this.getPoolName());
             msg = "Executor pool " + this.getPoolName() + " dropped.";
         }
         return new ExecutionResults(msg);

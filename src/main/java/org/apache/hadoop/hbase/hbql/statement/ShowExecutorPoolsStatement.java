@@ -20,10 +20,10 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.expreval.util.ExecutorPool;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.ExecutorPool;
-import org.apache.hadoop.hbase.hbql.impl.ExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.HExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class ShowExecutorPoolsStatement extends BasicStatement implements ConnectionStatement {
@@ -36,7 +36,7 @@ public class ShowExecutorPoolsStatement extends BasicStatement implements Connec
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Executor Pools: ");
-        for (final ExecutorPool executorPool : ExecutorPoolManager.getExecutorPools())
+        for (final ExecutorPool executorPool : HExecutorPoolManager.getExecutorPools())
             retval.out.println("\t" + executorPool.getName() + "( max_pool_size: " + executorPool.getMaxPoolSize()
                                + ", thread_count: " + executorPool.getThreadCount() + ")");
 

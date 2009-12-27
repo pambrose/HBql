@@ -18,30 +18,18 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.impl;
+package org.apache.hadoop.hbase.hbql.client;
 
-public class QueueElement<T> {
-    private final T element;
-    private final boolean completeToken;
+import org.apache.hadoop.hbase.hbql.impl.ResultExecutor;
+import org.apache.hadoop.hbase.hbql.impl.ResultScannerExecutor;
 
-    QueueElement(final T element, boolean completeToken) {
-        this.element = element;
-        this.completeToken = completeToken;
-    }
+public class HExecutor {
 
-    public static <T> QueueElement<T> newResult(final T result) {
-        return new QueueElement<T>(result, false);
-    }
-
-    public static <T> QueueElement<T> newComplete() {
-        return new QueueElement<T>(null, true);
-    }
-
-    public T getElement() {
-        return this.element;
-    }
-
-    public boolean isCompleteToken() {
-        return this.completeToken;
+    public static HExecutor newExecutor(final int threadCount,
+                                        final boolean threadsReadResults,
+                                        final int queueSize) {
+        return threadsReadResults
+               ? ResultExecutor.newResultExecutor(threadCount, queueSize)
+               : ResultScannerExecutor.newResultScannerExecutor(threadCount, queueSize);
     }
 }

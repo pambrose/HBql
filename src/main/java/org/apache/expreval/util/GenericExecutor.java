@@ -18,11 +18,9 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.impl;
+package org.apache.expreval.util;
 
-import org.apache.expreval.util.BlockingQueueWithCompletion;
-import org.apache.expreval.util.PoolableElement;
-import org.apache.hadoop.hbase.hbql.client.Executor;
+import org.apache.hadoop.hbase.hbql.client.HExecutor;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -30,7 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class GenericExecutor<T> extends Executor implements PoolableElement {
+public abstract class GenericExecutor<T> extends HExecutor implements PoolableElement {
 
     private final ExecutorPool executorPool;
     private final ExecutorService threadPool;
@@ -43,7 +41,7 @@ public abstract class GenericExecutor<T> extends Executor implements PoolableEle
         this.queue = new BlockingQueueWithCompletion<T>(queueSize);
     }
 
-    abstract boolean threadsReadResults();
+    public abstract boolean threadsReadResults();
 
     protected ExecutorPool getExecutorPool() {
         return this.executorPool;

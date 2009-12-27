@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.util.ElementPool;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;

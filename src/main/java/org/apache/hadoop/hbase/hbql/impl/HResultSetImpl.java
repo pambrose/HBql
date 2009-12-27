@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.literal.DateLiteral;
+import org.apache.expreval.util.GenericExecutor;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;

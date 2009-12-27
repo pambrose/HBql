@@ -18,9 +18,11 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.impl;
+package org.apache.expreval.util;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.ResultExecutor;
+import org.apache.hadoop.hbase.hbql.impl.ResultScannerExecutor;
 
 public class ExecutorPool extends ElementPool<GenericExecutor> {
 

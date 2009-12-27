@@ -20,6 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.util.ExecutorPool;
+import org.apache.expreval.util.GenericExecutor;
 import org.apache.hadoop.hbase.client.Result;
 
 public class ResultExecutor extends GenericExecutor<Result> {
