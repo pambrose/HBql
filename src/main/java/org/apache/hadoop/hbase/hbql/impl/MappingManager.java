@@ -65,7 +65,7 @@ public class MappingManager {
         final Set<HMapping> names = Sets.newHashSet();
         names.addAll(getMappingMap().values());
 
-        final String sql = "SELECT mapping_obj FROM system_mappings)";
+        final String sql = "SELECT mapping_obj FROM system_mappings";
         final List<HRecord> recs = this.getConnection().executeQueryAndFetch(sql);
 
         for (final HRecord rec : recs)
@@ -79,7 +79,7 @@ public class MappingManager {
         if (this.getMappingMap().get(mappingName) != null)
             return true;
         else {
-            final String sql = "SELECT mapping_name FROM system_mappings WITH KEYS ?)";
+            final String sql = "SELECT mapping_name FROM system_mappings WITH KEYS ?";
             final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
             stmt.setParameter(1, mappingName);
             final List<HRecord> recs = stmt.executeQueryAndFetch();

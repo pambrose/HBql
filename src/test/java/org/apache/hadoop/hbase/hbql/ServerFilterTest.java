@@ -190,9 +190,9 @@ public class ServerFilterTest extends TestSupport {
     public void simpleSelect9b() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
-        System.out
-                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, threads_read_results: true, queue_size: 100) " +
-                                      "if not executorPoolExists('threadPool1')"));
+        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
+                                        "threads_read_results: true, queue_size: 100) " +
+                                        "if not executorPoolExists('threadPool1')"));
         connection.setExecutorPoolName("threadPool1");
 
         //Executor executor = Executor.newExecutor(5, 4, true, 100);
@@ -218,16 +218,18 @@ public class ServerFilterTest extends TestSupport {
 
         HStatement stmt = connection.createStatement();
 
-        System.out
-                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, threads_read_results: true, queue_size: 100) " +
-                                      "if not executorPoolExists('threadPool1')"));
-        System.out
-                .println(stmt.execute("DROP EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, threads_read_results: true, queue_size: 100) " +
-                                      "if executorPoolExists('threadPool1')"));
-        System.out
-                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, threads_read_results: true, queue_size: 100)"));
+        /*
+        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
+                                        "threads_read_results: true, queue_size: 100) " +
+                                        "if not executorPoolExists('threadPool1')"));
+        System.out.println(stmt.execute("DROP EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
+                                        "threads_read_results: true, queue_size: 100) " +
+                                        "if executorPoolExists('threadPool1')"));
+        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
+                                        "threads_read_results: true, queue_size: 100)"));
 
         connection.setExecutorPoolName("threadPool1");
+        */
 
         for (int i = 0; i < 100; i++) {
             final String q1 = "select * from tab3 WITH "
@@ -273,9 +275,14 @@ public class ServerFilterTest extends TestSupport {
     public void repeatTests() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
-        System.out
-                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, threads_read_results: false, queue_size: 100) " +
-                                      "if not executorPoolExists('threadPool1')"));
+
+        System.out.println(stmt.execute("DROP EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
+                                        "threads_read_results: true, queue_size: 100) " +
+                                        "if executorPoolExists('threadPool1')"));
+
+        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
+                                        "threads_read_results: false, queue_size: 100) " +
+                                        "if not executorPoolExists('threadPool1')"));
         for (int i = 0; i < 10; i++) {
             simpleSelect10();
             simpleSelect9b();

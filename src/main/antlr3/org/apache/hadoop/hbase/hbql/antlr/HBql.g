@@ -104,11 +104,15 @@ options {backtrack=true;}
 	| keySET t=simpleId EQ? val=QSTRING	 	{retval = new SetStatement($t.text, $val.text);}
 	| keyVERSION					{retval = new VersionStatement();}
 	| keyHELP					{retval = new HelpStatement();}
-	| jdbc=jdbcStatement				{retval = $jdbc.retval;}
+	| jdbc=jdbcStmt					{retval = $jdbc.retval;}
 	;						
 
 jdbcStatement returns [HBqlStatement retval]
+	: j=jdbcStmt SEMI+				{retval = $j.retval;};
+	
+jdbcStmt returns [HBqlStatement retval]
 options {backtrack=true;}	
+//options {backtrack=true; memoize=true;}	
 	: sel=selectStatement				{retval = $sel.retval;}			
 	| keyDELETE di=deleteItemList? keyFROM keyMAPPING? t=simpleId w=withClause? p=pred?	
 							{retval = new DeleteStatement($p.retval, $di.retval, $t.text, $w.retval);}
@@ -159,7 +163,7 @@ attribMapping returns [AttribMapping retval]
 							{retval = new AttribMapping(new KeyInfo($key.text, $w.retval), $fm.retval);};
 	
 pred returns [StatementPredicate retval]
-//options {memoize=true;}	
+options {memoize=true;}	
 	: keyIF  b=exprValue 				{retval = new StatementPredicate($b.retval);};
 
 	
@@ -203,7 +207,8 @@ familyPropertyList returns [List<FamilyProperty> retval]
 	: a1=familyProperty {retval.add($a1.retval);} (COMMA a2=familyProperty {retval.add($a2.retval);})*;
 	
 familyProperty returns [FamilyProperty retval]
-options {memoize=true;}	
+//options {memoize=true;}	
+options {backtrack=true;}	
 	: keyMAX_VERSIONS COLON v=exprValue		{retval = new MaxVersionsProperty($v.retval);}
 	| keyBLOOM_FILTER COLON v=exprValue		{retval = new BloomFilterProperty($v.retval);}
 	| keyBLOCK_SIZE COLON v=exprValue		{retval = new BlockSizeProperty($v.retval);}

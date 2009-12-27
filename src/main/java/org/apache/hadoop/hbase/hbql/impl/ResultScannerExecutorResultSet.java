@@ -93,7 +93,7 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
                     }
 
                     setCurrentResultScanner(resultScanner);
-                    return getCurrentResultScanner().iterator();
+                    return (getCurrentResultScanner() == null) ? null : getCurrentResultScanner().iterator();
                 }
 
                 protected void cleanUp(final boolean fromExceptionCatch) {
