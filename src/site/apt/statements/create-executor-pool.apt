@@ -1,31 +1,31 @@
     -----
-    CREATE EXECUTOR POOL
+    CREATE QUERY EXECUTOR POOL
     -----
     -----
 
 
-CREATE EXECUTOR POOL
+CREATE QUERY EXECUTOR POOL
 
 *Syntax
 
 ---------------------------
 
-CREATE EXECUTOR POOL pool_name '(' MAX_POOL_SIZE ':' integer_value ',' THREAD_COUNT ':' integer_value ')' [IF boolean_condition]
+CREATE [QUERY] EXECUTOR POOL pool_name '(' MAX_POOL_SIZE ':' integer_value ',' THREAD_COUNT ':' integer_value ')' [IF boolean_condition]
 
 ---------------------------
 
 *Description
 
-    Creates named executor pool.
+    Creates named query executor pool.
 
-    * An HConnection can be assigned an Executor from a ExecutorPool using HConncetion.setExecutorPoolName(),
-    or a dedicated Executor with HConncetion.setExecutor().
+    * An HConnection can be assigned an QueryExecutor from a QueryExecutor pool using HConncetion.setQueryExecutorPoolName(),
+    or a dedicated QueryExecutor with HConncetion.setQueryExecutor().
 
-    * An ExecutorPool has a maximum size and each Executor in the pool has a fixed number of threads.
-    Requests for Executors will block if all elements of the pool have been taken.  Executors are released
+    * An QueryExecutorPool has a maximum size and each QueryExecutor in the pool has a fixed number of threads.
+    Requests for QueryExecutors will block if all elements of the pool have been taken.  QueryExecutors are released
     back into the pool when ResultSets are closed.
 
-    * Executors are used in queries such that each KeyRange is processed by a different thread in the Executor.
+    * QueryExecutos are used in queries such that each KeyRange is processed by a different thread in the QueryExecutors.
 
 *Example
 

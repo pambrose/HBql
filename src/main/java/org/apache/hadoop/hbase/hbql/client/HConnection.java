@@ -91,13 +91,11 @@ public interface HConnection {
 
     Set<HMapping> getMappings() throws HBqlException;
 
-    void setExecutorPoolName(String name);
+    void setQueryExecutorPoolName(String name);
 
-    String getExecutorPoolName();
+    String getQueryExecutorPoolName();
 
-    void setExecutor(HExecutor executor);
+    void setQueryExecutor(QueryExecutor executor);
 
-    HExecutor getExecutor();
-
-    boolean usesAnExecutor();
+    QueryExecutor getQueryExecutor();
 }

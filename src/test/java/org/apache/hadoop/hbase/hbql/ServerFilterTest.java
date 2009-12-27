@@ -23,11 +23,11 @@ package org.apache.hadoop.hbase.hbql;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
-import org.apache.hadoop.hbase.hbql.client.HExecutor;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutor;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
@@ -170,10 +170,10 @@ public class ServerFilterTest extends TestSupport {
         System.out
                 .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2, " +
                                       "threads_read_results: true, queue_size: 100) " +
-                                      "if not executorPoolExists('threadPool1')"));
+                                      "if not queryExecutorPoolExists('threadPool1')"));
 
         // ExecutorPoolManager.newExecutorPool("threadPool1", 2, 10);
-        connection.setExecutorPoolName("threadPool1");
+        connection.setQueryExecutorPoolName("threadPool1");
 
         for (int i = 0; i < 100; i++) {
             final String q1 = "select * from tab3 "
@@ -192,8 +192,8 @@ public class ServerFilterTest extends TestSupport {
     @Test
     public void simpleSelect9b() throws HBqlException {
 
-        HExecutor executor = HExecutor.newExecutor(4, true, 100);
-        connection.setExecutor(executor);
+        QueryExecutor executor = QueryExecutor.newQueryExecutor(4, true, 100);
+        connection.setQueryExecutor(executor);
 
         for (int i = 0; i < 100; i++) {
             final String q1 = "select * from tab3 "
@@ -217,14 +217,14 @@ public class ServerFilterTest extends TestSupport {
 
         System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
                                         "threads_read_results: true, queue_size: 100) " +
-                                        "if not executorPoolExists('threadPool1')"));
+                                        "if not queryExecutorPoolExists('threadPool1')"));
         System.out.println(stmt.execute("DROP EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
                                         "threads_read_results: true, queue_size: 100) " +
-                                        "if executorPoolExists('threadPool1')"));
+                                        "if queryExecutorPoolExists('threadPool1')"));
         System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
                                         "threads_read_results: true, queue_size: 100)"));
 
-        connection.setExecutorPoolName("threadPool1");
+        connection.setQueryExecutorPoolName("threadPool1");
 
         for (int i = 0; i < 100; i++) {
             final String q1 = "select * from tab3 WITH "
@@ -273,7 +273,7 @@ public class ServerFilterTest extends TestSupport {
 
         System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
                                         "threads_read_results: false, queue_size: 100) " +
-                                        "if not executorPoolExists('threadPool1')"));
+                                        "if not queryExecutorPoolExists('threadPool1')"));
         int cnt = 0;
         for (int i = 0; i < 10000; i++) {
             boolean bval = Utils.getRandomBoolean();

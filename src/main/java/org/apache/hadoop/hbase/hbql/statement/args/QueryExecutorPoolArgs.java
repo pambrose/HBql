@@ -23,13 +23,13 @@ package org.apache.hadoop.hbase.hbql.statement.args;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class ExecutorPoolArgs extends SelectStatementArgs {
+public class QueryExecutorPoolArgs extends SelectStatementArgs {
 
 
-    public ExecutorPoolArgs(final GenericValue arg0,
-                            final GenericValue arg1,
-                            final GenericValue arg2,
-                            final GenericValue arg3) {
+    public QueryExecutorPoolArgs(final GenericValue arg0,
+                                 final GenericValue arg1,
+                                 final GenericValue arg2,
+                                 final GenericValue arg3) {
         super(ArgType.EXECUTORPOOL, arg0, arg1, arg2, arg3);
     }
 

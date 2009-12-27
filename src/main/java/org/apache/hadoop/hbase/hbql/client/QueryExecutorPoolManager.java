@@ -27,19 +27,19 @@ import org.apache.hadoop.hbase.hbql.impl.Utils;
 import java.util.Collection;
 import java.util.Map;
 
-public class HExecutorPoolManager {
+public class QueryExecutorPoolManager {
 
     private static Map<String, ExecutorPool> executorPoolMap = Maps.newConcurrentHashMap();
 
     private static Map<String, ExecutorPool> getExecutorPoolMap() {
-        return HExecutorPoolManager.executorPoolMap;
+        return QueryExecutorPoolManager.executorPoolMap;
     }
 
-    public static ExecutorPool newExecutorPool(final String poolName,
-                                               final int maxPoolSize,
-                                               final int threadCount,
-                                               final boolean threadsReadResults,
-                                               final int queueSize) throws HBqlException {
+    public static ExecutorPool newQueryExecutorPool(final String poolName,
+                                                    final int maxPoolSize,
+                                                    final int threadCount,
+                                                    final boolean threadsReadResults,
+                                                    final int queueSize) throws HBqlException {
 
         if (Utils.isValidString(poolName) && getExecutorPoolMap().containsKey(poolName))
             throw new HBqlException("Executor pool already exists: " + poolName);
@@ -64,15 +64,15 @@ public class HExecutorPoolManager {
         return false;
     }
 
-    public static boolean executorPoolExists(final String name) {
+    public static boolean queryExecutorPoolExists(final String name) {
         return Utils.isValidString(name) && getExecutorPoolMap().containsKey(name);
     }
 
     public static ExecutorPool getExecutorPool(final String poolName) throws HBqlException {
-        if (!HExecutorPoolManager.getExecutorPoolMap().containsKey(poolName))
+        if (!QueryExecutorPoolManager.getExecutorPoolMap().containsKey(poolName))
             throw new HBqlException("Missing executor pool: " + poolName);
 
-        return HExecutorPoolManager.getExecutorPoolMap().get(poolName);
+        return QueryExecutorPoolManager.getExecutorPoolMap().get(poolName);
     }
 
     public static Collection<ExecutorPool> getExecutorPools() {

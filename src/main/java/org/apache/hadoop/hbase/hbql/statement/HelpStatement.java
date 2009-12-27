@@ -53,9 +53,9 @@ public class HelpStatement extends BasicStatement implements NonConnectionStatem
         retval.out.println(DescribeIndexForMappingStatement.usage());
         retval.out.println(DescribeIndexForTableStatement.usage());
 
-        retval.out.println(CreateExecutorPoolStatement.usage());
-        retval.out.println(DropExecutorPoolStatement.usage());
-        retval.out.println(ShowExecutorPoolsStatement.usage());
+        retval.out.println(CreateQueryExecutorPoolStatement.usage());
+        retval.out.println(DropQueryExecutorPoolStatement.usage());
+        retval.out.println(ShowQueryExecutorPoolsStatement.usage());
 
         retval.out.println(InsertStatement.usage());
         retval.out.println(DeleteStatement.usage());

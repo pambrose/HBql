@@ -20,7 +20,7 @@
 
 package org.apache.expreval.util;
 
-import org.apache.hadoop.hbase.hbql.client.HExecutor;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutor;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class GenericExecutor<T> extends HExecutor implements PoolableElement {
+public abstract class GenericExecutor<T> extends QueryExecutor implements PoolableElement {
 
     private final ExecutorPool executorPool;
     private final ExecutorService threadPool;

@@ -106,7 +106,7 @@ public class Query<T> {
     }
 
     public HResultSet<T> newResultSet() throws HBqlException {
-        if (this.getHConnectionImpl().usesAnExecutor()) {
+        if (this.getHConnectionImpl().usesAQueryExecutor()) {
             // This may block waiting for a Executor to become available from the ExecutorPool
             final GenericExecutor executor = this.getHConnectionImpl().getExecutorForConnection();
             if (executor.threadsReadResults())

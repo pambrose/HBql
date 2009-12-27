@@ -1,19 +1,19 @@
     -----
-    SHOW EXECUTOR POOLS
+    SHOW QUERY EXECUTOR POOLS
     -----
     -----
 
-SHOW EXECUTOR POOLS
+SHOW QUERY EXECUTOR POOLS
 
 *Syntax
 
 ---------------------------
 
-SHOW EXECUTOR POOLS
+SHOW [QUERY] EXECUTOR POOLS
 
 ---------------------------
 
 *Description
 
-    Displays all executor pools. 
+    Displays all query executor pools.
 

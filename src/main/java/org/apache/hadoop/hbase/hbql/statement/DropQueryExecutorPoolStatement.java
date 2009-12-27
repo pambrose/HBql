@@ -20,31 +20,39 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.expreval.util.ExecutorPool;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class ShowExecutorPoolsStatement extends BasicStatement implements ConnectionStatement {
+public class DropQueryExecutorPoolStatement extends BasicStatement implements ConnectionStatement {
 
-    public ShowExecutorPoolsStatement() {
-        super(null);
+    private final String poolName;
+
+    public DropQueryExecutorPoolStatement(final StatementPredicate predicate, final String poolName) {
+        super(predicate);
+        this.poolName = poolName;
+    }
+
+    private String getPoolName() {
+        return this.poolName;
     }
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        final ExecutionResults retval = new ExecutionResults();
-        retval.out.println("Executor Pools: ");
-        for (final ExecutorPool executorPool : HExecutorPoolManager.getExecutorPools())
-            retval.out.println("\t" + executorPool.getName() + "( max_pool_size: " + executorPool.getMaxPoolSize()
-                               + ", thread_count: " + executorPool.getThreadCount() + ")");
-
-        retval.out.flush();
-        return retval;
+        final String msg;
+        if (!QueryExecutorPoolManager.queryExecutorPoolExists(this.getPoolName())) {
+            msg = "Executor pool " + this.getPoolName() + " does not exist";
+        }
+        else {
+            QueryExecutorPoolManager.dropExecutorPool(this.getPoolName());
+            msg = "Executor pool " + this.getPoolName() + " dropped.";
+        }
+        return new ExecutionResults(msg);
     }
 
+
     public static String usage() {
-        return "SHOW EXECUTOR POOLS";
+        return "DROP [QUERY] EXECUTOR POOL pool_name [IF boolean_expression]";
     }
 }

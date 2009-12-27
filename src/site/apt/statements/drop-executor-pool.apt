@@ -1,22 +1,22 @@
     -----
-    DROP EXECUTOR POOL
+    DROP QUERY EXECUTOR POOL
     -----
     -----
 
 
-DROP EXECUTOR POOL
+DROP QUERY EXECUTOR POOL
 
 *Syntax
 
 ---------------------------
 
-DROP EXECUTOR POOL pool_name [IF boolean_condition]
+DROP [QUERY] EXECUTOR POOL pool_name [IF boolean_condition]
 
 ---------------------------
 
 *Description
 
-    Drops named executor pool.
+    Drops named query executor pool.
 
 *Example
 

@@ -97,7 +97,7 @@ consoleStatement returns [HBqlStatement retval]
 options {backtrack=true;}	
 	: keySHOW keyTABLES 		 		{retval = new ShowTablesStatement();}
 	| keySHOW keyMAPPINGS 		 		{retval = new ShowMappingsStatement();}
-	| keySHOW keyEXECUTOR keyPOOLS 		 	{retval = new ShowExecutorPoolsStatement();}
+	| keySHOW keyQUERY? keyEXECUTOR keyPOOLS 	{retval = new ShowQueryExecutorPoolsStatement();}
 	| keyIMPORT val=QSTRING				{retval = new ImportStatement($val.text);}
 	| keyPARSE c=consoleStatement			{retval = new ParseStatement($c.retval);}
 	| keyEVAL te=exprValue				{retval = new EvalStatement($te.retval);}
@@ -140,15 +140,15 @@ options {backtrack=true;}
 					 		{retval = new DescribeIndexForMappingStatement($t.text, $t2.text);}
 	| keyDESCRIBE keyINDEX t=simpleId keyON keyTABLE t2=simpleId
 					 		{retval = new DescribeIndexForTableStatement($t.text, $t2.text);}
-	| keyCREATE keyEXECUTOR keyPOOL t=simpleId 
+	| keyCREATE keyQUERY? keyEXECUTOR keyPOOL t=simpleId 
 	  LPAREN keyMAX_POOL_SIZE COLON ps=exprValue COMMA 
 	         keyTHREAD_COUNT COLON tc=exprValue COMMA 
 	         keyTHREADS_READ_RESULTS COLON trc=exprValue COMMA
 	         keyQUEUE_SIZE COLON qs=exprValue 
 	  RPAREN p=pred?
-							{retval = new CreateExecutorPoolStatement($p.retval, $t.text, new ExecutorPoolArgs($ps.retval, $tc.retval, $trc.retval, $qs.retval));}
-	| keyDROP keyEXECUTOR keyPOOL t=simpleId p=pred?
-							{retval = new DropExecutorPoolStatement($p.retval, $t.text);}
+							{retval = new CreateQueryExecutorPoolStatement($p.retval, $t.text, new QueryExecutorPoolArgs($ps.retval, $tc.retval, $trc.retval, $qs.retval));}
+	| keyDROP keyQUERY? keyEXECUTOR keyPOOL t=simpleId p=pred?
+							{retval = new DropQueryExecutorPoolStatement($p.retval, $t.text);}
 	;
 
 indexColumnList returns [List<String> retval]
@@ -625,6 +625,7 @@ keyOR                           : {isKeyword(input, "OR")}? ID;
 keyPARSE                        : {isKeyword(input, "PARSE")}? ID;
 keyPOOL                         : {isKeyword(input, "POOL")}? ID;
 keyPOOLS                        : {isKeyword(input, "POOLS")}? ID;
+keyQUERY	                : {isKeyword(input, "QUERY")}? ID;
 keyQUEUE_SIZE                   : {isKeyword(input, "QUEUE_SIZE")}? ID;
 keyRANGE                        : {isKeyword(input, "RANGE")}? ID;
 keySCANNER_CACHE_SIZE           : {isKeyword(input, "SCANNER_CACHE_SIZE")}? ID;

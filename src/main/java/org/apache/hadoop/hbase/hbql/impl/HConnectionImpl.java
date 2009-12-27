@@ -39,13 +39,13 @@ import org.apache.hadoop.hbase.client.tableindexed.IndexedTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.client.HExecutor;
-import org.apache.hadoop.hbase.hbql.client.HExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutor;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
@@ -97,8 +97,8 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void reset() {
-        this.setExecutorPoolName(null);
-        this.setExecutor(null);
+        this.setQueryExecutorPoolName(null);
+        this.setQueryExecutor(null);
     }
 
     public boolean isPooled() {
@@ -444,8 +444,8 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     // The value returned from this call must be eventually released.
     public GenericExecutor getExecutorForConnection() throws HBqlException {
         // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
-        final GenericExecutor retval = this.getExecutor() != null
-                                       ? this.getExecutor()
+        final GenericExecutor retval = this.getQueryExecutor() != null
+                                       ? this.getQueryExecutor()
                                        : this.takeExecutorFromPool();
         // Reset it prior to handing it out
         retval.reset();
@@ -453,28 +453,28 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     private GenericExecutor takeExecutorFromPool() throws HBqlException {
-        this.validateExecutorPoolNameExists(this.getExecutorPoolName());
-        final ExecutorPool pool = HExecutorPoolManager.getExecutorPool(this.getExecutorPoolName());
+        this.validateExecutorPoolNameExists(this.getQueryExecutorPoolName());
+        final ExecutorPool pool = QueryExecutorPoolManager.getExecutorPool(this.getQueryExecutorPoolName());
         return pool.take();
     }
 
-    public boolean usesAnExecutor() {
-        return this.getExecutor() != null || Utils.isValidString(this.getExecutorPoolName());
+    public boolean usesAQueryExecutor() {
+        return this.getQueryExecutor() != null || Utils.isValidString(this.getQueryExecutorPoolName());
     }
 
-    public String getExecutorPoolName() {
+    public String getQueryExecutorPoolName() {
         return this.executorPoolName;
     }
 
-    public void setExecutorPoolName(final String poolName) {
+    public void setQueryExecutorPoolName(final String poolName) {
         this.executorPoolName = poolName;
     }
 
-    public void setExecutor(final HExecutor executor) {
+    public void setQueryExecutor(final QueryExecutor executor) {
         this.executor = (GenericExecutor)executor;
     }
 
-    public GenericExecutor getExecutor() {
+    public GenericExecutor getQueryExecutor() {
         return this.executor;
     }
 
@@ -499,7 +499,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void validateExecutorPoolNameExists(final String poolName) throws HBqlException {
-        if (!HExecutorPoolManager.executorPoolExists(poolName))
+        if (!QueryExecutorPoolManager.queryExecutorPoolExists(poolName))
             throw new HBqlException("Executor pool " + poolName + " does not exist.");
     }
 }

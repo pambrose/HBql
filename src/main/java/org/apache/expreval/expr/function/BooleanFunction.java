@@ -26,8 +26,8 @@ import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
@@ -181,9 +181,9 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
                 }
             }
 
-            case EXECUTORPOOLEXISTS: {
+            case QUERYEXECUTORPOOLEXISTS: {
                 final String poolName = (String)this.getExprArg(0).getValue(null, null);
-                return HExecutorPoolManager.executorPoolExists(poolName);
+                return QueryExecutorPoolManager.queryExecutorPoolExists(poolName);
             }
 
             default:

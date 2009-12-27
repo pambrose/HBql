@@ -105,7 +105,7 @@ public abstract class GenericFunction extends GenericExpression {
         TABLEENABLED(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false),
         INDEXEXISTSFORTABLE(new FunctionTypeSignature(BooleanValue.class, StringValue.class, StringValue.class), false, false),
         INDEXEXISTSFORMAPPING(new FunctionTypeSignature(BooleanValue.class, StringValue.class, StringValue.class), false, false),
-        EXECUTORPOOLEXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false);
+        QUERYEXECUTORPOOLEXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false);
 
 
         private final FunctionTypeSignature typeSignature;

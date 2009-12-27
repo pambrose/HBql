@@ -20,39 +20,31 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.expreval.util.ExecutorPool;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class DropExecutorPoolStatement extends BasicStatement implements ConnectionStatement {
+public class ShowQueryExecutorPoolsStatement extends BasicStatement implements ConnectionStatement {
 
-    private final String poolName;
-
-    public DropExecutorPoolStatement(final StatementPredicate predicate, final String poolName) {
-        super(predicate);
-        this.poolName = poolName;
-    }
-
-    private String getPoolName() {
-        return this.poolName;
+    public ShowQueryExecutorPoolsStatement() {
+        super(null);
     }
 
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
-        final String msg;
-        if (!HExecutorPoolManager.executorPoolExists(this.getPoolName())) {
-            msg = "Executor pool " + this.getPoolName() + " does not exist";
-        }
-        else {
-            HExecutorPoolManager.dropExecutorPool(this.getPoolName());
-            msg = "Executor pool " + this.getPoolName() + " dropped.";
-        }
-        return new ExecutionResults(msg);
+        final ExecutionResults retval = new ExecutionResults();
+        retval.out.println("Executor Pools: ");
+        for (final ExecutorPool executorPool : QueryExecutorPoolManager.getExecutorPools())
+            retval.out.println("\t" + executorPool.getName() + "( max_pool_size: " + executorPool.getMaxPoolSize()
+                               + ", thread_count: " + executorPool.getThreadCount() + ")");
+
+        retval.out.flush();
+        return retval;
     }
 
-
     public static String usage() {
-        return "CREATE EXECUTOR POOL pool_name [IF boolean_expression]";
+        return "SHOW [QUERY] EXECUTOR POOLS";
     }
 }
