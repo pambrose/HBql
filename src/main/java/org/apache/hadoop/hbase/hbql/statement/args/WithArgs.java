@@ -475,4 +475,8 @@ public class WithArgs implements Serializable {
             return HBqlFilter.newHBqlFilter(this.getServerExpressionTree());
         }
     }
+
+    public int getMaxVersions() throws HBqlException {
+        return this.getVersionArgs() != null ? this.getVersionArgs().getMaxVersions() : Integer.MAX_VALUE;
+    }
 }

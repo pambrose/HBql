@@ -164,7 +164,7 @@ public class KeyRange extends SelectStatementArgs {
                 return new GetRequest(get);
             }
             else {
-                // TODO This is temp until Get is fixed for Filters
+                // TODO This is temporay until Get is fixed for Filters
                 final Scan scan = new Scan();
 
                 scan.setStartRow(lowerBytes);

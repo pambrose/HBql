@@ -33,7 +33,7 @@ public class VersionArgs extends SelectStatementArgs {
         super(ArgType.VERSION, val);
     }
 
-    private int getValue() throws HBqlException {
+    public int getMaxVersions() throws HBqlException {
         return ((Number)this.evaluateConstant(null, 0, false, null)).intValue();
     }
 
@@ -43,7 +43,7 @@ public class VersionArgs extends SelectStatementArgs {
 
     public void setMaxVersions(final Get get) throws HBqlException {
         try {
-            final int max = this.getValue();
+            final int max = this.getMaxVersions();
             if (max == Integer.MAX_VALUE)
                 get.setMaxVersions();
             else
@@ -55,7 +55,7 @@ public class VersionArgs extends SelectStatementArgs {
     }
 
     public void setMaxVersions(final Scan scan) throws HBqlException {
-        final int max = this.getValue();
+        final int max = this.getMaxVersions();
         if (max == Integer.MAX_VALUE)
             scan.setMaxVersions();
         else

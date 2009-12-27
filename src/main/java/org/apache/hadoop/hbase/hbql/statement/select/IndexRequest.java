@@ -61,10 +61,6 @@ public class IndexRequest implements RowRequest {
         return this.stopRow;
     }
 
-    public int getMaxVersions() {
-        return Integer.MAX_VALUE;
-    }
-
     private byte[][] getColumns() throws HBqlException {
 
         final byte[][] attribs;

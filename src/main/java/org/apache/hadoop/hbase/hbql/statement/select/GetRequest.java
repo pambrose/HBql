@@ -45,10 +45,6 @@ public class GetRequest implements RowRequest {
         return this.getValue;
     }
 
-    public int getMaxVersions() {
-        return this.getGetValue().getMaxVersions();
-    }
-
     public ResultScanner getResultScanner(final Mapping mapping,
                                           final WithArgs withArgs,
                                           final HTable table) throws HBqlException {

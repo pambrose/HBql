@@ -40,7 +40,6 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     private final long returnedRecordLimit;
 
     private final List<ResultScanner> resultScannerList = Lists.newArrayList();
-    private int maxVersions = 0;
     private ResultScanner currentResultScanner = null;
     private AggregateRecord aggregateRecord;
 
@@ -148,12 +147,8 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
         return this.returnedRecordLimit;
     }
 
-    protected int getMaxVersions() {
-        return this.maxVersions;
-    }
-
-    protected void setMaxVersions(final int maxVersions) {
-        this.maxVersions = maxVersions;
+    protected int getMaxVersions() throws HBqlException {
+        return this.getQuery().getSelectStmt().getWithArgs().getMaxVersions();
     }
 
     protected Query<T> getQuery() {

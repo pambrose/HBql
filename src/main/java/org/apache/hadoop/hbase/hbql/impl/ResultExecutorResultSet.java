@@ -47,7 +47,6 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
             final Callable<String> job = new Callable<String>() {
                 public String call() throws HBqlException, InterruptedException {
                     try {
-                        setMaxVersions(rowRequest.getMaxVersions());
                         final ResultScanner scanner = rowRequest.getResultScanner(getSelectStmt().getMapping(),
                                                                                   getWithArgs(),
                                                                                   getHTableWrapper().getHTable());

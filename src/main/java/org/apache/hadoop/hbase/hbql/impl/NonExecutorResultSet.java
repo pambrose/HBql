@@ -57,7 +57,6 @@ public class NonExecutorResultSet<T> extends HResultSetImpl<T, Object> {
 
                 protected Iterator<Result> getNextResultIterator() throws HBqlException {
                     final RowRequest rowRequest = getRowRequestIterator().next();
-                    setMaxVersions(rowRequest.getMaxVersions());
                     setCurrentResultScanner(rowRequest.getResultScanner(getSelectStmt().getMapping(),
                                                                         getWithArgs(),
                                                                         getHTableWrapper().getHTable()));
