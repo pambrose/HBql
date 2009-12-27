@@ -37,8 +37,8 @@ import org.apache.expreval.expr.node.ShortValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
 import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
 
 import java.util.List;
 import java.util.Random;

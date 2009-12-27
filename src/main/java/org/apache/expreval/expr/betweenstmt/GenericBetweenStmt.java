@@ -25,7 +25,7 @@ import org.apache.expreval.expr.NotValue;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
-import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
 
 public abstract class GenericBetweenStmt extends NotValue<GenericBetweenStmt> implements BooleanValue {
 

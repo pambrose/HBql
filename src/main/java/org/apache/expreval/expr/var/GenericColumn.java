@@ -27,8 +27,8 @@ import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.InvalidServerFilterExpressionException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
+import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 
