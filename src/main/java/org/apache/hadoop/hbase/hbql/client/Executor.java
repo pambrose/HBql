@@ -20,30 +20,10 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.expreval.util.BlockingQueueWithCompletion;
-import org.apache.hadoop.hbase.hbql.impl.ExecutorPool;
-import org.apache.hadoop.hbase.hbql.impl.HExecutor;
 import org.apache.hadoop.hbase.hbql.impl.ResultExecutor;
 import org.apache.hadoop.hbase.hbql.impl.ResultScannerExecutor;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
-
-public class Executor<R> {
-
-    private final ExecutorPool executorPool;
-    private final ExecutorService threadPool;
-    private final AtomicInteger workSubmittedCount = new AtomicInteger(0);
-    private final BlockingQueueWithCompletion<R> elementQueue;
-
-    protected Executor(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
-        this.executorPool = executorPool;
-        this.threadPool = Executors.newFixedThreadPool(threadCount);
-        this.elementQueue = new BlockingQueueWithCompletion<R>(queueSize);
-    }
+public class Executor {
 
     public static Executor newExecutor(final int threadCount,
                                        final boolean threadsReadResults,
@@ -51,42 +31,5 @@ public class Executor<R> {
         return threadsReadResults
                ? ResultExecutor.newResultExecutor(threadCount, queueSize)
                : ResultScannerExecutor.newResultScannerExecutor(threadCount, queueSize);
-    }
-
-    protected ExecutorPool getExecutorPool() {
-        return this.executorPool;
-    }
-
-    protected ExecutorService getThreadPool() {
-        return this.threadPool;
-    }
-
-    public BlockingQueueWithCompletion<R> getQueue() {
-        return this.elementQueue;
-    }
-
-    protected AtomicInteger getWorkSubmittedCount() {
-        return this.workSubmittedCount;
-    }
-
-    public void reset() {
-        this.getWorkSubmittedCount().set(0);
-        this.getQueue().reset();
-    }
-
-    public Future<String> submit(final Callable<String> job) {
-        final Future<String> future = this.getThreadPool().submit(job);
-        this.getWorkSubmittedCount().incrementAndGet();
-        return future;
-    }
-
-    public boolean moreResultsPending(final int val) {
-        return val < this.getWorkSubmittedCount().get();
-    }
-
-    public void release() {
-        // Release if it is a pool element
-        if (this.getExecutorPool() != null)
-            this.getExecutorPool().release((HExecutor)this);
     }
 }

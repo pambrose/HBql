@@ -21,9 +21,8 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.hbql.client.Executor;
 
-public class ResultScannerExecutor extends Executor<ResultScanner> implements HExecutor {
+public class ResultScannerExecutor extends ExecutorImpl<ResultScanner> implements HExecutor {
 
     public ResultScannerExecutor(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
         super(executorPool, threadCount, queueSize);

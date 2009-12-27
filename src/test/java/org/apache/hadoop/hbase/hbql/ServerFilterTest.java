@@ -29,6 +29,7 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.Util;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -167,7 +168,8 @@ public class ServerFilterTest extends TestSupport {
 
         HStatement stmt = connection.createStatement();
         System.out
-                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2, threads_read_results: true, queue_size: 100) " +
+                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2, " +
+                                      "threads_read_results: true, queue_size: 100) " +
                                       "if not executorPoolExists('threadPool1')"));
 
         // ExecutorPoolManager.newExecutorPool("threadPool1", 2, 10);
@@ -265,16 +267,23 @@ public class ServerFilterTest extends TestSupport {
     }
 
     @Test
-    public void repeatTests() throws HBqlException {
+    public void randomConcurrentTest() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
 
         System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
                                         "threads_read_results: false, queue_size: 100) " +
                                         "if not executorPoolExists('threadPool1')"));
-        for (int i = 0; i < 10; i++) {
-            simpleSelect10();
-            simpleSelect9b();
+        int cnt = 0;
+        for (int i = 0; i < 10000; i++) {
+            boolean bval = Utils.getRandomBoolean();
+            if (bval) cnt++;
+            System.out.println(bval);
+            int upper = 20;
+            int val = Utils.getRandomPositiveInt(upper);
+            System.out.println(val);
+            assertTrue(val >= 1 && val <= upper);
         }
+        System.out.println("Count: " + cnt);
     }
 }

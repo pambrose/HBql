@@ -398,7 +398,7 @@ public class ExamplesTest extends TestSupport {
         // Then assign the connection a pool name to use for queries
         connection.setExecutorPoolName("execPool");
 
-        // If a dedicated Executor, rather than one from a pool, is desired:
+        // Or could use a dedicated Executor, rather than one from a pool, if appropriate:
         Executor executor = Executor.newExecutor(10, true, 100);
         connection.setExecutor(executor);
 

@@ -37,6 +37,7 @@ import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Random;
 
 
 public class Utils {
@@ -89,7 +90,7 @@ public class Utils {
         return (ParameterStatement)statement;
     }
 
-    static List<Class> classList = Lists.newArrayList();
+    private static List<Class> classList = Lists.newArrayList();
 
     public static void checkForDefaultConstructors(final Class clazz) {
 
@@ -139,5 +140,18 @@ public class Utils {
 
     public static boolean isValidString(final String val) {
         return val != null && val.trim().length() > 0;
+    }
+
+    private static Random randomVal = new Random();
+
+
+    public static boolean getRandomBoolean() {
+        return randomVal.nextBoolean();
+    }
+
+    public static int getRandomPositiveInt(final int upper) {
+        int val = Math.abs(randomVal.nextInt());
+        int remainder = val % upper;
+        return remainder + 1;
     }
 }

@@ -24,7 +24,6 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.hbql.client.Executor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
@@ -48,11 +47,11 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     private final Query<T> query;
     private final ExpressionTree clientExpressionTree;
     private HTableWrapper tableWrapper;
-    private final Executor<R> executor;
+    private final ExecutorImpl<R> executor;
 
     private volatile boolean closed = false;
 
-    protected HResultSetImpl(final Query<T> query, final Executor<R> executor) throws HBqlException {
+    protected HResultSetImpl(final Query<T> query, final ExecutorImpl<R> executor) throws HBqlException {
         this.query = query;
         this.executor = executor;
 
@@ -78,7 +77,7 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
 
     protected abstract void submitWork() throws HBqlException;
 
-    protected Executor<R> getExecutor() {
+    protected ExecutorImpl<R> getExecutor() {
         return this.executor;
     }
 
