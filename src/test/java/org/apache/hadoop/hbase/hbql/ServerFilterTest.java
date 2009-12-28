@@ -308,74 +308,76 @@ public class ServerFilterTest extends TestSupport {
             final String poolName = "execPool" + p;
             System.out.println("Creating query executor pool: " + poolName);
             QueryExecutorPoolManager.newQueryExecutorPool(poolName,
-                                                          Utils.getRandomPositiveInt(3),
+                                                          Utils.getRandomPositiveInt(5),
                                                           Utils.getRandomPositiveInt(5),
                                                           Utils.getRandomBoolean(),
                                                           Utils.getRandomPositiveInt(10));
         }
 
-        final int totalJobs = 100;
-        final int maxRangeCount = 100;
-        final ExecutorService threadPool = Executors.newFixedThreadPool(Utils.getRandomPositiveInt(10));
-        final CountDownLatch latch = new CountDownLatch(totalJobs);
+        final int repeats = 10;
 
-        int cnt = 0;
-        for (int tj = 0; tj < totalJobs; tj++) {
-            final int jobNum = tj;
-            threadPool.submit(
-                    new Runnable() {
-                        public void run() {
+        for (int i = 0; i < repeats; i++) {
+            final int totalJobs = Utils.getRandomPositiveInt(50);
+            final int maxKeyRangeCount = Utils.getRandomPositiveInt(100);
+            final ExecutorService threadPool = Executors.newFixedThreadPool(Utils.getRandomPositiveInt(10));
+            final CountDownLatch latch = new CountDownLatch(totalJobs);
 
-                            HConnection conn = null;
-                            try {
-                                conn = connectionPool.takeConnection();
+            for (int tj = 0; tj < totalJobs; tj++) {
+                final int jobNum = tj;
+                threadPool.submit(
+                        new Runnable() {
+                            public void run() {
 
-                                conn.setQueryExecutorPoolName("execPool" + Utils.getRandomPositiveInt(queryPoolCnt));
+                                HConnection conn = null;
+                                try {
+                                    conn = connectionPool.takeConnection();
 
-                                conn.execute("CREATE TEMP MAPPING tab3 FOR TABLE table20"
-                                             + "("
-                                             + "keyval key, "
-                                             + "f1 ("
-                                             + "  val1 string alias val1, "
-                                             + "  val2 int alias val2, "
-                                             + "  val3 int alias val3 DEFAULT 12 "
-                                             + ")) if not mappingExists('tab3')");
+                                    conn.setQueryExecutorPoolName("execPool" + Utils.getRandomPositiveInt(queryPoolCnt));
 
-                                final StringBuilder query = new StringBuilder("select * from tab3 WITH KEYS ");
-                                final int rangeCount = Utils.getRandomPositiveInt(maxRangeCount);
-                                boolean firstTime = true;
-                                for (int rc = 0; rc < rangeCount; rc++) {
-                                    if (!firstTime)
-                                        query.append(", ");
-                                    else
-                                        firstTime = false;
-                                    query.append("'0000000001'TO '0000000009' ");
-                                }
+                                    conn.execute("CREATE TEMP MAPPING tab3 FOR TABLE table20"
+                                                 + "("
+                                                 + "keyval key, "
+                                                 + "f1 ("
+                                                 + "  val1 string alias val1, "
+                                                 + "  val2 int alias val2, "
+                                                 + "  val3 int alias val3 DEFAULT 12 "
+                                                 + ")) if not mappingExists('tab3')");
 
-                                query.append("SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ");
-
-                                int recCnt = showValues(conn, query.toString(), rangeCount * 3, false);
-                                System.out.println("Value count: " + recCnt + " for job: " + jobNum);
-                            }
-                            catch (HBqlException e) {
-                                e.printStackTrace();
-                            }
-                            finally {
-                                if (conn != null) {
-                                    try {
-                                        conn.close();
+                                    final StringBuilder query = new StringBuilder("select * from tab3 WITH KEYS ");
+                                    final int rangeCount = Utils.getRandomPositiveInt(maxKeyRangeCount);
+                                    boolean firstTime = true;
+                                    for (int rc = 0; rc < rangeCount; rc++) {
+                                        if (!firstTime)
+                                            query.append(", ");
+                                        else
+                                            firstTime = false;
+                                        query.append("'0000000001'TO '0000000009' ");
                                     }
-                                    catch (HBqlException e1) {
-                                        e1.printStackTrace();
-                                    }
+
+                                    query.append("SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ");
+
+                                    int recCnt = showValues(conn, query.toString(), rangeCount * 3, false);
+                                    System.out.println("Value count: " + recCnt + " for job: " + jobNum);
                                 }
-                                latch.countDown();
+                                catch (HBqlException e) {
+                                    e.printStackTrace();
+                                }
+                                finally {
+                                    if (conn != null) {
+                                        try {
+                                            conn.close();
+                                        }
+                                        catch (HBqlException e1) {
+                                            e1.printStackTrace();
+                                        }
+                                    }
+                                    latch.countDown();
+                                }
                             }
-                        }
-                    });
+                        });
+            }
+
+            latch.await();
         }
-        System.out.println("Count: " + cnt);
-
-        latch.await();
     }
 }
