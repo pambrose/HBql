@@ -235,6 +235,7 @@ public class FamilySelectElement implements SelectElement {
                 final NavigableMap<Long, byte[]> timeStampMap = versionColumnMap.get(columnBytes);
                 final String columnName = IO.getSerialization().getStringFromBytes(columnBytes);
 
+                // ZZZ
                 final ColumnAttrib attrib = tableMapping.getVersionAttribMap(familyName, columnName);
 
                 if (attrib == null) {

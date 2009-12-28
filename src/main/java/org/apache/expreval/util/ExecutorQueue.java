@@ -26,17 +26,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class GenericExecutor<T> implements PoolableElement {
+public abstract class ExecutorQueue<T> implements PoolableElement {
 
     private final ExecutorPool executorPool;
     private final ExecutorService threadPool;
-    private final BlockingQueueWithCompletion<T> queue;
+    private final QueueWithCompletion<T> completionQueue;
     private final AtomicInteger workSubmittedCount = new AtomicInteger(0);
 
-    protected GenericExecutor(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
+    protected ExecutorQueue(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
         this.executorPool = executorPool;
         this.threadPool = Executors.newFixedThreadPool(threadCount);
-        this.queue = new BlockingQueueWithCompletion<T>(queueSize);
+        this.completionQueue = new QueueWithCompletion<T>(queueSize);
     }
 
     public abstract boolean threadsReadResults();
@@ -49,8 +49,8 @@ public abstract class GenericExecutor<T> implements PoolableElement {
         return this.threadPool;
     }
 
-    public BlockingQueueWithCompletion<T> getQueue() {
-        return this.queue;
+    public QueueWithCompletion<T> getCompletionQueue() {
+        return this.completionQueue;
     }
 
     protected AtomicInteger getWorkSubmittedCount() {
@@ -63,7 +63,7 @@ public abstract class GenericExecutor<T> implements PoolableElement {
 
     public void reset() {
         this.getWorkSubmittedCount().set(0);
-        this.getQueue().reset();
+        this.getCompletionQueue().reset();
     }
 
     public Future<String> submit(final Callable<String> job) {

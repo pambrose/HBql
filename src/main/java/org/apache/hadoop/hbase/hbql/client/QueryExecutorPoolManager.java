@@ -49,7 +49,7 @@ public class QueryExecutorPoolManager {
                                                            threadCount,
                                                            threadsReadResults,
                                                            queueSize);
-        getExecutorPoolMap().put(executorPool.getName(), executorPool);
+        QueryExecutorPoolManager.getExecutorPoolMap().put(executorPool.getName(), executorPool);
 
         return executorPool;
     }

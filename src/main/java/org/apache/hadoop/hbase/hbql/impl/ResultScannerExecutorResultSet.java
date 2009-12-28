@@ -49,10 +49,10 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
                         final ResultScanner resultScanner = rowRequest.getResultScanner(getSelectStmt().getMapping(),
                                                                                         getWithArgs(),
                                                                                         getHTableWrapper().getHTable());
-                        getExecutor().getQueue().putElement(resultScanner);
+                        getExecutor().getCompletionQueue().putElement(resultScanner);
                     }
                     finally {
-                        getExecutor().getQueue().markCompletion();
+                        getExecutor().getCompletionQueue().markCompletion();
                     }
                     return "OK";
                 }
@@ -67,14 +67,15 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
             return new ResultSetIterator<T, ResultScanner>(this) {
 
                 protected boolean moreResultsPending() {
-                    return getExecutor().moreResultsPending(getExecutor().getQueue().getCompletionCount());
+                    return getExecutor().moreResultsPending(getExecutor().getCompletionQueue().getCompletionCount());
                 }
 
                 protected Iterator<Result> getNextResultIterator() throws HBqlException {
                     final ResultScanner resultScanner;
                     while (true) {
                         try {
-                            final QueueElement<ResultScanner> queueElement = getExecutor().getQueue().takeElement();
+                            final QueueElement<ResultScanner> queueElement = getExecutor().getCompletionQueue()
+                                    .takeElement();
                             if (queueElement.isCompleteToken()) {
                                 if (!moreResultsPending()) {
                                     resultScanner = null;

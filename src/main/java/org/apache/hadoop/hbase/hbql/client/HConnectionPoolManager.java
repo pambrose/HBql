@@ -33,33 +33,33 @@ public class HConnectionPoolManager {
 
     private static int maxPoolReferencesPerTablePerConnection = Integer.MAX_VALUE;
 
-    public static HConnectionPool newConnectionPool(final int initPoolSize,
+    public static HConnectionPool newConnectionPool(final int initialPoolSize,
                                                     final int maxPoolSize) throws HBqlException {
-        return HConnectionPoolManager.newConnectionPool(initPoolSize,
+        return HConnectionPoolManager.newConnectionPool(initialPoolSize,
                                                         maxPoolSize,
                                                         null,
                                                         null);
     }
 
-    public static HConnectionPool newConnectionPool(final int initConnectionPoolSize,
+    public static HConnectionPool newConnectionPool(final int initialPoolSize,
                                                     final int maxPoolSize,
                                                     final HBaseConfiguration config) throws HBqlException {
-        return HConnectionPoolManager.newConnectionPool(initConnectionPoolSize,
+        return HConnectionPoolManager.newConnectionPool(initialPoolSize,
                                                         maxPoolSize,
                                                         null,
                                                         config);
     }
 
-    public static HConnectionPool newConnectionPool(final int initConnectionPoolSize,
+    public static HConnectionPool newConnectionPool(final int initialPoolSize,
                                                     final int maxPoolSize,
                                                     final String poolName) throws HBqlException {
-        return HConnectionPoolManager.newConnectionPool(initConnectionPoolSize,
+        return HConnectionPoolManager.newConnectionPool(initialPoolSize,
                                                         maxPoolSize,
                                                         poolName,
                                                         null);
     }
 
-    public static HConnectionPool newConnectionPool(final int initPoolSize,
+    public static HConnectionPool newConnectionPool(final int initialPoolSize,
                                                     final int maxPoolSize,
                                                     final String poolName,
                                                     final HBaseConfiguration config) throws HBqlException {
@@ -67,7 +67,7 @@ public class HConnectionPoolManager {
         if (Utils.isValidString(poolName) && getConnectionPoolMap().containsKey(poolName))
             throw new HBqlException("Connection pool already exists: " + poolName);
 
-        final HConnectionPoolImpl connectionPool = new HConnectionPoolImpl(initPoolSize,
+        final HConnectionPoolImpl connectionPool = new HConnectionPoolImpl(initialPoolSize,
                                                                            maxPoolSize,
                                                                            poolName,
                                                                            config,

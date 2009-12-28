@@ -23,6 +23,8 @@ package org.apache.hadoop.hbase.hbql;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
+import org.apache.hadoop.hbase.hbql.client.HConnectionPool;
+import org.apache.hadoop.hbase.hbql.client.HConnectionPoolManager;
 import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
@@ -34,6 +36,10 @@ import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ServerFilterTest extends TestSupport {
 
@@ -102,6 +108,33 @@ public class ServerFilterTest extends TestSupport {
         results.close();
 
         assertTrue(rec_cnt == cnt);
+    }
+
+    private static int showValues(final HConnection conn,
+                                  final String sql,
+                                  final int cnt,
+                                  final boolean printValues) throws HBqlException {
+
+        HStatement stmt = conn.createStatement();
+        HResultSet<HRecord> results = stmt.executeQuery(sql);
+
+        int rec_cnt = 0;
+        for (HRecord rec : results) {
+
+            String keyval = (String)rec.getCurrentValue("keyval");
+            String val1 = (String)rec.getCurrentValue("val1");
+            int val2 = (Integer)rec.getCurrentValue("f1:val2");
+            int val3 = (Integer)rec.getCurrentValue("val3");
+            if (printValues)
+                System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
+            rec_cnt++;
+        }
+
+        results.close();
+
+        assertTrue(rec_cnt == cnt);
+
+        return rec_cnt;
     }
 
     @Test
@@ -219,15 +252,13 @@ public class ServerFilterTest extends TestSupport {
         System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
                                         "threads_read_results: true, queue_size: 100) " +
                                         "if not queryExecutorPoolExists('threadPool1')"));
-        System.out.println(stmt.execute("DROP EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
-                                        "threads_read_results: true, queue_size: 100) " +
-                                        "if queryExecutorPoolExists('threadPool1')"));
+        System.out.println(stmt.execute("DROP EXECUTOR POOL threadPool1 if queryExecutorPoolExists('threadPool1')"));
         System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
                                         "threads_read_results: true, queue_size: 100)"));
 
         connection.setQueryExecutorPoolName("threadPool1");
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 50; i++) {
             final String q1 = "select * from tab3 WITH "
                               + "KEYS " +
                               "'0000000001'TO '0000000009', " +
@@ -268,24 +299,83 @@ public class ServerFilterTest extends TestSupport {
     }
 
     @Test
-    public void randomConcurrentTest() throws HBqlException {
+    public void randomConcurrentTest() throws HBqlException, InterruptedException {
 
-        if (!QueryExecutorPoolManager.queryExecutorPoolExists("threadPool1"))
-            QueryExecutorPoolManager.newQueryExecutorPool("threadPool1",
+        final HConnectionPool connectionPool = HConnectionPoolManager.newConnectionPool(1, 4);
+
+        final int queryPoolCnt = 5;
+        for (int p = 1; p <= queryPoolCnt; p++) {
+            final String poolName = "execPool" + p;
+            System.out.println("Creating query executor pool: " + poolName);
+            QueryExecutorPoolManager.newQueryExecutorPool(poolName,
                                                           Utils.getRandomPositiveInt(3),
-                                                          Utils.getRandomPositiveInt(3),
+                                                          Utils.getRandomPositiveInt(5),
                                                           Utils.getRandomBoolean(),
-                                                          Utils.getRandomPositiveInt(5));
+                                                          Utils.getRandomPositiveInt(10));
+        }
+
+        final int totalJobs = 100;
+        final int maxRangeCount = 100;
+        final ExecutorService threadPool = Executors.newFixedThreadPool(Utils.getRandomPositiveInt(10));
+        final CountDownLatch latch = new CountDownLatch(totalJobs);
+
         int cnt = 0;
-        for (int i = 0; i < 10000; i++) {
-            boolean bval = Utils.getRandomBoolean();
-            if (bval) cnt++;
-            System.out.println(bval);
-            int upper = 20;
-            int val = Utils.getRandomPositiveInt(upper);
-            System.out.println(val);
-            assertTrue(val >= 1 && val <= upper);
+        for (int tj = 0; tj < totalJobs; tj++) {
+            final int jobNum = tj;
+            threadPool.submit(
+                    new Runnable() {
+                        public void run() {
+
+                            HConnection conn = null;
+                            try {
+                                conn = connectionPool.takeConnection();
+
+                                conn.setQueryExecutorPoolName("execPool" + Utils.getRandomPositiveInt(queryPoolCnt));
+
+                                conn.execute("CREATE TEMP MAPPING tab3 FOR TABLE table20"
+                                             + "("
+                                             + "keyval key, "
+                                             + "f1 ("
+                                             + "  val1 string alias val1, "
+                                             + "  val2 int alias val2, "
+                                             + "  val3 int alias val3 DEFAULT 12 "
+                                             + ")) if not mappingExists('tab3')");
+
+                                final StringBuilder query = new StringBuilder("select * from tab3 WITH KEYS ");
+                                final int rangeCount = Utils.getRandomPositiveInt(maxRangeCount);
+                                boolean firstTime = true;
+                                for (int rc = 0; rc < rangeCount; rc++) {
+                                    if (!firstTime)
+                                        query.append(", ");
+                                    else
+                                        firstTime = false;
+                                    query.append("'0000000001'TO '0000000009' ");
+                                }
+
+                                query.append("SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ");
+
+                                int recCnt = showValues(conn, query.toString(), rangeCount * 3, false);
+                                System.out.println("Value count: " + recCnt + " for job: " + jobNum);
+                            }
+                            catch (HBqlException e) {
+                                e.printStackTrace();
+                            }
+                            finally {
+                                if (conn != null) {
+                                    try {
+                                        conn.close();
+                                    }
+                                    catch (HBqlException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+                                latch.countDown();
+                            }
+                        }
+                    });
         }
         System.out.println("Count: " + cnt);
+
+        latch.await();
     }
 }

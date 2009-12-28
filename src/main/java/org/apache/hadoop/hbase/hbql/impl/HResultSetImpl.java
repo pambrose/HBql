@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.literal.DateLiteral;
-import org.apache.expreval.util.GenericExecutor;
+import org.apache.expreval.util.ExecutorQueue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -48,11 +48,11 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     private final Query<T> query;
     private final ExpressionTree clientExpressionTree;
     private HTableWrapper tableWrapper;
-    private final GenericExecutor<R> executor;
+    private final ExecutorQueue<R> executor;
 
     private volatile boolean closed = false;
 
-    protected HResultSetImpl(final Query<T> query, final GenericExecutor<R> executor) throws HBqlException {
+    protected HResultSetImpl(final Query<T> query, final ExecutorQueue<R> executor) throws HBqlException {
         this.query = query;
         this.executor = executor;
 
@@ -80,7 +80,7 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
 
     public abstract Iterator<T> iterator();
 
-    protected GenericExecutor<R> getExecutor() {
+    protected ExecutorQueue<R> getExecutor() {
         return this.executor;
     }
 

@@ -115,6 +115,7 @@ public class SelectStatement extends StatementContext implements ParameterStatem
             }
             catch (InvalidColumnException e) {
                 // No op
+                e.printStackTrace();
             }
         }
 

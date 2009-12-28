@@ -62,13 +62,13 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                                 continue;
                             }
 
-                            getExecutor().getQueue().putElement(result);
+                            getExecutor().getCompletionQueue().putElement(result);
                         }
 
                         scanner.close();
                     }
                     finally {
-                        getExecutor().getQueue().markCompletion();
+                        getExecutor().getCompletionQueue().markCompletion();
                     }
                     return "OK";
                 }
@@ -114,7 +114,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                 }
 
                 protected boolean moreResultsPending() {
-                    return getExecutor().moreResultsPending(getExecutor().getQueue().getCompletionCount());
+                    return getExecutor().moreResultsPending(getExecutor().getCompletionQueue().getCompletionCount());
                 }
 
                 @SuppressWarnings("unchecked")
@@ -126,7 +126,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                     while (true) {
                         final Result result;
                         try {
-                            final QueueElement<Result> queueElement = getExecutor().getQueue().takeElement();
+                            final QueueElement<Result> queueElement = getExecutor().getCompletionQueue().takeElement();
                             if (queueElement.isCompleteToken()) {
                                 if (!moreResultsPending())
                                     break;

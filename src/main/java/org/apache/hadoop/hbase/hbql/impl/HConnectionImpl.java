@@ -21,7 +21,7 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.util.ExecutorPool;
-import org.apache.expreval.util.GenericExecutor;
+import org.apache.expreval.util.ExecutorQueue;
 import org.apache.expreval.util.Maps;
 import org.apache.expreval.util.PoolableElement;
 import org.apache.expreval.util.Sets;
@@ -263,11 +263,14 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void close() throws HBqlException {
-        // If it is a pool conection, just give it back to pool
-        if (this.isPooled())
+        // If it is a pool conection, just give it back to pool (reset() will be called on release)
+        if (this.isPooled()) {
             this.release();
-        else
+        }
+        else {
             this.closed = true;
+            this.reset();
+        }
     }
 
     public boolean isClosed() {
@@ -442,17 +445,17 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     // The value returned from this call must be eventually released.
-    public GenericExecutor getExecutorForConnection() throws HBqlException {
+    public ExecutorQueue getExecutorForConnection() throws HBqlException {
         // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
-        final GenericExecutor retval = this.getQueryExecutor() != null
-                                       ? this.getQueryExecutor().getExecutor()
-                                       : this.takeExecutorFromPool();
+        final ExecutorQueue retval = this.getQueryExecutor() != null
+                                     ? this.getQueryExecutorImpl().getExecutor()
+                                     : this.takeExecutorFromPool();
         // Reset it prior to handing it out
         retval.reset();
         return retval;
     }
 
-    private GenericExecutor takeExecutorFromPool() throws HBqlException {
+    private ExecutorQueue takeExecutorFromPool() throws HBqlException {
         this.validateExecutorPoolNameExists(this.getQueryExecutorPoolName());
         final ExecutorPool pool = QueryExecutorPoolManager.getExecutorPool(this.getQueryExecutorPoolName());
         return pool.take();
@@ -476,6 +479,10 @@ public class HConnectionImpl implements HConnection, PoolableElement {
 
     public QueryExecutor getQueryExecutor() {
         return this.queryExecutor;
+    }
+
+    private QueryExecutorImpl getQueryExecutorImpl() {
+        return (QueryExecutorImpl)this.queryExecutor;
     }
 
     public void validateTableName(final String tableName) throws HBqlException {
