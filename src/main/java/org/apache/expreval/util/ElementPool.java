@@ -31,13 +31,16 @@ public abstract class ElementPool<T extends PoolableElement> {
     private final String name;
     private final int maxPoolSize;
     private final BlockingQueue<T> elementPool;
-    private final AtomicInteger count = new AtomicInteger(0);
+    private final AtomicInteger createdElementCount = new AtomicInteger(0);
+    private final AtomicInteger takenElementCount = new AtomicInteger(0);
 
     public ElementPool(final String name, final int maxPoolSize) {
         this.name = name;
         this.maxPoolSize = maxPoolSize;
         this.elementPool = new ArrayBlockingQueue<T>(this.getMaxPoolSize());
     }
+
+    protected abstract T newElement() throws HBqlException;
 
     public int getMaxPoolSize() {
         return this.maxPoolSize;
@@ -51,17 +54,23 @@ public abstract class ElementPool<T extends PoolableElement> {
         return this.name;
     }
 
-    private AtomicInteger getCount() {
-        return this.count;
+    private AtomicInteger getCreatedElementCount() {
+        return this.createdElementCount;
     }
 
-    protected abstract T newElement() throws HBqlException;
+    private AtomicInteger getTakenElementCount() {
+        return this.takenElementCount;
+    }
+
+    public int getElementsTaken() {
+        return this.getTakenElementCount().get();
+    }
 
     protected void addElementToPool() throws HBqlException {
-        if (this.getCount().get() < this.getMaxPoolSize()) {
+        if (this.getCreatedElementCount().get() < this.getMaxPoolSize()) {
             final T connection = this.newElement();
             this.getElementPool().add(connection);
-            this.getCount().incrementAndGet();
+            this.getCreatedElementCount().incrementAndGet();
         }
     }
 
@@ -72,17 +81,18 @@ public abstract class ElementPool<T extends PoolableElement> {
             this.addElementToPool();
 
         try {
-            final T element = this.getElementPool().take();
-            return element;
+            final T retval = this.getElementPool().take();
+            this.getTakenElementCount().incrementAndGet();
+            return retval;
         }
         catch (InterruptedException e) {
             throw new HBqlException("InterruptedException: " + e.getMessage());
         }
     }
 
-
     public void release(final T element) {
         element.reset();
         this.getElementPool().add(element);
+        this.getTakenElementCount().decrementAndGet();
     }
 }

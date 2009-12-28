@@ -20,15 +20,13 @@
 
 package org.apache.expreval.util;
 
-import org.apache.hadoop.hbase.hbql.client.QueryExecutor;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class GenericExecutor<T> extends QueryExecutor implements PoolableElement {
+public abstract class GenericExecutor<T> implements PoolableElement {
 
     private final ExecutorPool executorPool;
     private final ExecutorService threadPool;
@@ -59,6 +57,10 @@ public abstract class GenericExecutor<T> extends QueryExecutor implements Poolab
         return this.workSubmittedCount;
     }
 
+    public boolean moreResultsPending(final int val) {
+        return val < this.getWorkSubmittedCount().get();
+    }
+
     public void reset() {
         this.getWorkSubmittedCount().set(0);
         this.getQueue().reset();
@@ -68,10 +70,6 @@ public abstract class GenericExecutor<T> extends QueryExecutor implements Poolab
         final Future<String> future = this.getThreadPool().submit(job);
         this.getWorkSubmittedCount().incrementAndGet();
         return future;
-    }
-
-    public boolean moreResultsPending(final int val) {
-        return val < this.getWorkSubmittedCount().get();
     }
 
     public void release() {

@@ -150,6 +150,12 @@ public class Utils {
     }
 
     public static int getRandomPositiveInt(final int upper) {
-        return (Math.abs(randomVal.nextInt()) % upper) + 1;
+        while (true) {
+            final int val = randomVal.nextInt();
+            // Math.abs(Integer.MIN_VALUE = Integer.MIN_VALUE, which is still negative
+            // So try again if it comes up
+            if (val != Integer.MIN_VALUE)
+                return (Math.abs(val) % upper) + 1;
+        }
     }
 }

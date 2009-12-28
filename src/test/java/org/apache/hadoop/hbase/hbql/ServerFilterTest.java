@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutor;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
@@ -269,11 +270,12 @@ public class ServerFilterTest extends TestSupport {
     @Test
     public void randomConcurrentTest() throws HBqlException {
 
-        HStatement stmt = connection.createStatement();
-
-        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
-                                        "threads_read_results: false, queue_size: 100) " +
-                                        "if not queryExecutorPoolExists('threadPool1')"));
+        if (!QueryExecutorPoolManager.queryExecutorPoolExists("threadPool1"))
+            QueryExecutorPoolManager.newQueryExecutorPool("threadPool1",
+                                                          Utils.getRandomPositiveInt(3),
+                                                          Utils.getRandomPositiveInt(3),
+                                                          Utils.getRandomBoolean(),
+                                                          Utils.getRandomPositiveInt(5));
         int cnt = 0;
         for (int i = 0; i < 10000; i++) {
             boolean bval = Utils.getRandomBoolean();

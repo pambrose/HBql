@@ -52,7 +52,7 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
                         getExecutor().getQueue().putElement(resultScanner);
                     }
                     finally {
-                        getExecutor().getQueue().putCompletion();
+                        getExecutor().getQueue().markCompletion();
                     }
                     return "OK";
                 }

@@ -31,6 +31,7 @@ import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -76,6 +77,8 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     }
 
     protected abstract void submitWork() throws HBqlException;
+
+    public abstract Iterator<T> iterator();
 
     protected GenericExecutor<R> getExecutor() {
         return this.executor;

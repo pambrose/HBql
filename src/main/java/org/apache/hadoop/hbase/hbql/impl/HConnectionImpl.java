@@ -76,7 +76,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     private volatile boolean closed = false;
 
     private String executorPoolName = null;
-    private GenericExecutor executor = null;
+    private QueryExecutor queryExecutor = null;
 
     public HConnectionImpl(final HBaseConfiguration hbaseConfig,
                            final HConnectionPoolImpl connectionPool,
@@ -445,7 +445,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     public GenericExecutor getExecutorForConnection() throws HBqlException {
         // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
         final GenericExecutor retval = this.getQueryExecutor() != null
-                                       ? this.getQueryExecutor()
+                                       ? this.getQueryExecutor().getExecutor()
                                        : this.takeExecutorFromPool();
         // Reset it prior to handing it out
         retval.reset();
@@ -471,11 +471,11 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void setQueryExecutor(final QueryExecutor executor) {
-        this.executor = (GenericExecutor)executor;
+        this.queryExecutor = executor;
     }
 
-    public GenericExecutor getQueryExecutor() {
-        return this.executor;
+    public QueryExecutor getQueryExecutor() {
+        return this.queryExecutor;
     }
 
     public void validateTableName(final String tableName) throws HBqlException {

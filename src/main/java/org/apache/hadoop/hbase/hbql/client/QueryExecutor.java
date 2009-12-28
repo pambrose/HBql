@@ -20,16 +20,27 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
+import org.apache.expreval.util.GenericExecutor;
 import org.apache.hadoop.hbase.hbql.impl.ResultExecutor;
 import org.apache.hadoop.hbase.hbql.impl.ResultScannerExecutor;
 
 public class QueryExecutor {
 
+    private GenericExecutor executor;
+
+    private QueryExecutor(final GenericExecutor executor) {
+        this.executor = executor;
+    }
+
     public static QueryExecutor newQueryExecutor(final int threadCount,
                                                  final boolean threadsReadResults,
                                                  final int queueSize) {
-        return threadsReadResults
-               ? ResultExecutor.newResultExecutor(threadCount, queueSize)
-               : ResultScannerExecutor.newResultScannerExecutor(threadCount, queueSize);
+        return new QueryExecutor(threadsReadResults
+                                 ? ResultExecutor.newResultExecutor(threadCount, queueSize)
+                                 : ResultScannerExecutor.newResultScannerExecutor(threadCount, queueSize));
+    }
+
+    public GenericExecutor getExecutor() {
+        return this.executor;
     }
 }

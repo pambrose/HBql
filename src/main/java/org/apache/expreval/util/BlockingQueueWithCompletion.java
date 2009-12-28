@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BlockingQueueWithCompletion<T> {
 
     private final BlockingQueue<QueueElement<T>> resultQueue;
-    private final AtomicInteger completionCount = new AtomicInteger(0);
+    private final AtomicInteger completionCounter = new AtomicInteger(0);
 
     public BlockingQueueWithCompletion(final int size) {
         resultQueue = new ArrayBlockingQueue<QueueElement<T>>(size, true);
@@ -37,8 +37,12 @@ public class BlockingQueueWithCompletion<T> {
         return this.resultQueue;
     }
 
-    private AtomicInteger getCounter() {
-        return this.completionCount;
+    private AtomicInteger getCompletionCounter() {
+        return this.completionCounter;
+    }
+
+    public int getCompletionCount() {
+        return this.getCompletionCounter().get();
     }
 
     public void putElement(final T val) throws InterruptedException {
@@ -46,7 +50,7 @@ public class BlockingQueueWithCompletion<T> {
         this.getResultQueue().put(element);
     }
 
-    public void putCompletion() throws InterruptedException {
+    public void markCompletion() throws InterruptedException {
         final QueueElement<T> element = QueueElement.newComplete();
         this.getResultQueue().put(element);
     }
@@ -54,17 +58,13 @@ public class BlockingQueueWithCompletion<T> {
     public QueueElement<T> takeElement() throws InterruptedException {
         final QueueElement<T> queueElement = this.getResultQueue().take();
         if (queueElement.isCompleteToken())
-            this.getCounter().incrementAndGet();
+            this.getCompletionCounter().incrementAndGet();
 
         return queueElement;
     }
 
-    public int getCompletionCount() {
-        return this.getCounter().get();
-    }
-
     public void reset() {
-        this.getCounter().set(0);
+        this.getCompletionCounter().set(0);
         this.getResultQueue().clear();
     }
 }

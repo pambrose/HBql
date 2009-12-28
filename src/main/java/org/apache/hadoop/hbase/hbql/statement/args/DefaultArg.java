@@ -50,6 +50,10 @@ public class DefaultArg extends MultipleExpressionContext implements Serializabl
         this.value = null;
     }
 
+    private boolean isComputed() {
+        return this.computed;
+    }
+
     public String asString() {
         return this.getGenericValue(0).asString();
     }
@@ -68,9 +72,9 @@ public class DefaultArg extends MultipleExpressionContext implements Serializabl
 
     public Object getDefaultValue() throws HBqlException {
 
-        if (!this.computed) {
+        if (!this.isComputed()) {
             synchronized (this) {
-                if (!this.computed) {
+                if (!this.isComputed()) {
                     // Type checking happens in this call, so we force it above in the constructor
                     this.value = this.evaluateConstant(null, 0, false, null);
                     this.computed = true;
