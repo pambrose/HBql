@@ -22,10 +22,6 @@ package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.mapping.property.BooleanProperty;
-import org.apache.hadoop.hbase.hbql.mapping.property.CompressionTypeProperty;
-import org.apache.hadoop.hbase.hbql.mapping.property.FamilyProperty;
-import org.apache.hadoop.hbase.hbql.mapping.property.IntegerProperty;
 
 import java.util.List;
 

@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.executor.property;
 
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.mapping.property.FamilyProperty;
+import org.apache.hadoop.hbase.hbql.mapping.FamilyProperty;
 
 public class MaxPoolSizeProperty extends FamilyProperty {
 
