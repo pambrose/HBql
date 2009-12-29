@@ -57,7 +57,7 @@ public class KeyRangeArgs implements Serializable {
 
     public void validate() throws HBqlException {
         for (final KeyRange keyRange : this.getKeyRangeList())
-            keyRange.validateArgTypes();
+            keyRange.validate();
     }
 
     public String asString() {

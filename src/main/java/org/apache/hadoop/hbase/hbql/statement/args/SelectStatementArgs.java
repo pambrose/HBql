@@ -21,55 +21,44 @@
 package org.apache.hadoop.hbase.hbql.statement.args;
 
 import org.apache.expreval.expr.ArgumentListTypeSignature;
-import org.apache.expreval.expr.MultipleExpressionContext;
-import org.apache.expreval.expr.node.BooleanValue;
+import org.apache.expreval.expr.ExpressionProperty;
+import org.apache.expreval.expr.PropertyType;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.IntegerValue;
 import org.apache.expreval.expr.node.StringValue;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public abstract class SelectStatementArgs extends MultipleExpressionContext {
+public abstract class SelectStatementArgs extends ExpressionProperty {
 
-    public static enum ArgType {
+    public static enum ArgType implements PropertyType {
 
-        NOARGSKEY(new ArgumentListTypeSignature()),
-        SINGLEKEY(new ArgumentListTypeSignature(StringValue.class)),
-        KEYRANGE(new ArgumentListTypeSignature(StringValue.class, StringValue.class)),
-        TIMESTAMPRANGE(new ArgumentListTypeSignature(DateValue.class, DateValue.class)),
-        LIMIT(new ArgumentListTypeSignature(IntegerValue.class)),
-        SCANNERCACHE(new ArgumentListTypeSignature(IntegerValue.class)),
-        VERSION(new ArgumentListTypeSignature(IntegerValue.class)),
-        WIDTH(new ArgumentListTypeSignature(IntegerValue.class)),
-        EXECUTORPOOL(new ArgumentListTypeSignature(IntegerValue.class,
-                                                   IntegerValue.class,
-                                                   BooleanValue.class,
-                                                   IntegerValue.class));
+        NOARGSKEY(new ArgumentListTypeSignature(), ""),
+        SINGLEKEY(new ArgumentListTypeSignature(StringValue.class), ""),
+        KEYRANGE(new ArgumentListTypeSignature(StringValue.class, StringValue.class), ""),
+        TIMESTAMPRANGE(new ArgumentListTypeSignature(DateValue.class, DateValue.class), "TIMESTAMP"),
+        LIMIT(new ArgumentListTypeSignature(IntegerValue.class), "LIMIT"),
+        SCANNERCACHE(new ArgumentListTypeSignature(IntegerValue.class), "SCANNER_CACHE"),
+        VERSION(new ArgumentListTypeSignature(IntegerValue.class), "VERSION"),
+        WIDTH(new ArgumentListTypeSignature(IntegerValue.class), "WIDTH");
 
         private final ArgumentListTypeSignature typeSignature;
+        private final String description;
 
-        ArgType(final ArgumentListTypeSignature typeSignature) {
+        ArgType(final ArgumentListTypeSignature typeSignature, final String description) {
             this.typeSignature = typeSignature;
+            this.description = description;
         }
 
         public ArgumentListTypeSignature getTypeSignature() {
             return typeSignature;
         }
-    }
 
-    public void validateArgTypes() throws HBqlException {
-        this.validateTypes(this.allowColumns(), false);
+        public String getDescription() {
+            return this.description;
+        }
     }
 
     protected SelectStatementArgs(final ArgType argType, final GenericValue... exprs) {
-        super(argType.getTypeSignature(), exprs);
-    }
-
-    public boolean useResultData() {
-        return false;
-    }
-
-    public boolean allowColumns() {
-        return false;
+        super(argType, exprs);
     }
 }

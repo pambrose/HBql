@@ -18,14 +18,14 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.mapping;
+package org.apache.hadoop.hbase.hbql.executor;
 
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class IntegerProperty extends FamilyProperty {
+public class IntegerExecutorPoolProperty extends ExecutorPoolProperty {
 
-    public IntegerProperty(final Type type, final GenericValue arg0) {
+    public IntegerExecutorPoolProperty(final Type type, final GenericValue arg0) {
         super(type, arg0);
     }
 

@@ -29,6 +29,11 @@ import java.util.Map;
 
 public class QueryExecutorPoolManager {
 
+    public static int defaultMaxPoolSize = 10;
+    public static int defaultThreadCount = 5;
+    public static int defaultQueueSize = 25;
+    public static boolean defaultThreadsReadResults = true;
+
     private static Map<String, ExecutorPool> executorPoolMap = Maps.newConcurrentHashMap();
 
     private static Map<String, ExecutorPool> getExecutorPoolMap() {

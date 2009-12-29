@@ -18,16 +18,15 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.executor.property;
+package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.mapping.FamilyProperty;
 
-public class MaxPoolSizeProperty extends FamilyProperty {
+public class IntegerFamilyProperty extends FamilyProperty {
 
-    public MaxPoolSizeProperty(final GenericValue arg0) {
-        super(Type.MAXVERSIONS, arg0);
+    public IntegerFamilyProperty(final Type type, final GenericValue arg0) {
+        super(type, arg0);
     }
 
     public int getValue() throws HBqlException {

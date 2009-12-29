@@ -30,14 +30,14 @@ public class FamilyDefinition {
     private final String familyName;
     private final List<FamilyProperty> mappingPropertyList;
 
-    private IntegerProperty maxVersions = null;
+    private IntegerFamilyProperty maxVersions = null;
+    private IntegerFamilyProperty mapFileIndexInterval = null;
+    private IntegerFamilyProperty ttl = null;
+    private IntegerFamilyProperty blockSize = null;
+    private BooleanFamilyProperty blockCacheEnabled = null;
+    private BooleanFamilyProperty bloomFilterEnabled = null;
+    private BooleanFamilyProperty inMemoryEnabled = null;
     private CompressionTypeProperty compressionType = null;
-    private BooleanProperty inMemory = null;
-    private BooleanProperty blockCache = null;
-    private IntegerProperty blockSize = null;
-    private IntegerProperty mapFileIndexInterval = null;
-    private IntegerProperty ttl = null;
-    private BooleanProperty bloomFilter = null;
 
     public FamilyDefinition(final String familyName, final List<FamilyProperty> mappingPropertyList) {
         this.familyName = familyName;
@@ -60,20 +60,20 @@ public class FamilyDefinition {
 
         if (this.maxVersions != null)
             columnDesc.setMaxVersions(this.maxVersions.getValue());
-        if (this.compressionType != null)
-            columnDesc.setCompressionType(this.compressionType.getValue());
-        if (this.inMemory != null)
-            columnDesc.setInMemory(this.inMemory.getValue());
-        if (this.blockCache != null)
-            columnDesc.setBlockCacheEnabled(this.blockCache.getValue());
-        if (this.blockSize != null)
-            columnDesc.setBlocksize(this.blockSize.getValue());
         if (this.mapFileIndexInterval != null)
             columnDesc.setMapFileIndexInterval(this.mapFileIndexInterval.getValue());
         if (this.ttl != null)
             columnDesc.setTimeToLive(this.ttl.getValue());
-        if (this.bloomFilter != null)
-            columnDesc.setBloomfilter(this.bloomFilter.getValue());
+        if (this.blockSize != null)
+            columnDesc.setBlocksize(this.blockSize.getValue());
+        if (this.blockCacheEnabled != null)
+            columnDesc.setBlockCacheEnabled(this.blockCacheEnabled.getValue());
+        if (this.inMemoryEnabled != null)
+            columnDesc.setInMemory(this.inMemoryEnabled.getValue());
+        if (this.bloomFilterEnabled != null)
+            columnDesc.setBloomfilter(this.bloomFilterEnabled.getValue());
+        if (this.compressionType != null)
+            columnDesc.setCompressionType(this.compressionType.getValue());
 
         return columnDesc;
     }
@@ -95,38 +95,38 @@ public class FamilyDefinition {
 
             mappingProperty.validate();
 
-            switch (mappingProperty.getPropertyType()) {
+            switch (mappingProperty.getEnumType()) {
 
                 case MAXVERSIONS:
-                    this.maxVersions = (IntegerProperty)this.validateProperty(this.maxVersions, mappingProperty);
+                    this.maxVersions = (IntegerFamilyProperty)this.validateProperty(this.maxVersions, mappingProperty);
+                    break;
+
+                case MAPFILEINDEXINTERVAL:
+                    this.mapFileIndexInterval = (IntegerFamilyProperty)this.validateProperty(this.mapFileIndexInterval, mappingProperty);
+                    break;
+
+                case TTL:
+                    this.ttl = (IntegerFamilyProperty)this.validateProperty(this.ttl, mappingProperty);
+                    break;
+
+                case BLOCKSIZE:
+                    this.blockSize = (IntegerFamilyProperty)this.validateProperty(this.blockSize, mappingProperty);
+                    break;
+
+                case BLOCKCACHEENABLED:
+                    this.blockCacheEnabled = (BooleanFamilyProperty)this.validateProperty(this.blockCacheEnabled, mappingProperty);
+                    break;
+
+                case INMEMORY:
+                    this.inMemoryEnabled = (BooleanFamilyProperty)this.validateProperty(this.inMemoryEnabled, mappingProperty);
+                    break;
+
+                case BLOOMFILTER:
+                    this.bloomFilterEnabled = (BooleanFamilyProperty)this.validateProperty(this.bloomFilterEnabled, mappingProperty);
                     break;
 
                 case COMPRESSIONTYPE:
                     this.compressionType = (CompressionTypeProperty)this.validateProperty(this.compressionType, mappingProperty);
-                    break;
-
-                case INMEMORY:
-                    this.inMemory = (BooleanProperty)this.validateProperty(this.inMemory, mappingProperty);
-                    break;
-
-                case BLOCKCACHE:
-                    this.blockCache = (BooleanProperty)this.validateProperty(this.blockCache, mappingProperty);
-                    break;
-
-                case BLOCKSIZE:
-                    this.blockSize = (IntegerProperty)this.validateProperty(this.blockSize, mappingProperty);
-                    break;
-
-                case MAPFILEINDEXINTERVAL:
-                    this.mapFileIndexInterval = (IntegerProperty)this.validateProperty(this.mapFileIndexInterval, mappingProperty);
-                    break;
-
-                case TTL:
-                    this.ttl = (IntegerProperty)this.validateProperty(this.ttl, mappingProperty);
-                    break;
-
-                case BLOOMFILTER:
-                    this.bloomFilter = (BooleanProperty)this.validateProperty(this.bloomFilter, mappingProperty);
                     break;
             }
         }

@@ -18,45 +18,39 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.statement.args;
+package org.apache.expreval.expr;
 
-import org.apache.expreval.expr.ExpressionProperty;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-import java.io.Serializable;
+public abstract class ExpressionProperty extends MultipleExpressionContext {
 
-public class ColumnWidth extends ExpressionProperty implements Serializable {
+    private final PropertyType propertyType;
 
-    private final boolean widthSpecified;
-    private int width = -1;
-
-    public ColumnWidth() {
-        this(null);
+    public ExpressionProperty(final PropertyType propertyType, final GenericValue... exprs) {
+        super(propertyType.getTypeSignature(), exprs);
+        this.propertyType = propertyType;
     }
 
-    public ColumnWidth(final GenericValue val) {
-        super(SelectStatementArgs.ArgType.WIDTH, val);
-        this.widthSpecified = val != null;
+    // This is for DefaultArg
+    public ExpressionProperty(final ArgumentListTypeSignature argumentListTypeSignature, final GenericValue expr) {
+        super(argumentListTypeSignature, expr);
+        this.propertyType = null;
     }
 
-    public boolean isWidthSpecified() {
-        return this.widthSpecified;
+    public PropertyType getPropertyType() {
+        return this.propertyType;
     }
 
-    public int getWidth() {
-        return this.width;
+    public boolean useResultData() {
+        return false;
     }
 
-    public String asString() {
-        return (this.isWidthSpecified() ? "WIDTH " + this.getGenericValue(0).asString() : "");
+    public boolean allowColumns() {
+        return false;
     }
 
     public void validate() throws HBqlException {
-        if (this.isWidthSpecified()) {
-            this.width = ((Number)this.evaluateConstant(0, false)).intValue();
-            if (this.getWidth() <= 0)
-                throw new HBqlException("Invalid column width: " + this.getWidth());
-        }
+        this.validateTypes(this.allowColumns(), false);
     }
 }

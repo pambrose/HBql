@@ -21,13 +21,13 @@
 package org.apache.hadoop.hbase.hbql.statement.args;
 
 import org.apache.expreval.expr.ArgumentListTypeSignature;
-import org.apache.expreval.expr.MultipleExpressionContext;
+import org.apache.expreval.expr.ExpressionProperty;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.io.Serializable;
 
-public class DefaultArg extends MultipleExpressionContext implements Serializable {
+public class DefaultArg extends ExpressionProperty implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -45,33 +45,16 @@ public class DefaultArg extends MultipleExpressionContext implements Serializabl
         this.getDefaultValue();
     }
 
+    private boolean isComputed() {
+        return this.computed;
+    }
+
     public void reset() {
         this.computed = false;
         this.value = null;
     }
 
-    private boolean isComputed() {
-        return this.computed;
-    }
-
-    public String asString() {
-        return this.getGenericValue(0).asString();
-    }
-
-    public boolean useResultData() {
-        return false;
-    }
-
-    public boolean allowColumns() {
-        return false;
-    }
-
-    private void validate() throws HBqlException {
-        this.validateTypes(this.allowColumns(), false);
-    }
-
     public Object getDefaultValue() throws HBqlException {
-
         if (!this.isComputed()) {
             synchronized (this) {
                 if (!this.isComputed()) {
@@ -82,5 +65,9 @@ public class DefaultArg extends MultipleExpressionContext implements Serializabl
             }
         }
         return this.value;
+    }
+
+    public String asString() {
+        return this.getGenericValue(0).asString();
     }
 }

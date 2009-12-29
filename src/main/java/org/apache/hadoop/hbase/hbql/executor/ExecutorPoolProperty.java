@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.mapping;
+package org.apache.hadoop.hbase.hbql.executor;
 
 import org.apache.expreval.expr.ArgumentListTypeSignature;
 import org.apache.expreval.expr.ExpressionProperty;
@@ -27,18 +27,14 @@ import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.IntegerValue;
 
-public abstract class FamilyProperty extends ExpressionProperty {
+public abstract class ExecutorPoolProperty extends ExpressionProperty {
 
     public static enum Type implements PropertyType {
 
-        MAXVERSIONS(new ArgumentListTypeSignature(IntegerValue.class), "MAX_VERSIONS"),
-        MAPFILEINDEXINTERVAL(new ArgumentListTypeSignature(IntegerValue.class), "MAP_FILE_INDEX_INTERVAL"),
-        TTL(new ArgumentListTypeSignature(IntegerValue.class), "TTL"),
-        INMEMORY(new ArgumentListTypeSignature(BooleanValue.class), "IN_MEMORY"),
-        BLOCKSIZE(new ArgumentListTypeSignature(IntegerValue.class), "BLOCK_SIZE"),
-        BLOCKCACHEENABLED(new ArgumentListTypeSignature(BooleanValue.class), "BLOCK_CACHE"),
-        BLOOMFILTER(new ArgumentListTypeSignature(BooleanValue.class), "BLOOM_FILTER"),
-        COMPRESSIONTYPE(new ArgumentListTypeSignature(), "COMPRESSION_TYPE");
+        MAXPOOLSIZE(new ArgumentListTypeSignature(IntegerValue.class), "MAX_POOL_SIZE"),
+        THREADCOUNT(new ArgumentListTypeSignature(IntegerValue.class), "THREAD_COUNT"),
+        THREADSREADRESULTS(new ArgumentListTypeSignature(BooleanValue.class), "THREADS_READ_RESULTS"),
+        QUEUESIZE(new ArgumentListTypeSignature(IntegerValue.class), "QUEUE_SIZE");
 
         private final ArgumentListTypeSignature typeSignature;
         private final String description;
@@ -57,7 +53,7 @@ public abstract class FamilyProperty extends ExpressionProperty {
         }
     }
 
-    protected FamilyProperty(final Type type, final GenericValue... exprs) {
+    protected ExecutorPoolProperty(final Type type, final GenericValue... exprs) {
         super(type, exprs);
     }
 

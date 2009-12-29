@@ -91,7 +91,7 @@ public class KeyRange extends SelectStatementArgs {
         return this.getKeyRangeType() == RangeType.SINGLE;
     }
 
-    public void validateArgTypes() throws HBqlException {
+    public void validate() throws HBqlException {
         this.validateTypes(this.allowColumns(), this.isSingleKey());
     }
 

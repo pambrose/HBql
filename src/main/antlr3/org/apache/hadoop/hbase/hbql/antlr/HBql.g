@@ -64,8 +64,8 @@ import org.apache.hadoop.hbase.hbql.parser.*;
 import org.apache.hadoop.hbase.hbql.statement.*;
 import org.apache.hadoop.hbase.hbql.statement.args.*;
 import org.apache.hadoop.hbase.hbql.statement.select.*;
+import org.apache.hadoop.hbase.hbql.executor.*;
 import org.apache.hadoop.hbase.hbql.mapping.*;
-import org.apache.hadoop.hbase.hbql.mapping.property.*;
 
 import org.apache.expreval.expr.*;
 import org.apache.expreval.expr.node.*;
@@ -140,22 +140,22 @@ options {backtrack=true;}
 					 		{retval = new DescribeIndexForMappingStatement($t.text, $t2.text);}
 	| keyDESCRIBE keyINDEX t=simpleId keyON keyTABLE t2=simpleId
 					 		{retval = new DescribeIndexForTableStatement($t.text, $t2.text);}
-	| keyCREATE keyQUERY? keyEXECUTOR keyPOOL t=simpleId executorPropertyList?  p=pred?
-							{retval = new CreateQueryExecutorPoolStatement($p.retval, $t.text, new QueryExecutorPoolArgs($ps.retval, $tc.retval, $trc.retval, $qs.retval));}
+	| keyCREATE keyQUERY? keyEXECUTOR keyPOOL t=simpleId executorPoolPropertyList?  p=pred?
+							{retval = new CreateQueryExecutorPoolStatement($p.retval, new QueryExecutorPoolDefinition($t.text, $qs.retval));}
 	| keyDROP keyQUERY? keyEXECUTOR keyPOOL t=simpleId p=pred?
 							{retval = new DropQueryExecutorPoolStatement($p.retval, $t.text);}
 	;
 
-executorPropertyList returns [List<ExecutorProperty> retval]
+executorPoolPropertyList returns [List<ExecutorPoolProperty> retval]
 @init {retval = Lists.newArrayList();}
-	: LPAREN a1=executorProperty {retval.add($a1.retval);} (COMMA a2=executorProperty {retval.add($a2.retval);})* RPAREN;
+	: LPAREN a1=executorPoolProperty {retval.add($a1.retval);} (COMMA a2=executorPoolProperty {retval.add($a2.retval);})* RPAREN;
 
-executorProperty returns [ExecutorProperty retval]
+executorPoolProperty returns [ExecutorPoolProperty retval]
 options {backtrack=true;}	
-	: keyMAX_POOL_SIZE COLON v=exprValue		{retval = new IntegerProperty($v.retval);}
-	| keyTHREAD_COUNT COLON v=exprValue		{retval = new IntegerProperty($v.retval);}
-	| keyTHREADS_READ_RESULTS COLON v=exprValue	{retval = new BooleanProperty($v.retval);}
-	| keyQUEUE_SIZE COLON v=exprValue		{retval = new IntegerProperty($v.retval);}
+	: keyMAX_POOL_SIZE COLON v=exprValue		{retval = new IntegerExecutorPoolProperty($v.retval);}
+	| keyTHREAD_COUNT COLON v=exprValue		{retval = new IntegerExecutorPoolProperty($v.retval);}
+	| keyTHREADS_READ_RESULTS COLON v=exprValue	{retval = new BooleanExecutorPoolProperty($v.retval);}
+	| keyQUEUE_SIZE COLON v=exprValue		{retval = new IntegerExecutorPoolProperty($v.retval);}
 	;
 
 indexColumnList returns [List<String> retval]
@@ -214,16 +214,15 @@ familyPropertyList returns [List<FamilyProperty> retval]
 	: a1=familyProperty {retval.add($a1.retval);} (COMMA a2=familyProperty {retval.add($a2.retval);})*;
 	
 familyProperty returns [FamilyProperty retval]
-//options {memoize=true;}	
 options {backtrack=true;}	
-	: keyMAX_VERSIONS COLON v=exprValue		{retval = new IntegerProperty(FamilyProperty.Type.MAXVERSIONS, $v.retval);}
+	: keyMAX_VERSIONS COLON v=exprValue		{retval = new IntegerFamilyProperty(FamilyProperty.Type.MAXVERSIONS, $v.retval);}
+	| keyMAP_FILE_INDEX_INTERVAL COLON v=exprValue	{retval = new IntegerFamilyProperty(FamilyProperty.Type.MAPFILEINDEXINTERVAL, $v.retval);}
+	| keyTTL COLON v=exprValue			{retval = new IntegerFamilyProperty(FamilyProperty.Type.TTL, $v.retval);}
+	| keyBLOCK_SIZE COLON v=exprValue		{retval = new IntegerFamilyProperty(FamilyProperty.Type.BLOCKSIZE, $v.retval);}
+	| keyBLOCK_CACHE_ENABLED COLON v=exprValue	{retval = new BooleanFamilyProperty(FamilyProperty.Type.BLOCKCACHEENABLED, $v.retval);}
+	| keyIN_MEMORY COLON v=exprValue		{retval = new BooleanFamilyProperty(FamilyProperty.Type.INMEMORY, $v.retval);}
+	| keyBLOOM_FILTER COLON v=exprValue		{retval = new BooleanFamilyProperty(FamilyProperty.Type.BLOOMFILTER, $v.retval);}
 	| keyCOMPRESSION_TYPE COLON c=compressionType	{retval = new CompressionTypeProperty($c.text);}
-	| keyIN_MEMORY COLON v=exprValue		{retval = new BooleanProperty(FamilyProperty.Type.INMEMORY, $v.retval);}
-	| keyBLOCK_CACHE_ENABLED COLON v=exprValue	{retval = new IntegerProperty(FamilyProperty.Type.BLOCKCACHE, $v.retval);}
-	| keyBLOCK_SIZE COLON v=exprValue		{retval = new IntegerProperty(FamilyProperty.Type.BLOCKSIZE, $v.retval);}
-	| keyMAP_FILE_INDEX_INTERVAL COLON v=exprValue	{retval = new IntegerProperty(FamilyProperty.Type.MAPFILEINDEXINTERVAL, $v.retval);}
-	| keyTTL COLON v=exprValue			{retval = new IntegerProperty(FamilyProperty.Type.TTL, $v.retval);}
-	| keyBLOOM_FILTER COLON v=exprValue		{retval = new BooleanProperty(FamilyProperty.Type.BLOOMFILTER, $v.retval);}
 	;
 
 compressionType

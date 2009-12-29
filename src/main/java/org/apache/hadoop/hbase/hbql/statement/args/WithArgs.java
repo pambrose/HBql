@@ -105,13 +105,13 @@ public class WithArgs implements Serializable {
             this.getKeyRangeArgs().validate();
 
         if (this.getTimestampArgs() != null)
-            this.getTimestampArgs().validateArgTypes();
+            this.getTimestampArgs().validate();
 
         if (this.getVersionArgs() != null)
-            this.getVersionArgs().validateArgTypes();
+            this.getVersionArgs().validate();
 
         if (this.getLimitArgs() != null)
-            this.getLimitArgs().validateArgTypes();
+            this.getLimitArgs().validate();
     }
 
 
