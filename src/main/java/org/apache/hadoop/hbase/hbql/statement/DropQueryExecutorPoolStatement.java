@@ -53,6 +53,6 @@ public class DropQueryExecutorPoolStatement extends BasicStatement implements Co
 
 
     public static String usage() {
-        return "DROP [QUERY] EXECUTOR POOL pool_name [IF boolean_expression]";
+        return "DROP [QUERY] EXECUTOR POOL pool_name [IF bool_expr]";
     }
 }

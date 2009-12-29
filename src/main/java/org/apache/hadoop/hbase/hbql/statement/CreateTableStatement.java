@@ -54,6 +54,6 @@ public class CreateTableStatement extends BasicStatement implements ConnectionSt
     }
 
     public static String usage() {
-        return "CREATE TABLE table_name (family_definition_list) [IF boolean_expression]";
+        return "CREATE TABLE table_name (family_definition_list) [IF bool_expr]";
     }
 }

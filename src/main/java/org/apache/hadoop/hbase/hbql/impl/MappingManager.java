@@ -43,6 +43,10 @@ public class MappingManager {
         this.connection = connection;
     }
 
+    public void clear() {
+        this.getMappingMap().clear();
+    }
+
     public void validatePersistentMetadata() throws HBqlException {
 
         String sql = "CREATE TEMP MAPPING system_mappings(mapping_name KEY, f1(mapping_obj object alias mapping_obj))";
@@ -67,10 +71,8 @@ public class MappingManager {
 
         final String sql = "SELECT mapping_obj FROM system_mappings";
         final List<HRecord> recs = this.getConnection().executeQueryAndFetch(sql);
-
         for (final HRecord rec : recs)
             names.add((TableMapping)rec.getCurrentValue("mapping_obj"));
-
         return names;
     }
 

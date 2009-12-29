@@ -44,6 +44,6 @@ public class DisableTableStatement extends TableStatement {
     }
 
     public static String usage() {
-        return "DISABLE TABLE table_name [IF boolean_expression]";
+        return "DISABLE TABLE table_name [IF bool_expr]";
     }
 }

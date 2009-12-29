@@ -45,6 +45,6 @@ public class DropIndexForTableStatement extends TableStatement implements Connec
     }
 
     public static String usage() {
-        return "DROP INDEX index_name ON TABLE table_name [IF boolean_expression]";
+        return "DROP INDEX index_name ON TABLE table_name [IF bool_expr]";
     }
 }

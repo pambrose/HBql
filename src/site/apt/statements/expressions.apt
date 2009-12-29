@@ -19,9 +19,9 @@ Expressions
 
 * Value expressions
 
-    ** IF boolean_value THEN value ELSE value END
+    ** IF bool_expr THEN value ELSE value END
 
-    ** CASE ( WHEN boolean_value THEN value [, ...] ) ELSE value END
+    ** CASE ( WHEN bool_expr THEN value [, ...] ) ELSE value END
 
     ** A built-in {{{./functions.html}function}}
 

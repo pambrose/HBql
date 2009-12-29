@@ -57,6 +57,6 @@ public class AlterTableStatement extends BasicStatement implements ConnectionSta
     }
 
     public static String usage() {
-        return "ALTER TABLE table_name alter_action_list [IF boolean_expression]";
+        return "ALTER TABLE table_name alter_action_list [IF bool_expr]";
     }
 }

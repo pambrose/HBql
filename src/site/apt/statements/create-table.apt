@@ -10,20 +10,20 @@ CREATE TABLE
 
 ---------------------------
 
-CREATE TABLE table_name '(' family_description [, ...] ')'  [IF boolean_condition]
+CREATE TABLE table_name '(' family_description [, ...] ')'  [IF bool_expr]
 
 family_description:
     family_name '(' [family_property [, ...]] ')'
 
 family_property:
-    MAX_VERSIONS ':' integer_value
-	| BLOOM_FILTER ':' boolean_value
-	| BLOCK_SIZE ':' integer_value
-	| BLOCK_CACHE_ENABLED ':' boolean_value
+    MAX_VERSIONS ':' int_expr
+	| BLOOM_FILTER ':' bool_expr
+	| BLOCK_SIZE ':' int_expr
+	| BLOCK_CACHE_ENABLED ':' bool_expr
 	| COMPRESSION_TYPE ':' ( GZ | LZO | NONE )	
-	| IN_MEMORY ':' boolean_value
-	| MAP_FILE_INDEX_INTERVAL ':' integer_value
-	| TTL ':' integer_value
+	| IN_MEMORY ':' bool_expr
+	| MAP_FILE_INDEX_INTERVAL ':' int_expr
+	| TTL ':' int_expr
 
 ---------------------------
 

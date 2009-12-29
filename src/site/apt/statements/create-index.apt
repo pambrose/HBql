@@ -10,7 +10,7 @@ CREATE INDEX
 
 ---------------------------
 
-CREATE INDEX index_name '(' column_name ')' ON [MAPPING] mapping_name [includeColumns] [IF boolean_condition]
+CREATE INDEX index_name '(' column_name ')' ON [MAPPING] mapping_name [includeColumns] [IF bool_expr]
 
 includeColumns:
     INCLUDE '(' column_name [, ...] ')'

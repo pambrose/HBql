@@ -244,6 +244,6 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
     }
 
     public static String usage() {
-        return "DELETE delete_item_list FROM [MAPPING] mapping_name with_clause [IF boolean_expression]";
+        return "DELETE delete_item_list FROM [MAPPING] mapping_name with_clause [IF bool_expr]";
     }
 }

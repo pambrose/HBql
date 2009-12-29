@@ -10,7 +10,7 @@ INSERT
 ---------------------------
 
 INSERT INTO [MAPPING] mapping_name '(' column_reference [, ...] ')'
-    { VALUES ( { expression | DEFAULT } [, ...] ) | query }  [IF boolean_condition]
+    { VALUES ( { expression | DEFAULT } [, ...] ) | query }  [IF bool_expr]
 
 column_reference:
     family_name ':' column_name

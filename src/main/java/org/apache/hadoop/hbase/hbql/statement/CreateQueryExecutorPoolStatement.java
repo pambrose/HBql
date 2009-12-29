@@ -60,6 +60,6 @@ public class CreateQueryExecutorPoolStatement extends BasicStatement implements 
 
 
     public static String usage() {
-        return "CREATE [QUERY] EXECUTOR POOL pool_name (MAX_POOL_SIZE: integer_expression, THREAD_COUNT: integer_expression, THREADS_READ_RESULTS: boolean_expression, QUEUE_SIZE: integer_expression) [IF boolean_expression]";
+        return "CREATE [QUERY] EXECUTOR POOL pool_name (MAX_POOL_SIZE: int_expr, THREAD_COUNT: int_expr, THREADS_READ_RESULTS: bool_expr, QUEUE_SIZE: int_expr) [IF bool_expr]";
     }
 }

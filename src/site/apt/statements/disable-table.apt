@@ -10,7 +10,7 @@ DISABLE TABLE
 
 ---------------------------
 
-DISABLE TABLE table_name [IF boolean_condition]
+DISABLE TABLE table_name [IF bool_expr]
 
 ---------------------------
 

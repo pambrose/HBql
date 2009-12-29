@@ -39,6 +39,6 @@ public class DropMappingStatement extends StatementContext implements Connection
     }
 
     public static String usage() {
-        return "DROP MAPPING mapping_name [IF boolean_expression]";
+        return "DROP MAPPING mapping_name [IF bool_expr]";
     }
 }

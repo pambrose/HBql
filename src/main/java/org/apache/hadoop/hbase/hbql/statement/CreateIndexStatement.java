@@ -140,6 +140,6 @@ public class CreateIndexStatement extends MappingStatement implements Connection
     }
 
     public static String usage() {
-        return "CREATE INDEX index_name ON [MAPPING] mapping_name (column) INCLUDE (column_list) [IF boolean_expression]";
+        return "CREATE INDEX index_name ON [MAPPING] mapping_name (column) INCLUDE (column_list) [IF bool_expr]";
     }
 }

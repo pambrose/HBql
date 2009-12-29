@@ -47,6 +47,6 @@ public class DropIndexForMappingStatement extends MappingStatement implements Co
     }
 
     public static String usage() {
-        return "DROP INDEX index_name ON [MAPPING] mapping_name [IF boolean_expression]";
+        return "DROP INDEX index_name ON [MAPPING] mapping_name [IF bool_expr]";
     }
 }

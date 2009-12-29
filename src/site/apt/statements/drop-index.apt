@@ -10,7 +10,7 @@ DROP INDEX
 
 ---------------------------
 
-DROP INDEX index_name {ON [MAPPING] mapping_name | ON TABLE table_name} [IF boolean_condition]
+DROP INDEX index_name {ON [MAPPING] mapping_name | ON TABLE table_name} [IF bool_expr]
 
 ---------------------------
 

@@ -10,7 +10,9 @@ CREATE QUERY EXECUTOR POOL
 
 ---------------------------
 
-CREATE [QUERY] EXECUTOR POOL pool_name '(' MAX_POOL_SIZE ':' integer_value ',' THREAD_COUNT ':' integer_value ')' [IF boolean_condition]
+CREATE [QUERY] EXECUTOR POOL pool_name '(' executor_args ')' [IF bool_expr]
+
+executor_args:  MAX_POOL_SIZE ':' int_expr ',' THREAD_COUNT ':' int_expr',' THREADS_READ_RESULTS ':' bool_expr',' QUEUE_SIZE ':' int_expr
 
 ---------------------------
 

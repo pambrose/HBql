@@ -10,7 +10,7 @@ DROP MAPPING
 
 ---------------------------
 
-DROP MAPPING mapping_name [IF boolean_condition]
+DROP MAPPING mapping_name [IF bool_expr]
 
 ---------------------------
 

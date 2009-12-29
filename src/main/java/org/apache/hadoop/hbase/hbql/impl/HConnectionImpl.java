@@ -97,6 +97,12 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void reset() {
+        try {
+            this.getMappingManager().clear();
+        }
+        catch (HBqlException e) {
+            e.printStackTrace();
+        }
         this.setQueryExecutorPoolName(null);
         this.setQueryExecutor(null);
     }

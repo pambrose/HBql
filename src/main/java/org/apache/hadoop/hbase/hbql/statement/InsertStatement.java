@@ -263,6 +263,6 @@ public class InsertStatement extends StatementContext implements ParameterStatem
     }
 
     public static String usage() {
-        return "INSERT INTO [MAPPING] mapping_name (column_name_list) insert_values [IF boolean_expression]";
+        return "INSERT INTO [MAPPING] mapping_name (column_name_list) insert_values [IF bool_expr]";
     }
 }

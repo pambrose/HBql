@@ -37,6 +37,6 @@ public class DropTableStatement extends TableStatement {
     }
 
     public static String usage() {
-        return "DROP TABLE table_name [IF boolean_expression]";
+        return "DROP TABLE table_name [IF bool_expr]";
     }
 }

@@ -9,7 +9,7 @@ ENABLE TABLE
 
 ---------------------------
 
-ENABLE TABLE table_name [IF boolean_condition]
+ENABLE TABLE table_name [IF bool_expr]
 
 ---------------------------
 

@@ -10,7 +10,7 @@ ALTER TABLE
 
 ---------------------------
 
-ALTER TABLE table_name alter_action [, ...] [IF boolean_condition]
+ALTER TABLE table_name alter_action [, ...] [IF bool_expr]
 
 alter_action:
     DROP [FAMILY] family_name
