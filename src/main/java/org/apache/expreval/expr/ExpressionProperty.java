@@ -53,4 +53,12 @@ public abstract class ExpressionProperty extends MultipleExpressionContext {
     public void validate() throws HBqlException {
         this.validateTypes(this.allowColumns(), false);
     }
+
+    public int getIntegerValue() throws HBqlException {
+        return ((Number)this.evaluateConstant(0, false)).intValue();
+    }
+
+    public boolean getBooleanValue() throws HBqlException {
+        return ((Boolean)this.evaluateConstant(0, false));
+    }
 }

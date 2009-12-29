@@ -27,14 +27,14 @@ import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.IntegerValue;
 
-public abstract class ExecutorPoolProperty extends ExpressionProperty {
+public class ExecutorPoolProperty extends ExpressionProperty {
 
     public static enum Type implements PropertyType {
 
-        MAXPOOLSIZE(new ArgumentListTypeSignature(IntegerValue.class), "MAX_POOL_SIZE"),
-        THREADCOUNT(new ArgumentListTypeSignature(IntegerValue.class), "THREAD_COUNT"),
-        THREADSREADRESULTS(new ArgumentListTypeSignature(BooleanValue.class), "THREADS_READ_RESULTS"),
-        QUEUESIZE(new ArgumentListTypeSignature(IntegerValue.class), "QUEUE_SIZE");
+        MAX_POOL_SIZE(new ArgumentListTypeSignature(IntegerValue.class), "MAX_POOL_SIZE"),
+        THREAD_COUNT(new ArgumentListTypeSignature(IntegerValue.class), "THREAD_COUNT"),
+        THREADS_READ_RESULTS(new ArgumentListTypeSignature(BooleanValue.class), "THREADS_READ_RESULTS"),
+        QUEUE_SIZE(new ArgumentListTypeSignature(IntegerValue.class), "QUEUE_SIZE");
 
         private final ArgumentListTypeSignature typeSignature;
         private final String description;
@@ -53,8 +53,8 @@ public abstract class ExecutorPoolProperty extends ExpressionProperty {
         }
     }
 
-    protected ExecutorPoolProperty(final Type type, final GenericValue... exprs) {
-        super(type, exprs);
+    public ExecutorPoolProperty(final String text, final GenericValue arg0) {
+        super(ExecutorPoolProperty.Type.valueOf(text.toUpperCase()), arg0);
     }
 
     public Type getEnumType() {

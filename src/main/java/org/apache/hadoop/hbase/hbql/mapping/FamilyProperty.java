@@ -27,18 +27,18 @@ import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.IntegerValue;
 
-public abstract class FamilyProperty extends ExpressionProperty {
+public class FamilyProperty extends ExpressionProperty {
 
     public static enum Type implements PropertyType {
 
-        MAXVERSIONS(new ArgumentListTypeSignature(IntegerValue.class), "MAX_VERSIONS"),
-        MAPFILEINDEXINTERVAL(new ArgumentListTypeSignature(IntegerValue.class), "MAP_FILE_INDEX_INTERVAL"),
+        MAX_VERSIONS(new ArgumentListTypeSignature(IntegerValue.class), "MAX_VERSIONS"),
+        MAP_FILE_INDEX_INTERVAL(new ArgumentListTypeSignature(IntegerValue.class), "MAP_FILE_INDEX_INTERVAL"),
         TTL(new ArgumentListTypeSignature(IntegerValue.class), "TTL"),
-        INMEMORY(new ArgumentListTypeSignature(BooleanValue.class), "IN_MEMORY"),
-        BLOCKSIZE(new ArgumentListTypeSignature(IntegerValue.class), "BLOCK_SIZE"),
-        BLOCKCACHEENABLED(new ArgumentListTypeSignature(BooleanValue.class), "BLOCK_CACHE"),
-        BLOOMFILTER(new ArgumentListTypeSignature(BooleanValue.class), "BLOOM_FILTER"),
-        COMPRESSIONTYPE(new ArgumentListTypeSignature(), "COMPRESSION_TYPE");
+        IN_MEMORY(new ArgumentListTypeSignature(BooleanValue.class), "IN_MEMORY"),
+        BLOCK_SIZE(new ArgumentListTypeSignature(IntegerValue.class), "BLOCK_SIZE"),
+        BLOCK_CACHE_ENABLED(new ArgumentListTypeSignature(BooleanValue.class), "BLOCK_CACHE_ENABLED"),
+        BLOOM_FILTER(new ArgumentListTypeSignature(BooleanValue.class), "BLOOM_FILTER"),
+        COMPRESSION_TYPE(new ArgumentListTypeSignature(), "COMPRESSION_TYPE");
 
         private final ArgumentListTypeSignature typeSignature;
         private final String description;
@@ -57,7 +57,11 @@ public abstract class FamilyProperty extends ExpressionProperty {
         }
     }
 
-    protected FamilyProperty(final Type type, final GenericValue... exprs) {
+    public FamilyProperty(final String text, final GenericValue... arg0) {
+        super(FamilyProperty.Type.valueOf(text.toUpperCase()), arg0);
+    }
+
+    public FamilyProperty(final Type type, final GenericValue... exprs) {
         super(type, exprs);
     }
 

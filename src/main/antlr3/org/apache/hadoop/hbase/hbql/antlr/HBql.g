@@ -140,8 +140,8 @@ options {backtrack=true;}
 					 		{retval = new DescribeIndexForMappingStatement($t.text, $t2.text);}
 	| keyDESCRIBE keyINDEX t=simpleId keyON keyTABLE t2=simpleId
 					 		{retval = new DescribeIndexForTableStatement($t.text, $t2.text);}
-	| keyCREATE keyQUERY? keyEXECUTOR keyPOOL t=simpleId executorPoolPropertyList?  p=pred?
-							{retval = new CreateQueryExecutorPoolStatement($p.retval, new QueryExecutorPoolDefinition($t.text, $qs.retval));}
+	| keyCREATE keyQUERY? keyEXECUTOR keyPOOL t=simpleId pl=executorPoolPropertyList?  p=pred?
+							{retval = new CreateQueryExecutorPoolStatement($p.retval, new QueryExecutorPoolDefinition($t.text, $pl.retval));}
 	| keyDROP keyQUERY? keyEXECUTOR keyPOOL t=simpleId p=pred?
 							{retval = new DropQueryExecutorPoolStatement($p.retval, $t.text);}
 	;
@@ -152,10 +152,10 @@ executorPoolPropertyList returns [List<ExecutorPoolProperty> retval]
 
 executorPoolProperty returns [ExecutorPoolProperty retval]
 options {backtrack=true;}	
-	: keyMAX_POOL_SIZE COLON v=exprValue		{retval = new IntegerExecutorPoolProperty($v.retval);}
-	| keyTHREAD_COUNT COLON v=exprValue		{retval = new IntegerExecutorPoolProperty($v.retval);}
-	| keyTHREADS_READ_RESULTS COLON v=exprValue	{retval = new BooleanExecutorPoolProperty($v.retval);}
-	| keyQUEUE_SIZE COLON v=exprValue		{retval = new IntegerExecutorPoolProperty($v.retval);}
+	: k=keyMAX_POOL_SIZE COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	| k=keyTHREAD_COUNT COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	| k=keyTHREADS_READ_RESULTS COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	| k=keyQUEUE_SIZE COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
 	;
 
 indexColumnList returns [List<String> retval]
@@ -215,14 +215,14 @@ familyPropertyList returns [List<FamilyProperty> retval]
 	
 familyProperty returns [FamilyProperty retval]
 options {backtrack=true;}	
-	: keyMAX_VERSIONS COLON v=exprValue		{retval = new IntegerFamilyProperty(FamilyProperty.Type.MAXVERSIONS, $v.retval);}
-	| keyMAP_FILE_INDEX_INTERVAL COLON v=exprValue	{retval = new IntegerFamilyProperty(FamilyProperty.Type.MAPFILEINDEXINTERVAL, $v.retval);}
-	| keyTTL COLON v=exprValue			{retval = new IntegerFamilyProperty(FamilyProperty.Type.TTL, $v.retval);}
-	| keyBLOCK_SIZE COLON v=exprValue		{retval = new IntegerFamilyProperty(FamilyProperty.Type.BLOCKSIZE, $v.retval);}
-	| keyBLOCK_CACHE_ENABLED COLON v=exprValue	{retval = new BooleanFamilyProperty(FamilyProperty.Type.BLOCKCACHEENABLED, $v.retval);}
-	| keyIN_MEMORY COLON v=exprValue		{retval = new BooleanFamilyProperty(FamilyProperty.Type.INMEMORY, $v.retval);}
-	| keyBLOOM_FILTER COLON v=exprValue		{retval = new BooleanFamilyProperty(FamilyProperty.Type.BLOOMFILTER, $v.retval);}
-	| keyCOMPRESSION_TYPE COLON c=compressionType	{retval = new CompressionTypeProperty($c.text);}
+	: k=keyMAX_VERSIONS COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
+	| k=keyMAP_FILE_INDEX_INTERVAL COLON v=exprValue{retval = new FamilyProperty($k.retval, $v.retval);}
+	| k=keyTTL COLON v=exprValue			 {retval = new FamilyProperty($k.retval, $v.retval);}
+	| k=keyBLOCK_SIZE COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
+	| k=keyBLOCK_CACHE_ENABLED COLON v=exprValue	 {retval = new FamilyProperty($k.retval, $v.retval);}
+	| k=keyIN_MEMORY COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
+	| k=keyBLOOM_FILTER COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
+	| k=keyCOMPRESSION_TYPE COLON c=compressionType	 {retval = new CompressionTypeProperty($k.retval, $c.text);}
 	;
 
 compressionType
@@ -280,7 +280,7 @@ keysRangeArgs returns [KeyRangeArgs retval]
 
 rangeList returns [List<KeyRange> retval]
 @init {retval = Lists.newArrayList();}
-	: k1=keyRange {retval.add($k1.retval);} (COMMA k2=keyRange {retval.add($k2.retval);})*;
+	: kr1=keyRange {retval.add($kr1.retval);} (COMMA kr2=keyRange {retval.add($kr2.retval);})*;
 	
 keyRange returns [KeyRange retval]
 options {backtrack=true;}	
@@ -569,6 +569,23 @@ COMMENT
 
 WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();};
 
+
+// Any changes in these require a change in the ExecutorPool.Type enums
+keyMAX_POOL_SIZE returns [String retval]           : {isKeyword(input, "MAX_POOL_SIZE")}? id=ID {retval = $id.text;};
+keyQUEUE_SIZE returns [String retval]              : {isKeyword(input, "QUEUE_SIZE")}? id=ID {retval = $id.text;};
+keyTHREAD_COUNT returns [String retval]            : {isKeyword(input, "THREAD_COUNT")}? id=ID {retval = $id.text;};
+keyTHREADS_READ_RESULTS returns [String retval]    : {isKeyword(input, "THREADS_READ_RESULTS")}? id=ID {retval = $id.text;};
+
+// Any changes to these require a change in the FamilyProperty.Type enums
+keyBLOCK_CACHE_ENABLED returns [String retval]	   : {isKeyword(input, "BLOCK_CACHE_ENABLED")}? id=ID {retval = $id.text;};
+keyBLOCK_SIZE returns [String retval]              : {isKeyword(input, "BLOCK_SIZE")}? id=ID {retval = $id.text;};
+keyBLOOM_FILTER returns [String retval]            : {isKeyword(input, "BLOOM_FILTER")}? id=ID {retval = $id.text;};
+keyCOMPRESSION_TYPE returns [String retval]        : {isKeyword(input, "COMPRESSION_TYPE")}? id=ID {retval = $id.text;};
+keyIN_MEMORY returns [String retval]               : {isKeyword(input, "IN_MEMORY")}? id=ID {retval = $id.text;};
+keyMAP_FILE_INDEX_INTERVAL returns [String retval] : {isKeyword(input, "MAP_FILE_INDEX_INTERVAL")}? id=ID {retval = $id.text;};
+keyMAX_VERSIONS returns [String retval] 	   : {isKeyword(input, "MAX_VERSIONS")}? id=ID {retval = $id.text;};
+keyTTL returns [String retval]     		   : {isKeyword(input, "TTL")}? id=ID {retval = $id.text;};
+
 keyADD                          : {isKeyword(input, "ADD")}? ID;
 keyALIAS                        : {isKeyword(input, "ALIAS")}? ID;
 keyALL                          : {isKeyword(input, "ALL")}? ID;
@@ -576,12 +593,8 @@ keyALTER                        : {isKeyword(input, "ALTER")}? ID;
 keyAND                          : {isKeyword(input, "AND")}? ID;
 keyAS                           : {isKeyword(input, "AS")}? ID;
 keyBETWEEN                      : {isKeyword(input, "BETWEEN")}? ID;
-keyBLOCK_CACHE_ENABLED          : {isKeyword(input, "BLOCK_CACHE_ENABLED")}? ID;
-keyBLOCK_SIZE                   : {isKeyword(input, "BLOCK_SIZE")}? ID;
-keyBLOOM_FILTER                 : {isKeyword(input, "BLOOM_FILTER")}? ID;
 keyCASE                         : {isKeyword(input, "CASE")}? ID;
 keyCLIENT                       : {isKeyword(input, "CLIENT")}? ID;
-keyCOMPRESSION_TYPE             : {isKeyword(input, "COMPRESSION_TYPE")}? ID;
 keyCONTAINS                     : {isKeyword(input, "CONTAINS")}? ID;
 keyCREATE                       : {isKeyword(input, "CREATE")}? ID;
 keyDEFAULT                      : {isKeyword(input, "DEFAULT")}? ID;
@@ -609,7 +622,6 @@ keyINCLUDE                      : {isKeyword(input, "INCLUDE")}? ID;
 keyINDEX                        : {isKeyword(input, "INDEX")}? ID;
 keyINSERT                       : {isKeyword(input, "INSERT")}? ID;
 keyINTO                         : {isKeyword(input, "INTO")}? ID;
-keyIN_MEMORY                    : {isKeyword(input, "IN_MEMORY")}? ID;
 keyIS                           : {isKeyword(input, "IS")}? ID;
 keyKEY                          : {isKeyword(input, "KEY")}? ID;
 keyKEYS                         : {isKeyword(input, "KEYS")}? ID;
@@ -619,10 +631,7 @@ keyLIMIT                        : {isKeyword(input, "LIMIT")}? ID;
 keyLZO                          : {isKeyword(input, "LZO")}? ID;
 keyMAPPING                      : {isKeyword(input, "MAPPING")}? ID;
 keyMAPPINGS                     : {isKeyword(input, "MAPPINGS")}? ID;
-keyMAP_FILE_INDEX_INTERVAL      : {isKeyword(input, "MAP_FILE_INDEX_INTERVAL")}? ID;
 keyMAX                          : {isKeyword(input, "MAX")}? ID;
-keyMAX_POOL_SIZE                : {isKeyword(input, "MAX_POOL_SIZE")}? ID;
-keyMAX_VERSIONS                 : {isKeyword(input, "MAX_VERSIONS")}? ID;
 keyNONE                         : {isKeyword(input, "NONE")}? ID;
 keyNOT                          : {isKeyword(input, "NOT")}? ID;
 keyNULL                         : {isKeyword(input, "NULL")}? ID;
@@ -632,7 +641,6 @@ keyPARSE                        : {isKeyword(input, "PARSE")}? ID;
 keyPOOL                         : {isKeyword(input, "POOL")}? ID;
 keyPOOLS                        : {isKeyword(input, "POOLS")}? ID;
 keyQUERY	                : {isKeyword(input, "QUERY")}? ID;
-keyQUEUE_SIZE                   : {isKeyword(input, "QUEUE_SIZE")}? ID;
 keyRANGE                        : {isKeyword(input, "RANGE")}? ID;
 keySCANNER_CACHE_SIZE           : {isKeyword(input, "SCANNER_CACHE_SIZE")}? ID;
 keySELECT                       : {isKeyword(input, "SELECT")}? ID;
@@ -643,12 +651,9 @@ keyTABLE                        : {isKeyword(input, "TABLE")}? ID;
 keyTABLES                       : {isKeyword(input, "TABLES")}? ID;
 keyTEMP                         : {isKeyword(input, "TEMP")}? ID;
 keyTHEN                         : {isKeyword(input, "THEN")}? ID;
-keyTHREAD_COUNT                 : {isKeyword(input, "THREAD_COUNT")}? ID;
-keyTHREADS_READ_RESULTS         : {isKeyword(input, "THREADS_READ_RESULTS")}? ID;
 keyTIMESTAMP                    : {isKeyword(input, "TIMESTAMP")}? ID;
 keyTO                           : {isKeyword(input, "TO")}? ID;
 keyTRUE                         : {isKeyword(input, "TRUE")}? ID;
-keyTTL                          : {isKeyword(input, "TTL")}? ID;
 keyUNMAPPED                     : {isKeyword(input, "UNMAPPED")}? ID;
 keyVALUES                       : {isKeyword(input, "VALUES")}? ID;
 keyVERSION                      : {isKeyword(input, "VERSION")}? ID;

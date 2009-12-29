@@ -27,15 +27,15 @@ public class CompressionTypeProperty extends FamilyProperty {
 
     final String type;
 
-    public CompressionTypeProperty(final String type) {
-        super(Type.COMPRESSIONTYPE);
+    public CompressionTypeProperty(final String text, final String type) {
+        super(text);
         this.type = type;
     }
 
     public Compression.Algorithm getValue() throws HBqlException {
 
         try {
-            return Compression.Algorithm.valueOf(this.type);
+            return Compression.Algorithm.valueOf(this.type.toUpperCase());
         }
         catch (Exception e) {
             throw new HBqlException("Invalid compression type: " + this.type);

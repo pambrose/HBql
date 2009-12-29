@@ -30,10 +30,10 @@ public class QueryExecutorPoolDefinition {
     private final String poolName;
     private final List<ExecutorPoolProperty> executorPoolPropertyList;
 
-    private IntegerExecutorPoolProperty maxPoolSize = null;
-    private IntegerExecutorPoolProperty threadCount = null;
-    private BooleanExecutorPoolProperty threadsReadResults = null;
-    private IntegerExecutorPoolProperty queueSize = null;
+    private ExecutorPoolProperty maxPoolSize = null;
+    private ExecutorPoolProperty threadCount = null;
+    private ExecutorPoolProperty threadsReadResults = null;
+    private ExecutorPoolProperty queueSize = null;
 
     public QueryExecutorPoolDefinition(final String poolName, final List<ExecutorPoolProperty> executorPropertyList) {
         this.poolName = poolName;
@@ -67,20 +67,20 @@ public class QueryExecutorPoolDefinition {
 
             switch (executorPoolProperty.getEnumType()) {
 
-                case MAXPOOLSIZE:
-                    this.maxPoolSize = (IntegerExecutorPoolProperty)this.validateProperty(this.maxPoolSize, executorPoolProperty);
+                case MAX_POOL_SIZE:
+                    this.maxPoolSize = this.validateProperty(this.maxPoolSize, executorPoolProperty);
                     break;
 
-                case THREADCOUNT:
-                    this.threadCount = (IntegerExecutorPoolProperty)this.validateProperty(this.threadCount, executorPoolProperty);
+                case THREAD_COUNT:
+                    this.threadCount = this.validateProperty(this.threadCount, executorPoolProperty);
                     break;
 
-                case THREADSREADRESULTS:
-                    this.threadsReadResults = (BooleanExecutorPoolProperty)this.validateProperty(this.threadsReadResults, executorPoolProperty);
+                case THREADS_READ_RESULTS:
+                    this.threadsReadResults = this.validateProperty(this.threadsReadResults, executorPoolProperty);
                     break;
 
-                case QUEUESIZE:
-                    this.queueSize = (IntegerExecutorPoolProperty)this.validateProperty(this.queueSize, executorPoolProperty);
+                case QUEUE_SIZE:
+                    this.queueSize = this.validateProperty(this.queueSize, executorPoolProperty);
                     break;
             }
         }
@@ -88,28 +88,28 @@ public class QueryExecutorPoolDefinition {
 
     public int getMaxPoolSize() throws HBqlException {
         if (this.maxPoolSize != null)
-            return this.maxPoolSize.getValue();
+            return this.maxPoolSize.getIntegerValue();
         else
             return QueryExecutorPoolManager.defaultMaxPoolSize;
     }
 
     public int getThreadCount() throws HBqlException {
         if (this.threadCount != null)
-            return this.threadCount.getValue();
+            return this.threadCount.getIntegerValue();
         else
             return QueryExecutorPoolManager.defaultThreadCount;
     }
 
     public boolean getThreadsReadResults() throws HBqlException {
         if (this.threadsReadResults != null)
-            return this.threadsReadResults.getValue();
+            return this.threadsReadResults.getBooleanValue();
         else
             return QueryExecutorPoolManager.defaultThreadsReadResults;
     }
 
     public int getQueueSize() throws HBqlException {
         if (this.queueSize != null)
-            return this.queueSize.getValue();
+            return this.queueSize.getIntegerValue();
         else
             return QueryExecutorPoolManager.defaultQueueSize;
     }
