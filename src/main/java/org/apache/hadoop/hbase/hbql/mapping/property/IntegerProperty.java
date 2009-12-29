@@ -23,13 +23,13 @@ package org.apache.hadoop.hbase.hbql.mapping.property;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class BlockCacheProperty extends FamilyProperty {
+public class IntegerProperty extends FamilyProperty {
 
-    public BlockCacheProperty(final GenericValue arg0) {
-        super(Type.BLOCKCACHE, arg0);
+    public IntegerProperty(final Type type, final GenericValue arg0) {
+        super(type, arg0);
     }
 
-    public boolean getValue() throws HBqlException {
-        return ((Boolean)this.evaluateConstant(0, false));
+    public int getValue() throws HBqlException {
+        return ((Number)this.evaluateConstant(0, false)).intValue();
     }
 }

@@ -31,14 +31,14 @@ public abstract class FamilyProperty extends MultipleExpressionContext {
 
     public static enum Type {
 
-        TTL(new ArgumentListTypeSignature(IntegerValue.class), "TTL"),
-        MAPFILEINDEXINTERVAL(new ArgumentListTypeSignature(IntegerValue.class), "INDEX:INTERVAL"),
-        INMEMORY(new ArgumentListTypeSignature(BooleanValue.class), "IN_MEMORY"),
+        MAXVERSIONS(new ArgumentListTypeSignature(IntegerValue.class), "MAX_VERSIONS"),
         COMPRESSIONTYPE(new ArgumentListTypeSignature(), "COMPRESSION_TYPE"),
+        INMEMORY(new ArgumentListTypeSignature(BooleanValue.class), "IN_MEMORY"),
         BLOCKCACHE(new ArgumentListTypeSignature(BooleanValue.class), "BLOCK_CACHE"),
         BLOCKSIZE(new ArgumentListTypeSignature(IntegerValue.class), "BLOCK_SIZE"),
-        BLOOMFILTER(new ArgumentListTypeSignature(BooleanValue.class), "BLOOM_FILTER"),
-        MAXVERSIONS(new ArgumentListTypeSignature(IntegerValue.class), "MAX_VERSIONS");
+        MAPFILEINDEXINTERVAL(new ArgumentListTypeSignature(IntegerValue.class), "INDEX:INTERVAL"),
+        TTL(new ArgumentListTypeSignature(IntegerValue.class), "TTL"),
+        BLOOMFILTER(new ArgumentListTypeSignature(BooleanValue.class), "BLOOM_FILTER");
 
         private final ArgumentListTypeSignature typeSignature;
         private final String description;

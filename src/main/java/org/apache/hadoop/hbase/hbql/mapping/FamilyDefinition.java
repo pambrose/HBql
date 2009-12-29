@@ -22,35 +22,30 @@ package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.mapping.property.BlockCacheProperty;
-import org.apache.hadoop.hbase.hbql.mapping.property.BlockSizeProperty;
-import org.apache.hadoop.hbase.hbql.mapping.property.BloomFilterProperty;
+import org.apache.hadoop.hbase.hbql.mapping.property.BooleanProperty;
 import org.apache.hadoop.hbase.hbql.mapping.property.CompressionTypeProperty;
 import org.apache.hadoop.hbase.hbql.mapping.property.FamilyProperty;
-import org.apache.hadoop.hbase.hbql.mapping.property.InMemoryProperty;
-import org.apache.hadoop.hbase.hbql.mapping.property.MapFileIndexIntervalProperty;
-import org.apache.hadoop.hbase.hbql.mapping.property.MaxVersionsProperty;
-import org.apache.hadoop.hbase.hbql.mapping.property.TtlProperty;
+import org.apache.hadoop.hbase.hbql.mapping.property.IntegerProperty;
 
 import java.util.List;
 
 public class FamilyDefinition {
 
     private final String familyName;
-    private final List<FamilyProperty> familyPropertyList;
+    private final List<FamilyProperty> mappingPropertyList;
 
-    private MaxVersionsProperty maxVersions = null;
+    private IntegerProperty maxVersions = null;
     private CompressionTypeProperty compressionType = null;
-    private InMemoryProperty inMemory = null;
-    private BlockCacheProperty blockCache = null;
-    private BlockSizeProperty blockSize = null;
-    private MapFileIndexIntervalProperty mapFileIndexInterval = null;
-    private TtlProperty ttl = null;
-    private BloomFilterProperty bloomFilter = null;
+    private BooleanProperty inMemory = null;
+    private BooleanProperty blockCache = null;
+    private IntegerProperty blockSize = null;
+    private IntegerProperty mapFileIndexInterval = null;
+    private IntegerProperty ttl = null;
+    private BooleanProperty bloomFilter = null;
 
-    public FamilyDefinition(final String familyName, final List<FamilyProperty> familyPropertyList) {
+    public FamilyDefinition(final String familyName, final List<FamilyProperty> mappingPropertyList) {
         this.familyName = familyName;
-        this.familyPropertyList = familyPropertyList;
+        this.mappingPropertyList = mappingPropertyList;
     }
 
     public String getFamilyName() {
@@ -58,7 +53,7 @@ public class FamilyDefinition {
     }
 
     private List<FamilyProperty> getFamilyPropertyList() {
-        return this.familyPropertyList;
+        return this.mappingPropertyList;
     }
 
     public HColumnDescriptor getHColumnDescriptor() throws HBqlException {
@@ -100,42 +95,42 @@ public class FamilyDefinition {
         if (this.getFamilyPropertyList() == null)
             return;
 
-        for (final FamilyProperty familyProperty : this.getFamilyPropertyList()) {
+        for (final FamilyProperty mappingProperty : this.getFamilyPropertyList()) {
 
-            familyProperty.validate();
+            mappingProperty.validate();
 
-            switch (familyProperty.getPropertyType()) {
+            switch (mappingProperty.getPropertyType()) {
 
-                case BLOCKCACHE:
-                    this.blockCache = (BlockCacheProperty)this.validateProperty(this.blockCache, familyProperty);
-                    break;
-
-                case BLOCKSIZE:
-                    this.blockSize = (BlockSizeProperty)this.validateProperty(this.blockSize, familyProperty);
-                    break;
-
-                case BLOOMFILTER:
-                    this.bloomFilter = (BloomFilterProperty)this.validateProperty(this.bloomFilter, familyProperty);
+                case MAXVERSIONS:
+                    this.maxVersions = (IntegerProperty)this.validateProperty(this.maxVersions, mappingProperty);
                     break;
 
                 case COMPRESSIONTYPE:
-                    this.compressionType = (CompressionTypeProperty)this.validateProperty(this.compressionType, familyProperty);
-                    break;
-
-                case MAPFILEINDEXINTERVAL:
-                    this.mapFileIndexInterval = (MapFileIndexIntervalProperty)this.validateProperty(this.mapFileIndexInterval, familyProperty);
+                    this.compressionType = (CompressionTypeProperty)this.validateProperty(this.compressionType, mappingProperty);
                     break;
 
                 case INMEMORY:
-                    this.inMemory = (InMemoryProperty)this.validateProperty(this.inMemory, familyProperty);
+                    this.inMemory = (BooleanProperty)this.validateProperty(this.inMemory, mappingProperty);
                     break;
 
-                case MAXVERSIONS:
-                    this.maxVersions = (MaxVersionsProperty)this.validateProperty(this.maxVersions, familyProperty);
+                case BLOCKCACHE:
+                    this.blockCache = (BooleanProperty)this.validateProperty(this.blockCache, mappingProperty);
+                    break;
+
+                case BLOCKSIZE:
+                    this.blockSize = (IntegerProperty)this.validateProperty(this.blockSize, mappingProperty);
+                    break;
+
+                case MAPFILEINDEXINTERVAL:
+                    this.mapFileIndexInterval = (IntegerProperty)this.validateProperty(this.mapFileIndexInterval, mappingProperty);
                     break;
 
                 case TTL:
-                    this.ttl = (TtlProperty)this.validateProperty(this.ttl, familyProperty);
+                    this.ttl = (IntegerProperty)this.validateProperty(this.ttl, mappingProperty);
+                    break;
+
+                case BLOOMFILTER:
+                    this.bloomFilter = (BooleanProperty)this.validateProperty(this.bloomFilter, mappingProperty);
                     break;
             }
         }

@@ -23,10 +23,10 @@ package org.apache.hadoop.hbase.hbql.mapping.property;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class BloomFilterProperty extends FamilyProperty {
+public class BooleanProperty extends FamilyProperty {
 
-    public BloomFilterProperty(final GenericValue arg0) {
-        super(Type.BLOOMFILTER, arg0);
+    public BooleanProperty(final Type type, final GenericValue arg0) {
+        super(type, arg0);
     }
 
     public boolean getValue() throws HBqlException {
