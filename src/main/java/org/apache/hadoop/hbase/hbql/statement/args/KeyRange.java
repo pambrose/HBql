@@ -97,11 +97,11 @@ public class KeyRange extends SelectStatementArgs {
 
     // This returns an object because it might be a collection in the case of a param
     private Object getFirstArg(final boolean allowCollections) throws HBqlException {
-        return this.evaluateConstant(null, 0, allowCollections, null);
+        return this.evaluateConstant(0, allowCollections);
     }
 
     private String getSecondArg() throws HBqlException {
-        return (String)this.evaluateConstant(null, 1, false, null);
+        return (String)this.evaluateConstant(1, false);
     }
 
     public List<RowRequest> getRowRequestList(final WithArgs withArgs,

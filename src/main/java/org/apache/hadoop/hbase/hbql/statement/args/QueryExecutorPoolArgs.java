@@ -34,19 +34,19 @@ public class QueryExecutorPoolArgs extends SelectStatementArgs {
     }
 
     public int getMaxPoolSize() throws HBqlException {
-        return (Integer)this.evaluateConstant(null, 0, false, null);
+        return (Integer)this.evaluateConstant(0, false);
     }
 
     public int getThreadCount() throws HBqlException {
-        return (Integer)this.evaluateConstant(null, 1, false, null);
+        return (Integer)this.evaluateConstant(1, false);
     }
 
     public boolean getThreadsReadResults() throws HBqlException {
-        return (Boolean)this.evaluateConstant(null, 2, false, null);
+        return (Boolean)this.evaluateConstant(2, false);
     }
 
     public int getQueueSize() throws HBqlException {
-        return (Integer)this.evaluateConstant(null, 3, false, null);
+        return (Integer)this.evaluateConstant(3, false);
     }
 
     public String asString() {

@@ -34,7 +34,7 @@ public class VersionArgs extends SelectStatementArgs {
     }
 
     public int getMaxVersions() throws HBqlException {
-        return ((Number)this.evaluateConstant(null, 0, false, null)).intValue();
+        return ((Number)this.evaluateConstant(0, false)).intValue();
     }
 
     public String asString() {

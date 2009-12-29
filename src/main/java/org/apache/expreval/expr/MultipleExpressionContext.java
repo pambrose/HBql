@@ -148,12 +148,9 @@ public abstract class MultipleExpressionContext implements Serializable {
         return this.getGenericValue(i).getValue(connection, object);
     }
 
-    public Object evaluateConstant(final HConnectionImpl connection,
-                                   final int i,
-                                   final boolean allowCollections,
-                                   final Object object) throws HBqlException {
+    public Object evaluateConstant(final int i, final boolean allowCollections) throws HBqlException {
         try {
-            return this.evaluate(connection, i, false, allowCollections, object);
+            return this.evaluate(null, i, false, allowCollections, null);
         }
         catch (ResultMissingColumnException e) {
             throw new InternalErrorException();

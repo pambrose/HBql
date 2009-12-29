@@ -52,7 +52,7 @@ public class MappingManager {
         String sql = "CREATE TEMP MAPPING system_mappings(mapping_name KEY, f1(mapping_obj object alias mapping_obj))";
         this.getConnection().execute(sql);
 
-        sql = "CREATE TABLE system_mappings (f1(MAX_VERSIONS: 5)) IF NOT tableexists('system_mappings')";
+        sql = "CREATE TABLE system_mappings (f1(MAX_VERSIONS: 5)) IF NOT tableExists('system_mappings')";
         this.getConnection().execute(sql);
     }
 

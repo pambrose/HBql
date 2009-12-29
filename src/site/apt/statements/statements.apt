@@ -45,13 +45,13 @@ HBql Statements
     **{{{./describe-mapping.html}DESCRIBE MAPPING}}
 
 
-* Executor Pools
+* Query Executor Pools
 
-    **{{{./create-executor-pool.html}CREATE EXECUTOR POOL}}
+    **{{{./create-executor-pool.html}CREATE QUERY EXECUTOR POOL}}
 
-    **{{{./drop-executor-pool.html}DROP EXECUTOR POOL}}
+    **{{{./drop-executor-pool.html}DROP QUERY EXECUTOR POOL}}
 
-    **{{{./show-executor-pools.html}SHOW EXECUTOR POOLS}}
+    **{{{./show-executor-pools.html}SHOW QUERY EXECUTOR POOLS}}
 
 
 * Data Manipulation

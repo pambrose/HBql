@@ -39,14 +39,14 @@ public class FamilyDefinition {
     private final String familyName;
     private final List<FamilyProperty> familyPropertyList;
 
+    private MaxVersionsProperty maxVersions = null;
+    private CompressionTypeProperty compressionType = null;
+    private InMemoryProperty inMemory = null;
     private BlockCacheProperty blockCache = null;
     private BlockSizeProperty blockSize = null;
-    private BloomFilterProperty bloomFilter = null;
-    private CompressionTypeProperty compressionType = null;
     private MapFileIndexIntervalProperty mapFileIndexInterval = null;
-    private InMemoryProperty inMemory = null;
-    private MaxVersionsProperty maxVersions = null;
     private TtlProperty ttl = null;
+    private BloomFilterProperty bloomFilter = null;
 
     public FamilyDefinition(final String familyName, final List<FamilyProperty> familyPropertyList) {
         this.familyName = familyName;
@@ -65,7 +65,6 @@ public class FamilyDefinition {
 
         this.validateFamilyPropertyList();
 
-        //final String name = (this.getFamilyName().endsWith(":")) ? this.getFamilyName() : this.getFamilyName() + ":";
         final HColumnDescriptor columnDesc = new HColumnDescriptor(this.getFamilyName());
 
         if (this.maxVersions != null)

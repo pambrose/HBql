@@ -62,7 +62,7 @@ public class ColumnWidth extends MultipleExpressionContext implements Serializab
 
     public void validate() throws HBqlException {
         if (this.isWidthSpecified()) {
-            this.width = ((Number)this.evaluateConstant(null, 0, false, null)).intValue();
+            this.width = ((Number)this.evaluateConstant(0, false)).intValue();
             if (this.getWidth() <= 0)
                 throw new HBqlException("Invalid column width: " + this.getWidth());
         }

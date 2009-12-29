@@ -30,7 +30,7 @@ public class LimitArgs extends SelectStatementArgs {
     }
 
     public long getValue() throws HBqlException {
-        return ((Number)this.evaluateConstant(null, 0, false, null)).longValue();
+        return ((Number)this.evaluateConstant(0, false)).longValue();
     }
 
     public String asString() {

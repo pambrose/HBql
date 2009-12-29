@@ -30,6 +30,6 @@ public class BloomFilterProperty extends FamilyProperty {
     }
 
     public boolean getValue() throws HBqlException {
-        return ((Boolean)this.evaluateConstant(null, 0, false, null));
+        return ((Boolean)this.evaluateConstant(0, false));
     }
 }
