@@ -10,9 +10,9 @@ ALTER TABLE
 
 ---------------------------
 
-ALTER TABLE table_name alter_action [, ...] [IF bool_expr]
+ALTER TABLE table_name alterAction [, ...] [IF bool_expr]
 
-alter_action:
+alterAction:
     DROP [FAMILY] family_name
     | ADD [FAMILY] family_description
     | ALTER [FAMILY] family_name TO family_description

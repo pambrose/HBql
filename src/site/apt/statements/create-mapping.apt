@@ -10,15 +10,15 @@ CREATE MAPPING
 
 ---------------------------
 
-CREATE [TEMP] MAPPING mapping_name [FOR TABLE table_name] '(' key_description ',' [family_mapping [, ...]] ')'
+CREATE [TEMP] MAPPING mapping_name [FOR TABLE table_name] '(' keyDescription ',' [familyMapping [, ...]] ')'
 
-key_description:
+keyDescription:
     key_name KEY [WIDTH int_expr]
 
-family_mapping:
-    family_name [INCLUDE UNMAPPED] '(' column_description  [, ...] ')'
+familyMapping:
+    family_name [INCLUDE UNMAPPED] '(' columnDescription  [, ...] ')'
 
-column_description:
+column_Description:
     column_name type ['['']'] [WIDTH int_expr] [ALIAS alias_name] [DEFAULT constant_expr]
 
 type:

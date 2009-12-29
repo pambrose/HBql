@@ -9,9 +9,9 @@ SELECT
 
 ---------------------------
 
-SELECT { '*' | select_element [, ...] } FROM [MAPPING] mapping_name [with_clause | with_index_clause]
+SELECT { '*' | selectElement [, ...] } FROM [MAPPING] mapping_name [with_clause | with_index_clause]
 
-select_element:
+selectElement:
     expression [AS alias_name] | family_name ':' '*'
 
 ---------------------------

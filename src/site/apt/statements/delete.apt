@@ -9,9 +9,9 @@ DELETE
 
 ---------------------------
 
-DELETE [delete_item [, ...]] FROM [MAPPING] mapping_name with_clause [IF bool_expr]
+DELETE [deleteItem [, ...]] FROM [MAPPING] mapping_name with_clause [IF bool_expr]
 
-delete_item:
+deleteItem:
     family_name ':*'
     | family_name ':' column_name
     | alias_name

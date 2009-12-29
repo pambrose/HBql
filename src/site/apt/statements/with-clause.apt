@@ -9,13 +9,13 @@ WITH Clause
 
 ---------------------------
 
-WITH {keys | timestamp | versions | scanner_cache_size | query_limit | server_filer | client_filter}+
+WITH {keys | timestamp | versions | scannerCacheSize | queryLimit | serverFiler | clientFilter}+
 
 keys:
-    KEYS key_range [, ...]
+    KEYS key_Range [, ...]
     | KEYS ALL
 
-key_range:
+keyRange:
     FIRST TO key_value
     | key_value TO LAST
     | key_value TO key_value
@@ -29,16 +29,16 @@ versions:
     VERSIONS version_value
     | VERSIONS MAX
 
-scanner_cache_size:
+scannerCacheSize:
     SCANNER_CACHE_SIZE cache_size
 
-query_limit:
+queryLimit:
     LIMIT limit_value
 
-server_filter:
+serverFilter:
     SERVER FILTER WHERE where_clause
 
-client_filter:
+clientFilter:
     CLIENT FILTER WHERE where_clause
 
 ---------------------------

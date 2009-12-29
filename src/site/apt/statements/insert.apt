@@ -9,10 +9,10 @@ INSERT
 
 ---------------------------
 
-INSERT INTO [MAPPING] mapping_name '(' column_reference [, ...] ')'
+INSERT INTO [MAPPING] mapping_name '(' columnReference [, ...] ')'
     { VALUES ( { expression | DEFAULT } [, ...] ) | query }  [IF bool_expr]
 
-column_reference:
+columnReference:
     family_name ':' column_name
     | alias_name
     | family_name '(' column_name [,...] ')'

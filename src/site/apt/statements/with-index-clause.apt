@@ -9,22 +9,22 @@ WITH INDEX Clause
 
 ---------------------------
 
-WITH INDEX index_name {keys | index_filter | client_filter}*
+WITH INDEX index_name {keys | indexFilter | clientFilter}*
 
 keys:
-    KEYS key_range [, ...]
+    KEYS keyRange [, ...]
     | KEYS ALL
 
-key_range:
+keyRange:
     FIRST TO key_value
     | key_value TO LAST
     | key_value TO key_value
     | key_value
 
-index_filter:
+indexFilter:
     INDEX FILTER WHERE where_clause
 
-client_filter:
+clientFilter:
     CLIENT FILTER WHERE where_clause
 
 ---------------------------

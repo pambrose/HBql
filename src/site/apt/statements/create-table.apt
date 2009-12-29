@@ -10,17 +10,17 @@ CREATE TABLE
 
 ---------------------------
 
-CREATE TABLE table_name '(' family_description [, ...] ')'  [IF bool_expr]
+CREATE TABLE table_name '(' familyDescription [, ...] ')'  [IF bool_expr]
 
-family_description:
-    family_name '(' [family_property [, ...]] ')'
+familyDescription:
+    family_name '(' [familyProperty [, ...]] ')'
 
-family_property:
+familyProperty:
     MAX_VERSIONS ':' int_expr
 	| BLOOM_FILTER ':' bool_expr
 	| BLOCK_SIZE ':' int_expr
 	| BLOCK_CACHE_ENABLED ':' bool_expr
-	| COMPRESSION_TYPE ':' ( GZ | LZO | NONE )	
+	| COMPRESSION_TYPE ':' {GZ | LZO | NONE}	
 	| IN_MEMORY ':' bool_expr
 	| MAP_FILE_INDEX_INTERVAL ':' int_expr
 	| TTL ':' int_expr
