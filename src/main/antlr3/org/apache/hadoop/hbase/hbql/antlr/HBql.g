@@ -104,13 +104,13 @@ options {backtrack=true;}
 	| keySET t=simpleId EQ? val=QSTRING	 	{retval = new SetStatement($t.text, $val.text);}
 	| keyVERSION					{retval = new VersionStatement();}
 	| keyHELP					{retval = new HelpStatement();}
-	| jdbc=jdbcStmt					{retval = $jdbc.retval;}
+	| jdbc=hbqlStmt					{retval = $jdbc.retval;}
 	;						
 
-jdbcStatement returns [HBqlStatement retval]
-	: j=jdbcStmt SEMI+				{retval = $j.retval;};
+hbqlStatement returns [HBqlStatement retval]
+	: j=hbqlStmt SEMI+				{retval = $j.retval;};
 	
-jdbcStmt returns [HBqlStatement retval]
+hbqlStmt returns [HBqlStatement retval]
 options {backtrack=true;}	
 //options {backtrack=true; memoize=true;}	
 	: sel=selectStatement				{retval = $sel.retval;}			
@@ -260,8 +260,8 @@ options {memoize=true;}
 	: (keyKEYS | keyKEY) k=keysRangeArgs		{withArgs.setKeyRangeArgs($k.retval);}
 	| keyTIMESTAMP t=timestampArgs			{withArgs.setTimestampArgs($t.retval);}	
 	| keyVERSIONS v=versionArgs			{withArgs.setVersionArgs($v.retval);}
-	| keySCANNER_CACHE_SIZE sc=scannerCacheArgs	{withArgs.setScannerCacheArgs($sc.retval);}
-	| keyLIMIT l=limitArgs				{withArgs.setLimitArgs($l.retval);}
+	| keySCANNER_CACHE_SIZE v=exprValue		{withArgs.setScannerCacheArgs(new ScannerCacheArgs($v.retval));}
+	| keyLIMIT v=exprValue				{withArgs.setLimitArgs(new LimitArgs($v.retval));}
 	| keySERVER keyFILTER keyWHERE s=serverFilter	{withArgs.setServerExpressionTree($s.retval);}
 	| keyCLIENT keyFILTER keyWHERE c=clientFilter	{withArgs.setClientExpressionTree($c.retval);}
 	;
@@ -299,14 +299,7 @@ versionArgs returns [VersionArgs retval]
 	: v=exprValue					{retval = new VersionArgs($v.retval);}
 	| keyMAX					{retval = new VersionArgs(new IntegerLiteral(Integer.MAX_VALUE));}
 	;
-	
-scannerCacheArgs returns [ScannerCacheArgs retval]
-	: v=exprValue					{retval = new ScannerCacheArgs($v.retval);}
-	;
-	
-limitArgs returns [LimitArgs retval]
-	: v=exprValue					{retval = new LimitArgs($v.retval);};
-		
+			
 clientFilter returns [ExpressionTree retval]
 	: w=nodescWhereExpr				{retval = $w.retval;};
 	

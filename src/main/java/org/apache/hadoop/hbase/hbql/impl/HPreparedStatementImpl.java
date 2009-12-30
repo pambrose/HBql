@@ -40,7 +40,7 @@ public class HPreparedStatementImpl extends HStatementImpl implements HPreparedS
         super(hbqlConnection);
         this.sql = sql;
 
-        this.statement = Utils.parseJdbcStatement(sql);
+        this.statement = Utils.parseHBqlStatement(sql);
 
         if ((this.getStatement() instanceof ParameterStatement)) {
             final ParameterStatement paramStmt = (ParameterStatement)this.getStatement();

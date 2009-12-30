@@ -110,6 +110,6 @@ public class CreateMappingStatement extends StatementContext implements Connecti
     }
 
     public static String usage() {
-        return "CREATE [TEMP] MAPPING mapping_name [FOR TABLE table_name] [(key_name KEY [WIDTH int_expression], family_mapping_list)] [IF bool_expr]";
+        return "CREATE [TEMP] MAPPING mapping_name [FOR TABLE table_name] [(key_name KEY [WIDTH int_expr], family_mapping_list)] [IF bool_expr]";
     }
 }

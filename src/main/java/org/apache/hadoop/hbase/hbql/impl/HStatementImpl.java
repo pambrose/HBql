@@ -111,27 +111,27 @@ public class HStatementImpl implements HStatement {
     }
 
     public ExecutionResults execute(final String sql) throws HBqlException {
-        return this.execute(Utils.parseJdbcStatement(sql));
+        return this.execute(Utils.parseHBqlStatement(sql));
     }
 
     public HResultSet<HRecord> executeQuery(final String sql) throws HBqlException {
-        return this.executeQuery(Utils.parseJdbcStatement(sql), HRecord.class);
+        return this.executeQuery(Utils.parseHBqlStatement(sql), HRecord.class);
     }
 
     public <T> HResultSet<T> executeQuery(final String sql, final Class clazz) throws HBqlException {
-        return this.executeQuery(Utils.parseJdbcStatement(sql), clazz);
+        return this.executeQuery(Utils.parseHBqlStatement(sql), clazz);
     }
 
     public List<HRecord> executeQueryAndFetch(final String sql) throws HBqlException {
-        return this.executeQueryAndFetch(Utils.parseJdbcStatement(sql), HRecord.class);
+        return this.executeQueryAndFetch(Utils.parseHBqlStatement(sql), HRecord.class);
     }
 
     public <T> List<T> executeQueryAndFetch(final String sql, final Class clazz) throws HBqlException {
-        return this.executeQueryAndFetch(Utils.parseJdbcStatement(sql), clazz);
+        return this.executeQueryAndFetch(Utils.parseHBqlStatement(sql), clazz);
     }
 
     public ExecutionResults executeUpdate(final String sql) throws HBqlException {
-        return this.executeUpdate(Utils.parseJdbcStatement(sql));
+        return this.executeUpdate(Utils.parseHBqlStatement(sql));
     }
 
     public synchronized void close() throws HBqlException {

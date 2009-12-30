@@ -21,10 +21,10 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.util.ExecutorPool;
-import org.apache.expreval.util.ExecutorQueue;
+import org.apache.expreval.util.ExecutorWithQueue;
 import org.apache.hadoop.hbase.client.ResultScanner;
 
-public class ResultScannerExecutor extends ExecutorQueue<ResultScanner> {
+public class ResultScannerExecutor extends ExecutorWithQueue<ResultScanner> {
 
     public ResultScannerExecutor(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
         super(executorPool, threadCount, queueSize);

@@ -107,7 +107,7 @@ public class ObjectResultSet<T> implements Iterable<T> {
                     return null;
                 }
 
-                protected void cleanUp(final boolean fromExceptionCatch) {
+                protected void cleanUpAtEndOfIterator(final boolean fromExceptionCatch) {
                     // No op
                 }
             };

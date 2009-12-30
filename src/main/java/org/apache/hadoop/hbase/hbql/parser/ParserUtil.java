@@ -157,10 +157,10 @@ public class ParserUtil {
         }
     }
 
-    public static HBqlStatement parseJdbcStatement(final String sql) throws HBqlException {
+    public static HBqlStatement parseHBqlStatement(final String sql) throws HBqlException {
         try {
             final HBqlParser parser = ParserUtil.newHBqlParser(sql + ";");
-            final HBqlStatement stmt = parser.jdbcStatement();
+            final HBqlStatement stmt = parser.hbqlStatement();
             stmt.validate();
             return stmt;
         }

@@ -24,7 +24,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.ResultExecutor;
 import org.apache.hadoop.hbase.hbql.impl.ResultScannerExecutor;
 
-public class ExecutorPool extends ElementPool<ExecutorQueue> {
+public class ExecutorPool extends ElementPool<ExecutorWithQueue> {
 
     private final int threadCount;
     private final boolean threadsReadResults;
@@ -53,7 +53,7 @@ public class ExecutorPool extends ElementPool<ExecutorQueue> {
         return this.queueSize;
     }
 
-    protected ExecutorQueue newElement() throws HBqlException {
+    protected ExecutorWithQueue newElement() throws HBqlException {
         return this.threadsReadResults()
                ? ResultExecutor.newPooledResultExecutor(this, this.getThreadCount(), this.getQueueSize())
                : ResultScannerExecutor.newPooledResultScannerExecutor(this, this.getThreadCount(), this.getQueueSize());

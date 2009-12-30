@@ -42,10 +42,10 @@ import java.util.Random;
 
 public class Utils {
 
-    public static HBqlStatement parseJdbcStatement(final String sql) throws HBqlException {
+    public static HBqlStatement parseHBqlStatement(final String sql) throws HBqlException {
 
         try {
-            final HBqlStatement stmt = ParserUtil.parseJdbcStatement(sql);
+            final HBqlStatement stmt = ParserUtil.parseHBqlStatement(sql);
 
             if (!Utils.isSelectStatement(stmt)
                 && !(stmt instanceof ConnectionStatement)
@@ -69,8 +69,7 @@ public class Utils {
     }
 
     public static boolean isDMLStatement(final HBqlStatement stmt) {
-        return stmt instanceof InsertStatement
-               || stmt instanceof DeleteStatement;
+        return stmt instanceof InsertStatement || stmt instanceof DeleteStatement;
     }
 
     public static boolean isConnectionStatemet(final HBqlStatement stmt) {
@@ -82,10 +81,8 @@ public class Utils {
     }
 
     public static ParameterStatement getParameterStatement(final HBqlStatement statement) throws HBqlException {
-        if (!(statement instanceof ParameterStatement)) {
-            throw new HBqlException(statement.getClass().getSimpleName()
-                                    + " statements do not support parameters");
-        }
+        if (!(statement instanceof ParameterStatement))
+            throw new HBqlException(statement.getClass().getSimpleName() + " statements do not support parameters");
 
         return (ParameterStatement)statement;
     }

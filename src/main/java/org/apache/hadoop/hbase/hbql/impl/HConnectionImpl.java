@@ -21,7 +21,7 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.util.ExecutorPool;
-import org.apache.expreval.util.ExecutorQueue;
+import org.apache.expreval.util.ExecutorWithQueue;
 import org.apache.expreval.util.Maps;
 import org.apache.expreval.util.PoolableElement;
 import org.apache.expreval.util.Sets;
@@ -463,17 +463,17 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     // The value returned from this call must be eventually released.
-    public ExecutorQueue getExecutorForConnection() throws HBqlException {
+    public ExecutorWithQueue getExecutorForConnection() throws HBqlException {
         // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
-        final ExecutorQueue executorQueue = this.getQueryExecutor() != null
-                                            ? this.getQueryExecutorImpl().getExecutor()
-                                            : this.takeExecutorFromPool();
+        final ExecutorWithQueue executorQueue = this.getQueryExecutor() != null
+                                                ? this.getQueryExecutorImpl().getExecutor()
+                                                : this.takeExecutorFromPool();
         // Reset it prior to handing it out
         executorQueue.reset();
         return executorQueue;
     }
 
-    private ExecutorQueue takeExecutorFromPool() throws HBqlException {
+    private ExecutorWithQueue takeExecutorFromPool() throws HBqlException {
         this.validateExecutorPoolNameExists(this.getQueryExecutorPoolName());
         final ExecutorPool pool = QueryExecutorPoolManager.getExecutorPool(this.getQueryExecutorPoolName());
         return pool.take();

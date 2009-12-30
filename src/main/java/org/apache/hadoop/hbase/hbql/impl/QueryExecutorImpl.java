@@ -20,19 +20,19 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.expreval.util.ExecutorQueue;
+import org.apache.expreval.util.ExecutorWithQueue;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutor;
 
 // This hides details form the public API
 public class QueryExecutorImpl extends QueryExecutor {
 
-    private ExecutorQueue executor;
+    private ExecutorWithQueue executor;
 
-    public QueryExecutorImpl(final ExecutorQueue executor) {
+    public QueryExecutorImpl(final ExecutorWithQueue executor) {
         this.executor = executor;
     }
 
-    public ExecutorQueue getExecutor() {
+    public ExecutorWithQueue getExecutor() {
         return this.executor;
     }
 }

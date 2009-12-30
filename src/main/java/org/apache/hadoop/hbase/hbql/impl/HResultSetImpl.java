@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.literal.DateLiteral;
-import org.apache.expreval.util.ExecutorQueue;
+import org.apache.expreval.util.ExecutorWithQueue;
 import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -48,11 +48,11 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     private final Query<T> query;
     private final ExpressionTree clientExpressionTree;
     private HTableWrapper tableWrapper;
-    private final ExecutorQueue<R> executor;
+    private final ExecutorWithQueue<R> executor;
 
     private volatile boolean closed = false;
 
-    protected HResultSetImpl(final Query<T> query, final ExecutorQueue<R> executor) throws HBqlException {
+    protected HResultSetImpl(final Query<T> query, final ExecutorWithQueue<R> executor) throws HBqlException {
         this.query = query;
         this.executor = executor;
 
@@ -80,7 +80,7 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
 
     public abstract Iterator<T> iterator();
 
-    protected ExecutorQueue<R> getExecutor() {
+    protected ExecutorWithQueue<R> getExecutor() {
         return this.executor;
     }
 
@@ -98,6 +98,10 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
 
     protected ResultScanner getCurrentResultScanner() {
         return this.currentResultScanner;
+    }
+
+    public boolean isClosed() {
+        return this.closed;
     }
 
     protected void setCurrentResultScanner(final ResultScanner currentResultScanner) {
@@ -121,9 +125,9 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     }
 
     public void close() {
-        if (!this.closed) {
+        if (!this.isClosed()) {
             synchronized (this) {
-                if (!this.closed) {
+                if (!this.isClosed()) {
                     for (final ResultScanner scanner : this.getResultScannerList())
                         closeResultScanner(scanner, false);
                     this.getResultScannerList().clear();

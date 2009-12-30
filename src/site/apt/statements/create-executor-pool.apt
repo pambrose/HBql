@@ -22,16 +22,41 @@ executorArg:
 
 *Description
 
-    Creates named query executor pool.
+    Creates a named QueryExecutor pool.
 
-    * An HConnection can be assigned an QueryExecutor from a QueryExecutor pool using HConncetion.setQueryExecutorPoolName(),
-    or a dedicated QueryExecutor with HConncetion.setQueryExecutor().
+    * A QueryExecutor provides a thread pool for processing query results.  A QueryExecutor can be assigned
+    from a QueryExecutorPool using HConncetion.setQueryExecutorPoolName(), or a dedicated QueryExecutor can
+    be assigned using HConncetion.setQueryExecutor().
 
-    * An QueryExecutorPool has a maximum size and each QueryExecutor in the pool has a fixed number of threads.
-    Requests for QueryExecutors will block if all elements of the pool have been taken.  QueryExecutors are released
-    back into the pool when ResultSets are closed.
+    * A QueryExecutorPool has a maximum size and each QueryExecutor in the pool has a fixed number of threads.
+    A QueryExecutor pool request will block if all elements in the pool have been already assigned.
+    A pooled QueryExecutor is released back to a pool when the ResultSet is closed (when the ResultSet
+    iterator is completed).
 
-    * QueryExecutors are used in queries such that each KeyRange is processed by a different thread in the QueryExecutors.
+    * QueryExecutors are used in queries such that each key or key range is processed by a different thread in the
+    QueryExecutor thread pool.  Keys and key ranges correspond to Gets and Scans in HBase.  QueryExecutors can
+    assume two behaviors for processing query data: the threads can either request the data and return the
+    ResultScanner objects back to the main thread, which will then read the Result values.  Or, the threads can
+    iterate through the ResultScanner and return the Result objects back to the main thread.
+    The THREADS_READ_RESULTS parameter  determines the
+    thread processing behavior. If THREADS_READ_RESULTS is false, the order of Result values within a
+    Scans will be preserved, but at a cost of less concurrency.  If THREADS_READ_RESULTS is true, then Result
+    values across Scan results will be merged in the ResultSet iterator.
+    Since each Get and Scan is executed in a thread pool, there is no guarantee on the order in which
+    keys and key ranges are returned.
+
+    * The QUEUE_SIZE parameter determines the size of the queue used by the threads to return data
+    to the main thread.  If THREADS_READ_RESULTS is false, then it is the size of the queue used to
+    return ResultScanner objects and if THREADS_READ_RESULTS is true, it is the the size of the queue used to
+    Result objects.
+
+    * All the executorArg parameters are optional.  If unspecified, the values default to:
+
+        ** QueryExecutorPoolManager.defaultMaxPoolSize
+        ** QueryExecutorPoolManager.defaultThreadCount
+        ** QueryExecutorPoolManager.defaultQueueSize
+        ** QueryExecutorPoolManager.defaultThreadsReadResults
+
 
 *Example
 

@@ -63,7 +63,7 @@ public class NonExecutorResultSet<T> extends HResultSetImpl<T, Object> {
                     return getCurrentResultScanner().iterator();
                 }
 
-                protected void cleanUp(final boolean fromExceptionCatch) {
+                protected void cleanUpAtEndOfIterator(final boolean fromExceptionCatch) {
                     try {
                         if (!fromExceptionCatch && getListeners() != null) {
                             for (final QueryListener<T> listener : getListeners())

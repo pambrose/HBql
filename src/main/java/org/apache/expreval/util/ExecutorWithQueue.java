@@ -26,14 +26,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class ExecutorQueue<T> implements PoolableElement {
+public abstract class ExecutorWithQueue<T> implements PoolableElement {
 
     private final ExecutorPool executorPool;
     private final ExecutorService threadPool;
     private final QueueWithCompletion<T> completionQueue;
     private final AtomicInteger workSubmittedCount = new AtomicInteger(0);
 
-    protected ExecutorQueue(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
+    protected ExecutorWithQueue(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
         this.executorPool = executorPool;
         this.threadPool = Executors.newFixedThreadPool(threadCount);
         this.completionQueue = new QueueWithCompletion<T>(queueSize);
@@ -72,9 +72,13 @@ public abstract class ExecutorQueue<T> implements PoolableElement {
         return future;
     }
 
+    public boolean isPooled() {
+        return this.getExecutorPool() != null;
+    }
+
     public void release() {
         // Release if it is a pool element
-        if (this.getExecutorPool() != null)
+        if (this.isPooled())
             this.getExecutorPool().release(this);
     }
 }

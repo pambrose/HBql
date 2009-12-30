@@ -116,15 +116,15 @@ public class StatementImpl implements Statement {
     }
 
     public boolean execute(final String sql) throws SQLException {
-        return this.execute(Utils.parseJdbcStatement(sql));
+        return this.execute(Utils.parseHBqlStatement(sql));
     }
 
     public ResultSet executeQuery(final String sql) throws SQLException {
-        return this.executeQuery(Utils.parseJdbcStatement(sql));
+        return this.executeQuery(Utils.parseHBqlStatement(sql));
     }
 
     public int executeUpdate(final String sql) throws SQLException {
-        return this.executeUpdate(Utils.parseJdbcStatement(sql));
+        return this.executeUpdate(Utils.parseHBqlStatement(sql));
     }
 
     public void close() throws SQLException {

@@ -38,7 +38,7 @@ public class ParseTest extends TestSupport {
         long start = System.currentTimeMillis();
 
         for (int i = 0; i < reps; i++) {
-            HBqlStatement stmt = Utils.parseJdbcStatement(sql);
+            HBqlStatement stmt = Utils.parseHBqlStatement(sql);
 
             assertTrue(stmt != null);
         }

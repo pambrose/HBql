@@ -96,7 +96,7 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
                     return (getCurrentResultScanner() == null) ? null : getCurrentResultScanner().iterator();
                 }
 
-                protected void cleanUp(final boolean fromExceptionCatch) {
+                protected void cleanUpAtEndOfIterator(final boolean fromExceptionCatch) {
                     try {
                         if (!fromExceptionCatch && getListeners() != null) {
                             for (final QueryListener<T> listener : getListeners())

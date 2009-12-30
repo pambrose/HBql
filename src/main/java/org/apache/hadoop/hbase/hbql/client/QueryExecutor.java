@@ -33,4 +33,12 @@ public class QueryExecutor {
                                      ? ResultExecutor.newResultExecutor(threadCount, queueSize)
                                      : ResultScannerExecutor.newResultScannerExecutor(threadCount, queueSize));
     }
+
+    private QueryExecutorImpl getExecutorImpl() {
+        return (QueryExecutorImpl)this;
+    }
+
+    public boolean isPooled() {
+        return this.getExecutorImpl().getExecutor().isPooled();
+    }
 }

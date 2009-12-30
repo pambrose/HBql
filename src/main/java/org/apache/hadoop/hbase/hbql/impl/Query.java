@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.expreval.util.ExecutorQueue;
+import org.apache.expreval.util.ExecutorWithQueue;
 import org.apache.expreval.util.Lists;
 import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -108,7 +108,7 @@ public class Query<T> {
     public HResultSet<T> newResultSet() throws HBqlException {
         if (this.getHConnectionImpl().usesAQueryExecutor()) {
             // This may block waiting for a Executor to become available from the ExecutorPool
-            final ExecutorQueue executor = this.getHConnectionImpl().getExecutorForConnection();
+            final ExecutorWithQueue executor = this.getHConnectionImpl().getExecutorForConnection();
             if (executor.threadsReadResults())
                 return new ResultExecutorResultSet<T>(this, (ResultExecutor)executor);
             else

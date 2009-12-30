@@ -55,7 +55,7 @@ public class PreparedStatementImpl extends StatementImpl implements PreparedStat
     public PreparedStatementImpl(final ConnectionImpl connectionImpl, final String sql) throws HBqlException {
         super(connectionImpl);
 
-        this.statement = Utils.parseJdbcStatement(sql);
+        this.statement = Utils.parseHBqlStatement(sql);
 
         if ((this.getStatement() instanceof ParameterStatement)) {
             final ParameterStatement paramStmt = (ParameterStatement)this.getStatement();
