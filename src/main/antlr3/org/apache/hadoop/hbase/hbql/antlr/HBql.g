@@ -259,7 +259,7 @@ withElements[WithArgs withArgs]
 options {memoize=true;}	
 	: (keyKEYS | keyKEY) k=keysRangeArgs		{withArgs.setKeyRangeArgs($k.retval);}
 	| keyTIMESTAMP t=timestampArgs			{withArgs.setTimestampArgs($t.retval);}	
-	| keyVERSIONS v=versionArgs			{withArgs.setVersionArgs($v.retval);}
+	| keyVERSIONS va=versionArgs			{withArgs.setVersionArgs($va.retval);}
 	| keySCANNER_CACHE_SIZE v=exprValue		{withArgs.setScannerCacheArgs(new ScannerCacheArgs($v.retval));}
 	| keyLIMIT v=exprValue				{withArgs.setLimitArgs(new LimitArgs($v.retval));}
 	| keySERVER keyFILTER keyWHERE s=serverFilter	{withArgs.setServerExpressionTree($s.retval);}

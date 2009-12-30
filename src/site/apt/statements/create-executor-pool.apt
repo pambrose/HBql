@@ -50,6 +50,10 @@ executorArg:
     return ResultScanner objects and if THREADS_READ_RESULTS is true, it is the the size of the queue used to
     Result objects.
 
+    * If an HConnection is from an HConnectionPool, the QueryExecutor assignments (dedicated or from a pool) are
+      reset when HConnection.close() is called.  Thus, QueryExecutor assignments should be made when an
+      HConnection is retrieved from a pool.
+
     * All the executorArg parameters are optional.  If unspecified, the values default to:
 
         ** QueryExecutorPoolManager.defaultMaxPoolSize
