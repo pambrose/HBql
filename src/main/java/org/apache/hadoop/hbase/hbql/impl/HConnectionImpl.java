@@ -337,7 +337,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         return this.getMappingManager().dropMapping(mappingName);
     }
 
-    public Set<HMapping> getMappings() throws HBqlException {
+    public Set<HMapping> getAllMappings() throws HBqlException {
         return this.getMappingManager().getAllMappings();
     }
 

@@ -236,7 +236,9 @@ public class FamilySelectElement implements SelectElement {
                 final String columnName = IO.getSerialization().getStringFromBytes(columnBytes);
 
                 // ZZZ
-                final ColumnAttrib attrib = tableMapping.getVersionAttribMap(familyName, columnName);
+                final ColumnAttrib attrib = this.getResultAccessor()
+                        .getColumnAttribByQualifiedName(familyName, columnName);
+                final ColumnAttrib attrib8 = tableMapping.getVersionAttribMap(familyName, columnName);
 
                 if (attrib == null) {
                     final ColumnAttrib unMappedAttrib = tableMapping.getUnMappedAttrib(familyName);

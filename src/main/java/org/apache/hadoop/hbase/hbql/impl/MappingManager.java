@@ -39,6 +39,7 @@ public class MappingManager {
     private final HConnectionImpl connection;
     private final Map<String, TableMapping> userMappingsMap = Maps.newConcurrentHashMap();
     private final Map<String, TableMapping> systemMappingsMap = Maps.newConcurrentHashMap();
+    private final Map<String, TableMapping> cachedMappingsMap = Maps.newConcurrentHashMap();
 
     public MappingManager(final HConnectionImpl conn) {
         this.connection = conn;
@@ -46,6 +47,7 @@ public class MappingManager {
 
     public synchronized void clear() {
         this.getUserMappingsMap().clear();
+        this.getCachedMappingsMap().clear();
     }
 
     public void validatePersistentMetadata() throws HBqlException {
@@ -69,6 +71,10 @@ public class MappingManager {
         return this.systemMappingsMap;
     }
 
+    private Map<String, TableMapping> getCachedMappingsMap() {
+        return this.cachedMappingsMap;
+    }
+
     public Set<HMapping> getAllMappings() throws HBqlException {
 
         final Set<HMapping> names = Sets.newHashSet();
@@ -89,6 +95,7 @@ public class MappingManager {
         else if (this.getSystemMappingsMap().get(mappingName) != null)
             return true;
         else {
+            // Do not check cached mappings map, go to the server for answer
             final String sql = "SELECT mapping_name FROM system_mappings WITH KEYS ?";
             final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
             stmt.setParameter(1, mappingName);
@@ -108,6 +115,10 @@ public class MappingManager {
             return true;
         }
         else {
+            // Remove from cached mappings map
+            if (this.getCachedMappingsMap().containsKey(mappingName))
+                this.getCachedMappingsMap().remove(mappingName);
+
             final String sql = "DELETE FROM system_mappings WITH KEYS ?";
             final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
             stmt.setParameter(1, mappingName);
@@ -140,19 +151,17 @@ public class MappingManager {
             else
                 this.getSystemMappingsMap().put(mappingName, tableMapping);
         }
-        else
-            this.insertMapping(tableMapping);
+        else {
+            this.getCachedMappingsMap().put(mappingName, tableMapping);
+
+            final String sql = "INSERT INTO system_mappings (mapping_name, mapping_obj) VALUES (?, ?)";
+            final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
+            stmt.setParameter(1, tableMapping.getMappingName());
+            stmt.setParameter(2, tableMapping);
+            stmt.execute();
+        }
 
         return tableMapping;
-    }
-
-    private void insertMapping(final TableMapping tableMapping) throws HBqlException {
-
-        final String sql = "INSERT INTO system_mappings (mapping_name, mapping_obj) VALUES (?, ?)";
-        final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
-        stmt.setParameter(1, tableMapping.getMappingName());
-        stmt.setParameter(2, tableMapping);
-        stmt.execute();
     }
 
     public TableMapping getMapping(final String mappingName) throws HBqlException {
@@ -162,6 +171,9 @@ public class MappingManager {
         }
         else if (this.getSystemMappingsMap().containsKey(mappingName)) {
             return this.getSystemMappingsMap().get(mappingName);
+        }
+        else if (this.getCachedMappingsMap().containsKey(mappingName)) {
+            return this.getCachedMappingsMap().get(mappingName);
         }
         else {
             final String sql = "SELECT mapping_obj FROM system_mappings WITH KEYS ?";

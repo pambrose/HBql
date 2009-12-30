@@ -120,7 +120,6 @@ public class AnnotatedAllTypes implements Serializable {
                 return false;
 
             final TestObject val = (TestObject)o;
-
             return val.intvalue == this.intvalue;
         }
     }

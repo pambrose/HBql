@@ -86,7 +86,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
         if (mappingAnnotation.name() == null || mappingAnnotation.name().length() == 0)
             throw new HBqlException("@Mapping annotation for class " + clazz.getName() + " is missing a name");
 
-        TableMapping tableMapping = conn.getMapping(mappingAnnotation.name());
+        final TableMapping tableMapping = conn.getMapping(mappingAnnotation.name());
         return new AnnotationResultAccessor(tableMapping, clazz);
     }
 

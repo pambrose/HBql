@@ -79,6 +79,6 @@ public class MappingTest extends TestSupport {
         connection.dropMapping(mappingName);
         assertFalse(connection.mappingExists(mappingName));
 
-        Set<HMapping> mappings = connection.getMappings();
+        Set<HMapping> mappings = connection.getAllMappings();
     }
 }

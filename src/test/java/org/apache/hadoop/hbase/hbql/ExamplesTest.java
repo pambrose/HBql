@@ -70,7 +70,7 @@ public class ExamplesTest extends TestSupport {
         System.out.println(connection.execute("SHOW MAPPINGS"));
 
         // Or using the API
-        Set<HMapping> mappings = connection.getMappings();
+        Set<HMapping> mappings = connection.getAllMappings();
         for (HMapping mapping : mappings)
             System.out.println(mapping.getMappingName());
 

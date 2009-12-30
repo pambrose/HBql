@@ -35,7 +35,7 @@ public class ShowMappingsStatement extends BasicStatement implements ConnectionS
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Mappings: ");
-        for (final HMapping mapping : conn.getMappings())
+        for (final HMapping mapping : conn.getAllMappings())
             retval.out.println("\t" + mapping.getMappingName() + " mapped to table " + mapping.getTableName());
 
         retval.out.flush();

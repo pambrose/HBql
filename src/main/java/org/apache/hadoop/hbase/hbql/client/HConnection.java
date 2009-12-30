@@ -89,7 +89,7 @@ public interface HConnection {
 
     boolean dropMapping(String mappingName) throws HBqlException;
 
-    Set<HMapping> getMappings() throws HBqlException;
+    Set<HMapping> getAllMappings() throws HBqlException;
 
     void setQueryExecutorPoolName(String name);
 
