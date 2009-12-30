@@ -31,7 +31,7 @@ executorArg:
     Requests for QueryExecutors will block if all elements of the pool have been taken.  QueryExecutors are released
     back into the pool when ResultSets are closed.
 
-    * QueryExecutos are used in queries such that each KeyRange is processed by a different thread in the QueryExecutors.
+    * QueryExecutors are used in queries such that each KeyRange is processed by a different thread in the QueryExecutors.
 
 *Example
 
