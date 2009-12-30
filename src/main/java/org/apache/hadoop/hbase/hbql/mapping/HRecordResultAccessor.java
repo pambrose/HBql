@@ -61,12 +61,17 @@ public class HRecordResultAccessor extends ResultAccessor {
             selectElement.assignSelectValue(conn, record, maxVersions, result);
     }
 
+    public ColumnAttrib getColumnAttribByName(final String name) throws HBqlException {
+        return this.getMapping().getAttribByVariableName(name);
+    }
+
     public ColumnAttrib getColumnAttribByQualifiedName(final String familyName,
                                                        final String columnName) throws HBqlException {
         return this.getTableMapping().getAttribFromFamilyQualifiedName(familyName + ":" + columnName);
     }
 
-    public ColumnAttrib getColumnAttribByName(final String name) throws HBqlException {
-        return this.getMapping().getAttribByVariableName(name);
+    public ColumnAttrib getVersionAttrib(final String name) throws HBqlException {
+        return this.getTableMapping().getVersionAttrib(name);
     }
 }
+

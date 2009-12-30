@@ -205,10 +205,6 @@ public class TableMapping extends Mapping implements HMapping {
         return this.getVersionAttribMap().get(name);
     }
 
-    public ColumnAttrib getVersionAttribMap(final String familyName, final String columnName) {
-        return this.getVersionAttrib(familyName + ":" + columnName);
-    }
-
     protected void addVersionAttrib(final HRecordAttrib attrib) throws HBqlException {
 
         if (!attrib.isAVersionValue())

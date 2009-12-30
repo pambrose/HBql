@@ -52,4 +52,8 @@ public class ReflectionResultAccessor extends ResultAccessor {
     public ColumnAttrib getColumnAttribByQualifiedName(final String familyName, final String columnName) throws HBqlException {
         return null;
     }
+
+    public ColumnAttrib getVersionAttrib(final String name) throws HBqlException {
+        return null;
+    }
 }
