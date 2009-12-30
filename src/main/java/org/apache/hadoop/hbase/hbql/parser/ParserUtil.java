@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.LexerRecognitionException;
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.node.GenericValue;
@@ -101,7 +102,10 @@ public class ParserUtil {
         }
         catch (ResultMissingColumnException e) {
             // No column refs should be missing
-            throw new InternalErrorException(e.getMessage());
+            throw new InternalErrorException("Missing column: " + e.getMessage());
+        }
+        catch (NullColumnValueException e) {
+            throw new InternalErrorException("Null value: " + e.getMessage());
         }
         catch (RecognitionException e) {
             e.printStackTrace();

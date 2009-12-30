@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.function;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.node.BooleanValue;
@@ -57,134 +58,124 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
         return BooleanValue.class;
     }
 
-    public Boolean getValue(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
+    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException,
+                                                                                    NullColumnValueException {
 
         switch (this.getFunctionType()) {
 
-            case RANDOMBOOLEAN: {
+            case RANDOMBOOLEAN:
                 return GenericFunction.randomVal.nextBoolean();
-            }
 
-            case DEFINEDINROW: {
+            case DEFINEDINROW:
                 try {
-                    this.getExprArg(0).getValue(connection, object);
+                    this.getExprArg(0).getValue(conn, object);
                     return true;
                 }
                 catch (ResultMissingColumnException e) {
                     return false;
                 }
-            }
 
-            case EVAL: {
-                final String exprStr = (String)this.getExprArg(0).getValue(connection, object);
+            case EVAL:
+                final String exprStr = (String)this.getExprArg(0).getValue(conn, object);
                 final StatementContext statementContext = this.getExpressionContext().getStatementContext();
                 final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(exprStr, statementContext);
-                return expressionTree.evaluate(connection, object);
-            }
+                return expressionTree.evaluate(conn, object);
 
-            case MAPPINGEXISTS: {
-                if (connection == null) {
+            case MAPPINGEXISTS:
+                if (conn == null) {
                     return false;
                 }
                 else {
-                    final String mappingName = (String)this.getExprArg(0).getValue(connection, null);
-                    return connection.mappingExists(mappingName);
+                    final String mappingName = (String)this.getExprArg(0).getValue(conn, null);
+                    return conn.mappingExists(mappingName);
                 }
-            }
 
-            case TABLEEXISTS: {
-                if (connection == null) {
+            case TABLEEXISTS:
+                if (conn == null) {
                     return false;
                 }
                 else {
-                    final String tableName = (String)this.getExprArg(0).getValue(connection, null);
-                    return connection.tableExists(tableName);
+                    final String tableName = (String)this.getExprArg(0).getValue(conn, null);
+                    return conn.tableExists(tableName);
                 }
-            }
 
-            case TABLEENABLED: {
-                if (connection == null) {
+            case TABLEENABLED:
+                if (conn == null) {
                     return false;
                 }
                 else {
-                    final String tableName = (String)this.getExprArg(0).getValue(connection, null);
-                    return connection.tableEnabled(tableName);
+                    final String tableName = (String)this.getExprArg(0).getValue(conn, null);
+                    return conn.tableEnabled(tableName);
                 }
-            }
 
-            case FAMILYEXISTSFORTABLE: {
-                if (connection == null) {
+            case FAMILYEXISTSFORTABLE:
+                if (conn == null) {
                     return false;
                 }
                 else {
-                    final String familyName = (String)this.getExprArg(0).getValue(connection, null);
-                    final String tableName = (String)this.getExprArg(1).getValue(connection, null);
+                    final String familyName = (String)this.getExprArg(0).getValue(conn, null);
+                    final String tableName = (String)this.getExprArg(1).getValue(conn, null);
                     try {
-                        return connection.familyExistsForTable(familyName, tableName);
+                        return conn.familyExistsForTable(familyName, tableName);
                     }
                     catch (HBqlException e) {
                         // return false if table doesn't exist
                         return false;
                     }
                 }
-            }
 
-            case FAMILYEXISTSFORMAPPING: {
-                if (connection == null) {
+            case FAMILYEXISTSFORMAPPING:
+                if (conn == null) {
                     return false;
                 }
                 else {
-                    final String familyName = (String)this.getExprArg(0).getValue(connection, null);
-                    final String mappingName = (String)this.getExprArg(1).getValue(connection, null);
+                    final String familyName = (String)this.getExprArg(0).getValue(conn, null);
+                    final String mappingName = (String)this.getExprArg(1).getValue(conn, null);
                     try {
-                        return connection.familyExistsForMapping(familyName, mappingName);
+                        return conn.familyExistsForMapping(familyName, mappingName);
                     }
                     catch (HBqlException e) {
                         // return false if table doesn't exist
                         return false;
                     }
                 }
-            }
 
-            case INDEXEXISTSFORTABLE: {
-                if (connection == null) {
+            case INDEXEXISTSFORTABLE:
+                if (conn == null) {
                     return false;
                 }
                 else {
-                    final String indexName = (String)this.getExprArg(0).getValue(connection, null);
-                    final String tableName = (String)this.getExprArg(1).getValue(connection, null);
+                    final String indexName = (String)this.getExprArg(0).getValue(conn, null);
+                    final String tableName = (String)this.getExprArg(1).getValue(conn, null);
                     try {
-                        return connection.indexExistsForTable(indexName, tableName);
+                        return conn.indexExistsForTable(indexName, tableName);
                     }
                     catch (HBqlException e) {
                         // return false if index doesn't exist
                         return false;
                     }
                 }
-            }
 
-            case INDEXEXISTSFORMAPPING: {
-                if (connection == null) {
+            case INDEXEXISTSFORMAPPING:
+                if (conn == null) {
                     return false;
                 }
                 else {
-                    final String indexName = (String)this.getExprArg(0).getValue(connection, null);
-                    final String mappingName = (String)this.getExprArg(1).getValue(connection, null);
+                    final String indexName = (String)this.getExprArg(0).getValue(conn, null);
+                    final String mappingName = (String)this.getExprArg(1).getValue(conn, null);
                     try {
-                        return connection.indexExistsForMapping(indexName, mappingName);
+                        return conn.indexExistsForMapping(indexName, mappingName);
                     }
                     catch (HBqlException e) {
                         // return false if index doesn't exist
                         return false;
                     }
                 }
-            }
 
-            case QUERYEXECUTORPOOLEXISTS: {
+            case QUERYEXECUTORPOOLEXISTS:
                 final String poolName = (String)this.getExprArg(0).getValue(null, null);
                 return QueryExecutorPoolManager.queryExecutorPoolExists(poolName);
-            }
 
             default:
                 throw new HBqlException("Invalid function: " + this.getFunctionType());

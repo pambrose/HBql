@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.compare;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.node.GenericValue;
@@ -49,11 +50,11 @@ public class NumberCompare extends GenericCompare {
         return this.validateType(NumberValue.class);
     }
 
-    public Boolean getValue(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
-
-        final Object obj0 = this.getValue(0, connection, object);
-        final Object obj1 = this.getValue(1, connection, object);
+    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException,
+                                                                                    NullColumnValueException {
+        final Object obj0 = this.getValue(0, conn, object);
+        final Object obj1 = this.getValue(1, conn, object);
 
         this.validateNumericArgTypes(obj0, obj1);
 

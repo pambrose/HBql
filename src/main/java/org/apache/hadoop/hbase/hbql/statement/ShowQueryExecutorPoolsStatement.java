@@ -32,7 +32,7 @@ public class ShowQueryExecutorPoolsStatement extends BasicStatement implements C
         super(null);
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Executor Pools: ");

@@ -44,9 +44,9 @@ public abstract class BasicStatement implements Serializable {
         return this.predicate;
     }
 
-    public ExecutionResults evaluatePredicateAndExecute(final HConnectionImpl connection) throws HBqlException {
-        if (this.getPredicate() == null || this.getPredicate().evaluate(connection)) {
-            return this.execute(connection);
+    public ExecutionResults evaluatePredicateAndExecute(final HConnectionImpl conn) throws HBqlException {
+        if (this.getPredicate() == null || this.getPredicate().evaluate(conn)) {
+            return this.execute(conn);
         }
         else {
             final ExecutionResults results = new ExecutionResults("False predicate");

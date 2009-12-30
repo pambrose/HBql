@@ -20,6 +20,7 @@
 
 package org.apache.yaoql.client;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.NullIterator;
@@ -84,6 +85,9 @@ public class ObjectResultSet<T> implements Iterable<T> {
                                 return val;
                         }
                         catch (ResultMissingColumnException e) {
+                            // Just skip and do nothing
+                        }
+                        catch (NullColumnValueException e) {
                             // Just skip and do nothing
                         }
                     }

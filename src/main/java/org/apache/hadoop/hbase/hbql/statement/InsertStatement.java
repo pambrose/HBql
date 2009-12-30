@@ -92,7 +92,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
         return this.validated;
     }
 
-    public void validate(final HConnectionImpl connection) throws HBqlException {
+    public void validate(final HConnectionImpl conn) throws HBqlException {
 
         if (this.isValidated())
             return;
@@ -102,7 +102,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
         if (this.invalidInsertColumn != null)
             throw new InvalidTypeException(this.invalidInsertColumn + " is not a column reference in " + this.asString());
 
-        this.connection = connection;
+        this.connection = conn;
         this.validateMappingName(this.getConnection());
         this.record = this.getConnection().getMapping(this.getMappingName()).newHRecord();
 
@@ -202,9 +202,9 @@ public class InsertStatement extends StatementContext implements ParameterStatem
         return this.insertValuesSource;
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
-        this.validate(connection);
+        this.validate(conn);
 
         this.validateTypes();
 
@@ -214,7 +214,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
 
         while (this.getInsertValuesSource().hasValues()) {
 
-            final HBatch<HRecord> batch = HBatch.newHBatch(connection);
+            final HBatch<HRecord> batch = HBatch.newHBatch(conn);
 
             for (int i = 0; i < this.getInsertColumnList().size(); i++) {
                 final String name = this.getInsertColumnList().get(i).asString();
@@ -224,7 +224,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
                     val = attrib.getDefaultValue();
                 }
                 else {
-                    val = this.getInsertValuesSource().getValue(connection, i);
+                    val = this.getInsertValuesSource().getValue(conn, i);
                 }
                 this.getHRecord().setCurrentValue(name, val);
             }

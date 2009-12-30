@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -140,6 +141,9 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
                         continue;
                 }
                 catch (ResultMissingColumnException e) {
+                    continue;
+                }
+                catch (NullColumnValueException e) {
                     continue;
                 }
 

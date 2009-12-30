@@ -38,7 +38,7 @@ public abstract class GenericLiteral<T> implements GenericValue {
         this.value = value;
     }
 
-    public T getValue(final HConnectionImpl connection, final Object object) {
+    public T getValue(final HConnectionImpl conn, final Object object) {
         return this.value;
     }
 

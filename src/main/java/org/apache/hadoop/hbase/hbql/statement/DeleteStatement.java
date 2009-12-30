@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.util.Lists;
@@ -85,18 +86,18 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         return this.namedParameters;
     }
 
-    public void validate(final HConnectionImpl connection) throws HBqlException {
+    public void validate(final HConnectionImpl conn) throws HBqlException {
 
         if (this.isValidated())
             return;
 
         this.validated = true;
-        this.connection = connection;
+        this.connection = conn;
 
-        this.validateMappingName(connection);
+        this.validateMappingName(conn);
 
         this.getWithArgs().setStatementContext(this);
-        this.getWithArgs().validate(connection, this.getTableMapping());
+        this.getWithArgs().validate(conn, this.getTableMapping());
 
         this.collectParameters();
 
@@ -121,9 +122,9 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         this.getWithArgs().validateArgTypes();
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
-        this.validate(connection);
+        this.validate(conn);
 
         this.validateTypes();
 
@@ -133,9 +134,9 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         HTableWrapper tableWrapper = null;
 
         try {
-            tableWrapper = connection.newHTableWrapper(withArgs, this.getMapping().getTableName());
+            tableWrapper = conn.newHTableWrapper(withArgs, this.getMapping().getTableName());
 
-            final List<RowRequest> rowRequests = withArgs.getRowRequestList(connection,
+            final List<RowRequest> rowRequests = withArgs.getRowRequestList(conn,
                                                                             this.getMapping(),
                                                                             allWhereAttribs);
 
@@ -195,6 +196,9 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
                     }
                 }
                 catch (ResultMissingColumnException e) {
+                    // Just skip and go to next record
+                }
+                catch (NullColumnValueException e) {
                     // Just skip and go to next record
                 }
             }

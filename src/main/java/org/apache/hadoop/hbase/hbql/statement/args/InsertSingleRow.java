@@ -65,10 +65,10 @@ public class InsertSingleRow extends InsertValueSource {
 
     public void validate() throws HBqlException {
 
-        final HConnectionImpl connection = this.getInsertStatement().getConnection();
+        final HConnectionImpl conn = this.getInsertStatement().getConnection();
 
         for (final SelectExpressionContext element : this.getValueList()) {
-            element.validate(this.getInsertStatement(), connection);
+            element.validate(this.getInsertStatement(), conn);
 
             // Make sure values do not have column references
             if (element.hasAColumnReference())
@@ -110,7 +110,7 @@ public class InsertSingleRow extends InsertValueSource {
         return this.getValueList().get(i).isDefaultKeyword();
     }
 
-    public Object getValue(final HConnectionImpl connection, final int i) throws HBqlException {
+    public Object getValue(final HConnectionImpl conn, final int i) throws HBqlException {
         return this.getValueList().get(i).evaluateConstant(0, false);
     }
 

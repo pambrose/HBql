@@ -39,22 +39,22 @@ public class DescribeIndexForTableStatement extends TableStatement implements Co
         return this.indexName;
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
-        return this.execute(connection, this.getIndexName(), this.getTableName());
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
+        return executeDescribe(conn, this.getIndexName(), this.getTableName());
     }
 
-    static ExecutionResults execute(final HConnectionImpl connection,
-                                    final String indexName,
-                                    final String tableName) throws HBqlException {
+    static ExecutionResults executeDescribe(final HConnectionImpl conn,
+                                            final String indexName,
+                                            final String tableName) throws HBqlException {
 
         final ExecutionResults retval = new ExecutionResults();
 
-        if (!connection.tableExists(tableName)) {
+        if (!conn.tableExists(tableName)) {
             retval.out.println("Table not found: " + tableName);
         }
         else {
 
-            final IndexSpecification index = connection.getIndexForTable(indexName, tableName);
+            final IndexSpecification index = conn.getIndexForTable(indexName, tableName);
 
             if (index == null) {
                 retval.out.println("Index " + indexName + " not found for table " + tableName);

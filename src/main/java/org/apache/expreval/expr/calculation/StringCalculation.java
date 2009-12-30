@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.calculation;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.Operator;
@@ -33,11 +34,12 @@ public class StringCalculation extends GenericCalculation {
         super(ExpressionType.STRINGCALCULATION, arg0, operator, arg1);
     }
 
-    public String getValue(final HConnectionImpl connection,
-                           final Object object) throws HBqlException, ResultMissingColumnException {
+    public String getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                   ResultMissingColumnException,
+                                                                                   NullColumnValueException {
 
-        final String val0 = (String)this.getExprArg(0).getValue(connection, object);
-        final String val1 = (String)this.getExprArg(1).getValue(connection, object);
+        final String val0 = (String)this.getExprArg(0).getValue(conn, object);
+        final String val1 = (String)this.getExprArg(1).getValue(conn, object);
 
         switch (this.getOperator()) {
             case PLUS:

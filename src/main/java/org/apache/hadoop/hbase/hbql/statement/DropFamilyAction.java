@@ -38,11 +38,11 @@ public class DropFamilyAction implements AlterTableAction {
         return this.familyName;
     }
 
-    public void execute(final HConnectionImpl connection,
+    public void execute(final HConnectionImpl conn,
                         final HBaseAdmin admin,
                         final String tableName) throws HBqlException {
         try {
-            connection.validateFamilyExistsForTable(this.getFamilyName(), tableName);
+            conn.validateFamilyExistsForTable(this.getFamilyName(), tableName);
             admin.deleteColumn(tableName, this.getFamilyName());
         }
         catch (IOException e) {

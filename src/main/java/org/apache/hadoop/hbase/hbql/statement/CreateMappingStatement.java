@@ -96,14 +96,14 @@ public class CreateMappingStatement extends StatementContext implements Connecti
         }
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
-        final TableMapping tableMapping = connection.createMapping(this.isTempMapping(),
-                                                                   this.isSystemMapping(),
-                                                                   this.getMappingName(),
-                                                                   this.getTableName(),
-                                                                   this.getKeyInfo(),
-                                                                   this.getFamilyMappingList());
+        final TableMapping tableMapping = conn.createMapping(this.isTempMapping(),
+                                                             this.isSystemMapping(),
+                                                             this.getMappingName(),
+                                                             this.getTableName(),
+                                                             this.getKeyInfo(),
+                                                             this.getFamilyMappingList());
         this.setMapping(tableMapping);
         tableMapping.validate(tableMapping.getMappingName());
         return new ExecutionResults("Mapping " + tableMapping.getMappingName() + " defined.");

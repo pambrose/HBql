@@ -21,6 +21,7 @@
 package org.apache.expreval.expr;
 
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.literal.DoubleLiteral;
 import org.apache.expreval.expr.literal.FloatLiteral;
@@ -170,7 +171,7 @@ public abstract class GenericExpression implements GenericValue {
         throw new InternalErrorException("Not applicable");
     }
 
-    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException, ResultMissingColumnException {
+    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException, ResultMissingColumnException, NullColumnValueException {
         throw new InternalErrorException("Not applicable");
     }
 
@@ -241,7 +242,10 @@ public abstract class GenericExpression implements GenericValue {
             return this.getExprArg(pos).getValue(null, null);
         }
         catch (ResultMissingColumnException e) {
-            throw new InternalErrorException("Invalid column present in constant");
+            throw new InternalErrorException("Missing column: " + e.getMessage());
+        }
+        catch (NullColumnValueException e) {
+            throw new InternalErrorException("Null value: " + e.getMessage());
         }
     }
 
@@ -322,7 +326,10 @@ public abstract class GenericExpression implements GenericValue {
             throw new InternalErrorException(this.getTypeSignature().getReturnType().getSimpleName());
         }
         catch (ResultMissingColumnException e) {
-            throw new InternalErrorException();
+            throw new InternalErrorException("Missing column: " + e.getMessage());
+        }
+        catch (NullColumnValueException e) {
+            throw new InternalErrorException("Null value: " + e.getMessage());
         }
     }
 

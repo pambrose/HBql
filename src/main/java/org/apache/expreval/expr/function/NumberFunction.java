@@ -21,6 +21,7 @@
 package org.apache.expreval.expr.function;
 
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
@@ -56,8 +57,9 @@ public class NumberFunction extends GenericFunction implements NumberValue {
         }
     }
 
-    public void applyResultToAggregateValue(final AggregateValue aggVal,
-                                            final Result result) throws HBqlException, ResultMissingColumnException {
+    public void applyResultToAggregateValue(final AggregateValue aggVal, final Result result) throws HBqlException,
+                                                                                                     ResultMissingColumnException,
+                                                                                                     NullColumnValueException {
 
         switch (this.getFunctionType()) {
 
@@ -124,55 +126,54 @@ public class NumberFunction extends GenericFunction implements NumberValue {
         }
     }
 
-    public Number getValue(final HConnectionImpl connection,
-                           final Object object) throws HBqlException, ResultMissingColumnException {
+    public Number getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                   ResultMissingColumnException,
+                                                                                   NullColumnValueException {
 
         switch (this.getFunctionType()) {
 
             case LENGTH: {
-                final String val = (String)this.getExprArg(0).getValue(connection, object);
-                this.checkForNull(val);
+                final String val = (String)this.getExprArg(0).getValue(conn, object);
                 return val.length();
             }
 
             case INDEXOF: {
-                final String v1 = (String)this.getExprArg(0).getValue(connection, object);
-                final String v2 = (String)this.getExprArg(1).getValue(connection, object);
-                this.checkForNull(v1, v2);
+                final String v1 = (String)this.getExprArg(0).getValue(conn, object);
+                final String v2 = (String)this.getExprArg(1).getValue(conn, object);
                 return v1.indexOf(v2);
             }
 
             case DATETOLONG: {
-                return (Long)this.getExprArg(0).getValue(connection, object);
+                return (Long)this.getExprArg(0).getValue(conn, object);
             }
 
             case SHORT: {
-                final String v1 = (String)this.getExprArg(0).getValue(connection, object);
+                final String v1 = (String)this.getExprArg(0).getValue(conn, object);
                 return Short.valueOf(v1);
             }
 
             case INTEGER: {
-                final String v1 = (String)this.getExprArg(0).getValue(connection, object);
+                final String v1 = (String)this.getExprArg(0).getValue(conn, object);
                 return Integer.valueOf(v1);
             }
 
             case LONG: {
-                final String v1 = (String)this.getExprArg(0).getValue(connection, object);
+                final String v1 = (String)this.getExprArg(0).getValue(conn, object);
                 return Long.valueOf(v1);
             }
 
             case FLOAT: {
-                final String v1 = (String)this.getExprArg(0).getValue(connection, object);
+                final String v1 = (String)this.getExprArg(0).getValue(conn, object);
                 return Float.valueOf(v1);
             }
 
             case DOUBLE: {
-                final String v1 = (String)this.getExprArg(0).getValue(connection, object);
+                final String v1 = (String)this.getExprArg(0).getValue(conn, object);
                 return Double.valueOf(v1);
             }
 
             case ABS: {
-                final Number v1 = (Number)this.getExprArg(0).getValue(connection, object);
+                final Number v1 = (Number)this.getExprArg(0).getValue(conn, object);
 
                 if (v1 instanceof Short)
                     return Math.abs(v1.shortValue());
@@ -187,8 +188,8 @@ public class NumberFunction extends GenericFunction implements NumberValue {
             }
 
             case LESSER: {
-                final Number v1 = (Number)this.getExprArg(0).getValue(connection, object);
-                final Number v2 = (Number)this.getExprArg(1).getValue(connection, object);
+                final Number v1 = (Number)this.getExprArg(0).getValue(conn, object);
+                final Number v2 = (Number)this.getExprArg(1).getValue(conn, object);
 
                 if (v1 instanceof Short)
                     return Math.min(v1.shortValue(), v2.shortValue());
@@ -203,8 +204,8 @@ public class NumberFunction extends GenericFunction implements NumberValue {
             }
 
             case GREATER: {
-                final Number v1 = (Number)this.getExprArg(0).getValue(connection, object);
-                final Number v2 = (Number)this.getExprArg(1).getValue(connection, object);
+                final Number v1 = (Number)this.getExprArg(0).getValue(conn, object);
+                final Number v2 = (Number)this.getExprArg(1).getValue(conn, object);
 
                 if (v1 instanceof Short)
                     return Math.max(v1.shortValue(), v2.shortValue());

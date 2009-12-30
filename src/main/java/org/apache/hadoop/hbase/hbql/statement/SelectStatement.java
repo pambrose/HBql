@@ -75,25 +75,25 @@ public class SelectStatement extends StatementContext implements ParameterStatem
         return this.withArgs;
     }
 
-    public synchronized void validate(final HConnectionImpl connection) throws HBqlException {
+    public synchronized void validate(final HConnectionImpl conn) throws HBqlException {
 
         if (this.isValidated())
             return;
 
         this.validated = true;
 
-        this.validateMappingName(connection);
+        this.validateMappingName(conn);
 
         this.getSelectAttribList().clear();
 
         for (final SelectElement element : this.getSelectElementList()) {
-            element.validate(this, connection);
+            element.validate(this, conn);
             element.assignAsNamesForExpressions(this);
             this.getSelectAttribList().addAll(element.getAttribsUsedInExpr());
         }
 
         this.getWithArgs().setStatementContext(this);
-        this.getWithArgs().validate(connection, this.getTableMapping());
+        this.getWithArgs().validate(conn, this.getTableMapping());
 
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();

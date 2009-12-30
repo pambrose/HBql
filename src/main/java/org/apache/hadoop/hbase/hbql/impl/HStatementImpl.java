@@ -37,16 +37,16 @@ import java.util.List;
 
 public class HStatementImpl implements HStatement {
 
-    private final HConnectionImpl connectionImpl;
+    private final HConnectionImpl connection;
     private HResultSet resultSet = null;
     private volatile boolean closed = false;
 
-    public HStatementImpl(final HConnectionImpl connectionImpl) {
-        this.connectionImpl = connectionImpl;
+    public HStatementImpl(final HConnectionImpl conn) {
+        this.connection = conn;
     }
 
     protected HConnectionImpl getHConnectionImpl() {
-        return this.connectionImpl;
+        return this.connection;
     }
 
     public <T> HResultSet<T> getResultSet() {

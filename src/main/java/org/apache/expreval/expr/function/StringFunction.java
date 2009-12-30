@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.function;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.StringValue;
@@ -35,61 +36,55 @@ public class StringFunction extends GenericFunction implements StringValue {
         super(functionType, exprs);
     }
 
-    public String getValue(final HConnectionImpl connection,
-                           final Object object) throws HBqlException, ResultMissingColumnException {
-
+    public String getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                   ResultMissingColumnException,
+                                                                                   NullColumnValueException {
         switch (this.getFunctionType()) {
 
             case TRIM: {
-                final String val = (String)this.getExprArg(0).getValue(connection, object);
-                this.checkForNull(val);
+                final String val = (String)this.getExprArg(0).getValue(conn, object);
                 return val.trim();
             }
 
             case LOWER: {
-                final String val = (String)this.getExprArg(0).getValue(connection, object);
-                this.checkForNull(val);
+                final String val = (String)this.getExprArg(0).getValue(conn, object);
                 return val.toLowerCase();
             }
 
             case UPPER: {
-                final String val = (String)this.getExprArg(0).getValue(connection, object);
-                this.checkForNull(val);
+                final String val = (String)this.getExprArg(0).getValue(conn, object);
                 return val.toUpperCase();
             }
 
             case CONCAT: {
-                final String v1 = (String)this.getExprArg(0).getValue(connection, object);
-                final String v2 = (String)this.getExprArg(1).getValue(connection, object);
-                this.checkForNull(v1, v2);
+                final String v1 = (String)this.getExprArg(0).getValue(conn, object);
+                final String v2 = (String)this.getExprArg(1).getValue(conn, object);
                 return v1 + v2;
             }
 
             case REPLACE: {
-                final String v1 = (String)this.getExprArg(0).getValue(connection, object);
-                final String v2 = (String)this.getExprArg(1).getValue(connection, object);
-                final String v3 = (String)this.getExprArg(2).getValue(connection, object);
-                this.checkForNull(v1, v2, v3);
+                final String v1 = (String)this.getExprArg(0).getValue(conn, object);
+                final String v2 = (String)this.getExprArg(1).getValue(conn, object);
+                final String v3 = (String)this.getExprArg(2).getValue(conn, object);
                 return v1.replace(v2, v3);
             }
 
             case SUBSTRING: {
-                final String val = (String)this.getExprArg(0).getValue(connection, object);
-                final int begin = ((Number)this.getExprArg(1).getValue(connection, object)).intValue();
-                final int length = ((Number)this.getExprArg(2).getValue(connection, object)).intValue();
-                this.checkForNull(val);
+                final String val = (String)this.getExprArg(0).getValue(conn, object);
+                final int begin = ((Number)this.getExprArg(1).getValue(conn, object)).intValue();
+                final int length = ((Number)this.getExprArg(2).getValue(conn, object)).intValue();
                 return val.substring(begin, begin + length);
             }
 
             case ZEROPAD: {
-                final int num = ((Number)this.getExprArg(0).getValue(connection, object)).intValue();
-                final int width = ((Number)this.getExprArg(1).getValue(connection, object)).intValue();
+                final int num = ((Number)this.getExprArg(0).getValue(conn, object)).intValue();
+                final int width = ((Number)this.getExprArg(1).getValue(conn, object)).intValue();
                 return Util.getZeroPaddedNonNegativeNumber(num, width);
             }
 
             case REPEAT: {
-                final String val = (String)this.getExprArg(0).getValue(connection, object);
-                final int cnt = ((Number)this.getExprArg(1).getValue(connection, object)).intValue();
+                final String val = (String)this.getExprArg(0).getValue(conn, object);
+                final int cnt = ((Number)this.getExprArg(1).getValue(conn, object)).intValue();
                 final StringBuilder sbuf = new StringBuilder();
                 for (int i = 0; i < cnt; i++)
                     sbuf.append(val);

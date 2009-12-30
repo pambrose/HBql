@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
@@ -59,10 +60,10 @@ public class ExpressionTree extends MultipleExpressionContext {
             this.setStatementContext(new NonStatement(this.embeddedMapping, null));
     }
 
-    public Boolean evaluate(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
-
-        return (Boolean)this.evaluate(connection, 0, this.allowColumns(), false, object);
+    public Boolean evaluate(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException,
+                                                                                    NullColumnValueException {
+        return (Boolean)this.evaluate(conn, 0, this.allowColumns(), false, object);
     }
 
     private GenericValue getGenericValue() {

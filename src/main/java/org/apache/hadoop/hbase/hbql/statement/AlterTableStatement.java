@@ -44,14 +44,14 @@ public class AlterTableStatement extends BasicStatement implements ConnectionSta
         return this.tableName;
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
-        connection.validateTableDisabled(this.getTableName(), "alter");
+        conn.validateTableDisabled(this.getTableName(), "alter");
 
-        final HBaseAdmin admin = connection.getHBaseAdmin();
+        final HBaseAdmin admin = conn.getHBaseAdmin();
 
         for (final AlterTableAction alterTableAction : this.alterTableActionList)
-            alterTableAction.execute(connection, admin, this.getTableName());
+            alterTableAction.execute(conn, admin, this.getTableName());
 
         return new ExecutionResults("Table " + this.getTableName() + " altered.");
     }

@@ -21,6 +21,7 @@
 package org.apache.expreval.expr;
 
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
@@ -138,14 +139,14 @@ public abstract class MultipleExpressionContext implements Serializable {
         return this.getExpressionList().get(i);
     }
 
-    public Object evaluate(final HConnectionImpl connection,
+    public Object evaluate(final HConnectionImpl conn,
                            final int i,
                            final boolean allowColumns,
                            final boolean allowCollections,
-                           final Object object) throws HBqlException, ResultMissingColumnException {
+                           final Object object) throws HBqlException, ResultMissingColumnException, NullColumnValueException {
         this.validateTypes(allowColumns, allowCollections);
         this.optimize();
-        return this.getGenericValue(i).getValue(connection, object);
+        return this.getGenericValue(i).getValue(conn, object);
     }
 
     public Object evaluateConstant(final int i, final boolean allowCollections) throws HBqlException {
@@ -153,7 +154,10 @@ public abstract class MultipleExpressionContext implements Serializable {
             return this.evaluate(null, i, false, allowCollections, null);
         }
         catch (ResultMissingColumnException e) {
-            throw new InternalErrorException();
+            throw new InternalErrorException("Missing column: " + e.getMessage());
+        }
+        catch (NullColumnValueException e) {
+            throw new InternalErrorException("Null value: " + e.getMessage());
         }
     }
 

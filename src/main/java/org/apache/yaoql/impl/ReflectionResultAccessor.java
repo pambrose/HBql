@@ -37,7 +37,7 @@ public class ReflectionResultAccessor extends ResultAccessor {
         super(new NonStatement(ReflectionMapping.getReflectionMapping(object), null));
     }
 
-    public Object newObject(final HConnectionImpl connection,
+    public Object newObject(final HConnectionImpl conn,
                             final StatementContext statementContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,

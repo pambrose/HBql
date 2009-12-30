@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -51,7 +52,9 @@ public class AggregateValue extends ColumnValue {
         this.getContext().initAggregateValue(this);
     }
 
-    public void applyValues(final Result result) throws HBqlException, ResultMissingColumnException {
+    public void applyValues(final Result result) throws HBqlException,
+                                                        ResultMissingColumnException,
+                                                        NullColumnValueException {
         this.getContext().applyResultToAggregateValue(this, result);
     }
 

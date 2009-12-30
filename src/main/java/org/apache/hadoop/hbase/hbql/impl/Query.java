@@ -43,15 +43,15 @@ public class Query<T> {
     private final SelectStatement selectStatement;
     private List<QueryListener<T>> listeners = null;
 
-    private Query(final HConnectionImpl connection, final SelectStatement selectStatement) throws HBqlException {
-        this.connection = connection;
+    private Query(final HConnectionImpl conn, final SelectStatement selectStatement) throws HBqlException {
+        this.connection = conn;
         this.selectStatement = selectStatement;
 
         this.getSelectStmt().validate(this.getHConnectionImpl());
         this.getSelectStmt().validateTypes();
     }
 
-    public static <E> Query<E> newQuery(final HConnectionImpl connection,
+    public static <E> Query<E> newQuery(final HConnectionImpl conn,
                                         final SelectStatement selectStatement,
                                         final Class clazz) throws HBqlException {
         final ResultAccessor accessor;
@@ -59,14 +59,14 @@ public class Query<T> {
             accessor = new HRecordResultAccessor(selectStatement);
         }
         else {
-            accessor = connection.getAnnotationMapping(clazz);
+            accessor = conn.getAnnotationMapping(clazz);
             if (accessor == null)
                 throw new HBqlException("Unknown class " + clazz.getName());
         }
 
         selectStatement.setResultAccessor(accessor);
 
-        return new Query<E>(connection, selectStatement);
+        return new Query<E>(conn, selectStatement);
     }
 
     public synchronized void addListener(final QueryListener<T> listener) {

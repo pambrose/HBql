@@ -115,7 +115,7 @@ public class InsertSelectValues extends InsertValueSource {
         return this.getSelectStatement().asString();
     }
 
-    public Object getValue(final HConnectionImpl connection, final int i) throws HBqlException {
+    public Object getValue(final HConnectionImpl conn, final int i) throws HBqlException {
         final SelectElement element = this.getSelectStatement().getSelectElementList().get(i);
         final String name = element.getElementName();
         return this.getCurrentRecord().getCurrentValue(name);

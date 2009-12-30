@@ -183,7 +183,7 @@ public class FamilySelectElement implements SelectElement {
         // No op;
     }
 
-    public void assignSelectValue(final HConnectionImpl connection,
+    public void assignSelectValue(final HConnectionImpl conn,
                                   final Object obj,
                                   final int maxVersions,
                                   final Result result) throws HBqlException {

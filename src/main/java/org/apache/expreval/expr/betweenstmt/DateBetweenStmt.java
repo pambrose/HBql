@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.betweenstmt;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
@@ -39,16 +40,19 @@ import java.util.Date;
 
 public class DateBetweenStmt extends GenericBetweenStmt {
 
-    public DateBetweenStmt(final GenericValue expr, final boolean not, final GenericValue lower, final GenericValue upper) {
+    public DateBetweenStmt(final GenericValue expr,
+                           final boolean not,
+                           final GenericValue lower,
+                           final GenericValue upper) {
         super(ExpressionType.DATEBETWEEN, not, expr, lower, upper);
     }
 
-    public Boolean getValue(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
-
-        final long dateval = (Long)this.getExprArg(0).getValue(connection, object);
-        final boolean retval = dateval >= (Long)this.getExprArg(1).getValue(connection, object)
-                               && dateval <= (Long)this.getExprArg(2).getValue(connection, object);
+    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException,
+                                                                                    NullColumnValueException {
+        final long dateval = (Long)this.getExprArg(0).getValue(conn, object);
+        final boolean retval = dateval >= (Long)this.getExprArg(1).getValue(conn, object)
+                               && dateval <= (Long)this.getExprArg(2).getValue(conn, object);
 
         return (this.isNot()) ? !retval : retval;
     }

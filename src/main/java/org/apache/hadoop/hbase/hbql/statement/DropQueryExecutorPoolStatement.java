@@ -38,7 +38,7 @@ public class DropQueryExecutorPoolStatement extends BasicStatement implements Co
         return this.poolName;
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         final String msg;
         if (!QueryExecutorPoolManager.queryExecutorPoolExists(this.getPoolName())) {

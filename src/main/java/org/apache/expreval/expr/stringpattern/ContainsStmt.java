@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.stringpattern;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -35,11 +36,12 @@ public class ContainsStmt extends GenericStringPatternStmt {
         return "CONTAINS";
     }
 
-    public Boolean getValue(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
+    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException,
+                                                                                    NullColumnValueException {
 
-        final String val0 = (String)this.getExprArg(0).getValue(connection, object);
-        final String val1 = (String)this.getExprArg(1).getValue(connection, object);
+        final String val0 = (String)this.getExprArg(0).getValue(conn, object);
+        final String val1 = (String)this.getExprArg(1).getValue(conn, object);
 
         if (val0 == null)
             throw new HBqlException("Null string for value in " + this.asString());

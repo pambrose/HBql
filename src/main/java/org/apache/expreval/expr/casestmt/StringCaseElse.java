@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.casestmt;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
@@ -33,8 +34,9 @@ public class StringCaseElse extends GenericCaseElse implements StringValue {
         super(ExpressionType.STRINGCASEELSE, arg0);
     }
 
-    public String getValue(final HConnectionImpl connection,
-                           final Object object) throws HBqlException, ResultMissingColumnException {
-        return (String)super.getValue(connection, object);
+    public String getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                   ResultMissingColumnException,
+                                                                                   NullColumnValueException {
+        return (String)super.getValue(conn, object);
     }
 }

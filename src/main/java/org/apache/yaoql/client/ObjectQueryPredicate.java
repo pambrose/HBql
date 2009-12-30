@@ -21,6 +21,7 @@
 package org.apache.yaoql.client;
 
 import com.google.common.base.Predicate;
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -62,6 +63,10 @@ public class ObjectQueryPredicate<T> extends ParameterBinding implements Predica
             return expressionTree.evaluate(null, obj);
         }
         catch (ResultMissingColumnException e) {
+            // Not possible
+            return false;
+        }
+        catch (NullColumnValueException e) {
             // Not possible
             return false;
         }

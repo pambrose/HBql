@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.filter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.KeyValue;
@@ -148,6 +149,10 @@ public class HBqlFilter implements Filter {
             }
             catch (ResultMissingColumnException e) {
                 LOG.debug("In filterRow() had ResultMissingColumnException exception: " + e.getMessage());
+                filterRow = true;
+            }
+            catch (NullColumnValueException e) {
+                LOG.debug("In filterRow() had NullColumnValueException exception: " + e.getMessage());
                 filterRow = true;
             }
             catch (HBqlException e) {

@@ -46,11 +46,11 @@ public class AlterFamilyAction implements AlterTableAction {
         return this.familyDefinition;
     }
 
-    public void execute(final HConnectionImpl connection,
+    public void execute(final HConnectionImpl conn,
                         final HBaseAdmin admin,
                         final String tableName) throws HBqlException {
 
-        connection.validateFamilyExistsForTable(this.getFamilyName(), tableName);
+        conn.validateFamilyExistsForTable(this.getFamilyName(), tableName);
         final HColumnDescriptor columnDescriptor = this.getFamilyDefinition().getHColumnDescriptor();
 
         try {

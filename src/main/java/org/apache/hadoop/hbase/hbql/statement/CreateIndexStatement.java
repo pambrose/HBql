@@ -53,16 +53,16 @@ public class CreateIndexStatement extends MappingStatement implements Connection
         return this.indexName;
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
-        final TableMapping mapping = connection.getMapping(this.getMappingName());
+        final TableMapping mapping = conn.getMapping(this.getMappingName());
 
         final List<String> indexList = this.getQualifiedNameList(mapping, this.indexColumns);
         final List<String> includeList = this.getQualifiedNameList(mapping, this.includeColumns);
         final IndexSpecification spec = SingleColumnIndex.newIndex(this.getIndexName(), indexList, includeList);
 
         try {
-            connection.getIndexTableAdmin().addIndex(mapping.getTableNameAsBytes(), spec);
+            conn.getIndexTableAdmin().addIndex(mapping.getTableNameAsBytes(), spec);
         }
         catch (IOException e) {
             throw new HBqlException(e);

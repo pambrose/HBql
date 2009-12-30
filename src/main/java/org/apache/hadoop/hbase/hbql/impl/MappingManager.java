@@ -40,8 +40,8 @@ public class MappingManager {
     private final Map<String, TableMapping> userMappingsMap = Maps.newConcurrentHashMap();
     private final Map<String, TableMapping> systemMappingsMap = Maps.newConcurrentHashMap();
 
-    public MappingManager(final HConnectionImpl connection) {
-        this.connection = connection;
+    public MappingManager(final HConnectionImpl conn) {
+        this.connection = conn;
     }
 
     public synchronized void clear() {

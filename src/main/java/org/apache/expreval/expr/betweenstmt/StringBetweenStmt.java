@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.betweenstmt;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
@@ -44,15 +45,12 @@ public class StringBetweenStmt extends GenericBetweenStmt {
         super(ExpressionType.STRINGBETWEEN, not, arg0, arg1, arg2);
     }
 
-    public Boolean getValue(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
-
-        final String val = (String)this.getExprArg(0).getValue(connection, object);
-        final String lowerVal = (String)this.getExprArg(1).getValue(connection, object);
-        final String upperVal = (String)this.getExprArg(2).getValue(connection, object);
-
-        //if (val == null || lowerVal == null || upperVal == null)
-        //    return false;
+    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException,
+                                                                                    NullColumnValueException {
+        final String val = (String)this.getExprArg(0).getValue(conn, object);
+        final String lowerVal = (String)this.getExprArg(1).getValue(conn, object);
+        final String upperVal = (String)this.getExprArg(2).getValue(conn, object);
 
         final boolean retval = val.compareTo(lowerVal) >= 0 && val.compareTo(upperVal) <= 0;
 

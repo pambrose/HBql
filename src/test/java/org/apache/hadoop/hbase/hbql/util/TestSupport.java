@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.util;
 
 import org.antlr.runtime.RecognitionException;
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.var.GenericColumn;
@@ -128,7 +129,7 @@ public abstract class TestSupport {
 
     public static void assertExpressionEvalTrue(final Object recordObj,
                                                 final ExpressionTree tree) throws HBqlException {
-        assertTrue(evaluateExprression(recordObj, tree));
+        assertTrue(evaluateExpression(recordObj, tree));
     }
 
     public static void assertExpressionEvalFalse(final ExpressionTree tree) throws HBqlException {
@@ -136,7 +137,7 @@ public abstract class TestSupport {
     }
 
     public static void assertEvalFalse(final Object recordObj, final ExpressionTree tree) throws HBqlException {
-        assertFalse(evaluateExprression(recordObj, tree));
+        assertFalse(evaluateExpression(recordObj, tree));
     }
 
     public void assertHasException(final ExpressionTree tree, final Class clazz) {
@@ -146,7 +147,7 @@ public abstract class TestSupport {
     public void assertExpressionHasException(final Object recordObj, final ExpressionTree tree, final Class clazz) {
         Class eclazz = null;
         try {
-            evaluateExprression(recordObj, tree);
+            evaluateExpression(recordObj, tree);
         }
         catch (HBqlException e) {
             e.printStackTrace();
@@ -193,13 +194,13 @@ public abstract class TestSupport {
                                                         final String expr) throws HBqlException {
         final StatementContext statementContext = getAnnotationStatementContext(connection, recordObj);
         final ExpressionTree tree = parseDescWhereExpr(expr, statementContext);
-        return evaluateExprression(recordObj, tree);
+        return evaluateExpression(recordObj, tree);
     }
 
     private static boolean evaluateReflectionExpression(final Object recordObj, final String expr) throws HBqlException {
         final StatementContext statementContext = getReflectionStatementContext(recordObj);
         final ExpressionTree tree = parseDescWhereExpr(expr, statementContext);
-        return evaluateExprression(recordObj, tree);
+        return evaluateExpression(recordObj, tree);
     }
 
     private static StatementContext getAnnotationStatementContext(final HConnection connection,
@@ -218,13 +219,16 @@ public abstract class TestSupport {
     }
 
 
-    private static boolean evaluateExprression(final Object recordObj, final ExpressionTree tree) throws HBqlException {
+    private static boolean evaluateExpression(final Object recordObj, final ExpressionTree tree) throws HBqlException {
         System.out.println("Evaluating: " + tree.asString());
         try {
             return tree.evaluate(null, recordObj);
         }
         catch (ResultMissingColumnException e) {
-            throw new InternalErrorException();
+            throw new InternalErrorException("Missing column: " + e.getMessage());
+        }
+        catch (NullColumnValueException e) {
+            throw new InternalErrorException("Null value: " + e.getMessage());
         }
     }
 

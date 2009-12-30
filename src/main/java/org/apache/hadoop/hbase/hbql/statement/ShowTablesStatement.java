@@ -34,10 +34,10 @@ public class ShowTablesStatement extends BasicStatement implements ConnectionSta
         super(null);
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         try {
-            final HBaseAdmin admin = connection.getHBaseAdmin();
+            final HBaseAdmin admin = conn.getHBaseAdmin();
 
             final ExecutionResults retval = new ExecutionResults();
             retval.out.println("Tables: ");

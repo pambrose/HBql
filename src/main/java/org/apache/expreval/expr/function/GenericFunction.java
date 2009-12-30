@@ -21,6 +21,7 @@
 package org.apache.expreval.expr.function;
 
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.FunctionTypeSignature;
 import org.apache.expreval.expr.GenericExpression;
@@ -190,14 +191,6 @@ public abstract class GenericFunction extends GenericExpression {
         return super.isAConstant();
     }
 
-
-    protected void checkForNull(final String... vals) throws HBqlException {
-        for (final Object val : vals) {
-            if (val == null)
-                throw new HBqlException("Null value in " + this.asString());
-        }
-    }
-
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
@@ -236,7 +229,10 @@ public abstract class GenericFunction extends GenericExpression {
                 return this.getFunctionType().getTypeSignature().newLiteral(this.getValue(null, null));
             }
             catch (ResultMissingColumnException e) {
-                throw new InternalErrorException();
+                throw new InternalErrorException("Missing column: " + e.getMessage());
+            }
+            catch (NullColumnValueException e) {
+                throw new InternalErrorException("Null value: " + e.getMessage());
             }
     }
 

@@ -39,8 +39,8 @@ public class DropIndexForTableStatement extends TableStatement implements Connec
         return this.indexName;
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
-        connection.dropIndexForTable(this.getTableName(), this.getIndexName());
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
+        conn.dropIndexForTable(this.getTableName(), this.getIndexName());
         return new ExecutionResults("Index " + this.getIndexName() + " dropped for table " + this.getTableName());
     }
 

@@ -55,7 +55,8 @@ public abstract class ResultAccessor implements Serializable {
         return (TableMapping)this.getMapping();
     }
 
-    public abstract Object newObject(final HConnectionImpl connection, final StatementContext statementContext,
+    public abstract Object newObject(final HConnectionImpl conn,
+                                     final StatementContext statementContext,
                                      final List<SelectElement> selectElementList,
                                      final int maxVersions,
                                      final Result result) throws HBqlException;

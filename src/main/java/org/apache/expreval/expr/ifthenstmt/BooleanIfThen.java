@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.ifthenstmt;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.BooleanValue;
@@ -33,8 +34,9 @@ public class BooleanIfThen extends GenericIfThen implements BooleanValue {
         super(ExpressionType.BOOLEANIFTHEN, arg0, arg1, arg2);
     }
 
-    public Boolean getValue(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
-        return (Boolean)super.getValue(connection, object);
+    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException,
+                                                                                    NullColumnValueException {
+        return (Boolean)super.getValue(conn, object);
     }
 }

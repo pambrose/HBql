@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.node;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.hadoop.hbase.client.Result;
@@ -36,7 +37,7 @@ public interface GenericValue extends Serializable {
 
     void setExpressionContext(MultipleExpressionContext context) throws HBqlException;
 
-    Object getValue(HConnectionImpl connection, Object object) throws HBqlException, ResultMissingColumnException;
+    Object getValue(HConnectionImpl connection, Object object) throws HBqlException, ResultMissingColumnException, NullColumnValueException;
 
     Filter getFilter() throws HBqlException;
 
@@ -53,7 +54,7 @@ public interface GenericValue extends Serializable {
     void initAggregateValue(AggregateValue aggregateValue) throws HBqlException;
 
     void applyResultToAggregateValue(AggregateValue aggregateValue,
-                                     Result result) throws HBqlException, ResultMissingColumnException;
+                                     Result result) throws HBqlException, ResultMissingColumnException, NullColumnValueException;
 
     boolean hasAColumnReference();
 

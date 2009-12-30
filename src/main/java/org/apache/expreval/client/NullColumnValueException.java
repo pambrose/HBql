@@ -18,14 +18,11 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.expr.node;
+package org.apache.expreval.client;
 
-import org.apache.expreval.client.NullColumnValueException;
-import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+public class NullColumnValueException extends Exception {
 
-public interface NumberValue extends GenericValue {
-
-    Number getValue(HConnectionImpl connection, Object object) throws HBqlException, ResultMissingColumnException, NullColumnValueException;
+    public NullColumnValueException(final String s) {
+        super(s);
+    }
 }

@@ -32,10 +32,10 @@ public class EnableTableStatement extends TableStatement {
         super(predicate, tableName);
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         try {
-            connection.getHBaseAdmin().enableTable(this.getTableName());
+            conn.getHBaseAdmin().enableTable(this.getTableName());
         }
         catch (IOException e) {
             throw new HBqlException(e);

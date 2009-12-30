@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.statement.args;
 
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.GenericValue;
@@ -128,7 +129,10 @@ public class KeyRange extends SelectStatementArgs {
                     rowRequestList.add(rowRequest);
                 }
                 catch (ResultMissingColumnException e) {
-                    throw new InternalErrorException(val.asString());
+                    throw new InternalErrorException("Missing column: " + val.asString());
+                }
+                catch (NullColumnValueException e) {
+                    throw new InternalErrorException("Null value: " + e.getMessage());
                 }
             }
         }

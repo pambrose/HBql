@@ -41,14 +41,14 @@ public class CreateTableStatement extends BasicStatement implements ConnectionSt
         this.familyList = familyList;
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         final HTableDescriptor tableDesc = new HTableDescriptor(this.tableName);
 
         for (final FamilyDefinition familyDefintion : this.familyList)
             tableDesc.addFamily(familyDefintion.getHColumnDescriptor());
 
-        connection.createTable(tableDesc);
+        conn.createTable(tableDesc);
 
         return new ExecutionResults("Table " + tableDesc.getNameAsString() + " created.");
     }

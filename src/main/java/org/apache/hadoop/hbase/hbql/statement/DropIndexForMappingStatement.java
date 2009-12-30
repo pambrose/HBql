@@ -40,9 +40,9 @@ public class DropIndexForMappingStatement extends MappingStatement implements Co
         return this.indexName;
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
-        connection.dropIndexForMapping(this.getIndexName(), this.getMappingName());
-        final TableMapping mapping = connection.getMapping(this.getMappingName());
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
+        conn.dropIndexForMapping(this.getIndexName(), this.getMappingName());
+        final TableMapping mapping = conn.getMapping(this.getMappingName());
         return new ExecutionResults("Index " + this.getIndexName() + " dropped for table " + mapping.getTableName());
     }
 

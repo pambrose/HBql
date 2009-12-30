@@ -35,7 +35,7 @@ public class HRecordResultAccessor extends ResultAccessor {
         super(statementContext);
     }
 
-    public Object newObject(final HConnectionImpl connection,
+    public Object newObject(final HConnectionImpl conn,
                             final StatementContext statementContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
@@ -43,11 +43,12 @@ public class HRecordResultAccessor extends ResultAccessor {
 
         // Create object and assign values
         final HRecordImpl newrec = new HRecordImpl(statementContext);
-        this.assignSelectValues(connection, newrec, selectElementList, maxVersions, result);
+        this.assignSelectValues(conn, newrec, selectElementList, maxVersions, result);
         return newrec;
     }
 
-    private void assignSelectValues(final HConnectionImpl connection, final HRecordImpl record,
+    private void assignSelectValues(final HConnectionImpl conn,
+                                    final HRecordImpl record,
                                     final List<SelectElement> selectElementList,
                                     final int maxVersions,
                                     final Result result) throws HBqlException {
@@ -57,7 +58,7 @@ public class HRecordResultAccessor extends ResultAccessor {
 
         // Set the non-key values
         for (final SelectElement selectElement : selectElementList)
-            selectElement.assignSelectValue(connection, record, maxVersions, result);
+            selectElement.assignSelectValue(conn, record, maxVersions, result);
     }
 
     public ColumnAttrib getColumnAttribByQualifiedName(final String familyName,

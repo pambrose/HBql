@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.casestmt;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.DelegateStmt;
 import org.apache.expreval.expr.ExpressionType;
@@ -39,17 +40,17 @@ public abstract class GenericCase extends DelegateStmt<GenericCase> {
         this.elseExpr = elseExpr;
     }
 
-    public Object getValue(final HConnectionImpl connection,
-                           final Object object) throws HBqlException, ResultMissingColumnException {
-
+    public Object getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                   ResultMissingColumnException,
+                                                                                   NullColumnValueException {
         for (final GenericCaseWhen when : this.getWhenExprList()) {
-            final boolean predicate = when.getPredicateValue(connection, object);
+            final boolean predicate = when.getPredicateValue(conn, object);
             if (predicate)
-                return when.getValue(connection, object);
+                return when.getValue(conn, object);
         }
 
         if (this.getElseExpr() != null)
-            return this.getElseExpr().getValue(connection, object);
+            return this.getElseExpr().getValue(conn, object);
 
         return null;
     }

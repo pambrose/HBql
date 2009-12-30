@@ -53,7 +53,7 @@ public abstract class InsertValueSource implements Serializable {
 
     public abstract String asString();
 
-    public abstract Object getValue(final HConnectionImpl connection, int i) throws HBqlException;
+    public abstract Object getValue(final HConnectionImpl conn, int i) throws HBqlException;
 
     public abstract boolean isDefaultValue(int i) throws HBqlException;
 

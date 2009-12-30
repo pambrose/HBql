@@ -75,7 +75,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
         return clazz.getAnnotation(org.apache.hadoop.hbase.hbql.client.Mapping.class) != null;
     }
 
-    public static AnnotationResultAccessor newAnnotationMapping(final HConnectionImpl connection,
+    public static AnnotationResultAccessor newAnnotationMapping(final HConnectionImpl conn,
                                                                 final Class<?> clazz) throws HBqlException {
 
         Mapping mappingAnnotation = clazz.getAnnotation(Mapping.class);
@@ -86,7 +86,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
         if (mappingAnnotation.name() == null || mappingAnnotation.name().length() == 0)
             throw new HBqlException("@Mapping annotation for class " + clazz.getName() + " is missing a name");
 
-        TableMapping tableMapping = connection.getMapping(mappingAnnotation.name());
+        TableMapping tableMapping = conn.getMapping(mappingAnnotation.name());
         return new AnnotationResultAccessor(tableMapping, clazz);
     }
 
@@ -164,15 +164,15 @@ public class AnnotationResultAccessor extends ResultAccessor {
         return this.getClazz().newInstance();
     }
 
-    public Object newObject(final HConnectionImpl connection, final StatementContext statementContext,
+    public Object newObject(final HConnectionImpl conn,
+                            final StatementContext statementContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {
-
         try {
             // Create object and assign values
             final Object newobj = this.createNewObject();
-            this.assignSelectValues(connection, newobj, selectElementList, maxVersions, result);
+            this.assignSelectValues(conn, newobj, selectElementList, maxVersions, result);
             return newobj;
         }
         catch (Exception e) {
@@ -181,7 +181,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
         }
     }
 
-    private void assignSelectValues(final HConnectionImpl connection,
+    private void assignSelectValues(final HConnectionImpl conn,
                                     final Object newobj,
                                     final List<SelectElement> selectElementList,
                                     final int maxVersions,
@@ -193,7 +193,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
 
         // Set the non-key values
         for (final SelectElement selectElement : selectElementList)
-            selectElement.assignSelectValue(connection, newobj, maxVersions, result);
+            selectElement.assignSelectValue(conn, newobj, maxVersions, result);
     }
 
     private Object createNewObject() throws HBqlException {

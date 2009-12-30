@@ -40,7 +40,7 @@ public class CreateQueryExecutorPoolStatement extends BasicStatement implements 
         return this.args;
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         this.getArgs().validateExecutorPoolPropertyList();
 

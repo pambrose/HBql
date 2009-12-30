@@ -58,7 +58,7 @@ public class TableMapping extends Mapping implements HMapping {
     public TableMapping() {
     }
 
-    public TableMapping(final HConnectionImpl connection,
+    public TableMapping(final HConnectionImpl conn,
                         final boolean tempMapping,
                         final boolean systemMapping,
                         final String mappingName,
@@ -68,7 +68,7 @@ public class TableMapping extends Mapping implements HMapping {
 
         super(mappingName, tableName);
 
-        this.connection = connection;
+        this.connection = conn;
         this.tempMapping = tempMapping;
         this.systemMapping = systemMapping;
         this.keyInfo = keyInfo;

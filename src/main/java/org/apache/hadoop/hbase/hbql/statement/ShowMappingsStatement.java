@@ -31,11 +31,11 @@ public class ShowMappingsStatement extends BasicStatement implements ConnectionS
         super(null);
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Mappings: ");
-        for (final HMapping mapping : connection.getMappings())
+        for (final HMapping mapping : conn.getMappings())
             retval.out.println("\t" + mapping.getMappingName() + " mapped to table " + mapping.getTableName());
 
         retval.out.flush();

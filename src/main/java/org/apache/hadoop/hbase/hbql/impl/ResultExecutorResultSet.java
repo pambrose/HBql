@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.util.NullIterator;
 import org.apache.expreval.util.QueueElement;
@@ -59,6 +60,9 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                                     continue;
                             }
                             catch (ResultMissingColumnException e) {
+                                continue;
+                            }
+                            catch (NullColumnValueException e) {
                                 continue;
                             }
 

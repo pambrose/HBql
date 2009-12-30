@@ -20,11 +20,12 @@
 
 package org.apache.expreval.expr.node;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public interface BooleanValue extends GenericValue {
 
-    Boolean getValue(HConnectionImpl connection, Object object) throws HBqlException, ResultMissingColumnException;
+    Boolean getValue(HConnectionImpl connection, Object object) throws HBqlException, ResultMissingColumnException, NullColumnValueException;
 }

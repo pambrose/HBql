@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ArgumentListTypeSignature;
 import org.apache.expreval.expr.MultipleExpressionContext;
@@ -46,15 +47,18 @@ public class StatementPredicate extends MultipleExpressionContext {
         this.validateTypes(this.allowColumns(), false);
     }
 
-    public boolean evaluate(final HConnectionImpl connection) throws HBqlException {
+    public boolean evaluate(final HConnectionImpl conn) throws HBqlException {
 
         this.validate();
 
         try {
-            return (Boolean)this.evaluate(connection, 0, this.allowColumns(), false, connection);
+            return (Boolean)this.evaluate(conn, 0, this.allowColumns(), false, conn);
         }
         catch (ResultMissingColumnException e) {
-            throw new InternalErrorException();
+            throw new InternalErrorException("Missing column: " + e.getMessage());
+        }
+        catch (NullColumnValueException e) {
+            throw new InternalErrorException("Null value: " + e.getMessage());
         }
     }
 

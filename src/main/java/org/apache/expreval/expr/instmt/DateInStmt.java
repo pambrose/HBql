@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.instmt;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.GenericValue;
@@ -34,7 +35,9 @@ public class DateInStmt extends GenericInStmt {
         super(arg0, not, argList);
     }
 
-    protected boolean evaluateInList(final Object object) throws HBqlException, ResultMissingColumnException {
+    protected boolean evaluateInList(final Object object) throws HBqlException,
+                                                                 ResultMissingColumnException,
+                                                                 NullColumnValueException {
 
         final long attribVal = (Long)this.getExprArg(0).getValue(null, object);
 

@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.ifthenstmt;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
@@ -33,8 +34,9 @@ public class NumberIfThen extends GenericIfThen implements NumberValue {
         super(ExpressionType.NUMBERIFTHEN, arg0, arg1, arg2);
     }
 
-    public Number getValue(final HConnectionImpl connection,
-                           final Object object) throws HBqlException, ResultMissingColumnException {
-        return (Number)super.getValue(connection, object);
+    public Number getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                   ResultMissingColumnException,
+                                                                                   NullColumnValueException {
+        return (Number)super.getValue(conn, object);
     }
 }

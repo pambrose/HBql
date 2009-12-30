@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.var;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.hadoop.hbase.client.Result;
@@ -35,9 +36,9 @@ public class DateColumn extends GenericColumn<DateValue> implements DateValue {
         super(attrib);
     }
 
-    public Long getValue(final HConnectionImpl connection,
-                         final Object object) throws HBqlException, ResultMissingColumnException {
-
+    public Long getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                 ResultMissingColumnException,
+                                                                                 NullColumnValueException {
         final Date val;
 
         if (this.getExpressionContext().useResultData())

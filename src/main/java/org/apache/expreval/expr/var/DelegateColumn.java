@@ -21,6 +21,7 @@
 package org.apache.expreval.expr.var;
 
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
@@ -53,13 +54,14 @@ public class DelegateColumn extends GenericColumn<GenericValue> {
         return this.variableName;
     }
 
-    public Object getValue(final HConnectionImpl connection,
-                           final Object object) throws HBqlException, ResultMissingColumnException {
+    public Object getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                   ResultMissingColumnException,
+                                                                                   NullColumnValueException {
 
         if (!this.isVariableDefinedInMapping())
             throw new InvalidColumnException(this.getVariableName());
 
-        return this.getTypedColumn().getValue(connection, object);
+        return this.getTypedColumn().getValue(conn, object);
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,

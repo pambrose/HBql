@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.betweenstmt;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
@@ -46,12 +47,13 @@ public class NumberBetweenStmt extends GenericBetweenStmt {
         super(ExpressionType.NUMBERBETWEEN, not, arg0, arg1, arg2);
     }
 
-    public Boolean getValue(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
+    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException,
+                                                                                    NullColumnValueException {
 
-        final Object obj0 = this.getExprArg(0).getValue(connection, object);
-        final Object obj1 = this.getExprArg(1).getValue(connection, object);
-        final Object obj2 = this.getExprArg(2).getValue(connection, object);
+        final Object obj0 = this.getExprArg(0).getValue(conn, object);
+        final Object obj1 = this.getExprArg(1).getValue(conn, object);
+        final Object obj2 = this.getExprArg(2).getValue(conn, object);
 
         this.validateNumericArgTypes(obj0, obj1, obj2);
 

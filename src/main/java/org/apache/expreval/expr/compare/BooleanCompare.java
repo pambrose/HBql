@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.compare;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.node.BooleanValue;
@@ -44,23 +45,24 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
         return this.validateType(BooleanValue.class);
     }
 
-    public Boolean getValue(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
+    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException,
+                                                                                    NullColumnValueException {
 
         // Do not pre-evalute the OR or AND values. Should evaluate them in place
         switch (this.getOperator()) {
             case OR:
-                return (Boolean)this.getValue(0, connection, object) || (Boolean)this.getValue(1, connection, object);
+                return (Boolean)this.getValue(0, conn, object) || (Boolean)this.getValue(1, conn, object);
             case AND:
-                return (Boolean)this.getValue(0, connection, object) && (Boolean)this.getValue(1, connection, object);
+                return (Boolean)this.getValue(0, conn, object) && (Boolean)this.getValue(1, conn, object);
             case EQ: {
-                boolean val0 = (Boolean)this.getValue(0, connection, object);
-                boolean val1 = (Boolean)this.getValue(1, connection, object);
+                boolean val0 = (Boolean)this.getValue(0, conn, object);
+                boolean val1 = (Boolean)this.getValue(1, conn, object);
                 return val0 == val1;
             }
             case NOTEQ: {
-                boolean val0 = (Boolean)this.getValue(0, connection, object);
-                boolean val1 = (Boolean)this.getValue(1, connection, object);
+                boolean val0 = (Boolean)this.getValue(0, conn, object);
+                boolean val1 = (Boolean)this.getValue(1, conn, object);
                 return val0 != val1;
             }
             default:

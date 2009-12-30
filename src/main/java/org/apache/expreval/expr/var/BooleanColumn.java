@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.var;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.NumberValue;
@@ -34,8 +35,9 @@ public class BooleanColumn extends GenericColumn<NumberValue> implements Boolean
         super(attrib);
     }
 
-    public Boolean getValue(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
+    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException,
+                                                                                    NullColumnValueException {
         if (this.getExpressionContext().useResultData())
             return (Boolean)this.getColumnAttrib().getValueFromBytes((Result)object);
         else

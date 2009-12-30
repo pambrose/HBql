@@ -38,9 +38,9 @@ public class DescribeIndexForMappingStatement extends MappingStatement implement
         return this.indexName;
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
-        final Mapping mapping = connection.getMapping(this.getMappingName());
-        return DescribeIndexForTableStatement.execute(connection, this.getIndexName(), mapping.getTableName());
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
+        final Mapping mapping = conn.getMapping(this.getMappingName());
+        return DescribeIndexForTableStatement.executeDescribe(conn, this.getIndexName(), mapping.getTableName());
     }
 
     public static String usage() {

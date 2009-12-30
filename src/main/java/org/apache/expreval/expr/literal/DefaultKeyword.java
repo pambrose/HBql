@@ -36,8 +36,7 @@ public class DefaultKeyword implements GenericValue {
 
     }
 
-    public Object getValue(final HConnectionImpl connection,
-                           final Object object) {
+    public Object getValue(final HConnectionImpl conn, final Object object) {
         return null;
     }
 

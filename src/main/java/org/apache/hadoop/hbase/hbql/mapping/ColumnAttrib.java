@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.mapping;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -275,13 +276,14 @@ public abstract class ColumnAttrib implements Serializable {
             return IO.getSerialization().getScalarFromBytes(this.getFieldType(), b);
     }
 
-    public Object getValueFromBytes(final Result result) throws HBqlException, ResultMissingColumnException {
+    public Object getValueFromBytes(final Result result) throws HBqlException, ResultMissingColumnException, NullColumnValueException {
 
         if (this.isAKeyAttrib()) {
             return IO.getSerialization().getStringFromBytes(result.getRow());
         }
         else {
             if (!result.containsColumn(this.getFamilyNameAsBytes(), this.getColumnNameAsBytes())) {
+
                 // See if a default value is present
                 if (!this.hasDefaultArg())
                     throw new ResultMissingColumnException(this.getFamilyQualifiedName());
@@ -291,10 +293,15 @@ public abstract class ColumnAttrib implements Serializable {
 
             final byte[] b = result.getValue(this.getFamilyNameAsBytes(), this.getColumnNameAsBytes());
 
-            if (this.isAnArray())
-                return IO.getSerialization().getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
-            else
-                return IO.getSerialization().getScalarFromBytes(this.getFieldType(), b);
+            if (b == null) {
+                throw new NullColumnValueException(this.getFamilyQualifiedName());
+            }
+            else {
+                if (this.isAnArray())
+                    return IO.getSerialization().getArrayFromBytes(this.getFieldType(), this.getComponentType(), b);
+                else
+                    return IO.getSerialization().getScalarFromBytes(this.getFieldType(), b);
+            }
         }
     }
 

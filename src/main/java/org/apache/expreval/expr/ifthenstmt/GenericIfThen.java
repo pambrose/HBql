@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.ifthenstmt;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.DelegateStmt;
 import org.apache.expreval.expr.ExpressionType;
@@ -36,12 +37,13 @@ public abstract class GenericIfThen extends DelegateStmt<GenericIfThen> {
         super(type, arg0, arg1, arg2);
     }
 
-    public Object getValue(final HConnectionImpl connection,
-                           final Object object) throws HBqlException, ResultMissingColumnException {
-        if ((Boolean)this.getExprArg(0).getValue(connection, object))
-            return this.getExprArg(1).getValue(connection, object);
+    public Object getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                   ResultMissingColumnException,
+                                                                                   NullColumnValueException {
+        if ((Boolean)this.getExprArg(0).getValue(conn, object))
+            return this.getExprArg(1).getValue(conn, object);
         else
-            return this.getExprArg(2).getValue(connection, object);
+            return this.getExprArg(2).getValue(conn, object);
     }
 
     public String asString() {

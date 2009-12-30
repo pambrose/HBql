@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.instmt;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.NotValue;
@@ -36,14 +37,15 @@ public abstract class GenericInStmt extends NotValue<GenericInStmt> implements B
         super(ExpressionType.INSTMT, not, arg0, inList);
     }
 
-    protected abstract boolean evaluateInList(final Object object) throws HBqlException, ResultMissingColumnException;
+    protected abstract boolean evaluateInList(final Object object) throws HBqlException, ResultMissingColumnException, NullColumnValueException;
 
     protected List<GenericValue> getInList() {
         return this.getSubArgs(1);
     }
 
-    public Boolean getValue(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
+    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException,
+                                                                                    NullColumnValueException {
         final boolean retval = this.evaluateInList(object);
         return (this.isNot()) ? !retval : retval;
     }

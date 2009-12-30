@@ -21,6 +21,7 @@
 package org.apache.expreval.expr;
 
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
@@ -52,13 +53,17 @@ public class BooleanNot extends GenericExpression implements BooleanValue {
                 return new BooleanLiteral(this.getValue(null, null));
             }
             catch (ResultMissingColumnException e) {
-                throw new InternalErrorException();
+                throw new InternalErrorException("Missing column: " + e.getMessage());
+            }
+            catch (NullColumnValueException e) {
+                throw new InternalErrorException("Null value: " + e.getMessage());
             }
     }
 
-    public Boolean getValue(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
-        final boolean retval = (Boolean)this.getExprArg(0).getValue(connection, object);
+    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException,
+                                                                                    NullColumnValueException {
+        final boolean retval = (Boolean)this.getExprArg(0).getValue(conn, object);
         return (this.not) ? !retval : retval;
     }
 

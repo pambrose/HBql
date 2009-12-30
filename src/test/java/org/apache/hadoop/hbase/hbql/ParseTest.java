@@ -82,4 +82,23 @@ public class ParseTest extends TestSupport {
     public void parseTest3() throws HBqlException {
         parseSQL("CREATE EXECUTOR POOL pool1 (MAX_POOL_SIZE: 100, THREAD_COUNT: 20, THREADS_READ_RESULTS: TRUE, QUEUE_SIZE: 12 ) ", 1000, 1000);
     }
+
+
+    @Test
+    public void parseTest4() throws HBqlException {
+
+        final StringBuilder query = new StringBuilder("select * from tab3 WITH KEYS ");
+        boolean firstTime = true;
+        for (int rc = 0; rc < 1000; rc++) {
+            if (!firstTime)
+                query.append(", ");
+            else
+                firstTime = false;
+            query.append("'0000000001'TO '0000000009' ");
+        }
+
+        query.append("SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ");
+
+        parseSQL(query.toString(), 100, 5000);
+    }
 }

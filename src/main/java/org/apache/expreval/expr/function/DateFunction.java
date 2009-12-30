@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.function;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.expr.node.DateValue;
@@ -126,14 +127,14 @@ public class DateFunction extends GenericFunction implements DateValue {
         return this.intervalType;
     }
 
-    public Long getValue(final HConnectionImpl connection,
-                         final Object object) throws HBqlException, ResultMissingColumnException {
-
+    public Long getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                 ResultMissingColumnException,
+                                                                                 NullColumnValueException {
         switch (this.getFunctionType()) {
 
             case DATE: {
-                final String datestr = (String)this.getExprArg(0).getValue(connection, object);
-                final String pattern = (String)this.getExprArg(1).getValue(connection, object);
+                final String datestr = (String)this.getExprArg(0).getValue(conn, object);
+                final String pattern = (String)this.getExprArg(1).getValue(conn, object);
                 final SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 
                 try {
@@ -145,13 +146,13 @@ public class DateFunction extends GenericFunction implements DateValue {
             }
 
             case DATEINTERVAL: {
-                final Number num = (Number)this.getExprArg(0).getValue(connection, object);
+                final Number num = (Number)this.getExprArg(0).getValue(conn, object);
                 final long val = num.longValue();
                 return val * this.getIntervalType().getIntervalMillis();
             }
 
             case DATECONSTANT: {
-                return this.dateValue.getValue(connection, object);
+                return this.dateValue.getValue(conn, object);
             }
 
             case RANDOMDATE: {
@@ -159,10 +160,10 @@ public class DateFunction extends GenericFunction implements DateValue {
             }
 
             case LONGTODATE: {
-                final Number num = (Number)this.getExprArg(0).getValue(connection, object);
+                final Number num = (Number)this.getExprArg(0).getValue(conn, object);
                 final long val = num.longValue();
                 this.dateValue = new DateLiteral(val);
-                return this.dateValue.getValue(connection, object);
+                return this.dateValue.getValue(conn, object);
             }
 
             default:

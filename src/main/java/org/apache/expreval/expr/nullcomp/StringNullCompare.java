@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr.nullcomp;
 
+import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
@@ -32,9 +33,10 @@ public class StringNullCompare extends GenericNullCompare {
         super(ExpressionType.STRINGNULL, not, arg0);
     }
 
-    public Boolean getValue(final HConnectionImpl connection,
-                            final Object object) throws HBqlException, ResultMissingColumnException {
-        final String val = (String)this.getExprArg(0).getValue(connection, object);
+    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException,
+                                                                                    NullColumnValueException {
+        final String val = (String)this.getExprArg(0).getValue(conn, object);
         final boolean retval = (val == null);
         return (this.isNot()) ? !retval : retval;
     }

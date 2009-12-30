@@ -44,11 +44,11 @@ public abstract class StatementContext extends MappingStatement {
         this.setMapping(mapping);
     }
 
-    protected synchronized void validateMappingName(final HConnectionImpl connection) throws HBqlException {
+    protected synchronized void validateMappingName(final HConnectionImpl conn) throws HBqlException {
 
         if (this.getMapping() == null) {
             try {
-                this.setMapping(connection.getMapping(this.getMappingName()));
+                this.setMapping(conn.getMapping(this.getMappingName()));
             }
             catch (HBqlException e) {
                 e.printStackTrace();

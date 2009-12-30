@@ -92,10 +92,10 @@ public class WithArgs implements Serializable {
         }
     }
 
-    public void validate(final HConnectionImpl connection, final TableMapping mapping) throws HBqlException {
-        if (connection != null) {
+    public void validate(final HConnectionImpl conn, final TableMapping mapping) throws HBqlException {
+        if (conn != null) {
             if (this.hasAnIndex())
-                connection.validateIndexExistsForTable(this.getIndexName(), mapping.getTableName());
+                conn.validateIndexExistsForTable(this.getIndexName(), mapping.getTableName());
         }
     }
 
@@ -380,7 +380,7 @@ public class WithArgs implements Serializable {
     }
 
 
-    public List<RowRequest> getRowRequestList(final HConnectionImpl connection,
+    public List<RowRequest> getRowRequestList(final HConnectionImpl conn,
                                               final Mapping mapping,
                                               final Set<ColumnAttrib> columnAttribs) throws HBqlException {
 
@@ -388,7 +388,7 @@ public class WithArgs implements Serializable {
 
         if (this.hasAnIndex()) {
             // Need to look up the index
-            final IndexSpecification index = connection.getIndexForTable(this.getIndexName(), mapping.getTableName());
+            final IndexSpecification index = conn.getIndexForTable(this.getIndexName(), mapping.getTableName());
             final byte[][] cols = index.getIndexedColumns();
             final String indexedColumName = new String(cols[0]);
             keyAttrib = mapping.getAttribByVariableName(indexedColumName);

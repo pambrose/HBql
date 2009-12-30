@@ -37,9 +37,9 @@ public class DescribeTableStatement extends TableStatement {
         super(null, tableName);
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
-        final HTableDescriptor tableDesc = connection.getHTableDescriptor(this.getTableName());
+        final HTableDescriptor tableDesc = conn.getHTableDescriptor(this.getTableName());
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Table name: " + tableDesc.getNameAsString());
@@ -57,7 +57,7 @@ public class DescribeTableStatement extends TableStatement {
                                + "\n");
         }
 
-        final IndexedTableDescriptor indexDesc = connection.newIndexedTableDescriptor(this.getTableName());
+        final IndexedTableDescriptor indexDesc = conn.newIndexedTableDescriptor(this.getTableName());
         final Collection<IndexSpecification> indexes = indexDesc.getIndexes();
         if (indexes.isEmpty()) {
             retval.out.println("No indexes.");

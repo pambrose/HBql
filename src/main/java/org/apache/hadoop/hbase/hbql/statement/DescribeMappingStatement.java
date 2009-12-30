@@ -31,9 +31,9 @@ public class DescribeMappingStatement extends StatementContext implements Connec
         super(null, mappingName);
     }
 
-    protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
+    protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
-        this.validateMappingName(connection);
+        this.validateMappingName(conn);
 
         final TableMapping tableMapping = this.getTableMapping();
 
