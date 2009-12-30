@@ -151,7 +151,7 @@ executorPoolPropertyList returns [List<ExecutorPoolProperty> retval]
 	: LPAREN a1=executorPoolProperty {retval.add($a1.retval);} (COMMA a2=executorPoolProperty {retval.add($a2.retval);})* RPAREN;
 
 executorPoolProperty returns [ExecutorPoolProperty retval]
-//options {backtrack=true;}	
+options {backtrack=true;}	
 	: k=keyMAX_POOL_SIZE COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
 	| k=keyTHREAD_COUNT COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
 	| k=keyTHREADS_READ_RESULTS COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}

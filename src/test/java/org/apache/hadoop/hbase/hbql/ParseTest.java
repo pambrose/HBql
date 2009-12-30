@@ -80,6 +80,6 @@ public class ParseTest extends TestSupport {
 
     @Test
     public void parseTest3() throws HBqlException {
-        parseSQL("CREATE EXECUTOR POOL pool1 (MAX_POOL_SIZE: 100, THREAD_COUNT: 20, THREADS_READ_RESULTS: TRUE, QUEUE_SIZE: 12 ) ", 500, 1000);
+        parseSQL("CREATE EXECUTOR POOL pool1 (MAX_POOL_SIZE: 100, THREAD_COUNT: 20, THREADS_READ_RESULTS: TRUE, QUEUE_SIZE: 12 ) ", 1000, 1000);
     }
 }
