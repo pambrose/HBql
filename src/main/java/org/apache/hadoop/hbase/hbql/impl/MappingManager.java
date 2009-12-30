@@ -100,7 +100,15 @@ public class MappingManager {
             final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
             stmt.setParameter(1, mappingName);
             final List<HRecord> recs = stmt.executeQueryAndFetch();
-            return recs.size() > 0;
+            final boolean retval = recs.size() > 0;
+
+            if (!retval) {
+                // Remove from cached mappings map if it was dropped by another user
+                if (this.getCachedMappingsMap().containsKey(mappingName))
+                    this.getCachedMappingsMap().remove(mappingName);
+            }
+
+            return retval;
         }
     }
 
