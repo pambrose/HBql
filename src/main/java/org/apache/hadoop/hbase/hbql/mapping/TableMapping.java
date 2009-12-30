@@ -41,11 +41,11 @@ import java.util.Set;
 
 public class TableMapping extends Mapping implements HMapping {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3L;
 
     private transient HConnectionImpl connection;
     private boolean tempMapping;
-    private Set<String> familyNameSet = null;
+    private boolean systemMapping;
     private KeyInfo keyInfo = null;
 
     private final Map<String, HRecordAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
@@ -60,6 +60,7 @@ public class TableMapping extends Mapping implements HMapping {
 
     public TableMapping(final HConnectionImpl connection,
                         final boolean tempMapping,
+                        final boolean systemMapping,
                         final String mappingName,
                         final String tableName,
                         final KeyInfo keyInfo,
@@ -69,6 +70,7 @@ public class TableMapping extends Mapping implements HMapping {
 
         this.connection = connection;
         this.tempMapping = tempMapping;
+        this.systemMapping = systemMapping;
         this.keyInfo = keyInfo;
 
         // Add KEY column
@@ -76,9 +78,7 @@ public class TableMapping extends Mapping implements HMapping {
             processColumnDefintion(ColumnDefinition.newKeyColumn(keyInfo));
 
         if (familyMappingList != null) {
-
             for (final FamilyMapping familyMapping : familyMappingList) {
-
                 // Add columns
                 if (familyMapping.getColumnDefinitionList() != null)
                     for (final ColumnDefinition columnDefinition : familyMapping.getColumnDefinitionList())
@@ -272,15 +272,10 @@ public class TableMapping extends Mapping implements HMapping {
 
     public synchronized Set<String> getMappingFamilyNames() throws HBqlException {
 
-        // TODO May not want to cache this
-        if (this.familyNameSet == null) {
-            // Connction will be null from tests
-            this.familyNameSet = (this.getConnection() == null)
-                                 ? this.getFamilySet()
-                                 : this.getConnection().getFamilyNames(this.getTableName());
-        }
-
-        return this.familyNameSet;
+        // Connction will be null from tests
+        return (this.getConnection() == null)
+               ? this.getFamilySet()
+               : this.getConnection().getFamilyNames(this.getTableName());
     }
 
     public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
@@ -292,6 +287,10 @@ public class TableMapping extends Mapping implements HMapping {
 
     public boolean isTempMapping() {
         return this.tempMapping;
+    }
+
+    public boolean isSystemMapping() {
+        return this.systemMapping;
     }
 
     public void dropMapping() throws HBqlException {

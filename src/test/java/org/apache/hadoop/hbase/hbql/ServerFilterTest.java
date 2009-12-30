@@ -341,7 +341,7 @@ public class ServerFilterTest extends TestSupport {
                                                  + "  val1 string alias val1, "
                                                  + "  val2 int alias val2, "
                                                  + "  val3 int alias val3 DEFAULT 12 "
-                                                 + ")) if not mappingExists('tab3')");
+                                                 + "))");
 
                                     final StringBuilder query = new StringBuilder("select * from tab3 WITH KEYS ");
                                     final int rangeCount = Utils.getRandomPositiveInt(maxKeyRangeCount);

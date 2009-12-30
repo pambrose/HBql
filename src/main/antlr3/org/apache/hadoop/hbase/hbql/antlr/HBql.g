@@ -118,8 +118,8 @@ options {backtrack=true;}
 							{retval = new DeleteStatement($p.retval, $di.retval, $t.text, $w.retval);}
 	| keyINSERT keyINTO keyMAPPING? t=simpleId LPAREN e=exprList RPAREN ins=insertValues p=pred?
 							{retval = new InsertStatement($p.retval, $t.text, $e.retval, $ins.retval);}
-	| keyCREATE (tmp=keyTEMP)? keyMAPPING t=simpleId (keyFOR keyTABLE a=simpleId)? (am=attribMapping)? p=pred? 
-							{retval = new CreateMappingStatement($p.retval, $tmp.text != null,$t.text, $a.text, $am.retval);}
+	| keyCREATE (tmp=keyTEMP)? (sys=keySYSTEM)? keyMAPPING t=simpleId (keyFOR keyTABLE a=simpleId)? (am=attribMapping)? p=pred? 
+							{retval = new CreateMappingStatement($p.retval, $tmp.text != null,  $sys.text != null, $t.text, $a.text, $am.retval);}
 	| keyDROP keyMAPPING t=simpleId p=pred?		{retval = new DropMappingStatement($p.retval, $t.text);}
 	| keyDESCRIBE keyMAPPING t=simpleId 		{retval = new DescribeMappingStatement($t.text);}
 	| keyCREATE keyTABLE t=simpleId LPAREN fd=familyDefinitionList RPAREN p=pred?
@@ -647,6 +647,7 @@ keySELECT                       : {isKeyword(input, "SELECT")}? ID;
 keySERVER                       : {isKeyword(input, "SERVER")}? ID;
 keySET                          : {isKeyword(input, "SET")}? ID;
 keySHOW                         : {isKeyword(input, "SHOW")}? ID;
+keySYSTEM                       : {isKeyword(input, "SYSTEM")}? ID;
 keyTABLE                        : {isKeyword(input, "TABLE")}? ID;
 keyTABLES                       : {isKeyword(input, "TABLES")}? ID;
 keyTEMP                         : {isKeyword(input, "TEMP")}? ID;

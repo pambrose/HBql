@@ -136,7 +136,7 @@ public class ParserSupport extends Parser {
         final List<FamilyMapping> mappingList = Lists.newArrayList(mapping);
 
         try {
-            return new TableMapping(null, true, EMBEDDED, null, null, mappingList);
+            return new TableMapping(null, true, false, EMBEDDED, null, null, mappingList);
         }
         catch (HBqlException e) {
             e.printStackTrace();

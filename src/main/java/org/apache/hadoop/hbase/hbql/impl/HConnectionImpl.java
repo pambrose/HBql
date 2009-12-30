@@ -91,20 +91,23 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public static HBaseConfiguration getHBaseConfiguration(final String master) {
-        final Configuration c = new Configuration();
-        c.set(HConnectionImpl.MASTER, master);
-        return new HBaseConfiguration(c);
+        final Configuration configuration = new Configuration();
+        configuration.set(HConnectionImpl.MASTER, master);
+        return new HBaseConfiguration(configuration);
     }
 
     public void reset() {
-        /*
+
         try {
             this.getMappingManager().clear();
         }
         catch (HBqlException e) {
             e.printStackTrace();
         }
-        */
+
+        if (this.annotationMappingMap != null)
+            this.annotationMappingMap.clear();
+
         this.setQueryExecutorPoolName(null);
         this.setQueryExecutor(null);
     }
@@ -166,13 +169,14 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         this.checkIfClosed();
         if (this.hbaseAdmin == null) {
             synchronized (this) {
-                if (this.hbaseAdmin == null)
+                if (this.hbaseAdmin == null) {
                     try {
                         this.hbaseAdmin = new HBaseAdmin(this.getHBaseConfiguration());
                     }
                     catch (MasterNotRunningException e) {
                         throw new HBqlException(e);
                     }
+                }
             }
         }
         return this.hbaseAdmin;
@@ -334,15 +338,21 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public Set<HMapping> getMappings() throws HBqlException {
-        return this.getMappingManager().getMappings();
+        return this.getMappingManager().getAllMappings();
     }
 
-    public synchronized TableMapping createMapping(final boolean tempMapping,
-                                                   final String mappingName,
-                                                   final String tableName,
-                                                   final KeyInfo keyInfo,
-                                                   final List<FamilyMapping> familyList) throws HBqlException {
-        return this.getMappingManager().createMapping(tempMapping, mappingName, tableName, keyInfo, familyList);
+    public TableMapping createMapping(final boolean tempMapping,
+                                      final boolean systemMapping,
+                                      final String mappingName,
+                                      final String tableName,
+                                      final KeyInfo keyInfo,
+                                      final List<FamilyMapping> familyList) throws HBqlException {
+        return this.getMappingManager().createMapping(tempMapping,
+                                                      systemMapping,
+                                                      mappingName,
+                                                      tableName,
+                                                      keyInfo,
+                                                      familyList);
     }
 
     // Table Routines
@@ -455,12 +465,12 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     // The value returned from this call must be eventually released.
     public ExecutorQueue getExecutorForConnection() throws HBqlException {
         // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
-        final ExecutorQueue retval = this.getQueryExecutor() != null
-                                     ? this.getQueryExecutorImpl().getExecutor()
-                                     : this.takeExecutorFromPool();
+        final ExecutorQueue executorQueue = this.getQueryExecutor() != null
+                                            ? this.getQueryExecutorImpl().getExecutor()
+                                            : this.takeExecutorFromPool();
         // Reset it prior to handing it out
-        retval.reset();
-        return retval;
+        executorQueue.reset();
+        return executorQueue;
     }
 
     private ExecutorQueue takeExecutorFromPool() throws HBqlException {

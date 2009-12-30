@@ -37,37 +37,43 @@ import java.util.Set;
 public class MappingManager {
 
     private final HConnectionImpl connection;
-    private final Map<String, TableMapping> mappingMap = Maps.newConcurrentHashMap();
+    private final Map<String, TableMapping> userMappingsMap = Maps.newConcurrentHashMap();
+    private final Map<String, TableMapping> systemMappingsMap = Maps.newConcurrentHashMap();
 
     public MappingManager(final HConnectionImpl connection) {
         this.connection = connection;
     }
 
-    public void clear() {
-        this.getMappingMap().clear();
+    public synchronized void clear() {
+        this.getUserMappingsMap().clear();
     }
 
     public void validatePersistentMetadata() throws HBqlException {
 
-        String sql = "CREATE TEMP MAPPING system_mappings(mapping_name KEY, f1(mapping_obj object alias mapping_obj))";
-        this.getConnection().execute(sql);
+        final String sql1 = "CREATE TEMP SYSTEM MAPPING system_mappings(mapping_name KEY, f1(mapping_obj object alias mapping_obj))";
+        this.getConnection().execute(sql1);
 
-        sql = "CREATE TABLE system_mappings (f1(MAX_VERSIONS: 5)) IF NOT tableExists('system_mappings')";
-        this.getConnection().execute(sql);
+        final String sql2 = "CREATE TABLE system_mappings (f1(MAX_VERSIONS: 5)) IF NOT tableExists('system_mappings')";
+        this.getConnection().execute(sql2);
     }
 
     private HConnectionImpl getConnection() {
-        return connection;
+        return this.connection;
     }
 
-    private Map<String, TableMapping> getMappingMap() {
-        return this.mappingMap;
+    private Map<String, TableMapping> getUserMappingsMap() {
+        return this.userMappingsMap;
     }
 
-    public Set<HMapping> getMappings() throws HBqlException {
+    private Map<String, TableMapping> getSystemMappingsMap() {
+        return this.systemMappingsMap;
+    }
+
+    public Set<HMapping> getAllMappings() throws HBqlException {
 
         final Set<HMapping> names = Sets.newHashSet();
-        names.addAll(getMappingMap().values());
+        names.addAll(getUserMappingsMap().values());
+        names.addAll(getSystemMappingsMap().values());
 
         final String sql = "SELECT mapping_obj FROM system_mappings";
         final List<HRecord> recs = this.getConnection().executeQueryAndFetch(sql);
@@ -78,7 +84,9 @@ public class MappingManager {
 
     public boolean mappingExists(final String mappingName) throws HBqlException {
 
-        if (this.getMappingMap().get(mappingName) != null)
+        if (this.getUserMappingsMap().get(mappingName) != null)
+            return true;
+        else if (this.getSystemMappingsMap().get(mappingName) != null)
             return true;
         else {
             final String sql = "SELECT mapping_name FROM system_mappings WITH KEYS ?";
@@ -91,8 +99,12 @@ public class MappingManager {
 
     public boolean dropMapping(final String mappingName) throws HBqlException {
 
-        if (this.getMappingMap().containsKey(mappingName)) {
-            this.getMappingMap().remove(mappingName);
+        if (this.getUserMappingsMap().containsKey(mappingName)) {
+            this.getUserMappingsMap().remove(mappingName);
+            return true;
+        }
+        else if (this.getSystemMappingsMap().containsKey(mappingName)) {
+            this.getSystemMappingsMap().remove(mappingName);
             return true;
         }
         else {
@@ -105,6 +117,7 @@ public class MappingManager {
     }
 
     public synchronized TableMapping createMapping(final boolean isTemp,
+                                                   final boolean isSystem,
                                                    final String mappingName,
                                                    final String tableName,
                                                    final KeyInfo keyInfo,
@@ -115,13 +128,18 @@ public class MappingManager {
 
         final TableMapping tableMapping = new TableMapping(this.getConnection(),
                                                            isTemp,
+                                                           isSystem,
                                                            mappingName,
                                                            tableName,
                                                            keyInfo,
                                                            familyMappingList);
 
-        if (tableMapping.isTempMapping())
-            this.getMappingMap().put(mappingName, tableMapping);
+        if (tableMapping.isTempMapping()) {
+            if (!tableMapping.isSystemMapping())
+                this.getUserMappingsMap().put(mappingName, tableMapping);
+            else
+                this.getSystemMappingsMap().put(mappingName, tableMapping);
+        }
         else
             this.insertMapping(tableMapping);
 
@@ -139,8 +157,11 @@ public class MappingManager {
 
     public TableMapping getMapping(final String mappingName) throws HBqlException {
 
-        if (this.getMappingMap().containsKey(mappingName)) {
-            return this.getMappingMap().get(mappingName);
+        if (this.getUserMappingsMap().containsKey(mappingName)) {
+            return this.getUserMappingsMap().get(mappingName);
+        }
+        else if (this.getSystemMappingsMap().containsKey(mappingName)) {
+            return this.getSystemMappingsMap().get(mappingName);
         }
         else {
             final String sql = "SELECT mapping_obj FROM system_mappings WITH KEYS ?";

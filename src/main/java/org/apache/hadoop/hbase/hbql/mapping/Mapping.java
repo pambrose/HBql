@@ -34,7 +34,7 @@ import java.util.Set;
 
 public abstract class Mapping implements Serializable {
 
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 3L;
 
     private String mappingName;
     private String tableName;

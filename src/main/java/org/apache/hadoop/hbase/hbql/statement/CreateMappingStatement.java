@@ -35,17 +35,20 @@ import java.util.Set;
 public class CreateMappingStatement extends StatementContext implements ConnectionStatement {
 
     private final boolean tempMapping;
+    private final boolean systemMapping;
     private final String tableName;
     private final KeyInfo keyInfo;
     private final List<FamilyMapping> familyMappingList;
 
     public CreateMappingStatement(final StatementPredicate predicate,
                                   final boolean tempMapping,
+                                  final boolean systemMapping,
                                   final String mappingName,
                                   final String tableName,
                                   final AttribMapping attribMapping) {
         super(predicate, mappingName);
         this.tempMapping = tempMapping;
+        this.systemMapping = systemMapping;
         this.tableName = (tableName == null || tableName.length() == 0) ? mappingName : tableName;
         this.keyInfo = attribMapping != null ? attribMapping.getKeyInfo() : null;
         this.familyMappingList = attribMapping != null ? attribMapping.getFamilyMappingList() : null;
@@ -53,6 +56,10 @@ public class CreateMappingStatement extends StatementContext implements Connecti
 
     private boolean isTempMapping() {
         return this.tempMapping;
+    }
+
+    private boolean isSystemMapping() {
+        return this.systemMapping;
     }
 
     private String getTableName() {
@@ -92,6 +99,7 @@ public class CreateMappingStatement extends StatementContext implements Connecti
     protected ExecutionResults execute(final HConnectionImpl connection) throws HBqlException {
 
         final TableMapping tableMapping = connection.createMapping(this.isTempMapping(),
+                                                                   this.isSystemMapping(),
                                                                    this.getMappingName(),
                                                                    this.getTableName(),
                                                                    this.getKeyInfo(),
