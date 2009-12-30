@@ -20,24 +20,12 @@
 
 package org.apache.expreval.expr.nullcomp;
 
-import org.apache.expreval.client.NullColumnValueException;
-import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class DateNullCompare extends GenericNullCompare {
 
     public DateNullCompare(final boolean not, final GenericValue arg0) {
         super(ExpressionType.DATENULL, not, arg0);
-    }
-
-    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
-                                                                                    ResultMissingColumnException,
-                                                                                    NullColumnValueException {
-        final Long val = (Long)this.getExprArg(0).getValue(conn, object);
-        final boolean retval = (val == null);
-        return (this.isNot()) ? !retval : retval;
     }
 }

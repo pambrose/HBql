@@ -20,7 +20,6 @@
 
 package org.apache.expreval.expr.nullcomp;
 
-import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.BooleanValue;
@@ -63,8 +62,7 @@ public class DelegateNullCompare extends GenericNullCompare {
     }
 
     public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
-                                                                                    ResultMissingColumnException,
-                                                                                    NullColumnValueException {
+                                                                                    ResultMissingColumnException {
         return this.getTypedExpr().getValue(conn, object);
     }
 }

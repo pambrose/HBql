@@ -20,10 +20,14 @@
 
 package org.apache.expreval.expr.nullcomp;
 
+import org.apache.expreval.client.NullColumnValueException;
+import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.NotValue;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public abstract class GenericNullCompare extends NotValue<GenericNullCompare> implements BooleanValue {
 
@@ -33,5 +37,18 @@ public abstract class GenericNullCompare extends NotValue<GenericNullCompare> im
 
     public String asString() {
         return this.getExprArg(0).asString() + " IS" + notAsString() + " NULL";
+    }
+
+    public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                    ResultMissingColumnException {
+        boolean retval;
+        try {
+            this.getExprArg(0).getValue(conn, object);
+            retval = false;
+        }
+        catch (NullColumnValueException e) {
+            retval = true;
+        }
+        return (this.isNot()) ? !retval : retval;
     }
 }
