@@ -43,8 +43,8 @@ public abstract class GenericNullCompare extends NotValue<GenericNullCompare> im
                                                                                     ResultMissingColumnException {
         boolean retval;
         try {
-            this.getExprArg(0).getValue(conn, object);
-            retval = false;
+            final Object val = this.getExprArg(0).getValue(conn, object);
+            retval = (val == null);
         }
         catch (NullColumnValueException e) {
             retval = true;
