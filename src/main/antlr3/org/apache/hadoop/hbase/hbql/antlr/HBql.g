@@ -119,7 +119,7 @@ options {backtrack=true;}
 	| keyINSERT keyINTO keyMAPPING? t=simpleId LPAREN e=exprList RPAREN ins=insertValues p=pred?
 							{retval = new InsertStatement($p.retval, $t.text, $e.retval, $ins.retval);}
 	| keyCREATE (tmp=keyTEMP)? (sys=keySYSTEM)? keyMAPPING t=simpleId (keyFOR keyTABLE a=simpleId)? (am=attribMapping)? p=pred? 
-							{retval = new CreateMappingStatement($p.retval, $tmp.text != null,  $sys.text != null, $t.text, $a.text, $am.retval);}
+							{retval = new CreateMappingStatement($p.retval, $tmp.retval!=null,  $sys.retval!=null, $t.text, $a.text, $am.retval);}
 	| keyDROP keyMAPPING t=simpleId p=pred?		{retval = new DropMappingStatement($p.retval, $t.text);}
 	| keyDESCRIBE keyMAPPING t=simpleId 		{retval = new DescribeMappingStatement($t.text);}
 	| keyCREATE keyTABLE t=simpleId LPAREN fd=familyDefinitionList RPAREN p=pred?
@@ -144,18 +144,6 @@ options {backtrack=true;}
 							{retval = new CreateQueryExecutorPoolStatement($p.retval, new QueryExecutorPoolDefinition($t.text, $pl.retval));}
 	| keyDROP keyQUERY? keyEXECUTOR keyPOOL t=simpleId p=pred?
 							{retval = new DropQueryExecutorPoolStatement($p.retval, $t.text);}
-	;
-
-executorPoolPropertyList returns [List<ExecutorPoolProperty> retval]
-@init {retval = Lists.newArrayList();}
-	: LPAREN a1=executorPoolProperty {retval.add($a1.retval);} (COMMA a2=executorPoolProperty {retval.add($a2.retval);})* RPAREN;
-
-executorPoolProperty returns [ExecutorPoolProperty retval]
-options {backtrack=true;}	
-	: k=keyMAX_POOL_SIZE COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyTHREAD_COUNT COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyTHREADS_READ_RESULTS COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyQUEUE_SIZE COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
 	;
 
 indexColumnList returns [List<String> retval]
@@ -206,8 +194,19 @@ familyDefinitionList returns [List<FamilyDefinition> retval]
 	: a1=familyDefinition {retval.add($a1.retval);} (COMMA a2=familyDefinition {retval.add($a2.retval);})*;
 
 familyDefinition returns [FamilyDefinition retval]
-	: t=simpleId LPAREN p=familyPropertyList? RPAREN	
-							{retval = new FamilyDefinition($t.text, $p.retval);};
+	: t=simpleId LPAREN p=familyPropertyList? RPAREN{retval = new FamilyDefinition($t.text, $p.retval);};
+
+executorPoolPropertyList returns [List<ExecutorPoolProperty> retval]
+@init {retval = Lists.newArrayList();}
+	: LPAREN a1=executorPoolProperty {retval.add($a1.retval);} (COMMA a2=executorPoolProperty {retval.add($a2.retval);})* RPAREN;
+
+executorPoolProperty returns [ExecutorPoolProperty retval]
+options {backtrack=true;}	
+	: k=keyMAX_POOL_SIZE COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	| k=keyTHREAD_COUNT COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	| k=keyTHREADS_READ_RESULTS COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	| k=keyQUEUE_SIZE COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	;
 
 familyPropertyList returns [List<FamilyProperty> retval]							
 @init {retval = Lists.newArrayList();}
@@ -216,7 +215,7 @@ familyPropertyList returns [List<FamilyProperty> retval]
 familyProperty returns [FamilyProperty retval]
 options {backtrack=true;}	
 	: k=keyMAX_VERSIONS COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
-	| k=keyMAP_FILE_INDEX_INTERVAL COLON v=exprValue{retval = new FamilyProperty($k.retval, $v.retval);}
+	| k=keyMAP_FILE_INDEX_INTERVAL COLON v=exprValue {retval = new FamilyProperty($k.retval, $v.retval);}
 	| k=keyTTL COLON v=exprValue			 {retval = new FamilyProperty($k.retval, $v.retval);}
 	| k=keyBLOCK_SIZE COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
 	| k=keyBLOCK_CACHE_ENABLED COLON v=exprValue	 {retval = new FamilyProperty($k.retval, $v.retval);}
@@ -234,7 +233,7 @@ familyMappingList returns [List<FamilyMapping> retval]
 
 familyMapping returns [FamilyMapping retval]
 	: f=simpleId (keyINCLUDE d=keyUNMAPPED)? (LPAREN c=columnDefinitionnList RPAREN)? 
-							{retval = new FamilyMapping($f.text,  $d.text!=null, $c.retval);};
+							{retval = new FamilyMapping($f.text,  $d.retval!=null, $c.retval);};
 
 columnDefinitionnList returns [List<ColumnDefinition> retval]
 @init {retval = Lists.newArrayList();}
@@ -327,7 +326,7 @@ andExpr returns [GenericValue retval]
 							{retval = getLeftAssociativeBooleanCompare(exprList, opList);};
 
 notExpr returns [GenericValue retval]			 
-	: (n=keyNOT)? p=eqneExpr			{retval = ($n.text != null) ? new BooleanNot(true, $p.retval) : $p.retval;};
+	: (n=keyNOT)? p=eqneExpr			{retval = ($n.retval!=null) ? new BooleanNot(true, $p.retval) : $p.retval;};
 
 eqneExpr returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
@@ -400,13 +399,13 @@ booleanLiteral returns [BooleanLiteral retval]
 booleanFunctions returns [BooleanValue retval]
 options {backtrack=true; memoize=true;}	
 	: s1=calcExpr n=keyNOT? keyCONTAINS s2=calcExpr		
-							{retval = new ContainsStmt($s1.retval, ($n.text != null), $s2.retval);}
-	| s1=calcExpr n=keyNOT? keyLIKE s2=calcExpr 	{retval = new LikeStmt($s1.retval, ($n.text != null), $s2.retval);}
+							{retval = new ContainsStmt($s1.retval, ($n.retval!=null), $s2.retval);}
+	| s1=calcExpr n=keyNOT? keyLIKE s2=calcExpr 	{retval = new LikeStmt($s1.retval, ($n.retval!=null), $s2.retval);}
 	| s1=calcExpr n=keyNOT? keyBETWEEN s2=calcExpr keyAND s3=calcExpr		
-							{retval = new DelegateBetweenStmt($s1.retval, ($n.text != null), $s2.retval, $s3.retval);}
+							{retval = new DelegateBetweenStmt($s1.retval, ($n.retval!=null), $s2.retval, $s3.retval);}
 	| s1=calcExpr n=keyNOT? keyIN LPAREN l=exprList RPAREN			
-							{retval = new DelegateInStmt($s1.retval, ($n.text != null), $l.retval);} 
-	| s1=calcExpr keyIS n=keyNOT? keyNULL		{retval = new DelegateNullCompare(($n.text != null), $s1.retval);}	
+							{retval = new DelegateInStmt($s1.retval, ($n.retval!=null), $l.retval);} 
+	| s1=calcExpr keyIS n=keyNOT? keyNULL		{retval = new DelegateNullCompare(($n.retval!=null), $s1.retval);}	
 	;
 
 valueFunctions returns [GenericValue retval]
@@ -579,6 +578,12 @@ keyMAP_FILE_INDEX_INTERVAL returns [String retval] : {isKeyword(input, "MAP_FILE
 keyMAX_VERSIONS returns [String retval] 	   : {isKeyword(input, "MAX_VERSIONS")}? id=ID {retval = $id.text;};
 keyTTL returns [String retval]     		   : {isKeyword(input, "TTL")}? id=ID {retval = $id.text;};
 
+// retval is used with these
+keyTEMP returns [String retval]                    : {isKeyword(input, "TEMP")}? id=ID {retval = $id.text;};
+keySYSTEM returns [String retval]                  : {isKeyword(input, "SYSTEM")}? id=ID {retval = $id.text;};
+keyUNMAPPED returns [String retval]                : {isKeyword(input, "UNMAPPED")}? id=ID {retval = $id.text;};
+keyNOT returns [String retval]                     : {isKeyword(input, "NOT")}? id=ID {retval = $id.text;};
+
 keyADD                          : {isKeyword(input, "ADD")}? ID;
 keyALIAS                        : {isKeyword(input, "ALIAS")}? ID;
 keyALL                          : {isKeyword(input, "ALL")}? ID;
@@ -626,7 +631,6 @@ keyMAPPING                      : {isKeyword(input, "MAPPING")}? ID;
 keyMAPPINGS                     : {isKeyword(input, "MAPPINGS")}? ID;
 keyMAX                          : {isKeyword(input, "MAX")}? ID;
 keyNONE                         : {isKeyword(input, "NONE")}? ID;
-keyNOT                          : {isKeyword(input, "NOT")}? ID;
 keyNULL                         : {isKeyword(input, "NULL")}? ID;
 keyON                           : {isKeyword(input, "ON")}? ID;
 keyOR                           : {isKeyword(input, "OR")}? ID;
@@ -640,15 +644,12 @@ keySELECT                       : {isKeyword(input, "SELECT")}? ID;
 keySERVER                       : {isKeyword(input, "SERVER")}? ID;
 keySET                          : {isKeyword(input, "SET")}? ID;
 keySHOW                         : {isKeyword(input, "SHOW")}? ID;
-keySYSTEM                       : {isKeyword(input, "SYSTEM")}? ID;
 keyTABLE                        : {isKeyword(input, "TABLE")}? ID;
 keyTABLES                       : {isKeyword(input, "TABLES")}? ID;
-keyTEMP                         : {isKeyword(input, "TEMP")}? ID;
 keyTHEN                         : {isKeyword(input, "THEN")}? ID;
 keyTIMESTAMP                    : {isKeyword(input, "TIMESTAMP")}? ID;
 keyTO                           : {isKeyword(input, "TO")}? ID;
 keyTRUE                         : {isKeyword(input, "TRUE")}? ID;
-keyUNMAPPED                     : {isKeyword(input, "UNMAPPED")}? ID;
 keyVALUES                       : {isKeyword(input, "VALUES")}? ID;
 keyVERSION                      : {isKeyword(input, "VERSION")}? ID;
 keyVERSIONS                     : {isKeyword(input, "VERSIONS")}? ID;
