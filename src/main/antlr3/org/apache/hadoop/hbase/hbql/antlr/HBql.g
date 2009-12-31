@@ -66,6 +66,7 @@ import org.apache.hadoop.hbase.hbql.statement.args.*;
 import org.apache.hadoop.hbase.hbql.statement.select.*;
 import org.apache.hadoop.hbase.hbql.executor.*;
 import org.apache.hadoop.hbase.hbql.mapping.*;
+import org.apache.hadoop.hbase.hbql.util.*;
 
 import org.apache.expreval.expr.*;
 import org.apache.expreval.expr.node.*;
@@ -80,7 +81,6 @@ import org.apache.expreval.expr.literal.*;
 import org.apache.expreval.expr.nullcomp.*;
 import org.apache.expreval.expr.stringpattern.*;
 import org.apache.expreval.expr.var.*;
-import org.apache.expreval.util.*;
 }
 
 @lexer::header {
@@ -579,10 +579,10 @@ keyMAX_VERSIONS returns [String retval] 	   : {isKeyword(input, "MAX_VERSIONS")}
 keyTTL returns [String retval]     		   : {isKeyword(input, "TTL")}? id=ID {retval = $id.text;};
 
 // retval is used with these
-keyTEMP returns [String retval]                    : {isKeyword(input, "TEMP")}? id=ID {retval = $id.text;};
-keySYSTEM returns [String retval]                  : {isKeyword(input, "SYSTEM")}? id=ID {retval = $id.text;};
-keyUNMAPPED returns [String retval]                : {isKeyword(input, "UNMAPPED")}? id=ID {retval = $id.text;};
 keyNOT returns [String retval]                     : {isKeyword(input, "NOT")}? id=ID {retval = $id.text;};
+keySYSTEM returns [String retval]                  : {isKeyword(input, "SYSTEM")}? id=ID {retval = $id.text;};
+keyTEMP returns [String retval]                    : {isKeyword(input, "TEMP")}? id=ID {retval = $id.text;};
+keyUNMAPPED returns [String retval]                : {isKeyword(input, "UNMAPPED")}? id=ID {retval = $id.text;};
 
 keyADD                          : {isKeyword(input, "ADD")}? ID;
 keyALIAS                        : {isKeyword(input, "ALIAS")}? ID;
