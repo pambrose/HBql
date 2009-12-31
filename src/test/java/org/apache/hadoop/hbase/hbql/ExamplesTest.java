@@ -37,6 +37,7 @@ import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.apache.hadoop.hbase.jdbc.ConnectionPool;
+import org.junit.Test;
 
 import javax.sql.PooledConnection;
 import java.sql.Connection;
@@ -47,6 +48,11 @@ import java.sql.Statement;
 import java.util.Set;
 
 public class ExamplesTest extends TestSupport {
+
+    @Test
+    public void dummyTest() {
+        assertTrue(true);
+    }
 
     public void showTables() throws HBqlException {
 
