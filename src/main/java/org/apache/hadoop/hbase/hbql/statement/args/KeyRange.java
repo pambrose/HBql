@@ -25,7 +25,6 @@ import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -35,6 +34,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.GetRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.IndexRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.statement.select.ScanRequest;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.Arrays;
 import java.util.Collection;

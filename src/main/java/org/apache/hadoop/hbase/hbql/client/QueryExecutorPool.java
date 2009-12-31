@@ -18,23 +18,24 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.util;
+package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.ResultExecutor;
 import org.apache.hadoop.hbase.hbql.impl.ResultScannerExecutor;
+import org.apache.hadoop.hbase.hbql.util.ElementPool;
+import org.apache.hadoop.hbase.hbql.util.ExecutorWithQueue;
 
-public class ExecutorPool extends ElementPool<ExecutorWithQueue> {
+public class QueryExecutorPool extends ElementPool<ExecutorWithQueue> {
 
     private final int threadCount;
     private final boolean threadsReadResults;
     private final int queueSize;
 
-    public ExecutorPool(final String name,
-                        final int maxPoolSize,
-                        final int threadCount,
-                        final boolean threadsReadResults,
-                        final int queueSize) {
+    public QueryExecutorPool(final String name,
+                             final int maxPoolSize,
+                             final int threadCount,
+                             final boolean threadsReadResults,
+                             final int queueSize) {
         super(name, maxPoolSize);
         this.threadCount = threadCount;
         this.threadsReadResults = threadsReadResults;
@@ -45,16 +46,16 @@ public class ExecutorPool extends ElementPool<ExecutorWithQueue> {
         return this.threadCount;
     }
 
-    private boolean threadsReadResults() {
+    public boolean getThreadsReadResults() {
         return this.threadsReadResults;
     }
 
-    private int getQueueSize() {
+    public int getQueueSize() {
         return this.queueSize;
     }
 
     protected ExecutorWithQueue newElement() throws HBqlException {
-        return this.threadsReadResults()
+        return this.getThreadsReadResults()
                ? ResultExecutor.newPooledResultExecutor(this, this.getThreadCount(), this.getQueueSize())
                : ResultScannerExecutor.newPooledResultScannerExecutor(this, this.getThreadCount(), this.getQueueSize());
     }

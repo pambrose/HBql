@@ -20,8 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.mapping;
 
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.util.Maps;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

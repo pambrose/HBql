@@ -20,8 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.expreval.util.Lists;
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.hbql.impl.BatchAction;
@@ -34,6 +32,8 @@ import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
+import org.apache.hadoop.hbase.hbql.util.Lists;
+import org.apache.hadoop.hbase.hbql.util.Maps;
 
 import java.io.IOException;
 import java.util.List;

@@ -22,14 +22,14 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
-import org.apache.expreval.util.NullIterator;
-import org.apache.expreval.util.QueueElement;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
+import org.apache.hadoop.hbase.hbql.util.NullIterator;
+import org.apache.hadoop.hbase.hbql.util.QueueElement;
 
 import java.io.IOException;
 import java.util.Iterator;

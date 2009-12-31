@@ -21,8 +21,8 @@
 package org.apache.yaoql.impl;
 
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.util.Maps;
 
 import java.util.Map;
 

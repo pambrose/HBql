@@ -20,7 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.mapping;
 
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.Column;
 import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
@@ -30,6 +29,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.NonStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
+import org.apache.hadoop.hbase.hbql.util.Maps;
 
 import java.lang.reflect.Field;
 import java.util.List;

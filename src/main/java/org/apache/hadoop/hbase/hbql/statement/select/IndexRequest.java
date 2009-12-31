@@ -20,7 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.statement.select;
 
-import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -31,6 +30,7 @@ import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;

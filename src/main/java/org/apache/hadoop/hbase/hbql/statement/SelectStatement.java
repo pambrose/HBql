@@ -20,14 +20,14 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.expreval.util.Lists;
-import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidColumnException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
+import org.apache.hadoop.hbase.hbql.util.Lists;
+import org.apache.hadoop.hbase.hbql.util.Sets;
 
 import java.util.List;
 import java.util.Set;

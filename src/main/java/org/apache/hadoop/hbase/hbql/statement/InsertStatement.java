@@ -25,7 +25,6 @@ import org.apache.expreval.expr.function.DelegateFunction;
 import org.apache.expreval.expr.literal.DefaultKeyword;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
-import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -35,6 +34,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.statement.args.InsertValueSource;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.List;
 

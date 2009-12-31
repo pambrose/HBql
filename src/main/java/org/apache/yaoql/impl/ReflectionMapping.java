@@ -20,10 +20,10 @@
 
 package org.apache.yaoql.impl;
 
-import org.apache.expreval.util.Lists;
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
+import org.apache.hadoop.hbase.hbql.util.Lists;
+import org.apache.hadoop.hbase.hbql.util.Maps;
 
 import java.lang.reflect.Field;
 import java.util.Collection;

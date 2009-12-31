@@ -21,8 +21,6 @@
 package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.expreval.util.Lists;
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
@@ -34,6 +32,8 @@ import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.NonStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
+import org.apache.hadoop.hbase.hbql.util.Lists;
+import org.apache.hadoop.hbase.hbql.util.Maps;
 
 import java.util.List;
 import java.util.Map;

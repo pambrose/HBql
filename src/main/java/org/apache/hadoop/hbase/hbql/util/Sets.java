@@ -18,11 +18,18 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.util;
+package org.apache.hadoop.hbase.hbql.util;
 
-public interface PoolableElement {
+import java.util.Arrays;
+import java.util.HashSet;
 
-    void reset();
+public class Sets {
 
-    void release();
+    public static <E> HashSet<E> newHashSet() {
+        return new HashSet<E>();
+    }
+
+    public static <E> HashSet<E> newHashSet(E... vals) {
+        return new HashSet<E>(Arrays.asList(vals));
+    }
 }

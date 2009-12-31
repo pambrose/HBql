@@ -28,8 +28,6 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.expreval.expr.var.GenericColumn;
 import org.apache.expreval.expr.var.NamedParameter;
-import org.apache.expreval.util.Lists;
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -39,6 +37,8 @@ import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.util.Lists;
+import org.apache.hadoop.hbase.hbql.util.Maps;
 
 import java.io.Serializable;
 import java.util.List;

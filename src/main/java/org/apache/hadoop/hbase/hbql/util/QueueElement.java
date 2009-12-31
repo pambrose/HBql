@@ -18,22 +18,30 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.util;
+package org.apache.hadoop.hbase.hbql.util;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+public class QueueElement<T> {
+    private final T element;
+    private final boolean completeToken;
 
-public class NullIterator<T> implements Iterator<T> {
-
-    public boolean hasNext() {
-        return false;
+    QueueElement(final T element, boolean completeToken) {
+        this.element = element;
+        this.completeToken = completeToken;
     }
 
-    public T next() {
-        throw new NoSuchElementException();
+    public static <T> QueueElement<T> newElement(final T element) {
+        return new QueueElement<T>(element, false);
     }
 
-    public void remove() {
+    public static <T> QueueElement<T> newComplete() {
+        return new QueueElement<T>(null, true);
+    }
 
+    public T getElement() {
+        return this.element;
+    }
+
+    public boolean isCompleteToken() {
+        return this.completeToken;
     }
 }

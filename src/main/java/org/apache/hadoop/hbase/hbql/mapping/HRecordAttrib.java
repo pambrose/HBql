@@ -22,11 +22,11 @@ package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.statement.args.DefaultArg;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.lang.reflect.Method;
 import java.util.List;

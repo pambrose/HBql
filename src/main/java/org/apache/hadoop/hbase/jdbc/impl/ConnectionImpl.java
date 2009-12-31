@@ -20,11 +20,11 @@
 
 package org.apache.hadoop.hbase.jdbc.impl;
 
-import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;

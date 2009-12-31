@@ -21,7 +21,6 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.client.InternalErrorException;
-import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
@@ -31,6 +30,7 @@ import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.List;
 

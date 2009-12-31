@@ -21,8 +21,6 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.expreval.client.InternalErrorException;
-import org.apache.expreval.util.Lists;
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.UnMappedValueMap;
@@ -30,6 +28,8 @@ import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.util.Lists;
+import org.apache.hadoop.hbase.hbql.util.Maps;
 
 import java.io.Serializable;
 import java.util.List;

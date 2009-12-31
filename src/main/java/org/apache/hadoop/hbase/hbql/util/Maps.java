@@ -18,30 +18,17 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.util;
+package org.apache.hadoop.hbase.hbql.util;
 
-public class QueueElement<T> {
-    private final T element;
-    private final boolean completeToken;
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
-    QueueElement(final T element, boolean completeToken) {
-        this.element = element;
-        this.completeToken = completeToken;
+public class Maps {
+    public static <K, V> HashMap<K, V> newHashMap() {
+        return new HashMap<K, V>();
     }
 
-    public static <T> QueueElement<T> newElement(final T element) {
-        return new QueueElement<T>(element, false);
-    }
-
-    public static <T> QueueElement<T> newComplete() {
-        return new QueueElement<T>(null, true);
-    }
-
-    public T getElement() {
-        return this.element;
-    }
-
-    public boolean isCompleteToken() {
-        return this.completeToken;
+    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap() {
+        return new ConcurrentHashMap<K, V>();
     }
 }

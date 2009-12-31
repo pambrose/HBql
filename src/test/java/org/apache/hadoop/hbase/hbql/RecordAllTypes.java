@@ -20,11 +20,11 @@
 
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.Util;
+import org.apache.hadoop.hbase.hbql.util.Maps;
 
 import java.io.Serializable;
 import java.util.Arrays;

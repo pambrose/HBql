@@ -20,7 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -28,6 +27,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.index.SingleColumnIndex;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.io.IOException;
 import java.util.List;

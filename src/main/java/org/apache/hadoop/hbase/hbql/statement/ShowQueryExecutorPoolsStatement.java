@@ -20,9 +20,9 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.expreval.util.ExecutorPool;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
@@ -36,7 +36,7 @@ public class ShowQueryExecutorPoolsStatement extends BasicStatement implements C
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Executor Pools: ");
-        for (final ExecutorPool executorPool : QueryExecutorPoolManager.getExecutorPools())
+        for (final QueryExecutorPool executorPool : QueryExecutorPoolManager.getExecutorPools())
             retval.out.println("\t" + executorPool.getName() + "( max_pool_size: " + executorPool.getMaxPoolSize()
                                + ", thread_count: " + executorPool.getThreadCount() + ")");
 

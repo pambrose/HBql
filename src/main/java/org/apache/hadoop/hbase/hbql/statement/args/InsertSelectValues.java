@@ -22,7 +22,6 @@ package org.apache.hadoop.hbase.hbql.statement.args;
 
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.NamedParameter;
-import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
@@ -33,6 +32,7 @@ import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.Iterator;
 import java.util.List;

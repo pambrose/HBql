@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.util;
+package org.apache.hadoop.hbase.hbql.util;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 

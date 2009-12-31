@@ -23,10 +23,10 @@ package org.apache.yaoql.client;
 import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.expreval.util.NullIterator;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.ResultSetIterator;
+import org.apache.hadoop.hbase.hbql.util.NullIterator;
 import org.apache.yaoql.impl.ObjectQueryImpl;
 
 import java.util.Collection;

@@ -20,11 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.expreval.util.ExecutorPool;
-import org.apache.expreval.util.ExecutorWithQueue;
-import org.apache.expreval.util.Maps;
-import org.apache.expreval.util.PoolableElement;
-import org.apache.expreval.util.Sets;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -45,12 +40,17 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutor;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
+import org.apache.hadoop.hbase.hbql.util.ExecutorWithQueue;
+import org.apache.hadoop.hbase.hbql.util.Maps;
+import org.apache.hadoop.hbase.hbql.util.PoolableElement;
+import org.apache.hadoop.hbase.hbql.util.Sets;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
@@ -475,7 +475,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
 
     private ExecutorWithQueue takeExecutorFromPool() throws HBqlException {
         this.validateExecutorPoolNameExists(this.getQueryExecutorPoolName());
-        final ExecutorPool pool = QueryExecutorPoolManager.getExecutorPool(this.getQueryExecutorPoolName());
+        final QueryExecutorPool pool = QueryExecutorPoolManager.getExecutorPool(this.getQueryExecutorPoolName());
         return pool.take();
     }
 

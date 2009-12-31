@@ -20,7 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -28,6 +27,7 @@ import org.apache.hadoop.hbase.hbql.mapping.AttribMapping;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
+import org.apache.hadoop.hbase.hbql.util.Sets;
 
 import java.util.List;
 import java.util.Set;

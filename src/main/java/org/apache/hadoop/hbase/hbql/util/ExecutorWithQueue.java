@@ -18,7 +18,9 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.util;
+package org.apache.hadoop.hbase.hbql.util;
+
+import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -28,12 +30,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class ExecutorWithQueue<T> implements PoolableElement {
 
-    private final ExecutorPool executorPool;
+    private final QueryExecutorPool executorPool;
     private final ExecutorService threadPool;
     private final QueueWithCompletion<T> completionQueue;
     private final AtomicInteger workSubmittedCount = new AtomicInteger(0);
 
-    protected ExecutorWithQueue(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
+    protected ExecutorWithQueue(final QueryExecutorPool executorPool, final int threadCount, final int queueSize) {
         this.executorPool = executorPool;
         this.threadPool = Executors.newFixedThreadPool(threadCount);
         this.completionQueue = new QueueWithCompletion<T>(queueSize);
@@ -41,7 +43,7 @@ public abstract class ExecutorWithQueue<T> implements PoolableElement {
 
     public abstract boolean threadsReadResults();
 
-    protected ExecutorPool getExecutorPool() {
+    protected QueryExecutorPool getExecutorPool() {
         return this.executorPool;
     }
 

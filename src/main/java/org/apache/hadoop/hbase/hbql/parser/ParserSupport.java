@@ -32,11 +32,11 @@ import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.calculation.DelegateCalculation;
 import org.apache.expreval.expr.compare.BooleanCompare;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnDefinition;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.List;
 

@@ -395,12 +395,14 @@ public class ExamplesTest extends TestSupport {
         if (!QueryExecutorPoolManager.queryExecutorPoolExists("execPool"))
             QueryExecutorPoolManager.newQueryExecutorPool("execPool", 5, 10, true, 100);
 
-        // Then assign the connection a pool name to use for queries
+        // Then assign the connection a query executor pool name to use for queries
         connection.setQueryExecutorPoolName("execPool");
 
-        // Or could use a dedicated Executor, rather than one from a pool, if appropriate:
+        // Or could use a dedicated QueryExecutor, rather than one from a pool:
         QueryExecutor executor = QueryExecutor.newQueryExecutor(10, true, 100);
         connection.setQueryExecutor(executor);
+
+        // Now use connection in a query.
 
         // END SNIPPET: create-executor-pool
     }
@@ -417,9 +419,6 @@ public class ExamplesTest extends TestSupport {
         // Or, using the API
         if (QueryExecutorPoolManager.queryExecutorPoolExists("execPool"))
             QueryExecutorPoolManager.dropExecutorPool("execPool");
-
-        // Then assign the connection a pool name to use for queries
-        connection.setQueryExecutorPoolName("execPool");
 
         // END SNIPPET: drop-executor-pool
     }

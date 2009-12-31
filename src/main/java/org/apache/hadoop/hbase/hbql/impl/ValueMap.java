@@ -20,8 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.util.Maps;
 
 import java.util.Map;
 import java.util.NavigableMap;

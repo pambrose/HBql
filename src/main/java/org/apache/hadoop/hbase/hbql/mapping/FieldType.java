@@ -32,8 +32,8 @@ import org.apache.expreval.expr.node.LongValue;
 import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.expreval.expr.node.ShortValue;
 import org.apache.expreval.expr.node.StringValue;
-import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.Serializable;

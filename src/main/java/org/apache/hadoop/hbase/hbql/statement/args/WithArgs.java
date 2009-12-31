@@ -22,8 +22,6 @@ package org.apache.hadoop.hbase.hbql.statement.args;
 
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.var.NamedParameter;
-import org.apache.expreval.util.Lists;
-import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
@@ -38,6 +36,8 @@ import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
+import org.apache.hadoop.hbase.hbql.util.Lists;
+import org.apache.hadoop.hbase.hbql.util.Sets;
 
 import java.io.Serializable;
 import java.util.List;

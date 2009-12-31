@@ -22,7 +22,6 @@ package org.apache.hadoop.hbase.hbql.statement.select;
 
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.expr.var.NamedParameter;
-import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -36,6 +35,7 @@ import org.apache.hadoop.hbase.hbql.mapping.SelectFamilyAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.Collection;
 import java.util.List;

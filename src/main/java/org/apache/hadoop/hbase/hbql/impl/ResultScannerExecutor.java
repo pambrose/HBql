@@ -20,17 +20,17 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.expreval.util.ExecutorPool;
-import org.apache.expreval.util.ExecutorWithQueue;
 import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
+import org.apache.hadoop.hbase.hbql.util.ExecutorWithQueue;
 
 public class ResultScannerExecutor extends ExecutorWithQueue<ResultScanner> {
 
-    public ResultScannerExecutor(final ExecutorPool executorPool, final int threadCount, final int queueSize) {
+    public ResultScannerExecutor(final QueryExecutorPool executorPool, final int threadCount, final int queueSize) {
         super(executorPool, threadCount, queueSize);
     }
 
-    public static ResultScannerExecutor newPooledResultScannerExecutor(final ExecutorPool executorPool,
+    public static ResultScannerExecutor newPooledResultScannerExecutor(final QueryExecutorPool executorPool,
                                                                        final int threadCount,
                                                                        final int queueSize) {
         return new ResultScannerExecutor(executorPool, threadCount, queueSize);

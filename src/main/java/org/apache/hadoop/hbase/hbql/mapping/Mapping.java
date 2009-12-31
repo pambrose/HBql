@@ -21,10 +21,10 @@
 package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.expreval.expr.ExpressionTree;
-import org.apache.expreval.util.Lists;
-import org.apache.expreval.util.Maps;
-import org.apache.expreval.util.Sets;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.util.Lists;
+import org.apache.hadoop.hbase.hbql.util.Maps;
+import org.apache.hadoop.hbase.hbql.util.Sets;
 
 import java.io.Serializable;
 import java.util.Collection;

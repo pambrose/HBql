@@ -20,10 +20,10 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionPoolImpl;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
+import org.apache.hadoop.hbase.hbql.util.Maps;
 
 import java.util.Map;
 

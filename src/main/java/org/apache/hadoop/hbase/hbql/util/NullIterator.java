@@ -18,17 +18,22 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.util;
+package org.apache.hadoop.hbase.hbql.util;
 
-import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-public class Maps {
-    public static <K, V> HashMap<K, V> newHashMap() {
-        return new HashMap<K, V>();
+public class NullIterator<T> implements Iterator<T> {
+
+    public boolean hasNext() {
+        return false;
     }
 
-    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap() {
-        return new ConcurrentHashMap<K, V>();
+    public T next() {
+        throw new NoSuchElementException();
+    }
+
+    public void remove() {
+
     }
 }

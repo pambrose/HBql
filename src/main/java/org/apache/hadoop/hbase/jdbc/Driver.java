@@ -20,9 +20,9 @@
 
 package org.apache.hadoop.hbase.jdbc;
 
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.util.Maps;
 import org.apache.hadoop.hbase.jdbc.impl.ConnectionImpl;
 
 import java.sql.Connection;

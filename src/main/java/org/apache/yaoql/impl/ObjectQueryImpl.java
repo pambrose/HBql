@@ -22,11 +22,11 @@ package org.apache.yaoql.impl;
 
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.literal.BooleanLiteral;
-import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.hadoop.hbase.hbql.statement.NonStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.yaoql.client.ObjectQuery;
 import org.apache.yaoql.client.ObjectQueryListener;
 import org.apache.yaoql.client.ObjectResultSet;

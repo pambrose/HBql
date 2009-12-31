@@ -21,9 +21,9 @@
 package org.apache.hadoop.hbase.hbql.statement.args;
 
 import org.apache.expreval.expr.var.NamedParameter;
-import org.apache.expreval.util.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.io.Serializable;
 import java.util.List;

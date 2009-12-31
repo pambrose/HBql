@@ -26,9 +26,9 @@ git clone git://github.com/pambrose/HBql.git
 
 Release Notes
 
-    0.9.15-alpha -- 12/21/09
+    0.9.15-alpha -- 12/30/09
 
-        * Added support for executor pools
+        * Added support for QueryExecutors and QueryExecutorPools
 
         * Added {{{statements/create-executor-pool.html}CREATE EXECUTOR POOL}} statement
 
@@ -36,7 +36,7 @@ Release Notes
 
         * Added {{{statements/show-executor-pools.html}SHOW EXECUTOR POOLS}} statement
 
-        * Added function executorPoolExsits()
+        * Added function queryExecutorPoolExsits()
 
     0.9.14-alpha -- 12/18/09
 

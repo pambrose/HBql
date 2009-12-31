@@ -20,7 +20,6 @@
 
 package org.apache.junk;
 
-import org.apache.expreval.util.Maps;
 import org.apache.hadoop.hbase.hbql.client.Column;
 import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HBatch;
@@ -31,6 +30,7 @@ import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.Mapping;
 import org.apache.hadoop.hbase.hbql.client.Util;
+import org.apache.hadoop.hbase.hbql.util.Maps;
 
 import java.util.Date;
 import java.util.Map;

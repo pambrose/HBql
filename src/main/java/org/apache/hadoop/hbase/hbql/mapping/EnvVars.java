@@ -21,7 +21,7 @@
 package org.apache.hadoop.hbase.hbql.mapping;
 
 
-import org.apache.expreval.util.Lists;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.Arrays;
 import java.util.List;
