@@ -79,7 +79,7 @@ public class QueryExecutorPoolManager {
         return QueryExecutorPoolManager.getExecutorPoolMap().get(poolName);
     }
 
-    public static Collection<QueryExecutorPool> getExecutorPools() {
+    public static Collection<QueryExecutorPool> getQueryExecutorPools() {
         return getExecutorPoolMap().values();
     }
 }

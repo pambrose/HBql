@@ -35,8 +35,8 @@ public class ShowQueryExecutorPoolsStatement extends BasicStatement implements C
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         final ExecutionResults retval = new ExecutionResults();
-        retval.out.println("Executor Pools: ");
-        for (final QueryExecutorPool executorPool : QueryExecutorPoolManager.getExecutorPools())
+        retval.out.println("Query Executor Pools: ");
+        for (final QueryExecutorPool executorPool : QueryExecutorPoolManager.getQueryExecutorPools())
             retval.out.println("\t" + executorPool.getName() + "( max_pool_size: " + executorPool.getMaxPoolSize()
                                + ", thread_count: " + executorPool.getThreadCount() + ")");
 

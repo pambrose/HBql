@@ -17,3 +17,5 @@ SHOW [QUERY] EXECUTOR POOLS
 
     Displays all query executor pools.
 
+    * The same information is avaiable with the API using QueryExecutorPoolManager.getQueryExecutorPools().
+
