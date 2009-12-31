@@ -9,6 +9,6 @@ Using the HBql API
 
 %{snippet|id=hbqlapi1|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
 
-*Using a Connection Pool
+*Using a Connection Pool and a QueryExecutorPool
 
 %{snippet|id=hbqlapi2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

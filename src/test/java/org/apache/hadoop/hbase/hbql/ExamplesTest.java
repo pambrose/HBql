@@ -388,7 +388,7 @@ public class ExamplesTest extends TestSupport {
 
         HConnection connection = HConnectionManager.newConnection();
 
-        // Mapping named foo that corresponds to table foo.
+        // Create Query Executor Pool named execPool if it doesn't already exist.
         connection.execute("CREATE QUERY EXECUTOR POOL execPool (MAX_POOL_SIZE: 5, THREAD_COUNT: 10) IF NOT queryExecutorPoolExists('execPool')");
 
         // Or, using the API
@@ -620,7 +620,15 @@ public class ExamplesTest extends TestSupport {
         // Create connection pool with max of 25 connections and prime it with 5 initial connections
         HConnectionPool connectionPool = HConnectionPoolManager.newConnectionPool(5, 25);
 
+        // Create Query Executor Pool named execPool if it doesn't already exist.
+        if (!QueryExecutorPoolManager.queryExecutorPoolExists("execPool"))
+            QueryExecutorPoolManager.newQueryExecutorPool("execPool", 5, 10, true, 100);
+
+        // Take a connection from the connection pool
         HConnection connection = connectionPool.takeConnection();
+
+        // Assign the connection a query executor pool name to use for queries
+        connection.setQueryExecutorPoolName("execPool");
 
         // Do something with the connection
 
