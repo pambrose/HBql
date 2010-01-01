@@ -19,7 +19,7 @@
  */
 
 @VersionAnnotation(version = "0.9.16-alpha",
-                   date = "12/30/09",
+                   date = "12/31/09",
                    user = "pambrose",
                    revision = "",
                    url = "http://www.hbql.com") package org.apache.hadoop.hbase.hbql.util;
