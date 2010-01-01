@@ -32,8 +32,8 @@ public class QueryExecutorPoolManager {
     public static int defaultMinThreadCount = 1;
     public static int defaultMaxThreadCount = 10;
     public static long defaultKeepAliveSecs = Long.MAX_VALUE;
-    public static int defaultCompletionQueueSize = 25;
     public static boolean defaultThreadsReadResults = true;
+    public static int defaultCompletionQueueSize = 25;
 
     private static Map<String, QueryExecutorPool> executorPoolMap = Maps.newConcurrentHashMap();
 

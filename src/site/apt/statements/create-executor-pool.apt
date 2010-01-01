@@ -72,17 +72,17 @@ executorArg:
 
     * All the executorArg parameters are optional.  If unspecified, the values default to:
 
-        ** QueryExecutorPoolManager.defaultMaxPoolSize
+        ** QueryExecutorPoolManager.defaultMaxPoolSize (5)
 
-        ** QueryExecutorPoolManager.defaultMinThreadCount
+        ** QueryExecutorPoolManager.defaultMinThreadCount (1)
 
-        ** QueryExecutorPoolManager.defaultMaxThreadCount
+        ** QueryExecutorPoolManager.defaultMaxThreadCount (10)
 
-        ** QueryExecutorPoolManager.defaultKeepAliveSecs
+        ** QueryExecutorPoolManager.defaultKeepAliveSecs (Long.MAX_VALUE)
 
-        ** QueryExecutorPoolManager.defaultQueueSize
-        
-        ** QueryExecutorPoolManager.defaultThreadsReadResults
+        ** QueryExecutorPoolManager.defaultThreadsReadResults (TRUE)
+
+        ** QueryExecutorPoolManager.defaultCompletionQueueSize (25)
 
 
 *Example

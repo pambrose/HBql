@@ -28,7 +28,7 @@ Release Notes
 
     0.9.16-alpha -- 12/31/09
 
-        * Improved QueryExecutor with queued thread pool work submission and additional parameters. 
+        * Improved QueryExecutor with queued thread pool work submission and additional tuning parameters. 
 
     0.9.15-alpha -- 12/30/09
 
