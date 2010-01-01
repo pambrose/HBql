@@ -27,26 +27,26 @@ import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 public class ResultExecutor extends CompletionQueueExecutor<Result> {
 
     private ResultExecutor(final QueryExecutorPool executorPool,
-                           final int coreThreadCount,
+                           final int minThreadCount,
                            final int maxThreadCount,
                            final long keepAliveSecs,
                            final int completionQueueSize) {
-        super(executorPool, coreThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
+        super(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 
     public static ResultExecutor newPooledResultExecutor(final QueryExecutorPool executorPool,
-                                                         final int coreThreadCount,
+                                                         final int minThreadCount,
                                                          final int maxThreadCount,
                                                          final long keepAliveSecs,
                                                          final int completionQueueSize) {
-        return new ResultExecutor(executorPool, coreThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
+        return new ResultExecutor(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 
-    public static ResultExecutor newResultExecutor(final int coreThreadCount,
+    public static ResultExecutor newResultExecutor(final int minThreadCount,
                                                    final int maxThreadCount,
                                                    final long keepAliveSecs,
                                                    final int completionQueueSize) {
-        return new ResultExecutor(null, coreThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
+        return new ResultExecutor(null, minThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 
     public boolean threadsReadResults() {

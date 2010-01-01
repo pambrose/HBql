@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.util.ElementPool;
 
 public class QueryExecutorPool extends ElementPool<CompletionQueueExecutor> {
 
-    private final int coreThreadCount;
+    private final int minThreadCount;
     private final int maxThreadCount;
     private final long keepAliveSecs;
     private final boolean threadsReadResults;
@@ -35,21 +35,21 @@ public class QueryExecutorPool extends ElementPool<CompletionQueueExecutor> {
 
     public QueryExecutorPool(final String name,
                              final int maxExecutorPoolSize,
-                             final int coreThreadCount,
+                             final int minThreadCount,
                              final int maxThreadCount,
                              final long keepAliveSecs,
                              final boolean threadsReadResults,
                              final int completionQueueSize) {
         super(name, maxExecutorPoolSize);
-        this.coreThreadCount = coreThreadCount;
+        this.minThreadCount = minThreadCount;
         this.maxThreadCount = maxThreadCount;
         this.keepAliveSecs = keepAliveSecs;
         this.threadsReadResults = threadsReadResults;
         this.completionQueueSize = completionQueueSize;
     }
 
-    public int getCoreThreadCount() {
-        return this.coreThreadCount;
+    public int getMinThreadCount() {
+        return this.minThreadCount;
     }
 
     public int getMaxThreadCount() {
@@ -71,12 +71,12 @@ public class QueryExecutorPool extends ElementPool<CompletionQueueExecutor> {
     protected CompletionQueueExecutor newElement() throws HBqlException {
         return this.getThreadsReadResults()
                ? ResultExecutor.newPooledResultExecutor(this,
-                                                        this.getCoreThreadCount(),
+                                                        this.getMinThreadCount(),
                                                         this.getMaxThreadCount(),
                                                         this.getKeepAliveSecs(),
                                                         this.getCompletionQueueSize())
                : ResultScannerExecutor.newPooledResultScannerExecutor(this,
-                                                                      this.getCoreThreadCount(),
+                                                                      this.getMinThreadCount(),
                                                                       this.getMaxThreadCount(),
                                                                       this.getKeepAliveSecs(),
                                                                       this.getCompletionQueueSize());

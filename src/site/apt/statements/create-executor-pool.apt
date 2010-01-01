@@ -14,7 +14,7 @@ CREATE [QUERY] EXECUTOR POOL pool_name ['(' executorArg [, ...] ')'] [IF bool_ex
 
 executorArg:
     MAX_EXECUTOR_POOL_SIZE ':' int_expr
-    | CORE_THREAD_COUNT ':' int_expr
+    | MIN_THREAD_COUNT ':' int_expr
     | MAX_THREAD_COUNT ':' int_expr
     | KEEP_ALIVE_SECS ':' long_expr
     | THREADS_READ_RESULTS ':' bool_expr
@@ -30,10 +30,6 @@ executorArg:
     from a QueryExecutorPool using HConncetion.setQueryExecutorPoolName(), or a dedicated QueryExecutor can
     be assigned using HConncetion.setQueryExecutor().
 
-    * A QueryExecutorPool has a maximum size (MAX_EXECUTOR_POOL_SIZE parameter)
-    and each QueryExecutor in the pool has a core number of threads (CORE_THREAD_COUNT parameter) and a 
-    maximum number of threads (MAX_THREAD_COUNT parameter).
-
     * A QueryExecutor pool request will block if all elements in the pool have been already taken.
     A pooled QueryExecutor is released back to a pool when the ResultSet is closed (when the ResultSet
     iterator is completed).
@@ -45,26 +41,40 @@ executorArg:
     Or, the threads can iterate through the ResultScanner results and return the Result objects back to
     the main thread.
 
-    * The THREADS_READ_RESULTS parameter  determines the
+    * If an HConnection is from an HConnectionPool, the QueryExecutor assignments (dedicated or from a pool) are
+      reset when HConnection.close() is called.  Thus, QueryExecutor assignments should be made when an
+      HConnection is retrieved from a pool.
+
+* Parameters
+
+    * A QueryExecutorPool has a maximum size specified by the MAX_EXECUTOR_POOL_SIZE parameter.
+
+    * Each QueryExecutor in has a thread pool specified by these parameters:
+
+        ** MIN_THREAD_COUNT - the number of threads to keep in a pool, even if they are idle.
+
+        ** MAX_THREAD_COUNT - the maximum number of threads to allow in the pool.
+
+        ** KEEP_ALIVE_SECS - when the number of threads is greater than the minimum thread count,
+        KEEP_ALIVE_SECS is the maximum number of seconds that excess idle threads will wait for
+        new tasks before terminating.
+
+        ** THREADS_READ_RESULTS - determines the
     thread processing behavior. If THREADS_READ_RESULTS is false, the order of Result values within a
     Scans will be preserved, but at a cost of less concurrency.  If THREADS_READ_RESULTS is true, then Result
     values across Scan results will be merged in the ResultSet iterator.
     There is no guarantee on the order in which keys and key ranges are returned.
 
-    * The COMPLETION_QUEUE_SIZE parameter is the size of the queue used by the threads to return data
+        ** COMPLETION_QUEUE_SIZE - the size of the queue used by the thread pool to return data
     to the main thread.  If THREADS_READ_RESULTS is false, then it is the size of the queue used to
     return ResultScanner objects and if THREADS_READ_RESULTS is true, it is the the size of the queue used to
     Result objects.
-
-    * If an HConnection is from an HConnectionPool, the QueryExecutor assignments (dedicated or from a pool) are
-      reset when HConnection.close() is called.  Thus, QueryExecutor assignments should be made when an
-      HConnection is retrieved from a pool.
 
     * All the executorArg parameters are optional.  If unspecified, the values default to:
 
         ** QueryExecutorPoolManager.defaultMaxPoolSize
 
-        ** QueryExecutorPoolManager.defaultCoreThreadCount
+        ** QueryExecutorPoolManager.defaultMinThreadCount
 
         ** QueryExecutorPoolManager.defaultMaxThreadCount
 

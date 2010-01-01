@@ -29,7 +29,7 @@ import java.util.Map;
 public class QueryExecutorPoolManager {
 
     public static int defaultMaxExecutorPoolSize = 5;
-    public static int defaultCoreThreadCount = 1;
+    public static int defaultMinThreadCount = 1;
     public static int defaultMaxThreadCount = 10;
     public static long defaultKeepAliveSecs = Long.MAX_VALUE;
     public static int defaultCompletionQueueSize = 25;
@@ -43,7 +43,7 @@ public class QueryExecutorPoolManager {
 
     public static QueryExecutorPool newQueryExecutorPool(final String poolName,
                                                          final int maxExecutorPoolSize,
-                                                         final int coreThreadCount,
+                                                         final int minThreadCount,
                                                          final int maxThreadCount,
                                                          final long keepAliveSecs,
                                                          final boolean threadsReadResults,
@@ -54,7 +54,7 @@ public class QueryExecutorPoolManager {
 
         final QueryExecutorPool executorPool = new QueryExecutorPool(poolName,
                                                                      maxExecutorPoolSize,
-                                                                     coreThreadCount,
+                                                                     minThreadCount,
                                                                      maxThreadCount,
                                                                      keepAliveSecs,
                                                                      threadsReadResults,

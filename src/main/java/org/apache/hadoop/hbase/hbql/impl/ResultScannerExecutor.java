@@ -27,26 +27,26 @@ import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 public class ResultScannerExecutor extends CompletionQueueExecutor<ResultScanner> {
 
     public ResultScannerExecutor(final QueryExecutorPool executorPool,
-                                 final int coreThreadCount,
+                                 final int minThreadCount,
                                  final int maxThreadCount,
                                  final long keepAliveSecs,
                                  final int queueSize) {
-        super(executorPool, coreThreadCount, maxThreadCount, keepAliveSecs, queueSize);
+        super(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, queueSize);
     }
 
     public static ResultScannerExecutor newPooledResultScannerExecutor(final QueryExecutorPool executorPool,
-                                                                       final int coreThreadCount,
+                                                                       final int minThreadCount,
                                                                        final int maxThreadCount,
                                                                        final long keepAliveSecs,
                                                                        final int queueSize) {
-        return new ResultScannerExecutor(executorPool, coreThreadCount, maxThreadCount, keepAliveSecs, queueSize);
+        return new ResultScannerExecutor(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, queueSize);
     }
 
-    public static ResultScannerExecutor newResultScannerExecutor(final int coreThreadCount,
+    public static ResultScannerExecutor newResultScannerExecutor(final int minThreadCount,
                                                                  final int maxThreadCount,
                                                                  final long keepAliveSecs,
                                                                  final int queueSize) {
-        return new ResultScannerExecutor(null, coreThreadCount, maxThreadCount, keepAliveSecs, queueSize);
+        return new ResultScannerExecutor(null, minThreadCount, maxThreadCount, keepAliveSecs, queueSize);
     }
 
     public boolean threadsReadResults() {

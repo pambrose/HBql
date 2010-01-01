@@ -26,17 +26,17 @@ import org.apache.hadoop.hbase.hbql.impl.ResultScannerExecutor;
 
 public class QueryExecutor {
 
-    public static QueryExecutor newQueryExecutor(final int coreThreadCount,
+    public static QueryExecutor newQueryExecutor(final int minThreadCount,
                                                  final int maxThreadCount,
                                                  final long keepAliveSecs,
                                                  final boolean threadsReadResults,
                                                  final int queueSize) {
         return new QueryExecutorImpl(threadsReadResults
-                                     ? ResultExecutor.newResultExecutor(coreThreadCount,
+                                     ? ResultExecutor.newResultExecutor(minThreadCount,
                                                                         maxThreadCount,
                                                                         keepAliveSecs,
                                                                         queueSize)
-                                     : ResultScannerExecutor.newResultScannerExecutor(coreThreadCount,
+                                     : ResultScannerExecutor.newResultScannerExecutor(minThreadCount,
                                                                                       maxThreadCount,
                                                                                       keepAliveSecs,
                                                                                       queueSize));

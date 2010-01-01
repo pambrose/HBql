@@ -33,7 +33,7 @@ public class ExecutorPoolProperty extends ExpressionProperty {
     public static enum Type implements PropertyType {
 
         MAX_EXECUTOR_POOL_SIZE(new ArgumentListTypeSignature(IntegerValue.class)),
-        CORE_THREAD_COUNT(new ArgumentListTypeSignature(IntegerValue.class)),
+        MIN_THREAD_COUNT(new ArgumentListTypeSignature(IntegerValue.class)),
         MAX_THREAD_COUNT(new ArgumentListTypeSignature(IntegerValue.class)),
         KEEP_ALIVE_SECS(new ArgumentListTypeSignature(LongValue.class)),
         THREADS_READ_RESULTS(new ArgumentListTypeSignature(BooleanValue.class)),

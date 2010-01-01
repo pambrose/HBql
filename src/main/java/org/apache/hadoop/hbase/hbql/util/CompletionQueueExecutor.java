@@ -51,13 +51,13 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
 
     private static class LocalThreadPoolExecutor extends ThreadPoolExecutor {
 
-        private LocalThreadPoolExecutor(final int corePoolSize,
-                                        final int maximumPoolSize,
+        private LocalThreadPoolExecutor(final int minPoolSize,
+                                        final int maxPoolSize,
                                         final long keepAliveTime,
                                         final TimeUnit timeUnit,
                                         final BlockingQueue<Runnable> workQueue,
                                         final RejectedExecutionHandler handler) {
-            super(corePoolSize, maximumPoolSize, keepAliveTime, timeUnit, workQueue, handler);
+            super(minPoolSize, maxPoolSize, keepAliveTime, timeUnit, workQueue, handler);
         }
 
         private final AtomicInteger rejectionCounter = new AtomicInteger(0);
@@ -81,13 +81,13 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
 
 
     protected CompletionQueueExecutor(final QueryExecutorPool executorPool,
-                                      final int coreThreadCount,
+                                      final int minThreadCount,
                                       final int maxThreadCount,
                                       final long keepAliveSecs,
                                       final int completionQueueSize) {
         this.executorPool = executorPool;
         final BlockingQueue<Runnable> backingQueue = new ArrayBlockingQueue<Runnable>(maxThreadCount * 5);
-        this.threadPoolExecutor = new LocalThreadPoolExecutor(coreThreadCount,
+        this.threadPoolExecutor = new LocalThreadPoolExecutor(minThreadCount,
                                                               maxThreadCount,
                                                               keepAliveSecs,
                                                               TimeUnit.SECONDS,

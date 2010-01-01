@@ -46,7 +46,7 @@ public class CreateQueryExecutorPoolStatement extends BasicStatement implements 
 
         QueryExecutorPoolManager.newQueryExecutorPool(this.getArgs().getPoolName(),
                                                       this.getArgs().getMaxExecutorPoolSize(),
-                                                      this.getArgs().getCoreThreadCount(),
+                                                      this.getArgs().getMinThreadCount(),
                                                       this.getArgs().getMaxThreadCount(),
                                                       this.getArgs().getKeepAliveSecs(),
                                                       this.getArgs().getThreadsReadResults(),
@@ -57,6 +57,6 @@ public class CreateQueryExecutorPoolStatement extends BasicStatement implements 
 
 
     public static String usage() {
-        return "CREATE [QUERY] EXECUTOR POOL pool_name (MAX_EXECUTOR_POOL_SIZE: int_expr, CORE_THREAD_COUNT: int_expr, MAX_THREAD_COUNT: int_expr, THREADS_READ_RESULTS: bool_expr, COMPLETION_QUEUE_SIZE: int_expr) [IF bool_expr]";
+        return "CREATE [QUERY] EXECUTOR POOL pool_name (MAX_EXECUTOR_POOL_SIZE: int_expr, MIN_THREAD_COUNT: int_expr, MAX_THREAD_COUNT: int_expr, THREADS_READ_RESULTS: bool_expr, COMPLETION_QUEUE_SIZE: int_expr) [IF bool_expr]";
     }
 }

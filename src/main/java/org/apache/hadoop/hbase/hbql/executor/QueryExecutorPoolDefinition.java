@@ -31,7 +31,7 @@ public class QueryExecutorPoolDefinition {
     private final List<ExecutorPoolProperty> executorPoolPropertyList;
 
     private ExecutorPoolProperty maxExecutorPoolSize = null;
-    private ExecutorPoolProperty coreThreadCount = null;
+    private ExecutorPoolProperty minThreadCount = null;
     private ExecutorPoolProperty maxThreadCount = null;
     private ExecutorPoolProperty keepAliveSecs = null;
     private ExecutorPoolProperty threadsReadResults = null;
@@ -73,8 +73,8 @@ public class QueryExecutorPoolDefinition {
                     this.maxExecutorPoolSize = this.validateProperty(this.maxExecutorPoolSize, executorPoolProperty);
                     break;
 
-                case CORE_THREAD_COUNT:
-                    this.coreThreadCount = this.validateProperty(this.coreThreadCount, executorPoolProperty);
+                case MIN_THREAD_COUNT:
+                    this.minThreadCount = this.validateProperty(this.minThreadCount, executorPoolProperty);
                     break;
 
                 case MAX_THREAD_COUNT:
@@ -103,11 +103,11 @@ public class QueryExecutorPoolDefinition {
             return QueryExecutorPoolManager.defaultMaxExecutorPoolSize;
     }
 
-    public int getCoreThreadCount() throws HBqlException {
-        if (this.coreThreadCount != null)
-            return this.coreThreadCount.getIntegerValue();
+    public int getMinThreadCount() throws HBqlException {
+        if (this.minThreadCount != null)
+            return this.minThreadCount.getIntegerValue();
         else
-            return QueryExecutorPoolManager.defaultCoreThreadCount;
+            return QueryExecutorPoolManager.defaultMinThreadCount;
     }
 
     public int getMaxThreadCount() throws HBqlException {
@@ -141,7 +141,7 @@ public class QueryExecutorPoolDefinition {
     public String asString() {
         try {
             return ", MAX_EXECUTOR_POOL_SIZE : " + this.getMaxExecutorPoolSize()
-                   + ", CORE_THREAD_COUNT : " + this.getCoreThreadCount()
+                   + ", MIN_THREAD_COUNT : " + this.getMinThreadCount()
                    + ", MAX_THREAD_COUNT : " + this.getMaxThreadCount()
                    + ", KEEP_ALIVE_SECS : " + this.getKeepAliveSecs()
                    + ", THREADS_READ_RESULTS : " + this.getThreadsReadResults()

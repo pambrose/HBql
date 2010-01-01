@@ -203,7 +203,7 @@ executorPoolPropertyList returns [List<ExecutorPoolProperty> retval]
 executorPoolProperty returns [ExecutorPoolProperty retval]
 options {backtrack=true;}	
 	: k=keyMAX_EXECUTOR_POOL_SIZE COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyCORE_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	| k=keyMIN_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
 	| k=keyMAX_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
 	| k=keyKEEP_ALIVE_SECS COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
 	| k=keyTHREADS_READ_RESULTS COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
@@ -566,7 +566,7 @@ WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();};
 
 // Any changes in these require a change in the ExecutorPool.Type enums
 keyMAX_EXECUTOR_POOL_SIZE returns [String retval]  : {isKeyword(input, "MAX_EXECUTOR_POOL_SIZE")}? id=ID {retval = $id.text;};
-keyCORE_THREAD_COUNT returns [String retval]       : {isKeyword(input, "CORE_THREAD_COUNT")}? id=ID {retval = $id.text;};
+keyMIN_THREAD_COUNT returns [String retval]        : {isKeyword(input, "MIN_THREAD_COUNT")}? id=ID {retval = $id.text;};
 keyMAX_THREAD_COUNT returns [String retval]        : {isKeyword(input, "MAX_THREAD_COUNT")}? id=ID {retval = $id.text;};
 keyKEEP_ALIVE_SECS returns [String retval]         : {isKeyword(input, "KEEP_ALIVE_SECS")}? id=ID {retval = $id.text;};
 keyTHREADS_READ_RESULTS returns [String retval]    : {isKeyword(input, "THREADS_READ_RESULTS")}? id=ID {retval = $id.text;};
